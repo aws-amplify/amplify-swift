@@ -37,8 +37,7 @@ struct InitiateSignUp: Action {
 
         let client: CognitoUserPoolBehavior
         do {
-            client = try createIdentityProviderClient(key: signUpEventData.key,
-                                                      environment: environment)
+            client = try environment.cognitoUserPoolFactory()
         } catch {
             let authError = AuthenticationError.configuration(message: "Failed to get CognitoUserPool client: \(error)")
             let event = SignUpEvent(
@@ -54,16 +53,16 @@ struct InitiateSignUp: Action {
                                 attributes: signUpEventData.attributes,
                                 userPoolConfiguration: environment.userPoolConfiguration)
         logVerbose("\(#fileID) Starting signup", environment: environment)
-        client.signUp(input: input) { result in
-            logVerbose("\(#fileID) SignUp received", environment: environment)
+
+        Task {
             let event: SignUpEvent
-            switch result {
-            case .success(let response):
+            do {
+                let response = try await client.signUp(input: input)
+                logVerbose("\(#fileID) SignUp received", environment: environment)
                 event = SignUpEvent(eventType: .initiateSignUpSuccess(
-                    username: signUpEventData.username,
-                    signUpResponse: response)
-                )
-            case .failure(let error):
+                                    username: signUpEventData.username,
+                                    signUpResponse: response))
+            } catch {
                 let error = SignUpError.service(error: error)
                 event = SignUpEvent(eventType: .initiateSignUpFailure(error: error))
             }
@@ -82,8 +81,7 @@ extension SignUpInput {
     init(username: String,
          password: String,
          attributes: [String: String],
-         userPoolConfiguration: UserPoolConfigurationData)
-    {
+         userPoolConfiguration: UserPoolConfigurationData) {
         let secretHash = Self.calculateSecretHash(username: username, userPoolConfiguration: userPoolConfiguration)
         let validationData = Self.getValidationData()
         let convertedAttributes = Self.convertAttributes(attributes)

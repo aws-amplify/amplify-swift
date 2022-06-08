@@ -32,26 +32,30 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
 
     /// Gets pre-signed URL.
     /// - Returns: Pre-Signed URL
-    func getPreSignedURL(key: String, signingOperation: AWSS3SigningOperation, expires: Int64? = nil) -> URL? {
+    func getPreSignedURL(key: String,
+                         signingOperation: AWSS3SigningOperation,
+                         expires: Int64? = nil) async throws -> URL {
         let expiresDate = Date(timeIntervalSinceNow: Double(expires ?? defaultExpiration))
         let expiration = Int64(expiresDate.timeIntervalSinceNow)
         let preSignedUrl: URL?
         switch signingOperation {
         case .getObject:
             let input = GetObjectInput(bucket: bucket, key: key)
-            preSignedUrl = input.presignURL(config: config, expiration: expiration)
+            preSignedUrl = try await input.presignURL(config: config, expiration: expiration)
         case .putObject:
             let input = PutObjectInput(bucket: bucket, key: key)
-            preSignedUrl = input.presignURL(config: config, expiration: expiration)
+            preSignedUrl = try await input.presignURL(config: config, expiration: expiration)
         case .uploadPart(let partNumber, let uploadId):
             let input = UploadPartInput(bucket: bucket, key: key, partNumber: partNumber, uploadId: uploadId)
-            preSignedUrl = input.presignURL(config: config, expiration: expiration)
+            preSignedUrl = try await input.presignURL(config: config, expiration: expiration)
         }
-        return urlWithEscapedToken(preSignedUrl)
+        guard let escapedURL = urlWithEscapedToken(preSignedUrl) else {
+            throw AWSS3PreSignedURLBuilderError.failed(reason: "Failed to get presigned URL.", error: nil)
+        }
+        return escapedURL
     }
 
     private func urlWithEscapedToken(_ url: URL?) -> URL? {
-        print("Received URL: \(url?.absoluteString ?? "nil")")
         guard let url = url,
               var components = URLComponents(string: url.absoluteString),
               var token = components.queryItems?.first(where: { $0.name == "X-Amz-Security-Token" }) else {

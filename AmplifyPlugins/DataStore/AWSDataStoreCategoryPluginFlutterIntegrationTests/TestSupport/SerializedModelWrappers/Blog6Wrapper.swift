@@ -16,22 +16,22 @@ import AmplifyTestCommon
  */
 class Blog6Wrapper: NSCopying {
     var model: FlutterSerializedModel
-    
+
     init(name: String) throws {
         let map: [String: Any] = [
             "name": name
         ]
         self.model = FlutterSerializedModel(id: UUID().uuidString, map: try FlutterDataStoreRequestUtils.getJSONValue(map))
     }
-    
+
     init(model: FlutterSerializedModel) {
         self.model = model
     }
-    
+
     func idString() -> String {
         return self.model.id
     }
-    
+
     func id() -> JSONValue? {
         return self.model.values["id"]
     }
@@ -39,11 +39,11 @@ class Blog6Wrapper: NSCopying {
     func name() -> JSONValue? {
         return self.model.values["name"]
     }
-    
+
     func posts() -> JSONValue? {
         return self.model.values["posts"]
     }
-    
+
     func copy(with zone: NSZone? = nil) -> Any {
         let copy = Blog6Wrapper(model: model)
         return copy

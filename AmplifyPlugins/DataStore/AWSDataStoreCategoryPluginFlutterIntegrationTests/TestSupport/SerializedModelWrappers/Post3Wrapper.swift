@@ -15,38 +15,38 @@ import AmplifyTestCommon
  */
 class Post3Wrapper: NSCopying {
     var model: FlutterSerializedModel
-    
+
     init(id: String = UUID().uuidString, title: String, comments: [FlutterSerializedModel] = []) throws {
         var serializedComments = [[:]]
-        
+
         for comment in comments {
             serializedComments.append(comment.toMap(modelSchema: Comment3.schema))
         }
-        
+
         var map: [String: Any] = [
             "title": title
         ]
-        
-        if (serializedComments.count > 0) {
+
+        if serializedComments.count > 0 {
             map["comments"] = serializedComments
         }
         self.model = FlutterSerializedModel(id: id, map: try FlutterDataStoreRequestUtils.getJSONValue(map))
     }
-    
+
     init(model: FlutterSerializedModel) {
         self.model = model
     }
-    
+
     init(json: String) throws {
         let data = json.data(using: .utf8)!
-        let map = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any]
+        let map = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]
         self.model = FlutterSerializedModel(id: map!["id"] as! String, map: try FlutterDataStoreRequestUtils.getJSONValue(map!))
     }
-    
+
     func idString() -> String {
         return self.model.id
     }
-    
+
     func id() -> JSONValue? {
         return self.model.values["id"]
     }

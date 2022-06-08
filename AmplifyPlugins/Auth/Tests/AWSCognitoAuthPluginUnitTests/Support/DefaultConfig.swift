@@ -52,8 +52,6 @@ enum Defaults {
         return authConfig
     }
 
-
-
     static func makeDefaultUserPool() throws -> CognitoUserPoolBehavior {
         return try CognitoIdentityProviderClient(region: regionString)
     }
@@ -82,22 +80,24 @@ enum Defaults {
     }
 
     static func makeDefaultAuthEnvironment(
-        authZEnvironment: BasicAuthorizationEnvironment? = nil
+        authZEnvironment: BasicAuthorizationEnvironment? = nil,
+        identityPoolFactory: @escaping () throws -> CognitoIdentityBehavior = makeIdentity,
+        userPoolFactory: @escaping () throws -> CognitoUserPoolBehavior = makeDefaultUserPool
     ) -> AuthEnvironment {
         let userPoolConfigData = makeDefaultUserPoolConfigData()
         let identityPoolConfigData = makeIdentityConfigData()
         let srpAuthEnvironment = BasicSRPAuthEnvironment(
             userPoolConfiguration: userPoolConfigData,
-            cognitoUserPoolFactory: makeDefaultUserPool
+            cognitoUserPoolFactory: userPoolFactory
         )
         let srpSignInEnvironment = BasicSRPSignInEnvironment(srpAuthEnvironment: srpAuthEnvironment)
         let userPoolEnvironment = BasicUserPoolEnvironment(userPoolConfiguration: userPoolConfigData,
-                                                           cognitoUserPoolFactory: makeDefaultUserPool)
+                                                           cognitoUserPoolFactory: userPoolFactory)
         let authenticationEnvironment = BasicAuthenticationEnvironment(srpSignInEnvironment: srpSignInEnvironment,
                                                                        userPoolEnvironment: userPoolEnvironment)
         let authorizationEnvironment = BasicAuthorizationEnvironment(
             identityPoolConfiguration: identityPoolConfigData,
-            cognitoIdentityFactory: makeIdentity)
+            cognitoIdentityFactory: identityPoolFactory)
         let authEnv = AuthEnvironment(
             configuration: Defaults.makeDefaultAuthConfigData(),
             userPoolConfigData: userPoolConfigData,
@@ -108,6 +108,19 @@ enum Defaults {
         )
         Amplify.Logging.logLevel = .verbose
         return authEnv
+    }
+
+    static func makeDefaultAuthStateMachine(
+        initialState: AuthState? = nil,
+        identityPoolFactory: @escaping () throws -> CognitoIdentityBehavior = makeIdentity,
+        userPoolFactory: @escaping () throws -> CognitoUserPoolBehavior = makeDefaultUserPool) ->
+    AuthStateMachine {
+
+            let environment = makeDefaultAuthEnvironment(identityPoolFactory: identityPoolFactory,
+                                                         userPoolFactory: userPoolFactory)
+            return AuthStateMachine(resolver: AuthState.Resolver(),
+                                    environment: environment,
+                                    initialState: initialState)
     }
 
 }

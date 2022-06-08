@@ -12,8 +12,7 @@ struct IdentityPoolConfigurationData: Equatable {
     let region: String
 
     init(poolId: String,
-                region: String)
-    {
+                region: String) {
         self.poolId = poolId
         self.region = region
     }
@@ -26,7 +25,7 @@ extension IdentityPoolConfigurationData: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "poolId": poolId.masked(interiorCount: 4, retainingCount: 4),
-            "region": region.masked(interiorCount: 4, retainingCount: 4)
+            "region": region.redacted()
         ]
     }
 }

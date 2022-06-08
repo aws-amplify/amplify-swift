@@ -22,8 +22,7 @@ struct InitiateAuthSRP: Action {
     }
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment)
-    {
+                 environment: Environment) {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         do {
             let environment = try SRPSignInHelper.srpEnvironment(environment)
@@ -65,8 +64,7 @@ struct InitiateAuthSRP: Action {
     }
 
     private func request(environment: SRPAuthEnvironment,
-                         publicHexValue: String) -> InitiateAuthInput
-    {
+                         publicHexValue: String) -> InitiateAuthInput {
         let userPoolClientId = environment.userPoolConfiguration.clientId
         var authParameters = [
             "USERNAME": username,
@@ -96,21 +94,19 @@ struct InitiateAuthSRP: Action {
 
     private func sendRequest(request: InitiateAuthInput,
                      environment: SRPAuthEnvironment,
-                     srpStateData: SRPStateData,
-                     callback: @escaping (SRPSignInEvent) -> Void) throws
-    {
+                             srpStateData: SRPStateData,
+                             callback: @escaping (SRPSignInEvent) -> Void) throws {
 
         let cognitoClient = try environment.cognitoUserPoolFactory()
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        cognitoClient.initiateAuth(input: request) { result in
-            logVerbose("\(#fileID) InitiateAuth response received", environment: environment)
+
+        Task {
             let event: SRPSignInEvent!
-            switch result {
-            case .success(let response):
-                event = SRPSignInEvent(
-                    eventType: .respondPasswordVerifier(srpStateData, response)
-                )
-            case .failure(let error):
+            do {
+                let response = try await cognitoClient.initiateAuth(input: request)
+                logVerbose("\(#fileID) InitiateAuth response success", environment: environment)
+                event = SRPSignInEvent(eventType: .respondPasswordVerifier(srpStateData, response))
+            } catch {
                 let authError = SRPSignInError.service(error: error)
                 event = SRPSignInEvent(eventType: .throwAuthError(authError))
             }

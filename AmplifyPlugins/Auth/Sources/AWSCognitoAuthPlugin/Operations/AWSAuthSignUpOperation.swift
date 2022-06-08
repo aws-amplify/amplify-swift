@@ -16,16 +16,13 @@ public typealias AmplifySignUpOperation = AmplifyOperation<
     AuthSignUpResult,
     AuthError>
 
-public class AWSAuthSignUpOperation: AmplifySignUpOperation,
-                                     AuthSignUpOperation
-{
+public class AWSAuthSignUpOperation: AmplifySignUpOperation, AuthSignUpOperation {
 
     let stateMachine: AuthStateMachine
 
     init(_ request: AuthSignUpRequest,
          stateMachine: AuthStateMachine,
-         resultListener: ResultListener?)
-    {
+         resultListener: ResultListener?) {
 
         self.stateMachine = stateMachine
         super.init(categoryType: .auth,
@@ -39,38 +36,25 @@ public class AWSAuthSignUpOperation: AmplifySignUpOperation,
             finish()
             return
         }
-        doInitialize()
-    }
-
-    func doInitialize() {
-        if isCancelled {
-            finish()
-            return
-        }
-        /// The listener is needed to cancel already ongoing sign ups and hence a getCurrentState on the state machine cannot be use to initialize. 
-        var token: AuthStateMachineToken?
-        token = stateMachine.listen { [weak self] in
-            guard let self = self else { return }
-
-            if case .configured(let authNState, _) = $0 {
-
-                switch authNState {
-                case .signingUp(let authConfig, _):
-                    let event = AuthenticationEvent(eventType: .cancelSignUp(authConfig))
-                    self.stateMachine.send(event)
-                    break
-                case .signedOut:
-                    self.cancelListener(token)
-                    self.doSignUp()
-                default:
-                    self.cancelListener(token)
-                    let message = "Auth state must be signed out to signup"
-                    let error = AuthError.invalidState(message, "", nil)
-                    self.dispatch(error)
-                    self.finish()
-                }
+        stateMachine.getCurrentState { [weak self] in
+            guard case .configured(let authenticationState, _) = $0 else {
+                return
             }
-        } onSubscribe: { }
+
+            switch authenticationState {
+            case .signedOut:
+                self?.doSignUp()
+            case .signingUp:
+                let event = AuthenticationEvent(eventType: .cancelSignUp)
+                self?.stateMachine.send(event)
+                self?.doSignUp()
+            default:
+                let message = "Auth state must be signed out to signup"
+                let error = AuthError.invalidState(message, "", nil)
+                self?.dispatch(error)
+                self?.finish()
+            }
+        }
     }
 
     func doSignUp() {
@@ -88,7 +72,9 @@ public class AWSAuthSignUpOperation: AmplifySignUpOperation,
                 return
             }
             switch authNState {
-            case .signingUp(_, let signUpState):
+            case .signedOut:
+                self.sendSignUpEvent()
+            case .signingUp(let signUpState):
 
                 switch signUpState {
                 case .signingUpInitiated(_, response: let response):
@@ -105,12 +91,7 @@ public class AWSAuthSignUpOperation: AmplifySignUpOperation,
             default:
                 break
             }
-        } onSubscribe: { [weak self] in
-            guard let self = self else {
-                return
-            }
-            self.sendSignUpEvent()
-        }
+        } onSubscribe: {}
     }
 
     private func sendSignUpEvent() {

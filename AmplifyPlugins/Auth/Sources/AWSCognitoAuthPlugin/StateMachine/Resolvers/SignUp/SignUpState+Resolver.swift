@@ -38,7 +38,7 @@ extension SignUpState {
                 return resolveSigningUpInitiated(byApplying: signUpEvent) ?? defaultState()
             case .signedUp:
                 return defaultState()
-            case .error(_):
+            case .error:
                 return defaultState()
             }
         }

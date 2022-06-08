@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git",
         "state": {
           "branch": null,
-          "revision": "810a305a8e2200db90d3a237c687b20cfc610268",
-          "version": "1.9.1"
+          "revision": "28f61d7ca362699941cc8844d34d082f1eb49602",
+          "version": "1.10.0"
         }
       },
       {
@@ -15,17 +15,17 @@
         "repositoryURL": "https://github.com/awslabs/aws-crt-swift.git",
         "state": {
           "branch": null,
-          "revision": "e13003f436e956a871d3d90e100695fd6916180e",
-          "version": "0.1.1"
+          "revision": "d654b82a55aec736ad8b4354027acab17394a060",
+          "version": "0.2.2"
         }
       },
       {
         "package": "AWSSwiftSDK",
-        "repositoryURL": "https://github.com/awslabs/aws-sdk-swift",
+        "repositoryURL": "https://github.com/awslabs/aws-sdk-swift.git",
         "state": {
           "branch": null,
-          "revision": "5593504a259b8136e36ecc47495c3bc506a13c61",
-          "version": "0.1.4"
+          "revision": "e907e654466a8bfafbcd79a78cb87964abecb1a0",
+          "version": "0.2.4"
         }
       },
       {
@@ -39,7 +39,7 @@
       },
       {
         "package": "CwlPreconditionTesting",
-        "repositoryURL": "https://github.com/mattgallagher/CwlPreconditionTesting",
+        "repositoryURL": "https://github.com/mattgallagher/CwlPreconditionTesting.git",
         "state": {
           "branch": null,
           "revision": "c21f7bab5ca8eee0a9998bbd17ca1d0eb45d4688",
@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/awslabs/smithy-swift.git",
         "state": {
           "branch": null,
-          "revision": "db74f688abbfb5d70375959055474ff3601bb1c4",
-          "version": "0.1.4"
+          "revision": "5c76b8f05f70f2b24276a2ae192fa8bd9c04beb6",
+          "version": "0.2.3"
         }
       },
       {
@@ -71,6 +71,15 @@
           "branch": null,
           "revision": "df8d82047f6654d8e4b655d1b1525c64e1059d21",
           "version": "4.0.4"
+        }
+      },
+      {
+        "package": "swift-collections",
+        "repositoryURL": "https://github.com/apple/swift-collections",
+        "state": {
+          "branch": null,
+          "revision": "48254824bb4248676bf7ce56014ff57b142b77eb",
+          "version": "1.0.2"
         }
       },
       {

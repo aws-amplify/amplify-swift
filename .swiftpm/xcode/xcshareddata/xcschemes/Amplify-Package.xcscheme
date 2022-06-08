@@ -342,6 +342,20 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSLocationGeoPlugin"
+               BuildableName = "AWSLocationGeoPlugin"
+               BlueprintName = "AWSLocationGeoPlugin"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -350,16 +364,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSAPICategoryPluginFunctionalTests"
-               BuildableName = "AWSAPICategoryPluginFunctionalTests"
-               BlueprintName = "AWSAPICategoryPluginFunctionalTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </TestableReference>
          <TestableReference
             skipped = "NO">
             <BuildableReference
@@ -384,16 +388,6 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSDataStoreCategoryPluginIntegrationTests"
-               BuildableName = "AWSDataStoreCategoryPluginIntegrationTests"
-               BlueprintName = "AWSDataStoreCategoryPluginIntegrationTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "AWSDataStoreCategoryPluginTests"
                BuildableName = "AWSDataStoreCategoryPluginTests"
                BlueprintName = "AWSDataStoreCategoryPluginTests"
@@ -407,16 +401,6 @@
                BlueprintIdentifier = "AWSPluginsCoreTests"
                BuildableName = "AWSPluginsCoreTests"
                BlueprintName = "AWSPluginsCoreTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSS3StoragePluginFunctionalTests"
-               BuildableName = "AWSS3StoragePluginFunctionalTests"
-               BlueprintName = "AWSS3StoragePluginFunctionalTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
@@ -454,39 +438,19 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "GraphQLWithIAMIntegrationTests"
-               BuildableName = "GraphQLWithIAMIntegrationTests"
-               BlueprintName = "GraphQLWithIAMIntegrationTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "RESTWithIAMIntegrationTests"
-               BuildableName = "RESTWithIAMIntegrationTests"
-               BlueprintName = "RESTWithIAMIntegrationTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSS3StoragePluginFunctionalTests"
-               BuildableName = "AWSS3StoragePluginFunctionalTests"
-               BlueprintName = "AWSS3StoragePluginFunctionalTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "AWSS3StoragePluginTests"
                BuildableName = "AWSS3StoragePluginTests"
                BlueprintName = "AWSS3StoragePluginTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSLocationGeoPluginTests"
+               BuildableName = "AWSLocationGeoPluginTests"
+               BlueprintName = "AWSLocationGeoPluginTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>

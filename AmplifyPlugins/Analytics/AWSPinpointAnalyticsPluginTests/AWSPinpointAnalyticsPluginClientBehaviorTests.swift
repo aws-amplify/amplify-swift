@@ -11,6 +11,8 @@ import AWSPinpoint
 @testable import AmplifyTestCommon
 import XCTest
 
+extension TypeRegistry: InstanceFactory {}
+
 // swiftlint:disable:next type_name
 class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginTestBase {
     let testName = "testName"

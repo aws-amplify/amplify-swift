@@ -6,9 +6,8 @@
 //
 
 import XCTest
-
 @testable import AWSCognitoAuthPlugin
-
+@testable import AWSPluginsTestCommon
 import AWSCognitoIdentityProvider
 
 class ConfirmSignUpStateTests: XCTestCase {
@@ -39,14 +38,14 @@ class ConfirmSignUpStateTests: XCTestCase {
         let username = "bob"
         let confirmationCode = "123456"
 
-        let confirmSignUpCallback: MockIdentityProvider.ConfirmSignUpCallback = { input, callback in
-            let response = ConfirmSignUpOutputResponse()
-            callback(.success(response))
+        let confirmSignUpCallback: MockIdentityProvider.MockConfirmSignUpResponse = { _ in
+            let response = try! ConfirmSignUpOutputResponse(httpResponse: MockHttpResponse.ok)
             exp.fulfill()
+            return response
         }
 
         let cognitoUserPoolFactory: BasicUserPoolEnvironment.CognitoUserPoolFactory = {
-            MockIdentityProvider(confirmSignUpCallback: confirmSignUpCallback)
+            MockIdentityProvider(mockConfirmSignUpResponse: confirmSignUpCallback)
         }
 
         let environment = BasicUserPoolEnvironment(userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),

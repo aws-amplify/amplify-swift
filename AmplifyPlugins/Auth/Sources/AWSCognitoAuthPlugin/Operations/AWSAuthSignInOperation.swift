@@ -17,8 +17,7 @@ public typealias AmplifySignInOperation = AmplifyOperation<
     AuthError>
 
 public class AWSAuthSignInOperation: AmplifySignInOperation,
-                                     AuthSignInOperation
-{
+                                     AuthSignInOperation {
 
     let authStateMachine: AuthStateMachine
     let credentialStoreStateMachine: CredentialStoreStateMachine
@@ -26,8 +25,7 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
     init(_ request: AuthSignInRequest,
          authStateMachine: AuthStateMachine,
          credentialStoreStateMachine: CredentialStoreStateMachine,
-         resultListener: ResultListener?)
-    {
+         resultListener: ResultListener?) {
 
         self.authStateMachine = authStateMachine
         self.credentialStoreStateMachine = credentialStoreStateMachine
@@ -42,40 +40,20 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
             finish()
             return
         }
-        doInitialize { [weak self] authenticationState in
-            self?.tryToInvokeSignIn(authenticationState)
-        }
-    }
-    
-    func doInitialize(_ callback: @escaping (AuthenticationState) -> Void) {
-        var token: AuthStateMachineToken?
-        token = authStateMachine.listen { [weak self] in
-            guard let self = self else {
+        authStateMachine.getCurrentState { [weak self] in
+            guard case .configured(let authenticationState, _) = $0 else {
                 return
             }
-            // Auth should be configured to start the signIn process
-            if case .configured(let authenticationState, _) = $0 {
-                callback(authenticationState)
-                self.cancelToken(token)
-            }
-        } onSubscribe: { }
-    }
 
-    func tryToInvokeSignIn(_ authenticationState: AuthenticationState) {
-        switch authenticationState {
-        case .signedOut:
-            self.doSignIn()
-        case .signingUp(let configuration, _):
-            self.cancelSignUp(configuration)
-        case .signedIn:
-            self.dispatch(AuthError.invalidState(
-                "There is already a user in signedIn state. SignOut the user first before calling signIn",
-                AuthPluginErrorConstants.invalidStateError, nil))
-            self.finish()
-        default:
-            self.dispatch(AuthError.invalidState("Sign in reached an invalid state: \(authenticationState)",
-                                                 AuthPluginErrorConstants.invalidStateError, nil))
-            self.finish()
+            switch authenticationState {
+            case .signedIn:
+                self?.dispatch(AuthError.invalidState(
+                    "There is already a user in signedIn state. SignOut the user first before calling signIn",
+                    AuthPluginErrorConstants.invalidStateError, nil))
+                self?.finish()
+            default:
+                self?.doSignIn()
+            }
         }
     }
 
@@ -95,18 +73,25 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
             }
 
             switch authNState {
-            case .signedIn(_, let signedInData):
+            case .signedOut:
+                self.sendSignInEvent()
+
+            case .signingUp:
+                self.sendCancelSignUpEvent()
+
+            case .signedIn(let signedInData):
                 let cognitoTokens = signedInData.cognitoUserPoolTokens
                 self.storeUserPoolTokens(cognitoTokens)
                 self.cancelToken(token)
-            case .error(_, let error):
+
+            case .error(let error):
                 self.dispatch(AuthError.unknown("Sign in reached an error state", error))
                 self.cancelToken(token)
                 self.finish()
-            case .signingIn(_, let signInState):
+
+            case .signingIn(let signInState):
                 if case .signingInWithSRP(let srpState, _) = signInState,
-                   case .error(let signInError) = srpState
-                {
+                   case .error(let signInError) = srpState {
                     if signInError.isUserUnConfirmed {
                         self.dispatch(AuthSignInResult(nextStep: .confirmSignUp(nil)))
                     } else if signInError.isResetPassword {
@@ -121,47 +106,7 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
             default:
                 break
             }
-        } onSubscribe: { [weak self] in
-            guard let self = self else {
-                return
-            }
-            self.sendSignInEvent()
-        }
-
-    }
-
-    func cancelSignUp(_ configuration: AuthConfiguration) {
-        if isCancelled {
-            finish()
-            return
-        }
-
-        var token: AuthStateMachine.StateChangeListenerToken?
-        token = authStateMachine.listen { [weak self] in
-            guard let self = self else {
-                return
-            }
-            guard case .configured(let authNState, _) = $0 else {
-                return
-            }
-
-            switch authNState {
-            case .signedOut:
-                self.tryToInvokeSignIn(authNState)
-                self.cancelToken(token)
-            case .error(_, let error):
-                self.dispatch(AuthError.unknown("Unable to cancel sign up", error))
-                self.cancelToken(token)
-                self.finish()
-            default:
-                break
-            }
-        } onSubscribe: { [weak self] in
-            guard let self = self else {
-                return
-            }
-            self.sendCancelSignUpEvent(configuration)
-        }
+        } onSubscribe: { }
     }
 
     func storeUserPoolTokens(_ tokens: AWSCognitoUserPoolTokens) {
@@ -205,9 +150,8 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
         authStateMachine.send(event)
     }
 
-    private func sendCancelSignUpEvent(_ configuration: AuthConfiguration) {
-        let event = AuthenticationEvent(
-            eventType: .cancelSignUp(configuration))
+    private func sendCancelSignUpEvent() {
+        let event = AuthenticationEvent(eventType: .cancelSignUp)
         authStateMachine.send(event)
     }
 

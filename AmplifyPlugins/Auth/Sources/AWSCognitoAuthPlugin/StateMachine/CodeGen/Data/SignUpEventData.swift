@@ -14,8 +14,7 @@ struct SignUpEventData: Codable {
 
     init(username: String,
          password: String,
-         attributes: [String: String])
-    {
+         attributes: [String: String]) {
         self.username = username
         self.password = password
         self.attributes = attributes
@@ -28,7 +27,7 @@ extension SignUpEventData: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "username": username.masked(),
-            "password": password.redacted(),
+            "password": password.redacted()
         ]
     }
 }

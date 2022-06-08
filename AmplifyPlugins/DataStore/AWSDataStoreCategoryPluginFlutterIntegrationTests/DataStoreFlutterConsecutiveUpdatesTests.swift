@@ -110,10 +110,10 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
                         XCTFail("Failed to get data")
                         return
                     }
-                    
+
                     let testPost = self.convertToTestPost(model: post.model.instance as! Post)
                     XCTAssertNotNil(testPost)
-                    
+
                     XCTAssertEqual(testPost?.title(), updatedPost.title())
                     XCTAssertEqual(testPost?.content(), updatedPost.content())
                     XCTAssertEqual(testPost?.rating(), updatedPost.rating())
@@ -247,7 +247,6 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
                           createdAt: Temporal.DateTime.now().iso8601String,
                           rating: 3)
 
-
         var updatedPost = newPost
         try updatedPost.updateRating(rating: 5)
         try updatedPost.updateStringProp(key: "title", value: "MyUpdatedTitle")
@@ -376,7 +375,7 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
         plugin.query(FlutterSerializedModel.self, modelSchema: Post.schema, where: Post.keys.id.eq(id)) { result in
             switch result {
             case .success(let post):
-                if (!post.isEmpty) {
+                if !post.isEmpty {
                     queryResult = PostWrapper(model: post[0])
                 }
                 queryExpectation.fulfill()
@@ -389,7 +388,7 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
     }
 
     private func convertToTestPost(model: Post) -> PostWrapper? {
-        var result: PostWrapper? = nil;
+        var result: PostWrapper?
         do {
             result = try PostWrapper(post: model)
         } catch {

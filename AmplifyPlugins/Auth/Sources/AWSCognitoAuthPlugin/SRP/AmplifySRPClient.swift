@@ -41,8 +41,7 @@ struct AmplifySRPClient: SRPClientBehavior {
                                saltHexValue: String,
                                clientPrivateKeyHexValue: String,
                                clientPublicKeyHexValue: String,
-                               serverPublicKeyHexValue: String) throws -> String
-    {
+                               serverPublicKeyHexValue: String) throws -> String {
         guard let clientPublicNum = BigInt(clientPublicKeyHexValue, radix: 16) else {
             throw SRPError.numberConversion
         }
@@ -69,8 +68,7 @@ struct AmplifySRPClient: SRPClientBehavior {
     }
 
     static func calculateUHexValue(clientPublicKeyHexValue: String,
-                                   serverPublicKeyHexValue: String) throws -> String
-    {
+                                   serverPublicKeyHexValue: String) throws -> String {
         guard let clientPublicNum = BigInt(clientPublicKeyHexValue, radix: 16) else {
             throw SRPError.numberConversion
         }

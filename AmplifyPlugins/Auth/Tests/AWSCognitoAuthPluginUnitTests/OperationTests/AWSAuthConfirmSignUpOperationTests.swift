@@ -10,16 +10,26 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-/* Commenting out the tests because of credential store not reachable in SPM
+
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
+@testable import AWSPluginsTestCommon
 import ClientRuntime
 
 import AWSCognitoIdentityProvider
 
 class AWSAuthConfirmSignUpOperationTests: XCTestCase {
 
+    var queue: OperationQueue?
+
+    let initialState = AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured)
+
+    override func setUp() {
+        super.setUp()
+        queue = OperationQueue()
+        queue?.maxConcurrentOperationCount = 1
+    }
     override func tearDown() {
         super.tearDown()
         Amplify.reset()
@@ -28,110 +38,64 @@ class AWSAuthConfirmSignUpOperationTests: XCTestCase {
 
     func testConfirmSignUpOperationSuccess() throws {
         let exp = expectation(description: #function)
+        let functionExpectation = expectation(description: "API call should be invoked")
 
-        var called = false
-        var testError: Error? = nil
-        let confirmSignUp: MockIdentityProvider.ConfirmSignUpCallback = {
-            _, completion in
-            called = true
-            completion(.success(.init()))
+        let confirmSignUp: MockIdentityProvider.MockConfirmSignUpResponse = { _ in
+            functionExpectation.fulfill()
+            return try .init(httpResponse: MockHttpResponse.ok)
         }
 
-        let plugin = try createPlugin()
+        let statemachine = Defaults.makeDefaultAuthStateMachine(
+            initialState: initialState,
+            userPoolFactory: {MockIdentityProvider(mockConfirmSignUpResponse: confirmSignUp)})
 
-        let confirmSignUpEventData = ConfirmSignUpEventData(
-            username: "jeffb",
-            confirmationCode: "07051994")
-
-        IdentityProviderFactoryRegistry.shared[confirmSignUpEventData.key] = {
-            MockIdentityProvider(confirmSignUpCallback: confirmSignUp)
-        }
-        defer {
-            IdentityProviderFactoryRegistry.shared[confirmSignUpEventData.key] = nil
-        }
-
-        _ = plugin.confirmSignUp(for: confirmSignUpEventData.username,
-                                    confirmationCode: confirmSignUpEventData.confirmationCode,
-                                    options: nil) { result in
+        let request = AuthConfirmSignUpRequest(username: "jeffb",
+                                               code: "213",
+                                               options: AuthConfirmSignUpRequest.Options())
+        let operation = AWSAuthConfirmSignUpOperation(request,
+                                                      stateMachine: statemachine) {result in
             switch result {
             case .success(let confirmSignUpResult):
                 print("Confirm Sign Up Result: \(confirmSignUpResult)")
             case .failure(let error):
-                testError = error
+                XCTAssertNil(error, "Error should not be returned")
             }
             exp.fulfill()
         }
+        queue?.addOperation(operation)
 
-        wait(for: [exp], timeout: 22)
-
-        XCTAssertTrue(called, "Confirm Signup closure should be called")
-        XCTAssertNil(testError, "Error should not be returned")
+        wait(for: [exp, functionExpectation], timeout: 1)
     }
 
     func testConfirmSignUpOperationFailure() throws {
         let exp = expectation(description: #function)
+        let functionExpectation = expectation(description: "API call should be invoked")
 
-        var called = false
-        var testError: Error? = nil
-        let confirmSignUp: MockIdentityProvider.ConfirmSignUpCallback = { _, completion in
-            called = true
-            completion(.failure(.unknown(nil)))
+        let confirmSignUp: MockIdentityProvider.MockConfirmSignUpResponse = { _ in
+            functionExpectation.fulfill()
+            throw try ConfirmSignUpOutputError(httpResponse: MockHttpResponse.ok)
         }
 
-        let plugin = try createPlugin()
+        let statemachine = Defaults.makeDefaultAuthStateMachine(
+            initialState: initialState,
+            userPoolFactory: {MockIdentityProvider(mockConfirmSignUpResponse: confirmSignUp)})
 
-        let confirmSignUpEventData = ConfirmSignUpEventData(username: "jeffb", confirmationCode: "07051994")
+        let request = AuthConfirmSignUpRequest(username: "jeffb",
+                                               code: "213",
+                                               options: AuthConfirmSignUpRequest.Options())
 
-        IdentityProviderFactoryRegistry.shared[confirmSignUpEventData.key] = {
-            MockIdentityProvider(confirmSignUpCallback: confirmSignUp)
-        }
-        defer {
-            IdentityProviderFactoryRegistry.shared[confirmSignUpEventData.key] = nil
-        }
-
-        _ = plugin.confirmSignUp(for: confirmSignUpEventData.username, confirmationCode: confirmSignUpEventData.confirmationCode, options: nil) { result in
+        let operation = AWSAuthConfirmSignUpOperation(request,
+                                                      stateMachine: statemachine) {result in
             switch result {
             case .success:
-                XCTFail("Operation should fail")
+                XCTFail("Should not produce success response")
             case .failure(let error):
-                testError = error
+                print(error)
             }
             exp.fulfill()
         }
+        queue?.addOperation(operation)
 
-        wait(for: [exp], timeout: 2)
-
-        XCTAssertTrue(called, "Signup closure should be called")
-        XCTAssertNotNil(testError, "Error should be returned")
-    }
-
-    private func createPlugin(file: StaticString = #filePath,
-                              line: UInt = #line) throws -> AWSCognitoAuthPlugin {
-        let plugin = AWSCognitoAuthPlugin()
-        try Amplify.add(plugin: plugin)
-
-        let categoryConfig = AuthCategoryConfiguration(plugins: [
-            "awsCognitoAuthPlugin": [
-                "CredentialsProvider": ["CognitoIdentity": [
-                    "Default":
-                        ["PoolId": "xx",
-                         "Region": "us-east-1"]
-                ]],
-                "CognitoUserPool": ["Default": [
-                    "PoolId": "xx",
-                    "Region": "us-east-1",
-                    "AppClientId": "xx",
-                    "AppClientSecret": "xx"]]
-            ]
-        ])
-        let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
-        do {
-            try Amplify.configure(amplifyConfig)
-        } catch {
-            XCTFail("Should not throw error. \(error)", file: file, line: line)
-        }
-
-        return plugin
+        wait(for: [exp, functionExpectation], timeout: 1)
     }
 }
-*/

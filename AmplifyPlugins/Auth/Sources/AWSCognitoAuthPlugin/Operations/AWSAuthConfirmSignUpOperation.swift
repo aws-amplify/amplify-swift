@@ -16,16 +16,14 @@ public typealias AmplifyConfirmSignUpOperation = AmplifyOperation<
     AuthError>
 
 public class AWSAuthConfirmSignUpOperation: AmplifyConfirmSignUpOperation,
-                                            AuthConfirmSignUpOperation
-{
+                                            AuthConfirmSignUpOperation {
 
     let stateMachine: AuthStateMachine
     var statelistenerToken: AuthStateMachineToken?
 
     init(_ request: AuthConfirmSignUpRequest,
          stateMachine: AuthStateMachine,
-         resultListener: ResultListener?)
-    {
+         resultListener: ResultListener?) {
 
         self.stateMachine = stateMachine
         super.init(categoryType: .auth,
@@ -39,35 +37,22 @@ public class AWSAuthConfirmSignUpOperation: AmplifyConfirmSignUpOperation,
              finish()
              return
          }
-         doInitialize()
-     }
-
-    func doInitialize() {
-        if isCancelled {
-            finish()
-            return
-        }
-        var token: AuthStateMachineToken?
-        token = stateMachine.listen { [weak self] in
-            guard let self = self else {
+        stateMachine.getCurrentState { [weak self] in
+            guard case .configured(let authenticationState, _) = $0 else {
                 return
             }
-            
-            if case .configured(let authNState, _) = $0 {
-                switch authNState {
-                case .signedOut, .signingUp:
-                    self.doConfirmSignUp()
-                    self.cancelListener(token)
-                default:
-                    let message = "Auth state must be signed out to signup"
-                    let error = AuthError.invalidState(message, "", nil)
-                    self.dispatch(error)
-                    self.finish()
-                    self.cancelListener(token)
-                }
+
+            switch authenticationState {
+            case .signedOut, .signingUp:
+                self?.doConfirmSignUp()
+            default:
+                let message = "Auth state must be signed out to signup"
+                let error = AuthError.invalidState(message, "", nil)
+                self?.dispatch(error)
+                self?.finish()
             }
-        } onSubscribe: { }
-    }
+        }
+     }
 
     func doConfirmSignUp() {
         var token: AuthStateMachineToken?
@@ -84,7 +69,7 @@ public class AWSAuthConfirmSignUpOperation: AmplifyConfirmSignUpOperation,
             }
 
             switch authNState {
-            case .signingUp(_, let signUpState):
+            case .signingUp(let signUpState):
                 switch signUpState {
                 case .signedUp:
                     self.dispatch(result: .success(AuthSignUpResult(.done)))

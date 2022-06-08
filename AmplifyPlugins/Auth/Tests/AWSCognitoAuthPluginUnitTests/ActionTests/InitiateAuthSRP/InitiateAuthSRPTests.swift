@@ -8,7 +8,6 @@
 import XCTest
 import AWSCognitoIdentityProvider
 
-
 @testable import AWSCognitoAuthPlugin
 
 class InitiateAuthSRPTests: XCTestCase {
@@ -17,7 +16,10 @@ class InitiateAuthSRPTests: XCTestCase {
         let initiateAuthInvoked = expectation(description: "initiateAuthInvoked")
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                initiateAuthCallback: { _, _ in initiateAuthInvoked.fulfill() }
+                mockInitiateAuthResponse: { _ in
+                    initiateAuthInvoked.fulfill()
+                    return InitiateAuthOutputResponse()
+                }
             )
         }
 
@@ -38,9 +40,9 @@ class InitiateAuthSRPTests: XCTestCase {
     func testFailedInitiateAuthPropagatesError() {
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                initiateAuthCallback: { _, callback in
-                    let error = NSError(domain: "testError", code: 0, userInfo: nil)
-                    callback(.failure(.unknown(error)))
+                mockInitiateAuthResponse: { _ in
+                    throw NSError(domain: "testError", code: 0, userInfo: nil)
+
                 }
             )
         }
@@ -78,9 +80,8 @@ class InitiateAuthSRPTests: XCTestCase {
     func testSuccessfulInitiateAuthPropagatesSuccess() {
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                initiateAuthCallback: { _, callback in
-                    let response = InitiateAuthOutputResponse()
-                    callback(.success(response))
+                mockInitiateAuthResponse: { _ in
+                    return InitiateAuthOutputResponse()
                 }
             )
         }

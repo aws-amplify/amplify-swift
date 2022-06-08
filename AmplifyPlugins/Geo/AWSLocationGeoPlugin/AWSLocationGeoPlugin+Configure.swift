@@ -9,11 +9,8 @@ import Amplify
 import AWSPluginsCore
 import Foundation
 
-#if COCOAPODS
 import AWSLocation
-#else
-import AWSLocationXCF
-#endif
+import AWSClientRuntime
 
 extension AWSLocationGeoPlugin {
     /// Configures AWSLocationPlugin with the specified configuration.
@@ -32,14 +29,10 @@ extension AWSLocationGeoPlugin {
     public func configure(using configuration: AWSLocationGeoPluginConfiguration) throws {
         let authService = AWSAuthService()
         let credentialsProvider = authService.getCredentialsProvider()
-        let region = configuration.region
+        let region = configuration.regionName
+        let serviceConfiguration = try LocationClient.LocationClientConfiguration(region: region, credentialsProvider: credentialsProvider)
 
-        let serviceConfiguration = AmplifyAWSServiceConfiguration(region: region,
-                                                                  credentialsProvider: credentialsProvider)
-        AWSLocation.register(with: serviceConfiguration,
-                             forKey: key)
-
-        let location = AWSLocation(forKey: key)
+        let location = LocationClient(config: serviceConfiguration)
         let locationService = AWSLocationAdapter(location: location)
 
         configure(locationService: locationService,

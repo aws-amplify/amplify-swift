@@ -11,7 +11,7 @@ import Foundation
 struct URLRequestConstants {
     static let appSyncServiceName = "appsync"
     static let apiGatewayServiceName = "execute-api"
-    
+
     struct Header {
         static let xAmzDate = "X-Amz-Date"
         static let contentType = "Content-Type"

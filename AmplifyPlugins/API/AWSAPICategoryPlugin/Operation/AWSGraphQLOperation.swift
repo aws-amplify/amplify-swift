@@ -102,32 +102,33 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         let urlRequest = GraphQLOperationRequestUtils.constructRequest(with: endpointConfig.baseURL,
                                                                        requestPayload: requestPayload)
 
-        // Intercept request
-        let finalRequest = requestInterceptors.reduce(urlRequest) { (request, interceptor) -> URLRequest in
-            do {
-                return try interceptor.intercept(request)
-            } catch let error as APIError {
-                dispatch(result: .failure(error))
-                cancel()
-                return request
-            } catch {
-                dispatch(result: .failure(APIError.operationError("Failed to intercept request fully.",
-                                                                  "Something wrong with the interceptor",
-                                                                  error)))
-                cancel()
-                return request
+        Task {
+            // Intercept request
+            var finalRequest = urlRequest
+            for interceptor in requestInterceptors {
+                do {
+                    finalRequest = try await interceptor.intercept(finalRequest)
+                } catch let error as APIError {
+                    dispatch(result: .failure(error))
+                    cancel()
+                } catch {
+                    dispatch(result: .failure(APIError.operationError("Failed to intercept request fully.",
+                                                                      "Something wrong with the interceptor",
+                                                                      error)))
+                    cancel()
+                }
             }
-        }
 
-        if isCancelled {
-            finish()
-            return
-        }
+            if isCancelled {
+                finish()
+                return
+            }
 
-        // Begin network task
-        Amplify.API.log.debug("Starting network task for \(request.operationType) \(id)")
-        let task = session.dataTaskBehavior(with: finalRequest)
-        mapper.addPair(operation: self, task: task)
-        task.resume()
+            // Begin network task
+            Amplify.API.log.debug("Starting network task for \(request.operationType) \(id)")
+            let task = session.dataTaskBehavior(with: finalRequest)
+            mapper.addPair(operation: self, task: task)
+            task.resume()
+        }
     }
 }

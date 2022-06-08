@@ -25,12 +25,14 @@ extension AWSS3StorageService {
                                               key: serviceKey,
                                               location: fileURL)
 
-        guard let preSignedURL = preSignedURLBuilder.getPreSignedURL(key: serviceKey) else {
-            onEvent(.failed(StorageError.unknown("Failed to get pre-signed URL", nil)))
-            return
+        Task {
+            do {
+                let preSignedURL = try await preSignedURLBuilder.getPreSignedURL(key: serviceKey)
+                startDownload(preSignedURL: preSignedURL, transferTask: transferTask)
+            } catch {
+                onEvent(.failed(StorageError.unknown("Failed to get pre-signed URL", nil)))
+            }
         }
-
-        startDownload(preSignedURL: preSignedURL, transferTask: transferTask)
     }
 
     private func startDownload(preSignedURL: URL,
@@ -63,5 +65,4 @@ extension AWSS3StorageService {
             transferTask.resume()
         }
     }
-
 }

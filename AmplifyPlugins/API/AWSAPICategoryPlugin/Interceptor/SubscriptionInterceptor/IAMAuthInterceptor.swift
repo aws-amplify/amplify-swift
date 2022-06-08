@@ -12,7 +12,7 @@ import AppSyncRealTimeClient
 import AWSClientRuntime
 import ClientRuntime
 
-class IAMAuthInterceptor: AuthInterceptor {
+class IAMAuthInterceptor: AuthInterceptorAsync {
 
     private static let defaultLowercasedHeaderKeys: Set = [SubscriptionConstants.authorizationkey.lowercased(),
                                                            RealtimeProviderConstants.acceptKey.lowercased(),
@@ -29,10 +29,10 @@ class IAMAuthInterceptor: AuthInterceptor {
         self.region = region
     }
 
-    func interceptMessage(_ message: AppSyncMessage, for endpoint: URL) -> AppSyncMessage {
+    func interceptMessage(_ message: AppSyncMessage, for endpoint: URL) async -> AppSyncMessage {
         switch message.messageType {
         case .subscribe:
-            let authHeader = getAuthHeader(endpoint, with: message.payload?.data ?? "")
+            let authHeader = await getAuthHeader(endpoint, with: message.payload?.data ?? "")
             var payload = message.payload ?? AppSyncMessage.Payload()
             payload.authHeader = authHeader
             let signedMessage = AppSyncMessage(id: message.id,
@@ -46,10 +46,10 @@ class IAMAuthInterceptor: AuthInterceptor {
     }
 
     func interceptConnection(_ request: AppSyncConnectionRequest,
-                             for endpoint: URL) -> AppSyncConnectionRequest {
+                             for endpoint: URL) async -> AppSyncConnectionRequest {
         let url = endpoint.appendingPathComponent(RealtimeProviderConstants.iamConnectPath)
         let payloadString = SubscriptionConstants.emptyPayload
-        guard let authHeader = getAuthHeader(url, with: payloadString) else {
+        guard let authHeader = await getAuthHeader(url, with: payloadString) else {
             return request
         }
         let base64Auth = AppSyncJSONHelper.base64AuthenticationBlob(authHeader)
@@ -72,11 +72,11 @@ class IAMAuthInterceptor: AuthInterceptor {
 
     func getAuthHeader(_ endpoint: URL,
                        with payload: String,
-                       signer: AWSSignatureV4Signer = AmplifyAWSSignatureV4Signer()) -> IAMAuthenticationHeader? {
+                       signer: AWSSignatureV4Signer = AmplifyAWSSignatureV4Signer()) async -> IAMAuthenticationHeader? {
         guard let host = endpoint.host else {
             return nil
         }
-        
+
         /// The process of getting the auth header for an IAM based authentication request is as follows:
         ///
         /// 1. A request is created with the IAM based auth headers (date,  accept, content encoding, content type, and
@@ -92,11 +92,11 @@ class IAMAuthInterceptor: AuthInterceptor {
             .withHeader(name: URLRequestConstants.Header.contentType, value: RealtimeProviderConstants.iamConentType)
             .withHeader(name: URLRequestConstants.Header.host, value: host)
             .withBody(.data(payload.data(using: .utf8)))
-        
+
         /// 2. The request is SigV4 signed by using all the available headers on the request. By signing the request, the signature is added to
         /// the request headers as authorization and security token.
         do {
-            guard let urlRequest = try signer.sigV4SignedRequest(requestBuilder: requestBuilder,
+            guard let urlRequest = try await signer.sigV4SignedRequest(requestBuilder: requestBuilder,
                                                                  credentialsProvider: authProvider,
                                                                  signingName: SubscriptionConstants.appsyncServiceName,
                                                                  signingRegion: region,
@@ -104,14 +104,14 @@ class IAMAuthInterceptor: AuthInterceptor {
                 Amplify.Logging.error("Unable to sign request")
                 return nil
             }
-            
+
             var authorization: String = ""
             // TODO: Using long lived credentials without getting a session with security token will fail
             // since the session token does not exist on the signed request, and is an empty string.
             // Once Amplify.Auth is ready to be integrated, this code path needs to be re-tested.
             var securityToken: String = ""
             var amzDate: String = ""
-            var additionalHeaders: [String: String]? = nil
+            var additionalHeaders: [String: String]?
             for header in urlRequest.headers.headers {
                 guard let value = header.value.first else {
                     continue
@@ -127,7 +127,7 @@ class IAMAuthInterceptor: AuthInterceptor {
                     additionalHeaders?.updateValue(header.value.joined(separator: ","), forKey: header.name)
                 }
             }
-            
+
             return IAMAuthenticationHeader(host: host,
                                            authorization: authorization,
                                            securityToken: securityToken,
@@ -158,7 +158,7 @@ class IAMAuthenticationHeader: AuthenticationHeader {
     /// Additional headers that are not one of the expected headers in the request, but because additional headers are
     /// also signed (and added the authorization header), they are required to be stored here to be further encoded.
     let additionalHeaders: [String: String]?
-    
+
     init(host: String,
          authorization: String,
          securityToken: String,

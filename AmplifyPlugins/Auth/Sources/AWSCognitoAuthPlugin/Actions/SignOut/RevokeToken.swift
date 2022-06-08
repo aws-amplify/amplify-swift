@@ -43,13 +43,11 @@ struct RevokeToken: Action {
 
         let input = RevokeTokenInput(clientId: clientId, clientSecret: clientSecret, token: refreshToken)
 
-        client.revokeToken(input: input) { result in
-            // Log the result, but proceed to clear credential store regardless of revokeToken result.
-            logVerbose("\(#fileID) Revoke token response received", environment: environment)
-            switch result {
-            case .success:
-                logVerbose("\(#fileID) Revoke token succeedd", environment: environment)
-            case .failure(let error):
+        Task {
+            do {
+                _ = try await client.revokeToken(input: input)
+                logVerbose("\(#fileID) Revoke token succeeded", environment: environment)
+            } catch {
                 logVerbose("\(#fileID) Revoke token failed \(error)", environment: environment)
             }
             let event = SignOutEvent(eventType: .signOutLocally(signedInData))
@@ -73,5 +71,3 @@ extension RevokeToken: CustomDebugStringConvertible {
         debugDictionary.debugDescription
     }
 }
-
-

@@ -22,24 +22,27 @@ extension AWSS3StorageService {
 
         guard attempt(try validateParameters(bucket: bucket, key: serviceKey, accelerationModeEnabled: false), fail: fail) else { return }
 
-        let transferTask = createTransferTask(transferType: .upload(onEvent: onEvent),
-                                              bucket: bucket,
-                                              key: serviceKey)
-        let uploadFileURL: URL
-        guard let uploadFile = attempt(try uploadSource.getFile(), fail: fail) else { return }
-        uploadFileURL = uploadFile.fileURL
+        Task {
+            let transferTask = createTransferTask(transferType: .upload(onEvent: onEvent),
+                                                  bucket: bucket,
+                                                  key: serviceKey)
+            let uploadFileURL: URL
+            guard let uploadFile = attempt(try uploadSource.getFile(), fail: fail) else { return }
+            uploadFileURL = uploadFile.fileURL
 
-        let contentType = contentType ?? "application/octet-stream"
+            let contentType = contentType ?? "application/octet-stream"
 
-        guard let preSignedURL = preSignedURLBuilder.getPreSignedURL(key: serviceKey, signingOperation: .putObject) else {
-            onEvent(.failed(StorageError.unknown("Failed to get pre-signed URL", nil)))
-            return
+            do {
+                let preSignedURL = try await preSignedURLBuilder.getPreSignedURL(key: serviceKey,
+                                                                                 signingOperation: .putObject)
+                startUpload(preSignedURL: preSignedURL,
+                            fileURL: uploadFileURL,
+                            contentType: contentType,
+                            transferTask: transferTask)
+            } catch {
+                onEvent(.failed(StorageError.unknown("Failed to get pre-signed URL", nil)))
+            }
         }
-
-        startUpload(preSignedURL: preSignedURL,
-                    fileURL: uploadFileURL,
-                    contentType: contentType,
-                    transferTask: transferTask)
     }
 
     func startUpload(preSignedURL: URL,
@@ -76,6 +79,4 @@ extension AWSS3StorageService {
             transferTask.resume()
         }
     }
-
 }
-

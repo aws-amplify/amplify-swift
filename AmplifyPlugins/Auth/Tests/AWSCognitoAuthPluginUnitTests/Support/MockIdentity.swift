@@ -11,32 +11,26 @@ import ClientRuntime
 
 struct MockIdentity: CognitoIdentityBehavior {
 
-    typealias GetIdCallback = (
-        GetIdInput,
-        (SdkResult<GetIdOutputResponse, GetIdOutputError>) -> Void
-    ) -> Void
+    typealias MockGetIdResponse = (GetIdInput) async throws -> GetIdOutputResponse
 
-    typealias GetCredentialsCallback = (
-        GetCredentialsForIdentityInput,
-        (SdkResult<GetCredentialsForIdentityOutputResponse, GetCredentialsForIdentityOutputError>) -> Void
-    ) -> Void
+    typealias MockGetCredentialsResponse = (GetCredentialsForIdentityInput) async throws
+    -> GetCredentialsForIdentityOutputResponse
 
-    let getIdCallback: GetIdCallback?
-    let getCredentialsCallback: GetCredentialsCallback?
+    let mockGetIdResponse: MockGetIdResponse?
+    let mockGetCredentialsResponse: MockGetCredentialsResponse?
 
-    init(getIdCallback: GetIdCallback? = nil,
-         getCredentialsCallback: GetCredentialsCallback? = nil)
-    {
-        self.getIdCallback = getIdCallback
-        self.getCredentialsCallback = getCredentialsCallback
+    init(mockGetIdResponse: MockGetIdResponse? = nil,
+         mockGetCredentialsResponse: MockGetCredentialsResponse? = nil) {
+        self.mockGetIdResponse = mockGetIdResponse
+        self.mockGetCredentialsResponse = mockGetCredentialsResponse
     }
 
-    func getId(input: GetIdInput, completion: @escaping (SdkResult<GetIdOutputResponse, GetIdOutputError>) -> Void) {
-        getIdCallback?(input, completion)
+    func getId(input: GetIdInput) async throws -> GetIdOutputResponse {
+        return try await mockGetIdResponse!(input)
     }
 
-    func getCredentialsForIdentity(input: GetCredentialsForIdentityInput, completion: @escaping (SdkResult<GetCredentialsForIdentityOutputResponse, GetCredentialsForIdentityOutputError>) -> Void) {
-        getCredentialsCallback?(input, completion)
+    func getCredentialsForIdentity(input: GetCredentialsForIdentityInput) async throws -> GetCredentialsForIdentityOutputResponse {
+        return try await mockGetCredentialsResponse!(input)
     }
 
 }

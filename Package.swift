@@ -11,28 +11,20 @@ let dependencies: [Package.Dependency] = [
     .package(
         name: "AppSyncRealTimeClient",
         url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git",
-        from: "1.9.0"
-    ),// We can remove AwsCrt and ClientRuntime once we move to the latest AWS SDK for Swift
-    .package(
-        name: "AwsCrt",
-        url: "https://github.com/awslabs/aws-crt-swift.git",
-        .exact("0.1.1")
-    ),
-    .package(
-        name: "ClientRuntime",
-        url: "https://github.com/awslabs/smithy-swift.git",
-        .exact("0.1.4")
+        from: "1.10.0"
     ),
     .package(
         name: "AWSSwiftSDK",
         url: "https://github.com/awslabs/aws-sdk-swift.git",
-        .exact("0.1.4")
+        .upToNextMinor(from: "0.2.4")
     ),
     .package(
         name: "CwlPreconditionTesting",
         url: "https://github.com/mattgallagher/CwlPreconditionTesting.git",
-        .upToNextMinor(from: "2.1.0"))
+        .upToNextMinor(from: "2.1.0")
+    )
 ]
+let swiftSettings: [SwiftSetting]? = [.define("DEV_PREVIEW_BUILD")]
 
 let amplifyTargets: [Target] = [
     .target(
@@ -107,7 +99,7 @@ let amplifyTargets: [Target] = [
         exclude: [
             "Info.plist"
         ]
-    ),
+    )
 ]
 
 let apiTargets: [Target] = [
@@ -121,7 +113,8 @@ let apiTargets: [Target] = [
         exclude: [
             "Info.plist",
             "AWSAPIPlugin.md"
-        ]
+        ],
+        swiftSettings: swiftSettings
     ),
     .testTarget(
         name: "AWSAPIPluginTests",
@@ -166,14 +159,14 @@ let apiTargets: [Target] = [
         dependencies: [
             "AWSAPIPlugin",
             "AWSCognitoAuthPlugin",
-            "AmplifyTestCommon",
+            "AmplifyTestCommon"
         ],
         path: "AmplifyPlugins/API/AWSAPICategoryPluginIntegrationTests/REST/RESTWithIAMIntegrationTests/",
         exclude: [
             "README.md",
             "Info.plist"
         ]
-    ),
+    )
 ]
 
 let authTargets: [Target] = [
@@ -186,7 +179,7 @@ let authTargets: [Target] = [
     .target(
         name: "AmplifySRP",
         dependencies: [
-            .target(name: "AmplifyBigInteger"),
+            .target(name: "AmplifyBigInteger")
         ],
         path: "AmplifyPlugins/Auth/Sources/AmplifySRP"
     ),
@@ -200,7 +193,8 @@ let authTargets: [Target] = [
             .product(name: "AWSCognitoIdentityProvider", package: "AWSSwiftSDK"),
             .product(name: "AWSCognitoIdentity", package: "AWSSwiftSDK")
         ],
-        path: "AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin"
+        path: "AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin",
+        swiftSettings: swiftSettings
     ),
     .target(
         name: "libtommathAmplify",
@@ -216,7 +210,8 @@ let authTargets: [Target] = [
     .testTarget(
         name: "AWSCognitoAuthPluginUnitTests",
         dependencies: [
-            "AWSCognitoAuthPlugin"
+            "AWSCognitoAuthPlugin",
+            "AWSPluginsTestCommon"
         ],
         path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests"
     ),
@@ -226,7 +221,7 @@ let authTargets: [Target] = [
             "AmplifyBigInteger"
         ],
         path: "AmplifyPlugins/Auth/Tests/AmplifyBigIntegerUnitTests"
-    ),
+    )
 ]
 
 let dataStoreTargets: [Target] = [
@@ -239,7 +234,8 @@ let dataStoreTargets: [Target] = [
         path: "AmplifyPlugins/DataStore/AWSDataStoreCategoryPlugin",
         exclude: [
             "Info.plist"
-        ]
+        ],
+        swiftSettings: swiftSettings
     ),
     .testTarget(
         name: "AWSDataStoreCategoryPluginTests",
@@ -265,7 +261,7 @@ let dataStoreTargets: [Target] = [
             "README.md",
             "Info.plist"
         ]
-    ),
+    )
 ]
 
 let storageTargets: [Target] = [
@@ -278,7 +274,8 @@ let storageTargets: [Target] = [
         path: "AmplifyPlugins/Storage/AWSS3StoragePlugin",
         exclude: [
             "Resources/Info.plist"
-        ]
+        ],
+        swiftSettings: swiftSettings
     ),
     .testTarget(
         name: "AWSS3StoragePluginTests",
@@ -299,10 +296,33 @@ let storageTargets: [Target] = [
             "AWSCognitoAuthPlugin"
         ],
         path: "AmplifyPlugins/Storage/AWSS3StoragePluginFunctionalTests"
+    )
+]
+
+let geoTargets: [Target] = [
+    .target(
+        name: "AWSLocationGeoPlugin",
+        dependencies: [
+            .target(name: "Amplify"),
+            .target(name: "AWSPluginsCore"),
+            .product(name: "AWSLocation", package: "AWSSwiftSDK")],
+        path: "AmplifyPlugins/Geo/AWSLocationGeoPlugin",
+        exclude: [
+            "Resources/Info.plist"
+        ]
+    ),
+    .testTarget(
+        name: "AWSLocationGeoPluginTests",
+        dependencies: [
+            "AWSLocationGeoPlugin",
+            "AmplifyTestCommon",
+            "AWSPluginsTestCommon"
+            ],
+        path: "AmplifyPlugins/Geo/AWSLocationGeoPluginTests"
     ),
 ]
 
-let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTargets + storageTargets
+let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTargets + storageTargets + geoTargets
 
 let package = Package(
     name: "Amplify",
@@ -328,6 +348,10 @@ let package = Package(
             name: "AWSS3StoragePlugin",
             targets: ["AWSS3StoragePlugin"]
         ),
+        .library(
+            name: "AWSLocationGeoPlugin",
+            targets: ["AWSLocationGeoPlugin"]
+        )
         
     ],
     dependencies: dependencies,

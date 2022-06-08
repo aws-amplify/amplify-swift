@@ -99,7 +99,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
                         XCTFail("Should have been service error with missing File description, not \(error)")
                         return
                     }
-                    //XCTAssertEqual(error.0, StorageErrorConstants.missingFile.errorDescription)
+                    // XCTAssertEqual(error.0, StorageErrorConstants.missingFile.errorDescription)
                     failedInvoked.fulfill()
                 }
         }

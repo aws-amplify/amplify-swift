@@ -36,7 +36,7 @@ struct ConfirmSignUp: Action {
 
         let client: CognitoUserPoolBehavior
         do {
-            client = try createIdentityProviderClient(key: confirmSignUpEventData.key, environment: environment)
+            client = try environment.cognitoUserPoolFactory()
         } catch {
             let authError = AuthenticationError.configuration(message: "Failed to get CognitoUserPool client: \(error)")
             let event = SignUpEvent(
@@ -48,24 +48,23 @@ struct ConfirmSignUp: Action {
         }
 
         let input = ConfirmSignUpInput(username: confirmSignUpEventData.username,
-                                       confirmationCode:  confirmSignUpEventData.confirmationCode,
+                                       confirmationCode: confirmSignUpEventData.confirmationCode,
                                        userPoolConfiguration: environment.userPoolConfiguration)
         logVerbose("\(#fileID) Starting ConfirmSignUp", environment: environment)
-        client.confirmSignUp(input: input) { result in
-            logVerbose("\(#fileID) ConfirmSignUp received", environment: environment)
+        Task {
             let event: SignUpEvent
-            switch result {
-            case .success(let response):
+            do {
+                let response = try await client.confirmSignUp(input: input)
+                logVerbose("\(#fileID) ConfirmSignUp received", environment: environment)
                 event = SignUpEvent(id: UUID().uuidString,
                                     eventType: .confirmSignUpSuccess(confirmSignupResponse: response),
                                     time: Date())
-            case .failure(let error):
+            } catch {
                 let error = SignUpError.service(error: error)
                 event = SignUpEvent(eventType: .confirmSignUpFailure(error: error))
             }
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
-
         }
     }
 }

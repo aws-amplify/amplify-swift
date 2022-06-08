@@ -8,7 +8,6 @@
 import XCTest
 @testable import AWSCognitoAuthPlugin
 
-
 class AuthStateNotConfiguredTests: XCTestCase {
     var resolver: AnyResolver<AuthState> {
         AuthState.Resolver().logging().eraseToAnyResolver()

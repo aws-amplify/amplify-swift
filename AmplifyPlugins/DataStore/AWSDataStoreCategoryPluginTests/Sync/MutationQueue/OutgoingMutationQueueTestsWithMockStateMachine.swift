@@ -136,7 +136,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
     }
 
     func testReceivedStartActionWhileExpectingEventProcessedAction() throws {
-        //Ensure subscription is setup
+        // Ensure subscription is setup
         let receivedSubscription = expectation(description: "receivedSubscription")
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, OutgoingMutationQueue.Action.receivedSubscription)
@@ -145,7 +145,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         stateMachine.state = .starting(apiBehavior, publisher, reconciliationQueue)
         wait(for: [receivedSubscription], timeout: 0.1)
 
-        //Mock incoming mutation event
+        // Mock incoming mutation event
         let post = Post(title: "title",
                         content: "content",
                         createdAt: .now())
@@ -183,7 +183,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
         mutationQueue.stopSyncingToCloud { }
         wait(for: [mutationQueueStopped], timeout: 0.1)
 
-        //Re-enable syncing
+        // Re-enable syncing
         let startReceivedAgain = expectation(description: "Start received again")
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, OutgoingMutationQueue.Action.receivedStart(self.apiBehavior,
@@ -198,7 +198,7 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
 
         wait(for: [startReceivedAgain], timeout: 1)
 
-        //After - enabling, mock the callback from API to be completed
+        // After - enabling, mock the callback from API to be completed
         let processEvent = expectation(description: "state requestingEvent, processedEvent")
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, OutgoingMutationQueue.Action.processedEvent)

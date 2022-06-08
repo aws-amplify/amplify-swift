@@ -42,8 +42,8 @@ class FetchAuthIdentityIdTests: XCTestCase {
 
         let expectation = expectation(description: "fetchIdentity")
         let identityProviderFactory: BasicAuthorizationEnvironment.CognitoIdentityFactory = {
-            MockIdentity { _, callback in
-                callback(.success(GetIdOutputResponse()))
+            MockIdentity { _ in
+                return GetIdOutputResponse()
             }
         }
         let authorizationEnvironment = BasicAuthorizationEnvironment(identityPoolConfiguration: IdentityPoolConfigurationData.testData,
@@ -79,8 +79,8 @@ class FetchAuthIdentityIdTests: XCTestCase {
         let updatedIdentityId = "updatedIdentityId"
 
         let identityProviderFactory: BasicAuthorizationEnvironment.CognitoIdentityFactory = {
-            MockIdentity { _, callback in
-                callback(.success(GetIdOutputResponse(identityId: updatedIdentityId)))
+            MockIdentity { _ in
+                return GetIdOutputResponse(identityId: updatedIdentityId)
             }
         }
         let authorizationEnvironment = BasicAuthorizationEnvironment(identityPoolConfiguration: IdentityPoolConfigurationData.testData,
@@ -93,12 +93,10 @@ class FetchAuthIdentityIdTests: XCTestCase {
             withDispatcher: MockDispatcher { event in
 
                 if let identityEvent = event as? FetchIdentityEvent,
-                   case .fetched = identityEvent.eventType
-                {
+                   case .fetched = identityEvent.eventType {
                     fetchIdentityExpectation.fulfill()
                 } else if let authSessionEvent = event as? FetchAuthSessionEvent,
-                          case let .fetchAWSCredentials(credentials) = authSessionEvent.eventType
-                {
+                          case let .fetchAWSCredentials(credentials) = authSessionEvent.eventType {
                     XCTAssertNotNil(credentials)
                     fetchAWSCredentialExpectation.fulfill()
                 }
@@ -116,8 +114,8 @@ class FetchAuthIdentityIdTests: XCTestCase {
         let testError = NSError(domain: "testError", code: 0, userInfo: nil)
 
         let identityProviderFactory: BasicAuthorizationEnvironment.CognitoIdentityFactory = {
-            MockIdentity(getIdCallback:  { _, callback in
-                callback(.failure(.unknown(testError)))
+            MockIdentity(mockGetIdResponse: { _ in
+                throw testError
             })
         }
 
@@ -131,14 +129,12 @@ class FetchAuthIdentityIdTests: XCTestCase {
             withDispatcher: MockDispatcher { event in
 
                 if let fetchIdentityEvent = event as? FetchIdentityEvent,
-                   case let .throwError(error) = fetchIdentityEvent.eventType
-                {
+                   case let .throwError(error) = fetchIdentityEvent.eventType {
                     XCTAssertNotNil(error)
                     XCTAssertEqual(error, AuthorizationError.service(error: testError))
                     expectation.fulfill()
                 } else if let authSessionEvent = event as? FetchAuthSessionEvent,
-                          case let .fetchAWSCredentials(cognitoSession) = authSessionEvent.eventType
-                {
+                          case let .fetchAWSCredentials(cognitoSession) = authSessionEvent.eventType {
                     XCTAssertNotNil(cognitoSession)
                     fetchAWSCredentialExpectation.fulfill()
                 }

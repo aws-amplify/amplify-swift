@@ -16,15 +16,13 @@ struct VerifyPasswordSRP: Action {
     let authResponse: InitiateAuthOutputResponse
 
     init(stateData: SRPStateData,
-         authResponse: InitiateAuthOutputResponse)
-    {
+         authResponse: InitiateAuthOutputResponse) {
         self.stateData = stateData
         self.authResponse = authResponse
     }
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment)
-    {
+                 environment: Environment) {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
         do {
@@ -105,41 +103,38 @@ struct VerifyPasswordSRP: Action {
             userContextData: nil)
     }
 
-    private func sendRequest(
-        request: RespondToAuthChallengeInput,
-        environment: SRPAuthEnvironment,
-        callback: @escaping (SRPSignInEvent) -> Void) throws
-    {
+    private func sendRequest(request: RespondToAuthChallengeInput,
+                             environment: SRPAuthEnvironment,
+                             callback: @escaping (SRPSignInEvent) -> Void) throws {
 
-            let client = try environment.cognitoUserPoolFactory()
-            client.respondToAuthChallenge(input: request) { result in
+        let client = try environment.cognitoUserPoolFactory()
 
-                let event: SRPSignInEvent!
-                switch result {
-                case .success(let response):
-                    guard let signedInData = parseResponse(response) else {
-                        let message = "Response did not contain signIn info"
-                        let error = SRPSignInError.invalidServiceResponse(
-                            message: message
-                        )
-                        event = SRPSignInEvent(
-                            eventType: .throwPasswordVerifierError(error)
-                        )
-                        callback(event)
-                        return
-                    }
+        Task {
+            let event: SRPSignInEvent!
+
+            do {
+                let response = try await client.respondToAuthChallenge(input: request)
+
+                guard let signedInData = parseResponse(response) else {
+                    let message = "Response did not contain signIn info"
+                    let error = SRPSignInError.invalidServiceResponse(
+                        message: message
+                    )
                     event = SRPSignInEvent(
-                        eventType: .finalizeSRPSignIn(signedInData))
+                        eventType: .throwPasswordVerifierError(error)
+                    )
                     callback(event)
-                case .failure(let error):
-
-                    let authError = SRPSignInError.service(error: error)
-                    event = SRPSignInEvent(
-                        eventType: .throwPasswordVerifierError(authError))
-                    callback(event)
+                    return
                 }
+
+                event = SRPSignInEvent(eventType: .finalizeSRPSignIn(signedInData))
+            } catch {
+                let authError = SRPSignInError.service(error: error)
+                event = SRPSignInEvent(eventType: .throwPasswordVerifierError(authError))
             }
+            callback(event)
         }
+    }
 
     private func parseResponse(_ response: RespondToAuthChallengeOutputResponse)
     -> SignedInData? {

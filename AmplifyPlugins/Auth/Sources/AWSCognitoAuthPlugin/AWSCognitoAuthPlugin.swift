@@ -10,17 +10,18 @@ import Amplify
 
 public final class AWSCognitoAuthPlugin: AuthCategoryPlugin {
 
-    var authStateMachine: StateMachine<AuthState, AuthEnvironment>!
-    var authStateListenerToken: StateMachine<AuthState, AuthEnvironment>.StateChangeListenerToken!
+    var authStateMachine: AuthStateMachine!
 
-    var credentialStoreStateMachine: StateMachine<CredentialStoreState, CredentialEnvironment>!
+    var credentialStoreStateMachine: CredentialStoreStateMachine!
+
+    var authStateListenerToken: AuthStateMachine.StateChangeListenerToken!
 
     /// A queue that regulates the execution of operations.
     var queue: OperationQueue!
 
     /// Configuration for the auth plugin
     var authConfiguration: AuthConfiguration!
-    
+
     /// Handles different auth event send through hub
     var hubEventHandler: AuthHubEventBehavior!
 

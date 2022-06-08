@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Amplify
 
 // swiftlint:disable line_length
 /// File System implementation which wraps FileManager.

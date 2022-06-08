@@ -159,7 +159,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             }
         }
 
-        let completion: (Result<MutationEvent?, Error>) -> Void = { result in
+        let completion: (Result<MutationEvent?, Error>) -> Void = { _ in
             expectCompletion.fulfill()
         }
         let post1 = Post(title: "post1", content: "content1", createdAt: .now())

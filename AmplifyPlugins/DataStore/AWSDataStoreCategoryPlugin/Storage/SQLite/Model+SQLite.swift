@@ -28,7 +28,7 @@ extension Persistable {
             let binding = try SQLiteModelValueConverter.convertToTarget(from: value,
                                                                         fieldType: .from(type: valueType))
             guard let validBinding = binding else {
-                preconditionFailure("""
+                return Fatal.preconditionFailure("""
                 Converting \(String(describing: value)) of type \(String(describing: valueType))
                 to a SQLite Binding returned a nil value. This is likely a bug in the
                 SQLiteModelValueConverter logic.
@@ -36,7 +36,7 @@ extension Persistable {
             }
             return validBinding
         } catch {
-            preconditionFailure("""
+            return Fatal.preconditionFailure("""
             Value \(String(describing: value)) of type \(String(describing: valueType))
             is not a SQLite Binding compatible type. Error: \(error.localizedDescription)
 
@@ -84,14 +84,13 @@ extension Model {
 
             // At this point, we have a value: Any. However, remember that Any could itself be an optional, so we're
             // not quite done yet.
-            // swiftlint:disable syntactic_sugar
             let value: Any
+            // swiftlint:disable:next syntactic_sugar
             if case Optional<Any>.some(let unwrappedValue) = anyValue {
                 value = unwrappedValue
             } else {
                 return nil
             }
-            // swiftlint:enable syntactic_sugar
 
             // Now `value` is still an Any, but we've assured ourselves that it's not an Optional, which means we can
             // safely attempt a cast to Persistable below.
@@ -162,7 +161,7 @@ extension Array where Element == ModelSchema {
                     .map { (schema) -> ModelSchema in
                         guard let associatedSchema = ModelRegistry.modelSchema(from: schema.requiredAssociatedModelName)
                         else {
-                            preconditionFailure("""
+                            return Fatal.preconditionFailure("""
                             Could not retrieve schema for the model \(schema.requiredAssociatedModelName), verify that
                             datastore is initialized.
                             """)

@@ -7,6 +7,7 @@
 
 import XCTest
 import AWSCognitoIdentityProvider
+@testable import AWSPluginsTestCommon
 @testable import AWSCognitoAuthPlugin
 
 class RevokeTokenTests: XCTestCase {
@@ -15,7 +16,10 @@ class RevokeTokenTests: XCTestCase {
         let revokeTokenInvoked = expectation(description: "revokeTokenInvoked")
         let identityProviderFactory: BasicUserPoolEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                revokeTokenCallback: { _, _ in revokeTokenInvoked.fulfill() }
+                mockRevokeTokenResponse: { _ in
+                    revokeTokenInvoked.fulfill()
+                    return try RevokeTokenOutputResponse(httpResponse: MockHttpResponse.ok)
+                }
             )
         }
 
@@ -36,9 +40,8 @@ class RevokeTokenTests: XCTestCase {
     func testFailedRevokeTokenTriggersClearCredentialStore() {
         let identityProviderFactory: BasicUserPoolEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                revokeTokenCallback: { _, callback in
-                    let error = NSError(domain: "testError", code: 0, userInfo: nil)
-                    callback(.failure(.unknown(error)))
+                mockRevokeTokenResponse: { _ in
+                    throw NSError(domain: "testError", code: 0, userInfo: nil)
                 }
             )
         }
@@ -74,9 +77,8 @@ class RevokeTokenTests: XCTestCase {
     func testSuccessfulRevokeTokenTriggersClearCredentialStore() {
         let identityProviderFactory: BasicUserPoolEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
-                revokeTokenCallback: { _, callback in
-                    let response = RevokeTokenOutputResponse()
-                    callback(.success(response))
+                mockRevokeTokenResponse: { _ in
+                    return try RevokeTokenOutputResponse(httpResponse: MockHttpResponse.ok)
                 }
             )
         }
