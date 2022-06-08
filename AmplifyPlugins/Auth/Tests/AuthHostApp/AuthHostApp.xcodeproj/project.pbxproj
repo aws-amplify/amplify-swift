@@ -10,6 +10,7 @@
 		484834BC27B6ED8800649D11 /* CredentialStoreConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 484834BB27B6ED8700649D11 /* CredentialStoreConfigurationTests.swift */; };
 		484834BE27B6FD9B00649D11 /* AuthEnvironmentHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 484834BD27B6FD9B00649D11 /* AuthEnvironmentHelper.swift */; };
 		484EDEB227F4FFBE000284B4 /* AuthEventIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 484EDEB127F4FFBE000284B4 /* AuthEventIntegrationTests.swift */; };
+		485105AA2840513C002D6FC8 /* AuthUserAttributesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485105A92840513C002D6FC8 /* AuthUserAttributesTests.swift */; };
 		485CB53E27B614CE006CCEC7 /* AuthHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB53D27B614CE006CCEC7 /* AuthHostAppApp.swift */; };
 		485CB54027B614CE006CCEC7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB53F27B614CE006CCEC7 /* ContentView.swift */; };
 		485CB54227B614CF006CCEC7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 485CB54127B614CF006CCEC7 /* Assets.xcassets */; };
@@ -43,6 +44,7 @@
 		484834BB27B6ED8700649D11 /* CredentialStoreConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialStoreConfigurationTests.swift; sourceTree = "<group>"; };
 		484834BD27B6FD9B00649D11 /* AuthEnvironmentHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthEnvironmentHelper.swift; sourceTree = "<group>"; };
 		484EDEB127F4FFBE000284B4 /* AuthEventIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthEventIntegrationTests.swift; sourceTree = "<group>"; };
+		485105A92840513C002D6FC8 /* AuthUserAttributesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthUserAttributesTests.swift; sourceTree = "<group>"; };
 		485CB53A27B614CE006CCEC7 /* AuthHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AuthHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		485CB53D27B614CE006CCEC7 /* AuthHostAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthHostAppApp.swift; sourceTree = "<group>"; };
 		485CB53F27B614CE006CCEC7 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -99,6 +101,14 @@
 			path = AuthEventTests;
 			sourceTree = "<group>";
 		};
+		485105A82840510B002D6FC8 /* AuthUserAttributesTests */ = {
+			isa = PBXGroup;
+			children = (
+				485105A92840513C002D6FC8 /* AuthUserAttributesTests.swift */,
+			);
+			path = AuthUserAttributesTests;
+			sourceTree = "<group>";
+		};
 		485CB53127B614CE006CCEC7 = {
 			isa = PBXGroup;
 			children = (
@@ -148,6 +158,7 @@
 		485CB5A027B61E04006CCEC7 /* AuthIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
+				485105A82840510B002D6FC8 /* AuthUserAttributesTests */,
 				484EDEB027F4FF46000284B4 /* AuthEventTests */,
 				B43C26C627BC9D54003F3BF7 /* SignUpTests */,
 				484834BA27B6ED7200649D11 /* CredentialStore */,
@@ -361,6 +372,7 @@
 				484834BE27B6FD9B00649D11 /* AuthEnvironmentHelper.swift in Sources */,
 				484834BC27B6ED8800649D11 /* CredentialStoreConfigurationTests.swift in Sources */,
 				B43C26CC27BC9D54003F3BF7 /* AuthResendSignUpCodeTests.swift in Sources */,
+				485105AA2840513C002D6FC8 /* AuthUserAttributesTests.swift in Sources */,
 				485CB5BF27B61F1E006CCEC7 /* SignedInAuthSessionTests.swift in Sources */,
 				B43C26CA27BC9D54003F3BF7 /* AuthSignUpTests.swift in Sources */,
 			);
