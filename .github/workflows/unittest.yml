@@ -22,7 +22,7 @@ jobs:
       - name: Run unit test
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
-          scheme: AWSPinpointAnalyticsPluginTests
+          scheme: AWSPinpointAnalyticsPlugin
 
   amplify-unit-test:
     runs-on: macos-latest
