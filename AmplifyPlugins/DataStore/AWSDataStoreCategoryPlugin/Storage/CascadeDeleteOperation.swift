@@ -145,7 +145,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                                associatedModels: associatedModels)
     }
 
-    func recurseQueryAssociatedModels(modelSchema: ModelSchema, ids: [Model.Identifier]) -> [(ModelName, Model)] {
+    func recurseQueryAssociatedModels(modelSchema: ModelSchema, ids: [String]) -> [(ModelName, Model)] {
         var associatedModels: [(ModelName, Model)] = []
         for (_, modelField) in modelSchema.fields {
             guard modelField.hasAssociation,
@@ -161,7 +161,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                 return []
             }
 
-            let queriedModels = queryAssociatedModels(associateModelSchema: modelSchema,
+            let queriedModels = queryAssociatedModels(associatedModelSchema: modelSchema,
                                                       associatedField: associatedField,
                                                       ids: ids)
             let associatedModelIds = queriedModels.map { $0.1.identifier(schema: modelSchema).stringValue }
@@ -172,9 +172,9 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         return associatedModels
     }
 
-    func queryAssociatedModels(associateModelSchema modelSchema: ModelSchema,
+    func queryAssociatedModels(associatedModelSchema modelSchema: ModelSchema,
                                associatedField: ModelField,
-                               ids: [Model.Identifier]) -> [(ModelName, Model)] {
+                               ids: [String]) -> [(ModelName, Model)] {
         var queriedModels: [(ModelName, Model)] = []
         let chunkedArrays = ids.chunked(into: SQLiteStorageEngineAdapter.maxNumberOfPredicates)
         for chunkedArray in chunkedArrays {
