@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-class FetchAuthSessionOperationHelper {
+struct FetchAuthSessionOperationHelper {
     
     typealias FetchAuthSessionCompletion = (Result<AuthSession, AuthError>) -> ()
     
