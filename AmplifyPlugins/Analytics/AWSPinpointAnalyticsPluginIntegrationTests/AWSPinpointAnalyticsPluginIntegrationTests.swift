@@ -11,6 +11,7 @@ import AWSPinpoint
 @testable import Amplify
 @testable import AWSPinpointAnalyticsPlugin
 @testable import AmplifyTestCommon
+import AWSCognitoAuthPlugin
 
 // swiftlint:disable:next type_name
 class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
@@ -76,7 +77,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         _ = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
             if payload.eventName == HubPayload.EventName.Analytics.flushEvents {
                 // TODO: Remove exposing AWSPinpointEvent
-                guard let pinpointEvents = payload.data as? [AWSPinpointEvent] else {
+                guard let pinpointEvents = payload.data as? [PinpointEvent] else {
                     XCTFail("Missing data")
                     return
                 }
@@ -110,10 +111,5 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         }
         let awsPinpoint = pinpointAnalyticsPlugin.getEscapeHatch()
         XCTAssertNotNil(awsPinpoint)
-        XCTAssertNotNil(awsPinpoint.analyticsClient)
-        XCTAssertNotNil(awsPinpoint.targetingClient)
-        XCTAssertNotNil(awsPinpoint.sessionClient)
-        XCTAssertNotNil(awsPinpoint.configuration)
-        XCTAssertTrue(awsPinpoint.configuration.enableAutoSessionRecording)
     }
 }

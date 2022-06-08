@@ -10,51 +10,39 @@ import AWSPinpoint
 import Foundation
 
 extension MockAWSPinpoint: AWSPinpointTargetingClientBehavior {
-    public func currentEndpointProfile() -> AWSPinpointEndpointProfile {
+    public func currentEndpointProfile() -> PinpointEndpointProfile {
         currentEndpointProfileCalled += 1
 
-        return AWSPinpointEndpointProfile(applicationId: applicationId, endpointId: endpointId)
+        return PinpointEndpointProfile() // applicationId: applicationId, endpointId: endpointId)
     }
 
-    public func updateEndpointProfile() -> AWSTask<AnyObject> {
+    public func updateEndpointProfile() async throws {
         updateEndpointProfileCalled += 1
-
-        if let result = updateEndpointProfileResult {
-            return result
-        }
-
-        return AWSTask<AnyObject>.init(result: "" as AnyObject)
     }
 
-    public func update(_ endpointProfile: AWSPinpointEndpointProfile) -> AWSTask<AnyObject> {
+    public func update(_ endpointProfile: PinpointEndpointProfile) async throws {
         updateEndpointProfileCalled += 1
         updateEndpointProfileValue = endpointProfile
-
-        if let result = updateEndpointProfileResult {
-            return result
-        }
-
-        return AWSTask<AnyObject>.init(result: "" as AnyObject)
     }
 
-    public func addAttribute(_ theValue: [Any], forKey theKey: String) {
+    public func addAttributes(_ attributes: [Any], forKey key: String) {
         addAttributeCalled += 1
 
-        addAttributeValue = theValue
-        addAttributeKey = theKey
+        addAttributeValue = attributes
+        addAttributeKey = key
     }
 
-    public func removeAttribute(forKey theKey: String) {
+    public func removeAttributes(forKey key: String) {
         removeAttributeCalled += 1
 
-        removeAttributeKey = theKey
+        removeAttributeKey = key
     }
 
-    public func addMetric(_ theValue: NSNumber, forKey theKey: String) {
+    public func addMetric(_ metric: Double, forKey key: String) {
         addMetricCalled += 1
 
-        addMetricValue = theValue
-        addMetricKey = theKey
+        addMetricValue = metric
+        addMetricKey = key
     }
 
     public func removeMetric(forKey theKey: String) {
