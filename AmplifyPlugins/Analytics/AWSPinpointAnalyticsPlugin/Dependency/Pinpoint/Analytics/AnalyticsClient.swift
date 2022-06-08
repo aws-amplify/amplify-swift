@@ -10,7 +10,7 @@ import StoreKit
 import Amplify
 
 actor AnalyticsClient: InternalPinpointClient {
-    private let eventRecorder: AnalyticsEventRecording
+    private let eventRecorder: AnalyticsEventRecording?
     unowned let context: PinpointContext
     private lazy var globalAttributes: PinpointEventAttributes = [:]
     private lazy var globalMetrics: PinpointEventMetrics = [:]
@@ -25,12 +25,12 @@ actor AnalyticsClient: InternalPinpointClient {
         self.context = context
     }
     
-    convenience override init(context: PinpointContext) {
+    convenience init(context: PinpointContext) {
         if let storage = try? AnalyticsEventSQLStorage(dbAdapter: SQLiteLocalStorageAdapter(prefixPath: Constants.eventRecorderStoragePathPrefix, databaseName: context.configuration.appId)),
            let eventRecorder = try? EventRecorder(appId: context.configuration.appId, storage: storage,pinpointClient: context.pinpointClient) {
             self.init(context: context, eventRecorder: eventRecorder)
         } else {
-            self.init(context: context)
+            self.init(context: context, eventRecorder: nil)
             log.error("Analytics Client missing event recorder")
         }
     }
