@@ -208,7 +208,6 @@
 		762547F42735FD0C00E5F6A3 /* GroupPublicUPIAMPost+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762547BE2735FD0C00E5F6A3 /* GroupPublicUPIAMPost+Schema.swift */; };
 		7638898F26AB56580061AF0B /* StorageEngineSyncRequirementsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7638898E26AB56570061AF0B /* StorageEngineSyncRequirementsTests.swift */; };
 		763CB90727FE557D00DEA9BB /* AWSDataStorePrimaryKeyBaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 763CB90627FE557D00DEA9BB /* AWSDataStorePrimaryKeyBaseTest.swift */; };
-		763CB90A27FE578400DEA9BB /* schema.graphql in Resources */ = {isa = PBXBuildFile; fileRef = 763CB90927FE578400DEA9BB /* schema.graphql */; };
 		763CB90C27FE5CEC00DEA9BB /* AWSDataStorePrimaryKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 763CB90B27FE5CEC00DEA9BB /* AWSDataStorePrimaryKeyTests.swift */; };
 		7678B31025FAD93200B4917F /* InitialSyncOperationSyncExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7678B30F25FAD93200B4917F /* InitialSyncOperationSyncExpressionTests.swift */; };
 		767C398B266EE4DA00CB64B9 /* AWSDataStoreMultiAuthThreeRulesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767C398A266EE4DA00CB64B9 /* AWSDataStoreMultiAuthThreeRulesTests.swift */; };
@@ -645,7 +644,6 @@
 		7638898E26AB56570061AF0B /* StorageEngineSyncRequirementsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEngineSyncRequirementsTests.swift; sourceTree = "<group>"; };
 		763CB90627FE557D00DEA9BB /* AWSDataStorePrimaryKeyBaseTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStorePrimaryKeyBaseTest.swift; sourceTree = "<group>"; };
 		763CB90827FE56BB00DEA9BB /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		763CB90927FE578400DEA9BB /* schema.graphql */ = {isa = PBXFileReference; lastKnownFileType = text; path = schema.graphql; sourceTree = "<group>"; };
 		763CB90B27FE5CEC00DEA9BB /* AWSDataStorePrimaryKeyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStorePrimaryKeyTests.swift; sourceTree = "<group>"; };
 		7678B30F25FAD93200B4917F /* InitialSyncOperationSyncExpressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialSyncOperationSyncExpressionTests.swift; sourceTree = "<group>"; };
 		767C398A266EE4DA00CB64B9 /* AWSDataStoreMultiAuthThreeRulesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreMultiAuthThreeRulesTests.swift; sourceTree = "<group>"; };
@@ -1281,7 +1279,6 @@
 				763CB90627FE557D00DEA9BB /* AWSDataStorePrimaryKeyBaseTest.swift */,
 				763CB90B27FE5CEC00DEA9BB /* AWSDataStorePrimaryKeyTests.swift */,
 				763CB90827FE56BB00DEA9BB /* README.md */,
-				763CB90927FE578400DEA9BB /* schema.graphql */,
 			);
 			path = PrimaryKey;
 			sourceTree = "<group>";
@@ -1957,7 +1954,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				763CB90A27FE578400DEA9BB /* schema.graphql in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
