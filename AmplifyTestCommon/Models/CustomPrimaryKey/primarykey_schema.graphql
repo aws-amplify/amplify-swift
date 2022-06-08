@@ -22,24 +22,16 @@ type ModelCompositePk @model {
   name: String
 }
 
-type ModelCustomPkDefined @model {
-  id: ID! @primaryKey(sortKeyFields: ["dob"])
-  dob: AWSDateTime!
-  name: String
+type ModelCompositeMultiplePk @model {
+  id: ID! @primaryKey(sortKeyFields: ["location", "name"])
+  location: String!
+  name: String!
+  lastName: String
 }
 
-type ModelCompositePkBelongsTo @model {
-  id: ID! @primaryKey(sortKeyFields: ["dob"])
-  dob: AWSDateTime!
-  name: String
-  owner: ModelCompositePkWithAssociation @belongsTo
-}
-
-type ModelCompositePkWithAssociation @model {
-  id: ID! @primaryKey(sortKeyFields: ["dob"])
-  dob: AWSDateTime!
-  name: String
-  otherModels: [ModelCompositePkBelongsTo] @hasMany
+type ModelCompositeIntPk @model {
+  id: ID! @primaryKey(sortKeyFields: ["serial"])
+  serial: Int!
 }
 
 type PostWithCompositeKey @model {
@@ -52,4 +44,27 @@ type CommentWithCompositeKey @model {
   id: ID! @primaryKey(sortKeyFields: ["content"])
   content: String!
   post: PostWithCompositeKey @belongsTo
+}
+
+type PostWithTagsCompositeKey @model {
+  postId: ID! @primaryKey(sortKeyFields: ["title"])
+  title: String!
+  tags: [TagWithCompositeKey] @manyToMany(relationName: "PostTagsWithCompositeKey")
+}
+
+type TagWithCompositeKey @model {
+  id: ID! @primaryKey(sortKeyFields: ["name"])
+  name: String!
+  posts: [PostWithTagsCompositeKey] @manyToMany(relationName: "PostTagsWithCompositeKey")
+}
+
+type PostWithCompositeKeyUnidirectional @model {
+  id: ID! @primaryKey(sortKeyFields: ["title"])
+  title: String!
+  comments: [CommentWithCompositeKeyUnidirectional] @hasMany
+}
+
+type CommentWithCompositeKeyUnidirectional @model {
+  id: ID! @primaryKey(sortKeyFields: ["content"])
+  content: String!
 }

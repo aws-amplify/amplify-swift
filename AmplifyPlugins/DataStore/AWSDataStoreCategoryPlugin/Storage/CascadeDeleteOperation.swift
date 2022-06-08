@@ -155,7 +155,13 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                 let associatedModelSchema = ModelRegistry.modelSchema(from: associatedModelName) else {
                     continue
             }
-            let queriedModels = queryAssociatedModels(modelName: associatedModelName,
+
+            guard let modelSchema = ModelRegistry.modelSchema(from: associatedModelName) else {
+                log.error("Failed to lookup associate model \(associatedModelName)")
+                return []
+            }
+
+            let queriedModels = queryAssociatedModels(associateModelSchema: modelSchema,
                                                       associatedField: associatedField,
                                                       ids: ids)
             let associatedModelIds = queriedModels.map { $0.1.identifier(schema: modelSchema).stringValue }
@@ -166,14 +172,9 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         return associatedModels
     }
 
-    func queryAssociatedModels(modelName: ModelName,
+    func queryAssociatedModels(associateModelSchema modelSchema: ModelSchema,
                                associatedField: ModelField,
                                ids: [Model.Identifier]) -> [(ModelName, Model)] {
-        guard let modelSchema = ModelRegistry.modelSchema(from: modelName) else {
-            log.error("Failed to lookup \(modelName)")
-            return []
-        }
-
         var queriedModels: [(ModelName, Model)] = []
         let chunkedArrays = ids.chunked(into: SQLiteStorageEngineAdapter.maxNumberOfPredicates)
         for chunkedArray in chunkedArrays {
@@ -192,7 +193,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                 switch result {
                 case .success(let models):
                     queriedModels.append(contentsOf: models.map { model in
-                        (modelName, model)
+                        (modelSchema.name, model)
                     })
                 case .failure(let error):
                     log.error("Failed to query \(modelSchema) on mutation event generation: \(error)")

@@ -23,21 +23,21 @@ extension CommentWithCompositeKey {
   //  MARK: - ModelSchema
 
   public static let schema = defineSchema { model in
-    let comment22 = CommentWithCompositeKey.keys
+    let commentWithCompositeKey = CommentWithCompositeKey.keys
 
     model.pluralName = "CommentWithCompositeKeys"
 
     model.attributes(
       .index(fields: ["id", "content"], name: nil),
-      .primaryKey(fields: [comment22.id, comment22.content])
+      .primaryKey(fields: [commentWithCompositeKey.id, commentWithCompositeKey.content])
     )
 
     model.fields(
-      .field(comment22.id, is: .required, ofType: .string),
-      .field(comment22.content, is: .required, ofType: .string),
-      .belongsTo(comment22.post, is: .optional, ofType: PostWithCompositeKey.self, targetNames: ["postWithCompositeKeyCommentsId", "postWithCompositeKeyCommentsTitle"]),
-      .field(comment22.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
-      .field(comment22.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
+      .field(commentWithCompositeKey.id, is: .required, ofType: .string),
+      .field(commentWithCompositeKey.content, is: .required, ofType: .string),
+      .belongsTo(commentWithCompositeKey.post, is: .optional, ofType: PostWithCompositeKey.self, targetNames: ["postWithCompositeKeyCommentsId", "postWithCompositeKeyCommentsTitle"]),
+      .field(commentWithCompositeKey.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
+      .field(commentWithCompositeKey.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
 }

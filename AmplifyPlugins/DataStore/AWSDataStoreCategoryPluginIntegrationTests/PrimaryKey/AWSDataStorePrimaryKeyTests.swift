@@ -137,6 +137,12 @@ class AWSDataStorePrimaryKeyIntegrationTests: AWSDataStorePrimaryKeyBaseTest {
         assertMutationsParentChild(parent: parent, child: child, expectations) { error in
             XCTFail("Error mutation \(error)")
         }
+
+        // Child should not exists as we've deleted the parent
+        assertModelDeleted(modelType: CommentWithCompositeKey.self,
+                           identifier: .identifier(id: child.id, content: child.content)) { error in
+            XCTFail("Error deleting child \(error)")
+        }
     }
 }
 

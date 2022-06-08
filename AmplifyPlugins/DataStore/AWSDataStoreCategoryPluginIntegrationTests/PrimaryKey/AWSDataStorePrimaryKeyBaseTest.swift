@@ -106,11 +106,33 @@ extension AWSDataStorePrimaryKeyBaseTest {
                 onFailure(error)
             }
         }
-        receiveValue: { posts in
-            XCTAssertNotNil(posts)
+        receiveValue: { models in
+            XCTAssertNotNil(models)
             expectations.query.fulfill()
         }.store(in: &requests)
         wait(for: [expectations.query],
+             timeout: 60)
+    }
+
+    /// Asserts that query with given `Model` succeeds
+    /// - Parameters:
+    ///   - modelType: model type
+    ///   - expectation: success XCTestExpectation
+    ///   - onFailure: on failure callback
+    func assertModelDeleted<M: Model & ModelIdentifiable>(modelType: M.Type,
+                                                          identifier: ModelIdentifier<M, M.IdentifierFormat>,
+                                                          onFailure: @escaping (_ error: DataStoreError) -> Void) {
+        let expectation = expectation(description: "Model deleted")
+        Amplify.DataStore.query(modelType, byIdentifier: identifier).sink {
+            if case let .failure(error) = $0 {
+                onFailure(error)
+            }
+        }
+        receiveValue: { model in
+            XCTAssertNil(model)
+            expectation.fulfill()
+        }.store(in: &requests)
+        wait(for: [expectation],
              timeout: 60)
     }
 
@@ -265,17 +287,6 @@ extension AWSDataStorePrimaryKeyBaseTest {
         }.store(in: &requests)
 
         wait(for: [expectations.mutationSave, expectations.mutationSaveProcessed], timeout: 60)
-
-        // delete child first
-        Amplify.DataStore.delete(child).sink {
-            if case let .failure(error) = $0 {
-                onFailure(error)
-            }
-        }
-        receiveValue: { posts in
-            XCTAssertNotNil(posts)
-            expectations.mutationDelete.fulfill()
-        }.store(in: &requests)
 
         // delete parent
         Amplify.DataStore.delete(parent).sink {
