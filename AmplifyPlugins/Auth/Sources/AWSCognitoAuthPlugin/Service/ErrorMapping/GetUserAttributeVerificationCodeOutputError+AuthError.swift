@@ -14,71 +14,66 @@ extension GetUserAttributeVerificationCodeOutputError: AuthErrorConvertible {
     var authError: AuthError {
         switch self {
         case .codeDeliveryFailureException(let exception):
-            return .service(
-                exception.message ?? "Code Delivery Failure error",
-                AuthPluginErrorConstants.codeDeliveryError,
-                AWSCognitoAuthError.codeDelivery
-            )
+            return .service(exception.message ?? "Code Delivery Failure error",
+                            AuthPluginErrorConstants.codeDeliveryError,
+                            AWSCognitoAuthError.codeDelivery)
         case .internalErrorException(let exception):
             return .unknown(exception.message ?? "Internal exception occurred")
         case .invalidEmailRoleAccessPolicyException(let exception):
-            return .service(
-                exception.message ?? "Invalid email role access policy error",
-                AuthPluginErrorConstants.invalidEmailRoleError,
-                AWSCognitoAuthError.emailRole
-            )
+            return .service(exception.message ?? "Invalid email role access policy error",
+                            AuthPluginErrorConstants.invalidEmailRoleError,
+                            AWSCognitoAuthError.emailRole)
         case .invalidLambdaResponseException(let exception):
-            return AuthError.service(exception.message ?? "Invalid lambda response error",
-                                     AuthPluginErrorConstants.lambdaError,
-                                     AWSCognitoAuthError.lambda)
+            return .service(exception.message ?? "Invalid lambda response error",
+                            AuthPluginErrorConstants.lambdaError,
+                            AWSCognitoAuthError.lambda)
         case .invalidParameterException(let exception):
-            return AuthError.service(exception.message ?? "Invalid parameter error",
-                                     AuthPluginErrorConstants.invalidParameterError,
-                                     AWSCognitoAuthError.invalidParameter)
+            return .service(exception.message ?? "Invalid parameter error",
+                            AuthPluginErrorConstants.invalidParameterError,
+                            AWSCognitoAuthError.invalidParameter)
         case .invalidSmsRoleAccessPolicyException(let exception):
-            return AuthError.service(exception.message ?? "Invalid SMS Role Access Policy error",
-                                     AuthPluginErrorConstants.invalidParameterError,
-                                     AWSCognitoAuthError.smsRole)
+            return .service(exception.message ?? "Invalid SMS Role Access Policy error",
+                            AuthPluginErrorConstants.invalidParameterError,
+                            AWSCognitoAuthError.smsRole)
         case .invalidSmsRoleTrustRelationshipException(let exception):
-            return AuthError.service(exception.message ?? "Invalid SMS Role Trust Relationship error",
-                                     AuthPluginErrorConstants.invalidParameterError,
-                                     AWSCognitoAuthError.smsRole)
+            return .service(exception.message ?? "Invalid SMS Role Trust Relationship error",
+                            AuthPluginErrorConstants.invalidParameterError,
+                            AWSCognitoAuthError.smsRole)
         case .limitExceededException(let limitExceededException):
             return .service(limitExceededException.message ?? "Limit exceeded error",
                             AuthPluginErrorConstants.limitExceededException,
                             AWSCognitoAuthError.limitExceededException)
         case .notAuthorizedException(let exception):
-            return AuthError.notAuthorized(exception.message ?? "Not authorized error",
-                                           AuthPluginErrorConstants.notAuthorizedError)
+            return .notAuthorized(exception.message ?? "Not authorized error",
+                                  AuthPluginErrorConstants.notAuthorizedError)
         case .passwordResetRequiredException(let exception):
-            return AuthError.service(exception.message ?? "Password reset required error",
-                                     AuthPluginErrorConstants.passwordResetRequired,
-                                     AWSCognitoAuthError.passwordResetRequired)
+            return .service(exception.message ?? "Password reset required error",
+                            AuthPluginErrorConstants.passwordResetRequired,
+                            AWSCognitoAuthError.passwordResetRequired)
         case .resourceNotFoundException(let exception):
-            return AuthError.service(exception.message ?? "Resource not found error",
-                                     AuthPluginErrorConstants.resourceNotFoundError,
-                                     AWSCognitoAuthError.resourceNotFound)
+            return .service(exception.message ?? "Resource not found error",
+                            AuthPluginErrorConstants.resourceNotFoundError,
+                            AWSCognitoAuthError.resourceNotFound)
         case .tooManyRequestsException(let exception):
-            return AuthError.service(exception.message ?? "Too many requests error",
-                                     AuthPluginErrorConstants.tooManyRequestError,
-                                     AWSCognitoAuthError.requestLimitExceeded)
+            return .service(exception.message ?? "Too many requests error",
+                            AuthPluginErrorConstants.tooManyRequestError,
+                            AWSCognitoAuthError.requestLimitExceeded)
         case .unexpectedLambdaException(let exception):
-            return AuthError.service(exception.message ?? "Invalid lambda response error",
-                                     AuthPluginErrorConstants.lambdaError,
-                                     AWSCognitoAuthError.lambda)
+            return .service(exception.message ?? "Invalid lambda response error",
+                            AuthPluginErrorConstants.lambdaError,
+                            AWSCognitoAuthError.lambda)
         case .userLambdaValidationException(let exception):
-            return AuthError.service(exception.message ?? "Invalid lambda response error",
-                                     AuthPluginErrorConstants.lambdaError,
-                                     AWSCognitoAuthError.lambda)
-            
+            return .service(exception.message ?? "Invalid lambda response error",
+                            AuthPluginErrorConstants.lambdaError,
+                            AWSCognitoAuthError.lambda)
         case .userNotConfirmedException(let userNotConfirmedException):
-            return AuthError.service(userNotConfirmedException.message ?? "User not confirmed error",
-                                     AuthPluginErrorConstants.userNotConfirmedError,
-                                     AWSCognitoAuthError.userNotConfirmed)
+            return .service(userNotConfirmedException.message ?? "User not confirmed error",
+                            AuthPluginErrorConstants.userNotConfirmedError,
+                            AWSCognitoAuthError.userNotConfirmed)
         case .userNotFoundException(let userNotFoundException):
-            return AuthError.service(userNotFoundException.message ?? "User not found error",
-                                     AuthPluginErrorConstants.userNotFoundError,
-                                     AWSCognitoAuthError.userNotFound)
+            return .service(userNotFoundException.message ?? "User not found error",
+                            AuthPluginErrorConstants.userNotFoundError,
+                            AWSCognitoAuthError.userNotFound)
         case .unknown(let unknownAWSHttpServiceError):
             let statusCode = unknownAWSHttpServiceError._statusCode?.rawValue ?? -1
             let message = unknownAWSHttpServiceError._message ?? ""

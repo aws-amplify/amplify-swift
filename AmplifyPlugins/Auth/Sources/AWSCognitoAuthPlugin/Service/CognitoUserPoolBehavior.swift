@@ -31,6 +31,7 @@ protocol CognitoUserPoolBehavior {
   
     // MARK: - User Attribute API's
     
+    /// Throws GetUserAttributeVerificationCodeOutputError
     func getUserAttributeVerificationCode(input: GetUserAttributeVerificationCodeInput) async throws -> GetUserAttributeVerificationCodeOutputResponse
     
 }
