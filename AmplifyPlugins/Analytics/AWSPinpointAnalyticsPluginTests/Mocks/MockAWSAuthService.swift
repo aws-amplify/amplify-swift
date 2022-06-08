@@ -6,8 +6,8 @@
 //
 
 import Amplify
-import AWSMobileClient
-import AWSPluginsCore
+@testable import AWSPluginsCore
+import AWSClientRuntime
 import Foundation
 
 @testable import AWSPinpointAnalyticsPlugin
@@ -23,8 +23,8 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
 
     public func reset() {}
 
-    public func getCredentialsProvider() -> AWSCredentialsProvider {
-        let cognitoCredentialsProvider = AWSCognitoCredentialsProvider()
+    public func getCredentialsProvider() -> CredentialsProvider {
+        let cognitoCredentialsProvider = AmplifyAWSCredentialsProvider()
         return cognitoCredentialsProvider
     }
 

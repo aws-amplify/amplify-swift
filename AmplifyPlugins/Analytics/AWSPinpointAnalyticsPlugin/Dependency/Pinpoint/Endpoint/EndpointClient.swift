@@ -39,7 +39,7 @@ class EndpointClient: InternalPinpointClient {
         fatalError("Not yet implemented")
     }
 
-    func addMetric(_ metric: Float, forKey key: String) {
+    func addMetric(_ metric: Double, forKey key: String) {
         // TODO: Implement
         fatalError("Not yet implemented")
     }

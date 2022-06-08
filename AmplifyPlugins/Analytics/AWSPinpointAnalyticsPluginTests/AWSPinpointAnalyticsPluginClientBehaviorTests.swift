@@ -11,8 +11,6 @@ import AWSPinpoint
 @testable import AmplifyTestCommon
 import XCTest
 
-extension TypeRegistry: InstanceFactory {}
-
 // swiftlint:disable:next type_name
 class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginTestBase {
     let testName = "testName"
@@ -36,7 +34,8 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// When: AnalyticsPlugin.identifyUser is invoked with the user profile
     /// Then: AWSPinpoint.currentEndpoint and updateEndpoint methods are called
     ///     and Hub Analytics.identifyUser event is dispatched with the input data
-    func testIdentifyUser() {
+    func testIdentifyUser() throws {
+        throw XCTSkip("Identify User is not yet implemented")
         let analyticsEventReceived = expectation(description: "Analytics event was received on the hub plugin")
 
         _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in
@@ -58,7 +57,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
                                                plan: testPlan,
                                                location: testLocation,
                                                properties: testProperties)
-        let expectedEndpointProfile = AWSPinpointEndpointProfile()
+        let expectedEndpointProfile = PinpointEndpointProfile()
         expectedEndpointProfile.addIdentityId(testIdentityId)
         expectedEndpointProfile.addUserProfile(userProfile)
 
@@ -85,10 +84,9 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// When: AnalyticsPlugin.identifyUser is invoked with the user profile
     /// Then: AWSPinpoint.currentEndpoint and updateEndpoint methods are called
     ///     and Hub Analytics.identifyUser event is dispatched with an error
-    func testIdentifyUserDispatchesErrorForPinpointError() {
-        mockPinpoint.updateEndpointProfileResult = AWSTask<AnyObject>.init(error: NSError(domain: "domain",
-                                                                                          code: 1,
-                                                                                          userInfo: nil))
+    func testIdentifyUserDispatchesErrorForPinpointError() throws {
+        throw XCTSkip("Identify User is not yet implemented")
+        mockPinpoint.updateEndpointProfileResult = PinpointEndpointProfile()
         let analyticsEventReceived = expectation(description: "Analytics event was received on the hub plugin")
 
         _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in
@@ -109,7 +107,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
                                                plan: testPlan,
                                                location: testLocation,
                                                properties: testProperties)
-        let expectedEndpointProfile = AWSPinpointEndpointProfile()
+        let expectedEndpointProfile = PinpointEndpointProfile()
         expectedEndpointProfile.addIdentityId(testIdentityId)
         expectedEndpointProfile.addUserProfile(userProfile)
 
@@ -127,7 +125,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// Then: AWSPinpoint.createEvent and record methods are called
     ///     and Hub Analytics.record event is dispatched with the input data
     func testRecordEvent() {
-        let expectedPinpointEvent = AWSPinpointEvent(eventType: testName, session: AWSPinpointSession())
+        let expectedPinpointEvent = PinpointEvent(eventType: testName, session: PinpointSession(appId: "", uniqueId: ""))
         mockPinpoint.createEventResult = expectedPinpointEvent
         expectedPinpointEvent.addProperties(testProperties)
         let event = BasicAnalyticsEvent(name: testName, properties: testProperties)
@@ -148,9 +146,9 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
 
         analyticsPlugin.record(event: event)
 
+        waitForExpectations(timeout: 1)
         mockPinpoint.verifyCreateEvent(withEventType: testName)
         mockPinpoint.verifyRecord(expectedPinpointEvent)
-        waitForExpectations(timeout: 1)
     }
 
     /// Given: AnalyticsPlugin is disabled
@@ -170,10 +168,10 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// Then: AWSPinpoint.createEvent and record methods are called
     ///     and Hub Analytics.record event is dispatched with a error
     func testRecordEventDispatchesErrorForPinpointError() {
-        mockPinpoint.recordResult = AWSTask<AnyObject>.init(error: NSError(domain: "domain",
-                                                                           code: 1,
-                                                                           userInfo: nil))
-        let expectedPinpointEvent = AWSPinpointEvent(eventType: testName, session: AWSPinpointSession())
+        mockPinpoint.recordResult = .failure(NSError(domain: "domain",
+                                                     code: 1,
+                                                     userInfo: nil))
+        let expectedPinpointEvent = PinpointEvent(eventType: testName, session: PinpointSession(appId: "", uniqueId: ""))
         mockPinpoint.createEventResult = expectedPinpointEvent
         expectedPinpointEvent.addProperties(testProperties)
         let event = BasicAnalyticsEvent(name: testName, properties: testProperties)
@@ -194,9 +192,9 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
 
         analyticsPlugin.record(event: event)
 
+        waitForExpectations(timeout: 1)
         mockPinpoint.verifyCreateEvent(withEventType: testName)
         mockPinpoint.verifyRecord(expectedPinpointEvent)
-        waitForExpectations(timeout: 1)
     }
 
     // MARK: RecordEventWithName API
@@ -206,7 +204,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// Then: AWSPinpoint.createEvent and record methods are called
     ///     and Hub Analytics.record event is dispatched with the input data
     func testRecordEventWithName() {
-        let expectedPinpointEvent = AWSPinpointEvent(eventType: testName, session: AWSPinpointSession())
+        let expectedPinpointEvent = PinpointEvent(eventType: testName, session: PinpointSession(appId: "", uniqueId: ""))
         mockPinpoint.createEventResult = expectedPinpointEvent
 
         let analyticsEventReceived = expectation(description: "Analytics event was received on the hub plugin")
@@ -225,9 +223,9 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
 
         analyticsPlugin.record(eventWithName: testName)
 
+        waitForExpectations(timeout: 1)
         mockPinpoint.verifyCreateEvent(withEventType: testName)
         mockPinpoint.verifyRecord(expectedPinpointEvent)
-        waitForExpectations(timeout: 1)
     }
 
     /// AnalyticsPlugin is disabled
@@ -246,10 +244,10 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// Then: AWSPinpoint.createEvent and record methods are called
     ///     and Hub Analytics.record event is dispatched with a error
     func testRecordEventWithNameDispatchesErrorForPinpointError() {
-        mockPinpoint.recordResult = AWSTask<AnyObject>.init(error: NSError(domain: "domain",
-                                                                           code: 1,
-                                                                           userInfo: nil))
-        let expectedPinpointEvent = AWSPinpointEvent(eventType: testName, session: AWSPinpointSession())
+        mockPinpoint.recordResult = .failure(NSError(domain: "domain",
+                                                     code: 1,
+                                                     userInfo: nil))
+        let expectedPinpointEvent = PinpointEvent(eventType: testName, session: PinpointSession(appId: "", uniqueId: ""))
         mockPinpoint.createEventResult = expectedPinpointEvent
 
         let analyticsEventReceived = expectation(description: "Analytics event was received on the hub plugin")
@@ -268,9 +266,9 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
 
         analyticsPlugin.record(eventWithName: testName)
 
+        waitForExpectations(timeout: 1)
         mockPinpoint.verifyCreateEvent(withEventType: testName)
         mockPinpoint.verifyRecord(expectedPinpointEvent)
-        waitForExpectations(timeout: 1)
     }
 
     // MARK: RegisterGlobalProperties API
@@ -331,14 +329,15 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// Then: AWSPinpoint.submitEvents is invoked
     ///     and Hub Analytics.flushEvents event is dispatched with submitted events
     func testFlushEvents() {
-        mockPinpoint.submitEventsResult = AWSTask<AnyObject>.init(result: [AWSPinpointEvent(),
-                                                                           AWSPinpointEvent()] as AnyObject)
+        let result = [PinpointEvent(eventType: "1", session: PinpointSession(appId: "", uniqueId: "")),
+                      PinpointEvent(eventType: "2", session: PinpointSession(appId: "", uniqueId: ""))]
+        mockPinpoint.submitEventsResult = .success(result)
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
 
         _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in
             if payload.eventName == HubPayload.EventName.Analytics.flushEvents {
                 methodWasInvokedOnPlugin.fulfill()
-                guard let pinpointEvents = payload.data as? [AWSPinpointEvent] else {
+                guard let pinpointEvents = payload.data as? [PinpointEvent] else {
                     XCTFail("Missing data")
                     return
                 }
@@ -348,8 +347,8 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
         }
 
         analyticsPlugin.flushEvents()
-        mockPinpoint.verifySubmitEvents()
         waitForExpectations(timeout: 1)
+        mockPinpoint.verifySubmitEvents()
     }
 
     /// Given: AnalyticsPlugin is disabled
@@ -368,9 +367,9 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// Then: AWSPinpoint.submitEvents is invoked
     ///     and Hub Analytics.flushEvents event is dispatched with error
     func testFlushEventsDispatchesErrorForPinpointError() {
-        mockPinpoint.submitEventsResult = AWSTask<AnyObject>.init(error: NSError(domain: "domain",
-                                                                                 code: 1,
-                                                                                 userInfo: nil))
+        mockPinpoint.submitEventsResult = .failure(NSError(domain: "domain",
+                                                           code: 1,
+                                                           userInfo: nil))
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
 
         _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in
@@ -386,8 +385,8 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
         }
 
         analyticsPlugin.flushEvents()
-        mockPinpoint.verifySubmitEvents()
         waitForExpectations(timeout: 1)
+        mockPinpoint.verifySubmitEvents()
     }
 
     // MARK: Enable API

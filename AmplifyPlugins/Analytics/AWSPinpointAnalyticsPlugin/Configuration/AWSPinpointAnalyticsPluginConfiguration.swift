@@ -7,6 +7,7 @@
 
 import Amplify
 import AWSPinpoint
+import AWSClientRuntime
 import Foundation
 
 public struct AWSPinpointAnalyticsPluginConfiguration {
