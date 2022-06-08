@@ -79,10 +79,6 @@ AuthError>, AuthAttributeResendConfirmationCodeOperation {
             
             let result = try await userPoolService?.getUserAttributeVerificationCode(input: input)
             
-            defer {
-                self.finish()
-            }
-            
             if self.isCancelled {
                 return
             }
