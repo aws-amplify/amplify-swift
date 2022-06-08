@@ -8,7 +8,7 @@
 import XCTest
 import SQLite
 @testable import Amplify
-@testable import AWSDataStorePlugin
+@testable import AWSPinpointAnalyticsPlugin
 
 class SQLiteLocalStorageAdapterTests: XCTestCase {
     let databaseName = "TestDatabase"
