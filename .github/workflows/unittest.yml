@@ -13,6 +13,15 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  analytics-unit-test:
+    runs-on: macos-latest
+    environment: UnitTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - name: Run unit test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          scheme: AWSPinpointAnalyticsPlugin
 
   amplify-unit-test:
     runs-on: macos-latest
