@@ -37,65 +37,15 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
             finish()
             return
         }
-        initializeCredentialStore { [weak self] in
-            self?.fetchStoredCredentials()
-        }
-    }
-
-    func initializeCredentialStore(completion: @escaping () -> Void) {
-
-        var token: AuthStateMachine.StateChangeListenerToken?
-        token = credentialStoreStateMachine.listen { [weak self] in
-            guard let self = self else { return }
-
-            switch $0 {
-            case .idle:
-                completion()
-                if let token = token {
-                    self.credentialStoreStateMachine.cancel(listenerToken: token)
-                }
-            default:
-                break
-            }
-
-        } onSubscribe: { }
-    }
-
-    func initializeAuthStateMachine(with storedCredentials: AmplifyCredentials?) {
-
-        authStateMachine.getCurrentState { [weak self] state in
-            guard case .configured = state  else {
-                let message = "Credential store state machine not in idle state: \(state)"
-                let error = AuthError.invalidState(message, "", nil)
-                self?.dispatch(error)
-                return
-            }
-            self?.fetchAuthSession(with: storedCredentials)
-        }
-    }
-
-    func fetchStoredCredentials() {
-
-        var token: AuthStateMachine.StateChangeListenerToken?
-        token = credentialStoreStateMachine.listen { [weak self] in
-            guard let self = self else { return }
-
-            switch $0 {
-            case .success(let credentials):
-                self.initializeAuthStateMachine(with: credentials)
-                if let token = token {
-                    self.credentialStoreStateMachine.cancel(listenerToken: token)
-                }
-            case .error:
-                self.initializeAuthStateMachine(with: nil)
-                if let token = token {
-                    self.credentialStoreStateMachine.cancel(listenerToken: token)
-                }
-            default:
-                break
-            }
-        }
         
+        fetchSessionHelper.fetchSession { [weak self] result in
+            switch result {
+            case .success(let session):
+                self?.dispatch(session)
+            case .failure(let error):
+                self?.dispatch(error)
+            }
+        }
     }
 
     private func dispatch(_ result: AuthSession) {

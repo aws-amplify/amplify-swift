@@ -54,7 +54,9 @@ AuthError>, AuthAttributeResendConfirmationCodeOperation {
                     self?.dispatch(AuthError.unknown("Unable to fetch auth session", nil))
                     return
                 }
-                self?.initiateGettingVerificationCode(with: tokens.accessToken)
+                Task.init { [weak self] in
+                    await self?.initiateGettingVerificationCode(with: tokens.accessToken)
+                }
             case .failure(let error):
                 self?.dispatch(error)
             }
@@ -62,11 +64,40 @@ AuthError>, AuthAttributeResendConfirmationCodeOperation {
         
     }
     
-    func initiateGettingVerificationCode(with accessToken: String) {
+    func initiateGettingVerificationCode(with accessToken: String) async {
         
         let userPoolService: CognitoUserPoolBehavior?
         do {
             userPoolService = try userPoolFactory()
+            let clientMetaData = (request.options.pluginOptions
+                                  as? AWSAttributeResendConfirmationCodeOptions)?.metadata ?? [:]
+            
+            let input = GetUserAttributeVerificationCodeInput(
+                accessToken: accessToken,
+                attributeName: request.attributeKey.rawValue,
+                clientMetadata: clientMetaData)
+            
+            let result = try await userPoolService?.getUserAttributeVerificationCode(input: input)
+            
+            defer {
+                self.finish()
+            }
+            
+            if self.isCancelled {
+                return
+            }
+            
+            guard let deliveryDetails = result?.codeDeliveryDetails?.toAuthCodeDeliveryDetails() else {
+                let authError = AuthError.service("Unable to get Auth code delivery details",
+                                                  AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
+                                                  nil)
+                self.dispatch(authError)
+                return
+            }
+            self.dispatch(deliveryDetails)
+        }
+        catch let error as GetUserAttributeVerificationCodeOutputError {
+            self.dispatch(error.authError)
         }
         catch let error {
             let error = AuthError.configuration(
@@ -74,38 +105,6 @@ AuthError>, AuthAttributeResendConfirmationCodeOperation {
                 AuthPluginErrorConstants.configurationError,
                 error)
             self.dispatch(error)
-            return
-        }
-        
-        let clientMetaData = (request.options.pluginOptions
-                              as? AWSAttributeResendConfirmationCodeOptions)?.metadata ?? [:]
-        
-        let input = GetUserAttributeVerificationCodeInput(
-            accessToken: accessToken,
-            attributeName: request.attributeKey.rawValue,
-            clientMetadata: clientMetaData)
-        
-        userPoolService?.getUserAttributeVerificationCode(input: input) { [weak self] result in
-            guard let self = self else { return }
-            defer {
-                self.finish()
-            }
-            if self.isCancelled {
-                return
-            }
-            switch result {
-            case .failure(let error):
-                self.dispatch(error.authError)
-            case .success(let result):
-                guard let deliveryDetails = result.codeDeliveryDetails?.toAuthCodeDeliveryDetails() else {
-                    let authError = AuthError.service("Unable to get Auth code delivery details",
-                                                      AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
-                                                      nil)
-                    self.dispatch(authError)
-                    return
-                }
-                self.dispatch(deliveryDetails)
-            }
         }
     }
     
