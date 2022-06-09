@@ -137,8 +137,7 @@ class GeoCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(geo: geoConfig)
         try Amplify.configure(amplifyConfig)
         
-        throw XCTSkip("Fatal error throw is not compatible with async methods")
-        let registry = TypeRegistry.register(type: MockGeoCategoryPlugin.self) { _ in MockGeoCategoryPlugin() }
+        let registry = TypeRegistry.register(type: GeoCategoryPlugin.self) { _ in MockGeoCategoryPlugin() }
         _ = try await Amplify.Geo.search(for: "test", options: nil)
         XCTAssertGreaterThan(registry.messages.count, 0)
     }
@@ -213,12 +212,9 @@ class GeoCategoryConfigurationTests: XCTestCase {
         let plugin = MockGeoCategoryPlugin()
         try Amplify.add(plugin: plugin)
 
-        throw XCTSkip("Fatal error throw is not compatible with async methods")
-        let registry = TypeRegistry.register(type: MockGeoCategoryPlugin.self) { _ in plugin }
-        
+        let registry = TypeRegistry.register(type: GeoCategoryPlugin.self) { _ in plugin }
         // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
         _ = try await Amplify.Geo.search(for: "test", options: nil)
-        
         XCTAssertGreaterThan(registry.messages.count, 0)
     }
 
