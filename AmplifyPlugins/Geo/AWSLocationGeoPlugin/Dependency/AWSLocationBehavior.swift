@@ -18,6 +18,6 @@ protocol AWSLocationBehavior {
     func searchPlaceIndex(forText: SearchPlaceIndexForTextInput)
             async throws -> SearchPlaceIndexForTextOutputResponse
 
-        func searchPlaceIndex(forPosition: SearchPlaceIndexForPositionInput)
+    func searchPlaceIndex(forPosition: SearchPlaceIndexForPositionInput)
             async throws -> SearchPlaceIndexForPositionOutputResponse
 }
