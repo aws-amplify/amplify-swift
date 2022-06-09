@@ -100,12 +100,12 @@ class GeoCategoryConfigurationTests: XCTestCase {
         XCTAssertNotNil(try Amplify.Geo.getPlugin(for: "MockSecondGeoCategoryPlugin"))
     }
 
-    func testCanUseDefaultPluginIfOnlyOnePlugin() throws {
+    func testCanUseDefaultPluginIfOnlyOnePlugin() async throws {
         let plugin = MockGeoCategoryPlugin()
-        let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
+        var methodInvokedOnDefaultPlugin = false
         plugin.listeners.append { message in
             if message == "search(for text:test)" {
-                methodInvokedOnDefaultPlugin.fulfill()
+                methodInvokedOnDefaultPlugin = true
             }
         }
         try Amplify.add(plugin: plugin)
@@ -116,13 +116,11 @@ class GeoCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        Amplify.Geo.search(for: "test", options: nil) { _ in }
-
-        waitForExpectations(timeout: 1.0)
+        _ = try await Amplify.Geo.search(for: "test", options: nil)
+        XCTAssertTrue(methodInvokedOnDefaultPlugin)
     }
 
-    // TODO: Update the unit test to work with `CwlPreconditionTesting`
-    func testPreconditionFailureInvokingWithMultiplePlugins() throws {
+    func testPreconditionFailureInvokingWithMultiplePlugins() async throws {
         let plugin1 = MockGeoCategoryPlugin()
         try Amplify.add(plugin: plugin1)
 
@@ -137,33 +135,29 @@ class GeoCategoryConfigurationTests: XCTestCase {
         )
 
         let amplifyConfig = AmplifyConfiguration(geo: geoConfig)
-
         try Amplify.configure(amplifyConfig)
-
-        throw XCTSkip("CwlPreconditionTesting is not compatible with async methods")
-        try XCTAssertThrowFatalError {
-            Amplify.Geo.search(for: "test", options: nil) { _ in }
-        }
+        
+        throw XCTSkip("Fatal error throw is not compatible with async methods")
+        let registry = TypeRegistry.register(type: MockGeoCategoryPlugin.self) { _ in MockGeoCategoryPlugin() }
+        _ = try await Amplify.Geo.search(for: "test", options: nil)
+        XCTAssertGreaterThan(registry.messages.count, 0)
     }
 
-    func testCanUseSpecifiedPlugin() throws {
+    func testCanUseSpecifiedPlugin() async throws {
         let plugin1 = MockGeoCategoryPlugin()
-        let methodShouldNotBeInvokedOnDefaultPlugin =
-            expectation(description: "test method should not be invoked on default plugin")
-        methodShouldNotBeInvokedOnDefaultPlugin.isInverted = true
+        var methodInvokedOnDefaultPlugin = false
         plugin1.listeners.append { message in
             if message == "search(for text:test)" {
-                methodShouldNotBeInvokedOnDefaultPlugin.fulfill()
+                methodInvokedOnDefaultPlugin = true
             }
         }
         try Amplify.add(plugin: plugin1)
 
         let plugin2 = MockSecondGeoCategoryPlugin()
-        let methodShouldBeInvokedOnSecondPlugin =
-            expectation(description: "test method should be invoked on second plugin")
+        var methodInvokedOnSecondPlugin = false
         plugin2.listeners.append { message in
             if message == "search(for text:test)" {
-                methodShouldBeInvokedOnSecondPlugin.fulfill()
+                methodInvokedOnSecondPlugin = true
             }
         }
         try Amplify.add(plugin: plugin2)
@@ -178,9 +172,10 @@ class GeoCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(geo: geoConfig)
 
         try Amplify.configure(amplifyConfig)
-        try Amplify.Geo.getPlugin(for: "MockSecondGeoCategoryPlugin")
-            .search(for: "test", options: nil) { _ in }
-        waitForExpectations(timeout: 1.0)
+        _ = try await Amplify.Geo.getPlugin(for: "MockSecondGeoCategoryPlugin").search(for: "test", options: nil)
+        
+        XCTAssertFalse(methodInvokedOnDefaultPlugin)
+        XCTAssertTrue(methodInvokedOnSecondPlugin)
     }
 
     func testCanConfigurePluginDirectly() throws {
@@ -214,16 +209,17 @@ class GeoCategoryConfigurationTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
     }
 
-    // TODO: Update the unit test to work with `CwlPreconditionTesting`
-    func testPreconditionFailureInvokingBeforeConfig() throws {
+    func testPreconditionFailureInvokingBeforeConfig() async throws {
         let plugin = MockGeoCategoryPlugin()
         try Amplify.add(plugin: plugin)
 
-        throw XCTSkip("CwlPreconditionTesting is not compatible with async methods")
+        throw XCTSkip("Fatal error throw is not compatible with async methods")
+        let registry = TypeRegistry.register(type: MockGeoCategoryPlugin.self) { _ in plugin }
+        
         // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
-        try XCTAssertThrowFatalError {
-            Amplify.Geo.search(for: "test", options: nil) { _ in }
-        }
+        _ = try await Amplify.Geo.search(for: "test", options: nil)
+        
+        XCTAssertGreaterThan(registry.messages.count, 0)
     }
 
     // MARK: - Test internal config behavior guarantees
