@@ -25,8 +25,7 @@ extension AWSCognitoAuthPlugin {
                 self.credentialStoreStateMachine.send(credentialStoreEvent)
             case .configured(_, let authorizationState):
 
-                if case .fetchingAuthSession(let fetchSessionState) = authorizationState,
-                   case .waitingToStore(let credentials) = fetchSessionState {
+                if case .waitingToStore(let credentials) = authorizationState {
                     let credentialStoreEvent = CredentialStoreEvent(
                         eventType: .storeCredentials(credentials))
                     self.credentialStoreStateMachine.send(credentialStoreEvent)

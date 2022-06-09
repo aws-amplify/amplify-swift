@@ -11,16 +11,23 @@ typealias IdentityID = String
 
 struct FetchAuthSessionEvent: StateMachineEvent {
     enum EventType: Equatable {
-        static func == (lhs: FetchAuthSessionEvent.EventType, rhs: FetchAuthSessionEvent.EventType) -> Bool {
+        static func == (lhs: FetchAuthSessionEvent.EventType,
+                        rhs: FetchAuthSessionEvent.EventType) -> Bool {
             // TODO: Fix
             return true
         }
 
         case fetchUnAuthIdentityID
 
+        case fetchAuthenticatedIdentityID(LoginsMapProvider)
+
         case fetchedIdentityID(IdentityID)
 
+        case fetchAWSCredentials(IdentityID)
+
         case fetchedAWSCredentials(IdentityID, AuthAWSCognitoCredentials)
+
+        case fetched(IdentityID, AuthAWSCognitoCredentials)
 
         case throwError(FetchSessionError)
 
@@ -32,10 +39,20 @@ struct FetchAuthSessionEvent: StateMachineEvent {
 
     var type: String {
         switch eventType {
-        case .fetchUnAuthIdentityID: return "FetchAuthSessionEvent.fetchUnAuthIdentityID"
-        case .fetchedIdentityID: return "FetchAuthSessionEvent.fetchedIdentityID"
-        case .fetchedAWSCredentials: return "FetchAuthSessionEvent.fetchedAWSCredentials"
-        case .throwError: return "FetchAuthSessionEvent.throwError"
+        case .fetchUnAuthIdentityID:
+            return "FetchAuthSessionEvent.fetchUnAuthIdentityID"
+        case .fetchAuthenticatedIdentityID:
+            return "FetchAuthSessionEvent.fetchAuthenticatedIdentityID"
+        case .fetchedIdentityID:
+            return "FetchAuthSessionEvent.fetchedIdentityID"
+        case .fetchAWSCredentials:
+            return "FetchAuthSessionEvent.fetchAWSCredentials"
+        case .fetchedAWSCredentials:
+            return "FetchAuthSessionEvent.fetchedAWSCredentials"
+        case .throwError:
+            return "FetchAuthSessionEvent.throwError"
+        case .fetched:
+            return "FetchAuthSessionEvent.fetched"
         }
     }
 

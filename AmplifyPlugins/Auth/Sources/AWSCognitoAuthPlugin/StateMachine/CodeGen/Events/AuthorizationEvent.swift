@@ -12,13 +12,13 @@ struct AuthorizationEvent: StateMachineEvent {
 
         case configure
 
-        case fetchAuthSession(AmplifyCredentials)
-
         case fetchUnAuthSession
 
         case cachedCredentialsAvailable(AmplifyCredentials)
 
-        case fetchedAuthSession(AmplifyCredentials)
+        case fetched(IdentityID, AuthAWSCognitoCredentials)
+
+        case sessionEstablished(AmplifyCredentials)
 
         case throwError(AuthorizationError)
 
@@ -31,11 +31,11 @@ struct AuthorizationEvent: StateMachineEvent {
     var type: String {
         switch eventType {
         case .configure: return "AuthorizationEvent.configure"
-        case .fetchAuthSession: return "AuthorizationEvent.fetchAuthSession"
-        case .fetchedAuthSession: return "AuthorizationEvent.fetchedAuthSession"
+        case .sessionEstablished: return "AuthorizationEvent.sessionEstablished"
         case .throwError: return "AuthorizationEvent.throwError"
         case .cachedCredentialsAvailable: return "AuthorizationEvent.cachedCredentialsAvailable"
         case .fetchUnAuthSession: return "AuthorizationEvent.fetchUnAuthSession"
+        case .fetched:  return "AuthorizationEvent.fetched"
         }
     }
 

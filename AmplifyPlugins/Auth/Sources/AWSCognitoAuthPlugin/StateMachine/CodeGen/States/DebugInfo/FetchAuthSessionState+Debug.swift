@@ -18,10 +18,8 @@ extension FetchAuthSessionState {
             additionalMetadataDictionary = [:]
         case .fetchingAWSCredentials:
             additionalMetadataDictionary = [:]
-        case .fetched(let credentials):
-            return [type: credentials.debugDescription]
-        case .waitingToStore(let credentials):
-            return [type: credentials.debugDescription]
+        case .fetched:
+            additionalMetadataDictionary = [:]
         }
         return [type: additionalMetadataDictionary]
     }

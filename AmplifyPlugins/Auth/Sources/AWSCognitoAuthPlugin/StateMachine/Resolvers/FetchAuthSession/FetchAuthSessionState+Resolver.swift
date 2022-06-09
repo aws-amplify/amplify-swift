@@ -10,68 +10,65 @@ import AWSPluginsCore
 import Amplify
 
 extension FetchAuthSessionState {
-
+    
     struct Resolver: StateMachineResolver {
-
+        
         var defaultState: FetchAuthSessionState = .notStarted
-
+        
         func resolve(oldState: FetchAuthSessionState,
-                     byApplying event: StateMachineEvent) -> StateResolution<FetchAuthSessionState> {
-
+                     byApplying event: StateMachineEvent)
+        -> StateResolution<FetchAuthSessionState> {
+            
             switch oldState {
-
+                
             case .notStarted:
-                if case .fetchUnAuthIdentityID = isFetchAuthSessionEvent(event)?.eventType {
-                    let action = FetchIdentityId()
+                guard let eventType = isFetchAuthSessionEvent(event)?.eventType else {
+                    return .from(oldState)
+                }
+                switch eventType {
+                    
+                case .fetchUnAuthIdentityID:
                     return .init(newState: .fetchingIdentityID(UnAuthLoginsMapProvider()),
-                                 actions: [action])
+                                 actions: [FetchIdentityId()])
+                    
+                case .fetchAuthenticatedIdentityID(let provider):
+                    return .init(newState: .fetchingIdentityID(provider),
+                                 actions: [FetchIdentityId(loginsMap: provider.loginsMap)])
+                    
+                default:
+                    return .from(oldState)
                 }
-                return .from(oldState)
+                
             case .fetchingIdentityID(let loginsmapProvider):
-                if case .fetchedIdentityID(let identityID) = isFetchAuthSessionEvent(event)?.eventType {
-                    let action = FetchAuthAWSCredentials(loginsMap: [:], identityID: identityID)
-                    return .init(newState: .fetchingAWSCredentials(identityID, loginsmapProvider),
-                                 actions: [action])
-                } else if case .throwError(let fetchError) = isFetchAuthSessionEvent(event)?.eventType,
-                          case .notAuthorized = fetchError {
-                    let credentials = AmplifyCredentials.noCredentials
-                    return .init(newState: .waitingToStore(credentials))
+                guard let eventType = isFetchAuthSessionEvent(event)?.eventType,
+                      case .fetchedIdentityID(let identityID) = eventType else {
+                    return .from(oldState)
                 }
-                return .from(oldState)
+                let action = FetchAuthAWSCredentials(
+                    loginsMap: loginsmapProvider.loginsMap,
+                    identityID: identityID)
+                return .init(newState: .fetchingAWSCredentials(identityID, loginsmapProvider),
+                             actions: [action])
+                
             case .fetchingAWSCredentials:
                 if case .fetchedAWSCredentials(
                     let identityID,
                     let credentials) = isFetchAuthSessionEvent(event)?.eventType {
-
-                    let amplifyCredentials = AmplifyCredentials.identityPoolOnly(
-                        identityID: identityID,
-                        credentials: credentials)
-                    return .init(newState: .waitingToStore(amplifyCredentials))
+                    let action = InformSessionFetched(identityID: identityID,
+                                                      credetentials: credentials)
+                    return .init(newState: .fetched(identityID, credentials), actions: [action])
                 }
                 return .from(oldState)
             case .fetched:
-                fatalError()
-            case .waitingToStore:
-                if case .receivedCachedCredentials(let cachedCredentials) = isAuthEvent(event)?.eventType {
-                    let action = AuthorizationSessionEstablished(credentials: cachedCredentials)
-                    return .init(newState: .fetched(cachedCredentials), actions: [action])
-                }
                 return .from(oldState)
             }
         }
-
+        
         private func isFetchAuthSessionEvent(_ event: StateMachineEvent) -> FetchAuthSessionEvent? {
             guard let fetchAuthSessionEvent = event as? FetchAuthSessionEvent else {
                 return nil
             }
             return fetchAuthSessionEvent
-        }
-
-        private func isAuthEvent(_ event: StateMachineEvent) -> AuthEvent? {
-            guard let authEvent = event as? AuthEvent else {
-                return nil
-            }
-            return authEvent
         }
     }
 }

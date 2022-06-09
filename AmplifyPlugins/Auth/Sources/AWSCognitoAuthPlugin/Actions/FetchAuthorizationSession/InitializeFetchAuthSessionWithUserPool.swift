@@ -8,9 +8,11 @@
 import Amplify
 import Foundation
 
-struct InitializeFetchUnAuthSession: Action {
+struct InitializeFetchAuthSessionWithUserPool: Action {
 
-    let identifier = "InitializeFetchUnAuthSession"
+    let identifier = "InitializeFetchAuthSessionWithUserPool"
+
+    let tokens: AWSCognitoUserPoolTokens
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
@@ -22,17 +24,24 @@ struct InitializeFetchUnAuthSession: Action {
         case .userPools:
             // If only user pool is configured then we do not have any unauthsession
             event = .init(eventType: .throwError(.noIdentityPool))
-        default:
-            event = .init(eventType: .fetchUnAuthIdentityID)
+        case .userPoolsAndIdentityPools(let userPoolData, _):
+            let region = userPoolData.region
+            let poolId = userPoolData.poolId
+            let loginsMapProvider = CognitoUserPoolLoginsMap(idToken: tokens.idToken,
+                                                             region: region,
+                                                             poolId: poolId)
+            event = .init(eventType: .fetchAuthenticatedIdentityID(loginsMapProvider))
+        default: fatalError("Should not reach here")
+
         }
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         dispatcher.send(event)
     }
 }
 
-extension InitializeFetchUnAuthSession: DefaultLogger { }
+extension InitializeFetchAuthSessionWithUserPool: DefaultLogger { }
 
-extension InitializeFetchUnAuthSession: CustomDebugDictionaryConvertible {
+extension InitializeFetchAuthSessionWithUserPool: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "identifier": identifier
@@ -40,7 +49,7 @@ extension InitializeFetchUnAuthSession: CustomDebugDictionaryConvertible {
     }
 }
 
-extension InitializeFetchUnAuthSession: CustomDebugStringConvertible {
+extension InitializeFetchAuthSessionWithUserPool: CustomDebugStringConvertible {
     var debugDescription: String {
         debugDictionary.debugDescription
     }

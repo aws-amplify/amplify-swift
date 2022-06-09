@@ -18,7 +18,7 @@ struct AuthorizationSessionEstablished: Action {
                  environment: Environment) {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         let event = AuthorizationEvent(
-            eventType: .fetchedAuthSession(credentials))
+            eventType: .sessionEstablished(credentials))
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         dispatcher.send(event)
     }
