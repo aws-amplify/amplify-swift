@@ -30,7 +30,7 @@ extension AmplifyCredentials {
                                           awsCredentialsResult: .success(credentials),
                                          cognitoTokensResult: .failure(error))
         case .userPoolAndIdentityPool(let tokens, let identityID, let credentials):
-            return AWSAuthCognitoSession(isSignedIn: false,
+            return AWSAuthCognitoSession(isSignedIn: true,
                                          identityIdResult: .success(identityID),
                                           awsCredentialsResult: .success(credentials),
                                          cognitoTokensResult: .success(tokens))

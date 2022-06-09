@@ -20,15 +20,12 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
                                      AuthSignInOperation {
 
     let authStateMachine: AuthStateMachine
-    let credentialStoreStateMachine: CredentialStoreStateMachine
 
     init(_ request: AuthSignInRequest,
          authStateMachine: AuthStateMachine,
-         credentialStoreStateMachine: CredentialStoreStateMachine,
          resultListener: ResultListener?) {
 
         self.authStateMachine = authStateMachine
-        self.credentialStoreStateMachine = credentialStoreStateMachine
         super.init(categoryType: .auth,
                    eventName: HubPayload.EventName.Auth.signInAPI,
                    request: request,
@@ -80,8 +77,7 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
                 self.sendCancelSignUpEvent()
 
             case .signedIn(let signedInData):
-                let cognitoTokens = signedInData.cognitoUserPoolTokens
-                self.storeUserPoolTokens(cognitoTokens)
+                self.dispatch(AuthSignInResult(nextStep: .done))
                 self.cancelToken(token)
 
             case .error(let error):
@@ -113,41 +109,6 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
                 break
             }
         } onSubscribe: { }
-    }
-
-    func storeUserPoolTokens(_ tokens: AWSCognitoUserPoolTokens) {
-        var token: CredentialStoreStateMachine.StateChangeListenerToken?
-        token = credentialStoreStateMachine.listen { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            switch $0 {
-            case .success:
-                self.dispatch(AuthSignInResult(nextStep: .done))
-                self.cancelCredentialStoreToken(token)
-                self.finish()
-            case .error(let credentialStoreError):
-                // Unable to save the credentials in the local store
-                self.dispatch(credentialStoreError.authError)
-                self.cancelCredentialStoreToken(token)
-                self.finish()
-            default:
-                break
-            }
-        } onSubscribe: {[weak self] in
-            guard let self = self else {
-                return
-            }
-            // Send the load locally stored credentials event
-            self.sendStoreCredentialsEvent(with: tokens)
-        }
-    }
-
-    private func sendStoreCredentialsEvent(with userPoolTokens: AWSCognitoUserPoolTokens) {
-        let credentials = AmplifyCredentials.noCredentials
-        let event = CredentialStoreEvent.init(eventType: .storeCredentials(credentials))
-        credentialStoreStateMachine.send(event)
     }
 
     private func sendSignInEvent() {

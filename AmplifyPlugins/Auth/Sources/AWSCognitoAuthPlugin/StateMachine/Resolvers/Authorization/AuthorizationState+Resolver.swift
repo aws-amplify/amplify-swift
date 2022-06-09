@@ -90,9 +90,12 @@ extension AuthorizationState {
 
                 let resolver = FetchAuthSessionState.Resolver()
                 let resolution = resolver.resolve(oldState: fetchSessionState, byApplying: event)
-                return .init(newState: .fetchingUnAuthSession(resolution.newState),
+                return .init(newState: .fetchingAuthSessionWithUserPool(resolution.newState, tokens),
                              actions: resolution.actions)
             case .waitingToStore:
+                if case .receivedCachedCredentials(let credentials) = isAuthEvent(event)?.eventType {
+                    return .init(newState: .sessionEstablished(credentials))
+                }
                 return .from(oldState)
 
             case .error:
@@ -137,21 +140,18 @@ extension AuthorizationState {
             }
         }
 
-        //        private func resolveFetchAuthSessionEvent(storedCredentials: AmplifyCredentials)
-        //        -> StateResolution<StateType> {
-        //            let action = InitializeFetchAuthSession(storedCredentials: storedCredentials)
-        //            let resolution = StateResolution(
-        //                newState: AuthorizationState.fetchingAuthSession(.initializingFetchAuthSession),
-        //                actions: [action]
-        //            )
-        //            return resolution
-        //        }
-
         private func isAuthorizationEvent(_ event: StateMachineEvent) -> AuthorizationEvent? {
             guard let authZEvent = event as? AuthorizationEvent else {
                 return nil
             }
             return authZEvent
+        }
+
+        private func isAuthEvent(_ event: StateMachineEvent) -> AuthEvent? {
+            guard let authEvent = event as? AuthEvent else {
+                return nil
+            }
+            return authEvent
         }
 
     }
