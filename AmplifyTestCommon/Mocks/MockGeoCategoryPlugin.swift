@@ -22,32 +22,6 @@ class MockGeoCategoryPlugin: MessageReporter, GeoCategoryPlugin {
         onComplete()
     }
 
-    func search(for text: String,
-                options: Geo.SearchForTextOptions? = nil,
-                completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
-
-        notify("search(for text:\(text))")
-        completionHandler(.success([createPlace()]))
-    }
-
-    func search(for coordinates: Geo.Coordinates,
-                options: Geo.SearchForCoordinatesOptions? = nil,
-                completionHandler: @escaping Geo.ResultsHandler<[Geo.Place]>) {
-
-        notify("search(for coordinates:\(coordinates))")
-        completionHandler(.success([createPlace()]))
-    }
-
-    func availableMaps(completionHandler: @escaping Geo.ResultsHandler<[Geo.MapStyle]>) {
-        notify("availableMaps")
-        completionHandler(.success([createMapStyle()]))
-    }
-
-    func defaultMap(completionHandler: @escaping Geo.ResultsHandler<Geo.MapStyle>) {
-        notify("defaultMap")
-        completionHandler(.success(createMapStyle()))
-    }
-
     func search(for text: String, options: Geo.SearchForTextOptions?) async throws -> [Geo.Place] {
         notify("search(for text:\(text))")
         return [createPlace()]
