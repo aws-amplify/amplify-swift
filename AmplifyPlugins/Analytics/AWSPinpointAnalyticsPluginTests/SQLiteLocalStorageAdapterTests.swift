@@ -38,8 +38,15 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
     /// - Then: A database with the specified name exists at the specified path
     func testLocalStorageInitialization() {
         let dbPath = SQLiteLocalStorageAdapter.getDbFilePath(databaseName: databaseName)
-        let fileExists = FileManager.default.fileExists(atPath: dbPath.path)
+        var fileExists = FileManager.default.fileExists(atPath: dbPath.path)
         XCTAssertTrue(fileExists)
+        do {
+            try FileManager.default.removeItem(atPath: dbPath.path)
+        } catch {
+            XCTFail("Failed to remove SQLite as part of teardown")
+        }
+        fileExists = FileManager.default.fileExists(atPath: dbPath.path)
+        XCTAssertFalse(fileExists)
     }
     
     /// - Given: An adapter to the SQLite local database
@@ -50,7 +57,6 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
             let countStatement = "SELECT COUNT(*) FROM Event"
             var result = try adapter.executeQuery(countStatement, []).scalar() as! Int64
             XCTAssertTrue(result == 0)
-            
             
             let insertStatement = """
                 INSERT INTO Event (
@@ -125,6 +131,27 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
             result = try adapter.executeQuery(countStatement, []).scalar() as! Int64
             XCTAssertTrue(result == 0)
             
+        } catch {
+            XCTFail("Failed to create SQLiteLocalStorageAdapter: \(error)")
+        }
+    }
+    
+    /// - Given: An adapter to the SQLite local database with one record
+    /// - When: Calling disk file size
+    /// - Then: returns the database file size
+    func testLocalStorageDiskUsage() {
+        do {
+            XCTAssertEqual(adapter.diskByteUsed, 16384)
+            let insertStatement = """
+                INSERT INTO Event (
+                id, attributes, eventType, metrics,
+                eventTimestamp, sessionId, sessionStartTime,
+                sessionStopTime, timestamp, dirty, retryCount)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """
+            let bindings: [Binding] = [1, "", "", "", 100000, 2, 1000000, 1000000, 100000, true, 0]
+            _ = try adapter.executeQuery(insertStatement, bindings)
+            XCTAssertEqual(adapter.diskByteUsed, 16384)
         } catch {
             XCTFail("Failed to create SQLiteLocalStorageAdapter: \(error)")
         }

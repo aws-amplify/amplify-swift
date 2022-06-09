@@ -37,13 +37,14 @@ class EventRecorder: AnalyticsEventRecording {
         self.pinpointClient = pinpointClient
         try self.storage.initializeStorage()
         try self.storage.deleteDirtyEvents()
-        //TODO: check disk space size limit and cleanup as needed
+        try self.storage.checkDiskSize(byteLimit: Constants.pinpointClientByteLimitDefault)
     }
     
     /// Saves a pinpoint event to storage
     /// - Parameter event: A PinpointEvent
     func save(_ event: PinpointEvent) throws {
         try storage.saveEvent(event)
+        try self.storage.checkDiskSize(byteLimit: Constants.pinpointClientByteLimitDefault)
     }
     
     /// Submit all locally stored events in batches
@@ -106,5 +107,8 @@ class EventRecorder: AnalyticsEventRecording {
 extension EventRecorder {
     private struct Constants {
         static let maxEventsSubmittedPerBatch = 100
+        static let pinpointClientByteLimitDefault = 5 * 1024 * 1024 // 5MB
+        static let pinpointClientBatchRecordByteLimitDefault = 512 * 1024 // 0.5MB
+        static let pinpointClientBatchRecordByteLimitMax = 4 * 1024 * 1024 // 4MB
     }
 }

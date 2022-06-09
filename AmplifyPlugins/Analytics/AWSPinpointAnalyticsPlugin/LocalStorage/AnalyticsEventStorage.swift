@@ -37,4 +37,8 @@ protocol AnalyticsEventStorage {
     /// Set the dirty column to 1 for the event in the Event table
     /// - Parameter eventId: The event id for the event to update
     func setDirtyEvent(eventId: String) throws
+    
+    /// Checks to see if local storage size is over the limit
+    /// - Parameter byteLimit: the byte limit of the local storage
+    func checkDiskSize(byteLimit: Int) throws
 }
