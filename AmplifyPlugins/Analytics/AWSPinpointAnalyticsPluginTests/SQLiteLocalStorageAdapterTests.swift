@@ -65,7 +65,7 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
                 sessionStopTime, timestamp, dirty, retryCount)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """
-            let bindings: [Binding] = [1, "", "", "", 100000, 2, 1000000, 1000000, 100000, true, 0]
+            let bindings: [Binding] = [1, "", "", "", 100000, 2, 1000000, 1000000, 100000, 1, 0]
             _ = try adapter.executeQuery(insertStatement, bindings)
             result = try adapter.executeQuery(countStatement, []).scalar() as! Int64
             XCTAssertTrue(result == 1)
@@ -86,7 +86,7 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
                 sessionStopTime, timestamp, dirty, retryCount)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """
-            let bindings: [Binding] = [1, "", "", "", 100000, 2, 1000000, 1000000, 100000, true, 0]
+            let bindings: [Binding] = [1, "", "", "", 100000, 2, 1000000, 1000000, 100000, 1, 0]
             _ = try adapter.executeQuery(insertStatement, bindings)
             
             let countStatement = "SELECT COUNT(*) FROM Event"
@@ -115,7 +115,7 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
                 sessionStopTime, timestamp, dirty, retryCount)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """
-            let bindings: [Binding] = [123, "", "", "", 100000, 2, 1000000, 1000000, 100000, false, 0]
+            let bindings: [Binding] = [123, "", "", "", 100000, 2, 1000000, 1000000, 100000, 0, 0]
             _ = try adapter.executeQuery(insertStatement, bindings)
             
             let countStatement = "SELECT COUNT(*) FROM Event WHERE dirty = false"
@@ -149,9 +149,12 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
                 sessionStopTime, timestamp, dirty, retryCount)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """
-            let bindings: [Binding] = [1, "", "", "", 100000, 2, 1000000, 1000000, 100000, true, 0]
-            _ = try adapter.executeQuery(insertStatement, bindings)
-            XCTAssertEqual(adapter.diskByteUsed, 16384)
+            for _ in 0...100 {
+                let bindings: [Binding] = [Int.random(in: 1...1000), "attributes", "eventType", "metrics", 1654796845, 1, 1654796847, 1654796848, 1654796845, 0, 0]
+                _ = try adapter.executeQuery(insertStatement, bindings)
+            }
+            
+            XCTAssertEqual(adapter.diskByteUsed, 24576)
         } catch {
             XCTFail("Failed to create SQLiteLocalStorageAdapter: \(error)")
         }
