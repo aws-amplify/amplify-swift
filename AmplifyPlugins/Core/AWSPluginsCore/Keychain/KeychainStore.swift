@@ -131,7 +131,7 @@ public struct KeychainStore: KeychainStoreBehavior {
     public func removeAll() throws {
         var query = attributes.query()
 #if !os(iOS) && !os(watchOS) && !os(tvOS)
-        query[MatchLimit] = MatchLimitAll
+        query[Constants.MatchLimit] = Constants.MatchLimitAll
 #endif
 
         let status = SecItemDelete(query as CFDictionary)
