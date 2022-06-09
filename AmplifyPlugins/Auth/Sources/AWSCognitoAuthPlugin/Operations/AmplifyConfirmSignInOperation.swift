@@ -55,6 +55,7 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
                 }
                 self?.sendConfirmSignInEvent()
             default:
+                // TODO: Return proper error
                 print("")
             }
         }
@@ -72,6 +73,7 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
             switch authNState {
 
             case .signedIn(let signedInData):
+                self.cancelToken(token)
                 let cognitoTokens = signedInData.cognitoUserPoolTokens
                 self.storeUserPoolTokens(cognitoTokens)
 

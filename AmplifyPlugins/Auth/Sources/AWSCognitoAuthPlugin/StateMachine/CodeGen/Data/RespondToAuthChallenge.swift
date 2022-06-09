@@ -38,7 +38,7 @@ extension RespondToAuthChallenge {
 
     var debugDictionary: [String: Any] {
         return ["challenge": challenge,
-                "username": username]
+                "username": username.masked()]
     }
 
 }
