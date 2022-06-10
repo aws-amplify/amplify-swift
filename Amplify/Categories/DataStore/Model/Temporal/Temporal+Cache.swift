@@ -25,9 +25,13 @@ extension Temporal {
         return calendar
     }()
 
-    /// Lock to ensure exclusive access
-    private static var lock = os_unfair_lock_s()
-
+    /// Pointer to lock to ensure exclusive access.
+    private static let lock: UnsafeMutablePointer<os_unfair_lock> = {
+        let pointer = UnsafeMutablePointer<os_unfair_lock>.allocate(capacity: 1)
+        pointer.initialize(to: os_unfair_lock())
+        return pointer
+    }()
+    
     /// Internal helper function to retrieve and/or create `DateFormatter`s
     /// - Parameters:
     ///   - format: The `DateFormatter().dateFormat`
@@ -37,10 +41,11 @@ extension Temporal {
         for format: String,
         in timeZone: TimeZone
     ) -> DateFormatter {
-        defer { os_unfair_lock_unlock(&lock) }
-
         // lock before read from cache
-        os_unfair_lock_lock(&lock)
+        os_unfair_lock_lock(lock)
+        
+        // unlock at return
+        defer { os_unfair_lock_unlock(lock) }
 
         // If the formatter is already in the cache and
         // the time zones match, we return it rather than
