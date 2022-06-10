@@ -43,6 +43,7 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
                 let message = "Credential store state machine not in idle state: \(state)"
                 let error = AuthError.invalidState(message, "", nil)
                 self?.dispatch(error)
+                return
             }
 
             switch authorizationState {

@@ -107,7 +107,8 @@ class FetchAuthSessionOperationHelper {
             case .sessionEstablished(let session):
                 // Store the credentials
                 self.initializeCredentialStore { [weak self] in
-                    self?.storeSession(session)
+                   // self?.storeSession(session)
+                    fatalError("FIX here")
                 }
                 if let token = token {
                     self.authStateMachine.cancel(listenerToken: token)
@@ -159,7 +160,8 @@ class FetchAuthSessionOperationHelper {
                 return
             }
             // Send the load locally stored credentials event
-            self.sendStoreCredentialsEvent(with: session.getCognitoCredentials())
+            // TODO: Fix here
+            //self.sendStoreCredentialsEvent(with: session.getCognitoCredentials())
 
         }
     }
@@ -170,8 +172,9 @@ class FetchAuthSessionOperationHelper {
     }
 
     private func sendFetchAuthSessionEvent(with storedCredentials: AmplifyCredentials?) {
-        let event = AuthorizationEvent.init(eventType: .fetchAuthSession(storedCredentials))
-        authStateMachine.send(event)
+        // TODO: Fix here
+//        let event = AuthorizationEvent.init(eventType: .fetchAuthSession(storedCredentials))
+//        authStateMachine.send(event)
     }
 
     private func dispatch(_ result: AuthSession) {
