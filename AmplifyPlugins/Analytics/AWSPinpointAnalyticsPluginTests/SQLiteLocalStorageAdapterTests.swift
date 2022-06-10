@@ -141,7 +141,7 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
     /// - Then: returns the database file size
     func testLocalStorageDiskUsage() {
         do {
-            XCTAssertEqual(adapter.diskByteUsed, 16384)
+            XCTAssertEqual(adapter.diskBytesUsed, 16384)
             let insertStatement = """
                 INSERT INTO Event (
                 id, attributes, eventType, metrics,
@@ -154,7 +154,7 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
                 _ = try adapter.executeQuery(insertStatement, bindings)
             }
             
-            XCTAssertEqual(adapter.diskByteUsed, 24576)
+            XCTAssertEqual(adapter.diskBytesUsed, 24576)
         } catch {
             XCTFail("Failed to create SQLiteLocalStorageAdapter: \(error)")
         }

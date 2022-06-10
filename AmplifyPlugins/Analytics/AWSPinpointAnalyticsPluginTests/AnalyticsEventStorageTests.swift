@@ -73,7 +73,7 @@ class AnalyticsEventStorageTests: XCTestCase {
             XCTAssertTrue(eventcount == 2)
             XCTAssertTrue(dirtyEventcount == 2)
             
-            try storage.checkDiskSize(byteLimit: 10000000)
+            try storage.checkDiskSize(limit: 10000000)
             
             eventcount = try adapter.executeQuery(eventCountStatement, []).scalar() as! Int64
             dirtyEventcount = try adapter.executeQuery(dirtyEventCountStatement, []).scalar() as! Int64
@@ -94,7 +94,7 @@ class AnalyticsEventStorageTests: XCTestCase {
             XCTAssertTrue(eventcount == 2)
             XCTAssertTrue(dirtyEventcount == 2)
             
-            try storage.checkDiskSize(byteLimit: 100)
+            try storage.checkDiskSize(limit: 100)
             
             eventcount = try adapter.executeQuery(eventCountStatement, []).scalar() as! Int64
             dirtyEventcount = try adapter.executeQuery(dirtyEventCountStatement, []).scalar() as! Int64

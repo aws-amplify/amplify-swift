@@ -196,13 +196,13 @@ class AnalyticsEventSQLStorage: AnalyticsEventStorage {
     
     /// Check the disk usage limit of the local database.
     /// If database is over the limit then delete all dirty events and oldest event 
-    /// - Parameter byteLimit: the size limit of the database
-    func checkDiskSize(byteLimit: Int) throws {
-        if dbAdapter.diskByteUsed > byteLimit {
+    /// - Parameter limit: the size limit of the database in Byte unit
+    func checkDiskSize(limit: Byte) throws {
+        if dbAdapter.diskBytesUsed > limit {
             try self.deleteDirtyEvents()
         }
         
-        if dbAdapter.diskByteUsed > byteLimit {
+        if dbAdapter.diskBytesUsed > limit {
             try self.deleteOldestEvent()
         }
     }

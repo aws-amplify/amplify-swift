@@ -13,9 +13,10 @@ import SQLite
 final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
     private var connection: Connection?
     private var dbFilePath: URL?
-    
-    var diskByteUsed: Int {
-        return dbFilePath?.fileSize ?? 0
+    private let fileManager: FileManagerBehaviour
+    var diskBytesUsed: Byte {
+        guard let url = dbFilePath else { return 0}
+        return fileManager.fileSize(for: url)
     }
     
     /// Initializer
@@ -41,10 +42,12 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
     ///   - dbFilePath: Path to the database
     private init(
         connection: Connection,
-        dbFilePath: URL? = nil
+        dbFilePath: URL? = nil,
+        fileManager: FileManagerBehaviour = FileManager.default
     ) throws {
         self.connection = connection
         self.dbFilePath = dbFilePath
+        self.fileManager = fileManager
         try initializeDatabase(connection: connection)
     }
     
@@ -112,19 +115,4 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
 }
 
 extension SQLiteLocalStorageAdapter: DefaultLogger { }
-
-extension URL: DefaultLogger {
-    var attributes: [FileAttributeKey : Any]? {
-        do {
-            return try FileManager.default.attributesOfItem(atPath: path)
-        } catch {
-            log.error("Error getting file attributes with error \(error)")
-        }
-        return nil
-    }
-
-    var fileSize: Int {
-        return attributes?[.size] as? Int ?? 0
-    }
-}
 

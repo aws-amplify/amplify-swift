@@ -39,6 +39,6 @@ protocol AnalyticsEventStorage {
     func setDirtyEvent(eventId: String) throws
     
     /// Checks to see if local storage size is over the limit
-    /// - Parameter byteLimit: the byte limit of the local storage
-    func checkDiskSize(byteLimit: Int) throws
+    /// - Parameter limit: the Byte limit of the local storage
+    func checkDiskSize(limit: Byte) throws
 }

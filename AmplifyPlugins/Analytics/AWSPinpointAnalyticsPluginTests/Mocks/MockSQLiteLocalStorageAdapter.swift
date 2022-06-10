@@ -9,7 +9,7 @@ import SQLite
 @testable import AWSPinpointAnalyticsPlugin
 
 class MockSQLiteLocalStorageAdapter: SQLStorageProtocol {
-    var diskByteUsed: Int = 1
+    var diskBytesUsed: Byte = 1
     var statement: String = ""
     
     func createTable(_ statement: String) throws {
