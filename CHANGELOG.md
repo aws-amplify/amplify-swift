@@ -1,5 +1,11 @@
 # Changelog
 ## Unreleased
+## 1.26.2 (2022-06-10)
+
+### Bug Fixes
+
+- **datastore**: create pointer to temporal lock (#1883)
+
 ## 1.26.1 (2022-06-02)
 
 ### Bug Fixes
