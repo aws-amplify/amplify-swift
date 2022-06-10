@@ -14,6 +14,8 @@ runs:
   using: "composite"
   steps:
     - name: Test ${{ inputs.scheme }}
+      env:
+        SCHEME: ${{ inputs.scheme }}
       run: |
-        xcodebuild test -scheme ${{ inputs.scheme }} -sdk iphonesimulator -destination '${{ inputs.destination }}' | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}        
+        xcodebuild test -scheme $SCHEME -sdk iphonesimulator -destination '${{ inputs.destination }}' | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}        
       shell: bash 
