@@ -105,58 +105,60 @@ struct VerifyPasswordSRP: Action {
 
     private func sendRequest(request: RespondToAuthChallengeInput,
                              environment: SRPAuthEnvironment,
-                             callback: @escaping (SRPSignInEvent) -> Void) throws {
+                             callback: @escaping (StateMachineEvent) -> Void) throws {
 
         let client = try environment.cognitoUserPoolFactory()
 
         Task {
-            let event: SRPSignInEvent!
-
             do {
                 let response = try await client.respondToAuthChallenge(input: request)
-
-                guard let signedInData = parseResponse(response) else {
-                    let message = "Response did not contain signIn info"
-                    let error = SRPSignInError.invalidServiceResponse(
-                        message: message
-                    )
-                    event = SRPSignInEvent(
-                        eventType: .throwPasswordVerifierError(error)
-                    )
-                    callback(event)
-                    return
-                }
-
-                event = SRPSignInEvent(eventType: .finalizeSRPSignIn(signedInData))
+                callback(parseResponse(response))
             } catch {
                 let authError = SRPSignInError.service(error: error)
-                event = SRPSignInEvent(eventType: .throwPasswordVerifierError(authError))
+                callback(SRPSignInEvent(eventType: .throwPasswordVerifierError(authError)))
             }
-            callback(event)
         }
     }
 
     private func parseResponse(_ response: RespondToAuthChallengeOutputResponse)
-    -> SignedInData? {
-        guard let authResult = response.authenticationResult,
-              let idToken = authResult.idToken,
-              let accessToken = authResult.accessToken,
-              let refreshToken = authResult.refreshToken
-        else {
-            return nil
-        }
-        let userPoolTokens = AWSCognitoUserPoolTokens(
-            idToken: idToken,
-            accessToken: accessToken,
-            refreshToken: refreshToken,
-            expiresIn: authResult.expiresIn)
+    -> StateMachineEvent {
 
-        return SignedInData(
-            userId: "",
-            userName: stateData.username,
-            signedInDate: Date(),
-            signInMethod: .srp,
-            cognitoUserPoolTokens: userPoolTokens)
+        if let authenticationResult = response.authenticationResult,
+           let idToken = authenticationResult.idToken,
+           let accessToken = authenticationResult.accessToken,
+           let refreshToken = authenticationResult.refreshToken {
+
+            let userPoolTokens = AWSCognitoUserPoolTokens(idToken: idToken,
+                                                          accessToken: accessToken,
+                                                          refreshToken: refreshToken,
+                                                          expiresIn: authenticationResult.expiresIn)
+            let signedInData = SignedInData(userId: "",
+                                            userName: stateData.username,
+                                            signedInDate: Date(),
+                                            signInMethod: .srp,
+                                            cognitoUserPoolTokens: userPoolTokens)
+            return SRPSignInEvent(eventType: .finalizeSRPSignIn(signedInData))
+
+        } else if let challengeName = response.challengeName, let session = response.session {
+            let parameters = response.challengeParameters
+            let response = RespondToAuthChallenge(challenge: challengeName,
+                                                  username: stateData.username,
+                                                  session: session,
+                                                  parameters: parameters)
+
+            switch challengeName {
+            case .smsMfa:
+                return SignInEvent(eventType: .receivedSMSChallenge(response))
+            default:
+                let message = "UnSupported challenge response \(challengeName)"
+                let error = SRPSignInError.invalidServiceResponse(message: message)
+                return SRPSignInEvent(eventType: .throwPasswordVerifierError(error))
+            }
+        } else {
+            let message = "Response did not contain signIn info"
+            let error = SRPSignInError.invalidServiceResponse(message: message)
+            return SRPSignInEvent(eventType: .throwPasswordVerifierError(error))
+        }
     }
 }
 
