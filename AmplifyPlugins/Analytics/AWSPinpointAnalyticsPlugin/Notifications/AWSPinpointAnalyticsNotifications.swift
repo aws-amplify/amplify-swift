@@ -28,7 +28,7 @@ public class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotification
         
         let (eventSource, pinpointMetadata) = pinpointMetadata(fromPayload: notificationPayload)
         Task {
-            await self.addGlobalEventMetadata(eventMetadata: pinpointMetadata, eventSource: eventSource)
+            await self.addGlobalEventSourceMetadata(eventMetadata: pinpointMetadata, eventSource: eventSource)
             await recordEventForNotification(metadata: pinpointMetadata,
                                              eventSource: eventSource,
                                              pushEvent: .opened,
@@ -64,7 +64,7 @@ public class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotification
         case .openedNotification:
             log.verbose("App launched from received notification.")
             Task {
-                await self.addGlobalEventMetadata(eventMetadata: metadata, eventSource: eventSource)
+                await self.addGlobalEventSourceMetadata(eventMetadata: metadata, eventSource: eventSource)
                 await self.recordEventForNotification(metadata: metadata,
                                                 eventSource: eventSource,
                                                 pushEvent: .opened,
@@ -78,7 +78,7 @@ public class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotification
         case .receivedBackground:
             log.verbose("Received notification with app in background.")
             Task {
-                await self.addGlobalEventMetadata(eventMetadata: metadata, eventSource: eventSource)
+                await self.addGlobalEventSourceMetadata(eventMetadata: metadata, eventSource: eventSource)
                 await self.recordEventForNotification(metadata: metadata,
                                                 eventSource: eventSource,
                                                 pushEvent: .received,
@@ -177,22 +177,26 @@ extension AWSPinpointAnalyticsNotifications {
         return metadata
     }
     
-    private func addGlobalEventMetadata(eventMetadata: UserInfo?,
+    private func addGlobalEventSourceMetadata(eventMetadata: UserInfo?,
                                         eventSource: EventSource) async {
-        guard eventSource != previousEventSource,
-              let pinpointMetadata = eventMetadata,
-              !pinpointMetadata.isEmpty else {
+        guard let eventMetadata = eventMetadata, !eventMetadata.isEmpty else {
             return
         }
-        previousEventSource = eventSource
+
+        // Remove previous global event source attributes from _globalAttributes
+        // only if event source type changes
+        // This is to prevent _globalAttributes containing attributes from multiple event sources (campaign/journey)
+        if eventSource != previousEventSource && eventSource != .unknown {
+            // remove all global attributes
+            await self.context.analyticsClient.removeAllGlobalEventSourceAttributes()
+            previousEventSource = eventSource
+        }
         
-        // remove all global attributes
+        await self.context.analyticsClient.setGlobalEventSourceAttributes(eventMetadata)
         
-        // [self.context.analyticsClient setEventSourceAttributes:metadata];
-        
-        for (key, value) in pinpointMetadata {
-            guard let value = value as? String, let key = key as? String else {
-                log.debug("Skipping metadata with key \(key) because has value of type \(type(of: value)).")
+        for (key, value) in eventMetadata {
+            guard let value = value as? String else {
+                log.debug("Skipping metadata with key \(key) because has a value of type \(type(of: value)).")
                 continue
             }
             await self.context.analyticsClient.addGlobalAttribute(value, forKey: key)

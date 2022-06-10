@@ -12,7 +12,7 @@ import UIKit
 #endif
 
 public protocol AWSPinpointAnalyticsNotificationsBehavior {
-    typealias UserInfo = [AnyHashable: Any]
+    typealias UserInfo = [String: Any]
     
     func interceptDidFinishLaunchingWithOptions(launchOptions: LaunchOptions) -> Bool
     
