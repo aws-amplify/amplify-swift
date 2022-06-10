@@ -13,6 +13,8 @@ runs:
   using: "composite"
   steps:
     - name: Test ${{ inputs.scheme }}
+      env:
+        SCHEME: ${{ inputs.scheme }}
       run: |
-        xcodebuild test -scheme AWSCognitoAuthPlugin -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 13' | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}        
+        xcodebuild test -scheme $SCHEME -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 13' | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}        
       shell: bash 
