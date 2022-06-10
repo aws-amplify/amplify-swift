@@ -29,9 +29,10 @@ public class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotification
         let (eventSource, pinpointMetadata) = pinpointMetadata(fromPayload: notificationPayload)
         Task {
             await self.addGlobalEventMetadata(eventMetadata: pinpointMetadata, eventSource: eventSource)
-            recordEventForNotification(eventSource: eventSource,
-                                       pushEvent: .opened,
-                                       pushAction: .openedNotification)
+            await recordEventForNotification(metadata: pinpointMetadata,
+                                             eventSource: eventSource,
+                                             pushEvent: .opened,
+                                             pushAction: .openedNotification)
         }
         
         return true
@@ -64,7 +65,10 @@ public class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotification
             log.verbose("App launched from received notification.")
             Task {
                 await self.addGlobalEventMetadata(eventMetadata: metadata, eventSource: eventSource)
-                self.recordEventForNotification(eventSource: eventSource, pushEvent: .opened, pushAction: pushAction)
+                await self.recordEventForNotification(metadata: metadata,
+                                                eventSource: eventSource,
+                                                pushEvent: .opened,
+                                                pushAction: pushAction)
                 
                 if shouldHandleNotificationDeepLink {
                     self.handleDeepLinkForNotification(userInfo: userInfo)
@@ -75,15 +79,23 @@ public class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotification
             log.verbose("Received notification with app in background.")
             Task {
                 await self.addGlobalEventMetadata(eventMetadata: metadata, eventSource: eventSource)
-                self.recordEventForNotification(eventSource: eventSource, pushEvent: .received, pushAction: pushAction)
+                await self.recordEventForNotification(metadata: metadata,
+                                                eventSource: eventSource,
+                                                pushEvent: .received,
+                                                pushAction: pushAction)
             }
         
         case .receivedForeground:
             log.verbose("Received notification with app in foreground.")
             
-            // Not adding global event source metadata because if the app session is already running,
-            // the session should not contribute to the new push notification that is being received
-            self.recordEventForNotification(eventSource: eventSource, pushEvent: .received, pushAction: pushAction)
+            Task {
+                // Not adding global event source metadata because if the app session is already running,
+                // the session should not contribute to the new push notification that is being received
+                await self.recordEventForNotification(metadata: metadata,
+                                                      eventSource: eventSource,
+                                                      pushEvent: .received,
+                                                      pushAction: pushAction)
+            }
         
         case .unknown:
             log.verbose("Received notification with app in unknown state.")
@@ -100,10 +112,11 @@ public class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotification
         return pinpointMetadata
     }
     
-    private func recordEventForNotification(eventSource: EventSource,
+    private func recordEventForNotification(metadata: UserInfo?,
+                                            eventSource: EventSource,
                                             pushEvent: AWSPinpointPushEvent,
                                             pushAction: AWSPinpointPushAction,
-                                            withIdentifier identifier: String? = nil) {
+                                            withIdentifier identifier: String? = nil) async {
         guard let pushNotificationEvent = PinpointEvent.makeEvent(eventSource: eventSource,
                                                                   pushAction: pushAction,
                                                                   usingClient: self.context.analyticsClient) else {
@@ -115,6 +128,14 @@ public class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotification
             pushNotificationEvent.addAttribute(identifier, forKey: PinpointContext.Constants.Notifications.actionIdentifierKey)
         }
         
+        pushNotificationEvent.addApplicationState()
+        pushNotificationEvent.addSourceMetadata(metadata)
+        
+        do {
+            try await self.context.analyticsClient.record(pushNotificationEvent)
+        } catch {
+            log.error("Failed recording event with error \(error)")
+        }
     }
     
     private func remoteNotificationPayload(fromLaunchOptions launchOptions: LaunchOptions) -> UserInfo? {
@@ -180,7 +201,7 @@ extension AWSPinpointAnalyticsNotifications {
     }
 }
 
-// MARK - AWSPinpointAnalyticsNotifications + handleDeepLink
+// MARK: - AWSPinpointAnalyticsNotifications + handleDeepLink
 extension AWSPinpointAnalyticsNotifications {
     func handleDeepLinkForNotification(userInfo: UserInfo) {
         guard let payload = pinpointPayloadFromNotificationPayload(notification: userInfo) as? [String: String],
@@ -196,7 +217,6 @@ extension AWSPinpointAnalyticsNotifications {
             }
         }
 #endif
-        
     }
 }
 
@@ -237,7 +257,7 @@ extension AWSPinpointAnalyticsNotifications {
 extension AWSPinpointAnalyticsNotifications: DefaultLogger {}
 
 
-// MARK: - PinpointEvent + makeWithActionType
+// MARK: - PinpointEvent + makeWithActionType / addApplicationState
 extension PinpointEvent {
     static func makeEvent(eventSource: AWSPinpointAnalyticsNotifications.EventSource,
                           pushAction: AWSPinpointPushAction,
@@ -253,6 +273,37 @@ extension PinpointEvent {
         
         return analyticClient.createEvent(withEventType: eventType)
     }
+    
+    func addApplicationState() {
+#if canImport(UIKit)
+        let appState = UIApplication.shared.applicationState
+        let attributeValue: String
+        
+        switch appState {
+        case .active:
+            attributeValue = "UIApplicationStateActive"
+        case .inactive:
+            attributeValue = "UIApplicationStateInactive"
+        case .background:
+            attributeValue = "UIApplicationStateBackground"
+        @unknown default:
+            return
+        }
+        
+        self.addAttribute(attributeValue,
+                          forKey: PinpointContext.Constants.Notifications.attributeApplicationState)
+#endif
+    }
+    
+    func addSourceMetadata(_ metadata: AWSPinpointAnalyticsNotifications.UserInfo?) {
+        guard let metadata = metadata else {
+            return
+        }
+        
+        for (key, value) in metadata.compactMap({ $0 as? (String, String) }) {
+            self.addAttribute(value, forKey: key)
+        }
+    }
 }
 
 
@@ -264,6 +315,7 @@ fileprivate extension PinpointContext.Constants {
         static let dataKey = "data"
         static let pinpointKey = "pinpoint"
         static let deeplinkKey = "deeplink"
+        static let attributeApplicationState = "applicationState"
     }
 }
 
