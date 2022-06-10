@@ -79,6 +79,29 @@ enum Defaults {
         return .userPoolsAndIdentityPools(userPoolConfigData, identityConfigDate)
     }
 
+    static func makeAmplifyStore() -> AmplifyAuthCredentialStoreBehavior &
+    AmplifyAuthCredentialStoreProvider {
+        return MockAmplifyStore()
+    }
+
+    static func makeLegacyStore(service: String) -> CredentialStoreBehavior {
+        return MockLegacyStore()
+    }
+
+    static func makeDefaultCredentialStoreEnvironment(
+        amplifyStoreFactory: @escaping () -> AmplifyAuthCredentialStoreBehavior &
+        AmplifyAuthCredentialStoreProvider = makeAmplifyStore,
+        legacyStoreFactory: @escaping (String) -> CredentialStoreBehavior = makeLegacyStore(service: )
+    ) -> CredentialEnvironment {
+        CredentialEnvironment(
+            authConfiguration: makeDefaultAuthConfigData(),
+            credentialStoreEnvironment: BasicCredentialStoreEnvironment(
+                amplifyCredentialStoreFactory: amplifyStoreFactory,
+                legacyCredentialStoreFactory: legacyStoreFactory
+            )
+        )
+    }
+
     static func makeDefaultAuthEnvironment(
         authZEnvironment: BasicAuthorizationEnvironment? = nil,
         identityPoolFactory: @escaping () throws -> CognitoIdentityBehavior = makeIdentity,
@@ -116,11 +139,62 @@ enum Defaults {
         userPoolFactory: @escaping () throws -> CognitoUserPoolBehavior = makeDefaultUserPool) ->
     AuthStateMachine {
 
-            let environment = makeDefaultAuthEnvironment(identityPoolFactory: identityPoolFactory,
-                                                         userPoolFactory: userPoolFactory)
-            return AuthStateMachine(resolver: AuthState.Resolver(),
-                                    environment: environment,
-                                    initialState: initialState)
+        let environment = makeDefaultAuthEnvironment(identityPoolFactory: identityPoolFactory,
+                                                     userPoolFactory: userPoolFactory)
+        return AuthStateMachine(resolver: AuthState.Resolver(),
+                                environment: environment,
+                                initialState: initialState)
+    }
+
+    static func makeDefaultCredentialStateMachine() -> CredentialStoreStateMachine {
+        return CredentialStoreStateMachine(resolver: CredentialStoreState.Resolver(),
+                                           environment: makeDefaultCredentialStoreEnvironment(),
+                                           initialState: .idle)
+    }
+
+}
+
+struct MockAmplifyStore: AmplifyAuthCredentialStoreBehavior, AmplifyAuthCredentialStoreProvider {
+    func saveCredential(_ credential: AmplifyCredentials) throws {
+
+    }
+
+    func retrieveCredential() throws -> AmplifyCredentials {
+        return AmplifyCredentials(userPoolTokens: nil, identityId: nil, awsCredential: nil)
+    }
+
+    func deleteCredential() throws {
+
+    }
+
+    func getCredentialStore() -> CredentialStoreBehavior {
+        return MockLegacyStore()
+    }
+}
+
+struct MockLegacyStore: CredentialStoreBehavior {
+    func getString(_ key: String) throws -> String {
+        return ""
+    }
+
+    func getData(_ key: String) throws -> Data {
+        return Data()
+    }
+
+    func set(_ value: String, key: String) throws {
+
+    }
+
+    func set(_ value: Data, key: String) throws {
+
+    }
+
+    func remove(_ key: String) throws {
+
+    }
+
+    func removeAll() throws {
+
     }
 
 }
