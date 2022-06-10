@@ -64,6 +64,7 @@ struct FetchAuthAWSCredentials: Action {
                 dispatcher.send(fetchedAWSCredentialEvent)
 
             } catch {
+                // TODO: Handle error
 //                let sdkError = error as? SdkError<GetCredentialsForIdentityOutputError> ?? SdkError.unknown(error)
 //                let authZError = AuthorizationError.service(error: error)
 //                let event = FetchAWSCredentialEvent(eventType: .throwError(authZError))

@@ -9,7 +9,7 @@ import AWSCognitoIdentity
 import Foundation
 import ClientRuntime
 
-struct FetchIdentityId: Action {
+struct FetchAuthIdentityId: Action {
 
     let identifier = "FetchUnAuthenticatedIdentityId"
 
@@ -30,7 +30,7 @@ struct FetchIdentityId: Action {
         else {
             let authZError = AuthorizationError.configuration(
                 message: AuthPluginErrorConstants.signedInIdentityIdWithNoCIDPError.errorDescription)
-            let event = FetchIdentityEvent(eventType: .throwError(authZError))
+            let event = AuthorizationEvent(eventType: .throwError(authZError))
             dispatcher.send(event)
             return
         }
@@ -78,7 +78,7 @@ struct FetchIdentityId: Action {
     }
 }
 
-extension FetchIdentityId: CustomDebugDictionaryConvertible {
+extension FetchAuthIdentityId: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "identifier": identifier
@@ -86,7 +86,7 @@ extension FetchIdentityId: CustomDebugDictionaryConvertible {
     }
 }
 
-extension FetchIdentityId: CustomDebugStringConvertible {
+extension FetchAuthIdentityId: CustomDebugStringConvertible {
     var debugDescription: String {
         debugDictionary.debugDescription
     }

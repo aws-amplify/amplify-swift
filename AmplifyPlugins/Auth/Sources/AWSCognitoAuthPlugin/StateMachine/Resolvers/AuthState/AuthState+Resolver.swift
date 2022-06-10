@@ -52,7 +52,7 @@ extension AuthState {
                     let newState = AuthState.configuringAuthentication(.notConfigured)
                     let action = InitializeAuthenticationConfiguration(
                         configuration: authConfiguration,
-                        cognitoCredentials: storedCredentials)
+                        storedCredentials: storedCredentials)
                     return .init(newState: newState, actions: [action])
                 case .configureAuthorization(_, let storedCredentials):
                     let newState = AuthState.configuringAuthorization(.notConfigured, .notConfigured)

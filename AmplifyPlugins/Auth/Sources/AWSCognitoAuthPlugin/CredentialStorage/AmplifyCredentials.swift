@@ -29,7 +29,22 @@ enum AmplifyCredentials {
 
 extension AmplifyCredentials: Equatable {
     static func == (lhs: AmplifyCredentials, rhs: AmplifyCredentials) -> Bool {
-        return true
+        switch (lhs, rhs) {
+        case (.userPoolOnly(let lhsToken), .userPoolOnly(let rhsToken)):
+            return lhsToken == rhsToken
+
+        case (.identityPoolOnly(let lhsIdentityId, let lhsCredentials),
+            .identityPoolOnly(let rhsidentityId, let rhsCredentials)):
+            return (lhsIdentityId == rhsidentityId) && (lhsCredentials == rhsCredentials)
+
+        case (.userPoolAndIdentityPool(let lhsToken, let lhsIdentityId, let lhsCredentials),
+            .userPoolAndIdentityPool(let rhsToken, let rhsidentityId, let rhsCredentials)):
+            return (lhsToken == rhsToken) &&
+            (lhsIdentityId == rhsidentityId) &&
+            (lhsCredentials == rhsCredentials)
+
+        default: return false
+        }
     }
 }
 

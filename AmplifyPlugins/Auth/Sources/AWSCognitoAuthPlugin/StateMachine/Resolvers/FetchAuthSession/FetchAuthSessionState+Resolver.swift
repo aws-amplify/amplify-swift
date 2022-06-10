@@ -29,11 +29,11 @@ extension FetchAuthSessionState {
                     
                 case .fetchUnAuthIdentityID:
                     return .init(newState: .fetchingIdentityID(UnAuthLoginsMapProvider()),
-                                 actions: [FetchIdentityId()])
+                                 actions: [FetchAuthIdentityId()])
                     
                 case .fetchAuthenticatedIdentityID(let provider):
                     return .init(newState: .fetchingIdentityID(provider),
-                                 actions: [FetchIdentityId(loginsMap: provider.loginsMap)])
+                                 actions: [FetchAuthIdentityId(loginsMap: provider.loginsMap)])
                     
                 default:
                     return .from(oldState)
