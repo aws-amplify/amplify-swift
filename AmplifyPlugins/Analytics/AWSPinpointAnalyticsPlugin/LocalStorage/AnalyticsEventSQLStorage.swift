@@ -74,16 +74,6 @@ class AnalyticsEventSQLStorage: AnalyticsEventStorage {
         _ = try dbAdapter.executeQuery(insertStatement, event.getInsertBindings())
     }
     
-    /// Delete events from the Events older than a specified timestamp
-    /// - Parameter timeStamp: The timestamp to query against
-    func deleteEventsOlderThan(timeStamp: Binding) throws {
-        let deleteStatement = """
-         DELETE FROM Event
-         WHERE timestamp < ?"
-        """
-        _ = try dbAdapter.executeQuery(deleteStatement, [timeStamp])
-    }
-    
     /// Delete all dirty events from the Event and DirtyEvent tables
     func deleteDirtyEvents() throws {
         let deleteFromDirtyEventTable = "DELETE FROM DirtyEvent"
@@ -202,6 +192,19 @@ class AnalyticsEventSQLStorage: AnalyticsEventStorage {
         _ = try dbAdapter.executeQuery(markStatement, [])
         _ = try dbAdapter.executeQuery(moveStatement, [])
         _ = try dbAdapter.executeQuery(deleteStatement, [])
+    }
+    
+    /// Check the disk usage limit of the local database.
+    /// If database is over the limit then delete all dirty events and oldest event 
+    /// - Parameter limit: the size limit of the database in Byte unit
+    func checkDiskSize(limit: Byte) throws {
+        if dbAdapter.diskBytesUsed > limit {
+            try self.deleteDirtyEvents()
+        }
+        
+        if dbAdapter.diskBytesUsed > limit {
+            try self.deleteOldestEvent()
+        }
     }
 }
 

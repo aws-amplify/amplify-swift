@@ -9,6 +9,7 @@ import Foundation
 import SQLite
 
 protocol SQLStorageProtocol {
+    var diskBytesUsed: Byte { get }
     /// Create SQL table
     /// - Parameter statement: SQL statement to create table
     func createTable(_ statement: String) throws
