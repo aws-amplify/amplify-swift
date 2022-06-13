@@ -34,23 +34,36 @@ protocol FileManagerBehaviour {
     func removeItem(atPath path: String) throws
     func urls(for directory: FileManager.SearchPathDirectory, in domainMask: FileManager.SearchPathDomainMask) -> [URL]
     func fileExists(atPath path: String) -> Bool
+    func fileSize(for url: URL) -> Byte
 }
 
-extension FileManager: FileManagerBehaviour {}
+extension FileManager: FileManagerBehaviour, DefaultLogger {
+    func fileSize(for url: URL) -> Byte {
+        do {
+            let attributes = try self.attributesOfItem(atPath: url.path)
+            return attributes[.size] as? Byte ?? 0
+        } catch {
+            log.error("Error getting file size with error \(error)")
+        }
+        return 0
+    }
+
+}
+
+typealias Byte = Int
 
 // MARK: - PinpointContext
 struct PinpointContextConfiguration {
-    typealias Megabyte = Int
     /// The Pinpoint AppId.
     let appId: String
     /// The session timeout in seconds. Defaults to 5 seconds.
     let sessionTimeout: TimeInterval
     /// The max storage size to use for event storage in MB. Defaults to 5 MB.
-    let maxStorageSize: Megabyte
+    let maxStorageSize: Byte
 
     init(appId: String,
          sessionTimeout: TimeInterval = 5,
-         maxStorageSize: Megabyte = (1024 * 1024 * 5)) {
+         maxStorageSize: Byte = (1024 * 1024 * 5)) {
         self.appId = appId
         self.sessionTimeout = sessionTimeout
         self.maxStorageSize = maxStorageSize
