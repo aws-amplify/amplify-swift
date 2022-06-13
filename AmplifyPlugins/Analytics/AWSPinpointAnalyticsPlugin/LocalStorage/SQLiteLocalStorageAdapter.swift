@@ -13,11 +13,16 @@ import SQLite
 final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
     private var connection: Connection?
     private var dbFilePath: URL?
+    private let fileManager: FileManagerBehaviour
+    var diskBytesUsed: Byte {
+        guard let url = dbFilePath else { return 0}
+        return fileManager.fileSize(for: url)
+    }
     
     /// Initializer
     /// - Parameter databaseName: The database name
     convenience init(prefixPath: String = "", databaseName: String) throws {
-        var dbFilePath = SQLiteLocalStorageAdapter.getDbFilePath(databaseName: databaseName)
+        var dbFilePath = SQLiteLocalStorageAdapter.getDbFilePath(prefixPath: prefixPath, databaseName: databaseName)
         let connection: Connection
         do {
             connection = try Connection(dbFilePath.absoluteString)
@@ -37,10 +42,12 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
     ///   - dbFilePath: Path to the database
     private init(
         connection: Connection,
-        dbFilePath: URL? = nil
+        dbFilePath: URL? = nil,
+        fileManager: FileManagerBehaviour = FileManager.default
     ) throws {
         self.connection = connection
         self.dbFilePath = dbFilePath
+        self.fileManager = fileManager
         try initializeDatabase(connection: connection)
     }
     
@@ -108,3 +115,4 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
 }
 
 extension SQLiteLocalStorageAdapter: DefaultLogger { }
+
