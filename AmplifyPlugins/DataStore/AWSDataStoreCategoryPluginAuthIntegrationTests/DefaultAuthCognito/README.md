@@ -5,7 +5,14 @@ This configuration is used to run the tests in `AWSDataStoreCategoryPluginAuthIn
 
 ### Set-up
 
-1. `amplify init`
+1. `amplify init`. Make sure your amplify CLI version produces ClI.json containing
+```
+"useexperimentalpipelinedtransformer": false,
+"transformerversion": 1,
+"usesubfordefaultidentityclaim": true
+```
+
+TODO: These tests were written for V1 Transformer and will not work with V2 Transformer. In V2 Transform, the operations defined on the auth rule indicate which operations are allowed and omitted operations are denied by default. The behavior difference causes the subscription operations for the following V1 schema to fail. https://github.com/aws-amplify/amplify-ios/issues/1894
 
 2. `amplify add api`
 
