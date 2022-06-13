@@ -7,7 +7,6 @@
 
 import Foundation
 import Amplify
-import SwiftUI
 
 enum AmplifyCredentials {
 
@@ -34,14 +33,25 @@ extension AmplifyCredentials: Equatable {
             return lhsToken == rhsToken
 
         case (.identityPoolOnly(let lhsIdentityId, let lhsCredentials),
-            .identityPoolOnly(let rhsidentityId, let rhsCredentials)):
+              .identityPoolOnly(let rhsidentityId, let rhsCredentials)):
             return (lhsIdentityId == rhsidentityId) && (lhsCredentials == rhsCredentials)
 
         case (.userPoolAndIdentityPool(let lhsToken, let lhsIdentityId, let lhsCredentials),
-            .userPoolAndIdentityPool(let rhsToken, let rhsidentityId, let rhsCredentials)):
+              .userPoolAndIdentityPool(let rhsToken, let rhsidentityId, let rhsCredentials)):
             return (lhsToken == rhsToken) &&
             (lhsIdentityId == rhsidentityId) &&
             (lhsCredentials == rhsCredentials)
+
+        case (.identityPoolWithFederation(federatedToken: let lhsToken,
+                                          identityID: let lhsIdentityID,
+                                          credentials: let lhsCredentials),
+              .identityPoolWithFederation(federatedToken: let rhsToken,
+                                          identityID: let rhsIdentityID,
+                                          credentials: let rhsCredentials)):
+            return (lhsToken == rhsToken) &&
+            (lhsIdentityID == rhsIdentityID) &&
+            (lhsCredentials == rhsCredentials)
+
 
         default: return false
         }
@@ -54,6 +64,27 @@ struct FederatedToken {
 
     let provider: AuthProvider
 
+}
+
+extension FederatedToken: Equatable {
+    static func == (lhs: FederatedToken, rhs: FederatedToken) -> Bool {
+        guard lhs.token == rhs.token else {
+            return false
+        }
+        switch (lhs.provider, rhs.provider) {
+
+        case (.amazon, .amazon),
+            (.apple, .apple),
+            (.facebook, .facebook),
+            (.google, .google),
+            (.oidc, .oidc),
+            (.saml, .saml):
+            return true
+        case (.custom(let lhsCustom), .custom(let rhsCustom)):
+            return lhsCustom == rhsCustom
+        default: return false
+        }
+    }
 }
 
 extension AmplifyCredentials {
@@ -94,6 +125,13 @@ extension AmplifyCredentials: Codable {
             self = .identityPoolOnly(identityID: identityID, credentials: credentials)
             return
         }
+
+        if let userPoolInfo = userPoolInfo {
+            let tokens = try userPoolInfo.decode(AWSCognitoUserPoolTokens.self, forKey: .tokens)
+            self = .userPoolOnly(tokens: tokens)
+            return
+        }
+        //TODO: Add when implemented for `identityPoolWithFederation`
         self = .noCredentials
     }
 
@@ -109,6 +147,7 @@ extension AmplifyCredentials: Codable {
             try identityPool.encode(credentials, forKey: .awsCredentials)
 
         case .identityPoolWithFederation:
+            //TODO: Add when implemented
             fatalError("Not implemented")
 
         case .userPoolAndIdentityPool(let tokens, let identityID, let credentials):

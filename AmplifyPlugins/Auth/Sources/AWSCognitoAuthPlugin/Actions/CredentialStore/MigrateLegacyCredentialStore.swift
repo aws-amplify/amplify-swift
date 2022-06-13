@@ -62,6 +62,7 @@ struct MigrateLegacyCredentialStore: Action {
                 let credentials = AmplifyCredentials.noCredentials
 
                 // Save the fetched Credentials
+                //TODO: Fix the credentials conversion.
                 try amplifyCredentialStore.saveCredential(credentials)
             }
             let event = CredentialStoreEvent(eventType: .loadCredentialStore)

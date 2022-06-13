@@ -51,6 +51,7 @@ struct FetchAuthAWSCredentials: Action {
                       let sessionKey = awsCredentials.sessionToken,
                       let expiration = awsCredentials.expiration
                 else {
+                    // TODO: Handle error
                    fatalError()
                 }
                 let awsCognitoCredentials = AuthAWSCognitoCredentials(accessKey: accessKey,

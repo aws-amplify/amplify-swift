@@ -25,7 +25,9 @@ struct FetchAuthSessionWithCognitoUserPool: Action {
         case .noCredentials:
             // No stored credentials, try to fetch identity ID for guest user.
             event = FetchAuthSessionEvent(eventType: .fetchAuthenticatedIdentityID(cognitoToken))
-        default: fatalError("Not implemented")
+        default:
+            // TODO: Fix fetch authsession with user pool token for already existing credentials
+            fatalError("Not implemented")
         }
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         dispatcher.send(event)

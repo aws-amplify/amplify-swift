@@ -53,7 +53,8 @@ extension AuthorizationState {
                 if let authEvent = event as? AuthenticationEvent {
                     switch authEvent.eventType {
                     case .signInCompleted(let event):
-                        let action = InitializeFetchUnAuthSession()
+                        let action = InitializeFetchAuthSessionWithUserPool(
+                            tokens: event.cognitoUserPoolTokens)
                         let tokens = event.cognitoUserPoolTokens
                         return .init(newState: .fetchingAuthSessionWithUserPool(.notStarted, tokens),
                                      actions: [action])

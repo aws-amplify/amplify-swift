@@ -11,7 +11,7 @@ import ClientRuntime
 
 struct FetchAuthIdentityId: Action {
 
-    let identifier = "FetchUnAuthenticatedIdentityId"
+    let identifier = "FetchAuthIdentityId"
 
     let loginsMap: [String: String]
 

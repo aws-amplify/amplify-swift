@@ -56,28 +56,11 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
                 // TODO: Validate the credentials, if it is invalid invoke a refresh
                 self?.dispatch(credentials.cognitoSession)
             default:
+                // TODO:  Add error handling
                 fatalError()
             }
 
         }
-    }
-
-    func listenAuthEvents() {
-        _ = authStateMachine.listen { [weak self] state in
-            guard case .configured(_, let authorizationState) = state  else {
-                return
-            }
-
-            switch authorizationState {
-                case .sessionEstablished(let credentials):
-                    self?.dispatch(credentials.cognitoSession)
-                default: break
-            }
-
-        } onSubscribe: {
-
-        }
-
     }
 
     private func dispatch(_ result: AuthSession) {

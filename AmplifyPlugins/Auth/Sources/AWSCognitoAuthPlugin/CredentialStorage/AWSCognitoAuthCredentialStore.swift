@@ -108,7 +108,9 @@ struct AWSCognitoAuthCredentialStore {
 extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
 
     func saveCredential(_ credential: Codable) throws {
-        let amplifyCredentials = credential as! AmplifyCredentials
+        guard let amplifyCredentials = credential as? AmplifyCredentials else {
+            throw CredentialStoreError.codingError("Error occurred while saving credentials", nil)
+        }
         let authCredentialStoreKey = generateSessionKey(for: authConfiguration)
         let encodedCredentials = try encode(object: amplifyCredentials)
         try keychain.set(encodedCredentials, key: authCredentialStoreKey)
