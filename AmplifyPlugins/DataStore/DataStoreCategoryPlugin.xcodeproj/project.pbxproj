@@ -138,7 +138,7 @@
 		6BC4FDAA23A899680027D20C /* MockRequestRetryablePolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BC4FDA923A899680027D20C /* MockRequestRetryablePolicy.swift */; };
 		6BDC224023E21A4E007C8410 /* RemoteSyncEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BDC223F23E21A4E007C8410 /* RemoteSyncEngineTests.swift */; };
 		6BDC224223E27324007C8410 /* MockAWSInitialSyncOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BDC224123E27324007C8410 /* MockAWSInitialSyncOrchestrator.swift */; };
-		6BE7431C2575B8B000009FCB /* AWSAPICategoryPluginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE7431B2575B8B000009FCB /* AWSAPICategoryPluginTests.swift */; };
+		6BE7431C2575B8B000009FCB /* AWSDataStorePluginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE7431B2575B8B000009FCB /* AWSDataStorePluginTests.swift */; };
 		6BE9D6F125A6643100AB5C9A /* StorageEngineTestsHasOne.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE9D6F025A6643100AB5C9A /* StorageEngineTestsHasOne.swift */; };
 		6BE9D6F325A665EA00AB5C9A /* StorageEngineTestsBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE9D6F225A665EA00AB5C9A /* StorageEngineTestsBase.swift */; };
 		6BE9D73E25A6800100AB5C9A /* StorageEngineTestsManyToMany.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE9D73D25A6800100AB5C9A /* StorageEngineTestsManyToMany.swift */; };
@@ -562,7 +562,7 @@
 		6BC4FDA923A899680027D20C /* MockRequestRetryablePolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRequestRetryablePolicy.swift; sourceTree = "<group>"; };
 		6BDC223F23E21A4E007C8410 /* RemoteSyncEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteSyncEngineTests.swift; sourceTree = "<group>"; };
 		6BDC224123E27324007C8410 /* MockAWSInitialSyncOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAWSInitialSyncOrchestrator.swift; sourceTree = "<group>"; };
-		6BE7431B2575B8B000009FCB /* AWSAPICategoryPluginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAPICategoryPluginTests.swift; sourceTree = "<group>"; };
+		6BE7431B2575B8B000009FCB /* AWSDataStorePluginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStorePluginTests.swift; sourceTree = "<group>"; };
 		6BE9D6F025A6643100AB5C9A /* StorageEngineTestsHasOne.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEngineTestsHasOne.swift; sourceTree = "<group>"; };
 		6BE9D6F225A665EA00AB5C9A /* StorageEngineTestsBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEngineTestsBase.swift; sourceTree = "<group>"; };
 		6BE9D73D25A6800100AB5C9A /* StorageEngineTestsManyToMany.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEngineTestsManyToMany.swift; sourceTree = "<group>"; };
@@ -1563,7 +1563,7 @@
 		FAD2BDF423957F35006EB065 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				6BE7431B2575B8B000009FCB /* AWSAPICategoryPluginTests.swift */,
+				6BE7431B2575B8B000009FCB /* AWSDataStorePluginTests.swift */,
 				FA1C819E25868D17006160E9 /* AWSDataStorePluginAmplifyVersionableTests.swift */,
 				B40EF02724BF68C900F2264C /* ConfigurationTests.swift */,
 				21A4EE5B259D50C700E1047D /* DataStoreListDecoderTests.swift */,
@@ -2578,7 +2578,7 @@
 				211FFEDD26CD621400F0DB75 /* DataStoreObserveQueryOperationTests.swift in Sources */,
 				FA4B8E942391C2CD009FC10F /* MutationIngesterConflictResolutionTests.swift in Sources */,
 				FA4A9557239ACAD7008E876E /* ModelReconciliationQueueBehaviorTests.swift in Sources */,
-				6BE7431C2575B8B000009FCB /* AWSAPICategoryPluginTests.swift in Sources */,
+				6BE7431C2575B8B000009FCB /* AWSDataStorePluginTests.swift in Sources */,
 				FA4A955D239AD810008E876E /* MockSQLiteStorageEngineAdapterResponders.swift in Sources */,
 				D80064F62499297800935DA3 /* MockFileManager.swift in Sources */,
 				21A4EE5C259D50C700E1047D /* DataStoreListDecoderTests.swift in Sources */,
