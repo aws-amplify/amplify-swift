@@ -46,7 +46,7 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
     }
 
     // MARK: - Search
-    
+
     /// Test if search(for: text) successfully gets Place results.
     ///
     /// - Given: Geo plugin with a valid configuration.
@@ -64,7 +64,7 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
             XCTFail("Failed with error: \(error)")
         }
     }
-    
+
     /// Test if search(for: coordinates) successfully gets Place results.
     ///
     /// - Given: Geo plugin with a valid configuration.
@@ -104,7 +104,7 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
             XCTFail("Failed with error: \(error)")
         }
     }
-    
+
     /// Test if availableMaps() successfully gets metadata for all available maps.
     ///
     /// - Given: Geo plugin with a valid configuration.

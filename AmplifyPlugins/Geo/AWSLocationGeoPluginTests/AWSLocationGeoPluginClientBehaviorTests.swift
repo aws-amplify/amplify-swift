@@ -15,7 +15,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
     let coordinates = Geo.Coordinates(latitude: 39.7392, longitude: -104.9903)
 
     // MARK: - Search
-    
+
     /// Test if search(for: text) calls the location service correctly.
     ///
     /// - Given: Geo plugin with a valid configuration.
@@ -34,7 +34,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
             XCTFail("Failed with error: \(error)")
         }
     }
-    
+
     /// Test if search(for: text) calls the location service correctly and sets the correct options.
     ///
     /// - Given: Geo plugin with a valid configuration.
@@ -64,7 +64,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
             XCTFail("Failed with error: \(error)")
         }
     }
-    
+
     /// Test if search(for: text) fails when configuration is invalid.
     ///
     /// - Given: Geo plugin with a missing configuration.
@@ -120,7 +120,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
         var options = Geo.SearchForCoordinatesOptions()
         options.maxResults = 5
         options.pluginOptions = AWSLocationGeoPluginSearchOptions(searchIndex: GeoPluginTestConfig.searchIndex)
-        
+
         do {
             _ = try await geoPlugin.search(for: coordinates, options: options)
             var request = SearchPlaceIndexForPositionInput()
@@ -133,7 +133,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
             XCTFail("Failed with error: \(error)")
         }
     }
-    
+
     /// Test if search(for: coordinates) fails when configuration is invalid.
     ///
     /// - Given: Geo plugin with a missing configuration.
@@ -158,7 +158,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
     }
 
     // MARK: - Maps
-    
+
     /// Test if availableMaps() calls the location service correctly.
     ///
     /// - Given: Geo plugin with a valid configuration.
@@ -178,7 +178,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
             XCTFail("Failed with error: \(error)")
         }
     }
-    
+
     /// Test if availableMaps() fails when configuration is invalid.
     ///
     /// - Given: Geo plugin with a missing configuration.
@@ -201,7 +201,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
             XCTAssertEqual(geoError.errorDescription, "No maps are available.")
         }
     }
-    
+
     /// Test if defaultMap() calls the location service correctly.
     ///
     /// - Given: Geo plugin with a valid configuration.
@@ -210,7 +210,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
     /// - Then:
     ///    - Correct serivce call is made.
     ///
-    func testDefaultMap() async  {
+    func testDefaultMap() async {
         do {
             let map = try await geoPlugin.defaultMap()
             XCTAssertEqual(map.mapName, GeoPluginTestConfig.map)
@@ -218,7 +218,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
             XCTFail("Failed with error: \(error)")
         }
     }
-    
+
     /// Test if defaultMap() fails when configuration is invalid.
     ///
     /// - Given: Geo plugin with a missing configuration.

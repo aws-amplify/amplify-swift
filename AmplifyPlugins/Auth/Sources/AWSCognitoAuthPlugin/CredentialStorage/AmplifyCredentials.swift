@@ -52,7 +52,6 @@ extension AmplifyCredentials: Equatable {
             (lhsIdentityID == rhsIdentityID) &&
             (lhsCredentials == rhsCredentials)
 
-
         default: return false
         }
     }
@@ -131,7 +130,7 @@ extension AmplifyCredentials: Codable {
             self = .userPoolOnly(tokens: tokens)
             return
         }
-        //TODO: Add when implemented for `identityPoolWithFederation`
+        // TODO: Add when implemented for `identityPoolWithFederation`
         self = .noCredentials
     }
 
@@ -147,7 +146,7 @@ extension AmplifyCredentials: Codable {
             try identityPool.encode(credentials, forKey: .awsCredentials)
 
         case .identityPoolWithFederation:
-            //TODO: Add when implemented
+            // TODO: Add when implemented
             fatalError("Not implemented")
 
         case .userPoolAndIdentityPool(let tokens, let identityID, let credentials):
