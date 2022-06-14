@@ -57,11 +57,15 @@ extension PinpointEvent {
         
         let session = PinpointSession(sessionId: sessionId, startTime: startDateTime, stopTime: stopDateTime)
 
-        guard let eventType = element[EventPropertyIndex.eventType] as? String, let timeStamp = element[EventPropertyIndex.timestamp] as? TimeInterval else {
+        guard let eventType = element[EventPropertyIndex.eventType] as? String, let eventTimestampValue = element[EventPropertyIndex.eventTimestamp] as? String, let timestamp = Date.Millisecond(eventTimestampValue) else {
             return nil
         }
         
-        let pinpointEvent = PinpointEvent(eventType: eventType, eventTimestamp: Date.Millisecond(timeStamp), session: session)
+        guard let eventId = element[EventPropertyIndex.id] as? String else {
+            return nil
+        }
+        
+        let pinpointEvent = PinpointEvent(id: eventId, eventType: eventType, eventTimestamp: timestamp, session: session)
         
         if let attributes = element[EventPropertyIndex.attributes] as? String, let data = Data(base64Encoded: attributes),
            let decodedAttributes = try? archiver.decode(AnalyticsClient.PinpointEventAttributes.self, from: data) {
@@ -90,6 +94,7 @@ extension PinpointEvent {
         static let sessionStartTime = 6
         static let sessionStopTime = 7
         static let timestamp = 8
-        static let retryCount = 9
+        static let dirtyFlag = 9
+        static let retryCount = 10
     }
 }
