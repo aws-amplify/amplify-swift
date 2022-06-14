@@ -23,17 +23,13 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         Amplify.reset()
     }
     
-    /// Test updating the user's email attribute.
-    /// Internally, Cognito's `UpdateUserAttributes` API will be called with metadata as clientMetadata.
-    /// The configured lambda trigger will invoke the custom message lambda with the client metadata payload. See
-    /// https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserAttributes.html
-    /// for more details.
+    /// Test fetching the user's email attribute.
     ///
     /// - Given: A confirmed user
     /// - When:
-    ///    - I invoke Amplify.Auth.update with email attribute
+    ///    - I invoke Amplify.Auth.fetchUserAttributes
     /// - Then:
-    ///    - The request should be successful and the email specified should receive a confirmation code
+    ///    - The request should be successful and the email attribute should have the correct value
     ///
     func testSuccessfulFetchAttribute() throws {
         let username = "integTest\(UUID().uuidString)"
