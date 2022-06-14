@@ -14,9 +14,16 @@ public extension AWSCognitoAuthPlugin {
                                     listener: AuthFetchUserAttributeOperation.ResultListener?)
     -> AuthFetchUserAttributeOperation {
 
-        //        let options = options ?? AuthFetchUserAttributesRequest.Options()
-        //        let request = AuthFetchUserAttributesRequest(options: options)
-        fatalError("Not implemented")
+        let options = options ?? AuthFetchUserAttributesRequest.Options()
+        let request = AuthFetchUserAttributesRequest(options: options)
+        let operation = AWSAuthFetchUserAttributesOperation(
+            request,
+            authStateMachine: authStateMachine,
+            credentialStoreStateMachine: credentialStoreStateMachine,
+            userPoolFactory: makeUserPool,
+            resultListener: listener)
+        queue.addOperation(operation)
+        return operation
     }
 
     func update(userAttribute: AuthUserAttribute,
