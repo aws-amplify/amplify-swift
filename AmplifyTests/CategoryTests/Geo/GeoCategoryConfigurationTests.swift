@@ -172,7 +172,7 @@ class GeoCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         _ = try await Amplify.Geo.getPlugin(for: "MockSecondGeoCategoryPlugin").search(for: "test", options: nil)
-        
+
         XCTAssertFalse(methodInvokedOnDefaultPlugin)
         XCTAssertTrue(methodInvokedOnSecondPlugin)
     }

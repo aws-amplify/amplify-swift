@@ -30,17 +30,17 @@ extension MockAWSLocation {
             completionHandler(SearchPlaceIndexForPositionOutputResponse(), nil)
         }
     }
-    
+
     public func searchPlaceIndex(forText: SearchPlaceIndexForTextInput) async throws -> SearchPlaceIndexForTextOutputResponse {
         searchPlaceIndexForTextCalled += 1
         searchPlaceIndexForTextRequest = forText
         return SearchPlaceIndexForTextOutputResponse()
     }
-    
+
     public func searchPlaceIndex(forPosition: SearchPlaceIndexForPositionInput) async throws -> SearchPlaceIndexForPositionOutputResponse {
         searchPlaceIndexForPositionCalled += 1
         searchPlaceIndexForPositionRequest = forPosition
         return SearchPlaceIndexForPositionOutputResponse()
-        
+
     }
 }

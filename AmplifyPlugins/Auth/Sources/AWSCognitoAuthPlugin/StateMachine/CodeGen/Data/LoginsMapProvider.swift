@@ -19,7 +19,6 @@ struct UnAuthLoginsMapProvider: LoginsMapProvider {
 
 struct CognitoUserPoolLoginsMap: LoginsMapProvider {
 
-
     let idToken: String
     let region: String
     let poolId: String
