@@ -12,16 +12,22 @@ extension AuthorizationState: CustomDebugDictionaryConvertible {
         var additionalMetadataDictionary: [String: Any] = [:]
 
         switch self {
-        case .notConfigured:
+        case .notConfigured,
+                .configured,
+                .signingIn:
             additionalMetadataDictionary = [:]
-        case .configured:
-            additionalMetadataDictionary = [:]
-        case .fetchingAuthSession(let state):
+
+        case .fetchingUnAuthSession(let state),
+                .fetchingAuthSessionWithUserPool(let state, _):
             additionalMetadataDictionary = state.debugDictionary
-        case .sessionEstablished:
-            additionalMetadataDictionary = [:]
+
         case .error(let error):
             additionalMetadataDictionary = ["Error": error]
+
+        case .sessionEstablished(let credentials),
+                .waitingToStore(let credentials):
+            return [type: credentials.debugDescription]
+
         }
         return [type: additionalMetadataDictionary]
     }

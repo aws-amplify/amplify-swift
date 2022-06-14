@@ -8,8 +8,8 @@
 import Foundation
 
 protocol AmplifyAuthCredentialStoreBehavior {
-    func saveCredential(_ credential: AmplifyCredentials) throws
-    func retrieveCredential() throws -> AmplifyCredentials
+    func saveCredential(_ credential: Codable) throws
+    func retrieveCredential() throws -> Codable
     func deleteCredential() throws
 }
 

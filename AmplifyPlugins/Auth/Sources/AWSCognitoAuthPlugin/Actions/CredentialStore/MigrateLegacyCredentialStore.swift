@@ -59,11 +59,10 @@ struct MigrateLegacyCredentialStore: Action {
         do {
             // If everything is nil, probably the store has been migrated
             if !(identityId == nil && awsCredentials == nil && userPoolTokens == nil) {
-                let credentials = AmplifyCredentials(userPoolTokens: userPoolTokens,
-                                                     identityId: identityId,
-                                                     awsCredential: awsCredentials)
+                let credentials = AmplifyCredentials.noCredentials
 
                 // Save the fetched Credentials
+                //TODO: Fix the credentials conversion.
                 try amplifyCredentialStore.saveCredential(credentials)
             }
             let event = CredentialStoreEvent(eventType: .loadCredentialStore)

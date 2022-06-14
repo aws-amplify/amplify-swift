@@ -48,63 +48,22 @@ class AuthConfigureOperation: ConfigureOperation {
             return
         }
 
-        /// Auth needs the Credential Store to be configured first.
-        sendConfigureCredentialEvent { result in
-            self.credentialStoreToken = nil
-            do {
-                /// If Credential store is successfully configured send event to configure auth statemachine.
-                /// Auth state change listener should finish this operation after that.
-                let credentials = try result.get()
-                self.sendConfigureAuthEvent(with: credentials)
-            } catch {
-                // TODO: Fix failure, should we move auth state to an error state?
-                self.finish()
-            }
-        }
+        sendConfigureAuthEvent()
     }
 
-    func sendConfigureCredentialEvent(
-        completion: @escaping (Result<AmplifyCredentials?, Error>) -> Void) {
-        credentialStoreToken = credentialStoreStateMachine.listen {
-
-            switch $0 {
-            case .success(let storedCredentials):
-                completion(.success(storedCredentials))
-
-            case .error(let credentialStoreError):
-
-                guard case .itemNotFound = credentialStoreError else {
-                    let error = AuthError.service(
-                        "An exception occurred when configuring credential store",
-                        AmplifyErrorMessages.reportBugToAWS(),
-                        credentialStoreError)
-                    completion(.failure(error))
-                    return
-                }
-
-                completion(.success(nil))
-            default:
-                break
-            }
-        } onSubscribe: { [weak self] in
-            let event = CredentialStoreEvent(eventType: .migrateLegacyCredentialStore)
-            self?.credentialStoreStateMachine.send(event)
-        }
-    }
-
-    func sendConfigureAuthEvent(with storedCredentials: AmplifyCredentials?) {
+    func sendConfigureAuthEvent() {
         authToken = authStateMachine.listen({ [weak self] state in
             switch state {
             case .configured:
                 self?.finish()
-            default: break
+            default: break //TODO: Add any error handling if required.
             }
         }, onSubscribe: {[weak self] in
             guard let self = self else {
                 return
             }
 
-            let event = AuthEvent(eventType: .configureAuth(self.authConfiguration, storedCredentials))
+            let event = AuthEvent(eventType: .configureAuth(self.authConfiguration))
             self.authStateMachine.send(event)
         })
     }
