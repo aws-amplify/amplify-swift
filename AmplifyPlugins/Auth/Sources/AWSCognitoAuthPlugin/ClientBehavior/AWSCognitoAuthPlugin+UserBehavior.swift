@@ -63,7 +63,7 @@ public extension AWSCognitoAuthPlugin {
                                 options: AuthAttributeResendConfirmationCodeOperation.Request.Options? = nil,
                                 listener: AuthAttributeResendConfirmationCodeOperation.ResultListener?)
     -> AuthAttributeResendConfirmationCodeOperation {
-        
+
         let options = options ?? AuthAttributeResendConfirmationCodeRequest.Options()
         let request = AuthAttributeResendConfirmationCodeRequest(attributeKey: attributeKey, options: options)
         let operation = AWSAuthAttributeResendConfirmationCodeOperation(

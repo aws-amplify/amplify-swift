@@ -41,7 +41,6 @@ extension AuthorizationState {
 
                 return .from(oldState)
 
-
             case .sessionEstablished:
                 if let authenEvent = event as? AuthenticationEvent,
                    case .signInRequested = authenEvent.eventType {
@@ -107,7 +106,6 @@ extension AuthorizationState {
 
                 return .from(oldState)
             }
-
 
         }
 

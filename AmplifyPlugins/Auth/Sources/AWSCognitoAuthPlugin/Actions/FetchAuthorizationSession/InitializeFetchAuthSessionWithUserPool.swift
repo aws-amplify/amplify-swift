@@ -32,7 +32,7 @@ struct InitializeFetchAuthSessionWithUserPool: Action {
                                                              poolId: poolId)
             event = .init(eventType: .fetchAuthenticatedIdentityID(loginsMapProvider))
         default:
-            //TODO: Handle error
+            // TODO: Handle error
             fatalError("Should not reach here")
 
         }

@@ -32,20 +32,20 @@ extension AWSLocationGeoPlugin {
     ///     `Geo.Error.unknown` if error is unknown
     public func search(for text: String,
                        options: Geo.SearchForTextOptions? = nil) async throws -> [Geo.Place] {
-        
+
         var request = SearchPlaceIndexForTextInput()
-        
+
         request.indexName = (options?.pluginOptions as? AWSLocationGeoPluginSearchOptions)?
             .searchIndex ?? pluginConfig.defaultSearchIndex
-        
+
         guard request.indexName != nil else {
             throw Geo.Error.invalidConfiguration(
                 GeoPluginErrorConstants.missingDefaultSearchIndex.errorDescription,
                 GeoPluginErrorConstants.missingDefaultSearchIndex.recoverySuggestion)
         }
-        
+
         request.text = text
-        
+
         if let area = options?.area {
             switch area {
             case .near(let coordinates):
@@ -58,17 +58,17 @@ extension AWSLocationGeoPlugin {
                                       boundingBox.northeast.latitude]
             }
         }
-        
+
         if let countries = options?.countries {
             request.filterCountries = countries.map { country in
                 country.code
             }
         }
-        
+
         if let maxResults = options?.maxResults {
             request.maxResults = maxResults as Int
         }
-        
+
         do {
             let response = try await locationService.searchPlaceIndex(forText: request)
             var results = [LocationClientTypes.Place]()
@@ -77,7 +77,7 @@ extension AWSLocationGeoPlugin {
                     $0.place
                 }
             }
-            
+
             let places: [Geo.Place] = results.compactMap {
                 guard let long = $0.geometry?.point?.first,
                       let lat = $0.geometry?.point?.last
@@ -120,26 +120,25 @@ extension AWSLocationGeoPlugin {
     ///     `Geo.Error.unknown` if error is unknown
     public func search(for coordinates: Geo.Coordinates,
                        options: Geo.SearchForCoordinatesOptions? = nil) async throws -> [Geo.Place] {
-        
+
         var request = SearchPlaceIndexForPositionInput()
-        
+
         request.indexName = (options?.pluginOptions as? AWSLocationGeoPluginSearchOptions)?
             .searchIndex ?? pluginConfig.defaultSearchIndex
-        
+
         guard request.indexName != nil else {
             throw Geo.Error.invalidConfiguration(
                 GeoPluginErrorConstants.missingDefaultSearchIndex.errorDescription,
                 GeoPluginErrorConstants.missingDefaultSearchIndex.recoverySuggestion)
         }
-        
+
         request.position = [coordinates.longitude,
                             coordinates.latitude]
-        
+
         if let maxResults = options?.maxResults {
             request.maxResults = maxResults as Int
         }
-        
-        
+
         do {
             let response = try await locationService.searchPlaceIndex(forPosition: request)
             var results = [LocationClientTypes.Place]()
@@ -148,7 +147,7 @@ extension AWSLocationGeoPlugin {
                     $0.place
                 }
             }
-            
+
             let places: [Geo.Place] = results.compactMap {
                 guard let long = $0.geometry?.point?.first,
                       let lat = $0.geometry?.point?.last

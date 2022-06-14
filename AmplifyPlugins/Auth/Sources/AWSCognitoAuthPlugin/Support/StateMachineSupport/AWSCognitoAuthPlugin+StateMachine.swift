@@ -38,7 +38,7 @@ extension AWSCognitoAuthPlugin {
         self.credentialStoreStateListenerToken = credentialStoreStateMachine.listen { state in
             self.log.verbose("""
             Credential Store state change:
-            
+
             \(state)
 
             """)

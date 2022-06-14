@@ -15,7 +15,7 @@ public class MockAWSLocation: AWSLocationBehavior {
 
     // MARK: - Location Client
     var locationClient: LocationClient
-    
+
     // MARK: - Method call counts for AWSLocation
     var getEscapeHatchCalled = 0
     var searchPlaceIndexForTextCalled = 0

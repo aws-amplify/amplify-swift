@@ -6,7 +6,7 @@
 //
 
 extension GeoCategory: GeoCategoryBehavior {
-    
+
     // MARK: - Search
 
     /// Search for places or points of interest.
