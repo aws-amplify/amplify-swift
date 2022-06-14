@@ -13,90 +13,68 @@ struct FetchAuthIdentityId: Action {
 
     let identifier = "FetchAuthIdentityId"
 
-    let cognitoSession: AWSAuthCognitoSession
+    let loginsMap: [String: String]
+
+    init(loginsMap: [String: String] = [:]) {
+        self.loginsMap = loginsMap
+    }
 
     func execute(withDispatcher dispatcher: EventDispatcher,
                  environment: Environment) {
+
+        logVerbose("\(#fileID) Starting execution", environment: environment)
+
         guard let authEnv = environment as? AuthEnvironment,
               let authZEnvironment = authEnv.authorizationEnvironment,
               let client = try? authZEnvironment.cognitoIdentityFactory()
         else {
-            let authZError = AuthorizationError.configuration(message: AuthPluginErrorConstants.signedInIdentityIdWithNoCIDPError.errorDescription)
-            let event = FetchIdentityEvent(eventType: .throwError(authZError))
+            let authZError = AuthorizationError.configuration(
+                message: AuthPluginErrorConstants.signedInIdentityIdWithNoCIDPError.errorDescription)
+            let event = AuthorizationEvent(eventType: .throwError(authZError))
             dispatcher.send(event)
-
-            let updatedSession = cognitoSession.copySessionByUpdating(
-                identityIdResult: .failure(authZError.authError))
-            let fetchAwsCredentialsEvent = FetchAuthSessionEvent(
-                eventType: .fetchAWSCredentials(updatedSession))
-            dispatcher.send(fetchAwsCredentialsEvent)
             return
         }
 
-        logVerbose("\(#fileID) Starting execution", environment: environment)
-
-        var loginsMap: [String: String] = [:]
-        if case let .success(cognitoUserPoolTokens) = cognitoSession.cognitoTokensResult,
-           let userpoolEnvironment = environment as? UserPoolEnvironment {
-
-            let identityProviderName = userpoolEnvironment.userPoolConfiguration.getIdentityProviderName()
-            loginsMap[identityProviderName] = cognitoUserPoolTokens.idToken
-        }
-
-        let getIdInput = GetIdInput(identityPoolId: authZEnvironment.identityPoolConfiguration.poolId,
-                                    logins: loginsMap)
+        let getIdInput = GetIdInput(
+            identityPoolId: authZEnvironment.identityPoolConfiguration.poolId,
+            logins: loginsMap)
 
         Task {
             do {
                 let response = try await client.getId(input: getIdInput)
 
                 guard let identityId = response.identityId else {
-                    let authZError = AuthorizationError.invalidIdentityId(
-                        message: "IdentityId is invalid.")
-                    let event = FetchIdentityEvent(eventType: .throwError(authZError))
+                    let event = FetchAuthSessionEvent(eventType: .throwError(.invalidIdentityID))
                     dispatcher.send(event)
-
-                    let updateCognitoSession = cognitoSession.copySessionByUpdating(
-                        identityIdResult: .failure(authZError.authError))
-                    // Move to fetching the AWS Credentials
-                    let fetchAwsCredentialsEvent = FetchAuthSessionEvent(
-                        eventType: .fetchAWSCredentials(updateCognitoSession))
-                    dispatcher.send(fetchAwsCredentialsEvent)
-
-                    logVerbose("\(#fileID) Sending event \(fetchAwsCredentialsEvent.type)",
-                               environment: environment)
                     return
                 }
-
-                let updateCognitoSession = cognitoSession.copySessionByUpdating(
-                    identityIdResult: .success(identityId))
-
-                let fetchIdentityEvent = FetchIdentityEvent(eventType: .fetched)
-                logVerbose("\(#fileID) Sending event \(fetchIdentityEvent.type)",
-                           environment: environment)
-                dispatcher.send(fetchIdentityEvent)
-
-                let fetchAwsCredentialsEvent = FetchAuthSessionEvent(
-                    eventType: .fetchAWSCredentials(updateCognitoSession))
-                logVerbose("\(#fileID) Sending event \(fetchAwsCredentialsEvent.type)",
-                           environment: environment)
-                dispatcher.send(fetchAwsCredentialsEvent)
-
-            } catch {
-                let sdkError = error as? SdkError<GetCredentialsForIdentityOutputError> ?? SdkError.unknown(error)
-                let authZError = AuthorizationError.service(error: error)
-                let event = FetchIdentityEvent(eventType: .throwError(authZError))
+                let event = FetchAuthSessionEvent(eventType: .fetchedIdentityID(identityId))
+                logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
                 dispatcher.send(event)
+            } catch {
 
-                let updateCognitoSession = cognitoSession.copySessionByUpdating(
-                    identityIdResult: .failure(sdkError.authError))
-                let fetchAwsCredentialsEvent = FetchAuthSessionEvent(
-                    eventType: .fetchAWSCredentials(updateCognitoSession))
-                logVerbose("\(#fileID) Sending event \(fetchAwsCredentialsEvent.type)",
+                let event: FetchAuthSessionEvent
+                if isNotAuthorizedError(error) {
+                    event = FetchAuthSessionEvent(eventType: .throwError(.notAuthorized))
+                } else {
+                    event = FetchAuthSessionEvent(eventType: .throwError(.service(error)))
+                }
+                logVerbose("\(#fileID) Sending event \(event.type)",
                            environment: environment)
-                dispatcher.send(fetchAwsCredentialsEvent)
+                dispatcher.send(event)
             }
         }
+    }
+
+    func isNotAuthorizedError(_ error: Error) -> Bool {
+        if case .client(let clientError, _) = error as? SdkError<GetIdOutputError>,
+           case .retryError(let serviceError) = clientError,
+           let sdkError = serviceError as? SdkError<GetIdOutputError>,
+           case .service(let getIdError, _ ) = sdkError,
+           case .notAuthorizedException = getIdError {
+            return true
+        }
+        return false
     }
 }
 

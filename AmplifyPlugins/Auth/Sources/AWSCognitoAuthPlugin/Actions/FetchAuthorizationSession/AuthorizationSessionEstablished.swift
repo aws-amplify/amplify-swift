@@ -7,20 +7,21 @@
 
 import Foundation
 import Amplify
-import AWSPluginsCore
 
 struct AuthorizationSessionEstablished: Action {
 
     let identifier = "AuthorizationSessionEstablished"
 
-    let cognitoSession: AWSAuthCognitoSession
+    let credentials: AmplifyCredentials
 
     func execute(withDispatcher dispatcher: EventDispatcher,
                  environment: Environment) {
-        let authorizationSessionEvent = AuthorizationEvent(eventType: .fetchedAuthSession(cognitoSession))
-        dispatcher.send(authorizationSessionEvent)
+        logVerbose("\(#fileID) Starting execution", environment: environment)
+        let event = AuthorizationEvent(
+            eventType: .sessionEstablished(credentials))
+        logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+        dispatcher.send(event)
     }
-
 }
 
 extension AuthorizationSessionEstablished: CustomDebugDictionaryConvertible {

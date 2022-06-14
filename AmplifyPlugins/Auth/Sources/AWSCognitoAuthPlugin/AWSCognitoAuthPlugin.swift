@@ -16,6 +16,8 @@ public final class AWSCognitoAuthPlugin: AuthCategoryPlugin {
 
     var authStateListenerToken: AuthStateMachine.StateChangeListenerToken!
 
+    var credentialStoreStateListenerToken: CredentialStoreStateMachine.StateChangeListenerToken!
+
     /// A queue that regulates the execution of operations.
     var queue: OperationQueue!
 

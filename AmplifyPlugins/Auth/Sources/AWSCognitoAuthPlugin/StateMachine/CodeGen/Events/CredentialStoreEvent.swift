@@ -19,7 +19,7 @@ struct CredentialStoreEvent: StateMachineEvent {
 
         case clearCredentialStore
 
-        case completedOperation(AmplifyCredentials?)
+        case completedOperation(AmplifyCredentials)
 
         case throwError(CredentialStoreError)
 

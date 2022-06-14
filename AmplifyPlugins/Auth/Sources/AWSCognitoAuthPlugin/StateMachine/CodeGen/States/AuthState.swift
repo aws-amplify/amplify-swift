@@ -13,6 +13,10 @@ enum AuthState: State {
 
     case configuringAuth
 
+    case waitingForCachedCredentials(AuthConfiguration)
+
+    case validatingCredentialsAndConfiguration
+
     case configuringAuthentication(AuthenticationState)
 
     case configuringAuthorization(AuthenticationState, AuthorizationState)
@@ -26,6 +30,8 @@ extension AuthState {
         switch self {
         case .notConfigured: return "AuthState.notConfigured"
         case .configuringAuth: return "AuthState.configuringAuth"
+        case .waitingForCachedCredentials: return "AuthState.waitingForCachedCredentials"
+        case .validatingCredentialsAndConfiguration: return "AuthState.validatingCredentialsAndConfiguration"
         case .configuringAuthentication: return "AuthState.configuringAuthentication"
         case .configuringAuthorization: return "AuthState.configuringAuthorization"
         case .configured: return "AuthState.configured"
