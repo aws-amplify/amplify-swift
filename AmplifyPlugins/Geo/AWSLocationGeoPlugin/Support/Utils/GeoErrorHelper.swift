@@ -17,13 +17,13 @@ class GeoErrorHelper {
 
     static func mapAWSLocationError(_ error: Error) -> Geo.Error {
         let defaultError = GeoErrorHelper.getDefaultError(error)
-        
+
         if let searchPlaceIndexForTextOutputError = error as? SearchPlaceIndexForTextOutputError {
             return GeoErrorHelper.mapError(error: searchPlaceIndexForTextOutputError) ?? defaultError
         } else if let searchPlaceIndexForPositionOutputError = error as? SearchPlaceIndexForPositionOutputError {
             return GeoErrorHelper.mapError(error: searchPlaceIndexForPositionOutputError) ?? defaultError
         }
-        
+
         return defaultError
     }
 
@@ -43,7 +43,7 @@ class GeoErrorHelper {
             return Geo.Error.unknown(unknownAWSHttpServiceError._message ?? "", "See underlying error.", error)
         }
     }
-    
+
     static func mapError(error: SearchPlaceIndexForPositionOutputError) -> Geo.Error? {
         switch error {
         case .accessDeniedException(let accessDeniedException):

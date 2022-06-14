@@ -319,7 +319,7 @@ let geoTargets: [Target] = [
             "AWSPluginsTestCommon"
             ],
         path: "AmplifyPlugins/Geo/AWSLocationGeoPluginTests"
-    ),
+    )
 ]
 
 let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTargets + storageTargets + geoTargets
@@ -352,7 +352,7 @@ let package = Package(
             name: "AWSLocationGeoPlugin",
             targets: ["AWSLocationGeoPlugin"]
         )
-        
+
     ],
     dependencies: dependencies,
     targets: targets

@@ -16,21 +16,21 @@ import XCTest
 
 class MockAWSClientConfiguration: AWSClientRuntime.AWSClientConfiguration {
     var credentialsProvider: CredentialsProvider
-    
+
     var region: String?
-    
+
     var signingRegion: String?
-    
+
     var endpointResolver: EndpointResolver
-    
+
     var regionResolver: RegionResolver?
-    
+
     var frameworkMetadata: FrameworkMetadata?
-    
+
     var logger: LogAgent
-    
+
     var retryer: SDKRetryer
-    
+
     init(config: AWSLocationGeoPluginConfiguration) throws {
         self.credentialsProvider = MockAWSAuthService().getCredentialsProvider()
         self.region = config.regionName
@@ -49,10 +49,10 @@ class MockEndPointResolver: EndpointResolver {
 
 class MockLogAgent: LogAgent {
     var name: String = ""
-    
+
     var level: LogAgentLevel = .debug
-    
-    func log(level: LogAgentLevel, message: String, metadata: [String : String]?, source: String, file: String, function: String, line: UInt) {
+
+    func log(level: LogAgentLevel, message: String, metadata: [String: String]?, source: String, file: String, function: String, line: UInt) {
         print("MockLogAgent")
     }
 }

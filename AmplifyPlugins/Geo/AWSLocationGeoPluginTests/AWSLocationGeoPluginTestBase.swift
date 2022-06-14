@@ -11,7 +11,6 @@
 @testable import AWSPluginsTestCommon
 import XCTest
 
-
 class AWSLocationGeoPluginTestBase: XCTestCase {
     var geoPlugin: AWSLocationGeoPlugin!
     var mockLocation: MockAWSLocation!
@@ -36,7 +35,7 @@ class AWSLocationGeoPluginTestBase: XCTestCase {
         } catch {
             XCTFail("Error initializing mockLocation: \(error)")
         }
-        
+
         geoPlugin = AWSLocationGeoPlugin()
         geoPlugin.locationService = mockLocation
         geoPlugin.authService = MockAWSAuthService()
