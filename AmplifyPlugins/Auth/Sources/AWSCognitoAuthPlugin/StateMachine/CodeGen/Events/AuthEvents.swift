@@ -7,40 +7,49 @@
 
 import Foundation
 
- struct AuthEvent: StateMachineEvent {
+struct AuthEvent: StateMachineEvent {
 
-     enum EventType: Equatable {
+    enum EventType: Equatable {
 
-        case configureAuth(AuthConfiguration, AmplifyCredentials?)
+        case configureAuth(AuthConfiguration)
 
-        case configureAuthentication(AuthConfiguration, AmplifyCredentials?)
+        case fetchCachedCredentials(AuthConfiguration)
 
-        case configureAuthorization(AuthConfiguration)
+        case receivedCachedCredentials(AmplifyCredentials)
 
-        case authenticationConfigured(AuthConfiguration)
+        case cachedCredentialsFailed
+
+        case configureAuthentication(AuthConfiguration, AmplifyCredentials)
+
+        case configureAuthorization(AuthConfiguration, AmplifyCredentials)
+
+        case authenticationConfigured(AuthConfiguration, AmplifyCredentials)
 
         case authorizationConfigured
     }
 
-     var id: String
+    var id: String
 
-     let eventType: EventType
+    let eventType: EventType
 
-     var time: Date?
+    var time: Date?
 
-     var type: String {
+    var type: String {
         switch eventType {
         case .configureAuth: return "AuthEvent.configureAuth"
+        case .fetchCachedCredentials: return "AuthEvent.fetchCachedCredentials"
         case .configureAuthentication: return "AuthEvent.configureAuthentication"
         case .configureAuthorization: return "AuthEvent.configureAuthorization"
         case .authenticationConfigured: return "AuthEvent.authenticationConfigured"
         case .authorizationConfigured: return "AuthEvent.authorizationConfigured"
+        case .receivedCachedCredentials: return "AuthEvent.receivedCachedCredentials"
+        case .cachedCredentialsFailed: return "AuthEvent.cachedCredentialsFailed"
         }
     }
 
-     init(id: String = UUID().uuidString,
-                eventType: EventType,
-                time: Date? = Date()) {
+    init(id: String = UUID().uuidString,
+         eventType: EventType,
+         time: Date? = Date()) {
         self.id = id
         self.eventType = eventType
         self.time = time

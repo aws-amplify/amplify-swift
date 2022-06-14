@@ -12,12 +12,12 @@ struct InitializeAuthenticationConfiguration: Action {
     let identifier = "InitializeAuthenticationConfiguration"
 
     let configuration: AuthConfiguration
-    let cognitoCredentials: AmplifyCredentials?
+    let storedCredentials: AmplifyCredentials
 
     func execute(withDispatcher dispatcher: EventDispatcher,
                         environment: Environment) {
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        let event = AuthenticationEvent(eventType: .configure(configuration, cognitoCredentials))
+        let event = AuthenticationEvent(eventType: .configure(configuration, storedCredentials))
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         dispatcher.send(event)
     }
@@ -27,7 +27,8 @@ extension InitializeAuthenticationConfiguration: CustomDebugDictionaryConvertibl
     var debugDictionary: [String: Any] {
         [
             "identifier": identifier,
-            "configuration": configuration
+            "configuration": configuration,
+            "cachedCredentials": storedCredentials.debugDescription
         ]
     }
 }

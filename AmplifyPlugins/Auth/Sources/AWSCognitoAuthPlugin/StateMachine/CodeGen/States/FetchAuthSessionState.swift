@@ -9,26 +9,40 @@ import Foundation
 
 enum FetchAuthSessionState: State {
 
-    case initializingFetchAuthSession
+    case notStarted
 
-    case fetchingUserPoolTokens(FetchUserPoolTokensState)
+    case fetchingIdentityID(LoginsMapProvider)
 
-    case fetchingIdentity(FetchIdentityState)
+    case fetchingAWSCredentials(String, LoginsMapProvider)
 
-    case fetchingAWSCredentials(FetchAWSCredentialsState)
-
-    case sessionEstablished
-
+    case fetched(IdentityID, AuthAWSCognitoCredentials)
 }
 
-extension FetchAuthSessionState {
+extension FetchAuthSessionState: Equatable {
+
+    static func == (lhs: FetchAuthSessionState, rhs: FetchAuthSessionState) -> Bool {
+        switch (lhs, rhs) {
+        case (.notStarted, .notStarted),
+            (.fetchingIdentityID, .fetchingIdentityID),
+            (.fetchingAWSCredentials, .fetchingAWSCredentials),
+            (.fetched, .fetched):
+            return true
+
+        default:
+            return false
+        }
+    }
+
     var type: String {
         switch self {
-        case .initializingFetchAuthSession: return "FetchAuthSessionState.initializingFetchAuthSession"
-        case .fetchingUserPoolTokens: return "FetchAuthSessionState.fetchingUserPoolTokens"
-        case .fetchingIdentity: return "FetchAuthSessionState.fetchingIdentity"
-        case .fetchingAWSCredentials: return "FetchAuthSessionState.fetchingAwsCredentials"
-        case .sessionEstablished: return "FetchAuthSessionState.sessionEstablished"
+        case .notStarted:
+            return "FetchSessionState.notStarted"
+        case .fetchingIdentityID:
+            return "FetchSessionState.fetchingIdentityID"
+        case .fetchingAWSCredentials:
+            return "FetchSessionState.fetchingAWSCredentials"
+        case .fetched:
+            return "FetchSessionState.fetched"
         }
     }
 }

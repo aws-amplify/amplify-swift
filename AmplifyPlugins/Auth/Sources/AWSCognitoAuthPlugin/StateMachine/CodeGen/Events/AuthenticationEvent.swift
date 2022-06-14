@@ -11,7 +11,7 @@ struct AuthenticationEvent: StateMachineEvent {
     enum EventType: Equatable {
 
         /// Emitted at startup when the Authentication system is being initialized
-        case configure(AuthConfiguration, AmplifyCredentials?)
+        case configure(AuthConfiguration, AmplifyCredentials)
 
         /// Emitted at startup when the Authentication system finished configuring
         case configured

@@ -13,7 +13,7 @@ enum FetchIdentityState: State {
 
     case fetching
 
-    case fetched
+    case fetched(String)
 
     case error(AuthorizationError)
 
