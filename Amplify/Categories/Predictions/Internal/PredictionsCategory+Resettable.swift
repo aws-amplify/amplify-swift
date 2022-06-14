@@ -8,23 +8,19 @@
 import Foundation
 
 extension PredictionsCategory: Resettable {
-
-    public func reset(onComplete: @escaping (() -> Void)) {
-        let group = DispatchGroup()
-
-        for plugin in plugins.values {
-            log.verbose("Resetting \(categoryType) plugin")
-            group.enter()
-            plugin.reset {
-                self.log.verbose("Resetting \(self.categoryType) plugin: finished")
-                group.leave()
+    
+    public func reset() async {
+        await withTaskGroup(of: Void.self) { taskGroup in
+            for plugin in plugins.values {
+                taskGroup.addTask { [weak self] in
+                    self?.log.verbose("Resetting \(self?.categoryType) plugin")
+                    await plugin.reset()
+                    self?.log.verbose("Resetting \(self?.categoryType) plugin: finished")
+                }
             }
         }
-
-        group.wait()
-
+        
         isConfigured = false
-        onComplete()
     }
 
 }

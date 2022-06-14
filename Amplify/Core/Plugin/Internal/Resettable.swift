@@ -20,6 +20,8 @@ public protocol Resettable {
     ///
     /// This method is intended only for use by the Amplify system, and should not be
     /// invoked by host applications.
-    func reset(onComplete: @escaping BasicClosure)
+//    func reset(onComplete: @escaping BasicClosure)
+    
+    func reset() async
 
 }
