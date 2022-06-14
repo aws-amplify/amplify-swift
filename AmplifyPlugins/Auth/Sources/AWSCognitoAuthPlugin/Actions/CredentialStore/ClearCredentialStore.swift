@@ -27,7 +27,7 @@ struct ClearCredentialStore: Action {
 
         do {
             try amplifyCredentialStore.deleteCredential()
-            let event = CredentialStoreEvent(eventType: .completedOperation(nil))
+            let event = CredentialStoreEvent(eventType: .completedOperation(.noCredentials))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
         } catch let error as CredentialStoreError {

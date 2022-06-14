@@ -10,131 +10,65 @@ import AWSPluginsCore
 import Amplify
 
 extension FetchAuthSessionState {
-
+    
     struct Resolver: StateMachineResolver {
-
-        var defaultState: FetchAuthSessionState = .initializingFetchAuthSession
-
+        
+        var defaultState: FetchAuthSessionState = .notStarted
+        
         func resolve(oldState: FetchAuthSessionState,
-                     byApplying event: StateMachineEvent) -> StateResolution<FetchAuthSessionState> {
-
+                     byApplying event: StateMachineEvent)
+        -> StateResolution<FetchAuthSessionState> {
+            
             switch oldState {
-            case .initializingFetchAuthSession:
-                guard let fetchAuthSessionEvent = isFetchAuthSessionEvent(event) else {
-                    return .from(.initializingFetchAuthSession)
+                
+            case .notStarted:
+                guard let eventType = isFetchAuthSessionEvent(event)?.eventType else {
+                    return .from(oldState)
                 }
-                return resolveInitializeFetchUserAuthSession(byApplying: fetchAuthSessionEvent,
-                                                             from: oldState)
-
-            case .fetchingUserPoolTokens(let userPoolTokenState):
-                let fetchUserPoolTokenResolver = FetchUserPoolTokensState.Resolver()
-                let fetchUserPoolTokenResolution = fetchUserPoolTokenResolver.resolve(
-                    oldState: userPoolTokenState, byApplying: event)
-                guard let fetchAuthSessionEvent = isFetchAuthSessionEvent(event) else {
-                    let fetchAuthSessionState = FetchAuthSessionState.fetchingUserPoolTokens(
-                        fetchUserPoolTokenResolution.newState)
-                    return .init(newState: fetchAuthSessionState, actions: fetchUserPoolTokenResolution.actions)
+                switch eventType {
+                    
+                case .fetchUnAuthIdentityID:
+                    return .init(newState: .fetchingIdentityID(UnAuthLoginsMapProvider()),
+                                 actions: [FetchAuthIdentityId()])
+                    
+                case .fetchAuthenticatedIdentityID(let provider):
+                    return .init(newState: .fetchingIdentityID(provider),
+                                 actions: [FetchAuthIdentityId(loginsMap: provider.loginsMap)])
+                    
+                default:
+                    return .from(oldState)
                 }
-                return resolveFetchingUserTokensState(byApplying: fetchAuthSessionEvent,
-                                                      from: oldState)
-            case .fetchingIdentity(let fetchIdentityState):
-                let fetchIdentityResolver = FetchIdentityState.Resolver()
-                let fetchIdentityResolution = fetchIdentityResolver.resolve(
-                    oldState: fetchIdentityState, byApplying: event)
-                guard let fetchAuthSessionEvent = isFetchAuthSessionEvent(event) else {
-                    let fetchAuthSessionState = FetchAuthSessionState.fetchingIdentity(
-                        fetchIdentityResolution.newState)
-                    return .init(newState: fetchAuthSessionState, actions: fetchIdentityResolution.actions)
+                
+            case .fetchingIdentityID(let loginsmapProvider):
+                guard let eventType = isFetchAuthSessionEvent(event)?.eventType,
+                      case .fetchedIdentityID(let identityID) = eventType else {
+                    return .from(oldState)
                 }
-                return resolveFetchingIdentityState(byApplying: fetchAuthSessionEvent,
-                                                    from: oldState)
-            case .fetchingAWSCredentials(let awsCredentialState):
-                let fetchAWSCredentialResolver = FetchAWSCredentialsState.Resolver()
-                let fetchAWSCredentialResolution = fetchAWSCredentialResolver.resolve(
-                    oldState: awsCredentialState, byApplying: event)
-                guard let fetchAuthSessionEvent = isFetchAuthSessionEvent(event) else {
-                    let fetchAuthSessionState = FetchAuthSessionState.fetchingAWSCredentials(
-                        fetchAWSCredentialResolution.newState)
-                    return .init(newState: fetchAuthSessionState, actions: fetchAWSCredentialResolution.actions)
+                let action = FetchAuthAWSCredentials(
+                    loginsMap: loginsmapProvider.loginsMap,
+                    identityID: identityID)
+                return .init(newState: .fetchingAWSCredentials(identityID, loginsmapProvider),
+                             actions: [action])
+                
+            case .fetchingAWSCredentials:
+                if case .fetchedAWSCredentials(
+                    let identityID,
+                    let credentials) = isFetchAuthSessionEvent(event)?.eventType {
+                    let action = InformSessionFetched(identityID: identityID,
+                                                      credetentials: credentials)
+                    return .init(newState: .fetched(identityID, credentials), actions: [action])
                 }
-                return resolveFetchingAWSCredentialsState(byApplying: fetchAuthSessionEvent,
-                                                          from: oldState)
-            case .sessionEstablished:
+                return .from(oldState)
+            case .fetched:
                 return .from(oldState)
             }
         }
-
-        private func resolveInitializeFetchUserAuthSession(
-            byApplying fetchAuthSessionEvent: FetchAuthSessionEvent,
-            from oldState: FetchAuthSessionState) -> StateResolution<FetchAuthSessionState> {
-            switch fetchAuthSessionEvent.eventType {
-            case .fetchUserPoolTokens(let cognitoSession):
-                let newState = FetchAuthSessionState.fetchingUserPoolTokens(FetchUserPoolTokensState.configuring)
-                let action = ConfigureUserPoolToken(cognitoSession: cognitoSession)
-                return .init(newState: newState, actions: [action])
-            case .fetchIdentity(let cognitoSession):
-                let newState = FetchAuthSessionState.fetchingIdentity(FetchIdentityState.configuring)
-                let action = ConfigureFetchIdentity(cognitoSession: cognitoSession)
-                return .init(newState: newState, actions: [action])
-            default:
-                return .from(oldState)
-            }
-        }
-
-        private func resolveFetchingUserTokensState(
-            byApplying fetchAuthSessionEvent: FetchAuthSessionEvent,
-            from oldState: FetchAuthSessionState) -> StateResolution<FetchAuthSessionState> {
-            guard case .fetchingUserPoolTokens = oldState else {
-                return .from(oldState)
-            }
-            switch fetchAuthSessionEvent.eventType {
-            case .fetchIdentity(let cognitoSession):
-                let newState = FetchAuthSessionState.fetchingIdentity( FetchIdentityState.configuring)
-                let action = ConfigureFetchIdentity(cognitoSession: cognitoSession)
-                return .init(newState: newState, actions: [action])
-            default:
-                return .from(oldState)
-            }
-        }
-
-        private func resolveFetchingIdentityState(
-            byApplying fetchAuthSessionEvent: FetchAuthSessionEvent,
-            from oldState: FetchAuthSessionState) -> StateResolution<FetchAuthSessionState> {
-            guard case .fetchingIdentity = oldState else {
-                return .from(oldState)
-            }
-            switch fetchAuthSessionEvent.eventType {
-            case .fetchAWSCredentials(let cognitoSession):
-                let newState = FetchAuthSessionState.fetchingAWSCredentials(FetchAWSCredentialsState.configuring)
-                let action = ConfigureFetchAWSCredentials(cognitoSession: cognitoSession)
-                return .init(newState: newState, actions: [action])
-            default:
-                return .from(oldState)
-            }
-        }
-
-        private func resolveFetchingAWSCredentialsState(
-            byApplying fetchAuthSessionEvent: FetchAuthSessionEvent,
-            from oldState: FetchAuthSessionState) -> StateResolution<FetchAuthSessionState> {
-            guard case .fetchingAWSCredentials = oldState else {
-                return .from(oldState)
-            }
-            switch fetchAuthSessionEvent.eventType {
-            case .fetchedAuthSession(let cognitoSession):
-                let newState = FetchAuthSessionState.sessionEstablished
-                let action = AuthorizationSessionEstablished(cognitoSession: cognitoSession)
-                return .init(newState: newState, actions: [action])
-            default:
-                return .from(oldState)
-            }
-        }
-
+        
         private func isFetchAuthSessionEvent(_ event: StateMachineEvent) -> FetchAuthSessionEvent? {
-            guard let authEvent = event as? FetchAuthSessionEvent else {
+            guard let fetchAuthSessionEvent = event as? FetchAuthSessionEvent else {
                 return nil
             }
-            return authEvent
+            return fetchAuthSessionEvent
         }
-
     }
 }
