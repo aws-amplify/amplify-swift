@@ -17,9 +17,8 @@ class MockGeoCategoryPlugin: MessageReporter, GeoCategoryPlugin {
         notify()
     }
 
-    func reset(onComplete: @escaping BasicClosure) {
+    func reset() {
         notify("reset")
-        onComplete()
     }
 
     func search(for text: String, options: Geo.SearchForTextOptions?) async throws -> [Geo.Place] {

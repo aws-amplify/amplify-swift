@@ -19,7 +19,7 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
     let password = "P123@\(UUID().uuidString)"
     let email = UUID().uuidString + "@" + UUID().uuidString + ".com"
 
-    override func setUp() {
+    override func setUp() async throws {
         do {
             try Amplify.add(plugin: AWSAPIPlugin())
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
@@ -31,9 +31,9 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
         signOut()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         signOut()
-        Amplify.reset()
+        await Amplify.reset()
     }
 
     func testGetAPISuccess() {

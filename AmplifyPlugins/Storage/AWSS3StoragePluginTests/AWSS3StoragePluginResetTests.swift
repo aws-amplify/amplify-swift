@@ -11,12 +11,7 @@ import XCTest
 class AWSS3StoragePluginResetTests: AWSS3StoragePluginTests {
 
     func testReset() {
-        let completedInvoked = expectation(description: "onComplete is invoked")
-        storagePlugin.reset {
-            completedInvoked.fulfill()
-        }
-
-        waitForExpectations(timeout: 1)
+        storagePlugin.reset()
         XCTAssertNil(storagePlugin.authService)
         XCTAssertNil(storagePlugin.storageService)
         XCTAssertNil(storagePlugin.queue)

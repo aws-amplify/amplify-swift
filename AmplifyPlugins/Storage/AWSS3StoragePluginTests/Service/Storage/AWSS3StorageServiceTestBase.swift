@@ -20,7 +20,7 @@ class AWSS3StorageServiceTestBase: XCTestCase {
     var bucket = "bucket"
     var identifier = "identifier"
 
-    override func setUp() {
+    override func setUp() async throws {
         mockTransferUtility = MockAWSS3TransferUtility()
         mockPreSignedURLBuilder = MockAWSS3PreSignedURLBuilder()
         mockS3 = MockS3()

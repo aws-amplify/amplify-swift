@@ -64,11 +64,11 @@ public struct ModelMultipleOwner: Model {
 
 class ModelMultipleOwnerAuthRuleTests: XCTestCase {
 
-    override func setUp() {
+    override func setUp() async throws {
         ModelRegistry.register(modelType: ModelMultipleOwner.self)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         ModelRegistry.reset()
     }
     // This is a test case to demostrate if we attempt to use a model with multiple auth rules

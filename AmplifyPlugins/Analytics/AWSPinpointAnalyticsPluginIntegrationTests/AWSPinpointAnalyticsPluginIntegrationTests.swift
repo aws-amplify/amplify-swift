@@ -18,7 +18,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
     static let amplifyConfiguration = "testconfiguration/AWSPinpointAnalyticsPluginIntegrationTests-amplifyconfiguration"
     static let analyticsPluginKey = "awsPinpointAnalyticsPlugin"
 
-    override func setUp() {
+    override func setUp() async throws {
         do {
             let config = try TestConfigHelper.retrieveAmplifyConfiguration(
                 forResource: AWSPinpointAnalyticsPluginIntergrationTests.amplifyConfiguration)
@@ -30,8 +30,8 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         }
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 
     func testIdentifyUser() {

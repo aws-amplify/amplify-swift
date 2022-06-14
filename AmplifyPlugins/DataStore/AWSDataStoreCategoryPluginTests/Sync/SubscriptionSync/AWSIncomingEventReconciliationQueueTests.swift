@@ -17,7 +17,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
     var storageAdapter: MockSQLiteStorageEngineAdapter!
     var apiPlugin: MockAPICategoryPlugin!
 
-    override func setUp() {
+    override func setUp() async throws {
         MockModelReconciliationQueue.reset()
         storageAdapter = MockSQLiteStorageEngineAdapter()
         storageAdapter.returnOnQuery(dataStoreResult: .none)

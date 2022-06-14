@@ -15,7 +15,7 @@ class PredictionsServiceTranslateTests: XCTestCase {
     var predictionsService: AWSPredictionsService!
     let mockTranslate = MockTranslateBehavior()
 
-    override func setUp() {
+    override func setUp() async throws {
         let mockConfigurationJSON = """
         {
             "defaultRegion": "us_east_1"

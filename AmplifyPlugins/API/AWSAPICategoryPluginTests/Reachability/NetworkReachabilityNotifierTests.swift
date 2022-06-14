@@ -15,7 +15,7 @@ class NetworkReachabilityNotifierTests: XCTestCase {
     var notification: Notification!
     var notifier: NetworkReachabilityNotifier!
 
-    override func setUp() {
+    override func setUp() async throws {
         do {
             notifier = try NetworkReachabilityNotifier(
                 host: "localhost",

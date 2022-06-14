@@ -14,11 +14,11 @@ import XCTest
 // swiftlint:disable type_body_length
 class ModelWithOwnerFieldAuthRuleTests: XCTestCase {
 
-    override func setUp() {
+    override func setUp() async throws {
         ModelRegistry.register(modelType: ModelWithOwnerField.self)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         ModelRegistry.reset()
     }
 

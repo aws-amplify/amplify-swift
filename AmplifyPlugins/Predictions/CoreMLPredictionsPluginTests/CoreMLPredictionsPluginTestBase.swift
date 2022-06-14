@@ -21,7 +21,7 @@ class CoreMLPredictionsPluginTestBase: XCTestCase {
 
     var queue: MockOperationQueue!
 
-    override func setUp() {
+    override func setUp() async throws {
         coreMLPredictionsPlugin = CoreMLPredictionsPlugin()
         naturalLanguageBehavior = MockCoreMLNaturalLanguageAdapter()
         visionBehavior = MockCoreMLVisionAdapter()

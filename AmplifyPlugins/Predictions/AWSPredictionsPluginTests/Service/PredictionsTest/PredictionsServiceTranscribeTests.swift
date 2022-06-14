@@ -16,7 +16,7 @@ class PredictionsServiceTranscribeTests: XCTestCase {
     let mockTranscribe = MockTranscribeBehavior()
     var audioFile: URL!
 
-    override func setUp() {
+    override func setUp() async throws {
         let mockConfigurationJSON = """
         {
             "defaultRegion": "us_east_1"

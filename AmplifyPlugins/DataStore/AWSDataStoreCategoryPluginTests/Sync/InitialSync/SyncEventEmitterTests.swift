@@ -19,8 +19,8 @@ class SyncEventEmitterTests: XCTestCase {
     var reconciliationQueue: MockAWSIncomingEventReconciliationQueue?
     var syncEventEmitter: SyncEventEmitter?
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
 
         ModelRegistry.reset()
         MockModelReconciliationQueue.reset()

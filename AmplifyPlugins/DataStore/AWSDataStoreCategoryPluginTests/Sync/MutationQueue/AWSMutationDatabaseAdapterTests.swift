@@ -19,7 +19,7 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
     let model1 = Post(title: "model1", content: "content1", createdAt: .now())
     let post = Post.keys
 
-    override func setUp() {
+    override func setUp() async throws {
         do {
             let mockStorageAdapter = MockSQLiteStorageEngineAdapter()
             databaseAdapter = try AWSMutationDatabaseAdapter(storageAdapter: mockStorageAdapter)

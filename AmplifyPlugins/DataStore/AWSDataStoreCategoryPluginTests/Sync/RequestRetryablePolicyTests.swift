@@ -12,8 +12,8 @@ import XCTest
 class RequestRetryablePolicyTests: XCTestCase {
     var retryPolicy: RequestRetryablePolicy!
     let defaultTimeout = DispatchTimeInterval.seconds(60)
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         retryPolicy = RequestRetryablePolicy()
     }
 

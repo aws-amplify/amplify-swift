@@ -20,8 +20,8 @@ class StorageEngineTestsSQLiteIndex: StorageEngineTestsBase {
     // number of records to be created
     let numberOfRecords = 1_000
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         Amplify.Logging.logLevel = .warn
     }
 

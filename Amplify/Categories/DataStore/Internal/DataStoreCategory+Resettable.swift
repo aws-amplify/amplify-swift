@@ -9,15 +9,14 @@ import Foundation
 
 extension DataStoreCategory: Resettable {
 
-    public func reset(onComplete: @escaping BasicClosure) {
-        let group = DispatchGroup()
-
-        for plugin in plugins.values {
-            log.verbose("Resetting \(categoryType) plugin")
-            group.enter()
-            plugin.reset {
-                self.log.verbose("Resetting \(self.categoryType) plugin: finished")
-                group.leave()
+    public func reset() async {
+        await withTaskGroup(of: Void.self) { taskGroup in
+            for plugin in plugins.values {
+                taskGroup.addTask { [weak self] in
+                    self?.log.verbose("Resetting \(String(describing: self?.categoryType)) plugin")
+                    await plugin.reset()
+                    self?.log.verbose("Resetting \(String(describing: self?.categoryType)) plugin: finished")
+                }
             }
         }
 
@@ -26,10 +25,6 @@ extension DataStoreCategory: Resettable {
         ModelListDecoderRegistry.reset()
         log.verbose("Resetting ModelRegistry and ModelListDecoderRegistry: finished")
 
-        group.wait()
-
         isConfigured = false
-        onComplete()
     }
-
 }

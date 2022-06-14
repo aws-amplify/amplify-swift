@@ -16,8 +16,8 @@ import XCTest
 
 class StorageEngineTestsHasMany: StorageEngineTestsBase {
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         Amplify.Logging.logLevel = .warn
 
         let validAPIPluginKey = "MockAPICategoryPlugin"

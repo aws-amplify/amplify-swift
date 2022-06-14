@@ -11,7 +11,7 @@ import XCTest
 
 class AmplifyAWSServiceConfigurationTests: XCTestCase {
 
-    override func tearDown() {
+    override func tearDown() async throws {
         AmplifyAWSServiceConfiguration.platformMapping = [:]
     }
 

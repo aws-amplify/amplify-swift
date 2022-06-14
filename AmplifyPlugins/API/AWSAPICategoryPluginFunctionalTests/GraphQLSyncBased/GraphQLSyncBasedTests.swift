@@ -16,8 +16,8 @@ class GraphQLSyncBasedTests: XCTestCase {
 
     static let amplifyConfiguration = "testconfiguration/GraphQLSyncBasedTests-amplifyconfiguration"
 
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
         let plugin = AWSAPIPlugin(modelRegistration: PostCommentModelRegistration())
 
         do {
@@ -35,8 +35,8 @@ class GraphQLSyncBasedTests: XCTestCase {
         }
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 
     // Given: No post created

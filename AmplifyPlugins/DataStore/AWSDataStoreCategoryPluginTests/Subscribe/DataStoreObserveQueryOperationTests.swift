@@ -20,7 +20,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
     var storageEngine: MockStorageEngineBehavior!
     var dataStorePublisher: ModelSubcriptionBehavior!
 
-    override func setUp() {
+    override func setUp() async throws {
         ModelRegistry.register(modelType: Post.self)
         storageEngine = MockStorageEngineBehavior()
         dataStorePublisher = DataStorePublisher()

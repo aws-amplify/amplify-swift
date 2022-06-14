@@ -11,8 +11,8 @@ import XCTest
 @testable import AmplifyTestCommon
 
 class StorageCategoryConfigurationTests: XCTestCase {
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
     }
 
     func testCanAddStoragePlugin() throws {
@@ -36,7 +36,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
         XCTAssertNotNil(try Amplify.Storage.getPlugin(for: "MockStorageCategoryPlugin"))
     }
 
-    func testCanResetStoragePlugin() throws {
+    func testCanResetStoragePlugin() async throws {
         let plugin = MockStorageCategoryPlugin()
         let resetWasInvoked = expectation(description: "reset() was invoked")
         plugin.listeners.append { message in
@@ -53,11 +53,11 @@ class StorageCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         try Amplify.configure(amplifyConfig)
-        Amplify.reset()
-        waitForExpectations(timeout: 1.0)
+        await Amplify.reset()
+        await waitForExpectations(timeout: 1.0)
     }
 
-    func testResetRemovesAddedPlugin() throws {
+    func testResetRemovesAddedPlugin() async throws {
         let plugin = MockStorageCategoryPlugin()
         try Amplify.add(plugin: plugin)
 
@@ -68,7 +68,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         try Amplify.configure(amplifyConfig)
-        Amplify.reset()
+        await Amplify.reset()
         XCTAssertThrowsError(try Amplify.Storage.getPlugin(for: "MockStorageCategoryPlugin"),
                              "Getting a plugin after reset() should throw") { error in
                                 guard case StorageError.configuration = error else {
@@ -245,7 +245,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
         }
     }
 
-    func testCanConfigureAfterReset() throws {
+    func testCanConfigureAfterReset() async throws {
         let plugin = MockStorageCategoryPlugin()
         try Amplify.add(plugin: plugin)
         let categoryConfig = StorageCategoryConfiguration(
@@ -254,11 +254,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
 
         try Amplify.Storage.configure(using: categoryConfig)
 
-        let exp = expectation(description: #function)
-        Amplify.Storage.reset {
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
+        await Amplify.Storage.reset()
 
         XCTAssertNoThrow(try Amplify.Storage.configure(using: categoryConfig))
     }

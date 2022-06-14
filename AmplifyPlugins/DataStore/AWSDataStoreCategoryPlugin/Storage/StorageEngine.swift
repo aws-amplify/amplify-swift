@@ -558,20 +558,14 @@ final class StorageEngine: StorageEngineBehavior {
 }
 
 extension StorageEngine: Resettable {
-    func reset(onComplete: @escaping BasicClosure) {
+    func reset() async {
         // TOOD: Perform cleanup on StorageAdapter, including releasing its `Connection` if needed
-        let group = DispatchGroup()
+
         if let resettable = syncEngine as? Resettable {
             log.verbose("Resetting syncEngine")
-            group.enter()
-            resettable.reset {
-                self.log.verbose("Resetting syncEngine: finished")
-                group.leave()
-            }
+            await resettable.reset()
+            self.log.verbose("Resetting syncEngine: finished")
         }
-
-        group.wait()
-        onComplete()
     }
 }
 

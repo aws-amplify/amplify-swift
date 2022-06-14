@@ -32,12 +32,12 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
     // swiftlint:enable force_try
     // swiftlint:enable force_cast
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
 
         continueAfterFailure = false
 
-        Amplify.reset()
+        await Amplify.reset()
         Amplify.Logging.logLevel = .verbose
 
         do {

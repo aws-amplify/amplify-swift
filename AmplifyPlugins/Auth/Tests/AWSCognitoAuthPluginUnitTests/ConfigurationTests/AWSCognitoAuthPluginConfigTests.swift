@@ -11,8 +11,8 @@ import XCTest
 
 class AWSCognitoAuthPluginConfigTests: XCTestCase {
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 
     /// Test Auth configuration with invalid config for auth

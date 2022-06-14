@@ -26,7 +26,7 @@ class AmplifyInProcessReportingOperationCombineTests: XCTestCase {
     var resultSink: AnyCancellable?
     var inProcessSink: AnyCancellable?
 
-    override func setUp() {
+    override func setUp() async throws {
         receivedResultValue = expectation(description: "receivedResultValue")
         receivedResultFinished = expectation(description: "receivedResultFinished")
         receivedResultFailure = expectation(description: "receivedResultFailure")

@@ -14,14 +14,14 @@ class AWSPredictionsPluginTestBase: XCTestCase {
     let region: JSONValue = "us-east-1"
     let networkTimeout = TimeInterval(180) // 180 seconds to wait before network timeouts
 
-    override func setUp() {
+    override func setUp() async throws {
 
         setupAmplify()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         print("Amplify reset")
-        Amplify.reset()
+        await Amplify.reset()
         sleep(5)
     }
 

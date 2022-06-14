@@ -11,8 +11,8 @@ import XCTest
 @testable import AmplifyTestCommon
 
 class AnalyticsCategoryConfigurationTests: XCTestCase {
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
     }
 
     func testCanAddAnalyticsPlugin() throws {
@@ -36,7 +36,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         XCTAssertNotNil(try Amplify.Analytics.getPlugin(for: "MockAnalyticsCategoryPlugin"))
     }
 
-    func testCanResetAnalyticsPlugin() throws {
+    func testCanResetAnalyticsPlugin() async throws {
         let plugin = MockAnalyticsCategoryPlugin()
         let resetWasInvoked = expectation(description: "reset() was invoked")
         plugin.listeners.append { message in
@@ -53,11 +53,11 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(analytics: analyticsConfig)
 
         try Amplify.configure(amplifyConfig)
-        Amplify.reset()
-        waitForExpectations(timeout: 1.0)
+        await Amplify.reset()
+        await waitForExpectations(timeout: 1.0)
     }
 
-    func testResetRemovesAddedPlugin() throws {
+    func testResetRemovesAddedPlugin() async throws {
         let plugin = MockAnalyticsCategoryPlugin()
         try Amplify.add(plugin: plugin)
 
@@ -68,7 +68,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(analytics: analyticsConfig)
 
         try Amplify.configure(amplifyConfig)
-        Amplify.reset()
+        await Amplify.reset()
         XCTAssertThrowsError(try Amplify.Analytics.getPlugin(for: "MockAnalyticsCategoryPlugin"),
                              "Getting a plugin after reset() should throw") { error in
                                 guard case AnalyticsError.configuration = error else {
@@ -240,7 +240,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
         }
     }
 
-    func testCanConfigureAfterReset() throws {
+    func testCanConfigureAfterReset() async throws {
         let plugin = MockAnalyticsCategoryPlugin()
         try Amplify.add(plugin: plugin)
         let categoryConfig = AnalyticsCategoryConfiguration(
@@ -249,11 +249,7 @@ class AnalyticsCategoryConfigurationTests: XCTestCase {
 
         try Amplify.Analytics.configure(using: categoryConfig)
 
-        let exp = expectation(description: #function)
-        Amplify.Analytics.reset {
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
+        await Amplify.Analytics.reset()
 
         XCTAssertNoThrow(try Amplify.Analytics.configure(using: categoryConfig))
     }

@@ -23,7 +23,7 @@ class PredictionsServiceRekognitionTests: XCTestCase {
     }
     """
 
-    override func setUp() {
+    override func setUp() async throws {
 
     }
 

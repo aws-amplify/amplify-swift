@@ -16,7 +16,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
 
     static let amplifyConfiguration = "RESTWithIAMIntegrationTests-amplifyconfiguration"
 
-    override func setUp() {
+    override func setUp() async throws {
 
         do {
             try Amplify.add(plugin: AWSAPIPlugin())
@@ -29,8 +29,8 @@ class RESTWithIAMIntegrationTests: XCTestCase {
         }
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 
     func testSetUp() {

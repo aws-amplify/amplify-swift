@@ -13,11 +13,11 @@ import XCTest
 
 class GraphQLRequestEmbeddableTypeTests: XCTestCase {
 
-    override func setUp() {
+    override func setUp() async throws {
         ModelRegistry.register(modelType: Todo.self)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         ModelRegistry.reset()
     }
 
@@ -75,7 +75,7 @@ class GraphQLRequestEmbeddableTypeTests: XCTestCase {
 
 class GraphQLRequestJSONNonModelTests: XCTestCase {
 
-    override func setUp() {
+    override func setUp() async throws {
         let sectionName =  ModelField(name: "name",
                                     type: .string,
                                     isRequired: true)
@@ -142,7 +142,7 @@ class GraphQLRequestJSONNonModelTests: XCTestCase {
         }
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         ModelRegistry.reset()
     }
 

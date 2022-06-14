@@ -12,10 +12,10 @@ import XCTest
 @testable import Amplify
 
 class StorageBackgroundEventsRegistryTests: XCTestCase {
-    override func setUp() {
+    override func setUp() async throws {
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
     }
 
     func testRegisteringAndRunningHandler() throws {

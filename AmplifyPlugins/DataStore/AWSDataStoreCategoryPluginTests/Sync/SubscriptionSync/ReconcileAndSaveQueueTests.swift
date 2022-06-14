@@ -16,7 +16,7 @@ class ReconcileAndSaveQueueTests: XCTestCase {
     var anyPostMetadata: MutationSyncMetadata!
     var anyPostMutationSync: MutationSync<AnyModel>!
     var stateMachine: MockStateMachine<ReconcileAndLocalSaveOperation.State, ReconcileAndLocalSaveOperation.Action>!
-    override func setUp() {
+    override func setUp() async throws {
         ModelRegistry.register(modelType: Post.self)
         let testPost = Post(id: "1", title: "post1", content: "content", createdAt: .now())
         let anyPost = AnyModel(testPost)

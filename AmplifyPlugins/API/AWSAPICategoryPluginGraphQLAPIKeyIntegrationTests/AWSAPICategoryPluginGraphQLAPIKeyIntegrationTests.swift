@@ -9,11 +9,11 @@ import XCTest
 
 class AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests: XCTestCase {
 
-    override func setUp() {
+    override func setUp() async throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 

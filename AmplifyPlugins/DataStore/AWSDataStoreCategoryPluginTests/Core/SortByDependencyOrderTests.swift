@@ -15,7 +15,7 @@ class SortByDependencyOrderTests: XCTestCase {
 
     var modelList = [Model.Type]()
 
-    override func setUp() {
+    override func setUp() async throws {
         modelList = [
             Author.self,
             MockUnsynced.self,

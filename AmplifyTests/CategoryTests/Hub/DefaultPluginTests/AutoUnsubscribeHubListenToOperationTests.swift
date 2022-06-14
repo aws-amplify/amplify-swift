@@ -11,8 +11,8 @@ import XCTest
 
 class AutoUnsubscribeHubListenToOperationTests: XCTestCase {
 
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
 
         let storageConfiguration =
             StorageCategoryConfiguration(plugins: ["MockDispatchingStoragePlugin": nil])
@@ -25,8 +25,8 @@ class AutoUnsubscribeHubListenToOperationTests: XCTestCase {
         }
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 
     /// - Given: An Amplify operation class

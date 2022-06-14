@@ -14,7 +14,7 @@ import AWSAPIPlugin
 
 class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
     let amplifyConfigurationFile = "testconfiguration/GraphQLWithLambdaAuthIntegrationTests-amplifyconfiguration"
-    override func setUp() {
+    override func setUp() async throws {
         do {
             try Amplify.add(plugin: AWSAPIPlugin(apiAuthProviderFactory: TestAPIAuthProviderFactory()))
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
@@ -26,8 +26,8 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
         }
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 
     /// Test create mutation with a custom GraphQL Document

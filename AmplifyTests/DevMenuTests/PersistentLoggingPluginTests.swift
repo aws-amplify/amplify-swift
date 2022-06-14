@@ -14,7 +14,7 @@ class PersistentLoggingPluginTests: XCTestCase {
 
     let provider = MockDevMenuContextProvider()
 
-    override func setUp() {
+    override func setUp() async throws {
         do {
             Amplify.enableDevMenu(contextProvider: provider)
 
@@ -43,8 +43,8 @@ class PersistentLoggingPluginTests: XCTestCase {
         XCTAssertTrue(devMenuPlugin.default is PersistentLogWrapper)
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 }
 #endif

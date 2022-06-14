@@ -12,11 +12,11 @@ import XCTest
 
 class GraphQLRequestAuthIdentityClaimTests: XCTestCase {
 
-    override func setUp() {
+    override func setUp() async throws {
         ModelRegistry.register(modelType: ScenarioATest6Post.self)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         ModelRegistry.reset()
     }
 

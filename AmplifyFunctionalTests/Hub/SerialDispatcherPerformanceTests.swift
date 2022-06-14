@@ -13,15 +13,15 @@ class SerialDispatcherPerformanceTests: XCTestCase {
     let dispatcherTypeUnderTest = SerialDispatcher.self
 
     override static func setUp() {
-        Amplify.reset()
+        await Amplify.reset()
     }
 
     override static func tearDown() {
-        Amplify.reset()
+        await Amplify.reset()
     }
 
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
         let config = AmplifyConfiguration()
         do {
             try Amplify.configure(config)
@@ -30,8 +30,8 @@ class SerialDispatcherPerformanceTests: XCTestCase {
         }
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 
     // MARK: - Performance of single channel, multiple listeners

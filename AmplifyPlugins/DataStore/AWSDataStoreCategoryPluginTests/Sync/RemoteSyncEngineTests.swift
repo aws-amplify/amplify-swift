@@ -23,8 +23,8 @@ class RemoteSyncEngineTests: XCTestCase {
 
     let defaultAsyncWaitTimeout = 2.0
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         apiPlugin = MockAPICategoryPlugin()
         MockAWSInitialSyncOrchestrator.reset()
         storageAdapter = MockSQLiteStorageEngineAdapter()

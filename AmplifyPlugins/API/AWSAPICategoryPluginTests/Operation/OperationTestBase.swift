@@ -22,11 +22,7 @@ class OperationTestBase: XCTestCase {
     /// `AWSAPIPlugin.reset` from inside `setUp`.
     override func setUpWithError() throws {
         if apiPlugin != nil {
-            let waitForReset = DispatchSemaphore(value: 0)
-            apiPlugin.reset {
-                waitForReset.signal()
-            }
-            waitForReset.wait()
+            apiPlugin.reset()
         }
         apiPlugin = nil
     }

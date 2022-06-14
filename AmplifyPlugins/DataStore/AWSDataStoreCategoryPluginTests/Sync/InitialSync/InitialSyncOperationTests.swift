@@ -17,7 +17,7 @@ import Combine
 // swiftlint:disable type_body_length
 class InitialSyncOperationTests: XCTestCase {
 
-    override func setUp() {
+    override func setUp() async throws {
         continueAfterFailure = false
     }
 

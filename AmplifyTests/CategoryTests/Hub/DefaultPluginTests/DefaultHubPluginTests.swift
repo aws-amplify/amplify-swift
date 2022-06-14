@@ -20,8 +20,8 @@ class DefaultHubPluginTests: XCTestCase {
         return plugin
     }
 
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
         // This test suite will have a lot of in-flight messages at the time of the `reset`. Give them time to finis
         // being delivered before moving to the next step.
         Thread.sleep(forTimeInterval: 1.0)
@@ -33,8 +33,8 @@ class DefaultHubPluginTests: XCTestCase {
         }
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 
     /// Given: An Amplify system configured with default values

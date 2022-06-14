@@ -27,7 +27,7 @@ class AWSS3StoragePluginTests: XCTestCase {
     let testPath = "TestPath"
     let testExpires = 10
 
-    override func setUp() {
+    override func setUp() async throws {
         storagePlugin = AWSS3StoragePlugin()
         storageService = MockAWSS3StorageService()
         authService = MockAWSAuthService()

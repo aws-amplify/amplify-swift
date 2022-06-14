@@ -11,7 +11,7 @@ import XCTest
 
 class AnyModelTests: XCTestCase {
 
-    override func setUp() {
+    override func setUp() async throws {
         ModelRegistry.register(modelType: AnyModelTester.self)
     }
 

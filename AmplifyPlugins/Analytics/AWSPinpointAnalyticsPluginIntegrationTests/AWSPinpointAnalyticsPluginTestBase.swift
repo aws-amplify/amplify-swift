@@ -15,7 +15,7 @@ class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
     let region: JSONValue = "us-east-1"
     let targetingRegion: JSONValue = "us-east-1"
 
-    override func setUp() {
+    override func setUp() async throws {
         let mobileClientIsInitialized = expectation(description: "AWSMobileClient is initialized")
         AWSMobileClient.default().initialize { userState, error in
             guard error == nil else {
@@ -62,8 +62,8 @@ class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
         print("Amplify initialized")
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         print("Amplify reset")
-        Amplify.reset()
+        await Amplify.reset()
     }
 }

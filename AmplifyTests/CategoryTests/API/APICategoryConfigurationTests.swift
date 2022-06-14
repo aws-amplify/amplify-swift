@@ -11,8 +11,8 @@ import XCTest
 @testable import AmplifyTestCommon
 
 class APICategoryConfigurationTests: XCTestCase {
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
     }
 
     func testCanAddAPIPlugin() throws {
@@ -36,7 +36,7 @@ class APICategoryConfigurationTests: XCTestCase {
         XCTAssertNotNil(try Amplify.API.getPlugin(for: "MockAPICategoryPlugin"))
     }
 
-    func testCanResetAPIPlugin() throws {
+    func testCanResetAPIPlugin() async throws {
         let plugin = MockAPICategoryPlugin()
         let resetWasInvoked = expectation(description: "reset() was invoked")
         plugin.listeners.append { message in
@@ -53,11 +53,11 @@ class APICategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(api: apiConfig)
 
         try Amplify.configure(amplifyConfig)
-        Amplify.reset()
-        waitForExpectations(timeout: 1.0)
+        await Amplify.reset()
+        await waitForExpectations(timeout: 1.0)
     }
 
-    func testResetRemovesAddedPlugin() throws {
+    func testResetRemovesAddedPlugin() async throws {
         let plugin = MockAPICategoryPlugin()
         try Amplify.add(plugin: plugin)
 
@@ -68,7 +68,7 @@ class APICategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(api: apiConfig)
 
         try Amplify.configure(amplifyConfig)
-        Amplify.reset()
+        await Amplify.reset()
         XCTAssertThrowsError(try Amplify.API.getPlugin(for: "MockAPICategoryPlugin"),
                              "Getting a plugin after reset() should throw") { error in
                                 guard case APIError.invalidConfiguration = error else {
@@ -246,7 +246,7 @@ class APICategoryConfigurationTests: XCTestCase {
         }
     }
 
-    func testCanConfigureAfterReset() throws {
+    func testCanConfigureAfterReset() async throws {
         let plugin = MockAPICategoryPlugin()
         try Amplify.add(plugin: plugin)
         let categoryConfig = APICategoryConfiguration(
@@ -260,11 +260,7 @@ class APICategoryConfigurationTests: XCTestCase {
 
         try api.configure(using: categoryConfig)
 
-        let exp = expectation(description: #function)
-        api.reset {
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
+        await api.reset()
 
         XCTAssertNoThrow(try api.configure(using: categoryConfig))
     }
@@ -295,7 +291,7 @@ class APICategoryConfigurationTests: XCTestCase {
         XCTAssertTrue(category.isConfigured)
     }
 
-    func testIsConfiguredIsFalseAfterReset() throws {
+    func testIsConfiguredIsFalseAfterReset() async throws {
         let plugin = MockAPICategoryPlugin()
         try Amplify.add(plugin: plugin)
         let categoryConfig = APICategoryConfiguration(
@@ -305,7 +301,7 @@ class APICategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(api: categoryConfig)
         try Amplify.configure(amplifyConfig)
 
-        Amplify.reset()
+        await Amplify.reset()
 
         guard let category = Amplify.API as? AmplifyAPICategory else {
             XCTFail("Could not cast Amplify.API as AmplifyAPICategory")

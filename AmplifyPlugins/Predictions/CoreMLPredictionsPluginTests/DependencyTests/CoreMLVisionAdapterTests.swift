@@ -13,7 +13,7 @@ class CoreMLVisionAdapterTests: XCTestCase {
 
     var coreMLVisionAdapter: CoreMLVisionAdapter!
 
-    override func setUp() {
+    override func setUp() async throws {
         coreMLVisionAdapter = CoreMLVisionAdapter()
     }
 

@@ -18,7 +18,7 @@ class AWSLocationGeoPluginTestBase: XCTestCase {
     var pluginConfig: AWSLocationGeoPluginConfiguration!
     var emptyPluginConfig: AWSLocationGeoPluginConfiguration!
 
-    override func setUp() {
+    override func setUp() async throws {
         pluginConfig = AWSLocationGeoPluginConfiguration(regionName: GeoPluginTestConfig.regionName,
                                                          defaultMap: GeoPluginTestConfig.map,
                                                          maps: GeoPluginTestConfig.maps,
@@ -42,7 +42,7 @@ class AWSLocationGeoPluginTestBase: XCTestCase {
         geoPlugin.authService = MockAWSAuthService()
         geoPlugin.pluginConfig = pluginConfig
 
-        Amplify.reset()
+        await Amplify.reset()
         let config = AmplifyConfiguration()
         do {
             try Amplify.configure(config)
@@ -51,8 +51,8 @@ class AWSLocationGeoPluginTestBase: XCTestCase {
         }
     }
 
-    override func tearDown() {
-        Amplify.reset()
-        geoPlugin.reset {}
+    override func tearDown() async throws {
+        await Amplify.reset()
+        geoPlugin.reset()
     }
 }

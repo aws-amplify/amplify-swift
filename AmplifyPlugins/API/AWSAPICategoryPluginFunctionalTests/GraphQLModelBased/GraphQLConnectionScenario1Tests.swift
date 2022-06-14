@@ -29,7 +29,7 @@ import XCTest
  */
 class GraphQLConnectionScenario1Tests: XCTestCase {
 
-    override func setUp() {
+    override func setUp() async throws {
         do {
             Amplify.Logging.logLevel = .verbose
             try Amplify.add(plugin: AWSAPIPlugin())
@@ -46,8 +46,8 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
         }
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 
     func testCreateAndGetProject() throws {
@@ -59,7 +59,7 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
         let project = Project1(team: team)
         Amplify.API.mutate(request: .create(project)) { result in
             switch result {
-            case .success(let result):
+            case .success(_):
                 createProjectSuccessful.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")

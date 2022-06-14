@@ -16,7 +16,7 @@ class PredictionsServiceTextractTests: XCTestCase {
     var predictionsService: AWSPredictionsService!
     let mockTextract = MockTextractBehavior()
 
-    override func setUp() {
+    override func setUp() async throws {
         let mockConfigurationJSON = """
         {
             "defaultRegion": "us-west-2"

@@ -78,11 +78,11 @@ public struct OIDCMultiGroupPost: Model {
 }
 
 class ModelWithOwnerAuthAndMultiGroup: XCTestCase {
-    override func setUp() {
+    override func setUp() async throws {
         ModelRegistry.register(modelType: OIDCMultiGroupPost.self)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         ModelRegistry.reset()
     }
 

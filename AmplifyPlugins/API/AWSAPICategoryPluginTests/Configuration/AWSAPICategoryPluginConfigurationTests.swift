@@ -34,8 +34,8 @@ class AWSAPICategoryPluginConfigurationTests: XCTestCase {
                                                    authService: MockAWSAuthService())
     }
 
-    func testThrowsOnMissingConfig() throws {
-        Amplify.reset()
+    func testThrowsOnMissingConfig() async throws {
+        await Amplify.reset()
         let plugin = AWSAPIPlugin()
         try Amplify.add(plugin: plugin)
 

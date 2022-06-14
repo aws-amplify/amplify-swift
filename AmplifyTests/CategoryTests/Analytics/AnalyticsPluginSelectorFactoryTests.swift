@@ -11,8 +11,8 @@ import XCTest
 
 class AnalyticsPluginSelectorFactoryTests: XCTestCase {
 
-//    override func setUp() {
-//        Amplify.reset()
+//    override func setUp() async throws {
+//        await Amplify.reset()
 //    }
 //
 //    func testAddingSelectorFactoryBeforeFirstPluginWorks() throws {

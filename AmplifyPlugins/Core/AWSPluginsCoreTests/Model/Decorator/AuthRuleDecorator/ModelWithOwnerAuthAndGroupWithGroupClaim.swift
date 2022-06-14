@@ -74,11 +74,11 @@ public struct OIDCGroupPost: Model {
 }
 
 class ModelWithOwnerAuthAndGroupWithGroupClaim: XCTestCase {
-    override func setUp() {
+    override func setUp() async throws {
         ModelRegistry.register(modelType: OIDCGroupPost.self)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         ModelRegistry.reset()
     }
 

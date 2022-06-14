@@ -18,7 +18,7 @@ class ModelCodableTests: XCTestCase {
     {"id":"post-1","title":"title","content":"content","comments":[],"createdAt":"1970-01-12T13:46:40Z"}
     """
 
-    override func setUp() {
+    override func setUp() async throws {
         ModelRegistry.register(modelType: Post.self)
         ModelRegistry.register(modelType: Comment.self)
     }

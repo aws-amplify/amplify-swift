@@ -23,7 +23,7 @@ class ReconciliationQueueTestBase: XCTestCase {
     var subscriptionEventsSubject: PassthroughSubject<IncomingSubscriptionEventPublisherEvent, DataStoreError>!
     var modelPredicate: QueryPredicate?
 
-    override func setUp() {
+    override func setUp() async throws {
         ModelRegistry.register(modelType: MockSynced.self)
 
         apiPlugin = MockAPICategoryPlugin()

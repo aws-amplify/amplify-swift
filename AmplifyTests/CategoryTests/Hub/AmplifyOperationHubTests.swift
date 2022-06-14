@@ -11,8 +11,8 @@ import XCTest
 
 class AmplifyOperationHubTests: XCTestCase {
 
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
 
         let storageConfiguration =
             StorageCategoryConfiguration(plugins: ["MockDispatchingStoragePlugin": nil])
@@ -25,8 +25,8 @@ class AmplifyOperationHubTests: XCTestCase {
         }
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 
     /// Given: An AmplifyOperation
@@ -212,8 +212,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
         return operation
     }
 
-    func reset(onComplete: @escaping BasicClosure) {
-        onComplete()
+    func reset() {
     }
 }
 

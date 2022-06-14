@@ -30,9 +30,8 @@ class MockLoggingCategoryPlugin: MessageReporter, LoggingCategoryPlugin, Logger 
         notify()
     }
 
-    func reset(onComplete: @escaping BasicClosure) {
+    func reset() {
         notify("reset")
-        onComplete()
     }
 
     func error(_ message: @autoclosure () -> String) {

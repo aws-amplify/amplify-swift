@@ -11,7 +11,7 @@ import AmplifyTestCommon
 @testable import AWSAPIPlugin
 
 class ModelMetadataTests: XCTestCase {
-    override func setUp() {
+    override func setUp() async throws {
         ModelRegistry.register(modelType: Comment4.self)
         ModelRegistry.register(modelType: Post4.self)
     }

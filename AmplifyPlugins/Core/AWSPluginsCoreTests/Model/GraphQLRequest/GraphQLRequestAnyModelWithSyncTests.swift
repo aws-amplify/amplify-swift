@@ -13,13 +13,13 @@ import XCTest
 // swiftlint:disable type_body_length
 class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
 
-    override func setUp() {
+    override func setUp() async throws {
         ModelRegistry.register(modelType: Comment.self)
         ModelRegistry.register(modelType: Post.self)
 
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         ModelRegistry.reset()
     }
 

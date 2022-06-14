@@ -14,8 +14,8 @@ class GeoCategoryClientAPITests: XCTestCase {
     var geo: GeoCategory!
     var plugin: MockGeoCategoryPlugin!
 
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
         plugin = MockGeoCategoryPlugin()
         geo = Amplify.Geo
         let categoryConfiguration = GeoCategoryConfiguration(

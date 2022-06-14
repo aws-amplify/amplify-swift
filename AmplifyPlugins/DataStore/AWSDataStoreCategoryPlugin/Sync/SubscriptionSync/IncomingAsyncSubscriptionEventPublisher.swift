@@ -258,7 +258,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         }
     }
 
-    func reset(onComplete: () -> Void) {
+    func reset() {
         consistencyQueue.sync {
             onCreateOperation?.cancel()
             onCreateOperation = nil
@@ -274,8 +274,6 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
 
             genericCompletionListenerHandler(result: .successfulVoid)
         }
-
-        onComplete()
     }
 
 }

@@ -11,15 +11,15 @@ import AWSCognitoAuthPlugin
 
 class AuthSRPSignInTests: AWSAuthBaseTest {
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         initializeAmplify()
         AuthSessionHelper.clearSession()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         super.tearDown()
-        Amplify.reset()
+        await Amplify.reset()
         AuthSessionHelper.clearSession()
         sleep(2)
     }

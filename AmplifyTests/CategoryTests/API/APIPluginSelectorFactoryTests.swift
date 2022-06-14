@@ -11,7 +11,7 @@ import XCTest
 
 class APIPluginSelectorFactoryTests: XCTestCase {
 
-//    override func setUp() {
+//    override func setUp() async throws {
 //        Amplify.reset()
 //    }
 //

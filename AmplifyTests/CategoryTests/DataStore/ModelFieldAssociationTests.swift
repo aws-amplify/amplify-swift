@@ -11,7 +11,7 @@ import XCTest
 
 class ModelFieldAssociationTests: XCTestCase {
 
-    override func setUp() {
+    override func setUp() async throws {
         ModelRegistry.register(modelType: Post.self)
         ModelRegistry.register(modelType: Comment.self)
     }

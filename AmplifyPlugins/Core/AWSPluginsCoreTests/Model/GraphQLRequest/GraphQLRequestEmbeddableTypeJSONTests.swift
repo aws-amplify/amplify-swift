@@ -13,7 +13,7 @@ import XCTest
 
 class GraphQLRequestEmbeddableTypeJSONTests: XCTestCase {
 
-    override func setUp() {
+    override func setUp() async throws {
         let sectionName =  ModelField(name: "name", type: .string, isRequired: true)
         let sectionNumber =  ModelField(name: "number", type: .double, isRequired: true)
         let sectionSchema = ModelSchema(name: "Section",
@@ -62,7 +62,7 @@ class GraphQLRequestEmbeddableTypeJSONTests: XCTestCase {
         }
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         ModelRegistry.reset()
     }
 

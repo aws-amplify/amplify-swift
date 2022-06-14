@@ -12,8 +12,8 @@ import XCTest
 class LoggingCategoryClientAPITests: XCTestCase {
     var mockAmplifyConfig: AmplifyConfiguration!
 
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
 
         let loggingConfig = LoggingCategoryConfiguration(
             plugins: ["MockLoggingCategoryPlugin": true]
@@ -173,8 +173,8 @@ class NonEvaluatingLoggingPlugin: LoggingCategoryPlugin, Logger {
         self
     }
 
-    func reset(onComplete: @escaping BasicClosure) {
-        onComplete()
+    func reset() {
+        // Do nothing
     }
 
     func error(_ message: @autoclosure () -> String) {

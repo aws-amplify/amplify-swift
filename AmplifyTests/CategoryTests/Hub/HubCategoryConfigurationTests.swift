@@ -11,8 +11,8 @@ import XCTest
 @testable import AmplifyTestCommon
 
 class HubCategoryConfigurationTests: XCTestCase {
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
     }
 
     func testCanAddHubPlugin() throws {
@@ -36,7 +36,7 @@ class HubCategoryConfigurationTests: XCTestCase {
         XCTAssertNotNil(try Amplify.Hub.getPlugin(for: "MockHubCategoryPlugin"))
     }
 
-    func testCanResetHubPlugin() throws {
+    func testCanResetHubPlugin() async throws {
         let plugin = MockHubCategoryPlugin()
         let resetWasInvoked = expectation(description: "reset() was invoked")
         plugin.listeners.append { message in
@@ -53,11 +53,11 @@ class HubCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(hub: hubConfig)
 
         try Amplify.configure(amplifyConfig)
-        Amplify.reset()
-        waitForExpectations(timeout: 1.0)
+        await Amplify.reset()
+        await waitForExpectations(timeout: 1.0)
     }
 
-    func testResetRemovesAddedPlugin() throws {
+    func testResetRemovesAddedPlugin() async throws {
         let plugin = MockHubCategoryPlugin()
         try Amplify.add(plugin: plugin)
 
@@ -68,7 +68,7 @@ class HubCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(hub: hubConfig)
 
         try Amplify.configure(amplifyConfig)
-        Amplify.reset()
+        await Amplify.reset()
         XCTAssertThrowsError(try Amplify.Hub.getPlugin(for: "MockHubCategoryPlugin"),
                              "Getting a plugin after reset() should throw") { error in
                                 guard case HubError.configuration = error else {
@@ -242,7 +242,7 @@ class HubCategoryConfigurationTests: XCTestCase {
         }
     }
 
-    func testCanConfigureAfterReset() throws {
+    func testCanConfigureAfterReset() async throws {
         let plugin = MockHubCategoryPlugin()
         try Amplify.add(plugin: plugin)
         let categoryConfig = HubCategoryConfiguration(
@@ -251,11 +251,7 @@ class HubCategoryConfigurationTests: XCTestCase {
 
         try Amplify.Hub.configure(using: categoryConfig)
 
-        let exp = expectation(description: #function)
-        Amplify.Hub.reset {
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
+        await Amplify.Hub.reset()
 
         XCTAssertNoThrow(try Amplify.Hub.configure(using: categoryConfig))
     }

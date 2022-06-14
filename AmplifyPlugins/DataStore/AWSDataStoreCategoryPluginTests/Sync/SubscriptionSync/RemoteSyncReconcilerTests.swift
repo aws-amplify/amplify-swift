@@ -15,7 +15,7 @@ import SQLite
 
 class RemoteSyncReconcilerTests: XCTestCase {
 
-    override func setUp() {
+    override func setUp() async throws {
         continueAfterFailure = false
     }
 

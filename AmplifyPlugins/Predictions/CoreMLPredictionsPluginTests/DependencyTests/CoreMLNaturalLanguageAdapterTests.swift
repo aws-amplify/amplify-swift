@@ -13,7 +13,7 @@ class CoreMLNaturalLanguageAdapterTests: XCTestCase {
 
     var coreMLNaturalLanguageAdapter: CoreMLNaturalLanguageAdapter!
 
-    override func setUp() {
+    override func setUp() async throws {
         coreMLNaturalLanguageAdapter = CoreMLNaturalLanguageAdapter()
     }
 

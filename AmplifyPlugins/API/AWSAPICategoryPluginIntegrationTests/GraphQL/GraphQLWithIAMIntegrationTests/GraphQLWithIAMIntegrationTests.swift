@@ -21,7 +21,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
     let password = "P123@\(UUID().uuidString)"
     let email = UUID().uuidString + "@" + UUID().uuidString + ".com"
 
-    override func setUp() {
+    override func setUp() async throws {
         do {
 
             try Amplify.add(plugin: AWSAPIPlugin())
@@ -39,8 +39,8 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
 //        }
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 
     /// Test create mutation with a custom GraphQL Document

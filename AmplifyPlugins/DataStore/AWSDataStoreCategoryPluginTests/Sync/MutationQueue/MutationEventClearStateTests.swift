@@ -17,7 +17,7 @@ class MutationEventClearStateTests: XCTestCase {
     var mockStorageAdapter: MockSQLiteStorageEngineAdapter!
     var mutationEventClearState: MutationEventClearState!
 
-    override func setUp() {
+    override func setUp() async throws {
         mockStorageAdapter = MockSQLiteStorageEngineAdapter()
         mutationEventClearState = MutationEventClearState(storageAdapter: mockStorageAdapter)
     }

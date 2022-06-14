@@ -17,7 +17,7 @@ class PredictionsServiceComprehendTests: XCTestCase {
 
     let inputForTest = "Input text for testing"
 
-    override func setUp() {
+    override func setUp() async throws {
         let mockConfigurationJSON = """
         {
             "defaultRegion": "us_east_1"

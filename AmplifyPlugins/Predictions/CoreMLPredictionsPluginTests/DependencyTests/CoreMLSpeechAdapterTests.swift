@@ -14,7 +14,7 @@ class CoreMLSpeechAdapterTests: XCTestCase {
 
     var coreMLSpeechAdapter: MockCoreMLSpeechAdapter!
 
-    override func setUp() {
+    override func setUp() async throws {
         coreMLSpeechAdapter = MockCoreMLSpeechAdapter()
     }
 

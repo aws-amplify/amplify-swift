@@ -24,7 +24,7 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
     var user1: User!
     var user2: User!
 
-    override func setUp() {
+    override func setUp() async throws {
         do {
             let credentials = try TestConfigHelper.retrieveCredentials(forResource: credentialsFile)
 
@@ -53,9 +53,9 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
         }
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         signOut()
-        Amplify.reset()
+        await Amplify.reset()
     }
 
     /// Models created with:

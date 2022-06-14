@@ -12,16 +12,16 @@ import AWSPluginsCore
 
 class SignedOutAuthSessionTests: AWSAuthBaseTest {
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         initializeAmplify()
         AuthSessionHelper.clearSession()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         super.tearDown()
         AuthSessionHelper.clearSession()
-        Amplify.reset()
+        await Amplify.reset()
     }
 
     /// Test if we can fetch auth session in signedOut state

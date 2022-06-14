@@ -20,8 +20,8 @@ class ReadyEventEmitterTests: XCTestCase {
     var readyEventEmitter: ReadyEventEmitter?
     var readyEventSink: AnyCancellable?
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
     }
 
     func testReadyEventReceived() throws {

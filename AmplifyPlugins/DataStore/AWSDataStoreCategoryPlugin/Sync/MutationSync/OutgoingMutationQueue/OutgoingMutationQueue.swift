@@ -411,8 +411,8 @@ extension OutgoingMutationQueue: Subscriber {
 }
 
 extension OutgoingMutationQueue: Resettable {
-    func reset(onComplete: @escaping BasicClosure) {
-        doStopWithoutNotifyingStateMachine(completion: onComplete)
+    func reset() {
+        doStopWithoutNotifyingStateMachine(completion: {})
     }
 }
 

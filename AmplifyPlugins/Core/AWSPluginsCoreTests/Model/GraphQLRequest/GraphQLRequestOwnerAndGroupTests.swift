@@ -14,12 +14,12 @@ import XCTest
 
 class GraphQLRequestOwnerAndGroupTests: XCTestCase {
 
-    override func setUp() {
+    override func setUp() async throws {
         ModelRegistry.register(modelType: OGCScenarioBPost.self)
         ModelRegistry.register(modelType: OGCScenarioBMGroupPost.self)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         ModelRegistry.reset()
     }
 

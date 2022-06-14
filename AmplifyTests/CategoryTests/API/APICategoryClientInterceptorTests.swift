@@ -15,8 +15,8 @@ import XCTest
 class APICategoryClientInterceptorTests: XCTestCase {
     var mockAmplifyConfig: AmplifyConfiguration!
 
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
 
         let apiConfig = APICategoryConfiguration(
             plugins: ["MockAPICategoryPlugin": true]

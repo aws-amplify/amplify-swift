@@ -18,7 +18,7 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
     let coordinates = Geo.Coordinates(latitude: 39.7392, longitude: -104.9903)
     let amplifyConfigurationFile = "testconfiguration/AWSLocationGeoPluginIntegrationTests-amplifyconfiguration"
 
-    override func setUp() {
+    override func setUp() async throws {
         continueAfterFailure = false
         do {
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
@@ -31,8 +31,8 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
         XCTAssertNotNil(Amplify.Geo.plugin)
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 
     func testGetEscapeHatch() throws {

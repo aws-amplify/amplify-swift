@@ -15,8 +15,8 @@ class AWSPredictionsPluginTestBase: XCTestCase {
 
     let networkTimeout = TimeInterval(180) // 180 seconds to wait before network timeouts
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
 
         continueAfterFailure = false
 
@@ -38,9 +38,9 @@ class AWSPredictionsPluginTestBase: XCTestCase {
         }
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         sleep(1)
         print("Amplify reset")
-        Amplify.reset()
+        await Amplify.reset()
     }
 }

@@ -71,27 +71,17 @@ final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPubl
 // MARK: Resettable
 extension AWSIncomingSubscriptionEventPublisher: Resettable {
 
-    func reset(onComplete: () -> Void) {
-        let group = DispatchGroup()
-
-        group.enter()
+    func reset() {
         Amplify.log.verbose("Resetting asyncEvents")
-        asyncEvents.reset {
-            Amplify.log.verbose("Resetting asyncEvents: finished")
-            group.leave()
-        }
+        asyncEvents.reset()
+        Amplify.log.verbose("Resetting asyncEvents: finished")
 
         if let mapper = mapper {
             Amplify.log.verbose("Resetting mapper")
-            group.enter()
-            mapper.reset {
-                Amplify.log.verbose("Resetting mapper: finished")
-                group.leave()
-            }
-        }
 
-        group.wait()
-        onComplete()
+            mapper.reset()
+            Amplify.log.verbose("Resetting mapper: finished")
+        }
     }
 
 }

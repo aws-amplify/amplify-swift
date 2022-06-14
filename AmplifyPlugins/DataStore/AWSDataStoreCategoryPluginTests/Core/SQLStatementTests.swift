@@ -17,7 +17,7 @@ import XCTest
 // TODO: Refactor this into separate test suites
 class SQLStatementTests: XCTestCase {
 
-    override func setUp() {
+    override func setUp() async throws {
         // one-to-many/many-to-one association
         ModelRegistry.register(modelType: Post.self)
         ModelRegistry.register(modelType: Comment.self)

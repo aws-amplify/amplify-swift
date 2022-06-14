@@ -10,12 +10,12 @@ import XCTest
 
 class CredentialStoreConfigurationTests: AWSAuthBaseTest {
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         AuthSessionHelper.clearSession()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         super.tearDown()
         AuthSessionHelper.clearSession()
     }

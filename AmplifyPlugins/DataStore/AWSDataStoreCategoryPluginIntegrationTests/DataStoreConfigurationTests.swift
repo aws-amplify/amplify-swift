@@ -15,15 +15,15 @@ import AWSPluginsCore
 
 class DataStoreConfigurationTests: XCTestCase {
 
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         Amplify.DataStore.clear(completion: { _ in })
     }
 
-    func testConfigureWithSameSchemaDoesNotDeleteDatabase() throws {
+    func testConfigureWithSameSchemaDoesNotDeleteDatabase() async throws {
 
         let previousVersion = "previousVersion"
         let saveSuccess = expectation(description: "Save was successful")
@@ -49,7 +49,7 @@ class DataStoreConfigurationTests: XCTestCase {
 
         wait(for: [saveSuccess], timeout: TestCommonConstants.networkTimeout)
 
-        Amplify.reset()
+        await Amplify.reset()
 
         let querySuccess = expectation(description: "query was successful")
 
@@ -82,7 +82,7 @@ class DataStoreConfigurationTests: XCTestCase {
         wait(for: [querySuccess], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testConfigureWithDifferentSchemaClearsDatabase() throws {
+    func testConfigureWithDifferentSchemaClearsDatabase() async throws {
 
         let prevoisVersion = "previousVersion"
         let saveSuccess = expectation(description: "Save was successful")
@@ -108,7 +108,7 @@ class DataStoreConfigurationTests: XCTestCase {
 
         wait(for: [saveSuccess], timeout: TestCommonConstants.networkTimeout)
 
-        Amplify.reset()
+        await Amplify.reset()
 
         let querySuccess = expectation(description: "query was successful")
 

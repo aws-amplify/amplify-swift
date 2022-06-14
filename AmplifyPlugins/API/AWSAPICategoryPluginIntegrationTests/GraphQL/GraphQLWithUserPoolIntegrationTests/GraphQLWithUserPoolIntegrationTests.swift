@@ -28,7 +28,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
 
     var user: User!
 
-    override func setUp() {
+    override func setUp() async throws {
         do {
 
             try Amplify.add(plugin: AWSAPIPlugin())
@@ -43,9 +43,9 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         signOut()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         signOut()
-        Amplify.reset()
+        await Amplify.reset()
     }
 
     /// Given: A CreateTodo mutation request, and user signed in, graphql has userpools as auth mode.

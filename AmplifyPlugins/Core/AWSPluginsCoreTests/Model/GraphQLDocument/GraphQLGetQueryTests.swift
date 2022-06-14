@@ -13,7 +13,7 @@ import XCTest
 
 class GraphQLGetQueryTests: XCTestCase {
 
-    override func setUp() {
+    override func setUp() async throws {
         ModelRegistry.register(modelType: Comment.self)
         ModelRegistry.register(modelType: Post.self)
     }

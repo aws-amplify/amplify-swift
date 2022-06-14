@@ -18,15 +18,15 @@ class AWSAuthSignInOperationTests: XCTestCase {
     var queue: OperationQueue?
     let initialState = AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured)
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         queue = OperationQueue()
         queue?.maxConcurrentOperationCount = 1
     }
 
-    override func tearDown() {
-        super.tearDown()
-        Amplify.reset()
+    override func tearDown() async throws {
+        try await super.tearDown()
+        await Amplify.reset()
         sleep(2)
     }
 

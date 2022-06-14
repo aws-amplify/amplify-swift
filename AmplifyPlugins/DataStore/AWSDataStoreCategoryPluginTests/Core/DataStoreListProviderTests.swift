@@ -14,8 +14,8 @@ class DataStoreListProviderTests: XCTestCase {
 
     var mockDataStorePlugin: MockDataStoreCategoryPlugin!
 
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
         ModelRegistry.register(modelType: Post4.self)
         ModelRegistry.register(modelType: Comment4.self)
         ModelListDecoderRegistry.registerDecoder(DataStoreListDecoder.self)

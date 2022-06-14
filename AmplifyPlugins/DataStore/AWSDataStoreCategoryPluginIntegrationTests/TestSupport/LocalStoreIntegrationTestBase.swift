@@ -13,8 +13,8 @@ import XCTest
 
 class LocalStoreIntegrationTestBase: XCTestCase {
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
 
         continueAfterFailure = false
 
@@ -27,9 +27,9 @@ class LocalStoreIntegrationTestBase: XCTestCase {
         }
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         Amplify.DataStore.clear(completion: { _ in })
-        Amplify.reset()
+        await Amplify.reset()
     }
 
 }

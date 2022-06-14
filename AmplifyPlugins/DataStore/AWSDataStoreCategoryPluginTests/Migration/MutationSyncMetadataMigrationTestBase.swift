@@ -17,8 +17,8 @@ class MutationSyncMetadataMigrationTestBase: XCTestCase {
     var storageAdapter: SQLiteStorageEngineAdapter!
     var modelSchemas: [ModelSchema]!
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         Amplify.Logging.logLevel = .debug
         do {
             let connection = try Connection(.inMemory)

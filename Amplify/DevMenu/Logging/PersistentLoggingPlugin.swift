@@ -28,9 +28,9 @@ public class PersistentLoggingPlugin: LoggingCategoryPlugin {
         return plugin.logger(forCategory: category)
     }
 
-    public func reset(onComplete: @escaping BasicClosure) {
+    public func reset() async {
         persistentLogWrapper = nil
-        plugin.reset(onComplete: onComplete)
+        await plugin.reset()
     }
 
     init(plugin: LoggingCategoryPlugin) {

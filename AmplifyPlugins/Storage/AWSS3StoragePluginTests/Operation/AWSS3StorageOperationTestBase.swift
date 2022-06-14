@@ -28,7 +28,7 @@ class AWSS3StorageOperationTestBase: XCTestCase {
     let testURL = URL(fileURLWithPath: "path")
     let testStorageConfiguration = AWSS3StoragePluginConfiguration()
 
-    override func setUp() {
+    override func setUp() async throws {
         let mockAmplifyConfig = AmplifyConfiguration()
 
         do {
@@ -43,8 +43,8 @@ class AWSS3StorageOperationTestBase: XCTestCase {
         mockAuthService = MockAWSAuthService()
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 
 }

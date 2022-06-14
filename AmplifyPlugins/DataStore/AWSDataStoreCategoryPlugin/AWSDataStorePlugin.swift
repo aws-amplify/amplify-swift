@@ -216,7 +216,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         }
     }
 
-    public func reset(onComplete: @escaping (() -> Void)) {
+    public func reset() async {
         if operationQueue != nil {
             operationQueue = nil
         }
@@ -225,18 +225,12 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             Amplify.Hub.removeListener(listener)
             hubListener = nil
         }
-        let group = DispatchGroup()
+
         if let resettable = storageEngine as? Resettable {
             log.verbose("Resetting storageEngine")
-            group.enter()
-            resettable.reset {
-                self.log.verbose("Resetting storageEngine: finished")
-                group.leave()
-            }
+            await resettable.reset()
+            self.log.verbose("Resetting storageEngine: finished")
         }
-
-        group.wait()
-        onComplete()
     }
 
 }

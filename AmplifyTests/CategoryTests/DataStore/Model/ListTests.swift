@@ -12,7 +12,7 @@ import XCTest
 
 class ListTests: XCTestCase {
 
-    override func setUp() {
+    override func setUp() async throws {
         ModelListDecoderRegistry.reset()
     }
 

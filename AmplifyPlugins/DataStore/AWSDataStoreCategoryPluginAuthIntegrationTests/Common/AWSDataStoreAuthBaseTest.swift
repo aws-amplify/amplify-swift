@@ -22,7 +22,7 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
     var user2: TestUser?
     var authRecorderInterceptor: AuthRecorderInterceptor!
 
-    override func setUp() {
+    override func setUp() async throws {
         continueAfterFailure = false
     }
 
@@ -30,7 +30,7 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
         clearDataStore()
         requests = []
         signOut()
-        Amplify.reset()
+        await Amplify.reset()
     }
 
     // MARK: - Test Helpers

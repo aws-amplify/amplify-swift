@@ -39,7 +39,7 @@ class StorageTransferDatabaseTests: XCTestCase {
 
     let bucket = "MY_BUCKET"
 
-    override func setUp() {
+    override func setUp() async throws {
         fileSystem = FileSystem()
         queue = DispatchQueue(label: "com.amazon.aws.amplify.storage", qos: .background, target: .global())
         logger = storageLogger
@@ -48,7 +48,7 @@ class StorageTransferDatabaseTests: XCTestCase {
         database = DefaultStorageTransferDatabase(databaseDirectoryURL: temporaryDirectoryURL, fileSystem: fileSystem, logger: logger)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         fileSystem.removeDirectoryIfExists(directoryURL: temporaryDirectoryURL)
 
         fileSystem = nil

@@ -12,8 +12,8 @@ import XCTest
 
 class AuthCategoryConfigurationTests: XCTestCase {
 
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
     }
 
     /// Test if we can add a new auth plugin
@@ -61,7 +61,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
     /// - Then:
     ///    - The plugin should invoke the reset method.
     ///
-    func testCanResetCategory() throws {
+    func testCanResetCategory() async throws {
         let plugin = MockAuthCategoryPlugin()
         let resetWasInvoked = expectation(description: "reset() was invoked")
         plugin.listeners.append { message in
@@ -78,8 +78,8 @@ class AuthCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(auth: config)
 
         try Amplify.configure(amplifyConfig)
-        Amplify.reset()
-        waitForExpectations(timeout: 1.0)
+        await Amplify.reset()
+        await waitForExpectations(timeout: 1.0)
     }
 
     /// Test whether calling reset removes the plugin added
@@ -90,7 +90,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
     /// - Then:
     ///    - Auth plugin should no longer work
     ///
-    func testResetRemovesAddedPlugin() throws {
+    func testResetRemovesAddedPlugin() async throws {
         let plugin = MockAuthCategoryPlugin()
         try Amplify.add(plugin: plugin)
 
@@ -101,7 +101,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(auth: config)
 
         try Amplify.configure(amplifyConfig)
-        Amplify.reset()
+        await Amplify.reset()
         XCTAssertThrowsError(try Amplify.Auth.getPlugin(for: "MockAuthCategoryPlugin"),
                              "Getting a plugin after reset() should throw") { error in
                                 guard case AuthError.configuration = error else {
@@ -342,7 +342,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
     /// - Then:
     ///    - Should not throw any error
     ///
-    func testCanConfigureAfterReset() throws {
+    func testCanConfigureAfterReset() async throws {
         let plugin = MockAuthCategoryPlugin()
         try Amplify.add(plugin: plugin)
         let config = AuthCategoryConfiguration(
@@ -351,11 +351,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
 
         XCTAssertNoThrow(try Amplify.Auth.configure(using: config))
 
-        let exp = expectation(description: #function)
-        Amplify.Auth.reset {
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
+        await Amplify.Auth.reset()
 
         XCTAssertNoThrow(try Amplify.Auth.configure(using: config))
 

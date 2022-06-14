@@ -14,7 +14,7 @@ class AWSAuthServiceTests: XCTestCase {
 
     var awsAuthService: AWSAuthServiceBehavior!
 
-    override func setUp() {
+    override func setUp() async throws {
         awsAuthService = AWSAuthService()
     }
     func testValidTokenGetTokenClaims() throws {

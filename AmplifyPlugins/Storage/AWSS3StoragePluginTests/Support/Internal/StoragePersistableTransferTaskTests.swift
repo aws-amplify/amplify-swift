@@ -15,14 +15,14 @@ class StoragePersistableTransferTaskTests: XCTestCase {
     var fileSystem: FileSystem!
     var logger: Logger!
 
-    override func setUp() {
+    override func setUp() async throws {
         database = MockStorageTransferDatabase()
         fileSystem = FileSystem()
         logger = storageLogger
         logger.logLevel = .info
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         database = nil
         fileSystem = nil
         logger = nil

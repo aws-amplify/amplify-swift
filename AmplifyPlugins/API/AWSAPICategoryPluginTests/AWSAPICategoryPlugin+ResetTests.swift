@@ -11,10 +11,7 @@ import XCTest
 class AWSAPICategoryPluginResetTests: AWSAPICategoryPluginTestBase {
 
     func testReset() {
-        let completedInvoked = expectation(description: "onComplete is invoked")
-        apiPlugin.reset {
-            completedInvoked.fulfill()
-        }
+        apiPlugin.reset()
 
         waitForExpectations(timeout: 1)
         XCTAssertNotNil(apiPlugin.mapper)

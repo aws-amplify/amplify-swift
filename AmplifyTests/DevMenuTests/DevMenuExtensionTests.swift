@@ -12,7 +12,7 @@ import XCTest
 
 class DevMenuExtensionTests: XCTestCase {
     let provider = MockDevMenuContextProvider()
-    override func setUp() {
+    override func setUp() async throws {
         do {
             Amplify.enableDevMenu(contextProvider: provider)
 
@@ -50,8 +50,8 @@ class DevMenuExtensionTests: XCTestCase {
         let devMenuPlugin = try Amplify.Logging.getPlugin(for: DevMenuStringConstants.persistentLoggingPluginKey)
         XCTAssertTrue(devMenuPlugin is PersistentLoggingPlugin)
     }
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 }
 #endif

@@ -12,13 +12,13 @@ import XCTest
 @testable import AWSPluginsCore
 
 class GraphQLRequestOptionalAssociationTests: XCTestCase {
-    override func setUp() {
+    override func setUp() async throws {
         ModelRegistry.register(modelType: User.self)
         ModelRegistry.register(modelType: UserFollowing.self)
         ModelRegistry.register(modelType: UserFollowers.self)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         ModelRegistry.reset()
     }
 
