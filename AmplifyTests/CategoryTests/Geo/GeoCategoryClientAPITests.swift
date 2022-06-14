@@ -33,7 +33,7 @@ class GeoCategoryClientAPITests: XCTestCase {
         }
 
     }
-    
+
     func testSearchForText() async {
         let text = "test"
         let expectedMessage = "search(for text:\(text))"
@@ -51,7 +51,7 @@ class GeoCategoryClientAPITests: XCTestCase {
             XCTFail("Error: \(error)")
         }
     }
-    
+
     func testSearchForCoords() async {
         let coordinates = Geo.Coordinates(latitude: 0, longitude: 0)
         let expectedMessage = "search(for coordinates:\(coordinates))"
@@ -69,7 +69,7 @@ class GeoCategoryClientAPITests: XCTestCase {
             XCTFail("Error: \(error)")
         }
     }
-    
+
     func testGetAvailableMaps() async {
         let expectedMessage = "availableMaps"
         var expectedFunctionCalled = false
@@ -87,7 +87,7 @@ class GeoCategoryClientAPITests: XCTestCase {
             XCTFail("Error: \(error)")
         }
     }
-    
+
     func testGetDefaultMap() async {
         let expectedMessage = "defaultMap"
         var expectedFunctionCalled = false

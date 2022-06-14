@@ -135,7 +135,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
         let updatedEmail = "\(username)@amazon.com"
-        
+
         let signInExpectation = expectation(description: "SignIn operation should complete")
         AuthSignInHelper.registerAndSignInUser(username: username,
                                                password: password,
@@ -172,7 +172,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         }
         wait(for: [resendExpectation], timeout: networkTimeout)
     }
-    
+
     /// Test resending code for the user's updated email attribute.
     /// Internally, Cognito's `GetUserAttributeVerificationCode` API will be called with metadata as clientMetadata.
     /// The configured lambda trigger will invoke the custom message lambda with the client metadata payload. See

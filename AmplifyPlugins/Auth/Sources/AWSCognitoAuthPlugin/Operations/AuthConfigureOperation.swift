@@ -56,7 +56,7 @@ class AuthConfigureOperation: ConfigureOperation {
             switch state {
             case .configured:
                 self?.finish()
-            default: break //TODO: Add any error handling if required.
+            default: break // TODO: Add any error handling if required.
             }
         }, onSubscribe: {[weak self] in
             guard let self = self else {
