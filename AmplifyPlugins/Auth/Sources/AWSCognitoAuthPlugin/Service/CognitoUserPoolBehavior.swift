@@ -34,4 +34,7 @@ protocol CognitoUserPoolBehavior {
     /// Throws GetUserAttributeVerificationCodeOutputError
     func getUserAttributeVerificationCode(input: GetUserAttributeVerificationCodeInput) async throws -> GetUserAttributeVerificationCodeOutputResponse
     
+    /// Throws GetUserOutputError
+    func getUser(input: GetUserInput) async throws -> GetUserOutputResponse
+    
 }
