@@ -19,7 +19,7 @@ struct RefreshUserPoolTokens: Action {
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
         // TODO: Fix refresh token flow.
-        
+
 //        guard case let .success(cognitoUserPoolTokens) = cognitoSession.cognitoTokensResult else {
 //            let authZError = AuthorizationError.invalidState(
 //                message: "Refresh User Pool Tokens action will only be triggered in the success scenario")

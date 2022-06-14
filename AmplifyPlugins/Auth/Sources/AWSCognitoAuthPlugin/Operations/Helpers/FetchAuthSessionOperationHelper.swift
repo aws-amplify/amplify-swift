@@ -9,28 +9,27 @@ import Foundation
 import Amplify
 
 class FetchAuthSessionOperationHelper {
-    
-    typealias FetchAuthSessionCompletion = (Result<AuthSession, AuthError>) -> ()
-    
+
+    typealias FetchAuthSessionCompletion = (Result<AuthSession, AuthError>) -> Void
+
     let authStateMachine: AuthStateMachine
     let credentialStoreStateMachine: CredentialStoreStateMachine
-    
-    var completion: FetchAuthSessionCompletion? = nil
+
+    var completion: FetchAuthSessionCompletion?
 
     init(authStateMachine: AuthStateMachine,
-         credentialStoreStateMachine: CredentialStoreStateMachine)
-    {
+         credentialStoreStateMachine: CredentialStoreStateMachine) {
         self.authStateMachine = authStateMachine
         self.credentialStoreStateMachine = credentialStoreStateMachine
     }
-    
-    func fetchSession(completion: FetchAuthSessionCompletion?)  {
+
+    func fetchSession(completion: FetchAuthSessionCompletion?) {
         self.completion = completion
         initializeCredentialStore { [weak self] in
             self?.fetchStoredCredentials()
         }
     }
-    
+
     private func initializeCredentialStore(completion: @escaping () -> Void) {
 
         var token: AuthStateMachine.StateChangeListenerToken?
@@ -49,9 +48,9 @@ class FetchAuthSessionOperationHelper {
 
         } onSubscribe: { }
     }
-    
+
     private func initializeAuthStateMachine(with storedCredentials: AmplifyCredentials?) {
-        
+
         authStateMachine.getCurrentState { [weak self] state in
             guard case .configured = state  else {
                 let message = "Credential store state machine not in idle state: \(state)"
@@ -62,7 +61,6 @@ class FetchAuthSessionOperationHelper {
             self?.fetchAuthSession(with: storedCredentials)
         }
     }
-
 
     private func fetchStoredCredentials() {
 
@@ -161,7 +159,7 @@ class FetchAuthSessionOperationHelper {
             }
             // Send the load locally stored credentials event
             // TODO: Fix here
-            //self.sendStoreCredentialsEvent(with: session.getCognitoCredentials())
+            // self.sendStoreCredentialsEvent(with: session.getCognitoCredentials())
 
         }
     }
@@ -185,5 +183,4 @@ class FetchAuthSessionOperationHelper {
         completion?(.failure(error))
     }
 
-    
 }

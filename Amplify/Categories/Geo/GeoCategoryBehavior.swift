@@ -28,7 +28,6 @@ public protocol GeoCategoryBehavior {
     func search(for text: String,
                 options: Geo.SearchForTextOptions?) async throws -> [Geo.Place]
 
-    
     /// Reverse geocodes a given pair of coordinates and returns a list of Places
     /// closest to the specified position.
     /// - Parameters:
@@ -45,7 +44,7 @@ public protocol GeoCategoryBehavior {
     ///     `Geo.Error.unknown` if error is unknown
     func search(for coordinates: Geo.Coordinates,
                 options: Geo.SearchForCoordinatesOptions?) async throws -> [Geo.Place]
-    
+
     // MARK: - Maps
 
     /// Retrieves metadata for available Map resources.
@@ -59,7 +58,7 @@ public protocol GeoCategoryBehavior {
     ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
     ///     `Geo.Error.unknown` if error is unknown
     func availableMaps() async throws -> [Geo.MapStyle]
-    
+
     /// Retrieves metadata for the default Map resource.
     /// - Returns:
     ///     It returns the default Map resource.

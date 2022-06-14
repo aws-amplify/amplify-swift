@@ -26,22 +26,22 @@ class MockGeoCategoryPlugin: MessageReporter, GeoCategoryPlugin {
         notify("search(for text:\(text))")
         return [createPlace()]
     }
-    
+
     func search(for coordinates: Geo.Coordinates, options: Geo.SearchForCoordinatesOptions?) async throws -> [Geo.Place] {
         notify("search(for coordinates:\(coordinates))")
         return [createPlace()]
     }
-    
+
     func availableMaps() async throws -> [Geo.MapStyle] {
         notify("availableMaps")
         return [createMapStyle()]
     }
-    
+
     func defaultMap() async throws -> Geo.MapStyle {
         notify("defaultMap")
         return createMapStyle()
     }
-    
+
     private func createMapStyle() -> Geo.MapStyle {
         Geo.MapStyle(mapName: "MapName",
                  style: "MapStyle",
