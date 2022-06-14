@@ -15,7 +15,6 @@ enum AuthorizationError: Error {
     case service(error: Swift.Error)
     case invalidState(message: String)
     case invalidAWSCredentials(message: String)
-    case invalidIdentityId(message: String)
     case invalidUserPoolTokens(message: String)
 }
 
@@ -35,7 +34,6 @@ extension AuthorizationError: AuthErrorConvertible {
                 return AuthError.unknown("", error)
             }
         case .invalidAWSCredentials(let message),
-                .invalidIdentityId(let message),
                 .invalidUserPoolTokens(let message):
             return .unknown(message, nil)
         case .invalidState(let message):
@@ -52,8 +50,6 @@ extension AuthorizationError: Equatable {
         case (.service, .service):
             return true
         case (.invalidAWSCredentials, invalidAWSCredentials):
-            return true
-        case (.invalidIdentityId, invalidIdentityId):
             return true
         case (.invalidUserPoolTokens, .invalidUserPoolTokens):
             return true

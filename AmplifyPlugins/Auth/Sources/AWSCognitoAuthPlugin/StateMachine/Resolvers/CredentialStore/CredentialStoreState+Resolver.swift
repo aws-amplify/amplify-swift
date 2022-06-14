@@ -29,7 +29,7 @@ extension CredentialStoreState {
                 return resolveMigratingLegacyStore(oldState: oldState, byApplying: credentialStoreEvent)
             case .loadingStoredCredentials, .storingCredentials, .clearingCredentials:
                 return resolveOperationCompletion(oldState: oldState, byApplying: credentialStoreEvent)
-            case .success, error:
+            case .success, .error:
                 return resolveSuccessAndErrorState(oldState: oldState, byApplying: credentialStoreEvent)
             case .idle:
                 return resolveIdleState(oldState: oldState, byApplying: credentialStoreEvent)
@@ -41,7 +41,7 @@ extension CredentialStoreState {
         ) -> StateResolution<StateType> {
 
             switch credentialStoreEvent.eventType {
-            case .migrateLegacyCredentialStore:
+            case .migrateLegacyCredentialStore, .loadCredentialStore:
                 let action = MigrateLegacyCredentialStore()
                 let resolution = StateResolution(
                     newState: CredentialStoreState.migratingLegacyStore,

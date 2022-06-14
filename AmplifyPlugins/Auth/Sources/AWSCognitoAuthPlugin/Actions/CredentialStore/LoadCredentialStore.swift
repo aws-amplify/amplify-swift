@@ -29,7 +29,7 @@ struct LoadCredentialStore: Action {
 
         do {
             let storedCredentials = try amplifyCredentialStore.retrieveCredential()
-            let event = CredentialStoreEvent(eventType: .completedOperation(storedCredentials))
+            let event = CredentialStoreEvent(eventType: .completedOperation(storedCredentials as! AmplifyCredentials))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
         } catch let error as CredentialStoreError {

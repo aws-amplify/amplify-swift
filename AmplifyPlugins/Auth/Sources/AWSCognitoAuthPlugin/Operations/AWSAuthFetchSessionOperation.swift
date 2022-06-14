@@ -37,27 +37,42 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation, AuthFet
             finish()
             return
         }
-        
-        fetchSessionHelper.fetchSession { [weak self] result in
-            switch result {
-            case .success(let session):
-                self?.dispatch(session)
-            case .failure(let error):
+
+        authStateMachine.getCurrentState { [weak self] state in
+            guard case .configured(_, let authorizationState) = state  else {
+                let message = "Credential store state machine not in idle state: \(state)"
+                let error = AuthError.invalidState(message, "", nil)
                 self?.dispatch(error)
+                return
             }
+
+            switch authorizationState {
+            case .configured:
+                // If session has not been established, ask statemachine to invoke fetching
+                // fresh session.
+                let event = AuthorizationEvent(eventType: .fetchUnAuthSession)
+                self?.authStateMachine.send(event)
+            case .sessionEstablished(let credentials):
+                // TODO: Validate the credentials, if it is invalid invoke a refresh
+                self?.dispatch(credentials.cognitoSession)
+            default:
+                // TODO:  Add error handling
+                fatalError()
+            }
+
         }
     }
 
     private func dispatch(_ result: AuthSession) {
-        finish()
         let asyncEvent = AWSAuthFetchSessionOperation.OperationResult.success(result)
         dispatch(result: asyncEvent)
+        finish()
     }
 
     private func dispatch(_ error: AuthError) {
-        finish()
         let asyncEvent = AWSAuthFetchSessionOperation.OperationResult.failure(error)
         dispatch(result: asyncEvent)
+        finish()
     }
 
 }

@@ -18,9 +18,12 @@ extension AuthState: CustomDebugStringConvertible {
             additionalMetadataDictionary = [:]
         case .configuringAuth:
             additionalMetadataDictionary = [:]
+        case .waitingForCachedCredentials:
+            additionalMetadataDictionary = [:]
         case .configuringAuthentication(let authenticationState):
             additionalMetadataDictionary = authenticationState.debugDictionary
-
+        case .validatingCredentialsAndConfiguration:
+            additionalMetadataDictionary = [:]
         case .configuringAuthorization(let authenticationState, let authorizationState):
             additionalMetadataDictionary = authenticationState.debugDictionary.merging(
                 authorizationState.debugDictionary, uniquingKeysWith: {$1}

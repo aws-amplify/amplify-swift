@@ -5,33 +5,38 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
+import AWSPluginsCore
 import Foundation
 
-struct InitializeAuthConfiguration: Action {
+struct InformSessionFetched: Action {
 
-    let identifier = "InitializeAuthConfiguration"
+    let identifier = "InformSessionFetched"
 
-    let authConfiguration: AuthConfiguration
+    let identityID: IdentityID
+
+    let credetentials: AuthAWSCognitoCredentials
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        let event = AuthEvent(eventType: .fetchCachedCredentials(authConfiguration))
+        let event = AuthorizationEvent(eventType: .fetched(identityID, credetentials))
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         dispatcher.send(event)
     }
 }
 
-extension InitializeAuthConfiguration: CustomDebugDictionaryConvertible {
+extension InformSessionFetched: DefaultLogger { }
+
+extension InformSessionFetched: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
-            "identifier": identifier,
-            "configuration": authConfiguration
+            "identifier": identifier
         ]
     }
 }
 
-extension InitializeAuthConfiguration: CustomDebugStringConvertible {
+extension InformSessionFetched: CustomDebugStringConvertible {
     var debugDescription: String {
         debugDictionary.debugDescription
     }
