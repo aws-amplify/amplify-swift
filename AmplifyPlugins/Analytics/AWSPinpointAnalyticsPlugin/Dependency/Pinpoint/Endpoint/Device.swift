@@ -19,7 +19,7 @@ import UIKit
 
 extension UIDevice: Device {
     var appVersion: String? {
-        return Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+        return Bundle.main.appVersion
     }
     
     var platform: Platform {
