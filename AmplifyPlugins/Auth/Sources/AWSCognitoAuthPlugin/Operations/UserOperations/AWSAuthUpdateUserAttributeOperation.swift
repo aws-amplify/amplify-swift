@@ -9,10 +9,10 @@ import Amplify
 import AWSPluginsCore
 import AWSCognitoIdentityProvider
 
-public class AWSAuthFetchUserAttributesOperation: AmplifyOperation<
-AuthFetchUserAttributesRequest,
-[AuthUserAttribute],
-AuthError>, AuthFetchUserAttributeOperation {
+public class AWSAuthUpdateUserAttributeOperation: AmplifyOperation<
+AuthUpdateUserAttributeRequest,
+AuthUpdateAttributeResult,
+AuthError>, AuthUpdateUserAttributeOperation {
     
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
     
@@ -22,7 +22,7 @@ AuthError>, AuthFetchUserAttributeOperation {
     private var statelistenerToken: AuthStateMachineToken?
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
     
-    init(_ request: AuthFetchUserAttributesRequest,
+    init(_ request: AuthUpdateUserAttributeRequest,
          authStateMachine: AuthStateMachine,
          credentialStoreStateMachine: CredentialStoreStateMachine,
          userPoolFactory: @escaping CognitoUserPoolFactory,
@@ -55,7 +55,7 @@ AuthError>, AuthFetchUserAttributeOperation {
                     return
                 }
                 Task.init { [weak self] in
-                    await self?.getUserAttributes(with: tokens.accessToken)
+                    await self?.updateAttribute(with: tokens.accessToken)
                 }
             case .failure(let error):
                 self?.dispatch(error)
@@ -64,20 +64,25 @@ AuthError>, AuthFetchUserAttributeOperation {
         
     }
     
-    func getUserAttributes(with accessToken: String) async {
+    func updateAttribute(with accessToken: String) async {
         
         do {
             let userPoolService = try userPoolFactory()
-
-            let input = GetUserInput(accessToken: accessToken)
             
-            let result = try await userPoolService.getUser(input: input)
+            let attributeList = [request.userAttribute]
+            
+            let clientMetaData = (request.options.pluginOptions as? AWSUpdateUserAttributeOptions)?.metadata ?? [:]
+            let input = UpdateUserAttributesInput(accessToken: accessToken,
+                                                  clientMetadata: clientMetaData,
+                                                  userAttributes: attributeList.map({ $0.sdkClientAttributeType() }))
+            
+            let result = try await userPoolService.updateUserAttributes(input: input)
             
             if self.isCancelled {
                 return
             }
             
-            guard let attributes = result.userAttributes else {
+            guard let codeDeliveryDetailsList = result.codeDeliveryDetailsList else {
                 let authError = AuthError.service("Unable to get Auth code delivery details",
                                                   AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
                                                   nil)
@@ -85,18 +90,34 @@ AuthError>, AuthFetchUserAttributeOperation {
                 return
             }
             
-            let mappedAttributes: [AuthUserAttribute] = attributes.compactMap { oldAttribute in
-                guard let attributeName = oldAttribute.name,
-                      let attributeValue = oldAttribute.value else {
-                    return nil
+            var finalResult = [AuthUserAttributeKey: AuthUpdateAttributeResult]()
+            for item in codeDeliveryDetailsList {
+                if let attribute = item.attributeName {
+                    let authCodeDeliveryDetails = item.toAuthCodeDeliveryDetails()
+                    let nextStep = AuthUpdateAttributeStep.confirmAttributeWithCode(authCodeDeliveryDetails, nil)
+                    let updateAttributeResult = AuthUpdateAttributeResult(isUpdated: false,
+                                                                          nextStep: nextStep)
+                    finalResult[AuthUserAttributeKey(rawValue: attribute)] = updateAttributeResult
                 }
-                return AuthUserAttribute(AuthUserAttributeKey(rawValue: attributeName),
-                                         value: attributeValue)
             }
             
-            self.dispatch(mappedAttributes)
+            // Check if all items are added to the dictionary
+            for item in attributeList where finalResult[item.key] == nil {
+                let updateAttributeResult = AuthUpdateAttributeResult(isUpdated: true, nextStep: .done)
+                finalResult[item.key] = updateAttributeResult
+            }
+            
+            guard let dispatchResult = finalResult[request.userAttribute.key] else {
+                let authError = AuthError.service("Attribute to be updated does not exist in the result",
+                                                  AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
+                                                  nil)
+                self.dispatch(authError)
+                return
+            }
+            
+            dispatch(dispatchResult)
         }
-        catch let error as GetUserOutputError {
+        catch let error as UpdateUserAttributesOutputError {
             self.dispatch(error.authError)
         }
         catch let error {
@@ -108,7 +129,7 @@ AuthError>, AuthFetchUserAttributeOperation {
         }
     }
     
-    private func dispatch(_ result: [AuthUserAttribute]) {
+    private func dispatch(_ result: AuthUpdateAttributeResult) {
         let result = OperationResult.success(result)
         dispatch(result: result)
         finish()

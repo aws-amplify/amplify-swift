@@ -36,5 +36,9 @@ protocol CognitoUserPoolBehavior {
     
     /// Throws GetUserOutputError
     func getUser(input: GetUserInput) async throws -> GetUserOutputResponse
+
+    /// Throws UpdateUserAttributesOutputError
+    func updateUserAttributes(input: UpdateUserAttributesInput) async throws -> UpdateUserAttributesOutputResponse
+
     
 }
