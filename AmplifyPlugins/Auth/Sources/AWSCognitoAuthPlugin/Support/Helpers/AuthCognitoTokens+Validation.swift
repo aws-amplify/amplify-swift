@@ -11,7 +11,7 @@ import AWSPluginsCore
 /// Internal Helpers for managing session tokens
 extension AuthCognitoTokens {
 
-    func areTokensExpiring(in seconds: TimeInterval = 0) -> Bool {
+    func doesExpire(in seconds: TimeInterval = 0) -> Bool {
 
         guard let idTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: idToken).get(),
               let accessTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: accessToken).get(),

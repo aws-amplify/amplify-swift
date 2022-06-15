@@ -42,7 +42,7 @@ struct InitializeRefreshSession: Action {
             let provider = CognitoUserPoolLoginsMap(idToken: tokens.idToken,
                                                     region: config.region,
                                                     poolId: config.poolId)
-            if !tokens.areTokensExpiring(in: expiryBufferInSeconds) || isForceRefresh {
+            if !tokens.doesExpire(in: expiryBufferInSeconds) || isForceRefresh {
                 event = .init(eventType: .refreshCognitoUserPoolWithIdentityId(tokens, identityID))
             } else {
                 event = .init(eventType: .refreshAWSCredentialsWithUserPool(identityID,

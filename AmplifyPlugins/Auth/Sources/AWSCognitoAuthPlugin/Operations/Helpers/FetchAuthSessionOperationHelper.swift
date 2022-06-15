@@ -29,14 +29,39 @@ struct FetchAuthSessionOperationHelper {
                 let event = AuthorizationEvent(eventType: .fetchUnAuthSession)
                 invokeEvent(event, authStateMachine: authStateMachine, completion: completion)
             case .sessionEstablished(let credentials):
-                // TODO: Validate the credentials, if it is invalid invoke a refresh
-                if (credentials.areUserPoolTokenValid &&
-                    credentials.areAWSCredentialsValid) {
-                    completion(.success(credentials.cognitoSession))
-                } else {
+
+                switch credentials {
+
+                case .userPoolOnly(tokens: let tokens):
+                    if (tokens.doesExpire(in: 5)) {
+                        let event = AuthorizationEvent(eventType: .refreshSession)
+                        invokeEvent(event, authStateMachine: authStateMachine, completion: completion)
+                    } else {
+                        completion(.success(credentials.cognitoSession))
+                    }
+
+                case .identityPoolOnly(identityID: _, credentials: let awsCredentials):
+                    if (awsCredentials.doesExpire(in: 5)) {
+                        let event = AuthorizationEvent(eventType: .refreshSession)
+                        invokeEvent(event, authStateMachine: authStateMachine, completion: completion)
+                    } else {
+                        completion(.success(credentials.cognitoSession))
+                    }
+
+                case .userPoolAndIdentityPool(tokens: let tokens,
+                                              identityID: _,
+                                              credentials: let awsCredentials):
+                    if (awsCredentials.doesExpire(in: 5) || tokens.doesExpire(in: 5)) {
+                        let event = AuthorizationEvent(eventType: .refreshSession)
+                        invokeEvent(event, authStateMachine: authStateMachine, completion: completion)
+                    } else {
+                        completion(.success(credentials.cognitoSession))
+                    }
+                default:
                     let event = AuthorizationEvent(eventType: .refreshSession)
                     invokeEvent(event, authStateMachine: authStateMachine, completion: completion)
                 }
+
 
             default:
                 // TODO:  Add error handling
