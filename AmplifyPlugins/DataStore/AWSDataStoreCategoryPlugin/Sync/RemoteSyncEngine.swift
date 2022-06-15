@@ -356,7 +356,13 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
     private func activateCloudSubscriptions() {
         log.debug(#function)
-        reconciliationQueue?.start()
+        guard let reconciliationQueue = reconciliationQueue else {
+            let error = DataStoreError.internalOperation("reconciliationQueue is unexpectedly `nil`", "", nil)
+            stateMachine.notify(action: .errored(error))
+            return
+        }
+
+        reconciliationQueue.start()
     }
 
     private func startMutationQueue(api: APICategoryGraphQLBehavior,
