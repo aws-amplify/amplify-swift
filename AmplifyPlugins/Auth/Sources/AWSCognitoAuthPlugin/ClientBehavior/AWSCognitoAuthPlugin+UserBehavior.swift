@@ -9,11 +9,11 @@ import Foundation
 import Amplify
 
 public extension AWSCognitoAuthPlugin {
-
+    
     func fetchUserAttributes(options: AuthFetchUserAttributeOperation.Request.Options? = nil,
-                                    listener: AuthFetchUserAttributeOperation.ResultListener?)
+                             listener: AuthFetchUserAttributeOperation.ResultListener?)
     -> AuthFetchUserAttributeOperation {
-
+        
         let options = options ?? AuthFetchUserAttributesRequest.Options()
         let request = AuthFetchUserAttributesRequest(options: options)
         let operation = AWSAuthFetchUserAttributesOperation(
@@ -25,24 +25,33 @@ public extension AWSCognitoAuthPlugin {
         queue.addOperation(operation)
         return operation
     }
-
+    
     func update(userAttribute: AuthUserAttribute,
-                       options: AuthUpdateUserAttributeOperation.Request.Options? = nil,
-                       listener: AuthUpdateUserAttributeOperation.ResultListener?) -> AuthUpdateUserAttributeOperation {
-        //        let options = options ?? AuthUpdateUserAttributeRequest.Options()
-        //        let request = AuthUpdateUserAttributeRequest(userAttribute: userAttribute, options: options)
-        fatalError("Not implemented")
-    }
+                options: AuthUpdateUserAttributeOperation.Request.Options? = nil,
+                listener: AuthUpdateUserAttributeOperation.ResultListener?) -> AuthUpdateUserAttributeOperation {
+        
+        let options = options ?? AuthUpdateUserAttributeRequest.Options()
+        let request = AuthUpdateUserAttributeRequest(userAttribute: userAttribute, options: options)
+        let operation = AWSAuthUpdateUserAttributeOperation(
+            request,
+            authStateMachine: authStateMachine,
+            credentialStoreStateMachine: credentialStoreStateMachine,
+            userPoolFactory: makeUserPool,
+            resultListener: listener)
+        queue.addOperation(operation)
+        return operation
 
+    }
+    
     func update(userAttributes: [AuthUserAttribute],
-                       options: AuthUpdateUserAttributesOperation.Request.Options? = nil,
-                       listener: AuthUpdateUserAttributesOperation.ResultListener?)
+                options: AuthUpdateUserAttributesOperation.Request.Options? = nil,
+                listener: AuthUpdateUserAttributesOperation.ResultListener?)
     -> AuthUpdateUserAttributesOperation {
         //        let options = options ?? AuthUpdateUserAttributesRequest.Options()
         //        let request = AuthUpdateUserAttributesRequest(userAttributes: userAttributes, options: options)
         fatalError("Not implemented")
     }
-
+    
     func resendConfirmationCode(for attributeKey: AuthUserAttributeKey,
                                 options: AuthAttributeResendConfirmationCodeOperation.Request.Options? = nil,
                                 listener: AuthAttributeResendConfirmationCodeOperation.ResultListener?)
@@ -59,11 +68,11 @@ public extension AWSCognitoAuthPlugin {
         queue.addOperation(operation)
         return operation
     }
-
+    
     func confirm(userAttribute: AuthUserAttributeKey,
-                        confirmationCode: String,
-                        options: AuthConfirmUserAttributeOperation.Request.Options? = nil,
-                        listener: AuthConfirmUserAttributeOperation.ResultListener?)
+                 confirmationCode: String,
+                 options: AuthConfirmUserAttributeOperation.Request.Options? = nil,
+                 listener: AuthConfirmUserAttributeOperation.ResultListener?)
     -> AuthConfirmUserAttributeOperation {
         //        let options = options ?? AuthConfirmUserAttributeRequest.Options()
         //        let request = AuthConfirmUserAttributeRequest(attributeKey: userAttribute,
@@ -71,18 +80,18 @@ public extension AWSCognitoAuthPlugin {
         //                                                      options: options)
         fatalError("Not implemented")
     }
-
+    
     func update(oldPassword: String,
-                       to newPassword: String,
-                       options: AuthChangePasswordOperation.Request.Options? = nil,
-                       listener: AuthChangePasswordOperation.ResultListener?) -> AuthChangePasswordOperation {
+                to newPassword: String,
+                options: AuthChangePasswordOperation.Request.Options? = nil,
+                listener: AuthChangePasswordOperation.ResultListener?) -> AuthChangePasswordOperation {
         //        let options = options ?? AuthChangePasswordRequest.Options()
         //        let request = AuthChangePasswordRequest(oldPassword: oldPassword,
         //                                                newPassword: newPassword,
         //                                                options: options)
         fatalError("Not implemented")
     }
-
+    
     func getCurrentUser() -> AuthUser? {
         fatalError("Not implemented")
     }
