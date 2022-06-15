@@ -20,6 +20,8 @@ struct AuthorizationEvent: StateMachineEvent {
 
         case sessionEstablished(AmplifyCredentials)
 
+        case refreshSession
+
         case throwError(AuthorizationError)
 
     }
@@ -36,6 +38,7 @@ struct AuthorizationEvent: StateMachineEvent {
         case .cachedCredentialsAvailable: return "AuthorizationEvent.cachedCredentialsAvailable"
         case .fetchUnAuthSession: return "AuthorizationEvent.fetchUnAuthSession"
         case .fetched:  return "AuthorizationEvent.fetched"
+        case .refreshSession:  return "AuthorizationEvent.refreshSession"
         }
     }
 
