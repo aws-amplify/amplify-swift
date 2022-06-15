@@ -42,7 +42,7 @@ class MockAPICategoryPlugin: MessageReporter,
         notify("configure")
     }
 
-    func reset() {
+    func reset() async {
         notify("reset")
         listeners.set([])
     }

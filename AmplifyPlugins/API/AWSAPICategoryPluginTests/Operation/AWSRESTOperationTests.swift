@@ -32,7 +32,7 @@ class AWSRESTOperationTests: OperationTestBase {
         throw XCTSkip("Not yet implemented")
     }
 
-    func testGetReturnsOperation() throws {
+    func testGetReturnsOperation() async throws {
         try setUpPlugin(endpointType: .rest)
 
         // Use this as a semaphore to ensure the task is cleaned up before proceeding to the next test
@@ -49,7 +49,7 @@ class AWSRESTOperationTests: OperationTestBase {
 
         XCTAssertNotNil(operation.request)
 
-        waitForExpectations(timeout: 1.00)
+        await waitForExpectations(timeout: 1.00)
     }
 
     func testGetFailsWithBadAPIName() throws {

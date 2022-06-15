@@ -77,7 +77,7 @@ class AWSAPICategoryPluginTestBase: XCTestCase {
 
     override func tearDown() async throws {
         if let api = apiPlugin {
-            api.reset()
+            await api.reset()
         }
     }
 }

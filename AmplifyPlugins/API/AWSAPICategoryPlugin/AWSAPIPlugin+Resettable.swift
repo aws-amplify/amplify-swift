@@ -10,13 +10,11 @@ import Foundation
 import AwsCommonRuntimeKit
 
 extension AWSAPIPlugin: Resettable {
-
-    public func reset() {
+    
+    public func reset() async {
         mapper.reset()
 
-        let waitForReset = DispatchSemaphore(value: 0)
-        session.reset { waitForReset.signal() }
-        waitForReset.wait()
+        await session.cancelAndReset()
 
         session = nil
 
@@ -32,5 +30,27 @@ extension AWSAPIPlugin: Resettable {
 
         AwsCommonRuntimeKit.cleanUp()
     }
+
+//    public func reset() {
+//        mapper.reset()
+//
+//        let waitForReset = DispatchSemaphore(value: 0)
+//        session.reset { waitForReset.signal() }
+//        waitForReset.wait()
+//
+//        session = nil
+//
+//        pluginConfig = nil
+//
+//        authService = nil
+//
+//        reachabilityMapLock.execute {
+//                reachabilityMap.removeAll()
+//        }
+//
+//        subscriptionConnectionFactory = nil
+//
+//        AwsCommonRuntimeKit.cleanUp()
+//    }
 
 }
