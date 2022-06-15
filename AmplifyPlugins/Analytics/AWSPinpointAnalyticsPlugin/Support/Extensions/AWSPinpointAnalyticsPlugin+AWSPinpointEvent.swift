@@ -11,7 +11,7 @@ import Foundation
 
 // TODO: Implement in PinpointEvent
 
-//extension AWSPinpointEvent {
+// extension AWSPinpointEvent {
 //    func addProperties(_ properties: [String: AnalyticsPropertyValue]) {
 //        for (key, value) in properties {
 //            if let value = value as? String {
@@ -25,4 +25,4 @@ import Foundation
 //            }
 //        }
 //    }
-//}
+// }

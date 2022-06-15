@@ -9,12 +9,12 @@ import Amplify
 import Foundation
 
 struct PinpointEndpointProfile {
-    
+
     func addIdentityId(_ identityId: String) {
         // TODO: Implement
         fatalError("Not yet implemented")
     }
-    
+
     func addUserProfile(_ userProfile: AnalyticsUserProfile) {
         // TODO: Implement
         fatalError("Not yet implemented")

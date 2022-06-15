@@ -11,7 +11,7 @@ import Foundation
 
 // TODO: Implement in PinpointEndpointProfile
 
-//extension AWSPinpointEndpointProfile {
+// extension AWSPinpointEndpointProfile {
 //    func addIdentityId(_ identityId: String) {
 //        let pinpointEndpointProfileUser = user ?? AWSPinpointEndpointProfileUser()
 //        pinpointEndpointProfileUser.userId = identityId
@@ -55,4 +55,4 @@ import Foundation
 //            location = pinpointEndpointProfileLocation
 //        }
 //    }
-//}
+// }

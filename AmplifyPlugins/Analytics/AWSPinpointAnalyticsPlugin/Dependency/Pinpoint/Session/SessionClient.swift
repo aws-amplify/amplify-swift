@@ -23,7 +23,7 @@ struct SessionClientConfiguration {
 
 class SessionClient: SessionClientBehaviour {
     private var session: PinpointSession
-    
+
     private weak var analyticsClient: AnalyticsClientBehaviour?
     private weak var endpointClient: EndpointClient?
 
@@ -90,11 +90,11 @@ class SessionClient: SessionClientBehaviour {
         if let session = session, !session.sessionId.isEmpty {
             return session
         }
-        
+
         if let storedSession = Self.retrieveStoredSession(from: userDefaults, using: archiver) {
             return storedSession
         }
-        
+
         return PinpointSession(sessionId: PinpointSession.Constants.defaultSessionId,
                                startTime: Date(),
                                stopTime: Date())
@@ -107,7 +107,7 @@ class SessionClient: SessionClientBehaviour {
               !storedSession.sessionId.isEmpty else {
             return nil
         }
-        
+
         return storedSession
     }
 
@@ -116,7 +116,7 @@ class SessionClient: SessionClientBehaviour {
                                   uniqueId: configuration.uniqueDeviceId)
         saveSession()
         log.info("Session Started.")
-        
+
         // Update Endpoint and record Session Start event
         Task {
             try? await endpointClient?.updateEndpointProfile()
@@ -133,7 +133,7 @@ class SessionClient: SessionClientBehaviour {
             log.error("Error archiving sessionData: \(error.localizedDescription)")
         }
     }
-    
+
     private func pauseSession() {
         session.pause()
         saveSession()
@@ -141,20 +141,20 @@ class SessionClient: SessionClientBehaviour {
         log.verbose("Firing Session Event: Pause")
         record(eventType: Constants.Events.pause)
     }
-    
+
     private func resumeSession() {
         guard session.isPaused else {
             log.verbose("Session Resume Failed: Session is already runnning.")
             return
         }
-        
+
         guard !isSessionExpired(session) else {
             log.verbose("Session has expired. Starting a fresh one...")
             endSession()
             startNewSession()
             return
         }
-        
+
         session.resume()
         saveSession()
         log.info("Session Resumed.")
@@ -162,7 +162,7 @@ class SessionClient: SessionClientBehaviour {
         log.verbose("Firing Session Event: Resume")
         record(eventType: Constants.Events.resume)
     }
-    
+
     private func endSession() {
         session.stop()
         log.info("Session Stopped.")
@@ -172,16 +172,16 @@ class SessionClient: SessionClientBehaviour {
         log.verbose("Firing Session Event: Stop")
         record(eventType: Constants.Events.stop)
     }
-    
+
     private func isSessionExpired(_ session: PinpointSession) -> Bool {
         guard let stopTime = session.stopTime?.timeIntervalSince1970 else {
             return false
         }
-        
+
         let now = Date().timeIntervalSince1970
         return now - stopTime > configuration.sessionTimeout
     }
-    
+
     private func record(eventType: String) {
         guard let analyticsClient = analyticsClient else {
             log.error("Pinpoint Analytics is disabled.")
@@ -193,7 +193,7 @@ class SessionClient: SessionClientBehaviour {
             try? await analyticsClient.record(event)
         }
     }
-    
+
     private func respond(to newState: ApplicationState) {
         switch newState {
         case .runningInBackground(let isStale):
@@ -222,7 +222,7 @@ extension SessionClient {
     struct Constants {
         static let sessionKey = "com.amazonaws.AWSPinpointSessionKey"
         static let queue = "com.amazonaws.Amplify.SessionClientQueue"
-        
+
         struct Events {
             static let start = "_session.start"
             static let stop = "_session.stop"

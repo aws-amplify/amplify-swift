@@ -11,7 +11,7 @@ import Foundation
 
 // TODO: Implement in PinpointEndpointProfile
 
-//extension AWSPinpointEndpointProfileLocation {
+// extension AWSPinpointEndpointProfileLocation {
 //    func addLocation(_ location: AnalyticsUserProfile.Location) {
 //        if let latitudeValue = location.latitude as NSNumber? {
 //            latitude = latitudeValue
@@ -37,4 +37,4 @@ import Foundation
 //            country = countryValue
 //        }
 //    }
-//}
+// }

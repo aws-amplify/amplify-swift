@@ -16,18 +16,18 @@ class MockEndpointClient: EndpointClient {
                                            region: "region")
         super.init(context: context)
     }
-    
+
     class MockCredentialsProvider: CredentialsProvider {
         func getCredentials() async throws -> AWSCredentials {
             return AWSCredentials(accessKey: "", secret: "", expirationTimeout: 1000)
         }
     }
-    
+
     var updateEndpointProfileCount = 0
     override func updateEndpointProfile() async throws {
         updateEndpointProfileCount += 1
     }
-    
+
     func resetCounters() {
         updateEndpointProfileCount = 0
     }

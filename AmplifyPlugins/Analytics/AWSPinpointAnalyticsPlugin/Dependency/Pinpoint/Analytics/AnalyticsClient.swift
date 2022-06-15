@@ -20,7 +20,7 @@ protocol AnalyticsClientBehaviour: Actor {
     func removeGlobalMetric(forKey key: String, forEventType eventType: String)
     func record(_ event: PinpointEvent) async throws
     @discardableResult func submitEvents() async throws -> [PinpointEvent]
-    
+
     nonisolated func createAppleMonetizationEvent(with transaction: SKPaymentTransaction,
                                       with product: SKProduct) -> PinpointEvent
     nonisolated func createVirtualMonetizationEvent(withProductId productId: String,
@@ -37,7 +37,7 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
     private lazy var globalMetrics: PinpointEventMetrics = [:]
     private lazy var eventTypeAttributes: [String: PinpointEventAttributes] = [:]
     private lazy var eventTypeMetrics: [String: PinpointEventMetrics] = [:]
-    
+
     init(
         context: PinpointContext,
         eventRecorder: AnalyticsEventRecording?
@@ -45,23 +45,23 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
         self.eventRecorder = eventRecorder
         self.context = context
     }
-    
+
     convenience init(context: PinpointContext) {
         if let storage = try? AnalyticsEventSQLStorage(dbAdapter: SQLiteLocalStorageAdapter(prefixPath: Constants.eventRecorderStoragePathPrefix, databaseName: context.configuration.appId)),
-           let eventRecorder = try? EventRecorder(appId: context.configuration.appId, storage: storage,pinpointClient: context.pinpointClient) {
+           let eventRecorder = try? EventRecorder(appId: context.configuration.appId, storage: storage, pinpointClient: context.pinpointClient) {
             self.init(context: context, eventRecorder: eventRecorder)
         } else {
             self.init(context: context, eventRecorder: nil)
             log.error("Analytics Client missing event recorder")
         }
     }
-    
+
     // MARK: - Attributes & Metrics
     func addGlobalAttribute(_ attribute: String, forKey key: String) {
         precondition(!key.isEmpty, "Attributes and metrics must have a valid key")
         globalAttributes[key] = attribute
     }
-    
+
     func addGlobalAttribute(_ attribute: String, forKey key: String, forEventType eventType: String) {
         precondition(!key.isEmpty, "Attributes and metrics must have a valid key")
         eventTypeAttributes[eventType]?[key] = attribute
@@ -71,28 +71,28 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
         precondition(!key.isEmpty, "Attributes and metrics must have a valid key")
         globalMetrics[key] = metric
     }
-    
+
     func addGlobalMetric(_ metric: Double, forKey key: String, forEventType eventType: String) {
         precondition(!key.isEmpty, "Attributes and metrics must have a valid key")
         eventTypeMetrics[eventType]?[key] = metric
     }
-    
+
     func removeGlobalAttribute(forKey key: String) {
         globalAttributes[key] = nil
     }
-    
+
     func removeGlobalAttribute(forKey key: String, forEventType eventType: String) {
         eventTypeAttributes[eventType]?[key] = nil
     }
-    
+
     func removeGlobalMetric(forKey key: String) {
         globalMetrics[key] = nil
     }
-    
+
     func removeGlobalMetric(forKey key: String, forEventType eventType: String) {
         eventTypeMetrics[eventType]?[key] = nil
     }
-    
+
     // MARK: - Monetization events
     nonisolated func createAppleMonetizationEvent(with transaction: SKPaymentTransaction,
                                                   with product: SKProduct) -> PinpointEvent {
@@ -120,7 +120,7 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
                                        itemPrice: itemPrice,
                                        currencyCode: currency)
     }
-    
+
     private nonisolated func createMonetizationEvent(withStore store: String,
                                                      productId: String,
                                                      quantity: Int,
@@ -164,7 +164,7 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
         return PinpointEvent(eventType: eventType,
                              session: context.sessionClient.currentSession)
     }
-    
+
     func record(_ event: PinpointEvent) async throws {
         // Add event type attributes
         if let eventAttributes = eventTypeAttributes[event.eventType] {
@@ -192,7 +192,7 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
 
         try eventRecorder?.save(event)
     }
-    
+
     @discardableResult
     func submitEvents() async throws -> [PinpointEvent] {
         guard let eventRecorder = eventRecorder else {
@@ -223,10 +223,10 @@ extension AnalyticsClient {
                 static let transactionId = "_transaction_id"
             }
         }
-        
+
         static let eventRecorderStoragePathPrefix = "com/amazonaws/AWSPinpointRecorder/"
     }
-    
+
     typealias PinpointEventAttributes = [String: String]
     typealias PinpointEventMetrics = [String: Double]
 }

@@ -9,11 +9,11 @@ import Foundation
 
 class EndpointClient: InternalPinpointClient {
     unowned var context: PinpointContext
-    
+
     init(context: PinpointContext) {
         self.context = context
     }
-    
+
     func currentEndpointProfile() -> PinpointEndpointProfile {
         // TODO: Implement
         fatalError("Not yet implemented")

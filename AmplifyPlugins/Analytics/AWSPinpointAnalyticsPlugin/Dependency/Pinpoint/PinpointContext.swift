@@ -74,21 +74,21 @@ class PinpointContext {
     let configuration: PinpointContextConfiguration
     let pinpointClient: PinpointClientProtocol
     let userDefaults: UserDefaultsBehaviour
-    
+
     lazy var uniqueId = retrieveUniqueId()
-    
+
     lazy var analyticsClient: AnalyticsClientBehaviour = {
         AnalyticsClient(context: self)
     }()
-    
+
     lazy var targetingClient: EndpointClient = {
         EndpointClient(context: self)
     }()
-    
+
     lazy var sessionClient: SessionClientBehaviour = {
         SessionClient(context: self)
     }()
-    
+
     private let keychainStore: KeychainStoreBehavior
     private let fileManager: FileManagerBehaviour
 
@@ -107,7 +107,7 @@ class PinpointContext {
                                                                                    frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData())
         pinpointClient = PinpointClient(config: pinpointConfiguration)
     }
-    
+
     private var legacyPreferencesFilePath: String? {
         let applicationSupportDirectoryUrls = fileManager.urls(for: .applicationSupportDirectory,
                                                                in: .userDomainMask)
@@ -115,22 +115,22 @@ class PinpointContext {
             .appendingPathComponent(Constants.Preferences.mobileAnalyticsRoot)
             .appendingPathComponent(configuration.appId)
             .appendingPathComponent(Constants.Preferences.fileName)
-        
+
         return preferencesFileUrl?.path
     }
-    
+
     private func removeLegacyPreferencesFile() {
         guard let preferencesPath = legacyPreferencesFilePath else {
             return
         }
-        
+
         do {
             try fileManager.removeItem(atPath: preferencesPath)
         } catch {
             log.verbose("Cannot remove legacy preferences file")
         }
     }
-    
+
     private func legacyUniqueId() -> String? {
         guard let preferencesPath = legacyPreferencesFilePath,
               fileManager.fileExists(atPath: preferencesPath),
@@ -138,10 +138,10 @@ class PinpointContext {
                                                                       options: .mutableContainers) as? [String: String] else {
             return nil
         }
-        
+
         return preferencesJson[Constants.Preferences.uniqueIdKey]
     }
-    
+
     /**
      Attempts to retrieve a previously generated Device Unique ID.
      
@@ -161,23 +161,23 @@ class PinpointContext {
         if let deviceUniqueId = try? keychainStore.getString(Constants.Keychain.uniqueIdKey) {
             return deviceUniqueId
         }
-        
+
         // 2. Look for UniqueId in the legacy preferences file
         if let legacyUniqueId = legacyUniqueId() {
             do {
                 // Attempt to migrate to Keychain
                 try keychainStore.set(legacyUniqueId, key: Constants.Keychain.uniqueIdKey)
                 log.verbose("Migrated Legacy Pinpoint UniqueId to Keychain: \(legacyUniqueId)")
-                
+
                 // Delete the old file
                 removeLegacyPreferencesFile()
             } catch {
                 log.error("Failed to migrate UniqueId to Keychain from preferences file")
                 log.verbose("Fallback: Migrate UniqueId to UserDefaults: \(legacyUniqueId)")
-                
+
                 // Attempt to migrate to UserDefaults
                 userDefaults.save(legacyUniqueId, forKey: Constants.Keychain.uniqueIdKey)
-                
+
                 // Delete the old file
                 removeLegacyPreferencesFile()
             }
@@ -191,16 +191,16 @@ class PinpointContext {
             do {
                 try keychainStore.set(userDefaultsUniqueId, key: Constants.Keychain.uniqueIdKey)
                 log.verbose("Migrated Pinpoint UniqueId from UserDefaults to Keychain: \(userDefaultsUniqueId)")
-                
+
                 // Delete the UserDefault entry
                 userDefaults.removeObject(forKey: Constants.Keychain.uniqueIdKey)
             } catch {
                 log.error("Failed to migrate UniqueId from UserDefaults to Keychain")
             }
-            
+
             return userDefaultsUniqueId
         }
-        
+
         // 4. Create a new ID
         let newUniqueId = UUID().uuidString
         do {
