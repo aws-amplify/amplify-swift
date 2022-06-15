@@ -38,7 +38,6 @@ class PersistentLogWrapperTests: XCTestCase {
     /// - Then:
     ///    -  LogHistory should not be empty and must contain a
     ///    single log item with loglevel as error and message the same as passed to error()
-
     func testError() {
         Amplify.Logging.error("Error message")
         let logHistory: [LogEntryItem] = LogEntryHelper.getLogHistory()
@@ -55,7 +54,6 @@ class PersistentLogWrapperTests: XCTestCase {
     /// - Then:
     ///    -  LogHistory should not be empty and must contain a
     ///    single log item with loglevel as verbose and message the same as passed to verbose()
-
     func testVerbose() {
         Amplify.Logging.verbose("Verbose message")
         let logHistory: [LogEntryItem] = LogEntryHelper.getLogHistory()
