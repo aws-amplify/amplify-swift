@@ -20,6 +20,8 @@ enum AuthorizationState: State {
     case fetchingAuthSessionWithUserPool(FetchAuthSessionState,
                                          AWSCognitoUserPoolTokens)
 
+    case refreshingSession(existingCredentials: AmplifyCredentials, RefreshSessionState)
+
     case waitingToStore(AmplifyCredentials)
 
     case sessionEstablished(AmplifyCredentials)
@@ -40,6 +42,8 @@ extension AuthorizationState {
             return "AuthorizationState.fetchingUnAuthSession"
         case .sessionEstablished:
             return "AuthorizationState.sessionEstablished"
+        case .refreshingSession:
+            return "AuthorizationState.refreshingSession"
         case .waitingToStore:
             return "AuthorizationState.waitingToStore"
         case .fetchingAuthSessionWithUserPool:
