@@ -49,7 +49,6 @@ extension FetchAuthSessionState {
                     identityID: identityID)
                 return .init(newState: .fetchingAWSCredentials(identityID, loginsmapProvider),
                              actions: [action])
-
             case .fetchingAWSCredentials:
                 if case .fetchedAWSCredentials(
                     let identityID,
