@@ -181,14 +181,3 @@ extension AmplifyCredentials: CustomDebugStringConvertible {
     }
 
 }
-
-extension AmplifyCredentials {
-
-    var areUserPoolTokenValid: Bool {
-        return false
-    }
-
-    var areAWSCredentialsValid: Bool {
-        return false
-    }
-}

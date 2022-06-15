@@ -18,8 +18,7 @@ class RefreshUserPoolTokensTests: XCTestCase {
 
         let expectation = expectation(description: "noUserPoolEnvironment")
 
-        let action = RefreshUserPoolTokens(exitingTokens: AWSCognitoUserPoolTokens.testData,
-                                           identityID: nil)
+        let action = RefreshUserPoolTokens(existingTokens: .testData)
 
         action.execute(withDispatcher: MockDispatcher { event in
 
@@ -53,7 +52,7 @@ class RefreshUserPoolTokensTests: XCTestCase {
             userPoolConfiguration: UserPoolConfigurationData.testData,
                                                    cognitoUserPoolFactory: identityProviderFactory)
 
-        let action = RefreshUserPoolTokens(exitingTokens: .testData, identityID: nil)
+        let action = RefreshUserPoolTokens(existingTokens: .testData)
 
         action.execute(withDispatcher: MockDispatcher { event in
 
@@ -91,9 +90,7 @@ class RefreshUserPoolTokensTests: XCTestCase {
             userPoolConfiguration: UserPoolConfigurationData.testData,
                                                    cognitoUserPoolFactory: identityProviderFactory)
 
-        let action = RefreshUserPoolTokens(
-            exitingTokens: AWSCognitoUserPoolTokens.testData,
-            identityID: nil)
+        let action = RefreshUserPoolTokens(existingTokens: .testData)
 
         action.execute(withDispatcher: MockDispatcher { event in
 
@@ -125,7 +122,7 @@ class RefreshUserPoolTokensTests: XCTestCase {
             userPoolConfiguration: UserPoolConfigurationData.testData,
                                                    cognitoUserPoolFactory: identityProviderFactory)
 
-        let action = RefreshUserPoolTokens(exitingTokens: .testData, identityID: nil)
+        let action = RefreshUserPoolTokens(existingTokens: .testData)
 
         action.execute(withDispatcher: MockDispatcher { event in
 
