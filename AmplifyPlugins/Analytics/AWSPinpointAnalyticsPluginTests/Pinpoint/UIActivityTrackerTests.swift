@@ -5,63 +5,58 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+@testable import AWSPinpointAnalyticsPlugin
 import XCTest
 
-@testable import AWSPinpointAnalyticsPlugin
-
 class UIActivityTrackerTests: XCTestCase {
-  private var tracker: UIActivityTracker!
-  private var stateMachine: MockStateMachine!
-  private var timeout: TimeInterval = 1
+    private var tracker: UIActivityTracker!
+    private var stateMachine: MockStateMachine!
+    private var timeout: TimeInterval = 1
 
-  override func setUp() {
-    stateMachine = MockStateMachine(initialState: .initializing) { _, _ in
-      return .initializing
+    override func setUp() {
+        stateMachine = MockStateMachine(initialState: .initializing) { _, _ in
+            return .initializing
+        }
+
+        tracker = UIActivityTracker(backgroundTrackingTimeout: timeout,
+                                    stateMachine: stateMachine)
     }
 
-    tracker = UIActivityTracker(
-      backgroundTrackingTimeout: timeout,
-      stateMachine: stateMachine)
-  }
-
-  func testBeginTracking() {
-    let expectation = expectation(description: "Initial state")
-    tracker.beginActivityTracking { newState in
-      XCTAssertEqual(newState, .initializing)
-      expectation.fulfill()
+    func testBeginTracking() {
+        let expectation = expectation(description: "Initial state")
+        tracker.beginActivityTracking { newState in
+            XCTAssertEqual(newState, .initializing)
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 1)
     }
-    waitForExpectations(timeout: 1)
-  }
 
-  func testApplicationStateChanged_shouldReportProperEvent() {
-    NotificationCenter.default.post(
-      Notification(name: UIApplication.didEnterBackgroundNotification))
-    XCTAssertEqual(stateMachine.processedEvent, .applicationDidMoveToBackground)
+    func testApplicationStateChanged_shouldReportProperEvent() {
+        NotificationCenter.default.post(Notification(name: UIApplication.didEnterBackgroundNotification))
+        XCTAssertEqual(stateMachine.processedEvent, .applicationDidMoveToBackground)
 
-    NotificationCenter.default.post(
-      Notification(name: UIApplication.willEnterForegroundNotification))
-    XCTAssertEqual(stateMachine.processedEvent, .applicationWillMoveToForeground)
+        NotificationCenter.default.post(Notification(name: UIApplication.willEnterForegroundNotification))
+        XCTAssertEqual(stateMachine.processedEvent, .applicationWillMoveToForeground)
 
-    NotificationCenter.default.post(Notification(name: UIApplication.willTerminateNotification))
-    XCTAssertEqual(stateMachine.processedEvent, .applicationWillTerminate)
-  }
+        NotificationCenter.default.post(Notification(name: UIApplication.willTerminateNotification))
+        XCTAssertEqual(stateMachine.processedEvent, .applicationWillTerminate)
+    }
 
-  func testBackgroundTracking_afterTimeout_shouldReportBackgroundTimeout() {
-    NotificationCenter.default.post(
-      Notification(name: UIApplication.didEnterBackgroundNotification))
-    XCTAssertEqual(stateMachine.processedEvent, .applicationDidMoveToBackground)
-    stateMachine.processExpectation = expectation(description: "Background tracking timeout")
-    waitForExpectations(timeout: 1)
-    XCTAssertEqual(stateMachine.processedEvent, .backgroundTrackingDidTimeout)
-  }
+    func testBackgroundTracking_afterTimeout_shouldReportBackgroundTimeout() {
+        NotificationCenter.default.post(Notification(name: UIApplication.didEnterBackgroundNotification))
+        XCTAssertEqual(stateMachine.processedEvent, .applicationDidMoveToBackground)
+        stateMachine.processExpectation = expectation(description: "Background tracking timeout")
+        waitForExpectations(timeout: 1)
+        XCTAssertEqual(stateMachine.processedEvent, .backgroundTrackingDidTimeout)
+    }
 }
 
 class MockStateMachine: StateMachine<ApplicationState, ActivityEvent> {
-  var processedEvent: ActivityEvent?
-  var processExpectation: XCTestExpectation?
+    var processedEvent: ActivityEvent?
+    var processExpectation: XCTestExpectation?
 
-  override func process(_ event: ActivityEvent) {
-    processedEvent = event
-    processExpectation?.fulfill()
-  }
+    override func process(_ event: ActivityEvent) {
+        processedEvent = event
+        processExpectation?.fulfill()
+    }
 }

@@ -5,15 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSPinpointAnalyticsPlugin
 import XCTest
+import AWSPinpointAnalyticsPlugin
 
 // swiftlint:disable:next type_name
 class AWSPinpointAnalyticsPluginAmplifyVersionableTests: XCTestCase {
 
-  func testVersionExists() {
-    let plugin = AWSPinpointAnalyticsPlugin()
-    XCTAssertNotNil(plugin.version)
-  }
+    func testVersionExists() {
+        let plugin = AWSPinpointAnalyticsPlugin()
+        XCTAssertNotNil(plugin.version)
+    }
 
 }

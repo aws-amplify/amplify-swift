@@ -10,88 +10,79 @@ import Foundation
 import StoreKit
 
 extension AWSPinpointAdapter: AWSPinpointAnalyticsClientBehavior {
-  func addGlobalAttribute(_ theValue: String, forKey theKey: String) {
-    Task {
-      await pinpoint.analyticsClient.addGlobalAttribute(theValue, forKey: theKey)
+    func addGlobalAttribute(_ theValue: String, forKey theKey: String) {
+        Task {
+            await pinpoint.analyticsClient.addGlobalAttribute(theValue, forKey: theKey)
+        }
     }
-  }
 
-  func addGlobalAttribute(
-    _ theValue: String, forKey theKey: String, forEventType theEventType: String
-  ) {
-    Task {
-      await pinpoint.analyticsClient.addGlobalAttribute(
-        theValue, forKey: theKey, forEventType: theEventType)
+    func addGlobalAttribute(_ theValue: String, forKey theKey: String, forEventType theEventType: String) {
+        Task {
+            await pinpoint.analyticsClient.addGlobalAttribute(theValue, forKey: theKey, forEventType: theEventType)
+        }
     }
-  }
 
-  func addGlobalMetric(_ theValue: Double, forKey theKey: String) {
-    Task {
-      await pinpoint.analyticsClient.addGlobalMetric(theValue, forKey: theKey)
+    func addGlobalMetric(_ theValue: Double, forKey theKey: String) {
+        Task {
+            await pinpoint.analyticsClient.addGlobalMetric(theValue, forKey: theKey)
+        }
     }
-  }
 
-  func addGlobalMetric(_ theValue: Double, forKey theKey: String, forEventType theEventType: String) {
-    Task {
-      await pinpoint.analyticsClient.addGlobalMetric(
-        theValue, forKey: theKey, forEventType: theEventType)
+    func addGlobalMetric(_ theValue: Double, forKey theKey: String, forEventType theEventType: String) {
+        Task {
+            await pinpoint.analyticsClient.addGlobalMetric(theValue, forKey: theKey, forEventType: theEventType)
+        }
     }
-  }
 
-  func removeGlobalAttribute(forKey theKey: String) {
-    Task {
-      await pinpoint.analyticsClient.removeGlobalAttribute(forKey: theKey)
+    func removeGlobalAttribute(forKey theKey: String) {
+        Task {
+            await pinpoint.analyticsClient.removeGlobalAttribute(forKey: theKey)
+        }
     }
-  }
 
-  func removeGlobalAttribute(forKey theKey: String, forEventType _: String) {
-    Task {
-      await pinpoint.analyticsClient.removeGlobalAttribute(forKey: theKey)
+    func removeGlobalAttribute(forKey theKey: String, forEventType _: String) {
+        Task {
+            await pinpoint.analyticsClient.removeGlobalAttribute(forKey: theKey)
+        }
     }
-  }
 
-  func removeGlobalMetric(forKey theKey: String) {
-    Task {
-      await pinpoint.analyticsClient.removeGlobalMetric(forKey: theKey)
+    func removeGlobalMetric(forKey theKey: String) {
+        Task {
+            await pinpoint.analyticsClient.removeGlobalMetric(forKey: theKey)
+        }
     }
-  }
 
-  func removeGlobalMetric(forKey theKey: String, forEventType theEventType: String) {
-    Task {
-      await pinpoint.analyticsClient.removeGlobalMetric(forKey: theKey, forEventType: theEventType)
+    func removeGlobalMetric(forKey theKey: String, forEventType theEventType: String) {
+        Task {
+            await pinpoint.analyticsClient.removeGlobalMetric(forKey: theKey, forEventType: theEventType)
+        }
     }
-  }
 
-  func record(_ theEvent: PinpointEvent) async throws {
-    try await pinpoint.analyticsClient.record(theEvent)
-  }
+    func record(_ theEvent: PinpointEvent) async throws {
+        try await pinpoint.analyticsClient.record(theEvent)
+    }
 
-  func createEvent(withEventType theEventType: String) -> PinpointEvent {
-    return pinpoint.analyticsClient.createEvent(withEventType: theEventType)
-  }
+    func createEvent(withEventType theEventType: String) -> PinpointEvent {
+        return pinpoint.analyticsClient.createEvent(withEventType: theEventType)
+    }
 
-  func createAppleMonetizationEvent(
-    with transaction: SKPaymentTransaction,
-    with product: SKProduct
-  ) -> PinpointEvent {
-    pinpoint.analyticsClient.createAppleMonetizationEvent(with: transaction, with: product)
-  }
+    func createAppleMonetizationEvent(with transaction: SKPaymentTransaction,
+                                      with product: SKProduct) -> PinpointEvent {
+        pinpoint.analyticsClient.createAppleMonetizationEvent(with: transaction, with: product)
+    }
 
-  func createVirtualMonetizationEvent(
-    withProductId theProductId: String,
-    withItemPrice theItemPrice: Double,
-    withQuantity theQuantity: Int,
-    withCurrency theCurrency: String
-  ) -> PinpointEvent {
-    pinpoint.analyticsClient.createVirtualMonetizationEvent(
-      withProductId: theProductId,
-      withItemPrice: theItemPrice,
-      withQuantity: theQuantity,
-      withCurrency: theCurrency)
-  }
+    func createVirtualMonetizationEvent(withProductId theProductId: String,
+                                        withItemPrice theItemPrice: Double,
+                                        withQuantity theQuantity: Int,
+                                        withCurrency theCurrency: String) -> PinpointEvent {
+        pinpoint.analyticsClient.createVirtualMonetizationEvent(withProductId: theProductId,
+                                                                withItemPrice: theItemPrice,
+                                                                withQuantity: theQuantity,
+                                                                withCurrency: theCurrency)
+    }
 
-  @discardableResult
-  func submitEvents() async throws -> [PinpointEvent] {
-    return try await pinpoint.analyticsClient.submitEvents()
-  }
+    @discardableResult
+    func submitEvents() async throws -> [PinpointEvent] {
+        return try await pinpoint.analyticsClient.submitEvents()
+    }
 }

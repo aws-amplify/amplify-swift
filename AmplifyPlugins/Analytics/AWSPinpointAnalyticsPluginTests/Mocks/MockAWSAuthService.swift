@@ -5,45 +5,45 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSClientRuntime
 import Amplify
+@testable import AWSPluginsCore
+import AWSClientRuntime
 import Foundation
 
 @testable import AWSPinpointAnalyticsPlugin
-@testable import AWSPluginsCore
 
 // This should be moved over to common test package https://github.com/aws-amplify/amplify-ios/issues/21
 public class MockAWSAuthService: AWSAuthServiceBehavior {
-  var getIdentityIdError: AuthError?
-  var getTokenClaimsError: AuthError?
-  var identityId: String?
-  var tokenClaims: [String: AnyObject]?
+    var getIdentityIdError: AuthError?
+    var getTokenClaimsError: AuthError?
+    var identityId: String?
+    var tokenClaims: [String: AnyObject]?
 
-  public func configure() {}
+    public func configure() {}
 
-  public func reset() {}
+    public func reset() {}
 
-  public func getCredentialsProvider() -> CredentialsProvider {
-    let cognitoCredentialsProvider = AmplifyAWSCredentialsProvider()
-    return cognitoCredentialsProvider
-  }
-
-  public func getIdentityId() -> Result<String, AuthError> {
-    if let error = getIdentityIdError {
-      return .failure(error)
+    public func getCredentialsProvider() -> CredentialsProvider {
+        let cognitoCredentialsProvider = AmplifyAWSCredentialsProvider()
+        return cognitoCredentialsProvider
     }
 
-    return .success(identityId ?? "IdentityId")
-  }
+    public func getIdentityId() -> Result<String, AuthError> {
+        if let error = getIdentityIdError {
+            return .failure(error)
+        }
 
-  public func getToken() -> Result<String, AuthError> {
-    .success("")
-  }
-
-  public func getTokenClaims(tokenString: String) -> Result<[String: AnyObject], AuthError> {
-    if let error = getTokenClaimsError {
-      return .failure(error)
+        return .success(identityId ?? "IdentityId")
     }
-    return .success(tokenClaims ?? ["": "" as AnyObject])
-  }
+
+    public func getToken() -> Result<String, AuthError> {
+        .success("")
+    }
+
+    public func getTokenClaims(tokenString: String) -> Result<[String: AnyObject], AuthError> {
+        if let error = getTokenClaimsError {
+            return .failure(error)
+        }
+        return .success(tokenClaims ?? ["": "" as AnyObject])
+    }
 }
