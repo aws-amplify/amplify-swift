@@ -34,6 +34,7 @@ struct InitializeRefreshSession: Action {
 
         case .userPoolAndIdentityPool(let tokens, let identityID, _):
             guard let config = (environment as? AuthEnvironment)?.userPoolConfigData else {
+                //TODO: Fix error
                 fatalError("fix here")
             }
             let provider = CognitoUserPoolLoginsMap(idToken: tokens.idToken,
@@ -60,7 +61,9 @@ extension InitializeRefreshSession: DefaultLogger { }
 extension InitializeRefreshSession: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
-            "identifier": identifier
+            "identifier": identifier,
+            "isForceRefresh": isForceRefresh ? "true": "false",
+            "existingCredentials": existingCredentials.debugDescription
         ]
     }
 }

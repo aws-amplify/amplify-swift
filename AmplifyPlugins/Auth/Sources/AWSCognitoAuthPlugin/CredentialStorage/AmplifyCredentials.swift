@@ -185,10 +185,12 @@ extension AmplifyCredentials: CustomDebugStringConvertible {
 extension AmplifyCredentials {
 
     var areUserPoolTokenValid: Bool {
+        //TODO: Fix the logic, reuse `areTokensExpiring`
         return false
     }
 
     var areAWSCredentialsValid: Bool {
+        //TODO: Fix the logic, reuse `areTokensExpiring`
         return false
     }
 }

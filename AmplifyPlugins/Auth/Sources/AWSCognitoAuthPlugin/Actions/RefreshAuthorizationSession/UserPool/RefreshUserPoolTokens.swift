@@ -15,7 +15,7 @@ struct RefreshUserPoolTokens: Action {
 
     let identifier = "RefreshUserPoolTokens"
 
-    let exitingTokens: AWSCognitoUserPoolTokens
+    let existingCredentials: AWSCognitoUserPoolTokens
 
     let identityID: IdentityID?
 
@@ -33,7 +33,7 @@ struct RefreshUserPoolTokens: Action {
         let client = try? environment.cognitoUserPoolFactory()
 
         var authParameters: [String: String] = [
-            "REFRESH_TOKEN": exitingTokens.refreshToken
+            "REFRESH_TOKEN": existingCredentials.refreshToken
         ]
         if let clientSecret = config.clientSecret {
             authParameters["SECRET_HASH"] = clientSecret
@@ -71,7 +71,7 @@ struct RefreshUserPoolTokens: Action {
                 let userPoolTokens = AWSCognitoUserPoolTokens(
                     idToken: idToken,
                     accessToken: accessToken,
-                    refreshToken: exitingTokens.refreshToken,
+                    refreshToken: existingCredentials.refreshToken,
                     expiresIn: authenticationResult.expiresIn
                 )
                 let event: RefreshSessionEvent
@@ -103,7 +103,8 @@ extension RefreshUserPoolTokens: DefaultLogger { }
 extension RefreshUserPoolTokens: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
-            "identifier": identifier
+            "identifier": identifier,
+            "existingCredentials": existingCredentials
         ]
     }
 }

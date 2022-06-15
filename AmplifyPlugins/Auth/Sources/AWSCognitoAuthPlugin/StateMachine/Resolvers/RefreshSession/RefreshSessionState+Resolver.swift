@@ -21,14 +21,14 @@ extension RefreshSessionState {
             case .notStarted:
 
                 if case .refreshCognitoUserPool(let tokens,
-                                                let identityID) = isRefreshSessionEvent(event) {
-                    let action = RefreshUserPoolTokens(exitingTokens: tokens,
+                                                let identityID) = event.isRefreshSessionEvent {
+                    let action = RefreshUserPoolTokens(existingCredentials: tokens,
                                                        identityID: identityID)
                     return .init(newState: .refreshingUserPoolToken(tokens, identityID),
                                  actions: [action])
                 }
 
-                if case .refreshUnAuthAWSCredentials(let identityID) = isRefreshSessionEvent(event) {
+                if case .refreshUnAuthAWSCredentials(let identityID) = event.isRefreshSessionEvent {
                     let provider = UnAuthLoginsMapProvider()
                     let action = FetchAuthAWSCredentials(loginsMap: provider.loginsMap,
                                                          identityID: identityID)
@@ -39,7 +39,7 @@ extension RefreshSessionState {
                 if case .refreshAWSCredentialsWithUserPool(
                     let identityID,
                     let tokens,
-                    let provider) = isRefreshSessionEvent(event) {
+                    let provider) = event.isRefreshSessionEvent {
                     let action = FetchAuthAWSCredentials(loginsMap: provider.loginsMap,
                                                          identityID: identityID)
                     return .init(newState: .refreshingAWSCredentialsWithUserPoolTokens(
@@ -51,11 +51,11 @@ extension RefreshSessionState {
 
             case .refreshingUserPoolToken:
 
-                if case .refreshedCognitoUserPool(let tokens) = isRefreshSessionEvent(event) {
+                if case .refreshedCognitoUserPool(let tokens) = event.isRefreshSessionEvent {
                     return .from(.refreshed(.userPoolOnly(tokens: tokens)))
                 }
 
-                if case .fetchIdentityInfo(let tokens) = isRefreshSessionEvent(event) {
+                if case .fetchIdentityInfo(let tokens) = event.isRefreshSessionEvent {
                     let action = InitializeFetchAuthSessionWithUserPool(tokens: tokens)
                     return .init(newState: .fetchingAuthSessionWithUserPool(.notStarted, tokens),
                                  actions: [action])
@@ -63,19 +63,18 @@ extension RefreshSessionState {
                 if case .refreshAWSCredentialsWithUserPool(
                     let identityID,
                     let tokens,
-                    let provider) = isRefreshSessionEvent(event) {
+                    let provider) = event.isRefreshSessionEvent {
                     let action = FetchAuthAWSCredentials(loginsMap: provider.loginsMap,
                                                          identityID: identityID)
                     return .init(newState: .refreshingAWSCredentialsWithUserPoolTokens(
                         tokens,
-                        identityID),
-                                 actions: [action])
+                        identityID), actions: [action])
                 }
                 return .from(oldState)
 
             case .fetchingAuthSessionWithUserPool(let fetchSessionState, let tokens):
                 if case .fetched(let identityID,
-                                 let credentials) = isAuthorizationEvent(event) {
+                                 let credentials) = event.isAuthorizationEvent {
                     let amplifyCredentials = AmplifyCredentials.userPoolAndIdentityPool(
                         tokens: tokens,
                         identityID: identityID,
@@ -84,8 +83,9 @@ extension RefreshSessionState {
                 }
                 let resolver = FetchAuthSessionState.Resolver()
                 let resolution = resolver.resolve(oldState: fetchSessionState, byApplying: event)
-                return .init(newState: .fetchingAuthSessionWithUserPool(resolution.newState, tokens),
-                             actions: resolution.actions)
+                return .init(newState: .fetchingAuthSessionWithUserPool(
+                    resolution.newState,
+                    tokens), actions: resolution.actions)
 
             case .refreshed:
                 return .from(oldState)
@@ -93,7 +93,7 @@ extension RefreshSessionState {
             case .refreshingUnAuthAWSCredentials:
                 if case .fetchedAWSCredentials(
                     let identityID,
-                    let credentials) = isFetchSessionEvent(event) {
+                    let credentials) = event.isFetchSessionEvent {
                     let amplifyCredentials = AmplifyCredentials.identityPoolOnly(
                         identityID: identityID,
                         credentials: credentials)
@@ -104,7 +104,7 @@ extension RefreshSessionState {
             case .refreshingAWSCredentialsWithUserPoolTokens(let tokens, _):
                 if case .fetchedAWSCredentials(
                     let identityID,
-                    let credentials) = isFetchSessionEvent(event) {
+                    let credentials) = event.isFetchSessionEvent {
                     let amplifyCredentials = AmplifyCredentials.userPoolAndIdentityPool(
                         tokens: tokens,
                         identityID: identityID,
@@ -113,30 +113,6 @@ extension RefreshSessionState {
                 }
                 return .from(oldState)
             }
-        }
-
-        private func isRefreshSessionEvent(_ event: StateMachineEvent)
-        -> RefreshSessionEvent.EventType? {
-            guard let refreshSessionEvent = (event as? RefreshSessionEvent)?.eventType else {
-                return nil
-            }
-            return refreshSessionEvent
-        }
-
-        private func isAuthorizationEvent(_ event: StateMachineEvent)
-        -> AuthorizationEvent.EventType? {
-            guard let authZEvent = (event as? AuthorizationEvent)?.eventType else {
-                return nil
-            }
-            return authZEvent
-        }
-
-        private func isFetchSessionEvent(_ event: StateMachineEvent)
-        -> FetchAuthSessionEvent.EventType? {
-            guard let refreshSessionEvent = (event as? FetchAuthSessionEvent)?.eventType else {
-                return nil
-            }
-            return refreshSessionEvent
         }
     }
 
