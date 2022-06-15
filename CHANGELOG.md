@@ -1,6 +1,76 @@
 # Changelog
 
 ## Unreleased
+## 1.26.2 (2022-06-10)
+
+### Bug Fixes
+
+- **datastore**: create pointer to temporal lock (#1883)
+
+## 1.26.1 (2022-06-02)
+
+### Bug Fixes
+
+- **datastore**: ModelSyncedEvent dispatch consistency (#1823)
+
+## 1.26.0 (2022-05-26)
+
+### Features
+
+- **DataStore**: Temporal performance enhancements (#1760)
+
+### Bug Fixes
+
+- **DataStore**: include table name inside quotes in SQL Update statement (#1824)
+
+## 1.25.0 (2022-05-19)
+
+### Features
+
+- **auth**: Add support for authType as runtime parameter (#1774)
+
+## 1.24.1 (2022-05-13)
+
+### Bug Fixes
+
+- **Auth**: Fixing a typo in the Auth error message (#1782) (#1798)
+- **DataStore**: retry on URLError.dataNotAllowed (#1791)
+- **DataStore**: retry initial sync network failures from RemoteSyncEngine (#1773)
+
+## 1.24.0 (2022-05-05)
+
+### Features
+
+- **auth**: Add support of custom endpoint for CognitoUserPool (#1715)
+
+## 1.23.2 (2022-05-04)
+
+### Bug Fixes
+
+- **DataStore**: Nesting DataStore integration tests (#1757)
+
+## 1.23.1 (2022-04-25)
+
+### Bug Fixes
+
+- **DataStore**: Cascade delete sync from children to parent models (#1731)
+
+## 1.23.0 (2022-04-12)
+
+### Features
+
+- **DataStore**: DataStore.delete(modelType:where:) API (#1723)
+
+### Bug Fixes
+
+- **build**: remove ungated  >= Swift 5.4 features to allow building on Xcode 12 (#1737)
+
+## 1.22.4 (2022-04-07)
+
+### Bug Fixes
+
+- **analytics**: Set pinpointConfiguration.debug on debug mode (#1689)
+- **DataStore**: Reconcile locally sourced mutations while subscriptions are disabled (#1712)
 
 ### ⚠ BREAKING CHANGES
 - The escape hatch of Auth and Storage plugins now returns the underlying Swift SDK instead of AWSMobileClient and AWSTransferUtility.

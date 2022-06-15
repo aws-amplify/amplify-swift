@@ -1,1 +1,16 @@
-*	@aws-amplify/ios-team
+* @aws-amplify/amplify-ios 
+
+# This covers
+# - Amplify/Categories/DataStore/**
+# - Amplify/Categories/API/**
+# - AmplifyPlugins/DataStore/**
+# - AmplifyPlugins/API/**
+# - AmplifyPlugins/Core/AWSPuginsCore/**
+# - AmplifyTests/CategoryTests/DataStore/**
+# - AmplifyTestCommon/Models
+**/DataStore/**  @aws-amplify/amplify-data @aws-amplify/amplify-ios
+**/API/**  @aws-amplify/amplify-data @aws-amplify/amplify-ios
+**/Core/**  @aws-amplify/amplify-data @aws-amplify/amplify-ios
+/AmplifyTestCommon/Models/** @aws-amplify/amplify-data @aws-amplify/amplify-ios
+/.circleci @aws-amplify/amplify-data @aws-amplify/amplify-ios
+/.github @aws-amplify/amplify-data @aws-amplify/amplify-ios

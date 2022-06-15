@@ -19,7 +19,7 @@ enum InitialSyncOperationEvent {
 
     /// Published when the sync operation has completed and all remote models have been enqueued for reconciliation.
     /// Used by `ModelSyncedEventEmitter` to determine when to send `ModelSyncedEvent`
-    case finished(modelName: ModelName)
+    case finished(modelName: ModelName, error: DataStoreError? = nil)
 }
 
 enum SyncType {

@@ -117,8 +117,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
             }
         })
         wait(for: [fetchUserAttributeExpectation], timeout: networkTimeout)
-    }
-    
+    }    
     
     /// Test updating the user's email and name attributes.
     /// Internally, Cognito's `UpdateUserAttributes` API will be called with metadata as clientMetadata.

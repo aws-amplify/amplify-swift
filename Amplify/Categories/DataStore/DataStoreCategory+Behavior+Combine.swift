@@ -39,6 +39,22 @@ public extension DataStoreBaseBehavior {
         }.eraseToAnyPublisher()
     }
 
+    /// Deletes models matching the `predicate` from the DataStore. If sync is enabled, this will delete the
+    /// model from the remote store as well.
+    ///
+    /// - Parameters:
+    ///   - modelType: The type of the model to delete
+    ///   - predicate: The models that match this predicate to be deleted
+    /// - Returns: A DataStorePublisher with the results of the operation
+    func delete<M: Model>(
+        _ modelType: M.Type,
+        where predicate: QueryPredicate
+    ) -> DataStorePublisher<Void> {
+        Future { promise in
+            self.delete(modelType, where: predicate) { promise($0) }
+        }.eraseToAnyPublisher()
+    }
+
     /// Deletes the specified model instance from the DataStore. If sync is enabled, this will delete the
     /// model from the remote store as well.
     ///

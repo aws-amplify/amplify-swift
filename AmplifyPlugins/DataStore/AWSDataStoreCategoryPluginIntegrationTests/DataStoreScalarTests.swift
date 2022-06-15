@@ -13,7 +13,20 @@ import XCTest
 
 class DataStoreScalarTests: SyncEngineIntegrationTestBase {
 
+    struct TestModelRegistration: AmplifyModelRegistration {
+        func registerModels(registry: ModelRegistry.Type) {
+            registry.register(modelType: ScalarContainer.self)
+            registry.register(modelType: ListIntContainer.self)
+            registry.register(modelType: ListStringContainer.self)
+            registry.register(modelType: EnumTestModel.self)
+            registry.register(modelType: NestedTypeTestModel.self)
+        }
+
+        let version: String = "1"
+    }
+
     func testScalarContainer() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let container = ScalarContainer(myString: "myString",
                                         myInt: 1,
@@ -59,6 +72,7 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
     }
 
     func testListIntContainer() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let container = ListIntContainer(
             test: 1,
@@ -105,6 +119,7 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
     }
 
     func testListStringContainer() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let container = ListStringContainer(
             test: "test",
@@ -151,6 +166,7 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
     }
 
     func testListContainerWithNil() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let container = ListStringContainer(
             test: "test",
@@ -197,6 +213,7 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
     }
 
     func testEnumTestModel() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let container = EnumTestModel(enumVal: .valueOne,
                                       nullableEnumVal: .valueTwo,
@@ -241,6 +258,7 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
     }
 
     func testNestedEnumTestModel() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let container = NestedTypeTestModel(nestedVal: .init(valueOne: 1),
                                             nullableNestedVal: .init(),

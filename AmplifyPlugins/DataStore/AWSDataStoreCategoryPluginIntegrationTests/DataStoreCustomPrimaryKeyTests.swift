@@ -16,6 +16,14 @@ import AWSPluginsCore
 // swiftlint:disable cyclomatic_complexity
 class DataStoreCustomPrimaryKeyTests: SyncEngineIntegrationTestBase {
 
+    struct TestModelRegistration: AmplifyModelRegistration {
+        func registerModels(registry: ModelRegistry.Type) {
+            registry.register(modelType: CustomerOrder.self)
+        }
+
+        let version: String = "1"
+    }
+
     /// - Given: API has been setup with CustomerOrder model registered
     /// - When: A new customer order is
     ///     - saved, updated and queried - should return the saved model
@@ -23,7 +31,7 @@ class DataStoreCustomPrimaryKeyTests: SyncEngineIntegrationTestBase {
     ///     - queried
     /// - Then: The model should be deleted finally and the sync events should be received in order
     func testDeleteModelWithCustomPrimaryKey() throws {
-
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let customerOrder = CustomerOrder(orderId: UUID().uuidString, email: "test@abc.com")
 

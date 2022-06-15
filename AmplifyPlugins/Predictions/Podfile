@@ -24,7 +24,8 @@ target "HostApp" do
   use_frameworks!
   include_test_utilities!
   pod 'Amplify', :path => '../../'
-
+  pod 'AmplifyTestCommon', :path => '../../'
+  
   target "AWSPredictionsPluginIntegrationTests" do
     inherit! :complete
 

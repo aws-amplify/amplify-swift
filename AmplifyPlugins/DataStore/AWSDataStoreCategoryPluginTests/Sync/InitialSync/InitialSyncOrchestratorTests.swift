@@ -71,10 +71,17 @@ class InitialSyncOrchestratorTests: XCTestCase {
         syncStartedReceived.expectedFulfillmentCount = 2
         let finishedReceived = expectation(description: "InitialSyncOperation finished paginating and offering")
         finishedReceived.expectedFulfillmentCount = 2
+        let completionFinishedReceived = expectation(description: "InitialSyncOrchestrator finished successfully")
         let sink = orchestrator
             .publisher
-            .sink(receiveCompletion: { _ in },
-                  receiveValue: { value in
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    completionFinishedReceived.fulfill()
+                case .failure:
+                    XCTFail("Should have completed with .finished")
+                }
+            }, receiveValue: { value in
                     switch value {
                     case .started:
                         syncStartedReceived.fulfill()
@@ -84,6 +91,105 @@ class InitialSyncOrchestratorTests: XCTestCase {
                         break
                     }
                   })
+
+        orchestrator.sync { _ in
+            syncCallbackReceived.fulfill()
+        }
+
+        waitForExpectations(timeout: 1)
+        XCTAssertEqual(orchestrator.syncOperationQueue.maxConcurrentOperationCount, 1)
+        Amplify.Hub.removeListener(hubListener)
+        sink.cancel()
+    }
+
+    /// - Given: An InitialSyncOrchestrator with a model dependency graph, API is expected to return an error for certain models
+    /// - When:
+    ///    - The orchestrator starts up
+    /// - Then:
+    ///    - Finish with an error for each sync query that fails.
+    func testFinishWithAPIError() throws {
+        ModelRegistry.reset()
+        PostCommentModelRegistration().registerModels(registry: ModelRegistry.self)
+        let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { request, listener in
+            if request.document.contains("SyncPosts") {
+                let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult =
+                    .failure(APIError.operationError("", "", nil))
+                listener?(event)
+            } else if request.document.contains("SyncComments") {
+                let startedAt = Int(Date().timeIntervalSince1970)
+                let list = PaginatedList<AnyModel>(items: [], nextToken: nil, startedAt: startedAt)
+                let event: GraphQLOperation<PaginatedList<AnyModel>>.OperationResult = .success(.success(list))
+                listener?(event)
+            }
+
+            return nil
+        }
+
+        let apiPlugin = MockAPICategoryPlugin()
+        apiPlugin.responders[.queryRequestListener] = responder
+
+        let storageAdapter = MockSQLiteStorageEngineAdapter()
+        storageAdapter.returnOnQueryModelSyncMetadata(nil)
+
+        let reconciliationQueue = MockReconciliationQueue()
+
+        let orchestrator: AWSInitialSyncOrchestrator =
+        AWSInitialSyncOrchestrator(dataStoreConfiguration: .default,
+                                   authModeStrategy: AWSDefaultAuthModeStrategy(),
+                                   api: apiPlugin,
+                                   reconciliationQueue: reconciliationQueue,
+                                   storageAdapter: storageAdapter)
+
+        let syncCallbackReceived = expectation(description: "Sync callback received, sync operation is complete")
+        let syncQueriesStartedReceived = expectation(description: "syncQueriesStarted received")
+
+        let filter = HubFilters.forEventName(HubPayload.EventName.DataStore.syncQueriesStarted)
+        let hubListener = Amplify.Hub.listen(to: .dataStore, isIncluded: filter) { payload in
+            guard let syncQueriesStartedEvent = payload.data as? SyncQueriesStartedEvent else {
+                XCTFail("Failed to cast payload data as SyncQueriesStartedEvent")
+                return
+            }
+            XCTAssertEqual(syncQueriesStartedEvent.models.count, 2)
+            syncQueriesStartedReceived.fulfill()
+        }
+
+        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+            XCTFail("Listener not registered for hub")
+            return
+        }
+
+        let syncStartedReceived = expectation(description: "Sync started received, sync operation started")
+        syncStartedReceived.expectedFulfillmentCount = 2
+        let finishedReceived = expectation(description: "InitialSyncOperation finished paginating and offering")
+        finishedReceived.expectedFulfillmentCount = 2
+        let failureCompletionReceived = expectation(description: "InitialSyncOrchestrator completed with failure")
+        let sink = orchestrator
+            .publisher
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    XCTFail("Should have finished with failure")
+                case .failure:
+                    failureCompletionReceived.fulfill()
+                }
+            }, receiveValue: { value in
+                switch value {
+                case .started:
+                    syncStartedReceived.fulfill()
+                case .finished(let modelName, let error):
+                    if modelName == "Post" {
+                        guard case .api(let apiError, _) = error, case .operationError = apiError as? APIError else {
+                            XCTFail("Should be api error")
+                            return
+                        }
+                    } else if modelName == "Comment" {
+                        XCTAssertNil(error)
+                    }
+                    finishedReceived.fulfill()
+                default:
+                    break
+                }
+            })
 
         orchestrator.sync { _ in
             syncCallbackReceived.fulfill()

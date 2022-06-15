@@ -444,7 +444,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
                                                         operator: .greaterThan(dateTestStart.iso8601String))
                 self.storageAdapter.delete(DynamicModel.self,
                                            modelSchema: Post.schema,
-                                           predicate: predicate) { result in
+                                           filter: predicate) { result in
                     switch result {
                     case .success:
                         deleteExpectation.fulfill()
@@ -490,7 +490,7 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
                         saveExpectation.fulfill()
                         self.storageAdapter.delete(DynamicModel.self,
                                                    modelSchema: schema,
-                                                   predicate: QueryPredicateConstant.all) { result in
+                                                   filter: QueryPredicateConstant.all) { result in
                             switch result {
                             case .success:
                                 deleteExpectation.fulfill()

@@ -111,7 +111,9 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         }
 
         guard let storageAdapter = storageAdapter else {
-            stateMachine.notify(action: .errored(DataStoreError.nilStorageAdapter()))
+            let error = DataStoreError.nilStorageAdapter()
+            notifyDropped(count: remoteModels.count, error: error)
+            stateMachine.notify(action: .errored(error))
             return
         }
 
@@ -167,7 +169,9 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                 return
             }
             guard let storageAdapter = self.storageAdapter else {
-                result = .failure(DataStoreError.nilStorageAdapter())
+                let error = DataStoreError.nilStorageAdapter()
+                self.notifyDropped(count: modelIds.count, error: error)
+                result = .failure(error)
                 return
             }
 
@@ -180,6 +184,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                                                 storageAdapter: storageAdapter) { queryResult in
                 switch queryResult {
                 case .failure(let dataStoreError):
+                    self.notifyDropped(count: modelIds.count, error: dataStoreError)
                     result = .failure(dataStoreError)
                 case .success(let mutationEvents):
                     result = .success(mutationEvents)
@@ -189,17 +194,13 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     }
 
     func reconcile(_ remoteModels: [RemoteModel], pendingMutations: [MutationEvent]) -> [RemoteModel] {
-        guard let remoteModel = remoteModels.first else {
+        guard !remoteModels.isEmpty else {
             return []
         }
 
         let remoteModelsToApply = RemoteSyncReconciler.filter(remoteModels,
                                                               pendingMutations: pendingMutations)
-
-        for _ in 0 ..< (remoteModels.count - remoteModelsToApply.count) {
-            notifyDropped()
-        }
-
+        notifyDropped(count: remoteModels.count - remoteModelsToApply.count)
         return remoteModelsToApply
     }
 
@@ -216,7 +217,9 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                 return
             }
             guard let storageAdapter = self.storageAdapter else {
-                result = .failure(DataStoreError.nilStorageAdapter())
+                let error = DataStoreError.nilStorageAdapter()
+                self.notifyDropped(count: remoteModels.count, error: error)
+                result = .failure(error)
                 return
             }
 
@@ -231,7 +234,9 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                        modelName: self.modelSchema.name)
                 result = .success((remoteModels, localMetadatas))
             } catch {
-                result = .failure(DataStoreError(error: error))
+                let error = DataStoreError(error: error)
+                self.notifyDropped(count: remoteModels.count, error: error)
+                result = .failure(error)
                 return
             }
         }
@@ -239,16 +244,13 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
     func getDispositions(for remoteModels: [RemoteModel],
                          localMetadatas: [LocalMetadata]) -> [RemoteSyncReconciler.Disposition] {
-        guard let remoteModel = remoteModels.first else {
+        guard !remoteModels.isEmpty else {
             return []
         }
 
         let dispositions = RemoteSyncReconciler.getDispositions(remoteModels,
                                                                 localMetadatas: localMetadatas)
-        for _ in 0 ..< (remoteModels.count - dispositions.count) {
-            notifyDropped()
-        }
-
+        notifyDropped(count: remoteModels.count - dispositions.count)
         return dispositions
     }
 
@@ -267,7 +269,9 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                 return
             }
             guard let storageAdapter = self.storageAdapter else {
-                result = .failure(DataStoreError.nilStorageAdapter())
+                let error = DataStoreError.nilStorageAdapter()
+                self.notifyDropped(count: dispositions.count, error: error)
+                result = .failure(error)
                 return
             }
 
@@ -344,11 +348,11 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
             storageAdapter.delete(untypedModelType: modelType,
                                   modelSchema: self.modelSchema,
                                   withId: remoteModel.model.id,
-                                  predicate: nil) { response in
+                                  condition: nil) { response in
                 switch response {
                 case .failure(let dataStoreError):
+                    self.notifyDropped(error: dataStoreError)
                     if storageAdapter.shouldIgnoreError(error: dataStoreError) {
-                        self.notifyDropped()
                         promise(.success(.dropped))
                     } else {
                         promise(.failure(dataStoreError))
@@ -366,8 +370,8 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
             storageAdapter.save(untypedModel: remoteModel.model.instance) { response in
                 switch response {
                 case .failure(let dataStoreError):
+                    self.notifyDropped(error: dataStoreError)
                     if storageAdapter.shouldIgnoreError(error: dataStoreError) {
-                        self.notifyDropped()
                         promise(.success(.dropped))
                     } else {
                         promise(.failure(dataStoreError))
@@ -378,6 +382,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                         anyModel = try savedModel.eraseToAnyModel()
                     } catch {
                         let dataStoreError = DataStoreError(error: error)
+                        self.notifyDropped(error: dataStoreError)
                         promise(.failure(dataStoreError))
                         return
                     }
@@ -400,6 +405,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
             storageAdapter.save(inProcessModel.syncMetadata, condition: nil) { result in
                 switch result {
                 case .failure(let dataStoreError):
+                    self.notifyDropped(error: dataStoreError)
                     promise(.failure(dataStoreError))
                 case .success(let syncMetadata):
                     let appliedModel = MutationSync(model: inProcessModel.model, syncMetadata: syncMetadata)
@@ -410,8 +416,10 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         }
     }
 
-    private func notifyDropped() {
-        mutationEventPublisher.send(.mutationEventDropped(modelName: modelSchema.name))
+    private func notifyDropped(count: Int = 1, error: DataStoreError? = nil) {
+        for _ in 0 ..< count {
+            mutationEventPublisher.send(.mutationEventDropped(modelName: modelSchema.name, error: error))
+        }
     }
 
     private func notify(savedModel: AppliedModel,
@@ -454,5 +462,5 @@ extension ReconcileAndLocalSaveOperation: DefaultLogger { }
 
 enum ReconcileAndLocalSaveOperationEvent {
     case mutationEvent(MutationEvent)
-    case mutationEventDropped(modelName: String)
+    case mutationEventDropped(modelName: String, error: DataStoreError? = nil)
 }

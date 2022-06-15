@@ -10,25 +10,21 @@ import AWSPredictionsPlugin
 import AWSCore
 
 @testable import Amplify
+@testable import AmplifyTestCommon
 
 class AWSPredictionsPluginTestBase: XCTestCase {
 
-    let networkTimeout = TimeInterval(180) // 180 seconds to wait before network timeouts
+    let networkTimeout = TimeInterval(20) // 20 seconds to wait before network timeouts
+    let amplifyConfigurationFile = "testconfiguration/AWSPredictionsPluginIntegrationTests-amplifyconfiguration"
 
     override func setUp() {
         super.setUp()
 
         continueAfterFailure = false
 
-        let bundle = Bundle(for: type(of: self))
-        guard let configFile = bundle.url(forResource: "amplifyconfiguration", withExtension: "json") else {
-            XCTFail("Could not get URL for amplifyconfiguration.json from \(bundle)")
-            return
-        }
-
         do {
-            let configData = try Data(contentsOf: configFile)
-            let amplifyConfig = try JSONDecoder().decode(AmplifyConfiguration.self, from: configData)
+            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
+                forResource: amplifyConfigurationFile)
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSPredictionsPlugin())
             try Amplify.configure(amplifyConfig)

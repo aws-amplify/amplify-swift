@@ -72,11 +72,15 @@ class RemoteSyncEngineTests: XCTestCase {
         let subscriptionsEstablishedReceived = expectation(description: "subscriptionsEstablished received")
         let cleanedup = expectation(description: "cleanedup")
         let failureOnInitialSync = expectation(description: "failureOnInitialSync")
-
+        let retryAdviceReceivedNetworkError = expectation(description: "retry advice received network error")
         var currCount = 1
 
         let advice = RequestRetryAdvice.init(shouldRetry: false)
         mockRequestRetryablePolicy.pushOnRetryRequestAdvice(response: advice)
+        mockRequestRetryablePolicy.setOnRetryRequestAdvice { urlError, httpURLResponse, attemptNumber in
+            XCTAssertNotNil(urlError)
+            retryAdviceReceivedNetworkError.fulfill()
+        }
 
         let filter = HubFilters.forEventName(HubPayload.EventName.DataStore.subscriptionsEstablished)
         let hubListener = Amplify.Hub.listen(to: .dataStore, isIncluded: filter) { payload in
@@ -116,8 +120,8 @@ class RemoteSyncEngineTests: XCTestCase {
                     XCTFail("Unexpected case gets hit")
                 }
             })
-        MockAWSInitialSyncOrchestrator.setResponseOnSync(result:
-            .failure(DataStoreError.internalOperation("forceError", "none", nil)))
+        MockAWSInitialSyncOrchestrator.setResponseOnSync(result: .failure(
+            DataStoreError.internalOperation("forceError", "none", URLError(.notConnectedToInternet))))
 
         remoteSyncEngine.start(api: apiPlugin)
 
@@ -128,7 +132,8 @@ class RemoteSyncEngineTests: XCTestCase {
                    subscriptionsInitialized,
                    subscriptionsEstablishedReceived,
                    cleanedup,
-                   failureOnInitialSync], timeout: defaultAsyncWaitTimeout)
+                   failureOnInitialSync,
+                   retryAdviceReceivedNetworkError], timeout: defaultAsyncWaitTimeout)
         remoteSyncEngineSink.cancel()
         Amplify.Hub.removeListener(hubListener)
     }

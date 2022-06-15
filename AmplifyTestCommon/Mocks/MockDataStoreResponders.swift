@@ -13,6 +13,7 @@ extension MockDataStoreCategoryPlugin {
         case queryByIdListener
         case queryModelsListener
         case deleteByIdListener
+        case deleteModelTypeListener
         case deleteModelListener
         case clearListener
         case startListener
@@ -36,6 +37,11 @@ typealias QueryModelsResponder<M: Model> = MockResponder<
 
 typealias DeleteByIdResponder<M: Model> = MockResponder<
     (modelType: M.Type, id: String),
+    DataStoreResult<Void>?
+>
+
+typealias DeleteModelTypeResponder<M: Model> = MockResponder<
+    (modelType: M.Type, where: QueryPredicate),
     DataStoreResult<Void>?
 >
 

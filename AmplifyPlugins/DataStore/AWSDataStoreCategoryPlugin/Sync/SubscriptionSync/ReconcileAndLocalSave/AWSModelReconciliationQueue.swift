@@ -132,7 +132,6 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     /// unsubscribes from the incoming events publisher. The queue may not be restarted after cancelling.
     func cancel() {
         incomingEventsSink?.cancel()
-        incomingEventsSink = nil
         incomingSubscriptionEvents.cancel()
         reconcileAndSaveQueue.cancelOperations(modelName: modelSchema.name)
         incomingSubscriptionEventQueue.cancelAllOperations()
@@ -163,8 +162,8 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
                     return
                 }
                 switch value {
-                case .mutationEventDropped(let modelName):
-                    self.modelReconciliationQueueSubject.send(.mutationEventDropped(modelName: modelName))
+                case .mutationEventDropped(let modelName, let error):
+                    self.modelReconciliationQueueSubject.send(.mutationEventDropped(modelName: modelName, error: error))
                 case .mutationEvent(let event):
                     self.modelReconciliationQueueSubject.send(.mutationEvent(event))
                 }

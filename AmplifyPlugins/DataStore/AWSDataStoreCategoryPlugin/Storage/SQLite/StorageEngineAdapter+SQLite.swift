@@ -195,14 +195,14 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     func delete<M: Model>(_ modelType: M.Type,
                           modelSchema: ModelSchema,
-                          predicate: QueryPredicate,
+                          filter: QueryPredicate,
                           completion: (DataStoreResult<[M]>) -> Void) {
         guard let connection = connection else {
             completion(.failure(DataStoreError.nilSQLiteConnection()))
             return
         }
         do {
-            let statement = DeleteStatement(modelSchema: modelSchema, predicate: predicate)
+            let statement = DeleteStatement(modelSchema: modelSchema, predicate: filter)
             _ = try connection.prepare(statement.stringValue).run(statement.variables)
             completion(.success([]))
         } catch {
@@ -213,9 +213,9 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     func delete<M: Model>(_ modelType: M.Type,
                           modelSchema: ModelSchema,
                           withId id: Model.Identifier,
-                          predicate: QueryPredicate? = nil,
+                          condition: QueryPredicate? = nil,
                           completion: (DataStoreResult<M?>) -> Void) {
-        delete(untypedModelType: modelType, modelSchema: modelSchema, withId: id, predicate: predicate) { result in
+        delete(untypedModelType: modelType, modelSchema: modelSchema, withId: id, condition: condition) { result in
             switch result {
             case .success:
                 completion(.success(nil))
@@ -228,14 +228,14 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     func delete(untypedModelType modelType: Model.Type,
                 modelSchema: ModelSchema,
                 withId id: Model.Identifier,
-                predicate: QueryPredicate? = nil,
+                condition: QueryPredicate? = nil,
                 completion: DataStoreCallback<Void>) {
         guard let connection = connection else {
             completion(.failure(DataStoreError.nilSQLiteConnection()))
             return
         }
         do {
-            let statement = DeleteStatement(modelSchema: modelSchema, withId: id, predicate: predicate)
+            let statement = DeleteStatement(modelSchema: modelSchema, withId: id, predicate: condition)
             _ = try connection.prepare(statement.stringValue).run(statement.variables)
             completion(.emptyResult)
         } catch {

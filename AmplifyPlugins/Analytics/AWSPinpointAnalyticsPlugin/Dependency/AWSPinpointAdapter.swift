@@ -29,6 +29,11 @@ class AWSPinpointAdapter: AWSPinpointBehavior {
         pinpointConfiguration.targetingServiceConfiguration = targetingServiceConfiguration
         pinpointConfiguration.enableAutoSessionRecording = true
 
+        #if DEBUG
+        pinpointConfiguration.debug = true
+        Amplify.Logging.verbose("Setting pinpointConfiguration.debug to true")
+        #endif
+
         let pinpoint = AWSPinpoint(configuration: pinpointConfiguration)
 
         self.init(pinpoint: pinpoint)

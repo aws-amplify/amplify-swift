@@ -29,10 +29,15 @@ extension RemoteSyncEngine {
     }
 
     private func getRetryAdvice(error: Error) -> RequestRetryAdvice {
-        // TODO: Parse error from the receive completion to use as an input into getting retry advice.
-        //      For now, specifying not connected to internet to force a retry up to our maximum
-        let urlError = URLError(.notConnectedToInternet)
-        let advice = requestRetryablePolicy.retryRequestAdvice(urlError: urlError,
+        var urlErrorOptional: URLError?
+        if let dataStoreError = error as? DataStoreError,
+            let underlyingError = dataStoreError.underlyingError as? URLError {
+            urlErrorOptional = underlyingError
+        } else if let urlError = error as? URLError {
+            urlErrorOptional = urlError
+        }
+
+        let advice = requestRetryablePolicy.retryRequestAdvice(urlError: urlErrorOptional,
                                                                httpURLResponse: nil,
                                                                attemptNumber: currentAttemptNumber)
         return advice

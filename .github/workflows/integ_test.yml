@@ -1,0 +1,912 @@
+name: Integration Tests
+on:
+  push:
+    branches: [main]
+
+permissions:
+    id-token: write
+    contents: read 
+
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  prepare-for-test:
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Verify copy resources
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: NA
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+  analytics-integration-test:
+    needs: prepare-for-test
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: analytics
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/Analytics/
+          workspace: AnalyticsCategoryPlugin.xcworkspace
+          scheme: AWSPinpointAnalyticsPluginIntegrationTests
+
+  api-integration-test:
+    needs: prepare-for-test
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: api
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/API/
+          workspace: APICategoryPlugin.xcworkspace
+          scheme: AWSAPICategoryPluginFunctionalTests
+
+  api-graphqliam-integration-test:
+    needs: [api-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: api
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/API/
+          workspace: APICategoryPlugin.xcworkspace
+          scheme: GraphQLWithIAMIntegrationTests
+
+  api-graphqluserpool-integration-test:
+    needs: [api-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: api
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/API/
+          workspace: APICategoryPlugin.xcworkspace
+          scheme: GraphQLWithUserPoolIntegrationTests
+
+  api-restiam-integration-test:
+    needs: [api-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: api
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/API/
+          workspace: APICategoryPlugin.xcworkspace
+          scheme: RESTWithIAMIntegrationTests
+
+  api-restuserpool-integration-test:
+    needs: [api-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: api
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/API/
+          workspace: APICategoryPlugin.xcworkspace
+          scheme: RESTWithUserPoolIntegrationTests
+
+  api-graphqllambda-integration-test:
+    needs: [api-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: api
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/API/
+          workspace: APICategoryPlugin.xcworkspace
+          scheme: GraphQLWithLambdaAuthIntegrationTests
+
+  auth-integration-test:
+    needs: prepare-for-test
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: auth
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/Auth/
+          workspace: AWSCognitoAuthPlugin.xcworkspace
+          scheme: AWSCognitoAuthPluginIntegrationTests
+
+  datastore-integration-test:
+    needs: prepare-for-test
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: datastore
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/DataStore/
+          workspace: DataStoreCategoryPlugin.xcworkspace
+          scheme: AWSDataStoreCategoryPluginIntegrationTests
+  datastore-integration-hub-test:
+    needs: [datastore-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: datastore
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/DataStore/
+          workspace: DataStoreCategoryPlugin.xcworkspace
+          scheme: AWSDataStoreIntegrationHubTests
+  datastore-integration-local-test:
+    needs: [datastore-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: datastore
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/DataStore/
+          workspace: DataStoreCategoryPlugin.xcworkspace
+          scheme: AWSDataStoreIntegrationLocalTests
+
+  datastore-integration-V1-S1-test:
+    needs: [datastore-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: datastore
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/DataStore/
+          workspace: DataStoreCategoryPlugin.xcworkspace
+          scheme: AWSDataStoreIntegrationV1Scenario1Tests
+  datastore-integration-V1-S2-test:
+    needs: [datastore-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: datastore
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/DataStore/
+          workspace: DataStoreCategoryPlugin.xcworkspace
+          scheme: AWSDataStoreIntegrationV1Scenario2Tests
+  datastore-integration-V1-S3-test:
+    needs: [datastore-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: datastore
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/DataStore/
+          workspace: DataStoreCategoryPlugin.xcworkspace
+          scheme: AWSDataStoreIntegrationV1Scenario3Tests
+  datastore-integration-V1-S4-test:
+    needs: [datastore-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: datastore
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/DataStore/
+          workspace: DataStoreCategoryPlugin.xcworkspace
+          scheme: AWSDataStoreIntegrationV1Scenario4Tests
+  datastore-integration-V1-S5-test:
+    needs: [datastore-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: datastore
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/DataStore/
+          workspace: DataStoreCategoryPlugin.xcworkspace
+          scheme: AWSDataStoreIntegrationV1Scenario5Tests
+  datastore-integration-V1-S6-test:
+    needs: [datastore-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: datastore
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/DataStore/
+          workspace: DataStoreCategoryPlugin.xcworkspace
+          scheme: AWSDataStoreIntegrationV1Scenario6Tests
+  datastore-integration-V2-S1-test:
+    needs: [datastore-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: datastore
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/DataStore/
+          workspace: DataStoreCategoryPlugin.xcworkspace
+          scheme: AWSDataStoreIntegrationV2Scenario1V2Tests
+  datastore-integration-V2-S2-test:
+    needs: [datastore-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: datastore
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/DataStore/
+          workspace: DataStoreCategoryPlugin.xcworkspace
+          scheme: AWSDataStoreIntegrationV2Scenario2V2Tests
+  datastore-integration-V2-S3a-test:
+    needs: [datastore-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: datastore
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/DataStore/
+          workspace: DataStoreCategoryPlugin.xcworkspace
+          scheme: AWSDataStoreIntegrationV2Scenario3aV2Tests
+  datastore-integration-V2-S3-test:
+    needs: [datastore-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: datastore
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/DataStore/
+          workspace: DataStoreCategoryPlugin.xcworkspace
+          scheme: AWSDataStoreIntegrationV2Scenario3V2Tests
+  datastore-integration-V2-S4-test:
+    needs: [datastore-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: datastore
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/DataStore/
+          workspace: DataStoreCategoryPlugin.xcworkspace
+          scheme: AWSDataStoreIntegrationV2Scenario4V2Tests
+  datastore-integration-V2-S5-test:
+    needs: [datastore-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: datastore
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/DataStore/
+          workspace: DataStoreCategoryPlugin.xcworkspace
+          scheme: AWSDataStoreIntegrationV2Scenario5V2Tests
+  datastore-integration-V2-S6-test:
+    needs: [datastore-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: datastore
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/DataStore/
+          workspace: DataStoreCategoryPlugin.xcworkspace
+          scheme: AWSDataStoreIntegrationV2Scenario6V2Tests
+  datastore-integration-V2-S7-test:
+    needs: [datastore-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: datastore
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/DataStore/
+          workspace: DataStoreCategoryPlugin.xcworkspace
+          scheme: AWSDataStoreIntegrationV2Scenario7V2Tests
+  datastore-integration-V2-S8-test:
+    needs: [datastore-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: datastore
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/DataStore/
+          workspace: DataStoreCategoryPlugin.xcworkspace
+          scheme: AWSDataStoreIntegrationV2Scenario8V2Tests
+  datastore-integration-V2-test:
+    needs: [datastore-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: datastore
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/DataStore/
+          workspace: DataStoreCategoryPlugin.xcworkspace
+          scheme: AWSDataStoreIntegrationV2Scenario1V2Tests
+  datastore-integration-observe-query-test:
+    needs: [datastore-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: datastore
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/DataStore/
+          workspace: DataStoreCategoryPlugin.xcworkspace
+          scheme: AWSDataStoreIntegrationObserveQueryTests
+
+  datastore-auth-integration-test:
+    needs: [datastore-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: datastore
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/DataStore/
+          workspace: DataStoreCategoryPlugin.xcworkspace
+          scheme: AWSDataStoreCategoryPluginAuthIntegrationTests
+
+  datastore-flutter-integration-test:
+    needs: [datastore-integration-test]
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: datastore
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/DataStore/
+          workspace: DataStoreCategoryPlugin.xcworkspace
+          scheme: AWSDataStoreCategoryPluginFlutterIntegrationTests
+
+  geo-integration-test:
+    needs: prepare-for-test
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: geo
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/Geo/
+          workspace: GeoCategoryPlugin.xcworkspace
+          scheme: AWSLocationGeoPluginIntegrationTests
+
+  predictions-integration-test:
+    needs: prepare-for-test
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: predictions
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: List the copied configurations
+        run: ls ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/Predictions/
+          workspace: PredictionsCategoryPlugin.xcworkspace
+          scheme: AWSPredictionsPluginIntegrationTests
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/Predictions/
+          workspace: PredictionsCategoryPlugin.xcworkspace
+          scheme: CoreMLPredictionsPluginIntegrationTests
+
+  storage-integration-test:
+    needs: prepare-for-test
+    runs-on: macos-latest
+    environment: IntegrationTest
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: Make directory
+        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+
+      - name: Copy integration test resouces
+        uses: ./.github/composite_actions/download_test_configuration
+        with:
+          resource_subfolder: storage
+          aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+
+      - name: Run Integration test
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: ./AmplifyPlugins/Storage/
+          workspace: StoragePlugin.xcworkspace
+          scheme: AWSS3StoragePluginFunctionalTests

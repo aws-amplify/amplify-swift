@@ -402,7 +402,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
                 self.storageAdapter.delete(Post.self,
                                            modelSchema: Post.schema,
                                            withId: post.id,
-                                           predicate: predicate) { result in
+                                           condition: predicate) { result in
                     switch result {
                     case .success:
                         deleteExpectation.fulfill()
@@ -437,7 +437,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
                 self.storageAdapter.delete(Post.self,
                                            modelSchema: Post.schema,
                                            withId: post.id,
-                                           predicate: predicate) { result in
+                                           condition: predicate) { result in
                     switch result {
                     case .success:
                         deleteCompleteExpectation.fulfill()
@@ -469,7 +469,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
                 saveExpectation.fulfill()
                 let postKeys = Post.keys
                 let predicate = postKeys.createdAt.gt(dateTestStart)
-                self.storageAdapter.delete(Post.self, modelSchema: Post.schema, predicate: predicate) { result in
+                self.storageAdapter.delete(Post.self, modelSchema: Post.schema, filter: predicate) { result in
                     switch result {
                     case .success:
                         deleteExpectation.fulfill()
@@ -510,7 +510,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
                         saveExpectation.fulfill()
                         self.storageAdapter.delete(Post.self,
                                                    modelSchema: Post.schema,
-                                                   predicate: QueryPredicateConstant.all) { result in
+                                                   filter: QueryPredicateConstant.all) { result in
                             switch result {
                             case .success:
                                 deleteExpectation.fulfill()

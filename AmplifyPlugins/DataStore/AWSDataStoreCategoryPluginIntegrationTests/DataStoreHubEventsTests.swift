@@ -15,6 +15,15 @@ import AWSPluginsCore
 
 class DataStoreHubEventTests: HubEventsIntegrationTestBase {
 
+    struct TestModelRegistration: AmplifyModelRegistration {
+        func registerModels(registry: ModelRegistry.Type) {
+            registry.register(modelType: Post.self)
+            registry.register(modelType: Comment.self)
+        }
+
+        let version: String = "1"
+    }
+
     /// - Given:
     ///    - registered two models from `TestModelRegistration`
     ///    - no pending MutationEvents in MutationEvent database
@@ -60,7 +69,7 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
                     XCTFail("Failed to cast payload data as SyncQueriesStartedEvent")
                     return
                 }
-                XCTAssertEqual(syncQueriesStartedEvent.models.count, 22)
+                XCTAssertEqual(syncQueriesStartedEvent.models.count, 2)
                 syncQueriesStartedReceived.fulfill()
             }
 
@@ -74,7 +83,7 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
             }
         }
 
-        startAmplify()
+        startAmplify(withModels: TestModelRegistration())
 
         waitForExpectations(timeout: networkTimeout)
         hubListener.cancel()
@@ -125,7 +134,7 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
             }
         }
 
-        startAmplify()
+        startAmplify(withModels: TestModelRegistration())
         Amplify.DataStore.save(post) { _ in }
 
         waitForExpectations(timeout: networkTimeout)
@@ -171,7 +180,7 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
             }
         }
 
-        startAmplify()
+        startAmplify(withModels: TestModelRegistration())
 
         waitForExpectations(timeout: networkTimeout)
         hubListener.cancel()

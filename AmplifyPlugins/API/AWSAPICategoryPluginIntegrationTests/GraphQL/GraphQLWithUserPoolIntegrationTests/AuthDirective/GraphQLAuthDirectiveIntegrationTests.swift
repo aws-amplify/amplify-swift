@@ -19,31 +19,25 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
         let password: String
     }
 
-    let amplifyConfigurationFile = "testconfiguration/GraphQLAuthDirectiveIntegrationTests-amplifyconfiguration"
-    let credentialsFile = "testconfiguration/GraphQLAuthDirectiveIntegrationTests-credentials"
+    let amplifyConfigurationFile = "testconfiguration/GraphQLWithUserPoolIntegrationTests-amplifyconfiguration"
     var user1: User!
     var user2: User!
 
     override func setUp() {
         do {
-            let credentials = try TestConfigHelper.retrieveCredentials(forResource: credentialsFile)
-
-            guard let user1 = credentials["user1"],
-                let user2 = credentials["user2"],
-                let passwordUser1 = credentials["passwordUser1"],
-                let passwordUser2 = credentials["passwordUser2"] else {
-                    XCTFail("Missing credentials.json data")
-                    return
-            }
-
-            self.user1 = User(username: user1, password: passwordUser1)
-            self.user2 = User(username: user2, password: passwordUser2)
-
+            user1 = User(username: "integTest\(UUID().uuidString)", password: "P123@\(UUID().uuidString)")
+            user2 = User(username: "integTest\(UUID().uuidString)", password: "P123@\(UUID().uuidString)")
             try Amplify.add(plugin: AWSAPIPlugin())
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
             try Amplify.configure(amplifyConfig)
 
+            AuthSignInHelper.signUpUser(username: user1.username,
+                                        password: user1.password,
+                                        email: "\(user1.username)@\(UUID().uuidString).com") { _, _ in }
+            AuthSignInHelper.signUpUser(username: user2.username,
+                                        password: user2.password,
+                                        email: "\(user2.username)@\(UUID().uuidString).com") { _, _ in }
             ModelRegistry.register(modelType: SocialNote.self)
         } catch {
             XCTFail("Error during setup: \(error)")

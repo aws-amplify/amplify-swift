@@ -16,10 +16,20 @@ import AWSPluginsCore
 // swiftlint:disable cyclomatic_complexity
 // swiftlint:disable type_body_length
 class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
+    struct TestModelRegistration: AmplifyModelRegistration {
+        func registerModels(registry: ModelRegistry.Type) {
+            registry.register(modelType: Post.self)
+            registry.register(modelType: Comment.self)
+        }
+
+        let version: String = "1"
+    }
+
     /// - Given: API has been setup with `Post` model registered
     /// - When: A Post is saved and then immediately updated
     /// - Then: The post should be updated with new fields immediately and in the eventual consistent state
     func testSaveAndImmediatelyUpdate() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         let newPost = Post(title: "MyPost",
@@ -135,6 +145,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
     /// - When: A Post is saved and deleted immediately
     /// - Then: The Post should not be returned when queried for immediately and in the eventual consistent state
     func testSaveAndImmediatelyDelete() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         let newPost = Post(title: "MyPost",
@@ -239,6 +250,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
     /// - When: A Post is saved with sync complete, updated and deleted immediately
     /// - Then: The Post should not be returned when queried for
     func testSaveThenUpdateAndImmediatelyDelete() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         let newPost = Post(title: "MyPost",
@@ -371,6 +383,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
     /// - When: A Post is saved with sync complete, then it is updated 10 times
     /// - Then: The Post should be updated with new fields
     func testSaveThenMultipleUpdate() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         let newPost = Post(title: "MyPost",

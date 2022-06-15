@@ -21,6 +21,14 @@
                BlueprintName = "AWSPredictionsPluginIntegrationTests"
                ReferencedContainer = "container:PredictionsCategoryPlugin.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "ConvertBasicIntegrationTests">
+               </Test>
+               <Test
+                  Identifier = "ConvertBasicIntegrationTests/testConvertSpeechToText()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

@@ -540,6 +540,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
         }
         let queue = OperationQueue()
         queue.addOperation(operation)
+        wait(for: [firstSnapshot], timeout: 5)
 
         let post = try createPost(id: "1", title: "title 1")
         dataStorePublisher.send(input: post)
@@ -548,8 +549,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
         var updatedPost2 = try createPost(id: "2", title: "Does not match predicate")
         updatedPost2.mutationType = MutationEvent.MutationType.update.rawValue
         dataStorePublisher.send(input: updatedPost2)
-        waitForExpectations(timeout: 1)
-
+        wait(for: [secondSnapshot, thirdSnapshot, fourthSnapshot], timeout: 10)
         XCTAssertEqual(querySnapshots.count, 4)
 
         // First snapshot is empty from the initial query

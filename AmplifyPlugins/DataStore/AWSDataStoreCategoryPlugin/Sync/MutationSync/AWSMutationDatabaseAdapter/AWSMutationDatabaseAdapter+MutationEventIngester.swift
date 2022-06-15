@@ -149,7 +149,7 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
                 storageAdapter.delete(MutationEvent.self,
                                       modelSchema: MutationEvent.schema,
                                       withId: $0.id,
-                                      predicate: nil) { _ in group.leave() }
+                                      condition: nil) { _ in group.leave() }
             }
             group.wait()
             completionPromise(.success(candidate))
@@ -173,7 +173,7 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
                     .forEach { storageAdapter.delete(MutationEvent.self,
                                                      modelSchema: MutationEvent.schema,
                                                      withId: $0.id,
-                                                     predicate: nil) { _ in } }
+                                                     condition: nil) { _ in } }
             }
 
             let resolvedEvent = getResolvedEvent(for: eventToUpdate, applying: candidate)

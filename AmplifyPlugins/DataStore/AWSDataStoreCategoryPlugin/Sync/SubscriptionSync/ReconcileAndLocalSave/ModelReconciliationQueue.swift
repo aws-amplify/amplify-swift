@@ -20,7 +20,7 @@ enum ModelReconciliationQueueEvent {
     case connected(modelName: String)
     case disconnected(modelName: String, reason: ModelConnectionDisconnectedReason)
     case mutationEvent(MutationEvent)
-    case mutationEventDropped(modelName: String)
+    case mutationEventDropped(modelName: String, error: DataStoreError? = nil)
 }
 
 protocol ModelReconciliationQueue {

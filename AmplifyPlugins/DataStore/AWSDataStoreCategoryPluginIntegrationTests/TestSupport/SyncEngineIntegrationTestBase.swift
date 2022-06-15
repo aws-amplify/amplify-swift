@@ -32,17 +32,17 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
     // swiftlint:enable force_try
     // swiftlint:enable force_cast
 
-    override func setUp() {
-        super.setUp()
+    func setUp(withModels models: AmplifyModelRegistration, logLevel: LogLevel = .error) {
 
         continueAfterFailure = false
 
         Amplify.reset()
-        Amplify.Logging.logLevel = .verbose
+        sleep(2)
+        Amplify.Logging.logLevel = logLevel
 
         do {
-            try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: TestModelRegistration()))
-            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: TestModelRegistration()))
+            try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: models))
+            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models))
         } catch {
             XCTFail(String(describing: error))
             return
@@ -75,16 +75,13 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
         wait(for: [cleared], timeout: 2)
     }
 
-    func startAmplify(_ completion: BasicClosure? = nil) throws {
-        let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfigurationFile)
-
-        DispatchQueue.global().async {
-            do {
-                try Amplify.configure(amplifyConfig)
-                completion?()
-            } catch {
-                XCTFail(String(describing: error))
-            }
+    func startAmplify() throws {
+        let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
+            forResource: Self.amplifyConfigurationFile)
+        do {
+            try Amplify.configure(amplifyConfig)
+        } catch {
+            XCTFail(String(describing: error))
         }
     }
 
@@ -111,11 +108,10 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
             return
         }
 
-        try startAmplify {
-            Amplify.DataStore.start { result in
-                if case .failure(let error) = result {
-                    XCTFail("\(error)")
-                }
+        try startAmplify()
+        Amplify.DataStore.start { result in
+            if case .failure(let error) = result {
+                XCTFail("\(error)")
             }
         }
 

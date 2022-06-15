@@ -13,13 +13,12 @@ import XCTest
 
 class LocalStoreIntegrationTestBase: XCTestCase {
 
-    override func setUp() {
-        super.setUp()
+    func setUp(withModels models: AmplifyModelRegistration) {
 
         continueAfterFailure = false
 
         do {
-            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: TestModelRegistration()))
+            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models))
             try Amplify.configure(AmplifyConfiguration(dataStore: nil))
         } catch {
             XCTFail(String(describing: error))
@@ -28,7 +27,11 @@ class LocalStoreIntegrationTestBase: XCTestCase {
     }
 
     override func tearDown() {
-        Amplify.DataStore.clear(completion: { _ in })
+        let semaphore = DispatchSemaphore(value: 0)
+        Amplify.DataStore.clear { _ in
+            semaphore.signal()
+        }
+        semaphore.wait()
         Amplify.reset()
     }
 

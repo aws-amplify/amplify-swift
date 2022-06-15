@@ -12,7 +12,7 @@ import Foundation
 
 enum IncomingModelSyncedEmitterEvent {
     case mutationEventApplied(MutationEvent)
-    case mutationEventDropped(modelName: String)
+    case mutationEventDropped(modelName: String, error: DataStoreError? = nil)
     case modelSyncedEvent(ModelSyncedEvent)
 }
 
@@ -89,7 +89,7 @@ final class ModelSyncedEventEmitter {
             return modelSchema.name == modelName
         case .enqueued(_, let modelName):
             return modelSchema.name == modelName
-        case .finished(let modelName):
+        case .finished(let modelName, _):
             return modelSchema.name == modelName
         }
     }
@@ -100,7 +100,7 @@ final class ModelSyncedEventEmitter {
         switch value {
         case .mutationEventApplied(let event):
             return modelSchema.name == event.modelName
-        case .mutationEventDropped(let modelName):
+        case .mutationEventDropped(let modelName, _):
             return modelSchema.name == modelName
         case .initialized, .started, .paused:
             return false
@@ -127,8 +127,8 @@ final class ModelSyncedEventEmitter {
             switch value {
             case .mutationEventApplied(let event):
                 modelSyncedEventTopic.send(.mutationEventApplied(event))
-            case .mutationEventDropped(let modelName):
-                modelSyncedEventTopic.send(.mutationEventDropped(modelName: modelName))
+            case .mutationEventDropped(let modelName, let error):
+                modelSyncedEventTopic.send(.mutationEventDropped(modelName: modelName, error: error))
             case .initialized, .started, .paused:
                 return
             }
@@ -154,11 +154,9 @@ final class ModelSyncedEventEmitter {
             if shouldSendModelSyncedEvent {
                 sendModelSyncedEvent()
             }
-        case .mutationEventDropped(let modelName):
+        case .mutationEventDropped(let modelName, let error):
             reconciledReceived += 1
-
-            modelSyncedEventTopic.send(.mutationEventDropped(modelName: modelName))
-
+            modelSyncedEventTopic.send(.mutationEventDropped(modelName: modelName, error: error))
             if shouldSendModelSyncedEvent {
                 sendModelSyncedEvent()
             }

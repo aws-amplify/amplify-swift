@@ -12,23 +12,6 @@ The following steps demonstrate how to set up Storage with unauthenticated and a
 ```perl
 ? Please select from one of the below mentioned services: `Content (Images, audio, video, etc.)`
 ? You need to add auth (Amazon Cognito) to your project in order to add storage for user files. Do you want to add auth now? `Yes`
- Do you want to use the default authentication and security configuration? `Default configuration`
- How do you want users to be able to sign in? `Username`
- Do you want to configure advanced settings? `No, I am done.`
-Successfully added auth resource
-? Please provide a friendly name for your resource that will be used to label this category in the project: `s3f34a5918`
-? Please provide bucket name: `<BucketName>`
-? Who should have access: `Auth and guest users`
-? What kind of access do you want for Authenticated users? `create/update, read, delete`
-? What kind of access do you want for Guest users? `create/update, read, delete`
-? Do you want to add a Lambda Trigger for your S3 Bucket? `No`
-```
-
-3. Some of the tests rely on the Auth plugin to be setup as a prerequisite
-
-    `amplify add auth`
-
-```
 Do you want to use the default authentication and security configuration? 
     Manual configuration
 Select the authentication/authorization services that you want to use: 
@@ -77,11 +60,7 @@ Do you want to use an OAuth flow?
 Do you want to configure Lambda Triggers for Cognito? 
     Yes
 Which triggers do you want to enable for Cognito
-    Custom Message
     Pre Sign-up
-    [Choose as many that you would like to manually verify later]
-What functionality do you want to use for Custom Message
-    Create your own module
 What functionality do you want to use for Pre Sign-up 
     Create your own module
 Succesfully added the Lambda function locally
@@ -98,26 +77,24 @@ exports.handler = async (event, context) => {
 };
 ```
 
-For Custom Message and any other lambdas
-
-```
-// you can simply set them to log the input so you can verify valid and correct validationData/clientMetadata
-exports.handler = (event) => {
-    console.log("Reached custom message lambda"); 
-};
-```
-
 Continue in the terminal;
 
 ```
 ? Press enter to continue
-Successfully added resource amplifyintegtest locally
+
+Successfully added auth resource
+? Please provide a friendly name for your resource that will be used to label this category in the project: `s3f34a5918`
+? Please provide bucket name: `<BucketName>`
+? Who should have access: `Auth and guest users`
+? What kind of access do you want for Authenticated users? `create/update, read, delete`
+? What kind of access do you want for Guest users? `create/update, read, delete`
+? Do you want to add a Lambda Trigger for your S3 Bucket? `No`
 ```
 
-4. `amplify push`
+3. `amplify push`
 
 
-5. Copy `amplifyconfiguration.json` as `AWSS3StoragePluginTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`
+4. Copy `amplifyconfiguration.json` as `AWSS3StoragePluginTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`
 
 ```
 cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSS3StoragePluginTests-amplifyconfiguration.json

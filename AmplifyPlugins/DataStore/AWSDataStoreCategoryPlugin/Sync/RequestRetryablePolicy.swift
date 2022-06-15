@@ -37,7 +37,8 @@ class RequestRetryablePolicy: RequestRetryable {
              .dnsLookupFailed,
              .cannotConnectToHost,
              .cannotFindHost,
-             .timedOut:
+             .timedOut,
+             .dataNotAllowed:
             let waitMillis = retryDelayInMillseconds(for: attemptNumber)
             return RequestRetryAdvice(shouldRetry: true, retryInterval: .milliseconds(waitMillis))
         default:

@@ -9,30 +9,31 @@ import Foundation
 
 extension Temporal {
 
-    /// An extension that makes the `Date` struct conform with the `TemporalSpec` protocol.
-    /// When used in persistence operations, the granularity of the different date representations
-    /// is set by using different scalar types: `Date`, `DateTime` and `Time`.
+    /// `Temporal.Date` represents a `Date` with specific allowable formats.
     ///
-    /// In those scenarios, the standard `Date` is formatted to ISO-8601 without the time.
-    /// When the full date information is required, use `DateTime` instead.
-    public struct Date: TemporalSpec, DateUnitOperable {
-
-        public static func now() -> Self {
-            return Temporal.Date(Foundation.Date())
-        }
-
+    ///  * `.short` => `yyyy-MM-dd`
+    ///  * `.medium` => `yyyy-MM-ddZZZZZ`
+    ///  * `.long` => `yyyy-MM-ddZZZZZ`
+    ///  * `.full` => `yyyy-MM-ddZZZZZ`
+    ///
+    ///  - Note: `.medium`, `.long`, and `.full` are the same date format.
+    public struct Date: TemporalSpec {
+        // Inherits documentation from `TemporalSpec`
         public let foundationDate: Foundation.Date
 
-        public init(iso8601String: String) throws {
-            guard let date = Temporal.Date.iso8601Date(from: iso8601String) else {
-                throw DataStoreError.invalidDateFormat(iso8601String)
-            }
-            self.init(date)
+        // Inherits documentation from `TemporalSpec`
+        public static func now() -> Self {
+            Temporal.Date(Foundation.Date())
         }
 
+        // Inherits documentation from `TemporalSpec`
         public init(_ date: Foundation.Date) {
-            // sets the date to a fixed instant so date-only operations are safe
-            self.foundationDate = Date.iso8601Calendar.startOfDay(for: date)
+            self.foundationDate = Temporal
+                .iso8601Calendar
+                .startOfDay(for: date)
         }
     }
 }
+
+// Allow date unit operations on `Temporal.Date`
+extension Temporal.Date: DateUnitOperable {}

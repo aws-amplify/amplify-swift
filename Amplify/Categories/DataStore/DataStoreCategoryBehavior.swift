@@ -34,6 +34,11 @@ public protocol DataStoreBaseBehavior {
                           withId id: String,
                           where predicate: QueryPredicate?,
                           completion: @escaping DataStoreCallback<Void>)
+
+    func delete<M: Model>(_ modelType: M.Type,
+                          where predicate: QueryPredicate,
+                          completion: @escaping DataStoreCallback<Void>)
+
     /**
      Synchronization starts automatically whenever you run any DataStore operation (query(), save(), delete())
      however, you can explicitly begin the process with DatasStore.start()

@@ -198,13 +198,13 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
         })
         guard case .success = deleteModelSynchronousOrFailOtherwise(modelType: Restaurant.self,
                                                                     withId: restaurant1.id,
-                                                                    timeout: 10) else {
+                                                                    timeout: 100) else {
                                                                         XCTFail("Failed to delete restaurant")
                                                                         return
         }
-        wait(for: [receivedMutationEvent], timeout: 10)
-        // let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
-        // print("Time elapsed time to delete: \(timeElapsed) s.")
+        wait(for: [receivedMutationEvent], timeout: 100)
+        //let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+        //print("Time elapsed time to delete: \(timeElapsed) s.")
     }
 
     func testErrorOnSingleSubmissionToSyncEngine() {
@@ -246,8 +246,8 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
 
         guard case .failure(let error) = deleteModelSynchronousOrFailOtherwise(modelType: Restaurant.self,
                                                                                withId: restaurant1.id) else {
-                                                                                XCTFail("Deleting should have failed due to our mock")
-                                                                                return
+            XCTFail("Deleting should have failed due to our mock")
+            return
         }
         wait(for: [receivedMutationEvent, expectedFailures, expectedSuccess], timeout: defaultTimeout)
         XCTAssertEqual(error.errorDescription, "mockError")

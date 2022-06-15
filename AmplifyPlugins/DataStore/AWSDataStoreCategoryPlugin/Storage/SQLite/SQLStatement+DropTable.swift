@@ -14,7 +14,7 @@ struct DropTableStatement: SQLStatement {
     var modelSchema: ModelSchema
 
     var stringValue: String {
-        return "DROP TABLE IF EXISTS \(modelSchema.name)"
+        return "DROP TABLE IF EXISTS \"\(modelSchema.name)\""
     }
 
     init(modelSchema: ModelSchema) {

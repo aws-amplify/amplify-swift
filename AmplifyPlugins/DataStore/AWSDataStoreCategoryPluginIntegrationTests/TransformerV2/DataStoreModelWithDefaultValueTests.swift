@@ -20,7 +20,16 @@ import XCTest
 
 class DataStoreModelWithDefaultValueTests: SyncEngineIntegrationV2TestBase {
 
+    struct TestModelRegistration: AmplifyModelRegistration {
+        func registerModels(registry: ModelRegistry.Type) {
+            registry.register(modelType: TodoWithDefaultValueV2.self)
+        }
+
+        let version: String = "1"
+    }
+
     func testSaveModelWithExplicitContentAndSync() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         guard let todo = saveTodo(content: "content") else {
@@ -71,6 +80,7 @@ class DataStoreModelWithDefaultValueTests: SyncEngineIntegrationV2TestBase {
     }
 
     func testSaveModelWithoutExplicitContentAndSync() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         guard let todo = saveTodo(content: nil) else {

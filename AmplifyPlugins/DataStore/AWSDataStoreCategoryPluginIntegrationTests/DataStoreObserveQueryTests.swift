@@ -17,6 +17,15 @@ import AWSPluginsCore
 // swiftlint:disable file_length
 class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
 
+    struct TestModelRegistration: AmplifyModelRegistration {
+        func registerModels(registry: ModelRegistry.Type) {
+            registry.register(modelType: Post.self)
+            registry.register(modelType: Comment.self)
+        }
+
+        let version: String = "1"
+    }
+
     /// ObserveQuery API will eventually return query snapshot with `isSynced` true
     ///
     /// - Given: DataStore is cleared
@@ -27,11 +36,8 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///    - Eventually one of the query snapshots will be returned with `isSynced` true
     ///
     func testObserveQueryInitialSync() throws {
-        let started = expectation(description: "Amplify started")
-        try startAmplify {
-            started.fulfill()
-        }
-        wait(for: [started], timeout: 2)
+        setUp(withModels: TestModelRegistration())
+        try startAmplify()
         clearDataStore()
         var snapshots = [DataStoreQuerySnapshot<Post>]()
         let snapshotWithIsSynced = expectation(description: "query snapshot with isSynced true")
@@ -67,19 +73,16 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///    - The models only contain models based on the predicate
     ///
     func testInitialSyncWithPredicate() throws {
-        let started = expectation(description: "Amplify started")
-        try startAmplify {
-            started.fulfill()
-        }
-        wait(for: [started], timeout: 2)
+        setUp(withModels: TestModelRegistration(), logLevel: .info)
+        try startAmplify()
         savePostAndWaitForSync(Post(title: "xyz 1", content: "content", createdAt: .now()))
         savePostAndWaitForSync(Post(title: "xyz 2", content: "content", createdAt: .now()))
         savePostAndWaitForSync(Post(title: "xyz 3", content: "content", createdAt: .now()))
         clearDataStore()
         var snapshots = [DataStoreQuerySnapshot<Post>]()
-        Amplify.Logging.logLevel = .info
         let snapshotWithIsSynced = expectation(description: "query snapshot with isSynced true")
         snapshotWithIsSynced.assertForOverFulfill = false
+        var snapshotWithIsSyncedFulfilled = false
         let predicate = Post.keys.title.beginsWith("xyz")
         let sink = Amplify.DataStore.observeQuery(for: Post.self, where: predicate).sink { completed in
             switch completed {
@@ -89,9 +92,13 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                 XCTFail("\(error)")
             }
         } receiveValue: { querySnapshot in
-            snapshots.append(querySnapshot)
-            if querySnapshot.isSynced {
-                snapshotWithIsSynced.fulfill()
+            if !snapshotWithIsSyncedFulfilled {
+                snapshots.append(querySnapshot)
+
+                if querySnapshot.isSynced {
+                    snapshotWithIsSyncedFulfilled = true
+                    snapshotWithIsSynced.fulfill()
+                }
             }
         }
 
@@ -113,11 +120,8 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///    - Each snapshot should have items sorted according to the sort order
     ///
     func testObserveQueryWithSort() throws {
-        let started = expectation(description: "Amplify started")
-        try startAmplify {
-            started.fulfill()
-        }
-        wait(for: [started], timeout: 2)
+        setUp(withModels: TestModelRegistration())
+        try startAmplify()
         clearDataStore()
         let post1 = Post(title: "title", content: "content", createdAt: .now())
         let post2 = Post(title: "title", content: "content", createdAt: .now().add(value: 1, to: .second))
@@ -161,6 +165,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///    - The final snapshot should have all the models with `isSynced` true
     ///
     func testObserveQueryWithDataStoreDeltaSync() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForReady()
         savePostAndWaitForSync(Post(title: "title", content: "content", createdAt: .now()))
         let numberOfPosts = queryNumberOfPosts()
@@ -205,12 +210,8 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///     - Delete a model that matches the predicate. Model is removed from the snapshot
     ///     - Delete a model that does NOT match the predicate. No snapshot is emitted
     func testPredicateWithCreateUpdateDelete() throws {
-        let started = expectation(description: "Amplify started")
-        try startAmplify {
-            started.fulfill()
-        }
-        wait(for: [started], timeout: 2)
-        Amplify.Logging.logLevel = .info
+        setUp(withModels: TestModelRegistration(), logLevel: .info)
+        try startAmplify()
 
         let testId = UUID().uuidString
         let postMatchPredicate = Post(title: "xyz 1", content: testId, createdAt: .now())
@@ -303,12 +304,8 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///    - Delete models. The snapshot should have the models removed
     ///
     func testSortWithCreateUpdateDelete() throws {
-        let started = expectation(description: "Amplify started")
-        try startAmplify {
-            started.fulfill()
-        }
-        wait(for: [started], timeout: 2)
-        Amplify.Logging.logLevel = .info
+        setUp(withModels: TestModelRegistration(), logLevel: .info)
+        try startAmplify()
 
         let testId = UUID().uuidString
         var snapshotCount = 0
@@ -406,6 +403,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///    -  ObserveQuery is not completed.
     ///
     func testObserveQueryShouldResetOnDataStoreStop() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForReady()
         let firstSnapshotWithIsSynced = expectation(description: "query snapshot with isSynced true")
         let observeQueryReceivedCompleted = expectation(description: "observeQuery received completed")
@@ -445,6 +443,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///    -  ObserveQuery is not completed.
     ///
     func testObserveQueryShouldResetOnDataStoreClear() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForReady()
         let firstSnapshotWithIsSynced = expectation(description: "query snapshot with isSynced true")
         let observeQueryReceivedCompleted = expectation(description: "observeQuery received completed")
@@ -476,6 +475,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     }
 
     func testObserveQueryShouldStartOnDataStoreStart() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForReady()
         let firstSnapshot = expectation(description: "first query snapshot")
         let secondSnapshot = expectation(description: "second query snapshot")

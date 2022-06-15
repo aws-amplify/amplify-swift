@@ -214,7 +214,7 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
                 XCTAssertFalse(data.tables.isEmpty)
                 XCTAssertEqual(data.tables.count, 1)
                 XCTAssertFalse(data.keyValues.isEmpty)
-                XCTAssertEqual(data.keyValues.count, 5)
+                XCTAssertEqual(data.keyValues.count, 4)
                 completeInvoked.fulfill()
             case .failure(let error):
                 XCTFail("Failed with \(error)")
@@ -252,11 +252,11 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
                 }
                 XCTAssertFalse(data.fullText.isEmpty)
                 XCTAssertFalse(data.words.isEmpty)
-                XCTAssertEqual(data.words.count, 28)
+                XCTAssertEqual(data.words.count, 33)
                 XCTAssertFalse(data.rawLineText.isEmpty)
-                XCTAssertEqual(data.rawLineText.count, 16)
+                XCTAssertEqual(data.rawLineText.count, 17)
                 XCTAssertFalse(data.identifiedLines.isEmpty)
-                XCTAssertEqual(data.identifiedLines.count, 16)
+                XCTAssertEqual(data.identifiedLines.count, 17)
                 XCTAssertFalse(data.keyValues.isEmpty)
                 XCTAssertEqual(data.keyValues.count, 7)
                 completeInvoked.fulfill()

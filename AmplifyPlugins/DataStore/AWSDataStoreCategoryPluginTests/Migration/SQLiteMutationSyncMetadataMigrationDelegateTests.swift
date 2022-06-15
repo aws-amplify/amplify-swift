@@ -120,7 +120,9 @@ class SQLiteMutationSyncMetadataMigrationDelegateTests: MutationSyncMetadataMigr
         // Dropping the table without the table in the database is successful
         let drop = try delegate.removeMutationSyncMetadataCopyStore()
 
-        XCTAssertEqual(drop, "DROP TABLE IF EXISTS MutationSyncMetadataCopy")
+        XCTAssertEqual(drop, """
+        DROP TABLE IF EXISTS "MutationSyncMetadataCopy"
+        """)
 
         // Creating the table is successful
         let create = try delegate.createMutationSyncMetadataCopyStore()

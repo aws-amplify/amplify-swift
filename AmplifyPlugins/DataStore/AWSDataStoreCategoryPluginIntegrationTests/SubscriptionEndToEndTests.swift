@@ -15,12 +15,22 @@ import AWSPluginsCore
 
 class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
 
+    struct TestModelRegistration: AmplifyModelRegistration {
+        func registerModels(registry: ModelRegistry.Type) {
+            registry.register(modelType: Post.self)
+            registry.register(modelType: Comment.self)
+        }
+
+        let version: String = "1"
+    }
+
     /// - Given: An API-connected DataStore
     /// - When:
     ///    - I start Amplify
     /// - Then:
     ///    - I receive subscriptions from other systems for syncable models
     func testSubscribeReceivesCreateMutateDelete() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         // Filter all events to ensure they have this ID. This prevents us from overfulfilling on

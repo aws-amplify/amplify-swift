@@ -16,7 +16,17 @@ import Combine
 
 class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 
+    struct TestModelRegistration: AmplifyModelRegistration {
+        func registerModels(registry: ModelRegistry.Type) {
+            registry.register(modelType: Post.self)
+            registry.register(modelType: Comment.self)
+        }
+
+        let version: String = "1"
+    }
+
     func testCreate() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         var cancellables = Set<AnyCancellable>()
         let date = Temporal.DateTime.now()
@@ -99,6 +109,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     }
 
     func testCreateMutateDelete() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         let date = Temporal.DateTime.now()
@@ -175,6 +186,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     /// - Then:
     ///    - the update with condition that matches existing data will be applied and returned.
     func testCreateThenMutateWithCondition() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         let post = Post.keys
@@ -243,6 +255,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     ///    - the post is first only updated on local store is not sync to the remote
     ///    - the save with condition reaches the remote and fails with conditional save failed
     func testCreateThenMutateWithConditionFailOnSync() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         let post = Post.keys
@@ -329,6 +342,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     ///    - Saving a post should be successful
     ///
     func testStopStart() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let stopStartSuccess = expectation(description: "stop then start successful")
         Amplify.DataStore.stop { result in
@@ -359,6 +373,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     /// - Then:
     ///   - DataStore is automatically started
     func testQueryImplicitlyStarts() throws {
+        setUp(withModels: TestModelRegistration())
         let dataStoreStarted = expectation(description: "dataStoreStarted")
         let sink = Amplify
             .Hub
@@ -366,11 +381,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             .filter { $0.eventName == HubPayload.EventName.DataStore.ready }
             .sink { _ in dataStoreStarted.fulfill() }
 
-        let amplifyStarted = expectation(description: "amplifyStarted")
-        try startAmplify {
-            amplifyStarted.fulfill()
-        }
-        wait(for: [amplifyStarted], timeout: 1.0)
+        try startAmplify()
 
         // We expect the query to complete, but not to return a value. Thus, we'll ignore the error
         let queryCompleted = expectation(description: "queryCompleted")
@@ -390,6 +401,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     ///    - Saving a post should be successful
     ///
     func testClearStart() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let clearStartSuccess = expectation(description: "clear then start successful")
         Amplify.DataStore.clear { result in
@@ -423,6 +435,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     ///    - Ensure the expected mutation event with version 2 (synced from cloud) is received
     ///
     func testConcurrentSave() throws {
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         var posts = [Post]()

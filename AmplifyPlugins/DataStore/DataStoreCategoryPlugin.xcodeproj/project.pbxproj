@@ -61,6 +61,8 @@
 		214B6B68264B157500A9311D /* StopwatchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214B6B67264B157500A9311D /* StopwatchTests.swift */; };
 		215D40AD277233340077E7DA /* DataStoreConnectionScenario8V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 215D40AC277233340077E7DA /* DataStoreConnectionScenario8V2Tests.swift */; };
 		216942F427F4E0BC00DE36BC /* DataStoreHubEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216942F327F4E0BC00DE36BC /* DataStoreHubEvent.swift */; };
+		2169431627FCD82D00DE36BC /* CascadeDeleteOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2169431527FCD82D00DE36BC /* CascadeDeleteOperation.swift */; };
+		2169431827FF760A00DE36BC /* CascadeDeleteOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2169431727FF760A00DE36BC /* CascadeDeleteOperationTests.swift */; };
 		216B69D326DD542D005D97AD /* Model+Sort.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216B69D226DD542D005D97AD /* Model+Sort.swift */; };
 		216B69D626DD594E005D97AD /* ModelSortTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216B69D526DD594E005D97AD /* ModelSortTests.swift */; };
 		2178C0A126D3F1E200C53065 /* DataStoreObserveQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2178C0A026D3F1E200C53065 /* DataStoreObserveQueryTests.swift */; };
@@ -126,7 +128,6 @@
 		6B52DC9624478E75007F5AD3 /* MockModelReconciliationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B52DC9524478E75007F5AD3 /* MockModelReconciliationQueue.swift */; };
 		6B64027923E3584300001FD7 /* MockAWSIncomingEventReconciliationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B64027823E3584300001FD7 /* MockAWSIncomingEventReconciliationQueue.swift */; };
 		6B64027B23E38B9900001FD7 /* MockOutgoingMutationQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B64027A23E38B9900001FD7 /* MockOutgoingMutationQueue.swift */; };
-		6B7743D525906B6E001469F5 /* StorageEngine+DeleteTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B7743D425906B6E001469F5 /* StorageEngine+DeleteTransaction.swift */; };
 		6B7743E7259071C8001469F5 /* StorageEngineTestsHasMany.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B7743E6259071C8001469F5 /* StorageEngineTestsHasMany.swift */; };
 		6B7743E9259071F5001469F5 /* MockRemoteSyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B7743E8259071F5001469F5 /* MockRemoteSyncEngine.swift */; };
 		6B91DEBF238B9CE0004D6BEE /* ReconcileAndLocalSaveOperationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B91DEBE238B9CE0004D6BEE /* ReconcileAndLocalSaveOperationTests.swift */; };
@@ -479,6 +480,8 @@
 		214B6B67264B157500A9311D /* StopwatchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopwatchTests.swift; sourceTree = "<group>"; };
 		215D40AC277233340077E7DA /* DataStoreConnectionScenario8V2Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario8V2Tests.swift; sourceTree = "<group>"; };
 		216942F327F4E0BC00DE36BC /* DataStoreHubEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreHubEvent.swift; sourceTree = "<group>"; };
+		2169431527FCD82D00DE36BC /* CascadeDeleteOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CascadeDeleteOperation.swift; sourceTree = "<group>"; };
+		2169431727FF760A00DE36BC /* CascadeDeleteOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CascadeDeleteOperationTests.swift; sourceTree = "<group>"; };
 		216B69D226DD542D005D97AD /* Model+Sort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+Sort.swift"; sourceTree = "<group>"; };
 		216B69D526DD594E005D97AD /* ModelSortTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelSortTests.swift; sourceTree = "<group>"; };
 		2178C0A026D3F1E200C53065 /* DataStoreObserveQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreObserveQueryTests.swift; sourceTree = "<group>"; };
@@ -549,7 +552,6 @@
 		6B52DC9524478E75007F5AD3 /* MockModelReconciliationQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockModelReconciliationQueue.swift; sourceTree = "<group>"; };
 		6B64027823E3584300001FD7 /* MockAWSIncomingEventReconciliationQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAWSIncomingEventReconciliationQueue.swift; sourceTree = "<group>"; };
 		6B64027A23E38B9900001FD7 /* MockOutgoingMutationQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockOutgoingMutationQueue.swift; sourceTree = "<group>"; };
-		6B7743D425906B6E001469F5 /* StorageEngine+DeleteTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StorageEngine+DeleteTransaction.swift"; sourceTree = "<group>"; };
 		6B7743E6259071C8001469F5 /* StorageEngineTestsHasMany.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageEngineTestsHasMany.swift; sourceTree = "<group>"; };
 		6B7743E8259071F5001469F5 /* MockRemoteSyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRemoteSyncEngine.swift; sourceTree = "<group>"; };
 		6B91DEBE238B9CE0004D6BEE /* ReconcileAndLocalSaveOperationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReconcileAndLocalSaveOperationTests.swift; sourceTree = "<group>"; };
@@ -891,9 +893,9 @@
 				2149E5E42388692E00873955 /* AWSDataStoreCategoryPluginTests */,
 				2149E61E23886CEE00873955 /* AWSDataStoreCategoryPluginIntegrationTests */,
 				21233DDE2475935600039337 /* AWSDataStoreCategoryPluginAuthIntegrationTests */,
+				9C0CA4EF2748705F001C70CD /* AWSDataStoreCategoryPluginFlutterIntegrationTests */,
 				2149E60623886C7B00873955 /* HostApp */,
 				9B5889A231ECAD33B03B5DF6 /* Pods */,
-				9C0CA4EF2748705F001C70CD /* AWSDataStoreCategoryPluginFlutterIntegrationTests */,
 				2149E59C238867E100873955 /* Products */,
 				FA9C743C238CB493009DAFCF /* Recovered References */,
 				B158D86B8144CD1BD9589BA7 /* Frameworks */,
@@ -935,13 +937,13 @@
 		2149E5A72388684F00873955 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
+				2169431527FCD82D00DE36BC /* CascadeDeleteOperation.swift */,
 				FAED5741238B52CE008EBED8 /* ModelStorageBehavior.swift */,
+				2149E5AB2388684F00873955 /* SQLite */,
 				2149E5AA2388684F00873955 /* StorageEngine.swift */,
-				6B7743D425906B6E001469F5 /* StorageEngine+DeleteTransaction.swift */,
 				21233E1224763D0700039337 /* StorageEngine+SyncRequirement.swift */,
 				2149E5A92388684F00873955 /* StorageEngineAdapter.swift */,
 				2149E5A82388684F00873955 /* StorageEngineBehavior.swift */,
-				2149E5AB2388684F00873955 /* SQLite */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -1172,6 +1174,7 @@
 		6B7743E5259071AB001469F5 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
+				2169431727FF760A00DE36BC /* CascadeDeleteOperationTests.swift */,
 				21DDCE05273049F200D9B297 /* StorageEnginePublisherTests.swift */,
 				6BE9D6F225A665EA00AB5C9A /* StorageEngineTestsBase.swift */,
 				219F796925B8D268007107D3 /* StorageEngineTestsDelete.swift */,
@@ -1893,8 +1896,8 @@
 				2149E5E22388692E00873955 /* AWSDataStoreCategoryPluginTests */,
 				2149E61C23886CEE00873955 /* AWSDataStoreCategoryPluginIntegrationTests */,
 				21233DDC2475935600039337 /* AWSDataStoreCategoryPluginAuthIntegrationTests */,
-				2149E60423886C7B00873955 /* HostApp */,
 				9C0CA4ED2748705F001C70CD /* AWSDataStoreCategoryPluginFlutterIntegrationTests */,
+				2149E60423886C7B00873955 /* HostApp */,
 			);
 		};
 /* End PBXProject section */
@@ -2453,7 +2456,6 @@
 				D8079A73251656A200826E8F /* SyncEventEmitter.swift in Sources */,
 				2149E5D42388684F00873955 /* DataStorePublisher.swift in Sources */,
 				FA3841E723889D340070AD5B /* ReconcileAndLocalSaveOperation.swift in Sources */,
-				6B7743D525906B6E001469F5 /* StorageEngine+DeleteTransaction.swift in Sources */,
 				FADD728F238B0F10005AA69A /* IncomingAsyncSubscriptionEventPublisher.swift in Sources */,
 				6B4693E923A5645F006BE2C5 /* MutationRetryNotifier.swift in Sources */,
 				FACBA78B2394950C006349C8 /* MutationEventSource.swift in Sources */,
@@ -2496,6 +2498,7 @@
 				FA5D76AB2394752900489864 /* AWSMutationDatabaseAdapter+MutationEventIngester.swift in Sources */,
 				B9B64AA123FD0A3C00730B68 /* ModelValueConverter+SQLite.swift in Sources */,
 				FA0427CA2396C35500D25AB0 /* InitialSyncOrchestrator.swift in Sources */,
+				2169431627FCD82D00DE36BC /* CascadeDeleteOperation.swift in Sources */,
 				FAED5738238B3A2A008EBED8 /* AWSIncomingSubscriptionEventPublisher.swift in Sources */,
 				FACBA78F23949C75006349C8 /* AWSMutationDatabaseAdapter.swift in Sources */,
 				FA55A54D2391F96E002AFF2D /* AWSMutationDatabaseAdapter+MutationEventSource.swift in Sources */,
@@ -2537,6 +2540,7 @@
 				B996FC4923FF3E92006D0F68 /* ExampleWithEveryType+Schema.swift in Sources */,
 				2129BE4A23948A97006363A1 /* StorageAdapterMutationSyncTests.swift in Sources */,
 				B4D59DDD2554BBE7009B9235 /* LocalSubscriptionWithJSONModelTests.swift in Sources */,
+				2169431827FF760A00DE36BC /* CascadeDeleteOperationTests.swift in Sources */,
 				FAABC227239B1B9100740F9F /* ReconciliationQueueTestBase.swift in Sources */,
 				21DDCE00272C869D00D9B297 /* SQLiteMutationSyncMetadataMigrationValidationTests.swift in Sources */,
 				FA0427CC2396C7E400D25AB0 /* InitialSyncOrchestratorTests.swift in Sources */,
