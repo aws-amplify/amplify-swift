@@ -77,7 +77,7 @@ class PinpointContext {
     
     lazy var uniqueId = retrieveUniqueId()
     
-    lazy var analyticsClient: AnalyticsClient = {
+    lazy var analyticsClient: AnalyticsClientBehaviour = {
         AnalyticsClient(context: self)
     }()
     
@@ -85,7 +85,7 @@ class PinpointContext {
         EndpointClient(context: self)
     }()
     
-    lazy var sessionTracker: SessionClient = {
+    lazy var sessionClient: SessionClientBehaviour = {
         SessionClient(context: self)
     }()
     
