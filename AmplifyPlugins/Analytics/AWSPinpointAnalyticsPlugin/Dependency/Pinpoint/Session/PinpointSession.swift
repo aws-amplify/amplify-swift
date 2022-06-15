@@ -105,7 +105,7 @@ extension PinpointSession {
         struct Date {
             static let defaultTimezone = "GMT"
             static let defaultLocale = "en_US"
-            static let dateFormat = "yyyMMdd"
+            static let dateFormat = "yyyyMMdd"
             static let timeFormat = "HHmmssSSS"
         }
     }
