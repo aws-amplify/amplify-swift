@@ -9,7 +9,28 @@ import Foundation
 import StoreKit
 import Amplify
 
-actor AnalyticsClient: InternalPinpointClient {
+protocol AnalyticsClientBehaviour: Actor {
+    func addGlobalAttribute(_ attribute: String, forKey key: String)
+    func addGlobalAttribute(_ attribute: String, forKey key: String, forEventType eventType: String)
+    func addGlobalMetric(_ metric: Double, forKey key: String)
+    func addGlobalMetric(_ metric: Double, forKey key: String, forEventType eventType: String)
+    func removeGlobalAttribute(forKey key: String)
+    func removeGlobalAttribute(forKey key: String, forEventType eventType: String)
+    func removeGlobalMetric(forKey key: String)
+    func removeGlobalMetric(forKey key: String, forEventType eventType: String)
+    func record(_ event: PinpointEvent) async throws
+    @discardableResult func submitEvents() async throws -> [PinpointEvent]
+    
+    nonisolated func createAppleMonetizationEvent(with transaction: SKPaymentTransaction,
+                                      with product: SKProduct) -> PinpointEvent
+    nonisolated func createVirtualMonetizationEvent(withProductId productId: String,
+                                                    withItemPrice itemPrice: Double,
+                                                    withQuantity quantity: Int,
+                                        withCurrency currency: String) -> PinpointEvent
+    nonisolated func createEvent(withEventType eventType: String) -> PinpointEvent
+}
+
+actor AnalyticsClient: AnalyticsClientBehaviour {
     private let eventRecorder: AnalyticsEventRecording?
     unowned let context: PinpointContext
     private lazy var globalAttributes: PinpointEventAttributes = [:]
@@ -109,7 +130,7 @@ actor AnalyticsClient: InternalPinpointClient {
                                                      priceLocale: Locale? = nil,
                                                      transactionId: String? = nil) -> PinpointEvent {
         let monetizationEvent = PinpointEvent(eventType: Constants.PurchaseEvent.name,
-                                              session: context.sessionTracker.currentSession)
+                                              session: context.sessionClient.currentSession)
         monetizationEvent.addAttribute(store,
                                        forKey: Constants.PurchaseEvent.Keys.store)
         monetizationEvent.addAttribute(productId,
@@ -141,7 +162,7 @@ actor AnalyticsClient: InternalPinpointClient {
     nonisolated func createEvent(withEventType eventType: String) -> PinpointEvent {
         precondition(!eventType.isEmpty, "Event types must be at least 1 character in length.")
         return PinpointEvent(eventType: eventType,
-                             session: context.sessionTracker.currentSession)
+                             session: context.sessionClient.currentSession)
     }
     
     func record(_ event: PinpointEvent) async throws {
