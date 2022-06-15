@@ -5,31 +5,34 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
 import AWSClientRuntime
 import AWSPinpoint
 import AWSPluginsCore
+import Amplify
 import Foundation
 
 /// Conforms to `AWSPinpointBehavior` by storing an instance of the `AWSPinpoint` to expose AWS Pinpoint functionality
 class AWSPinpointAdapter: AWSPinpointBehavior {
-    let pinpoint: PinpointContext
+  let pinpoint: PinpointContext
 
-    convenience init(appId: String,
-                     region: String,
-                     credentialsProvider: CredentialsProvider) throws {
-        let configuration = PinpointContextConfiguration(appId: appId)
-        let pinpoint = try PinpointContext(with: configuration,
-                                           credentialsProvider: credentialsProvider,
-                                           region: region)
-        self.init(pinpoint: pinpoint)
-    }
+  convenience init(
+    appId: String,
+    region: String,
+    credentialsProvider: CredentialsProvider
+  ) throws {
+    let configuration = PinpointContextConfiguration(appId: appId)
+    let pinpoint = try PinpointContext(
+      with: configuration,
+      credentialsProvider: credentialsProvider,
+      region: region)
+    self.init(pinpoint: pinpoint)
+  }
 
-    init(pinpoint: PinpointContext) {
-        self.pinpoint = pinpoint
-    }
+  init(pinpoint: PinpointContext) {
+    self.pinpoint = pinpoint
+  }
 
-    func getEscapeHatch() -> PinpointClientProtocol {
-        pinpoint.pinpointClient
-    }
+  func getEscapeHatch() -> PinpointClientProtocol {
+    pinpoint.pinpointClient
+  }
 }

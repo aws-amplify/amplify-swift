@@ -5,8 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
 import AWSPinpoint
+import Amplify
 import Foundation
 
 // TODO: Implement in PinpointEndpointProfile

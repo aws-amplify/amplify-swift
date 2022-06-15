@@ -9,19 +9,19 @@ import Amplify
 import Foundation
 
 class AnalyticsErrorHelper {
-    static func getDefaultError(_ error: Error) -> AnalyticsError {
-        return getDefaultError(error as NSError)
-    }
+  static func getDefaultError(_ error: Error) -> AnalyticsError {
+    return getDefaultError(error as NSError)
+  }
 
-    static func getDefaultError(_ error: NSError) -> AnalyticsError {
-        let errorMessage = """
-        Domain: [\(error.domain)
-        Code: [\(error.code)
-        LocalizedDescription: [\(error.localizedDescription)
-        LocalizedFailureReason: [\(error.localizedFailureReason ?? "")
-        LocalizedRecoverySuggestion: [\(error.localizedRecoverySuggestion ?? "")
-        """
+  static func getDefaultError(_ error: NSError) -> AnalyticsError {
+    let errorMessage = """
+      Domain: [\(error.domain)
+      Code: [\(error.code)
+      LocalizedDescription: [\(error.localizedDescription)
+      LocalizedFailureReason: [\(error.localizedFailureReason ?? "")
+      LocalizedRecoverySuggestion: [\(error.localizedRecoverySuggestion ?? "")
+      """
 
-        return AnalyticsError.unknown(errorMessage)
-    }
+    return AnalyticsError.unknown(errorMessage)
+  }
 }

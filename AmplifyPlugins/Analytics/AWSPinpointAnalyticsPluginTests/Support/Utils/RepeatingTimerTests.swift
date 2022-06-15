@@ -5,22 +5,23 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import AWSPinpointAnalyticsPlugin
 import XCTest
 
-class RepeatingTimerTests: XCTestCase {
-    func testRepeatingTimer() {
-        let timerFired = expectation(description: "timer fired")
-        timerFired.expectedFulfillmentCount = 4
-        timerFired.assertForOverFulfill = true
-        let timer = RepeatingTimer.createRepeatingTimer(timeInterval: TimeInterval(0.25)) {
-            timerFired.fulfill()
-        }
-        timer.resume()
-        wait(for: [timerFired], timeout: 2)
+@testable import AWSPinpointAnalyticsPlugin
 
-        timer.setEventHandler {}
-        timer.cancel()
-        XCTAssertTrue(timer.isCancelled)
+class RepeatingTimerTests: XCTestCase {
+  func testRepeatingTimer() {
+    let timerFired = expectation(description: "timer fired")
+    timerFired.expectedFulfillmentCount = 4
+    timerFired.assertForOverFulfill = true
+    let timer = RepeatingTimer.createRepeatingTimer(timeInterval: TimeInterval(0.25)) {
+      timerFired.fulfill()
     }
+    timer.resume()
+    wait(for: [timerFired], timeout: 2)
+
+    timer.setEventHandler {}
+    timer.cancel()
+    XCTAssertTrue(timer.isCancelled)
+  }
 }
