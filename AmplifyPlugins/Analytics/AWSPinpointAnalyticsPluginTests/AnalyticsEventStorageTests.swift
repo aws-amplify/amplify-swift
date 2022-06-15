@@ -82,15 +82,15 @@ class AnalyticsEventStorageTests: XCTestCase {
         do {
             var eventcount = try adapter.executeQuery(eventCountStatement, []).scalar() as! Int64
             var dirtyEventcount = try adapter.executeQuery(dirtyEventCountStatement, []).scalar() as! Int64
-            XCTAssertTrue(eventcount == 3)
-            XCTAssertTrue(dirtyEventcount == 2)
+            XCTAssertEqual(eventcount, 3)
+            XCTAssertEqual(dirtyEventcount, 2)
             
             try storage.checkDiskSize(limit: 10000000)
             
             eventcount = try adapter.executeQuery(eventCountStatement, []).scalar() as! Int64
             dirtyEventcount = try adapter.executeQuery(dirtyEventCountStatement, []).scalar() as! Int64
-            XCTAssertTrue(eventcount == 3)
-            XCTAssertTrue(dirtyEventcount == 2)
+            XCTAssertEqual(eventcount, 3)
+            XCTAssertEqual(dirtyEventcount, 2)
         } catch {
             XCTFail("Failed to test disk usage under limit")
         }
@@ -102,10 +102,10 @@ class AnalyticsEventStorageTests: XCTestCase {
     func testDeleteEvent() {
         do {
             var eventcount = try adapter.executeQuery(eventCountStatement, []).scalar() as! Int64
-            XCTAssertTrue(eventcount == 3)
+            XCTAssertEqual(eventcount, 3)
             try storage.deleteEvent(eventId: "1")
             eventcount = try adapter.executeQuery(eventCountStatement, []).scalar() as! Int64
-            XCTAssertTrue(eventcount == 2)
+            XCTAssertEqual(eventcount, 2)
         } catch {
             XCTFail("Failed to delete event")
         }
@@ -117,10 +117,10 @@ class AnalyticsEventStorageTests: XCTestCase {
     func testInvalidDeleteEvent() {
         do {
             var eventcount = try adapter.executeQuery(eventCountStatement, []).scalar() as! Int64
-            XCTAssertTrue(eventcount == 3)
+            XCTAssertEqual(eventcount, 3)
             try storage.deleteEvent(eventId: "200")
             eventcount = try adapter.executeQuery(eventCountStatement, []).scalar() as! Int64
-            XCTAssertTrue(eventcount == 3)
+            XCTAssertEqual(eventcount, 3)
         } catch {
             XCTFail("Failed to delete event")
         }
@@ -133,15 +133,15 @@ class AnalyticsEventStorageTests: XCTestCase {
         do {
             var eventcount = try adapter.executeQuery(eventCountStatement, []).scalar() as! Int64
             var dirtyEventcount = try adapter.executeQuery(dirtyEventCountStatement, []).scalar() as! Int64
-            XCTAssertTrue(eventcount == 3)
-            XCTAssertTrue(dirtyEventcount == 2)
+            XCTAssertEqual(eventcount, 3)
+            XCTAssertEqual(dirtyEventcount, 2)
             
             try storage.deleteDirtyEvents()
             
             eventcount = try adapter.executeQuery(eventCountStatement, []).scalar() as! Int64
             dirtyEventcount = try adapter.executeQuery(dirtyEventCountStatement, []).scalar() as! Int64
-            XCTAssertTrue(eventcount == 2)
-            XCTAssertTrue(dirtyEventcount == 0)
+            XCTAssertEqual(eventcount, 2)
+            XCTAssertEqual(dirtyEventcount, 0)
         } catch {
             XCTFail("Failed to delete all dirty events")
         }
@@ -154,18 +154,18 @@ class AnalyticsEventStorageTests: XCTestCase {
         do {
             var eventcount = try adapter.executeQuery(eventCountStatement, []).scalar() as! Int64
             var dirtyEventcount = try adapter.executeQuery(dirtyEventCountStatement, []).scalar() as! Int64
-            XCTAssertTrue(eventcount == 3)
-            XCTAssertTrue(dirtyEventcount == 2)
+            XCTAssertEqual(eventcount, 3)
+            XCTAssertEqual(dirtyEventcount, 2)
 
             try storage.deleteOldestEvent()
 
             eventcount = try adapter.executeQuery(eventCountStatement, []).scalar() as! Int64
             dirtyEventcount = try adapter.executeQuery(dirtyEventCountStatement, []).scalar() as! Int64
-            XCTAssertTrue(eventcount == 2)
-            XCTAssertTrue(dirtyEventcount == 2)
+            XCTAssertEqual(eventcount, 2)
+            XCTAssertEqual(dirtyEventcount, 2)
 
             let events = try storage.getEventsWith(limit: 5)
-            XCTAssertTrue(events.count == 2)
+            XCTAssertEqual(events.count, 2)
             XCTAssertTrue(events.contains(where: { $0.id ==  "1"}))
             XCTAssertTrue(events.contains(where: { $0.id ==  "2"}))
         } catch {
@@ -180,7 +180,7 @@ class AnalyticsEventStorageTests: XCTestCase {
         do {
 
             let events = try storage.getEventsWith(limit: 5)
-            XCTAssertTrue(events.count == 3)
+            XCTAssertEqual(events.count, 3)
             XCTAssertTrue(events.contains(where: { $0.id ==  "1"}))
             XCTAssertTrue(events.contains(where: { $0.id ==  "2"}))
             XCTAssertTrue(events.contains(where: { $0.id ==  "5"}))
@@ -199,16 +199,16 @@ class AnalyticsEventStorageTests: XCTestCase {
             let events = try storage.getEventsWith(limit: 5)
             let latestEvent = events.first(where: { $0.id == "1" })
             XCTAssertNotNil(latestEvent)
-            XCTAssertTrue(latestEvent?.eventType == "eventType")
-            XCTAssertTrue(latestEvent?.eventTimestamp == 1654887020618)
-            XCTAssertTrue(latestEvent?.session.sessionId == "1")
-            XCTAssertTrue(latestEvent?.session.startTime == expectedSessionStartTime)
-            XCTAssertTrue(latestEvent?.session.stopTime == expectedSessionStopTime)
-            XCTAssertTrue(latestEvent?.session.duration == 600000)
-            XCTAssertTrue(latestEvent?.attributes.count == 3)
-            XCTAssertTrue(latestEvent?.attributes["key2"] == "value2")
-            XCTAssertTrue(latestEvent?.metrics.count == 2)
-            XCTAssertTrue(latestEvent?.metrics["key2"] == 2.0)
+            XCTAssertEqual(latestEvent?.eventType, "eventType")
+            XCTAssertEqual(latestEvent?.eventTimestamp, 1654887020618)
+            XCTAssertEqual(latestEvent?.session.sessionId, "1")
+            XCTAssertEqual(latestEvent?.session.startTime, expectedSessionStartTime)
+            XCTAssertEqual(latestEvent?.session.stopTime, expectedSessionStopTime)
+            XCTAssertEqual(latestEvent?.session.duration, 600000)
+            XCTAssertEqual(latestEvent?.attributes.count, 3)
+            XCTAssertEqual(latestEvent?.attributes["key2"], "value2")
+            XCTAssertEqual(latestEvent?.metrics.count, 2)
+            XCTAssertEqual(latestEvent?.metrics["key2"], 2.0)
         } catch {
             XCTFail("Failed to convert elements to event")
         }
@@ -220,12 +220,12 @@ class AnalyticsEventStorageTests: XCTestCase {
     func testDeleteAllEvents() {
         do {
             var eventcount = try adapter.executeQuery(eventCountStatement, []).scalar() as! Int64
-            XCTAssertTrue(eventcount == 3)
+            XCTAssertEqual(eventcount, 3)
 
             try storage.deleteAllEvents()
 
             eventcount = try adapter.executeQuery(eventCountStatement, []).scalar() as! Int64
-            XCTAssertTrue(eventcount == 0)
+            XCTAssertEqual(eventcount, 0)
         } catch {
             XCTFail("Failed to delete all events")
         }
@@ -242,14 +242,14 @@ class AnalyticsEventStorageTests: XCTestCase {
             var results = try adapter.executeQuery(selectStatement, [eventId])
             var result = results.makeIterator().next()
             retryCount = result?[10] as? Int64
-            XCTAssertTrue(retryCount == 0)
+            XCTAssertEqual(retryCount, 0)
             
             try storage.incrementEventRetry(eventId: eventId)
             
             results = try adapter.executeQuery(selectStatement, [eventId])
             result = results.makeIterator().next()
             retryCount = result?[10] as? Int64
-            XCTAssertTrue(retryCount == 1)
+            XCTAssertEqual(retryCount, 1)
         } catch {
             XCTFail("Failed to increment event retry count")
         }
@@ -262,18 +262,18 @@ class AnalyticsEventStorageTests: XCTestCase {
         do {
             var eventcount = try adapter.executeQuery(eventCountStatement, []).scalar() as! Int64
             var dirtyEventcount = try adapter.executeQuery(dirtyEventCountStatement, []).scalar() as! Int64
-            XCTAssertTrue(eventcount == 3)
-            XCTAssertTrue(dirtyEventcount == 2)
+            XCTAssertEqual(eventcount, 3)
+            XCTAssertEqual(dirtyEventcount, 2)
 
             try storage.removeFailedEvents()
 
             eventcount = try adapter.executeQuery(eventCountStatement, []).scalar() as! Int64
             dirtyEventcount = try adapter.executeQuery(dirtyEventCountStatement, []).scalar() as! Int64
-            XCTAssertTrue(eventcount == 1)
-            XCTAssertTrue(dirtyEventcount == 4)
+            XCTAssertEqual(eventcount, 1)
+            XCTAssertEqual(dirtyEventcount, 4)
 
             let events = try storage.getEventsWith(limit: 5)
-            XCTAssertTrue(events.count == 1)
+            XCTAssertEqual(events.count, 1)
             XCTAssertTrue(events.contains(where: { $0.id ==  "1"}))
         } catch {
             XCTFail("Failed to remove failed events")
@@ -291,14 +291,14 @@ class AnalyticsEventStorageTests: XCTestCase {
             var results = try adapter.executeQuery(selectStatement, [eventId])
             var result = results.makeIterator().next()
             dirtyFlag = result?[9] as? Int64
-            XCTAssertTrue(dirtyFlag == 0)
+            XCTAssertEqual(dirtyFlag, 0)
             
             try storage.setDirtyEvent(eventId: eventId)
             
             results = try adapter.executeQuery(selectStatement, [eventId])
             result = results.makeIterator().next()
             dirtyFlag = result?[9] as? Int64
-            XCTAssertTrue(dirtyFlag == 1)
+            XCTAssertEqual(dirtyFlag, 1)
         } catch {
             XCTFail("Failed to set dirty flag on event")
         }
@@ -325,16 +325,16 @@ class AnalyticsEventStorageTests: XCTestCase {
             events = try storage.getEventsWith(limit: 5)
             latestEvent = events.first(where: { $0.id == "6" })
             XCTAssertNotNil(latestEvent)
-            XCTAssertTrue(latestEvent?.eventType == "newEventType")
-            XCTAssertTrue(latestEvent?.eventTimestamp == expectedSessionStartTime!.utcTimeMillis)
-            XCTAssertTrue(latestEvent?.session.sessionId == "6")
-            XCTAssertTrue(latestEvent?.session.startTime == expectedSessionStartTime)
-            XCTAssertTrue(latestEvent?.session.stopTime == expectedSessionStopTime)
-            XCTAssertTrue(latestEvent?.session.duration == 600000)
-            XCTAssertTrue(latestEvent?.attributes.count == 1)
-            XCTAssertTrue(latestEvent?.attributes["testKey"] == "testValue")
-            XCTAssertTrue(latestEvent?.metrics.count == 1)
-            XCTAssertTrue(latestEvent?.metrics["testKey"] == 3.0)
+            XCTAssertEqual(latestEvent?.eventType, "newEventType")
+            XCTAssertEqual(latestEvent?.eventTimestamp, expectedSessionStartTime!.utcTimeMillis)
+            XCTAssertEqual(latestEvent?.session.sessionId, "6")
+            XCTAssertEqual(latestEvent?.session.startTime, expectedSessionStartTime)
+            XCTAssertEqual(latestEvent?.session.stopTime, expectedSessionStopTime)
+            XCTAssertEqual(latestEvent?.session.duration, 600000)
+            XCTAssertEqual(latestEvent?.attributes.count, 1)
+            XCTAssertEqual(latestEvent?.attributes["testKey"], "testValue")
+            XCTAssertEqual(latestEvent?.metrics.count, 1)
+            XCTAssertEqual(latestEvent?.metrics["testKey"], 3.0)
         } catch {
             XCTFail("Failed to save a new event")
         }

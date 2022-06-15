@@ -68,7 +68,7 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
             let bindings: [Binding] = [1, "", "", "", 100000, 2, 1000000, 1000000, 100000, 1, 0]
             _ = try adapter.executeQuery(insertStatement, bindings)
             result = try adapter.executeQuery(countStatement, []).scalar() as! Int64
-            XCTAssertTrue(result == 1)
+            XCTAssertEqual(result, 1)
         } catch {
             XCTFail("Failed to create SQLiteLocalStorageAdapter: \(error)")
         }
@@ -96,7 +96,7 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
             let deleteStatement = "DELETE FROM Event"
             _ = try adapter.executeQuery(deleteStatement, [])
             result = try adapter.executeQuery(countStatement, []).scalar() as! Int64
-            XCTAssertTrue(result == 0)
+            XCTAssertEqual(result, 0)
 
         } catch {
             XCTFail("Failed to create SQLiteLocalStorageAdapter: \(error)")
@@ -129,7 +129,7 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
             """
             _ = try adapter.executeQuery(updateStatement, [true, 123])
             result = try adapter.executeQuery(countStatement, []).scalar() as! Int64
-            XCTAssertTrue(result == 0)
+            XCTAssertEqual(result, 0)
             
         } catch {
             XCTFail("Failed to create SQLiteLocalStorageAdapter: \(error)")
