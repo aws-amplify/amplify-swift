@@ -17,8 +17,6 @@ struct RefreshUserPoolTokens: Action {
 
     let existingCredentials: AWSCognitoUserPoolTokens
 
-    let identityID: IdentityID?
-
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
@@ -75,13 +73,12 @@ struct RefreshUserPoolTokens: Action {
                     expiresIn: authenticationResult.expiresIn
                 )
                 let event: RefreshSessionEvent
-                if let identityID = identityID {
+
+                if ((environment as? AuthEnvironment)?.identityPoolConfigData) != nil {
                     let provider = CognitoUserPoolLoginsMap(idToken: idToken,
                                                             region: config.region,
                                                             poolId: config.poolId)
-                    event = .init(eventType: .refreshAWSCredentialsWithUserPool(identityID, userPoolTokens, provider))
-                } else if ((environment as? AuthEnvironment)?.identityPoolConfigData) != nil {
-                    event = .init(eventType: .fetchIdentityInfo(userPoolTokens))
+                    event = .init(eventType: .refreshIdentityInfo(userPoolTokens, provider))
                 } else {
                     event = .init(eventType: .refreshedCognitoUserPool(userPoolTokens))
                 }

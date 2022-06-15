@@ -13,7 +13,9 @@ enum RefreshSessionState: State {
 
     case refreshingUnAuthAWSCredentials(IdentityID)
 
-    case refreshingUserPoolToken(AWSCognitoUserPoolTokens, IdentityID?)
+    case refreshingUserPoolToken(AWSCognitoUserPoolTokens)
+
+    case refreshingUserPoolTokenWithIdentity(AWSCognitoUserPoolTokens, IdentityID)
 
     case refreshingAWSCredentialsWithUserPoolTokens(AWSCognitoUserPoolTokens, IdentityID)
 
@@ -30,6 +32,7 @@ extension RefreshSessionState: Equatable {
         case (.notStarted, .notStarted),
             (.refreshingUnAuthAWSCredentials, .refreshingUnAuthAWSCredentials),
             (.refreshingUserPoolToken, .refreshingUserPoolToken),
+            (.refreshingUserPoolTokenWithIdentity, .refreshingUserPoolTokenWithIdentity),
             (.refreshingAWSCredentialsWithUserPoolTokens, .refreshingAWSCredentialsWithUserPoolTokens),
             (.fetchingAuthSessionWithUserPool, .fetchingAuthSessionWithUserPool),
             (.refreshed, .refreshed):
@@ -43,17 +46,19 @@ extension RefreshSessionState: Equatable {
     var type: String {
         switch self {
         case .notStarted:
-            return "FetchSessionState.notStarted"
+            return "RefreshSessionState.notStarted"
         case .refreshingUserPoolToken:
-            return "FetchSessionState.refreshingUserPoolToken"
+            return "RefreshSessionState.refreshingUserPoolToken"
+        case .refreshingUserPoolTokenWithIdentity:
+            return "RefreshSessionState.refreshingUserPoolTokenWithIdentity"
         case .refreshingAWSCredentialsWithUserPoolTokens:
-            return "FetchSessionState.refreshingAWSCredentialsWithUserPoolTokens"
+            return "RefreshSessionState.refreshingAWSCredentialsWithUserPoolTokens"
         case .fetchingAuthSessionWithUserPool:
-            return "FetchSessionState.fetchingAuthSessionWithUserPool"
+            return "RefreshSessionState.fetchingAuthSessionWithUserPool"
         case .refreshed:
-            return "FetchSessionState.refreshed"
+            return "RefreshSessionState.refreshed"
         case .refreshingUnAuthAWSCredentials:
-            return "FetchSessionState.refreshingUnAuthAWSCredentials"
+            return "RefreshSessionState.refreshingUnAuthAWSCredentials"
         }
     }
 }

@@ -20,14 +20,18 @@ extension RefreshSessionState {
             switch oldState {
             case .notStarted:
 
-                if case .refreshCognitoUserPool(let tokens,
-                                                let identityID) = event.isRefreshSessionEvent {
-                    let action = RefreshUserPoolTokens(existingCredentials: tokens,
-                                                       identityID: identityID)
-                    return .init(newState: .refreshingUserPoolToken(tokens, identityID),
-                                 actions: [action])
+                if case .refreshCognitoUserPool(let tokens) = event.isRefreshSessionEvent {
+                    let action = RefreshUserPoolTokens(existingCredentials: tokens)
+                    return .init(newState: .refreshingUserPoolToken(tokens), actions: [action])
                 }
 
+                if case .refreshCognitoUserPoolWithIdentityId(
+                    let tokens,
+                    let identityID) = event.isRefreshSessionEvent {
+                    let action = RefreshUserPoolTokens(existingCredentials: tokens)
+                    return .init(newState: .refreshingUserPoolTokenWithIdentity(tokens, identityID),
+                                 actions: [action])
+                }
                 if case .refreshUnAuthAWSCredentials(let identityID) = event.isRefreshSessionEvent {
                     let provider = UnAuthLoginsMapProvider()
                     let action = FetchAuthAWSCredentials(loginsMap: provider.loginsMap,
@@ -55,15 +59,18 @@ extension RefreshSessionState {
                     return .from(.refreshed(.userPoolOnly(tokens: tokens)))
                 }
 
-                if case .fetchIdentityInfo(let tokens) = event.isRefreshSessionEvent {
+                if case .refreshIdentityInfo(let tokens, _) = event.isRefreshSessionEvent {
                     let action = InitializeFetchAuthSessionWithUserPool(tokens: tokens)
                     return .init(newState: .fetchingAuthSessionWithUserPool(.notStarted, tokens),
                                  actions: [action])
                 }
-                if case .refreshAWSCredentialsWithUserPool(
-                    let identityID,
-                    let tokens,
-                    let provider) = event.isRefreshSessionEvent {
+                return .from(oldState)
+
+            case .refreshingUserPoolTokenWithIdentity(_, let identityID):
+                if case .refreshedCognitoUserPool(let tokens) = event.isRefreshSessionEvent {
+                    return .from(.refreshed(.userPoolOnly(tokens: tokens)))
+                }
+                if case .refreshIdentityInfo(let tokens, let provider) = event.isRefreshSessionEvent {
                     let action = FetchAuthAWSCredentials(loginsMap: provider.loginsMap,
                                                          identityID: identityID)
                     return .init(newState: .refreshingAWSCredentialsWithUserPoolTokens(
@@ -71,7 +78,6 @@ extension RefreshSessionState {
                         identityID), actions: [action])
                 }
                 return .from(oldState)
-
             case .fetchingAuthSessionWithUserPool(let fetchSessionState, let tokens):
                 if case .fetched(let identityID,
                                  let credentials) = event.isAuthorizationEvent {

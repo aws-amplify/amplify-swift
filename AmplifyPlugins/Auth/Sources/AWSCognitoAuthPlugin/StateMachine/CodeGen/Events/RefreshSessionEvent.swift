@@ -19,11 +19,13 @@ struct RefreshSessionEvent: StateMachineEvent {
 
         case refreshAWSCredentialsWithUserPool(IdentityID, AWSCognitoUserPoolTokens, LoginsMapProvider)
 
-        case refreshCognitoUserPool(AWSCognitoUserPoolTokens, IdentityID?)
+        case refreshCognitoUserPool(AWSCognitoUserPoolTokens)
+
+        case refreshCognitoUserPoolWithIdentityId(AWSCognitoUserPoolTokens, IdentityID)
 
         case refreshedCognitoUserPool(AWSCognitoUserPoolTokens)
 
-        case fetchIdentityInfo(AWSCognitoUserPoolTokens)
+        case refreshIdentityInfo(AWSCognitoUserPoolTokens, LoginsMapProvider)
 
         case refreshed(AmplifyCredentials)
 
@@ -44,10 +46,12 @@ struct RefreshSessionEvent: StateMachineEvent {
             return "RefreshSessionEvent.refreshAWSCredentialsWithUserPool"
         case .refreshCognitoUserPool:
             return "RefreshSessionEvent.refreshCognitoUserPool"
+        case .refreshCognitoUserPoolWithIdentityId:
+            return "RefreshSessionEvent.refreshCognitoUserPoolWithIdentityId"
         case .refreshedCognitoUserPool:
             return "RefreshSessionEvent.refreshedCognitoUserPool"
-        case .fetchIdentityInfo:
-            return "RefreshSessionEvent.fetchIdentityInfo"
+        case .refreshIdentityInfo:
+            return "RefreshSessionEvent.refreshIdentityInfo"
         case .refreshed:
             return "RefreshSessionEvent.refreshed"
         case .throwError:

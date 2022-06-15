@@ -16,6 +16,8 @@ struct InitializeRefreshSession: Action {
 
     let isForceRefresh: Bool
 
+    let expiryBufferInSeconds = TimeInterval.seconds(2 * 60)
+
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
@@ -24,7 +26,7 @@ struct InitializeRefreshSession: Action {
 
         switch existingCredentials {
         case .userPoolOnly(let tokens):
-            event = .init(eventType: .refreshCognitoUserPool(tokens, nil))
+            event = .init(eventType: .refreshCognitoUserPool(tokens))
 
         case .identityPoolOnly(let identityID, _):
             event = .init(eventType: .refreshUnAuthAWSCredentials(identityID))
@@ -40,8 +42,8 @@ struct InitializeRefreshSession: Action {
             let provider = CognitoUserPoolLoginsMap(idToken: tokens.idToken,
                                                     region: config.region,
                                                     poolId: config.poolId)
-            if !existingCredentials.areUserPoolTokenValid || isForceRefresh {
-                event = .init(eventType: .refreshCognitoUserPool(tokens, identityID))
+            if !tokens.areTokensExpiring(in: expiryBufferInSeconds) || isForceRefresh {
+                event = .init(eventType: .refreshCognitoUserPoolWithIdentityId(tokens, identityID))
             } else {
                 event = .init(eventType: .refreshAWSCredentialsWithUserPool(identityID,
                                                                             tokens,
