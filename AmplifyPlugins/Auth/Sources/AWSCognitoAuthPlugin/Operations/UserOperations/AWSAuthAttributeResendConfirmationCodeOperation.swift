@@ -66,9 +66,8 @@ AuthError>, AuthAttributeResendConfirmationCodeOperation {
     
     func initiateGettingVerificationCode(with accessToken: String) async {
         
-        let userPoolService: CognitoUserPoolBehavior?
         do {
-            userPoolService = try userPoolFactory()
+            let userPoolService = try userPoolFactory()
             let clientMetaData = (request.options.pluginOptions
                                   as? AWSAttributeResendConfirmationCodeOptions)?.metadata ?? [:]
             
@@ -77,13 +76,13 @@ AuthError>, AuthAttributeResendConfirmationCodeOperation {
                 attributeName: request.attributeKey.rawValue,
                 clientMetadata: clientMetaData)
             
-            let result = try await userPoolService?.getUserAttributeVerificationCode(input: input)
+            let result = try await userPoolService.getUserAttributeVerificationCode(input: input)
             
             if self.isCancelled {
                 return
             }
             
-            guard let deliveryDetails = result?.codeDeliveryDetails?.toAuthCodeDeliveryDetails() else {
+            guard let deliveryDetails = result.codeDeliveryDetails?.toAuthCodeDeliveryDetails() else {
                 let authError = AuthError.service("Unable to get Auth code delivery details",
                                                   AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
                                                   nil)
