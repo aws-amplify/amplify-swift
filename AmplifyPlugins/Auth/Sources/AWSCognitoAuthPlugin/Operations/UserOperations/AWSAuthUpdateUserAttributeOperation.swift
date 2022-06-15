@@ -88,6 +88,9 @@ AuthError>, AuthUpdateUserAttributeOperation {
         catch let error as UpdateUserAttributesOutputError {
             self.dispatch(error.authError)
         }
+        catch let error as AuthError {
+            self.dispatch(error)
+        }
         catch let error {
             let error = AuthError.configuration(
                 "Unable to create a Swift SDK user pool service",
