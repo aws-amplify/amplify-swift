@@ -8,6 +8,7 @@
 import Foundation
 import StoreKit
 import Amplify
+import AWSPinpoint
 
 protocol AnalyticsClientBehaviour: Actor {
     func addGlobalAttribute(_ attribute: String, forKey key: String)
@@ -30,30 +31,32 @@ protocol AnalyticsClientBehaviour: Actor {
     nonisolated func createEvent(withEventType eventType: String) -> PinpointEvent
 }
 
+typealias SessionProvider = () -> PinpointSession
+
 actor AnalyticsClient: AnalyticsClientBehaviour {
-    private let eventRecorder: AnalyticsEventRecording?
-    unowned let context: PinpointContext
+    private let eventRecorder: AnalyticsEventRecording
+    private let sessionProvider: SessionProvider
     private lazy var globalAttributes: PinpointEventAttributes = [:]
     private lazy var globalMetrics: PinpointEventMetrics = [:]
     private lazy var eventTypeAttributes: [String: PinpointEventAttributes] = [:]
     private lazy var eventTypeMetrics: [String: PinpointEventMetrics] = [:]
 
-    init(
-        context: PinpointContext,
-        eventRecorder: AnalyticsEventRecording?
-    ) {
+    init(eventRecorder: AnalyticsEventRecording,
+         sessionProvider: @escaping SessionProvider) {
         self.eventRecorder = eventRecorder
-        self.context = context
+        self.sessionProvider = sessionProvider
     }
 
-    convenience init(applicationId: String, context: PinpointContext) {
-        if let storage = try? AnalyticsEventSQLStorage(dbAdapter: SQLiteLocalStorageAdapter(prefixPath: Constants.eventRecorderStoragePathPrefix, databaseName: applicationId)),
-           let eventRecorder = try? EventRecorder(appId: applicationId, storage: storage,pinpointClient: context.pinpointClient) {
-            self.init(context: context, eventRecorder: eventRecorder)
-        } else {
-            self.init(context: context, eventRecorder: nil)
-            log.error("Analytics Client missing event recorder")
-        }
+    convenience init(applicationId: String,
+                     pinpointClient: PinpointClientProtocol,
+                     sessionProvider: @escaping SessionProvider) throws {
+        let dbAdapter = try SQLiteLocalStorageAdapter(prefixPath: Constants.eventRecorderStoragePathPrefix,
+                                                      databaseName: applicationId)
+        let eventRecorder = try EventRecorder(appId: applicationId,
+                                              storage: AnalyticsEventSQLStorage(dbAdapter: dbAdapter),
+                                              pinpointClient: pinpointClient)
+        self.init(eventRecorder: eventRecorder,
+                  sessionProvider: sessionProvider)
     }
 
     // MARK: - Attributes & Metrics
@@ -130,7 +133,7 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
                                                      priceLocale: Locale? = nil,
                                                      transactionId: String? = nil) -> PinpointEvent {
         let monetizationEvent = PinpointEvent(eventType: Constants.PurchaseEvent.name,
-                                              session: context.sessionClient.currentSession)
+                                              session: sessionProvider())
         monetizationEvent.addAttribute(store,
                                        forKey: Constants.PurchaseEvent.Keys.store)
         monetizationEvent.addAttribute(productId,
@@ -162,7 +165,7 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
     nonisolated func createEvent(withEventType eventType: String) -> PinpointEvent {
         precondition(!eventType.isEmpty, "Event types must be at least 1 character in length.")
         return PinpointEvent(eventType: eventType,
-                             session: context.sessionClient.currentSession)
+                             session: sessionProvider())
     }
 
     func record(_ event: PinpointEvent) async throws {
@@ -190,16 +193,11 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
             event.addMetric(metric, forKey: key)
         }
 
-        try eventRecorder?.save(event)
+        try eventRecorder.save(event)
     }
 
     @discardableResult
     func submitEvents() async throws -> [PinpointEvent] {
-        guard let eventRecorder = eventRecorder else {
-            log.error("Analytics Client missing event recorder when submitting events")
-            return []
-        }
-
         return try await eventRecorder.submitAllEvents()
     }
 }
