@@ -16,14 +16,14 @@ class AnalyticsEventStorageTests: XCTestCase {
     let eventCountStatement = "SELECT COUNT(*) FROM Event"
     let dirtyEventCountStatement = "SELECT COUNT(*) FROM DirtyEvent"
     var storage: AnalyticsEventStorage!
-    
+
     override func setUp() {
         do {
             cleanup()
             adapter = try SQLiteLocalStorageAdapter(databaseName: databaseName)
             storage = AnalyticsEventSQLStorage(dbAdapter: adapter)
             try storage.initializeStorage()
-            
+
             let insertEventStatement = """
                 INSERT INTO Event (
                 id, attributes, eventType, metrics,
@@ -31,7 +31,7 @@ class AnalyticsEventStorageTests: XCTestCase {
                 sessionStopTime, timestamp, dirty, retryCount)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """
-            
+
             let insertDirtyEventStatement = """
                 INSERT INTO DirtyEvent (
                 id, attributes, eventType, metrics,
@@ -39,8 +39,8 @@ class AnalyticsEventStorageTests: XCTestCase {
                 sessionStopTime, timestamp, dirty, retryCount)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """
-            let attributes = ["key1":"value1", "key2":"value2", "key3":"value3"]
-            let metrics = ["key1":1.0,"key2":2.0]
+            let attributes = ["key1": "value1", "key2": "value2", "key3": "value3"]
+            let metrics = ["key1": 1.0, "key2": 2.0]
             let archiver = AmplifyArchiver()
             let encodedAttributes = try archiver.encode(attributes).base64EncodedString()
             let encodedMetrics = try archiver.encode(metrics).base64EncodedString()
@@ -49,22 +49,22 @@ class AnalyticsEventStorageTests: XCTestCase {
             let dirtyEvent: [Binding] = [3, encodedAttributes, "eventType", encodedMetrics, DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2022-06-8T18:50:20.618+0000")!.utcTimeMillis, 3, "2022-06-8T17:00:20.618+0000", "2022-06-8T17:10:20.618+0000", 1654731785, 1, 3]
             let dirtyEvent2: [Binding] = [4, encodedAttributes, "eventType", encodedMetrics, DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2022-06-7T18:50:20.618+0000")!.utcTimeMillis, 4, "2022-06-7T17:00:20.618+0000", "2022-06-7T17:10:20.618+0000", 1654645385, 1, 3]
             let eventWithDirtyFlag: [Binding] = [5, encodedAttributes, "eventType", encodedMetrics, DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2022-06-6T18:50:20.618+0000")!.utcTimeMillis, 5, "2022-06-6T17:00:20.618+0000", "2022-06-6T17:10:20.618+0000", 1654558985, 1, 1]
-            
+
             _ = try adapter.executeQuery(insertEventStatement, basicEvent)
             _ = try adapter.executeQuery(insertEventStatement, failedWithMaxRetry)
             _ = try adapter.executeQuery(insertDirtyEventStatement, dirtyEvent)
             _ = try adapter.executeQuery(insertDirtyEventStatement, dirtyEvent2)
-            
+
             _ = try adapter.executeQuery(insertEventStatement, eventWithDirtyFlag)
         } catch {
             XCTFail("Failed to remove SQLite as part of test setup")
         }
     }
-    
+
     override func tearDown() {
         cleanup()
     }
-    
+
     private func cleanup() {
         let dbPath = SQLiteLocalStorageAdapter.getDbFilePath(databaseName: "TestDatabase")
         do {
@@ -74,7 +74,7 @@ class AnalyticsEventStorageTests: XCTestCase {
         } catch {
         }
     }
-    
+
     /// - Given: a local storage
     /// - When: disk usage is under the limit
     /// - Then: keep records intact
@@ -84,9 +84,9 @@ class AnalyticsEventStorageTests: XCTestCase {
             var dirtyEventcount = try adapter.executeQuery(dirtyEventCountStatement, []).scalar() as! Int64
             XCTAssertEqual(eventcount, 3)
             XCTAssertEqual(dirtyEventcount, 2)
-            
+
             try storage.checkDiskSize(limit: 10000000)
-            
+
             eventcount = try adapter.executeQuery(eventCountStatement, []).scalar() as! Int64
             dirtyEventcount = try adapter.executeQuery(dirtyEventCountStatement, []).scalar() as! Int64
             XCTAssertEqual(eventcount, 3)
@@ -95,7 +95,7 @@ class AnalyticsEventStorageTests: XCTestCase {
             XCTFail("Failed to test disk usage under limit")
         }
     }
-    
+
     /// - Given: a local storage
     /// - When: delete is called for a given event id
     /// - Then: event is deleted from local storage
@@ -110,7 +110,7 @@ class AnalyticsEventStorageTests: XCTestCase {
             XCTFail("Failed to delete event")
         }
     }
-    
+
     /// - Given: a local storage
     /// - When: delete is called with an invalid event id
     /// - Then: no events are deleted
@@ -125,7 +125,7 @@ class AnalyticsEventStorageTests: XCTestCase {
             XCTFail("Failed to delete event")
         }
     }
-    
+
     /// - Given: a local storage
     /// - When: delete dirty events is called
     /// - Then: all dirty events are removed
@@ -135,9 +135,9 @@ class AnalyticsEventStorageTests: XCTestCase {
             var dirtyEventcount = try adapter.executeQuery(dirtyEventCountStatement, []).scalar() as! Int64
             XCTAssertEqual(eventcount, 3)
             XCTAssertEqual(dirtyEventcount, 2)
-            
+
             try storage.deleteDirtyEvents()
-            
+
             eventcount = try adapter.executeQuery(eventCountStatement, []).scalar() as! Int64
             dirtyEventcount = try adapter.executeQuery(dirtyEventCountStatement, []).scalar() as! Int64
             XCTAssertEqual(eventcount, 2)
@@ -146,7 +146,7 @@ class AnalyticsEventStorageTests: XCTestCase {
             XCTFail("Failed to delete all dirty events")
         }
     }
-    
+
     /// - Given: a local storage
     /// - When: delete oldest event is called
     /// - Then: the oldest event in the event table is removed
@@ -172,7 +172,7 @@ class AnalyticsEventStorageTests: XCTestCase {
             XCTFail("Failed to delete oldest event")
         }
     }
-    
+
     /// - Given: a local storage
     /// - When: get a list of of events given a limit is called
     /// - Then: a list of events is returned
@@ -188,7 +188,7 @@ class AnalyticsEventStorageTests: XCTestCase {
             XCTFail("Failed to get events")
         }
     }
-    
+
     /// - Given: a local storage
     /// - When: get events with limit is called
     /// - Then: a event with the list of event has expect properties and attributes
@@ -213,7 +213,7 @@ class AnalyticsEventStorageTests: XCTestCase {
             XCTFail("Failed to convert elements to event")
         }
     }
-    
+
     /// - Given: a local storage
     /// - When: delete all event si called
     /// - Then: all events in the events table are removed
@@ -230,7 +230,7 @@ class AnalyticsEventStorageTests: XCTestCase {
             XCTFail("Failed to delete all events")
         }
     }
-    
+
     /// - Given: a local storage
     /// - When: increment even retry count on a given event id
     /// - Then: the retry count for the event is incremented by one
@@ -243,9 +243,9 @@ class AnalyticsEventStorageTests: XCTestCase {
             var result = results.makeIterator().next()
             retryCount = result?[10] as? Int64
             XCTAssertEqual(retryCount, 0)
-            
+
             try storage.incrementEventRetry(eventId: eventId)
-            
+
             results = try adapter.executeQuery(selectStatement, [eventId])
             result = results.makeIterator().next()
             retryCount = result?[10] as? Int64
@@ -254,7 +254,7 @@ class AnalyticsEventStorageTests: XCTestCase {
             XCTFail("Failed to increment event retry count")
         }
     }
-    
+
     /// - Given: a local storage
     /// - When: remove failed events is called
     /// - Then: all events with retry count > 3 are removed from the event table and added to the dirty event table
@@ -279,7 +279,7 @@ class AnalyticsEventStorageTests: XCTestCase {
             XCTFail("Failed to remove failed events")
         }
     }
-    
+
     /// - Given: a local storage
     /// - When: set the dirty flag on the even table is called for a given event id
     /// - Then: the dirty flag on the given event id is set to 1
@@ -292,9 +292,9 @@ class AnalyticsEventStorageTests: XCTestCase {
             var result = results.makeIterator().next()
             dirtyFlag = result?[9] as? Int64
             XCTAssertEqual(dirtyFlag, 0)
-            
+
             try storage.setDirtyEvent(eventId: eventId)
-            
+
             results = try adapter.executeQuery(selectStatement, [eventId])
             result = results.makeIterator().next()
             dirtyFlag = result?[9] as? Int64
@@ -303,7 +303,7 @@ class AnalyticsEventStorageTests: XCTestCase {
             XCTFail("Failed to set dirty flag on event")
         }
     }
-    
+
     /// - Given: a local storage
     /// - When: save event is called given a Pinpoint event
     /// - Then: the event is save with correct attributes/properties in the event table
@@ -311,17 +311,17 @@ class AnalyticsEventStorageTests: XCTestCase {
         do {
             let expectedSessionStartTime = DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2022-06-11T17:00:20.618+0000")
             let expectedSessionStopTime = DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2022-06-11T17:10:20.618+0000")
-            
+
             var events = try storage.getEventsWith(limit: 5)
             var latestEvent = events.first(where: { $0.id == "6" })
             XCTAssertNil(latestEvent)
-            
+
             let session = PinpointSession(sessionId: "6", startTime: expectedSessionStartTime!, stopTime: expectedSessionStopTime)
             let event = PinpointEvent(id: "6", eventType: "newEventType", eventTimestamp: expectedSessionStartTime!.utcTimeMillis, session: session)
             event.addAttribute("testValue", forKey: "testKey")
             event.addMetric(3.0, forKey: "testKey")
             try storage.saveEvent(event)
-            
+
             events = try storage.getEventsWith(limit: 5)
             latestEvent = events.first(where: { $0.id == "6" })
             XCTAssertNotNil(latestEvent)

@@ -15,12 +15,12 @@ class StateMachine<State, Event> {
                                       target: DispatchQueue.global())
     private var reducer: Reducer
     @Published var state: State
-    
+
     init(initialState: State, resolver: @escaping Reducer) {
         self.state = initialState
         self.reducer = resolver
     }
-    
+
     func process(_ event: Event) {
         queue.sync {
             log.verbose("Processing event \(event) for current state \(self.state)")

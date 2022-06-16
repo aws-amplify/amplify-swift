@@ -13,7 +13,7 @@ protocol SQLStorageProtocol {
     /// Create SQL table
     /// - Parameter statement: SQL statement to create table
     func createTable(_ statement: String) throws
-    
+
     /// Executes a SQL statement
     /// - Parameters:
     ///   - statement: SQL statement

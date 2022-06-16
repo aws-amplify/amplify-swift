@@ -73,7 +73,7 @@ actor EndpointClient: EndpointClientBehaviour {
 
     func currentEndpointProfile() -> PinpointEndpointProfile {
         let endpointProfile = retrieveOrCreateEndpointProfile()
-        
+
         // Refresh Attributes and Metrics
         endpointProfile.removeAllAttributes()
         endpointProfile.removeAllMetrics()
@@ -131,18 +131,18 @@ actor EndpointClient: EndpointClientBehaviour {
         if let endpointProfile = endpointProfile {
             return configure(endpointProfile: endpointProfile)
         }
-        
+
         // 2. Look for a valid PinpointEndpointProfile object stored in UserDefaults. It needs to match the current applicationId, otherwise we'll discard it.
         if let endpointProfileData = userDefaults.data(forKey: Constants.endpointProfileKey),
            let decodedEndpointProfile = try? archiver.decode(PinpointEndpointProfile.self, from: endpointProfileData),
            decodedEndpointProfile.applicationId == configuration.appId {
             return configure(endpointProfile: decodedEndpointProfile)
         }
-        
+
         userDefaults.removeObject(forKey: Constants.endpointProfileKey)
         // 3. Look for a valid PinpointEndpointProfile object stored in the Keychain. It needs to match the current applicationId, otherwise we'll discard it.
         // TODO: Implement once the migration is completed in the legacy SDK.
-        
+
         // Create a new PinpointEndpointProfile
         return configure(endpointProfile: PinpointEndpointProfile(applicationId: configuration.appId,
                                                                   endpointId: configuration.uniqueDeviceId))
@@ -157,7 +157,7 @@ actor EndpointClient: EndpointClientBehaviour {
         // TODO: Use the upcoming AWSPinpointAnalyticsClientBehavior.areNotificationsEnabled to check
         let isUsingPinpointForNotifications = (false) && deviceToken.isNotEmpty
         let isOptOut = configuration.isOptOut || !isUsingPinpointForNotifications
-        
+
         endpointProfile.applicationId = configuration.appId
         endpointProfile.endpointId = configuration.uniqueDeviceId
         endpointProfile.deviceToken = deviceToken
@@ -214,7 +214,7 @@ extension EndpointClient {
             static let all = "ALL"
             static let none = "NONE"
         }
-        
+
         static let attributesKey = "AWSPinpointEndpointAttributesKey"
         static let metricsKey = "AWSPinpointEndpointMetricsKey"
         static let endpointProfileKey = "AWSPinpointEndpointProfileKey"
@@ -227,7 +227,7 @@ extension PinpointClientTypes.EndpointDemographic {
         static let appleMake = "apple"
         static let unknown = "Unknown"
     }
-    
+
     init(device: Device,
          locale: String = Locale.autoupdatingCurrent.identifier,
          timezone: String = TimeZone.current.identifier) {

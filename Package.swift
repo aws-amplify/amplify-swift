@@ -317,8 +317,8 @@ let analyticsTargets: [Target] = [
         name: "AWSPinpointAnalyticsPluginTests",
         dependencies: [
             "AWSPinpointAnalyticsPlugin",
-            "AmplifyTestCommon",
-            //"AWSPluginsTestCommon"
+            "AmplifyTestCommon"
+            // "AWSPluginsTestCommon"
         ],
         path: "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPluginTests"
     ),
@@ -334,7 +334,7 @@ let analyticsTargets: [Target] = [
             "README.md",
             "Info.plist"
         ]
-    ),
+    )
 ]
 
 let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTargets + storageTargets + analyticsTargets
@@ -367,7 +367,7 @@ let package = Package(
             name: "AWSPinpointAnalyticsPlugin",
             targets: ["AWSPinpointAnalyticsPlugin"]
         )
-        
+
     ],
     dependencies: dependencies,
     targets: targets
