@@ -17,7 +17,7 @@ class EndpointClientTests: XCTestCase {
     private var device: MockDevice!
     private var currentApplicationId = "applicationId"
     private var currentEndpointId = "endpointId"
-    
+
     override func setUp() {
         archiver = MockArchiver()
         userDefaults = MockUserDefaults()
@@ -32,7 +32,7 @@ class EndpointClientTests: XCTestCase {
                                         currentDevice: device,
                                         userDefaults: userDefaults)
     }
-    
+
     override func tearDown() {
         archiver = nil
         userDefaults = nil
@@ -40,7 +40,7 @@ class EndpointClientTests: XCTestCase {
         device = nil
         endpointClient = nil
     }
-    
+
     func testCurrentEndpointProfile_withValidStoredProfile_shouldReturnUpdatedStored() async {
         let oldEffectiveDate = Date().addingTimeInterval(-1000)
         let oldDemographic = PinpointClientTypes.EndpointDemographic(appVersion: "oldVersion")
@@ -53,9 +53,9 @@ class EndpointClientTests: XCTestCase {
         let newToken = "newToken".data(using: .utf8)
         userDefaults.addMockValue(newToken, forKey: EndpointClient.Constants.deviceTokenKey)
         archiver.decoded = storedEndpointProfile
-        
+
         let endpointProfile = await endpointClient.currentEndpointProfile()
-        
+
         XCTAssertEqual(userDefaults.dataForKeyCount, 2)
         XCTAssertEqual(userDefaults.dataForKeyCountMap[EndpointClient.Constants.endpointProfileKey], 1)
         XCTAssertEqual(userDefaults.dataForKeyCountMap[EndpointClient.Constants.deviceTokenKey], 1)
@@ -71,7 +71,7 @@ class EndpointClientTests: XCTestCase {
         XCTAssertEqual(endpointProfile.demographic.platform, device.platform.name)
         XCTAssertEqual(endpointProfile.demographic.platformVersion, device.platform.version)
     }
-    
+
     func testCurrentEndpointProfile_withInvalidStoredProfile_shouldRemoveStored_andReturnNew() async {
         let oldEffectiveDate = Date().addingTimeInterval(-1000)
         let oldDemographic = PinpointClientTypes.EndpointDemographic(appVersion: "oldVersion")
@@ -83,9 +83,9 @@ class EndpointClientTests: XCTestCase {
         let newToken = "newToken".data(using: .utf8)
         userDefaults.addMockValue(newToken, forKey: EndpointClient.Constants.deviceTokenKey)
         archiver.decoded = storedEndpointProfile
-        
+
         let endpointProfile = await endpointClient.currentEndpointProfile()
-        
+
         XCTAssertEqual(userDefaults.dataForKeyCount, 2)
         XCTAssertEqual(userDefaults.dataForKeyCountMap[EndpointClient.Constants.endpointProfileKey], 1)
         XCTAssertEqual(userDefaults.dataForKeyCountMap[EndpointClient.Constants.deviceTokenKey], 1)
@@ -102,41 +102,41 @@ class EndpointClientTests: XCTestCase {
         XCTAssertEqual(endpointProfile.demographic.platform, device.platform.name)
         XCTAssertEqual(endpointProfile.demographic.platformVersion, device.platform.version)
     }
-    
+
     func testCurrentEndpointProfile_shouldUpdateAttributesAndMetrics() async {
         let storedEndpointProfile = PinpointEndpointProfile(applicationId: "oldApplicationId",
                                                             endpointId: "oldEndpoint")
         storedEndpointProfile.addAttribute("value", forKey: "oldAttribute")
         storedEndpointProfile.addMetric(0, forKey: "oldMetric")
         archiver.decoded = storedEndpointProfile
-        
+
         await endpointClient.addAttributes(["newValue"], forKey: "newAttribute")
         await endpointClient.addAttributes(["newerValue"], forKey: "newerAttribute")
         await endpointClient.addMetric(1, forKey: "newMetric")
         await endpointClient.addMetric(2, forKey: "newerMetric")
         let endpointProfile = await endpointClient.currentEndpointProfile()
-        
+
         XCTAssertEqual(endpointProfile.attributes.count, 2)
         XCTAssertEqual(endpointProfile.metrics.count, 2)
         XCTAssertNil(endpointProfile.attributes["oldAttribute"])
         XCTAssertNil(endpointProfile.metrics["oldMetric"])
     }
-    
+
     func testUpdateEndpointProfile_shouldSendUpdateRequestAndSave() async {
         try? await endpointClient.updateEndpointProfile()
-        
+
         XCTAssertEqual(pinpointClient.updateEndpointCount, 1)
         XCTAssertEqual(archiver.encodeCount, 1)
         XCTAssertEqual(userDefaults.saveCount, 1)
     }
-    
+
     func testUpdateEndpointProfile_withProfile_shouldUpdateandSendUpdateRequestAndSave() async {
         await endpointClient.addAttributes(["value"], forKey: "attribute")
         await endpointClient.addMetric(1, forKey: "metric")
-        
+
         let pinpointProfile = PinpointEndpointProfile(applicationId: currentApplicationId,
                                                       endpointId: currentEndpointId)
-        
+
         XCTAssertTrue(pinpointProfile.attributes.isEmpty)
         XCTAssertTrue(pinpointProfile.metrics.isEmpty)
         XCTAssertEqual(userDefaults.saveCount, 2)

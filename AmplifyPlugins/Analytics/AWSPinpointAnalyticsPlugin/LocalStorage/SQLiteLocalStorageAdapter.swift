@@ -18,7 +18,7 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
         guard let url = dbFilePath else { return 0}
         return fileManager.fileSize(for: url)
     }
-    
+
     /// Initializer
     /// - Parameter databaseName: The database name
     convenience init(prefixPath: String = "", databaseName: String) throws {
@@ -35,7 +35,7 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
 
         try self.init(connection: connection, dbFilePath: dbFilePath)
     }
-    
+
     /// Initializer
     /// - Parameters:
     ///   - connection: SQLite Connection
@@ -50,7 +50,7 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
         self.fileManager = fileManager
         try initializeDatabase(connection: connection)
     }
-    
+
     /// Initilizes the database and create the table if it doesn't already exists
     /// - Parameter connection: SQLite connection
     private func initializeDatabase(connection: Connection) throws {
@@ -64,7 +64,7 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
 
         try connection.execute(databaseInitializationStatement)
     }
-    
+
     /// Get the database file path constructed by the database name and the Documents directory
     /// - Parameter databaseName: The database file name
     /// - Returns: URL containing the location of the database
@@ -74,27 +74,27 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
         }
         return documentsPath.appendingPathComponent(prefixPath).appendingPathComponent("\(databaseName).db")
     }
-    
+
     /// Get document path
     /// - Returns: Optional URL to the Document path
     private static func getDocumentPath() -> URL? {
         return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
     }
-    
+
     /// Create a SQL table
     /// - Parameter statement: SQL statement to create a table
     func createTable(_ statement: String) throws {
         guard let connection = connection else {
             throw LocalStorageError.missingConnection
         }
-        
+
         do {
             try connection.execute(statement)
         } catch {
             throw LocalStorageError.invalidOperation(causedBy: error)
         }
     }
-    
+
     /// Executes a SQL query
     /// - Parameters:
     ///   - statement: SQL query statement
@@ -104,7 +104,7 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
         guard let connection = connection else {
             throw LocalStorageError.missingConnection
         }
-        
+
         do {
             let statement = try connection.prepare(statement).run(bindings)
             return statement
@@ -115,4 +115,3 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
 }
 
 extension SQLiteLocalStorageAdapter: DefaultLogger { }
-

@@ -19,14 +19,14 @@ enum ApplicationState {
     case runningInForeground
     case runningInBackground(isStale: Bool)
     case terminated
-    
+
     struct Resolver {
         static func resolve(currentState: ApplicationState, event: ActivityEvent) -> ApplicationState {
             if case .terminated = currentState {
                 log.warn("Unexpected state transition. Received event \(event) in \(currentState) state.")
                 return currentState
             }
-            
+
             switch event {
             case .applicationWillTerminate:
                 return .terminated
@@ -57,7 +57,7 @@ class ActivityTracker {
         return EmptyTracker()
 #endif
     }
-    
+
     private class EmptyTracker: ActivityTrackerBehaviour {
         func beginActivityTracking(_ listener: @escaping (ApplicationState) -> Void) {}
     }

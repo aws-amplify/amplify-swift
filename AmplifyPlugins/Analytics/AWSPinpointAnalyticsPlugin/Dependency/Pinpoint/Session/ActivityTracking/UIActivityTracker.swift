@@ -12,7 +12,7 @@ import UIKit
 
 class UIActivityTracker: ActivityTrackerBehaviour {
     private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
-    private var backgroundTimer: Timer? = nil {
+    private var backgroundTimer: Timer? {
         willSet {
             backgroundTimer?.invalidate()
         }
@@ -20,7 +20,7 @@ class UIActivityTracker: ActivityTrackerBehaviour {
     private let backgroundTrackingTimeout: TimeInterval
     private let stateMachine: StateMachine<ApplicationState, ActivityEvent>
     private var stateMachineSink: AnyCancellable?
-    
+
     init(backgroundTrackingTimeout: TimeInterval,
          stateMachine: StateMachine<ApplicationState, ActivityEvent>? = nil) {
         self.backgroundTrackingTimeout = backgroundTrackingTimeout
@@ -51,7 +51,7 @@ class UIActivityTracker: ActivityTrackerBehaviour {
                                                   name: UIApplication.willTerminateNotification,
                                                   object: nil)
     }
-    
+
     func beginActivityTracking(_ listener: @escaping (ApplicationState) -> Void) {
         stateMachineSink = stateMachine
             .$state
@@ -67,19 +67,19 @@ class UIActivityTracker: ActivityTrackerBehaviour {
                 self?.stopBackgroundTracking()
             }
         }
-        
+
         backgroundTimer = Timer.scheduledTimer(withTimeInterval: backgroundTrackingTimeout, repeats: false) { [weak self] _ in
             self?.stateMachine.process(.backgroundTrackingDidTimeout)
             self?.stopBackgroundTracking()
         }
     }
-    
+
     private func stopBackgroundTracking() {
         backgroundTimer = nil
         guard backgroundTask != .invalid else {
             return
         }
-        
+
         UIApplication.shared.endBackgroundTask(backgroundTask)
         backgroundTask = .invalid
     }

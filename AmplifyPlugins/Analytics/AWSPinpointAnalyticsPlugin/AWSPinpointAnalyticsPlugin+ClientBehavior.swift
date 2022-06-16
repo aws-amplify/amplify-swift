@@ -42,7 +42,7 @@ extension AWSPinpointAnalyticsPlugin {
         if let properties = event.properties {
             pinpointEvent.addProperties(properties)
         }
-        
+
         Task {
             do {
                 try await pinpoint.record(pinpointEvent)
@@ -98,7 +98,7 @@ extension AWSPinpointAnalyticsPlugin {
             log.warn("Cannot flushEvents. Analytics is disabled. Call Amplify.Analytics.enable() to enable")
             return
         }
-        
+
         Task {
             do {
                 let submittedEvents: [PinpointEvent] = try await pinpoint.submitEvents()
