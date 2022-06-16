@@ -8,7 +8,7 @@
 import Foundation
 protocol Device {
     typealias Platform = (name: String, version: String)
-    
+
     var model: String { get }
     var appVersion: String? { get }
     var platform: Platform { get }
@@ -21,7 +21,7 @@ extension UIDevice: Device {
     var appVersion: String? {
         return Bundle.main.appVersion
     }
-    
+
     var platform: Platform {
         return (name: systemName, version: systemVersion)
     }

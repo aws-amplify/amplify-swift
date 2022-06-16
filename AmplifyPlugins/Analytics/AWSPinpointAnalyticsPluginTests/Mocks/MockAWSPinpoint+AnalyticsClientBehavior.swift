@@ -117,7 +117,7 @@ extension MockAWSPinpoint: AWSPinpointAnalyticsClientBehavior {
             return []
         }
     }
-    
+
     private func createEmptyEvent() -> PinpointEvent {
         return PinpointEvent(eventType: "",
                              session: PinpointSession(appId: "", uniqueId: ""))

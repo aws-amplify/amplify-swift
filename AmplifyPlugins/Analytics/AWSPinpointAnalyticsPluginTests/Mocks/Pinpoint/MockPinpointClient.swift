@@ -176,7 +176,7 @@ class MockPinpointClient: PinpointClientProtocol {
     func getApplicationDateRangeKpi(input: GetApplicationDateRangeKpiInput) async throws -> GetApplicationDateRangeKpiOutputResponse {
         fatalError("Not supported")
     }
-    
+
     func getApplicationSettings(input: GetApplicationSettingsInput) async throws -> GetApplicationSettingsOutputResponse {
         fatalError("Not supported")
     }
@@ -426,13 +426,13 @@ class MockPinpointClient: PinpointClientProtocol {
     }
 
     var updateEndpointCount = 0
-    var updateEndpointResult: Result<UpdateEndpointOutputResponse, Error>? = nil
+    var updateEndpointResult: Result<UpdateEndpointOutputResponse, Error>?
     func updateEndpoint(input: UpdateEndpointInput) async throws -> UpdateEndpointOutputResponse {
         updateEndpointCount += 1
         guard let result = updateEndpointResult else {
             return UpdateEndpointOutputResponse()
         }
-        
+
         switch result {
         case .success(let output):
             return output

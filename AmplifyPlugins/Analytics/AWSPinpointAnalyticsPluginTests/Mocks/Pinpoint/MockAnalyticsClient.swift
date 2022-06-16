@@ -18,15 +18,15 @@ actor MockAnalyticsClient: AnalyticsClientBehaviour {
     func removeGlobalAttribute(forKey key: String, forEventType eventType: String) {}
     func removeGlobalMetric(forKey key: String) {}
     func removeGlobalMetric(forKey key: String, forEventType eventType: String) {}
-    
+
     nonisolated func createAppleMonetizationEvent(with transaction: SKPaymentTransaction, with product: SKProduct) -> PinpointEvent {
         return PinpointEvent(eventType: "Apple", session: PinpointSession(appId: "", uniqueId: ""))
     }
-    
+
     nonisolated func createVirtualMonetizationEvent(withProductId productId: String, withItemPrice itemPrice: Double, withQuantity quantity: Int, withCurrency currency: String) -> PinpointEvent {
         return PinpointEvent(eventType: "Virtual", session: PinpointSession(appId: "", uniqueId: ""))
     }
-    
+
     var createEventCount = 0
     private func increaseCreateEventCount() {
         createEventCount += 1
@@ -38,7 +38,7 @@ actor MockAnalyticsClient: AnalyticsClientBehaviour {
         }
         return PinpointEvent(eventType: eventType, session: PinpointSession(appId: "", uniqueId: ""))
     }
-    
+
     private var recordExpectation: XCTestExpectation?
     func setRecordExpectation(_ expectation: XCTestExpectation, count: Int = 1) {
         recordExpectation = expectation
@@ -54,8 +54,7 @@ actor MockAnalyticsClient: AnalyticsClientBehaviour {
         recordedEvents.append(event)
         recordExpectation?.fulfill()
     }
-    
-    
+
     private var submitEventsExpectation: XCTestExpectation?
     func setSubmitEventsExpectation(_ expectation: XCTestExpectation, count: Int = 1) {
         submitEventsExpectation = expectation
@@ -68,7 +67,7 @@ actor MockAnalyticsClient: AnalyticsClientBehaviour {
         submitEventsExpectation?.fulfill()
         return []
     }
-    
+
     func resetCounters() {
         recordCount = 0
         submitEventsCount = 0

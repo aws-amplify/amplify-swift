@@ -27,7 +27,7 @@ extension MockAWSPinpoint: AWSPinpointTargetingClientBehavior {
     public func update(_ endpointProfile: PinpointEndpointProfile) async throws {
         updateEndpointProfileCalled += 1
         updateEndpointProfileValue = endpointProfile
-        
+
         if case let .failure(error) = updateEndpointProfileResult {
             throw error
         }

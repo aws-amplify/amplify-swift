@@ -105,7 +105,7 @@ extension MockAWSPinpoint {
             XCTFail("actual EndpointProfile is nil")
             return
         }
-        
+
         let actualLocation = actualEndpointProfile.location
         let expectedLocation = endpointProfile.location
         XCTAssertEqual(actualLocation.latitude, expectedLocation.latitude)

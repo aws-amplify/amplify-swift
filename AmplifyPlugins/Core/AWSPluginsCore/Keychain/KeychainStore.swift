@@ -117,7 +117,7 @@ public struct KeychainStore: KeychainStoreBehavior {
         }
     }
 
-    // MARK:
+    // MARK: 
     public func remove(_ key: String) throws {
         var query = attributes.query()
         query[Constants.AttributeAccount] = key
@@ -141,7 +141,6 @@ public struct KeychainStore: KeychainStoreBehavior {
     }
 
 }
-
 
 extension KeychainStore {
     struct Constants {
