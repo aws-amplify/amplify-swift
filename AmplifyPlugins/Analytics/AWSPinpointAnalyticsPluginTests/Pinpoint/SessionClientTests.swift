@@ -17,7 +17,7 @@ class SessionClientTests: XCTestCase {
     private var endpointClient: MockEndpointClient!
     private var userDefaults: MockUserDefaults!
     private var sessionTimeout: TimeInterval = 5
-    
+
     override func setUp() {
         activityTracker = MockActivityTracker()
         archiver = MockArchiver()
@@ -27,7 +27,7 @@ class SessionClientTests: XCTestCase {
 
         createNewSessionClient()
     }
-    
+
     override func tearDown() {
         activityTracker = nil
         archiver = nil
@@ -36,7 +36,7 @@ class SessionClientTests: XCTestCase {
         endpointClient = nil
         client = nil
     }
-    
+
     func createNewSessionClient() {
         client = SessionClient(activityTracker: activityTracker,
                                analyticsClient: analyticsClient,

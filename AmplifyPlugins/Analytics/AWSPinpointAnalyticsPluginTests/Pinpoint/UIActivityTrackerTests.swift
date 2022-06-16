@@ -21,12 +21,12 @@ class UIActivityTrackerTests: XCTestCase {
         tracker = UIActivityTracker(backgroundTrackingTimeout: timeout,
                                     stateMachine: stateMachine)
     }
-    
+
     override func tearDown() {
         tracker = nil
         stateMachine = nil
     }
-    
+
     func testBeginTracking() {
         let expectation = expectation(description: "Initial state")
         tracker.beginActivityTracking { newState in

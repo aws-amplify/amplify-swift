@@ -62,11 +62,11 @@ struct PinpointContextConfiguration {
     let sessionTimeout: TimeInterval
     /// The max storage size to use for event storage in MB. Defaults to 5 MB.
     let maxStorageSize: Byte
-    
+
     /// Indicates if the App is in Debug or Release build. Defaults to `false`
     /// Setting this flag to true will set the Endpoint Profile to have a channel type of "APNS_SANDBOX".
     let isDebug: Bool
-    
+
     /// Indicates whether or not the Targeting Client should set application level OptOut.
     /// Use it to configure whether or not the client should receive push notifications at an application level.
     /// If System-level notifications for this application are disabled, this will be ignored.
@@ -90,13 +90,13 @@ class PinpointContext {
     let pinpointClient: PinpointClientProtocol
     let userDefaults: UserDefaultsBehaviour
     let currentDevice: Device
-    
+
     lazy var uniqueId = retrieveUniqueId()
 
     lazy var analyticsClient: AnalyticsClientBehaviour = {
         AnalyticsClient(context: self)
     }()
-    
+
     lazy var endpointClient: EndpointClientBehaviour = {
         EndpointClient(context: self)
     }()

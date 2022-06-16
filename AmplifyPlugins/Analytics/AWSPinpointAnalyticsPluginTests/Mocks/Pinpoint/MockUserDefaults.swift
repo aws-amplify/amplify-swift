@@ -11,17 +11,17 @@ import Foundation
 class MockUserDefaults: UserDefaultsBehaviour {
     private var data: [String: UserDefaultsBehaviourValue] = [:]
     var mockedValue: UserDefaultsBehaviourValue?
-    
+
     func addMockValue(_ value: UserDefaultsBehaviourValue?, forKey key: String) {
         data[key] = value
     }
-    
+
     var saveCount = 0
     func save(_ value: UserDefaultsBehaviourValue?, forKey key: String) {
         saveCount += 1
         data[key] = value
     }
-    
+
     var removeObjectCount = 0
     func removeObject(forKey key: String) {
         removeObjectCount += 1
@@ -47,7 +47,7 @@ class MockUserDefaults: UserDefaultsBehaviour {
         }
         return mockedValue as? Data
     }
-    
+
     var objectForKeyCount = 0
     func object(forKey key: String) -> Any? {
         objectForKeyCount += 1
@@ -56,7 +56,7 @@ class MockUserDefaults: UserDefaultsBehaviour {
         }
         return mockedValue
     }
-    
+
     func resetCounters() {
         saveCount = 0
         dataForKeyCount = 0

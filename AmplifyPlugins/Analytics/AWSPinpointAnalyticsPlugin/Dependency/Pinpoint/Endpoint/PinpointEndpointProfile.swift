@@ -23,7 +23,7 @@ class PinpointEndpointProfile: Codable, AnalyticsPropertiesModel {
     private(set) var user: PinpointClientTypes.EndpointUser
     private(set) var attributes: [String: [String]] = [:]
     private(set) var metrics: [String: Double] = [:]
-    
+
     init(applicationId: String,
          endpointId: String,
          deviceToken: DeviceToken? = nil,
@@ -43,37 +43,37 @@ class PinpointEndpointProfile: Codable, AnalyticsPropertiesModel {
         self.demographic = demographic
         self.user = user
     }
-    
+
     func addIdentityId(_ identityId: String) {
         user.userId = identityId
     }
-    
+
     func addUserProfile(_ userProfile: AnalyticsUserProfile) {
         if let email = userProfile.email {
             addAttribute(email, forKey: Constants.AttributeKeys.email)
         }
-        
+
         if let name = userProfile.name {
             addAttribute(name, forKey: Constants.AttributeKeys.name)
         }
-        
+
         if let plan = userProfile.plan {
             addAttribute(plan, forKey: Constants.AttributeKeys.plan)
         }
-        
+
         if let properties = userProfile.properties {
             addProperties(properties)
         }
-        
+
         if let userLocation = userProfile.location {
             location.update(with: userLocation)
         }
     }
-    
+
     func addAttribute(_ attribute: String, forKey key: String) {
         attributes[key] = [attribute]
     }
-    
+
     func addAttributes(_ newAttributes: [String], forKey key: String) {
         attributes[key] = newAttributes
     }
@@ -81,7 +81,7 @@ class PinpointEndpointProfile: Codable, AnalyticsPropertiesModel {
     func removeAttributes(forKey key: String) {
         attributes[key] = nil
     }
-    
+
     func addMetric(_ metric: Int, forKey key: String) {
         addMetric(Double(metric), forKey: key)
     }
@@ -93,11 +93,11 @@ class PinpointEndpointProfile: Codable, AnalyticsPropertiesModel {
     func removeMetric(forKey key: String) {
         metrics[key] = nil
     }
-    
+
     func removeAllAttributes() {
         attributes = [:]
     }
-    
+
     func removeAllMetrics() {
         metrics = [:]
     }

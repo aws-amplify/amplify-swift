@@ -25,7 +25,7 @@ class PinpointEvent: AnalyticsPropertiesModel {
         self.eventTimestamp = eventTimestamp
         self.session = session
     }
-    
+
     func addAttribute(_ attribute: String, forKey key: String) {
         guard numberOfAttributesAndMetrics < Constants.maxNumberOfAttributesAndMetrics  else {
             log.warn("Max number of attributes/metrics reached, dropping attribute with key \(key)")
