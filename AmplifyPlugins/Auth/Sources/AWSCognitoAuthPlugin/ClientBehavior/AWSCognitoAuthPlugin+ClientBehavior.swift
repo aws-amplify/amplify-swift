@@ -108,7 +108,6 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         let request = AuthFetchSessionRequest(options: options)
         let fetchAuthSessionOperation = AWSAuthFetchSessionOperation(request,
                                                                      authStateMachine: authStateMachine,
-                                                                     credentialStoreStateMachine: credentialStoreStateMachine,
                                                                      resultListener: listener)
         queue.addOperation(fetchAuthSessionOperation)
         return fetchAuthSessionOperation

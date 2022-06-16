@@ -76,7 +76,7 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
             case .signingUp:
                 self.sendCancelSignUpEvent()
 
-            case .signedIn(let signedInData):
+            case .signedIn:
                 self.dispatch(AuthSignInResult(nextStep: .done))
                 self.cancelToken(token)
 
@@ -134,12 +134,6 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
 
     // TODO: Find a differnet mechanism to cancel the tokens
     private func cancelToken(_ token: AuthStateMachineToken?) {
-        if let token = token {
-            authStateMachine.cancel(listenerToken: token)
-        }
-    }
-
-    private func cancelCredentialStoreToken(_ token: CredentialStoreStateMachineToken?) {
         if let token = token {
             authStateMachine.cancel(listenerToken: token)
         }

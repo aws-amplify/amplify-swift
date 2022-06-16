@@ -30,9 +30,7 @@ AuthError>, AuthAttributeResendConfirmationCodeOperation {
         self.authStateMachine = authStateMachine
         self.credentialStoreStateMachine = credentialStoreStateMachine
         self.userPoolFactory = userPoolFactory
-        self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper(
-            authStateMachine: authStateMachine,
-            credentialStoreStateMachine: credentialStoreStateMachine)
+        self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()
         super.init(categoryType: .auth,
                    eventName: HubPayload.EventName.Auth.attributeResendConfirmationCodeAPI,
                    request: request,
@@ -45,7 +43,7 @@ AuthError>, AuthAttributeResendConfirmationCodeOperation {
             return
         }
 
-        fetchAuthSessionHelper.fetchSession { [weak self] result in
+        fetchAuthSessionHelper.fetch(authStateMachine) { [weak self] result in
             switch result {
             case .success(let session):
                 guard let cognitoTokenProvider = session as? AuthCognitoTokensProvider,
