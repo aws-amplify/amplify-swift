@@ -28,6 +28,15 @@ class SessionClientTests: XCTestCase {
         createNewSessionClient()
     }
     
+    override func tearDown() {
+        activityTracker = nil
+        archiver = nil
+        userDefaults = nil
+        analyticsClient = nil
+        endpointClient = nil
+        client = nil
+    }
+    
     func createNewSessionClient() {
         client = SessionClient(activityTracker: activityTracker,
                                analyticsClient: analyticsClient,
@@ -43,7 +52,7 @@ class SessionClientTests: XCTestCase {
         await analyticsClient.resetCounters()
         activityTracker.resetCounters()
         archiver.resetCounters()
-        endpointClient.resetCounters()
+        await endpointClient.resetCounters()
         userDefaults.resetCounters()
     }
     
@@ -84,7 +93,8 @@ class SessionClientTests: XCTestCase {
         XCTAssertEqual(userDefaults.saveCount, 1)
         await analyticsClient.setRecordExpectation(expectation(description: "Start event for new session"))
         await waitForExpectations(timeout: 1)
-        XCTAssertEqual(endpointClient.updateEndpointProfileCount, 1)
+        let updateEndpointProfileCount = await endpointClient.updateEndpointProfileCount
+        XCTAssertEqual(updateEndpointProfileCount, 1)
         let createEventCount = await analyticsClient.createEventCount
         XCTAssertEqual(createEventCount, 1)
         let recordCount = await analyticsClient.recordCount
@@ -150,7 +160,8 @@ class SessionClientTests: XCTestCase {
         client.startPinpointSession()
         await analyticsClient.setRecordExpectation(expectation(description: "Start event for new session"))
         await waitForExpectations(timeout: 1)
-        XCTAssertEqual(endpointClient.updateEndpointProfileCount, 1)
+        let updateEndpointProfileCount = await endpointClient.updateEndpointProfileCount
+        XCTAssertEqual(updateEndpointProfileCount, 1)
         let createCount = await analyticsClient.createEventCount
         XCTAssertEqual(createCount, 1)
         let recordCount = await analyticsClient.recordCount

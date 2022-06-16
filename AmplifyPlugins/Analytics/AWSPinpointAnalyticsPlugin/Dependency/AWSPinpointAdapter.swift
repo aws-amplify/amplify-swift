@@ -18,7 +18,14 @@ class AWSPinpointAdapter: AWSPinpointBehavior {
     convenience init(appId: String,
                      region: String,
                      credentialsProvider: CredentialsProvider) throws {
-        let configuration = PinpointContextConfiguration(appId: appId)
+        var isDebug = false
+        #if DEBUG
+        isDebug = true
+        Amplify.Logging.verbose("Setting PinpointContextConfiguration.isDebug to true")
+        #endif
+
+        let configuration = PinpointContextConfiguration(appId: appId,
+                                                         isDebug: isDebug)
         let pinpoint = try PinpointContext(with: configuration,
                                            credentialsProvider: credentialsProvider,
                                            region: region)

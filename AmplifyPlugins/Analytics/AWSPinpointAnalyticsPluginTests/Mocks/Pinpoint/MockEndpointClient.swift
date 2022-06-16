@@ -8,15 +8,7 @@
 @testable import AWSPinpointAnalyticsPlugin
 import AWSClientRuntime
 
-// TODO: `EndpointClient` should be replaced with a protocol instead
-class MockEndpointClient: EndpointClient {
-    init() {
-        let context = try! PinpointContext(with: PinpointContextConfiguration(appId: "appId"),
-                                           credentialsProvider: MockCredentialsProvider(),
-                                           region: "region")
-        super.init(context: context)
-    }
-    
+actor MockEndpointClient: EndpointClientBehaviour {
     class MockCredentialsProvider: CredentialsProvider {
         func getCredentials() async throws -> AWSCredentials {
             return AWSCredentials(accessKey: "", secret: "", expirationTimeout: 1000)
@@ -24,11 +16,31 @@ class MockEndpointClient: EndpointClient {
     }
     
     var updateEndpointProfileCount = 0
-    override func updateEndpointProfile() async throws {
+    func updateEndpointProfile() async throws {
         updateEndpointProfileCount += 1
     }
     
     func resetCounters() {
         updateEndpointProfileCount = 0
     }
+    
+    var currentEndpointProfileCount = 0
+    var mockedEndpointProfile: PinpointEndpointProfile?
+    func currentEndpointProfile() -> PinpointEndpointProfile {
+        currentEndpointProfileCount += 1
+        return mockedEndpointProfile ?? PinpointEndpointProfile(applicationId: "", endpointId: "")
+    }
+    
+    var updateEndpointProfileWithCount = 0
+    func updateEndpointProfile(with endpointProfile: PinpointEndpointProfile) async throws {
+        updateEndpointProfileWithCount += 1
+    }
+    
+    func addAttributes(_ attributes: [String], forKey key: String) {}
+    
+    func removeAttributes(forKey key: String) {}
+    
+    func addMetric(_ metric: Double, forKey key: String) {}
+    
+    func removeMetric(forKey key: String) {}
 }
