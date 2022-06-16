@@ -154,7 +154,7 @@ class LoadCredentialsTests: XCTestCase {
         let mockedData = "mock"
         let expectation = expectation(description: "loadCredentialErrorInvoked")
 
-        let unknownError = AuthorizationError.invalidIdentityId(message: "")
+        let unknownError = AuthorizationError.invalidState(message: "")
         let expectedError = CredentialStoreError.unknown("An unknown error occurred", unknownError)
 
         let mockLegacyCredentialStoreBehavior = MockCredentialStoreBehavior(data: mockedData)
@@ -170,10 +170,12 @@ class LoadCredentialsTests: XCTestCase {
         let amplifyCredentialStoreFactory: BasicCredentialStoreEnvironment.AmplifyAuthCredentialStoreFactory = {
             return mockAmplifyCredentialStoreBehavior
         }
-        let authConfig = AuthConfiguration.userPoolsAndIdentityPools(Defaults.makeDefaultUserPoolConfigData(),
+        let authConfig = AuthConfiguration.userPoolsAndIdentityPools(
+            Defaults.makeDefaultUserPoolConfigData(),
                                                                      Defaults.makeIdentityConfigData())
 
-        let credentialStoreEnv = BasicCredentialStoreEnvironment(amplifyCredentialStoreFactory: amplifyCredentialStoreFactory,
+        let credentialStoreEnv = BasicCredentialStoreEnvironment(
+            amplifyCredentialStoreFactory: amplifyCredentialStoreFactory,
                                                                  legacyCredentialStoreFactory: legacyCredentialStoreFactory)
 
         let environment = CredentialEnvironment(authConfiguration: authConfig, credentialStoreEnvironment: credentialStoreEnv)

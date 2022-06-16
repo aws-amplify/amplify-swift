@@ -155,12 +155,12 @@ enum Defaults {
 }
 
 struct MockAmplifyStore: AmplifyAuthCredentialStoreBehavior, AmplifyAuthCredentialStoreProvider {
-    func saveCredential(_ credential: AmplifyCredentials) throws {
+    func saveCredential(_ credential: Codable) throws {
 
     }
 
-    func retrieveCredential() throws -> AmplifyCredentials {
-        return AmplifyCredentials(userPoolTokens: nil, identityId: nil, awsCredential: nil)
+    func retrieveCredential() throws -> Codable {
+        return AmplifyCredentials.noCredentials
     }
 
     func deleteCredential() throws {

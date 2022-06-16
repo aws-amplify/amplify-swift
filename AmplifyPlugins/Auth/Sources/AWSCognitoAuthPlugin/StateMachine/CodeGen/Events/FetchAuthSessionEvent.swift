@@ -75,5 +75,23 @@ enum FetchSessionError: Error {
 
     case invalidIdentityID
 
+    case invalidAWSCredentials
+
     case service(Error)
+}
+
+extension FetchSessionError: Equatable {
+    static func == (lhs: FetchSessionError, rhs: FetchSessionError) -> Bool {
+        switch (lhs, rhs) {
+        case (.noIdentityPool, .noIdentityPool),
+            (.notAuthorized, .notAuthorized),
+            (.invalidIdentityID, .invalidIdentityID),
+            (.invalidAWSCredentials, .invalidAWSCredentials),
+            (.service, .service):
+            return true
+        default: return false
+        }
+    }
+
+
 }

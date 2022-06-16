@@ -13,20 +13,18 @@ class InitializeFetchAuthSessionTests: XCTestCase {
 
     func testInitializeUserPoolTokens() {
         let expectation = expectation(description: "initializeUserPool")
-        let action = InitializeFetchAuthSession(storedCredentials: AmplifyCredentials.testData)
+        let action = InitializeFetchAuthSessionWithUserPool(tokens: .testData)
 
         let environment = Defaults.makeDefaultAuthEnvironment()
 
-        action.execute(
-            withDispatcher: MockDispatcher { event in
+        action.execute(withDispatcher: MockDispatcher { event in
 
                 guard let event = event as? FetchAuthSessionEvent else {
                     XCTFail("Expected event to be FetchAuthSessionEvent")
                     return
                 }
 
-                if case let .fetchUserPoolTokens(cognitoCredentials)  = event.eventType {
-                    XCTAssertNotNil(cognitoCredentials)
+                if case let .fetchAuthenticatedIdentityID = event.eventType {
                     expectation.fulfill()
                 }
 
@@ -37,31 +35,5 @@ class InitializeFetchAuthSessionTests: XCTestCase {
         waitForExpectations(timeout: 0.1)
     }
 
-    func testInitializeIdentityPoolTokens() {
-        let expectation = expectation(description: "initializeIdentity")
 
-        let action = InitializeFetchAuthSession(
-            storedCredentials: AmplifyCredentials(userPoolTokens: nil, identityId: "", awsCredential: nil))
-
-        let environment = Defaults.makeDefaultAuthEnvironment()
-
-        action.execute(
-            withDispatcher: MockDispatcher { event in
-
-                guard let event = event as? FetchAuthSessionEvent else {
-                    XCTFail("Expected event to be FetchAuthSessionEvent")
-                    return
-                }
-
-                if case let .fetchIdentity(cognitoCredentials)  = event.eventType {
-                    XCTAssertNotNil(cognitoCredentials)
-                    expectation.fulfill()
-                }
-
-            },
-            environment: environment
-        )
-
-        waitForExpectations(timeout: 0.1)
-    }
 }
