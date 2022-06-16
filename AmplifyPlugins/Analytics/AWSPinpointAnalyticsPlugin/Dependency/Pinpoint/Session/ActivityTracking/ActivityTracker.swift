@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import Foundation
 
 enum ActivityEvent {
     case applicationDidMoveToBackground
@@ -50,9 +51,9 @@ protocol ActivityTrackerBehaviour {
 }
 
 class ActivityTracker {
-    static func create(from context: PinpointContext) -> ActivityTrackerBehaviour {
+    static func create(timeout: TimeInterval) -> ActivityTrackerBehaviour {
 #if !os(OSX)
-        return UIActivityTracker(backgroundTrackingTimeout: context.configuration.sessionTimeout)
+        return UIActivityTracker(backgroundTrackingTimeout: timeout)
 #else
         return EmptyTracker()
 #endif

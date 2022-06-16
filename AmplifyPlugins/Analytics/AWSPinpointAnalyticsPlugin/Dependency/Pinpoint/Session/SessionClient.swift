@@ -8,8 +8,9 @@
 import Amplify
 import Foundation
 
-protocol SessionClientBehaviour {
+protocol SessionClientBehaviour: AnyObject {
     var currentSession: PinpointSession { get }
+    var analyticsClient: AnalyticsClientBehaviour? { set get }
 
     func startPinpointSession()
     func validateOrRetrieveSession(_ session: PinpointSession?) -> PinpointSession
@@ -24,8 +25,8 @@ struct SessionClientConfiguration {
 class SessionClient: SessionClientBehaviour {
     private var session: PinpointSession
 
-    private weak var analyticsClient: AnalyticsClientBehaviour?
-    private weak var endpointClient: EndpointClientBehaviour?
+    weak var analyticsClient: AnalyticsClientBehaviour?
+    private let endpointClient: EndpointClientBehaviour
 
     private let activityTracker: ActivityTrackerBehaviour
     private let archiver: AmplifyArchiverBehaviour
@@ -34,26 +35,13 @@ class SessionClient: SessionClientBehaviour {
                                                    attributes: .concurrent)
     private let userDefaults: UserDefaultsBehaviour
 
-    convenience init(context: PinpointContext,
-                     archiver: AmplifyArchiverBehaviour = AmplifyArchiver(),
-                     activityTracker: ActivityTrackerBehaviour? = nil) {
-        self.init(activityTracker: activityTracker ?? ActivityTracker.create(from: context),
-                  analyticsClient: context.analyticsClient,
-                  archiver: archiver,
-                  configuration: SessionClientConfiguration(appId: context.configuration.appId,
-                                                            uniqueDeviceId: context.uniqueId,
-                                                            sessionTimeout: context.configuration.sessionTimeout),
-                  endpointClient: context.endpointClient,
-                  userDefaults: context.userDefaults)
-    }
-
-    init(activityTracker: ActivityTrackerBehaviour,
-         analyticsClient: AnalyticsClientBehaviour,
-         archiver: AmplifyArchiverBehaviour = AmplifyArchiver(),
+    init(activityTracker: ActivityTrackerBehaviour? = nil,
+         analyticsClient: AnalyticsClientBehaviour? = nil,
+         archiver: AmplifyArchiverBehaviour,
          configuration: SessionClientConfiguration,
          endpointClient: EndpointClientBehaviour,
          userDefaults: UserDefaultsBehaviour) {
-        self.activityTracker = activityTracker
+        self.activityTracker = activityTracker ?? ActivityTracker.create(timeout: configuration.sessionTimeout)
         self.analyticsClient = analyticsClient
         self.archiver = archiver
         self.configuration = configuration
@@ -70,6 +58,11 @@ class SessionClient: SessionClientBehaviour {
     }
 
     func startPinpointSession() {
+        guard analyticsClient != nil else {
+            log.error("Pinpoint Analytics is disabled.")
+            return
+        }
+
         activityTracker.beginActivityTracking { [weak self] newState in
             guard let self = self else { return }
             self.log.verbose("New state received: \(newState)")
@@ -119,7 +112,7 @@ class SessionClient: SessionClientBehaviour {
 
         // Update Endpoint and record Session Start event
         Task {
-            try? await endpointClient?.updateEndpointProfile()
+            try? await endpointClient.updateEndpointProfile()
         }
         log.verbose("Firing Session Event: Start")
         record(eventType: Constants.Events.start)
