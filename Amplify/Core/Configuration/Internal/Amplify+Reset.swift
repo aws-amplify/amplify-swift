@@ -9,7 +9,7 @@ import Foundation
 
 // swiftlint:disable cyclomatic_complexity
 extension Amplify {
-
+    
     /// Resets the state of the Amplify framework.
     ///
     /// Internally, this method:
@@ -24,31 +24,31 @@ extension Amplify {
                 switch categoryType {
                 case .analytics:
                     group.addTask {
-                        await reset(Analytics)
+                        await Analytics.reset()
                     }
                 case .api:
                     group.addTask {
-                        await reset(API)
+                        await API.reset()
                     }
                 case .auth:
                     group.addTask {
-                        await reset(Auth)
+                        await Auth.reset()
                     }
                 case .dataStore:
                     group.addTask {
-                        await reset(DataStore)
+                        await DataStore.reset()
                     }
                 case .geo:
                     group.addTask {
-                        await reset(Geo)
+                        await Geo.reset()
                     }
                 case .storage:
                     group.addTask {
-                        await reset(Storage)
+                        await Storage.reset()
                     }
                 case .predictions:
                     group.addTask {
-                        await reset(Predictions)
+                        await Predictions.reset()
                     }
                 case .hub, .logging:
                     // Hub and Logging should be reset after all other categories
@@ -59,22 +59,22 @@ extension Amplify {
         
         await withTaskGroup(of: Void.self) { group in
             group.addTask {
-                await reset(Hub)
+                await Hub.reset()
             }
             group.addTask {
-                await reset(Logging)
+                await Logging.reset()
             }
         }
-
+        
 #if canImport(UIKit)
         devMenu = nil
 #endif
-
+        
         // Initialize Logging and Hub first, to ensure their default plugins are registered and available to other
         // categories during their initialization and configuration phases.
         Logging = LoggingCategory()
         Hub = HubCategory()
-
+        
         // Switch over all category types to ensure we don't forget any
         for categoryType in CategoryType.allCases.filter({ $0 != .logging && $0 != .hub }) {
             switch categoryType {
@@ -97,16 +97,7 @@ extension Amplify {
                 Storage = StorageCategory()
             }
         }
-
+        
         isConfigured = false
     }
-
-    /// If `candidate` is `Resettable`,  invokes `candidate.reset(onComplete)`
-    /// If `candidate` is not resettable, exits.
-    private static func reset(_ candidate: Any) async {
-        guard let resettable = candidate as? Resettable else { return }
-
-        await resettable.reset()
-    }
-
 }

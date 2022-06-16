@@ -16,4 +16,6 @@ public protocol APICategory: Category, APICategoryBehavior {
     /// Retrieve an API plugin
     /// - Parameter key: the key which is defined in the plugin.
     func getPlugin(for key: PluginKey) throws -> APICategoryPlugin
+    
+    func reset() async
 }

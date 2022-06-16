@@ -379,21 +379,6 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSCognitoAuthPluginUnitTests"
-               BuildableName = "AWSCognitoAuthPluginUnitTests"
-               BlueprintName = "AWSCognitoAuthPluginUnitTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "EscapeHatchTests">
-               </Test>
-            </SkippedTests>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "AWSDataStoreCategoryPluginTests"
                BuildableName = "AWSDataStoreCategoryPluginTests"
                BlueprintName = "AWSDataStoreCategoryPluginTests"

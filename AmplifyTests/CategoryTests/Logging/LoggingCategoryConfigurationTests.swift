@@ -38,10 +38,11 @@ class LoggingCategoryConfigurationTests: XCTestCase {
 
     func testCanResetLoggingPlugin() async throws {
         let plugin = MockLoggingCategoryPlugin()
-        let resetWasInvoked = expectation(description: "reset() was invoked")
+//        let resetWasInvoked = expectation(description: "reset() was invoked")
+        var resetWasInvoked = false
         plugin.listeners.append { message in
             if message == "reset" {
-                resetWasInvoked.fulfill()
+                resetWasInvoked = true
             }
         }
         try Amplify.add(plugin: plugin)
@@ -54,7 +55,7 @@ class LoggingCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         await Amplify.reset()
-        await waitForExpectations(timeout: 1.0)
+        XCTAssertTrue(resetWasInvoked)
     }
 
     func testResetRemovesAddedPlugin() async throws {

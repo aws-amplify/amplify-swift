@@ -10,8 +10,8 @@ import Foundation
 
 extension URLSession: URLSessionBehavior {
     public func cancelAndReset() async {
-        invalidateAndCancel()
-        await reset()
+        //invalidateAndCancel()
+        //await reset()
     }
 
     public func dataTaskBehavior(with request: URLRequest) -> URLSessionDataTaskBehavior {
