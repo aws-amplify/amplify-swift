@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Amplify
+import AmplifyPlugins
 
 @main
 struct MyAmplifyAppApp: App {
