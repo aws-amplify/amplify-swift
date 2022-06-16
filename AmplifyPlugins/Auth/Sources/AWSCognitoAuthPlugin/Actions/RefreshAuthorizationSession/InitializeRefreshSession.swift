@@ -9,31 +9,29 @@ import Amplify
 import Foundation
 
 struct InitializeRefreshSession: Action {
-
+    
     let identifier = "InitializeRefreshSession"
-
+    
     let existingCredentials: AmplifyCredentials
-
+    
     let isForceRefresh: Bool
-
-    let expiryBufferInSeconds = TimeInterval.seconds(2 * 60)
-
+    
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
-
+        
         logVerbose("\(#fileID) Starting execution", environment: environment)
-
+        
         let event: RefreshSessionEvent
-
+        
         switch existingCredentials {
         case .userPoolOnly(let tokens):
             event = .init(eventType: .refreshCognitoUserPool(tokens))
-
+            
         case .identityPoolOnly(let identityID, _):
             event = .init(eventType: .refreshUnAuthAWSCredentials(identityID))
-
+            
         case .identityPoolWithFederation:
             fatalError("Federation not implemented")
-
+            
         case .userPoolAndIdentityPool(let tokens, let identityID, _):
             guard let config = (environment as? AuthEnvironment)?.userPoolConfigData else {
                 //TODO: Fix error
@@ -42,7 +40,8 @@ struct InitializeRefreshSession: Action {
             let provider = CognitoUserPoolLoginsMap(idToken: tokens.idToken,
                                                     region: config.region,
                                                     poolId: config.poolId)
-            if tokens.doesExpire(in: expiryBufferInSeconds) || isForceRefresh {
+            if isForceRefresh ||
+                tokens.doesExpire(in: FetchAuthSessionOperationHelper.expiryBufferInSeconds) {
                 event = .init(eventType: .refreshCognitoUserPoolWithIdentityId(tokens, identityID))
             } else {
                 event = .init(eventType: .refreshAWSCredentialsWithUserPool(identityID,
@@ -52,7 +51,7 @@ struct InitializeRefreshSession: Action {
         case .noCredentials:
             event = .init(eventType: .throwError(.noCredentialsToRefresh))
         }
-
+        
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         dispatcher.send(event)
     }

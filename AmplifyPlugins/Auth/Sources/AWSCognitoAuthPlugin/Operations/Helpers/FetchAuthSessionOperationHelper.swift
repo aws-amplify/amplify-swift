@@ -10,6 +10,8 @@ import Amplify
 
 struct FetchAuthSessionOperationHelper {
 
+    static let expiryBufferInSeconds = TimeInterval.seconds(2 * 60)
+
     typealias FetchAuthSessionCompletion = (Result<AuthSession, AuthError>) -> Void
 
     func fetch(_ authStateMachine: AuthStateMachine,
@@ -34,7 +36,7 @@ struct FetchAuthSessionOperationHelper {
                 switch credentials {
 
                 case .userPoolOnly(tokens: let tokens):
-                    if (tokens.doesExpire(in: 5)) {
+                    if (tokens.doesExpire(in: Self.expiryBufferInSeconds)) {
                         let event = AuthorizationEvent(eventType: .refreshSession)
                         authStateMachine.send(event)
                     } else {
@@ -42,7 +44,7 @@ struct FetchAuthSessionOperationHelper {
                     }
 
                 case .identityPoolOnly(identityID: _, credentials: let awsCredentials):
-                    if (awsCredentials.doesExpire(in: 5)) {
+                    if (awsCredentials.doesExpire(in: Self.expiryBufferInSeconds)) {
                         let event = AuthorizationEvent(eventType: .refreshSession)
                         authStateMachine.send(event)
                     } else {
@@ -52,7 +54,8 @@ struct FetchAuthSessionOperationHelper {
                 case .userPoolAndIdentityPool(tokens: let tokens,
                                               identityID: _,
                                               credentials: let awsCredentials):
-                    if ( tokens.doesExpire(in: 5) || awsCredentials.doesExpire(in: 10 * 60)) {
+                    if ( tokens.doesExpire(in: Self.expiryBufferInSeconds) ||
+                         awsCredentials.doesExpire(in: Self.expiryBufferInSeconds)) {
                         let event = AuthorizationEvent(eventType: .refreshSession)
                         authStateMachine.send(event)
                     } else {

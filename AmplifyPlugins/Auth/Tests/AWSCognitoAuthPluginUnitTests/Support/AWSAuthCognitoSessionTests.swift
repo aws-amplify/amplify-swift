@@ -34,9 +34,9 @@ class AWSAuthCognitoSessionTests: XCTestCase {
                                             awsCredentialsResult: .failure(error),
                                             cognitoTokensResult: .success(tokens))
         let cognitoTokens = try! session.getCognitoTokens().get()
-        XCTAssertTrue(cognitoTokens.areTokensExpiring(in: 120))
-        XCTAssertFalse(cognitoTokens.areTokensExpiring(in: 122))
-        XCTAssertTrue(cognitoTokens.areTokensExpiring())
+        XCTAssertFalse(cognitoTokens.doesExpire(in: 120))
+        XCTAssertTrue(cognitoTokens.doesExpire(in: 122))
+        XCTAssertFalse(cognitoTokens.doesExpire())
     }
 
     /// Given: a JWT token
@@ -62,7 +62,7 @@ class AWSAuthCognitoSessionTests: XCTestCase {
                                             cognitoTokensResult: .success(tokens))
 
         let cognitoTokens = try! session.getCognitoTokens().get()
-        XCTAssertTrue(cognitoTokens.areTokensExpiring())
+        XCTAssertFalse(cognitoTokens.doesExpire())
     }
 
 }
