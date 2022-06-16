@@ -16,13 +16,12 @@ extension AWSPinpointAnalyticsPlugin {
             return
         }
 
-        let currentEndpointProfile = pinpoint.currentEndpointProfile()
-        currentEndpointProfile.addIdentityId(identityId)
-        if let userProfile = userProfile {
-            currentEndpointProfile.addUserProfile(userProfile)
-        }
-
         Task {
+            let currentEndpointProfile =  await pinpoint.currentEndpointProfile()
+            currentEndpointProfile.addIdentityId(identityId)
+            if let userProfile = userProfile {
+                currentEndpointProfile.addUserProfile(userProfile)
+            }
             do {
                 try await pinpoint.update(currentEndpointProfile)
                 Amplify.Hub.dispatchIdentifyUser(identityId, userProfile: userProfile)

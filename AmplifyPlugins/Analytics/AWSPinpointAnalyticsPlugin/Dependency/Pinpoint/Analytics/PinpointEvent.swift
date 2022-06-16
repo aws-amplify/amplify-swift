@@ -8,7 +8,7 @@
 import Amplify
 import Foundation
 
-class PinpointEvent {
+class PinpointEvent: AnalyticsPropertiesModel {
     let id: String
     let eventType: String
     let eventTimestamp: Date.Millisecond
@@ -25,21 +25,7 @@ class PinpointEvent {
         self.eventTimestamp = eventTimestamp
         self.session = session
     }
-
-    func addProperties(_ properties: [String: AnalyticsPropertyValue]) {
-        for (key, value) in properties {
-            if let value = value as? String {
-                addAttribute(value, forKey: key)
-            } else if let value = value as? Int {
-                addMetric(value, forKey: key)
-            } else if let value = value as? Double {
-                addMetric(value, forKey: key)
-            } else if let value = value as? Bool {
-                addAttribute(String(value), forKey: key)
-            }
-        }
-    }
-
+    
     func addAttribute(_ attribute: String, forKey key: String) {
         guard numberOfAttributesAndMetrics < Constants.maxNumberOfAttributesAndMetrics  else {
             log.warn("Max number of attributes/metrics reached, dropping attribute with key \(key)")
