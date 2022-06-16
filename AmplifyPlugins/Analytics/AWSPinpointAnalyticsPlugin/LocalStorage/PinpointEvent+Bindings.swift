@@ -10,7 +10,7 @@ import SQLite
 
 extension PinpointEvent {
     private static let archiver: AmplifyArchiverBehaviour = AmplifyArchiver()
-    
+
     /// Converts a Pinpoint Event to a collection of SQL Bindings for SQL insert statements
     /// - Parameters:
     ///   - dateFormater: The date formatter to format dates to strings.  Defaults to ISO8601 with fractional seconds format.
@@ -24,7 +24,7 @@ extension PinpointEvent {
         let encodedAttributes = try? archiver.encode(attributes).base64EncodedString()
         let encodedMetrics = try? archiver.encode(metrics).base64EncodedString()
         return [
-            id, 
+            id,
             encodedAttributes,
             eventType,
             encodedMetrics,
@@ -37,7 +37,7 @@ extension PinpointEvent {
             0 // RetryCount
         ]
     }
-    
+
     /// Converts a SQL Statement element to a pinpoint event based on predefined/known property index of columns/index
     /// - Parameters:
     ///   - element: The SQL statement element
@@ -49,38 +49,38 @@ extension PinpointEvent {
               let startDateTime = dateFormater.date(from: startTime)else {
             return nil
         }
-        
-        var stopDateTime: Date? = nil
+
+        var stopDateTime: Date?
         if let stopTime = element[EventPropertyIndex.sessionStopTime] as? String {
             stopDateTime = dateFormater.date(from: stopTime)
         }
-        
+
         let session = PinpointSession(sessionId: sessionId, startTime: startDateTime, stopTime: stopDateTime)
 
         guard let eventType = element[EventPropertyIndex.eventType] as? String, let eventTimestampValue = element[EventPropertyIndex.eventTimestamp] as? String, let timestamp = Date.Millisecond(eventTimestampValue) else {
             return nil
         }
-        
+
         guard let eventId = element[EventPropertyIndex.id] as? String else {
             return nil
         }
-        
+
         let pinpointEvent = PinpointEvent(id: eventId, eventType: eventType, eventTimestamp: timestamp, session: session)
-        
+
         if let attributes = element[EventPropertyIndex.attributes] as? String, let data = Data(base64Encoded: attributes),
            let decodedAttributes = try? archiver.decode(AnalyticsClient.PinpointEventAttributes.self, from: data) {
             for (key, value) in decodedAttributes {
                 pinpointEvent.addAttribute(value, forKey: key)
             }
         }
-        
+
         if let metrics = element[EventPropertyIndex.metrics] as? String, let data = Data(base64Encoded: metrics),
            let decodedMetrics = try? archiver.decode(AnalyticsClient.PinpointEventMetrics.self, from: data) {
             for (key, value) in decodedMetrics {
                 pinpointEvent.addMetric(value, forKey: key)
             }
         }
-        
+
         return pinpointEvent
     }
 

@@ -25,23 +25,23 @@ extension SdkError {
 extension ClientError {
     var isRetryable: Bool {
         switch self {
-        case .authError(_):
+        case .authError:
             return true
-        case .crtError(_):
+        case .crtError:
             return true
-        case .dataNotFound(_):
+        case .dataNotFound:
             return true
-        case .deserializationFailed(_):
+        case .deserializationFailed:
             return false
-        case .networkError(_):
+        case .networkError:
             return true
-        case .pathCreationFailed(_):
+        case .pathCreationFailed:
             return true
-        case .retryError(_):
+        case .retryError:
             return true
-        case .serializationFailed(_):
+        case .serializationFailed:
             return false
-        case .unknownError(_):
+        case .unknownError:
             return true
         }
     }

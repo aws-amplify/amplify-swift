@@ -15,7 +15,7 @@ class PinpointEvent: AnalyticsPropertiesModel {
     let session: PinpointSession
     private(set) lazy var attributes: [String: String] = [:]
     private(set) lazy var metrics: [String: Double] = [:]
-    
+
     init(id: String = UUID().uuidString,
          eventType: String,
          eventTimestamp: Date.Millisecond = Date().utcTimeMillis,
@@ -25,7 +25,7 @@ class PinpointEvent: AnalyticsPropertiesModel {
         self.eventTimestamp = eventTimestamp
         self.session = session
     }
-    
+
     func addAttribute(_ attribute: String, forKey key: String) {
         guard numberOfAttributesAndMetrics < Constants.maxNumberOfAttributesAndMetrics  else {
             log.warn("Max number of attributes/metrics reached, dropping attribute with key \(key)")
@@ -34,7 +34,7 @@ class PinpointEvent: AnalyticsPropertiesModel {
 
         attributes[trimmedKey(key)] = trimmedValue(attribute)
     }
-    
+
     func addMetric(_ metric: Double, forKey key: String) {
         guard numberOfAttributesAndMetrics < Constants.maxNumberOfAttributesAndMetrics  else {
             log.warn("Max number of attributes/metrics reached, dropping attribute with key \(key)")
@@ -43,27 +43,27 @@ class PinpointEvent: AnalyticsPropertiesModel {
 
         metrics[trimmedKey(key)] = metric
     }
-    
+
     func addMetric(_ metric: Int, forKey key: String) {
         addMetric(Double(metric), forKey: key)
     }
-    
+
     func attribute(forKey key: String) -> String? {
         return attributes[key]
     }
-    
+
     func metric(forKey key: String) -> Double? {
         return metrics[key]
     }
-    
+
     private var numberOfAttributesAndMetrics: Int {
         return attributes.count + metrics.count
     }
-    
+
     private func trimmedKey(_ string: String) -> String {
         return String(string.prefix(Constants.maxKeyLength))
     }
-    
+
     private func trimmedValue(_ string: String) -> String {
         return String(string.prefix(Constants.maxValueLenght))
     }
