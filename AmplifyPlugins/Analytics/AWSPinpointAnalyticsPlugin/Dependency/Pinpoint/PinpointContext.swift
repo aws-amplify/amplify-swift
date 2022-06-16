@@ -55,12 +55,17 @@ extension FileManager: FileManagerBehaviour, DefaultLogger {
 typealias Byte = Int
 
 // MARK: - PinpointContext
+/// The configuration object containing the necessary and optional configurations required to use AWSPinpoint
 struct PinpointContextConfiguration {
     /// The Pinpoint AppId.
     let appId: String
+    /// The Pinpoint region
+    let region: String
+    /// Used to retrieve the proper AWSCredentials when creating the PinpointCLient
+    let credentialsProvider: CredentialsProvider
     /// The session timeout in seconds. Defaults to 5 seconds.
     let sessionTimeout: TimeInterval
-    /// The max storage size to use for event storage in MB. Defaults to 5 MB.
+    /// The max storage size to use for event storage in bytes. Defaults to 5 MB.
     let maxStorageSize: Byte
 
     /// Indicates if the App is in Debug or Release build. Defaults to `false`
@@ -73,11 +78,15 @@ struct PinpointContextConfiguration {
     let isApplicationLevelOptOut: Bool
 
     init(appId: String,
+         region: String,
+         credentialsProvider: CredentialsProvider,
          sessionTimeout: TimeInterval = 5,
          maxStorageSize: Byte = (1024 * 1024 * 5),
          isDebug: Bool = false,
          isApplicationLevelOptOut: Bool = false) {
         self.appId = appId
+        self.region = region
+        self.credentialsProvider = credentialsProvider
         self.sessionTimeout = sessionTimeout
         self.maxStorageSize = maxStorageSize
         self.isDebug = isDebug
@@ -85,73 +94,98 @@ struct PinpointContextConfiguration {
     }
 }
 
-class PinpointContext {
-    let configuration: PinpointContextConfiguration
-    let pinpointClient: PinpointClientProtocol
+/// An internal helper struct used to group all the storage dependencies that can be provided.
+private struct PinpointContextStorage {
     let userDefaults: UserDefaultsBehaviour
-    let currentDevice: Device
+    let keychainStore: KeychainStoreBehavior
+    let fileManager: FileManagerBehaviour
+    let archiver: AmplifyArchiverBehaviour
+}
 
-    lazy var uniqueId = retrieveUniqueId()
-
+class PinpointContext {
+    let pinpointClient: PinpointClientProtocol
+    let endpointClient: EndpointClientBehaviour
+    let sessionClient: SessionClientBehaviour
     lazy var analyticsClient: AnalyticsClientBehaviour = {
-        AnalyticsClient(context: self)
+        let client = AnalyticsClient(applicationId: configuration.appId,
+                                     context: self)
+        sessionClient.analyticsClient = client
+        sessionClient.startPinpointSession()
+        return client
     }()
 
-    lazy var endpointClient: EndpointClientBehaviour = {
-        EndpointClient(context: self)
-    }()
-
-    lazy var sessionClient: SessionClientBehaviour = {
-        SessionClient(context: self)
-    }()
-
-    private let keychainStore: KeychainStoreBehavior
-    private let fileManager: FileManagerBehaviour
+    private let uniqueId: String
+    private let configuration: PinpointContextConfiguration
+    private let storage: PinpointContextStorage
 
     init(with configuration: PinpointContextConfiguration,
-         credentialsProvider: CredentialsProvider,
-         region: String,
          currentDevice: Device = DeviceProvider.current,
          userDefaults: UserDefaultsBehaviour = UserDefaults.standard,
-         keychainStore: KeychainStoreBehavior = KeychainStore(service: Constants.Keychain.service),
-         fileManager: FileManagerBehaviour = FileManager.default) throws {
-        self.configuration = configuration
-        self.keychainStore = keychainStore
-        self.userDefaults = userDefaults
-        self.fileManager = fileManager
-        self.currentDevice = currentDevice
-        let pinpointConfiguration = try PinpointClient.PinpointClientConfiguration(region: region,
-                                                                                   credentialsProvider: credentialsProvider,
-                                                                                   frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData())
+         keychainStore: KeychainStoreBehavior = KeychainStore(service: PinpointContext.Constants.Keychain.service),
+         fileManager: FileManagerBehaviour = FileManager.default,
+         archiver: AmplifyArchiverBehaviour = AmplifyArchiver()) throws {
+        storage = PinpointContextStorage(userDefaults: userDefaults,
+                                         keychainStore: keychainStore,
+                                         fileManager: fileManager,
+                                         archiver: archiver)
+        uniqueId = Self.retrieveUniqueId(applicationId: configuration.appId, storage: storage)
+
+        let pinpointConfiguration = try PinpointClient.PinpointClientConfiguration(
+            region: configuration.region,
+            credentialsProvider: configuration.credentialsProvider,
+            frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData()
+        )
         pinpointClient = PinpointClient(config: pinpointConfiguration)
+
+        endpointClient = EndpointClient(configuration: .init(appId: configuration.appId,
+                                                             uniqueDeviceId: uniqueId,
+                                                             isDebug: configuration.isDebug,
+                                                             isOptOut: configuration.isApplicationLevelOptOut),
+                                        pinpointClient: pinpointClient,
+                                        currentDevice: currentDevice,
+                                        userDefaults: userDefaults)
+        
+        sessionClient = SessionClient(analyticsClient: nil,
+                                      archiver: archiver,
+                                      configuration: .init(appId: configuration.appId,
+                                                           uniqueDeviceId: uniqueId,
+                                                           sessionTimeout: configuration.sessionTimeout),
+                                      endpointClient: endpointClient,
+                                      userDefaults: userDefaults)
+        self.configuration = configuration
     }
 
-    private var legacyPreferencesFilePath: String? {
-        let applicationSupportDirectoryUrls = fileManager.urls(for: .applicationSupportDirectory,
-                                                               in: .userDomainMask)
+    private static func legacyPreferencesFilePath(applicationId: String,
+                                                  storage: PinpointContextStorage) -> String? {
+        let applicationSupportDirectoryUrls = storage.fileManager.urls(for: .applicationSupportDirectory,
+                                                                            in: .userDomainMask)
         let preferencesFileUrl = applicationSupportDirectoryUrls.first?
             .appendingPathComponent(Constants.Preferences.mobileAnalyticsRoot)
-            .appendingPathComponent(configuration.appId)
+            .appendingPathComponent(applicationId)
             .appendingPathComponent(Constants.Preferences.fileName)
 
         return preferencesFileUrl?.path
     }
 
-    private func removeLegacyPreferencesFile() {
-        guard let preferencesPath = legacyPreferencesFilePath else {
+    private static func removeLegacyPreferencesFile(applicationId: String,
+                                                    storage: PinpointContextStorage) {
+        guard let preferencesPath = legacyPreferencesFilePath(applicationId: applicationId,
+                                                              storage: storage) else {
             return
         }
 
         do {
-            try fileManager.removeItem(atPath: preferencesPath)
+            try storage.fileManager.removeItem(atPath: preferencesPath)
         } catch {
             log.verbose("Cannot remove legacy preferences file")
         }
     }
 
-    private func legacyUniqueId() -> String? {
-        guard let preferencesPath = legacyPreferencesFilePath,
-              fileManager.fileExists(atPath: preferencesPath),
+    private static func legacyUniqueId(applicationId: String,
+                                       storage: PinpointContextStorage) -> String? {
+        guard let preferencesPath = legacyPreferencesFilePath(applicationId: applicationId,
+                                                              storage: storage),
+              storage.fileManager.fileExists(atPath: preferencesPath),
               let preferencesJson = try? JSONSerialization.jsonObject(with: Data(contentsOf: URL(fileURLWithPath: preferencesPath)),
                                                                       options: .mutableContainers) as? [String: String] else {
             return nil
@@ -174,44 +208,45 @@ class PinpointContext {
      
      - Returns: A string representing the Device Unique ID
      */
-    private func retrieveUniqueId() -> String {
+    private static func retrieveUniqueId(applicationId: String,
+                                         storage: PinpointContextStorage) -> String {
         // 1. Look for the UniqueId in the Keychain
-        if let deviceUniqueId = try? keychainStore.getString(Constants.Keychain.uniqueIdKey) {
+        if let deviceUniqueId = try? storage.keychainStore.getString(Constants.Keychain.uniqueIdKey) {
             return deviceUniqueId
         }
 
         // 2. Look for UniqueId in the legacy preferences file
-        if let legacyUniqueId = legacyUniqueId() {
+        if let legacyUniqueId = legacyUniqueId(applicationId: applicationId, storage: storage) {
             do {
                 // Attempt to migrate to Keychain
-                try keychainStore.set(legacyUniqueId, key: Constants.Keychain.uniqueIdKey)
+                try storage.keychainStore.set(legacyUniqueId, key: Constants.Keychain.uniqueIdKey)
                 log.verbose("Migrated Legacy Pinpoint UniqueId to Keychain: \(legacyUniqueId)")
 
                 // Delete the old file
-                removeLegacyPreferencesFile()
+                removeLegacyPreferencesFile(applicationId: applicationId, storage: storage)
             } catch {
                 log.error("Failed to migrate UniqueId to Keychain from preferences file")
                 log.verbose("Fallback: Migrate UniqueId to UserDefaults: \(legacyUniqueId)")
 
                 // Attempt to migrate to UserDefaults
-                userDefaults.save(legacyUniqueId, forKey: Constants.Keychain.uniqueIdKey)
+                storage.userDefaults.save(legacyUniqueId, forKey: Constants.Keychain.uniqueIdKey)
 
                 // Delete the old file
-                removeLegacyPreferencesFile()
+                removeLegacyPreferencesFile(applicationId: applicationId, storage: storage)
             }
 
             return legacyUniqueId
         }
 
         // 3. Look for UniqueID in UserDefaults
-        if let userDefaultsUniqueId = userDefaults.string(forKey: Constants.Keychain.uniqueIdKey) {
+        if let userDefaultsUniqueId = storage.userDefaults.string(forKey: Constants.Keychain.uniqueIdKey) {
             // Attempt to migrate to Keychain
             do {
-                try keychainStore.set(userDefaultsUniqueId, key: Constants.Keychain.uniqueIdKey)
+                try storage.keychainStore.set(userDefaultsUniqueId, key: Constants.Keychain.uniqueIdKey)
                 log.verbose("Migrated Pinpoint UniqueId from UserDefaults to Keychain: \(userDefaultsUniqueId)")
 
                 // Delete the UserDefault entry
-                userDefaults.removeObject(forKey: Constants.Keychain.uniqueIdKey)
+                storage.userDefaults.removeObject(forKey: Constants.Keychain.uniqueIdKey)
             } catch {
                 log.error("Failed to migrate UniqueId from UserDefaults to Keychain")
             }
@@ -222,12 +257,12 @@ class PinpointContext {
         // 4. Create a new ID
         let newUniqueId = UUID().uuidString
         do {
-            try keychainStore.set(newUniqueId, key: Constants.Keychain.uniqueIdKey)
+            try storage.keychainStore.set(newUniqueId, key: Constants.Keychain.uniqueIdKey)
             log.verbose("Created new Pinpoint UniqueId and saved it to Keychain: \(newUniqueId)")
         } catch {
             log.error("Failed to save UniqueId in Keychain")
             log.verbose("Fallback: Created new Pinpoint UniqueId and saved it to UserDefaults: \(newUniqueId)")
-            userDefaults.save(newUniqueId, forKey: Constants.Keychain.uniqueIdKey)
+            storage.userDefaults.save(newUniqueId, forKey: Constants.Keychain.uniqueIdKey)
         }
 
         return newUniqueId
