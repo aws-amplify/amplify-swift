@@ -25,10 +25,10 @@ class AWSPinpointAdapter: AWSPinpointBehavior {
         #endif
 
         let configuration = PinpointContextConfiguration(appId: appId,
+                                                         region: region,
+                                                         credentialsProvider: credentialsProvider,
                                                          isDebug: isDebug)
-        let pinpoint = try PinpointContext(with: configuration,
-                                           credentialsProvider: credentialsProvider,
-                                           region: region)
+        let pinpoint = try PinpointContext(with: configuration)
         self.init(pinpoint: pinpoint)
     }
 

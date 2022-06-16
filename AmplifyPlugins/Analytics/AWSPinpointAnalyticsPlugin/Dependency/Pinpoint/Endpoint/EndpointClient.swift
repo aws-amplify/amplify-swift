@@ -40,15 +40,6 @@ actor EndpointClient: EndpointClientBehaviour {
     private var endpointProfile: PinpointEndpointProfile?
     private static let defaultDateFormatter = ISO8601DateFormatter()
 
-    convenience init(context: PinpointContext) {
-        self.init(configuration: Configuration(appId: context.configuration.appId,
-                                               uniqueDeviceId: context.uniqueId,
-                                               isDebug: context.configuration.isDebug,
-                                               isOptOut: context.configuration.isApplicationLevelOptOut),
-                  pinpointClient: context.pinpointClient,
-                  userDefaults: context.userDefaults)
-    }
-
     init(configuration: EndpointClient.Configuration,
          pinpointClient: PinpointClientProtocol,
          archiver: AmplifyArchiverBehaviour = AmplifyArchiver(),
