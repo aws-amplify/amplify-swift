@@ -18,7 +18,7 @@ struct AuthorizationEvent: StateMachineEvent {
 
         case fetched(IdentityID, AuthAWSCognitoCredentials)
 
-        case sessionEstablished(AmplifyCredentials)
+        case refreshed(AmplifyCredentials)
 
         case refreshSession
 
@@ -33,7 +33,7 @@ struct AuthorizationEvent: StateMachineEvent {
     var type: String {
         switch eventType {
         case .configure: return "AuthorizationEvent.configure"
-        case .sessionEstablished: return "AuthorizationEvent.sessionEstablished"
+        case .refreshed: return "AuthorizationEvent.refreshed"
         case .throwError: return "AuthorizationEvent.throwError"
         case .cachedCredentialsAvailable: return "AuthorizationEvent.cachedCredentialsAvailable"
         case .fetchUnAuthSession: return "AuthorizationEvent.fetchUnAuthSession"

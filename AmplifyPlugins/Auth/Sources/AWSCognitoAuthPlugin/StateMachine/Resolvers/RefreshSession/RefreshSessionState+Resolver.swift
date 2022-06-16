@@ -56,7 +56,9 @@ extension RefreshSessionState {
             case .refreshingUserPoolToken:
 
                 if case .refreshedCognitoUserPool(let tokens) = event.isRefreshSessionEvent {
-                    return .from(.refreshed(.userPoolOnly(tokens: tokens)))
+                    let credentials = AmplifyCredentials.userPoolOnly(tokens: tokens)
+                    let action = InformSessionRefreshed(credentials: credentials)
+                    return .init(newState: .refreshed(credentials), actions: [action])
                 }
 
                 if case .refreshIdentityInfo(let tokens, _) = event.isRefreshSessionEvent {
@@ -68,7 +70,9 @@ extension RefreshSessionState {
 
             case .refreshingUserPoolTokenWithIdentity(_, let identityID):
                 if case .refreshedCognitoUserPool(let tokens) = event.isRefreshSessionEvent {
-                    return .from(.refreshed(.userPoolOnly(tokens: tokens)))
+                    let credentials = AmplifyCredentials.userPoolOnly(tokens: tokens)
+                    let action = InformSessionRefreshed(credentials: credentials)
+                    return .init(newState: .refreshed(credentials), actions: [action])
                 }
                 if case .refreshIdentityInfo(let tokens, let provider) = event.isRefreshSessionEvent {
                     let action = FetchAuthAWSCredentials(loginsMap: provider.loginsMap,
@@ -81,11 +85,12 @@ extension RefreshSessionState {
             case .fetchingAuthSessionWithUserPool(let fetchSessionState, let tokens):
                 if case .fetched(let identityID,
                                  let credentials) = event.isAuthorizationEvent {
-                    let amplifyCredentials = AmplifyCredentials.userPoolAndIdentityPool(
+                    let credentials = AmplifyCredentials.userPoolAndIdentityPool(
                         tokens: tokens,
                         identityID: identityID,
                         credentials: credentials)
-                    return .init(newState: .refreshed(amplifyCredentials))
+                    let action = InformSessionRefreshed(credentials: credentials)
+                    return .init(newState: .refreshed(credentials), actions: [action])
                 }
                 let resolver = FetchAuthSessionState.Resolver()
                 let resolution = resolver.resolve(oldState: fetchSessionState, byApplying: event)
@@ -115,7 +120,8 @@ extension RefreshSessionState {
                         tokens: tokens,
                         identityID: identityID,
                         credentials: credentials)
-                    return .init(newState: .refreshed(amplifyCredentials))
+                    let action = InformSessionRefreshed(credentials: amplifyCredentials)
+                    return .init(newState: .refreshed(amplifyCredentials), actions: [action])
                 }
                 return .from(oldState)
             }

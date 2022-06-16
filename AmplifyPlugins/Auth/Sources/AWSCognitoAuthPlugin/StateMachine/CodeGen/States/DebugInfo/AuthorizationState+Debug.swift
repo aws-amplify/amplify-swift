@@ -14,10 +14,11 @@ extension AuthorizationState: CustomDebugDictionaryConvertible {
         switch self {
         case .notConfigured,
                 .configured,
-                .signingIn,
-                .refreshingSession:
+                .signingIn:
             additionalMetadataDictionary = [:]
-
+        case .refreshingSession(existingCredentials: let credentials, let state):
+            additionalMetadataDictionary = ["existing": credentials.debugDescription,
+                                            "refreshState": state.debugDictionary]
         case .fetchingUnAuthSession(let state),
                 .fetchingAuthSessionWithUserPool(let state, _):
             additionalMetadataDictionary = state.debugDictionary

@@ -43,6 +43,12 @@ extension AuthState {
                         cachedCredentials: credentials)
                     let newState = AuthState.validatingCredentialsAndConfiguration
                     return .init(newState: newState, actions: [action])
+                case .cachedCredentialsFailed:
+                    let action = ValidateCredentialsAndConfiguration(
+                        authConfiguration: authConfiguration,
+                        cachedCredentials: .noCredentials)
+                    let newState = AuthState.validatingCredentialsAndConfiguration
+                    return .init(newState: newState, actions: [action])
                 default:
                     return .from(oldState)
                 }
