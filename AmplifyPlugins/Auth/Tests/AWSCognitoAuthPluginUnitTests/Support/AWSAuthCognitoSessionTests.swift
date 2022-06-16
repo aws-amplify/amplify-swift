@@ -7,7 +7,7 @@
 
 @testable import AWSCognitoAuthPlugin
 import AWSPluginsCore
-import CryptoKit
+import Amplify
 import XCTest
 
 class AWSAuthCognitoSessionTests: XCTestCase {
@@ -23,13 +23,16 @@ class AWSAuthCognitoSessionTests: XCTestCase {
             "iat": "1516239022",
             "exp": String(Date(timeIntervalSinceNow: 121).timeIntervalSince1970)
         ]
-
+        let error = AuthError.unknown("", nil)
         let tokens = AWSCognitoUserPoolTokens(idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
                                               accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
                                               refreshToken: "refreshToken",
                                               expiresIn: 121)
 
-        let session = AWSAuthCognitoSession.testData.copySessionByUpdating(cognitoTokensResult: .success(tokens))
+        let session = AWSAuthCognitoSession(isSignedIn: true,
+                                            identityIdResult: .failure(error),
+                                            awsCredentialsResult: .failure(error),
+                                            cognitoTokensResult: .success(tokens))
         let cognitoTokens = try! session.getCognitoTokens().get()
         XCTAssertTrue(cognitoTokens.areTokensExpiring(in: 120))
         XCTAssertFalse(cognitoTokens.areTokensExpiring(in: 122))
@@ -47,16 +50,20 @@ class AWSAuthCognitoSessionTests: XCTestCase {
             "iat": "1516239022",
             "exp": String(Date(timeIntervalSinceNow: 1).timeIntervalSince1970)
         ]
-
+        let error = AuthError.unknown("", nil)
         let tokens = AWSCognitoUserPoolTokens(idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
                                               accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
                                               refreshToken: "refreshToken",
                                               expiresIn: 121)
 
-        let session = AWSAuthCognitoSession.testData.copySessionByUpdating(cognitoTokensResult: .success(tokens))
+        let session = AWSAuthCognitoSession(isSignedIn: true,
+                                            identityIdResult: .failure(error),
+                                            awsCredentialsResult: .failure(error),
+                                            cognitoTokensResult: .success(tokens))
 
         let cognitoTokens = try! session.getCognitoTokens().get()
         XCTAssertTrue(cognitoTokens.areTokensExpiring())
     }
 
 }
+
