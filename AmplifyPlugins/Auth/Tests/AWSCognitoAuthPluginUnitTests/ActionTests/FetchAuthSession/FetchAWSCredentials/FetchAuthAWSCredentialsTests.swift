@@ -18,28 +18,22 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
 
         let expectation = expectation(description: "noAuthorizationEnvironment")
 
-        let action = FetchAuthAWSCredentials(cognitoSession: AWSAuthCognitoSession.testData)
+        let action = FetchAuthAWSCredentials(loginsMap: [:], identityID: "identityID")
 
-        action.execute(
-            withDispatcher: MockDispatcher { event in
+        action.execute(withDispatcher: MockDispatcher { event in
 
-                guard let event = event as? FetchAWSCredentialEvent else {
-                    return
-                }
+            guard let event = event as? FetchAuthSessionEvent else {return}
 
-                if case let .throwError(error) = event.eventType {
-                    XCTAssertNotNil(error)
-                    XCTAssertEqual(error, AuthorizationError.configuration(message: AuthPluginErrorConstants.signedInAWSCredentialsWithNoCIDPError.errorDescription))
-                    expectation.fulfill()
-                }
-            },
-            environment: MockInvalidEnvironment()
-        )
-
+            if case let .throwError(error) = event.eventType {
+                XCTAssertNotNil(error)
+                XCTAssertEqual(error, .noIdentityPool)
+                expectation.fulfill()
+            }
+        }, environment: MockInvalidEnvironment())
         waitForExpectations(timeout: 0.1)
     }
 
-    func testInvalidIdentitySuccessfulResponse() {
+    func testInvalidIdentitySuccessfullResponse() {
 
         let expectation = expectation(description: "fetchAWSCredentials")
         let identityProviderFactory: BasicAuthorizationEnvironment.CognitoIdentityFactory = {
@@ -47,27 +41,24 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
                 return GetCredentialsForIdentityOutputResponse()
             })
         }
-        let authorizationEnvironment = BasicAuthorizationEnvironment(identityPoolConfiguration: IdentityPoolConfigurationData.testData,
-                                                                     cognitoIdentityFactory: identityProviderFactory)
-        let authEnvironment = Defaults.makeDefaultAuthEnvironment(authZEnvironment: authorizationEnvironment)
+        let authorizationEnvironment = BasicAuthorizationEnvironment(
+            identityPoolConfiguration: IdentityPoolConfigurationData.testData,
+            cognitoIdentityFactory: identityProviderFactory)
+        let authEnvironment = Defaults.makeDefaultAuthEnvironment(
+            authZEnvironment: authorizationEnvironment)
 
-        let action = FetchAuthAWSCredentials(cognitoSession: AWSAuthCognitoSession.testData)
+        let action = FetchAuthAWSCredentials(loginsMap: [:], identityID: "identityID")
 
-        action.execute(
-            withDispatcher: MockDispatcher { event in
+        action.execute(withDispatcher: MockDispatcher { event in
 
-                guard let event = event as? FetchAWSCredentialEvent else {
-                    return
-                }
+            guard let event = event as? FetchAuthSessionEvent else { return }
 
-                if case let .throwError(error) = event.eventType {
-                    XCTAssertNotNil(error)
-                    XCTAssertEqual(error, AuthorizationError.invalidIdentityId(message: "IdentityId is invalid."))
-                    expectation.fulfill()
-                }
-            },
-            environment: authEnvironment
-        )
+            if case let .throwError(error) = event.eventType {
+                XCTAssertNotNil(error)
+                XCTAssertEqual(error, .invalidIdentityID)
+                expectation.fulfill()
+            }
+        }, environment: authEnvironment)
 
         waitForExpectations(timeout: 0.1)
     }
@@ -80,22 +71,22 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
                 return GetCredentialsForIdentityOutputResponse(identityId: "identityId")
             })
         }
-        let authorizationEnvironment = BasicAuthorizationEnvironment(identityPoolConfiguration: IdentityPoolConfigurationData.testData,
-                                                                     cognitoIdentityFactory: identityProviderFactory)
-        let authEnvironment = Defaults.makeDefaultAuthEnvironment(authZEnvironment: authorizationEnvironment)
+        let authorizationEnvironment = BasicAuthorizationEnvironment(
+            identityPoolConfiguration: IdentityPoolConfigurationData.testData,
+            cognitoIdentityFactory: identityProviderFactory)
+        let authEnvironment = Defaults.makeDefaultAuthEnvironment(
+            authZEnvironment: authorizationEnvironment)
 
-        let action = FetchAuthAWSCredentials(cognitoSession: AWSAuthCognitoSession.testData)
+        let action = FetchAuthAWSCredentials(loginsMap: [:], identityID: "identityID")
 
         action.execute(
             withDispatcher: MockDispatcher { event in
 
-                guard let event = event as? FetchAWSCredentialEvent else {
-                    return
-                }
+                guard let event = event as? FetchAuthSessionEvent else { return }
 
                 if case let .throwError(error) = event.eventType {
                     XCTAssertNotNil(error)
-                    XCTAssertEqual(error, AuthorizationError.invalidAWSCredentials(message: "AWSCredentials are invalid."))
+                    XCTAssertEqual(error, .invalidAWSCredentials)
                     expectation.fulfill()
                 }
             },
@@ -108,7 +99,7 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
     func testValidSuccessfulResponse() {
 
         let credentialValidExpectation = expectation(description: "awsCredentialsAreValid")
-        let fetchedAuthSessionExpectation = expectation(description: "fetchedAuthSession")
+
 
         let expectedIdentityId = "newIdentityId"
         let expectedSecretKey = "newSecretKey"
@@ -126,21 +117,20 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
                     identityId: expectedIdentityId)
             })
         }
-        let authorizationEnvironment = BasicAuthorizationEnvironment(identityPoolConfiguration: IdentityPoolConfigurationData.testData,
-                                                                     cognitoIdentityFactory: identityProviderFactory)
-        let authEnvironment = Defaults.makeDefaultAuthEnvironment(authZEnvironment: authorizationEnvironment)
+        let authorizationEnvironment = BasicAuthorizationEnvironment(
+            identityPoolConfiguration: IdentityPoolConfigurationData.testData,
+            cognitoIdentityFactory: identityProviderFactory)
+        let authEnvironment = Defaults.makeDefaultAuthEnvironment(
+            authZEnvironment: authorizationEnvironment)
 
-        let action = FetchAuthAWSCredentials(cognitoSession: AWSAuthCognitoSession.testData)
+        let action = FetchAuthAWSCredentials(loginsMap: [:], identityID: "identityID")
 
         action.execute(
             withDispatcher: MockDispatcher { event in
 
-                if let event = event as? FetchAWSCredentialEvent,
-                   case .fetched = event.eventType {
+                if let event = event as? FetchAuthSessionEvent,
+                   case .fetchedAWSCredentials = event.eventType {
                     credentialValidExpectation.fulfill()
-                } else if let event = event as? FetchAuthSessionEvent,
-                          case .fetchedAuthSession = event.eventType {
-                    fetchedAuthSessionExpectation.fulfill()
                 }
             },
             environment: authEnvironment
@@ -149,10 +139,7 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
     }
 
     func testFailureResponse() {
-
-        let fetchedSessionExpectation = expectation(description: "fetchedSession")
         let expectation = expectation(description: "failureError")
-
         let testError = NSError(domain: "testError", code: 0, userInfo: nil)
 
         let identityProviderFactory: BasicAuthorizationEnvironment.CognitoIdentityFactory = {
@@ -160,23 +147,22 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
                 throw testError
             })
         }
-        let authorizationEnvironment = BasicAuthorizationEnvironment(identityPoolConfiguration: IdentityPoolConfigurationData.testData,
-                                                                     cognitoIdentityFactory: identityProviderFactory)
-        let authEnvironment = Defaults.makeDefaultAuthEnvironment(authZEnvironment: authorizationEnvironment)
+        let authorizationEnvironment = BasicAuthorizationEnvironment(
+            identityPoolConfiguration: IdentityPoolConfigurationData.testData,
+            cognitoIdentityFactory: identityProviderFactory)
+        let authEnvironment = Defaults.makeDefaultAuthEnvironment(
+            authZEnvironment: authorizationEnvironment)
 
-        let action = FetchAuthAWSCredentials(cognitoSession: AWSAuthCognitoSession.testData)
+        let action = FetchAuthAWSCredentials(loginsMap: [:], identityID: "identityID")
 
         action.execute(
             withDispatcher: MockDispatcher { event in
 
-                if let fetchAWSCredentialEvent = event as? FetchAWSCredentialEvent,
+                if let fetchAWSCredentialEvent = event as? FetchAuthSessionEvent,
                    case let .throwError(error) = fetchAWSCredentialEvent.eventType {
                     XCTAssertNotNil(error)
-                    XCTAssertEqual(error, AuthorizationError.service(error: testError))
+                    XCTAssertEqual(error, .service(testError))
                     expectation.fulfill()
-                } else if let authSessionEvent = event as? FetchAuthSessionEvent,
-                          case .fetchedAuthSession = authSessionEvent.eventType {
-                    fetchedSessionExpectation.fulfill()
                 }
             },
             environment: authEnvironment

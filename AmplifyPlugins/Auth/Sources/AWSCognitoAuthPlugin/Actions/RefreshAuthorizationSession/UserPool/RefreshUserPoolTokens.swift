@@ -15,7 +15,7 @@ struct RefreshUserPoolTokens: Action {
 
     let identifier = "RefreshUserPoolTokens"
 
-    let existingCredentials: AWSCognitoUserPoolTokens
+    let existingTokens: AWSCognitoUserPoolTokens
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
@@ -31,7 +31,7 @@ struct RefreshUserPoolTokens: Action {
         let client = try? environment.cognitoUserPoolFactory()
 
         var authParameters: [String: String] = [
-            "REFRESH_TOKEN": existingCredentials.refreshToken
+            "REFRESH_TOKEN": existingTokens.refreshToken
         ]
         if let clientSecret = config.clientSecret {
             authParameters["SECRET_HASH"] = clientSecret
@@ -57,11 +57,8 @@ struct RefreshUserPoolTokens: Action {
                       let accessToken = authenticationResult.accessToken
                 else {
 
-                    let authZError = AuthorizationError.invalidUserPoolTokens(
-                        message: "UserPoolTokens are invalid.")
-                    let event = AuthorizationEvent(eventType: .throwError(authZError))
+                    let event = RefreshSessionEvent(eventType: .throwError(.invalidTokens))
                     dispatcher.send(event)
-
                     logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
                     return
                 }
@@ -69,7 +66,7 @@ struct RefreshUserPoolTokens: Action {
                 let userPoolTokens = AWSCognitoUserPoolTokens(
                     idToken: idToken,
                     accessToken: accessToken,
-                    refreshToken: existingCredentials.refreshToken,
+                    refreshToken: existingTokens.refreshToken,
                     expiresIn: authenticationResult.expiresIn
                 )
                 let event: RefreshSessionEvent
@@ -86,8 +83,9 @@ struct RefreshUserPoolTokens: Action {
                 dispatcher.send(event)
 
             } catch {
-                // TODO: To implement
-                fatalError("")
+                let event = RefreshSessionEvent(eventType: .throwError(.service(error)))
+                logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+                dispatcher.send(event)
             }
 
             logVerbose("\(#fileID) Initiate auth complete", environment: environment)
@@ -101,7 +99,7 @@ extension RefreshUserPoolTokens: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "identifier": identifier,
-            "existingCredentials": existingCredentials
+            "existingCredentials": existingTokens
         ]
     }
 }

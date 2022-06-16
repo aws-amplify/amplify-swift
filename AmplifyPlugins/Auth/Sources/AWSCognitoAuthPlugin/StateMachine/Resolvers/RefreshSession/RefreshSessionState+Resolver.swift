@@ -21,14 +21,14 @@ extension RefreshSessionState {
             case .notStarted:
 
                 if case .refreshCognitoUserPool(let tokens) = event.isRefreshSessionEvent {
-                    let action = RefreshUserPoolTokens(existingCredentials: tokens)
+                    let action = RefreshUserPoolTokens(existingTokens: tokens)
                     return .init(newState: .refreshingUserPoolToken(tokens), actions: [action])
                 }
 
                 if case .refreshCognitoUserPoolWithIdentityId(
                     let tokens,
                     let identityID) = event.isRefreshSessionEvent {
-                    let action = RefreshUserPoolTokens(existingCredentials: tokens)
+                    let action = RefreshUserPoolTokens(existingTokens: tokens)
                     return .init(newState: .refreshingUserPoolTokenWithIdentity(tokens, identityID),
                                  actions: [action])
                 }

@@ -80,7 +80,27 @@ enum RefreshSessionError: Error {
 
     case invalidIdentityID
 
+    case invalidTokens
+
     case noCredentialsToRefresh
 
     case service(Error)
+}
+
+extension RefreshSessionError: Equatable {
+    static func == (lhs: RefreshSessionError,
+                    rhs: RefreshSessionError) -> Bool {
+        switch(lhs, rhs) {
+        case (.noIdentityPool, .noIdentityPool),
+            (.noUserPool, .noUserPool),
+            (.notAuthorized, .notAuthorized),
+            (.invalidIdentityID, .invalidIdentityID),
+            (.noCredentialsToRefresh, .noCredentialsToRefresh),
+            (.service, .service),
+            (.invalidTokens, .invalidTokens):
+            return true
+        default:
+            return false
+        }
+    }
 }

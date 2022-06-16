@@ -18,45 +18,49 @@ class RefreshUserPoolTokensTests: XCTestCase {
 
         let expectation = expectation(description: "noUserPoolEnvironment")
 
-        let action = RefreshUserPoolTokens(cognitoSession: AWSAuthCognitoSession.testData)
+        let action = RefreshUserPoolTokens(existingTokens: .testData)
 
-        action.execute(
-            withDispatcher: MockDispatcher { event in
+        action.execute(withDispatcher: MockDispatcher { event in
 
-                guard let event = event as? FetchUserPoolTokensEvent else {
-                    return
-                }
+            guard let event = event as? RefreshSessionEvent else {
+                return
+            }
 
-                if case let .throwError(error) = event.eventType {
-                    XCTAssertNotNil(error)
-                    XCTAssertEqual(error, AuthorizationError.configuration(message: AuthPluginErrorConstants.configurationError))
-                    expectation.fulfill()
-                }
-            },
-            environment: MockInvalidEnvironment()
+            if case let .throwError(error) = event.eventType {
+                XCTAssertNotNil(error)
+                XCTAssertEqual(error, .noUserPool)
+                expectation.fulfill()
+            }
+        }, environment: MockInvalidEnvironment()
         )
 
         waitForExpectations(timeout: 0.1)
     }
 
-    func testNoUserPoolTokensToRefresh() {
+    func testInvalidSuccessfulResponse() {
 
-        let expectation = expectation(description: "noUserPoolTokens")
-
-        let action = RefreshUserPoolTokens(cognitoSession: AWSAuthCognitoSession.testData)
-
-        let environment = Defaults.makeDefaultAuthEnvironment()
-
-        action.execute(
-            withDispatcher: MockDispatcher { event in
-
-                guard let event = event as? FetchUserPoolTokensEvent else {
-                    return
+        let expectation = expectation(description: "refreshUserPoolTokens")
+        let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
+            MockIdentityProvider(
+                mockInitiateAuthResponse: { _ in
+                    return InitiateAuthOutputResponse()
                 }
+            )
+        }
+
+        let environment = BasicUserPoolEnvironment(
+            userPoolConfiguration: UserPoolConfigurationData.testData,
+                                                   cognitoUserPoolFactory: identityProviderFactory)
+
+        let action = RefreshUserPoolTokens(existingTokens: .testData)
+
+        action.execute(withDispatcher: MockDispatcher { event in
+
+                guard let event = event as? RefreshSessionEvent else { return}
 
                 if case let .throwError(error) = event.eventType {
                     XCTAssertNotNil(error)
-                    XCTAssertEqual(error, AuthorizationError.service(error: AuthError.unknown("", nil)))
+                    XCTAssertEqual(error, .invalidTokens)
                     expectation.fulfill()
                 }
             },
@@ -66,53 +70,14 @@ class RefreshUserPoolTokensTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
 
-    func testInvalidSuccessfulResponse() {
-
-        let expectation = expectation(description: "refreshUserPoolTokens")
-        let cognitoSessionInput = AWSAuthCognitoSession.testData
-        let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
-            MockIdentityProvider(
-                mockInitiateAuthResponse: { _ in
-                    return InitiateAuthOutputResponse()
-                }
-            )
-        }
-
-        let environment = BasicUserPoolEnvironment(userPoolConfiguration: UserPoolConfigurationData.testData,
-                                                   cognitoUserPoolFactory: identityProviderFactory)
-
-        let action = RefreshUserPoolTokens(cognitoSession: cognitoSessionInput)
-
-        action.execute(
-            withDispatcher: MockDispatcher { event in
-
-                guard let event = event as? FetchUserPoolTokensEvent else {
-                    return
-                }
-
-                if case let .throwError(error) = event.eventType {
-                    XCTAssertNotNil(error)
-                    XCTAssertEqual(error, AuthorizationError.invalidUserPoolTokens(message: "UserPoolTokens are invalid."))
-                    expectation.fulfill()
-                }
-            },
-            environment: environment
-        )
-
-        waitForExpectations(timeout: 0.1)
-    }
-
     func testValidSuccessfulResponse() {
 
-        let fetchIdentityExpectation = expectation(description: "fetchIdentityEvent")
         let expectation = expectation(description: "refreshUserPoolTokens")
-
-        let cognitoSessionInput = AWSAuthCognitoSession.testData
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
                 mockInitiateAuthResponse: { _ in
-                   return InitiateAuthOutputResponse(
-                        authenticationResult: CognitoIdentityProviderClientTypes.AuthenticationResultType(
+                    return InitiateAuthOutputResponse(
+                        authenticationResult: .init(
                             accessToken: "accessTokenNew",
                             expiresIn: 100,
                             idToken: "idTokenNew",
@@ -121,21 +86,17 @@ class RefreshUserPoolTokensTests: XCTestCase {
             )
         }
 
-        let environment = BasicUserPoolEnvironment(userPoolConfiguration: UserPoolConfigurationData.testData,
+        let environment = BasicUserPoolEnvironment(
+            userPoolConfiguration: UserPoolConfigurationData.testData,
                                                    cognitoUserPoolFactory: identityProviderFactory)
 
-        let action = RefreshUserPoolTokens(cognitoSession: cognitoSessionInput)
+        let action = RefreshUserPoolTokens(existingTokens: .testData)
 
-        action.execute(
-            withDispatcher: MockDispatcher { event in
+        action.execute(withDispatcher: MockDispatcher { event in
 
-                if let userPoolEvent = event as? FetchUserPoolTokensEvent,
-                   case .fetched = userPoolEvent.eventType {
+                if let userPoolEvent = event as? RefreshSessionEvent,
+                   case .refreshedCognitoUserPool = userPoolEvent.eventType {
                     expectation.fulfill()
-                } else if let authSessionEvent = event as? FetchAuthSessionEvent,
-                          case let .fetchIdentity(credentials) = authSessionEvent.eventType {
-                    XCTAssertNotNil(credentials)
-                    fetchIdentityExpectation.fulfill()
                 }
             },
             environment: environment
@@ -145,37 +106,31 @@ class RefreshUserPoolTokensTests: XCTestCase {
 
     func testFailureResponse() {
 
-        let fetchIdentityExpectation = expectation(description: "fetchIdentityEvent")
         let expectation = expectation(description: "failureError")
 
         let testError = NSError(domain: "testError", code: 0, userInfo: nil)
 
-        let cognitoSessionInput = AWSAuthCognitoSession.testData
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
                 mockInitiateAuthResponse: { _ in
-                    throw NSError(domain: "testError", code: 0, userInfo: nil)
+                    throw testError
                 }
             )
         }
 
-        let environment = BasicUserPoolEnvironment(userPoolConfiguration: UserPoolConfigurationData.testData,
+        let environment = BasicUserPoolEnvironment(
+            userPoolConfiguration: UserPoolConfigurationData.testData,
                                                    cognitoUserPoolFactory: identityProviderFactory)
 
-        let action = RefreshUserPoolTokens(cognitoSession: cognitoSessionInput)
+        let action = RefreshUserPoolTokens(existingTokens: .testData)
 
-        action.execute(
-            withDispatcher: MockDispatcher { event in
+        action.execute(withDispatcher: MockDispatcher { event in
 
-                if let userPoolEvent = event as? FetchUserPoolTokensEvent,
+                if let userPoolEvent = event as? RefreshSessionEvent,
                    case let .throwError(error) = userPoolEvent.eventType {
                     XCTAssertNotNil(error)
-                    XCTAssertEqual(error, AuthorizationError.service(error: testError))
+                    XCTAssertEqual(error, .service(testError))
                     expectation.fulfill()
-                } else if let authSessionEvent = event as? FetchAuthSessionEvent,
-                          case let .fetchIdentity(credentials) = authSessionEvent.eventType {
-                    XCTAssertNotNil(credentials)
-                    fetchIdentityExpectation.fulfill()
                 }
             },
             environment: environment

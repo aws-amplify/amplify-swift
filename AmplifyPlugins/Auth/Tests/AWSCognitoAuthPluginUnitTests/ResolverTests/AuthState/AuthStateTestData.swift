@@ -16,21 +16,41 @@ extension AuthEvent {
         configureAuthentication,
         configureAuthorization,
         authenticationConfigured,
-        authorizationConfigured
+        authorizationConfigured,
+        fetchCachedCredentials,
+        receivedCachedCredentials,
+        cachedCredentialsFailed
     ]
 
-    static let configureAuth = AuthEvent(id: "configureAuth",
-                                         eventType: .configureAuth(.testData, .testData))
+    static let configureAuth = AuthEvent(
+        id: "configureAuth",
+        eventType: .configureAuth(.testData))
 
-    static let configureAuthentication = AuthEvent(id: "configureAuthentication",
-                                                   eventType: .configureAuthentication(.testData, .testData))
+    static let configureAuthentication = AuthEvent(
+        id: "configureAuthentication",
+        eventType: .configureAuthentication(.testData, .testData))
 
-    static let configureAuthorization = AuthEvent(id: "configureAuthentication",
-                                                  eventType: .configureAuthorization(.testData))
+    static let configureAuthorization = AuthEvent(
+        id: "configureAuthorization",
+        eventType: .configureAuthorization(.testData, .testData))
 
-    static let authenticationConfigured = AuthEvent(id: "configureAuthentication",
-                                                    eventType: .authenticationConfigured(.testData))
+    static let authenticationConfigured = AuthEvent(
+        id: "authenticationConfigured",
+        eventType: .authenticationConfigured(.testData, .testData))
 
-    static let authorizationConfigured = AuthEvent(id: "configureAuthentication",
-                                                   eventType: .authorizationConfigured)
+    static let authorizationConfigured = AuthEvent(
+        id: "authorizationConfigured",
+        eventType: .authorizationConfigured)
+
+    static let fetchCachedCredentials = AuthEvent(
+        id: "fetchCachedCredentials",
+        eventType: .fetchCachedCredentials(.testData))
+
+    static let receivedCachedCredentials = AuthEvent(
+        id: "receivedCachedCredentials",
+        eventType: .receivedCachedCredentials(.testData))
+
+    static let cachedCredentialsFailed = AuthEvent(
+        id: "cachedCredentialsFailed",
+        eventType: .cachedCredentialsFailed)
 }

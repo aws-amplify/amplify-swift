@@ -30,8 +30,8 @@ extension AuthAWSCognitoCredentials {
 
 extension AmplifyCredentials {
     static var testData: AmplifyCredentials {
-        AmplifyCredentials(userPoolTokens: AWSCognitoUserPoolTokens.testData,
-                           identityId: "identityId",
-                           awsCredential: AuthAWSCognitoCredentials.testData)
+        AmplifyCredentials.userPoolAndIdentityPool(tokens: AWSCognitoUserPoolTokens.testData,
+                                                   identityID: "identityId",
+                                                   credentials: AuthAWSCognitoCredentials.testData)
     }
 }

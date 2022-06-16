@@ -25,21 +25,21 @@ extension AuthorizationStateSequence {
 class AuthorizationStateResolverTests: XCTestCase {
 
     func testValidAuthorizationStateSequences() throws {
-        let sessionData = AWSAuthCognitoSession.testData
         let authorizationError = AuthorizationError.configuration(message: "someError")
+        let testCredentials = AmplifyCredentials.testData
         let validSequences: [AuthorizationStateSequence] = [
             AuthorizationStateSequence(oldState: .notConfigured,
                                        event: AuthorizationEvent(eventType: .configure),
                                        expected: .configured),
-            AuthorizationStateSequence(oldState: .configured,
-                                       event: AuthorizationEvent(eventType: .fetchAuthSession(nil)),
-                                       expected: .fetchingAuthSession(FetchAuthSessionState.initializingFetchAuthSession)),
-            AuthorizationStateSequence(oldState: .fetchingAuthSession(FetchAuthSessionState.initializingFetchAuthSession),
-                                       event: AuthorizationEvent(eventType: .fetchedAuthSession(sessionData)),
-                                       expected: .sessionEstablished(sessionData)),
             AuthorizationStateSequence(oldState: .notConfigured,
-                                       event: AuthorizationEvent(eventType: .throwError(authorizationError)),
-                                       expected: .error(authorizationError))
+                                       event: AuthorizationEvent(
+                                        eventType: .cachedCredentialsAvailable(testCredentials)),
+                                       expected: .sessionEstablished(testCredentials)),
+            AuthorizationStateSequence(oldState: .notConfigured,
+                                       event: AuthorizationEvent(
+                                        eventType: .throwError(authorizationError)),
+                                       expected: .error(authorizationError)),
+
         ]
 
         for sequence in validSequences {
@@ -51,21 +51,10 @@ class AuthorizationStateResolverTests: XCTestCase {
         let sessionData = AWSAuthCognitoSession.testData
         let authorizationError = AuthorizationError.configuration(message: "someError")
         let invalidSequences: [AuthorizationStateSequence] = [
-            AuthorizationStateSequence(oldState: .notConfigured,
-                                       event: AuthorizationEvent(eventType: .fetchAuthSession(nil)),
-                                       expected: .fetchingAuthSession(FetchAuthSessionState.initializingFetchAuthSession)),
-            AuthorizationStateSequence(oldState: .notConfigured,
-                                       event: AuthorizationEvent(eventType: .fetchedAuthSession(sessionData)),
-                                       expected: .sessionEstablished(sessionData)),
+
             AuthorizationStateSequence(oldState: .notConfigured,
                                        event: AuthorizationEvent(eventType: .throwError(authorizationError)),
                                        expected: .configured),
-            AuthorizationStateSequence(oldState: .configured,
-                                       event: AuthorizationEvent(eventType: .fetchAuthSession(nil)),
-                                       expected: .notConfigured),
-            AuthorizationStateSequence(oldState: .configured,
-                                       event: AuthorizationEvent(eventType: .fetchedAuthSession(sessionData)),
-                                       expected: .notConfigured),
             AuthorizationStateSequence(oldState: .configured,
                                        event: AuthorizationEvent(eventType: .throwError(authorizationError)),
                                        expected: .notConfigured)

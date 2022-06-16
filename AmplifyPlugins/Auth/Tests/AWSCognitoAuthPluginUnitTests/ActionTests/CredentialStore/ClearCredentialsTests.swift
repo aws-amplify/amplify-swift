@@ -142,7 +142,7 @@ class ClearCredentialsTests: XCTestCase {
         let mockedData = "mock"
         let expectation = expectation(description: "clearCredentialErrorInvoked")
 
-        let unknownError = AuthorizationError.invalidIdentityId(message: "")
+        let unknownError = AuthorizationError.invalidState(message: "")
         let expectedError = CredentialStoreError.unknown("An unknown error occurred", unknownError)
 
         let mockLegacyCredentialStoreBehavior = MockCredentialStoreBehavior(data: mockedData)
