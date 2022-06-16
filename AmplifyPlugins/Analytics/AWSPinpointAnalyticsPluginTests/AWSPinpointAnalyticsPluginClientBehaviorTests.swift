@@ -35,7 +35,6 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// Then: AWSPinpoint.currentEndpoint and updateEndpoint methods are called
     ///     and Hub Analytics.identifyUser event is dispatched with the input data
     func testIdentifyUser() throws {
-        throw XCTSkip("Identify User is not yet implemented")
         let analyticsEventReceived = expectation(description: "Analytics event was received on the hub plugin")
 
         _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in
@@ -57,15 +56,16 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
                                                plan: testPlan,
                                                location: testLocation,
                                                properties: testProperties)
-        let expectedEndpointProfile = PinpointEndpointProfile()
+        let expectedEndpointProfile = PinpointEndpointProfile(applicationId: "appId",
+                                                              endpointId: "endpointId")
         expectedEndpointProfile.addIdentityId(testIdentityId)
         expectedEndpointProfile.addUserProfile(userProfile)
 
         analyticsPlugin.identifyUser(testIdentityId, withProfile: userProfile)
 
+        waitForExpectations(timeout: 1)
         mockPinpoint.verifyCurrentEndpointProfile()
         mockPinpoint.verifyUpdate(expectedEndpointProfile)
-        waitForExpectations(timeout: 1)
     }
 
     /// Given: AnalyticsPlugin is disabled
@@ -85,8 +85,8 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     /// Then: AWSPinpoint.currentEndpoint and updateEndpoint methods are called
     ///     and Hub Analytics.identifyUser event is dispatched with an error
     func testIdentifyUserDispatchesErrorForPinpointError() throws {
-        throw XCTSkip("Identify User is not yet implemented")
-        mockPinpoint.updateEndpointProfileResult = PinpointEndpointProfile()
+        mockPinpoint.updateEndpointProfileResult = .failure(NSError(domain: "domain",
+                                                                    code: 1))
         let analyticsEventReceived = expectation(description: "Analytics event was received on the hub plugin")
 
         _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in
@@ -107,15 +107,16 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
                                                plan: testPlan,
                                                location: testLocation,
                                                properties: testProperties)
-        let expectedEndpointProfile = PinpointEndpointProfile()
+        let expectedEndpointProfile = PinpointEndpointProfile(applicationId: "appId",
+                                                              endpointId: "endpointId")
         expectedEndpointProfile.addIdentityId(testIdentityId)
         expectedEndpointProfile.addUserProfile(userProfile)
 
         analyticsPlugin.identifyUser(testIdentityId, withProfile: userProfile)
 
+        waitForExpectations(timeout: 1)
         mockPinpoint.verifyCurrentEndpointProfile()
         mockPinpoint.verifyUpdate(expectedEndpointProfile)
-        waitForExpectations(timeout: 1)
     }
 
     // MARK: RecordEvent API

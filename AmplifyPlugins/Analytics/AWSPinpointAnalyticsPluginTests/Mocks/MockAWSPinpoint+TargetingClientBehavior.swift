@@ -13,19 +13,27 @@ extension MockAWSPinpoint: AWSPinpointTargetingClientBehavior {
     public func currentEndpointProfile() -> PinpointEndpointProfile {
         currentEndpointProfileCalled += 1
 
-        return PinpointEndpointProfile() // applicationId: applicationId, endpointId: endpointId)
+        return PinpointEndpointProfile(applicationId: applicationId, endpointId: endpointId)
     }
 
     public func updateEndpointProfile() async throws {
         updateEndpointProfileCalled += 1
+
+        if case let .failure(error) = updateEndpointProfileResult {
+            throw error
+        }
     }
 
     public func update(_ endpointProfile: PinpointEndpointProfile) async throws {
         updateEndpointProfileCalled += 1
         updateEndpointProfileValue = endpointProfile
+        
+        if case let .failure(error) = updateEndpointProfileResult {
+            throw error
+        }
     }
 
-    public func addAttributes(_ attributes: [Any], forKey key: String) {
+    public func addAttributes(_ attributes: [String], forKey key: String) {
         addAttributeCalled += 1
 
         addAttributeValue = attributes
