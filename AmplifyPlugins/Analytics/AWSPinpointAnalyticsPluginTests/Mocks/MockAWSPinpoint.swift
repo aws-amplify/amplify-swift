@@ -29,7 +29,7 @@ public class MockAWSPinpoint: AWSPinpointBehavior {
     // MARK: Method arguments for AWSPinpointTargetingClient
 
     var updateEndpointProfileValue: PinpointEndpointProfile?
-    var addAttributeValue: [Any]?
+    var addAttributeValue: [String]?
     var addAttributeKey: String?
     var removeAttributeKey: String?
     var addMetricValue: Double?
@@ -71,7 +71,7 @@ public class MockAWSPinpoint: AWSPinpointBehavior {
 
     // MARK: Mock behavior for AWSPinpointTargetingClient
 
-    var updateEndpointProfileResult: PinpointEndpointProfile?
+    var updateEndpointProfileResult: Result<PinpointEndpointProfile, Error>?
 
     // MARK: Mock behavior for AWSPinpointAnalyticsClient
 
@@ -99,41 +99,25 @@ extension MockAWSPinpoint {
     }
 
     public func verifyUpdate(_ endpointProfile: PinpointEndpointProfile) {
-        fatalError("Not implemented")
-//        XCTAssertEqual(updateEndpointProfileCalled, 1)
-//        XCTAssertNotNil(updateEndpointProfileValue)
-//        guard let actualEndpointProfile = updateEndpointProfileValue else {
-//            XCTFail("actual EndpointProfile is nil")
-//            return
-//        }
-//
-//        if endpointProfile.location != nil {
-//            guard let actualLocation = actualEndpointProfile.location else {
-//                XCTFail("actual Location is nil")
-//                return
-//            }
-//            let expectedLocation = endpointProfile.location!
-//            XCTAssertEqual(actualLocation.latitude, expectedLocation.latitude)
-//            XCTAssertEqual(actualLocation.longitude, expectedLocation.longitude)
-//            XCTAssertEqual(actualLocation.postalCode, expectedLocation.postalCode)
-//            XCTAssertEqual(actualLocation.city, expectedLocation.city)
-//            XCTAssertEqual(actualLocation.region, expectedLocation.region)
-//            XCTAssertEqual(actualLocation.country, expectedLocation.country)
-//        } else {
-//            XCTAssertNil(actualEndpointProfile.location)
-//        }
-//
-//        if endpointProfile.user != nil {
-//            guard let actualUser = actualEndpointProfile.user else {
-//                XCTFail("actual User is nil")
-//                return
-//            }
-//
-//            let expectedUser = endpointProfile.user
-//            XCTAssertEqual(actualUser.userId, expectedUser?.userId)
-//        } else {
-//            XCTAssertNil(actualEndpointProfile.user)
-//        }
+        XCTAssertEqual(updateEndpointProfileCalled, 1)
+        XCTAssertNotNil(updateEndpointProfileValue)
+        guard let actualEndpointProfile = updateEndpointProfileValue else {
+            XCTFail("actual EndpointProfile is nil")
+            return
+        }
+        
+        let actualLocation = actualEndpointProfile.location
+        let expectedLocation = endpointProfile.location
+        XCTAssertEqual(actualLocation.latitude, expectedLocation.latitude)
+        XCTAssertEqual(actualLocation.longitude, expectedLocation.longitude)
+        XCTAssertEqual(actualLocation.postalCode, expectedLocation.postalCode)
+        XCTAssertEqual(actualLocation.city, expectedLocation.city)
+        XCTAssertEqual(actualLocation.region, expectedLocation.region)
+        XCTAssertEqual(actualLocation.country, expectedLocation.country)
+
+        let actualUser = actualEndpointProfile.user
+        let expectedUser = endpointProfile.user
+        XCTAssertEqual(actualUser.userId, expectedUser.userId)
     }
 
     public func verifyAddAttribute(_ theValue: [Any], forKey theKey: String) {

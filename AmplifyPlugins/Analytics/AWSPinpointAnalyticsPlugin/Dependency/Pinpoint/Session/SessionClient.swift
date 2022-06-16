@@ -25,7 +25,7 @@ class SessionClient: SessionClientBehaviour {
     private var session: PinpointSession
     
     private weak var analyticsClient: AnalyticsClientBehaviour?
-    private weak var endpointClient: EndpointClient?
+    private weak var endpointClient: EndpointClientBehaviour?
 
     private let activityTracker: ActivityTrackerBehaviour
     private let archiver: AmplifyArchiverBehaviour
@@ -43,7 +43,7 @@ class SessionClient: SessionClientBehaviour {
                   configuration: SessionClientConfiguration(appId: context.configuration.appId,
                                                             uniqueDeviceId: context.uniqueId,
                                                             sessionTimeout: context.configuration.sessionTimeout),
-                  endpointClient: context.targetingClient,
+                  endpointClient: context.endpointClient,
                   userDefaults: context.userDefaults)
     }
 
@@ -51,7 +51,7 @@ class SessionClient: SessionClientBehaviour {
          analyticsClient: AnalyticsClientBehaviour,
          archiver: AmplifyArchiverBehaviour = AmplifyArchiver(),
          configuration: SessionClientConfiguration,
-         endpointClient: EndpointClient,
+         endpointClient: EndpointClientBehaviour,
          userDefaults: UserDefaultsBehaviour) {
         self.activityTracker = activityTracker
         self.analyticsClient = analyticsClient
