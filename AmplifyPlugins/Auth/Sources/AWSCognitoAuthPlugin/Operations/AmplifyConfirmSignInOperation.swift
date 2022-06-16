@@ -72,10 +72,9 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
             }
             switch authNState {
 
-            case .signedIn(let signedInData):
+            case .signedIn:
+                self.dispatch(AuthSignInResult(nextStep: .done))
                 self.cancelToken(token)
-                let cognitoTokens = signedInData.cognitoUserPoolTokens
-                self.storeUserPoolTokens(cognitoTokens)
 
             case .error(let error):
                 self.dispatch(AuthError.unknown("Sign in reached an error state", error))
@@ -108,35 +107,6 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
         } onSubscribe: { }
     }
 
-    func storeUserPoolTokens(_ tokens: AWSCognitoUserPoolTokens) {
-        var token: CredentialStoreStateMachine.StateChangeListenerToken?
-        token = credentialStoreStateMachine.listen { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            switch $0 {
-            case .idle:
-                self.dispatch(AuthSignInResult(nextStep: .done))
-                self.cancelCredentialStoreToken(token)
-                self.finish()
-            case .error(let credentialStoreError):
-                // Unable to save the credentials in the local store
-                self.dispatch(credentialStoreError.authError)
-                self.cancelCredentialStoreToken(token)
-                self.finish()
-            default:
-                break
-            }
-        } onSubscribe: {[weak self] in
-            guard let self = self else {
-                return
-            }
-            // Send the load locally stored credentials event
-            self.sendStoreCredentialsEvent(with: tokens)
-        }
-    }
-
     private func sendStoreCredentialsEvent(with userPoolTokens: AWSCognitoUserPoolTokens) {
         let credentials = AmplifyCredentials.noCredentials
         let event = CredentialStoreEvent.init(eventType: .storeCredentials(credentials))
@@ -153,12 +123,6 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
     }
 
     private func cancelToken(_ token: AuthStateMachineToken?) {
-        if let token = token {
-            authStateMachine.cancel(listenerToken: token)
-        }
-    }
-
-    private func cancelCredentialStoreToken(_ token: CredentialStoreStateMachineToken?) {
         if let token = token {
             authStateMachine.cancel(listenerToken: token)
         }
