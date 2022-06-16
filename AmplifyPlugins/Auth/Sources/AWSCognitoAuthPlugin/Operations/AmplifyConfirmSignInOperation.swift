@@ -67,14 +67,17 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
             guard let self = self else {
                 return
             }
-            guard case .configured(let authNState, _) = $0 else {
+            guard case .configured(let authNState, let authZState) = $0 else {
                 return
             }
             switch authNState {
 
             case .signedIn:
-                self.dispatch(AuthSignInResult(nextStep: .done))
-                self.cancelToken(token)
+                if case .sessionEstablished = authZState {
+                    self.dispatch(AuthSignInResult(nextStep: .done))
+                    self.cancelToken(token)
+                    self.finish()
+                }
 
             case .error(let error):
                 self.dispatch(AuthError.unknown("Sign in reached an error state", error))
@@ -105,12 +108,6 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
                 break
             }
         } onSubscribe: { }
-    }
-
-    private func sendStoreCredentialsEvent(with userPoolTokens: AWSCognitoUserPoolTokens) {
-        let credentials = AmplifyCredentials.noCredentials
-        let event = CredentialStoreEvent.init(eventType: .storeCredentials(credentials))
-        credentialStoreStateMachine.send(event)
     }
 
     private func dispatch(_ result: AuthSignInResult) {

@@ -29,8 +29,8 @@ extension AuthorizationState {
 
             case .configured:
 
-                if let authenEvent = event as? AuthenticationEvent,
-                   case .signInRequested = authenEvent.eventType {
+                if let authenEvent = event.isAuthenticationEvent,
+                   case .signInRequested = authenEvent {
                     return .init(newState: .signingIn)
                 }
 
@@ -42,9 +42,12 @@ extension AuthorizationState {
                 return .from(oldState)
 
             case .sessionEstablished(let credentials):
-                if let authenEvent = event as? AuthenticationEvent,
-                   case .signInRequested = authenEvent.eventType {
+                if let authenEvent = event.isAuthenticationEvent {
+                   if case .signInRequested = authenEvent {
                     return .from(.signingIn)
+                   } else if case .signOutRequested = authenEvent {
+                       return .from(.signingOut)
+                   }
                 }
 
                 if case .refreshSession = event.isAuthorizationEvent {
@@ -59,8 +62,8 @@ extension AuthorizationState {
                 return .from(oldState)
 
             case .signingIn:
-                if let authEvent = event as? AuthenticationEvent {
-                    switch authEvent.eventType {
+                if let authEvent = event.isAuthenticationEvent {
+                    switch authEvent {
                     case .signInCompleted(let event):
                         let action = InitializeFetchAuthSessionWithUserPool(
                             tokens: event.cognitoUserPoolTokens)
@@ -74,6 +77,14 @@ extension AuthorizationState {
                     }
                 }
                 return .from(.signingIn)
+
+            case .signingOut:
+                if let signOutEvent = event.isSignOutEvent,
+                    case .signOutLocally = signOutEvent {
+                    return .init(newState: .waitingToStore(.noCredentials))
+                }
+                return .from(oldState)
+
             case .fetchingUnAuthSession(let fetchSessionState):
 
                 if case .fetched(let identityID,
