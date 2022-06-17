@@ -37,6 +37,9 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     
     typealias MockUpdateUserAttributesOutputResponse = (UpdateUserAttributesInput) async throws
     -> UpdateUserAttributesOutputResponse
+    
+    typealias MockConfirmUserAttributeOutputResponse = (VerifyUserAttributeInput) async throws
+    -> VerifyUserAttributeOutputResponse
 
     let mockSignUpResponse: MockSignUpResponse?
     let mockRevokeTokenResponse: MockRevokeTokenResponse?
@@ -47,6 +50,7 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     let mockGetUserAttributeVerificationCodeOutputResponse: MockGetUserAttributeVerificationCodeOutputResponse?
     let mockGetUserAttributeResponse: MockGetUserAttributesOutputResponse?
     let mockUpdateUserAttributeResponse: MockUpdateUserAttributesOutputResponse?
+    let mockConfirmUserAttributeOutputResponse: MockConfirmUserAttributeOutputResponse?
 
     init(
         mockSignUpResponse: MockSignUpResponse? = nil,
@@ -57,7 +61,8 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         mockRespondToAuthChallengeResponse: MockRespondToAuthChallengeResponse? = nil,
         mockGetUserAttributeVerificationCodeOutputResponse: MockGetUserAttributeVerificationCodeOutputResponse? = nil,
         mockGetUserAttributeResponse: MockGetUserAttributesOutputResponse? = nil,
-        mockUpdateUserAttributeResponse: MockUpdateUserAttributesOutputResponse? = nil
+        mockUpdateUserAttributeResponse: MockUpdateUserAttributesOutputResponse? = nil,
+        mockConfirmUserAttributeOutputResponse: MockConfirmUserAttributeOutputResponse? = nil
     ) {
         self.mockSignUpResponse = mockSignUpResponse
         self.mockRevokeTokenResponse = mockRevokeTokenResponse
@@ -68,6 +73,7 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         self.mockGetUserAttributeVerificationCodeOutputResponse = mockGetUserAttributeVerificationCodeOutputResponse
         self.mockGetUserAttributeResponse = mockGetUserAttributeResponse
         self.mockUpdateUserAttributeResponse = mockUpdateUserAttributeResponse
+        self.mockConfirmUserAttributeOutputResponse = mockConfirmUserAttributeOutputResponse
     }
 
     /// Throws InitiateAuthOutputError
@@ -112,5 +118,9 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     
     func updateUserAttributes(input: UpdateUserAttributesInput) async throws -> UpdateUserAttributesOutputResponse {
         return try await mockUpdateUserAttributeResponse!(input)
+    }
+    
+    func verifyUserAttribute(input: VerifyUserAttributeInput) async throws -> VerifyUserAttributeOutputResponse {
+        return try await mockConfirmUserAttributeOutputResponse!(input)
     }
 }

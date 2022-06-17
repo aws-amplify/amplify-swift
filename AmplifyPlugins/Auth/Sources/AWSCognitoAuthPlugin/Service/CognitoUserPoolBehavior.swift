@@ -39,6 +39,10 @@ protocol CognitoUserPoolBehavior {
 
     /// Throws UpdateUserAttributesOutputError
     func updateUserAttributes(input: UpdateUserAttributesInput) async throws -> UpdateUserAttributesOutputResponse
+    
+    /// Verifies the specified user attributes in the user pool.
+    /// Throws VerifyUserAttributeOutputError
+    func verifyUserAttribute(input: AWSCognitoIdentityProvider.VerifyUserAttributeInput) async throws -> AWSCognitoIdentityProvider.VerifyUserAttributeOutputResponse
 
     
 }
