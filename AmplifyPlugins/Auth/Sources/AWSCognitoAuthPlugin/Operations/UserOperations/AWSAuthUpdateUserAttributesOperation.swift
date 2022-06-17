@@ -17,7 +17,6 @@ AuthError>, AuthUpdateUserAttributesOperation {
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
     
     private let authStateMachine: AuthStateMachine
-    private let credentialStoreStateMachine: CredentialStoreStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
     private var statelistenerToken: AuthStateMachineToken?
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
@@ -29,13 +28,10 @@ AuthError>, AuthUpdateUserAttributesOperation {
          resultListener: ResultListener?)
     {
         self.authStateMachine = authStateMachine
-        self.credentialStoreStateMachine = credentialStoreStateMachine
         self.userPoolFactory = userPoolFactory
-        self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper(
-            authStateMachine: authStateMachine,
-            credentialStoreStateMachine: credentialStoreStateMachine)
+        self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.fetchUserAttributesAPI,
+                   eventName: HubPayload.EventName.Auth.updateUserAttributesAPI,
                    request: request,
                    resultListener: resultListener)
     }
@@ -46,7 +42,7 @@ AuthError>, AuthUpdateUserAttributesOperation {
             return
         }
         
-        fetchAuthSessionHelper.fetchSession { [weak self] result in
+        fetchAuthSessionHelper.fetch(authStateMachine) { [weak self] result in
             switch result {
             case .success(let session):
                 guard let cognitoTokenProvider = session as? AuthCognitoTokensProvider,
