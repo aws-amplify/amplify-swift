@@ -12,6 +12,9 @@
 		2102DD53260E2BC800B80FE2 /* ReconcileAndSaveQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2102DD52260E2BC800B80FE2 /* ReconcileAndSaveQueueTests.swift */; };
 		2104FE5B284E7168007CF949 /* DataStoreSchemaDriftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE5A284E7168007CF949 /* DataStoreSchemaDriftTests.swift */; };
 		2104FE64284E8B21007CF949 /* DataStoreInternal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE63284E8B21007CF949 /* DataStoreInternal.swift */; };
+		2104FE5028490638007CF949 /* StorageEngineTestsOptionalAssociation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE4F28490638007CF949 /* StorageEngineTestsOptionalAssociation.swift */; };
+		2104FE5328490DFE007CF949 /* StatementModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE5228490DFE007CF949 /* StatementModelTests.swift */; };
+		2104FE5928492D67007CF949 /* DataStoreConnectionOptionalAssociations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE5828492D67007CF949 /* DataStoreConnectionOptionalAssociations.swift */; };
 		210E218226601C1C00D90ED8 /* MutationEventQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210E218126601C1C00D90ED8 /* MutationEventQueryTests.swift */; };
 		211A81D7270F787200C5483D /* SortedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211A81D6270F787200C5483D /* SortedList.swift */; };
 		211A81D9270F78B100C5483D /* SortedListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211A81D8270F78B100C5483D /* SortedListTests.swift */; };
@@ -424,6 +427,9 @@
 		2102DD52260E2BC800B80FE2 /* ReconcileAndSaveQueueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReconcileAndSaveQueueTests.swift; sourceTree = "<group>"; };
 		2104FE5A284E7168007CF949 /* DataStoreSchemaDriftTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreSchemaDriftTests.swift; sourceTree = "<group>"; };
 		2104FE63284E8B21007CF949 /* DataStoreInternal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreInternal.swift; sourceTree = "<group>"; };
+		2104FE4F28490638007CF949 /* StorageEngineTestsOptionalAssociation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageEngineTestsOptionalAssociation.swift; sourceTree = "<group>"; };
+		2104FE5228490DFE007CF949 /* StatementModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatementModelTests.swift; sourceTree = "<group>"; };
+		2104FE5828492D67007CF949 /* DataStoreConnectionOptionalAssociations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionOptionalAssociations.swift; sourceTree = "<group>"; };
 		210E218126601C1C00D90ED8 /* MutationEventQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutationEventQueryTests.swift; sourceTree = "<group>"; };
 		211A81D6270F787200C5483D /* SortedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortedList.swift; sourceTree = "<group>"; };
 		211A81D8270F78B100C5483D /* SortedListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortedListTests.swift; sourceTree = "<group>"; };
@@ -869,6 +875,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2104FE5128490DE0007CF949 /* SQLite */ = {
+			isa = PBXGroup;
+			children = (
+				2104FE5228490DFE007CF949 /* StatementModelTests.swift */,
+			);
+			path = SQLite;
+			sourceTree = "<group>";
+		};
 		211FFEDB26CD61DD00F0DB75 /* Subscribe */ = {
 			isa = PBXGroup;
 			children = (
@@ -1133,6 +1147,7 @@
 				218F7881275A81400042334B /* DataStoreConnectionScenario6V2Tests.swift */,
 				218F7886275A81410042334B /* DataStoreConnectionScenario7V2Tests.swift */,
 				215D40AC277233340077E7DA /* DataStoreConnectionScenario8V2Tests.swift */,
+				2104FE5828492D67007CF949 /* DataStoreConnectionOptionalAssociations.swift */,
 				218F78D3275AC7CD0042334B /* DataStoreModelWithCustomTimestampTests.swift */,
 				218F78D2275AC7CD0042334B /* DataStoreModelWithDefaultValueTests.swift */,
 				218F78D1275AC7CD0042334B /* DataStoreModelWithSecondaryIndexTests.swift */,
@@ -1180,12 +1195,14 @@
 			isa = PBXGroup;
 			children = (
 				2169431727FF760A00DE36BC /* CascadeDeleteOperationTests.swift */,
+				2104FE5128490DE0007CF949 /* SQLite */,
 				21DDCE05273049F200D9B297 /* StorageEnginePublisherTests.swift */,
 				6BE9D6F225A665EA00AB5C9A /* StorageEngineTestsBase.swift */,
 				219F796925B8D268007107D3 /* StorageEngineTestsDelete.swift */,
 				6B7743E6259071C8001469F5 /* StorageEngineTestsHasMany.swift */,
 				6BE9D6F025A6643100AB5C9A /* StorageEngineTestsHasOne.swift */,
 				6BE9D73D25A6800100AB5C9A /* StorageEngineTestsManyToMany.swift */,
+				2104FE4F28490638007CF949 /* StorageEngineTestsOptionalAssociation.swift */,
 				97F793DB27BC7882000153D6 /* StorageEngineTestsSQLiteIndex.swift */,
 			);
 			path = Storage;
@@ -2583,6 +2600,7 @@
 				219F796A25B8D268007107D3 /* StorageEngineTestsDelete.swift in Sources */,
 				211FFEDD26CD621400F0DB75 /* DataStoreObserveQueryOperationTests.swift in Sources */,
 				FA4B8E942391C2CD009FC10F /* MutationIngesterConflictResolutionTests.swift in Sources */,
+				2104FE5028490638007CF949 /* StorageEngineTestsOptionalAssociation.swift in Sources */,
 				FA4A9557239ACAD7008E876E /* ModelReconciliationQueueBehaviorTests.swift in Sources */,
 				6BE7431C2575B8B000009FCB /* AWSAPICategoryPluginTests.swift in Sources */,
 				FA4A955D239AD810008E876E /* MockSQLiteStorageEngineAdapterResponders.swift in Sources */,
@@ -2601,6 +2619,7 @@
 				6BE9D6F125A6643100AB5C9A /* StorageEngineTestsHasOne.swift in Sources */,
 				2145314026CDAD6400CDEACB /* AWSDataStorePluginSubscribeBehaviorTests.swift in Sources */,
 				214B6B68264B157500A9311D /* StopwatchTests.swift in Sources */,
+				2104FE5328490DFE007CF949 /* StatementModelTests.swift in Sources */,
 				6B52DC9624478E75007F5AD3 /* MockModelReconciliationQueue.swift in Sources */,
 				FA4A955B239AD3F4008E876E /* Foundation+TestExtensions.swift in Sources */,
 				21A4EE77259D510400E1047D /* DataStoreListProviderFunctionalTests.swift in Sources */,
@@ -2648,6 +2667,7 @@
 				217D622225798ED3009F0639 /* DataStoreConnectionScenario1Tests.swift in Sources */,
 				217D61752578AF85009F0639 /* DataStoreConnectionScenario2Tests.swift in Sources */,
 				D888E80C24A65DC200F4CE3E /* LocalStoreIntegrationTestBase.swift in Sources */,
+				2104FE5928492D67007CF949 /* DataStoreConnectionOptionalAssociations.swift in Sources */,
 				97406B382666DC0200C41E19 /* DataStoreCustomPrimaryKeyTests.swift in Sources */,
 				218F7889275A81410042334B /* DataStoreConnectionScenario4V2Tests.swift in Sources */,
 				FA3841EB23889D6C0070AD5B /* SubscriptionEndToEndTests.swift in Sources */,
