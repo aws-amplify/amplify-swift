@@ -84,8 +84,7 @@ extension AWSCognitoAuthPlugin {
         }
     }
 
-    func makeCredentialStore() -> AmplifyAuthCredentialStoreBehavior &
-    AmplifyAuthCredentialStoreProvider {
+    func makeCredentialStore() -> AmplifyAuthCredentialStoreBehavior {
         AWSCognitoAuthCredentialStore(authConfiguration: authConfiguration)
     }
 
