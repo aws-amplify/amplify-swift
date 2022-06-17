@@ -13,21 +13,20 @@ public class AWSAuthConfirmUserAttributeOperation: AmplifyOperation<
 AuthConfirmUserAttributeRequest,
 Void,
 AuthError>, AuthConfirmUserAttributeOperation {
-    
+
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
-    
+
     private let authStateMachine: AuthStateMachine
     private let credentialStoreStateMachine: CredentialStoreStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
     private var statelistenerToken: AuthStateMachineToken?
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
-    
+
     init(_ request: AuthConfirmUserAttributeRequest,
          authStateMachine: AuthStateMachine,
          credentialStoreStateMachine: CredentialStoreStateMachine,
          userPoolFactory: @escaping CognitoUserPoolFactory,
-         resultListener: ResultListener?)
-    {
+         resultListener: ResultListener?) {
         self.authStateMachine = authStateMachine
         self.credentialStoreStateMachine = credentialStoreStateMachine
         self.userPoolFactory = userPoolFactory
@@ -37,13 +36,13 @@ AuthError>, AuthConfirmUserAttributeOperation {
                    request: request,
                    resultListener: resultListener)
     }
-    
+
     override public func main() {
         if isCancelled {
             finish()
             return
         }
-        
+
         fetchAuthSessionHelper.fetch(authStateMachine) { [weak self] result in
             switch result {
             case .success(let session):
@@ -59,11 +58,11 @@ AuthError>, AuthConfirmUserAttributeOperation {
                 self?.dispatch(error)
             }
         }
-        
+
     }
-    
+
     func confirmUserAttribute(with accessToken: String) async {
-        
+
         do {
             let userPoolService = try userPoolFactory()
 
@@ -71,15 +70,13 @@ AuthError>, AuthConfirmUserAttributeOperation {
                 accessToken: accessToken,
                 attributeName: request.attributeKey.rawValue,
                 code: request.confirmationCode)
-            
-            let _ = try await userPoolService.verifyUserAttribute(input: input)
-            
+
+            _ = try await userPoolService.verifyUserAttribute(input: input)
+
             self.dispatch()
-        }
-        catch let error as VerifyUserAttributeOutputError {
+        } catch let error as VerifyUserAttributeOutputError {
             self.dispatch(error.authError)
-        }
-        catch let error {
+        } catch let error {
             let error = AuthError.configuration(
                 "Unable to create a Swift SDK user pool service",
                 AuthPluginErrorConstants.configurationError,
@@ -87,13 +84,13 @@ AuthError>, AuthConfirmUserAttributeOperation {
             self.dispatch(error)
         }
     }
-    
+
     private func dispatch() {
         let result = OperationResult.success(())
         dispatch(result: result)
         finish()
     }
-    
+
     private func dispatch(_ error: AuthError) {
         let result = OperationResult.failure(error)
         dispatch(result: result)

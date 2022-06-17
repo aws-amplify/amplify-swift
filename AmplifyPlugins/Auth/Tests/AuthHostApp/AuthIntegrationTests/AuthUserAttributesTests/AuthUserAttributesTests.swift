@@ -22,7 +22,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         AuthSessionHelper.clearSession()
         Amplify.reset()
     }
-    
+
     /// Test fetching the user's email attribute.
     ///
     /// - Given: A confirmed user
@@ -45,7 +45,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         wait(for: [signInExpectation], timeout: networkTimeout)
 
         let fetchUserAttributeExpectation = expectation(description: "Fetch User Attribute operation should complete")
-        
+
         _ = Amplify.Auth.fetchUserAttributes(listener: { result in
             switch result {
             case .success(let attributes):
@@ -61,7 +61,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         })
         wait(for: [fetchUserAttributeExpectation], timeout: networkTimeout)
     }
-    
+
     /// Test updating the user's email attribute.
     /// Internally, Cognito's `UpdateUserAttributes` API will be called with metadata as clientMetadata.
     /// The configured lambda trigger will invoke the custom message lambda with the client metadata payload. See
@@ -100,9 +100,9 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
             }
         }
         wait(for: [updateExpectation], timeout: networkTimeout)
-        
+
         let fetchUserAttributeExpectation = expectation(description: "Fetch User Attribute operation should complete")
-        
+
         _ = Amplify.Auth.fetchUserAttributes(listener: { result in
             switch result {
             case .success(let attributes):
@@ -117,8 +117,8 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
             }
         })
         wait(for: [fetchUserAttributeExpectation], timeout: networkTimeout)
-    }    
-    
+    }
+
     /// Test updating the user's email and name attributes.
     /// Internally, Cognito's `UpdateUserAttributes` API will be called with metadata as clientMetadata.
     /// The configured lambda trigger will invoke the custom message lambda with the client metadata payload. See
@@ -163,9 +163,9 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
             }
         }
         wait(for: [updateExpectation], timeout: networkTimeout)
-        
+
         let fetchUserAttributeExpectation = expectation(description: "Fetch User Attribute operation should complete")
-        
+
         _ = Amplify.Auth.fetchUserAttributes(listener: { result in
             switch result {
             case .success(let attributes):
@@ -174,7 +174,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
                 } else {
                     XCTFail("Email attribute not found")
                 }
-                
+
                 if let emailAttribute = attributes.filter({ $0.key == .name }).first {
                     XCTAssertEqual(emailAttribute.value, updatedName)
                 } else {

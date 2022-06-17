@@ -58,7 +58,6 @@ public class AWSAuthSignOutOperation: AmplifySignOutOperation, AuthSignOutOperat
                     }
                 }
 
-
             case .error(let error):
                 defer {
                     self.finish()

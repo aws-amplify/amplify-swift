@@ -13,19 +13,18 @@ public class AWSAuthUpdateUserAttributesOperation: AmplifyOperation<
 AuthUpdateUserAttributesRequest,
 [AuthUserAttributeKey: AuthUpdateAttributeResult],
 AuthError>, AuthUpdateUserAttributesOperation {
-    
+
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
-    
+
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
     private var statelistenerToken: AuthStateMachineToken?
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
-    
+
     init(_ request: AuthUpdateUserAttributesRequest,
          authStateMachine: AuthStateMachine,
          userPoolFactory: @escaping CognitoUserPoolFactory,
-         resultListener: ResultListener?)
-    {
+         resultListener: ResultListener?) {
         self.authStateMachine = authStateMachine
         self.userPoolFactory = userPoolFactory
         self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()
@@ -34,13 +33,13 @@ AuthError>, AuthUpdateUserAttributesOperation {
                    request: request,
                    resultListener: resultListener)
     }
-    
+
     override public func main() {
         if isCancelled {
             finish()
             return
         }
-        
+
         fetchAuthSessionHelper.fetch(authStateMachine) { [weak self] result in
             switch result {
             case .success(let session):
@@ -56,9 +55,9 @@ AuthError>, AuthUpdateUserAttributesOperation {
                 self?.dispatch(error)
             }
         }
-        
+
     }
-    
+
     func updateAttributes(with accessToken: String) async {
         do {
             let clientMetaData = (request.options.pluginOptions as? AWSUpdateUserAttributesOptions)?.metadata ?? [:]
@@ -68,14 +67,11 @@ AuthError>, AuthUpdateUserAttributesOperation {
                 userPoolFactory: userPoolFactory,
                 clientMetaData: clientMetaData)
             dispatch(finalResult)
-        }
-        catch let error as UpdateUserAttributesOutputError {
+        } catch let error as UpdateUserAttributesOutputError {
             self.dispatch(error.authError)
-        }
-        catch let error as AuthError {
+        } catch let error as AuthError {
             self.dispatch(error)
-        }
-        catch let error {
+        } catch let error {
             let error = AuthError.configuration(
                 "Unable to create a Swift SDK user pool service",
                 AuthPluginErrorConstants.configurationError,
@@ -83,13 +79,13 @@ AuthError>, AuthUpdateUserAttributesOperation {
             self.dispatch(error)
         }
     }
-    
+
     private func dispatch(_ result: [AuthUserAttributeKey: AuthUpdateAttributeResult]) {
         let result = OperationResult.success(result)
         dispatch(result: result)
         finish()
     }
-    
+
     private func dispatch(_ error: AuthError) {
         let result = OperationResult.failure(error)
         dispatch(result: result)

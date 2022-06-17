@@ -33,16 +33,15 @@ protocol CognitoUserPoolBehavior {
 
     /// Throws GetUserAttributeVerificationCodeOutputError
     func getUserAttributeVerificationCode(input: GetUserAttributeVerificationCodeInput) async throws -> GetUserAttributeVerificationCodeOutputResponse
-    
+
     /// Throws GetUserOutputError
     func getUser(input: GetUserInput) async throws -> GetUserOutputResponse
 
     /// Throws UpdateUserAttributesOutputError
     func updateUserAttributes(input: UpdateUserAttributesInput) async throws -> UpdateUserAttributesOutputResponse
-    
+
     /// Verifies the specified user attributes in the user pool.
     /// Throws VerifyUserAttributeOutputError
     func verifyUserAttribute(input: AWSCognitoIdentityProvider.VerifyUserAttributeInput) async throws -> AWSCognitoIdentityProvider.VerifyUserAttributeOutputResponse
 
-    
 }

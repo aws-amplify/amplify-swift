@@ -31,13 +31,13 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
 
     typealias MockGetUserAttributeVerificationCodeOutputResponse = (GetUserAttributeVerificationCodeInput) async throws
     -> GetUserAttributeVerificationCodeOutputResponse
-    
+
     typealias MockGetUserAttributesOutputResponse = (GetUserInput) async throws
     -> GetUserOutputResponse
-    
+
     typealias MockUpdateUserAttributesOutputResponse = (UpdateUserAttributesInput) async throws
     -> UpdateUserAttributesOutputResponse
-    
+
     typealias MockConfirmUserAttributeOutputResponse = (VerifyUserAttributeInput) async throws
     -> VerifyUserAttributeOutputResponse
 
@@ -111,15 +111,15 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     func getUserAttributeVerificationCode(input: GetUserAttributeVerificationCodeInput) async throws -> GetUserAttributeVerificationCodeOutputResponse {
         return try await mockGetUserAttributeVerificationCodeOutputResponse!(input)
     }
-    
+
     func getUser(input: GetUserInput) async throws -> GetUserOutputResponse {
         return try await mockGetUserAttributeResponse!(input)
     }
-    
+
     func updateUserAttributes(input: UpdateUserAttributesInput) async throws -> UpdateUserAttributesOutputResponse {
         return try await mockUpdateUserAttributeResponse!(input)
     }
-    
+
     func verifyUserAttribute(input: VerifyUserAttributeInput) async throws -> VerifyUserAttributeOutputResponse {
         return try await mockConfirmUserAttributeOutputResponse!(input)
     }
