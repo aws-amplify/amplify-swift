@@ -35,5 +35,4 @@ class InitializeFetchAuthSessionTests: XCTestCase {
         waitForExpectations(timeout: 0.1)
     }
 
-
 }

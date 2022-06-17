@@ -10,9 +10,9 @@ import Foundation
 import AWSCognitoIdentityProvider
 
 extension AuthUserAttribute {
-    
+
     func sdkClientAttributeType() -> CognitoIdentityProviderClientTypes.AttributeType {
-        CognitoIdentityProviderClientTypes.AttributeType(name:key.rawValue, value: value)
+        CognitoIdentityProviderClientTypes.AttributeType(name: key.rawValue, value: value)
     }
-    
+
 }

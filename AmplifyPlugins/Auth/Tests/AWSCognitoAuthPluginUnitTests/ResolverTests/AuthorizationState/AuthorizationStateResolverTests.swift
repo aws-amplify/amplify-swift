@@ -38,7 +38,7 @@ class AuthorizationStateResolverTests: XCTestCase {
             AuthorizationStateSequence(oldState: .notConfigured,
                                        event: AuthorizationEvent(
                                         eventType: .throwError(authorizationError)),
-                                       expected: .error(authorizationError)),
+                                       expected: .error(authorizationError))
 
         ]
 

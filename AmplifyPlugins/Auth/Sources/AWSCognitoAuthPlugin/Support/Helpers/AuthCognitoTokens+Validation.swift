@@ -24,7 +24,6 @@ extension AuthCognitoTokens {
         let idTokenExpiry = Date(timeIntervalSince1970: idTokenExpiration)
         let accessTokenExpiry = Date(timeIntervalSince1970: accessTokenExpiration)
 
-
         return currentTime > idTokenExpiry || currentTime > accessTokenExpiry
     }
 

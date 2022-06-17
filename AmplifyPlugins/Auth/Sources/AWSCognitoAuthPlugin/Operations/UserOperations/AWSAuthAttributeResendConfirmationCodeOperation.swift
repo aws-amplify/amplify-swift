@@ -59,7 +59,7 @@ AuthError>, AuthAttributeResendConfirmationCodeOperation {
     }
 
     func initiateGettingVerificationCode(with accessToken: String) async {
-        
+
         do {
             let userPoolService = try userPoolFactory()
             let clientMetaData = (request.options.pluginOptions
@@ -69,13 +69,13 @@ AuthError>, AuthAttributeResendConfirmationCodeOperation {
                 accessToken: accessToken,
                 attributeName: request.attributeKey.rawValue,
                 clientMetadata: clientMetaData)
-            
+
             let result = try await userPoolService.getUserAttributeVerificationCode(input: input)
-            
+
             if self.isCancelled {
                 return
             }
-            
+
             guard let deliveryDetails = result.codeDeliveryDetails?.toAuthCodeDeliveryDetails() else {
                 let authError = AuthError.service("Unable to get Auth code delivery details",
                                                   AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),

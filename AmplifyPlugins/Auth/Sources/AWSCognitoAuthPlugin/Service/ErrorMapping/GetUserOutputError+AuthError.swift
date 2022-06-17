@@ -10,7 +10,7 @@ import AWSCognitoIdentityProvider
 import Amplify
 
 extension GetUserOutputError: AuthErrorConvertible {
-    
+
     var authError: AuthError {
         switch self {
         case .internalErrorException(let exception):
@@ -48,5 +48,5 @@ extension GetUserOutputError: AuthErrorConvertible {
             return .unknown("Unknown service error occurred with status \(statusCode) \(message)")
         }
     }
-    
+
 }

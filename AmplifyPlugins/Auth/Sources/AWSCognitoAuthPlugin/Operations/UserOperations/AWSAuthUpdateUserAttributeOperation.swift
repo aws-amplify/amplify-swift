@@ -13,19 +13,18 @@ public class AWSAuthUpdateUserAttributeOperation: AmplifyOperation<
 AuthUpdateUserAttributeRequest,
 AuthUpdateAttributeResult,
 AuthError>, AuthUpdateUserAttributeOperation {
-    
+
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
-    
+
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
     private var statelistenerToken: AuthStateMachineToken?
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
-    
+
     init(_ request: AuthUpdateUserAttributeRequest,
          authStateMachine: AuthStateMachine,
          userPoolFactory: @escaping CognitoUserPoolFactory,
-         resultListener: ResultListener?)
-    {
+         resultListener: ResultListener?) {
         self.authStateMachine = authStateMachine
         self.userPoolFactory = userPoolFactory
         self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()
@@ -34,13 +33,13 @@ AuthError>, AuthUpdateUserAttributeOperation {
                    request: request,
                    resultListener: resultListener)
     }
-    
+
     override public func main() {
         if isCancelled {
             finish()
             return
         }
-        
+
         fetchAuthSessionHelper.fetch(authStateMachine) { [weak self] result in
             switch result {
             case .success(let session):
@@ -56,20 +55,20 @@ AuthError>, AuthUpdateUserAttributeOperation {
                 self?.dispatch(error)
             }
         }
-        
+
     }
-    
+
     func updateAttribute(with accessToken: String) async {
-        
+
         do {
             let clientMetaData = (request.options.pluginOptions as? AWSUpdateUserAttributeOptions)?.metadata ?? [:]
-            
+
             let finalResult = try await UpdateAttributesOperationHelper.update(
                 attributes: [request.userAttribute],
                 accessToken: accessToken,
                 userPoolFactory: userPoolFactory,
                 clientMetaData: clientMetaData)
-            
+
             guard let dispatchResult = finalResult[request.userAttribute.key] else {
                 let authError = AuthError.service("Attribute to be updated does not exist in the result",
                                                   AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
@@ -77,16 +76,13 @@ AuthError>, AuthUpdateUserAttributeOperation {
                 self.dispatch(authError)
                 return
             }
-            
+
             dispatch(dispatchResult)
-        }
-        catch let error as UpdateUserAttributesOutputError {
+        } catch let error as UpdateUserAttributesOutputError {
             self.dispatch(error.authError)
-        }
-        catch let error as AuthError {
+        } catch let error as AuthError {
             self.dispatch(error)
-        }
-        catch let error {
+        } catch let error {
             let error = AuthError.configuration(
                 "Unable to create a Swift SDK user pool service",
                 AuthPluginErrorConstants.configurationError,
@@ -94,13 +90,13 @@ AuthError>, AuthUpdateUserAttributeOperation {
             self.dispatch(error)
         }
     }
-    
+
     private func dispatch(_ result: AuthUpdateAttributeResult) {
         let result = OperationResult.success(result)
         dispatch(result: result)
         finish()
     }
-    
+
     private func dispatch(_ error: AuthError) {
         let result = OperationResult.failure(error)
         dispatch(result: result)

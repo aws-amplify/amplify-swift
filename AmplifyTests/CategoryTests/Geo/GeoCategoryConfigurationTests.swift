@@ -136,7 +136,7 @@ class GeoCategoryConfigurationTests: XCTestCase {
 
         let amplifyConfig = AmplifyConfiguration(geo: geoConfig)
         try Amplify.configure(amplifyConfig)
-        
+
         let registry = TypeRegistry.register(type: GeoCategoryPlugin.self) { _ in MockGeoCategoryPlugin() }
         _ = try await Amplify.Geo.search(for: "test", options: nil)
         XCTAssertGreaterThan(registry.messages.count, 0)

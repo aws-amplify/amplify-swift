@@ -69,7 +69,7 @@ struct MigrateLegacyCredentialStore: Action {
                     identityID: identityId,
                     credentials: awsCredentials)
                 try amplifyCredentialStore.saveCredential(credentials)
-                
+
             } else if let identityId = identityId,
                let awsCredentials = awsCredentials,
                let userPoolTokens = userPoolTokens {

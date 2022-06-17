@@ -35,7 +35,7 @@ struct AuthSessionHelper {
             let updatedToken = updateTokenWithPastExpiry(tokens)
             let updatedCredentials = AmplifyCredentials.userPoolOnly(tokens: updatedToken)
             try! credentialStore.saveCredential(updatedCredentials)
-        default: break;
+        default: break
         }
 
     }

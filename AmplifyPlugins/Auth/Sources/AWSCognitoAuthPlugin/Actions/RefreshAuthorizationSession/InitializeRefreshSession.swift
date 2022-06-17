@@ -9,32 +9,32 @@ import Amplify
 import Foundation
 
 struct InitializeRefreshSession: Action {
-    
+
     let identifier = "InitializeRefreshSession"
-    
+
     let existingCredentials: AmplifyCredentials
-    
+
     let isForceRefresh: Bool
-    
+
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
-        
+
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        
+
         let event: RefreshSessionEvent
-        
+
         switch existingCredentials {
         case .userPoolOnly(let tokens):
             event = .init(eventType: .refreshCognitoUserPool(tokens))
-            
+
         case .identityPoolOnly(let identityID, _):
             event = .init(eventType: .refreshUnAuthAWSCredentials(identityID))
-            
+
         case .identityPoolWithFederation:
             fatalError("Federation not implemented")
-            
+
         case .userPoolAndIdentityPool(let tokens, let identityID, _):
             guard let config = (environment as? AuthEnvironment)?.userPoolConfigData else {
-                //TODO: Fix error
+                // TODO: Fix error
                 fatalError("fix here")
             }
             let provider = CognitoUserPoolLoginsMap(idToken: tokens.idToken,
@@ -51,7 +51,7 @@ struct InitializeRefreshSession: Action {
         case .noCredentials:
             event = .init(eventType: .throwError(.noCredentialsToRefresh))
         }
-        
+
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         dispatcher.send(event)
     }

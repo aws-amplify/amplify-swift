@@ -88,5 +88,5 @@ extension UpdateUserAttributesOutputError: AuthErrorConvertible {
                             AWSCognitoAuthError.emailRole)
         }
     }
-    
+
 }

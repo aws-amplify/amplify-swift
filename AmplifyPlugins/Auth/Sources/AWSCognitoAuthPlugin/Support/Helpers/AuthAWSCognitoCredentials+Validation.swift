@@ -15,5 +15,4 @@ extension AuthAWSCognitoCredentials {
         return currentTime > expiration
     }
 
-
 }
