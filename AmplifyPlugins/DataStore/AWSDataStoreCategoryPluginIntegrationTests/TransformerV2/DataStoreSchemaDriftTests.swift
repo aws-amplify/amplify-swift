@@ -125,6 +125,6 @@ class DataStoreSchemaDriftTests: SyncEngineIntegrationV2TestBase {
             }
         }.store(in: &subscriptions)
         wait(for: [syncEngineCleanedUp, syncEngineFailed], timeout: TestCommonConstants.networkTimeout)
-        wait(for: [syncEngineRestarting], timeout: 10)
+        wait(for: [syncEngineRestarting], timeout: TestCommonConstants.networkTimeout)
     }
 }
