@@ -134,14 +134,6 @@ extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
 
 }
 
-extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreProvider {
-
-    func getCredentialStore() -> CredentialStoreBehavior {
-        return keychain
-    }
-
-}
-
 /// Helpers for encode and decoding
 private extension AWSCognitoAuthCredentialStore {
 

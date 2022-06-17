@@ -9,7 +9,7 @@ import Foundation
 
 @testable import AWSCognitoAuthPlugin
 
-class MockAmplifyCredentialStoreBehavior: AmplifyAuthCredentialStoreBehavior, AmplifyAuthCredentialStoreProvider {
+class MockAmplifyCredentialStoreBehavior: AmplifyAuthCredentialStoreBehavior {
 
     typealias Migrationhandler = () -> Void
     typealias SaveCredentialHandler = (Codable) throws -> Void
