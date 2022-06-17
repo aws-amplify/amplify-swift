@@ -11,7 +11,7 @@ struct CredentialEnvironment: Environment {
 }
 
 protocol CredentialStoreEnvironment: Environment {
-    typealias AmplifyAuthCredentialStoreFactory = () -> AmplifyAuthCredentialStoreBehavior & AmplifyAuthCredentialStoreProvider
+    typealias AmplifyAuthCredentialStoreFactory = () -> AmplifyAuthCredentialStoreBehavior
     typealias CredentialStoreFactory = (_ service: String) -> CredentialStoreBehavior
 
     var amplifyCredentialStoreFactory: AmplifyAuthCredentialStoreFactory { get }
@@ -21,7 +21,7 @@ protocol CredentialStoreEnvironment: Environment {
 
 struct BasicCredentialStoreEnvironment: CredentialStoreEnvironment {
 
-    typealias AmplifyAuthCredentialStoreFactory = () -> AmplifyAuthCredentialStoreBehavior & AmplifyAuthCredentialStoreProvider
+    typealias AmplifyAuthCredentialStoreFactory = () -> AmplifyAuthCredentialStoreBehavior
     typealias CredentialStoreFactory = (_ service: String) -> CredentialStoreBehavior
 
     // Required

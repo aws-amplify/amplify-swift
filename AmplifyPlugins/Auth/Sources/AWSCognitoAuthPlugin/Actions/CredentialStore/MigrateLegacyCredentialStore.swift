@@ -14,13 +14,14 @@ struct MigrateLegacyCredentialStore: Action {
     let identifier = "MigrateLegacyCredentialStore"
 
     /// Legacy Keys
-    private let cognitoAWSCredentialsProviderClassKey = "AWSCognitoCredentialsProvider"
-    private let cognitoUserPoolClassKey = "AWSCognitoIdentityUserPool"
+    private let AWSCredentialsProviderClassKey = "AWSCognitoCredentialsProvider"
+    private let UserPoolClassKey = "AWSCognitoIdentityUserPool"
     private let AWSCredentialsProviderKeychainAccessKeyId = "accessKey"
     private let AWSCredentialsProviderKeychainSecretAccessKey = "secretKey"
     private let AWSCredentialsProviderKeychainSessionToken = "sessionKey"
     private let AWSCredentialsProviderKeychainExpiration = "expiration"
     private let AWSCredentialsProviderKeychainIdentityId = "identityId"
+
     private let AWSCognitoAuthUserPoolCurrentUser = "currentUser"
     private let AWSCognitoAuthUserAccessToken = "accessToken"
     private let AWSCognitoAuthUserIdToken = "idToken"
@@ -39,6 +40,7 @@ struct MigrateLegacyCredentialStore: Action {
             dispatcher.send(event)
             return
         }
+
         let credentialStoreEnvironment = credentialEnvironment.credentialStoreEnvironment
         let authConfiguration = credentialEnvironment.authConfiguration
 
@@ -47,24 +49,41 @@ struct MigrateLegacyCredentialStore: Action {
         var identityId: String?
         var awsCredentials: AuthAWSCognitoCredentials?
 
-        let userPoolTokens = try? getUserPoolTokens(from: credentialStoreEnvironment, with: authConfiguration)
+        let userPoolTokens = try? getUserPoolTokens(from: credentialStoreEnvironment,
+                                                    with: authConfiguration)
 
         // IdentityId and AWSCredentials should exist together
-        if let (storedIdentityId, storedAWSCredentials) = try? getIdentityIdAndAWSCredentials(from: credentialStoreEnvironment,
-                                                                                            with: authConfiguration) {
+        if let (storedIdentityId,
+                storedAWSCredentials) = try? getIdentityIdAndAWSCredentials(
+                    from: credentialStoreEnvironment,
+                    with: authConfiguration) {
             identityId = storedIdentityId
             awsCredentials = storedAWSCredentials
         }
 
         do {
-            // If everything is nil, probably the store has been migrated
-            if !(identityId == nil && awsCredentials == nil && userPoolTokens == nil) {
-                let credentials = AmplifyCredentials.noCredentials
+            if let identityId = identityId,
+               let awsCredentials = awsCredentials,
+               userPoolTokens == nil {
+                let credentials = AmplifyCredentials.identityPoolOnly(
+                    identityID: identityId,
+                    credentials: awsCredentials)
+                try amplifyCredentialStore.saveCredential(credentials)
+                
+            } else if let identityId = identityId,
+               let awsCredentials = awsCredentials,
+               let userPoolTokens = userPoolTokens {
+                let credentials = AmplifyCredentials.userPoolAndIdentityPool(
+                    tokens: userPoolTokens,
+                    identityID: identityId,
+                    credentials: awsCredentials)
+                try amplifyCredentialStore.saveCredential(credentials)
 
-                // Save the fetched Credentials
-                // TODO: Fix the credentials conversion.
+            } else if let userPoolTokens = userPoolTokens {
+                let credentials = AmplifyCredentials.userPoolOnly(tokens: userPoolTokens)
                 try amplifyCredentialStore.saveCredential(credentials)
             }
+
             let event = CredentialStoreEvent(eventType: .loadCredentialStore)
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
@@ -74,74 +93,78 @@ struct MigrateLegacyCredentialStore: Action {
             dispatcher.send(event)
         } catch {
             let event = CredentialStoreEvent(
-                eventType: .throwError(CredentialStoreError.unknown("An unknown error occurred", error)))
+                eventType: .throwError(
+                    CredentialStoreError.unknown("An unknown error occurred", error)))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
         }
-
     }
 
-    private func getUserPoolTokens(from credentialStoreEnvironment: CredentialStoreEnvironment,
-                                   with authConfiguration: AuthConfiguration) throws -> AWSCognitoUserPoolTokens {
+    private func getUserPoolTokens(
+        from credentialStoreEnvironment: CredentialStoreEnvironment,
+        with authConfiguration: AuthConfiguration) throws -> AWSCognitoUserPoolTokens {
 
-        guard let bundleIdentifier = Bundle.main.bundleIdentifier,
-              let userPoolConfig = authConfiguration.getUserPoolConfiguration()
-        else {
-            throw CredentialStoreError.configuration(
-                message: AuthPluginErrorConstants.configurationError)
+            guard let bundleIdentifier = Bundle.main.bundleIdentifier,
+                  let userPoolConfig = authConfiguration.getUserPoolConfiguration()
+            else {
+                throw CredentialStoreError.configuration(
+                    message: AuthPluginErrorConstants.configurationError)
+            }
+
+            let serviceKey = "\(bundleIdentifier).\(UserPoolClassKey)"
+            let legacyCredentialStore = credentialStoreEnvironment.legacyCredentialStoreFactory(serviceKey)
+            defer {
+                // Clean up the old store
+                try? legacyCredentialStore.removeAll()
+            }
+            let currentUser = try legacyCredentialStore.getString(
+                userPoolNamespace(
+                    userPoolConfig: userPoolConfig,
+                    for: AWSCognitoAuthUserPoolCurrentUser
+                )
+            )
+            let idToken = try legacyCredentialStore.getString(
+                userPoolNamespace(
+                    userPoolConfig: userPoolConfig,
+                    for: "\(currentUser).\(AWSCognitoAuthUserIdToken)"
+                )
+            )
+            let accessToken = try legacyCredentialStore.getString(
+                userPoolNamespace(
+                    userPoolConfig: userPoolConfig,
+                    for: "\(currentUser).\(AWSCognitoAuthUserAccessToken)"
+                )
+            )
+            let refreshToken = try legacyCredentialStore.getString(
+                userPoolNamespace(
+                    userPoolConfig: userPoolConfig,
+                    for: "\(currentUser).\(AWSCognitoAuthUserRefreshToken)"
+                )
+            )
+            let tokenExpirationString = try legacyCredentialStore.getString(
+                userPoolNamespace(
+                    userPoolConfig: userPoolConfig,
+                    for: "\(currentUser).\(AWSCognitoAuthUserTokenExpiration)"
+                )
+            )
+            // If the token expiration can't be converted to a date, chose a date in the past
+            let pastDate = Date.init(timeIntervalSince1970: 0)
+            let tokenExpiration = dateFormatter().date(from: tokenExpirationString) ?? pastDate
+            return AWSCognitoUserPoolTokens(idToken: idToken,
+                                            accessToken: accessToken,
+                                            refreshToken: refreshToken,
+                                            expiration: tokenExpiration)
         }
 
-        let serviceKey = "\(bundleIdentifier).\(cognitoUserPoolClassKey)"
-        let legacyCredentialStore = credentialStoreEnvironment.legacyCredentialStoreFactory(serviceKey)
-        defer {
-            // Clean up the old store
-            try? legacyCredentialStore.removeAll()
-        }
-        let currentUser = try legacyCredentialStore.getString(
-            userPoolNamespace(
-                userPoolConfig: userPoolConfig,
-                for: AWSCognitoAuthUserPoolCurrentUser
-            )
-        )
-        let idToken = try legacyCredentialStore.getString(
-            userPoolNamespace(
-                userPoolConfig: userPoolConfig,
-                for: "\(currentUser).\(AWSCognitoAuthUserIdToken)"
-            )
-        )
-        let accessToken = try legacyCredentialStore.getString(
-            userPoolNamespace(
-                userPoolConfig: userPoolConfig,
-                for: "\(currentUser).\(AWSCognitoAuthUserAccessToken)"
-            )
-        )
-        let refreshToken = try legacyCredentialStore.getString(
-            userPoolNamespace(
-                userPoolConfig: userPoolConfig,
-                for: "\(currentUser).\(AWSCognitoAuthUserRefreshToken)"
-            )
-        )
-        let tokenExpirationString = try legacyCredentialStore.getString(
-            userPoolNamespace(
-                userPoolConfig: userPoolConfig,
-                for: "\(currentUser).\(AWSCognitoAuthUserTokenExpiration)"
-            )
-        )
-        // If the token expiration can't be converted to a date, chose a date in the past
-        let tokenExpiration = dateFormatter().date(from: tokenExpirationString) ?? Date.init(timeIntervalSince1970: 0)
-        return AWSCognitoUserPoolTokens(idToken: idToken,
-                                        accessToken: accessToken,
-                                        refreshToken: refreshToken,
-                                        expiration: tokenExpiration)
-    }
-
-    private func userPoolNamespace(userPoolConfig: UserPoolConfigurationData, for key: String) -> String {
+    private func userPoolNamespace(userPoolConfig: UserPoolConfigurationData,
+                                   for key: String) -> String {
         return "\(userPoolConfig.clientId).\(key)"
     }
 
     private func getIdentityIdAndAWSCredentials(
         from credentialStoreEnvironment: CredentialStoreEnvironment,
-        with authConfiguration: AuthConfiguration) throws -> (identityId: String, awsCredentials: AuthAWSCognitoCredentials) {
+        with authConfiguration: AuthConfiguration) throws
+    -> (identityId: String, awsCredentials: AuthAWSCognitoCredentials) {
 
         guard let bundleIdentifier = Bundle.main.bundleIdentifier,
               let identityPoolConfig = authConfiguration.getIdentityPoolConfiguration()
@@ -150,17 +173,23 @@ struct MigrateLegacyCredentialStore: Action {
                 message: AuthPluginErrorConstants.configurationError)
         }
 
-        let serviceKey = "\(bundleIdentifier).\(cognitoAWSCredentialsProviderClassKey).\(identityPoolConfig.poolId)"
+        let poolId = identityPoolConfig.poolId
+        let serviceKey = "\(bundleIdentifier).\(AWSCredentialsProviderClassKey).\(poolId)"
         let legacyCredentialStore = credentialStoreEnvironment.legacyCredentialStoreFactory(serviceKey)
         defer {
             // Clean up the old store
             try? legacyCredentialStore.removeAll()
         }
-        let accessKey = try legacyCredentialStore.getString(AWSCredentialsProviderKeychainAccessKeyId)
-        let secretKey = try legacyCredentialStore.getString(AWSCredentialsProviderKeychainSecretAccessKey)
-        let sessionKey = try legacyCredentialStore.getString(AWSCredentialsProviderKeychainSessionToken)
-        let expirationString = try legacyCredentialStore.getString(AWSCredentialsProviderKeychainExpiration)
-        let identityId = try legacyCredentialStore.getString(AWSCredentialsProviderKeychainIdentityId)
+        let accessKey = try legacyCredentialStore.getString(
+            AWSCredentialsProviderKeychainAccessKeyId)
+        let secretKey = try legacyCredentialStore.getString(
+            AWSCredentialsProviderKeychainSecretAccessKey)
+        let sessionKey = try legacyCredentialStore.getString(
+            AWSCredentialsProviderKeychainSessionToken)
+        let expirationString = try legacyCredentialStore.getString(
+            AWSCredentialsProviderKeychainExpiration)
+        let identityId = try legacyCredentialStore.getString(
+            AWSCredentialsProviderKeychainIdentityId)
 
         let awsCredentials = AuthAWSCognitoCredentials(
             accessKey: accessKey,
@@ -168,7 +197,6 @@ struct MigrateLegacyCredentialStore: Action {
             sessionKey: sessionKey,
             expiration: Date(timeIntervalSince1970: Double(expirationString) ?? 0)
         )
-
         return (identityId, awsCredentials)
     }
 

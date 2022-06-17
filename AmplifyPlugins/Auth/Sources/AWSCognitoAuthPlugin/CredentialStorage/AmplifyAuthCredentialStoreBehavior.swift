@@ -12,7 +12,3 @@ protocol AmplifyAuthCredentialStoreBehavior {
     func retrieveCredential() throws -> Codable
     func deleteCredential() throws
 }
-
-protocol AmplifyAuthCredentialStoreProvider {
-    func getCredentialStore() -> CredentialStoreBehavior
-}

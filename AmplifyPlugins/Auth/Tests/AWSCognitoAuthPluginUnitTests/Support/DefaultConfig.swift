@@ -79,8 +79,7 @@ enum Defaults {
         return .userPoolsAndIdentityPools(userPoolConfigData, identityConfigDate)
     }
 
-    static func makeAmplifyStore() -> AmplifyAuthCredentialStoreBehavior &
-    AmplifyAuthCredentialStoreProvider {
+    static func makeAmplifyStore() -> AmplifyAuthCredentialStoreBehavior {
         return MockAmplifyStore()
     }
 
@@ -89,8 +88,7 @@ enum Defaults {
     }
 
     static func makeDefaultCredentialStoreEnvironment(
-        amplifyStoreFactory: @escaping () -> AmplifyAuthCredentialStoreBehavior &
-        AmplifyAuthCredentialStoreProvider = makeAmplifyStore,
+        amplifyStoreFactory: @escaping () -> AmplifyAuthCredentialStoreBehavior = makeAmplifyStore,
         legacyStoreFactory: @escaping (String) -> CredentialStoreBehavior = makeLegacyStore(service: )
     ) -> CredentialEnvironment {
         CredentialEnvironment(
@@ -154,7 +152,7 @@ enum Defaults {
 
 }
 
-struct MockAmplifyStore: AmplifyAuthCredentialStoreBehavior, AmplifyAuthCredentialStoreProvider {
+struct MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
     func saveCredential(_ credential: Codable) throws {
 
     }
