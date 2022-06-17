@@ -45,6 +45,7 @@ public extension AWSCognitoAuthPlugin {
                 options: AuthUpdateUserAttributesOperation.Request.Options? = nil,
                 listener: AuthUpdateUserAttributesOperation.ResultListener?)
     -> AuthUpdateUserAttributesOperation {
+        
         let options = options ?? AuthUpdateUserAttributesRequest.Options()
         let request = AuthUpdateUserAttributesRequest(userAttributes: userAttributes, options: options)
         let operation = AWSAuthUpdateUserAttributesOperation(
@@ -86,7 +87,6 @@ public extension AWSCognitoAuthPlugin {
         let operation = AWSAuthConfirmUserAttributeOperation(
             request,
             authStateMachine: authStateMachine,
-            credentialStoreStateMachine: credentialStoreStateMachine,
             userPoolFactory: makeUserPool,
             resultListener: listener)
         queue.addOperation(operation)
@@ -97,11 +97,18 @@ public extension AWSCognitoAuthPlugin {
                 to newPassword: String,
                 options: AuthChangePasswordOperation.Request.Options? = nil,
                 listener: AuthChangePasswordOperation.ResultListener?) -> AuthChangePasswordOperation {
-        //        let options = options ?? AuthChangePasswordRequest.Options()
-        //        let request = AuthChangePasswordRequest(oldPassword: oldPassword,
-        //                                                newPassword: newPassword,
-        //                                                options: options)
-        fatalError("Not implemented")
+        
+        let options = options ?? AuthChangePasswordRequest.Options()
+        let request = AuthChangePasswordRequest(oldPassword: oldPassword,
+                                                newPassword: newPassword,
+                                                options: options)
+        let operation = AWSAuthChangePasswordOperation(
+            request,
+            authStateMachine: authStateMachine,
+            userPoolFactory: makeUserPool,
+            resultListener: listener)
+        queue.addOperation(operation)
+        return operation
     }
     
     func getCurrentUser() -> AuthUser? {

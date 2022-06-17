@@ -9,10 +9,10 @@ import Amplify
 import AWSPluginsCore
 import AWSCognitoIdentityProvider
 
-public class AWSAuthConfirmUserAttributeOperation: AmplifyOperation<
-AuthConfirmUserAttributeRequest,
+public class AWSAuthChangePasswordOperation: AmplifyOperation<
+AuthChangePasswordRequest,
 Void,
-AuthError>, AuthConfirmUserAttributeOperation {
+AuthError>, AuthChangePasswordOperation {
     
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
     
@@ -21,7 +21,7 @@ AuthError>, AuthConfirmUserAttributeOperation {
     private var statelistenerToken: AuthStateMachineToken?
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
     
-    init(_ request: AuthConfirmUserAttributeRequest,
+    init(_ request: AuthChangePasswordRequest,
          authStateMachine: AuthStateMachine,
          userPoolFactory: @escaping CognitoUserPoolFactory,
          resultListener: ResultListener?)
@@ -30,7 +30,7 @@ AuthError>, AuthConfirmUserAttributeOperation {
         self.userPoolFactory = userPoolFactory
         self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.confirmUserAttributesAPI,
+                   eventName: HubPayload.EventName.Auth.changePasswordAPI,
                    request: request,
                    resultListener: resultListener)
     }
@@ -50,7 +50,7 @@ AuthError>, AuthConfirmUserAttributeOperation {
                     return
                 }
                 Task.init { [weak self] in
-                    await self?.confirmUserAttribute(with: tokens.accessToken)
+                    await self?.changePassword(with: tokens.accessToken)
                 }
             case .failure(let error):
                 self?.dispatch(error)
@@ -59,21 +59,21 @@ AuthError>, AuthConfirmUserAttributeOperation {
         
     }
     
-    func confirmUserAttribute(with accessToken: String) async {
+    func changePassword(with accessToken: String) async {
         
         do {
             let userPoolService = try userPoolFactory()
 
-            let input = VerifyUserAttributeInput(
+            let input = ChangePasswordInput(
                 accessToken: accessToken,
-                attributeName: request.attributeKey.rawValue,
-                code: request.confirmationCode)
+                previousPassword: request.oldPassword,
+                proposedPassword: request.newPassword)
             
-            let _ = try await userPoolService.verifyUserAttribute(input: input)
+            let _ = try await userPoolService.changePassword(input: input)
             
             self.dispatch()
         }
-        catch let error as VerifyUserAttributeOutputError {
+        catch let error as ChangePasswordOutputError {
             self.dispatch(error.authError)
         }
         catch let error {
