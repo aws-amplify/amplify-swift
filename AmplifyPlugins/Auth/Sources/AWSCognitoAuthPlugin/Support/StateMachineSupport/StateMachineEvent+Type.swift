@@ -50,6 +50,5 @@ extension StateMachineEvent {
         }
         return event
     }
-    
-}
 
+}

@@ -36,7 +36,7 @@ struct FetchAuthSessionOperationHelper {
                 switch credentials {
 
                 case .userPoolOnly(tokens: let tokens):
-                    if (tokens.doesExpire(in: Self.expiryBufferInSeconds)) {
+                    if tokens.doesExpire(in: Self.expiryBufferInSeconds) {
                         let event = AuthorizationEvent(eventType: .refreshSession)
                         authStateMachine.send(event)
                     } else {
@@ -44,7 +44,7 @@ struct FetchAuthSessionOperationHelper {
                     }
 
                 case .identityPoolOnly(identityID: _, credentials: let awsCredentials):
-                    if (awsCredentials.doesExpire(in: Self.expiryBufferInSeconds)) {
+                    if awsCredentials.doesExpire(in: Self.expiryBufferInSeconds) {
                         let event = AuthorizationEvent(eventType: .refreshSession)
                         authStateMachine.send(event)
                     } else {
@@ -54,8 +54,8 @@ struct FetchAuthSessionOperationHelper {
                 case .userPoolAndIdentityPool(tokens: let tokens,
                                               identityID: _,
                                               credentials: let awsCredentials):
-                    if ( tokens.doesExpire(in: Self.expiryBufferInSeconds) ||
-                         awsCredentials.doesExpire(in: Self.expiryBufferInSeconds)) {
+                    if  tokens.doesExpire(in: Self.expiryBufferInSeconds) ||
+                         awsCredentials.doesExpire(in: Self.expiryBufferInSeconds) {
                         let event = AuthorizationEvent(eventType: .refreshSession)
                         authStateMachine.send(event)
                     } else {
@@ -89,11 +89,11 @@ struct FetchAuthSessionOperationHelper {
             switch authorizationState {
             case .sessionEstablished(let credentials):
                 completion(.success(credentials.cognitoSession))
-            case .error(_):
+            case .error:
                 let message = "Auth state machine not in configured state: \(state)"
                 let error = AuthError.invalidState(message, "", nil)
                 completion(.failure(error))
-            default: break;
+            default: break
             }
 
         } onSubscribe: {}

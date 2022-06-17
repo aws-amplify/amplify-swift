@@ -203,8 +203,8 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
                                                                         return
         }
         wait(for: [receivedMutationEvent], timeout: 100)
-        //let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
-        //print("Time elapsed time to delete: \(timeElapsed) s.")
+        // let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+        // print("Time elapsed time to delete: \(timeElapsed) s.")
     }
 
     func testErrorOnSingleSubmissionToSyncEngine() {

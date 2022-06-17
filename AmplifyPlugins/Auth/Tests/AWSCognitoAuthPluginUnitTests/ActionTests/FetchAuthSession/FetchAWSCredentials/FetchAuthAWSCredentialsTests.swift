@@ -100,7 +100,6 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
 
         let credentialValidExpectation = expectation(description: "awsCredentialsAreValid")
 
-
         let expectedIdentityId = "newIdentityId"
         let expectedSecretKey = "newSecretKey"
         let expectedSessionToken = "newSessionToken"

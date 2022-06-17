@@ -9,11 +9,11 @@ import Foundation
 import Amplify
 
 public extension AWSCognitoAuthPlugin {
-    
+
     func fetchUserAttributes(options: AuthFetchUserAttributeOperation.Request.Options? = nil,
                              listener: AuthFetchUserAttributeOperation.ResultListener?)
     -> AuthFetchUserAttributeOperation {
-        
+
         let options = options ?? AuthFetchUserAttributesRequest.Options()
         let request = AuthFetchUserAttributesRequest(options: options)
         let operation = AWSAuthFetchUserAttributesOperation(
@@ -24,11 +24,11 @@ public extension AWSCognitoAuthPlugin {
         queue.addOperation(operation)
         return operation
     }
-    
+
     func update(userAttribute: AuthUserAttribute,
                 options: AuthUpdateUserAttributeOperation.Request.Options? = nil,
                 listener: AuthUpdateUserAttributeOperation.ResultListener?) -> AuthUpdateUserAttributeOperation {
-        
+
         let options = options ?? AuthUpdateUserAttributeRequest.Options()
         let request = AuthUpdateUserAttributeRequest(userAttribute: userAttribute, options: options)
         let operation = AWSAuthUpdateUserAttributeOperation(
@@ -40,7 +40,7 @@ public extension AWSCognitoAuthPlugin {
         return operation
 
     }
-    
+
     func update(userAttributes: [AuthUserAttribute],
                 options: AuthUpdateUserAttributesOperation.Request.Options? = nil,
                 listener: AuthUpdateUserAttributesOperation.ResultListener?)
@@ -55,7 +55,7 @@ public extension AWSCognitoAuthPlugin {
         queue.addOperation(operation)
         return operation
     }
-    
+
     func resendConfirmationCode(for attributeKey: AuthUserAttributeKey,
                                 options: AuthAttributeResendConfirmationCodeOperation.Request.Options? = nil,
                                 listener: AuthAttributeResendConfirmationCodeOperation.ResultListener?)
@@ -71,7 +71,7 @@ public extension AWSCognitoAuthPlugin {
         queue.addOperation(operation)
         return operation
     }
-    
+
     func confirm(userAttribute: AuthUserAttributeKey,
                  confirmationCode: String,
                  options: AuthConfirmUserAttributeOperation.Request.Options? = nil,
@@ -92,7 +92,7 @@ public extension AWSCognitoAuthPlugin {
         queue.addOperation(operation)
         return operation
     }
-    
+
     func update(oldPassword: String,
                 to newPassword: String,
                 options: AuthChangePasswordOperation.Request.Options? = nil,
@@ -103,7 +103,7 @@ public extension AWSCognitoAuthPlugin {
         //                                                options: options)
         fatalError("Not implemented")
     }
-    
+
     func getCurrentUser() -> AuthUser? {
         fatalError("Not implemented")
     }
