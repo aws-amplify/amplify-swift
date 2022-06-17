@@ -65,7 +65,7 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
             guard let self = self else {
                 return
             }
-            guard case .configured(let authNState, _) = $0 else {
+            guard case .configured(let authNState, let authZState) = $0 else {
                 return
             }
 
@@ -77,8 +77,11 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
                 self.sendCancelSignUpEvent()
 
             case .signedIn:
-                self.dispatch(AuthSignInResult(nextStep: .done))
-                self.cancelToken(token)
+                if case .sessionEstablished = authZState {
+                    self.dispatch(AuthSignInResult(nextStep: .done))
+                    self.cancelToken(token)
+                    self.finish()
+                }
 
             case .error(let error):
                 self.dispatch(AuthError.unknown("Sign in reached an error state", error))
@@ -132,7 +135,6 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
         dispatch(result: asyncEvent)
     }
 
-    // TODO: Find a differnet mechanism to cancel the tokens
     private func cancelToken(_ token: AuthStateMachineToken?) {
         if let token = token {
             authStateMachine.cancel(listenerToken: token)
