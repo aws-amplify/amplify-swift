@@ -23,7 +23,6 @@ AuthError>, AuthUpdateUserAttributesOperation {
     
     init(_ request: AuthUpdateUserAttributesRequest,
          authStateMachine: AuthStateMachine,
-         credentialStoreStateMachine: CredentialStoreStateMachine,
          userPoolFactory: @escaping CognitoUserPoolFactory,
          resultListener: ResultListener?)
     {

@@ -17,19 +17,16 @@ AuthError>, AuthFetchUserAttributeOperation {
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
     
     private let authStateMachine: AuthStateMachine
-    private let credentialStoreStateMachine: CredentialStoreStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
     private var statelistenerToken: AuthStateMachineToken?
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
     
     init(_ request: AuthFetchUserAttributesRequest,
          authStateMachine: AuthStateMachine,
-         credentialStoreStateMachine: CredentialStoreStateMachine,
          userPoolFactory: @escaping CognitoUserPoolFactory,
          resultListener: ResultListener?)
     {
         self.authStateMachine = authStateMachine
-        self.credentialStoreStateMachine = credentialStoreStateMachine
         self.userPoolFactory = userPoolFactory
         self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()
         super.init(categoryType: .auth,

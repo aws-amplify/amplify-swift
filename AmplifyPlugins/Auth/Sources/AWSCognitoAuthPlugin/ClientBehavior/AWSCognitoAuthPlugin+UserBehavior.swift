@@ -19,7 +19,6 @@ public extension AWSCognitoAuthPlugin {
         let operation = AWSAuthFetchUserAttributesOperation(
             request,
             authStateMachine: authStateMachine,
-            credentialStoreStateMachine: credentialStoreStateMachine,
             userPoolFactory: makeUserPool,
             resultListener: listener)
         queue.addOperation(operation)
@@ -35,7 +34,6 @@ public extension AWSCognitoAuthPlugin {
         let operation = AWSAuthUpdateUserAttributeOperation(
             request,
             authStateMachine: authStateMachine,
-            credentialStoreStateMachine: credentialStoreStateMachine,
             userPoolFactory: makeUserPool,
             resultListener: listener)
         queue.addOperation(operation)
@@ -52,7 +50,6 @@ public extension AWSCognitoAuthPlugin {
         let operation = AWSAuthUpdateUserAttributesOperation(
             request,
             authStateMachine: authStateMachine,
-            credentialStoreStateMachine: credentialStoreStateMachine,
             userPoolFactory: makeUserPool,
             resultListener: listener)
         queue.addOperation(operation)
@@ -69,7 +66,6 @@ public extension AWSCognitoAuthPlugin {
         let operation = AWSAuthAttributeResendConfirmationCodeOperation(
             request,
             authStateMachine: authStateMachine,
-            credentialStoreStateMachine: credentialStoreStateMachine,
             userPoolFactory: makeUserPool,
             resultListener: listener)
         queue.addOperation(operation)
@@ -81,11 +77,20 @@ public extension AWSCognitoAuthPlugin {
                  options: AuthConfirmUserAttributeOperation.Request.Options? = nil,
                  listener: AuthConfirmUserAttributeOperation.ResultListener?)
     -> AuthConfirmUserAttributeOperation {
-        //        let options = options ?? AuthConfirmUserAttributeRequest.Options()
-        //        let request = AuthConfirmUserAttributeRequest(attributeKey: userAttribute,
-        //                                                      confirmationCode: confirmationCode,
-        //                                                      options: options)
-        fatalError("Not implemented")
+
+        let options = options ?? AuthConfirmUserAttributeRequest.Options()
+        let request = AuthConfirmUserAttributeRequest(
+            attributeKey: userAttribute,
+            confirmationCode: confirmationCode,
+            options: options)
+        let operation = AWSAuthConfirmUserAttributeOperation(
+            request,
+            authStateMachine: authStateMachine,
+            credentialStoreStateMachine: credentialStoreStateMachine,
+            userPoolFactory: makeUserPool,
+            resultListener: listener)
+        queue.addOperation(operation)
+        return operation
     }
     
     func update(oldPassword: String,

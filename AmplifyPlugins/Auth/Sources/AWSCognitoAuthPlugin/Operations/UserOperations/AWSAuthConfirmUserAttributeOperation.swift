@@ -9,28 +9,31 @@ import Amplify
 import AWSPluginsCore
 import AWSCognitoIdentityProvider
 
-public class AWSAuthUpdateUserAttributeOperation: AmplifyOperation<
-AuthUpdateUserAttributeRequest,
-AuthUpdateAttributeResult,
-AuthError>, AuthUpdateUserAttributeOperation {
+public class AWSAuthConfirmUserAttributeOperation: AmplifyOperation<
+AuthConfirmUserAttributeRequest,
+Void,
+AuthError>, AuthConfirmUserAttributeOperation {
     
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
     
     private let authStateMachine: AuthStateMachine
+    private let credentialStoreStateMachine: CredentialStoreStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
     private var statelistenerToken: AuthStateMachineToken?
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
     
-    init(_ request: AuthUpdateUserAttributeRequest,
+    init(_ request: AuthConfirmUserAttributeRequest,
          authStateMachine: AuthStateMachine,
+         credentialStoreStateMachine: CredentialStoreStateMachine,
          userPoolFactory: @escaping CognitoUserPoolFactory,
          resultListener: ResultListener?)
     {
         self.authStateMachine = authStateMachine
+        self.credentialStoreStateMachine = credentialStoreStateMachine
         self.userPoolFactory = userPoolFactory
         self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.updateUserAttributeAPI,
+                   eventName: HubPayload.EventName.Auth.confirmUserAttributesAPI,
                    request: request,
                    resultListener: resultListener)
     }
@@ -50,7 +53,7 @@ AuthError>, AuthUpdateUserAttributeOperation {
                     return
                 }
                 Task.init { [weak self] in
-                    await self?.updateAttribute(with: tokens.accessToken)
+                    await self?.confirmUserAttribute(with: tokens.accessToken)
                 }
             case .failure(let error):
                 self?.dispatch(error)
@@ -59,32 +62,22 @@ AuthError>, AuthUpdateUserAttributeOperation {
         
     }
     
-    func updateAttribute(with accessToken: String) async {
+    func confirmUserAttribute(with accessToken: String) async {
         
         do {
-            let clientMetaData = (request.options.pluginOptions as? AWSUpdateUserAttributeOptions)?.metadata ?? [:]
-            
-            let finalResult = try await UpdateAttributesOperationHelper.update(
-                attributes: [request.userAttribute],
+            let userPoolService = try userPoolFactory()
+
+            let input = VerifyUserAttributeInput(
                 accessToken: accessToken,
-                userPoolFactory: userPoolFactory,
-                clientMetaData: clientMetaData)
+                attributeName: request.attributeKey.rawValue,
+                code: request.confirmationCode)
             
-            guard let dispatchResult = finalResult[request.userAttribute.key] else {
-                let authError = AuthError.service("Attribute to be updated does not exist in the result",
-                                                  AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
-                                                  nil)
-                self.dispatch(authError)
-                return
-            }
+            let _ = try await userPoolService.verifyUserAttribute(input: input)
             
-            dispatch(dispatchResult)
+            self.dispatch()
         }
-        catch let error as UpdateUserAttributesOutputError {
+        catch let error as VerifyUserAttributeOutputError {
             self.dispatch(error.authError)
-        }
-        catch let error as AuthError {
-            self.dispatch(error)
         }
         catch let error {
             let error = AuthError.configuration(
@@ -95,8 +88,8 @@ AuthError>, AuthUpdateUserAttributeOperation {
         }
     }
     
-    private func dispatch(_ result: AuthUpdateAttributeResult) {
-        let result = OperationResult.success(result)
+    private func dispatch() {
+        let result = OperationResult.success(())
         dispatch(result: result)
         finish()
     }
