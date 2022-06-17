@@ -24,6 +24,7 @@ class EventRecorder: AnalyticsEventRecording {
     let appId: String
     let storage: AnalyticsEventStorage
     let pinpointClient: PinpointClientProtocol
+    let endpointClient: EndpointClientBehaviour
     private var submittedEvents: [PinpointEvent] = []
 
     /// Initializer for Event Recorder
@@ -31,10 +32,12 @@ class EventRecorder: AnalyticsEventRecording {
     ///   - appId: The Pinpoint App Id
     ///   - storage: A storage object that conforms to AnalyticsEventStorage
     ///   - pinpointClient: A Pinpoint client
-    init(appId: String, storage: AnalyticsEventStorage, pinpointClient: PinpointClientProtocol) throws {
+    ///   - endpointClient: An EndpointClientBehaviour client
+    init(appId: String, storage: AnalyticsEventStorage, pinpointClient: PinpointClientProtocol, endpointClient: EndpointClientBehaviour) throws {
         self.appId = appId
         self.storage = storage
         self.pinpointClient = pinpointClient
+        self.endpointClient = endpointClient
         try self.storage.initializeStorage()
         try self.storage.deleteDirtyEvents()
         try self.storage.checkDiskSize(limit: Constants.pinpointClientByteLimitDefault)
@@ -56,10 +59,10 @@ class EventRecorder: AnalyticsEventRecording {
     }
 
     private func submitEvents() async throws -> [PinpointEvent] {
+        let publicEndpoint = try await getPublicEndpoint()
         let eventsBatch = try getBatchRecords()
-
         if eventsBatch.count > 0 {
-            try await submit(eventsBatch)
+            try await submit(eventsBatch, publicEndpoint: publicEndpoint)
         }
         return submittedEvents
     }
@@ -68,20 +71,17 @@ class EventRecorder: AnalyticsEventRecording {
         return try storage.getEventsWith(limit: Constants.maxEventsSubmittedPerBatch)
     }
 
-    private func submit(_ eventBatch: [PinpointEvent]) async throws {
-        try await submit(pinpointEvents: eventBatch)
+    private func submit(_ eventBatch: [PinpointEvent], publicEndpoint: PinpointClientTypes.PublicEndpoint) async throws {
+        try await submit(pinpointEvents: eventBatch, publicEndpoint: publicEndpoint)
         try storage.removeFailedEvents()
         let nextEventsBatch = try getBatchRecords()
         if nextEventsBatch.count > 0 {
-            try await submit(nextEventsBatch)
+            try await submit(nextEventsBatch, publicEndpoint: publicEndpoint)
         }
     }
 
-    private func submit(pinpointEvents: [PinpointEvent]) async throws {
-        // TODO: generate public endpoint from global attributes when this is available
-        let publicEndpoint: PinpointClientTypes.PublicEndpoint? = nil
+    private func submit(pinpointEvents: [PinpointEvent], publicEndpoint: PinpointClientTypes.PublicEndpoint) async throws {
         var clientEvents = [String: PinpointClientTypes.Event]()
-
         for event in pinpointEvents {
             clientEvents[UUID().uuidString] = event.clientTypeEvent
             let eventsBatch = PinpointClientTypes.EventsBatch(endpoint: publicEndpoint, events: clientEvents)
@@ -101,6 +101,23 @@ class EventRecorder: AnalyticsEventRecording {
                 }
             }
         }
+    }
+    
+    private func getPublicEndpoint() async throws -> PinpointClientTypes.PublicEndpoint {
+        let endpointProfile = await endpointClient.currentEndpointProfile()
+        let channelType: PinpointClientTypes.ChannelType = endpointProfile.isDebug ? .apns : .apnsSandbox
+        let optOut = endpointProfile.isOptOut ? EndpointClient.Constants.OptOut.all : EndpointClient.Constants.OptOut.none
+        let publicEndpoint = PinpointClientTypes.PublicEndpoint(
+            address: endpointProfile.endpointId,
+            attributes: endpointProfile.attributes,
+            channelType: channelType,
+            demographic: endpointProfile.demographic,
+            effectiveDate: endpointProfile.effectiveDate.iso8601FractionalSeconds(),
+            location: endpointProfile.location,
+            metrics: endpointProfile.metrics,
+            optOut: optOut,
+            user: endpointProfile.user)
+        return publicEndpoint
     }
 }
 

@@ -20,7 +20,7 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
             let analyticsEventStorage = AnalyticsEventSQLStorage(dbAdapter: adapter)
             try analyticsEventStorage.initializeStorage()
         } catch {
-            XCTFail("Failed to remove SQLite as part of test setup")
+            XCTFail("Failed to setup SQLiteLocalStorageAdapterTests")
         }
     }
 
@@ -29,7 +29,7 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
         do {
             try FileManager.default.removeItem(atPath: dbPath.path)
         } catch {
-            XCTFail("Failed to remove SQLite as part of teardown")
+            XCTFail("Failed to tear down SQLiteLocalStorageAdapterTests")
         }
     }
 

@@ -48,7 +48,7 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
 
     convenience init(applicationId: String, context: PinpointContext) {
         if let storage = try? AnalyticsEventSQLStorage(dbAdapter: SQLiteLocalStorageAdapter(prefixPath: Constants.eventRecorderStoragePathPrefix, databaseName: applicationId)),
-           let eventRecorder = try? EventRecorder(appId: applicationId, storage: storage,pinpointClient: context.pinpointClient) {
+           let eventRecorder = try? EventRecorder(appId: applicationId, storage: storage, pinpointClient: context.pinpointClient, endpointClient: context.endpointClient) {
             self.init(context: context, eventRecorder: eventRecorder)
         } else {
             self.init(context: context, eventRecorder: nil)
