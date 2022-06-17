@@ -12,6 +12,7 @@ import XCTest
 import ClientRuntime
 
 import AWSCognitoIdentityProvider
+import AWSCognitoIdentity
 
 class AWSAuthSignInOperationTests: XCTestCase {
 
@@ -50,16 +51,45 @@ class AWSAuthSignInOperationTests: XCTestCase {
                                                      refreshToken: "refreshToken"))
         }
 
+        let getId: MockIdentity.MockGetIdResponse = { _ in
+            return .init(identityId: "mockIdentityId")
+        }
+
+        let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
+            let credentials = CognitoIdentityClientTypes.Credentials(accessKeyId: "accessKey",
+                                                                     expiration: Date(),
+                                                                     secretKey: "secret",
+                                                                     sessionToken: "session")
+            return .init(credentials: credentials, identityId: "responseIdentityID")
+        }
         let request = AuthSignInRequest(username: "username",
                                         password: "password",
                                         options: AuthSignInRequest.Options())
 
         let statemachine = Defaults.makeDefaultAuthStateMachine(
             initialState: initialState,
+            identityPoolFactory: {MockIdentity(
+                mockGetIdResponse: getId,
+                mockGetCredentialsResponse: getCredentials)
+
+            },
             userPoolFactory: {MockIdentityProvider(
                 mockInitiateAuthResponse: initiateAuth,
                 mockRespondToAuthChallengeResponse: respondToChallenge
             )})
+        _ = statemachine.listen { state in
+            switch state {
+            case .configured(_, let authorizationState):
+
+                if case .waitingToStore(let credentials) = authorizationState {
+                    let authEvent = AuthEvent.init(
+                        eventType: .receivedCachedCredentials(credentials))
+                    statemachine.send(authEvent)
+                }
+            default: break
+            }
+        } onSubscribe: {}
+
         let operation = AWSAuthSignInOperation(
             request,
             authStateMachine: statemachine) {  result in

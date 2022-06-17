@@ -49,14 +49,6 @@ class SignOutStateResolverTests: XCTestCase {
             SignOutStateSequence(
                 oldState: .revokingToken,
                 event: SignOutEvent(eventType: .signedOutFailure(.testData)),
-                expected: .error(.testData)),
-            SignOutStateSequence(
-                oldState: .signingOutLocally(.testData),
-                event: SignOutEvent(eventType: .signedOutSuccess),
-                expected: .signedOut(.testData)),
-            SignOutStateSequence(
-                oldState: .signingOutLocally(.testData),
-                event: SignOutEvent(eventType: .signedOutFailure(.testData)),
                 expected: .error(.testData))
         ]
 

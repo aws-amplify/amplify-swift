@@ -23,6 +23,13 @@ extension StateMachineEvent {
         return authZEvent
     }
 
+    var isAuthenticationEvent: AuthenticationEvent.EventType? {
+        guard let authNEvent = (self as? AuthenticationEvent)?.eventType else {
+            return nil
+        }
+        return authNEvent
+    }
+
     var isRefreshSessionEvent: RefreshSessionEvent.EventType? {
         guard let refreshSessionEvent = (self as? RefreshSessionEvent)?.eventType else {
             return nil
@@ -35,6 +42,13 @@ extension StateMachineEvent {
             return nil
         }
         return fetchSessionEvent
+    }
+
+    var isSignOutEvent: SignOutEvent.EventType? {
+        guard let event = (self as? SignOutEvent)?.eventType else {
+            return nil
+        }
+        return event
     }
     
 }
