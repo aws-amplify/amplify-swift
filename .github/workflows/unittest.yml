@@ -4,6 +4,9 @@ on:
     branches:      
       - main      
       - dev-preview
+  push:
+    branches:
+      - fix/SwiftConcurrency/CategoryResettable
 
 permissions:
     contents: read 
