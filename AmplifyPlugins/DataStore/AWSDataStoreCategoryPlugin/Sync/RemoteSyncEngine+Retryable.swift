@@ -46,6 +46,7 @@ extension RemoteSyncEngine {
 
     private func scheduleRestart(advice: RequestRetryAdvice) {
         log.verbose("\(#function) scheduling retry for restarting remote sync engine")
+        remoteSyncTopicPublisher.send(.schedulingRestart)
         resolveReachabilityPublisher()
         mutationRetryNotifier = MutationRetryNotifier(
             advice: advice,

@@ -10,6 +10,8 @@
 		0CED484A59D39BAD5B9E757A /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F987EC33AAD7C0904A598CA /* Pods_HostApp_AWSDataStoreCategoryPluginIntegrationTests.framework */; };
 		2102DD47260D87BC00B80FE2 /* ReconcileAndLocalSaveQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2102DD46260D87BB00B80FE2 /* ReconcileAndLocalSaveQueue.swift */; };
 		2102DD53260E2BC800B80FE2 /* ReconcileAndSaveQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2102DD52260E2BC800B80FE2 /* ReconcileAndSaveQueueTests.swift */; };
+		2104FE5B284E7168007CF949 /* DataStoreSchemaDriftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE5A284E7168007CF949 /* DataStoreSchemaDriftTests.swift */; };
+		2104FE64284E8B21007CF949 /* DataStoreInternal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE63284E8B21007CF949 /* DataStoreInternal.swift */; };
 		210E218226601C1C00D90ED8 /* MutationEventQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210E218126601C1C00D90ED8 /* MutationEventQueryTests.swift */; };
 		211A81D7270F787200C5483D /* SortedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211A81D6270F787200C5483D /* SortedList.swift */; };
 		211A81D9270F78B100C5483D /* SortedListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211A81D8270F78B100C5483D /* SortedListTests.swift */; };
@@ -420,6 +422,8 @@
 		1AF725CF8D5E6F10D86CB75C /* Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.debug.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests/Pods-HostApp-AWSDataStoreCategoryPluginAuthIntegrationTests.debug.xcconfig"; sourceTree = "<group>"; };
 		2102DD46260D87BB00B80FE2 /* ReconcileAndLocalSaveQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReconcileAndLocalSaveQueue.swift; sourceTree = "<group>"; };
 		2102DD52260E2BC800B80FE2 /* ReconcileAndSaveQueueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReconcileAndSaveQueueTests.swift; sourceTree = "<group>"; };
+		2104FE5A284E7168007CF949 /* DataStoreSchemaDriftTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreSchemaDriftTests.swift; sourceTree = "<group>"; };
+		2104FE63284E8B21007CF949 /* DataStoreInternal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreInternal.swift; sourceTree = "<group>"; };
 		210E218126601C1C00D90ED8 /* MutationEventQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutationEventQueryTests.swift; sourceTree = "<group>"; };
 		211A81D6270F787200C5483D /* SortedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortedList.swift; sourceTree = "<group>"; };
 		211A81D8270F78B100C5483D /* SortedListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortedListTests.swift; sourceTree = "<group>"; };
@@ -1132,6 +1136,7 @@
 				218F78D3275AC7CD0042334B /* DataStoreModelWithCustomTimestampTests.swift */,
 				218F78D2275AC7CD0042334B /* DataStoreModelWithDefaultValueTests.swift */,
 				218F78D1275AC7CD0042334B /* DataStoreModelWithSecondaryIndexTests.swift */,
+				2104FE5A284E7168007CF949 /* DataStoreSchemaDriftTests.swift */,
 				218F788E275A825A0042334B /* README.md */,
 			);
 			path = TransformerV2;
@@ -1594,6 +1599,7 @@
 				FAD2BDF5239583B2006EB065 /* TestModelRegistration.swift */,
 				218F7892275A82C50042334B /* TestModelV2Registration.swift */,
 				216942F327F4E0BC00DE36BC /* DataStoreHubEvent.swift */,
+				2104FE63284E8B21007CF949 /* DataStoreInternal.swift */,
 			);
 			path = TestSupport;
 			sourceTree = "<group>";
@@ -2630,6 +2636,7 @@
 			files = (
 				218F7888275A81410042334B /* DataStoreConnectionScenario6V2Tests.swift in Sources */,
 				D8E9992425013C2F0006170A /* DataStoreHubEventsTests.swift in Sources */,
+				2104FE5B284E7168007CF949 /* DataStoreSchemaDriftTests.swift in Sources */,
 				D8C5BA59249815A6007C3A68 /* DataStoreConfigurationTests.swift in Sources */,
 				2178C0A126D3F1E200C53065 /* DataStoreObserveQueryTests.swift in Sources */,
 				2149E62D23886D3900873955 /* SyncMetadataTests.swift in Sources */,
@@ -2649,6 +2656,7 @@
 				218F7887275A81410042334B /* DataStoreConnectionScenario2V2Tests.swift in Sources */,
 				218F788C275A81410042334B /* DataStoreConnectionScenario5V2Tests.swift in Sources */,
 				218F7891275A82A00042334B /* SyncEngineIntegrationV2TestBase.swift in Sources */,
+				2104FE64284E8B21007CF949 /* DataStoreInternal.swift in Sources */,
 				21FDBBDB2587DB7A0086FCDC /* DataStoreConnectionScenario6Tests.swift in Sources */,
 				218F78D4275AC7CD0042334B /* DataStoreModelWithSecondaryIndexTests.swift in Sources */,
 				FAB571422395A3E80006A5F8 /* DataStoreEndToEndTests.swift in Sources */,

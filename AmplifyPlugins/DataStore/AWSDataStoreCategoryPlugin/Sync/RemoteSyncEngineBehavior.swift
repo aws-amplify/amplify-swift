@@ -24,6 +24,7 @@ enum RemoteSyncEngineEvent {
     case modelSyncedEvent(ModelSyncedEvent)
     case syncQueriesReadyEvent
     case readyEvent
+    case schedulingRestart
 }
 
 /// Behavior to sync mutation events to the remote API, and to subscribe to mutations from the remote API
