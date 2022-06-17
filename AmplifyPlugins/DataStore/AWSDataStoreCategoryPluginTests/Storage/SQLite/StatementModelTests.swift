@@ -15,6 +15,18 @@ import XCTest
 
 class StatementModelTests: XCTestCase {
 
+    func testDropLastPath_invalidString() throws {
+        let path = "post."
+        let result = path.dropLastPath()
+        XCTAssertEqual(result, "post")
+    }
+
+    func testDropLastPath_emptyString() throws {
+        let path = ""
+        let result = path.dropLastPath()
+        XCTAssertEqual(result, "")
+    }
+
     func testDropLastPath_Root() throws {
         let path = "post"
         let result = path.dropLastPath()

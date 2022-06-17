@@ -98,6 +98,8 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
                 return
         }
         XCTAssertEqual(queriedBlog.id, blog.id)
+        XCTAssertEqual(queriedBlog.customs![0]?.id, customModel.id)
+        XCTAssertEqual(queriedBlog.customs![0]?.children![0]?.id, nestedModel.id)
     }
 
     func testUpdateCommentWithPostThenQuery() {
@@ -154,6 +156,8 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
         XCTAssertEqual(updatedPost.id, post.id)
         XCTAssertNotNil(updatedPost.blog)
         XCTAssertEqual(updatedPost.blog?.id, blog.id)
+        XCTAssertEqual(updatedPost.blog?.customs![0]?.id, customModel.id)
+        XCTAssertEqual(updatedPost.blog?.customs![0]?.children![0]?.id, nestedModel.id)
     }
 
     func testUpdateCommentWithPostAndBlog() {
@@ -244,12 +248,16 @@ class StorageEngineTestsOptionalAssociation: StorageEngineTestsBase {
                                         sort: nil,
                                         paginationInput: nil)
         let rows = try connection.prepare(statement.stringValue).run(statement.variables)
+        // Eager loading selects all fields and associated fields. The number of columns is the number of fields of
+        // Post8 plus it's associated field Blog8. This excludes the association itself, ie. post.blog is excluded
+        // and blog.posts is excluded. So there are 6 Post8 fields and 6 Blog8 fields.
         XCTAssertEqual(rows.columnCount, 12)
         let results: [Post8] = try rows.convert(to: Post8.self,
                                                 withSchema: Post8.schema,
                                                 using: statement)
 
         XCTAssertNotNil(results)
+        // The result is the single post which was saved and queried
         XCTAssertEqual(results.count, 1)
         XCTAssertNil(results.first!.blog)
     }
