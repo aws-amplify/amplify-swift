@@ -5,6 +5,22 @@
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
+      <BuildActionEntries>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "2149E61C23886CEE00873955"
+               BuildableName = "AWSDataStoreCategoryPluginIntegrationTests.xctest"
+               BlueprintName = "AWSDataStoreCategoryPluginIntegrationTests"
+               ReferencedContainer = "container:DataStoreCategoryPlugin.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+      </BuildActionEntries>
    </BuildAction>
    <TestAction
       buildConfiguration = "Debug"
@@ -27,9 +43,6 @@
                </Test>
                <Test
                   Identifier = "DataStoreConfigurationTests">
-               </Test>
-               <Test
-                  Identifier = "DataStoreConnectionOptionalAssociations">
                </Test>
                <Test
                   Identifier = "DataStoreConnectionScenario1Tests">
@@ -74,6 +87,9 @@
                   Identifier = "DataStoreConnectionScenario7V2Tests">
                </Test>
                <Test
+                  Identifier = "DataStoreConnectionScenario8V2Tests">
+               </Test>
+               <Test
                   Identifier = "DataStoreConsecutiveUpdatesTests">
                </Test>
                <Test
@@ -102,9 +118,6 @@
                </Test>
                <Test
                   Identifier = "DataStoreScalarTests">
-               </Test>
-               <Test
-                  Identifier = "DataStoreSchemaDriftTests">
                </Test>
                <Test
                   Identifier = "DataStoreTestBase">
