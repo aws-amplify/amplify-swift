@@ -101,6 +101,9 @@
                   Identifier = "DataStoreScalarTests">
                </Test>
                <Test
+                  Identifier = "DataStoreSchemaDriftTests">
+               </Test>
+               <Test
                   Identifier = "DataStoreTestBase">
                </Test>
                <Test

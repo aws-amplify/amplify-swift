@@ -226,3 +226,16 @@ enum Priority {
   NORMAL
   HIGH
 }
+
+# 16 Schema drift scenario
+
+type SchemaDrift @model {
+  id: ID!
+  enumValue: EnumDrift
+}
+
+enum EnumDrift {
+   ONE
+   TWO
+   THREE
+}
