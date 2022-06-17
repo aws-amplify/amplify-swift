@@ -21,26 +21,41 @@ struct AuthSessionHelper {
     static func invalidateSession(with amplifyConfiguration: AmplifyConfiguration) {
         let configuration = getAuthConfiguration(configuration: amplifyConfiguration)
         let credentialStore = AWSCognitoAuthCredentialStore(authConfiguration: configuration, accessGroup: nil)
-        guard let credentials = try? credentialStore.retrieveCredential() else {
+        guard let credentials = try? credentialStore.retrieveCredential() as? AmplifyCredentials else {
             return
         }
+        switch credentials {
+        case .userPoolAndIdentityPool(tokens: let tokens, identityID: let identityID, credentials: let awsCredentials):
+            let updatedToken = updateTokenWithPastExpiry(tokens)
+            let updatedCredentials = AmplifyCredentials.userPoolAndIdentityPool(tokens: updatedToken,
+                                                                                identityID: identityID,
+                                                                                credentials: awsCredentials)
+            try! credentialStore.saveCredential(updatedCredentials)
+        case  .userPoolOnly(tokens: let tokens):
+            let updatedToken = updateTokenWithPastExpiry(tokens)
+            let updatedCredentials = AmplifyCredentials.userPoolOnly(tokens: updatedToken)
+            try! credentialStore.saveCredential(updatedCredentials)
+        default: break;
+        }
 
-        if let tokens = credentials.userPoolTokens,
-           var idTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: tokens.idToken).get(),
-           var accessTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: tokens.idToken).get() {
+    }
+
+    static private func updateTokenWithPastExpiry(_ tokens: AWSCognitoUserPoolTokens)
+    -> AWSCognitoUserPoolTokens {
+        var idToken = tokens.idToken
+        var accessToken = tokens.accessToken
+        if var idTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: idToken).get(),
+           var accessTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: accessToken).get() {
 
             idTokenClaims["exp"] = String(Date(timeIntervalSinceNow: -3000).timeIntervalSince1970) as AnyObject
             accessTokenClaims["exp"] = String(Date(timeIntervalSinceNow: -3000).timeIntervalSince1970) as AnyObject
-
-            let updatedCredentials = AmplifyCredentials(
-                userPoolTokens: AWSCognitoUserPoolTokens(idToken: CognitoAuthTestHelper.buildToken(for: idTokenClaims),
-                                                         accessToken: CognitoAuthTestHelper.buildToken(for: accessTokenClaims),
-                                                         refreshToken: "invalid",
-                                                         expiration: Date().addingTimeInterval(-50000)),
-                identityId: credentials.identityId,
-                awsCredential: credentials.awsCredential)
-            try! credentialStore.saveCredential(updatedCredentials)
+            idToken = CognitoAuthTestHelper.buildToken(for: idTokenClaims)
+            accessToken = CognitoAuthTestHelper.buildToken(for: accessTokenClaims)
         }
+        return AWSCognitoUserPoolTokens(idToken: idToken,
+                                        accessToken: accessToken,
+                                        refreshToken: "invalid",
+                                        expiration: Date().addingTimeInterval(-50000))
     }
 
     static private func getAuthConfiguration(configuration: AmplifyConfiguration) -> AuthConfiguration {
