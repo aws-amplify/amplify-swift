@@ -42,25 +42,22 @@ public class AWSAuthSignOutOperation: AmplifySignOutOperation, AuthSignOutOperat
             guard let self = self else {
                 return
             }
-            guard case .configured(let authNState, _) = $0 else {
+            guard case .configured(let authNState, let authZState) = $0 else {
                 return
             }
 
             switch authNState {
-            case .signingOut(let signOutState):
-                if case .signingOutLocally = signOutState {
-                    self.clearCredentialStore()
-                }
-
             case .signedOut:
                 defer {
                     self.finish()
                 }
-
-                self.dispatchSuccess()
-                if let token = self.stateListenerToken {
-                    self.authStateMachine.cancel(listenerToken: token)
+                if case .sessionEstablished = authZState {
+                    self.dispatchSuccess()
+                    if let token = self.stateListenerToken {
+                        self.authStateMachine.cancel(listenerToken: token)
+                    }
                 }
+
 
             case .error(let error):
                 defer {
@@ -84,58 +81,10 @@ public class AWSAuthSignOutOperation: AmplifySignOutOperation, AuthSignOutOperat
         }
     }
 
-    func clearCredentialStore() {
-        var token: CredentialStoreStateMachineToken?
-        token = credentialStoreStateMachine.listen { [weak self] credentialStoreState in
-            guard let self = self else {
-                return
-            }
-
-            switch credentialStoreState {
-            case .success:
-                self.sendSignedOutSuccessEvent()
-                if let token = token {
-                    self.credentialStoreStateMachine.cancel(listenerToken: token)
-                }
-
-            case .error(let credentialError):
-                // If running on simulator, ignore missing entitlement (OSStatus:-34018) error
-                // This is due to SPM not supporting testing with Keychain
-                #if targetEnvironment(simulator)
-                    if case let .securityError(osStatus) = credentialError, osStatus == -34_018 {
-                        self.sendSignedOutSuccessEvent()
-                    } else {
-                        self.sendSignedOutFailedEvent(credentialError)
-                    }
-                #else
-                    self.sendSignedOutFailedEvent(credentialError)
-                #endif
-                    if let token = token {
-                        self.credentialStoreStateMachine.cancel(listenerToken: token)
-                    }
-
-            default:
-                break
-            }
-
-        } onSubscribe: { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            self.sendClearCredentialsEvent()
-        }
-    }
-
     private func sendSignOutEvent() {
         let signOutData = SignOutEventData(globalSignOut: request.options.globalSignOut)
         let event = AuthenticationEvent(eventType: .signOutRequested(signOutData))
         authStateMachine.send(event)
-    }
-
-    private func sendClearCredentialsEvent() {
-        let event = CredentialStoreEvent.init(eventType: .clearCredentialStore)
-        credentialStoreStateMachine.send(event)
     }
 
     private func sendSignedOutSuccessEvent() {
