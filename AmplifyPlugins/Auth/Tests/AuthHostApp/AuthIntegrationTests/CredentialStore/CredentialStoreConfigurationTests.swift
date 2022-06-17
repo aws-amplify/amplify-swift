@@ -32,10 +32,9 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         // Given
         let identityId = "identityId"
         let awsCredentials = AuthAWSCognitoCredentials.testData
-        let initialCognitoCredentials = AmplifyCredentials(
-            userPoolTokens: nil,
-            identityId: identityId,
-            awsCredential: awsCredentials)
+        let initialCognitoCredentials = AmplifyCredentials.identityPoolOnly(
+            identityID: identityId,
+            credentials: awsCredentials)
         let configData = Defaults.makeIdentityConfigData()
         let initialAuthConfig = AuthConfiguration.identityPools(configData)
         let credentialStore = AWSCognitoAuthCredentialStore(authConfiguration: initialAuthConfig)
@@ -52,12 +51,16 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         let newCredentialStore = AWSCognitoAuthCredentialStore(authConfiguration: newAuthConfig)
 
         // Then
-        let credentials = try? newCredentialStore.retrieveCredential()
+        guard let credentials = try? newCredentialStore.retrieveCredential() as? AmplifyCredentials,
+              case .identityPoolOnly(let retrievedIdentityID, let retrievedCredentials) = credentials else {
+            XCTFail("Unable to retrieve Credentials")
+            return
+        }
         XCTAssertNotNil(credentials)
-        XCTAssertNotNil(credentials?.identityId)
-        XCTAssertNotNil(credentials?.awsCredential)
-        XCTAssertEqual(credentials?.identityId, identityId)
-        XCTAssertEqual(credentials?.awsCredential, awsCredentials)
+        XCTAssertNotNil(retrievedIdentityID)
+        XCTAssertNotNil(retrievedCredentials)
+        XCTAssertEqual(retrievedIdentityID, identityId)
+        XCTAssertEqual(retrievedCredentials, awsCredentials)
     }
 
     /// Test no migration happens when no configuration change happens
@@ -72,10 +75,10 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         // Given
         let identityId = "identityId"
         let awsCredentials = AuthAWSCognitoCredentials.testData
-        let initialCognitoCredentials = AmplifyCredentials(
-            userPoolTokens: AWSCognitoUserPoolTokens.testData,
-            identityId: identityId,
-            awsCredential: awsCredentials)
+        let initialCognitoCredentials = AmplifyCredentials.userPoolAndIdentityPool(
+            tokens: .testData,
+            identityID: identityId,
+            credentials: awsCredentials)
         let initialAuthConfig = AuthConfiguration.userPoolsAndIdentityPools(
             Defaults.makeDefaultUserPoolConfigData(),
             Defaults.makeIdentityConfigData())
@@ -90,12 +93,19 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         let newCredentialStore = AWSCognitoAuthCredentialStore(authConfiguration: initialAuthConfig)
 
         // Then
-        let credentials = try? newCredentialStore.retrieveCredential()
+        guard let credentials = try? newCredentialStore.retrieveCredential() as? AmplifyCredentials,
+              case .userPoolAndIdentityPool(let retrievedTokens,
+                                            let retrievedIdentityID,
+                                            let retrievedCredentials) = credentials else {
+            XCTFail("Unable to retrieve Credentials")
+            return
+        }
         XCTAssertNotNil(credentials)
-        XCTAssertNotNil(credentials?.identityId)
-        XCTAssertNotNil(credentials?.awsCredential)
-        XCTAssertEqual(credentials?.identityId, identityId)
-        XCTAssertEqual(credentials?.awsCredential, awsCredentials)
+        XCTAssertNotNil(retrievedTokens)
+        XCTAssertNotNil(retrievedIdentityID)
+        XCTAssertNotNil(retrievedCredentials)
+        XCTAssertEqual(retrievedIdentityID, identityId)
+        XCTAssertEqual(retrievedCredentials, awsCredentials)
     }
 
     /// Test clearing of existing credentials when a configuration change happens from UserPool to both User Pool and Identity Pool
@@ -110,10 +120,9 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         // Given
         let identityId = "identityId"
         let awsCredentials = AuthAWSCognitoCredentials.testData
-        let initialCognitoCredentials = AmplifyCredentials(
-            userPoolTokens: nil,
-            identityId: identityId,
-            awsCredential: awsCredentials)
+        let initialCognitoCredentials = AmplifyCredentials.identityPoolOnly(
+            identityID: identityId,
+            credentials: awsCredentials)
         let initialAuthConfig = AuthConfiguration.userPools(Defaults.makeDefaultUserPoolConfigData())
         let credentialStore = AWSCognitoAuthCredentialStore(authConfiguration: initialAuthConfig)
         do {
@@ -145,10 +154,10 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         // Given
         let identityId = "identityId"
         let awsCredentials = AuthAWSCognitoCredentials.testData
-        let initialCognitoCredentials = AmplifyCredentials(
-            userPoolTokens: nil,
-            identityId: identityId,
-            awsCredential: awsCredentials)
+        let initialCognitoCredentials = AmplifyCredentials.identityPoolOnly(
+            identityID: identityId,
+            credentials: awsCredentials)
+
         let initialAuthConfig = AuthConfiguration.identityPools(Defaults.makeIdentityConfigData())
         let credentialStore = AWSCognitoAuthCredentialStore(authConfiguration: initialAuthConfig)
         do {
@@ -179,10 +188,10 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         // Given
         let identityId = "identityId"
         let awsCredentials = AuthAWSCognitoCredentials.testData
-        let initialCognitoCredentials = AmplifyCredentials(
-            userPoolTokens: AWSCognitoUserPoolTokens.testData,
-            identityId: identityId,
-            awsCredential: awsCredentials)
+        let initialCognitoCredentials = AmplifyCredentials.userPoolAndIdentityPool(
+            tokens: .testData,
+            identityID: identityId,
+            credentials: awsCredentials)
         let initialAuthConfig = AuthConfiguration.userPoolsAndIdentityPools(
             Defaults.makeDefaultUserPoolConfigData(),
             Defaults.makeIdentityConfigData())
