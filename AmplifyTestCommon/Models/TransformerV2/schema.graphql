@@ -279,3 +279,4 @@ enum EnumDrift {
    ONE
    TWO
    THREE
+}
