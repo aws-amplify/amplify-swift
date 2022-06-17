@@ -144,7 +144,7 @@ class PinpointContext {
                                         pinpointClient: pinpointClient,
                                         currentDevice: currentDevice,
                                         userDefaults: userDefaults)
-        
+
         sessionClient = SessionClient(analyticsClient: nil,
                                       archiver: archiver,
                                       configuration: .init(appId: configuration.appId,

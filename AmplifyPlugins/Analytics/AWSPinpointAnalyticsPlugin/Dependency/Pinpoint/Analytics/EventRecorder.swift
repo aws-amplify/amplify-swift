@@ -102,7 +102,7 @@ class EventRecorder: AnalyticsEventRecording {
             }
         }
     }
-    
+
     private func getPublicEndpoint() async throws -> PinpointClientTypes.PublicEndpoint {
         let endpointProfile = await endpointClient.currentEndpointProfile()
         let channelType: PinpointClientTypes.ChannelType = endpointProfile.isDebug ? .apns : .apnsSandbox

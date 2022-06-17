@@ -10,7 +10,7 @@ import Foundation
 
 protocol SessionClientBehaviour: AnyObject {
     var currentSession: PinpointSession { get }
-    var analyticsClient: AnalyticsClientBehaviour? { set get }
+    var analyticsClient: AnalyticsClientBehaviour? { get set }
 
     func startPinpointSession()
     func validateOrRetrieveSession(_ session: PinpointSession?) -> PinpointSession
