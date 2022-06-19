@@ -24,7 +24,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         return reachabilityPublisher.eraseToAnyPublisher()
     }
 
-    override func setUp() async {
+    override func setUp() async throws {
         reachabilityPublisher = CurrentValueSubject<ReachabilityUpdate, Never>(ReachabilityUpdate(isOnline: false))
         await tryOrFail {
             try await setUpWithAPI()

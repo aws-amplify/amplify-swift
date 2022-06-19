@@ -128,7 +128,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
     func testDeleteWithNoLocalModel() async throws {
         let expectationListener = expectation(description: "listener")
 
-        tryOrFail {
+        await tryOrFail {
             try setUpStorageAdapter()
         }
 
@@ -145,7 +145,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
 
         apiPlugin.responders[.subscribeRequestListener] = responder
 
-        tryOrFail {
+        await tryOrFail {
             try setUpDataStore(modelRegistration: MockModelRegistration())
             mockRemoteSyncEngineFor_testDeleteWithNoLocalModel()
             try startAmplifyAndWaitForSync()

@@ -41,7 +41,7 @@ class SyncEngineTestBase: XCTestCase {
 
     // MARK: - Setup
 
-    override func setUpWithError() async throws {
+    override func setUp() async throws {
         continueAfterFailure = false
 
         await Amplify.reset()

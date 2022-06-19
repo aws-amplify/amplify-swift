@@ -26,7 +26,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
     var stateMachine: MockStateMachine<ReconcileAndLocalSaveOperation.State, ReconcileAndLocalSaveOperation.Action>!
     var cancellables: Set<AnyCancellable>!
     override func setUp() async throws {
-        tryOrFail {
+        await tryOrFail {
             try await setUpWithAPI()
         }
         ModelRegistry.register(modelType: Post.self)
