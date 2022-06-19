@@ -50,7 +50,7 @@ class DevMenuExtensionTests: XCTestCase {
         let devMenuPlugin = try Amplify.Logging.getPlugin(for: DevMenuStringConstants.persistentLoggingPluginKey)
         XCTAssertTrue(devMenuPlugin is PersistentLoggingPlugin)
     }
-    override func tearDown() {
+    override func tearDown() async throws {
         await Amplify.reset()
     }
 }

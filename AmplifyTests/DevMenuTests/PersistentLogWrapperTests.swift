@@ -133,7 +133,7 @@ class PersistentLogWrapperTests: XCTestCase {
         XCTAssertTrue(logHistory[0].message == "Message 2")
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         await Amplify.reset()
     }
 }

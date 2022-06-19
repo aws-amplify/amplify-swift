@@ -43,7 +43,7 @@ class PersistentLoggingPluginTests: XCTestCase {
         XCTAssertTrue(devMenuPlugin.default is PersistentLogWrapper)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         await Amplify.reset()
     }
 }
