@@ -27,9 +27,9 @@ class AWSS3StoragePluginTestBase: XCTestCase {
     static var isFirstUserSignedUp = false
     static var isSecondUserSignedUp = false
 
-    override func setUp() {
+    override func setUp() async throws {
         do {
-            Amplify.reset()
+            await Amplify.reset()
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSS3StoragePlugin())
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
@@ -41,8 +41,8 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         }
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
         // Unforunately, `sleep` has been added here to get more consistent test runs. The SDK will be used with
         // same key to create a URLSession. The `sleep` helps avoid the error:
         // ```

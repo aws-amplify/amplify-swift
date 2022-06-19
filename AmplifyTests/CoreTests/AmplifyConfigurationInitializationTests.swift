@@ -153,10 +153,10 @@ class AmplifyConfigurationInitializationTests: XCTestCase {
     ///    - Amplify is finished configuring its plugins
     /// - Then:
     ///    - I receive a Hub event
-    func testConfigurationNotification() throws {
+    func testConfigurationNotification() async throws {
         let notificationReceived = expectation(description: "Configured notification received")
         let listeningPlugin = NotificationListeningAnalyticsPlugin(notificationReceived: notificationReceived)
-        Amplify.reset()
+        await Amplify.reset()
         try Amplify.add(plugin: listeningPlugin)
 
         let analyticsConfiguration = AnalyticsCategoryConfiguration(plugins: [

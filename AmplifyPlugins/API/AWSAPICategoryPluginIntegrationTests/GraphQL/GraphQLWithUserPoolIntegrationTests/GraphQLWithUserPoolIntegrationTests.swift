@@ -45,7 +45,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
 
     override func tearDown() {
         signOut()
-        Amplify.reset()
+        await Amplify.reset()
     }
 
     /// Given: A CreateTodo mutation request, and user signed in, graphql has userpools as auth mode.

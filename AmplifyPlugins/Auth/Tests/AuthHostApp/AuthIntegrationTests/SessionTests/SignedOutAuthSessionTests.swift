@@ -21,7 +21,7 @@ class SignedOutAuthSessionTests: AWSAuthBaseTest {
     override func tearDown() {
         super.tearDown()
         AuthSessionHelper.clearSession()
-        Amplify.reset()
+        await Amplify.reset()
     }
 
     /// Test if we can fetch auth session in signedOut state

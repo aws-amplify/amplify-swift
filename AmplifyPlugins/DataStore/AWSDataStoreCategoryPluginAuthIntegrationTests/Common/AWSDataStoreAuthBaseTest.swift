@@ -30,7 +30,7 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
         clearDataStore()
         requests = []
         signOut()
-        Amplify.reset()
+        await Amplify.reset()
     }
 
     // MARK: - Test Helpers

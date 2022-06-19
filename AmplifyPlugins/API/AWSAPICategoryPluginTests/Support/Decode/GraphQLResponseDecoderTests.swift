@@ -15,8 +15,8 @@ class GraphQLResponseDecoderTests: XCTestCase {
     static let decoder = JSONDecoder()
     static let encoder = JSONEncoder()
 
-    override class func setUp() {
-        Amplify.reset()
+    override class func setUp() async {
+        await Amplify.reset()
         ModelRegistry.register(modelType: SimpleModel.self)
         ModelRegistry.register(modelType: Post4.self)
         ModelRegistry.register(modelType: Comment4.self)

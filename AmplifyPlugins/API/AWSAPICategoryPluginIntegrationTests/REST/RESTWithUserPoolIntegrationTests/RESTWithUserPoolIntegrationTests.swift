@@ -33,7 +33,7 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
 
     override func tearDown() {
         signOut()
-        Amplify.reset()
+        await Amplify.reset()
     }
 
     func testGetAPISuccess() {

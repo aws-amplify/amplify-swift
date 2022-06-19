@@ -25,8 +25,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         let version: String = "1"
     }
 
-    func testCreate() throws {
-        setUp(withModels: TestModelRegistration())
+    func testCreate() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         var cancellables = Set<AnyCancellable>()
         let date = Temporal.DateTime.now()
@@ -108,8 +108,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                    remoteEventReceived], timeout: 10.0)
     }
 
-    func testCreateMutateDelete() throws {
-        setUp(withModels: TestModelRegistration())
+    func testCreateMutateDelete() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         let date = Temporal.DateTime.now()
@@ -185,8 +185,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     ///    - attempt to update the existing post with a condition that matches existing data
     /// - Then:
     ///    - the update with condition that matches existing data will be applied and returned.
-    func testCreateThenMutateWithCondition() throws {
-        setUp(withModels: TestModelRegistration())
+    func testCreateThenMutateWithCondition() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         let post = Post.keys
@@ -254,8 +254,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     /// - Then:
     ///    - the post is first only updated on local store is not sync to the remote
     ///    - the save with condition reaches the remote and fails with conditional save failed
-    func testCreateThenMutateWithConditionFailOnSync() throws {
-        setUp(withModels: TestModelRegistration())
+    func testCreateThenMutateWithConditionFailOnSync() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         let post = Post.keys
@@ -341,8 +341,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     /// - Then:
     ///    - Saving a post should be successful
     ///
-    func testStopStart() throws {
-        setUp(withModels: TestModelRegistration())
+    func testStopStart() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let stopStartSuccess = expectation(description: "stop then start successful")
         Amplify.DataStore.stop { result in
@@ -372,8 +372,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     ///   - I call DataStore.query()
     /// - Then:
     ///   - DataStore is automatically started
-    func testQueryImplicitlyStarts() throws {
-        setUp(withModels: TestModelRegistration())
+    func testQueryImplicitlyStarts() async throws {
+        await setUp(withModels: TestModelRegistration())
         let dataStoreStarted = expectation(description: "dataStoreStarted")
         let sink = Amplify
             .Hub
@@ -400,8 +400,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     /// - Then:
     ///    - Saving a post should be successful
     ///
-    func testClearStart() throws {
-        setUp(withModels: TestModelRegistration())
+    func testClearStart() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let clearStartSuccess = expectation(description: "clear then start successful")
         Amplify.DataStore.clear { result in
@@ -434,8 +434,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     ///    - Clean up: Concurrently perform Delete's
     ///    - Ensure the expected mutation event with version 2 (synced from cloud) is received
     ///
-    func testConcurrentSave() throws {
-        setUp(withModels: TestModelRegistration())
+    func testConcurrentSave() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         var posts = [Post]()

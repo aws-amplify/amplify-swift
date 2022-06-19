@@ -43,8 +43,8 @@ class AWSS3StorageOperationTestBase: XCTestCase {
         mockAuthService = MockAWSAuthService()
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 
 }

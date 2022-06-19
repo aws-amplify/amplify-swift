@@ -32,8 +32,8 @@ class GraphQLScalarTests: GraphQLTestBase {
         }
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 
     func testScalarContainer() throws {

@@ -20,7 +20,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
     override func tearDown() {
         super.tearDown()
         AuthSessionHelper.clearSession()
-        Amplify.reset()
+        await Amplify.reset()
     }
 
     /// Test fetching the user's email attribute.

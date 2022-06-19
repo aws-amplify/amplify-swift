@@ -27,7 +27,7 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
     }
 
     override func tearDown() {
-        Amplify.reset()
+        await Amplify.reset()
     }
 
     /// Test create mutation with a custom GraphQL Document

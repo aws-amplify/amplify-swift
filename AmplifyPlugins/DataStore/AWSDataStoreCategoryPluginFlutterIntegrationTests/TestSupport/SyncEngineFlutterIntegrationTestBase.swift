@@ -33,7 +33,7 @@ class SyncEngineFlutterIntegrationTestBase: XCTestCase {
         super.setUp()
         continueAfterFailure = false
 
-        Amplify.reset()
+        await Amplify.reset()
         Amplify.Logging.logLevel = .verbose
 
         do {

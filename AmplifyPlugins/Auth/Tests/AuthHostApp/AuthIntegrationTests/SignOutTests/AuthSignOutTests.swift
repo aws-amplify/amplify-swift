@@ -26,7 +26,7 @@ class AuthSignOutTests: AWSAuthBaseTest {
 
     override func tearDown() {
         super.tearDown()
-        Amplify.reset()
+        await Amplify.reset()
         AuthSessionHelper.clearSession()
         sleep(2)
     }

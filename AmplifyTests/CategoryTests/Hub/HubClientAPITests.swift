@@ -13,8 +13,8 @@ import XCTest
 class HubClientAPITests: XCTestCase {
     var mockAmplifyConfig: AmplifyConfiguration!
 
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
 
         let hubConfig = HubCategoryConfiguration(
             plugins: ["MockHubCategoryPlugin": true]

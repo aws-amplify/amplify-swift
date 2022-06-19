@@ -25,9 +25,9 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
     ///    - The sync engine receives an update mutation
     /// - Then:
     ///    - The update is not applied
-    func testUpdateAfterDelete() throws {
+    func testUpdateAfterDelete() async throws {
         let expectationListener = expectation(description: "listener")
-        tryOrFail {
+        await tryOrFail {
             try setUpStorageAdapter(preCreating: [MockSynced.self])
         }
 
@@ -53,7 +53,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
 
         apiPlugin.responders[.subscribeRequestListener] = responder
 
-        tryOrFail {
+        await tryOrFail {
             try setUpDataStore(modelRegistration: MockModelRegistration())
             mockRemoteSyncEngineFor_testUpdateAfterDelete()
             try startAmplifyAndWaitForSync()
@@ -125,7 +125,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
     ///    - The sync engine receives a delete mutation
     /// - Then:
     ///    - The delete metadata record is written but no model record is written
-    func testDeleteWithNoLocalModel() throws {
+    func testDeleteWithNoLocalModel() async; throwsasync throws {
         let expectationListener = expectation(description: "listener")
 
         tryOrFail {

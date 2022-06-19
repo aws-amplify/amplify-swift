@@ -50,12 +50,12 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
         let version: String = "1"
     }
 
-    func testGetBlogThenFetchPostsThenFetchComments() throws {
-        setUp(withModels: TestModelRegistration())
+    func testGetBlogThenFetchPostsThenFetchComments() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let blog = saveBlog(name: "name"),
               let post1 = savePost(title: "title", blog: blog),
-              let post2 = savePost(title: "title", blog: blog),
+              let _ = savePost(title: "title", blog: blog),
               let comment1post1 = saveComment(post: post1, content: "content"),
               let comment2post1 = saveComment(post: post1, content: "content") else {
             XCTFail("Could not create blog, posts, and comments")
@@ -100,8 +100,8 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
         }
     }
 
-    func testGetCommentThenFetchPostThenFetchBlog() throws {
-        setUp(withModels: TestModelRegistration())
+    func testGetCommentThenFetchPostThenFetchBlog() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let blog = saveBlog(name: "name"),
               let post = savePost(title: "title", blog: blog),
@@ -150,8 +150,8 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
         XCTAssertEqual(fetchedBlog.name, blog.name)
     }
 
-    func testGetPostThenFetchBlogAndComment() throws {
-        setUp(withModels: TestModelRegistration())
+    func testGetPostThenFetchBlogAndComment() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let blog = saveBlog(name: "name"),
               let post = savePost(title: "title", blog: blog),
@@ -215,8 +215,8 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
         }
     }
 
-    func testDeleteAll() throws {
-        setUp(withModels: TestModelRegistration())
+    func testDeleteAll() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForReady()
         var cancellables = Set<AnyCancellable>()
         let remoteEventReceived = expectation(description: "received mutation event with version 1")

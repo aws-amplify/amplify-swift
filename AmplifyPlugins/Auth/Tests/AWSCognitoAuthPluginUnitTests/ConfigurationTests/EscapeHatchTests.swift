@@ -11,8 +11,8 @@ import XCTest
 
 class EscapeHatchTests: XCTestCase {
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 
     /// Test escape hatch with valid config for user pool and identity pool

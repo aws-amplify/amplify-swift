@@ -14,8 +14,8 @@ class AWSS3StoragePluginConfigurationTests: XCTestCase {
     /// Given: awss3StoragePlugin configuration with incorrect DefaultAccessLevel value
     /// When: Configure Amplify
     /// Then: The call throws a PluginError.pluginConfigurationError
-    func testConfigureWithIncorrectDefaultAccessLevelValueShouldThrow() {
-        Amplify.reset()
+    func testConfigureWithIncorrectDefaultAccessLevelValueShouldThrow() async {
+        await Amplify.reset()
 
         let storageConfig = StorageCategoryConfiguration(
             plugins: [

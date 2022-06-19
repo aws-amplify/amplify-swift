@@ -23,8 +23,8 @@ class APICategoryDependencyTests: XCTestCase {
     ///    - I invoke `save` on a non-syncable model
     /// - Then:
     ///    - The operation succeeds
-    func testNonSyncableWithoutAPICategorySucceeds() throws {
-        try setUpWithAPI()
+    func testNonSyncableWithoutAPICategorySucceeds() async throws {
+        try await setUpWithAPI()
 
         let model = MockUnsynced()
 
@@ -59,8 +59,8 @@ class APICategoryDependencyTests: XCTestCase {
 // MARK: - Setup
 
 extension APICategoryDependencyTests {
-    private func setUpCore() throws -> AmplifyConfiguration {
-        Amplify.reset()
+    private func setUpCore() async throws -> AmplifyConfiguration {
+        await Amplify.reset()
 
         let connection = try Connection(.inMemory)
         storageAdapter = try SQLiteStorageEngineAdapter(connection: connection)
@@ -109,14 +109,14 @@ extension APICategoryDependencyTests {
         return amplifyConfig
     }
 
-    private func setUpWithAPI() throws {
-        let configWithoutAPI = try setUpCore()
+    private func setUpWithAPI() async throws {
+        let configWithoutAPI = try await setUpCore()
         let configWithAPI = try setUpAPICategory(config: configWithoutAPI)
         try Amplify.configure(configWithAPI)
     }
 
-    private func setUpWithoutAPI() throws {
-        let configWithoutAPI = try setUpCore()
+    private func setUpWithoutAPI() async throws {
+        let configWithoutAPI = try await setUpCore()
         try Amplify.configure(configWithoutAPI)
     }
 

@@ -18,8 +18,8 @@ class DefaultHubPluginConcurrencyTests: XCTestCase {
         return plugin
     }
 
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
         let config = AmplifyConfiguration()
         do {
             try Amplify.configure(config)
@@ -28,8 +28,8 @@ class DefaultHubPluginConcurrencyTests: XCTestCase {
         }
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 
     /// Given: The default configuration

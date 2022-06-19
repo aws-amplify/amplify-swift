@@ -9,9 +9,9 @@ import XCTest
 import Amplify
 
 /// Test the public AmplifyConfiguration initializer. Note that this means we must not import
-/// Amplify as `@testable`. That means we cannot `Amplify.reset()`, which means we can only have
+/// Amplify as `@testable`. That means we cannot `await Amplify.reset()`, which means we can only have
 /// one test in this file. Further, this means we need to ensure that other tests do call
-/// `Amplify.reset()` in their static `setUp()` and `tearDown()` methods.
+/// `await Amplify.reset()` in their static `setUp()` and `tearDown()` methods.
 class AmplifyConfigurationInitFromFileTests: XCTestCase {
 
     func testInitFromFile() throws {

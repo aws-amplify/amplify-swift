@@ -32,7 +32,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
     }
 
     override func tearDown() {
-        Amplify.reset()
+        await Amplify.reset()
     }
 
     func testIdentifyUser() {

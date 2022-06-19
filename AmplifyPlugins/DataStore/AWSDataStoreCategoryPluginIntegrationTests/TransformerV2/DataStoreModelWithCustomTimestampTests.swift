@@ -31,15 +31,15 @@ class DataStoreModelWithCustomTimestampTests: SyncEngineIntegrationV2TestBase {
 
     // TODO: Upates are not working due to CLI provisioning issue. the Update mutation is missing the `id`
     // https://github.com/aws-amplify/amplify-cli/issues/9136
-    func testSaveModelAndSync() throws {
-        setUp(withModels: TestModelRegistration())
+    func testSaveModelAndSync() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
-        guard var todo = saveTodo(content: "content") else {
+        guard let todo = saveTodo(content: "content") else {
             XCTFail("Could not create blog, posts, and comments")
             return
         }
-        let updatedContent = "updatedContent"
+        _ = "updatedContent"
         let createReceived = expectation(description: "Create notification received")
         // let updateReceived = expectation(description: "Update notification received")
         var receivedTodoResult: TodoCustomTimestampV2?
