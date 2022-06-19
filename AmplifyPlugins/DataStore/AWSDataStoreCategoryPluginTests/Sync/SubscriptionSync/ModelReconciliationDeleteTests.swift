@@ -125,7 +125,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
     ///    - The sync engine receives a delete mutation
     /// - Then:
     ///    - The delete metadata record is written but no model record is written
-    func testDeleteWithNoLocalModel() async; throwsasync throws {
+    func testDeleteWithNoLocalModel() async throws {
         let expectationListener = expectation(description: "listener")
 
         tryOrFail {

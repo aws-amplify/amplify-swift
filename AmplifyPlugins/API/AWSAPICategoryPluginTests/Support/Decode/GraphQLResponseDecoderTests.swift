@@ -12,10 +12,10 @@ import AWSPluginsCore
 @testable import AWSAPIPlugin
 
 class GraphQLResponseDecoderTests: XCTestCase {
-    static let decoder = JSONDecoder()
-    static let encoder = JSONEncoder()
+    let decoder = JSONDecoder()
+    let encoder = JSONEncoder()
 
-    override class func setUp() async {
+    override func setUp() async throws {
         await Amplify.reset()
         ModelRegistry.register(modelType: SimpleModel.self)
         ModelRegistry.register(modelType: Post4.self)
@@ -71,7 +71,7 @@ class GraphQLResponseDecoderTests: XCTestCase {
                 ]
             ]
         ]
-        let data = try GraphQLResponseDecoderTests.encoder.encode(graphQLData)
+        let data = try encoder.encode(graphQLData)
         decoder.appendResponse(data)
 
         let result = try decoder.decodeToGraphQLResponse()
@@ -94,7 +94,7 @@ class GraphQLResponseDecoderTests: XCTestCase {
                 ["message": "message2"]
             ]
         ]
-        let data = try GraphQLResponseDecoderTests.encoder.encode(graphQLData)
+        let data = try encoder.encode(graphQLData)
         decoder.appendResponse(data)
 
         let result = try decoder.decodeToGraphQLResponse()
@@ -122,7 +122,7 @@ class GraphQLResponseDecoderTests: XCTestCase {
                 ["message": "message2"]
             ]
         ]
-        let data = try GraphQLResponseDecoderTests.encoder.encode(graphQLData)
+        let data = try encoder.encode(graphQLData)
         decoder.appendResponse(data)
 
         let result = try decoder.decodeToGraphQLResponse()
@@ -150,7 +150,7 @@ class GraphQLResponseDecoderTests: XCTestCase {
                 ["message": "message2"]
             ]
         ]
-        let data = try GraphQLResponseDecoderTests.encoder.encode(graphQLData)
+        let data = try encoder.encode(graphQLData)
         decoder.appendResponse(data)
 
         do {
@@ -180,7 +180,7 @@ class GraphQLResponseDecoderTests: XCTestCase {
                 ["message": "message2"]
             ]
         ]
-        let data = try GraphQLResponseDecoderTests.encoder.encode(graphQLData)
+        let data = try encoder.encode(graphQLData)
         decoder.appendResponse(data)
 
         let result = try decoder.decodeToGraphQLResponse()
