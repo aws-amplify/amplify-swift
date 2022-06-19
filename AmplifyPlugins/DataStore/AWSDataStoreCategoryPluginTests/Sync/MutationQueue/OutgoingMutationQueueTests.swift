@@ -20,7 +20,7 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
     ///    - I invoke DataStore.save() for a new model
     /// - Then:
     ///    - The outgoing mutation queue sends a create mutation
-    func testMutationQueueCreateSendsSync() throws {
+    func testMutationQueueCreateSendsSync() async throws {
 
         tryOrFail {
             try setUpStorageAdapter()
@@ -100,7 +100,7 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
     ///    - I start syncing with mutation events already in the database
     /// - Then:
     ///    - The mutation queue delivers the first previously loaded event
-    func testMutationQueueLoadsPendingMutations() throws {
+    func testMutationQueueLoadsPendingMutations() async throwsasync throws {
 
         tryOrFail {
             try setUpStorageAdapter()

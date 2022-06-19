@@ -29,7 +29,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
     /// - Then:
     ///    - I receive an error
     ///    - The mutation queue retains the original event
-    func test_create_create() {
+    func test_create_create() async {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
@@ -78,7 +78,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
     /// - Then:
     ///    - The update is saved to DataStore
     ///    - The mutation event is updated with the new values
-    func test_create_update() {
+    func test_create_update() async {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
@@ -134,7 +134,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
     /// - Then:
     ///    - The delete is saved to DataStore
     ///    - The mutation event is removed from the mutation queue
-    func test_create_delete() {
+    func test_create_delete() async {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
@@ -186,7 +186,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
     /// - Then:
     ///    - I receive an error
     ///    - The mutation queue retains the original event
-    func test_update_create() {
+    func test_update_create() async {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
@@ -237,7 +237,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
     /// - Then:
     ///    - The update is saved to DataStore
     ///    - The mutation event is updated with the new values
-    func test_update_update() {
+    func test_update_update() async {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
@@ -293,7 +293,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
     /// - Then:
     ///    - The delete is saved to DataStore
     ///    - The mutation event is updated to a .delete type
-    func test_update_delete() {
+    func test_update_delete() async {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
@@ -349,7 +349,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
     /// - Then:
     ///    - I receive an error
     ///    - The mutation queue retains the original event
-    func test_delete_create() {
+    func test_delete_create() async {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
@@ -402,7 +402,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
     /// - Then:
     ///    - I receive an error
     ///    - The mutation queue retains the original event
-    func test_delete_update() {
+    func test_delete_update() async {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
@@ -459,7 +459,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
     /// - Then:
     ///    - The update is saved to DataStore
     ///    - The mutation event is appended to the queue
-    func testCreateMutationAppendedToEmptyQueue() {
+    func testCreateMutationAppendedToEmptyQueue() async {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
@@ -509,7 +509,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
     /// - Then:
     ///    - The update is saved to DataStore
     ///    - The mutation event is appended to the queue
-    func testUpdateMutationAppendedToEmptyQueue() {
+    func testUpdateMutationAppendedToEmptyQueue() async {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
@@ -560,7 +560,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
     /// - Then:
     ///    - The update is saved to DataStore
     ///    - The mutation event is appended to the queue
-    func testDeleteMutationAppendedToEmptyQueue() {
+    func testDeleteMutationAppendedToEmptyQueue() async {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
@@ -614,7 +614,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
     /// - Then:
     ///    - The update is saved to DataStore
     ///    - The mutation event is appended to the queue, even though it would normally have thrown an error
-    func testCreateMutationAppendedToInProcessQueue() {
+    func testCreateMutationAppendedToInProcessQueue() async {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
@@ -663,7 +663,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
     ///    - The update is saved to DataStore
     ///    - The mutation event is appended to the queue, even though it would normally have overwritten the existing
     ///      create
-    func testUpdateMutationAppendedToInProcessQueue() {
+    func testUpdateMutationAppendedToInProcessQueue() async {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",
@@ -717,7 +717,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
     /// - Then:
     ///    - The update is saved to DataStore
     ///    - The mutation event is appended to the queue, even though it would normally have thrown an error
-    func testDeleteMutationAppendedToInProcessQueue() {
+    func testDeleteMutationAppendedToInProcessQueue() async {
         let post = Post(id: "post-1",
                         title: "title",
                         content: "content",

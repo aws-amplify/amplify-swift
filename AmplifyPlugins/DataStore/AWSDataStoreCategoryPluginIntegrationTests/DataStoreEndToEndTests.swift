@@ -477,15 +477,17 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 }
             }
         }
+        
+        let capturedPosts = posts
 
         DispatchQueue.concurrentPerform(iterations: count) { index in
-            _ = Amplify.DataStore.save(posts[index])
+            _ = Amplify.DataStore.save(capturedPosts[index])
         }
 
         wait(for: [postsSyncedToCloud], timeout: 100)
 
         DispatchQueue.concurrentPerform(iterations: count) { index in
-            _ = Amplify.DataStore.delete(posts[index])
+            _ = Amplify.DataStore.delete(capturedPosts[index])
         }
         wait(for: [postsDeletedFromCloud], timeout: 100)
         sink.cancel()
