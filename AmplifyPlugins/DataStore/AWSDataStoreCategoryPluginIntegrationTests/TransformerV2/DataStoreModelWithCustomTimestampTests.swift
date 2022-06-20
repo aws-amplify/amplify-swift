@@ -35,11 +35,11 @@ class DataStoreModelWithCustomTimestampTests: SyncEngineIntegrationV2TestBase {
         await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
-        guard let todo = saveTodo(content: "content") else {
+        guard var todo = saveTodo(content: "content") else {
             XCTFail("Could not create blog, posts, and comments")
             return
         }
-        _ = "updatedContent"
+        let updatedContent = "updatedContent"
         let createReceived = expectation(description: "Create notification received")
         // let updateReceived = expectation(description: "Update notification received")
         var receivedTodoResult: TodoCustomTimestampV2?

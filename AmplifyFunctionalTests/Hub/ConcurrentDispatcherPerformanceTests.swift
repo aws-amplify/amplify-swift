@@ -15,7 +15,7 @@ import XCTest
 //
 //    let dispatcherTypeUnderTest = ConcurrentDispatcher.self
 //
-//    override func setUp() {
+//    override func setUp() async throws {
 //        await Amplify.reset()
 //        let config = AmplifyConfiguration()
 //        do {
@@ -25,7 +25,7 @@ import XCTest
 //        }
 //    }
 //
-//    override func tearDown() {
+//    override func tearDown() async throws {
 //        await Amplify.reset()
 //    }
 //

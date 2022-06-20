@@ -54,7 +54,7 @@ class DataStoreConnectionScenario6V2Tests: SyncEngineIntegrationV2TestBase {
         try startAmplifyAndWaitForSync()
         guard let blog = saveBlog(name: "name"),
               let post1 = savePost(title: "title", blog: blog),
-              let _ = savePost(title: "title", blog: blog),
+              let post2 = savePost(title: "title", blog: blog),
               let comment1post1 = saveComment(post: post1, content: "content"),
               let comment2post1 = saveComment(post: post1, content: "content") else {
             XCTFail("Could not create blog, posts, and comments")

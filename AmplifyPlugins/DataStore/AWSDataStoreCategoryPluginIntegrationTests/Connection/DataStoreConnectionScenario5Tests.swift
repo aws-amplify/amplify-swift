@@ -101,7 +101,7 @@ class DataStoreConnectionScenario5Tests: SyncEngineIntegrationTestBase {
         let predicateByUserId = PostEditor5.keys.editor.eq(user.id)
         Amplify.DataStore.query(PostEditor5.self, where: predicateByUserId) { result in
             switch result {
-            case .success(_):
+            case .success(let projects):
                 listPostEditorByEditorIdCompleted.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")
@@ -121,7 +121,7 @@ class DataStoreConnectionScenario5Tests: SyncEngineIntegrationTestBase {
             XCTFail("Could not create user")
             return
         }
-        guard savePostEditor(post: post, editor: user) != nil else {
+        guard let postEditor = savePostEditor(post: post, editor: user) else {
             XCTFail("Could not create user")
             return
         }
@@ -168,7 +168,7 @@ class DataStoreConnectionScenario5Tests: SyncEngineIntegrationTestBase {
             XCTFail("Could not create user")
             return
         }
-        guard savePostEditor(post: post, editor: user) != nil else {
+        guard let postEditor = savePostEditor(post: post, editor: user) else {
             XCTFail("Could not create user")
             return
         }

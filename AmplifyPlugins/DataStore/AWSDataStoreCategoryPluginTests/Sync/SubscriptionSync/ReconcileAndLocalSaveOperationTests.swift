@@ -715,7 +715,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             completion(.success(model))
         }
         storageAdapter.responders[.saveModelCompletion] = saveMetadataResponder
-        _ = Amplify.Hub.listen(to: .dataStore) { payload in
+        let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
             if payload.eventName == "DataStore.syncReceived" {
                 hubExpect.fulfill()
             }
@@ -791,7 +791,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             completion(.success(model))
         }
         storageAdapter.responders[.saveModelCompletion] = saveMetadataResponder
-        _ = Amplify.Hub.listen(to: .dataStore) { payload in
+        let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
             if payload.eventName == "DataStore.syncReceived" {
                 hubExpect.fulfill()
             }
