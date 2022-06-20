@@ -32,13 +32,13 @@ public extension AuthChangePasswordRequest {
 
     struct Options {
 
-        // TODO: Move this metadata to plugin options. All other request has the metadata
-        // inside the plugin options.
+        /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
+        /// a way to utilize the underlying auth plugin functionality. See plugin documentation for expected
+        /// key/values
+        public let pluginOptions: Any?
 
-        public let metadata: [String: String]?
-
-        public init(metadata: [String: String]? = nil) {
-            self.metadata = metadata
+        public init(pluginOptions: Any? = nil) {
+            self.pluginOptions = pluginOptions
         }
     }
 }

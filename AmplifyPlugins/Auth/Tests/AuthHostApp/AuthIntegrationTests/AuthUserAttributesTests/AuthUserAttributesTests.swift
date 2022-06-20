@@ -282,4 +282,38 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         }
         wait(for: [resendExpectation], timeout: networkTimeout)
     }
-}
+    
+    /// Test changing/updating users password.
+    ///
+    /// - Given: A confirmed user signed In
+    /// - When:
+    ///    - I invoke Amplify.Auth.update(oldPassword:, updatedPassword:)
+    /// - Then:
+    ///    - The request should be successful and the password should be updated
+    ///
+    func testSuccessfulChangePassword() throws {
+        let username = "integTest\(UUID().uuidString)"
+        let oldPassword = "P123@\(UUID().uuidString)"
+        let updatedPassword = "P123@\(UUID().uuidString)"
+
+        let signInExpectation = expectation(description: "SignIn operation should complete")
+        AuthSignInHelper.registerAndSignInUser(username: username,
+                                               password: oldPassword,
+                                               email: defaultTestEmail) { didSucceed, error in
+            signInExpectation.fulfill()
+            XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
+        }
+        wait(for: [signInExpectation], timeout: networkTimeout)
+
+        let changePasswordExpectation = expectation(description: "Change operation should complete")
+
+        _ = Amplify.Auth.update(oldPassword: oldPassword, to: updatedPassword) { result in
+            switch result {
+            case .success:
+                changePasswordExpectation.fulfill()
+            case .failure(let error):
+                print("Failed to change password \(error)")
+            }
+        }
+        wait(for: [changePasswordExpectation], timeout: networkTimeout)
+    }}
