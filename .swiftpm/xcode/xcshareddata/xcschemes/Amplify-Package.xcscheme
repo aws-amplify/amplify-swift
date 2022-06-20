@@ -477,6 +477,16 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSPinpointAnalyticsPluginIntegrationTests"
+               BuildableName = "AWSPinpointAnalyticsPluginIntegrationTests"
+               BlueprintName = "AWSPinpointAnalyticsPluginIntegrationTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "AWSPinpointAnalyticsPluginTests"
                BuildableName = "AWSPinpointAnalyticsPluginTests"
                BlueprintName = "AWSPinpointAnalyticsPluginTests"
