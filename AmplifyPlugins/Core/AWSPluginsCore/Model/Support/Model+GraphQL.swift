@@ -144,7 +144,8 @@ extension Model {
         let fieldNames = getFieldNameForAssociatedModels(modelField: field)
         let values = getModelIdentifierValues(from: value, modelSchema: associateModelSchema)
 
-        guard fieldNames.count == values.count else {
+        // if the field is required, the associated field keys and values should match
+        if fieldNames.count != values.count, field.isRequired {
             preconditionFailure(
                 """
                 Associated model target names and values for field \(field.name) of model \(modelName) mismatch.
