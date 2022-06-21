@@ -55,14 +55,10 @@ class EventRecorder: AnalyticsEventRecording {
     /// If event submission succeeds, the event is removed from local storage
     /// - Returns: A collection of events submitted to Pinpoint
     func submitAllEvents() async throws -> [PinpointEvent] {
-        return try await submitEvents()
-    }
-
-    private func submitEvents() async throws -> [PinpointEvent] {
         let publicEndpoint = try await getPublicEndpoint()
         let eventsBatch = try getBatchRecords()
         if eventsBatch.count > 0 {
-            try await submit(eventsBatch, publicEndpoint: publicEndpoint)
+            try await processBatch(eventsBatch, publicEndpoint: publicEndpoint)
         }
         return submittedEvents
     }
@@ -71,12 +67,12 @@ class EventRecorder: AnalyticsEventRecording {
         return try storage.getEventsWith(limit: Constants.maxEventsSubmittedPerBatch)
     }
 
-    private func submit(_ eventBatch: [PinpointEvent], publicEndpoint: PinpointClientTypes.PublicEndpoint) async throws {
+    private func processBatch(_ eventBatch: [PinpointEvent], publicEndpoint: PinpointClientTypes.PublicEndpoint) async throws {
         try await submit(pinpointEvents: eventBatch, publicEndpoint: publicEndpoint)
         try storage.removeFailedEvents()
         let nextEventsBatch = try getBatchRecords()
         if nextEventsBatch.count > 0 {
-            try await submit(nextEventsBatch, publicEndpoint: publicEndpoint)
+            try await processBatch(nextEventsBatch, publicEndpoint: publicEndpoint)
         }
     }
 
@@ -105,17 +101,15 @@ class EventRecorder: AnalyticsEventRecording {
 
     private func getPublicEndpoint() async throws -> PinpointClientTypes.PublicEndpoint {
         let endpointProfile = await endpointClient.currentEndpointProfile()
-        let channelType: PinpointClientTypes.ChannelType = endpointProfile.isDebug ? .apns : .apnsSandbox
-        let optOut = endpointProfile.isOptOut ? EndpointClient.Constants.OptOut.all : EndpointClient.Constants.OptOut.none
         let publicEndpoint = PinpointClientTypes.PublicEndpoint(
             address: endpointProfile.endpointId,
             attributes: endpointProfile.attributes,
-            channelType: channelType,
+            channelType: endpointProfile.channelType,
             demographic: endpointProfile.demographic,
-            effectiveDate: endpointProfile.effectiveDate.iso8601FractionalSeconds(),
+            effectiveDate: endpointProfile.effectiveDateIso8601FractionalSeconds,
             location: endpointProfile.location,
             metrics: endpointProfile.metrics,
-            optOut: optOut,
+            optOut: endpointProfile.optOut,
             user: endpointProfile.user)
         return publicEndpoint
     }

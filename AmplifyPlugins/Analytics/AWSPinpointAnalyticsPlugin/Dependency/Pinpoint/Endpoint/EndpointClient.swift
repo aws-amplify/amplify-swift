@@ -32,7 +32,6 @@ actor EndpointClient: EndpointClientBehaviour {
     private let archiver: AmplifyArchiverBehaviour
     private let currentDevice: Device
     private let userDefaults: UserDefaultsBehaviour
-    private let dateFormatter: AmplifyDateFormatter
 
     private var globalAttributes: [String: [String]] = [:]
     private var globalMetrics: [String: Double] = [:]
@@ -44,14 +43,12 @@ actor EndpointClient: EndpointClientBehaviour {
          pinpointClient: PinpointClientProtocol,
          archiver: AmplifyArchiverBehaviour = AmplifyArchiver(),
          currentDevice: Device = DeviceProvider.current,
-         userDefaults: UserDefaultsBehaviour = UserDefaults.standard,
-         dateFormatter: AmplifyDateFormatter = EndpointClient.defaultDateFormatter) {
+         userDefaults: UserDefaultsBehaviour = UserDefaults.standard) {
         self.configuration = configuration
         self.pinpointClient = pinpointClient
         self.archiver = archiver
         self.currentDevice = currentDevice
         self.userDefaults = userDefaults
-        self.dateFormatter = dateFormatter
 
         if let attributes = userDefaults.object(forKey: Constants.attributesKey) as? [String: [String]] {
             globalAttributes = attributes
@@ -179,17 +176,14 @@ actor EndpointClient: EndpointClientBehaviour {
     }
 
     private func createUpdateInput(from endpointProfile: PinpointEndpointProfile) -> UpdateEndpointInput {
-        let channelType: PinpointClientTypes.ChannelType = endpointProfile.isDebug ? .apns : .apnsSandbox
-        let optOut = endpointProfile.isOptOut ? Constants.OptOut.all : Constants.OptOut.none
-        let effectiveDate = dateFormatter.string(from: endpointProfile.effectiveDate)
         let endpointRequest =  PinpointClientTypes.EndpointRequest(address: endpointProfile.deviceToken,
                                                                    attributes: endpointProfile.attributes,
-                                                                   channelType: channelType,
+                                                                   channelType: endpointProfile.channelType,
                                                                    demographic: endpointProfile.demographic,
-                                                                   effectiveDate: effectiveDate,
+                                                                   effectiveDate: endpointProfile.effectiveDateIso8601FractionalSeconds,
                                                                    location: endpointProfile.location,
                                                                    metrics: endpointProfile.metrics,
-                                                                   optOut: optOut,
+                                                                   optOut: endpointProfile.optOut,
                                                                    user: endpointProfile.user)
         return UpdateEndpointInput(applicationId: endpointProfile.applicationId,
                                    endpointId: endpointProfile.endpointId,
