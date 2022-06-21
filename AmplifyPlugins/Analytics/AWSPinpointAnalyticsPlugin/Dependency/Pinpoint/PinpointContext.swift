@@ -167,6 +167,7 @@ class PinpointContext {
 
         analyticsClient = try AnalyticsClient(applicationId: configuration.appId,
                                               pinpointClient: pinpointClient,
+                                              endpointClient: endpointClient,
                                               sessionProvider: sessionProvider)
         sessionClient.analyticsClient = analyticsClient
         if configuration.shouldTrackAppSessions {
