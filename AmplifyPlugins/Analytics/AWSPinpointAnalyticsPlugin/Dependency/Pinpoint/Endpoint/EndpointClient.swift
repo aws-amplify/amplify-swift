@@ -17,7 +17,7 @@ protocol EndpointClientBehaviour: Actor {
     func removeAttributes(forKey key: String)
     func addMetric(_ metric: Double, forKey key: String)
     func removeMetric(forKey key: String)
-    func getPublicEndpoint() -> PinpointClientTypes.PublicEndpoint
+    func currentPublicEndpoint() -> PinpointClientTypes.PublicEndpoint
 }
 
 actor EndpointClient: EndpointClientBehaviour {
@@ -194,7 +194,7 @@ actor EndpointClient: EndpointClientBehaviour {
                                    endpointRequest: endpointRequest)
     }
     
-    func getPublicEndpoint() -> PinpointClientTypes.PublicEndpoint {
+    func currentPublicEndpoint() -> PinpointClientTypes.PublicEndpoint {
         let endpointProfile = currentEndpointProfile()
         let channelType = getChannelType(from: endpointProfile)
         let effectiveDate = getEffectiveDateIso8601FractionalSeconds(from: endpointProfile)

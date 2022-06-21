@@ -150,8 +150,8 @@ class EndpointClientTests: XCTestCase {
         XCTAssertEqual(userDefaults.saveCount, 1)
     }
     
-    func testGetPublicEndpoint_withProfile_shouldReturnPublicEndpoint() async {
-        let publicEndpoint = await endpointClient.getPublicEndpoint()
+    func testCurrentPublicEndpoint_shouldReturnPublicEndpoint() async {
+        let publicEndpoint = await endpointClient.currentPublicEndpoint()
         let mockModel = MockDevice()
         XCTAssertNotNil(publicEndpoint)
         XCTAssertEqual(publicEndpoint.address, currentEndpointId)
