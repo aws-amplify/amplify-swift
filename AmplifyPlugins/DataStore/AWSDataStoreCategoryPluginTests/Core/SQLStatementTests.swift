@@ -266,6 +266,20 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(statement, expectedStatement)
     }
 
+    /// - Given: a `Model` instance with a composite primary key and a belongsTo association.
+    /// - When:
+    ///     - the model is of type `CommentWithCompositeKeyAndIndex`
+    ///     - there's a secondary index involving on or more fields part of the foreign key
+    /// - Then:
+    ///   - ONLY an index for the fields that make up the primary key should be generated
+    func testShouldNotCreateIndexOnForeignKeyField() {
+        let statement = CommentWithCompositeKeyAndIndex.schema.createIndexStatements()
+        let expectedStatement = """
+        create index if not exists "id_content_pk" on "CommentWithCompositeKeyAndIndex" ("id", "content");
+        """
+        XCTAssertEqual(statement, expectedStatement)
+    }
+
     // MARK: - Insert Statements
 
     /// - Given: a `Model` instance
