@@ -1,6 +1,6 @@
 type TodoExplicitOwnerField
     @model
-    @auth(rules: [{ allow: owner, ownerField: "owner", operations: [create, update, delete] }]) {
+    @auth(rules: [{ allow: owner, ownerField: "owner", operations: [read, create, update, delete] }]) {
     id: ID!
     content: String!
     owner: String
@@ -25,7 +25,7 @@ type TodoCustomOwnerExplicit @model @auth(rules: [{ allow: owner, ownerField: "d
 }
 
 type TodoCognitoExplicitOperations @model
-  @auth(rules: [{ allow: owner, operations: [create, delete] }]) {
+  @auth(rules: [{ allow: owner, operations: [read, create, delete] }]) {
   id: ID!
   title: String!
 }

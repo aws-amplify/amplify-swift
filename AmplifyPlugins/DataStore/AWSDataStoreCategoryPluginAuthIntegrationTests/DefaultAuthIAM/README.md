@@ -5,7 +5,14 @@ This configuration is used to run the tests in `AWSDataStoreCategoryPluginAuthIn
 
 ### Set-up
 
-1. `amplify init`
+1. `amplify init`. 
+
+These tests were provisioned with V1 Transform:
+
+- cli.json "transformerversion": 1
+- cli.json "useexperimentalpipelinedtransformer": false
+
+TODO: Update the schema and tests to use V2 Transform. 
 
 2. `amplify add api`
 
