@@ -21,9 +21,10 @@ protocol AnalyticsEventRecording {
 
 /// An AnalyticsEventRecording implementation that stores and submits pinpoint events
 class EventRecorder: AnalyticsEventRecording {
-    private let appId: String
-    private let storage: AnalyticsEventStorage
-    private let pinpointClient: PinpointClientProtocol
+    let appId: String
+    let storage: AnalyticsEventStorage
+    let pinpointClient: PinpointClientProtocol
+    let endpointClient: EndpointClientBehaviour
     private var submittedEvents: [PinpointEvent] = []
 
     /// Initializer for Event Recorder
@@ -31,10 +32,12 @@ class EventRecorder: AnalyticsEventRecording {
     ///   - appId: The Pinpoint App Id
     ///   - storage: A storage object that conforms to AnalyticsEventStorage
     ///   - pinpointClient: A Pinpoint client
-    init(appId: String, storage: AnalyticsEventStorage, pinpointClient: PinpointClientProtocol) throws {
+    ///   - endpointClient: An EndpointClientBehaviour client
+    init(appId: String, storage: AnalyticsEventStorage, pinpointClient: PinpointClientProtocol, endpointClient: EndpointClientBehaviour) throws {
         self.appId = appId
         self.storage = storage
         self.pinpointClient = pinpointClient
+        self.endpointClient = endpointClient
         try self.storage.initializeStorage()
         try self.storage.deleteDirtyEvents()
         try self.storage.checkDiskSize(limit: Constants.pinpointClientByteLimitDefault)
@@ -52,14 +55,10 @@ class EventRecorder: AnalyticsEventRecording {
     /// If event submission succeeds, the event is removed from local storage
     /// - Returns: A collection of events submitted to Pinpoint
     func submitAllEvents() async throws -> [PinpointEvent] {
-        return try await submitEvents()
-    }
-
-    private func submitEvents() async throws -> [PinpointEvent] {
+        let publicEndpoint = try await endpointClient.currentPublicEndpoint()
         let eventsBatch = try getBatchRecords()
-
         if eventsBatch.count > 0 {
-            try await submit(eventsBatch)
+            try await processBatch(eventsBatch, publicEndpoint: publicEndpoint)
         }
         return submittedEvents
     }
@@ -68,20 +67,17 @@ class EventRecorder: AnalyticsEventRecording {
         return try storage.getEventsWith(limit: Constants.maxEventsSubmittedPerBatch)
     }
 
-    private func submit(_ eventBatch: [PinpointEvent]) async throws {
-        try await submit(pinpointEvents: eventBatch)
+    private func processBatch(_ eventBatch: [PinpointEvent], publicEndpoint: PinpointClientTypes.PublicEndpoint) async throws {
+        try await submit(pinpointEvents: eventBatch, publicEndpoint: publicEndpoint)
         try storage.removeFailedEvents()
         let nextEventsBatch = try getBatchRecords()
         if nextEventsBatch.count > 0 {
-            try await submit(nextEventsBatch)
+            try await processBatch(nextEventsBatch, publicEndpoint: publicEndpoint)
         }
     }
 
-    private func submit(pinpointEvents: [PinpointEvent]) async throws {
-        // TODO: generate public endpoint from global attributes when this is available
-        let publicEndpoint: PinpointClientTypes.PublicEndpoint? = nil
+    private func submit(pinpointEvents: [PinpointEvent], publicEndpoint: PinpointClientTypes.PublicEndpoint) async throws {
         var clientEvents = [String: PinpointClientTypes.Event]()
-
         for event in pinpointEvents {
             clientEvents[UUID().uuidString] = event.clientTypeEvent
             let eventsBatch = PinpointClientTypes.EventsBatch(endpoint: publicEndpoint, events: clientEvents)
