@@ -7,19 +7,21 @@ This configuration is used to run the tests in `AWSDataStoreCategoryPluginAuthIn
 
 1. `amplify init`
 
-2. `amplify add api`
+2. Make sure the correct CLI version is used for this test. 
+
+- `amplify --v` should be at least 8.5.2
+- cli.json "transformerversion": 2
+- cli.json "useexperimentalpipelinedtransformer": true
+- cli.json "usesubusernamefordefaultidentityclaim": true
+
+3. `amplify add api`
 
 ```perl
 ? Select from one of the below mentioned services: GraphQL
-? Here is the GraphQL API that we will create. Select a setting to edit or continue Authorization modes: API key (default, expiration time: 7 days fro
-m now)
-? Choose the default authorization type for the API: Cognito User Pools
-? Configure additional auth types? No
-? Here is the GraphQL API that we will create. Select a setting to edit or continue Conflict detection (required for DataStore): Disabled
-? Enable conflict detection? Yes
-? Select the default resolution strategy Auto Merge
-? Here is the GraphQL API that we will create. Select a setting to edit or continue Continue
-? Choose a schema template: Blank Schema
+  Authorization modes: Amazon Cognito User Pool (default) 
+  Conflict detection (required for DataStore): Enabled 
+  Conflict resolution strategy: Auto Merge
+? Choose a schema template: Blank Schema  
 ? Do you want to edit the schema now? `Yes`
 ```
 
