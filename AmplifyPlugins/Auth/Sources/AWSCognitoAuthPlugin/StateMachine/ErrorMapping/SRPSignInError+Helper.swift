@@ -10,7 +10,7 @@ import Amplify
 import ClientRuntime
 import AWSCognitoIdentityProvider
 
-extension SRPSignInError {
+extension SignInError {
 
     var isUserUnConfirmed: Bool {
         switch self {
@@ -49,7 +49,7 @@ extension SRPSignInError {
     }
 }
 
-extension SRPSignInError: AuthErrorConvertible {
+extension SignInError: AuthErrorConvertible {
     var authError: AuthError {
         switch self {
         case .configuration(let message):

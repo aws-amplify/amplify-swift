@@ -5,32 +5,35 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import Foundation
 
-struct StartSRPFlow: Action {
+struct InitializeResolveChallenge: Action {
 
-    var identifier: String = "StartSRPFlow"
+    var identifier: String = "InitializeResolveChallenge"
 
-    let signInEventData: SignInEventData
+    let challenge: RespondToAuthChallenge
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
-        logVerbose("\(#fileID) Start execution", environment: environment)
-        let event = SignInEvent(id: UUID().uuidString, eventType: .initiateSRP(signInEventData))
+        logVerbose("\(#fileID) Starting execution", environment: environment)
+
+        let event = SignInChallengeEvent(eventType: .waitForAnswer(challenge))
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         dispatcher.send(event)
     }
+
 }
 
-extension StartSRPFlow: CustomDebugDictionaryConvertible {
+extension InitializeResolveChallenge: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "identifier": identifier,
-            "signInEventData": signInEventData.debugDictionary
+            "challenge": challenge.debugDictionary
         ]
     }
 }
 
-extension StartSRPFlow: CustomDebugStringConvertible {
+extension InitializeResolveChallenge: CustomDebugStringConvertible {
     var debugDescription: String {
         debugDictionary.debugDescription
     }

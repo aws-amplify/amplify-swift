@@ -85,9 +85,9 @@ extension RespondToAuthChallengeOutputResponse {
     }
 }
 
-extension SRPSignInEvent {
+extension SignInEvent {
 
-    static let allStates: [SRPSignInEvent] = [
+    static let allStates: [SignInEvent] = [
         initiateSRPEvent,
         respondPasswordVerifierEvent,
         respondNextAuthChallengeEvent,
@@ -98,42 +98,42 @@ extension SRPSignInEvent {
         restoreToNotInitializedEvent
     ]
 
-    static let initiateSRPEvent = SRPSignInEvent(
+    static let initiateSRPEvent = SignInEvent(
         id: "initiateSRPEvent",
         eventType: .initiateSRP(.testData)
     )
 
-    static let respondPasswordVerifierEvent = SRPSignInEvent(
+    static let respondPasswordVerifierEvent = SignInEvent(
         id: "respondPasswordVerifierEvent",
         eventType: .respondPasswordVerifier(.testData, InitiateAuthOutputResponse.testData)
     )
 
-    static let respondNextAuthChallengeEvent = SRPSignInEvent(
+    static let respondNextAuthChallengeEvent = SignInEvent(
         id: "respondNextAuthChallengeEvent",
         eventType: .respondNextAuthChallenge(RespondToAuthChallengeOutputResponse.testData())
     )
 
-    static let finalizeSRPSignInEvent = SRPSignInEvent(
+    static let finalizeSRPSignInEvent = SignInEvent(
         id: "finalizeSRPSignInEvent",
         eventType: .finalizeSRPSignIn(.testData)
     )
 
-    static let cancelSRPSignInEvent = SRPSignInEvent(
+    static let cancelSRPSignInEvent = SignInEvent(
         id: "cancelSRPSignInEvent",
         eventType: .cancelSRPSignIn(.testData)
     )
 
-    static let authErrorEvent = SRPSignInEvent(
+    static let authErrorEvent = SignInEvent(
         id: "authErrorEvent",
         eventType: .throwAuthError(.testData)
     )
 
-    static let passwordVerifierErrorEvent = SRPSignInEvent(
+    static let passwordVerifierErrorEvent = SignInEvent(
         id: "passwordVerifierErrorEvent",
         eventType: .throwPasswordVerifierError(.testData)
     )
 
-    static let restoreToNotInitializedEvent = SRPSignInEvent(
+    static let restoreToNotInitializedEvent = SignInEvent(
         id: "restoreToNotInitializedEvent",
         eventType: .restoreToNotInitialized(.testData)
     )

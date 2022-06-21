@@ -34,10 +34,8 @@ class VerifyPasswordSRPTests: XCTestCase {
                 })
         }
 
-        let environment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-            cognitoUserPoolFactory: identityProviderFactory
-        )
+        let environment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutputResponse.validTestData
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
@@ -68,10 +66,8 @@ class VerifyPasswordSRPTests: XCTestCase {
                 })
         }
 
-        let environment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-            cognitoUserPoolFactory: identityProviderFactory
-        )
+        let environment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutputResponse.validTestData
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
@@ -82,8 +78,8 @@ class VerifyPasswordSRPTests: XCTestCase {
         let dispatcher = MockDispatcher { event in
             defer { passwordVerifierError.fulfill() }
 
-            guard let event = event as? SRPSignInEvent else {
-                XCTFail("Expected event to be SRPSignInEvent but got \(event)")
+            guard let event = event as? SignInEvent else {
+                XCTFail("Expected event to be SignInEvent but got \(event)")
                 return
             }
 
@@ -117,10 +113,8 @@ class VerifyPasswordSRPTests: XCTestCase {
                 })
         }
 
-        let environment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-            cognitoUserPoolFactory: identityProviderFactory
-        )
+        let environment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutputResponse.invalidChallenge
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
@@ -132,8 +126,8 @@ class VerifyPasswordSRPTests: XCTestCase {
         let dispatcher = MockDispatcher { event in
             defer { passwordVerifierError.fulfill() }
 
-            guard let event = event as? SRPSignInEvent else {
-                XCTFail("Expected event to be SRPSignInEvent but got \(event)")
+            guard let event = event as? SignInEvent else {
+                XCTFail("Expected event to be SignInEvent but got \(event)")
                 return
             }
 
@@ -166,10 +160,8 @@ class VerifyPasswordSRPTests: XCTestCase {
                 })
         }
 
-        let environment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-            cognitoUserPoolFactory: identityProviderFactory
-        )
+        let environment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutputResponse.invalidTestDataWithNoSalt
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
@@ -181,8 +173,8 @@ class VerifyPasswordSRPTests: XCTestCase {
         let dispatcher = MockDispatcher { event in
             defer { passwordVerifierError.fulfill() }
 
-            guard let event = event as? SRPSignInEvent else {
-                XCTFail("Expected event to be SRPSignInEvent but got \(event)")
+            guard let event = event as? SignInEvent else {
+                XCTFail("Expected event to be SignInEvent but got \(event)")
                 return
             }
 
@@ -215,10 +207,8 @@ class VerifyPasswordSRPTests: XCTestCase {
                 })
         }
 
-        let environment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-            cognitoUserPoolFactory: identityProviderFactory
-        )
+        let environment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutputResponse.invalidTestDataWithNoSecretBlock
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
@@ -230,8 +220,8 @@ class VerifyPasswordSRPTests: XCTestCase {
         let dispatcher = MockDispatcher { event in
             defer { passwordVerifierError.fulfill() }
 
-            guard let event = event as? SRPSignInEvent else {
-                XCTFail("Expected event to be SRPSignInEvent but got \(event)")
+            guard let event = event as? SignInEvent else {
+                XCTFail("Expected event to be SignInEvent but got \(event)")
                 return
             }
 
@@ -264,10 +254,8 @@ class VerifyPasswordSRPTests: XCTestCase {
                 })
         }
 
-        let environment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-            cognitoUserPoolFactory: identityProviderFactory
-        )
+        let environment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutputResponse.invalidTestDataWithNoSRPB
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
@@ -279,8 +267,8 @@ class VerifyPasswordSRPTests: XCTestCase {
         let dispatcher = MockDispatcher { event in
             defer { passwordVerifierError.fulfill() }
 
-            guard let event = event as? SRPSignInEvent else {
-                XCTFail("Expected event to be SRPSignInEvent but got \(event)")
+            guard let event = event as? SignInEvent else {
+                XCTFail("Expected event to be SignInEvent but got \(event)")
                 return
             }
 
@@ -313,10 +301,8 @@ class VerifyPasswordSRPTests: XCTestCase {
                 })
         }
 
-        let environment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-            cognitoUserPoolFactory: identityProviderFactory
-        )
+        let environment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutputResponse.invalidTestDataForException
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
@@ -328,8 +314,8 @@ class VerifyPasswordSRPTests: XCTestCase {
         let dispatcher = MockDispatcher { event in
             defer { passwordVerifierError.fulfill() }
 
-            guard let event = event as? SRPSignInEvent else {
-                XCTFail("Expected event to be SRPSignInEvent but got \(event)")
+            guard let event = event as? SignInEvent else {
+                XCTFail("Expected event to be SignInEvent but got \(event)")
                 return
             }
 
@@ -361,10 +347,8 @@ class VerifyPasswordSRPTests: XCTestCase {
                 })
         }
 
-        let environment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-            cognitoUserPoolFactory: identityProviderFactory
-        )
+        let environment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutputResponse.validTestData
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
@@ -374,8 +358,8 @@ class VerifyPasswordSRPTests: XCTestCase {
             description: "passwordVerifierCompletion")
 
         let dispatcher = MockDispatcher { event in
-            guard let event = event as? SRPSignInEvent else {
-                XCTFail("Expected event to be SRPSignInEvent but got \(event)")
+            guard let event = event as? SignInEvent else {
+                XCTFail("Expected event to be SignInEvent but got \(event)")
                 return
             }
 
@@ -405,11 +389,9 @@ class VerifyPasswordSRPTests: XCTestCase {
                 })
         }
 
-        let environment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-            cognitoUserPoolFactory: identityProviderFactory
-        )
-
+        let environment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
+        
         let data = InitiateAuthOutputResponse.validTestData
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
                                        authResponse: data)
@@ -420,12 +402,12 @@ class VerifyPasswordSRPTests: XCTestCase {
         let dispatcher = MockDispatcher { event in
             defer { passwordVerifierError.fulfill() }
 
-            guard let event = event as? SRPSignInEvent else {
-                XCTFail("Expected event to be SRPSignInEvent but got \(event)")
+            guard let event = event as? SignInEvent else {
+                XCTFail("Expected event to be SignInEvent but got \(event)")
                 return
             }
 
-            guard case let .throwPasswordVerifierError(error) = event.eventType,
+            guard case let .throwAuthError(error) = event.eventType,
                   case .service = error
             else {
                       XCTFail("Should receive invalid service response")

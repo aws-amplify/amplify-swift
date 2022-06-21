@@ -20,15 +20,12 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
                                             AuthConfirmSignInOperation {
 
     let authStateMachine: AuthStateMachine
-    let credentialStoreStateMachine: CredentialStoreStateMachine
 
     init(_ request: AuthConfirmSignInRequest,
          stateMachine: AuthStateMachine,
-         credentialStoreStateMachine: CredentialStoreStateMachine,
          resultListener: ResultListener?) {
 
         self.authStateMachine = stateMachine
-        self.credentialStoreStateMachine = credentialStoreStateMachine
         super.init(categoryType: .auth,
                    eventName: HubPayload.EventName.Auth.confirmSignInAPI,
                    request: request,
@@ -43,17 +40,23 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
         authStateMachine.getCurrentState { [weak self] in
             guard case .configured(let authenticationState, _) = $0,
                   case .signingIn(let signInState) = authenticationState else {
-                // TODO: Return proper error
+                self?.dispatch(AuthError.invalidState(
+                    "User is not attempting signIn operation",
+                    AuthPluginErrorConstants.invalidStateError, nil))
+                self?.finish()
                 return
             }
 
             switch signInState {
             case .resolvingSMSChallenge(let challengeState):
                 guard case .waitingForAnswer = challengeState else {
-                    // TODO: Return proper error
+                    self?.dispatch(AuthError.invalidState(
+                        "SignIn process is not waiting to confirm signIn",
+                        AuthPluginErrorConstants.invalidStateError, nil))
+                    self?.finish()
                     return
                 }
-                self?.sendConfirmSignInEvent()
+                self?.sendSMSAnswer()
             default:
                 // TODO: Return proper error
                 print("")
@@ -61,15 +64,49 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
         }
     }
 
-    func sendConfirmSignInEvent() {
+    func sendSMSAnswer() {
+        if isCancelled {
+            finish()
+            return
+        }
+
+        var token: AuthStateMachine.StateChangeListenerToken?
+        token = authStateMachine.listen { [weak self] in
+
+            guard let self = self else { return }
+            guard case .configured(let authNState, _ ) = $0,
+                  case .signingIn(let signInState) = authNState,
+                  case .resolvingSMSChallenge(let challengeState) = signInState else { return }
+
+            switch challengeState {
+            case .waitingForAnswer:
+                let answer = self.request.challengeResponse
+                let event = SignInChallengeEvent(eventType: .verifyChallengeAnswer(answer))
+                self.authStateMachine.send(event)
+
+            case .verifying:
+                self.cancelToken(token)
+                self.verifyResponse()
+            default: break
+            }
+
+        } onSubscribe: { }
+    }
+
+
+    func verifyResponse() {
+        if isCancelled {
+            finish()
+            return
+        }
+
         var token: AuthStateMachine.StateChangeListenerToken?
         token = authStateMachine.listen { [weak self] in
             guard let self = self else {
                 return
             }
-            guard case .configured(let authNState, let authZState) = $0 else {
-                return
-            }
+            guard case .configured(let authNState,
+                                   let authZState) = $0 else { return }
             switch authNState {
 
             case .signedIn:
@@ -85,25 +122,10 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
                 self.finish()
 
             case .signingIn(let signInState):
-                if case .signingInWithSRP(let srpState, _) = signInState,
-                   case .error(let signInError) = srpState {
-                    if signInError.isUserUnConfirmed {
-                        self.dispatch(AuthSignInResult(nextStep: .confirmSignUp(nil)))
-                    } else if signInError.isResetPassword {
-                        self.dispatch(AuthSignInResult(nextStep: .resetPassword(nil)))
-                    } else {
-                        self.dispatch(signInError.authError)
-                    }
-
-                    self.cancelToken(token)
-                    self.finish()
-                } else if case .resolvingSMSChallenge(let challengeState) = signInState,
-                          case .waitingForAnswer(let challenge) = challengeState {
-                    let delivery = challenge.codeDeliveryDetails
-                    self.dispatch(.init(nextStep: .confirmSignInWithSMSMFACode(delivery, nil)))
-                    self.cancelToken(token)
-                    self.finish()
-                }
+                guard let result = UserPoolSignInHelper.checkNextStep(signInState) else { return }
+                self.dispatch(result: result)
+                self.cancelToken(token)
+                self.finish()
             default:
                 break
             }

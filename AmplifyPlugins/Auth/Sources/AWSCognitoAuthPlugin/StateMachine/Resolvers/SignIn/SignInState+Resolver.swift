@@ -20,15 +20,12 @@ extension SignInState {
 
             switch oldState {
             case .signingInWithSRP(let srpSignInState, let signInEventData):
-
-                if let signInEvent = event as? SignInEvent {
-                    switch signInEvent.eventType {
-                    case .receivedSMSChallenge(let challenge):
-                        let subState = SignInChallengeState.waitingForAnswer(challenge)
-                        return .init(newState: .resolvingSMSChallenge(subState))
-                    default:
-                        return .from(oldState)
-                    }
+                
+                if let signInEvent = event as? SignInEvent,
+                   case .receivedSMSChallenge(let challenge) = signInEvent.eventType {
+                    let action = InitializeResolveChallenge(challenge: challenge)
+                    let subState = SignInChallengeState.notStarted
+                    return .init(newState: .resolvingSMSChallenge(subState), actions: [action])
                 }
 
                 let resolution = SRPSignInState.Resolver().resolve(oldState: srpSignInState,
@@ -38,7 +35,11 @@ extension SignInState {
                 return .init(newState: signingInWithSRP, actions: resolution.actions)
 
             case .resolvingSMSChallenge(let challengeState):
-                return .init(newState: .resolvingSMSChallenge(challengeState))
+                let resolution = SignInChallengeState.Resolver().resolve(
+                    oldState: challengeState,
+                    byApplying: event)
+                return .init(newState: .resolvingSMSChallenge(resolution.newState),
+                             actions: resolution.actions)
             default:
                 return .from(oldState)
             }

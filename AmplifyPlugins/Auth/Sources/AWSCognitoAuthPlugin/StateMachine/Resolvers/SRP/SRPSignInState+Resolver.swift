@@ -17,7 +17,7 @@ extension SRPSignInState {
             byApplying event: StateMachineEvent
         ) -> StateResolution<SRPSignInState> {
 
-            guard let srpSignInEvent = event as? SRPSignInEvent else {
+            guard let srpSignInEvent = event as? SignInEvent else {
                 return .from(oldState)
             }
 
@@ -43,11 +43,11 @@ extension SRPSignInState {
             }
         }
 
-        private func resolveNotStarted(byApplying signInEvent: SRPSignInEvent) -> StateResolution<SRPSignInState> {
+        private func resolveNotStarted(byApplying signInEvent: SignInEvent) -> StateResolution<SRPSignInState> {
             switch signInEvent.eventType {
             case .initiateSRP(let signInEventData):
                 guard let username = signInEventData.username, !username.isEmpty else {
-                    let error = SRPSignInError.inputValidation(
+                    let error = SignInError.inputValidation(
                         field: AuthPluginErrorConstants.signInUsernameError.field
                     )
                     return errorStateWithCancelSignIn(error)
@@ -65,7 +65,7 @@ extension SRPSignInState {
         }
 
         private func resolveInitiatingSRPA(
-            byApplying signInEvent: SRPSignInEvent,
+            byApplying signInEvent: SignInEvent,
             from oldState: SRPSignInState)
         -> StateResolution<SRPSignInState> {
             switch signInEvent.eventType {
@@ -85,7 +85,7 @@ extension SRPSignInState {
 
         private func resolveRespondingVerifyPassword(
             srpStateData: SRPStateData,
-            byApplying signInEvent: SRPSignInEvent)
+            byApplying signInEvent: SignInEvent)
         -> StateResolution<SRPSignInState> {
             switch signInEvent.eventType {
             case .finalizeSRPSignIn(let signedInData):
@@ -100,7 +100,7 @@ extension SRPSignInState {
             }
         }
 
-        private func errorStateWithCancelSignIn(_ error: SRPSignInError)
+        private func errorStateWithCancelSignIn(_ error: SignInError)
         -> StateResolution<SRPSignInState> {
             let action = CancelSignIn()
             return StateResolution(

@@ -23,10 +23,8 @@ class InitiateAuthSRPTests: XCTestCase {
             )
         }
 
-        let environment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-            cognitoUserPoolFactory: identityProviderFactory
-        )
+        let environment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
         let action = InitiateAuthSRP(username: "testUser", password: "testPassword")
 
         action.execute(
@@ -47,18 +45,16 @@ class InitiateAuthSRPTests: XCTestCase {
             )
         }
 
-        let environment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-            cognitoUserPoolFactory: identityProviderFactory
-        )
+        let environment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
 
         let action = InitiateAuthSRP(username: "testUser", password: "testPassword")
 
         let errorEventSent = expectation(description: "errorEventSent")
         let dispatcher = MockDispatcher { event in
 
-            guard let event = event as? SRPSignInEvent else {
-                XCTFail("Expected event to be SRPSignInEvent")
+            guard let event = event as? SignInEvent else {
+                XCTFail("Expected event to be SignInEvent")
                 return
             }
 
@@ -86,18 +82,16 @@ class InitiateAuthSRPTests: XCTestCase {
             )
         }
 
-        let environment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-            cognitoUserPoolFactory: identityProviderFactory
-        )
+        let environment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
 
         let action = InitiateAuthSRP(username: "testUser", password: "testPassword")
 
         let successEventSent = expectation(description: "successEventSent")
 
         let dispatcher = MockDispatcher { event in
-            guard let event = event as? SRPSignInEvent else {
-                XCTFail("Expected event to be SRPSignInEvent")
+            guard let event = event as? SignInEvent else {
+                XCTFail("Expected event to be SignInEvent")
                 return
             }
 

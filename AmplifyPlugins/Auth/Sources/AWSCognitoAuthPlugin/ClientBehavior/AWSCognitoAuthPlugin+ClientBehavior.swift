@@ -83,7 +83,6 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         let operation = AWSAuthConfirmSignInOperation(
             request,
             stateMachine: authStateMachine,
-            credentialStoreStateMachine: credentialStoreStateMachine,
             resultListener: listener)
         queue.addOperation(operation)
         return operation
