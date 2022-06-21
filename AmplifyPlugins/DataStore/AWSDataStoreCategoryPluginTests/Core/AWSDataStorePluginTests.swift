@@ -11,7 +11,8 @@ import AmplifyTestCommon
 @testable import Amplify
 @testable import AWSDataStorePlugin
 
-class AWSAPICategoryPluginTests: XCTestCase {
+// swiftlint:disable type_body_length
+class AWSDataStorePluginTests: XCTestCase {
     func testStorageEngineDoesNotStartsOnConfigure() throws {
         let startExpectation = expectation(description: "Start Sync should not be called")
         startExpectation.isInverted = true
@@ -487,6 +488,66 @@ class AWSAPICategoryPluginTests: XCTestCase {
                 pluginClearExpectation.fulfill()
             }
         }
+        waitForExpectations(timeout: 1.0)
+    }
+
+    func testStopStorageEngineOnTerminalEvent() {
+        let storageEngine = MockStorageEngineBehavior()
+        let stopExpectation = expectation(description: "stop should be called")
+        var count = 0
+        storageEngine.responders[.stopSync] = StopSyncResponder { _ in
+            count = self.expect(stopExpectation, count, 1)
+        }
+        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
+            return storageEngine
+        }
+        let dataStorePublisher = DataStorePublisher()
+        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
+                                        storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+                                        dataStorePublisher: dataStorePublisher,
+                                        validAPIPluginKey: "MockAPICategoryPlugin",
+                                        validAuthPluginKey: "MockAuthCategoryPlugin")
+
+        let semaphore = DispatchSemaphore(value: 0)
+        plugin.start(completion: {_ in
+            XCTAssertNotNil(plugin.storageEngine)
+            XCTAssertNotNil(plugin.dataStorePublisher)
+            semaphore.signal()
+        })
+        semaphore.wait()
+
+        storageEngine.mockPublisher.send(completion: .finished)
+
+        waitForExpectations(timeout: 1.0)
+    }
+
+    func testStopStorageEngineOnTerminalFailureEvent() {
+        let storageEngine = MockStorageEngineBehavior()
+        let stopExpectation = expectation(description: "stop should be called")
+        var count = 0
+        storageEngine.responders[.stopSync] = StopSyncResponder { _ in
+            count = self.expect(stopExpectation, count, 1)
+        }
+        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
+            return storageEngine
+        }
+        let dataStorePublisher = DataStorePublisher()
+        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
+                                        storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+                                        dataStorePublisher: dataStorePublisher,
+                                        validAPIPluginKey: "MockAPICategoryPlugin",
+                                        validAuthPluginKey: "MockAuthCategoryPlugin")
+
+        let semaphore = DispatchSemaphore(value: 0)
+        plugin.start(completion: {_ in
+            XCTAssertNotNil(plugin.storageEngine)
+            XCTAssertNotNil(plugin.dataStorePublisher)
+            semaphore.signal()
+        })
+        semaphore.wait()
+
+        storageEngine.mockPublisher.send(completion: .failure(.internalOperation("", "", nil)))
+
         waitForExpectations(timeout: 1.0)
     }
 }

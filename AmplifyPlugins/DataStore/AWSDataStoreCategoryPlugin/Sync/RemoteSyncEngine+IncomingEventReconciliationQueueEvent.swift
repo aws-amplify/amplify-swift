@@ -38,12 +38,15 @@ extension RemoteSyncEngine {
             remoteSyncTopicPublisher.send(.subscriptionsInitialized)
             stateMachine.notify(action: .initializedSubscriptions)
         case .started:
-            remoteSyncTopicPublisher.send(.subscriptionsActivated)
-            if let api = self.api {
-                stateMachine.notify(action: .activatedCloudSubscriptions(api,
-                                                                         mutationEventPublisher,
-                                                                         reconciliationQueue))
+            guard let api = self.api else {
+                let error = DataStoreError.internalOperation("api is unexpectedly `nil`", "", nil)
+                stateMachine.notify(action: .errored(error))
+                return
             }
+            remoteSyncTopicPublisher.send(.subscriptionsActivated)
+            stateMachine.notify(action: .activatedCloudSubscriptions(api,
+                                                                     mutationEventPublisher,
+                                                                     reconciliationQueue))
         case .paused:
             remoteSyncTopicPublisher.send(.subscriptionsPaused)
         case .mutationEventDropped, .mutationEventApplied:
