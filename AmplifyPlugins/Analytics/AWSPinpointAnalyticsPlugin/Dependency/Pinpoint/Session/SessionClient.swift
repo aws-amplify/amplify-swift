@@ -225,6 +225,6 @@ extension SessionClient {
     }
 }
 
-private extension PinpointSession {
+extension PinpointSession {
     static var invalid = PinpointSession(sessionId: "InvalidId", startTime: Date(), stopTime: nil)
 }

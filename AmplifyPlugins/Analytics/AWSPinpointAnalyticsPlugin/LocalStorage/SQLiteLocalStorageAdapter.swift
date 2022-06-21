@@ -12,20 +12,31 @@ import SQLite
 /// Local storage adapter that implements local storage using SQLite.swift
 final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
     private var connection: Connection?
-    private var dbFilePath: URL?
+    private let dbFilePath: URL
     private let fileManager: FileManagerBehaviour
     var diskBytesUsed: Byte {
-        guard let url = dbFilePath else { return 0}
-        return fileManager.fileSize(for: url)
+        return fileManager.fileSize(for: dbFilePath)
     }
 
     /// Initializer
-    /// - Parameter databaseName: The database name
-    convenience init(prefixPath: String = "", databaseName: String) throws {
-        var dbFilePath = SQLiteLocalStorageAdapter.getDbFilePath(prefixPath: prefixPath, databaseName: databaseName)
+    /// - Parameters
+    ///     - prefixPath: A prefix to be used for the database path. Defaults to none.
+    ///     - databaseName: The database name
+    ///     - fileManager: A FileManagerBehaviour instance to interact with the disk. Defaults to FileManager.default
+    init(prefixPath: String = "",
+         databaseName: String,
+         fileManager: FileManagerBehaviour = FileManager.default) throws {
+        let dbDirectoryPath = try Self.getDocumentPath(using: fileManager)
+            .appendingPathComponent(prefixPath)
+        var dbFilePath = dbDirectoryPath.appendingPathComponent(databaseName)
+        if !fileManager.fileExists(atPath: dbDirectoryPath.path) {
+            try fileManager.createDirectory(atPath: dbDirectoryPath.path,
+                                            withIntermediateDirectories: true)
+        }
+
         let connection: Connection
         do {
-            connection = try Connection(dbFilePath.absoluteString)
+            connection = try Connection(dbFilePath.path)
             var urlResourceValues = URLResourceValues()
             urlResourceValues.isExcludedFromBackup = true
             try dbFilePath.setResourceValues(urlResourceValues)
@@ -33,18 +44,6 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
             throw LocalStorageError.invalidStorage(path: dbFilePath.absoluteString, error)
         }
 
-        try self.init(connection: connection, dbFilePath: dbFilePath)
-    }
-
-    /// Initializer
-    /// - Parameters:
-    ///   - connection: SQLite Connection
-    ///   - dbFilePath: Path to the database
-    private init(
-        connection: Connection,
-        dbFilePath: URL? = nil,
-        fileManager: FileManagerBehaviour = FileManager.default
-    ) throws {
         self.connection = connection
         self.dbFilePath = dbFilePath
         self.fileManager = fileManager
@@ -65,20 +64,14 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
         try connection.execute(databaseInitializationStatement)
     }
 
-    /// Get the database file path constructed by the database name and the Documents directory
-    /// - Parameter databaseName: The database file name
-    /// - Returns: URL containing the location of the database
-    internal static func getDbFilePath(prefixPath: String = "", databaseName: String) -> URL {
-        guard let documentsPath = getDocumentPath() else {
-            preconditionFailure("Could not create the database. The `.documentDirectory` is invalid")
-        }
-        return documentsPath.appendingPathComponent(prefixPath).appendingPathComponent("\(databaseName).db")
-    }
-
     /// Get document path
+    /// - Parameter fileManager: The FileManagerBehaviour instance used to interact with the disk
     /// - Returns: Optional URL to the Document path
-    private static func getDocumentPath() -> URL? {
-        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+    private static func getDocumentPath(using fileManager: FileManagerBehaviour) throws -> URL {
+        guard let documentPath = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            throw LocalStorageError.fileSystemError(description: "Could not create the database. The `.documentDirectory` is invalid")
+        }
+        return documentPath
     }
 
     /// Create a SQL table

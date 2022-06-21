@@ -37,9 +37,16 @@ protocol FileManagerBehaviour {
     func urls(for directory: FileManager.SearchPathDirectory, in domainMask: FileManager.SearchPathDomainMask) -> [URL]
     func fileExists(atPath path: String) -> Bool
     func fileSize(for url: URL) -> Byte
+    func createDirectory(atPath path: String, withIntermediateDirectories createIntermediates: Bool) throws
 }
 
 extension FileManager: FileManagerBehaviour, DefaultLogger {
+    func createDirectory(atPath path: String, withIntermediateDirectories createIntermediates: Bool) throws {
+        try createDirectory(atPath: path,
+                        withIntermediateDirectories: createIntermediates,
+                        attributes: nil)
+    }
+
     func fileSize(for url: URL) -> Byte {
         do {
             let attributes = try self.attributesOfItem(atPath: url.path)
@@ -77,13 +84,17 @@ struct PinpointContextConfiguration {
     /// If System-level notifications for this application are disabled, this will be ignored.
     let isApplicationLevelOptOut: Bool
 
+    /// Indicates whether to track application sessions. Defaults to `true`
+    let shouldTrackAppSessions: Bool
+
     init(appId: String,
          region: String,
          credentialsProvider: CredentialsProvider,
          sessionTimeout: TimeInterval = 5,
          maxStorageSize: Byte = (1024 * 1024 * 5),
          isDebug: Bool = false,
-         isApplicationLevelOptOut: Bool = false) {
+         isApplicationLevelOptOut: Bool = false,
+         shouldTrackAppSessions: Bool = true) {
         self.appId = appId
         self.region = region
         self.credentialsProvider = credentialsProvider
@@ -91,6 +102,7 @@ struct PinpointContextConfiguration {
         self.maxStorageSize = maxStorageSize
         self.isDebug = isDebug
         self.isApplicationLevelOptOut = isApplicationLevelOptOut
+        self.shouldTrackAppSessions = shouldTrackAppSessions
     }
 }
 
@@ -106,13 +118,7 @@ class PinpointContext {
     let pinpointClient: PinpointClientProtocol
     let endpointClient: EndpointClientBehaviour
     let sessionClient: SessionClientBehaviour
-    lazy var analyticsClient: AnalyticsClientBehaviour = {
-        let client = AnalyticsClient(applicationId: configuration.appId,
-                                     context: self)
-        sessionClient.analyticsClient = client
-        sessionClient.startPinpointSession()
-        return client
-    }()
+    let analyticsClient: AnalyticsClientBehaviour
 
     private let uniqueId: String
     private let configuration: PinpointContextConfiguration
@@ -145,13 +151,27 @@ class PinpointContext {
                                         currentDevice: currentDevice,
                                         userDefaults: userDefaults)
 
-        sessionClient = SessionClient(analyticsClient: nil,
-                                      archiver: archiver,
+        sessionClient = SessionClient(archiver: archiver,
                                       configuration: .init(appId: configuration.appId,
                                                            uniqueDeviceId: uniqueId,
                                                            sessionTimeout: configuration.sessionTimeout),
                                       endpointClient: endpointClient,
                                       userDefaults: userDefaults)
+
+        let sessionProvider: () -> PinpointSession = { [weak sessionClient] in
+            guard let sessionClient = sessionClient else {
+                fatalError("SessionClient was deallocated")
+            }
+            return sessionClient.currentSession
+        }
+
+        analyticsClient = try AnalyticsClient(applicationId: configuration.appId,
+                                              pinpointClient: pinpointClient,
+                                              sessionProvider: sessionProvider)
+        sessionClient.analyticsClient = analyticsClient
+        if configuration.shouldTrackAppSessions {
+            sessionClient.startPinpointSession()
+        }
         self.configuration = configuration
     }
 
@@ -285,8 +305,4 @@ extension PinpointContext {
             static let uniqueIdKey = "com.amazonaws.AWSPinpointContextKeychainUniqueIdKey"
         }
     }
-}
-
-protocol InternalPinpointClient {
-    var context: PinpointContext { get }
 }
