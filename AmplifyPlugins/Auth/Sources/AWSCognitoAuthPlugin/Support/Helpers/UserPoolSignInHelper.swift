@@ -39,8 +39,13 @@ struct UserPoolSignInHelper {
         let client = try environment.cognitoUserPoolFactory()
 
         Task {
-            let response = try await client.respondToAuthChallenge(input: request)
-            callback(self.parseResponse(response, for: username))
+            do {
+                let response = try await client.respondToAuthChallenge(input: request)
+                callback(self.parseResponse(response, for: username))
+            } catch {
+                let authError = SignInError.service(error: error)
+                callback(SignInEvent(eventType: .throwAuthError(authError)))
+            }
         }
     }
 
