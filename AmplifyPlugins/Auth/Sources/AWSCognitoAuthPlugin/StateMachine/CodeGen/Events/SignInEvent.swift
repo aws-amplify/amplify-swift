@@ -11,11 +11,7 @@ import AWSCognitoIdentityProvider
 struct SignInEvent: StateMachineEvent {
     var data: Any?
 
-    enum EventType: Equatable {
-        static func == (lhs: SignInEvent.EventType, rhs: SignInEvent.EventType) -> Bool {
-            return false
-        }
-
+    enum EventType {
         case initiateSRP(SignInEventData)
         case respondPasswordVerifier(SRPStateData, InitiateAuthOutputResponse)
         case throwPasswordVerifierError(SignInError)
@@ -48,10 +44,32 @@ struct SignInEvent: StateMachineEvent {
     }
 
     init(id: String = UUID().uuidString,
-                eventType: EventType,
-                time: Date? = nil) {
+         eventType: EventType,
+         time: Date? = nil) {
         self.id = id
         self.eventType = eventType
         self.time = time
+    }
+}
+
+extension SignInEvent.EventType: Equatable {
+
+    static func == (lhs: SignInEvent.EventType, rhs: SignInEvent.EventType) -> Bool {
+        switch (lhs, rhs) {
+
+        case (.initiateSRP, .initiateSRP),
+            (.respondPasswordVerifier, .respondPasswordVerifier),
+            (.throwPasswordVerifierError, .throwPasswordVerifierError),
+            (.respondNextAuthChallenge, .respondNextAuthChallenge),
+            (.finalizeSRPSignIn, .finalizeSRPSignIn),
+            (.cancelSRPSignIn, .cancelSRPSignIn),
+            (.throwAuthError, .throwAuthError),
+            (.restoreToNotInitialized, .restoreToNotInitialized),
+            (.receivedSMSChallenge, .receivedSMSChallenge),
+            (.verifySMSChallenge, .verifySMSChallenge):
+            return true
+        default: return false
+        }
+        
     }
 }
