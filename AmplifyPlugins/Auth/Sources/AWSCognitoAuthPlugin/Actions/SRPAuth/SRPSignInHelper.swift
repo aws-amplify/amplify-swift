@@ -10,17 +10,6 @@ import CryptoKit
 
 struct SRPSignInHelper {
 
-    static func srpEnvironment(_ environment: Environment) throws
-    -> SRPAuthEnvironment {
-
-        guard let environment = environment as? SRPAuthEnvironment else {
-            let message = AuthPluginErrorConstants.configurationError
-            let error = AuthenticationError.configuration(message: message)
-            throw error
-        }
-        return environment
-    }
-
     static func srpClient(_ environment: SRPAuthEnvironment) throws
     -> SRPClientBehavior {
         let nHexValue = environment.srpConfiguration.nHexValue

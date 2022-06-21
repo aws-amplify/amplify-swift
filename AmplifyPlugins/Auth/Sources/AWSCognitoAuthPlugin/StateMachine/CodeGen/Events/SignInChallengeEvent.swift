@@ -4,23 +4,18 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-import Foundation
-import AWSCognitoIdentityProvider
-import Amplify
 
-struct SignInEvent: StateMachineEvent {
+import Foundation
+
+struct SignInChallengeEvent: StateMachineEvent {
 
     enum EventType: Equatable {
 
-        static func == (lhs: SignInEvent.EventType, rhs: SignInEvent.EventType) -> Bool {
-            //TODO: Fix
-            return false
-        }
+        case waitForAnswer(RespondToAuthChallenge)
 
-        case receivedSMSChallenge(RespondToAuthChallenge)
+        case verifyChallengeAnswer(String)
 
-        case verifySMSChallenge(String)
-
+        case verified
 
     }
 
@@ -30,8 +25,9 @@ struct SignInEvent: StateMachineEvent {
 
     var type: String {
         switch eventType {
-        case .receivedSMSChallenge: return "SignInEvent.respondWithSMSChallenge"
-        case .verifySMSChallenge: return "SignInEvent.verifySMSChallenge"
+        case .verified: return "SignInChallengeEvent.verified"
+        case .verifyChallengeAnswer: return "SignInChallengeEvent.verifyChallengeAnswer"
+        case .waitForAnswer: return "SignInChallengeEvent.waitForAnswer"
         }
     }
 

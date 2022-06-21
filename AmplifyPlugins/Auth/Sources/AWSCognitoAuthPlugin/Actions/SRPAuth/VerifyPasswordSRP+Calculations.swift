@@ -15,17 +15,17 @@ extension VerifyPasswordSRP {
                    secretBlock: Data,
                    serverPublicBHexString: String,
                    srpClient: SRPClientBehavior,
-                   environment: SRPAuthEnvironment) throws -> String {
+                   poolId: String) throws -> String {
 
         let sharedSecret = try sharedSecret(
             userIdForSRP: userIdForSRP,
             saltHex: saltHex,
             serverPublicBHexString: serverPublicBHexString,
             srpClient: srpClient,
-            environment: environment)
+            poolId: poolId)
 
         do {
-            let strippedPoolId =  strippedPoolId(environment)
+            let strippedPoolId =  strippedPoolId(poolId)
             let dateStr = generateDateString(date: stateData.clientTimestamp)
             let clientClass = type(of: srpClient)
             let u = try clientClass.calculateUHexValue(
@@ -59,8 +59,8 @@ extension VerifyPasswordSRP {
                       saltHex: String,
                       serverPublicBHexString: String,
                       srpClient: SRPClientBehavior,
-                      environment: SRPAuthEnvironment) throws -> String {
-        let strippedPoolId =  strippedPoolId(environment)
+                      poolId: String) throws -> String {
+        let strippedPoolId =  strippedPoolId(poolId)
         let usernameForS = "\(strippedPoolId)\(userIdForSRP)"
         do {
             let srpKeyPair = stateData.srpKeyPair
@@ -81,8 +81,7 @@ extension VerifyPasswordSRP {
         }
     }
 
-    func strippedPoolId(_ environment: SRPAuthEnvironment) -> String {
-        let poolId = environment.userPoolConfiguration.poolId
+    func strippedPoolId(_ poolId: String) -> String {
         let index = poolId.firstIndex(of: "_")!
         return String(poolId[poolId.index(index, offsetBy: 1)...])
     }

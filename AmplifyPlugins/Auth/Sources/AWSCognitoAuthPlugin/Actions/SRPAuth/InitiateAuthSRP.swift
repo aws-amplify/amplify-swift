@@ -25,11 +25,12 @@ struct InitiateAuthSRP: Action {
                  environment: Environment) {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         do {
-            let environment = try SRPSignInHelper.srpEnvironment(environment)
-            let nHexValue = environment.srpConfiguration.nHexValue
-            let gHexValue = environment.srpConfiguration.gHexValue
+            let srpEnv = try environment.srpEnvironment()
+            let userPoolEnv = try environment.userPoolEnvironment()
+            let nHexValue = srpEnv.srpConfiguration.nHexValue
+            let gHexValue = srpEnv.srpConfiguration.gHexValue
 
-            let srpClient = try SRPSignInHelper.srpClient(environment)
+            let srpClient = try SRPSignInHelper.srpClient(srpEnv)
             let srpKeyPair = srpClient.generateClientKeyPair()
 
             let srpStateData = SRPStateData(username: username,
@@ -38,13 +39,13 @@ struct InitiateAuthSRP: Action {
                                             gHexValue: gHexValue,
                                             srpKeyPair: srpKeyPair,
                                             clientTimestamp: Date())
-            let request = request(environment: environment,
+            let request = request(environment: userPoolEnv,
                                   publicHexValue: srpKeyPair.publicKeyHexValue)
 
             try sendRequest(request: request,
-                            environment: environment,
+                            environment: userPoolEnv,
                             srpStateData: srpStateData) { responseEvent in
-                logVerbose("\(#fileID) Sending event \(responseEvent)", environment: environment)
+                logVerbose("\(#fileID) Sending event \(responseEvent)", environment: srpEnv)
                 dispatcher.send(responseEvent)
 
             }
@@ -63,7 +64,7 @@ struct InitiateAuthSRP: Action {
         }
     }
 
-    private func request(environment: SRPAuthEnvironment,
+    private func request(environment: UserPoolEnvironment,
                          publicHexValue: String) -> InitiateAuthInput {
         let userPoolClientId = environment.userPoolConfiguration.clientId
         var authParameters = [
@@ -93,7 +94,7 @@ struct InitiateAuthSRP: Action {
     }
 
     private func sendRequest(request: InitiateAuthInput,
-                     environment: SRPAuthEnvironment,
+                             environment: UserPoolEnvironment,
                              srpStateData: SRPStateData,
                              callback: @escaping (SRPSignInEvent) -> Void) throws {
 
