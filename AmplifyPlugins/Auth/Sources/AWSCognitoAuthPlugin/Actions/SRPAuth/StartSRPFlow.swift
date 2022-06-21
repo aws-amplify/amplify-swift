@@ -15,7 +15,7 @@ struct StartSRPFlow: Action {
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
         logVerbose("\(#fileID) Start execution", environment: environment)
-        let event = SRPSignInEvent(id: UUID().uuidString, eventType: .initiateSRP(signInEventData))
+        let event = SignInEvent(id: UUID().uuidString, eventType: .initiateSRP(signInEventData))
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         dispatcher.send(event)
     }

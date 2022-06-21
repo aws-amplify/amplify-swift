@@ -50,14 +50,14 @@ struct InitiateAuthSRP: Action {
 
             }
 
-        } catch let error as SRPSignInError {
+        } catch let error as SignInError {
             logVerbose("\(#fileID) Raised error \(error)", environment: environment)
-            let event = SRPSignInEvent(eventType: .throwAuthError(error))
+            let event = SignInEvent(eventType: .throwAuthError(error))
             dispatcher.send(event)
         } catch {
             logVerbose("\(#fileID) Caught error \(error)", environment: environment)
-            let authError = SRPSignInError.service(error: error)
-            let event = SRPSignInEvent(
+            let authError = SignInError.service(error: error)
+            let event = SignInEvent(
                 eventType: .throwAuthError(authError)
             )
             dispatcher.send(event)
@@ -96,20 +96,20 @@ struct InitiateAuthSRP: Action {
     private func sendRequest(request: InitiateAuthInput,
                              environment: UserPoolEnvironment,
                              srpStateData: SRPStateData,
-                             callback: @escaping (SRPSignInEvent) -> Void) throws {
+                             callback: @escaping (SignInEvent) -> Void) throws {
 
         let cognitoClient = try environment.cognitoUserPoolFactory()
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         Task {
-            let event: SRPSignInEvent!
+            let event: SignInEvent!
             do {
                 let response = try await cognitoClient.initiateAuth(input: request)
                 logVerbose("\(#fileID) InitiateAuth response success", environment: environment)
-                event = SRPSignInEvent(eventType: .respondPasswordVerifier(srpStateData, response))
+                event = SignInEvent(eventType: .respondPasswordVerifier(srpStateData, response))
             } catch {
-                let authError = SRPSignInError.service(error: error)
-                event = SRPSignInEvent(eventType: .throwAuthError(authError))
+                let authError = SignInError.service(error: error)
+                event = SignInEvent(eventType: .throwAuthError(authError))
             }
             callback(event)
         }

@@ -46,11 +46,11 @@ extension VerifyPasswordSRP {
 
             return signature.base64EncodedString()
         } catch let error as SRPError {
-            let authError = SRPSignInError.calculation(error)
+            let authError = SignInError.calculation(error)
             throw authError
         } catch {
             let message = "Could not calculate signature"
-            let authError = SRPSignInError.configuration(message: message)
+            let authError = SignInError.configuration(message: message)
             throw authError
         }
     }
@@ -72,11 +72,11 @@ extension VerifyPasswordSRP {
                 clientPublicKeyHexValue: srpKeyPair.publicKeyHexValue,
                 serverPublicKeyHexValue: serverPublicBHexString)
         } catch let error as SRPError {
-            let authError = SRPSignInError.calculation(error)
+            let authError = SignInError.calculation(error)
             throw authError
         } catch {
             let message = "Could not calculate shared secret"
-            let authError = SRPSignInError.configuration(message: message)
+            let authError = SignInError.configuration(message: message)
             throw authError
         }
     }

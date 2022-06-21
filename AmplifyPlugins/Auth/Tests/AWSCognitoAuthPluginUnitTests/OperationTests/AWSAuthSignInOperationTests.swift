@@ -137,6 +137,7 @@ class AWSAuthSignInOperationTests: XCTestCase {
                 mockInitiateAuthResponse: initiateAuth,
                 mockRespondToAuthChallengeResponse: respondToChallenge
             )})
+
         let operation = AWSAuthSignInOperation(
             request,
             authStateMachine: statemachine) {  result in

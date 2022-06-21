@@ -59,16 +59,16 @@ struct VerifyPasswordSRP: Action {
                                environment: environment)
                     dispatcher.send(responseEvent)
                 }
-        } catch let error as SRPSignInError {
+        } catch let error as SignInError {
             logVerbose("\(#fileID) SRPSignInError \(error)", environment: environment)
-            let event = SRPSignInEvent(
+            let event = SignInEvent(
                 eventType: .throwPasswordVerifierError(error)
             )
             dispatcher.send(event)
         } catch {
             logVerbose("\(#fileID) SRPSignInError Generic \(error)", environment: environment)
-            let authError = SRPSignInError.service(error: error)
-            let event = SRPSignInEvent(
+            let authError = SignInError.service(error: error)
+            let event = SignInEvent(
                 eventType: .throwAuthError(authError)
             )
             dispatcher.send(event)
