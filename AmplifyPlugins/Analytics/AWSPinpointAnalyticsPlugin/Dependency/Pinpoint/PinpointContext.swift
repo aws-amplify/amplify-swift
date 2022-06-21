@@ -306,7 +306,3 @@ extension PinpointContext {
         }
     }
 }
-
-protocol InternalPinpointClient {
-    var context: PinpointContext { get }
-}
