@@ -11,16 +11,18 @@ import SQLite
 @testable import AWSPinpointAnalyticsPlugin
 
 class AnalyticsEventStorageTests: XCTestCase {
-    let databaseName = "TestDatabase"
-    var adapter: SQLStorageProtocol!
-    let eventCountStatement = "SELECT COUNT(*) FROM Event"
-    let dirtyEventCountStatement = "SELECT COUNT(*) FROM DirtyEvent"
-    var storage: AnalyticsEventStorage!
+    private let databaseName = "TestDatabase"
+    private let eventCountStatement = "SELECT COUNT(*) FROM Event"
+    private let dirtyEventCountStatement = "SELECT COUNT(*) FROM DirtyEvent"
+    private var adapter: SQLStorageProtocol!
+    private var storage: AnalyticsEventSQLStorage!
+    private var fileManager: MockFileManager!
 
     override func setUp() {
         do {
             cleanup()
-            adapter = try SQLiteLocalStorageAdapter(databaseName: databaseName)
+            fileManager = MockFileManager(fileName: databaseName)
+            adapter = try SQLiteLocalStorageAdapter(databaseName: databaseName, fileManager: fileManager)
             storage = AnalyticsEventSQLStorage(dbAdapter: adapter)
             try storage.initializeStorage()
 
@@ -66,13 +68,9 @@ class AnalyticsEventStorageTests: XCTestCase {
     }
 
     private func cleanup() {
-        let dbPath = SQLiteLocalStorageAdapter.getDbFilePath(databaseName: "TestDatabase")
-        do {
-            if FileManager.default.fileExists(atPath: dbPath.path) {
-                try FileManager.default.removeItem(atPath: dbPath.path)
-            }
-        } catch {
-        }
+        fileManager = nil
+        adapter = nil
+        storage = nil
     }
 
     /// - Given: a local storage

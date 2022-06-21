@@ -38,7 +38,8 @@ extension AWSPinpointAnalyticsPlugin {
         let pinpoint = try AWSPinpointAdapter(
             appId: configuration.appId,
             region: configuration.region,
-            credentialsProvider: credentialsProvider
+            credentialsProvider: credentialsProvider,
+            shouldTrackAppSessions: configuration.trackAppSessions
         )
 
         let appSessionTracker =

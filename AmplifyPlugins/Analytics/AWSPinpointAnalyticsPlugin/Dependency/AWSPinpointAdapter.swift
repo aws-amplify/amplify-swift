@@ -17,7 +17,8 @@ class AWSPinpointAdapter: AWSPinpointBehavior {
 
     convenience init(appId: String,
                      region: String,
-                     credentialsProvider: CredentialsProvider) throws {
+                     credentialsProvider: CredentialsProvider,
+                     shouldTrackAppSessions: Bool = true) throws {
         var isDebug = false
         #if DEBUG
         isDebug = true
@@ -27,7 +28,8 @@ class AWSPinpointAdapter: AWSPinpointBehavior {
         let configuration = PinpointContextConfiguration(appId: appId,
                                                          region: region,
                                                          credentialsProvider: credentialsProvider,
-                                                         isDebug: isDebug)
+                                                         isDebug: isDebug,
+                                                         shouldTrackAppSessions: shouldTrackAppSessions)
         let pinpoint = try PinpointContext(with: configuration)
         self.init(pinpoint: pinpoint)
     }
