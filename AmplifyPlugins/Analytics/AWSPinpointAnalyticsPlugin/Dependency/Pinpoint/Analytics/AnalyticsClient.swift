@@ -49,12 +49,13 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
 
     convenience init(applicationId: String,
                      pinpointClient: PinpointClientProtocol,
+                     endpointClient: EndpointClientBehaviour,
                      sessionProvider: @escaping SessionProvider) throws {
         let dbAdapter = try SQLiteLocalStorageAdapter(prefixPath: Constants.eventRecorderStoragePathPrefix,
                                                       databaseName: applicationId)
         let eventRecorder = try EventRecorder(appId: applicationId,
                                               storage: AnalyticsEventSQLStorage(dbAdapter: dbAdapter),
-                                              pinpointClient: pinpointClient)
+                                              pinpointClient: pinpointClient, endpointClient: endpointClient)
         self.init(eventRecorder: eventRecorder,
                   sessionProvider: sessionProvider)
     }

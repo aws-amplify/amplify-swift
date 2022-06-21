@@ -22,7 +22,7 @@ class SQLiteLocalStorageAdapterTests: XCTestCase {
             let analyticsEventStorage = AnalyticsEventSQLStorage(dbAdapter: adapter)
             try analyticsEventStorage.initializeStorage()
         } catch {
-            XCTFail("Failed to remove SQLite as part of test setup")
+            XCTFail("Failed to setup SQLiteLocalStorageAdapterTests")
         }
     }
 
