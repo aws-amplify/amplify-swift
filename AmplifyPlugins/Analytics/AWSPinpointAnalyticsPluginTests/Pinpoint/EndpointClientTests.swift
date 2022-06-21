@@ -154,7 +154,7 @@ class EndpointClientTests: XCTestCase {
         let publicEndpoint = await endpointClient.currentPublicEndpoint()
         let mockModel = MockDevice()
         XCTAssertNotNil(publicEndpoint)
-        XCTAssertEqual(publicEndpoint.address, currentEndpointId)
+        XCTAssertNil(publicEndpoint.address)
         XCTAssertEqual(publicEndpoint.attributes?.count, 0)
         XCTAssertEqual(publicEndpoint.metrics?.count, 0)
         XCTAssertEqual(publicEndpoint.channelType, .apnsSandbox)
