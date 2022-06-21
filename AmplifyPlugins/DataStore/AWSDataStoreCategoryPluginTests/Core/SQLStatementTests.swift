@@ -936,6 +936,27 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(statement.stringValue, expectedStatement)
     }
 
+    func testSelectStatementWithPredicateCompositePrimaryKey() {
+        let comment = CommentWithCompositeKey.keys
+        let post = PostWithCompositeKey(id: "id", title: "title")
+        let predicate = comment.post == post.identifier
+
+        let statement = SelectStatement(from: CommentWithCompositeKey.schema, predicate: predicate)
+        let expectedStatement = """
+        select
+          "root"."@@primaryKey" as "@@primaryKey", "root"."id" as "id", "root"."content" as "content",
+          "root"."createdAt" as "createdAt", "root"."updatedAt" as "updatedAt", "root"."@@postForeignKey" as "@@postForeignKey",
+          "post"."@@primaryKey" as "post.@@primaryKey", "post"."id" as "post.id", "post"."title" as "post.title",
+          "post"."createdAt" as "post.createdAt", "post"."updatedAt" as "post.updatedAt"
+        from "CommentWithCompositeKey" as "root"
+        left outer join "PostWithCompositeKey" as "post"
+          on "post"."@@primaryKey" = "root"."@@postForeignKey"
+        where 1 = 1
+          and "root"."@@postForeignKey" = ?
+        """
+        XCTAssertEqual(statement.stringValue, expectedStatement)
+    }
+
     // MARK: - Query Predicates
 
     /// - Given: a simple predicate
