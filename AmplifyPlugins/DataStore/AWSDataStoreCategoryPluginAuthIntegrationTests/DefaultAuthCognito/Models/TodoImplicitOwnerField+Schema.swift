@@ -25,7 +25,7 @@ extension TodoImplicitOwnerField {
     let todoImplicitOwnerField = TodoImplicitOwnerField.keys
 
     model.authRules = [
-      rule(allow: .owner, ownerField: "owner", identityClaim: "cognito:username", operations: [.create, .update, .delete, .read])
+      rule(allow: .owner, ownerField: "owner", identityClaim: "cognito:username", provider: .userPools, operations: [.create, .update, .delete, .read])
     ]
 
     model.pluralName = "TodoImplicitOwnerFields"
