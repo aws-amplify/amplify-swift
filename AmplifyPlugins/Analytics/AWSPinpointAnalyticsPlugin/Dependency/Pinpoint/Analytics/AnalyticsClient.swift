@@ -67,7 +67,7 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
 
     func addGlobalAttribute(_ attribute: String, forKey key: String, forEventType eventType: String) {
         precondition(!key.isEmpty, "Attributes and metrics must have a valid key")
-        eventTypeAttributes[eventType]?[key] = attribute
+        eventTypeAttributes[eventType, default: [:]][key] = attribute
     }
 
     func addGlobalMetric(_ metric: Double, forKey key: String) {
@@ -77,7 +77,7 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
 
     func addGlobalMetric(_ metric: Double, forKey key: String, forEventType eventType: String) {
         precondition(!key.isEmpty, "Attributes and metrics must have a valid key")
-        eventTypeMetrics[eventType]?[key] = metric
+        eventTypeMetrics[eventType, default: [:]][key] = metric
     }
 
     func removeGlobalAttribute(forKey key: String) {
