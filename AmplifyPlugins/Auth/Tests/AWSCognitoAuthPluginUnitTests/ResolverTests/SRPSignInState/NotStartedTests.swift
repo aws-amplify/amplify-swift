@@ -41,8 +41,10 @@ class NotStartedTests: XCTestCase {
         func assertIfUnsupported(_ event: SignInEvent) {
             print(event)
             switch event.eventType {
-            case .finalizeSRPSignIn, .respondNextAuthChallenge, .respondPasswordVerifier,
-                    .cancelSRPSignIn, .restoreToNotInitialized:
+            case .initiateSRP, .throwAuthError, .throwPasswordVerifierError:
+                // Supported
+                break
+            default:
                 XCTAssertEqual(
                     resolver.resolve(
                         oldState: oldState,
@@ -51,9 +53,6 @@ class NotStartedTests: XCTestCase {
                     oldState,
                     "Should not support \(event) for oldState \(oldState)"
                 )
-            case .initiateSRP, .throwAuthError, .throwPasswordVerifierError:
-                // Supported
-                break
             }
         }
 
