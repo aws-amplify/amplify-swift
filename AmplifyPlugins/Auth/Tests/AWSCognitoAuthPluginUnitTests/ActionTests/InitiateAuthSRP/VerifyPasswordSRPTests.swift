@@ -34,10 +34,8 @@ class VerifyPasswordSRPTests: XCTestCase {
                 })
         }
 
-        let environment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-            cognitoUserPoolFactory: identityProviderFactory
-        )
+        let environment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutputResponse.validTestData
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
@@ -68,10 +66,8 @@ class VerifyPasswordSRPTests: XCTestCase {
                 })
         }
 
-        let environment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-            cognitoUserPoolFactory: identityProviderFactory
-        )
+        let environment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutputResponse.validTestData
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
@@ -117,10 +113,8 @@ class VerifyPasswordSRPTests: XCTestCase {
                 })
         }
 
-        let environment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-            cognitoUserPoolFactory: identityProviderFactory
-        )
+        let environment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutputResponse.invalidChallenge
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
@@ -166,10 +160,8 @@ class VerifyPasswordSRPTests: XCTestCase {
                 })
         }
 
-        let environment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-            cognitoUserPoolFactory: identityProviderFactory
-        )
+        let environment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutputResponse.invalidTestDataWithNoSalt
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
@@ -215,10 +207,8 @@ class VerifyPasswordSRPTests: XCTestCase {
                 })
         }
 
-        let environment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-            cognitoUserPoolFactory: identityProviderFactory
-        )
+        let environment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutputResponse.invalidTestDataWithNoSecretBlock
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
@@ -264,10 +254,8 @@ class VerifyPasswordSRPTests: XCTestCase {
                 })
         }
 
-        let environment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-            cognitoUserPoolFactory: identityProviderFactory
-        )
+        let environment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutputResponse.invalidTestDataWithNoSRPB
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
@@ -313,10 +301,8 @@ class VerifyPasswordSRPTests: XCTestCase {
                 })
         }
 
-        let environment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-            cognitoUserPoolFactory: identityProviderFactory
-        )
+        let environment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutputResponse.invalidTestDataForException
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
@@ -361,10 +347,8 @@ class VerifyPasswordSRPTests: XCTestCase {
                 })
         }
 
-        let environment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-            cognitoUserPoolFactory: identityProviderFactory
-        )
+        let environment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
 
         let data = InitiateAuthOutputResponse.validTestData
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
@@ -405,11 +389,9 @@ class VerifyPasswordSRPTests: XCTestCase {
                 })
         }
 
-        let environment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-            cognitoUserPoolFactory: identityProviderFactory
-        )
-
+        let environment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
+        
         let data = InitiateAuthOutputResponse.validTestData
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
                                        authResponse: data)

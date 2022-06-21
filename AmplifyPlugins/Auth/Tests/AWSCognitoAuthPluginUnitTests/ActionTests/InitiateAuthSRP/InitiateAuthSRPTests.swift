@@ -23,10 +23,8 @@ class InitiateAuthSRPTests: XCTestCase {
             )
         }
 
-        let environment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-            cognitoUserPoolFactory: identityProviderFactory
-        )
+        let environment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
         let action = InitiateAuthSRP(username: "testUser", password: "testPassword")
 
         action.execute(
@@ -47,10 +45,8 @@ class InitiateAuthSRPTests: XCTestCase {
             )
         }
 
-        let environment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-            cognitoUserPoolFactory: identityProviderFactory
-        )
+        let environment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
 
         let action = InitiateAuthSRP(username: "testUser", password: "testPassword")
 
@@ -86,10 +82,8 @@ class InitiateAuthSRPTests: XCTestCase {
             )
         }
 
-        let environment = BasicSRPAuthEnvironment(
-            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-            cognitoUserPoolFactory: identityProviderFactory
-        )
+        let environment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
 
         let action = InitiateAuthSRP(username: "testUser", password: "testPassword")
 
