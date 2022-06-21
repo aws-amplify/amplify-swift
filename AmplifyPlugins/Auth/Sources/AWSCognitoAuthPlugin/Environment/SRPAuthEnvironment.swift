@@ -57,10 +57,7 @@ struct SRPCommonConfig {
 
 protocol SRPAuthEnvironment: Environment {
     typealias SRPClientFactory = (String, String) throws -> SRPClientBehavior
-    typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
 
-    var userPoolConfiguration: UserPoolConfigurationData { get }
-    var cognitoUserPoolFactory: CognitoUserPoolFactory { get }
     var eventIDFactory: EventIDFactory { get }
     var srpClientFactory: SRPClientFactory { get }
     var srpConfiguration: SRPCommonConfig { get }

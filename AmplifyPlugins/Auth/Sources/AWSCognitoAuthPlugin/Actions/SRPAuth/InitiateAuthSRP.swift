@@ -25,11 +25,12 @@ struct InitiateAuthSRP: Action {
                  environment: Environment) {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         do {
-            let environment = try SRPSignInHelper.srpEnvironment(environment)
-            let nHexValue = environment.srpConfiguration.nHexValue
-            let gHexValue = environment.srpConfiguration.gHexValue
+            let srpEnv = try environment.srpEnvironment()
+            let userPoolEnv = try environment.userPoolEnvironment()
+            let nHexValue = srpEnv.srpConfiguration.nHexValue
+            let gHexValue = srpEnv.srpConfiguration.gHexValue
 
-            let srpClient = try SRPSignInHelper.srpClient(environment)
+            let srpClient = try SRPSignInHelper.srpClient(srpEnv)
             let srpKeyPair = srpClient.generateClientKeyPair()
 
             let srpStateData = SRPStateData(username: username,
@@ -38,32 +39,32 @@ struct InitiateAuthSRP: Action {
                                             gHexValue: gHexValue,
                                             srpKeyPair: srpKeyPair,
                                             clientTimestamp: Date())
-            let request = request(environment: environment,
+            let request = request(environment: userPoolEnv,
                                   publicHexValue: srpKeyPair.publicKeyHexValue)
 
             try sendRequest(request: request,
-                            environment: environment,
+                            environment: userPoolEnv,
                             srpStateData: srpStateData) { responseEvent in
-                logVerbose("\(#fileID) Sending event \(responseEvent)", environment: environment)
+                logVerbose("\(#fileID) Sending event \(responseEvent)", environment: srpEnv)
                 dispatcher.send(responseEvent)
 
             }
 
-        } catch let error as SRPSignInError {
+        } catch let error as SignInError {
             logVerbose("\(#fileID) Raised error \(error)", environment: environment)
-            let event = SRPSignInEvent(eventType: .throwAuthError(error))
+            let event = SignInEvent(eventType: .throwAuthError(error))
             dispatcher.send(event)
         } catch {
             logVerbose("\(#fileID) Caught error \(error)", environment: environment)
-            let authError = SRPSignInError.service(error: error)
-            let event = SRPSignInEvent(
+            let authError = SignInError.service(error: error)
+            let event = SignInEvent(
                 eventType: .throwAuthError(authError)
             )
             dispatcher.send(event)
         }
     }
 
-    private func request(environment: SRPAuthEnvironment,
+    private func request(environment: UserPoolEnvironment,
                          publicHexValue: String) -> InitiateAuthInput {
         let userPoolClientId = environment.userPoolConfiguration.clientId
         var authParameters = [
@@ -93,22 +94,22 @@ struct InitiateAuthSRP: Action {
     }
 
     private func sendRequest(request: InitiateAuthInput,
-                     environment: SRPAuthEnvironment,
+                             environment: UserPoolEnvironment,
                              srpStateData: SRPStateData,
-                             callback: @escaping (SRPSignInEvent) -> Void) throws {
+                             callback: @escaping (SignInEvent) -> Void) throws {
 
         let cognitoClient = try environment.cognitoUserPoolFactory()
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         Task {
-            let event: SRPSignInEvent!
+            let event: SignInEvent!
             do {
                 let response = try await cognitoClient.initiateAuth(input: request)
                 logVerbose("\(#fileID) InitiateAuth response success", environment: environment)
-                event = SRPSignInEvent(eventType: .respondPasswordVerifier(srpStateData, response))
+                event = SignInEvent(eventType: .respondPasswordVerifier(srpStateData, response))
             } catch {
-                let authError = SRPSignInError.service(error: error)
-                event = SRPSignInEvent(eventType: .throwAuthError(authError))
+                let authError = SignInError.service(error: error)
+                event = SignInEvent(eventType: .throwAuthError(authError))
             }
             callback(event)
         }

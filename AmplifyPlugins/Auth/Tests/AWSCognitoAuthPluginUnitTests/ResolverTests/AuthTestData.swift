@@ -56,8 +56,8 @@ extension AuthConfiguration {
     static let testData = AuthConfiguration.userPools(.testData)
 }
 
-extension SRPSignInError {
-    static let testData = SRPSignInError.configuration(message: "testSRPSignInError")
+extension SignInError {
+    static let testData = SignInError.configuration(message: "testSRPSignInError")
 }
 
 extension AuthenticationError {

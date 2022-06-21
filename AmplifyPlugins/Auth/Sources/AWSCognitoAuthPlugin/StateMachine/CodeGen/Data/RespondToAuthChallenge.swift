@@ -12,8 +12,11 @@ import AWSCognitoIdentityProvider
 struct RespondToAuthChallenge: Equatable {
 
     let challenge: CognitoIdentityProviderClientTypes.ChallengeNameType
+
     let username: String
+
     let session: String
+
     let parameters: [String: String]?
 
 }

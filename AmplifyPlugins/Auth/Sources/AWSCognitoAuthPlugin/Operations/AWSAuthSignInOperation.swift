@@ -65,9 +65,8 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
             guard let self = self else {
                 return
             }
-            guard case .configured(let authNState, let authZState) = $0 else {
-                return
-            }
+            guard case .configured(let authNState,
+                                   let authZState) = $0 else { return }
 
             switch authNState {
             case .signedOut:
@@ -89,25 +88,12 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
                 self.finish()
 
             case .signingIn(let signInState):
-                if case .signingInWithSRP(let srpState, _) = signInState,
-                   case .error(let signInError) = srpState {
-                    if signInError.isUserUnConfirmed {
-                        self.dispatch(AuthSignInResult(nextStep: .confirmSignUp(nil)))
-                    } else if signInError.isResetPassword {
-                        self.dispatch(AuthSignInResult(nextStep: .resetPassword(nil)))
-                    } else {
-                        self.dispatch(signInError.authError)
-                    }
-
-                    self.cancelToken(token)
-                    self.finish()
-                } else if case .resolvingSMSChallenge(let challengeState) = signInState,
-                         case .waitingForAnswer(let challenge) = challengeState {
-                   let delivery = challenge.codeDeliveryDetails
-                   self.dispatch(.init(nextStep: .confirmSignInWithSMSMFACode(delivery, nil)))
-                   self.cancelToken(token)
-                   self.finish()
-               }
+                guard let result = UserPoolSignInHelper.checkNextStep(signInState) else {
+                    return
+                }
+                self.dispatch(result: result)
+                self.cancelToken(token)
+                self.finish()
             default:
                 break
             }

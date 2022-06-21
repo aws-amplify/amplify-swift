@@ -24,7 +24,7 @@ class SRPSignInStateTests: XCTestCase {
         XCTAssertEqual(
             resolver.resolve(
                 oldState: oldState,
-                byApplying: SRPSignInEvent.finalizeSRPSignInEvent
+                byApplying: SignInEvent.finalizeSRPSignInEvent
             ).newState,
             expected
         )
