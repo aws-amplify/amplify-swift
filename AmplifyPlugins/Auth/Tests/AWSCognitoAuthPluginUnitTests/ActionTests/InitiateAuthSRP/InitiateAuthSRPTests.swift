@@ -53,8 +53,8 @@ class InitiateAuthSRPTests: XCTestCase {
         let errorEventSent = expectation(description: "errorEventSent")
         let dispatcher = MockDispatcher { event in
 
-            guard let event = event as? SRPSignInEvent else {
-                XCTFail("Expected event to be SRPSignInEvent")
+            guard let event = event as? SignInEvent else {
+                XCTFail("Expected event to be SignInEvent")
                 return
             }
 
@@ -90,8 +90,8 @@ class InitiateAuthSRPTests: XCTestCase {
         let successEventSent = expectation(description: "successEventSent")
 
         let dispatcher = MockDispatcher { event in
-            guard let event = event as? SRPSignInEvent else {
-                XCTFail("Expected event to be SRPSignInEvent")
+            guard let event = event as? SignInEvent else {
+                XCTFail("Expected event to be SignInEvent")
                 return
             }
 

@@ -11,7 +11,7 @@ extension VerifyPasswordSRP {
     func challengeParameters() throws -> [String: String] {
         guard let parameters = authResponse.challengeParameters else {
             let message = "ChallengeParameters is empty from service"
-            throw SRPSignInError.invalidServiceResponse(message: message)
+            throw SignInError.invalidServiceResponse(message: message)
         }
         return parameters
     }
@@ -19,7 +19,7 @@ extension VerifyPasswordSRP {
     func saltHex(_ parameters: [String: String]) throws -> String {
         guard let saltHex = parameters["SALT"], !saltHex.isEmpty else {
             let message = "Salt is empty from service"
-            throw SRPSignInError.invalidServiceResponse(message: message)
+            throw SignInError.invalidServiceResponse(message: message)
         }
         return saltHex
     }
@@ -29,7 +29,7 @@ extension VerifyPasswordSRP {
         guard let secretBlockString = parameters["SECRET_BLOCK"]
         else {
             let message = "Secret block is empty from service"
-            throw SRPSignInError.invalidServiceResponse(message: message)
+            throw SignInError.invalidServiceResponse(message: message)
         }
         return secretBlockString
     }
@@ -38,7 +38,7 @@ extension VerifyPasswordSRP {
         guard let serverSecretBlock = Data(base64Encoded: secretBlockString)
         else {
             let message = "Could not convert secret block to Data"
-            throw SRPSignInError.invalidServiceResponse(message: message)
+            throw SignInError.invalidServiceResponse(message: message)
         }
         return serverSecretBlock
     }
@@ -46,7 +46,7 @@ extension VerifyPasswordSRP {
     func serverPublic(_ parameters: [String: String]) throws -> String {
         guard let serverPublicBHexString = parameters["SRP_B"] else {
             let message = "SRP_B not found from the service response"
-            throw SRPSignInError.invalidServiceResponse(message: message)
+            throw SignInError.invalidServiceResponse(message: message)
         }
         return serverPublicBHexString
     }

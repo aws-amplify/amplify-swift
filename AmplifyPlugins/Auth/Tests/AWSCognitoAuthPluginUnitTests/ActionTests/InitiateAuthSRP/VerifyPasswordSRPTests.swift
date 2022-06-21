@@ -78,8 +78,8 @@ class VerifyPasswordSRPTests: XCTestCase {
         let dispatcher = MockDispatcher { event in
             defer { passwordVerifierError.fulfill() }
 
-            guard let event = event as? SRPSignInEvent else {
-                XCTFail("Expected event to be SRPSignInEvent but got \(event)")
+            guard let event = event as? SignInEvent else {
+                XCTFail("Expected event to be SignInEvent but got \(event)")
                 return
             }
 
@@ -126,8 +126,8 @@ class VerifyPasswordSRPTests: XCTestCase {
         let dispatcher = MockDispatcher { event in
             defer { passwordVerifierError.fulfill() }
 
-            guard let event = event as? SRPSignInEvent else {
-                XCTFail("Expected event to be SRPSignInEvent but got \(event)")
+            guard let event = event as? SignInEvent else {
+                XCTFail("Expected event to be SignInEvent but got \(event)")
                 return
             }
 
@@ -173,8 +173,8 @@ class VerifyPasswordSRPTests: XCTestCase {
         let dispatcher = MockDispatcher { event in
             defer { passwordVerifierError.fulfill() }
 
-            guard let event = event as? SRPSignInEvent else {
-                XCTFail("Expected event to be SRPSignInEvent but got \(event)")
+            guard let event = event as? SignInEvent else {
+                XCTFail("Expected event to be SignInEvent but got \(event)")
                 return
             }
 
@@ -220,8 +220,8 @@ class VerifyPasswordSRPTests: XCTestCase {
         let dispatcher = MockDispatcher { event in
             defer { passwordVerifierError.fulfill() }
 
-            guard let event = event as? SRPSignInEvent else {
-                XCTFail("Expected event to be SRPSignInEvent but got \(event)")
+            guard let event = event as? SignInEvent else {
+                XCTFail("Expected event to be SignInEvent but got \(event)")
                 return
             }
 
@@ -267,8 +267,8 @@ class VerifyPasswordSRPTests: XCTestCase {
         let dispatcher = MockDispatcher { event in
             defer { passwordVerifierError.fulfill() }
 
-            guard let event = event as? SRPSignInEvent else {
-                XCTFail("Expected event to be SRPSignInEvent but got \(event)")
+            guard let event = event as? SignInEvent else {
+                XCTFail("Expected event to be SignInEvent but got \(event)")
                 return
             }
 
@@ -314,8 +314,8 @@ class VerifyPasswordSRPTests: XCTestCase {
         let dispatcher = MockDispatcher { event in
             defer { passwordVerifierError.fulfill() }
 
-            guard let event = event as? SRPSignInEvent else {
-                XCTFail("Expected event to be SRPSignInEvent but got \(event)")
+            guard let event = event as? SignInEvent else {
+                XCTFail("Expected event to be SignInEvent but got \(event)")
                 return
             }
 
@@ -358,8 +358,8 @@ class VerifyPasswordSRPTests: XCTestCase {
             description: "passwordVerifierCompletion")
 
         let dispatcher = MockDispatcher { event in
-            guard let event = event as? SRPSignInEvent else {
-                XCTFail("Expected event to be SRPSignInEvent but got \(event)")
+            guard let event = event as? SignInEvent else {
+                XCTFail("Expected event to be SignInEvent but got \(event)")
                 return
             }
 
@@ -402,8 +402,8 @@ class VerifyPasswordSRPTests: XCTestCase {
         let dispatcher = MockDispatcher { event in
             defer { passwordVerifierError.fulfill() }
 
-            guard let event = event as? SRPSignInEvent else {
-                XCTFail("Expected event to be SRPSignInEvent but got \(event)")
+            guard let event = event as? SignInEvent else {
+                XCTFail("Expected event to be SignInEvent but got \(event)")
                 return
             }
 

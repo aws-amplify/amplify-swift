@@ -19,11 +19,11 @@ struct SRPSignInHelper {
             let factory = environment.srpClientFactory
             return try factory(nHexValue, gHexValue)
         } catch let error as SRPError {
-            let error = SRPSignInError.calculation(error)
+            let error = SignInError.calculation(error)
             throw error
         } catch {
             let message = "SRP Client failed to initialize"
-            let error = SRPSignInError.configuration(message: message)
+            let error = SignInError.configuration(message: message)
             throw error
         }
     }
