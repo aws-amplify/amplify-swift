@@ -177,8 +177,22 @@ extension ModelSchema {
 
     /// Create SQLite indexes corresponding to secondary indexes in the model schema
     func createIndexStatements() -> String {
+        // Store field names used to represent associations for a fast lookup
+        var associationsFields = Set<String>()
+        for (_, field) in self.fields {
+            if field.isAssociationOwner,
+               let association = field.association,
+               case let .belongsTo(_, targetNames: targetNames) = association {
+                associationsFields.formUnion(targetNames)
+            }
+        }
+
         var statement = ""
         for case let .index(fields, name) in indexes {
+            // don't create an index on fields used to represent associations
+            if !associationsFields.isDisjoint(with: fields) {
+                continue
+            }
             statement += CreateIndexStatement(
                 modelSchema: self,
                 fields: fields,

@@ -58,13 +58,17 @@ type TagWithCompositeKey @model {
   posts: [PostWithTagsCompositeKey] @manyToMany(relationName: "PostTagsWithCompositeKey")
 }
 
-type PostWithCompositeKeyUnidirectional @model {
+
+type PostWithCompositeKeyAndIndex @model {
   id: ID! @primaryKey(sortKeyFields: ["title"])
   title: String!
-  comments: [CommentWithCompositeKeyUnidirectional] @hasMany
+  comments: [CommentWithCompositeKeyAndIndex] @hasMany
 }
 
-type CommentWithCompositeKeyUnidirectional @model {
+type CommentWithCompositeKeyAndIndex @model {
   id: ID! @primaryKey(sortKeyFields: ["content"])
   content: String!
+  postID: ID @index(name: "byPost", sortKeyFields: ["postTitle"])
+  postTitle: String
+  post: PostWithCompositeKeyAndIndex @belongsTo(fields: ["postID", "postTitle"])
 }
