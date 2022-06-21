@@ -149,10 +149,27 @@ class EndpointClientTests: XCTestCase {
         XCTAssertEqual(archiver.encodeCount, 1)
         XCTAssertEqual(userDefaults.saveCount, 1)
     }
+    
+    func testCurrentPublicEndpoint_shouldReturnPublicEndpoint() async {
+        let publicEndpoint = await endpointClient.currentPublicEndpoint()
+        let mockModel = MockDevice()
+        XCTAssertNotNil(publicEndpoint)
+        XCTAssertNil(publicEndpoint.address)
+        XCTAssertEqual(publicEndpoint.attributes?.count, 0)
+        XCTAssertEqual(publicEndpoint.metrics?.count, 0)
+        XCTAssertEqual(publicEndpoint.channelType, .apnsSandbox)
+        XCTAssertEqual(publicEndpoint.optOut, "ALL")
+        XCTAssertEqual(publicEndpoint.demographic?.appVersion, mockModel.appVersion)
+        XCTAssertEqual(publicEndpoint.demographic?.locale, "en_US")
+        XCTAssertEqual(publicEndpoint.demographic?.make, "apple")
+        XCTAssertEqual(publicEndpoint.demographic?.model, mockModel.model)
+        XCTAssertEqual(publicEndpoint.demographic?.platform, mockModel.platform.name)
+        XCTAssertEqual(publicEndpoint.demographic?.platformVersion, mockModel.platform.version)
+    }
 }
 
 class MockDevice: Device {
-    var model: String = "mockModek"
+    var model: String = "mockModel"
     var appVersion: String? = "mockAppVersion"
     var platform: Platform = (name: "mockPlatformName", version: "mockPlatformVersion")
 }
