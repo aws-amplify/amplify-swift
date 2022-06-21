@@ -51,4 +51,11 @@ extension StateMachineEvent {
         return event
     }
 
+    var isChallengeEvent: SignInChallengeEvent.EventType? {
+        guard let event = (self as? SignInChallengeEvent)?.eventType else {
+            return nil
+        }
+        return event
+    }
+
 }

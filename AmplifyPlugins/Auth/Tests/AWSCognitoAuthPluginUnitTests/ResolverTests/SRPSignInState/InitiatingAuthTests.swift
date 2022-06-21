@@ -22,7 +22,7 @@ class InitiatingAuthTests: XCTestCase {
         XCTAssertEqual(
             resolver.resolve(
                 oldState: oldState,
-                byApplying: SRPSignInEvent.respondPasswordVerifierEvent
+                byApplying: SignInEvent.respondPasswordVerifierEvent
             ).newState,
             expected
         )
@@ -32,7 +32,7 @@ class InitiatingAuthTests: XCTestCase {
         let expected = SRPSignInState.error(.testData)
         let newState = resolver.resolve(
             oldState: oldState,
-            byApplying: SRPSignInEvent.authErrorEvent
+            byApplying: SignInEvent.authErrorEvent
         ).newState
         XCTAssertEqual(
             newState,
@@ -41,10 +41,13 @@ class InitiatingAuthTests: XCTestCase {
     }
 
     func testUnsupported() {
-        func assertIfUnsupported(_ event: SRPSignInEvent) {
+        func assertIfUnsupported(_ event: SignInEvent) {
             switch event.eventType {
-            case .initiateSRP, .finalizeSRPSignIn, .respondNextAuthChallenge,
-                .restoreToNotInitialized:
+            case .respondPasswordVerifier, .cancelSRPSignIn, .throwAuthError,
+                    .throwPasswordVerifierError:
+                // Supported
+                break
+            default:
                 XCTAssertEqual(
                     resolver.resolve(
                         oldState: oldState,
@@ -53,14 +56,10 @@ class InitiatingAuthTests: XCTestCase {
                     oldState,
                     "Should not support \(event) for oldState \(oldState)"
                 )
-            case .respondPasswordVerifier, .cancelSRPSignIn, .throwAuthError,
-                    .throwPasswordVerifierError:
-                // Supported
-                break
             }
         }
 
-        SRPSignInEvent.allStates.forEach(assertIfUnsupported(_:))
+        SignInEvent.allStates.forEach(assertIfUnsupported(_:))
     }
 
 }
