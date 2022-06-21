@@ -202,6 +202,15 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         case .finished:
             break
         }
+        stop { result in
+            switch result {
+            case .success:
+                self.log.info("Stopping DataStore successful.")
+                return
+            case .failure(let error):
+                self.log.error("Failed to stop StorageEngine with error: \(error)")
+            }
+        }
     }
 
     @available(iOS 13.0, *)
