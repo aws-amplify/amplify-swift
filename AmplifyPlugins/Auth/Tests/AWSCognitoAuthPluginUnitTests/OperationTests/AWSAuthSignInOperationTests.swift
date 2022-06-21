@@ -137,6 +137,12 @@ class AWSAuthSignInOperationTests: XCTestCase {
                 mockInitiateAuthResponse: initiateAuth,
                 mockRespondToAuthChallengeResponse: respondToChallenge
             )})
+        statemachine.listen { state in
+            print("State: \(state)")
+        } onSubscribe: {
+            
+        }
+
         let operation = AWSAuthSignInOperation(
             request,
             authStateMachine: statemachine) {  result in

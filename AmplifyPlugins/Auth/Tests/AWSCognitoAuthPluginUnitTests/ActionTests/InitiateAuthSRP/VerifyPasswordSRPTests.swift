@@ -407,7 +407,7 @@ class VerifyPasswordSRPTests: XCTestCase {
                 return
             }
 
-            guard case let .throwPasswordVerifierError(error) = event.eventType,
+            guard case let .throwAuthError(error) = event.eventType,
                   case .service = error
             else {
                       XCTFail("Should receive invalid service response")
