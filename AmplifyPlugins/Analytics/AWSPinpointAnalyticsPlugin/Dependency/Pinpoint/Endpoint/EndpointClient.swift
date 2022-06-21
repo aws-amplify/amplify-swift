@@ -200,7 +200,7 @@ actor EndpointClient: EndpointClientBehaviour {
         let effectiveDate = getEffectiveDateIso8601FractionalSeconds(from: endpointProfile)
         let optOut = getOptOut(from: endpointProfile)
         let publicEndpoint = PinpointClientTypes.PublicEndpoint(
-            address: endpointProfile.endpointId,
+            address: endpointProfile.deviceToken,
             attributes: endpointProfile.attributes,
             channelType: channelType,
             demographic: endpointProfile.demographic,
