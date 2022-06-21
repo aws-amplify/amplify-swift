@@ -21,9 +21,9 @@ protocol AnalyticsEventRecording {
 
 /// An AnalyticsEventRecording implementation that stores and submits pinpoint events
 class EventRecorder: AnalyticsEventRecording {
-    let appId: String
-    let storage: AnalyticsEventStorage
-    let pinpointClient: PinpointClientProtocol
+    private let appId: String
+    private let storage: AnalyticsEventStorage
+    private let pinpointClient: PinpointClientProtocol
     private var submittedEvents: [PinpointEvent] = []
 
     /// Initializer for Event Recorder

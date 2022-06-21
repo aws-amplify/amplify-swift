@@ -23,7 +23,7 @@ class AWSPinpointAnalyticsPluginConfigureTests: AWSPinpointAnalyticsPluginTestBa
         let appId = JSONValue(stringLiteral: testAppId)
         let region = JSONValue(stringLiteral: testRegion)
         let autoFlushInterval = JSONValue(integerLiteral: testAutoFlushInterval)
-        let trackAppSession = JSONValue(booleanLiteral: testTrackAppSession)
+        let trackAppSession = JSONValue(booleanLiteral: false)
         let autoSessionTrackingInterval = JSONValue(integerLiteral: testAutoSessionTrackingInterval)
 
         let pinpointAnalyticsPluginConfiguration = JSONValue(
