@@ -17,6 +17,7 @@ protocol EndpointClientBehaviour: Actor {
     func removeAttributes(forKey key: String)
     func addMetric(_ metric: Double, forKey key: String)
     func removeMetric(forKey key: String)
+    func getPublicEndpoint() -> PinpointClientTypes.PublicEndpoint
 }
 
 actor EndpointClient: EndpointClientBehaviour {
@@ -176,18 +177,51 @@ actor EndpointClient: EndpointClientBehaviour {
     }
 
     private func createUpdateInput(from endpointProfile: PinpointEndpointProfile) -> UpdateEndpointInput {
+        let channelType = getChannelType(from: endpointProfile)
+        let effectiveDate = getEffectiveDateIso8601FractionalSeconds(from: endpointProfile)
+        let optOut = getOptOut(from: endpointProfile)
         let endpointRequest =  PinpointClientTypes.EndpointRequest(address: endpointProfile.deviceToken,
                                                                    attributes: endpointProfile.attributes,
-                                                                   channelType: endpointProfile.channelType,
+                                                                   channelType: channelType,
                                                                    demographic: endpointProfile.demographic,
-                                                                   effectiveDate: endpointProfile.effectiveDateIso8601FractionalSeconds,
+                                                                   effectiveDate: effectiveDate,
                                                                    location: endpointProfile.location,
                                                                    metrics: endpointProfile.metrics,
-                                                                   optOut: endpointProfile.optOut,
+                                                                   optOut: optOut,
                                                                    user: endpointProfile.user)
         return UpdateEndpointInput(applicationId: endpointProfile.applicationId,
                                    endpointId: endpointProfile.endpointId,
                                    endpointRequest: endpointRequest)
+    }
+    
+    func getPublicEndpoint() -> PinpointClientTypes.PublicEndpoint {
+        let endpointProfile = currentEndpointProfile()
+        let channelType = getChannelType(from: endpointProfile)
+        let effectiveDate = getEffectiveDateIso8601FractionalSeconds(from: endpointProfile)
+        let optOut = getOptOut(from: endpointProfile)
+        let publicEndpoint = PinpointClientTypes.PublicEndpoint(
+            address: endpointProfile.endpointId,
+            attributes: endpointProfile.attributes,
+            channelType: channelType,
+            demographic: endpointProfile.demographic,
+            effectiveDate: effectiveDate,
+            location: endpointProfile.location,
+            metrics: endpointProfile.metrics,
+            optOut: optOut,
+            user: endpointProfile.user)
+        return publicEndpoint
+    }
+    
+    private func getChannelType(from endpointProfile: PinpointEndpointProfile) -> PinpointClientTypes.ChannelType {
+        return endpointProfile.isDebug ? .apns : .apnsSandbox
+    }
+
+    private func getEffectiveDateIso8601FractionalSeconds(from endpointProfile: PinpointEndpointProfile) -> String {
+        endpointProfile.effectiveDate.iso8601FractionalSeconds()
+    }
+
+    private func getOptOut(from endpointProfile: PinpointEndpointProfile) -> String {
+        return endpointProfile.isOptOut ? EndpointClient.Constants.OptOut.all : EndpointClient.Constants.OptOut.none
     }
 }
 

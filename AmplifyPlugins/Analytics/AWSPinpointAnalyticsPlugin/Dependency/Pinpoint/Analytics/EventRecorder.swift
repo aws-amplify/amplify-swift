@@ -55,7 +55,7 @@ class EventRecorder: AnalyticsEventRecording {
     /// If event submission succeeds, the event is removed from local storage
     /// - Returns: A collection of events submitted to Pinpoint
     func submitAllEvents() async throws -> [PinpointEvent] {
-        let publicEndpoint = try await getPublicEndpoint()
+        let publicEndpoint = try await endpointClient.getPublicEndpoint()
         let eventsBatch = try getBatchRecords()
         if eventsBatch.count > 0 {
             try await processBatch(eventsBatch, publicEndpoint: publicEndpoint)
@@ -97,21 +97,6 @@ class EventRecorder: AnalyticsEventRecording {
                 }
             }
         }
-    }
-
-    private func getPublicEndpoint() async throws -> PinpointClientTypes.PublicEndpoint {
-        let endpointProfile = await endpointClient.currentEndpointProfile()
-        let publicEndpoint = PinpointClientTypes.PublicEndpoint(
-            address: endpointProfile.endpointId,
-            attributes: endpointProfile.attributes,
-            channelType: endpointProfile.channelType,
-            demographic: endpointProfile.demographic,
-            effectiveDate: endpointProfile.effectiveDateIso8601FractionalSeconds,
-            location: endpointProfile.location,
-            metrics: endpointProfile.metrics,
-            optOut: endpointProfile.optOut,
-            user: endpointProfile.user)
-        return publicEndpoint
     }
 }
 

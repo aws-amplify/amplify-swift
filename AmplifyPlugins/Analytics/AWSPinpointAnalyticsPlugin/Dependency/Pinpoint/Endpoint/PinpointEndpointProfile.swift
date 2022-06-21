@@ -118,16 +118,4 @@ extension PinpointEndpointProfile {
             static let plan = "plan"
         }
     }
-
-    var channelType: PinpointClientTypes.ChannelType {
-        return isDebug ? .apns : .apnsSandbox
-    }
-
-    var effectiveDateIso8601FractionalSeconds: String {
-        effectiveDate.iso8601FractionalSeconds()
-    }
-
-    var optOut: String {
-        return isOptOut ? EndpointClient.Constants.OptOut.all : EndpointClient.Constants.OptOut.none
-    }
 }
