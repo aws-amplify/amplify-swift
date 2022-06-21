@@ -10,4 +10,5 @@ enum LocalStorageError: Error {
     case missingConnection
     case invalidStorage(path: String, Error? = nil)
     case invalidOperation(causedBy: Error? = nil)
+    case fileSystemError(description: String)
 }
