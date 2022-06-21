@@ -83,7 +83,7 @@ class VerifyPasswordSRPTests: XCTestCase {
                 return
             }
 
-            guard case let .throwPasswordVerifierError(error) = event.eventType,
+            guard case let .throwAuthError(error) = event.eventType,
                   case .invalidServiceResponse = error
             else {
                       XCTFail("Should receive invalid service response")
@@ -363,7 +363,7 @@ class VerifyPasswordSRPTests: XCTestCase {
                 return
             }
 
-            if case let .finalizeSRPSignIn(signedInData) = event.eventType {
+            if case let .finalizeSignIn(signedInData) = event.eventType {
                 XCTAssertNotNil(signedInData)
                 passwordVerifierCompletion.fulfill()
             }

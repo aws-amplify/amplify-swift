@@ -14,9 +14,11 @@ extension SignInChallengeState {
         switch self {
 
         case .waitingForAnswer(let respondAuthChallenge),
-                .verifying(let respondAuthChallenge, _),
-                .error(let respondAuthChallenge):
+                .verifying(let respondAuthChallenge, _):
             additionalMetadataDictionary = respondAuthChallenge.debugDictionary
+        case .error(let respondAuthChallenge, let error):
+            additionalMetadataDictionary = respondAuthChallenge.debugDictionary
+            additionalMetadataDictionary["error"] = error
         default: additionalMetadataDictionary = [:]
         }
         return [type: additionalMetadataDictionary]

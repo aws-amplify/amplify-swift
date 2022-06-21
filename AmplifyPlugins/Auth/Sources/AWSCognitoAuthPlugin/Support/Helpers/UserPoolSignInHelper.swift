@@ -67,7 +67,7 @@ struct UserPoolSignInHelper {
                                                 signedInDate: Date(),
                                                 signInMethod: .srp,
                                                 cognitoUserPoolTokens: userPoolTokens)
-                return SignInEvent(eventType: .finalizeSRPSignIn(signedInData))
+                return SignInEvent(eventType: .finalizeSignIn(signedInData))
 
             } else if let challengeName = response.challengeName, let session = response.session {
                 let parameters = response.challengeParameters
@@ -82,12 +82,12 @@ struct UserPoolSignInHelper {
                 default:
                     let message = "UnSupported challenge response \(challengeName)"
                     let error = SignInError.invalidServiceResponse(message: message)
-                    return SignInEvent(eventType: .throwPasswordVerifierError(error))
+                    return SignInEvent(eventType: .throwAuthError(error))
                 }
             } else {
                 let message = "Response did not contain signIn info"
                 let error = SignInError.invalidServiceResponse(message: message)
-                return SignInEvent(eventType: .throwPasswordVerifierError(error))
+                return SignInEvent(eventType: .throwAuthError(error))
             }
         }
 }

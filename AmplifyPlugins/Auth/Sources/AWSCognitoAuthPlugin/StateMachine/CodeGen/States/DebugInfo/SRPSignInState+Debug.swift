@@ -19,10 +19,6 @@ extension SRPSignInState {
             additionalMetadataDictionary = signInEventData.debugDictionary
         case .cancelling:
             additionalMetadataDictionary = [:]
-        case .nextAuthChallenge(let awsAuthChallenge):
-            additionalMetadataDictionary = [
-                "AuthChallengeData": awsAuthChallenge
-            ]
         case .respondingPasswordVerifier(let srpStateData):
             additionalMetadataDictionary = srpStateData.debugDictionary
         case .signedIn(let signedInData):
