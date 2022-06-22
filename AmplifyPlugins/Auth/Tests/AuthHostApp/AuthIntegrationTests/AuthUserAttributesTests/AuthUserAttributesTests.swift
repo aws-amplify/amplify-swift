@@ -316,4 +316,21 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
             }
         }
         wait(for: [changePasswordExpectation], timeout: networkTimeout)
+        
+        let fetchUserAttributeExpectation = expectation(description: "Fetch User Attribute operation should complete")
+
+        _ = Amplify.Auth.fetchUserAttributes(listener: { result in
+            switch result {
+            case .success(let attributes):
+                if let emailAttribute = attributes.filter({ $0.key == .email }).first {
+                    XCTAssertEqual(emailAttribute.value, self.defaultTestEmail)
+                } else {
+                    XCTFail("Email attribute not found")
+                }
+                fetchUserAttributeExpectation.fulfill()
+            case .failure(let error):
+                XCTFail("Failed to fetch user attribute with \(error)")
+            }
+        })
+        wait(for: [fetchUserAttributeExpectation], timeout: networkTimeout)
     }}

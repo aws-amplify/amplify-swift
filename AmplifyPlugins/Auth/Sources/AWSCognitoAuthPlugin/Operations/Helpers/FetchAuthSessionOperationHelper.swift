@@ -8,11 +8,13 @@
 import Foundation
 import Amplify
 
-struct FetchAuthSessionOperationHelper {
+class FetchAuthSessionOperationHelper {
 
     static let expiryBufferInSeconds = TimeInterval.seconds(2 * 60)
 
     typealias FetchAuthSessionCompletion = (Result<AuthSession, AuthError>) -> Void
+    
+    var authStateMachineToken: AuthStateMachine.StateChangeListenerToken?
 
     func fetch(_ authStateMachine: AuthStateMachine,
                completion: @escaping FetchAuthSessionCompletion) {
@@ -39,6 +41,7 @@ struct FetchAuthSessionOperationHelper {
                     if tokens.doesExpire(in: Self.expiryBufferInSeconds) {
                         let event = AuthorizationEvent(eventType: .refreshSession)
                         authStateMachine.send(event)
+                        self.listenForSession(authStateMachine: authStateMachine, completion: completion)
                     } else {
                         completion(.success(credentials.cognitoSession))
                     }
@@ -47,6 +50,7 @@ struct FetchAuthSessionOperationHelper {
                     if awsCredentials.doesExpire(in: Self.expiryBufferInSeconds) {
                         let event = AuthorizationEvent(eventType: .refreshSession)
                         authStateMachine.send(event)
+                        self.listenForSession(authStateMachine: authStateMachine, completion: completion)
                     } else {
                         completion(.success(credentials.cognitoSession))
                     }
@@ -58,6 +62,7 @@ struct FetchAuthSessionOperationHelper {
                          awsCredentials.doesExpire(in: Self.expiryBufferInSeconds) {
                         let event = AuthorizationEvent(eventType: .refreshSession)
                         authStateMachine.send(event)
+                        self.listenForSession(authStateMachine: authStateMachine, completion: completion)
                     } else {
                         completion(.success(credentials.cognitoSession))
                     }
@@ -78,7 +83,7 @@ struct FetchAuthSessionOperationHelper {
     func listenForSession(authStateMachine: AuthStateMachine,
                      completion: @escaping FetchAuthSessionCompletion) {
 
-        _ = authStateMachine.listen { state in
+        self.authStateMachineToken = authStateMachine.listen { [weak self] state in
             guard case .configured(_, let authorizationState) = state  else {
                 let message = "Auth state machine not in configured state: \(state)"
                 let error = AuthError.invalidState(message, "", nil)
@@ -89,10 +94,16 @@ struct FetchAuthSessionOperationHelper {
             switch authorizationState {
             case .sessionEstablished(let credentials):
                 completion(.success(credentials.cognitoSession))
+                if let authStateMachineToken = self?.authStateMachineToken {
+                    authStateMachine.cancel(listenerToken: authStateMachineToken)
+                }
             case .error:
                 let message = "Auth state machine not in configured state: \(state)"
                 let error = AuthError.invalidState(message, "", nil)
                 completion(.failure(error))
+                if let authStateMachineToken = self?.authStateMachineToken {
+                    authStateMachine.cancel(listenerToken: authStateMachineToken)
+                }
             default: break
             }
 
