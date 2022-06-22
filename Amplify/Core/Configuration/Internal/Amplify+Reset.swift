@@ -45,7 +45,9 @@ extension Amplify {
         await reset(Logging)
 
 #if canImport(UIKit)
-        devMenu = nil
+        await MainActor.run {
+            devMenu = nil
+        }
 #endif
 
         // Initialize Logging and Hub first, to ensure their default plugins are registered and available to other
