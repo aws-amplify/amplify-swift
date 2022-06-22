@@ -252,6 +252,7 @@ jobs:
           scheme: AWSCognitoAuthPluginIntegrationTests
 
   datastore-integration-test:
+    continue-on-error: true
     needs: prepare-for-test
     runs-on: macos-latest
     environment: IntegrationTest
