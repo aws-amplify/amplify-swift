@@ -53,8 +53,8 @@ extension ChangePasswordOutputError: AuthErrorConvertible {
                                      AWSCognitoAuthError.invalidPassword)
         case .limitExceededException(let limitExceededException):
             return .service(limitExceededException.message ?? "Limit exceeded error",
-                            AuthPluginErrorConstants.limitExceededException,
-                            AWSCognitoAuthError.limitExceededException)
+                            AuthPluginErrorConstants.limitExceededError,
+                            AWSCognitoAuthError.limitExceeded)
         }
     }
 }

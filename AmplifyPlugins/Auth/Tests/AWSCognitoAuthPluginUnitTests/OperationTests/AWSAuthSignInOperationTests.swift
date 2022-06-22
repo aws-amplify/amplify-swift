@@ -73,7 +73,7 @@ class AWSAuthSignInOperationTests: XCTestCase {
                 mockGetCredentialsResponse: getCredentials)
 
             },
-            userPoolFactory: {MockIdentityProvider(
+            userPoolFactory: { MockIdentityProvider(
                 mockInitiateAuthResponse: initiateAuth,
                 mockRespondToAuthChallengeResponse: respondToChallenge
             )})
