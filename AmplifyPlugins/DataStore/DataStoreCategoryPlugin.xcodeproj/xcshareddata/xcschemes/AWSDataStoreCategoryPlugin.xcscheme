@@ -87,9 +87,6 @@
                   Identifier = "DataStoreHubTests/testDataStoreDispatchesUpdateToHub()">
                </Test>
                <Test
-                  Identifier = "MutationEventExtensionsTest">
-               </Test>
-               <Test
                   Identifier = "OutgoingMutationQueueTests/testLocalMutationUnsubcsribesFromCloud()">
                </Test>
                <Test
