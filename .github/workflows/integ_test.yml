@@ -1,7 +1,7 @@
 name: Integration Tests
 on:
   push:
-    branches: [main]
+    branches: [chore/datstore-v2-test-run]
 
 permissions:
     id-token: write
