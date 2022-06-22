@@ -31,7 +31,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         }
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         await Amplify.reset()
     }
 
