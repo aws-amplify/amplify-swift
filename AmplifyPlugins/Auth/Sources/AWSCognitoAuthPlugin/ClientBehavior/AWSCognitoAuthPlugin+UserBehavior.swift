@@ -19,7 +19,7 @@ public extension AWSCognitoAuthPlugin {
         let operation = AWSAuthFetchUserAttributesOperation(
             request,
             authStateMachine: authStateMachine,
-            userPoolFactory: makeUserPool,
+            userPoolFactory: authEnvironment.cognitoUserPoolFactory,
             resultListener: listener)
         queue.addOperation(operation)
         return operation
@@ -34,7 +34,7 @@ public extension AWSCognitoAuthPlugin {
         let operation = AWSAuthUpdateUserAttributeOperation(
             request,
             authStateMachine: authStateMachine,
-            userPoolFactory: makeUserPool,
+            userPoolFactory: authEnvironment.cognitoUserPoolFactory,
             resultListener: listener)
         queue.addOperation(operation)
         return operation
@@ -51,7 +51,7 @@ public extension AWSCognitoAuthPlugin {
         let operation = AWSAuthUpdateUserAttributesOperation(
             request,
             authStateMachine: authStateMachine,
-            userPoolFactory: makeUserPool,
+            userPoolFactory: authEnvironment.cognitoUserPoolFactory,
             resultListener: listener)
         queue.addOperation(operation)
         return operation
@@ -67,7 +67,7 @@ public extension AWSCognitoAuthPlugin {
         let operation = AWSAuthAttributeResendConfirmationCodeOperation(
             request,
             authStateMachine: authStateMachine,
-            userPoolFactory: makeUserPool,
+            userPoolFactory: authEnvironment.cognitoUserPoolFactory,
             resultListener: listener)
         queue.addOperation(operation)
         return operation
@@ -87,7 +87,7 @@ public extension AWSCognitoAuthPlugin {
         let operation = AWSAuthConfirmUserAttributeOperation(
             request,
             authStateMachine: authStateMachine,
-            userPoolFactory: makeUserPool,
+            userPoolFactory: authEnvironment.cognitoUserPoolFactory,
             resultListener: listener)
         queue.addOperation(operation)
         return operation
@@ -105,7 +105,7 @@ public extension AWSCognitoAuthPlugin {
         let operation = AWSAuthChangePasswordOperation(
             request,
             authStateMachine: authStateMachine,
-            userPoolFactory: makeUserPool,
+            userPoolFactory: authEnvironment.cognitoUserPoolFactory,
             resultListener: listener)
         queue.addOperation(operation)
         return operation

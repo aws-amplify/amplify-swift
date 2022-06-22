@@ -16,21 +16,21 @@ public extension AWSCognitoAuthPlugin {
         switch authConfiguration {
 
         case .userPools:
-            let userPoolClient = try? makeUserPool()
+            let userPoolClient = try? authEnvironment.cognitoUserPoolFactory()
             if let client = userPoolClient as? CognitoIdentityProviderClient {
                 service = .userPool(client)
             }
 
         case .identityPools:
 
-            let identityPoolClient = try? makeIdentityClient()
+            let identityPoolClient = try? authEnvironment.cognitoIdentityFactory()
             if let client = identityPoolClient as? CognitoIdentityClient {
                 service = .identityPool(client)
             }
 
         case .userPoolsAndIdentityPools:
-            let userPoolClient = try? makeUserPool()
-            let identityPoolClient = try? makeIdentityClient()
+            let userPoolClient = try? authEnvironment.cognitoUserPoolFactory()
+            let identityPoolClient = try? authEnvironment.cognitoIdentityFactory()
             if let userPoolClient = userPoolClient
                 as? CognitoIdentityProviderClient,
                let identityPoolClient = identityPoolClient

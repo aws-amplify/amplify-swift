@@ -41,12 +41,14 @@ extension AWSCognitoAuthPlugin {
         let hubEventHandler = AuthHubEventHandler()
 
         configure(authConfiguration: authConfiguration,
+                  authEnvironment: authEnvironment,
                   authStateMachine: authStateMachine,
                   credentialStoreStateMachine: credentialStoreMachine,
                   hubEventHandler: hubEventHandler)
     }
 
     func configure(authConfiguration: AuthConfiguration,
+                   authEnvironment: AuthEnvironment,
                    authStateMachine: AuthStateMachine,
                    credentialStoreStateMachine: CredentialStoreStateMachine,
                    hubEventHandler: AuthHubEventBehavior,
@@ -55,13 +57,16 @@ extension AWSCognitoAuthPlugin {
         self.authConfiguration = authConfiguration
         self.queue = queue
         self.queue.maxConcurrentOperationCount = 1
+        self.authEnvironment = authEnvironment
         self.authStateMachine = authStateMachine
         self.credentialStoreStateMachine = credentialStoreStateMachine
         self.setupStateMachine()
         self.hubEventHandler = hubEventHandler
     }
+    
+    // MARK: - Configure Helpers
 
-    func makeUserPool() throws -> CognitoUserPoolBehavior {
+    private func makeUserPool() throws -> CognitoUserPoolBehavior {
         switch authConfiguration {
         case .userPools(let userPoolConfig), .userPoolsAndIdentityPools(let userPoolConfig, _):
             let configuration = try CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration(
@@ -73,7 +78,7 @@ extension AWSCognitoAuthPlugin {
         }
     }
 
-    func makeIdentityClient() throws -> CognitoIdentityBehavior {
+    private func makeIdentityClient() throws -> CognitoIdentityBehavior {
         switch authConfiguration {
         case .identityPools(let identityPoolConfig), .userPoolsAndIdentityPools(_, let identityPoolConfig):
             let configuration = try CognitoIdentityClient.CognitoIdentityClientConfiguration(
@@ -84,15 +89,15 @@ extension AWSCognitoAuthPlugin {
         }
     }
 
-    func makeCredentialStore() -> AmplifyAuthCredentialStoreBehavior {
+    private func makeCredentialStore() -> AmplifyAuthCredentialStoreBehavior {
         AWSCognitoAuthCredentialStore(authConfiguration: authConfiguration)
     }
 
-    func makeLegacyCredentialStore(service: String) -> CredentialStoreBehavior {
+    private func makeLegacyCredentialStore(service: String) -> CredentialStoreBehavior {
         CredentialStore(service: service)
     }
 
-    func makeAuthEnvironment(authConfiguration: AuthConfiguration) -> AuthEnvironment {
+    private func makeAuthEnvironment(authConfiguration: AuthConfiguration) -> AuthEnvironment {
 
         switch authConfiguration {
         case .userPools(let userPoolConfigurationData):
@@ -134,7 +139,7 @@ extension AWSCognitoAuthPlugin {
         }
     }
 
-    func authenticationEnvironment(userPoolConfigData: UserPoolConfigurationData) -> AuthenticationEnvironment {
+    private func authenticationEnvironment(userPoolConfigData: UserPoolConfigurationData) -> AuthenticationEnvironment {
 
         let srpAuthEnvironment = BasicSRPAuthEnvironment(userPoolConfiguration: userPoolConfigData,
                                                          cognitoUserPoolFactory: makeUserPool)
@@ -145,12 +150,12 @@ extension AWSCognitoAuthPlugin {
                                               userPoolEnvironment: userPoolEnvironment)
     }
 
-    func authorizationEnvironment(identityPoolConfigData: IdentityPoolConfigurationData) -> AuthorizationEnvironment {
+    private func authorizationEnvironment(identityPoolConfigData: IdentityPoolConfigurationData) -> AuthorizationEnvironment {
         BasicAuthorizationEnvironment(identityPoolConfiguration: identityPoolConfigData,
                                       cognitoIdentityFactory: makeIdentityClient)
     }
 
-    func credentialStoreEnvironment(authConfiguration: AuthConfiguration) -> CredentialEnvironment {
+    private func credentialStoreEnvironment(authConfiguration: AuthConfiguration) -> CredentialEnvironment {
         CredentialEnvironment(
             authConfiguration: authConfiguration,
             credentialStoreEnvironment: BasicCredentialStoreEnvironment(
