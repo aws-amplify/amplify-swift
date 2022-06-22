@@ -56,7 +56,7 @@ jobs:
           scheme: AWSPinpointAnalyticsPluginIntegrationTests
 
   api-integration-test:
-    if: ${{ false }}
+    continue-on-error: true
     needs: prepare-for-test
     runs-on: macos-latest
     environment: IntegrationTest
@@ -224,7 +224,7 @@ jobs:
           scheme: GraphQLWithLambdaAuthIntegrationTests
 
   auth-integration-test:
-    if: ${{ false }}
+    continue-on-error: true
     needs: prepare-for-test
     runs-on: macos-latest
     environment: IntegrationTest
@@ -306,6 +306,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationHubTests
   datastore-integration-local-test:
+    continue-on-error: true
     needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -333,6 +334,7 @@ jobs:
           scheme: AWSDataStoreIntegrationLocalTests
 
   datastore-integration-V1-S1-test:
+    continue-on-error: true
     needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -737,6 +739,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV2Scenario8V2Tests
   datastore-integration-V2-test:
+    continue-on-error: true
     needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -874,7 +877,7 @@ jobs:
           scheme: AWSLocationGeoPluginIntegrationTests
 
   predictions-integration-test:
-    if: ${{ false }}
+    continue-on-error: true
     needs: prepare-for-test
     runs-on: macos-latest
     environment: IntegrationTest
@@ -912,7 +915,7 @@ jobs:
           scheme: CoreMLPredictionsPluginIntegrationTests
 
   storage-integration-test:
-    if: ${{ false }}
+    continue-on-error: true
     needs: prepare-for-test
     runs-on: macos-latest
     environment: IntegrationTest
