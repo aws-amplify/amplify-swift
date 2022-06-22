@@ -87,15 +87,6 @@
                   Identifier = "DataStoreHubTests/testDataStoreDispatchesUpdateToHub()">
                </Test>
                <Test
-                  Identifier = "MutationEventExtensionsTest/testSentModelVersionNewerThanResponseVersion_PendingEventNotReconciled()">
-               </Test>
-               <Test
-                  Identifier = "MutationEventExtensionsTest/testSentModelWithNilVersion_Reconciled()">
-               </Test>
-               <Test
-                  Identifier = "MutationEventExtensionsTest/testSentModelWithNilVersion_SecondPendingEventNotReconciled()">
-               </Test>
-               <Test
                   Identifier = "OutgoingMutationQueueTests/testLocalMutationUnsubcsribesFromCloud()">
                </Test>
                <Test

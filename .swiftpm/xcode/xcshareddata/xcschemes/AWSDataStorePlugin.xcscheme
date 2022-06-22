@@ -37,6 +37,11 @@
                BlueprintName = "AWSDataStoreCategoryPluginTests"
                ReferencedContainer = "container:">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "MutationEventExtensionsTest">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

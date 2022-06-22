@@ -407,6 +407,11 @@
                BlueprintName = "AWSDataStoreCategoryPluginTests"
                ReferencedContainer = "container:">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "MutationEventExtensionsTest">
+               </Test>
+            </SkippedTests>
          </TestableReference>
          <TestableReference
             skipped = "NO">
@@ -465,16 +470,6 @@
                BlueprintIdentifier = "AWSLocationGeoPluginTests"
                BuildableName = "AWSLocationGeoPluginTests"
                BlueprintName = "AWSLocationGeoPluginTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSPinpointAnalyticsPluginIntegrationTests"
-               BuildableName = "AWSPinpointAnalyticsPluginIntegrationTests"
-               BlueprintName = "AWSPinpointAnalyticsPluginIntegrationTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
