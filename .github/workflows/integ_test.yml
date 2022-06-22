@@ -738,7 +738,7 @@ jobs:
         with:
           project_path: ./AmplifyPlugins/DataStore/
           workspace: DataStoreCategoryPlugin.xcworkspace
-          scheme: AWSDataStoreIntegrationV2Scenario1V2Tests
+          scheme: AWSDataStoreIntegrationV2Tests
   datastore-integration-observe-query-test:
     needs: [datastore-integration-test]
     runs-on: macos-latest
