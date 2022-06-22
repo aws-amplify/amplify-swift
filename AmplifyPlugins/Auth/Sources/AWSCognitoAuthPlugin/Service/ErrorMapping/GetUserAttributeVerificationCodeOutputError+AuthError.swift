@@ -41,8 +41,8 @@ extension GetUserAttributeVerificationCodeOutputError: AuthErrorConvertible {
                             AWSCognitoAuthError.smsRole)
         case .limitExceededException(let limitExceededException):
             return .service(limitExceededException.message ?? "Limit exceeded error",
-                            AuthPluginErrorConstants.limitExceededException,
-                            AWSCognitoAuthError.limitExceededException)
+                            AuthPluginErrorConstants.limitExceededError,
+                            AWSCognitoAuthError.limitExceeded)
         case .notAuthorizedException(let exception):
             return .notAuthorized(exception.message ?? "Not authorized error",
                                   AuthPluginErrorConstants.notAuthorizedError)

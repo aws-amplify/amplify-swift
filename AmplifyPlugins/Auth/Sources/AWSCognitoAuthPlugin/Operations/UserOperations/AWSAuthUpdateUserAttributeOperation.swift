@@ -70,8 +70,7 @@ AuthError>, AuthUpdateUserAttributeOperation {
                 clientMetaData: clientMetaData)
 
             guard let dispatchResult = finalResult[request.userAttribute.key] else {
-                let authError = AuthError.service("Attribute to be updated does not exist in the result",
-                                                  AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
+                let authError = AuthError.unknown("Attribute to be updated does not exist in the result",
                                                   nil)
                 self.dispatch(authError)
                 return
