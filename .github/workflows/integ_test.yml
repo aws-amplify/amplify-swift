@@ -84,6 +84,7 @@ jobs:
           scheme: AWSAPICategoryPluginFunctionalTests
 
   api-graphqliam-integration-test:
+    if: ${{ false }}
     needs: [api-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -111,6 +112,7 @@ jobs:
           scheme: GraphQLWithIAMIntegrationTests
 
   api-graphqluserpool-integration-test:
+    if: ${{ false }}
     needs: [api-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -138,6 +140,7 @@ jobs:
           scheme: GraphQLWithUserPoolIntegrationTests
 
   api-restiam-integration-test:
+    if: ${{ false }}
     needs: [api-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -165,6 +168,7 @@ jobs:
           scheme: RESTWithIAMIntegrationTests
 
   api-restuserpool-integration-test:
+    if: ${{ false }}
     needs: [api-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -192,6 +196,7 @@ jobs:
           scheme: RESTWithUserPoolIntegrationTests
 
   api-graphqllambda-integration-test:
+    if: ${{ false }}
     needs: [api-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -219,6 +224,7 @@ jobs:
           scheme: GraphQLWithLambdaAuthIntegrationTests
 
   auth-integration-test:
+    if: ${{ false }}
     needs: prepare-for-test
     runs-on: macos-latest
     environment: IntegrationTest
@@ -272,6 +278,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreCategoryPluginIntegrationTests
   datastore-integration-hub-test:
+    if: ${{ false }}
     needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -351,6 +358,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV1Scenario1Tests
   datastore-integration-V1-S2-test:
+    if: ${{ false }}
     needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -377,6 +385,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV1Scenario2Tests
   datastore-integration-V1-S3-test:
+    if: ${{ false }}
     needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -403,6 +412,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV1Scenario3Tests
   datastore-integration-V1-S4-test:
+    if: ${{ false }}
     needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -429,6 +439,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV1Scenario4Tests
   datastore-integration-V1-S5-test:
+    if: ${{ false }}
     needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -455,6 +466,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV1Scenario5Tests
   datastore-integration-V1-S6-test:
+    if: ${{ false }}
     needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -481,6 +493,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV1Scenario6Tests
   datastore-integration-V2-S1-test:
+    if: ${{ false }}
     needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -507,6 +520,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV2Scenario1V2Tests
   datastore-integration-V2-S2-test:
+    if: ${{ false }}
     needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -533,6 +547,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV2Scenario2V2Tests
   datastore-integration-V2-S3a-test:
+    if: ${{ false }}
     needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -559,6 +574,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV2Scenario3aV2Tests
   datastore-integration-V2-S3-test:
+    if: ${{ false }}
     needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -585,6 +601,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV2Scenario3V2Tests
   datastore-integration-V2-S4-test:
+    if: ${{ false }}
     needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -611,6 +628,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV2Scenario4V2Tests
   datastore-integration-V2-S5-test:
+    if: ${{ false }}
     needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -637,6 +655,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV2Scenario5V2Tests
   datastore-integration-V2-S6-test:
+    if: ${{ false }}
     needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -663,6 +682,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV2Scenario6V2Tests
   datastore-integration-V2-S7-test:
+    if: ${{ false }}
     needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -689,6 +709,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV2Scenario7V2Tests
   datastore-integration-V2-S8-test:
+    if: ${{ false }}
     needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -741,6 +762,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV2Tests
   datastore-integration-observe-query-test:
+    if: ${{ false }}
     needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -768,6 +790,7 @@ jobs:
           scheme: AWSDataStoreIntegrationObserveQueryTests
 
   datastore-auth-integration-test:
+    if: ${{ false }}
     needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -795,6 +818,7 @@ jobs:
           scheme: AWSDataStoreCategoryPluginAuthIntegrationTests
 
   datastore-flutter-integration-test:
+    if: ${{ false }}
     needs: [datastore-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
@@ -849,6 +873,7 @@ jobs:
           scheme: AWSLocationGeoPluginIntegrationTests
 
   predictions-integration-test:
+    if: ${{ false }}
     needs: prepare-for-test
     runs-on: macos-latest
     environment: IntegrationTest
@@ -886,6 +911,7 @@ jobs:
           scheme: CoreMLPredictionsPluginIntegrationTests
 
   storage-integration-test:
+    if: ${{ false }}
     needs: prepare-for-test
     runs-on: macos-latest
     environment: IntegrationTest
