@@ -28,8 +28,7 @@ struct UpdateAttributesOperationHelper {
             let result = try await userPoolService.updateUserAttributes(input: input)
 
             guard let codeDeliveryDetailsList = result.codeDeliveryDetailsList else {
-                let authError = AuthError.service("Unable to get Auth code delivery details",
-                                                  AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
+                let authError = AuthError.unknown("Unable to get Auth code delivery details",
                                                   nil)
                 throw authError
             }

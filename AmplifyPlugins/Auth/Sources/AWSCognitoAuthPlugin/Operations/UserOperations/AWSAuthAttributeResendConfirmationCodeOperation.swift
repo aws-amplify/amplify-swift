@@ -77,8 +77,7 @@ AuthError>, AuthAttributeResendConfirmationCodeOperation {
             }
 
             guard let deliveryDetails = result.codeDeliveryDetails?.toAuthCodeDeliveryDetails() else {
-                let authError = AuthError.service("Unable to get Auth code delivery details",
-                                                  AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
+                let authError = AuthError.unknown("Unable to get Auth code delivery details",
                                                   nil)
                 self.dispatch(authError)
                 return
