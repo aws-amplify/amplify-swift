@@ -129,8 +129,8 @@ extension GraphQLResponseDecoderTests {
                                            myDateTime: .now(),
                                            myTime: .now())
 
-        let data = try GraphQLResponseDecoderTests.encoder.encode(expectedObject)
-        let objectJSON = try GraphQLResponseDecoderTests.decoder.decode(JSONValue.self, from: data)
+        let data = try encoder.encode(expectedObject)
+        let objectJSON = try decoder.decode(JSONValue.self, from: data)
         let graphQLData: [String: JSONValue] = [
             "getSimpleCodable": objectJSON
         ]

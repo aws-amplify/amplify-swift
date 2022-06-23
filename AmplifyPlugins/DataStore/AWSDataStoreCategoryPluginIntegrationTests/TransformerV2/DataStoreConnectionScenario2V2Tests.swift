@@ -41,8 +41,8 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
         let version: String = "1"
     }
 
-    func testSaveTeamAndProjectSyncToCloud() throws {
-        setUp(withModels: TestModelRegistration())
+    func testSaveTeamAndProjectSyncToCloud() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let team = Team2V2(name: "name1")
         let project = Project2V2(teamID: team.id, team: team)
@@ -105,8 +105,8 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [queriedProjectCompleted], timeout: networkTimeout)
     }
 
-    func testUpdateProjectWithAnotherTeam() throws {
-        setUp(withModels: TestModelRegistration())
+    func testUpdateProjectWithAnotherTeam() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let team = Team2V2(name: "name1")
         let anotherTeam = Team2V2(name: "name1")
@@ -193,8 +193,8 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [queriedProjectCompleted, syncUpdatedProjectReceived], timeout: networkTimeout)
     }
 
-    func testCreateUpdateDeleteAndGetProjectReturnsNil() throws {
-        setUp(withModels: TestModelRegistration())
+    func testCreateUpdateDeleteAndGetProjectReturnsNil() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name"),
               var project = saveProject(teamID: team.id, team: team) else {
@@ -265,8 +265,8 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testDeleteAndGetProjectReturnsNilWithSync() throws {
-        setUp(withModels: TestModelRegistration())
+    func testDeleteAndGetProjectReturnsNilWithSync() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name"),
               let project = saveProject(teamID: team.id, team: team) else {
@@ -358,8 +358,8 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [getTeamIsEmptySuccess], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testDeleteWithValidCondition() throws {
-        setUp(withModels: TestModelRegistration())
+    func testDeleteWithValidCondition() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name"),
               let project = saveProject(teamID: team.id, team: team) else {
@@ -390,8 +390,8 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testDeleteWithInvalidCondition() throws {
-        setUp(withModels: TestModelRegistration())
+    func testDeleteWithInvalidCondition() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name"),
               let project = saveProject(teamID: team.id, team: team) else {
@@ -426,8 +426,8 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testDeleteAlreadyDeletedItemWithCondition() throws {
-        setUp(withModels: TestModelRegistration())
+    func testDeleteAlreadyDeletedItemWithCondition() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name"),
               let project = saveProject(teamID: team.id, team: team) else {
@@ -468,8 +468,8 @@ class DataStoreConnectionScenario2V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [deleteProjectSuccessful2], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testListProjectsByTeamID() throws {
-        setUp(withModels: TestModelRegistration())
+    func testListProjectsByTeamID() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name") else {
             XCTFail("Could not save team")

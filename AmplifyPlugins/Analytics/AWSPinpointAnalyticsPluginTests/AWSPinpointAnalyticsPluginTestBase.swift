@@ -30,7 +30,7 @@ class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
         return plugin
     }
 
-    override func setUp() {
+    override func setUp() async throws {
         analyticsPlugin = AWSPinpointAnalyticsPlugin()
 
         mockPinpoint = MockAWSPinpoint()
@@ -45,7 +45,7 @@ class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
                                   autoFlushEventsTimer: nil,
                                   appSessionTracker: appSessionTracker)
 
-        Amplify.reset()
+        await Amplify.reset()
         let config = AmplifyConfiguration()
         do {
             try Amplify.configure(config)
@@ -54,8 +54,8 @@ class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
         }
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
         analyticsPlugin.reset {}
     }
 }

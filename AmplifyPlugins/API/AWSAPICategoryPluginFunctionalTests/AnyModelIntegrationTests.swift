@@ -16,8 +16,8 @@ import AWSPluginsCore
 class AnyModelIntegrationTests: XCTestCase {
     let networkTimeout: TimeInterval = 180.0
 
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
         Amplify.Logging.logLevel = .verbose
 
         let plugin = AWSAPIPlugin(modelRegistration: PostCommentModelRegistration())
@@ -37,8 +37,8 @@ class AnyModelIntegrationTests: XCTestCase {
         }
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 
     func testCreateAsAnyModel() throws {

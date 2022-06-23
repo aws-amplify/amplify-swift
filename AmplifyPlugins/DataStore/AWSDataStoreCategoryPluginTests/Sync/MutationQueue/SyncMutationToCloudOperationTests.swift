@@ -24,10 +24,10 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         return reachabilityPublisher.eraseToAnyPublisher()
     }
 
-    override func setUp() {
+    override func setUp() async throws {
         reachabilityPublisher = CurrentValueSubject<ReachabilityUpdate, Never>(ReachabilityUpdate(isOnline: false))
-        tryOrFail {
-            try setUpWithAPI()
+        await tryOrFail {
+            try await setUpWithAPI()
         }
         ModelRegistry.register(modelType: Post.self)
         ModelRegistry.register(modelType: Comment.self)
@@ -237,8 +237,8 @@ class SyncMutationToCloudOperationTests: XCTestCase {
 }
 
 extension SyncMutationToCloudOperationTests {
-    private func setUpCore() throws -> AmplifyConfiguration {
-        Amplify.reset()
+    private func setUpCore() async throws -> AmplifyConfiguration {
+        await Amplify.reset()
 
         let dataStorePublisher = DataStorePublisher()
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
@@ -268,8 +268,8 @@ extension SyncMutationToCloudOperationTests {
         return amplifyConfig
     }
 
-    private func setUpWithAPI() throws {
-        let configWithoutAPI = try setUpCore()
+    private func setUpWithAPI() async throws {
+        let configWithoutAPI = try await setUpCore()
         let configWithAPI = try setUpAPICategory(config: configWithoutAPI)
         try Amplify.configure(configWithAPI)
     }

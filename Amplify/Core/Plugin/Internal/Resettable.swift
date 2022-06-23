@@ -11,7 +11,7 @@ import Foundation
 /// for internal use, and should not be invoked by host applications.
 public protocol Resettable {
 
-    /// Called when the client calls `Amplify.reset()` during testing. When invoked,
+    /// Called when the client calls `await Amplify.reset()` during testing. When invoked,
     /// the plugin must release resources and reset shared state. Shortly after calling
     /// `reset()` on the plugin, the category and its associated plugins will be
     /// released. Plugins must invoke the `onComplete` handler when they complete their

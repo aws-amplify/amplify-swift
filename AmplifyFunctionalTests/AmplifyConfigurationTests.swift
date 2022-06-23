@@ -12,16 +12,16 @@ import XCTest
 
 class AmplifyConfigurationTests: XCTestCase {
 
-    override static func setUp() {
-        Amplify.reset()
+    override static func setUp() async throws {
+        await Amplify.reset()
     }
 
-    override static func tearDown() {
-        Amplify.reset()
+    override static func tearDown() async throws {
+        await Amplify.reset()
     }
 
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
     }
 
     /// Given: An app with an `amplifyconfiguration.json` file in the main bundle

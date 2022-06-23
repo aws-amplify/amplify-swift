@@ -19,10 +19,10 @@ import Combine
 class LocalSubscriptionWithJSONModelTests: XCTestCase {
     var dataStorePlugin: AWSDataStorePlugin!
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
 
-        Amplify.reset()
+        await Amplify.reset()
         Amplify.Logging.logLevel = .warn
 
         let storageAdapter: SQLiteStorageEngineAdapter

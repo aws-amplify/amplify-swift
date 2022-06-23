@@ -23,12 +23,12 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
     /// and so we need to wait to configure during the actual test.
     var amplifyConfig: AmplifyConfiguration!
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
 
         // Allows any previously-running API calls to finish up before unconfiguring the category
         sleep(2)
-        Amplify.reset()
+        await Amplify.reset()
         Amplify.Logging.logLevel = .warn
 
         apiPlugin = MockAPICategoryPlugin()

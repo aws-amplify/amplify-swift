@@ -49,7 +49,7 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
 
     override func tearDown() {
         signOut()
-        Amplify.reset()
+        await Amplify.reset()
     }
 
     /// Models created with:

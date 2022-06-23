@@ -17,10 +17,10 @@ import Combine
 /// Tests behavior of local DataStore subscriptions (as opposed to remote API subscription behaviors)
 class LocalSubscriptionTests: XCTestCase {
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
 
-        Amplify.reset()
+        await Amplify.reset()
         Amplify.Logging.logLevel = .warn
 
         let storageAdapter: SQLiteStorageEngineAdapter

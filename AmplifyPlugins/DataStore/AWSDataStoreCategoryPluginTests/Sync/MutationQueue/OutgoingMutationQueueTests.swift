@@ -20,9 +20,9 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
     ///    - I invoke DataStore.save() for a new model
     /// - Then:
     ///    - The outgoing mutation queue sends a create mutation
-    func testMutationQueueCreateSendsSync() throws {
+    func testMutationQueueCreateSendsSync() async throws {
 
-        tryOrFail {
+        await tryOrFail {
             try setUpStorageAdapter()
             try setUpDataStore(mutationQueue: OutgoingMutationQueue(storageAdapter: storageAdapter,
                                                                     dataStoreConfiguration: .default,
@@ -82,7 +82,7 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
         try startAmplifyAndWaitForSync()
 
         Amplify.DataStore.save(post) { _ in }
-        waitForExpectations(timeout: 5.0, handler: nil)
+        await waitForExpectations(timeout: 5.0, handler: nil)
         Amplify.Hub.removeListener(hubListener)
     }
 
@@ -100,9 +100,9 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
     ///    - I start syncing with mutation events already in the database
     /// - Then:
     ///    - The mutation queue delivers the first previously loaded event
-    func testMutationQueueLoadsPendingMutations() throws {
+    func testMutationQueueLoadsPendingMutations() async throws {
 
-        tryOrFail {
+        await tryOrFail {
             try setUpStorageAdapter()
         }
 
@@ -174,14 +174,14 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
             }
         }
 
-        tryOrFail {
+        await tryOrFail {
             try setUpDataStore(mutationQueue: OutgoingMutationQueue(storageAdapter: storageAdapter,
                                                                     dataStoreConfiguration: .default,
                                                                     authModeStrategy: AWSDefaultAuthModeStrategy()))
             try startAmplify()
         }
 
-        waitForExpectations(timeout: 5.0, handler: nil)
+        await waitForExpectations(timeout: 5.0, handler: nil)
         Amplify.Hub.removeListener(hubListener)
     }
 

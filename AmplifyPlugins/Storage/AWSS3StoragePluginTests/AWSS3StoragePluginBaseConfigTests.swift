@@ -28,9 +28,9 @@ class AWSS3StoragePluginBaseConfigTests: XCTestCase {
         }
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         // Need this to avoid plugin already configured exception in the subsequent tests
-        Amplify.reset()
+        await Amplify.reset()
     }
 
 }

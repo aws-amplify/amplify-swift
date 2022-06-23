@@ -28,8 +28,8 @@ class DataStoreModelWithDefaultValueTests: SyncEngineIntegrationV2TestBase {
         let version: String = "1"
     }
 
-    func testSaveModelWithExplicitContentAndSync() throws {
-        setUp(withModels: TestModelRegistration())
+    func testSaveModelWithExplicitContentAndSync() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         guard let todo = saveTodo(content: "content") else {
@@ -79,8 +79,8 @@ class DataStoreModelWithDefaultValueTests: SyncEngineIntegrationV2TestBase {
         wait(for: [getTodoCompleted, createReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testSaveModelWithoutExplicitContentAndSync() throws {
-        setUp(withModels: TestModelRegistration())
+    func testSaveModelWithoutExplicitContentAndSync() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         guard let todo = saveTodo(content: nil) else {

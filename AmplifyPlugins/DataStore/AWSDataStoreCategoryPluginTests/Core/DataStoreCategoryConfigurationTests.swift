@@ -11,8 +11,8 @@ import AWSDataStorePlugin
 
 class AWSDataStorePluginConfigurationTests: XCTestCase {
 
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
     }
 
     func testDoesNotThrowOnMissingConfig() throws {

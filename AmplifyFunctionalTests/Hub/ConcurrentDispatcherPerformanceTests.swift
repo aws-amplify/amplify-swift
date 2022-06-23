@@ -15,8 +15,8 @@ import XCTest
 //
 //    let dispatcherTypeUnderTest = ConcurrentDispatcher.self
 //
-//    override func setUp() {
-//        Amplify.reset()
+//    override func setUp() async throws {
+//        await Amplify.reset()
 //        let config = AmplifyConfiguration()
 //        do {
 //            try Amplify.configure(config)
@@ -25,8 +25,8 @@ import XCTest
 //        }
 //    }
 //
-//    override func tearDown() {
-//        Amplify.reset()
+//    override func tearDown() async throws {
+//        await Amplify.reset()
 //    }
 //
 //    // MARK: - Performance of single channel, multiple listeners

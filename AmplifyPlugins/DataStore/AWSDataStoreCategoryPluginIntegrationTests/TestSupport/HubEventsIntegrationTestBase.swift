@@ -57,11 +57,11 @@ class HubEventsIntegrationTestBase: XCTestCase {
         }
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         sleep(1)
         print("Amplify reset")
         storageAdapter.delete(untypedModelType: ModelSyncMetadata.self, withId: "Post") { _ in }
         storageAdapter.delete(untypedModelType: ModelSyncMetadata.self, withId: "Comment") { _ in }
-        Amplify.reset()
+        await Amplify.reset()
     }
 }

@@ -11,9 +11,9 @@ import XCTest
 // extension file, presumably because AmplifyTestCommon isn't a test target?
 extension XCTestCase {
     /// Execute `block` inside a do/catch block, and fail the test with an XCTFail if the block throws an error
-    func tryOrFail(block: () throws -> Void) {
+    func tryOrFail(block: () async throws -> Void) async {
         do {
-            try block()
+            try await block()
         } catch {
             XCTFail(String(describing: error))
         }

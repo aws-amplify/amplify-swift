@@ -35,8 +35,8 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///    - The first snapshot should have `isSynced` false
     ///    - Eventually one of the query snapshots will be returned with `isSynced` true
     ///
-    func testObserveQueryInitialSync() throws {
-        setUp(withModels: TestModelRegistration())
+    func testObserveQueryInitialSync() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplify()
         clearDataStore()
         var snapshots = [DataStoreQuerySnapshot<Post>]()
@@ -72,8 +72,8 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     /// - Then:
     ///    - The models only contain models based on the predicate
     ///
-    func testInitialSyncWithPredicate() throws {
-        setUp(withModels: TestModelRegistration(), logLevel: .info)
+    func testInitialSyncWithPredicate() async throws {
+        await setUp(withModels: TestModelRegistration(), logLevel: .info)
         try startAmplify()
         savePostAndWaitForSync(Post(title: "xyz 1", content: "content", createdAt: .now()))
         savePostAndWaitForSync(Post(title: "xyz 2", content: "content", createdAt: .now()))
@@ -119,8 +119,8 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     /// - Then:
     ///    - Each snapshot should have items sorted according to the sort order
     ///
-    func testObserveQueryWithSort() throws {
-        setUp(withModels: TestModelRegistration())
+    func testObserveQueryWithSort() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplify()
         clearDataStore()
         let post1 = Post(title: "title", content: "content", createdAt: .now())
@@ -164,8 +164,8 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///    - The first snapshot should have the old data and `isSynced` false
     ///    - The final snapshot should have all the models with `isSynced` true
     ///
-    func testObserveQueryWithDataStoreDeltaSync() throws {
-        setUp(withModels: TestModelRegistration())
+    func testObserveQueryWithDataStoreDeltaSync() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForReady()
         savePostAndWaitForSync(Post(title: "title", content: "content", createdAt: .now()))
         let numberOfPosts = queryNumberOfPosts()
@@ -209,8 +209,8 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///         Model is added to the snapshot
     ///     - Delete a model that matches the predicate. Model is removed from the snapshot
     ///     - Delete a model that does NOT match the predicate. No snapshot is emitted
-    func testPredicateWithCreateUpdateDelete() throws {
-        setUp(withModels: TestModelRegistration(), logLevel: .info)
+    func testPredicateWithCreateUpdateDelete() async throws {
+        await setUp(withModels: TestModelRegistration(), logLevel: .info)
         try startAmplify()
 
         let testId = UUID().uuidString
@@ -303,8 +303,8 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///      The snasphot sould have the models in the correct sorted order
     ///    - Delete models. The snapshot should have the models removed
     ///
-    func testSortWithCreateUpdateDelete() throws {
-        setUp(withModels: TestModelRegistration(), logLevel: .info)
+    func testSortWithCreateUpdateDelete() async throws {
+        await setUp(withModels: TestModelRegistration(), logLevel: .info)
         try startAmplify()
 
         let testId = UUID().uuidString
@@ -402,8 +402,8 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     /// - Then:
     ///    -  ObserveQuery is not completed.
     ///
-    func testObserveQueryShouldResetOnDataStoreStop() throws {
-        setUp(withModels: TestModelRegistration())
+    func testObserveQueryShouldResetOnDataStoreStop() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForReady()
         let firstSnapshotWithIsSynced = expectation(description: "query snapshot with isSynced true")
         let observeQueryReceivedCompleted = expectation(description: "observeQuery received completed")
@@ -442,8 +442,8 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     /// - Then:
     ///    -  ObserveQuery is not completed.
     ///
-    func testObserveQueryShouldResetOnDataStoreClear() throws {
-        setUp(withModels: TestModelRegistration())
+    func testObserveQueryShouldResetOnDataStoreClear() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForReady()
         let firstSnapshotWithIsSynced = expectation(description: "query snapshot with isSynced true")
         let observeQueryReceivedCompleted = expectation(description: "observeQuery received completed")
@@ -474,8 +474,8 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         sink.cancel()
     }
 
-    func testObserveQueryShouldStartOnDataStoreStart() throws {
-        setUp(withModels: TestModelRegistration())
+    func testObserveQueryShouldStartOnDataStoreStart() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForReady()
         let firstSnapshot = expectation(description: "first query snapshot")
         let secondSnapshot = expectation(description: "second query snapshot")
