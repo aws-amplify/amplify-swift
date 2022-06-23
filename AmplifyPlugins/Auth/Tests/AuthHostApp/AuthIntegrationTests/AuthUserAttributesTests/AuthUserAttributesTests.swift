@@ -17,8 +17,8 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         AuthSessionHelper.clearSession()
     }
 
-    override func tearDown() {
-        super.tearDown()
+    override func tearDown() async throws {
+        try await super.tearDown()
         AuthSessionHelper.clearSession()
         await Amplify.reset()
     }

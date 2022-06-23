@@ -17,8 +17,8 @@ class AuthSignUpTests: AWSAuthBaseTest {
         Amplify.Auth.signOut { _ in }
     }
 
-    override func tearDown() {
-        super.tearDown()
+    override func tearDown() async throws {
+        try await super.tearDown()
         await Amplify.reset()
         sleep(2)
     }
