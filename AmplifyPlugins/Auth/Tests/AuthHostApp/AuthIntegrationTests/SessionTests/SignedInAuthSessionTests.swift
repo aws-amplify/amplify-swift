@@ -66,7 +66,8 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get the signedin state as true but with token result as sessionExpired
     ///
-    func testSessionExpired() {
+    func testSessionExpired() throws {
+        throw XCTSkip("TODO: fix this test. We need to find a way to mock credential store")
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
         let signInExpectation = expectation(description: "SignIn operation should complete")
@@ -123,7 +124,8 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get the signedin state as false but with token result as seignedOut
     ///
-    func testSessionCleared() {
+    func testSessionCleared() throws {
+        throw XCTSkip("TODO: fix this test. We need to find a way to mock credential store")
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
         let signInExpectation = expectation(description: "SignIn operation should complete")
