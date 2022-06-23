@@ -36,7 +36,7 @@ extension SRPSignInState {
                 return resolveInitiatingSRPA(byApplying: srpSignInEvent, from: oldState)
             case .respondingPasswordVerifier(let srpStateData):
                 return resolveRespondingVerifyPassword(srpStateData: srpStateData, byApplying: srpSignInEvent)
-            case .nextAuthChallenge, .signedIn, .error:
+            case .signedIn, .error:
                 return .from(oldState)
             case .cancelling:
                 return .from(.notStarted)
@@ -88,11 +88,9 @@ extension SRPSignInState {
             byApplying signInEvent: SignInEvent)
         -> StateResolution<SRPSignInState> {
             switch signInEvent.eventType {
-            case .finalizeSRPSignIn(let signedInData):
+            case .finalizeSignIn(let signedInData):
                 return .init(newState: .signedIn(signedInData),
                              actions: [SignInComplete(signedInData: signedInData)])
-            case .respondNextAuthChallenge(let authChallengeResponse):
-                return .from(.nextAuthChallenge(authChallengeResponse))
             case .cancelSRPSignIn:
                 return .from(.cancelling)
             default:

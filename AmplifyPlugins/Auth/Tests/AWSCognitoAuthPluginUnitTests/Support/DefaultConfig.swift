@@ -150,6 +150,14 @@ enum Defaults {
                                            initialState: .idle)
     }
 
+    static func authStateMachineWith(environment: AuthEnvironment = makeDefaultAuthEnvironment(),
+                                     initialState: AuthState? = nil)
+    -> AuthStateMachine {
+            return AuthStateMachine(resolver: AuthState.Resolver(),
+                                    environment: environment,
+                                    initialState: initialState)
+    }
+
 }
 
 struct MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {

@@ -18,23 +18,36 @@ extension SignInChallengeState {
             byApplying event: StateMachineEvent)
         -> StateResolution<SignInChallengeState> {
 
-
             switch oldState {
             case .notStarted:
+
                 if case .waitForAnswer(let challenge) = event.isChallengeEvent {
                     return .init(newState: .waitingForAnswer(challenge))
                 }
                 return .from(oldState)
-            case .waitingForAnswer(let response):
+
+            case .waitingForAnswer(let challenge):
+                
                 if case .verifyChallengeAnswer(let answer) = event.isChallengeEvent {
-                    return .init(newState: .verifying(response, answer))
+                    let action = VerifySignInChallenge(challenge: challenge, answer: answer)
+                    return .init(newState: .verifying(challenge, answer), actions: [action])
                 }
                 return .from(oldState)
-            case .verifying(_, _):
+
+            case .verifying(let challenge, _):
+
+                if case .finalizeSignIn(let signedInData) = event.isSignInEvent {
+                    return .init(newState: .verified,
+                                 actions: [SignInComplete(signedInData: signedInData)])
+                }
+
+                if case .throwAuthError(let error) = event.isSignInEvent {
+                    return .init(newState: .error(challenge, error))
+                }
                 return .from(oldState)
-            case .verified:
-                return .from(oldState)
-            case .error(_):
+
+            case .verified, .error:
+
                 return .from(oldState)
             }
 

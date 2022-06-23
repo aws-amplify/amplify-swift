@@ -12,14 +12,19 @@ struct SignInEvent: StateMachineEvent {
     var data: Any?
 
     enum EventType {
+
         case initiateSRP(SignInEventData)
+
         case respondPasswordVerifier(SRPStateData, InitiateAuthOutputResponse)
+
         case throwPasswordVerifierError(SignInError)
-        case respondNextAuthChallenge(RespondToAuthChallengeOutputResponse)
-        case finalizeSRPSignIn(SignedInData)
+
+        case finalizeSignIn(SignedInData)
+
         case cancelSRPSignIn(SignedInData)
+
         case throwAuthError(SignInError)
-        case restoreToNotInitialized(SRPStateData)
+
         case receivedSMSChallenge(RespondToAuthChallenge)
         case verifySMSChallenge(String)
     }
@@ -33,11 +38,9 @@ struct SignInEvent: StateMachineEvent {
         case .initiateSRP: return "SignInEvent.initiateSRP"
         case .respondPasswordVerifier: return "SignInEvent.respondPasswordVerifier"
         case .throwPasswordVerifierError: return "SignInEvent.throwPasswordVerifierError"
-        case .respondNextAuthChallenge: return "SignInEvent.respondNextAuthChallenge"
-        case .finalizeSRPSignIn: return "SignInEvent.finalizeSRPSignIn"
+        case .finalizeSignIn: return "SignInEvent.finalizeSignIn"
         case .cancelSRPSignIn: return "SignInEvent.cancelSRPSignIn"
         case .throwAuthError: return "SignInEvent.throwAuthError"
-        case .restoreToNotInitialized: return "SignInEvent.restoreToNotInitialized"
         case .receivedSMSChallenge: return "SignInEvent.respondWithSMSChallenge"
         case .verifySMSChallenge: return "SignInEvent.verifySMSChallenge"
         }
@@ -60,11 +63,9 @@ extension SignInEvent.EventType: Equatable {
         case (.initiateSRP, .initiateSRP),
             (.respondPasswordVerifier, .respondPasswordVerifier),
             (.throwPasswordVerifierError, .throwPasswordVerifierError),
-            (.respondNextAuthChallenge, .respondNextAuthChallenge),
-            (.finalizeSRPSignIn, .finalizeSRPSignIn),
+            (.finalizeSignIn, .finalizeSignIn),
             (.cancelSRPSignIn, .cancelSRPSignIn),
             (.throwAuthError, .throwAuthError),
-            (.restoreToNotInitialized, .restoreToNotInitialized),
             (.receivedSMSChallenge, .receivedSMSChallenge),
             (.verifySMSChallenge, .verifySMSChallenge):
             return true

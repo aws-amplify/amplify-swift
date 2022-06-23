@@ -77,8 +77,9 @@ class AWSAuthSignInOperationTests: XCTestCase {
                 mockInitiateAuthResponse: initiateAuth,
                 mockRespondToAuthChallengeResponse: respondToChallenge
             )})
-        _ = statemachine.listen { state in
-            switch state {
+        _ = statemachine.listen {
+            print($0)
+            switch $0 {
             case .configured(_, let authorizationState):
 
                 if case .waitingToStore(let credentials) = authorizationState {
