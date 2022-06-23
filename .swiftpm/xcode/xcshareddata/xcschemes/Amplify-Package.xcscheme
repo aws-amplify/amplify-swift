@@ -432,11 +432,6 @@
                BlueprintName = "AWSS3StoragePluginTests"
                ReferencedContainer = "container:">
             </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "AWSS3StoragePluginConfigureTests">
-               </Test>
-            </SkippedTests>
          </TestableReference>
          <TestableReference
             skipped = "NO">
