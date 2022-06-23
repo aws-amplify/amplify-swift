@@ -32,7 +32,7 @@ class FetchAuthSessionOperationHelper {
                 // a fresh session. 
                 let event = AuthorizationEvent(eventType: .fetchUnAuthSession)
                 authStateMachine.send(event)
-
+                self.listenForSession(authStateMachine: authStateMachine, completion: completion)
             case .sessionEstablished(let credentials):
 
                 switch credentials {

@@ -20,10 +20,9 @@ extension AmplifyCredentials {
                                          awsCredentialsResult: .failure(error),
                                          cognitoTokensResult: .success(tokens))
         case .identityPoolOnly(let identityID, let credentials):
-            return AWSAuthCognitoSession(isSignedIn: false,
-                                         identityIdResult: .success(identityID),
-                                         awsCredentialsResult: .success(credentials),
-                                         cognitoTokensResult: .failure(error))
+            return AuthCognitoSignedOutSessionHelper.makeSignedOutSession(
+                identityId: identityID,
+                awsCredentials: credentials)
         case .identityPoolWithFederation(_, let identityID, let credentials):
             return AWSAuthCognitoSession(isSignedIn: false,
                                          identityIdResult: .success(identityID),
