@@ -1,9 +1,16 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
 
 extension PostWithCompositeKeyAndIndex {
-  // MARK: - CodingKeys 
+  // MARK: - CodingKeys
    public enum CodingKeys: String, ModelKey {
     case id
     case title
@@ -11,20 +18,20 @@ extension PostWithCompositeKeyAndIndex {
     case createdAt
     case updatedAt
   }
-  
+
   public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
-  
+  //  MARK: - ModelSchema
+
   public static let schema = defineSchema { model in
     let postWithCompositeKeyAndIndex = PostWithCompositeKeyAndIndex.keys
-    
+
     model.pluralName = "PostWithCompositeKeyAndIndices"
-    
+
     model.attributes(
       .index(fields: ["id", "title"], name: nil),
       .primaryKey(fields: [postWithCompositeKeyAndIndex.id, postWithCompositeKeyAndIndex.title])
     )
-    
+
     model.fields(
       .field(postWithCompositeKeyAndIndex.id, is: .required, ofType: .string),
       .field(postWithCompositeKeyAndIndex.title, is: .required, ofType: .string),
@@ -43,6 +50,6 @@ extension PostWithCompositeKeyAndIndex: ModelIdentifiable {
 extension PostWithCompositeKeyAndIndex.Identifier {
   public static func identifier(id: String,
       title: String) -> Self {
-    .make(fields:[(name: "id", value: id), (name: "title", value: title)])
+    .make(fields: [(name: "id", value: id), (name: "title", value: title)])
   }
 }
