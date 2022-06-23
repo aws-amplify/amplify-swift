@@ -17,7 +17,7 @@ enum SignInChallengeState: State {
 
     case verified
 
-    case error(RespondToAuthChallenge)
+    case error(RespondToAuthChallenge, SignInError)
 }
 
 extension SignInChallengeState {
@@ -31,4 +31,20 @@ extension SignInChallengeState {
         case .error: return "SignInChallengeState.error"
         }
     }
+}
+
+extension SignInChallengeState: Equatable {
+    static func == (lhs: SignInChallengeState, rhs: SignInChallengeState) -> Bool {
+        switch (lhs, rhs) {
+        case (.notStarted, .notStarted),
+            (.waitingForAnswer, .waitingForAnswer),
+            (.verifying, .verifying),
+            (.verified, .verified),
+            (.error, .error):
+            return true
+        default: return false
+        }
+    }
+
+
 }

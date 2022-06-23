@@ -8,7 +8,6 @@
 import Foundation
 import Amplify
 
-import ClientRuntime
 import AWSCognitoIdentityProvider
 
 public typealias AmplifyConfirmSignInOperation = AmplifyOperation<
@@ -37,7 +36,15 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
             finish()
             return
         }
+
+        if let validationError = request.hasError() {
+            dispatch(validationError)
+            finish()
+            return
+        }
+
         authStateMachine.getCurrentState { [weak self] in
+
             guard case .configured(let authenticationState, _) = $0,
                   case .signingIn(let signInState) = authenticationState else {
                 self?.dispatch(AuthError.invalidState(
@@ -47,19 +54,15 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
                 return
             }
 
-            switch signInState {
-            case .resolvingSMSChallenge(let challengeState):
-                guard case .waitingForAnswer = challengeState else {
-                    self?.dispatch(AuthError.invalidState(
-                        "SignIn process is not waiting to confirm signIn",
-                        AuthPluginErrorConstants.invalidStateError, nil))
-                    self?.finish()
-                    return
-                }
+            if case .resolvingSMSChallenge(let challengeState) = signInState,
+               case .waitingForAnswer = challengeState {
                 self?.sendSMSAnswer()
-            default:
-                // TODO: Return proper error
-                print("")
+
+            } else {
+                self?.dispatch(AuthError.invalidState(
+                    "SignIn process is not waiting to confirm signIn",
+                    AuthPluginErrorConstants.invalidStateError, nil))
+                self?.finish()
             }
         }
     }
@@ -122,6 +125,32 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
                 self.finish()
 
             case .signingIn(let signInState):
+
+                if case .resolvingSMSChallenge(let challengeState) = signInState,
+                   case .error(_, let signInError) = challengeState {
+                    let authError = signInError.authError
+
+                    if case .service(_, _, let serviceError) = authError,
+                       let cognitoError = serviceError as? AWSCognitoAuthError,
+                       case .passwordResetRequired = cognitoError {
+                        let result = AuthSignInResult(nextStep: .resetPassword(nil))
+                        self.dispatch(result)
+                        self.cancelToken(token)
+                        self.finish()
+                    } else if case .service(_, _, let serviceError) = authError,
+                              let cognitoError = serviceError as? AWSCognitoAuthError,
+                              case .userNotConfirmed = cognitoError {
+                        let result = AuthSignInResult(nextStep: .confirmSignUp(nil))
+                        self.dispatch(result)
+                        self.cancelToken(token)
+                        self.finish()
+                    } else {
+                        self.dispatch(authError)
+                        self.cancelToken(token)
+                        self.finish()
+                    }
+                }
+
                 guard let result = UserPoolSignInHelper.checkNextStep(signInState) else { return }
                 self.dispatch(result: result)
                 self.cancelToken(token)

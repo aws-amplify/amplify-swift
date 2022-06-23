@@ -73,7 +73,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
 #endif
 
     public func confirmSignIn(challengeResponse: String,
-                              options: AuthConfirmSignInOperation.Request.Options?,
+                              options: AuthConfirmSignInOperation.Request.Options? = nil,
                               listener: AuthConfirmSignInOperation.ResultListener?)
     -> AuthConfirmSignInOperation {
 
