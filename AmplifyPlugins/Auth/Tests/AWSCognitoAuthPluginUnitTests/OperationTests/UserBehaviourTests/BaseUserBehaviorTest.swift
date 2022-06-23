@@ -75,6 +75,6 @@ class BaseUserBehaviorTest: XCTestCase {
 
     override func tearDown() {
         plugin = nil
-        mockIdentityProvider = nil
+        Amplify.reset()
     }
 }
