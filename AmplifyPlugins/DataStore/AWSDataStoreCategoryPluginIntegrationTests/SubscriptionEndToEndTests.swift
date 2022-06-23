@@ -29,8 +29,8 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
     ///    - I start Amplify
     /// - Then:
     ///    - I receive subscriptions from other systems for syncable models
-    func testSubscribeReceivesCreateMutateDelete() throws {
-        setUp(withModels: TestModelRegistration())
+    func testSubscribeReceivesCreateMutateDelete() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         // Filter all events to ensure they have this ID. This prevents us from overfulfilling on

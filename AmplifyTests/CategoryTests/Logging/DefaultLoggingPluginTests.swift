@@ -18,8 +18,8 @@ import XCTest
 /// method.
 class DefaultLoggingPluginTests: XCTestCase {
 
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
         let config = AmplifyConfiguration()
         do {
             try Amplify.configure(config)
@@ -28,8 +28,8 @@ class DefaultLoggingPluginTests: XCTestCase {
         }
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 
     /// Given: An Amplify system configured with default values

@@ -20,8 +20,8 @@ class DefaultHubPluginCustomChannelTests: XCTestCase {
         return plugin
     }
 
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
         let config = AmplifyConfiguration()
         do {
             try Amplify.configure(config)
@@ -30,8 +30,8 @@ class DefaultHubPluginCustomChannelTests: XCTestCase {
         }
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 
     /// Given: A listener to a custom channel

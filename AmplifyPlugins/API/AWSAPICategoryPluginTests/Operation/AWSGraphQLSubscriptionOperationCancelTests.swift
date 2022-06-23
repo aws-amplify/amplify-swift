@@ -30,7 +30,7 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
     let testBody = Data()
     let testPath = "testPath"
 
-    func setUp(subscriptionConnectionFactory: SubscriptionConnectionFactory) {
+    func setUp(subscriptionConnectionFactory: SubscriptionConnectionFactory) async {
         apiPlugin = AWSAPIPlugin()
 
         let authService = MockAWSAuthService()
@@ -58,7 +58,7 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
             XCTFail("Failed to create endpoint config")
         }
 
-        Amplify.reset()
+        await Amplify.reset()
         let config = AmplifyConfiguration()
         do {
             try Amplify.configure(config)
@@ -67,7 +67,7 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
         }
     }
 
-    func testCancelSendsCompletion() {
+    func testCancelSendsCompletion() async {
         let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _ in
             return MockSubscriptionConnection(onSubscribe: { (_, _, eventHandler) -> SubscriptionItem in
                 let item = SubscriptionItem(requestString: "", variables: nil, eventHandler: { _, _ in
@@ -77,7 +77,7 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
             }, onUnsubscribe: {_ in
             })
         })
-        setUp(subscriptionConnectionFactory: mockSubscriptionConnectionFactory)
+        await setUp(subscriptionConnectionFactory: mockSubscriptionConnectionFactory)
 
         let request = GraphQLRequest(apiName: apiName,
                                      document: testDocument,
@@ -123,15 +123,15 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
         wait(for: [receivedValueConnecting], timeout: 0.3)
         operation.cancel()
         XCTAssert(operation.isCancelled)
-        waitForExpectations(timeout: 0.3)
+        await waitForExpectations(timeout: 0.3)
     }
 
-    func testFailureOnConnection() {
+    func testFailureOnConnection() async {
         let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _ in
             throw APIError.invalidConfiguration("something went wrong", "", nil)
         })
 
-        setUp(subscriptionConnectionFactory: mockSubscriptionConnectionFactory)
+        await setUp(subscriptionConnectionFactory: mockSubscriptionConnectionFactory)
 
         let request = GraphQLRequest(apiName: apiName,
                                      document: testDocument,
@@ -164,10 +164,10 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
         )
         wait(for: [receivedFailure], timeout: 0.3)
         XCTAssert(operation.isFinished)
-        waitForExpectations(timeout: 0.3)
+        await waitForExpectations(timeout: 0.3)
     }
 
-    func testCallingCancelWhileCreatingConnectionShouldCallCompletionListener() {
+    func testCallingCancelWhileCreatingConnectionShouldCallCompletionListener() async {
         let connectionCreation = expectation(description: "connection factory called")
         let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _ in
             connectionCreation.fulfill()
@@ -180,7 +180,7 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
             })
         })
 
-        setUp(subscriptionConnectionFactory: mockSubscriptionConnectionFactory)
+        await setUp(subscriptionConnectionFactory: mockSubscriptionConnectionFactory)
 
         let request = GraphQLRequest(apiName: apiName,
                                      document: testDocument,
@@ -213,6 +213,6 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
         wait(for: [connectionCreation], timeout: 0.3)
         operation.cancel()
         XCTAssert(operation.isCancelled)
-        waitForExpectations(timeout: 0.3)
+        await waitForExpectations(timeout: 0.3)
     }
 }

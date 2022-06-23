@@ -19,9 +19,9 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
         AuthSessionHelper.clearSession()
     }
 
-    override func tearDown() {
-        super.tearDown()
-        Amplify.reset()
+    override func tearDown() async throws {
+        try await super.tearDown()
+        await Amplify.reset()
         AuthSessionHelper.clearSession()
         sleep(2)
     }

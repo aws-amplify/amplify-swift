@@ -12,7 +12,7 @@ import XCTest
 class LoggingPluginSelectorFactoryTests: XCTestCase {
 //
 //    override func setUp() {
-//        Amplify.reset()
+//        await Amplify.reset()
 //    }
 //
 //    func testAddingSelectorFactoryBeforeFirstPluginWorks() throws {

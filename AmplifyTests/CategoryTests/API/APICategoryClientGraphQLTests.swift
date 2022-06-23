@@ -7,7 +7,7 @@
 
 import XCTest
 
-// Only @testable so we can get access to `Amplify.reset()`
+// Only @testable so we can get access to `await Amplify.reset()`
 @testable import Amplify
 
 @testable import AmplifyTestCommon
@@ -15,8 +15,8 @@ import XCTest
 class APICategoryClientGraphQLTests: XCTestCase {
     var mockAmplifyConfig: AmplifyConfiguration!
 
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
 
         let apiConfig = APICategoryConfiguration(
             plugins: ["MockAPICategoryPlugin": true]

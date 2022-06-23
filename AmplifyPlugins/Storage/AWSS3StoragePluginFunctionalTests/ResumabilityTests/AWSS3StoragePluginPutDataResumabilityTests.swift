@@ -57,8 +57,8 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
         wait(for: [completeInvoked, failedInvoked, noProgressAfterPause], timeout: 30)
         operation.cancel()
         // A 5 second sleep has been added because, the cancelling runs async task to cancel anything existing that is still running, 
-        // This gives ample time for operation to cancel, and then Amplify.reset(), Amplify.configure works as expected.
-        // If the sleep is not added, Amplify.reset() will be trigerred in the tear down method which will remove all the plugins, 
+        // This gives ample time for operation to cancel, and then await Amplify.reset(), Amplify.configure works as expected.
+        // If the sleep is not added, await Amplify.reset() will be trigerred in the tear down method which will remove all the plugins, 
         // Removing all the plugins when operation is still cancelling, results in undesired behavior from the storage/auth plugin 
         sleep(5)
     }

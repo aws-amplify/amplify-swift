@@ -15,8 +15,8 @@ class GraphQLModelBasedTests: XCTestCase {
 
     static let amplifyConfiguration = "GraphQLModelBasedTests-amplifyconfiguration"
 
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
         Amplify.Logging.logLevel = .verbose
         let plugin = AWSAPIPlugin(modelRegistration: PostCommentModelRegistration())
 
@@ -35,8 +35,8 @@ class GraphQLModelBasedTests: XCTestCase {
         }
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 
     func testQuerySinglePostWithModel() {

@@ -23,10 +23,10 @@ class BaseDataStoreTests: XCTestCase {
 
     // MARK: - Lifecycle
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         sleep(2)
-        Amplify.reset()
+        await Amplify.reset()
         Amplify.Logging.logLevel = .warn
 
         let validAPIPluginKey = "MockAPICategoryPlugin"

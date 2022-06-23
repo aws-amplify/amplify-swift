@@ -12,8 +12,8 @@ import XCTest
 class LoggingCategoryClientAPITests: XCTestCase {
     var mockAmplifyConfig: AmplifyConfiguration!
 
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
 
         let loggingConfig = LoggingCategoryConfiguration(
             plugins: ["MockLoggingCategoryPlugin": true]

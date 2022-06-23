@@ -25,9 +25,9 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
     var operation: ReconcileAndLocalSaveOperation!
     var stateMachine: MockStateMachine<ReconcileAndLocalSaveOperation.State, ReconcileAndLocalSaveOperation.Action>!
     var cancellables: Set<AnyCancellable>!
-    override func setUp() {
-        tryOrFail {
-            try setUpWithAPI()
+    override func setUp() async throws {
+        await tryOrFail {
+            try await setUpWithAPI()
         }
         ModelRegistry.register(modelType: Post.self)
 
@@ -659,7 +659,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             completion(.success(model))
         }
         storageAdapter.responders[.saveModelCompletion] = saveMetadataResponder
-        let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
+        _ = Amplify.Hub.listen(to: .dataStore) { payload in
             if payload.eventName == "DataStore.syncReceived" {
                 hubExpect.fulfill()
             }
@@ -1052,8 +1052,8 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
 }
 
 extension ReconcileAndLocalSaveOperationTests {
-    private func setUpCore() throws -> AmplifyConfiguration {
-        Amplify.reset()
+    private func setUpCore() async throws -> AmplifyConfiguration {
+        await Amplify.reset()
 
         let dataStorePublisher = DataStorePublisher()
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
@@ -1082,8 +1082,8 @@ extension ReconcileAndLocalSaveOperationTests {
         return amplifyConfig
     }
 
-    private func setUpWithAPI() throws {
-        let configWithoutAPI = try setUpCore()
+    private func setUpWithAPI() async throws {
+        let configWithoutAPI = try await setUpCore()
         let configWithAPI = try setUpAPICategory(config: configWithoutAPI)
         try Amplify.configure(configWithAPI)
     }

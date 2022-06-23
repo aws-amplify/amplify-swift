@@ -42,8 +42,8 @@ class DataStoreConnectionScenario4Tests: SyncEngineIntegrationTestBase {
         let version: String = "1"
     }
 
-    func testCreateCommentAndGetCommentWithPost() throws {
-        setUp(withModels: TestModelRegistration())
+    func testCreateCommentAndGetCommentWithPost() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
@@ -73,14 +73,14 @@ class DataStoreConnectionScenario4Tests: SyncEngineIntegrationTestBase {
         wait(for: [getCommentCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testCreateCommentAndGetPostWithComments() throws {
-        setUp(withModels: TestModelRegistration())
+    func testCreateCommentAndGetPostWithComments() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
             return
         }
-        guard let comment = saveComment(content: "content", post: post) else {
+        guard saveComment(content: "content", post: post) != nil else {
             XCTFail("Could not create comment")
             return
         }
@@ -116,8 +116,8 @@ class DataStoreConnectionScenario4Tests: SyncEngineIntegrationTestBase {
         wait(for: [getPostCompleted, getCommentsCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testUpdateComment() throws {
-        setUp(withModels: TestModelRegistration())
+    func testUpdateComment() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
@@ -145,8 +145,8 @@ class DataStoreConnectionScenario4Tests: SyncEngineIntegrationTestBase {
         wait(for: [updateCommentSuccessful], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testDeleteAndGetComment() throws {
-        setUp(withModels: TestModelRegistration())
+    func testDeleteAndGetComment() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
@@ -183,8 +183,8 @@ class DataStoreConnectionScenario4Tests: SyncEngineIntegrationTestBase {
         wait(for: [getCommentAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testListCommentsByPostID() throws {
-        setUp(withModels: TestModelRegistration())
+    func testListCommentsByPostID() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")

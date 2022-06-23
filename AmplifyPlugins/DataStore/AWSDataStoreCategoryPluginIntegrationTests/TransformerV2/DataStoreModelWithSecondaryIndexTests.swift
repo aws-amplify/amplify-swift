@@ -31,8 +31,8 @@ class DataStoreModelWithSecondaryIndexTests: SyncEngineIntegrationV2TestBase {
         let version: String = "1"
     }
 
-    func testSaveModelAndSync() throws {
-        setUp(withModels: TestModelRegistration())
+    func testSaveModelAndSync() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         guard var customer = saveCustomer(name: "name", accountRepresentativeID: "accountId") else {

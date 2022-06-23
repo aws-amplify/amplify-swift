@@ -9,7 +9,7 @@ import XCTest
 @testable import Amplify
 
 class StorageCategoryClientAPITests: XCTestCase {
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
     }
 }

@@ -30,7 +30,7 @@ class AWSAPICategoryPluginTestBase: XCTestCase {
     let testBody = Data()
     let testPath = "testPath"
 
-    override func setUp() {
+    override func setUp() async throws {
         apiPlugin = AWSAPIPlugin()
 
         let authService = MockAWSAuthService()
@@ -63,8 +63,8 @@ class AWSAPICategoryPluginTestBase: XCTestCase {
             XCTFail("Failed to create endpoint config")
         }
 
-        Amplify.reset()
-        // Amplify.reset() doesn't immediately stop all in-progress tasks, so we sleep here to
+        await Amplify.reset()
+        // await Amplify.reset() doesn't immediately stop all in-progress tasks, so we sleep here to
         // give everything a chance to complete. This prevents sporadic failures when running many tests.
         sleep(2)
         let config = AmplifyConfiguration()

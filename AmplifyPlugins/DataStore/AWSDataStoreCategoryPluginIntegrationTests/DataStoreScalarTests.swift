@@ -25,8 +25,8 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
         let version: String = "1"
     }
 
-    func testScalarContainer() throws {
-        setUp(withModels: TestModelRegistration())
+    func testScalarContainer() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let container = ScalarContainer(myString: "myString",
                                         myInt: 1,
@@ -71,8 +71,8 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
         XCTAssertNil(emptyModel)
     }
 
-    func testListIntContainer() throws {
-        setUp(withModels: TestModelRegistration())
+    func testListIntContainer() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let container = ListIntContainer(
             test: 1,
@@ -118,8 +118,8 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
         XCTAssertNil(emptyModel)
     }
 
-    func testListStringContainer() throws {
-        setUp(withModels: TestModelRegistration())
+    func testListStringContainer() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let container = ListStringContainer(
             test: "test",
@@ -165,8 +165,8 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
         XCTAssertNil(emptyModel)
     }
 
-    func testListContainerWithNil() throws {
-        setUp(withModels: TestModelRegistration())
+    func testListContainerWithNil() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let container = ListStringContainer(
             test: "test",
@@ -212,8 +212,8 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
         XCTAssertNil(emptyModel)
     }
 
-    func testEnumTestModel() throws {
-        setUp(withModels: TestModelRegistration())
+    func testEnumTestModel() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let container = EnumTestModel(enumVal: .valueOne,
                                       nullableEnumVal: .valueTwo,
@@ -257,8 +257,8 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
         XCTAssertNil(emptyModel)
     }
 
-    func testNestedEnumTestModel() throws {
-        setUp(withModels: TestModelRegistration())
+    func testNestedEnumTestModel() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let container = NestedTypeTestModel(nestedVal: .init(valueOne: 1),
                                             nullableNestedVal: .init(),

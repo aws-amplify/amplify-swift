@@ -24,9 +24,9 @@ class AWSAuthSignUpOperationTests: XCTestCase {
         queue = OperationQueue()
         queue?.maxConcurrentOperationCount = 1
     }
-    override func tearDown() {
-        super.tearDown()
-        Amplify.reset()
+    override func tearDown() async throws {
+        try await super.tearDown()
+        await Amplify.reset()
         sleep(2)
     }
 

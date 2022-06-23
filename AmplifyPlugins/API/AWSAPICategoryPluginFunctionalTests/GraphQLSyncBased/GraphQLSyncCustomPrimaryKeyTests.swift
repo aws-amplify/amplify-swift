@@ -15,8 +15,8 @@ class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
 
     static let amplifyConfiguration = "testconfiguration/GraphQLSyncBasedTests-amplifyconfiguration"
 
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
         let plugin = AWSAPIPlugin()
 
         do {
@@ -33,8 +33,8 @@ class GraphQLSyncCustomPrimaryKeyTests: XCTestCase {
         }
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 
     /// Test for deletion of model with custom primary keys
