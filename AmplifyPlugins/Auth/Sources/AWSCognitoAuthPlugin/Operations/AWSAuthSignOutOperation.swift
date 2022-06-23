@@ -57,6 +57,12 @@ public class AWSAuthSignOutOperation: AmplifySignOutOperation, AuthSignOutOperat
                         self.authStateMachine.cancel(listenerToken: token)
                     }
                 }
+                if case .configured = authZState {
+                    self.dispatchSuccess()
+                    if let token = self.stateListenerToken {
+                        self.authStateMachine.cancel(listenerToken: token)
+                    }
+                }
 
             case .error(let error):
                 defer {
