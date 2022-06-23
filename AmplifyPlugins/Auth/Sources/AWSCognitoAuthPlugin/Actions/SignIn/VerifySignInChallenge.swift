@@ -58,8 +58,17 @@ struct VerifySignInChallenge: Action {
                                environment: environment)
                     dispatcher.send(responseEvent)
                 }
+        } catch let error as SignInError {
+            let errorEvent = SignInEvent(eventType: .throwAuthError(error))
+            logVerbose("\(#fileID) Sending event \(errorEvent)",
+                       environment: environment)
+            dispatcher.send(errorEvent)
         } catch {
-
+            let error = SignInError.invalidServiceResponse(message: error.localizedDescription)
+            let errorEvent = SignInEvent(eventType: .throwAuthError(error))
+            logVerbose("\(#fileID) Sending event \(errorEvent)",
+                       environment: environment)
+            dispatcher.send(errorEvent)
         }
     }
 

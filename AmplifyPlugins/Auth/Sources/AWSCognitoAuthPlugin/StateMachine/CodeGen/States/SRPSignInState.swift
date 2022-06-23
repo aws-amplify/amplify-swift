@@ -11,7 +11,6 @@ enum SRPSignInState: State {
 
     case notStarted
     case initiatingSRPA(SignInEventData)
-    case nextAuthChallenge(RespondToAuthChallengeOutputResponse)
     case respondingPasswordVerifier(SRPStateData)
     case signedIn(SignedInData)
     case error(SignInError)
@@ -25,7 +24,6 @@ extension SRPSignInState {
         case .notStarted: return "SRPSignInState.notStarted"
         case .initiatingSRPA: return "SRPSignInState.initiatingSRPA"
         case .cancelling: return "SRPSignInState.cancelling"
-        case .nextAuthChallenge: return "SRPSignInState.nextAuthChallenge"
         case .respondingPasswordVerifier: return "SRPSignInState.respondingPasswordVerifier"
         case .signedIn: return "SRPSignInState.signedIn"
         case .error: return "SRPSignInState.error"
@@ -40,8 +38,6 @@ extension SRPSignInState {
             return lhsData == rhsData
         case (.cancelling, .cancelling):
             return true
-        case (.nextAuthChallenge(let lhsData), .nextAuthChallenge(let rhsData)):
-            return lhsData == rhsData
         case (.respondingPasswordVerifier(let lhsData), .respondingPasswordVerifier(let rhsData)):
             return lhsData == rhsData
         case (.signedIn(let lhsData), .signedIn(let rhsData)):

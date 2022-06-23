@@ -85,17 +85,22 @@ extension RespondToAuthChallengeOutputResponse {
     }
 }
 
+extension RespondToAuthChallenge {
+    static let testData = RespondToAuthChallenge(challenge: .smsMfa,
+                                                 username: "username",
+                                                 session: "session",
+                                                 parameters: [:])
+}
+
 extension SignInEvent {
 
     static let allStates: [SignInEvent] = [
         initiateSRPEvent,
         respondPasswordVerifierEvent,
-        respondNextAuthChallengeEvent,
         finalizeSRPSignInEvent,
         cancelSRPSignInEvent,
         authErrorEvent,
-        passwordVerifierErrorEvent,
-        restoreToNotInitializedEvent
+        passwordVerifierErrorEvent
     ]
 
     static let initiateSRPEvent = SignInEvent(
@@ -108,14 +113,9 @@ extension SignInEvent {
         eventType: .respondPasswordVerifier(.testData, InitiateAuthOutputResponse.testData)
     )
 
-    static let respondNextAuthChallengeEvent = SignInEvent(
-        id: "respondNextAuthChallengeEvent",
-        eventType: .respondNextAuthChallenge(RespondToAuthChallengeOutputResponse.testData())
-    )
-
     static let finalizeSRPSignInEvent = SignInEvent(
         id: "finalizeSRPSignInEvent",
-        eventType: .finalizeSRPSignIn(.testData)
+        eventType: .finalizeSignIn(.testData)
     )
 
     static let cancelSRPSignInEvent = SignInEvent(
@@ -131,11 +131,6 @@ extension SignInEvent {
     static let passwordVerifierErrorEvent = SignInEvent(
         id: "passwordVerifierErrorEvent",
         eventType: .throwPasswordVerifierError(.testData)
-    )
-
-    static let restoreToNotInitializedEvent = SignInEvent(
-        id: "restoreToNotInitializedEvent",
-        eventType: .restoreToNotInitialized(.testData)
     )
 
 }
