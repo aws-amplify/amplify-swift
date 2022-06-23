@@ -14,6 +14,8 @@ extension RefreshSessionState {
         switch self {
         case .fetchingAuthSessionWithUserPool(let state, _):
             additionalMetadataDictionary = ["fetchingSession": state.debugDictionary]
+        case .error(let error):
+            additionalMetadataDictionary = ["error": error]
         default:
             additionalMetadataDictionary = [:]
         }

@@ -95,6 +95,14 @@ extension AuthorizationState {
                     return .init(newState: .waitingToStore(amplifyCredentials))
                 }
 
+                if case .receivedSessionError(let error) = event.isAuthorizationEvent {
+                    return .init(newState: .error(.sessionError(error, .noCredentials)))
+                }
+
+                if case .throwError(let error) = event.isAuthorizationEvent {
+                    return .init(newState: .error(error))
+                }
+
                 let resolver = FetchAuthSessionState.Resolver()
                 let resolution = resolver.resolve(oldState: fetchSessionState, byApplying: event)
                 return .init(newState: .fetchingUnAuthSession(resolution.newState),
@@ -109,6 +117,14 @@ extension AuthorizationState {
                     return .init(newState: .waitingToStore(amplifyCredentials))
                 }
 
+                if case .receivedSessionError(let error) = event.isAuthorizationEvent {
+                    return .init(newState: .error(.sessionError(error, .noCredentials)))
+                }
+
+                if case .throwError(let error) = event.isAuthorizationEvent {
+                    return .init(newState: .error(error))
+                }
+
                 let resolver = FetchAuthSessionState.Resolver()
                 let resolution = resolver.resolve(oldState: fetchSessionState, byApplying: event)
                 return .init(newState: .fetchingAuthSessionWithUserPool(resolution.newState, tokens),
@@ -119,6 +135,13 @@ extension AuthorizationState {
                     return .init(newState: .waitingToStore(amplifyCredentials))
                 }
 
+                if case .receivedSessionError(let error) = event.isAuthorizationEvent {
+                    return .init(newState: .error(.sessionError(error, existingCredentials)))
+                }
+
+                if case .throwError(let error) = event.isAuthorizationEvent {
+                    return .init(newState: .error(error))
+                }
                 let resolver = RefreshSessionState.Resolver()
                 let resolution = resolver.resolve(oldState: refreshState, byApplying: event)
                 return .init(newState: .refreshingSession(
@@ -131,12 +154,30 @@ extension AuthorizationState {
                 }
                 return .from(oldState)
 
-            case .error:
+            case .error(let error):
+                if let authenEvent = event.isAuthenticationEvent {
+                   if case .signInRequested = authenEvent {
+                    return .from(.signingIn)
+                   } else if case .signOutRequested = authenEvent {
+                       return .from(.signingOut)
+                   }
+                }
                 if case .fetchUnAuthSession = event.isAuthorizationEvent {
                     let action = InitializeFetchUnAuthSession()
                     return .init(newState: .fetchingUnAuthSession(.notStarted), actions: [action])
                 }
 
+                // If authorization is under session error, we try to refresh it again to see if
+                // it can recover from the error.
+                if case .refreshSession = event.isAuthorizationEvent,
+                   case .sessionError(_, let credentials) = error {
+                    let action = InitializeRefreshSession(existingCredentials: credentials,
+                                                          isForceRefresh: false)
+                    let subState = RefreshSessionState.notStarted
+                    return .init(newState: .refreshingSession(
+                        existingCredentials: credentials,
+                        subState), actions: [action])
+                }
                 return .from(oldState)
             }
 

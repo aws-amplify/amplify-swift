@@ -22,6 +22,8 @@ struct AuthorizationEvent: StateMachineEvent {
 
         case refreshSession
 
+        case receivedSessionError(FetchSessionError)
+
         case throwError(AuthorizationError)
 
     }
@@ -39,6 +41,7 @@ struct AuthorizationEvent: StateMachineEvent {
         case .fetchUnAuthSession: return "AuthorizationEvent.fetchUnAuthSession"
         case .fetched:  return "AuthorizationEvent.fetched"
         case .refreshSession:  return "AuthorizationEvent.refreshSession"
+        case .receivedSessionError:  return "AuthorizationEvent.receivedSessionError"
         }
     }
 
