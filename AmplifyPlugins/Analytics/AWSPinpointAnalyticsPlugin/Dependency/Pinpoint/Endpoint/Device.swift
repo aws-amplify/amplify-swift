@@ -26,12 +26,20 @@ extension UIDevice: Device {
         return (name: systemName, version: systemVersion)
     }
 }
+#else
+private class EmptyDevice: Device {
+    let model = ""
+    let appVersion: String? = nil
+    let platform: Platform = (name: "", version: "")
+}
 #endif
 
 class DeviceProvider {
     static var current: Device {
 #if canImport(UIKit)
         return UIDevice.current
+#else
+        return EmptyDevice()
 #endif
     }
 }
