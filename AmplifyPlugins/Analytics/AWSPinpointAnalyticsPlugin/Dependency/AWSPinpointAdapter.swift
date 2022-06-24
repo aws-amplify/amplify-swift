@@ -17,8 +17,10 @@ class AWSPinpointAdapter: AWSPinpointBehavior {
 
     convenience init(appId: String,
                      region: String,
+                     targetingRegion: String,
                      credentialsProvider: CredentialsProvider,
-                     shouldTrackAppSessions: Bool = true) throws {
+                     shouldTrackAppSessions: Bool,
+                     sessionBackgroundTimeout: TimeInterval) throws {
         var isDebug = false
         #if DEBUG
         isDebug = true
@@ -27,9 +29,11 @@ class AWSPinpointAdapter: AWSPinpointBehavior {
 
         let configuration = PinpointContextConfiguration(appId: appId,
                                                          region: region,
+                                                         targetingRegion: targetingRegion,
                                                          credentialsProvider: credentialsProvider,
                                                          isDebug: isDebug,
-                                                         shouldTrackAppSessions: shouldTrackAppSessions)
+                                                         shouldTrackAppSessions: shouldTrackAppSessions,
+                                                         sessionBackgroundTimeout: sessionBackgroundTimeout)
         let pinpoint = try PinpointContext(with: configuration)
         self.init(pinpoint: pinpoint)
     }
@@ -38,7 +42,10 @@ class AWSPinpointAdapter: AWSPinpointBehavior {
         self.pinpoint = pinpoint
     }
 
-    func getEscapeHatch() -> PinpointClientProtocol {
-        pinpoint.pinpointClient
+    func getEscapeHatch() -> AWSPinpoint {
+        return AWSPinpoint(
+            analytisClient: pinpoint.analyticsClient.pinpointClient,
+            targetingClient: pinpoint.endpointClient.pinpointClient
+        )
     }
 }

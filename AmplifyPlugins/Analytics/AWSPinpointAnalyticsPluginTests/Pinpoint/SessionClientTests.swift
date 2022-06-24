@@ -43,7 +43,7 @@ class SessionClientTests: XCTestCase {
                                archiver: archiver,
                                configuration: SessionClientConfiguration(appId: "appId",
                                                                          uniqueDeviceId: "deviceId",
-                                                                         sessionTimeout: sessionTimeout),
+                                                                         sessionBackgroundTimeout: sessionTimeout),
                                endpointClient: endpointClient,
                                userDefaults: userDefaults)
     }

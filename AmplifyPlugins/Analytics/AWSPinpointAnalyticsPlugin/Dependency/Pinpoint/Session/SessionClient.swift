@@ -19,7 +19,7 @@ protocol SessionClientBehaviour: AnyObject {
 struct SessionClientConfiguration {
     let appId: String
     let uniqueDeviceId: String
-    let sessionTimeout: TimeInterval
+    let sessionBackgroundTimeout: TimeInterval
 }
 
 class SessionClient: SessionClientBehaviour {
@@ -41,7 +41,7 @@ class SessionClient: SessionClientBehaviour {
          configuration: SessionClientConfiguration,
          endpointClient: EndpointClientBehaviour,
          userDefaults: UserDefaultsBehaviour) {
-        self.activityTracker = activityTracker ?? ActivityTracker.create(timeout: configuration.sessionTimeout)
+        self.activityTracker = activityTracker ?? ActivityTracker.create(timeout: configuration.sessionBackgroundTimeout)
         self.analyticsClient = analyticsClient
         self.archiver = archiver
         self.configuration = configuration
@@ -172,7 +172,7 @@ class SessionClient: SessionClientBehaviour {
         }
 
         let now = Date().timeIntervalSince1970
-        return now - stopTime > configuration.sessionTimeout
+        return now - stopTime > configuration.sessionBackgroundTimeout
     }
 
     private func record(eventType: String) {

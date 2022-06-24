@@ -24,10 +24,6 @@ extension AWSPinpointAnalyticsPlugin {
             autoFlushEventsTimer = nil
         }
 
-        if appSessionTracker != nil {
-            appSessionTracker = nil
-        }
-
         if globalProperties != nil {
             globalProperties = nil
         }

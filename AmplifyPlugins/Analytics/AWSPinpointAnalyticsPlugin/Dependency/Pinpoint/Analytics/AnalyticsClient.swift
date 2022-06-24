@@ -11,6 +11,8 @@ import Amplify
 import AWSPinpoint
 
 protocol AnalyticsClientBehaviour: Actor {
+    nonisolated var pinpointClient: PinpointClientProtocol { get }
+
     func addGlobalAttribute(_ attribute: String, forKey key: String)
     func addGlobalAttribute(_ attribute: String, forKey key: String, forEventType eventType: String)
     func addGlobalMetric(_ metric: Double, forKey key: String)
@@ -58,6 +60,10 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
                                               pinpointClient: pinpointClient, endpointClient: endpointClient)
         self.init(eventRecorder: eventRecorder,
                   sessionProvider: sessionProvider)
+    }
+
+    nonisolated var pinpointClient: PinpointClientProtocol {
+        return eventRecorder.pinpointClient
     }
 
     // MARK: - Attributes & Metrics
