@@ -39,8 +39,8 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
 //        }
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 
     /// Test create mutation with a custom GraphQL Document

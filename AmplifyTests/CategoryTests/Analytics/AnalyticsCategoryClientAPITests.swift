@@ -14,8 +14,8 @@ class AnalyticsCategoryClientAPITests: XCTestCase {
     var analytics: AnalyticsCategory!
     var plugin: MockAnalyticsCategoryPlugin!
 
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
         plugin = MockAnalyticsCategoryPlugin()
         analytics = Amplify.Analytics
         let categoryConfiguration = AnalyticsCategoryConfiguration(

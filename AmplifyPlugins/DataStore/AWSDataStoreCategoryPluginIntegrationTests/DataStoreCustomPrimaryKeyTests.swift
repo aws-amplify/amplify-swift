@@ -30,8 +30,8 @@ class DataStoreCustomPrimaryKeyTests: SyncEngineIntegrationTestBase {
     ///     - deleted
     ///     - queried
     /// - Then: The model should be deleted finally and the sync events should be received in order
-    func testDeleteModelWithCustomPrimaryKey() throws {
-        setUp(withModels: TestModelRegistration())
+    func testDeleteModelWithCustomPrimaryKey() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let customerOrder = CustomerOrder(orderId: UUID().uuidString, email: "test@abc.com")
 

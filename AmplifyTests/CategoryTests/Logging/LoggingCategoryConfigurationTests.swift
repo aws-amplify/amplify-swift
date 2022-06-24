@@ -11,8 +11,8 @@ import XCTest
 @testable import AmplifyTestCommon
 
 class LoggingCategoryConfigurationTests: XCTestCase {
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
     }
 
     func testCanAddLoggingPlugin() throws {
@@ -36,7 +36,7 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         XCTAssertNotNil(try Amplify.Logging.getPlugin(for: "MockLoggingCategoryPlugin"))
     }
 
-    func testCanResetLoggingPlugin() throws {
+    func testCanResetLoggingPlugin() async throws {
         let plugin = MockLoggingCategoryPlugin()
         let resetWasInvoked = expectation(description: "reset() was invoked")
         plugin.listeners.append { message in
@@ -53,11 +53,11 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(logging: loggingConfig)
 
         try Amplify.configure(amplifyConfig)
-        Amplify.reset()
-        waitForExpectations(timeout: 1.0)
+        await Amplify.reset()
+        await waitForExpectations(timeout: 1.0)
     }
 
-    func testResetRemovesAddedPlugin() throws {
+    func testResetRemovesAddedPlugin() async throws {
         let plugin = MockLoggingCategoryPlugin()
         try Amplify.add(plugin: plugin)
 
@@ -68,7 +68,7 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(logging: loggingConfig)
 
         try Amplify.configure(amplifyConfig)
-        Amplify.reset()
+        await Amplify.reset()
         XCTAssertThrowsError(try Amplify.Logging.getPlugin(for: "MockLoggingCategoryPlugin"),
                              "Getting a plugin after reset() should throw") { error in
                                 guard case LoggingError.configuration = error else {

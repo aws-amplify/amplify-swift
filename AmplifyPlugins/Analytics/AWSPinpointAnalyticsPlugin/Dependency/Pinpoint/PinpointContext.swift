@@ -66,12 +66,12 @@ typealias Byte = Int
 struct PinpointContextConfiguration {
     /// The Pinpoint AppId.
     let appId: String
-    /// The Pinpoint region
+    /// The region used for Pinpoint Analytics
     let region: String
+    /// The region used for Pinpoint Targeting
+    let targetingRegion: String
     /// Used to retrieve the proper AWSCredentials when creating the PinpointCLient
     let credentialsProvider: CredentialsProvider
-    /// The session timeout in seconds. Defaults to 5 seconds.
-    let sessionTimeout: TimeInterval
     /// The max storage size to use for event storage in bytes. Defaults to 5 MB.
     let maxStorageSize: Byte
 
@@ -86,19 +86,24 @@ struct PinpointContextConfiguration {
 
     /// Indicates whether to track application sessions. Defaults to `true`
     let shouldTrackAppSessions: Bool
+    /// The amount of time to wait before ending a session after going to the background. Only valid when `shouldTrackAppSessions` is `true`.
+    /// Defaults to 5 seconds.
+    let sessionBackgroundTimeout: TimeInterval
 
     init(appId: String,
          region: String,
+         targetingRegion: String,
          credentialsProvider: CredentialsProvider,
-         sessionTimeout: TimeInterval = 5,
          maxStorageSize: Byte = (1024 * 1024 * 5),
          isDebug: Bool = false,
          isApplicationLevelOptOut: Bool = false,
-         shouldTrackAppSessions: Bool = true) {
+         shouldTrackAppSessions: Bool = true,
+         sessionBackgroundTimeout: TimeInterval = 5) {
         self.appId = appId
         self.region = region
+        self.targetingRegion = targetingRegion
         self.credentialsProvider = credentialsProvider
-        self.sessionTimeout = sessionTimeout
+        self.sessionBackgroundTimeout = sessionBackgroundTimeout
         self.maxStorageSize = maxStorageSize
         self.isDebug = isDebug
         self.isApplicationLevelOptOut = isApplicationLevelOptOut
@@ -115,7 +120,6 @@ private struct PinpointContextStorage {
 }
 
 class PinpointContext {
-    let pinpointClient: PinpointClientProtocol
     let endpointClient: EndpointClientBehaviour
     let sessionClient: SessionClientBehaviour
     let analyticsClient: AnalyticsClientBehaviour
@@ -136,25 +140,21 @@ class PinpointContext {
                                          archiver: archiver)
         uniqueId = Self.retrieveUniqueId(applicationId: configuration.appId, storage: storage)
 
-        let pinpointConfiguration = try PinpointClient.PinpointClientConfiguration(
-            region: configuration.region,
-            credentialsProvider: configuration.credentialsProvider,
-            frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData()
-        )
-        pinpointClient = PinpointClient(config: pinpointConfiguration)
+        let targetingPinpointClient = try PinpointClient(region: configuration.targetingRegion,
+                                                         credentialsProvider: configuration.credentialsProvider)
 
         endpointClient = EndpointClient(configuration: .init(appId: configuration.appId,
                                                              uniqueDeviceId: uniqueId,
                                                              isDebug: configuration.isDebug,
                                                              isOptOut: configuration.isApplicationLevelOptOut),
-                                        pinpointClient: pinpointClient,
+                                        pinpointClient: targetingPinpointClient,
                                         currentDevice: currentDevice,
                                         userDefaults: userDefaults)
 
         sessionClient = SessionClient(archiver: archiver,
                                       configuration: .init(appId: configuration.appId,
                                                            uniqueDeviceId: uniqueId,
-                                                           sessionTimeout: configuration.sessionTimeout),
+                                                           sessionBackgroundTimeout: configuration.sessionBackgroundTimeout),
                                       endpointClient: endpointClient,
                                       userDefaults: userDefaults)
 
@@ -165,8 +165,14 @@ class PinpointContext {
             return sessionClient.currentSession
         }
 
+        var analyticsPinpointClient = targetingPinpointClient
+        if configuration.region != configuration.targetingRegion {
+            analyticsPinpointClient = try PinpointClient(region: configuration.region,
+                                                         credentialsProvider: configuration.credentialsProvider)
+        }
+
         analyticsClient = try AnalyticsClient(applicationId: configuration.appId,
-                                              pinpointClient: pinpointClient,
+                                              pinpointClient: analyticsPinpointClient,
                                               endpointClient: endpointClient,
                                               sessionProvider: sessionProvider)
         sessionClient.analyticsClient = analyticsClient

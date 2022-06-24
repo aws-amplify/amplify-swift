@@ -61,8 +61,8 @@ final class HubChannelDispatcher {
     /// cancels in-process operations and waits for them to complete, it does not attempt to assert anything about
     /// whether a given listener closure has completed. To mitigate this, the method sleeps for 1 second before
     /// returning, which should give common test cases time to execute their listeners. However, it's still not a
-    /// guarantee, so if your test encounters errors like "Hub is not configured" after you issue an `Amplify.reset()`,
-    /// you may wish to add additional sleep around your code that calls `Amplify.reset()`.
+    /// guarantee, so if your test encounters errors like "Hub is not configured" after you issue an `await Amplify.reset()`,
+    /// you may wish to add additional sleep around your code that calls `await Amplify.reset()`.
     func destroy() {
         listenersById.removeAll()
         messageQueue.cancelAllOperations()

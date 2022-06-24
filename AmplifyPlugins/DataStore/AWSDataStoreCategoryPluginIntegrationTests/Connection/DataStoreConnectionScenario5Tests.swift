@@ -54,8 +54,8 @@ class DataStoreConnectionScenario5Tests: SyncEngineIntegrationTestBase {
         let version: String = "1"
     }
 
-    func testListPostEditorByPost() throws {
-        setUp(withModels: TestModelRegistration())
+    func testListPostEditorByPost() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
@@ -82,8 +82,8 @@ class DataStoreConnectionScenario5Tests: SyncEngineIntegrationTestBase {
         wait(for: [listPostEditorByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testListPostEditorByUser() throws {
-        setUp(withModels: TestModelRegistration())
+    func testListPostEditorByUser() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
@@ -110,8 +110,8 @@ class DataStoreConnectionScenario5Tests: SyncEngineIntegrationTestBase {
         wait(for: [listPostEditorByEditorIdCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testGetPostThenLoadPostEditors() throws {
-        setUp(withModels: TestModelRegistration())
+    func testGetPostThenLoadPostEditors() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
@@ -157,8 +157,8 @@ class DataStoreConnectionScenario5Tests: SyncEngineIntegrationTestBase {
         wait(for: [getPostCompleted, getPostEditorsCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testGetUserThenLoadPostEditors() throws {
-        setUp(withModels: TestModelRegistration())
+    func testGetUserThenLoadPostEditors() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")

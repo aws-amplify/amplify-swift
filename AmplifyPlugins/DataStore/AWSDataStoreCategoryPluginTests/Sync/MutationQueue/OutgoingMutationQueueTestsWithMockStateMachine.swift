@@ -22,9 +22,9 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
     var apiBehavior: MockAPICategoryPlugin!
     var storageAdapter: StorageEngineAdapter!
     var eventSource: MockMutationEventSource!
-    override func setUp() {
+    override func setUp() async throws {
         do {
-            try setUpWithAPI()
+            try await setUpWithAPI()
         } catch {
             XCTFail(String(describing: "Unable to setup API category for unit tests"))
         }
@@ -282,8 +282,8 @@ class MockMutationEventSource: MutationEventSource {
 
 extension OutgoingMutationQueueMockStateTest {
 
-    private func setUpCore() throws -> AmplifyConfiguration {
-        Amplify.reset()
+    private func setUpCore() async throws -> AmplifyConfiguration {
+        await Amplify.reset()
 
         let dataStorePublisher = DataStorePublisher()
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
@@ -310,8 +310,8 @@ extension OutgoingMutationQueueMockStateTest {
         return amplifyConfig
     }
 
-    private func setUpWithAPI() throws {
-        let configWithoutAPI = try setUpCore()
+    private func setUpWithAPI() async throws {
+        let configWithoutAPI = try await setUpCore()
         let configWithAPI = try setUpAPICategory(config: configWithoutAPI)
         try Amplify.configure(configWithAPI)
     }

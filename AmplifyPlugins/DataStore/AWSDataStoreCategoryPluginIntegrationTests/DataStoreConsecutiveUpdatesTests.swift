@@ -28,8 +28,8 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
     /// - Given: API has been setup with `Post` model registered
     /// - When: A Post is saved and then immediately updated
     /// - Then: The post should be updated with new fields immediately and in the eventual consistent state
-    func testSaveAndImmediatelyUpdate() throws {
-        setUp(withModels: TestModelRegistration())
+    func testSaveAndImmediatelyUpdate() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         let newPost = Post(title: "MyPost",
@@ -144,8 +144,8 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
     /// - Given: API has been setup with `Post` model registered
     /// - When: A Post is saved and deleted immediately
     /// - Then: The Post should not be returned when queried for immediately and in the eventual consistent state
-    func testSaveAndImmediatelyDelete() throws {
-        setUp(withModels: TestModelRegistration())
+    func testSaveAndImmediatelyDelete() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         let newPost = Post(title: "MyPost",
@@ -249,8 +249,8 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
     /// - Given: API has been setup with `Post` model registered
     /// - When: A Post is saved with sync complete, updated and deleted immediately
     /// - Then: The Post should not be returned when queried for
-    func testSaveThenUpdateAndImmediatelyDelete() throws {
-        setUp(withModels: TestModelRegistration())
+    func testSaveThenUpdateAndImmediatelyDelete() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         let newPost = Post(title: "MyPost",
@@ -382,8 +382,8 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
     /// - Given: API has been setup with `Post` model registered
     /// - When: A Post is saved with sync complete, then it is updated 10 times
     /// - Then: The Post should be updated with new fields
-    func testSaveThenMultipleUpdate() throws {
-        setUp(withModels: TestModelRegistration())
+    func testSaveThenMultipleUpdate() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         let newPost = Post(title: "MyPost",

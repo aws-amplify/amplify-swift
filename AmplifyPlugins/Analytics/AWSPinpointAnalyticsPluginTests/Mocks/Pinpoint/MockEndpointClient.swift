@@ -10,6 +10,8 @@ import AWSClientRuntime
 import AWSPinpoint
 
 actor MockEndpointClient: EndpointClientBehaviour {
+    let pinpointClient: PinpointClientProtocol = MockPinpointClient()
+
     class MockCredentialsProvider: CredentialsProvider {
         func getCredentials() async throws -> AWSCredentials {
             return AWSCredentials(accessKey: "", secret: "", expirationTimeout: 1000)

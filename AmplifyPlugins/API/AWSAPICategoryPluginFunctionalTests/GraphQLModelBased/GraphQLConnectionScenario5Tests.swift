@@ -60,8 +60,8 @@ class GraphQLConnectionScenario5Tests: XCTestCase {
         }
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 
     func testListPostEditorByPost() {

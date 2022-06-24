@@ -14,8 +14,8 @@ import XCTest
 class AppSyncListProviderTests: XCTestCase {
     var mockAPIPlugin: MockAPICategoryPlugin!
 
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
         ModelRegistry.register(modelType: Post4.self)
         ModelRegistry.register(modelType: Comment4.self)
         ModelListDecoderRegistry.registerDecoder(AppSyncListDecoder.self)

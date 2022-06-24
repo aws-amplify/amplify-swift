@@ -17,8 +17,8 @@ class AuthHubEventHandlerTests: XCTestCase {
         authHandler = AuthHubEventHandler()
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
         authHandler = nil
     }
 

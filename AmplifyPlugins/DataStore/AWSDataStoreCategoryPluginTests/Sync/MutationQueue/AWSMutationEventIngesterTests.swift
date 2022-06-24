@@ -16,8 +16,8 @@ class AWSMutationEventIngesterTests: XCTestCase {
     // Used by tests to assert that the MutationEvent table is being updated
     var storageAdapter: SQLiteStorageEngineAdapter!
 
-    override func setUp() {
-        Amplify.reset()
+    override func setUp() async throws {
+        await Amplify.reset()
 
         let apiConfig = APICategoryConfiguration(plugins: [
             "MockAPICategoryPlugin": true

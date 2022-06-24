@@ -23,9 +23,9 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     var mockAPIPlugin: MockAPICategoryPlugin!
     var storageAdapter: StorageEngineAdapter!
 
-    override func setUp() {
-        tryOrFail {
-            try setUpWithAPI()
+    override func setUp() async throws {
+        await tryOrFail {
+            try await setUpWithAPI()
         }
         storageAdapter = MockSQLiteStorageEngineAdapter()
 
@@ -951,8 +951,8 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
 }
 
 extension ProcessMutationErrorFromCloudOperationTests {
-    private func setUpCore() throws -> AmplifyConfiguration {
-        Amplify.reset()
+    private func setUpCore() async throws -> AmplifyConfiguration {
+        await Amplify.reset()
 
         let dataStorePublisher = DataStorePublisher()
         let dataStorePlugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
@@ -981,8 +981,8 @@ extension ProcessMutationErrorFromCloudOperationTests {
         return amplifyConfig
     }
 
-    private func setUpWithAPI() throws {
-        let configWithoutAPI = try setUpCore()
+    private func setUpWithAPI() async throws {
+        let configWithoutAPI = try await setUpCore()
         let configWithAPI = try setUpAPICategory(config: configWithoutAPI)
         try Amplify.configure(configWithAPI)
     }

@@ -37,6 +37,6 @@ class AWSPredictionsPluginTestBase: XCTestCase {
     override func tearDown() {
         sleep(1)
         print("Amplify reset")
-        Amplify.reset()
+        await Amplify.reset()
     }
 }

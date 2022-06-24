@@ -16,7 +16,7 @@ class DevMenuExtensionTests: XCTestCase {
         do {
             Amplify.enableDevMenu(contextProvider: provider)
 
-            /// After Amplify.reset() is called in teardown(), Amplify.configure() doesn't
+            /// After await Amplify.reset() is called in teardown(), Amplify.configure() doesn't
             /// initialize the plugin for LoggingCategory . This doesn't call Amplify.getLoggingCategoryPlugin()
             /// and the plugin is not updated to PersistentLoggingPlugin. Making a call to
             /// add() so that configure() updates the plugin
@@ -50,8 +50,8 @@ class DevMenuExtensionTests: XCTestCase {
         let devMenuPlugin = try Amplify.Logging.getPlugin(for: DevMenuStringConstants.persistentLoggingPluginKey)
         XCTAssertTrue(devMenuPlugin is PersistentLoggingPlugin)
     }
-    override func tearDown() {
-        Amplify.reset()
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
 }
 #endif

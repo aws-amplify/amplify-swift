@@ -32,7 +32,7 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
     }
 
     override func tearDown() {
-        Amplify.reset()
+        await Amplify.reset()
     }
 
     func testGetEscapeHatch() throws {

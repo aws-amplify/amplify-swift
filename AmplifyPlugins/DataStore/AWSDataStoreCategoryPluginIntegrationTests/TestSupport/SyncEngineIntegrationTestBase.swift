@@ -32,11 +32,11 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
     // swiftlint:enable force_try
     // swiftlint:enable force_cast
 
-    func setUp(withModels models: AmplifyModelRegistration, logLevel: LogLevel = .error) {
+    func setUp(withModels models: AmplifyModelRegistration, logLevel: LogLevel = .error) async {
 
         continueAfterFailure = false
 
-        Amplify.reset()
+        await Amplify.reset()
         sleep(2)
         Amplify.Logging.logLevel = logLevel
 

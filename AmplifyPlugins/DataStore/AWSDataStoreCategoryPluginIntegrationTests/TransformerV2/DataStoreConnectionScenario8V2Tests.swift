@@ -48,8 +48,8 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
         let version: String = "1"
     }
 
-    func testSaveRegistration() throws {
-        setUp(withModels: TestModelRegistration())
+    func testSaveRegistration() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let attendee = saveAttendee(),
               let meeting = saveMeeting(),
@@ -127,8 +127,8 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [getMeetingCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testUpdateRegistrationToAnotherAttendee() throws {
-        setUp(withModels: TestModelRegistration())
+    func testUpdateRegistrationToAnotherAttendee() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let attendee = saveAttendee(),
               let attendee2 = saveAttendee(),
@@ -227,8 +227,8 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [getAttendeesCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testDeleteRegistration() throws {
-        setUp(withModels: TestModelRegistration())
+    func testDeleteRegistration() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let attendee = saveAttendee(),
               let meeting = saveMeeting(),
@@ -319,8 +319,8 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [getMeetingCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testDeleteAttendeeShouldCascadeDeleteRegistration() throws {
-        setUp(withModels: TestModelRegistration())
+    func testDeleteAttendeeShouldCascadeDeleteRegistration() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let attendee = saveAttendee(),
               let meeting = saveMeeting(),
@@ -412,8 +412,8 @@ class DataStoreConnectionScenario8V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [getMeetingCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testDeleteMeetingShouldCascadeDeleteRegistration() throws {
-        setUp(withModels: TestModelRegistration())
+    func testDeleteMeetingShouldCascadeDeleteRegistration() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let attendee = saveAttendee(),
               let meeting = saveMeeting(),
