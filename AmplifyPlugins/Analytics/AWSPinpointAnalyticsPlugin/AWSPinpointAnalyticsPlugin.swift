@@ -18,9 +18,6 @@ public final class AWSPinpointAnalyticsPlugin: AnalyticsCategoryPlugin {
     /// An instance of the authentication service
     var authService: AWSAuthServiceBehavior!
 
-    /// Tracks the application sessions
-    var appSessionTracker: Tracker!
-
     // The collection of properties applied to every event
     var globalProperties: [String: AnalyticsPropertyValue]!
 

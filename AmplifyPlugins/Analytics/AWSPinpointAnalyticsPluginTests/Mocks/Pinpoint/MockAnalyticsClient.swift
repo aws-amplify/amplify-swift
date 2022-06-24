@@ -5,11 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSPinpoint
 @testable import AWSPinpointAnalyticsPlugin
 import StoreKit
 import XCTest
 
 actor MockAnalyticsClient: AnalyticsClientBehaviour {
+    let pinpointClient: PinpointClientProtocol = MockPinpointClient()
+
     func addGlobalAttribute(_ attribute: String, forKey key: String) {}
     func addGlobalAttribute(_ attribute: String, forKey key: String, forEventType eventType: String) {}
     func addGlobalMetric(_ metric: Double, forKey key: String) {}

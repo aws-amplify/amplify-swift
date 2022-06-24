@@ -11,6 +11,8 @@ import Foundation
 
 /// AnalyticsEventRecording saves and submits pinpoint events
 protocol AnalyticsEventRecording {
+    var pinpointClient: PinpointClientProtocol { get }
+    
     /// Saves a pinpoint event to storage
     /// - Parameter event: A PinpointEvent
     func save(_ event: PinpointEvent) throws
@@ -55,7 +57,7 @@ class EventRecorder: AnalyticsEventRecording {
     /// If event submission succeeds, the event is removed from local storage
     /// - Returns: A collection of events submitted to Pinpoint
     func submitAllEvents() async throws -> [PinpointEvent] {
-        let publicEndpoint = try await endpointClient.currentPublicEndpoint()
+        let publicEndpoint = await endpointClient.currentPublicEndpoint()
         let eventsBatch = try getBatchRecords()
         if eventsBatch.count > 0 {
             try await processBatch(eventsBatch, publicEndpoint: publicEndpoint)
