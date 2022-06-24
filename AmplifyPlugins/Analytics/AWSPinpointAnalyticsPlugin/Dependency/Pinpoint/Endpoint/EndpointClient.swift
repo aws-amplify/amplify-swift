@@ -10,6 +10,8 @@ import AWSPinpoint
 import Foundation
 
 protocol EndpointClientBehaviour: Actor {
+    nonisolated var pinpointClient: PinpointClientProtocol { get }
+
     func currentEndpointProfile() -> PinpointEndpointProfile
     func updateEndpointProfile() async throws
     func updateEndpointProfile(with endpointProfile: PinpointEndpointProfile) async throws
@@ -28,8 +30,9 @@ actor EndpointClient: EndpointClientBehaviour {
         let isOptOut: Bool
     }
 
+    let pinpointClient: PinpointClientProtocol
+
     private let configuration: EndpointClient.Configuration
-    private let pinpointClient: PinpointClientProtocol
     private let archiver: AmplifyArchiverBehaviour
     private let currentDevice: Device
     private let userDefaults: UserDefaultsBehaviour

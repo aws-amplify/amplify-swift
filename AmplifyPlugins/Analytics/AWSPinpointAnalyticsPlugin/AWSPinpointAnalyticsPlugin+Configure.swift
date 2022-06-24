@@ -38,13 +38,11 @@ extension AWSPinpointAnalyticsPlugin {
         let pinpoint = try AWSPinpointAdapter(
             appId: configuration.appId,
             region: configuration.region,
+            targetingRegion: configuration.targetingRegion,
             credentialsProvider: credentialsProvider,
-            shouldTrackAppSessions: configuration.trackAppSessions
+            shouldTrackAppSessions: configuration.trackAppSessions,
+            sessionBackgroundTimeout: TimeInterval(configuration.autoSessionTrackingInterval)
         )
-
-        let appSessionTracker =
-            AppSessionTracker(trackAppSessions: configuration.trackAppSessions,
-                              autoSessionTrackingInterval: configuration.autoSessionTrackingInterval)
 
         var autoFlushEventsTimer: DispatchSourceTimer?
         if configuration.autoFlushEventsInterval != 0 {
@@ -59,8 +57,7 @@ extension AWSPinpointAnalyticsPlugin {
 
         configure(pinpoint: pinpoint,
                   authService: authService,
-                  autoFlushEventsTimer: autoFlushEventsTimer,
-                  appSessionTracker: appSessionTracker)
+                  autoFlushEventsTimer: autoFlushEventsTimer)
     }
 
     // MARK: Internal
@@ -68,11 +65,9 @@ extension AWSPinpointAnalyticsPlugin {
     /// Internal configure method to set the properties of the plugin
     func configure(pinpoint: AWSPinpointBehavior,
                    authService: AWSAuthServiceBehavior,
-                   autoFlushEventsTimer: DispatchSourceTimer?,
-                   appSessionTracker: Tracker) {
+                   autoFlushEventsTimer: DispatchSourceTimer?) {
         self.pinpoint = pinpoint
         self.authService = authService
-        self.appSessionTracker = appSessionTracker
         globalProperties = [:]
         isEnabled = true
         self.autoFlushEventsTimer = autoFlushEventsTimer

@@ -9,12 +9,18 @@ import Amplify
 import AWSPinpoint
 import Foundation
 
+/// Groups the `PinpointClientProtocol` instances used for Analytics and Targeting
+public struct AWSPinpoint {
+    let analytisClient: PinpointClientProtocol
+    let targetingClient: PinpointClientProtocol
+}
+
 /// Implemented by `AWSPinpointAdapter` as a pass through to the methods on `pinpoint.analyticClient` and
 /// `pinpoint.targetingClient`.
 /// This protocol allows a way to create a Mock and ensure plugin implementation is testable.
 protocol AWSPinpointBehavior: AWSPinpointAnalyticsClientBehavior, AWSPinpointTargetingClientBehavior {
-    // Get the lower level `PinpointClientProtocol` client.
-    func getEscapeHatch() -> PinpointClientProtocol
+    // Get the lower level `PinpointClientProtocol` clients.
+    func getEscapeHatch() -> AWSPinpoint
 }
 
 extension AWSPinpointBehavior {
