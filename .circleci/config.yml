@@ -1,9 +1,26 @@
+# This CircleCI config prevents CircleCI from running and creating failed
+# checks due to a missing or invalid CircleCI config on dev-preview
+# and branches based on dev-preview.
+#
+# By setting this job to only run on a non-existent branch, we prevent
+# execution from occuring on any branch with this config.
+
 version: 2.1
 
+# Define the jobs we want to run for this project
 jobs:
-  build:
+  skip-job:
+    docker: # executor type
+      - image: cimg/base:stable
+    steps:
+      - run: echo "skipping"
+
+# Orchestrate our job run sequence
+workflows:
+  skip-workflow:
     jobs:
-      skip:
-        branches:
-          ignore:
-            - chore/dev-preview-disable-circleci
+      - skip-job:
+          filters:
+            branches:
+              only:
+                - this-is-a-non-existent-branch
