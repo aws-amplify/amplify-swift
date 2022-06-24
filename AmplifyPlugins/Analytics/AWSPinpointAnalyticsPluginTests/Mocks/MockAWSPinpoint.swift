@@ -86,7 +86,7 @@ public class MockAWSPinpoint: AWSPinpointBehavior {
     public func getEscapeHatch() -> AWSPinpoint {
         escapeHatchCalled += 1
         let client = try! PinpointClient(region: "us-east-1")
-        return AWSPinpoint(analytisClient: client, targetingClient: client)
+        return AWSPinpoint(analyticsClient: client, targetingClient: client)
     }
 }
 
