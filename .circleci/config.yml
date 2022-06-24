@@ -1,1 +1,9 @@
 version: 2.1
+
+jobs:
+  build:
+    jobs:
+      skip:
+        branches:
+          ignore:
+            - chore/dev-preview-disable-circleci
