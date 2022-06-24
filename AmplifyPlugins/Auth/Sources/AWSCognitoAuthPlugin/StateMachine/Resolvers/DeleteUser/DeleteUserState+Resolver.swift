@@ -12,26 +12,27 @@ extension DeleteUserState {
     
     struct Resolver: StateMachineResolver {
         
-        var defaultState: DeleteUserState = .notStarted(nil)
+        var defaultState: DeleteUserState = .notStarted
+        
+        let signedInData: SignedInData
         
         func resolve(oldState: DeleteUserState,
                      byApplying event: StateMachineEvent) -> StateResolution<DeleteUserState> {
             
             switch oldState {
                 
-            case .notStarted(let signedInData):
+            case .notStarted:
                 if let deleteUserEvent = event.isDeleteUserEvent,
-                   case .deleteUser(let accessToken) = deleteUserEvent,
-                   let unwrappedSignedInData = signedInData {
+                   case .deleteUser(let accessToken) = deleteUserEvent {
                     let action = DeleteUser(accessToken: accessToken)
-                    return .init(newState: .deletingUser(unwrappedSignedInData), actions: [action])
+                    return .init(newState: .deletingUser, actions: [action])
                 }
                 return .from(oldState)
                 
-            case .deletingUser(let signInData):
+            case .deletingUser:
                 if case .signOutDeletedUser = event.isDeleteUserEvent {
                     let action = InitiateSignOut(
-                        signedInData: signInData,
+                        signedInData: signedInData,
                         signOutEventData: SignOutEventData(globalSignOut: true)
                     )
                     let newState = DeleteUserState.signingOut(.notStarted)

@@ -66,7 +66,7 @@ public class AWSAuthDeleteUserOperation: AmplifyOperation<
                 return
             }
             
-            guard case .deletingUser(let deleteUserState) = authNState else {
+            guard case .deletingUser(_, let deleteUserState) = authNState else {
                 return
             }
             

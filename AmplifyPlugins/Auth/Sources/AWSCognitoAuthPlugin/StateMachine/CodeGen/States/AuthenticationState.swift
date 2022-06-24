@@ -28,7 +28,7 @@ enum AuthenticationState: State {
     case signedIn(SignedInData)
     
     /// System is deleting the user
-    case deletingUser(DeleteUserState)
+    case deletingUser(SignedInData, DeleteUserState)
 
     /// System encountered an error
     case error(AuthenticationError)

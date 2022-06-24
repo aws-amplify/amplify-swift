@@ -10,10 +10,10 @@ import Amplify
 enum DeleteUserState: State {
     
     /// Initial state for deleting the user
-    case notStarted(SignedInData?)
+    case notStarted
     
     /// Delete user in progress
-    case deletingUser(SignedInData)
+    case deletingUser
     
     /// Signing out the user after successfully deleting the user
     case signingOut(SignOutState)
