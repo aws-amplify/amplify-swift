@@ -157,6 +157,12 @@ extension AuthPluginErrorConstants {
         "Username is required to confirmSignUp",
         "Make sure that a valid username is passed for confirmSignUp"
     )
+    
+    static let resendSignUpCodeUsernameError: AuthPluginValidationErrorString = (
+        "username",
+        "Username is required to confirmSignUp",
+        "Make sure that a valid username is passed for confirmSignUp"
+    )
 
     static let confirmSignUpCodeError: AuthPluginValidationErrorString = (
         "code",

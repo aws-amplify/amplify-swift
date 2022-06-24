@@ -38,7 +38,14 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     public func resendSignUpCode(for username: String,
                                  options: AuthResendSignUpCodeOperation.Request.Options?,
                                  listener: AuthResendSignUpCodeOperation.ResultListener?) -> AuthResendSignUpCodeOperation {
-        fatalError("Not implemented")
+        let options = options ?? AuthResendSignUpCodeRequest.Options()
+        let request = AuthResendSignUpCodeRequest(username: username, options: options)
+        let resendSignUpCodeOperation = AWSAuthResendSignUpCodeOperation(request,
+                                                                         userPoolFactory: authEnvironment.cognitoUserPoolFactory,
+                                                                         authConfiguration: authConfiguration,
+                                                                         resultListener: listener)
+        queue.addOperation(resendSignUpCodeOperation)
+        return resendSignUpCodeOperation
     }
 
     public func signIn(username: String?,
