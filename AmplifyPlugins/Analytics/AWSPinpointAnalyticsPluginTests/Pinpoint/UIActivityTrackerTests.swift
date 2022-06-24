@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
+
 @testable import AWSPinpointAnalyticsPlugin
 import XCTest
 
@@ -65,3 +67,5 @@ class MockStateMachine: StateMachine<ApplicationState, ActivityEvent> {
         processExpectation?.fulfill()
     }
 }
+
+#endif
