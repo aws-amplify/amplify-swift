@@ -135,7 +135,13 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     }
 
     public func deleteUser(listener: AuthDeleteUserOperation.ResultListener?) -> AuthDeleteUserOperation {
-        fatalError("Not implemented")
+        let request = AuthDeleteUserRequest()
+        let deleteUserOperation = AWSAuthDeleteUserOperation(
+            request,
+            authStateMachine: authStateMachine,
+            resultListener: listener)
+        queue.addOperation(deleteUserOperation)
+        return deleteUserOperation
     }
 
 }

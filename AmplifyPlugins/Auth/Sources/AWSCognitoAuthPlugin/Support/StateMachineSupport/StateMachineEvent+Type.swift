@@ -65,5 +65,12 @@ extension StateMachineEvent {
         }
         return event
     }
-
+    
+    var isDeleteUserEvent: DeleteUserEvent.EventType? {
+        guard let event = (self as? DeleteUserEvent)?.eventType else {
+            return nil
+        }
+        return event
+    }
+    
 }

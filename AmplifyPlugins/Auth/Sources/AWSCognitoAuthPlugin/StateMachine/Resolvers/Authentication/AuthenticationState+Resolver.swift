@@ -47,13 +47,21 @@ extension AuthenticationState {
             case .signingIn:
                 return resolveSigningInState(oldState: oldState, event: event)
             case .signedIn(let signedInData):
-                guard let authEvent = event as? AuthenticationEvent else {
+                if let authEvent = event as? AuthenticationEvent {
+                    return resolveSignedIn(byApplying: authEvent, to: signedInData)
+                } else if let deleteUserEvent = event as? DeleteUserEvent {
+                    return resolveDeleteUser(byApplying: deleteUserEvent, to: .notStarted(signedInData))
+                } else {
                     return .from(oldState)
                 }
-                return resolveSignedIn(
-                    byApplying: authEvent,
-                    to: signedInData
-                )
+
+            case .deletingUser(let deleteUserState):
+                if case let .userSignedOutAndDeleted(signedOutData) = event.isDeleteUserEvent {
+                    return .init(newState: AuthenticationState.signedOut(signedOutData))
+                } else {
+                    return resolveDeleteUser(byApplying: event, to: deleteUserState)
+                }
+                
             case .error:
                 return .from(oldState)
             }
@@ -125,6 +133,15 @@ extension AuthenticationState {
                 return .from(.signedIn(currentSignedInData))
             }
         }
+        
+        private func resolveDeleteUser(
+            byApplying deleteUserEvent: StateMachineEvent,
+            to oldState: DeleteUserState) -> StateResolution<StateType> {
+                let resolver = DeleteUserState.Resolver()
+                let resolution = resolver.resolve(oldState: oldState, byApplying: deleteUserEvent)
+                let newState = AuthenticationState.deletingUser(resolution.newState)
+                return .init(newState: newState, actions: resolution.actions)
+            }
 
         private func resolveSigningUpState(oldState: AuthenticationState,
                                            event: StateMachineEvent)  -> StateResolution<StateType> {
