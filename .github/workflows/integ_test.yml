@@ -1,7 +1,7 @@
 name: Integration Tests
 on:
   push:
-    branches: [chore/disable-most-jobs]
+    branches: [main]
 
 permissions:
     id-token: write
