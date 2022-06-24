@@ -14,7 +14,7 @@ import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 
 class AWSCognitoAuthClientBehaviorTests: XCTestCase {
-    
+    let networkTimeout = TimeInterval(10)
     var mockIdentityProvider: CognitoUserPoolBehavior!
     var plugin: AWSCognitoAuthPlugin!
     var initialState: AuthState {
@@ -78,34 +78,6 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
             authStateMachine: statemachine,
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
             hubEventHandler: MockAuthHubEventBehavior())
-    }
-    
-    /// Test resendSignUpCode operation can be invoked
-    ///
-    /// - Given: Given a configured auth plugin
-    /// - When:
-    ///    - I call resendSignUpCode operation
-    /// - Then:
-    ///    - I should get a valid operation object
-    ///
-    func testResendSignupCodeRequest() {
-        let pluginOptions = ["somekey": "somevalue"]
-        let options = AuthResendSignUpCodeRequest.Options(pluginOptions: pluginOptions)
-        let operation = plugin.resendSignUpCode(for: "username", options: options)
-        XCTAssertNotNil(operation)
-    }
-    
-    /// Test resendSignUpCode operation can be invoked without options
-    ///
-    /// - Given: Given a configured auth plugin
-    /// - When:
-    ///    - I call resendSignUpCode operation
-    /// - Then:
-    ///    - I should get a valid operation object
-    ///
-    func testResendSignupCodeRequestWithoutOptions() {
-        let operation = plugin.resendSignUpCode(for: "username")
-        XCTAssertNotNil(operation)
     }
     
     override func tearDown() {

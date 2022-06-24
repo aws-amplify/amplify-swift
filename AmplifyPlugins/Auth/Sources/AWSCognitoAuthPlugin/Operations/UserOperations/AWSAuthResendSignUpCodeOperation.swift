@@ -36,6 +36,12 @@ public class AWSAuthResendSignUpCodeOperation:
             return
         }
         
+        if let validationError = request.hasError() {
+            dispatch(validationError)
+            finish()
+            return
+        }
+        
         Task.init { [weak self] in
             await self?.resendSignUpCode()
         }
@@ -54,7 +60,7 @@ public class AWSAuthResendSignUpCodeOperation:
             case .userPoolsAndIdentityPools(let data, _):
                 userPoolConfigurationData = data
             case .identityPools:
-                let error = AuthError.configuration("UserPool configuration is invalid", AuthPluginErrorConstants.configurationError)
+                let error = AuthError.configuration("UserPool configuration is missing", AuthPluginErrorConstants.configurationError)
                 throw error
             }
             
@@ -65,6 +71,7 @@ public class AWSAuthResendSignUpCodeOperation:
             let result = try await userPoolService.resendConfirmationCode(input: input)
             
             if self.isCancelled {
+                finish()
                 return
             }
             
@@ -76,8 +83,14 @@ public class AWSAuthResendSignUpCodeOperation:
             }
             self.dispatch(deliveryDetails)
         }
+        catch let error as ResendConfirmationCodeOutputError {
+            self.dispatch(error.authError)
+        }
         catch let error as SdkError<ResendConfirmationCodeOutputError> {
             self.dispatch(error.authError)
+        }
+        catch let error as AuthError {
+            self.dispatch(error)
         }
         catch let error {
             let error = AuthError.configuration(

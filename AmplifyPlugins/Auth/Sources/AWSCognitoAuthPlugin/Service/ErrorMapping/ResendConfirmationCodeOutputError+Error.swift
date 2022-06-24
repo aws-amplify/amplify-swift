@@ -38,11 +38,11 @@ extension ResendConfirmationCodeOutputError: AuthErrorConvertible {
                                      AWSCognitoAuthError.invalidParameter)
         case .invalidSmsRoleAccessPolicyException(let exception):
             return AuthError.service(exception.message ?? "Invalid SMS Role Access Policy error",
-                                     AuthPluginErrorConstants.invalidParameterError,
+                                     AuthPluginErrorConstants.invalidSMSRoleError,
                                      AWSCognitoAuthError.smsRole)
         case .invalidSmsRoleTrustRelationshipException(let exception):
             return AuthError.service(exception.message ?? "Invalid SMS Role Trust Relationship error",
-                                     AuthPluginErrorConstants.invalidParameterError,
+                                     AuthPluginErrorConstants.invalidSMSRoleError,
                                      AWSCognitoAuthError.smsRole)
         case .limitExceededException(let exception):
             return .service(
