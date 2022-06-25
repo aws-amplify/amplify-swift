@@ -17,8 +17,11 @@ class AWSAPICategoryPluginRESTClientBehaviorTests: AWSAPICategoryPluginTestBase 
     // MARK: Get API tests
 
     func testGet() {
+        let operationFinished = expectation(description: "Operation should finish")
         let request = RESTRequest(apiName: apiName, path: testPath)
-        let operation = apiPlugin.get(request: request, listener: nil)
+        let operation = apiPlugin.get(request: request) { _ in
+            operationFinished.fulfill()
+        }
 
         XCTAssertNotNil(operation)
 
@@ -35,13 +38,17 @@ class AWSAPICategoryPluginRESTClientBehaviorTests: AWSAPICategoryPluginTestBase 
         XCTAssertEqual(operationRequest.operationType, RESTOperationType.get)
         XCTAssertNotNil(operationRequest.options)
         XCTAssertNotNil(operationRequest.path)
+        waitForExpectations(timeout: 1)
     }
 
     // MARK: Post API tests
 
     func testPost() {
+        let operationFinished = expectation(description: "Operation should finish")
         let request = RESTRequest(apiName: apiName, path: testPath, body: testBody)
-        let operation = apiPlugin.post(request: request, listener: nil)
+        let operation = apiPlugin.post(request: request) { _ in
+            operationFinished.fulfill()
+        }
 
         XCTAssertNotNil(operation)
 
@@ -58,6 +65,7 @@ class AWSAPICategoryPluginRESTClientBehaviorTests: AWSAPICategoryPluginTestBase 
         XCTAssertEqual(operationRequest.operationType, RESTOperationType.post)
         XCTAssertNotNil(operationRequest.options)
         XCTAssertNotNil(operationRequest.path)
+        waitForExpectations(timeout: 1)
     }
 
     // MARK: Put API tests

@@ -14,11 +14,14 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
     // MARK: Query API Tests
 
     func testQuery() {
+        let operationFinished = expectation(description: "Operation should finish")
         let request = GraphQLRequest(apiName: apiName,
                                      document: testDocument,
                                      variables: nil,
                                      responseType: JSONValue.self)
-        let operation = apiPlugin.query(request: request, listener: nil)
+        let operation = apiPlugin.query(request: request) { _ in
+            operationFinished.fulfill()
+        }
 
         XCTAssertNotNil(operation)
 
@@ -34,16 +37,20 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
         XCTAssertEqual(operationRequest.operationType, GraphQLOperationType.query)
         XCTAssertNotNil(operationRequest.options)
         XCTAssertNil(operationRequest.variables)
+        waitForExpectations(timeout: 1)
     }
 
     // MARK: Mutate API Tests
 
     func testMutate() {
+        let operationFinished = expectation(description: "Operation should finish")
         let request = GraphQLRequest(apiName: apiName,
                                      document: testDocument,
                                      variables: nil,
                                      responseType: JSONValue.self)
-        let operation = apiPlugin.mutate(request: request, listener: nil)
+        let operation = apiPlugin.mutate(request: request) { _ in
+            operationFinished.fulfill()
+        }
 
         XCTAssertNotNil(operation)
 
@@ -59,16 +66,20 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
         XCTAssertEqual(operationRequest.operationType, GraphQLOperationType.mutation)
         XCTAssertNotNil(operationRequest.options)
         XCTAssertNil(operationRequest.variables)
+        waitForExpectations(timeout: 1)
     }
 
     // MARK: Subscribe API Tests
 
     func testSubscribe() {
+        let operationFinished = expectation(description: "Operation should finish")
         let request = GraphQLRequest(apiName: apiName,
                                      document: testDocument,
                                      variables: nil,
                                      responseType: JSONValue.self)
-        let operation = apiPlugin.subscribe(request: request, valueListener: nil, completionListener: nil)
+        let operation = apiPlugin.subscribe(request: request, valueListener: nil) { _ in
+            operationFinished.fulfill()
+        }
 
         XCTAssertNotNil(operation)
 
@@ -84,5 +95,6 @@ class AWSAPICategoryPluginGraphQLBehaviorTests: AWSAPICategoryPluginTestBase {
         XCTAssertEqual(operationRequest.operationType, GraphQLOperationType.subscription)
         XCTAssertNotNil(operationRequest.options)
         XCTAssertNil(operationRequest.variables)
+        waitForExpectations(timeout: 1)
     }
 }
