@@ -44,10 +44,11 @@ class ClientBehaviorResendSignUpCodeTests : AWSCognitoAuthClientBehaviorTests {
     ///
     func testResendSignupCodeRequestWithoutOptions() {
         let operationFinished = expectation(description: "Operation should finish")
-        let operation = plugin.resendSignUpCode(for: "username") { _ in
+        let operation = plugin.resendSignUpCode(for: "username", options: nil) { _ in
             operationFinished.fulfill()
         }
         XCTAssertNotNil(operation)
+        waitForExpectations(timeout: 1)
     }
     
     /// Test a successful resendSignUpCode call with .email as the destination of AuthCodeDeliveryDetails
