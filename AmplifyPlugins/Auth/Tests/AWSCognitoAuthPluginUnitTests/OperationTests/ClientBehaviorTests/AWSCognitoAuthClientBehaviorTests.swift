@@ -80,8 +80,8 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
             hubEventHandler: MockAuthHubEventBehavior())
     }
     
-    override func tearDown() {
+    override func tearDown() async throws {
         plugin = nil
-        Amplify.reset()
+        await Amplify.reset()
     }
 }

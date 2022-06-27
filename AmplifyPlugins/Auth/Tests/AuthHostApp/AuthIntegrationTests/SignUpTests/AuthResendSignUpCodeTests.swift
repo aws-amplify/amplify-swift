@@ -16,9 +16,9 @@ class AuthResendSignUpCodeTests: AWSAuthBaseTest {
         initializeAmplify()
     }
 
-    override func tearDown() {
-        super.tearDown()
-        Amplify.reset()
+    override func tearDown() async throws {
+        try await super.tearDown()
+        await Amplify.reset()
         sleep(2)
     }
 
