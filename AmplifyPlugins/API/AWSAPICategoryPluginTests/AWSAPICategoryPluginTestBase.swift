@@ -64,9 +64,7 @@ class AWSAPICategoryPluginTestBase: XCTestCase {
         }
 
         await Amplify.reset()
-        // await Amplify.reset() doesn't immediately stop all in-progress tasks, so we sleep here to
-        // give everything a chance to complete. This prevents sporadic failures when running many tests.
-        sleep(2)
+
         let config = AmplifyConfiguration()
         do {
             try Amplify.configure(config)
