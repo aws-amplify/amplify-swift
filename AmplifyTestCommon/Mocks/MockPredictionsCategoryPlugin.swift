@@ -68,9 +68,8 @@ class MockPredictionsCategoryPlugin: MessageReporter, PredictionsCategoryPlugin 
         return MockPredictionsInterpretOperation(request: request)
     }
 
-    func reset(onComplete: @escaping BasicClosure) {
+    func reset() {
         notify("reset")
-        onComplete()
     }
 
     var key: String {

@@ -10,8 +10,7 @@ import Amplify
 
 extension AWSCognitoAuthPlugin: Resettable {
 
-    public func reset(onComplete: @escaping BasicClosure) {
+    public func reset() {
         // TODO: Reset other parts
-        onComplete()
     }
 }

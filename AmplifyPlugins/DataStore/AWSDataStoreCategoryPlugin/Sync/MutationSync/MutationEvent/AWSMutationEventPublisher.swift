@@ -94,8 +94,7 @@ extension AWSMutationEventPublisher: MutationEventPublisher {
 extension AWSMutationEventPublisher: DefaultLogger { }
 
 extension AWSMutationEventPublisher: Resettable {
-    func reset(onComplete: BasicClosure) {
+    func reset() {
         eventSource = nil
-        onComplete()
     }
 }

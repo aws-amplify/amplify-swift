@@ -9,11 +9,9 @@ import Amplify
 import Foundation
 
 extension URLSession: URLSessionBehavior {
-    public func reset(onComplete: BasicClosure?) {
+    public func cancelAndReset() async {
         invalidateAndCancel()
-        reset {
-            onComplete?()
-        }
+        await reset()
     }
 
     public func dataTaskBehavior(with request: URLRequest) -> URLSessionDataTaskBehavior {
@@ -23,5 +21,4 @@ extension URLSession: URLSessionBehavior {
     public var sessionBehaviorDelegate: URLSessionBehaviorDelegate? {
         return delegate as? URLSessionBehaviorDelegate
     }
-
 }

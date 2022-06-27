@@ -182,18 +182,15 @@ extension AWSIncomingEventReconciliationQueue {
 // MARK: - AWSIncomingEventReconciliationQueue + Resettable
 extension AWSIncomingEventReconciliationQueue: Resettable {
 
-    func reset(onComplete: () -> Void) {
+    func reset() async {
         let group = DispatchGroup()
         for queue in reconciliationQueues.values {
             guard let queue = queue as? Resettable else {
                 continue
             }
             Amplify.log.verbose("Resetting reconciliationQueue")
-            group.enter()
-            queue.reset {
-                Amplify.log.verbose("Resetting reconciliationQueue: finished")
-                group.leave()
-            }
+            await queue.reset()
+            Amplify.log.verbose("Resetting reconciliationQueue: finished")
         }
 
         Amplify.log.verbose("Resetting reconcileAndSaveQueue")
@@ -209,7 +206,6 @@ extension AWSIncomingEventReconciliationQueue: Resettable {
         }
 
         group.wait()
-        onComplete()
     }
 
 }

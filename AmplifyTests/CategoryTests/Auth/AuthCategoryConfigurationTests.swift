@@ -342,7 +342,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
     /// - Then:
     ///    - Should not throw any error
     ///
-    func testCanConfigureAfterReset() throws {
+    func testCanConfigureAfterReset() async throws {
         let plugin = MockAuthCategoryPlugin()
         try Amplify.add(plugin: plugin)
         let config = AuthCategoryConfiguration(
@@ -351,11 +351,7 @@ class AuthCategoryConfigurationTests: XCTestCase {
 
         XCTAssertNoThrow(try Amplify.Auth.configure(using: config))
 
-        let exp = expectation(description: #function)
-        Amplify.Auth.reset {
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
+        await Amplify.Auth.reset()
 
         XCTAssertNoThrow(try Amplify.Auth.configure(using: config))
 

@@ -20,9 +20,8 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify()
     }
 
-    func reset(onComplete: @escaping BasicClosure) {
+    func reset() {
         notify("reset")
-        onComplete()
     }
 
     func save<M: Model>(_ model: M,

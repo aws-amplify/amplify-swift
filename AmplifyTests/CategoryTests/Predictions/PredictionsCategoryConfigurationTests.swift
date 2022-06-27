@@ -352,7 +352,7 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
     /// - Then:
     ///    - Should not throw any error
     ///
-    func testCanConfigureAfterReset() throws {
+    func testCanConfigureAfterReset() async throws {
         let plugin = MockPredictionsCategoryPlugin()
         try Amplify.add(plugin: plugin)
         let config = PredictionsCategoryConfiguration(
@@ -361,11 +361,7 @@ class PredictionsCategoryConfigurationTests: XCTestCase {
 
         try Amplify.Predictions.configure(using: config)
 
-        let exp = expectation(description: #function)
-        Amplify.Predictions.reset {
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
+        await Amplify.Predictions.reset()
 
         XCTAssertNoThrow(try Amplify.Predictions.configure(using: config))
     }

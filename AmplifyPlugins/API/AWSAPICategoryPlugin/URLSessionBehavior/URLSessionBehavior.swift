@@ -14,7 +14,7 @@ import Foundation
 public protocol URLSessionBehavior {
 
     /// For testing only. Resets the state of the object in preparation for testing.
-    func reset(onComplete: BasicClosure?)
+    func cancelAndReset() async
 
     /// Returns a data task for the specified request
     /// - Parameter request: The URLRequest to fulfill

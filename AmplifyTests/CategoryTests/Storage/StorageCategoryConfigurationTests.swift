@@ -245,7 +245,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
         }
     }
 
-    func testCanConfigureAfterReset() throws {
+    func testCanConfigureAfterReset() async throws {
         let plugin = MockStorageCategoryPlugin()
         try Amplify.add(plugin: plugin)
         let categoryConfig = StorageCategoryConfiguration(
@@ -254,11 +254,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
 
         try Amplify.Storage.configure(using: categoryConfig)
 
-        let exp = expectation(description: #function)
-        Amplify.Storage.reset {
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
+        await Amplify.Storage.reset()
 
         XCTAssertNoThrow(try Amplify.Storage.configure(using: categoryConfig))
     }
