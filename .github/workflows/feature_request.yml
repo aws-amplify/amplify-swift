@@ -1,0 +1,24 @@
+name: Feature request label added.
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  issues: write
+
+jobs:
+  project:
+    name: Feature request message
+    runs-on: ubuntu-latest
+    if: ${{ github.event.label.name == 'feature-request' }}
+
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - name: add feature request comment
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment $ISSUE_NUMBER -b "This has been identified as a feature request. If this feature is important to you, we strongly encourage you to give a 👍 reaction the request. The feedback we receive from the community is a large factor in helping us prioritze new features."
