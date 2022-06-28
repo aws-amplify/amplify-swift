@@ -280,9 +280,7 @@ class MockPublisherOperation: AmplifyOperation<MockPublisherRequest, Int, APIErr
     }
 
     override func main() {
-        DispatchQueue.global().async {
-            self.responder(self)
-        }
+        self.responder(self)
     }
 
 }
