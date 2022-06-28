@@ -35,7 +35,8 @@ class AWSPinpointAnalyticsNotificationsTests: XCTestCase {
     
     func testMakePinpintPushActionFromEvent() {
         let pushActions = [
-            // Check that when the application is in an active state, the push event gets evaluated
+            // Check that when the application is in an active state
+            // the push event is used to return the appropriate push action
             pinpointNotifications.makePinpointPushAction(fromEvent: .opened, appState: .active),
             pinpointNotifications.makePinpointPushAction(fromEvent: .received, appState: .active),
             
@@ -92,6 +93,31 @@ class AWSPinpointAnalyticsNotificationsTests: XCTestCase {
                                             pushAction: .unknown,
                                             usingClient: analyticsClient)
         XCTAssertNil(event)
+    }
+    
+    // MARK: public APIs tests
+    func testInterceptDidFinishLaunchingWithOptions() async {
+        let payload = [UIApplication.LaunchOptionsKey.remoteNotification: TestData.campaignPushPayload]
+        _ = await pinpointNotifications.interceptDidFinishLaunchingWithOptions(launchOptions: payload)
+        
+        let recordedEvent = await analyticsClient.lastRecordedEvent
+        XCTAssertNotNil(recordedEvent)
+        
+        let (expectedAttributeKey, expectedAttributeValue) = await analyticsClient.addGlobalAttributeCalls[0]
+        XCTAssertEqual(expectedAttributeKey,TestData.campaignAttributeKey)
+        XCTAssertEqual(expectedAttributeValue,TestData.campaignAttributeValue)
+        
+    }
+    
+    func testInterceptDidRegisterForRemoteNotificationsWithDeviceToken() async {
+        let deviceToken = Data()
+        await pinpointNotifications.interceptDidRegisterForRemoteNotificationsWithDeviceToken(deviceToken: deviceToken)
+        
+        XCTAssertEqual(userDefaults.dataForKeyCountMap[PinpointContext.Constants.Notifications.deviceTokenKey], 1)
+        
+        XCTAssertEqual(userDefaults.data[PinpointContext.Constants.Notifications.deviceTokenKey] as? Data, deviceToken)
+        
+        targetingClient.verifyUpdateEndpointProfile()
     }
 }
 

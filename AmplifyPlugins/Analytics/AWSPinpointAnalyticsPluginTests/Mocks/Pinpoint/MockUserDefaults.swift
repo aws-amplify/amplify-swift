@@ -9,7 +9,7 @@
 import Foundation
 
 class MockUserDefaults: UserDefaultsBehaviour {
-    private var data: [String: UserDefaultsBehaviourValue] = [:]
+    var data: [String: UserDefaultsBehaviourValue] = [:]
     var mockedValue: UserDefaultsBehaviourValue?
 
     func addMockValue(_ value: UserDefaultsBehaviourValue?, forKey key: String) {

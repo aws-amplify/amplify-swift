@@ -26,82 +26,72 @@ public class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotification
     }
     
     // MARK: - Public APIs
-    public func interceptDidFinishLaunchingWithOptions(launchOptions: LaunchOptions) -> Bool {
+    public func interceptDidFinishLaunchingWithOptions(launchOptions: LaunchOptions) async -> Bool {
         guard let notificationPayload = remoteNotificationPayload(fromLaunchOptions: launchOptions),
               isValidPinpointNotification(payload: notificationPayload) else {
             return true
         }
         
         let (eventSource, pinpointMetadata) = pinpointMetadata(fromPayload: notificationPayload)
-        Task {
-            await self.addGlobalEventSourceMetadata(eventMetadata: pinpointMetadata, eventSource: eventSource)
-            await recordEventForNotification(metadata: pinpointMetadata,
-                                             eventSource: eventSource,
-                                             pushEvent: .opened,
-                                             pushAction: .openedNotification)
-        }
         
+        await self.addGlobalEventSourceMetadata(eventMetadata: pinpointMetadata,
+                                                eventSource: eventSource)
+        await recordEventForNotification(metadata: pinpointMetadata,
+                                         eventSource: eventSource,
+                                         pushEvent: .opened,
+                                         pushAction: .openedNotification)
         return true
     }
     
-    public func interceptDidRegisterForRemoteNotificationsWithDeviceToken(deviceToken: Data) {
+    public func interceptDidRegisterForRemoteNotificationsWithDeviceToken(deviceToken: Data) async {
         let currentToken = self.userDefaults.data(forKey: PinpointContext.Constants.Notifications.deviceTokenKey)
         guard currentToken != deviceToken else {
             return
         }
         
         self.userDefaults.save(deviceToken, forKey: PinpointContext.Constants.Notifications.deviceTokenKey)
-        Task {
-            do {
-                try await self.targetingClient.updateEndpointProfile()
-            } catch {
-                log.error("Failed updating endpoint profile with error: \(error)")
-            }
+        do {
+            try await self.targetingClient.updateEndpointProfile()
+        } catch {
+            log.error("Failed updating endpoint profile with error: \(error)")
         }
     }
     
     public func interceptDidReceiveRemoteNotification(userInfo: UserInfo,
                                                       pushEvent: AWSPinpointPushEvent = .received,
-                                                      shouldHandleNotificationDeepLink: Bool) {
+                                                      shouldHandleNotificationDeepLink: Bool) async {
         let (eventSource, metadata) = pinpointMetadata(fromPayload: userInfo)
         let pushAction = makePinpointPushAction(fromEvent: pushEvent)
         
         switch pushAction {
         case .openedNotification:
             log.verbose("App launched from received notification.")
-            Task {
-                await self.addGlobalEventSourceMetadata(eventMetadata: metadata, eventSource: eventSource)
-                await self.recordEventForNotification(metadata: metadata,
-                                                eventSource: eventSource,
-                                                pushEvent: .opened,
-                                                pushAction: pushAction)
-                
-                if shouldHandleNotificationDeepLink {
-                    self.handleDeepLinkForNotification(userInfo: userInfo)
-                }
+            await self.addGlobalEventSourceMetadata(eventMetadata: metadata, eventSource: eventSource)
+            await self.recordEventForNotification(metadata: metadata,
+                                            eventSource: eventSource,
+                                            pushEvent: .opened,
+                                            pushAction: pushAction)
+            
+            if shouldHandleNotificationDeepLink {
+                self.handleDeepLinkForNotification(userInfo: userInfo)
             }
             
         case .receivedBackground:
             log.verbose("Received notification with app in background.")
-            Task {
-                await self.addGlobalEventSourceMetadata(eventMetadata: metadata, eventSource: eventSource)
-                await self.recordEventForNotification(metadata: metadata,
-                                                eventSource: eventSource,
-                                                pushEvent: .received,
-                                                pushAction: pushAction)
-            }
+            await self.addGlobalEventSourceMetadata(eventMetadata: metadata, eventSource: eventSource)
+            await self.recordEventForNotification(metadata: metadata,
+                                            eventSource: eventSource,
+                                            pushEvent: .received,
+                                            pushAction: pushAction)
         
         case .receivedForeground:
             log.verbose("Received notification with app in foreground.")
-            
-            Task {
-                // Not adding global event source metadata because if the app session is already running,
-                // the session should not contribute to the new push notification that is being received
-                await self.recordEventForNotification(metadata: metadata,
-                                                      eventSource: eventSource,
-                                                      pushEvent: .received,
-                                                      pushAction: pushAction)
-            }
+            // Not adding global event source metadata because if the app session is already running,
+            // the session should not contribute to the new push notification that is being received
+            await self.recordEventForNotification(metadata: metadata,
+                                                  eventSource: eventSource,
+                                                  pushEvent: .received,
+                                                  pushAction: pushAction)
         
         case .unknown:
             log.verbose("Received notification with app in unknown state.")
@@ -184,7 +174,7 @@ extension AWSPinpointAnalyticsNotifications {
     }
     
     private func addGlobalEventSourceMetadata(eventMetadata: UserInfo?,
-                                        eventSource: EventSource) async {
+                                              eventSource: EventSource) async {
         guard let eventMetadata = eventMetadata, !eventMetadata.isEmpty else {
             return
         }

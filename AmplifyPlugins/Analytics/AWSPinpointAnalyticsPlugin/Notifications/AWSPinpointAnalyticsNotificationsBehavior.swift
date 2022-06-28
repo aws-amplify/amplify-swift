@@ -14,14 +14,14 @@ import UIKit
 public protocol AWSPinpointAnalyticsNotificationsBehavior {
     typealias UserInfo = [String: Any]
     
-    func interceptDidFinishLaunchingWithOptions(launchOptions: LaunchOptions) -> Bool
+    func interceptDidFinishLaunchingWithOptions(launchOptions: LaunchOptions) async -> Bool
     
     
     /// Invoke this method from the `- application:didRegisterForRemoteNotificationsWithDeviceToken:` application delegate
     /// method.
     /// The Pinpoint targeting client must intercept this callback in order to report campaign analytics correctly.
     /// - Parameter deviceToken: A token that identifies the device to APNs.
-    func interceptDidRegisterForRemoteNotificationsWithDeviceToken(deviceToken: Data)
+    func interceptDidRegisterForRemoteNotificationsWithDeviceToken(deviceToken: Data) async
     
     
     /// For iOS 9 and below, intercept the `application(_:didReceiveRemoteNotification:fetchCompletionHandler:)` application
@@ -42,7 +42,7 @@ public protocol AWSPinpointAnalyticsNotificationsBehavior {
     /// - Parameter shouldHandleNotificationDeepLink: Whether or not notification manager should attempt to open the remote notification deeplink, if present.
     func interceptDidReceiveRemoteNotification(userInfo: UserInfo,
                                                pushEvent: AWSPinpointPushEvent,
-                                               shouldHandleNotificationDeepLink: Bool)
+                                               shouldHandleNotificationDeepLink: Bool) async
 }
 
 // MARK: - AWSPinpointNotifications + LaunchOptions

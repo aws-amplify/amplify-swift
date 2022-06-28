@@ -13,14 +13,32 @@ import XCTest
 actor MockAnalyticsClient: AnalyticsClientBehaviour {
     let pinpointClient: PinpointClientProtocol = MockPinpointClient()
 
-    func addGlobalAttribute(_ attribute: String, forKey key: String) {}
+    var addGlobalAttributeCalls = [(String, String)]()
+    func addGlobalAttribute(_ attribute: String, forKey key: String) {
+        addGlobalAttributeCalls.append((key, attribute))
+    }
     func addGlobalAttribute(_ attribute: String, forKey key: String, forEventType eventType: String) {}
+    
     func addGlobalMetric(_ metric: Double, forKey key: String) {}
     func addGlobalMetric(_ metric: Double, forKey key: String, forEventType eventType: String) {}
-    func removeGlobalAttribute(forKey key: String) {}
-    func removeGlobalAttribute(forKey key: String, forEventType eventType: String) {}
-    func removeGlobalMetric(forKey key: String) {}
-    func removeGlobalMetric(forKey key: String, forEventType eventType: String) {}
+    
+    var removeGlobalAttributeCalls = [(String, String?)]()
+    func removeGlobalAttribute(forKey key: String) {
+        removeGlobalAttributeCalls.append((key, nil))
+    }
+    
+    func removeGlobalAttribute(forKey key: String, forEventType eventType: String) {
+        removeGlobalAttributeCalls.append((key, eventType))
+    }
+    
+    var removeGlobalMetricCalls = [(String, String?)]()
+    func removeGlobalMetric(forKey key: String) {
+        removeGlobalMetricCalls.append((key, nil))
+    }
+    
+    func removeGlobalMetric(forKey key: String, forEventType eventType: String) {
+        removeGlobalMetricCalls.append((key, eventType))
+    }
 
     nonisolated func createAppleMonetizationEvent(with transaction: SKPaymentTransaction, with product: SKProduct) -> PinpointEvent {
         return PinpointEvent(eventType: "Apple", session: PinpointSession(appId: "", uniqueId: ""))
@@ -85,5 +103,7 @@ actor MockAnalyticsClient: AnalyticsClientBehaviour {
         createEventCount = 0
         recordedEvents = []
         lastRecordedEvent = nil
+        removeGlobalAttributeCalls = []
+        addGlobalAttributeCalls = []
     }
 }
