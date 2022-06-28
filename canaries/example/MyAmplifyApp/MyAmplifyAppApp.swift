@@ -1,8 +1,8 @@
 //
-//  MyAmplifyAppApp.swift
-//  MyAmplifyApp
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
 //
-//  Created by Tsui, Yeung Wah on 4/12/22.
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import SwiftUI
@@ -16,7 +16,7 @@ struct MyAmplifyAppApp: App {
             ContentView()
         }
     }
-    
+
     // add a default initializer and configure Amplify
        init() {
         configureAmplify()
@@ -25,7 +25,7 @@ struct MyAmplifyAppApp: App {
 func configureAmplify() {
     do {
         try Amplify.configure()
-        print("Initialized Amplify");
+        print("Initialized Amplify")
     } catch {
         // simplified error handling for the tutorial
         print("Could not initialize Amplify: \(error)")
