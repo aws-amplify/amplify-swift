@@ -1,8 +1,8 @@
 //
-//  MyAmplifyAppUITests.swift
-//  MyAmplifyAppUITests
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
 //
-//  Created by Tsui, Yeung Wah on 4/12/22.
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import XCTest
