@@ -23,6 +23,8 @@ enum RefreshSessionState: State {
 
     case refreshed(AmplifyCredentials)
 
+    case error(FetchSessionError)
+
 }
 
 extension RefreshSessionState: Equatable {
@@ -35,7 +37,8 @@ extension RefreshSessionState: Equatable {
             (.refreshingUserPoolTokenWithIdentity, .refreshingUserPoolTokenWithIdentity),
             (.refreshingAWSCredentialsWithUserPoolTokens, .refreshingAWSCredentialsWithUserPoolTokens),
             (.fetchingAuthSessionWithUserPool, .fetchingAuthSessionWithUserPool),
-            (.refreshed, .refreshed):
+            (.refreshed, .refreshed),
+            (.error, .error):
             return true
 
         default:
@@ -59,6 +62,8 @@ extension RefreshSessionState: Equatable {
             return "RefreshSessionState.refreshed"
         case .refreshingUnAuthAWSCredentials:
             return "RefreshSessionState.refreshingUnAuthAWSCredentials"
+        case .error:
+            return "RefreshSessionState.error"
         }
     }
 }

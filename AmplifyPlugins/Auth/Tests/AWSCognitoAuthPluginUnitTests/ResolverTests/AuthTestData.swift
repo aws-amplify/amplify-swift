@@ -75,6 +75,9 @@ extension SignOutEventData {
 extension AWSCognitoUserPoolTokens {
     static let testData = AWSCognitoUserPoolTokens(
         idToken: "XX", accessToken: "XX", refreshToken: "XX", expiresIn: 300)
+
+    static let expiredTestData = AWSCognitoUserPoolTokens(
+        idToken: "XX", accessToken: "XX", refreshToken: "XX", expiresIn: -10000)
 }
 
 extension SignedInData {
