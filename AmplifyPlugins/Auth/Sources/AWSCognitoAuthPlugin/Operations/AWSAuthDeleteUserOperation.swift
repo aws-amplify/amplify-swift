@@ -66,7 +66,6 @@ public class AWSAuthDeleteUserOperation: AmplifyOperation<
         
         stateListenerToken = authStateMachine.listen({ [weak self] state in
             guard let self = self else { return }
-            // check if deletion is successful
             
             guard case .configured(let authNState, _) = state else {
                 self.dispatch(AuthError.invalidState(
@@ -92,15 +91,13 @@ public class AWSAuthDeleteUserOperation: AmplifyOperation<
                 if let stateListenerToken = self.stateListenerToken {
                     self.authStateMachine.cancel(listenerToken: stateListenerToken)
                 }
-            default:
-                break
+            default: break
             }
-
+            
         }, onSubscribe: { [weak self] in
             let deleteUserEvent = DeleteUserEvent(eventType: .deleteUser(token))
             self?.authStateMachine.send(deleteUserEvent)
         })
-        
     }
 
     private func dispatchSuccess() {

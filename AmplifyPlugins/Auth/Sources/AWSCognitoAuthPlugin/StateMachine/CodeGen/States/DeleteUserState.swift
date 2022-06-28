@@ -42,8 +42,8 @@ extension DeleteUserState: Equatable {
     
     static func == (lhs: DeleteUserState, rhs: DeleteUserState) -> Bool {
         switch (lhs, rhs) {
-        case (.notStarted, .notStarted), (.deletingUser, .deletingUser)
-            , (.userDeleted, .userDeleted), (.error, .error):
+        case (.notStarted, .notStarted), (.deletingUser, .deletingUser),
+            (.userDeleted, .userDeleted), (.error, .error):
             return true
         case (.signingOut(let lhsData), .signingOut(let rhsData)):
             return lhsData == rhsData

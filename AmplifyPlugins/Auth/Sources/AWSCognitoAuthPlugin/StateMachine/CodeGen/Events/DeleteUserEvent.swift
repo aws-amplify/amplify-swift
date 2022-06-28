@@ -8,11 +8,13 @@
 import Foundation
 import Amplify
 
+typealias AccessToken = String
+
 struct DeleteUserEvent: StateMachineEvent {
 
     enum EventType {
         
-        case deleteUser(String)
+        case deleteUser(AccessToken)
         
         case signOutDeletedUser
 

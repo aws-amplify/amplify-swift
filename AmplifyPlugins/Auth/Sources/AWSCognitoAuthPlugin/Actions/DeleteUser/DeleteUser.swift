@@ -38,7 +38,7 @@ struct DeleteUser: Action {
             return
         }
 
-        logVerbose("\(#fileID) Starting revoke token api", environment: environment)
+        logVerbose("\(#fileID) Starting delete user api", environment: environment)
 
         let input = DeleteUserInput(accessToken: accessToken)
         Task {
@@ -56,19 +56,19 @@ struct DeleteUser: Action {
                     AmplifyErrorMessages.reportBugToAWS(),
                     error)
                 event = DeleteUserEvent(eventType: .throwError(authError))
-                logVerbose("\(#fileID) Revoke token failed \(error)", environment: environment)
+                logVerbose("\(#fileID) Delete user failed \(error)", environment: environment)
             }
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
         }
     }
-
 }
 
 extension DeleteUser: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
-            "identifier": identifier
+            "identifier": identifier,
+            "accessToken": accessToken.masked()
         ]
     }
 }
