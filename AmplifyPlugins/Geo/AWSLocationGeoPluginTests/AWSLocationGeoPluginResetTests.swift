@@ -9,13 +9,8 @@
 import XCTest
 
 class AWSLocationGeoPluginResetTests: AWSLocationGeoPluginTestBase {
-    func testReset() {
-        let completedInvoked = expectation(description: "onComplete is invoked")
-        geoPlugin.reset {
-            completedInvoked.fulfill()
-        }
-
-        waitForExpectations(timeout: 1)
+    func testReset() async {
+        geoPlugin.reset()
         XCTAssertNil(geoPlugin.locationService)
         XCTAssertNil(geoPlugin.authService)
         XCTAssertNil(geoPlugin.pluginConfig)

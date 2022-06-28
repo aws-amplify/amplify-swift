@@ -217,30 +217,21 @@ extension AWSModelReconciliationQueue: DefaultLogger { }
 // MARK: Resettable
 extension AWSModelReconciliationQueue: Resettable {
 
-    func reset(onComplete: @escaping BasicClosure) {
-        let group = DispatchGroup()
-
+    func reset() async {
         log.verbose("Resetting incomingEventsSink")
         incomingEventsSink?.cancel()
         log.verbose("Resetting incomingEventsSink: finished")
 
         if let resettable = incomingSubscriptionEvents as? Resettable {
             log.verbose("Resetting incomingSubscriptionEvents")
-            group.enter()
-            resettable.reset {
-                self.log.verbose("Resetting incomingSubscriptionEvents: finished")
-                group.leave()
-            }
+            await resettable.reset()
+            self.log.verbose("Resetting incomingSubscriptionEvents: finished")
         }
 
         log.verbose("Resetting incomingSubscriptionEventQueue")
         incomingSubscriptionEventQueue.cancelAllOperations()
         incomingSubscriptionEventQueue.waitUntilAllOperationsAreFinished()
         log.verbose("Resetting incomingSubscriptionEventQueue: finished")
-
-        group.wait()
-
-        onComplete()
     }
 
 }

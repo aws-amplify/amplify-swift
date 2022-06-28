@@ -242,7 +242,7 @@ class HubCategoryConfigurationTests: XCTestCase {
         }
     }
 
-    func testCanConfigureAfterReset() throws {
+    func testCanConfigureAfterReset() async throws {
         let plugin = MockHubCategoryPlugin()
         try Amplify.add(plugin: plugin)
         let categoryConfig = HubCategoryConfiguration(
@@ -251,11 +251,7 @@ class HubCategoryConfigurationTests: XCTestCase {
 
         try Amplify.Hub.configure(using: categoryConfig)
 
-        let exp = expectation(description: #function)
-        Amplify.Hub.reset {
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
+        await Amplify.Hub.reset()
 
         XCTAssertNoThrow(try Amplify.Hub.configure(using: categoryConfig))
     }

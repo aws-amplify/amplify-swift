@@ -10,12 +10,7 @@ import XCTest
 
 class AWSPinpointAnalyticsPluginResetTests: AWSPinpointAnalyticsPluginTestBase {
     func testReset() {
-        let completedInvoked = expectation(description: "onComplete is invoked")
-        analyticsPlugin.reset {
-            completedInvoked.fulfill()
-        }
-
-        waitForExpectations(timeout: 1)
+        analyticsPlugin.reset()
         XCTAssertNil(analyticsPlugin.pinpoint)
         XCTAssertNil(analyticsPlugin.authService)
         XCTAssertNil(analyticsPlugin.autoFlushEventsTimer)

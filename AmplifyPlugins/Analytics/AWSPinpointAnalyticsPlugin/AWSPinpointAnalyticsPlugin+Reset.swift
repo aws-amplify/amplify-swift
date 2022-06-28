@@ -9,7 +9,7 @@ import Amplify
 import Foundation
 extension AWSPinpointAnalyticsPlugin {
     /// Resets the state of the plugin
-    public func reset(onComplete: @escaping (() -> Void)) {
+    public func reset() {
         if pinpoint != nil {
             pinpoint = nil
         }
@@ -31,7 +31,5 @@ extension AWSPinpointAnalyticsPlugin {
         if isEnabled != nil {
             isEnabled = nil
         }
-
-        onComplete()
     }
 }

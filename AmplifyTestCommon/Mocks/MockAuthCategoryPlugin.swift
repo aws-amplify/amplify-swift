@@ -175,9 +175,8 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         notify()
     }
 
-    func reset(onComplete: @escaping BasicClosure) {
+    func reset() {
         notify("reset")
-        onComplete()
     }
 }
 

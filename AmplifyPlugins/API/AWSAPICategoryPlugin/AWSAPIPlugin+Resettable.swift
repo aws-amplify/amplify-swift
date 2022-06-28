@@ -11,12 +11,10 @@ import AwsCommonRuntimeKit
 
 extension AWSAPIPlugin: Resettable {
 
-    public func reset(onComplete: @escaping BasicClosure) {
+    public func reset() async {
         mapper.reset()
 
-        let waitForReset = DispatchSemaphore(value: 0)
-        session.reset { waitForReset.signal() }
-        waitForReset.wait()
+        await session.cancelAndReset()
 
         session = nil
 
@@ -31,8 +29,6 @@ extension AWSAPIPlugin: Resettable {
         subscriptionConnectionFactory = nil
 
         AwsCommonRuntimeKit.cleanUp()
-
-        onComplete()
     }
 
 }

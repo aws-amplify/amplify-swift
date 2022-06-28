@@ -212,8 +212,8 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
         return operation
     }
 
-    func reset(onComplete: @escaping BasicClosure) {
-        onComplete()
+    func reset() {
+        // Do nothing
     }
 }
 

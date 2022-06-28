@@ -31,7 +31,7 @@ class MockURLSession: URLSessionBehavior {
         return task
     }
 
-    func reset(onComplete: BasicClosure?) {
-        onReset?(onComplete)
+    func cancelAndReset() {
+        // do nothing
     }
 }

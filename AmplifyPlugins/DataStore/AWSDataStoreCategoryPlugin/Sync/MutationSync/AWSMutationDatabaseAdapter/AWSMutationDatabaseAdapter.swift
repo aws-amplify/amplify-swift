@@ -44,12 +44,11 @@ extension AWSMutationDatabaseAdapter: DefaultLogger { }
 
 extension AWSMutationDatabaseAdapter: Resettable {
 
-    func reset(onComplete: () -> Void) {
+    func reset() {
         log.verbose("Resetting AWSMutationDatabaseAdapter")
         storageAdapter = nil
         nextEventPromise.set(nil)
         log.verbose("Resetting AWSMutationDatabaseAdapter: finished")
-        onComplete()
     }
 
 }

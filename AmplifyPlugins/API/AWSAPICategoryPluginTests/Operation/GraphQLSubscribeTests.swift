@@ -33,8 +33,8 @@ class GraphQLSubscribeTests: OperationTestBase {
     var subscriptionItem: SubscriptionItem!
     var subscriptionEventHandler: SubscriptionEventHandler!
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
+    override func setUp() async throws {
+        try await super.setUp()
 
         onSubscribeInvoked = expectation(description: "onSubscribeInvoked")
 

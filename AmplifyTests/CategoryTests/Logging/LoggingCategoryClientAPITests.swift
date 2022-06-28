@@ -173,8 +173,8 @@ class NonEvaluatingLoggingPlugin: LoggingCategoryPlugin, Logger {
         self
     }
 
-    func reset(onComplete: @escaping BasicClosure) {
-        onComplete()
+    func reset() {
+        // Do nothing
     }
 
     func error(_ message: @autoclosure () -> String) {

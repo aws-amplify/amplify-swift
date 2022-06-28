@@ -259,7 +259,7 @@ class DataStoreCategoryConfigurationTests: XCTestCase {
         }
     }
 
-    func testCanConfigureAfterReset() throws {
+    func testCanConfigureAfterReset() async throws {
         let plugin = MockDataStoreCategoryPlugin()
         try Amplify.add(plugin: plugin)
         let categoryConfig = DataStoreCategoryConfiguration(
@@ -268,11 +268,7 @@ class DataStoreCategoryConfigurationTests: XCTestCase {
 
         try Amplify.DataStore.configure(using: categoryConfig)
 
-        let exp = expectation(description: #function)
-        Amplify.DataStore.reset {
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
+        await Amplify.DataStore.reset()
 
         XCTAssertNoThrow(try Amplify.DataStore.configure(using: categoryConfig))
     }
