@@ -1,0 +1,22 @@
+name: New Issue by Maintainer
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+
+jobs:
+  maintainer-opened:
+    runs-on: ubuntu-latest
+    if: ${{ !github.event.issue.pull_request && contains(fromJSON('["palpatim", "brennanMKE", "diegocstn", "lawmicha", "harsh62", "thisisabhash", "ameter", "royjit", "atierian", "ukhan-amazon", "ruisebas", "phantumcode"]'), github.event.issue.user.login) }}
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - name: add message if maintainer opened
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment $ISSUE_NUMBER -b "This issue was opened by a maintainer of this repository; updates will be posted here. If you are also experiencing this issue, please comment here with any relevant information so that we're aware and can prioritize accordingly."
