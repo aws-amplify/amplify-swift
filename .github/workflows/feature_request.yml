@@ -20,4 +20,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
-          gh issue comment $ISSUE_NUMBER --repo aws-amplify/amplify-ios -b "This has been identified as a feature request. If this feature is important to you, we strongly encourage you to give a 👍 reaction the request. The feedback we receive from the community is a large factor in helping us prioritize new features."
+          gh issue comment $ISSUE_NUMBER --repo aws-amplify/amplify-ios -b "This has been identified as a feature request. If this feature is important to you, we strongly encourage you to give a 👍 reaction on the request. The feedback we receive from the community is a large factor in helping us prioritize new features."
