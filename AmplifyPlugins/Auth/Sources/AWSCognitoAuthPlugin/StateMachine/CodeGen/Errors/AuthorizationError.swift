@@ -14,13 +14,15 @@ enum AuthorizationError: Error {
     case configuration(message: String)
     case service(error: Swift.Error)
     case invalidState(message: String)
-    case invalidAWSCredentials(message: String)
-    case invalidUserPoolTokens(message: String)
+    case sessionError(FetchSessionError, AmplifyCredentials)
+    case sessionExpired
 }
 
 extension AuthorizationError: AuthErrorConvertible {
     var authError: AuthError {
         switch self {
+        case .sessionExpired:
+            return .sessionExpired("", "", nil)
         case .configuration(let message):
             return .configuration(message, "")
         case .service(let error):
@@ -33,11 +35,10 @@ extension AuthorizationError: AuthErrorConvertible {
             } else {
                 return AuthError.unknown("", error)
             }
-        case .invalidAWSCredentials(let message),
-                .invalidUserPoolTokens(let message):
-            return .unknown(message, nil)
         case .invalidState(let message):
             return .invalidState(message, AuthPluginErrorConstants.invalidStateError, nil)
+        case .sessionError(_, _):
+            return .invalidState("Session in error", AuthPluginErrorConstants.invalidStateError, nil)
         }
     }
 }
@@ -49,12 +50,12 @@ extension AuthorizationError: Equatable {
             return lhsMessage == rhsMessage
         case (.service, .service):
             return true
-        case (.invalidAWSCredentials, invalidAWSCredentials):
-            return true
-        case (.invalidUserPoolTokens, .invalidUserPoolTokens):
-            return true
         case (.invalidState, .invalidState):
             return true
+        case (.sessionExpired, .sessionExpired):
+            return true
+        case (.sessionError(let lhsError, _), .sessionError(let rhsError, _)):
+            return lhsError == rhsError
         default:
             return false
         }

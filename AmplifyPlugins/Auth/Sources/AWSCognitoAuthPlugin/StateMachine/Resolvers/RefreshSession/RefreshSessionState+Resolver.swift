@@ -55,6 +55,10 @@ extension RefreshSessionState {
 
             case .refreshingUserPoolToken:
 
+                if case .throwError(let error) = event.isRefreshSessionEvent {
+                    let action = InformSessionError(error: error)
+                    return .init(newState: .error(error), actions: [action])
+                }
                 if case .refreshedCognitoUserPool(let tokens) = event.isRefreshSessionEvent {
                     let credentials = AmplifyCredentials.userPoolOnly(tokens: tokens)
                     let action = InformSessionRefreshed(credentials: credentials)
@@ -69,6 +73,11 @@ extension RefreshSessionState {
                 return .from(oldState)
 
             case .refreshingUserPoolTokenWithIdentity(_, let identityID):
+
+                if case .throwError(let error) = event.isRefreshSessionEvent {
+                    let action = InformSessionError(error: error)
+                    return .init(newState: .error(error), actions: [action])
+                }
                 if case .refreshedCognitoUserPool(let tokens) = event.isRefreshSessionEvent {
                     let credentials = AmplifyCredentials.userPoolOnly(tokens: tokens)
                     let action = InformSessionRefreshed(credentials: credentials)
@@ -82,7 +91,13 @@ extension RefreshSessionState {
                         identityID), actions: [action])
                 }
                 return .from(oldState)
+
             case .fetchingAuthSessionWithUserPool(let fetchSessionState, let tokens):
+
+                if case .throwError(let error) = event.isRefreshSessionEvent {
+                    let action = InformSessionError(error: error)
+                    return .init(newState: .error(error), actions: [action])
+                }
                 if case .fetched(let identityID,
                                  let credentials) = event.isAuthorizationEvent {
                     let credentials = AmplifyCredentials.userPoolAndIdentityPool(
@@ -93,15 +108,18 @@ extension RefreshSessionState {
                     return .init(newState: .refreshed(credentials), actions: [action])
                 }
                 let resolver = FetchAuthSessionState.Resolver()
-                let resolution = resolver.resolve(oldState: fetchSessionState, byApplying: event)
+                let resolution = resolver.resolve(oldState: fetchSessionState,
+                                                  byApplying: event)
                 return .init(newState: .fetchingAuthSessionWithUserPool(
                     resolution.newState,
                     tokens), actions: resolution.actions)
 
-            case .refreshed:
-                return .from(oldState)
-
             case .refreshingUnAuthAWSCredentials:
+
+                if case .throwError(let error) = event.isFetchSessionEvent {
+                    let action = InformSessionError(error: error)
+                    return .init(newState: .error(error), actions: [action])
+                }
                 if case .fetchedAWSCredentials(
                     let identityID,
                     let credentials) = event.isFetchSessionEvent {
@@ -110,9 +128,14 @@ extension RefreshSessionState {
                         credentials: credentials)
                     return .init(newState: .refreshed(amplifyCredentials))
                 }
-
                 return .from(oldState)
+
             case .refreshingAWSCredentialsWithUserPoolTokens(let tokens, _):
+
+                if case .throwError(let error) = event.isFetchSessionEvent {
+                    let action = InformSessionError(error: error)
+                    return .init(newState: .error(error), actions: [action])
+                }
                 if case .fetchedAWSCredentials(
                     let identityID,
                     let credentials) = event.isFetchSessionEvent {
@@ -123,6 +146,9 @@ extension RefreshSessionState {
                     let action = InformSessionRefreshed(credentials: amplifyCredentials)
                     return .init(newState: .refreshed(amplifyCredentials), actions: [action])
                 }
+                return .from(oldState)
+
+            case .error, .refreshed:
                 return .from(oldState)
             }
         }

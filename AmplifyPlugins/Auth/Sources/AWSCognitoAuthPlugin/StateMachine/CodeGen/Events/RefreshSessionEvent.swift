@@ -8,12 +8,7 @@
 import Foundation
 
 struct RefreshSessionEvent: StateMachineEvent {
-    enum EventType: Equatable {
-        static func == (lhs: RefreshSessionEvent.EventType,
-                        rhs: RefreshSessionEvent.EventType) -> Bool {
-            // TODO: Fix
-            return true
-        }
+    enum EventType {
 
         case refreshUnAuthAWSCredentials(IdentityID)
 
@@ -29,8 +24,7 @@ struct RefreshSessionEvent: StateMachineEvent {
 
         case refreshed(AmplifyCredentials)
 
-        case throwError(RefreshSessionError)
-
+        case throwError(FetchSessionError)
     }
 
     let id: String
@@ -70,37 +64,20 @@ struct RefreshSessionEvent: StateMachineEvent {
     }
 }
 
-enum RefreshSessionError: Error {
-
-    case noIdentityPool
-
-    case noUserPool
-
-    case notAuthorized
-
-    case invalidIdentityID
-
-    case invalidTokens
-
-    case noCredentialsToRefresh
-
-    case service(Error)
-}
-
-extension RefreshSessionError: Equatable {
-    static func == (lhs: RefreshSessionError,
-                    rhs: RefreshSessionError) -> Bool {
-        switch(lhs, rhs) {
-        case (.noIdentityPool, .noIdentityPool),
-            (.noUserPool, .noUserPool),
-            (.notAuthorized, .notAuthorized),
-            (.invalidIdentityID, .invalidIdentityID),
-            (.noCredentialsToRefresh, .noCredentialsToRefresh),
-            (.service, .service),
-            (.invalidTokens, .invalidTokens):
+extension RefreshSessionEvent.EventType: Equatable {
+    static func == (lhs: RefreshSessionEvent.EventType, rhs: RefreshSessionEvent.EventType) -> Bool {
+        switch (lhs, rhs) {
+        case (.refreshUnAuthAWSCredentials,.refreshUnAuthAWSCredentials),
+            (.refreshAWSCredentialsWithUserPool, .refreshAWSCredentialsWithUserPool),
+            (.refreshCognitoUserPool, .refreshCognitoUserPool),
+            (.refreshCognitoUserPoolWithIdentityId, .refreshCognitoUserPoolWithIdentityId),
+            (.refreshedCognitoUserPool, .refreshedCognitoUserPool),
+            (.refreshIdentityInfo, .refreshIdentityInfo),
+            (.refreshed, .refreshed):
             return true
-        default:
-            return false
+        case (.throwError(let lhserror), .throwError(let rhsError)):
+            return lhserror == rhsError
+        default: return false
         }
     }
 }

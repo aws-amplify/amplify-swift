@@ -24,7 +24,7 @@ class InitializeFetchAuthSessionTests: XCTestCase {
                     return
                 }
 
-                if case let .fetchAuthenticatedIdentityID = event.eventType {
+                if case .fetchAuthenticatedIdentityID = event.eventType {
                     expectation.fulfill()
                 }
 
