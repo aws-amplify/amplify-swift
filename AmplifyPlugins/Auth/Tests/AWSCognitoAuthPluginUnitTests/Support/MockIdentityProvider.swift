@@ -46,6 +46,9 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     
     typealias MockResendConfirmationCodeOutputResponse = (ResendConfirmationCodeInput) async throws
     -> ResendConfirmationCodeOutputResponse
+    
+    typealias MockForgotPasswordOutputResponse = (ForgotPasswordInput) async throws
+    -> ForgotPasswordOutputResponse
 
     let mockSignUpResponse: MockSignUpResponse?
     let mockRevokeTokenResponse: MockRevokeTokenResponse?
@@ -59,6 +62,7 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     let mockConfirmUserAttributeOutputResponse: MockConfirmUserAttributeOutputResponse?
     let mockChangePasswordOutputResponse: MockChangePasswordOutputResponse?
     let mockResendConfirmationCodeOutputResponse: MockResendConfirmationCodeOutputResponse?
+    let mockForgotPasswordOutputResponse: MockForgotPasswordOutputResponse?
 
     init(
         mockSignUpResponse: MockSignUpResponse? = nil,
@@ -72,7 +76,8 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         mockUpdateUserAttributeResponse: MockUpdateUserAttributesOutputResponse? = nil,
         mockConfirmUserAttributeOutputResponse: MockConfirmUserAttributeOutputResponse? = nil,
         mockChangePasswordOutputResponse: MockChangePasswordOutputResponse? = nil,
-        mockResendConfirmationCodeOutputResponse: MockResendConfirmationCodeOutputResponse? = nil
+        mockResendConfirmationCodeOutputResponse: MockResendConfirmationCodeOutputResponse? = nil,
+        mockForgotPasswordOutputResponse: MockForgotPasswordOutputResponse? = nil
     ) {
         self.mockSignUpResponse = mockSignUpResponse
         self.mockRevokeTokenResponse = mockRevokeTokenResponse
@@ -86,6 +91,7 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         self.mockConfirmUserAttributeOutputResponse = mockConfirmUserAttributeOutputResponse
         self.mockChangePasswordOutputResponse = mockChangePasswordOutputResponse
         self.mockResendConfirmationCodeOutputResponse = mockResendConfirmationCodeOutputResponse
+        self.mockForgotPasswordOutputResponse = mockForgotPasswordOutputResponse;
     }
 
     /// Throws InitiateAuthOutputError
@@ -142,5 +148,9 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     
     func resendConfirmationCode(input: ResendConfirmationCodeInput) async throws -> ResendConfirmationCodeOutputResponse {
         return try await mockResendConfirmationCodeOutputResponse!(input)
+    }
+    
+    func forgotPassword(input: ForgotPasswordInput) async throws -> ForgotPasswordOutputResponse {
+        return try await mockForgotPasswordOutputResponse!(input)
     }
 }

@@ -26,12 +26,6 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
     }
     
     override func setUp() {
-        mockIdentityProvider = MockIdentityProvider(
-            mockResendConfirmationCodeOutputResponse: { _ in
-                ResendConfirmationCodeOutputResponse(codeDeliveryDetails: .init())
-            }
-        )
-        
         plugin = AWSCognitoAuthPlugin()
         
         let getId: MockIdentity.MockGetIdResponse = { _ in
