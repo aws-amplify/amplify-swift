@@ -13,116 +13,140 @@ import AWSCognitoIdentity
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 
-class ClientBehaviorResendSignUpCodeTests : AWSCognitoAuthClientBehaviorTests {
+class ClientBehaviorResetPasswordTests : AWSCognitoAuthClientBehaviorTests {
     
     override func setUp() {
         super.setUp()
         mockIdentityProvider = MockIdentityProvider(
-            mockResendConfirmationCodeOutputResponse: { _ in
-                ResendConfirmationCodeOutputResponse(codeDeliveryDetails: .init())
+            mockForgotPasswordOutputResponse: { _ in
+                ForgotPasswordOutputResponse(codeDeliveryDetails: .init())
             }
         )
     }
     
-    /// Test resendSignUpCode operation can be invoked
+    /// Test resetPassword operation can be invoked
     ///
     /// - Given: Given a configured auth plugin
     /// - When:
-    ///    - I call resendSignUpCode operation
+    ///    - I call resetPassword operation
     /// - Then:
     ///    - I should get a valid operation object
     ///
-    func testResendSignupCodeRequest() {
+    func testResetPasswordRequest() {
         let operationFinished = expectation(description: "Operation should finish")
-        let pluginOptions = ["somekey": "somevalue"]
-        let options = AuthResendSignUpCodeRequest.Options(pluginOptions: pluginOptions)
-        let operation = plugin.resendSignUpCode(for: "username", options: options) { _ in
+        let pluginOptions = ["key": "value"]
+        let options = AuthResetPasswordRequest.Options(pluginOptions: pluginOptions)
+        let operation = plugin.resetPassword(for: "username", options: options) { _ in
+            operationFinished.fulfill()
+        }
+        XCTAssertNotNil(operation)
+        waitForExpectations(timeout: 1)
+    }
+
+    /// Test resetPassword operation can be invoked without options
+    ///
+    /// - Given: Given a configured auth plugin
+    /// - When:
+    ///    - I call resetPassword operation
+    /// - Then:
+    ///    - I should get a valid operation object
+    ///
+    func testResetPasswordRequestWithoutOptions() {
+        let operationFinished = expectation(description: "Operation should finish")
+        let operation = plugin.resetPassword(for: "username", options: nil) { _ in
             operationFinished.fulfill()
         }
         XCTAssertNotNil(operation)
         waitForExpectations(timeout: 1)
     }
     
-    /// Test resendSignUpCode operation can be invoked without options
+    /// Test a successful resetPassword call
     ///
-    /// - Given: Given a configured auth plugin
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response
     /// - When:
-    ///    - I call resendSignUpCode operation
+    ///    - I invoke resetPassword with username
     /// - Then:
-    ///    - I should get a valid operation object
+    ///    - I should get a successful result
     ///
-    func testResendSignupCodeRequestWithoutOptions() {
-        let operationFinished = expectation(description: "Operation should finish")
-        let operation = plugin.resendSignUpCode(for: "username", options: nil) { _ in
-            operationFinished.fulfill()
-        }
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 1)
-    }
-    
-    /// Test a successful resendSignUpCode call with .email as the destination of AuthCodeDeliveryDetails
-    ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service calls should mock a successul response
-    /// - When:
-    ///    - I invoke resendSignUpCode with username
-    /// - Then:
-    ///    - I should get a successful result with .email as the destination of AuthCodeDeliveryDetails
-    ///
-    func testResendSignupCodeWithSuccess() {
-        
-        let codeDeliveryDetails = CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType(attributeName: nil,
+    func testSuccessfulResetPassword() {
+        let codeDeliveryDetails = CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType(attributeName: "attribute",
                                                                                              deliveryMedium: .email,
-                                                                                             destination: nil)
+                                                                                             destination: "Amplify@amazon.com")
         mockIdentityProvider = MockIdentityProvider(
-            mockResendConfirmationCodeOutputResponse: { _ in
-                ResendConfirmationCodeOutputResponse(codeDeliveryDetails: codeDeliveryDetails)
+            mockForgotPasswordOutputResponse: { _ in
+                ForgotPasswordOutputResponse(codeDeliveryDetails: codeDeliveryDetails)
             }
         )
-        
+
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            
+        _ = plugin.resetPassword(for: "user", options: nil) { result in
             switch result {
-            case .success(let authCodeDeliveryDetails):
-                guard case .email = authCodeDeliveryDetails.destination else {
-                    XCTFail("Result should be .email for the destination of AuthCodeDeliveryDetails")
-                    return
-                }
+            case .success:
+                resultExpectation.fulfill()
             case .failure(let error):
                 XCTFail("Received failure with error \(error)")
             }
         }
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
-    
-    /// Test a resendSignUpCode call with empty username
-    ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service calls should mock a successful response
-    /// - When:
-    ///    - I invoke resendSignUpCode with username
-    /// - Then:
-    ///    - I should get a failure with validation error
-    ///
-    func testResendSignupCodeWithEmptyUsername() {
 
-        let codeDeliveryDetails = CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType(attributeName: nil,
-                                                                                             deliveryMedium: .email,
-                                                                                             destination: nil)
+    /// Test a resetPassword call with nil UserCodeDeliveryDetails
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a successul response
+    /// - When:
+    ///    - I invoke resetPassword with username
+    /// - Then:
+    ///    - I should get an .unknown error
+    ///
+    func testResetPasswordWithNilCodeDeliveryDetails() {
+
         mockIdentityProvider = MockIdentityProvider(
-            mockResendConfirmationCodeOutputResponse: { _ in
-                ResendConfirmationCodeOutputResponse(codeDeliveryDetails: codeDeliveryDetails)
+            mockForgotPasswordOutputResponse: { _ in
+                ForgotPasswordOutputResponse(codeDeliveryDetails: nil)
+            }
+        )
+        let resultExpectation = expectation(description: "Should receive a result")
+        _ = plugin.resetPassword(for: "user", options: nil) { result in
+            defer {
+                resultExpectation.fulfill()
+            }
+            switch result {
+            case .success:
+                XCTFail("Should not succeed")
+            case .failure(let error):
+                guard case .unknown = error else {
+                    XCTFail("Should produce unknown error instead of \(error)")
+                    return
+                }
+            }
+        }
+        wait(for: [resultExpectation], timeout: networkTimeout)
+    }
+
+    /// Test a resetPassword call with empty username
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a successul response
+    /// - When:
+    ///    - I invoke resetPassword with empty username
+    /// - Then:
+    ///    - I should get an .validation error
+    ///
+    func testResetPasswordWithEmptyUsername() {
+
+        let codeDeliveryDetails = CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType(attributeName: "attribute",
+                                                                                             deliveryMedium: .email,
+                                                                                             destination: "Amplify@amazon.com")
+        mockIdentityProvider = MockIdentityProvider(
+            mockForgotPasswordOutputResponse: { _ in
+                ForgotPasswordOutputResponse(codeDeliveryDetails: codeDeliveryDetails)
             }
         )
         
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "", options: nil) { result in
+        _ = plugin.resetPassword(for: "", options: nil) { result in
             defer {
                 resultExpectation.fulfill()
             }
-
             switch result {
             case .success:
                 XCTFail("Should not succeed")
@@ -136,60 +160,24 @@ class ClientBehaviorResendSignUpCodeTests : AWSCognitoAuthClientBehaviorTests {
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
-    /// Test a resendSignUpCode call with invalid response from service
+    /// Test a resetPassword call with CodeDeliveryFailureException response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a invalid response
-    /// - When:
-    ///    - I invoke resendSignUpCode with valid username
-    /// - Then:
-    ///    - I should get an .unknown error
-    ///
-    func testResendSignupCodeWithInvalidResult() {
-
-        mockIdentityProvider = MockIdentityProvider(
-            mockResendConfirmationCodeOutputResponse: { _ in
-                throw AuthError.unknown("Unknown error", nil)
-            }
-        )
-        
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-
-            switch result {
-            case .success:
-                XCTFail("Should not succeed")
-            case .failure(let error):
-                guard case .unknown = error else {
-                    XCTFail("Should produce an unknown error")
-                    return
-                }
-            }
-        }
-        wait(for: [resultExpectation], timeout: networkTimeout)
-    }
-
-    // MARK: Service error handling test
-    /// Test a resendSignUpCode call with CodeDeliveryFailureException response from service
-    ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
     ///   CodeDeliveryFailureException response
     /// - When:
-    ///    - I invoke resendSignUpCode with a valid username
+    ///    - I invoke resetPassword with username
     /// - Then:
     ///    - I should get a .service error with .codeDelivery as underlyingError
     ///
-    func testResendSignupCodeWithCodeDeliveryFailureException() {
+    func testResetPasswordWithCodeDeliveryFailureException() {
 
         mockIdentityProvider = MockIdentityProvider(
-            mockResendConfirmationCodeOutputResponse: { _ in
-                throw ResendConfirmationCodeOutputError.codeDeliveryFailureException(CodeDeliveryFailureException(message: "Code delivery failure"))
+            mockForgotPasswordOutputResponse: { _ in
+                throw ForgotPasswordOutputError.codeDeliveryFailureException(CodeDeliveryFailureException(message: "Code delivery failure"))
             }
         )
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
+        _ = plugin.resetPassword(for: "user", options: nil) { result in
             defer {
                 resultExpectation.fulfill()
             }
@@ -203,7 +191,7 @@ class ClientBehaviorResendSignUpCodeTests : AWSCognitoAuthClientBehaviorTests {
                     return
                 }
                 guard case .codeDelivery = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be codedelivery \(error)")
+                    XCTFail("Underlying error should be codeDelivery \(error)")
                     return
                 }
 
@@ -212,22 +200,23 @@ class ClientBehaviorResendSignUpCodeTests : AWSCognitoAuthClientBehaviorTests {
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
-    /// Test a resendSignUpCode call with InternalErrorException response from service
+    /// Test a resetPassword call with InternalErrorException response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a InternalErrorException response
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a InternalErrorException response
     /// - When:
-    ///    - I invoke resendSignUpCode with a valid username
+    ///    - I invoke resetPassword with username
     /// - Then:
     ///    - I should get an .unknown error
     ///
-    func testResendSignupCodeWithInternalErrorException() {
+    func testResetPasswordWithInternalErrorException() {
+
         mockIdentityProvider = MockIdentityProvider(
-            mockResendConfirmationCodeOutputResponse: { _ in
-                throw ResendConfirmationCodeOutputError.internalErrorException(InternalErrorException(message: "internal error"))
+            mockForgotPasswordOutputResponse: { _ in
+                throw ForgotPasswordOutputError.internalErrorException(InternalErrorException(message: "internal error"))
             }
         )
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
+        _ = plugin.resetPassword(for: "user", options: nil) { result in
             defer {
                 resultExpectation.fulfill()
             }
@@ -246,23 +235,23 @@ class ClientBehaviorResendSignUpCodeTests : AWSCognitoAuthClientBehaviorTests {
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
-    /// Test a resendSignUpCode call with InvalidEmailRoleAccessPolicy response from service
+    /// Test a resetPassword call with InvalidEmailRoleAccessPolicyException response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
     ///   InvalidEmailRoleAccessPolicyException response
     /// - When:
-    ///    - I invoke resendSignUpCode with a valid username
+    ///    - I invoke resetPassword with username
     /// - Then:
-    ///    - I should get a .service error with .emailRole as underlyingError
+    ///    - I should get a .emailRole error
     ///
-    func testResendSignupCodeWithInvalidEmailRoleAccessPolicyException() {
+    func testResetPasswordWithInvalidEmailRoleAccessPolicyException() {
         mockIdentityProvider = MockIdentityProvider(
-            mockResendConfirmationCodeOutputResponse: { _ in
-                throw ResendConfirmationCodeOutputError.invalidEmailRoleAccessPolicyException(InvalidEmailRoleAccessPolicyException(message: "Invalid email role access policy"))
+            mockForgotPasswordOutputResponse: { _ in
+                throw ForgotPasswordOutputError.invalidEmailRoleAccessPolicyException(InvalidEmailRoleAccessPolicyException(message: "invalid email role"))
             }
         )
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
+        _ = plugin.resetPassword(for: "user", options: nil) { result in
             defer {
                 resultExpectation.fulfill()
             }
@@ -276,110 +265,31 @@ class ClientBehaviorResendSignUpCodeTests : AWSCognitoAuthClientBehaviorTests {
                     return
                 }
                 guard case .emailRole = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be sms role \(error)")
+                    XCTFail("Underlying error should be limitExceeded \(error)")
                     return
                 }
-
             }
         }
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
-    /// Test a resendSignUpCode call with InvalidSmsRoleAccessPolicy response from service
+    /// Test a resetPassword call with InvalidLambdaResponseException response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
-    ///   InvalidSmsRoleAccessPolicyException response
-    /// - When:
-    ///    - I invoke resendSignUpCode with a valid username
-    /// - Then:
-    ///    - I should get a .service error with .smsRole as underlyingError
-    ///
-    func testResendSignupCodeWithinvalidSmsRoleAccessPolicyException() {
-        mockIdentityProvider = MockIdentityProvider(
-            mockResendConfirmationCodeOutputResponse: { _ in
-                throw ResendConfirmationCodeOutputError.invalidSmsRoleAccessPolicyException(InvalidSmsRoleAccessPolicyException(message: "Invalid sms role access policy"))
-            }
-        )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be sms role \(error)")
-                    return
-                }
-
-            }
-        }
-        wait(for: [resultExpectation], timeout: networkTimeout)
-    }
-
-    /// Test a resendSignUpCode call with InvalidSmsRoleTrustRelationship response from service
-    ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
-    ///   InvalidSmsRoleTrustRelationshipException response
-    /// - When:
-    ///    - I invoke resendSignUpCode with a valid username
-    /// - Then:
-    ///    - I should get a .service error with .smsRole as underlyingError
-    ///
-    func testResendSignupCodeWithInvalidSmsRoleTrustRelationshipException() {
-        mockIdentityProvider = MockIdentityProvider(
-            mockResendConfirmationCodeOutputResponse: { _ in
-                throw ResendConfirmationCodeOutputError.invalidSmsRoleTrustRelationshipException(InvalidSmsRoleTrustRelationshipException(message: "Invalid sms role trust relationship"))
-            }
-        )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be sms role \(error)")
-                    return
-                }
-
-            }
-        }
-        wait(for: [resultExpectation], timeout: networkTimeout)
-    }
-
-    /// Test a resendSignUpCode call with InvalidLambdaResponseException response from service
-    ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
     ///   InvalidLambdaResponseException response
     /// - When:
-    ///    - I invoke resendSignUpCode with a valid username
+    ///    - I invoke resetPassword with username
     /// - Then:
     ///    - I should get a .service error with .lambda as underlyingError
     ///
-    func testResendSignupCodeWithInvalidLambdaResponseException() {
+    func testResetPasswordWithInvalidLambdaResponseException() {
         mockIdentityProvider = MockIdentityProvider(
-            mockResendConfirmationCodeOutputResponse: { _ in
-                throw ResendConfirmationCodeOutputError.invalidLambdaResponseException(InvalidLambdaResponseException(message: "Invalid lambda response"))
+            mockForgotPasswordOutputResponse: { _ in
+                throw ForgotPasswordOutputError.invalidLambdaResponseException(InvalidLambdaResponseException(message: "Invalid lambda response"))
             }
         )
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
+        _ = plugin.resetPassword(for: "user", options: nil) { result in
             defer {
                 resultExpectation.fulfill()
             }
@@ -402,24 +312,25 @@ class ClientBehaviorResendSignUpCodeTests : AWSCognitoAuthClientBehaviorTests {
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
-    /// Test a resendSignUpCode call with InvalidParameterException response from service
+    /// Test a resetPassword call with InvalidParameterException response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
     ///   InvalidParameterException response
     ///
     /// - When:
-    ///    - I invoke resendSignUpCode with a valid username
+    ///    - I invoke resetPassword with username
     /// - Then:
     ///    - I should get a .service error with  .invalidParameter as underlyingError
     ///
-    func testResendSignupCodeWithInvalidParameterException() {
+    func testResetPasswordWithInvalidParameterException() {
+
         mockIdentityProvider = MockIdentityProvider(
-            mockResendConfirmationCodeOutputResponse: { _ in
-                throw ResendConfirmationCodeOutputError.invalidParameterException(InvalidParameterException(message: "invalid parameter"))
+            mockForgotPasswordOutputResponse: { _ in
+                throw ForgotPasswordOutputError.invalidParameterException(InvalidParameterException(message: "invalid parameter"))
             }
         )
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
+        _ = plugin.resetPassword(for: "user", options: nil) { result in
             defer {
                 resultExpectation.fulfill()
             }
@@ -442,24 +353,101 @@ class ClientBehaviorResendSignUpCodeTests : AWSCognitoAuthClientBehaviorTests {
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
-    /// Test a resendSignUpCode call with LimitExceededException response from service
+    /// Test a resetPassword call with InvalidSmsRoleAccessPolicy response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
-    ///   LimitExceededException response
-    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   InvalidSmsRoleAccessPolicyException response
     /// - When:
-    ///    - I invoke resendSignUpCode with a valid username
+    ///    - I invoke resetPassword with username
     /// - Then:
-    ///    - I should get a .limitExceeded error
+    ///    - I should get a .smsRole error
     ///
-    func testResendSignupCodeWithLimitExceededException() {
+    func testResetPasswordWithInvalidSmsRoleAccessPolicyException() {
         mockIdentityProvider = MockIdentityProvider(
-            mockResendConfirmationCodeOutputResponse: { _ in
-                throw ResendConfirmationCodeOutputError.limitExceededException(LimitExceededException(message: "limit exceeded"))
+            mockForgotPasswordOutputResponse: { _ in
+                throw ForgotPasswordOutputError.invalidSmsRoleAccessPolicyException(InvalidSmsRoleAccessPolicyException(message: "invalid sms role"))
             }
         )
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
+        _ = plugin.resetPassword(for: "user", options: nil) { result in
+            defer {
+                resultExpectation.fulfill()
+            }
+
+            switch result {
+            case .success:
+                XCTFail("Should return an error if the result from service is invalid")
+            case .failure(let error):
+                guard case .service(_, _, let underlyingError) = error else {
+                    XCTFail("Should produce service error instead of \(error)")
+                    return
+                }
+                guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
+                    XCTFail("Underlying error should be limitExceeded \(error)")
+                    return
+                }
+            }
+        }
+        wait(for: [resultExpectation], timeout: networkTimeout)
+    }
+
+    /// Test a resetPassword call with InvalidSmsRoleTrustRelationshipException response from service
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   InvalidSmsRoleAccessPolicyException response
+    /// - When:
+    ///    - I invoke resetPassword with username
+    /// - Then:
+    ///    - I should get a .smsRole error
+    ///
+    func testResetPasswordWithInvalidSmsRoleTrustRelationshipException() {
+        mockIdentityProvider = MockIdentityProvider(
+            mockForgotPasswordOutputResponse: { _ in
+                throw ForgotPasswordOutputError.invalidSmsRoleTrustRelationshipException(InvalidSmsRoleTrustRelationshipException(message: "invalid sms role trust relationship"))
+            }
+        )
+        let resultExpectation = expectation(description: "Should receive a result")
+        _ = plugin.resetPassword(for: "user", options: nil) { result in
+            defer {
+                resultExpectation.fulfill()
+            }
+
+            switch result {
+            case .success:
+                XCTFail("Should return an error if the result from service is invalid")
+            case .failure(let error):
+                guard case .service(_, _, let underlyingError) = error else {
+                    XCTFail("Should produce service error instead of \(error)")
+                    return
+                }
+                guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
+                    XCTFail("Underlying error should be limitExceeded \(error)")
+                    return
+                }
+            }
+        }
+        wait(for: [resultExpectation], timeout: networkTimeout)
+    }
+
+    /// Test a resetPassword call with LimitExceededException response from service
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   LimitExceededException response
+    ///
+    /// - When:
+    ///    - I invoke resetPassword with username
+    /// - Then:
+    ///    - I should get a .limitExceeded error
+    ///
+    func testResetPasswordWithLimitExceededException() {
+
+        mockIdentityProvider = MockIdentityProvider(
+            mockForgotPasswordOutputResponse: { _ in
+                throw ForgotPasswordOutputError.limitExceededException(LimitExceededException(message: "limit exceeded"))
+            }
+        )
+        let resultExpectation = expectation(description: "Should receive a result")
+        _ = plugin.resetPassword(for: "user", options: nil) { result in
             defer {
                 resultExpectation.fulfill()
             }
@@ -481,24 +469,25 @@ class ClientBehaviorResendSignUpCodeTests : AWSCognitoAuthClientBehaviorTests {
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
-    /// Test a resendSignUpCode call with NotAuthorizedException response from service
+    /// Test a resetPassword call with NotAuthorizedException response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
     ///   NotAuthorizedException response
     ///
     /// - When:
-    ///    - I invoke resendSignUpCode with a valid username
+    ///    - I invoke resetPassword with username
     /// - Then:
     ///    - I should get a .notAuthorized error
     ///
-    func testResendSignupCodeWithNotAuthorizedException() {
+    func testResetPasswordWithNotAuthorizedException() {
+
         mockIdentityProvider = MockIdentityProvider(
-            mockResendConfirmationCodeOutputResponse: { _ in
-                throw ResendConfirmationCodeOutputError.notAuthorizedException(NotAuthorizedException(message: "not authorized"))
+            mockForgotPasswordOutputResponse: { _ in
+                throw ForgotPasswordOutputError.notAuthorizedException(NotAuthorizedException(message: "not authorized"))
             }
         )
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
+        _ = plugin.resetPassword(for: "user", options: nil) { result in
             defer {
                 resultExpectation.fulfill()
             }
@@ -516,24 +505,25 @@ class ClientBehaviorResendSignUpCodeTests : AWSCognitoAuthClientBehaviorTests {
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
-    /// Test a resendSignUpCode call with ResourceNotFoundException response from service
+    /// Test a resetPassword call with ResourceNotFoundException response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
     ///   ResourceNotFoundException response
     ///
     /// - When:
-    ///    - I invoke resendSignUpCode with a valid username
+    ///    - I invoke resetPassword with username
     /// - Then:
     ///    - I should get a .service error with .resourceNotFound as underlyingError
     ///
-    func testResendSignupCodeWithResourceNotFoundException() {
+    func testResetPasswordWithResourceNotFoundException() {
+
         mockIdentityProvider = MockIdentityProvider(
-            mockResendConfirmationCodeOutputResponse: { _ in
-                throw ResendConfirmationCodeOutputError.resourceNotFoundException(ResourceNotFoundException(message: "resource not found"))
+            mockForgotPasswordOutputResponse: { _ in
+                throw ForgotPasswordOutputError.resourceNotFoundException(ResourceNotFoundException(message: "resource not found"))
             }
         )
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
+        _ = plugin.resetPassword(for: "user", options: nil) { result in
             defer {
                 resultExpectation.fulfill()
             }
@@ -550,29 +540,31 @@ class ClientBehaviorResendSignUpCodeTests : AWSCognitoAuthClientBehaviorTests {
                     XCTFail("Underlying error should be resourceNotFound \(error)")
                     return
                 }
+
             }
         }
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
-    /// Test a resendSignUpCode call with TooManyRequestsException response from service
+    /// Test a resetPassword call with TooManyRequestsException response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
     ///   TooManyRequestsException response
     ///
     /// - When:
-    ///    - I invoke resendSignUpCode with a valid username
+    ///    - I invoke resetPassword with username
     /// - Then:
     ///    - I should get a .service error with .requestLimitExceeded as underlyingError
     ///
-    func testResendSignupCodeWithTooManyRequestsException() {
+    func testResetPasswordWithTooManyRequestsException() {
+
         mockIdentityProvider = MockIdentityProvider(
-            mockResendConfirmationCodeOutputResponse: { _ in
-                throw ResendConfirmationCodeOutputError.tooManyRequestsException(TooManyRequestsException(message: "too many requests"))
+            mockForgotPasswordOutputResponse: { _ in
+                throw ForgotPasswordOutputError.tooManyRequestsException(TooManyRequestsException(message: "too many requests"))
             }
         )
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
+        _ = plugin.resetPassword(for: "user", options: nil) { result in
             defer {
                 resultExpectation.fulfill()
             }
@@ -595,24 +587,25 @@ class ClientBehaviorResendSignUpCodeTests : AWSCognitoAuthClientBehaviorTests {
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
-    /// Test a resendSignUpCode call with UnexpectedLambdaException response from service
+    /// Test a resetPassword call with UnexpectedLambdaException response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
     ///   UnexpectedLambdaException response
     ///
     /// - When:
-    ///    - I invoke resendSignUpCode with a valid username
+    ///    - I invoke resetPassword with username
     /// - Then:
     ///    - I should get a .service error with .lambda as underlyingError
     ///
-    func testResendSignupCodeWithUnexpectedLambdaException() {
+    func testResetPasswordWithUnexpectedLambdaException() {
+
         mockIdentityProvider = MockIdentityProvider(
-            mockResendConfirmationCodeOutputResponse: { _ in
-                throw ResendConfirmationCodeOutputError.unexpectedLambdaException(UnexpectedLambdaException(message: "unexpected lambda"))
+            mockForgotPasswordOutputResponse: { _ in
+                throw ForgotPasswordOutputError.unexpectedLambdaException(UnexpectedLambdaException(message: "unexpected lambda"))
             }
         )
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
+        _ = plugin.resetPassword(for: "user", options: nil) { result in
             defer {
                 resultExpectation.fulfill()
             }
@@ -635,24 +628,25 @@ class ClientBehaviorResendSignUpCodeTests : AWSCognitoAuthClientBehaviorTests {
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
-    /// Test a resendSignUpCode call with UserLambdaValidationException response from service
+    /// Test a resetPassword call with UserLambdaValidationException response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
     ///   UserLambdaValidationException response
     ///
     /// - When:
-    ///    - I invoke resendSignUpCode with a valid username
+    ///    - I invoke resetPassword with username
     /// - Then:
     ///    - I should get a .service error with .lambda as underlyingError
     ///
-    func testResendSignupCodeWithUserLambdaValidationException() {
+    func testResetPasswordWithUserLambdaValidationException() {
+
         mockIdentityProvider = MockIdentityProvider(
-            mockResendConfirmationCodeOutputResponse: { _ in
-                throw ResendConfirmationCodeOutputError.userLambdaValidationException(UserLambdaValidationException(message: "user lambda validation exception"))
+            mockForgotPasswordOutputResponse: { _ in
+                throw ForgotPasswordOutputError.userLambdaValidationException(UserLambdaValidationException(message: "user lambda validation exception"))
             }
         )
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
+        _ = plugin.resetPassword(for: "user", options: nil) { result in
             defer {
                 resultExpectation.fulfill()
             }
@@ -675,24 +669,66 @@ class ClientBehaviorResendSignUpCodeTests : AWSCognitoAuthClientBehaviorTests {
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
-    /// Test a resendSignUpCode call with UserNotFound response from service
+    /// Test a resetPassword call with UserNotFound response from service
     ///
-    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
-    ///   UserNotFoundException response
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   UserNotConfirmedException response
     ///
     /// - When:
-    ///    - I invoke resendSignUpCode with a valid username
+    ///    - I invoke resetPassword with username
     /// - Then:
-    ///    - I should get a .userNotFound error
+    ///    - I should get a .service error with .userNotConfirmed as underlyingError
     ///
-    func testResendSignupCodeUpWithUserNotFoundException() {
+    func testResetPasswordWithUserNotConfirmedException() {
+
         mockIdentityProvider = MockIdentityProvider(
-            mockResendConfirmationCodeOutputResponse: { _ in
-                throw ResendConfirmationCodeOutputError.userNotFoundException(UserNotFoundException(message: "user not found"))
+            mockForgotPasswordOutputResponse: { _ in
+                throw ForgotPasswordOutputError.userNotConfirmedException(UserNotConfirmedException(message: "user not confirmed"))
             }
         )
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
+        _ = plugin.resetPassword(for: "user", options: nil) { result in
+            defer {
+                resultExpectation.fulfill()
+            }
+
+            switch result {
+            case .success:
+                XCTFail("Should return an error if the result from service is invalid")
+            case .failure(let error):
+                guard case .service(_, _, let underlyingError) = error else {
+                    XCTFail("Should produce service error instead of \(error)")
+                    return
+                }
+                guard case .userNotConfirmed = (underlyingError as? AWSCognitoAuthError) else {
+                    XCTFail("Underlying error should be userNotConfirmed \(error)")
+                    return
+                }
+
+            }
+        }
+        wait(for: [resultExpectation], timeout: networkTimeout)
+    }
+
+    /// Test a resetPassword call with UserNotFoundException response from service
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a
+    ///   UserNotFoundException response
+    ///
+    /// - When:
+    ///    - I invoke resetPassword with username
+    /// - Then:
+    ///    - I should get a .service error with .userNotFound as underlyingError
+    ///
+    func testResetPasswordWithUserNotFoundException() {
+
+        mockIdentityProvider = MockIdentityProvider(
+            mockForgotPasswordOutputResponse: { _ in
+                throw ForgotPasswordOutputError.userNotFoundException(UserNotFoundException(message: "user not found"))
+            }
+        )
+        let resultExpectation = expectation(description: "Should receive a result")
+        _ = plugin.resetPassword(for: "user", options: nil) { result in
             defer {
                 resultExpectation.fulfill()
             }

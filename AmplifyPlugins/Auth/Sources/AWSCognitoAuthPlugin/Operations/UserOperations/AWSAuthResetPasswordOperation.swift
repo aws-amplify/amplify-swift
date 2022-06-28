@@ -10,14 +10,14 @@ import AWSPluginsCore
 import ClientRuntime
 import AWSCognitoIdentityProvider
 
-public class AWSAuthResendSignUpCodeOperation:
-    AmplifyOperation< AuthResendSignUpCodeRequest, AuthCodeDeliveryDetails, AuthError>, AuthResendSignUpCodeOperation {
+public class AWSAuthResetPasswordOperation:
+    AmplifyOperation< AuthResetPasswordRequest, AuthResetPasswordResult, AuthError>, AuthResetPasswordOperation {
     
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
     private let userPoolFactory: CognitoUserPoolFactory
     private var authConfiguration: AuthConfiguration
     
-    init(_ request: AuthResendSignUpCodeRequest,
+    init(_ request: AuthResetPasswordRequest,
          userPoolFactory: @escaping CognitoUserPoolFactory,
          authConfiguration: AuthConfiguration,
          resultListener: ResultListener?)
@@ -25,7 +25,7 @@ public class AWSAuthResendSignUpCodeOperation:
         self.userPoolFactory = userPoolFactory
         self.authConfiguration = authConfiguration
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.resendSignUpCodeAPI,
+                   eventName: HubPayload.EventName.Auth.resetPasswordAPI,
                    request: request,
                    resultListener: resultListener)
     }
@@ -43,11 +43,11 @@ public class AWSAuthResendSignUpCodeOperation:
         }
         
         Task.init { [weak self] in
-            await self?.resendSignUpCode()
+            await self?.resetPassword()
         }
     }
     
-    func resendSignUpCode() async {
+    func resetPassword() async {
         do {
             let userPoolService = try userPoolFactory()
             let clientMetaData = (request.options.pluginOptions
@@ -64,11 +64,11 @@ public class AWSAuthResendSignUpCodeOperation:
                 throw error
             }
             
-            let input = ResendConfirmationCodeInput(clientId: userPoolConfigurationData.clientId,
+            let input = ForgotPasswordInput(clientId: userPoolConfigurationData.clientId,
                                                     clientMetadata: clientMetaData,
                                                     username: request.username)
             
-            let result = try await userPoolService.resendConfirmationCode(input: input)
+            let result = try await userPoolService.forgotPassword(input: input)
             
             if self.isCancelled {
                 finish()
@@ -81,12 +81,14 @@ public class AWSAuthResendSignUpCodeOperation:
                 self.dispatch(authError)
                 return
             }
-            self.dispatch(deliveryDetails)
+            let nextStep = AuthResetPasswordStep.confirmResetPasswordWithCode(deliveryDetails, nil)
+            let authResetPasswordResult = AuthResetPasswordResult(isPasswordReset: false, nextStep: nextStep)
+            self.dispatch(authResetPasswordResult)
         }
-        catch let error as ResendConfirmationCodeOutputError {
+        catch let error as ForgotPasswordOutputError {
             self.dispatch(error.authError)
         }
-        catch let error as SdkError<ResendConfirmationCodeOutputError> {
+        catch let error as SdkError<ForgotPasswordOutputError> {
             self.dispatch(error.authError)
         }
         catch let error as AuthError {
@@ -98,7 +100,7 @@ public class AWSAuthResendSignUpCodeOperation:
         }
     }
     
-    private func dispatch(_ result: AuthCodeDeliveryDetails) {
+    private func dispatch(_ result: AuthResetPasswordResult) {
         let result = OperationResult.success(result)
         dispatch(result: result)
         finish()
