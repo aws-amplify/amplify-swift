@@ -93,10 +93,7 @@ public class AWSAuthResendSignUpCodeOperation:
             self.dispatch(error)
         }
         catch let error {
-            let error = AuthError.configuration(
-                "Unable to create a Swift SDK user pool service",
-                AuthPluginErrorConstants.configurationError,
-                error)
+            let error = AuthError.unknown("Unable to create a Swift SDK user pool service", error)
             self.dispatch(error)
         }
     }
