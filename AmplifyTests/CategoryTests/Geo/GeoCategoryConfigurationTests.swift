@@ -237,7 +237,7 @@ class GeoCategoryConfigurationTests: XCTestCase {
         }
     }
 
-    func testCanConfigureAfterReset() throws {
+    func testCanConfigureAfterReset() async throws {
         let plugin = MockGeoCategoryPlugin()
         try Amplify.add(plugin: plugin)
         let categoryConfig = GeoCategoryConfiguration(
@@ -246,11 +246,7 @@ class GeoCategoryConfigurationTests: XCTestCase {
 
         try Amplify.Geo.configure(using: categoryConfig)
 
-        let exp = expectation(description: #function)
-        Amplify.Geo.reset {
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
+        await Amplify.Geo.reset()
 
         XCTAssertNoThrow(try Amplify.Geo.configure(using: categoryConfig))
     }

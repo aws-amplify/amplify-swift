@@ -22,10 +22,9 @@ class AWSAPICategoryPluginReachabilityTests: XCTestCase {
         apiPlugin = AWSAPIPlugin()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         if let api = apiPlugin {
-            api.reset {
-            }
+            await api.reset()
         }
     }
 

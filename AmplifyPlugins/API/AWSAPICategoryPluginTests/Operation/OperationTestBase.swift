@@ -15,18 +15,9 @@ class OperationTestBase: XCTestCase {
 
     var apiPlugin: AWSAPIPlugin!
 
-    /// There are no throwing methods in this, but in order to let subclasses have a predictable way
-    /// of setting up plugins, this base class uses `setUpWithError` instead of `setUp`. (XCTest
-    /// lifecycle normally invokes `setUp` after `setUpWithError`, which means that any state config
-    /// done inside of a subclass' `setUpWithError` could be erased by this class' call to
-    /// `AWSAPIPlugin.reset` from inside `setUp`.
-    override func setUpWithError() throws {
+    override func setUp() async throws {
         if apiPlugin != nil {
-            let waitForReset = DispatchSemaphore(value: 0)
-            apiPlugin.reset {
-                waitForReset.signal()
-            }
-            waitForReset.wait()
+            await apiPlugin.reset()
         }
         apiPlugin = nil
     }

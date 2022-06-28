@@ -20,7 +20,7 @@ class AWSLocationGeoPluginConfigureTests: AWSLocationGeoPluginTestBase {
     // MARK: - Configuration tests
 
     func testConfigureSuccess() {
-        geoPlugin.reset {}
+        geoPlugin.reset()
 
         do {
             try geoPlugin.configure(using: GeoPluginTestConfig.geoPluginConfigJSON)

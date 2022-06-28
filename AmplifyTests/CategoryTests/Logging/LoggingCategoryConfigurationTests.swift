@@ -245,7 +245,7 @@ class LoggingCategoryConfigurationTests: XCTestCase {
         }
     }
 
-    func testCanConfigureAfterReset() throws {
+    func testCanConfigureAfterReset() async throws {
         let plugin = MockLoggingCategoryPlugin()
         try Amplify.add(plugin: plugin)
         let categoryConfig = LoggingCategoryConfiguration(
@@ -254,11 +254,7 @@ class LoggingCategoryConfigurationTests: XCTestCase {
 
         try Amplify.Logging.configure(using: categoryConfig)
 
-        let exp = expectation(description: #function)
-        Amplify.Logging.reset {
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
+        await Amplify.Logging.reset()
 
         XCTAssertNoThrow(try Amplify.Logging.configure(using: categoryConfig))
     }

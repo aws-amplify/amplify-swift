@@ -82,12 +82,8 @@ extension Amplify {
     }
 
     private static func reset(_ candidate: Any) async {
-        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) -> Void in
-            guard let resettable = candidate as? Resettable else { return }
-            
-            resettable.reset {
-                continuation.resume()
-            }
-        }
+        guard let resettable = candidate as? Resettable else { return }
+        
+        await resettable.reset()
     }
 }

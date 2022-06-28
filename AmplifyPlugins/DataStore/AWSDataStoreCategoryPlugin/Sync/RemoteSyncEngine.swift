@@ -425,9 +425,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 extension RemoteSyncEngine: DefaultLogger { }
 
 extension RemoteSyncEngine: Resettable {
-    func reset(onComplete: @escaping BasicClosure) {
-        let group = DispatchGroup()
-
+    func reset() async {
         let mirror = Mirror(reflecting: self)
         for child in mirror.children {
             let label = child.label ?? "some RemoteSyncEngine child"
@@ -438,16 +436,10 @@ extension RemoteSyncEngine: Resettable {
             }
 
             if let resettable = child.value as? Resettable {
-                group.enter()
                 log.verbose("Resetting \(label)")
-                resettable.reset {
-                    self.log.verbose("Resetting \(label): finished")
-                    group.leave()
-                }
+                await resettable.reset()
+                self.log.verbose("Resetting \(label): finished")
             }
         }
-
-        group.wait()
-        onComplete()
     }
 }

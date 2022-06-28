@@ -14,9 +14,9 @@ class PersistentLoggingPluginTests: XCTestCase {
 
     let provider = MockDevMenuContextProvider()
 
-    override func setUp() {
+    override func setUp() async throws {
         do {
-            Amplify.enableDevMenu(contextProvider: provider)
+            await Amplify.enableDevMenu(contextProvider: provider)
 
             /// After await Amplify.reset() is called in teardown(), Amplify.configure() doesn't
             /// initialize the plugin for LoggingCategory . This doesn't call Amplify.getLoggingCategoryPlugin()

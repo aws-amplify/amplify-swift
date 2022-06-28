@@ -246,7 +246,7 @@ class APICategoryConfigurationTests: XCTestCase {
         }
     }
 
-    func testCanConfigureAfterReset() throws {
+    func testCanConfigureAfterReset() async throws {
         let plugin = MockAPICategoryPlugin()
         try Amplify.add(plugin: plugin)
         let categoryConfig = APICategoryConfiguration(
@@ -260,11 +260,7 @@ class APICategoryConfigurationTests: XCTestCase {
 
         try api.configure(using: categoryConfig)
 
-        let exp = expectation(description: #function)
-        api.reset {
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
+        await api.reset()
 
         XCTAssertNoThrow(try api.configure(using: categoryConfig))
     }

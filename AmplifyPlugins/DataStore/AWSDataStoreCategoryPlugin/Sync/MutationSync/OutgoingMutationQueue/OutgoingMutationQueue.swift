@@ -150,20 +150,18 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     /// - doneStopping
     private func doStop(completion: @escaping BasicClosure) {
         log.verbose(#function)
-        doStopWithoutNotifyingStateMachine {
-            self.stateMachine.notify(action: .doneStopping)
-            completion()
-        }
+        doStopWithoutNotifyingStateMachine()
+        self.stateMachine.notify(action: .doneStopping)
+        completion()
     }
 
-    private func doStopWithoutNotifyingStateMachine(completion: @escaping BasicClosure) {
+    private func doStopWithoutNotifyingStateMachine() {
         log.verbose(#function)
         subscription?.cancel()
         subscription = nil
         operationQueue.cancelAllOperations()
         operationQueue.isSuspended = true
         operationQueue.waitUntilAllOperationsAreFinished()
-        completion()
     }
 
     // MARK: - Event loop processing
@@ -411,8 +409,8 @@ extension OutgoingMutationQueue: Subscriber {
 }
 
 extension OutgoingMutationQueue: Resettable {
-    func reset(onComplete: @escaping BasicClosure) {
-        doStopWithoutNotifyingStateMachine(completion: onComplete)
+    func reset() {
+        doStopWithoutNotifyingStateMachine()
     }
 }
 

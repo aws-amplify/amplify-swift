@@ -18,9 +18,8 @@ class MockHubCategoryPlugin: MessageReporter, HubCategoryPlugin {
         notify()
     }
 
-    func reset(onComplete: @escaping BasicClosure) {
+    func reset() {
         notify("reset")
-        onComplete()
     }
 
     func dispatch(to channel: HubChannel, payload: HubPayload) {

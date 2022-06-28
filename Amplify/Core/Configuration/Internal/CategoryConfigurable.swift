@@ -21,6 +21,6 @@ protocol CategoryConfigurable: AnyObject, CategoryTypeable {
     func configure(using amplifyConfiguration: AmplifyConfiguration) throws
 
     /// Clears the category configurations, and invokes `reset` on each added plugin
-    func reset(onComplete: @escaping BasicClosure)
+    func reset() async
 
 }

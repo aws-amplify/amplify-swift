@@ -12,6 +12,7 @@ extension Amplify {
 #if canImport(UIKit)
     static var devMenu: AmplifyDevMenu?
 
+    @MainActor
     public static func enableDevMenu(contextProvider: DevMenuPresentationContextProvider) {
 #if DEBUG
         devMenu = AmplifyDevMenu(devMenuPresentationContextProvider: contextProvider)

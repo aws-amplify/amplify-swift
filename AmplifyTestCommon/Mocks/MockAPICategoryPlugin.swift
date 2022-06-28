@@ -42,10 +42,9 @@ class MockAPICategoryPlugin: MessageReporter,
         notify("configure")
     }
 
-    func reset(onComplete: @escaping BasicClosure) {
+    func reset() {
         notify("reset")
         listeners.set([])
-        onComplete()
     }
 
     // MARK: - Request-based GraphQL methods
