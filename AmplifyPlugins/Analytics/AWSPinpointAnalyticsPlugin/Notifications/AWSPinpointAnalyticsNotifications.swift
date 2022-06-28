@@ -13,10 +13,16 @@ import Amplify
 
 public class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotificationsBehavior {
     private var previousEventSource: EventSource = .unknown
-    private let context: PinpointContext
+    private let analyticsClient: AnalyticsClientBehaviour
+    private let targetingClient: AWSPinpointTargetingClientBehavior
+    private let userDefaults: UserDefaultsBehaviour
     
-    internal init(context: PinpointContext) {
-        self.context = context
+    internal init(analyticsClient: AnalyticsClientBehaviour,
+                  targetingClient: AWSPinpointTargetingClientBehavior,
+                  userDefaults: UserDefaultsBehaviour) {
+        self.analyticsClient = analyticsClient
+        self.targetingClient = targetingClient
+        self.userDefaults = userDefaults
     }
     
     // MARK: - Public APIs
@@ -39,15 +45,15 @@ public class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotification
     }
     
     public func interceptDidRegisterForRemoteNotificationsWithDeviceToken(deviceToken: Data) {
-        let currentToken = self.context.userDefaults.data(forKey: PinpointContext.Constants.Notifications.deviceTokenKey)
+        let currentToken = self.userDefaults.data(forKey: PinpointContext.Constants.Notifications.deviceTokenKey)
         guard currentToken != deviceToken else {
             return
         }
         
-        self.context.userDefaults.save(deviceToken, forKey: PinpointContext.Constants.Notifications.deviceTokenKey)
+        self.userDefaults.save(deviceToken, forKey: PinpointContext.Constants.Notifications.deviceTokenKey)
         Task {
             do {
-                try await self.context.targetingClient.updateEndpointProfile()
+                try await self.targetingClient.updateEndpointProfile()
             } catch {
                 log.error("Failed updating endpoint profile with error: \(error)")
             }
@@ -119,7 +125,7 @@ public class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotification
                                             withIdentifier identifier: String? = nil) async {
         guard let pushNotificationEvent = PinpointEvent.makeEvent(eventSource: eventSource,
                                                                   pushAction: pushAction,
-                                                                  usingClient: self.context.analyticsClient) else {
+                                                                  usingClient: self.analyticsClient) else {
             log.error("Invalid Pinpoint push notification event.")
             return
         }
@@ -132,7 +138,7 @@ public class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotification
         pushNotificationEvent.addSourceMetadata(metadata)
         
         do {
-            try await self.context.analyticsClient.record(pushNotificationEvent)
+            try await self.analyticsClient.record(pushNotificationEvent)
         } catch {
             log.error("Failed recording event with error \(error)")
         }
@@ -188,18 +194,18 @@ extension AWSPinpointAnalyticsNotifications {
         // This is to prevent _globalAttributes containing attributes from multiple event sources (campaign/journey)
         if eventSource != previousEventSource && eventSource != .unknown {
             // remove all global attributes
-            await self.context.analyticsClient.removeAllGlobalEventSourceAttributes()
+            await self.analyticsClient.removeAllGlobalEventSourceAttributes()
             previousEventSource = eventSource
         }
         
-        await self.context.analyticsClient.setGlobalEventSourceAttributes(eventMetadata)
+        await self.analyticsClient.setGlobalEventSourceAttributes(eventMetadata)
         
         for (key, value) in eventMetadata {
             guard let value = value as? String else {
                 log.debug("Skipping metadata with key \(key) because has a value of type \(type(of: value)).")
                 continue
             }
-            await self.context.analyticsClient.addGlobalAttribute(value, forKey: key)
+            await self.analyticsClient.addGlobalAttribute(value, forKey: key)
         }
         
     }
@@ -207,30 +213,34 @@ extension AWSPinpointAnalyticsNotifications {
 
 // MARK: - AWSPinpointAnalyticsNotifications + handleDeepLink
 extension AWSPinpointAnalyticsNotifications {
-    func handleDeepLinkForNotification(userInfo: UserInfo) {
+    typealias CanOpenURL = (URL) -> Bool
+    func handleDeepLinkForNotification(userInfo: UserInfo,
+                                       canOpenURL: CanOpenURL? = nil){
+#if canImport(UIKit)
+        let canOpenURL = canOpenURL ?? UIApplication.shared.canOpenURL
+#else
+        let canOpenURL = canOpenURL ?? {_ in false }
+#endif
+
         guard let payload = pinpointPayloadFromNotificationPayload(notification: userInfo) as? [String: String],
               let deepLink = payload[PinpointContext.Constants.Notifications.deeplinkKey],
               let deepLinkURL = URL(string: deepLink) else {
             return
         }
-        
-#if canImport(UIKit)
-        if UIApplication.shared.canOpenURL(deepLinkURL) {
+        if canOpenURL(deepLinkURL) {
             DispatchQueue.main.async {
                 UIApplication.shared.open(deepLinkURL)
             }
         }
-#endif
     }
 }
 
 // MARK: - AWSPinpointAnalyticsNotifications + AWSPinpointPushAction
 extension AWSPinpointAnalyticsNotifications {
-    func makePinpointPushAction(fromEvent pushEvent: AWSPinpointPushEvent) -> AWSPinpointPushAction {
-        var pushActionType: AWSPinpointPushAction
-
 #if canImport(UIKit)
-        let appState = UIApplication.shared.applicationState
+    func makePinpointPushAction(fromEvent pushEvent: AWSPinpointPushEvent,
+                                appState: UIApplication.State = UIApplication.shared.applicationState) -> AWSPinpointPushAction {
+        var pushActionType: AWSPinpointPushAction
         switch appState {
         case .active:
             pushActionType = pushEvent == .received ? .receivedForeground : .openedNotification
@@ -241,11 +251,13 @@ extension AWSPinpointAnalyticsNotifications {
         @unknown default:
             pushActionType = .unknown
         }
-#else
-        pushActionType = .unknown
-#endif
         return pushActionType
     }
+#else
+    func makePinpointPushAction(fromEvent pushEvent: AWSPinpointPushEvent) -> AWSPinpointPushAction {
+        .unknown
+    }
+#endif
 }
 
 // MARK: - AWSPinpointAnalyticsNotifications + EventSourceType
@@ -265,7 +277,7 @@ extension AWSPinpointAnalyticsNotifications: DefaultLogger {}
 extension PinpointEvent {
     static func makeEvent(eventSource: AWSPinpointAnalyticsNotifications.EventSource,
                           pushAction: AWSPinpointPushAction,
-                          usingClient analyticClient: AnalyticsClient) -> PinpointEvent? {
+                          usingClient analyticClient: AnalyticsClientBehaviour) -> PinpointEvent? {
         
         guard pushAction != .unknown else {
             return nil
@@ -312,7 +324,7 @@ extension PinpointEvent {
 
 
 // MARK: - Constants + notifications
-fileprivate extension PinpointContext.Constants {
+extension PinpointContext.Constants {
     enum Notifications {
         static let actionIdentifierKey = "actionIdentifier"
         static let deviceTokenKey = "com.amazonaws.AWSDeviceTokenKey"

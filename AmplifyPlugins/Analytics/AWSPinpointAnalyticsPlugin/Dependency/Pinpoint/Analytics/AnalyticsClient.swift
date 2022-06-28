@@ -22,6 +22,10 @@ protocol AnalyticsClientBehaviour: Actor {
     func removeGlobalMetric(forKey key: String)
     func removeGlobalMetric(forKey key: String, forEventType eventType: String)
     func record(_ event: PinpointEvent) async throws
+    
+    func setGlobalEventSourceAttributes(_ attributes: [String: Any])
+    func removeAllGlobalEventSourceAttributes()
+    
     @discardableResult func submitEvents() async throws -> [PinpointEvent]
 
     nonisolated func createAppleMonetizationEvent(with transaction: SKPaymentTransaction,
@@ -31,6 +35,7 @@ protocol AnalyticsClientBehaviour: Actor {
                                                     withQuantity quantity: Int,
                                         withCurrency currency: String) -> PinpointEvent
     nonisolated func createEvent(withEventType eventType: String) -> PinpointEvent
+    
 }
 
 typealias SessionProvider = () -> PinpointSession

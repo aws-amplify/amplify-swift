@@ -41,6 +41,14 @@ actor MockAnalyticsClient: AnalyticsClientBehaviour {
         }
         return PinpointEvent(eventType: eventType, session: PinpointSession(appId: "", uniqueId: ""))
     }
+    
+    func setGlobalEventSourceAttributes(_ attributes: [String : Any]) {
+        
+    }
+    
+    func removeAllGlobalEventSourceAttributes() {
+        
+    }
 
     private var recordExpectation: XCTestExpectation?
     func setRecordExpectation(_ expectation: XCTestExpectation, count: Int = 1) {
