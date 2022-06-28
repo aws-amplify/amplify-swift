@@ -97,10 +97,12 @@ public class AWSAuthDeleteUserOperation: AmplifyOperation<
     private func dispatchSuccess() {
         let result = OperationResult.success(())
         dispatch(result: result)
+        finish()
     }
 
     private func dispatch(_ error: AuthError) {
         let result = OperationResult.failure(error)
         dispatch(result: result)
+        finish()
     }
 }

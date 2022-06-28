@@ -22,23 +22,36 @@ extension DeleteUserState {
             switch oldState {
                 
             case .notStarted:
-                if let deleteUserEvent = event.isDeleteUserEvent,
-                   case .deleteUser(let accessToken) = deleteUserEvent {
+                guard let deleterUserEvent = event.isDeleteUserEvent else {
+                    return .from(oldState)
+                }
+                switch deleterUserEvent {
+                case .deleteUser(let accessToken):
                     let action = DeleteUser(accessToken: accessToken)
                     return .init(newState: .deletingUser, actions: [action])
+                case .throwError(let error):
+                    return .init(newState: .error(error))
+                default:
+                    return .from(oldState)
                 }
-                return .from(oldState)
                 
             case .deletingUser:
-                if case .signOutDeletedUser = event.isDeleteUserEvent {
+                guard let deleterUserEvent = event.isDeleteUserEvent else {
+                    return .from(oldState)
+                }
+                switch deleterUserEvent {
+                case .signOutDeletedUser:
                     let action = InitiateSignOut(
                         signedInData: signedInData,
                         signOutEventData: SignOutEventData(globalSignOut: true)
                     )
                     let newState = DeleteUserState.signingOut(.notStarted)
                     return .init(newState: newState, actions: [action])
+                case .throwError(let error):
+                    return .init(newState: .error(error))
+                default:
+                    return .from(oldState)
                 }
-                return .from(oldState)
                 
             case .signingOut(let signOutState):
                 return resolveSigningOutState(byApplying: event, to: signOutState)

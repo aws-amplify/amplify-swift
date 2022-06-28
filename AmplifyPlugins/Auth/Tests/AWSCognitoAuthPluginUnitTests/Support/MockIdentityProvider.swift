@@ -47,6 +47,9 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     typealias MockResendConfirmationCodeOutputResponse = (ResendConfirmationCodeInput) async throws
     -> ResendConfirmationCodeOutputResponse
 
+    typealias MockDeleteUserOutputResponse = (DeleteUserInput) async throws
+    -> DeleteUserOutputResponse
+
     let mockSignUpResponse: MockSignUpResponse?
     let mockRevokeTokenResponse: MockRevokeTokenResponse?
     let mockInitiateAuthResponse: MockInitiateAuthResponse?
@@ -59,6 +62,7 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     let mockConfirmUserAttributeOutputResponse: MockConfirmUserAttributeOutputResponse?
     let mockChangePasswordOutputResponse: MockChangePasswordOutputResponse?
     let mockResendConfirmationCodeOutputResponse: MockResendConfirmationCodeOutputResponse?
+    let mockDeleteUserOutputResponse: MockDeleteUserOutputResponse?
 
     init(
         mockSignUpResponse: MockSignUpResponse? = nil,
@@ -72,7 +76,8 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         mockUpdateUserAttributeResponse: MockUpdateUserAttributesOutputResponse? = nil,
         mockConfirmUserAttributeOutputResponse: MockConfirmUserAttributeOutputResponse? = nil,
         mockChangePasswordOutputResponse: MockChangePasswordOutputResponse? = nil,
-        mockResendConfirmationCodeOutputResponse: MockResendConfirmationCodeOutputResponse? = nil
+        mockResendConfirmationCodeOutputResponse: MockResendConfirmationCodeOutputResponse? = nil,
+        mockDeleteUserOutputResponse: MockDeleteUserOutputResponse? = nil
     ) {
         self.mockSignUpResponse = mockSignUpResponse
         self.mockRevokeTokenResponse = mockRevokeTokenResponse
@@ -86,6 +91,7 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         self.mockConfirmUserAttributeOutputResponse = mockConfirmUserAttributeOutputResponse
         self.mockChangePasswordOutputResponse = mockChangePasswordOutputResponse
         self.mockResendConfirmationCodeOutputResponse = mockResendConfirmationCodeOutputResponse
+        self.mockDeleteUserOutputResponse = mockDeleteUserOutputResponse
     }
 
     /// Throws InitiateAuthOutputError
@@ -142,5 +148,9 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     
     func resendConfirmationCode(input: ResendConfirmationCodeInput) async throws -> ResendConfirmationCodeOutputResponse {
         return try await mockResendConfirmationCodeOutputResponse!(input)
+    }
+
+    func deleteUser(input: DeleteUserInput) async throws -> DeleteUserOutputResponse {
+        return try await mockDeleteUserOutputResponse!(input)
     }
 }

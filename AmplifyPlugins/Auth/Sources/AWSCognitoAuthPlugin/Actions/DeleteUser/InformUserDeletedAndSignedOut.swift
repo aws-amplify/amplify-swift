@@ -24,7 +24,7 @@ struct InformUserDeletedAndSignedOut: Action {
         case .success(let signedOutData):
             event = DeleteUserEvent(eventType: .userSignedOutAndDeleted(signedOutData))
         case .failure(let error):
-            event = DeleteUserEvent(eventType: .throwError)
+            event = DeleteUserEvent(eventType: .throwError(error))
         }
         
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)

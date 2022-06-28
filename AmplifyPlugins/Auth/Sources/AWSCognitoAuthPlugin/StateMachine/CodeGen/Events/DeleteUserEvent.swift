@@ -18,7 +18,7 @@ struct DeleteUserEvent: StateMachineEvent {
 
         case userSignedOutAndDeleted(SignedOutData)
         
-        case throwError
+        case throwError(AuthError)
 
     }
 

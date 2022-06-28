@@ -60,20 +60,6 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
         }
         XCTAssertNotNil(operation, "SignIn operation should not be nil")
         wait(for: [operationExpectation], timeout: networkTimeout)
-        
-        
-        let deleteUserExpectation = expectation(description: "User should be deleted")
-
-        Amplify.Auth.deleteUser { result  in
-            switch result {
-            case .success:
-                deleteUserExpectation.fulfill()
-            case .failure(let error):
-                XCTFail("Failed to delete user with error: \(error)")
-            }
-        }
-        wait(for: [deleteUserExpectation], timeout: networkTimeout)
-
     }
 
     /// Test signIn with empty username password

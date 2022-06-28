@@ -46,12 +46,16 @@ struct DeleteUser: Action {
             do {
                 _ = try await client.deleteUser(input: input)
                 event = DeleteUserEvent(eventType: .signOutDeletedUser)
-                logVerbose("\(#fileID) Revoke token succeeded", environment: environment)
+                logVerbose("\(#fileID) Delete User succeeded", environment: environment)
             } catch let error as DeleteUserOutputError {
-                event = DeleteUserEvent(eventType: .throwError)
-                logVerbose("\(#fileID) Revoke token failed \(error)", environment: environment)
+                event = DeleteUserEvent(eventType: .throwError(error.authError))
+                logVerbose("\(#fileID) Delete User failed \(error)", environment: environment)
             } catch let error {
-                event = DeleteUserEvent(eventType: .throwError)
+                let authError = AuthError.service(
+                    "Delete user failed with service error",
+                    AmplifyErrorMessages.reportBugToAWS(),
+                    error)
+                event = DeleteUserEvent(eventType: .throwError(authError))
                 logVerbose("\(#fileID) Revoke token failed \(error)", environment: environment)
             }
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
