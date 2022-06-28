@@ -39,13 +39,22 @@ public class AWSAuthDeleteUserOperation: AmplifyOperation<
         fetchAuthSessionHelper.fetch(authStateMachine) { [weak self] result in
             switch result {
             case .success(let session):
-                guard let cognitoTokenProvider = session as? AuthCognitoTokensProvider,
-                      let tokens = try? cognitoTokenProvider.getCognitoTokens().get() else {
+                guard let cognitoTokenProvider = session as? AuthCognitoTokensProvider else {
                     self?.dispatch(AuthError.unknown("Unable to fetch auth session", nil))
                     return
                 }
-                Task.init { [weak self] in
-                    await self?.deleteUser(with: tokens.accessToken)
+                
+                do {
+                    let tokens = try cognitoTokenProvider.getCognitoTokens().get()
+                    
+                    Task.init { [weak self] in
+                        await self?.deleteUser(with: tokens.accessToken)
+                    }
+                    
+                } catch let error as AuthError {
+                    self?.dispatch(error)
+                } catch {
+                    self?.dispatch(AuthError.unknown("Unable to fetch auth session", error))
                 }
             case .failure(let error):
                 self?.dispatch(error)

@@ -71,7 +71,7 @@ class FetchAuthSessionOperationHelper {
                     authStateMachine.send(event)
                 }
 
-            case .refreshingSession, .fetchingUnAuthSession, .fetchingAuthSessionWithUserPool:
+            case .refreshingSession, .fetchingUnAuthSession, .fetchingAuthSessionWithUserPool, .signingIn:
                 self.listenForSession(authStateMachine: authStateMachine, completion: completion)
 
             case .error(let error):
