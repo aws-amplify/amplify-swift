@@ -1,0 +1,23 @@
+name: Feature request label added.
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  issues: write
+
+jobs:
+  project:
+    name: Feature request message
+    runs-on: ubuntu-latest
+    if: ${{ github.event.label.name == 'feature-request' }}
+
+    steps:
+      - name: add feature request comment
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment $ISSUE_NUMBER --repo aws-amplify/amplify-ios -b "This has been identified as a feature request. If this feature is important to you, we strongly encourage you to give a 👍 reaction on the request. This helps us prioritize new features most important to you. Thank you!"
