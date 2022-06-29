@@ -215,7 +215,7 @@ actor EndpointClient: EndpointClientBehaviour {
     }
 
     nonisolated private func getChannelType(from endpointProfile: PinpointEndpointProfile) -> PinpointClientTypes.ChannelType {
-        return endpointProfile.isDebug ? .apns : .apnsSandbox
+        return endpointProfile.isDebug ? .apnsSandbox : .apns
     }
 
     nonisolated private func getEffectiveDateIso8601FractionalSeconds(from endpointProfile: PinpointEndpointProfile) -> String {

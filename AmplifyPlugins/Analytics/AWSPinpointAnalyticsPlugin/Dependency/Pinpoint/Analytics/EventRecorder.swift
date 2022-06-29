@@ -99,7 +99,7 @@ class EventRecorder: AnalyticsEventRecording {
         do {
             let response = try await pinpointClient.putEvents(input: putEventsInput)
             guard let results = response.eventsResponse?.results else {
-                log.error("Unexpected response from server when atempting to submit events.")
+                log.error("Unexpected response from server when attempting to submit events.")
                 return
             }
 
@@ -120,31 +120,73 @@ class EventRecorder: AnalyticsEventRecording {
                     // On successful submission, add the event to the list of submitted events and delete it from the local storage
                     log.verbose("Successful submit for event with id \(eventId)")
                     submittedEvents.append(event)
-                    try self.storage.deleteEvent(eventId: event.id)
+                    deleteEvent(eventId: eventId)
                 } else if Constants.StatusCode.badRequest == eventResponse.statusCode {
                     // Mark event as dirty
                     log.error("Server rejected submission of event. Event with id \(eventId) will be marked dirty.")
-                    try storage.setDirtyEvent(eventId: eventId)
+                    setDirtyEvent(eventId: eventId)
                 } else {
                     // Mark event as retryable
                     log.warn("Unable to successfully deliver event with id \(eventId) to the server. It will be updated with retry count += 1.")
-                    try storage.incrementEventRetry(eventId: eventId)
+                    incrementEventRetry(eventId: eventId)
                 }
             }
-
         } catch {
             // This means all events were rejected, so we will update them all in the local storage accodingly
-            var isRetryable = false
-            if let sdkError = error as? SdkError<Any> {
-                isRetryable = sdkError.isRetryable
-            }
-
+            let isRetryable = isErrorRetryable(error)
             for event in pinpointEvents {
                 if isRetryable {
                     try self.storage.incrementEventRetry(eventId: event.id)
                 } else {
                     try self.storage.setDirtyEvent(eventId: event.id)
                 }
+            }
+        }
+    }
+
+    private func isErrorRetryable(_ error: Error) -> Bool {
+        switch error {
+        case let clientError as ClientError:
+            return clientError.isRetryable
+        case let putEventsOutputError as PutEventsOutputError:
+            return putEventsOutputError.isRetryable
+        case let sdkPutEventsOutputError as SdkError<PutEventsOutputError>:
+            return sdkPutEventsOutputError.isRetryable
+        case let sdkError as SdkError<Error>:
+            return sdkError.isRetryable
+        default:
+            return false
+        }
+    }
+
+    private func deleteEvent(eventId: String) {
+        retry(onErrorMessage: "Unable to delete event with id \(eventId).") {
+            try storage.deleteEvent(eventId: eventId)
+        }
+    }
+
+    private func setDirtyEvent(eventId: String) {
+        retry(onErrorMessage: "Unable to mark event with id \(eventId) as dirty.") {
+            try storage.setDirtyEvent(eventId: eventId)
+        }
+    }
+
+    private func incrementEventRetry(eventId: String) {
+        retry(onErrorMessage: "Unable to update retry count for event with id \(eventId).") {
+            try storage.incrementEventRetry(eventId: eventId)
+        }
+    }
+
+    private func retry(times: Int = 1, onErrorMessage: String, _ closure: () throws -> ()) {
+        do {
+            try closure()
+        } catch {
+            if times > 0 {
+                log.verbose("\(onErrorMessage). Retrying.")
+                retry(times: times - 1, onErrorMessage: onErrorMessage, closure)
+            } else {
+                log.error(onErrorMessage)
+                log.error(error: error)
             }
         }
     }

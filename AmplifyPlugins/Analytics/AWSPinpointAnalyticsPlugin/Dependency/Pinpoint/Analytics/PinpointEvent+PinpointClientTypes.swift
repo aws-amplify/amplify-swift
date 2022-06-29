@@ -31,18 +31,18 @@ extension PinpointEvent {
 
 extension Bundle {
     var appPackageName: String {
-        return object(forInfoDictionaryKey: "CFBundleIdentifier") as? String ?? ""
+        object(forInfoDictionaryKey: "CFBundleIdentifier") as? String ?? ""
     }
 
     var appName: String {
-        return object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ?? ""
+        object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ?? ""
     }
 
     var appBuild: String {
-        return object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? ""
+        object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? ""
     }
 
     var appVersion: String {
-        return object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
+        object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
     }
 }
