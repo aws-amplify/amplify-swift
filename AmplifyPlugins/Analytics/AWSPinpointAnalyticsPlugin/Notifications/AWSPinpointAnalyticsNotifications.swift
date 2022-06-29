@@ -1,8 +1,8 @@
 //
-//  File.swift
-//  
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
 //
-//  Created by Costantino, Diego on 2022-05-31.
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import Foundation
@@ -188,7 +188,11 @@ extension AWSPinpointAnalyticsNotifications {
             previousEventSource = eventSource
         }
         
-        await self.analyticsClient.setGlobalEventSourceAttributes(eventMetadata)
+        do {
+            try await self.analyticsClient.setGlobalEventSourceAttributes(eventMetadata)
+        } catch {
+            self.log.error("Failed setting event source metadata")
+        }
         
         for (key, value) in eventMetadata {
             guard let value = value as? String else {

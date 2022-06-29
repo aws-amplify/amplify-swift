@@ -23,7 +23,7 @@ protocol AnalyticsClientBehaviour: Actor {
     func removeGlobalMetric(forKey key: String, forEventType eventType: String)
     func record(_ event: PinpointEvent) async throws
     
-    func setGlobalEventSourceAttributes(_ attributes: [String: Any])
+    func setGlobalEventSourceAttributes(_ attributes: [String: Any]) throws
     func removeAllGlobalEventSourceAttributes()
     
     @discardableResult func submitEvents() async throws -> [PinpointEvent]
@@ -94,11 +94,16 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
         eventTypeMetrics[eventType, default: [:]][key] = metric
     }
     
-    func setGlobalEventSourceAttributes(_ attributes: [String: Any]) {
+    func setGlobalEventSourceAttributes(_ attributes: [String: Any]) throws {
+        guard let attributes = attributes as? [String: String] else {
+            return
+        }
         globalEventSourceAttributes = attributes
+        let sessionId = self.sessionProvider().sessionId
         
-        // TODO: update event 
-        // [eventRecorder updateSessionStartWithEventSourceAttributes:attributes]
+        try eventRecorder.updateAttributesOfEvents(ofType: "_session.start",
+                                                   withSessionId: sessionId,
+                                                   setAttributes: attributes)
     }
     
     func removeGlobalAttribute(forKey key: String) {

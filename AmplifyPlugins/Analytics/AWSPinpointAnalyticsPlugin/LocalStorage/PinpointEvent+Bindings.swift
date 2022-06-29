@@ -41,6 +41,10 @@ extension PinpointEvent {
             0 // RetryCount
         ]
     }
+    
+    static func archiveEventAttributes(_ attributes: [String: String]) -> Binding? {
+        try? archiver.encode(attributes).base64EncodedString()
+    }
 
     /// Converts a SQL Statement element to a pinpoint event based on predefined/known property index of columns/index
     /// - Parameters:
