@@ -19,7 +19,7 @@ extension StorageCategory: Resettable {
                 }
             }
         }
-        
+
         isConfigured = false
     }
 

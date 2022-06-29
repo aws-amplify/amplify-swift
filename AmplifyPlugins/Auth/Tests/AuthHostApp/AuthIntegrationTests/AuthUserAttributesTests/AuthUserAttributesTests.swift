@@ -282,7 +282,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         }
         wait(for: [resendExpectation], timeout: networkTimeout)
     }
-    
+
     /// Test changing/updating users password.
     ///
     /// - Given: A confirmed user signed In
@@ -316,7 +316,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
             }
         }
         wait(for: [changePasswordExpectation], timeout: networkTimeout)
-        
+
         let fetchUserAttributeExpectation = expectation(description: "Fetch User Attribute operation should complete")
 
         _ = Amplify.Auth.fetchUserAttributes(listener: { result in

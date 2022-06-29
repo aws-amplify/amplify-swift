@@ -196,7 +196,7 @@ actor EndpointClient: EndpointClientBehaviour {
                                    endpointId: endpointProfile.endpointId,
                                    endpointRequest: endpointRequest)
     }
-    
+
     func currentPublicEndpoint() -> PinpointClientTypes.PublicEndpoint {
         let endpointProfile = currentEndpointProfile()
         let channelType = getChannelType(from: endpointProfile)
@@ -214,7 +214,7 @@ actor EndpointClient: EndpointClientBehaviour {
             user: endpointProfile.user)
         return publicEndpoint
     }
-    
+
     private func getChannelType(from endpointProfile: PinpointEndpointProfile) -> PinpointClientTypes.ChannelType {
         return endpointProfile.isDebug ? .apns : .apnsSandbox
     }

@@ -15,7 +15,7 @@ class BaseUserBehaviorTest: XCTestCase {
     let apiTimeout = 2.0
     var mockIdentityProvider: CognitoUserPoolBehavior!
     var plugin: AWSCognitoAuthPlugin!
-    
+
     var initialState: AuthState {
         AuthState.configured(
             AuthenticationState.signedIn(
@@ -26,7 +26,7 @@ class BaseUserBehaviorTest: XCTestCase {
 
     override func setUp() {
         plugin = AWSCognitoAuthPlugin()
-        
+
         let getId: MockIdentity.MockGetIdResponse = { _ in
             return .init(identityId: "mockIdentityId")
         }
@@ -38,20 +38,20 @@ class BaseUserBehaviorTest: XCTestCase {
                                                                      sessionToken: "session")
             return .init(credentials: credentials, identityId: "responseIdentityID")
         }
-        
+
         let mockIdentity = MockIdentity(
             mockGetIdResponse: getId,
             mockGetCredentialsResponse: getCredentials)
-        
+
         let environment = Defaults.makeDefaultAuthEnvironment(
             identityPoolFactory: { mockIdentity },
             userPoolFactory: { self.mockIdentityProvider })
-        
+
         let statemachine = Defaults.makeDefaultAuthStateMachine(
             initialState: initialState,
             identityPoolFactory: { mockIdentity },
             userPoolFactory: { self.mockIdentityProvider })
-        
+
         _ = statemachine.listen { state in
             switch state {
             case .configured(_, let authorizationState):
@@ -64,7 +64,7 @@ class BaseUserBehaviorTest: XCTestCase {
             default: break
             }
         } onSubscribe: {}
-        
+
         plugin?.configure(
             authConfiguration: Defaults.makeDefaultAuthConfigData(),
             authEnvironment: environment,

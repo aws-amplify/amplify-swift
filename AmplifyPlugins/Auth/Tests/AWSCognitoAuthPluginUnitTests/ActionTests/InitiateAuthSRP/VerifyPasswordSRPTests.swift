@@ -391,7 +391,7 @@ class VerifyPasswordSRPTests: XCTestCase {
 
         let environment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
-        
+
         let data = InitiateAuthOutputResponse.validTestData
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
                                        authResponse: data)

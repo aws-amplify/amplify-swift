@@ -74,7 +74,7 @@ class AWSAuthFetchSignInSessionOperationTests: XCTestCase {
         }
 
         let plugin = configurePluginWith(identityPool: {
-            MockIdentity(mockGetIdResponse:getId,
+            MockIdentity(mockGetIdResponse: getId,
                          mockGetCredentialsResponse: getCredentials) },
                                          initialState: initialState)
 
@@ -177,7 +177,7 @@ class AWSAuthFetchSignInSessionOperationTests: XCTestCase {
                 NotAuthorizedException.init(httpResponse: MockHttpResponse.ok))
         }
 
-        let plugin = configurePluginWith(userPool: { MockIdentityProvider(mockInitiateAuthResponse:initAuth) }, initialState: initialState)
+        let plugin = configurePluginWith(userPool: { MockIdentityProvider(mockInitiateAuthResponse: initAuth) }, initialState: initialState)
         let resultExpectation = expectation(description: "Should receive a result")
         _ = plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options()) { result in
             defer {
@@ -247,8 +247,8 @@ class AWSAuthFetchSignInSessionOperationTests: XCTestCase {
         }
 
         let plugin = configurePluginWith(
-            userPool: { MockIdentityProvider(mockInitiateAuthResponse:initAuth) },
-            identityPool:{ MockIdentity(mockGetCredentialsResponse: awsCredentials) },
+            userPool: { MockIdentityProvider(mockInitiateAuthResponse: initAuth) },
+            identityPool: { MockIdentity(mockGetCredentialsResponse: awsCredentials) },
             initialState: initialState)
 
         let resultExpectation = expectation(description: "Should receive a result")
@@ -487,7 +487,7 @@ class AWSAuthFetchSignInSessionOperationTests: XCTestCase {
         }
 
         let plugin = configurePluginWith(
-            userPool: { MockIdentityProvider(mockInitiateAuthResponse:initAuth) },
+            userPool: { MockIdentityProvider(mockInitiateAuthResponse: initAuth) },
             initialState: initialState)
         let resultExpectation = expectation(description: "Should receive a result")
         _ = plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options()) { result in
@@ -554,7 +554,7 @@ class AWSAuthFetchSignInSessionOperationTests: XCTestCase {
             return GetCredentialsForIdentityOutputResponse(credentials: nil, identityId: "ss")
         }
         let plugin = configurePluginWith(
-            userPool: { MockIdentityProvider(mockInitiateAuthResponse:initAuth) },
+            userPool: { MockIdentityProvider(mockInitiateAuthResponse: initAuth) },
             identityPool: { MockIdentity(mockGetCredentialsResponse: awsCredentials) },
             initialState: initialState)
         let resultExpectation = expectation(description: "Should receive a result")

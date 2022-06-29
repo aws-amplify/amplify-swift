@@ -71,6 +71,6 @@ extension SignInEvent.EventType: Equatable {
             return true
         default: return false
         }
-        
+
     }
 }

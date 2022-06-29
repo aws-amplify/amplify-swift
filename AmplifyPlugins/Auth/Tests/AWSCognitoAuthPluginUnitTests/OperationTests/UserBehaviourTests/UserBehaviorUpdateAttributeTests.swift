@@ -21,14 +21,13 @@ class UserBehaviorUpdateAttributesTests: BaseUserBehaviorTest {
     ///    - I should get a successful result with .done as the next step
     ///
     func testSuccessfulUpdateUserAttributes() {
-        
+
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
             UpdateUserAttributesOutputResponse(codeDeliveryDetailsList: [
                 .init(attributeName: "attributeName",
                       deliveryMedium: .email,
                       destination: "destination")])
         })
-        
 
         let resultExpectation = expectation(description: "Should receive a result")
         _ = plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com")) { result in

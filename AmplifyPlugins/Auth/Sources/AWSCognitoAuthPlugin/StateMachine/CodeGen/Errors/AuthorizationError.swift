@@ -37,7 +37,7 @@ extension AuthorizationError: AuthErrorConvertible {
             }
         case .invalidState(let message):
             return .invalidState(message, AuthPluginErrorConstants.invalidStateError, nil)
-        case .sessionError(_, _):
+        case .sessionError:
             return .invalidState("Session in error", AuthPluginErrorConstants.invalidStateError, nil)
         }
     }

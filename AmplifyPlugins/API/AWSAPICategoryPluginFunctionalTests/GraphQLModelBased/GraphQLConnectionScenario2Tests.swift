@@ -63,7 +63,7 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
         let project2a = Project2(teamID: team2.id, team: team2)
         Amplify.API.mutate(request: .create(project2a)) { result in
             switch result {
-            case .success(_):
+            case .success:
                 createProject2aSuccessful.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")

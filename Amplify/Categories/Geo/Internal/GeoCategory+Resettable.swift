@@ -19,7 +19,7 @@ extension GeoCategory: Resettable {
                 }
             }
         }
-        
+
         isConfigured = false
     }
 }

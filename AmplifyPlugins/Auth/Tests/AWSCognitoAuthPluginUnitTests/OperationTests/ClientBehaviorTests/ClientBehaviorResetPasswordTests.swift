@@ -13,8 +13,8 @@ import AWSCognitoIdentity
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 
-class ClientBehaviorResetPasswordTests : AWSCognitoAuthClientBehaviorTests {
-    
+class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
+
     override func setUp() {
         super.setUp()
         mockIdentityProvider = MockIdentityProvider(
@@ -23,7 +23,7 @@ class ClientBehaviorResetPasswordTests : AWSCognitoAuthClientBehaviorTests {
             }
         )
     }
-    
+
     /// Test resetPassword operation can be invoked
     ///
     /// - Given: Given a configured auth plugin
@@ -59,7 +59,7 @@ class ClientBehaviorResetPasswordTests : AWSCognitoAuthClientBehaviorTests {
         XCTAssertNotNil(operation)
         waitForExpectations(timeout: 1)
     }
-    
+
     /// Test a successful resetPassword call
     ///
     /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response
@@ -141,7 +141,7 @@ class ClientBehaviorResetPasswordTests : AWSCognitoAuthClientBehaviorTests {
                 ForgotPasswordOutputResponse(codeDeliveryDetails: codeDeliveryDetails)
             }
         )
-        
+
         let resultExpectation = expectation(description: "Should receive a result")
         _ = plugin.resetPassword(for: "", options: nil) { result in
             defer {
@@ -750,5 +750,5 @@ class ClientBehaviorResetPasswordTests : AWSCognitoAuthClientBehaviorTests {
         }
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
-    
+
 }
