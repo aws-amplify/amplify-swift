@@ -22,7 +22,7 @@ extension SignOutState {
         case .notStarted: return "SignOutState.notStarted"
         case .signingOutGlobally: return "SignOutState.signingOutGlobally"
         case .revokingToken: return "SignOutState.revokingToken"
-        case .signingOutLocally: return "SignOutState.clearingCredentialStore"
+        case .signingOutLocally: return "SignOutState.signingOutLocally"
         case .signedOut: return "SignOutState.signedOut"
         case .error: return "SignOutState.error"
         }
