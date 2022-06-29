@@ -101,7 +101,7 @@ extension AWSPinpointAnalyticsPlugin {
 
         Task {
             do {
-                let submittedEvents: [PinpointEvent] = try await pinpoint.submitEvents()
+                let submittedEvents = try await pinpoint.submitEvents().asAnalyticsEventArray()
                 Amplify.Hub.dispatchFlushEvents(submittedEvents)
             } catch {
                 Amplify.Hub.dispatchFlushEvents(AnalyticsErrorHelper.getDefaultError(error))

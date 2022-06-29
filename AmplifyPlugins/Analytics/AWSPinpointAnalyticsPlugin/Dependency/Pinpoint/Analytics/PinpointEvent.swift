@@ -11,18 +11,18 @@ import Foundation
 class PinpointEvent: AnalyticsPropertiesModel {
     let id: String
     let eventType: String
-    let eventTimestamp: Date.Millisecond
+    let eventDate: Date
     let session: PinpointSession
     private(set) lazy var attributes: [String: String] = [:]
     private(set) lazy var metrics: [String: Double] = [:]
 
     init(id: String = UUID().uuidString,
          eventType: String,
-         eventTimestamp: Date.Millisecond = Date().utcTimeMillis,
+         eventDate: Date = Date(),
          session: PinpointSession) {
         self.id = id
         self.eventType = eventType
-        self.eventTimestamp = eventTimestamp
+        self.eventDate = eventDate
         self.session = session
     }
 
@@ -73,7 +73,7 @@ class PinpointEvent: AnalyticsPropertiesModel {
 extension PinpointEvent: Equatable {
     static func == (lhs: PinpointEvent, rhs: PinpointEvent) -> Bool {
         return lhs.eventType == rhs.eventType
-        && lhs.eventTimestamp == rhs.eventTimestamp
+        && lhs.eventDate == rhs.eventDate
         && lhs.session == rhs.session
         && lhs.attributes == rhs.attributes
         && lhs.metrics == rhs.metrics

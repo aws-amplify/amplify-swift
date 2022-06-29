@@ -47,7 +47,7 @@ actor MockEndpointClient: EndpointClientBehaviour {
 
     func removeMetric(forKey key: String) {}
 
-    func currentPublicEndpoint() -> PinpointClientTypes.PublicEndpoint {
+    nonisolated func convertToPublicEndpoint(_ endpointProfile: PinpointEndpointProfile) -> PinpointClientTypes.PublicEndpoint {
         return PinpointClientTypes.PublicEndpoint()
     }
 }

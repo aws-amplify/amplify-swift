@@ -10,31 +10,39 @@ import Foundation
 
 extension PinpointEvent {
     var clientTypeSession: PinpointClientTypes.Session {
-        return PinpointClientTypes.Session(duration: Int(session.duration), id: session.sessionId, startTimestamp: session.startTime.iso8601FractionalSeconds(), stopTimestamp: session.stopTime?.iso8601FractionalSeconds())
+        return PinpointClientTypes.Session(duration: Int(session.duration),
+                                           id: session.sessionId,
+                                           startTimestamp: session.startTime.asISO8601String,
+                                           stopTimestamp: session.stopTime?.asISO8601String)
     }
 
     var clientTypeEvent: PinpointClientTypes.Event {
-        let timeStamp = Date(timeIntervalSince1970: TimeInterval(eventTimestamp)).iso8601FractionalSeconds()
-
         // TODO: get the swift sdk version and name
-        return PinpointClientTypes.Event(appPackageName: Bundle.main.appPackageName, appTitle: Bundle.main.appName, appVersionCode: Bundle.main.appVersion, attributes: attributes, clientSdkVersion: "", eventType: eventType, metrics: metrics, sdkName: "", session: clientTypeSession, timestamp: timeStamp)
+        return PinpointClientTypes.Event(appPackageName: Bundle.main.appPackageName,
+                                         appTitle: Bundle.main.appName,
+                                         appVersionCode: Bundle.main.appVersion,
+                                         attributes: attributes,
+                                         eventType: eventType,
+                                         metrics: metrics,
+                                         session: clientTypeSession,
+                                         timestamp: eventDate.asISO8601String)
     }
 }
 
 extension Bundle {
     var appPackageName: String {
-        return Bundle.main.object(forInfoDictionaryKey: "CFBundleIdentifier") as? String ?? ""
+        return object(forInfoDictionaryKey: "CFBundleIdentifier") as? String ?? ""
     }
 
     var appName: String {
-        return Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ?? ""
+        return object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ?? ""
     }
 
     var appBuild: String {
-        return Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? ""
+        return object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? ""
     }
 
     var appVersion: String {
-        return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
+        return object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
     }
 }
