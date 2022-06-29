@@ -97,12 +97,6 @@ extension AuthenticationState {
             case .signInRequested(let signInData):
                 let action = InitializeSignInFlow(signInEventData: signInData)
                 return .init(newState: .signingIn(.notStarted), actions: [action])
-//                let signInState = SignInState.signingInWithSRP(.notStarted, signInData)
-//                let action = StartSRPFlow(signInEventData: signInData)
-//                return StateResolution(
-//                    newState: AuthenticationState.signingIn(signInState),
-//                    actions: [action]
-//                )
             default:
                 return .from(.signedOut(currentSignedOutData))
             }
