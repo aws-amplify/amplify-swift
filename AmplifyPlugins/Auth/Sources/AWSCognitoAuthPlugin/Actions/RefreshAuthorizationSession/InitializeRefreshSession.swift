@@ -34,8 +34,10 @@ struct InitializeRefreshSession: Action {
 
         case .userPoolAndIdentityPool(let tokens, let identityID, _):
             guard let config = (environment as? AuthEnvironment)?.userPoolConfigData else {
-                // TODO: Fix error
-                fatalError("fix here")
+                event = .init(eventType: .throwError(.noUserPool))
+                logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+                dispatcher.send(event)
+                return
             }
             let provider = CognitoUserPoolLoginsMap(idToken: tokens.idToken,
                                                     region: config.region,
