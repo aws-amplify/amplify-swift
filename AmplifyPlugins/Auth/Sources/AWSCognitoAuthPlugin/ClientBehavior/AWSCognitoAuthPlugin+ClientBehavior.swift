@@ -122,7 +122,14 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     public func resetPassword(for username: String,
                               options: AuthResetPasswordOperation.Request.Options?,
                               listener: AuthResetPasswordOperation.ResultListener?) -> AuthResetPasswordOperation {
-        fatalError("Not implemented")
+        let options = options ?? AuthResetPasswordRequest.Options()
+        let request = AuthResetPasswordRequest(username: username, options: options)
+        let resetPasswordOperation = AWSAuthResetPasswordOperation(request,
+                                                                         userPoolFactory: authEnvironment.cognitoUserPoolFactory,
+                                                                         authConfiguration: authConfiguration,
+                                                                         resultListener: listener)
+        queue.addOperation(resetPasswordOperation)
+        return resetPasswordOperation
     }
 
     public func confirmResetPassword(for username: String,

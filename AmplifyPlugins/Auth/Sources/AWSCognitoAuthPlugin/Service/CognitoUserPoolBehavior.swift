@@ -55,4 +55,8 @@ protocol CognitoUserPoolBehavior {
     /// Resends sign up code
     /// Throws ResendConfirmationCodeOutputError
     func resendConfirmationCode(input: ResendConfirmationCodeInput) async throws -> ResendConfirmationCodeOutputResponse
+    
+    /// Resets password
+    /// Throws ForgotPasswordOutputError
+    func forgotPassword(input: ForgotPasswordInput) async throws -> ForgotPasswordOutputResponse
 }

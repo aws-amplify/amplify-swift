@@ -10,12 +10,7 @@ import Foundation
 typealias IdentityID = String
 
 struct FetchAuthSessionEvent: StateMachineEvent {
-    enum EventType: Equatable {
-        static func == (lhs: FetchAuthSessionEvent.EventType,
-                        rhs: FetchAuthSessionEvent.EventType) -> Bool {
-            // TODO: Fix
-            return true
-        }
+    enum EventType {
 
         case fetchUnAuthIdentityID
 

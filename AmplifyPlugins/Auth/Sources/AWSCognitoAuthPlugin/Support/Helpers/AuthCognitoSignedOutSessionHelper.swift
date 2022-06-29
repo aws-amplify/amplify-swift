@@ -72,7 +72,7 @@ struct AuthCognitoSignedOutSessionHelper {
 
     /// Guest/SignOut session when the guest access is not enabled.
     /// - Returns: Session with isSignedIn = false
-    private static func makeSessionWithNoGuestAccess() -> AWSAuthCognitoSession {
+    static func makeSessionWithNoGuestAccess() -> AWSAuthCognitoSession {
         let identityIdError = AuthError.service(
             AuthPluginErrorConstants.identityIdSignOutError.errorDescription,
             AuthPluginErrorConstants.identityIdSignOutError.recoverySuggestion,

@@ -11,33 +11,29 @@ import Amplify
 extension AmplifyCredentials {
 
     var cognitoSession: AWSAuthCognitoSession {
-        // TODO: Fix the errors:
-        let error = AuthError.unknown("", nil)
+
         switch self {
         case .userPoolOnly(let tokens):
+            let identityError = AuthCognitoSignedInSessionHelper.identityIdErrorForInvalidConfiguration()
+            let credentialsError = AuthCognitoSignedInSessionHelper.awsCredentialsErrorForInvalidConfiguration()
             return AWSAuthCognitoSession(isSignedIn: true,
-                                         identityIdResult: .failure(error),
-                                         awsCredentialsResult: .failure(error),
+                                         identityIdResult: .failure(identityError),
+                                         awsCredentialsResult: .failure(credentialsError),
                                          cognitoTokensResult: .success(tokens))
         case .identityPoolOnly(let identityID, let credentials):
             return AuthCognitoSignedOutSessionHelper.makeSignedOutSession(
                 identityId: identityID,
                 awsCredentials: credentials)
-        case .identityPoolWithFederation(_, let identityID, let credentials):
-            return AWSAuthCognitoSession(isSignedIn: false,
-                                         identityIdResult: .success(identityID),
-                                         awsCredentialsResult: .success(credentials),
-                                         cognitoTokensResult: .failure(error))
+        case .identityPoolWithFederation:
+            //TODO: Not implemented
+            fatalError("Add when implemented")
         case .userPoolAndIdentityPool(let tokens, let identityID, let credentials):
             return AWSAuthCognitoSession(isSignedIn: true,
                                          identityIdResult: .success(identityID),
                                          awsCredentialsResult: .success(credentials),
                                          cognitoTokensResult: .success(tokens))
         case .noCredentials:
-            return AWSAuthCognitoSession(isSignedIn: false,
-                                         identityIdResult: .failure(error),
-                                         awsCredentialsResult: .failure(error),
-                                         cognitoTokensResult: .failure(error))
+            return AuthCognitoSignedOutSessionHelper.makeSessionWithNoGuestAccess()
         }
     }
 }
