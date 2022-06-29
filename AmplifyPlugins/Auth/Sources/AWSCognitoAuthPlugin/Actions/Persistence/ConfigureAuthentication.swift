@@ -24,7 +24,7 @@ struct ConfigureAuthentication: Action {
             let signedInData = SignedInData(userId: "",
                                             userName: "",
                                             signedInDate: Date(),
-                                            signInMethod: .srp,
+                                            signInMethod: .apiBased(.userSRP),
                                             cognitoUserPoolTokens: tokens)
             authenticationEvent = AuthenticationEvent(eventType: .initializedSignedIn(signedInData))
         default:

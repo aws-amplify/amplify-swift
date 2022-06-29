@@ -5,13 +5,20 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-struct SignInEventData: Codable {
+struct SignInEventData {
+
     let username: String?
+
     let password: String?
 
-    init(username: String?, password: String?) {
+    let signInMethod: SignInMethod
+
+    init(username: String?,
+         password: String?,
+         signInMethod: SignInMethod = .unknown) {
         self.username = username
         self.password = password
+        self.signInMethod = signInMethod
     }
 }
 

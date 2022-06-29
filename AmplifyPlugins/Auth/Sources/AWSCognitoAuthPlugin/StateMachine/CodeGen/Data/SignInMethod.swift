@@ -5,10 +5,15 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-enum SignInMethod: String {
-    case srp
-    case custom
-    case social
+enum SignInMethod {
+
+    case apiBased(AuthFlowType)
+
+    case hostedUI
+
+    case federated
+
+    case unknown
 }
 
 extension SignInMethod: Codable { }

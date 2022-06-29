@@ -8,12 +8,20 @@
 import Foundation
 import AWSCognitoIdentityProvider
 
+typealias Username = String
+typealias Password = String
+
 struct SignInEvent: StateMachineEvent {
+
     var data: Any?
 
     enum EventType {
 
-        case initiateSRP(SignInEventData)
+        case initiateSignInWithSRP(SignInEventData)
+
+        case initiateCustomSignIn(SignInEventData)
+
+        case initiateCustomSignInWithSRP(SignInEventData)
 
         case respondPasswordVerifier(SRPStateData, InitiateAuthOutputResponse)
 
@@ -26,6 +34,7 @@ struct SignInEvent: StateMachineEvent {
         case throwAuthError(SignInError)
 
         case receivedSMSChallenge(RespondToAuthChallenge)
+
         case verifySMSChallenge(String)
     }
 
@@ -35,7 +44,9 @@ struct SignInEvent: StateMachineEvent {
 
     var type: String {
         switch eventType {
-        case .initiateSRP: return "SignInEvent.initiateSRP"
+        case .initiateSignInWithSRP: return "SignInEvent.initiateSignInWithSRP"
+        case .initiateCustomSignIn: return "SignInEvent.initiateCustomSignIn"
+        case .initiateCustomSignInWithSRP: return "SignInEvent.initiateCustomSignInWithSRP"
         case .respondPasswordVerifier: return "SignInEvent.respondPasswordVerifier"
         case .throwPasswordVerifierError: return "SignInEvent.throwPasswordVerifierError"
         case .finalizeSignIn: return "SignInEvent.finalizeSignIn"
@@ -60,7 +71,9 @@ extension SignInEvent.EventType: Equatable {
     static func == (lhs: SignInEvent.EventType, rhs: SignInEvent.EventType) -> Bool {
         switch (lhs, rhs) {
 
-        case (.initiateSRP, .initiateSRP),
+        case (.initiateSignInWithSRP, .initiateSignInWithSRP),
+            (.initiateCustomSignIn, .initiateCustomSignIn),
+            (.initiateCustomSignInWithSRP, .initiateCustomSignInWithSRP),
             (.respondPasswordVerifier, .respondPasswordVerifier),
             (.throwPasswordVerifierError, .throwPasswordVerifierError),
             (.finalizeSignIn, .finalizeSignIn),
