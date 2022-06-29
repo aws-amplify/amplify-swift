@@ -488,7 +488,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 postsDeletedFromCloud.fulfill()
             }
         }
-        
+
         let capturedPosts = posts
 
         DispatchQueue.concurrentPerform(iterations: count) { index in

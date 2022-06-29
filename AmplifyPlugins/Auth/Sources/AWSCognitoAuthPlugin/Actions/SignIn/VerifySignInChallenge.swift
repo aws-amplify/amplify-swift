@@ -49,7 +49,6 @@ struct VerifySignInChallenge: Action {
                 session: session,
                 userContextData: nil)
 
-
             try UserPoolSignInHelper.sendRespondToAuth(
                 request: input,
                 for: username,

@@ -40,7 +40,7 @@ extension Amplify {
                 break
             }
         }
-        
+
         await reset(Hub)
         await reset(Logging)
 
@@ -83,7 +83,7 @@ extension Amplify {
 
     private static func reset(_ candidate: Any) async {
         guard let resettable = candidate as? Resettable else { return }
-        
+
         await resettable.reset()
     }
 }

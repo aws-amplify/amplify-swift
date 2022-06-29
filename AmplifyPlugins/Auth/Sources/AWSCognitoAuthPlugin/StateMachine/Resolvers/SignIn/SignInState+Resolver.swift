@@ -20,7 +20,7 @@ extension SignInState {
 
             switch oldState {
             case .signingInWithSRP(let srpSignInState, let signInEventData):
-                
+
                 if let signInEvent = event as? SignInEvent,
                    case .receivedSMSChallenge(let challenge) = signInEvent.eventType {
                     let action = InitializeResolveChallenge(challenge: challenge)

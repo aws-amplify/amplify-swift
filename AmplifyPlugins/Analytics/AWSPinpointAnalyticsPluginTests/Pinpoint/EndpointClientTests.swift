@@ -149,7 +149,7 @@ class EndpointClientTests: XCTestCase {
         XCTAssertEqual(archiver.encodeCount, 1)
         XCTAssertEqual(userDefaults.saveCount, 1)
     }
-    
+
     func testCurrentPublicEndpoint_shouldReturnPublicEndpoint() async {
         let publicEndpoint = await endpointClient.currentPublicEndpoint()
         let mockModel = MockDevice()

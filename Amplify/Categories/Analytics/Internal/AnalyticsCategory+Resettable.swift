@@ -19,7 +19,7 @@ extension AnalyticsCategory: Resettable {
                 }
             }
         }
-        
+
         isConfigured = false
     }
 

@@ -13,7 +13,7 @@ import XCTest
 import AWSCognitoIdentityProvider
 
 class AWSCognitoAuthUserBehaviorTests: BaseUserBehaviorTest {
-    
+
     override func setUp() {
         super.setUp()
         mockIdentityProvider = MockIdentityProvider(
@@ -63,7 +63,7 @@ class AWSCognitoAuthUserBehaviorTests: BaseUserBehaviorTest {
     ///
     func testFetchUserAttributesRequestWithoutOptions() {
         let operationFinished = expectation(description: "Operation should finish")
-        let operation = plugin.fetchUserAttributes() { _ in
+        let operation = plugin.fetchUserAttributes { _ in
             operationFinished.fulfill()
         }
         XCTAssertNotNil(operation)

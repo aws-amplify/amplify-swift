@@ -63,7 +63,7 @@ extension AWSCognitoAuthPlugin {
         self.setupStateMachine()
         self.hubEventHandler = hubEventHandler
     }
-    
+
     // MARK: - Configure Helpers
 
     private func makeUserPool() throws -> CognitoUserPoolBehavior {

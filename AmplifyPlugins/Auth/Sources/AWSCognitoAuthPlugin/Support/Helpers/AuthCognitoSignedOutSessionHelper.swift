@@ -8,7 +8,6 @@
 import Amplify
 import AWSPluginsCore
 
-
 struct AuthCognitoSignedOutSessionHelper {
 
     /// Creates a signedOut session information with valid identityId and aws credentials.

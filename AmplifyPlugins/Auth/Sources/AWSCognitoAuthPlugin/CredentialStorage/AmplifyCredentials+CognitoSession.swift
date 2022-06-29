@@ -25,7 +25,7 @@ extension AmplifyCredentials {
                 identityId: identityID,
                 awsCredentials: credentials)
         case .identityPoolWithFederation:
-            //TODO: Not implemented
+            // TODO: Not implemented
             fatalError("Add when implemented")
         case .userPoolAndIdentityPool(let tokens, let identityID, let credentials):
             return AWSAuthCognitoSession(isSignedIn: true,

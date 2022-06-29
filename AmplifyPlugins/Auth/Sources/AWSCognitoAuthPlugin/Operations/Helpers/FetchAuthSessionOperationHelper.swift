@@ -13,7 +13,7 @@ class FetchAuthSessionOperationHelper {
     static let expiryBufferInSeconds = TimeInterval.seconds(2 * 60)
 
     typealias FetchAuthSessionCompletion = (Result<AuthSession, AuthError>) -> Void
-    
+
     var authStateMachineToken: AuthStateMachine.StateChangeListenerToken?
 
     func fetch(_ authStateMachine: AuthStateMachine,

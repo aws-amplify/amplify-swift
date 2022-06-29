@@ -9,7 +9,7 @@ import Foundation
 import Amplify
 
 public final class AWSCognitoAuthPlugin: AuthCategoryPlugin {
-    
+
     var authEnvironment: AuthEnvironment!
 
     var authStateMachine: AuthStateMachine!
