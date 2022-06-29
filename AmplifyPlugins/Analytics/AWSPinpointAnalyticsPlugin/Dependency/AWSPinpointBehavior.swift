@@ -11,7 +11,7 @@ import Foundation
 
 /// Groups the `PinpointClientProtocol` instances used for Analytics and Targeting
 public struct AWSPinpoint {
-    let analytisClient: PinpointClientProtocol
+    let analyticsClient: PinpointClientProtocol
     let targetingClient: PinpointClientProtocol
 }
 

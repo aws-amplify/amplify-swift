@@ -44,7 +44,7 @@ class AWSPinpointAdapter: AWSPinpointBehavior {
 
     func getEscapeHatch() -> AWSPinpoint {
         return AWSPinpoint(
-            analytisClient: pinpoint.analyticsClient.pinpointClient,
+            analyticsClient: pinpoint.analyticsClient.pinpointClient,
             targetingClient: pinpoint.endpointClient.pinpointClient
         )
     }
