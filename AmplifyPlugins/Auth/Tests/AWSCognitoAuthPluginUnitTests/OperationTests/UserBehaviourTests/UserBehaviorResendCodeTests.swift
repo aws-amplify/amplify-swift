@@ -13,7 +13,7 @@ import XCTest
 import AWSCognitoIdentityProvider
 
 class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
-    
+
     /// Test a successful resendConfirmationCode call with .done as next step
     ///
     /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response
@@ -23,7 +23,7 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
     ///    - I should get a successful result with .email as the attribute's destination
     ///
     func testSuccessfulResendConfirmationCode() {
-        
+
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
             GetUserAttributeVerificationCodeOutputResponse(
                 codeDeliveryDetails: .init(
@@ -48,7 +48,7 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
-    
+
     /// Test a resendConfirmationCode call with invalid result
     ///
     /// - Given: an auth plugin with mocked service. Mocked service calls should mock a invalid response
@@ -58,7 +58,7 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
     ///    - I should get an .unknown error
     ///
     func testResendConfirmationCodeWithInvalidResult() {
-        
+
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
             GetUserAttributeVerificationCodeOutputResponse()
         })
@@ -79,7 +79,7 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
-    
+
     /// Test a resendConfirmationCode call with CodeMismatchException response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -90,17 +90,17 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
     ///    - I should get a .service error with .codeMismatch as underlyingError
     ///
     func testResendConfirmationCodeWithCodeMismatchException() {
-        
+
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
             throw GetUserAttributeVerificationCodeOutputError.codeDeliveryFailureException(.init())
         })
-        
+
         let resultExpectation = expectation(description: "Should receive a result")
         _ = plugin.resendConfirmationCode(for: .email) { result in
             defer {
                 resultExpectation.fulfill()
             }
-            
+
             switch result {
             case .success:
                 XCTFail("Should return an error if the result from service is invalid")
@@ -113,12 +113,12 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
                     XCTFail("Underlying error should be codeMismatch \(error)")
                     return
                 }
-                
+
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
-    
+
     /// Test a resendConfirmationCode call with InternalErrorException response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a InternalErrorException response
@@ -128,7 +128,7 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
     ///    - I should get an .unknown error
     ///
     func testResendConfirmationCodeWithInternalErrorException() {
-        
+
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
             throw GetUserAttributeVerificationCodeOutputError.internalErrorException(.init())
         })
@@ -137,7 +137,7 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
             defer {
                 resultExpectation.fulfill()
             }
-            
+
             switch result {
             case .success:
                 XCTFail("Should return an error if the result from service is invalid")
@@ -146,12 +146,12 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
                     XCTFail("Should produce an unknown error instead of \(error)")
                     return
                 }
-                
+
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
-    
+
     /// Test a resendConfirmationCode call with InvalidParameterException response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -163,7 +163,7 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
     ///    - I should get a .service error with  .invalidParameter as underlyingError
     ///
     func testResendConfirmationCodeWithInvalidParameterException() {
-        
+
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
             throw GetUserAttributeVerificationCodeOutputError.invalidParameterException(.init())
         })
@@ -172,7 +172,7 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
             defer {
                 resultExpectation.fulfill()
             }
-            
+
             switch result {
             case .success:
                 XCTFail("Should return an error if the result from service is invalid")
@@ -185,12 +185,12 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
                     XCTFail("Underlying error should be invalidParameter \(error)")
                     return
                 }
-                
+
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
-    
+
     /// Test a resendConfirmationCode call with LimitExceededException response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -202,17 +202,17 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
     ///    - I should get a .service error with .limitExceeded as underlyingError
     ///
     func testResendConfirmationCodeWithLimitExceededException() {
-        
+
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
             throw GetUserAttributeVerificationCodeOutputError.limitExceededException(.init())
         })
-        
+
         let resultExpectation = expectation(description: "Should receive a result")
         _ = plugin.resendConfirmationCode(for: .email) { result in
             defer {
                 resultExpectation.fulfill()
             }
-            
+
             switch result {
             case .success:
                 XCTFail("Should return an error if the result from service is invalid")
@@ -225,12 +225,12 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
                     XCTFail("Underlying error should be limitExceeded \(error)")
                     return
                 }
-                
+
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
-    
+
     /// Test a resendConfirmationCode call with NotAuthorizedException response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -242,17 +242,17 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
     ///    - I should get a .notAuthorized error
     ///
     func testResendConfirmationCodeWithNotAuthorizedException() {
-        
+
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
             throw GetUserAttributeVerificationCodeOutputError.notAuthorizedException(.init())
         })
-        
+
         let resultExpectation = expectation(description: "Should receive a result")
         _ = plugin.resendConfirmationCode(for: .email) { result in
             defer {
                 resultExpectation.fulfill()
             }
-            
+
             switch result {
             case .success:
                 XCTFail("Should return an error if the result from service is invalid")
@@ -265,7 +265,7 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
-    
+
     /// Test a resendConfirmationCode call with PasswordResetRequiredException response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -277,17 +277,17 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
     ///    - I should get a .service error with .passwordResetRequired as underlyingError
     ///
     func testResendConfirmationCodeWithPasswordResetRequiredException() {
-        
+
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
             throw GetUserAttributeVerificationCodeOutputError.passwordResetRequiredException(.init())
         })
-        
+
         let resultExpectation = expectation(description: "Should receive a result")
         _ = plugin.resendConfirmationCode(for: .email) { result in
             defer {
                 resultExpectation.fulfill()
             }
-            
+
             switch result {
             case .success:
                 XCTFail("Should return an error if the result from service is invalid")
@@ -304,7 +304,7 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
-    
+
     /// Test a resendConfirmationCode call with ResourceNotFoundException response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -316,17 +316,17 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
     ///    - I should get a .service error with .resourceNotFound as underlyingError
     ///
     func testResendConfirmationCodeWithResourceNotFoundException() {
-        
+
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
             throw GetUserAttributeVerificationCodeOutputError.resourceNotFoundException(.init())
         })
-        
+
         let resultExpectation = expectation(description: "Should receive a result")
         _ = plugin.resendConfirmationCode(for: .email) { result in
             defer {
                 resultExpectation.fulfill()
             }
-            
+
             switch result {
             case .success:
                 XCTFail("Should return an error if the result from service is invalid")
@@ -343,7 +343,7 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
-    
+
     /// Test a resendConfirmationCode call with TooManyRequestsException response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -355,17 +355,17 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
     ///    - I should get a .service error with .requestLimitExceeded as underlyingError
     ///
     func testResendConfirmationCodeWithTooManyRequestsException() {
-        
+
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
             throw GetUserAttributeVerificationCodeOutputError.tooManyRequestsException(.init())
         })
-        
+
         let resultExpectation = expectation(description: "Should receive a result")
         _ = plugin.resendConfirmationCode(for: .email) { result in
             defer {
                 resultExpectation.fulfill()
             }
-            
+
             switch result {
             case .success:
                 XCTFail("Should return an error if the result from service is invalid")
@@ -378,12 +378,12 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
                     XCTFail("Underlying error should be requestLimitExceeded \(error)")
                     return
                 }
-                
+
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
-    
+
     /// Test a resendConfirmationCode call with UserNotFound response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -395,17 +395,17 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
     ///    - I should get a .service error with .userNotConfirmed as underlyingError
     ///
     func testResendConfirmationCodeWithUserNotConfirmedException() {
-        
+
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
             throw GetUserAttributeVerificationCodeOutputError.userNotConfirmedException(.init())
         })
-        
+
         let resultExpectation = expectation(description: "Should receive a result")
         _ = plugin.resendConfirmationCode(for: .email) { result in
             defer {
                 resultExpectation.fulfill()
             }
-            
+
             switch result {
             case .success:
                 XCTFail("Should return an error if the result from service is invalid")
@@ -418,12 +418,12 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
                     XCTFail("Underlying error should be userNotConfirmed \(error)")
                     return
                 }
-                
+
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
-    
+
     /// Test a resendConfirmationCode call with UserNotFound response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -435,17 +435,17 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
     ///    - I should get a .service error with .userNotFound as underlyingError
     ///
     func testResendConfirmationCodeWithUserNotFoundException() {
-        
+
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
             throw GetUserAttributeVerificationCodeOutputError.userNotFoundException(.init())
         })
-        
+
         let resultExpectation = expectation(description: "Should receive a result")
         _ = plugin.resendConfirmationCode(for: .email) { result in
             defer {
                 resultExpectation.fulfill()
             }
-            
+
             switch result {
             case .success:
                 XCTFail("Should return an error if the result from service is invalid")
@@ -458,7 +458,7 @@ class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
                     XCTFail("Underlying error should be userNotFound \(error)")
                     return
                 }
-                
+
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)

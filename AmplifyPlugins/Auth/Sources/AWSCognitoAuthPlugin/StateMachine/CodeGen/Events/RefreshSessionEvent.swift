@@ -67,7 +67,7 @@ struct RefreshSessionEvent: StateMachineEvent {
 extension RefreshSessionEvent.EventType: Equatable {
     static func == (lhs: RefreshSessionEvent.EventType, rhs: RefreshSessionEvent.EventType) -> Bool {
         switch (lhs, rhs) {
-        case (.refreshUnAuthAWSCredentials,.refreshUnAuthAWSCredentials),
+        case (.refreshUnAuthAWSCredentials, .refreshUnAuthAWSCredentials),
             (.refreshAWSCredentialsWithUserPool, .refreshAWSCredentialsWithUserPool),
             (.refreshCognitoUserPool, .refreshCognitoUserPool),
             (.refreshCognitoUserPoolWithIdentityId, .refreshCognitoUserPoolWithIdentityId),

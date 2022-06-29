@@ -477,7 +477,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 }
             }
         }
-        
+
         let capturedPosts = posts
 
         DispatchQueue.concurrentPerform(iterations: count) { index in

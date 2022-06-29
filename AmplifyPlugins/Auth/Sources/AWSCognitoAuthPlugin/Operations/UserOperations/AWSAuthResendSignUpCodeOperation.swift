@@ -10,18 +10,16 @@ import AWSPluginsCore
 import ClientRuntime
 import AWSCognitoIdentityProvider
 
-public class AWSAuthResendSignUpCodeOperation:
-    AmplifyOperation< AuthResendSignUpCodeRequest, AuthCodeDeliveryDetails, AuthError>, AuthResendSignUpCodeOperation {
-    
+public class AWSAuthResendSignUpCodeOperation: AmplifyOperation< AuthResendSignUpCodeRequest, AuthCodeDeliveryDetails, AuthError>, AuthResendSignUpCodeOperation {
+
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
     private let userPoolFactory: CognitoUserPoolFactory
     private var authConfiguration: AuthConfiguration
-    
+
     init(_ request: AuthResendSignUpCodeRequest,
          userPoolFactory: @escaping CognitoUserPoolFactory,
          authConfiguration: AuthConfiguration,
-         resultListener: ResultListener?)
-    {
+         resultListener: ResultListener?) {
         self.userPoolFactory = userPoolFactory
         self.authConfiguration = authConfiguration
         super.init(categoryType: .auth,
@@ -29,31 +27,31 @@ public class AWSAuthResendSignUpCodeOperation:
                    request: request,
                    resultListener: resultListener)
     }
-    
+
     override public func main() {
         if isCancelled {
             finish()
             return
         }
-        
+
         if let validationError = request.hasError() {
             dispatch(validationError)
             finish()
             return
         }
-        
+
         Task.init { [weak self] in
             await self?.resendSignUpCode()
         }
     }
-    
+
     func resendSignUpCode() async {
         do {
             let userPoolService = try userPoolFactory()
             let clientMetaData = (request.options.pluginOptions
                                   as? AWSResendSignUpCodeOptions)?.metadata ?? [:]
-            
-            let userPoolConfigurationData : UserPoolConfigurationData
+
+            let userPoolConfigurationData: UserPoolConfigurationData
             switch authConfiguration {
             case .userPools(let data):
                 userPoolConfigurationData = data
@@ -63,18 +61,18 @@ public class AWSAuthResendSignUpCodeOperation:
                 let error = AuthError.configuration("UserPool configuration is missing", AuthPluginErrorConstants.configurationError)
                 throw error
             }
-            
+
             let input = ResendConfirmationCodeInput(clientId: userPoolConfigurationData.clientId,
                                                     clientMetadata: clientMetaData,
                                                     username: request.username)
-            
+
             let result = try await userPoolService.resendConfirmationCode(input: input)
-            
+
             if self.isCancelled {
                 finish()
                 return
             }
-            
+
             guard let deliveryDetails = result.codeDeliveryDetails?.toAuthCodeDeliveryDetails() else {
                 let authError = AuthError.unknown("Unable to get Auth code delivery details",
                                                   nil)
@@ -82,28 +80,24 @@ public class AWSAuthResendSignUpCodeOperation:
                 return
             }
             self.dispatch(deliveryDetails)
-        }
-        catch let error as ResendConfirmationCodeOutputError {
+        } catch let error as ResendConfirmationCodeOutputError {
             self.dispatch(error.authError)
-        }
-        catch let error as SdkError<ResendConfirmationCodeOutputError> {
+        } catch let error as SdkError<ResendConfirmationCodeOutputError> {
             self.dispatch(error.authError)
-        }
-        catch let error as AuthError {
+        } catch let error as AuthError {
             self.dispatch(error)
-        }
-        catch let error {
+        } catch let error {
             let error = AuthError.unknown("Unable to create a Swift SDK user pool service", error)
             self.dispatch(error)
         }
     }
-    
+
     private func dispatch(_ result: AuthCodeDeliveryDetails) {
         let result = OperationResult.success(result)
         dispatch(result: result)
         finish()
     }
-    
+
     private func dispatch(_ error: AuthError) {
         let result = OperationResult.failure(error)
         dispatch(result: result)

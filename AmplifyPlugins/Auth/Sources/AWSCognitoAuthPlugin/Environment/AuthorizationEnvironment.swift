@@ -46,12 +46,12 @@ extension AuthEnvironment: AuthorizationEnvironment {
         }
         return authorizationEnvironment.identityPoolConfiguration
     }
-    
+
     var cognitoIdentityFactory: CognitoIdentityFactory {
         guard let authorizationEnvironment = authorizationEnvironment else {
             fatalError("Could not find authorization environment")
         }
         return authorizationEnvironment.cognitoIdentityFactory
     }
-    
+
 }

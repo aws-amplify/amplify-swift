@@ -24,14 +24,14 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
                              cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData)),
             AuthorizationState.sessionEstablished(AmplifyCredentials.testData))
     }
-    
+
     override func setUp() {
         plugin = AWSCognitoAuthPlugin()
-        
+
         let getId: MockIdentity.MockGetIdResponse = { _ in
             return .init(identityId: "mockIdentityId")
         }
-        
+
         let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
             let credentials = CognitoIdentityClientTypes.Credentials(accessKeyId: "accessKey",
                                                                      expiration: Date(),
@@ -39,24 +39,24 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
                                                                      sessionToken: "session")
             return .init(credentials: credentials, identityId: "responseIdentityID")
         }
-        
+
         let mockIdentity = MockIdentity(
             mockGetIdResponse: getId,
             mockGetCredentialsResponse: getCredentials)
-        
+
         let environment = Defaults.makeDefaultAuthEnvironment(
             identityPoolFactory: { mockIdentity },
             userPoolFactory: { self.mockIdentityProvider })
-        
+
         let statemachine = Defaults.makeDefaultAuthStateMachine(
             initialState: initialState,
             identityPoolFactory: { mockIdentity },
             userPoolFactory: { self.mockIdentityProvider })
-        
+
         _ = statemachine.listen { state in
             switch state {
             case .configured(_, let authorizationState):
-                
+
                 if case .waitingToStore(let credentials) = authorizationState {
                     let authEvent = AuthEvent.init(
                         eventType: .receivedCachedCredentials(credentials))
@@ -65,7 +65,7 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
             default: break
             }
         } onSubscribe: {}
-        
+
         plugin?.configure(
             authConfiguration: Defaults.makeDefaultAuthConfigData(),
             authEnvironment: environment,
@@ -73,7 +73,7 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
             hubEventHandler: MockAuthHubEventBehavior())
     }
-    
+
     override func tearDown() async throws {
         plugin = nil
         await Amplify.reset()

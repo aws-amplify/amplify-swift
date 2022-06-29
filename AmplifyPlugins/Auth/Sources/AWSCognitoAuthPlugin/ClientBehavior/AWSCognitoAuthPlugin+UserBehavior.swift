@@ -45,7 +45,7 @@ public extension AWSCognitoAuthPlugin {
                 options: AuthUpdateUserAttributesOperation.Request.Options? = nil,
                 listener: AuthUpdateUserAttributesOperation.ResultListener?)
     -> AuthUpdateUserAttributesOperation {
-        
+
         let options = options ?? AuthUpdateUserAttributesRequest.Options()
         let request = AuthUpdateUserAttributesRequest(userAttributes: userAttributes, options: options)
         let operation = AWSAuthUpdateUserAttributesOperation(
@@ -97,7 +97,7 @@ public extension AWSCognitoAuthPlugin {
                 to newPassword: String,
                 options: AuthChangePasswordOperation.Request.Options? = nil,
                 listener: AuthChangePasswordOperation.ResultListener?) -> AuthChangePasswordOperation {
-        
+
         let options = options ?? AuthChangePasswordRequest.Options()
         let request = AuthChangePasswordRequest(oldPassword: oldPassword,
                                                 newPassword: newPassword,
