@@ -32,9 +32,7 @@ struct InitializeFetchAuthSessionWithUserPool: Action {
                                                              poolId: poolId)
             event = .init(eventType: .fetchAuthenticatedIdentityID(loginsMapProvider))
         default:
-            // TODO: Handle error
-            fatalError("Should not reach here")
-
+            event = .init(eventType: .throwError(.noUserPool))
         }
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         dispatcher.send(event)
