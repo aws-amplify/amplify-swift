@@ -113,9 +113,9 @@ class AWSPinpointAnalyticsNotificationsTests: XCTestCase {
         let deviceToken = Data()
         await pinpointNotifications.interceptDidRegisterForRemoteNotificationsWithDeviceToken(deviceToken: deviceToken)
         
-        XCTAssertEqual(userDefaults.dataForKeyCountMap[PinpointContext.Constants.Notifications.deviceTokenKey], 1)
+        XCTAssertEqual(userDefaults.dataForKeyCountMap[EndpointClient.Constants.deviceTokenKey], 1)
         
-        XCTAssertEqual(userDefaults.data[PinpointContext.Constants.Notifications.deviceTokenKey] as? Data, deviceToken)
+        XCTAssertEqual(userDefaults.data[EndpointClient.Constants.deviceTokenKey] as? Data, deviceToken)
         
         targetingClient.verifyUpdateEndpointProfile()
     }
