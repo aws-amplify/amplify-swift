@@ -26,6 +26,9 @@ enum AuthenticationState: State {
 
     /// System is signed in
     case signedIn(SignedInData)
+    
+    /// System is deleting the user
+    case deletingUser(SignedInData, DeleteUserState)
 
     /// System encountered an error
     case error(AuthenticationError)
@@ -43,6 +46,7 @@ extension AuthenticationState {
         case .signingUp: return "AuthenticationState.signingUp"
         case .signingIn: return "AuthenticationState.signingIn"
         case .signedIn: return "AuthenticationState.signedIn"
+        case .deletingUser: return "AuthenticationState.deletingUser"
         case .error: return "AuthenticationState.error"
         }
     }

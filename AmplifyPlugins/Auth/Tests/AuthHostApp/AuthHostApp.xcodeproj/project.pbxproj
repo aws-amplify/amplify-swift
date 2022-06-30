@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4821B2F2286B5F74000EC1D7 /* AuthDeleteUserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4821B2F1286B5F74000EC1D7 /* AuthDeleteUserTests.swift */; };
 		484834BC27B6ED8800649D11 /* CredentialStoreConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 484834BB27B6ED8700649D11 /* CredentialStoreConfigurationTests.swift */; };
 		484834BE27B6FD9B00649D11 /* AuthEnvironmentHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 484834BD27B6FD9B00649D11 /* AuthEnvironmentHelper.swift */; };
 		484EDEB227F4FFBE000284B4 /* AuthEventIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 484EDEB127F4FFBE000284B4 /* AuthEventIntegrationTests.swift */; };
@@ -42,6 +43,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4821B2F1286B5F74000EC1D7 /* AuthDeleteUserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthDeleteUserTests.swift; sourceTree = "<group>"; };
 		484834BB27B6ED8700649D11 /* CredentialStoreConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialStoreConfigurationTests.swift; sourceTree = "<group>"; };
 		484834BD27B6FD9B00649D11 /* AuthEnvironmentHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthEnvironmentHelper.swift; sourceTree = "<group>"; };
 		484EDEB127F4FFBE000284B4 /* AuthEventIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthEventIntegrationTests.swift; sourceTree = "<group>"; };
@@ -87,6 +89,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4821B2F0286B5F74000EC1D7 /* AuthDeleteUserTests */ = {
+			isa = PBXGroup;
+			children = (
+				4821B2F1286B5F74000EC1D7 /* AuthDeleteUserTests.swift */,
+			);
+			path = AuthDeleteUserTests;
+			sourceTree = "<group>";
+		};
 		484834BA27B6ED7200649D11 /* CredentialStore */ = {
 			isa = PBXGroup;
 			children = (
@@ -160,6 +170,7 @@
 		485CB5A027B61E04006CCEC7 /* AuthIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
+				4821B2F0286B5F74000EC1D7 /* AuthDeleteUserTests */,
 				485105A82840510B002D6FC8 /* AuthUserAttributesTests */,
 				484EDEB027F4FF46000284B4 /* AuthEventTests */,
 				B43C26C627BC9D54003F3BF7 /* SignUpTests */,
@@ -387,6 +398,7 @@
 				485105AA2840513C002D6FC8 /* AuthUserAttributesTests.swift in Sources */,
 				485CB5BF27B61F1E006CCEC7 /* SignedInAuthSessionTests.swift in Sources */,
 				B43C26CA27BC9D54003F3BF7 /* AuthSignUpTests.swift in Sources */,
+				4821B2F2286B5F74000EC1D7 /* AuthDeleteUserTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

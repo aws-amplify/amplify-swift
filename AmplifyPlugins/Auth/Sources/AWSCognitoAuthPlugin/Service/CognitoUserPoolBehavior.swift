@@ -47,6 +47,10 @@ protocol CognitoUserPoolBehavior {
     /// Changes the password for a specified user in a user pool.
     /// Throws ChangePasswordOutputError
     func changePassword(input: ChangePasswordInput) async throws -> ChangePasswordOutputResponse
+    
+    /// Delete the signed in user from the user pool.
+    /// Throws DeleteUserOutputError
+    func deleteUser(input: DeleteUserInput) async throws -> DeleteUserOutputResponse
 
     /// Resends sign up code
     /// Throws ResendConfirmationCodeOutputError
