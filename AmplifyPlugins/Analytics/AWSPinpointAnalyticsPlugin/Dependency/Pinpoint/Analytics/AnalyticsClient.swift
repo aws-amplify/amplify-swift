@@ -101,7 +101,7 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
         globalEventSourceAttributes = attributes
         let sessionId = self.sessionProvider().sessionId
         
-        try eventRecorder.updateAttributesOfEvents(ofType: "_session.start",
+        try eventRecorder.updateAttributesOfEvents(ofType: SessionClient.Constants.Events.start,
                                                    withSessionId: sessionId,
                                                    setAttributes: attributes)
     }

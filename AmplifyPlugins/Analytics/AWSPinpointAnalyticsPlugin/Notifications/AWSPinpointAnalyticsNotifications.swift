@@ -44,12 +44,12 @@ public class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotification
     }
     
     public func interceptDidRegisterForRemoteNotificationsWithDeviceToken(deviceToken: Data) async {
-        let currentToken = self.userDefaults.data(forKey: PinpointContext.Constants.Notifications.deviceTokenKey)
+        let currentToken = self.userDefaults.data(forKey: EndpointClient.Constants.deviceTokenKey)
         guard currentToken != deviceToken else {
             return
         }
         
-        self.userDefaults.save(deviceToken, forKey: PinpointContext.Constants.Notifications.deviceTokenKey)
+        self.userDefaults.save(deviceToken, forKey: EndpointClient.Constants.deviceTokenKey)
         do {
             try await self.targetingClient.updateEndpointProfile()
         } catch {
@@ -219,8 +219,10 @@ extension AWSPinpointAnalyticsNotifications {
                                        canOpenURL: CanOpenURL? = nil){
 #if canImport(UIKit)
         let canOpenURL = canOpenURL ?? UIApplication.shared.canOpenURL
+        let openDeepLink = { (url: URL) in UIApplication.shared.open(url) }
 #else
-        let canOpenURL = canOpenURL ?? {_ in false }
+        let canOpenURL = canOpenURL ?? { _ in false }
+        let openDeepLink = { _ in  }
 #endif
 
         guard let payload = pinpointPayloadFromNotificationPayload(notification: userInfo) as? [String: String],
@@ -230,7 +232,7 @@ extension AWSPinpointAnalyticsNotifications {
         }
         if canOpenURL(deepLinkURL) {
             DispatchQueue.main.async {
-                UIApplication.shared.open(deepLinkURL)
+                openDeepLink(deepLinkURL)
             }
         }
     }
@@ -338,7 +340,6 @@ extension PinpointEvent {
 extension PinpointContext.Constants {
     enum Notifications {
         static let actionIdentifierKey = "actionIdentifier"
-        static let deviceTokenKey = "com.amazonaws.AWSDeviceTokenKey"
         static let dataKey = "data"
         static let pinpointKey = "pinpoint"
         static let deeplinkKey = "deeplink"
