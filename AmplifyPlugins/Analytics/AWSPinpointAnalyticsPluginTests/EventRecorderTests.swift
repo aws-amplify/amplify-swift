@@ -41,7 +41,7 @@ class EventRecorderTests: XCTestCase {
     /// - Then: the event is saved to storage followed by a disk size check
     func testSaveEvent() {
         let session = PinpointSession(sessionId: "1", startTime: Date(), stopTime: nil)
-        let event = PinpointEvent(id: "1", eventType: "eventType", eventTimestamp: Date().utcTimeMillis, session: session)
+        let event = PinpointEvent(id: "1", eventType: "eventType", eventDate: Date(), session: session)
 
         XCTAssertEqual(storage.events.count, 0)
         XCTAssertEqual(storage.checkDiskSizeCallCount, 1)

@@ -36,7 +36,7 @@ class PinpointSession: Codable {
 
     var duration: Date.Millisecond {
         let endTime = stopTime ?? Date()
-        return endTime.utcTimeMillis - startTime.utcTimeMillis
+        return endTime.millisecondsSince1970 - startTime.millisecondsSince1970
     }
 
     func stop() {

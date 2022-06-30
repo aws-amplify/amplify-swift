@@ -19,7 +19,7 @@ protocol EndpointClientBehaviour: Actor {
     func removeAttributes(forKey key: String)
     func addMetric(_ metric: Double, forKey key: String)
     func removeMetric(forKey key: String)
-    func currentPublicEndpoint() -> PinpointClientTypes.PublicEndpoint
+    nonisolated func convertToPublicEndpoint(_ endpointProfile: PinpointEndpointProfile) -> PinpointClientTypes.PublicEndpoint
 }
 
 actor EndpointClient: EndpointClientBehaviour {
@@ -197,8 +197,7 @@ actor EndpointClient: EndpointClientBehaviour {
                                    endpointRequest: endpointRequest)
     }
 
-    func currentPublicEndpoint() -> PinpointClientTypes.PublicEndpoint {
-        let endpointProfile = currentEndpointProfile()
+    nonisolated func convertToPublicEndpoint(_ endpointProfile: PinpointEndpointProfile) -> PinpointClientTypes.PublicEndpoint {
         let channelType = getChannelType(from: endpointProfile)
         let effectiveDate = getEffectiveDateIso8601FractionalSeconds(from: endpointProfile)
         let optOut = getOptOut(from: endpointProfile)
@@ -215,15 +214,15 @@ actor EndpointClient: EndpointClientBehaviour {
         return publicEndpoint
     }
 
-    private func getChannelType(from endpointProfile: PinpointEndpointProfile) -> PinpointClientTypes.ChannelType {
-        return endpointProfile.isDebug ? .apns : .apnsSandbox
+    nonisolated private func getChannelType(from endpointProfile: PinpointEndpointProfile) -> PinpointClientTypes.ChannelType {
+        return endpointProfile.isDebug ? .apnsSandbox : .apns
     }
 
-    private func getEffectiveDateIso8601FractionalSeconds(from endpointProfile: PinpointEndpointProfile) -> String {
-        endpointProfile.effectiveDate.iso8601FractionalSeconds()
+    nonisolated private func getEffectiveDateIso8601FractionalSeconds(from endpointProfile: PinpointEndpointProfile) -> String {
+        endpointProfile.effectiveDate.asISO8601String
     }
 
-    private func getOptOut(from endpointProfile: PinpointEndpointProfile) -> String {
+    nonisolated private func getOptOut(from endpointProfile: PinpointEndpointProfile) -> String {
         return endpointProfile.isOptOut ? EndpointClient.Constants.OptOut.all : EndpointClient.Constants.OptOut.none
     }
 }
