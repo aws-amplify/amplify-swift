@@ -132,15 +132,17 @@ class EventRecorder: AnalyticsEventRecording {
                 }
             }
         } catch {
-            // This means all events were rejected, so we will update them all in the local storage accodingly
+            // This means all events were rejected, so we will attempt to update them all in the local storage accodingly
             let isRetryable = isErrorRetryable(error)
             for event in pinpointEvents {
                 if isRetryable {
-                    try self.storage.incrementEventRetry(eventId: event.id)
+                    incrementEventRetry(eventId: event.id)
                 } else {
-                    try self.storage.setDirtyEvent(eventId: event.id)
+                    setDirtyEvent(eventId: event.id)
                 }
             }
+            // Rethrow the original error so it can be handled by the consumer
+            throw error
         }
     }
 
@@ -177,7 +179,9 @@ class EventRecorder: AnalyticsEventRecording {
         }
     }
 
-    private func retry(times: Int = 1, onErrorMessage: String, _ closure: () throws -> ()) {
+    private func retry(times: Int = Constants.defaultNumberOfRetriesForStorageOperations,
+                       onErrorMessage: String,
+                       _ closure: () throws -> ()) {
         do {
             try closure()
         } catch {
@@ -206,5 +210,6 @@ extension EventRecorder {
         static let pinpointClientBatchRecordByteLimitDefault = 512 * 1024 // 0.5MB
         static let pinpointClientBatchRecordByteLimitMax = 4 * 1024 * 1024 // 4MB
         static let acceptedResponseMessage = "Accepted"
+        static let defaultNumberOfRetriesForStorageOperations = 1
     }
 }
