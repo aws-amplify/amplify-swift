@@ -99,7 +99,10 @@ public class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotification
     }
     
     
-    
+    // MARK: Helpers
+    /// Given a notification payload, returns a Pinpoint payload if available
+    /// - Parameter notification: remote notification payload
+    /// - Returns: Pinpoint payload or nil
     private func pinpointPayloadFromNotificationPayload(notification: UserInfo) -> [String: Any]? {
         guard let dataPayload = notification[PinpointContext.Constants.Notifications.dataKey] as? [String: Any],
               let pinpointMetadata = dataPayload[PinpointContext.Constants.Notifications.pinpointKey] as? [String: Any] else {
@@ -150,7 +153,11 @@ extension AWSPinpointAnalyticsNotifications {
         pinpointPayloadFromNotificationPayload(notification: payload) != nil
     }
     
-    private func pinpointMetadata(fromPayload payload: UserInfo) -> (EventSource, UserInfo?) {
+    
+    /// Given a Pinpoint notification payload, returns the event source and the metadata associated
+    /// - Parameter payload: Pinpoint notification payload
+    /// - Returns: the event source (campaign, journey) and its metadata
+    private func pinpointMetadata(fromPayload payload: UserInfo) -> (EventSource, [String : Any]?) {
         var metadata: (EventSource, UserInfo?) = (.unknown, nil)
         
         guard let pinpointPayload = pinpointPayloadFromNotificationPayload(notification: payload) else {
@@ -256,6 +263,7 @@ extension AWSPinpointAnalyticsNotifications {
 
 // MARK: - AWSPinpointAnalyticsNotifications + EventSourceType
 extension AWSPinpointAnalyticsNotifications {
+    /// Pinpoint remote notification event source type (campaign, journey, unknown)
     enum EventSource: String {
         case campaign
         case journey
@@ -269,6 +277,13 @@ extension AWSPinpointAnalyticsNotifications: DefaultLogger {}
 
 // MARK: - PinpointEvent + makeWithActionType / addApplicationState
 extension PinpointEvent {
+    
+    /// Creates a PinpointEvent given an event source and a push notification action.
+    /// - Parameters:
+    ///   - eventSource: event source
+    ///   - pushAction: push notification action
+    ///   - analyticClient: analytics client instance
+    /// - Returns: a PinpointEvent initialized with the proper event type
     static func makeEvent(eventSource: AWSPinpointAnalyticsNotifications.EventSource,
                           pushAction: AWSPinpointPushAction,
                           usingClient analyticClient: AnalyticsClientBehaviour) -> PinpointEvent? {
@@ -284,6 +299,8 @@ extension PinpointEvent {
         return analyticClient.createEvent(withEventType: eventType)
     }
     
+    
+    /// Adds the application state as event attribute on supported platforms.
     func addApplicationState() {
 #if canImport(UIKit)
         let appState = UIApplication.shared.applicationState

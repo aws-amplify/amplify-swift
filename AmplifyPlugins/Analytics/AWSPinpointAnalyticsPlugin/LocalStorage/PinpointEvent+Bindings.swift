@@ -49,7 +49,7 @@ extension PinpointEvent {
     /// Converts a SQL Statement element to a pinpoint event based on predefined/known property index of columns/index
     /// - Parameters:
     ///   - element: The SQL statement element
-    ///   - dateFormater: The date formatter to convert string to date.  Defaults to ISO8601 with fractional seconds format.
+    ///   - dateFormatter: The date formatter to convert string to date.  Defaults to ISO8601 with fractional seconds format.
     ///   - archiver: The default archiver to decode metrics and attributes.
     /// - Returns: A Pinpoint event
     static func convertToEvent(_ element: Statement.Element, archiver: AmplifyArchiverBehaviour = PinpointEvent.archiver) -> PinpointEvent? {
