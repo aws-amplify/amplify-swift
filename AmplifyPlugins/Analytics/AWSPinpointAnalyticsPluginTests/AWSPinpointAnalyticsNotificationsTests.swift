@@ -12,13 +12,13 @@ import Amplify
 class AWSPinpointAnalyticsNotificationsTests: XCTestCase {
     var pinpointNotifications: AWSPinpointAnalyticsNotifications!
     var analyticsClient = MockAnalyticsClient()
-    var targetingClient = MockAWSPinpoint()
+    var endpointClient = MockEndpointClient()
     var userDefaults = MockUserDefaults()
 
     override  func setUpWithError() throws {
         pinpointNotifications = AWSPinpointAnalyticsNotifications(analyticsClient: analyticsClient,
-                                                              targetingClient: targetingClient,
-                                                              userDefaults: userDefaults)
+                                                                  endpointClient: endpointClient,
+                                                                  userDefaults: userDefaults)
     }
     
     func testAddPinpointMetadataForEventCampaign() {
@@ -117,7 +117,8 @@ class AWSPinpointAnalyticsNotificationsTests: XCTestCase {
         
         XCTAssertEqual(userDefaults.data[EndpointClient.Constants.deviceTokenKey] as? Data, deviceToken)
         
-        targetingClient.verifyUpdateEndpointProfile()
+        let shouldHaveCalledEndpointProfileUpdate = await endpointClient.updateEndpointProfileCount == 1
+        XCTAssertTrue(shouldHaveCalledEndpointProfileUpdate)
     }
 }
 

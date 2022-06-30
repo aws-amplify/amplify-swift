@@ -14,14 +14,14 @@ import Amplify
 public class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotificationsBehavior {
     private var previousEventSource: EventSource = .unknown
     private let analyticsClient: AnalyticsClientBehaviour
-    private let targetingClient: AWSPinpointTargetingClientBehavior
+    private let endpointClient: EndpointClientBehaviour
     private let userDefaults: UserDefaultsBehaviour
     
     internal init(analyticsClient: AnalyticsClientBehaviour,
-                  targetingClient: AWSPinpointTargetingClientBehavior,
+                  endpointClient: EndpointClientBehaviour,
                   userDefaults: UserDefaultsBehaviour) {
         self.analyticsClient = analyticsClient
-        self.targetingClient = targetingClient
+        self.endpointClient = endpointClient
         self.userDefaults = userDefaults
     }
     
@@ -51,7 +51,7 @@ public class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotification
         
         self.userDefaults.save(deviceToken, forKey: EndpointClient.Constants.deviceTokenKey)
         do {
-            try await self.targetingClient.updateEndpointProfile()
+            try await self.endpointClient.updateEndpointProfile()
         } catch {
             log.error("Failed updating endpoint profile with error: \(error)")
         }
