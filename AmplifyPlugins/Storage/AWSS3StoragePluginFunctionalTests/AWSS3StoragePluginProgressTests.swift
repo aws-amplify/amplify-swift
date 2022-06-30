@@ -26,13 +26,9 @@ import Amplify
 /// of ~0-1MB. After ~1 MB, I start getting notified more frequently.
 class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
 
-    func testUploadProgressViaListener() {
+    func testUploadProgressViaListener() async {
         let timestamp = String(Date().timeIntervalSince1970)
         let key = "testUploadProgressViaListener-\(timestamp)"
-
-        addTeardownBlock {
-            self.removeTestFile(withKey: key)
-        }
 
         let resultReceived = expectation(description: "resultReceived")
         let progressReceived = expectation(description: "progressReceived")
@@ -49,18 +45,15 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
             }
         )
 
-        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await self.removeTestFile(withKey: key)
     }
 
-    func testUploadProgressViaPublisher() {
+    func testUploadProgressViaPublisher() async {
         var cancellables = Set<AnyCancellable>()
 
         let timestamp = String(Date().timeIntervalSince1970)
         let key = "testUploadProgressViaPublisher-\(timestamp)"
-
-        addTeardownBlock {
-            self.removeTestFile(withKey: key)
-        }
 
         let completionReceived = expectation(description: "resultReceived")
         let progressReceived = expectation(description: "progressReceived")
@@ -83,18 +76,15 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
             }
             .store(in: &cancellables)
 
-        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await self.removeTestFile(withKey: key)
     }
 
-    func testPublisherDeliveryAfterUploadCompletes() {
+    func testPublisherDeliveryAfterUploadCompletes() async {
         var cancellables = Set<AnyCancellable>()
 
         let timestamp = String(Date().timeIntervalSince1970)
         let key = "testUploadProgressDeliveryAfterCompletion-\(timestamp)"
-
-        addTeardownBlock {
-            self.removeTestFile(withKey: key)
-        }
 
         // Wait for the upload to complete
         let uploadComplete = expectation(description: "uploadComplete")
@@ -114,7 +104,7 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
                 receiveValue: { _ in resultValueReceived.fulfill() }
             )
             .store(in: &cancellables)
-        waitForExpectations(timeout: 0.5)
+        await waitForExpectations(timeout: 0.5)
 
         // Progress listener should immediately complete without delivering a value
         let progressValueReceived = expectation(description: "progressValueReceived")
@@ -126,16 +116,18 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
                 receiveValue: { _ in progressValueReceived.fulfill() }
             )
             .store(in: &cancellables)
-        waitForExpectations(timeout: 0.5)
+        await waitForExpectations(timeout: 0.5)
+        await self.removeTestFile(withKey: key)
     }
 
     // MARK: - Utilities
 
-    private func removeTestFile(withKey key: String) {
-        // Never do this in prod
-        let semaphore = DispatchSemaphore(value: 0)
-        _ = Amplify.Storage.remove(key: key) { _ in semaphore.signal() }
-        semaphore.wait()
+    private func removeTestFile(withKey key: String) async {
+        await withCheckedContinuation { continuation in
+            _ = Amplify.Storage.remove(key: key) { _ in
+                continuation.resume()
+            }
+        }
     }
 }
 
