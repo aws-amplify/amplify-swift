@@ -27,6 +27,8 @@ enum AuthorizationState: State {
     case waitingToStore(AmplifyCredentials)
 
     case sessionEstablished(AmplifyCredentials)
+    
+    case deletingUser
 
     case error(AuthorizationError)
 }
@@ -52,6 +54,8 @@ extension AuthorizationState {
             return "AuthorizationState.waitingToStore"
         case .fetchingAuthSessionWithUserPool:
             return "AuthorizationState.fetchingAuthSessionWithUserPool"
+        case .deletingUser:
+            return "AuthorizationState.deletingUser"
         case .error:
             return "AuthorizationState.error"
         }

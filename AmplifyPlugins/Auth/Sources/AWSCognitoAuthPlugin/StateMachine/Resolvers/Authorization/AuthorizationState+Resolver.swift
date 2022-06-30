@@ -58,6 +58,10 @@ extension AuthorizationState {
                         existingCredentials: credentials,
                         subState), actions: [action])
                 }
+                
+                if case .deleteUser = event.isDeleteUserEvent {
+                    return .init(newState: .deletingUser)
+                }
 
                 return .from(oldState)
 
@@ -177,6 +181,16 @@ extension AuthorizationState {
                     return .init(newState: .refreshingSession(
                         existingCredentials: credentials,
                         subState), actions: [action])
+                }
+                return .from(oldState)
+                
+            case .deletingUser:
+                if case .userSignedOutAndDeleted = event.isDeleteUserEvent {
+                    return .init(newState: .configured)
+                }
+                if let signOutEvent = event.isSignOutEvent,
+                    case .signOutLocally = signOutEvent {
+                    return .init(newState: .waitingToStore(.noCredentials))
                 }
                 return .from(oldState)
             }

@@ -34,7 +34,7 @@ struct SignOutEvent: StateMachineEvent {
         case .revokeToken:
             return "SignOutEvent.revokeToken"
         case .signOutLocally:
-            return "SignOutEvent.clearCredentialStore"
+            return "SignOutEvent.signOutLocally"
         case .signedOutSuccess:
             return "SignOutEvent.signedOutSuccess"
         case .signedOutFailure:
