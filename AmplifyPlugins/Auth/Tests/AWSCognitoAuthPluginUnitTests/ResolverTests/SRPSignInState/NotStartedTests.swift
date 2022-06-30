@@ -41,7 +41,7 @@ class NotStartedTests: XCTestCase {
         func assertIfUnsupported(_ event: SignInEvent) {
             print(event)
             switch event.eventType {
-            case .initiateSRP, .throwAuthError, .throwPasswordVerifierError:
+            case .initiateSignInWithSRP, .throwAuthError, .throwPasswordVerifierError:
                 // Supported
                 break
             default:

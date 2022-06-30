@@ -45,7 +45,7 @@ extension SRPSignInState {
 
         private func resolveNotStarted(byApplying signInEvent: SignInEvent) -> StateResolution<SRPSignInState> {
             switch signInEvent.eventType {
-            case .initiateSRP(let signInEventData):
+            case .initiateSignInWithSRP(let signInEventData):
                 guard let username = signInEventData.username, !username.isEmpty else {
                     let error = SignInError.inputValidation(
                         field: AuthPluginErrorConstants.signInUsernameError.field
