@@ -235,11 +235,3 @@ extension AnalyticsClient {
     typealias PinpointEventAttributes = [String: String]
     typealias PinpointEventMetrics = [String: Double]
 }
-
-extension Date {
-    typealias Millisecond = Int64
-
-    var utcTimeMillis: Millisecond {
-        return Int64(self.timeIntervalSince1970 * 1000)
-    }
-}

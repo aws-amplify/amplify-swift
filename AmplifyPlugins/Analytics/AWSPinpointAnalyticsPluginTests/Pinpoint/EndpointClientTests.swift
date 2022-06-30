@@ -150,14 +150,15 @@ class EndpointClientTests: XCTestCase {
         XCTAssertEqual(userDefaults.saveCount, 1)
     }
 
-    func testCurrentPublicEndpoint_shouldReturnPublicEndpoint() async {
-        let publicEndpoint = await endpointClient.currentPublicEndpoint()
+    func testConvertToPublicEndpoint_shouldReturnPublicEndpoint() async {
+        let endpointProfile = await endpointClient.currentEndpointProfile()
+        let publicEndpoint = endpointClient.convertToPublicEndpoint(endpointProfile)
         let mockModel = MockDevice()
         XCTAssertNotNil(publicEndpoint)
         XCTAssertNil(publicEndpoint.address)
         XCTAssertEqual(publicEndpoint.attributes?.count, 0)
         XCTAssertEqual(publicEndpoint.metrics?.count, 0)
-        XCTAssertEqual(publicEndpoint.channelType, .apnsSandbox)
+        XCTAssertEqual(publicEndpoint.channelType, .apns)
         XCTAssertEqual(publicEndpoint.optOut, "ALL")
         XCTAssertEqual(publicEndpoint.demographic?.appVersion, mockModel.appVersion)
         XCTAssertEqual(publicEndpoint.demographic?.make, "apple")

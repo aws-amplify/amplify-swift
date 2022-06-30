@@ -16,22 +16,26 @@ extension PinpointEvent {
     ///   - dateFormater: The date formatter to format dates to strings.  Defaults to ISO8601 with fractional seconds format.
     ///   - archiver: The archiver to archive metrics and attributes
     /// - Returns: A collection of SQLite Bindings
-    func getInsertBindings(dateFormater: DateFormatter = DateFormatter.iso8601DateFormatterWithFractionalSeconds, archiver: AmplifyArchiverBehaviour = PinpointEvent.archiver) -> [Binding?] {
-        var stopTimeBinding: String?
-        if let stopTime = session.stopTime {
-            stopTimeBinding = dateFormater.string(from: stopTime)
+    func getInsertBindings(archiver: AmplifyArchiverBehaviour = PinpointEvent.archiver) -> [Binding?] {
+        var attributesBlob: Blob?
+        if let encodedAttributes = try? archiver.encode(attributes) {
+            attributesBlob = Blob(bytes: [UInt8](encodedAttributes))
         }
-        let encodedAttributes = try? archiver.encode(attributes).base64EncodedString()
-        let encodedMetrics = try? archiver.encode(metrics).base64EncodedString()
+
+        var metricsBlob: Blob?
+        if let encodedMetrics = try? archiver.encode(metrics) {
+            metricsBlob = Blob(bytes: [UInt8](encodedMetrics))
+        }
+
         return [
             id,
-            encodedAttributes,
+            attributesBlob,
             eventType,
-            encodedMetrics,
-            eventTimestamp,
+            metricsBlob,
+            eventDate.millisecondsSince1970,
             session.sessionId,
-            dateFormater.string(from: session.startTime),
-            stopTimeBinding,
+            session.startTime.asISO8601String,
+            session.stopTime?.asISO8601String ?? "",
             Date().timeIntervalSince1970, // timestamp
             0, // isDirty
             0 // RetryCount
@@ -44,20 +48,24 @@ extension PinpointEvent {
     ///   - dateFormater: The date formatter to convert string to date.  Defaults to ISO8601 with fractional seconds format.
     ///   - archiver: The default archiver to decode metrics and attributes.
     /// - Returns: A Pinpoint event
-    static func convertToEvent(_ element: Statement.Element, dateFormater: DateFormatter = DateFormatter.iso8601DateFormatterWithFractionalSeconds, archiver: AmplifyArchiverBehaviour = PinpointEvent.archiver) -> PinpointEvent? {
-        guard let sessionId = element[EventPropertyIndex.sessionId] as? String, let startTime = element[EventPropertyIndex.sessionStartTime] as? String,
-              let startDateTime = dateFormater.date(from: startTime)else {
+    static func convertToEvent(_ element: Statement.Element, archiver: AmplifyArchiverBehaviour = PinpointEvent.archiver) -> PinpointEvent? {
+        let dateFormatter = DateFormatter.iso8601Formatter
+        guard let sessionId = element[EventPropertyIndex.sessionId] as? String,
+              let startTimeString = element[EventPropertyIndex.sessionStartTime] as? String,
+              let startTime = dateFormatter.date(from: startTimeString) else {
             return nil
         }
 
-        var stopDateTime: Date?
-        if let stopTime = element[EventPropertyIndex.sessionStopTime] as? String {
-            stopDateTime = dateFormater.date(from: stopTime)
+        var stopTime: Date?
+        if let stopTimeString = element[EventPropertyIndex.sessionStopTime] as? String {
+            stopTime = dateFormatter.date(from: stopTimeString)
         }
 
-        let session = PinpointSession(sessionId: sessionId, startTime: startDateTime, stopTime: stopDateTime)
+        let session = PinpointSession(sessionId: sessionId, startTime: startTime, stopTime: stopTime)
 
-        guard let eventType = element[EventPropertyIndex.eventType] as? String, let eventTimestampValue = element[EventPropertyIndex.eventTimestamp] as? String, let timestamp = Date.Millisecond(eventTimestampValue) else {
+        guard let eventType = element[EventPropertyIndex.eventType] as? String,
+              let eventTimestampValue = element[EventPropertyIndex.eventTimestamp] as? String,
+              let timestamp = Date.Millisecond(eventTimestampValue) else {
             return nil
         }
 
@@ -65,17 +73,17 @@ extension PinpointEvent {
             return nil
         }
 
-        let pinpointEvent = PinpointEvent(id: eventId, eventType: eventType, eventTimestamp: timestamp, session: session)
+        let pinpointEvent = PinpointEvent(id: eventId, eventType: eventType, eventDate: timestamp.asDate, session: session)
 
-        if let attributes = element[EventPropertyIndex.attributes] as? String, let data = Data(base64Encoded: attributes),
-           let decodedAttributes = try? archiver.decode(AnalyticsClient.PinpointEventAttributes.self, from: data) {
+        if let attributes = element[EventPropertyIndex.attributes] as? Blob,
+           let decodedAttributes = try? archiver.decode(AnalyticsClient.PinpointEventAttributes.self, from: Data(attributes.bytes)) {
             for (key, value) in decodedAttributes {
                 pinpointEvent.addAttribute(value, forKey: key)
             }
         }
 
-        if let metrics = element[EventPropertyIndex.metrics] as? String, let data = Data(base64Encoded: metrics),
-           let decodedMetrics = try? archiver.decode(AnalyticsClient.PinpointEventMetrics.self, from: data) {
+        if let metrics = element[EventPropertyIndex.metrics] as? Blob,
+           let decodedMetrics = try? archiver.decode(AnalyticsClient.PinpointEventMetrics.self, from: Data(metrics.bytes)) {
             for (key, value) in decodedMetrics {
                 pinpointEvent.addMetric(value, forKey: key)
             }

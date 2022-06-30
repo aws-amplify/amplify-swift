@@ -338,12 +338,12 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
         _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in
             if payload.eventName == HubPayload.EventName.Analytics.flushEvents {
                 methodWasInvokedOnPlugin.fulfill()
-                guard let pinpointEvents = payload.data as? [PinpointEvent] else {
+                guard let analyticsEvents = payload.data as? [AnalyticsEvent] else {
                     XCTFail("Missing data")
                     return
                 }
 
-                XCTAssertNotNil(pinpointEvents)
+                XCTAssertNotNil(analyticsEvents)
             }
         }
 

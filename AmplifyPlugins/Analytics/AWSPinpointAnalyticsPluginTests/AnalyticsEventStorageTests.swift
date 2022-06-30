@@ -44,13 +44,15 @@ class AnalyticsEventStorageTests: XCTestCase {
             let attributes = ["key1": "value1", "key2": "value2", "key3": "value3"]
             let metrics = ["key1": 1.0, "key2": 2.0]
             let archiver = AmplifyArchiver()
-            let encodedAttributes = try archiver.encode(attributes).base64EncodedString()
-            let encodedMetrics = try archiver.encode(metrics).base64EncodedString()
-            let basicEvent: [Binding] = [1, encodedAttributes, "eventType", encodedMetrics, DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2022-06-10T18:50:20.618+0000")!.utcTimeMillis, 1, "2022-06-10T17:00:20.618+0000", "2022-06-10T17:10:20.618+0000", 1654904585, 0, 0]
-            let failedWithMaxRetry: [Binding] = [2, encodedAttributes, "eventType", encodedMetrics, DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2022-06-9T18:50:20.618+0000")!.utcTimeMillis, 2, "2022-06-9T17:00:20.618+0000", "2022-06-9T17:10:20.618+0000", 1654818185, 0, 4]
-            let dirtyEvent: [Binding] = [3, encodedAttributes, "eventType", encodedMetrics, DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2022-06-8T18:50:20.618+0000")!.utcTimeMillis, 3, "2022-06-8T17:00:20.618+0000", "2022-06-8T17:10:20.618+0000", 1654731785, 1, 3]
-            let dirtyEvent2: [Binding] = [4, encodedAttributes, "eventType", encodedMetrics, DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2022-06-7T18:50:20.618+0000")!.utcTimeMillis, 4, "2022-06-7T17:00:20.618+0000", "2022-06-7T17:10:20.618+0000", 1654645385, 1, 3]
-            let eventWithDirtyFlag: [Binding] = [5, encodedAttributes, "eventType", encodedMetrics, DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2022-06-6T18:50:20.618+0000")!.utcTimeMillis, 5, "2022-06-6T17:00:20.618+0000", "2022-06-6T17:10:20.618+0000", 1654558985, 1, 1]
+            let encodedAttributes = try archiver.encode(attributes)
+            let attributesBlob = Blob(bytes: [UInt8](encodedAttributes))
+            let encodedMetrics = try archiver.encode(metrics)
+            let metricsBlob = Blob(bytes: [UInt8](encodedMetrics))
+            let basicEvent: [Binding] = [1, attributesBlob, "eventType", metricsBlob, DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2022-06-10T18:50:20.618Z")!.millisecondsSince1970, 1, "2022-06-10T17:00:20.618Z", "2022-06-10T17:10:20.618Z", 1654904585, 0, 0]
+            let failedWithMaxRetry: [Binding] = [2, attributesBlob, "eventType", metricsBlob, DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2022-06-9T18:50:20.618Z")!.millisecondsSince1970, 2, "2022-06-9T17:00:20.618Z", "2022-06-9T17:10:20.618Z", 1654818185, 0, 4]
+            let dirtyEvent: [Binding] = [3, attributesBlob, "eventType", metricsBlob, DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2022-06-8T18:50:20.618Z")!.millisecondsSince1970, 3, "2022-06-8T17:00:20.618Z", "2022-06-8T17:10:20.618Z", 1654731785, 1, 3]
+            let dirtyEvent2: [Binding] = [4, attributesBlob, "eventType", metricsBlob, DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2022-06-7T18:50:20.618Z")!.millisecondsSince1970, 4, "2022-06-7T17:00:20.618Z", "2022-06-7T17:10:20.618Z", 1654645385, 1, 3]
+            let eventWithDirtyFlag: [Binding] = [5, attributesBlob, "eventType", metricsBlob, DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2022-06-6T18:50:20.618Z")!.millisecondsSince1970, 5, "2022-06-6T17:00:20.618Z", "2022-06-6T17:10:20.618Z", 1654558985, 1, 1]
 
             _ = try adapter.executeQuery(insertEventStatement, basicEvent)
             _ = try adapter.executeQuery(insertEventStatement, failedWithMaxRetry)
@@ -198,7 +200,7 @@ class AnalyticsEventStorageTests: XCTestCase {
             let latestEvent = events.first(where: { $0.id == "1" })
             XCTAssertNotNil(latestEvent)
             XCTAssertEqual(latestEvent?.eventType, "eventType")
-            XCTAssertEqual(latestEvent?.eventTimestamp, 1654887020618)
+            XCTAssertEqual(latestEvent?.eventDate.millisecondsSince1970, 1654887020618)
             XCTAssertEqual(latestEvent?.session.sessionId, "1")
             XCTAssertEqual(latestEvent?.session.startTime, expectedSessionStartTime)
             XCTAssertEqual(latestEvent?.session.stopTime, expectedSessionStopTime)
@@ -315,7 +317,7 @@ class AnalyticsEventStorageTests: XCTestCase {
             XCTAssertNil(latestEvent)
 
             let session = PinpointSession(sessionId: "6", startTime: expectedSessionStartTime!, stopTime: expectedSessionStopTime)
-            let event = PinpointEvent(id: "6", eventType: "newEventType", eventTimestamp: expectedSessionStartTime!.utcTimeMillis, session: session)
+            let event = PinpointEvent(id: "6", eventType: "newEventType", eventDate: expectedSessionStartTime!, session: session)
             event.addAttribute("testValue", forKey: "testKey")
             event.addMetric(3.0, forKey: "testKey")
             try storage.saveEvent(event)
@@ -324,7 +326,7 @@ class AnalyticsEventStorageTests: XCTestCase {
             latestEvent = events.first(where: { $0.id == "6" })
             XCTAssertNotNil(latestEvent)
             XCTAssertEqual(latestEvent?.eventType, "newEventType")
-            XCTAssertEqual(latestEvent?.eventTimestamp, expectedSessionStartTime!.utcTimeMillis)
+            XCTAssertEqual(latestEvent?.eventDate, expectedSessionStartTime)
             XCTAssertEqual(latestEvent?.session.sessionId, "6")
             XCTAssertEqual(latestEvent?.session.startTime, expectedSessionStartTime)
             XCTAssertEqual(latestEvent?.session.stopTime, expectedSessionStopTime)
