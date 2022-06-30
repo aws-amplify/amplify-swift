@@ -442,7 +442,7 @@ class AuthenticationProviderConfirmSigninTests: BaseUserBehaviorTest {
     }
 
     // TODO: Fix the test below
-    
+
 //    /// Test a confirmSignIn with User pool configuration from service
 //    ///
 //    /// - Given: an auth plugin with mocked service with no User Pool configuration

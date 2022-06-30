@@ -19,7 +19,7 @@ extension AuthCategory: Resettable {
                 }
             }
         }
-        
+
         isConfigured = false
     }
 

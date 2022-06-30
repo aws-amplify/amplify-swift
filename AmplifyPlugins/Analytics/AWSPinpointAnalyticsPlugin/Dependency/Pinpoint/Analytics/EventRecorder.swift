@@ -12,7 +12,7 @@ import Foundation
 /// AnalyticsEventRecording saves and submits pinpoint events
 protocol AnalyticsEventRecording {
     var pinpointClient: PinpointClientProtocol { get }
-    
+
     /// Saves a pinpoint event to storage
     /// - Parameter event: A PinpointEvent
     func save(_ event: PinpointEvent) throws

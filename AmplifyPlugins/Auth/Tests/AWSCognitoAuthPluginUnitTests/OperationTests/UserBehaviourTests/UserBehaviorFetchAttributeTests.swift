@@ -196,7 +196,7 @@ class UserBehaviorFetchAttributesTests: BaseUserBehaviorTest {
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
             throw GetUserOutputError.passwordResetRequiredException(.init())
         })
-        
+
         let resultExpectation = expectation(description: "Should receive a result")
         _ = plugin.fetchUserAttributes { result in
             defer {
@@ -235,7 +235,7 @@ class UserBehaviorFetchAttributesTests: BaseUserBehaviorTest {
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
             throw GetUserOutputError.resourceNotFoundException(.init())
         })
-        
+
         let resultExpectation = expectation(description: "Should receive a result")
         _ = plugin.fetchUserAttributes { result in
             defer {
@@ -274,7 +274,7 @@ class UserBehaviorFetchAttributesTests: BaseUserBehaviorTest {
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
             throw GetUserOutputError.tooManyRequestsException(.init())
         })
-        
+
         let resultExpectation = expectation(description: "Should receive a result")
         _ = plugin.fetchUserAttributes { result in
             defer {

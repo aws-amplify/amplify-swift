@@ -96,7 +96,6 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
         } onSubscribe: { }
     }
 
-
     func verifyResponse() {
         if isCancelled {
             finish()

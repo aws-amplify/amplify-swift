@@ -13,19 +13,18 @@ public class AWSAuthChangePasswordOperation: AmplifyOperation<
 AuthChangePasswordRequest,
 Void,
 AuthError>, AuthChangePasswordOperation {
-    
+
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
-    
+
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
     private var statelistenerToken: AuthStateMachineToken?
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
-    
+
     init(_ request: AuthChangePasswordRequest,
          authStateMachine: AuthStateMachine,
          userPoolFactory: @escaping CognitoUserPoolFactory,
-         resultListener: ResultListener?)
-    {
+         resultListener: ResultListener?) {
         self.authStateMachine = authStateMachine
         self.userPoolFactory = userPoolFactory
         self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()
@@ -34,13 +33,13 @@ AuthError>, AuthChangePasswordOperation {
                    request: request,
                    resultListener: resultListener)
     }
-    
+
     override public func main() {
         if isCancelled {
             finish()
             return
         }
-        
+
         fetchAuthSessionHelper.fetch(authStateMachine) { [weak self] result in
             switch result {
             case .success(let session):
@@ -56,11 +55,11 @@ AuthError>, AuthChangePasswordOperation {
                 self?.dispatch(error)
             }
         }
-        
+
     }
-    
+
     func changePassword(with accessToken: String) async {
-        
+
         do {
             let userPoolService = try userPoolFactory()
 
@@ -68,15 +67,13 @@ AuthError>, AuthChangePasswordOperation {
                 accessToken: accessToken,
                 previousPassword: request.oldPassword,
                 proposedPassword: request.newPassword)
-            
-            let _ = try await userPoolService.changePassword(input: input)
-            
+
+            _ = try await userPoolService.changePassword(input: input)
+
             self.dispatch()
-        }
-        catch let error as ChangePasswordOutputError {
+        } catch let error as ChangePasswordOutputError {
             self.dispatch(error.authError)
-        }
-        catch let error {
+        } catch let error {
             let error = AuthError.configuration(
                 "Unable to create a Swift SDK user pool service",
                 AuthPluginErrorConstants.configurationError,
@@ -84,13 +81,13 @@ AuthError>, AuthChangePasswordOperation {
             self.dispatch(error)
         }
     }
-    
+
     private func dispatch() {
         let result = OperationResult.success(())
         dispatch(result: result)
         finish()
     }
-    
+
     private func dispatch(_ error: AuthError) {
         let result = OperationResult.failure(error)
         dispatch(result: result)

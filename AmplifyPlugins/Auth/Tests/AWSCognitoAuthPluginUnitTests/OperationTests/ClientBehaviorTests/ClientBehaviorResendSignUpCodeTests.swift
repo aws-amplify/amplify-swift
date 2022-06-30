@@ -13,8 +13,8 @@ import AWSCognitoIdentity
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 
-class ClientBehaviorResendSignUpCodeTests : AWSCognitoAuthClientBehaviorTests {
-    
+class ClientBehaviorResendSignUpCodeTests: AWSCognitoAuthClientBehaviorTests {
+
     override func setUp() {
         super.setUp()
         mockIdentityProvider = MockIdentityProvider(
@@ -23,7 +23,7 @@ class ClientBehaviorResendSignUpCodeTests : AWSCognitoAuthClientBehaviorTests {
             }
         )
     }
-    
+
     /// Test resendSignUpCode operation can be invoked
     ///
     /// - Given: Given a configured auth plugin
@@ -42,7 +42,7 @@ class ClientBehaviorResendSignUpCodeTests : AWSCognitoAuthClientBehaviorTests {
         XCTAssertNotNil(operation)
         waitForExpectations(timeout: 1)
     }
-    
+
     /// Test resendSignUpCode operation can be invoked without options
     ///
     /// - Given: Given a configured auth plugin
@@ -59,7 +59,7 @@ class ClientBehaviorResendSignUpCodeTests : AWSCognitoAuthClientBehaviorTests {
         XCTAssertNotNil(operation)
         waitForExpectations(timeout: 1)
     }
-    
+
     /// Test a successful resendSignUpCode call with .email as the destination of AuthCodeDeliveryDetails
     ///
     /// - Given: Given an auth plugin with mocked service. Mocked service calls should mock a successul response
@@ -69,7 +69,7 @@ class ClientBehaviorResendSignUpCodeTests : AWSCognitoAuthClientBehaviorTests {
     ///    - I should get a successful result with .email as the destination of AuthCodeDeliveryDetails
     ///
     func testResendSignupCodeWithSuccess() {
-        
+
         let codeDeliveryDetails = CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType(attributeName: nil,
                                                                                              deliveryMedium: .email,
                                                                                              destination: nil)
@@ -78,13 +78,13 @@ class ClientBehaviorResendSignUpCodeTests : AWSCognitoAuthClientBehaviorTests {
                 ResendConfirmationCodeOutputResponse(codeDeliveryDetails: codeDeliveryDetails)
             }
         )
-        
+
         let resultExpectation = expectation(description: "Should receive a result")
         _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
             defer {
                 resultExpectation.fulfill()
             }
-            
+
             switch result {
             case .success(let authCodeDeliveryDetails):
                 guard case .email = authCodeDeliveryDetails.destination else {
@@ -97,7 +97,7 @@ class ClientBehaviorResendSignUpCodeTests : AWSCognitoAuthClientBehaviorTests {
         }
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
-    
+
     /// Test a resendSignUpCode call with empty username
     ///
     /// - Given: Given an auth plugin with mocked service. Mocked service calls should mock a successful response
@@ -116,7 +116,7 @@ class ClientBehaviorResendSignUpCodeTests : AWSCognitoAuthClientBehaviorTests {
                 ResendConfirmationCodeOutputResponse(codeDeliveryDetails: codeDeliveryDetails)
             }
         )
-        
+
         let resultExpectation = expectation(description: "Should receive a result")
         _ = plugin.resendSignUpCode(for: "", options: nil) { result in
             defer {
@@ -151,7 +151,7 @@ class ClientBehaviorResendSignUpCodeTests : AWSCognitoAuthClientBehaviorTests {
                 throw AuthError.unknown("Unknown error", nil)
             }
         )
-        
+
         let resultExpectation = expectation(description: "Should receive a result")
         _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
             defer {
@@ -714,5 +714,5 @@ class ClientBehaviorResendSignUpCodeTests : AWSCognitoAuthClientBehaviorTests {
         }
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
-    
+
 }

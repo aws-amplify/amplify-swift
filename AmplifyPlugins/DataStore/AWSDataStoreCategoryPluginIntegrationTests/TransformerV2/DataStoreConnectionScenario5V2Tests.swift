@@ -87,7 +87,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
         let predicateByUserId = PostEditor5V2.keys.user5V2.eq(user.id)
         Amplify.DataStore.query(PostEditor5V2.self, where: predicateByUserId) { result in
             switch result {
-            case .success(_):
+            case .success:
                 listPostEditorByEditorIdCompleted.fulfill()
             case .failure(let error):
                 XCTFail("\(error)")

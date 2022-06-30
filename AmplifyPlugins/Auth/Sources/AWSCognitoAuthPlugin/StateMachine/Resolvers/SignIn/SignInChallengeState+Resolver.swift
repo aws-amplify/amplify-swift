@@ -27,7 +27,7 @@ extension SignInChallengeState {
                 return .from(oldState)
 
             case .waitingForAnswer(let challenge):
-                
+
                 if case .verifyChallengeAnswer(let answer) = event.isChallengeEvent {
                     let action = VerifySignInChallenge(challenge: challenge, answer: answer)
                     return .init(newState: .verifying(challenge, answer), actions: [action])

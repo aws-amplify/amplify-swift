@@ -67,7 +67,6 @@ class AnalyticsClientTests: XCTestCase {
         XCTAssertNil(event.attributes["_transaction_id"])
     }
 
-
     func testCreateEvent() {
         let eventType = "mockEvent"
         let event = analyticsClient.createEvent(withEventType: eventType)
