@@ -13,12 +13,14 @@ struct UserPoolConfigurationData: Equatable {
     let clientSecret: String?
     let pinpointAppId: String?
     let hostedUIConfig: HostedUIConfigurationData?
+    let authFlowType: AuthFlowType
 
     init(poolId: String,
                 clientId: String,
                 region: String,
                 clientSecret: String? = nil,
                 pinpointAppId: String? = nil,
+                authFlowType: AuthFlowType = .unknown,
                 hostedUIConfig: HostedUIConfigurationData? = nil) {
         self.poolId = poolId
         self.clientId = clientId
@@ -26,6 +28,7 @@ struct UserPoolConfigurationData: Equatable {
         self.clientSecret = clientSecret
         self.pinpointAppId = pinpointAppId
         self.hostedUIConfig = hostedUIConfig
+        self.authFlowType = authFlowType
     }
 
     /// Amazon Cognito user pool: cognito-idp.<region>.amazonaws.com/<YOUR_USER_POOL_ID>,

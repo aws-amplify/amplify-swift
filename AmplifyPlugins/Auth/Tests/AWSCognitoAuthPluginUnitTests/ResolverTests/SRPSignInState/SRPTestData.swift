@@ -105,7 +105,7 @@ extension SignInEvent {
 
     static let initiateSRPEvent = SignInEvent(
         id: "initiateSRPEvent",
-        eventType: .initiateSRP(.testData)
+        eventType: .initiateSignInWithSRP(.testData)
     )
 
     static let respondPasswordVerifierEvent = SignInEvent(

@@ -19,6 +19,20 @@ extension SignInState {
         -> StateResolution<SignInState> {
 
             switch oldState {
+            case .notStarted:
+                if case .initiateSignInWithSRP(let signInEventData) = event.isSignInEvent {
+                    let action = StartSRPFlow(signInEventData: signInEventData)
+                    return .init(newState: .signingInWithSRP(.notStarted, signInEventData),
+                                 actions: [action])
+                }
+                if case .initiateCustomSignIn = event.isSignInEvent {
+
+                    return .init(newState: .signingInWithCustom)
+                }
+                if case .initiateCustomSignInWithSRP = event.isSignInEvent {
+                    return .init(newState: .signingInWithSRPCustom)
+                }
+                return .from(oldState)
             case .signingInWithSRP(let srpSignInState, let signInEventData):
 
                 if let signInEvent = event as? SignInEvent,

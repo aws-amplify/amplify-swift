@@ -10,7 +10,7 @@ import Foundation
 enum SignInState: State {
     case notStarted
     case signingInWithSRP(SRPSignInState, SignInEventData)
-    case signingInWithSocial
+    case signingInWithSRPCustom
     case signingInWithCustom
     case resolvingMFAChallenge
     case resolvingSMSChallenge(SignInChallengeState)
@@ -24,7 +24,7 @@ extension SignInState {
         switch self {
         case .notStarted: return "SignInState.notStarted"
         case .signingInWithSRP: return "SignInState.signingInWithSRP"
-        case .signingInWithSocial: return "SignInState.signingInWithSocial"
+        case .signingInWithSRPCustom: return "SignInState.signingInWithSRPCustom"
         case .signingInWithCustom: return "SignInState.signingInWithCustom"
         case .resolvingMFAChallenge: return "SignInState.resolvingMFAChallenge"
         case .resolvingSMSChallenge: return "SignInState.resolvingSMSChallenge"
