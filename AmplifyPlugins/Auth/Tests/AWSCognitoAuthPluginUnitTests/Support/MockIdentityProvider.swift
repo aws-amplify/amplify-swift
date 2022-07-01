@@ -159,7 +159,7 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     func deleteUser(input: DeleteUserInput) async throws -> DeleteUserOutputResponse {
         return try await mockDeleteUserOutputResponse!(input)
     }
-    
+
     func forgotPassword(input: ForgotPasswordInput) async throws -> ForgotPasswordOutputResponse {
         return try await mockForgotPasswordOutputResponse!(input)
     }

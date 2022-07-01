@@ -26,13 +26,17 @@ extension SignInState {
                                  actions: [action])
                 }
                 if case .initiateCustomSignIn = event.isSignInEvent {
-
                     return .init(newState: .signingInWithCustom)
                 }
                 if case .initiateCustomSignInWithSRP = event.isSignInEvent {
                     return .init(newState: .signingInWithSRPCustom)
                 }
+                if case .initiateHostedUISignIn(let options) = event.isSignInEvent {
+                    let action = InitializeHostedUISignIn(options: options)
+                    return .init(newState: .signingInWithHostedUI(.notStarted), actions: [action])
+                }
                 return .from(oldState)
+
             case .signingInWithSRP(let srpSignInState, let signInEventData):
 
                 if let signInEvent = event as? SignInEvent,
