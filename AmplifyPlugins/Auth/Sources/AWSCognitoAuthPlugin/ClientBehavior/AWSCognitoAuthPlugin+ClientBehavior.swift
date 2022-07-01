@@ -138,7 +138,17 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
                                      options: AuthConfirmResetPasswordOperation.Request.Options?,
                                      listener: AuthConfirmResetPasswordOperation.ResultListener?)
     -> AuthConfirmResetPasswordOperation {
-        fatalError("Not implemented")
+        let options = options ?? AuthConfirmResetPasswordRequest.Options()
+        let request = AuthConfirmResetPasswordRequest(username: username,
+                                                      newPassword: newPassword,
+                                                      confirmationCode: confirmationCode,
+                                                      options: options)
+        let confirmResetPasswordOperation = AWSAuthConfirmResetPasswordOperation(request,
+                                                                         userPoolFactory: authEnvironment.cognitoUserPoolFactory,
+                                                                         authConfiguration: authConfiguration,
+                                                                         resultListener: listener)
+        queue.addOperation(confirmResetPasswordOperation)
+        return confirmResetPasswordOperation
     }
 
     public func deleteUser(listener: AuthDeleteUserOperation.ResultListener?) -> AuthDeleteUserOperation {

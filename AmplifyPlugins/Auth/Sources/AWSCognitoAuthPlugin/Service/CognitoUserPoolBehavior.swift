@@ -59,4 +59,8 @@ protocol CognitoUserPoolBehavior {
     /// Resets password
     /// Throws ForgotPasswordOutputError
     func forgotPassword(input: ForgotPasswordInput) async throws -> ForgotPasswordOutputResponse
+    
+    /// Confirm Reset password
+    /// Throws ConfirmForgotPasswordOutputError
+    func confirmForgotPassword(input: ConfirmForgotPasswordInput) async throws -> ConfirmForgotPasswordOutputResponse
 }
