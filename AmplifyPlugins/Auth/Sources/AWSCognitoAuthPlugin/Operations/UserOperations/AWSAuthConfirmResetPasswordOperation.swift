@@ -23,7 +23,7 @@ public class AWSAuthConfirmResetPasswordOperation: AmplifyOperation< AuthConfirm
         self.userPoolFactory = userPoolFactory
         self.authConfiguration = authConfiguration
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.resetPasswordAPI,
+                   eventName: HubPayload.EventName.Auth.confirmResetPasswordAPI,
                    request: request,
                    resultListener: resultListener)
     }
