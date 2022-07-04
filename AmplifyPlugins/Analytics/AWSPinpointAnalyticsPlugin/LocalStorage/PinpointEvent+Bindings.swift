@@ -17,11 +17,7 @@ extension PinpointEvent {
     ///   - archiver: The archiver to archive metrics and attributes
     /// - Returns: A collection of SQLite Bindings
     func getInsertBindings(archiver: AmplifyArchiverBehaviour = PinpointEvent.archiver) -> [Binding?] {
-        var attributesBlob: Blob?
-        if let encodedAttributes = try? archiver.encode(attributes) {
-            attributesBlob = Blob(bytes: [UInt8](encodedAttributes))
-        }
-
+        let attributesBlob = PinpointEvent.archiveEventAttributes(attributes)
         var metricsBlob: Blob?
         if let encodedMetrics = try? archiver.encode(metrics) {
             metricsBlob = Blob(bytes: [UInt8](encodedMetrics))
@@ -41,11 +37,18 @@ extension PinpointEvent {
             0 // RetryCount
         ]
     }
+    
+    static func archiveEventAttributes(_ attributes: [String: String]) -> Binding? {
+        guard let encodedAttributes = try? archiver.encode(attributes) else {
+            return nil
+        }
+        return Blob(bytes: [UInt8](encodedAttributes))
+    }
 
     /// Converts a SQL Statement element to a pinpoint event based on predefined/known property index of columns/index
     /// - Parameters:
     ///   - element: The SQL statement element
-    ///   - dateFormater: The date formatter to convert string to date.  Defaults to ISO8601 with fractional seconds format.
+    ///   - dateFormatter: The date formatter to convert string to date.  Defaults to ISO8601 with fractional seconds format.
     ///   - archiver: The default archiver to decode metrics and attributes.
     /// - Returns: A Pinpoint event
     static func convertToEvent(_ element: Statement.Element, archiver: AmplifyArchiverBehaviour = PinpointEvent.archiver) -> PinpointEvent? {

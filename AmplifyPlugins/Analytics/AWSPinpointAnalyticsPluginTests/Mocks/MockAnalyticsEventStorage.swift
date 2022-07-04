@@ -13,6 +13,7 @@ class MockAnalyticsEventStorage: AnalyticsEventStorage {
     var initializeStorageCallCount = 0
     var deleteOldestEventCallCount = 0
     var deleteAllEventsCallCount = 0
+    var updateEventsCallCount = 0
     var removedFailedEventsCallCount = 0
     var eventRetryDictionary = [String: Int]()
     var dirtyEventDictionary = [String: Int]()
@@ -37,6 +38,11 @@ class MockAnalyticsEventStorage: AnalyticsEventStorage {
 
     func deleteAllEvents() throws {
         deleteAllEventsCallCount += 1
+    }
+    func updateEvents(ofType: String,
+                      withSessionId: PinpointSession.SessionId,
+                      setAttributes: [String : String]) throws {
+        updateEventsCallCount += 1
     }
 
     func getEventsWith(limit: Int) throws -> [PinpointEvent] {

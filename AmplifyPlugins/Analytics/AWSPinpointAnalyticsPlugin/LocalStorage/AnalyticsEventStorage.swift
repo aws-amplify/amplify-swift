@@ -19,6 +19,18 @@ protocol AnalyticsEventStorage {
     func deleteOldestEvent() throws
     /// Delete all events from the Event table
     func deleteAllEvents() throws
+    
+    
+    /// Update attributes of the events with the provided session identifier
+    /// and type
+    /// - Parameters:
+    ///   - ofType: event type
+    ///   - sessionId: session identifier
+    ///   - setAttributes: event attributes
+    func updateEvents(ofType: String,
+                      withSessionId: PinpointSession.SessionId,
+                      setAttributes: [String: String]) throws
+    
     /// Get the oldest event with limit
     /// - Parameter limit: The number of query result to limit
     /// - Returns: A collection of PinpointEvent

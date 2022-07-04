@@ -339,4 +339,45 @@ class AnalyticsEventStorageTests: XCTestCase {
             XCTFail("Failed to save a new event")
         }
     }
+    
+    func testUpdateEvents() throws {
+        try storage.deleteAllEvents()
+        let eventType = "_session.start"
+        let expectedSessionStartTime = DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2050-06-11T17:00:20.618+0000")
+        let expectedSessionStopTime = DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2050-06-11T17:10:20.618+0000")
+        let session = PinpointSession(sessionId: "session-id",
+                                      startTime: expectedSessionStartTime!,
+                                      stopTime: expectedSessionStopTime)
+        let event1 = PinpointEvent(id: "event-1",
+                                   eventType: eventType,
+                                   session: session)
+        let event2 = PinpointEvent(id: "event-2",
+                                   eventType: eventType,
+                                   session: session)
+        
+        let notASessionStartEvent = PinpointEvent(id: "event-3",
+                                                  eventType: "another-event-type",
+                                                  session: session)
+        
+        let attributes = ["attr1": "value1", "attr2": "value2"]
+        
+        try storage.saveEvent(event1)
+        try storage.saveEvent(event2)
+        try storage.saveEvent(notASessionStartEvent)
+        
+        try storage.updateEvents(ofType: eventType,
+                                 withSessionId: session.sessionId,
+                                 setAttributes: attributes)
+        
+        let savedEvents = try storage.getEventsWith(limit: 3)
+        
+        XCTAssertEqual(savedEvents[0].id, event1.id)
+        XCTAssertEqual(savedEvents[1].id, event2.id)
+        XCTAssertEqual(savedEvents[0].attributes, attributes)
+        XCTAssertEqual(savedEvents[1].attributes, attributes)
+        
+        // event-3 should not have been updated
+        XCTAssertEqual(savedEvents[2].id, notASessionStartEvent.id)
+        XCTAssertNotEqual(savedEvents[2].attributes, attributes)
+    }
 }

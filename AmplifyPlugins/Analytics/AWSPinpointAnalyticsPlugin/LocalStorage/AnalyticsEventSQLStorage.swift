@@ -100,6 +100,22 @@ class AnalyticsEventSQLStorage: AnalyticsEventStorage {
         let deleteStatement = "DELETE FROM Event"
         _ = try dbAdapter.executeQuery(deleteStatement, [])
     }
+    
+    func updateEvents(ofType eventType: String,
+                      withSessionId sessionId: PinpointSession.SessionId,
+                      setAttributes attributes: [String : String]) throws {
+        let updateStatement = """
+        UPDATE Event
+        SET attributes = ?
+        WHERE sessionId = ?
+        AND eventType = ?
+        """
+        _ = try dbAdapter.executeQuery(updateStatement, [
+            PinpointEvent.archiveEventAttributes(attributes),
+            sessionId,
+            eventType])
+    }
+    
 
     /// Get the oldest event with limit
     /// - Parameter limit: The number of query result to limit
