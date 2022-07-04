@@ -17,6 +17,17 @@ protocol AnalyticsEventRecording {
     /// Saves a pinpoint event to storage
     /// - Parameter event: A PinpointEvent
     func save(_ event: PinpointEvent) throws
+    
+    
+    /// Updates attributes of the events with the provided session id
+    /// - Parameters:
+    ///   - ofType: event type
+    ///   - withSessionId: session identifier
+    ///   - setAttributes: event attributes
+    func updateAttributesOfEvents(ofType: String,
+                                  withSessionId: PinpointSession.SessionId,
+                                  setAttributes: [String: String]) throws
+    
     /// Submit all locally stored events
     /// - Returns: A collection of events submitted to Pinpoint
     func submitAllEvents() async throws -> [PinpointEvent]
@@ -36,7 +47,10 @@ class EventRecorder: AnalyticsEventRecording {
     ///   - storage: A storage object that conforms to AnalyticsEventStorage
     ///   - pinpointClient: A Pinpoint client
     ///   - endpointClient: An EndpointClientBehaviour client
-    init(appId: String, storage: AnalyticsEventStorage, pinpointClient: PinpointClientProtocol, endpointClient: EndpointClientBehaviour) throws {
+    init(appId: String,
+         storage: AnalyticsEventStorage,
+         pinpointClient: PinpointClientProtocol,
+         endpointClient: EndpointClientBehaviour) throws {
         self.appId = appId
         self.storage = storage
         self.pinpointClient = pinpointClient
@@ -51,6 +65,14 @@ class EventRecorder: AnalyticsEventRecording {
     func save(_ event: PinpointEvent) throws {
         try storage.saveEvent(event)
         try self.storage.checkDiskSize(limit: Constants.pinpointClientByteLimitDefault)
+    }
+    
+    func updateAttributesOfEvents(ofType eventType: String,
+                                  withSessionId sessionId: PinpointSession.SessionId,
+                                  setAttributes attributes: [String: String]) throws {
+        try self.storage.updateEvents(ofType: eventType,
+                                      withSessionId: sessionId,
+                                      setAttributes: attributes)
     }
 
     /// Submit all locally stored events in batches
