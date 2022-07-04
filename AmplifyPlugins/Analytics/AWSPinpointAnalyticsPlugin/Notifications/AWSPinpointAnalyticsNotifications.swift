@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import Foundation
 #if canImport(UIKit)
 import UIKit
 #endif
-import Amplify
 
-public class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotificationsBehavior {
+class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotificationsBehavior {
     private var previousEventSource: EventSource = .unknown
     private let analyticsClient: AnalyticsClientBehaviour
     private let endpointClient: EndpointClientBehaviour
@@ -26,7 +26,7 @@ public class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotification
     }
     
     // MARK: - Public APIs
-    public func interceptDidFinishLaunchingWithOptions(launchOptions: LaunchOptions) async -> Bool {
+    func interceptDidFinishLaunchingWithOptions(launchOptions: LaunchOptions) async -> Bool {
         guard let notificationPayload = remoteNotificationPayload(fromLaunchOptions: launchOptions),
               isValidPinpointNotification(payload: notificationPayload) else {
             return true
@@ -43,7 +43,7 @@ public class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotification
         return true
     }
     
-    public func interceptDidRegisterForRemoteNotificationsWithDeviceToken(deviceToken: Data) async {
+    func interceptDidRegisterForRemoteNotificationsWithDeviceToken(deviceToken: Data) async {
         let currentToken = self.userDefaults.data(forKey: EndpointClient.Constants.deviceTokenKey)
         guard currentToken != deviceToken else {
             return
@@ -57,9 +57,9 @@ public class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotification
         }
     }
     
-    public func interceptDidReceiveRemoteNotification(userInfo: UserInfo,
-                                                      pushEvent: AWSPinpointPushEvent = .received,
-                                                      shouldHandleNotificationDeepLink: Bool) async {
+    func interceptDidReceiveRemoteNotification(userInfo: UserInfo,
+                                               pushEvent: AWSPinpointPushEvent = .received,
+                                               shouldHandleNotificationDeepLink: Bool) async {
         let (eventSource, metadata) = pinpointMetadata(fromPayload: userInfo)
         let pushAction = makePinpointPushAction(fromEvent: pushEvent)
         
@@ -68,9 +68,9 @@ public class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotification
             log.verbose("App launched from received notification.")
             await self.addGlobalEventSourceMetadata(eventMetadata: metadata, eventSource: eventSource)
             await self.recordEventForNotification(metadata: metadata,
-                                            eventSource: eventSource,
-                                            pushEvent: .opened,
-                                            pushAction: pushAction)
+                                                  eventSource: eventSource,
+                                                  pushEvent: .opened,
+                                                  pushAction: pushAction)
             
             if shouldHandleNotificationDeepLink {
                 self.handleDeepLinkForNotification(userInfo: userInfo)
@@ -80,10 +80,10 @@ public class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotification
             log.verbose("Received notification with app in background.")
             await self.addGlobalEventSourceMetadata(eventMetadata: metadata, eventSource: eventSource)
             await self.recordEventForNotification(metadata: metadata,
-                                            eventSource: eventSource,
-                                            pushEvent: .received,
-                                            pushAction: pushAction)
-        
+                                                  eventSource: eventSource,
+                                                  pushEvent: .received,
+                                                  pushAction: pushAction)
+
         case .receivedForeground:
             log.verbose("Received notification with app in foreground.")
             // Not adding global event source metadata because if the app session is already running,
@@ -92,12 +92,11 @@ public class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotification
                                                   eventSource: eventSource,
                                                   pushEvent: .received,
                                                   pushAction: pushAction)
-        
+
         case .unknown:
             log.verbose("Received notification with app in unknown state.")
         }
     }
-    
     
     // MARK: Helpers
     /// Given a notification payload, returns a Pinpoint payload if available
@@ -167,7 +166,7 @@ extension AWSPinpointAnalyticsNotifications {
         if let campaignMetadata = pinpointPayload[EventSource.campaign.rawValue] as? UserInfo {
             metadata = (.campaign, campaignMetadata)
             self.log.verbose("Found Pinpoint campaign with attributes: \(campaignMetadata)")
-        
+
         } else if let journeyMetadata = pinpointPayload[EventSource.journey.rawValue] as? UserInfo {
             metadata = (.journey, journeyMetadata)
             self.log.verbose("Found Pinpoint journey with attributes: \(journeyMetadata)")
@@ -276,6 +275,26 @@ extension AWSPinpointAnalyticsNotifications {
 // MARK: - AWSPinpointAnalyticsNotifications + DefaultLogger
 extension AWSPinpointAnalyticsNotifications: DefaultLogger {}
 
+// MARK: - AWSPinpointAnalyticsNotifications + areNotificationsEnabled
+extension AWSPinpointAnalyticsNotifications {
+    static var areNotificationsEnabled: Bool {
+        get async {
+#if canImport(UIKit)
+            let isRegisteredForNotifications = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
+                DispatchQueue.main.async {
+                    let result = UIApplication.shared.isRegisteredForRemoteNotifications
+                    continuation.resume(with: .success(result))
+                }
+            }
+            return isRegisteredForNotifications
+
+#else
+            // TODO: Update this if needed to support multiplatform
+            return false
+#endif
+        }
+    }
+}
 
 // MARK: - PinpointEvent + makeWithActionType / addApplicationState
 extension PinpointEvent {
@@ -354,4 +373,3 @@ enum AWSPinpointPushAction: String {
     case receivedBackground = "received_background"
     case unknown
 }
-

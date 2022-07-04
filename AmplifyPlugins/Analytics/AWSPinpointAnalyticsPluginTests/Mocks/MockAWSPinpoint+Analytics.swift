@@ -5,12 +5,33 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import AWSPinpoint
 @testable import AWSPinpointAnalyticsPlugin
 import Foundation
 import StoreKit
 
-extension MockAWSPinpoint: AWSPinpointAnalyticsClientBehavior {
+extension MockAWSPinpoint {
+    public func addGlobalProperty(withValue value: AnalyticsPropertyValue, forKey: String) {
+        if let value = value as? String {
+            addGlobalAttribute(value, forKey: forKey)
+        } else if let value = value as? Int {
+            addGlobalMetric(Double(value), forKey: forKey)
+        } else if let value = value as? Double {
+            addGlobalMetric(value, forKey: forKey)
+        } else if let value = value as? Bool {
+            addGlobalAttribute(String(value), forKey: forKey)
+        }
+    }
+
+    public func removeGlobalProperty(withValue value: AnalyticsPropertyValue, forKey: String) {
+        if value is String || value is Bool {
+            removeGlobalAttribute(forKey: forKey)
+        } else if value is Int || value is Double {
+            removeGlobalMetric(forKey: forKey)
+        }
+    }
+
     public func addGlobalAttribute(_ theValue: String, forKey theKey: String) {
         addGlobalAttributeCalled += 1
 

@@ -9,7 +9,7 @@ import AWSPinpoint
 @testable import AWSPinpointAnalyticsPlugin
 import Foundation
 
-extension MockAWSPinpoint: AWSPinpointTargetingClientBehavior {
+extension MockAWSPinpoint {
     public func currentEndpointProfile() -> PinpointEndpointProfile {
         currentEndpointProfileCalled += 1
 
