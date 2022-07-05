@@ -40,6 +40,10 @@ extension SignInState {
                     let action = InitializeHostedUISignIn(options: options)
                     return .init(newState: .signingInWithHostedUI(.notStarted), actions: [action])
                 }
+                if case .initiateHostedUISignIn(let options) = event.isSignInEvent {
+                    let action = InitializeHostedUISignIn(options: options)
+                    return .init(newState: .signingInWithHostedUI(.notStarted), actions: [action])
+                }
                 return .from(oldState)
 
             case .signingInWithSRP(let srpSignInState, let signInEventData):
