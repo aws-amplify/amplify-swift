@@ -158,6 +158,40 @@ enum Defaults {
                                     initialState: initialState)
     }
 
+    static func makeAuthState(userId: String,
+                              userName: String,
+                              signedInDate: Date = Date(),
+                              signInMethod: SignInMethod = .unknown) -> AuthState {
+        let authConfig = makeAuthConfiguration()
+        let tokens = makeCognitoUserPoolTokens()
+
+        let signedInData = SignedInData(userId: userId,
+                                        userName: userName,
+                                        signedInDate: signedInDate,
+                                        signInMethod: signInMethod,
+                                        cognitoUserPoolTokens: tokens)
+
+        let authNState: AuthenticationState = .signedIn(signedInData)
+        let authZState: AuthorizationState = .configured
+        let authState: AuthState = .configured(authNState, authZState)
+
+        return authState
+    }
+
+    static func makeAuthConfiguration() -> AuthConfiguration {
+        AuthConfiguration.userPoolsAndIdentityPools(
+            Defaults.makeDefaultUserPoolConfigData(),
+            Defaults.makeIdentityConfigData()
+        )
+    }
+
+    static func makeCognitoUserPoolTokens(idToken: String = "XX",
+                                             accessToken: String = "",
+                                             refreshToken: String = "XX",
+                                             expiresIn: Int = 300) -> AWSCognitoUserPoolTokens {
+        AWSCognitoUserPoolTokens(idToken: idToken, accessToken: accessToken, refreshToken: refreshToken, expiresIn: expiresIn)
+    }
+
 }
 
 struct MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
