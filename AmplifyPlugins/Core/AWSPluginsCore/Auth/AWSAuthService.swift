@@ -80,26 +80,6 @@ public class AWSAuthService: AWSAuthServiceBehavior {
         }
         return .success(convertedDictionary)
     }
-
-    /// Retrieves the Cognito token from the AuthCognitoTokensProvider
-    /// - Parameter completion: Completion handler defined for the input `Result<String, AuthError>`
-    public func getUserPoolAccessToken(completion: @escaping (Result<String, AuthError>) -> Void) {
-        Amplify.Auth.fetchAuthSession { [weak self] event in
-            switch event {
-            case .success(let session):
-                guard
-                    let tokenResult = self?.getTokenString(from: session)
-                else {
-                    return completion(.failure(.unknown("""
-                    Did not receive a valid response from fetchAuthSession for get token.
-                    """)))
-                }
-                completion(tokenResult)
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
-    }
     
     /// Retrieves the Cognito token from the AuthCognitoTokensProvider
     public func getUserPoolAccessToken() async throws -> String {
@@ -127,6 +107,7 @@ public class AWSAuthService: AWSAuthServiceBehavior {
         }
     }
 
+    // TODO: Remove this after calls to it are removed from API and DataStore plugins
     @available(*, deprecated, message: "Use getUserPoolAccessToken(completion:) instead")
     public func getToken() -> Result<String, AuthError> {
         var result: Result<String, AuthError>?

@@ -29,17 +29,6 @@ class AuthTokenProviderWrapper: AuthTokenProvider {
                                               error))
         }
     }
-
-    func getUserPoolAccessToken(completion: @escaping (Result<String, AuthError>) -> Void) {
-        wrappedAuthTokenProvider.getUserPoolAccessToken { result in
-            switch result {
-            case .success(let result):
-                completion(.success(result))
-            case .failure(let error):
-                completion(.failure(AuthError.service("Unable to get latest auth token", "", error)))
-            }
-        }
-    }
     
     func getUserPoolAccessToken() async throws -> String {
         try await wrappedAuthTokenProvider.getUserPoolAccessToken()

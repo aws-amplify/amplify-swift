@@ -48,10 +48,6 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
         completion(.success(identityId ?? "IdentityId"))
     }
     
-    public func getUserPoolAccessToken(completion: @escaping (Result<String, AuthError>) -> Void) {
-        completion(.success(""))
-    }
-    
     public func getUserPoolAccessToken() async throws -> String {
         ""
     }
