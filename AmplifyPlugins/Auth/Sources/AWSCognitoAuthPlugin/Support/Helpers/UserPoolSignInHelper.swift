@@ -26,6 +26,9 @@ struct UserPoolSignInHelper {
         } else if case .resolvingChallenge(let challengeState, let challengeType) = signInState,
                   case .waitingForAnswer(let challenge) = challengeState {
             return validateResult(for: challengeType, with: challenge)
+        } else if case .signingInWithHostedUI(let hostedUIState) = signInState,
+                  case .error(let hostedUIError) = hostedUIState {
+            return validateError(signInError: hostedUIError)
         }
         return nil
     }

@@ -28,12 +28,28 @@ struct InitializeHostedUISignIn: Action {
             return
         }
 
+        guard let presentationAnchor = options.presentationAnchor else {
+            fatalError("""
+        Should not happen, initialize hostedUISignIn should always start with presentationanchor
+        """)
+        }
+
         let state = UUID().uuidString.lowercased()
-        let proofKey = generateRandom()
-        let hash = SHA256.hash(data: proofKey)
+
+        guard let proofKey = generateRandom(),
+              let proofData = proofKey.data(using: .ascii) else {
+            let event = HostedUIEvent(eventType: .throwError(.hostedUI(.proofCalculation)))
+            logVerbose("\(#fileID) Sending event \(event)", environment: environment)
+            dispatcher.send(event)
+            return
+        }
+        let hash = SHA256.hash(data: proofData)
         let hashData = Data([UInt8](hash))
         let codeChallenge = urlSafeBase64(hashData.base64EncodedString())
-        let normalizedScope = options.scopes.sorted().joined(separator: " ")
+        let normalizedScope = options
+            .scopes
+            .sorted()
+            .joined(separator: " ")
         // TODO: Add ASF
 
         let signInURI = hostedUIConfig.oauth
@@ -42,36 +58,42 @@ struct InitializeHostedUISignIn: Action {
 
         var components = URLComponents()
         components.scheme = "https"
+        components.path = "/oauth2/authorize"
         components.host = hostedUIConfig.oauth.domain
         components.queryItems = [
             URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "code_challenge_method", value: "256"),
+            URLQueryItem(name: "code_challenge_method", value: "S256"),
             URLQueryItem(name: "client_id", value: hostedUIConfig.clientId),
             URLQueryItem(name: "state", value: state),
             URLQueryItem(name: "redirect_uri", value: signInURI),
             URLQueryItem(name: "scope", value: normalizedScope),
             URLQueryItem(name: "code_challenge", value: codeChallenge),
-
         ]
 
         guard let url = components.url else {
-            fatalError("''")
+            let event = HostedUIEvent(eventType: .throwError(.hostedUI(.signInURI)))
+            logVerbose("\(#fileID) Sending event \(event)", environment: environment)
+            dispatcher.send(event)
+            return
         }
-
-        let signInData = HostedUISignInData(signInURL: url, state: state, codeChallenge: codeChallenge)
+        
+        let signInData = HostedUISigningInState(signInURL: url,
+                                                state: state,
+                                                codeChallenge: proofKey,
+                                                presentationAnchor: presentationAnchor)
         let event = HostedUIEvent(eventType: .showHostedUI(signInData))
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         dispatcher.send(event)
     }
 
-    private func generateRandom() -> Data {
+    private func generateRandom() -> String? {
         let byteSize = 32
         var randomBytes = [UInt8](repeating: 0, count: byteSize)
         let result = SecRandomCopyBytes(kSecRandomDefault, byteSize, &randomBytes)
         guard result == errSecSuccess else {
-            fatalError("Error occured in generating random bytes")
+            return nil
         }
-        return Data(randomBytes)
+        return self.urlSafeBase64(Data(randomBytes).base64EncodedString())
     }
 
     private func urlSafeBase64(_ content: String) -> String {

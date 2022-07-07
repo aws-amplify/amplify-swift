@@ -46,6 +46,17 @@ extension SignInState {
                 }
                 return .from(oldState)
 
+            case .signingInWithHostedUI(let hostedUIState):
+
+                if case .signInCompleted = event.isAuthenticationEvent {
+                    return .init(newState: .done)
+                }
+
+                let resolution = HostedUISignInState.Resolver().resolve(oldState: hostedUIState,
+                                                                        byApplying: event)
+                let newState = SignInState.signingInWithHostedUI(resolution.newState)
+                return .init(newState: newState, actions: resolution.actions)
+
             case .signingInWithSRP(let srpSignInState, let signInEventData):
 
                 if let signInEvent = event as? SignInEvent,

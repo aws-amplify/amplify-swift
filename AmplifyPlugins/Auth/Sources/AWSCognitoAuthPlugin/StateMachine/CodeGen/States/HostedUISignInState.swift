@@ -6,13 +6,14 @@
 //
 
 import Foundation
+import Amplify
 
 enum HostedUISignInState: State {
     case notStarted
-    case showingUI(HostedUISignInData)
+    case showingUI(HostedUISigningInState)
     case fetchingToken
     case done
-    case error
+    case error(SignInError)
 }
 
 extension HostedUISignInState {
@@ -29,11 +30,14 @@ extension HostedUISignInState {
 }
 
 
-struct HostedUISignInData: Equatable {
+struct HostedUISigningInState: Equatable {
 
     let signInURL: URL
 
     let state: String
 
     let codeChallenge: String
+
+    let presentationAnchor: AuthUIPresentationAnchor
 }
+
