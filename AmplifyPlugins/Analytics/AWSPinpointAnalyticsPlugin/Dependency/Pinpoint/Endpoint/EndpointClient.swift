@@ -12,7 +12,7 @@ import Foundation
 protocol EndpointClientBehaviour: Actor {
     nonisolated var pinpointClient: PinpointClientProtocol { get }
 
-    func currentEndpointProfile() -> PinpointEndpointProfile
+    func currentEndpointProfile() async -> PinpointEndpointProfile
     func updateEndpointProfile() async throws
     func updateEndpointProfile(with endpointProfile: PinpointEndpointProfile) async throws
     func addAttributes(_ attributes: [String], forKey key: String)
@@ -63,8 +63,8 @@ actor EndpointClient: EndpointClientBehaviour {
         }
     }
 
-    func currentEndpointProfile() -> PinpointEndpointProfile {
-        let endpointProfile = retrieveOrCreateEndpointProfile()
+    func currentEndpointProfile() async -> PinpointEndpointProfile {
+        let endpointProfile = await retrieveOrCreateEndpointProfile()
 
         // Refresh Attributes and Metrics
         endpointProfile.removeAllAttributes()
@@ -118,17 +118,17 @@ actor EndpointClient: EndpointClientBehaviour {
         }
     }
 
-    private func retrieveOrCreateEndpointProfile() -> PinpointEndpointProfile {
+    private func retrieveOrCreateEndpointProfile() async -> PinpointEndpointProfile {
         // 1. Look for the local endpointProfile variable
         if let endpointProfile = endpointProfile {
-            return configure(endpointProfile: endpointProfile)
+            return await configure(endpointProfile: endpointProfile)
         }
 
         // 2. Look for a valid PinpointEndpointProfile object stored in UserDefaults. It needs to match the current applicationId, otherwise we'll discard it.
         if let endpointProfileData = userDefaults.data(forKey: Constants.endpointProfileKey),
            let decodedEndpointProfile = try? archiver.decode(PinpointEndpointProfile.self, from: endpointProfileData),
            decodedEndpointProfile.applicationId == configuration.appId {
-            return configure(endpointProfile: decodedEndpointProfile)
+            return await configure(endpointProfile: decodedEndpointProfile)
         }
 
         userDefaults.removeObject(forKey: Constants.endpointProfileKey)
@@ -136,18 +136,18 @@ actor EndpointClient: EndpointClientBehaviour {
         // TODO: Implement once the migration is completed in the legacy SDK.
 
         // Create a new PinpointEndpointProfile
-        return configure(endpointProfile: PinpointEndpointProfile(applicationId: configuration.appId,
+        return await configure(endpointProfile: PinpointEndpointProfile(applicationId: configuration.appId,
                                                                   endpointId: configuration.uniqueDeviceId))
     }
 
-    private func configure(endpointProfile: PinpointEndpointProfile) -> PinpointEndpointProfile {
+    private func configure(endpointProfile: PinpointEndpointProfile) async -> PinpointEndpointProfile {
         var deviceToken: PinpointEndpointProfile.DeviceToken?
         if let tokenData = userDefaults.data(forKey: Constants.deviceTokenKey) {
             deviceToken = tokenData.asHexString()
         }
 
-        // TODO: Use the upcoming AWSPinpointAnalyticsClientBehavior.areNotificationsEnabled to check
-        let isUsingPinpointForNotifications = (false) && deviceToken.isNotEmpty
+        let areNotificationsEnabled = await AWSPinpointAnalyticsNotifications.areNotificationsEnabled
+        let isUsingPinpointForNotifications = areNotificationsEnabled && deviceToken.isNotEmpty
         let isOptOut = configuration.isOptOut || !isUsingPinpointForNotifications
 
         endpointProfile.applicationId = configuration.appId

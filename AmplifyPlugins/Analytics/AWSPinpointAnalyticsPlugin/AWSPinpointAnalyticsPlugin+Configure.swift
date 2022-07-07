@@ -35,14 +35,20 @@ extension AWSPinpointAnalyticsPlugin {
         let authService = AWSAuthService()
         let credentialsProvider = authService.getCredentialsProvider()
 
-        let pinpoint = try AWSPinpointAdapter(
-            appId: configuration.appId,
-            region: configuration.region,
-            targetingRegion: configuration.targetingRegion,
-            credentialsProvider: credentialsProvider,
-            shouldTrackAppSessions: configuration.trackAppSessions,
-            sessionBackgroundTimeout: TimeInterval(configuration.autoSessionTrackingInterval)
-        )
+        var isDebug = false
+        #if DEBUG
+        isDebug = true
+        Amplify.Logging.verbose("Setting PinpointContextConfiguration.isDebug to true")
+        #endif
+
+        let contextConfiguration = PinpointContextConfiguration(appId: configuration.appId,
+                                                                region: configuration.region,
+                                                                targetingRegion: configuration.targetingRegion,
+                                                                credentialsProvider: credentialsProvider,
+                                                                isDebug: isDebug,
+                                                                shouldTrackAppSessions: configuration.trackAppSessions,
+                                                                sessionBackgroundTimeout: TimeInterval(configuration.autoSessionTrackingInterval))
+        let pinpoint = try PinpointContext(with: contextConfiguration)
 
         var autoFlushEventsTimer: DispatchSourceTimer?
         if configuration.autoFlushEventsInterval != 0 {

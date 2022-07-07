@@ -113,9 +113,9 @@ class SessionClient: SessionClientBehaviour {
         // Update Endpoint and record Session Start event
         Task {
             try? await endpointClient.updateEndpointProfile()
+            log.verbose("Firing Session Event: Start")
+            record(eventType: Constants.Events.start)
         }
-        log.verbose("Firing Session Event: Start")
-        record(eventType: Constants.Events.start)
     }
 
     private func saveSession() {
@@ -160,10 +160,11 @@ class SessionClient: SessionClientBehaviour {
         session.stop()
         log.info("Session Stopped.")
 
-        // TODO: Remove Global Event Source Attributes
-
-        log.verbose("Firing Session Event: Stop")
-        record(eventType: Constants.Events.stop)
+        Task {
+            await analyticsClient?.removeAllGlobalEventSourceAttributes()
+            log.verbose("Firing Session Event: Stop")
+            record(eventType: Constants.Events.stop)
+        }
     }
 
     private func isSessionExpired(_ session: PinpointSession) -> Bool {
