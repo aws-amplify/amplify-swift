@@ -52,7 +52,13 @@ extension SRPSignInState {
                     )
                     return errorStateWithCancelSignIn(error)
                 }
-                guard case .apiBased(let authFlowType) = signInEventData.signInMethod else {
+                let authFlowType: AuthFlowType
+                switch signInEventData.signInMethod {
+                case .apiBased(let flowType):
+                    authFlowType = flowType
+                case .unknown:
+                    authFlowType = .unknown
+                default:
                     let error = SignInError.configuration(message: "Invalid auth flow type during SRP Sign In")
                     return errorStateWithCancelSignIn(error)
                 }
