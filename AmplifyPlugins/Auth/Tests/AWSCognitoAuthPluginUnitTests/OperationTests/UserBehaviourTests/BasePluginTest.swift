@@ -10,7 +10,7 @@ import AWSCognitoIdentity
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 
-class BaseUserBehaviorTest: XCTestCase {
+class BasePluginTest: XCTestCase {
 
     let apiTimeout = 2.0
     var mockIdentityProvider: CognitoUserPoolBehavior!

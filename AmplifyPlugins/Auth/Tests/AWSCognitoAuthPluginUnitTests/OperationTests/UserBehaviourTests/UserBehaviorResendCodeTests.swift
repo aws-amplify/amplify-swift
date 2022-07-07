@@ -12,7 +12,7 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 
-class UserBehaviorResendCodeTests: BaseUserBehaviorTest {
+class UserBehaviorResendCodeTests: BasePluginTest {
 
     /// Test a successful resendConfirmationCode call with .done as next step
     ///

@@ -13,7 +13,7 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 
-class AuthenticationProviderDeleteUserTests: BaseUserBehaviorTest {
+class AuthenticationProviderDeleteUserTests: BasePluginTest {
 
     func testDeleteUserSuccess() {
         mockIdentityProvider = MockIdentityProvider(

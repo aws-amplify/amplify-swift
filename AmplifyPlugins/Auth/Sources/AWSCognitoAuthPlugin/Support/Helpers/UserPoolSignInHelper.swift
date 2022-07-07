@@ -26,7 +26,7 @@ struct UserPoolSignInHelper {
         } else if case .resolvingSMSChallenge(let challengeState) = signInState,
                   case .waitingForAnswer(let challenge) = challengeState {
             let delivery = challenge.codeDeliveryDetails
-            return .success(.init(nextStep: .confirmSignInWithSMSMFACode(delivery, nil)))
+            return .success(.init(nextStep: .confirmSignInWithSMSMFACode(delivery, challenge.parameters)))
         } else if case .resolvingCustomChallenge(let challengeState) = signInState,
                   case .waitingForAnswer(let challenge) = challengeState {
             return .success(.init(nextStep: .confirmSignInWithCustomChallenge(challenge.parameters)))
@@ -96,7 +96,7 @@ struct UserPoolSignInHelper {
                     return SignInEvent(eventType: .receivedCustomChallenge(response))
                 default:
                     let message = "UnSupported challenge response \(challengeName)"
-                    let error = SignInError.invalidServiceResponse(message: message)
+                    let error = SignInError.unknown(message: message)
                     return SignInEvent(eventType: .throwAuthError(error))
                 }
             } else {

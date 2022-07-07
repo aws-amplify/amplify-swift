@@ -50,7 +50,7 @@ extension RespondToAuthChallenge {
         case .smsMfa: return "SMS_MFA_CODE"
         default:
             let message = "UnSupported challenge response \(challenge)"
-            let error = SignInError.invalidServiceResponse(message: message)
+            let error = SignInError.unknown(message: message)
             throw error
         }
     }

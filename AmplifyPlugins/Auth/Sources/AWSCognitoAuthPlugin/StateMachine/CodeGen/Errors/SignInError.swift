@@ -13,6 +13,7 @@ enum SignInError: Error {
     case inputValidation(field: String)
     case invalidServiceResponse(message: String)
     case calculation(SRPError)
+    case unknown(message: String)
 }
 
 extension SignInError: Equatable {
@@ -28,6 +29,8 @@ extension SignInError: Equatable {
             return true
         case (.calculation(let lhsField), .calculation(let rhsField)):
             return lhsField == rhsField
+        case (.unknown(let lhs), .unknown(let rhs)):
+            return lhs == rhs
         default:
             return false
         }
