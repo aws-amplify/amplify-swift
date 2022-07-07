@@ -123,6 +123,7 @@ class PinpointContext {
     let endpointClient: EndpointClientBehaviour
     let sessionClient: SessionClientBehaviour
     let analyticsClient: AnalyticsClientBehaviour
+    let notificationsClient: AWSPinpointAnalyticsNotificationsBehavior
 
     private let uniqueId: String
     private let configuration: PinpointContextConfiguration
@@ -176,10 +177,20 @@ class PinpointContext {
                                               endpointClient: endpointClient,
                                               sessionProvider: sessionProvider)
         sessionClient.analyticsClient = analyticsClient
+        notificationsClient = AWSPinpointAnalyticsNotifications(analyticsClient: analyticsClient,
+                                                                endpointClient: endpointClient,
+                                                                userDefaults: userDefaults)
         if configuration.shouldTrackAppSessions {
             sessionClient.startPinpointSession()
         }
         self.configuration = configuration
+    }
+
+    func getEscapeHatch() -> AWSPinpoint {
+        return AWSPinpoint(
+            analyticsClient: analyticsClient.pinpointClient,
+            targetingClient: endpointClient.pinpointClient
+        )
     }
 
     private static func legacyPreferencesFilePath(applicationId: String,
