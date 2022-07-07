@@ -128,6 +128,10 @@ class AWSAPICategoryPluginConfigurationTests: XCTestCase {
         func getUserPoolAccessToken() async throws -> String {
             "token"
         }
+        
+        func getUserPoolAccessToken(completion: @escaping (Result<String, AuthError>) -> Void) {
+            completion(.success("token"))
+        }
     }
 
 }
