@@ -108,6 +108,15 @@ public class AWSAuthService: AWSAuthServiceBehavior {
     }
 
     // TODO: Remove this after calls to it are removed from API and DataStore plugins
+    // MARK: List of Amplify internal usages of now deprecated AWSAuthServiceBehavior methods.
+    /**
+     `IncomingAsyncSubscriptionEventPublisher`
+        - File Path: `AmplifyPlugins/DataStore/AWSDataStoreCategoryPlugin/Sync/SubscriptionSync/IncomingAsyncSubscriptionEventPublisher.swift`
+        - Uses: `getToken()`
+     `AWSOIDCAuthProvider`
+        - File Path: `AmplifyPlugins/API/AWSAPICategoryPlugin/SubscriptionFactory/AWSOIDCAuthProvider.swift`
+        - Uses: `getToken()`
+     */
     @available(*, deprecated, message: "Use getUserPoolAccessToken() instead")
     public func getToken() -> Result<String, AuthError> {
         var result: Result<String, AuthError>?

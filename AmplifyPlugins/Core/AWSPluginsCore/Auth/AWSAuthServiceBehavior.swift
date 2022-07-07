@@ -14,6 +14,15 @@ public protocol AWSAuthServiceBehavior: AnyObject {
     func getCredentialsProvider() -> CredentialsProvider
 
     // TODO: Remove this after calls to it are removed from API and DataStore plugins
+    // MARK: List of Amplify internal usages of now deprecated AWSAuthServiceBehavior methods.
+    /**
+     `IncomingAsyncSubscriptionEventPublisher`
+        - File Path: `AmplifyPlugins/DataStore/AWSDataStoreCategoryPlugin/Sync/SubscriptionSync/IncomingAsyncSubscriptionEventPublisher.swift`
+        - Uses: `getToken()`
+     `AWSOIDCAuthProvider`
+        - File Path: `AmplifyPlugins/API/AWSAPICategoryPlugin/SubscriptionFactory/AWSOIDCAuthProvider.swift`
+        - Uses: `getToken()`
+     */
     @available(*, deprecated, message: "Use getUserPoolAccessToken() instead")
     func getToken() -> Result<String, AuthError>
 
@@ -26,11 +35,3 @@ public protocol AWSAuthServiceBehavior: AnyObject {
     /// Retrieves the token from the Auth token provider
     func getUserPoolAccessToken() async throws -> String
 }
-
-
-    // MARK: List of Amplify internal usages of now deprecated AWSAuthServiceBehavior methods.
-    /**
-     `AWSOIDCAuthProvider`
-        - File Path: `AmplifyPlugins/API/AWSAPICategoryPlugin/SubscriptionFactory/AWSOIDCAuthProvider.swift`
-        - Uses: `getToken()`
-     */
