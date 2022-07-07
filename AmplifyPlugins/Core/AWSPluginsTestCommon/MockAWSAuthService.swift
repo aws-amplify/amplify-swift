@@ -53,6 +53,14 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
 
         return .success(token ?? "token")
     }
+    
+    public func getUserPoolAccessToken(completion: @escaping (Result<String, AuthError>) -> Void) {
+        if let error = getTokenError {
+            completion(.failure(error))
+        } else {
+            completion(.success(token ?? "token"))
+        }
+    }
 
     public func getTokenClaims(tokenString: String) -> Result<[String: AnyObject], AuthError> {
         if let error = getTokenClaimsError {

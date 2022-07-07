@@ -303,6 +303,14 @@ class MockOIDCAuthProvider: AmplifyOIDCAuthProvider {
             return .success("token")
         }
     }
+    
+    func getUserPoolAccessToken(completion: @escaping (Result<AuthToken, Error>) -> Void) {
+        if let result = result {
+            completion(result)
+        } else {
+            completion(.success("token"))
+        }
+    }
 }
 
 class MockFunctionAuthProvider: AmplifyFunctionAuthProvider {
@@ -313,6 +321,14 @@ class MockFunctionAuthProvider: AmplifyFunctionAuthProvider {
             return result
         } else {
             return .success("token")
+        }
+    }
+    
+    func getUserPoolAccessToken(completion: @escaping (Result<AuthToken, Error>) -> Void) {
+        if let result = result {
+            completion(result)
+        } else {
+            completion(.success("token"))
         }
     }
 }

@@ -17,6 +17,7 @@ class AuthTokenProviderWrapper: AuthTokenProvider {
         self.wrappedAuthTokenProvider = tokenAuthProvider
     }
 
+    @available(*, deprecated, message: "Use getUserPoolAccessToken(completion:) instead")
     func getToken() -> Result<String, AuthError> {
         let result = wrappedAuthTokenProvider.getLatestAuthToken()
         switch result {
@@ -29,4 +30,14 @@ class AuthTokenProviderWrapper: AuthTokenProvider {
         }
     }
 
+    func getUserPoolAccessToken(completion: @escaping (Result<String, AuthError>) -> Void) {
+        wrappedAuthTokenProvider.getUserPoolAccessToken { result in
+            switch result {
+            case .success(let result):
+                completion(.success(result))
+            case .failure(let error):
+                completion(.failure(AuthError.service("Unable to get latest auth token", "", error)))
+            }
+        }
+    }
 }

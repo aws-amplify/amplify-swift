@@ -38,6 +38,10 @@ private class TestAuthTokenProvider: AmplifyAuthTokenProvider {
     func getLatestAuthToken() -> Result<AuthToken, Error> {
         .success(authToken)
     }
+    
+    func getUserPoolAccessToken(completion: @escaping (Result<AuthToken, Error>) -> Void) {
+        completion(.success(authToken))
+    }
 }
 
 private class TestFailingAuthTokenProvider: AmplifyAuthTokenProvider {
@@ -45,5 +49,9 @@ private class TestFailingAuthTokenProvider: AmplifyAuthTokenProvider {
     func getLatestAuthToken() -> Result<AuthToken, Error> {
         let error = APIError.networkError("Token error")
         return .failure(error)
+    }
+    
+    func getUserPoolAccessToken(completion: @escaping (Result<AuthToken, Error>) -> Void) {
+        completion(.success(authToken))
     }
 }

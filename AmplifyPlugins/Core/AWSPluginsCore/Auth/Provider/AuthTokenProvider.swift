@@ -9,7 +9,10 @@ import Foundation
 import Amplify
 
 public protocol AuthTokenProvider {
+    @available(*, deprecated, message: "Use getUserPoolAccessToken(completion:) instead")
     func getToken() -> Result<String, AuthError>
+    
+    func getUserPoolAccessToken(completion: @escaping (Result<String, AuthError>) -> Void)
 }
 
 public struct BasicUserPoolTokenProvider: AuthTokenProvider {
@@ -20,6 +23,11 @@ public struct BasicUserPoolTokenProvider: AuthTokenProvider {
         self.authService = authService
     }
 
+    public func getUserPoolAccessToken(completion: @escaping (Result<String, AuthError>) -> Void) {
+        authService.getUserPoolAccessToken(completion: completion)
+    }
+    
+    @available(*, deprecated, message: "Use getUserPoolAccessToken(completion:) instead")
     public func getToken() -> Result<String, AuthError> {
         return self.authService.getToken()
     }

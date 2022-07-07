@@ -37,5 +37,9 @@ extension AuthTokenURLRequestInterceptorTests {
         func getToken() -> Result<String, AuthError> {
             .success(authorizationToken)
         }
+        
+        func getUserPoolAccessToken(completion: @escaping (Result<String, AuthError>) -> Void) {
+            completion(.success(authorizationToken))
+        }
     }
 }
