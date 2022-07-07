@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 import Foundation
+import AWSCognitoIdentityProvider
 
 public struct AWSAuthSignInOptions {
 
@@ -42,6 +43,19 @@ public enum AuthFlowType: String {
     case unknown
 }
 
-extension AuthFlowType: Codable {
+extension AuthFlowType: Codable { }
+
+extension AuthFlowType {
+
+    func getClientFlowType() -> CognitoIdentityProviderClientTypes.AuthFlowType {
+        switch self {
+        case .custom, .customWithSRP:
+            return .customAuth
+        case .userSRP, .unknown:
+            return .userSrpAuth
+        default:
+            fatalError("Flow Type not supported")
+        }
+    }
 
 }

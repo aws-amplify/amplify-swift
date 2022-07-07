@@ -62,20 +62,19 @@ public class AWSAuthConfirmResetPasswordOperation: AmplifyOperation< AuthConfirm
                 throw error
             }
 
-
             let input = ConfirmForgotPasswordInput(clientId: userPoolConfigurationData.clientId,
                                                    clientMetadata: clientMetaData,
                                                    confirmationCode: request.confirmationCode,
                                                    password: request.newPassword,
                                                    username: request.username)
 
-            let _ = try await userPoolService.confirmForgotPassword(input: input)
-            
+            _ = try await userPoolService.confirmForgotPassword(input: input)
+
             if self.isCancelled {
                 finish()
                 return
             }
-            
+
             self.dispatch()
         } catch let error as ConfirmForgotPasswordOutputError {
             self.dispatch(error.authError)

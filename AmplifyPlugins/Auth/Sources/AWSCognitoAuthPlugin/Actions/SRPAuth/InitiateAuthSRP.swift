@@ -15,10 +15,17 @@ struct InitiateAuthSRP: Action {
 
     let username: String
     let password: String
+    let authFlowType: AuthFlowType
+    let clientMetadata: [String: String]
 
-    init(username: String, password: String) {
+    init(username: String,
+         password: String,
+         authFlowType: AuthFlowType = .userSRP,
+         clientMetadata: [String: String] = [:]) {
         self.username = username
         self.password = password
+        self.authFlowType = authFlowType
+        self.clientMetadata = clientMetadata
     }
 
     func execute(withDispatcher dispatcher: EventDispatcher,
@@ -72,6 +79,10 @@ struct InitiateAuthSRP: Action {
             "SRP_A": publicHexValue
         ]
 
+        if authFlowType == .customWithSRP {
+            authParameters["CHALLENGE_NAME"] = "SRP_A"
+        }
+
         if let clientSecret = environment.userPoolConfiguration.clientSecret {
             let clientSecretHash = SRPSignInHelper.clientSecretHash(
                 username: username,
@@ -85,12 +96,13 @@ struct InitiateAuthSRP: Action {
             authParameters["DEVICE_KEY"] = deviceId
         }
 
-        return InitiateAuthInput(analyticsMetadata: nil,
-                                 authFlow: .userSrpAuth,
-                                 authParameters: authParameters,
-                                 clientId: userPoolClientId,
-                                 clientMetadata: nil,
-                                 userContextData: nil)
+        return InitiateAuthInput(
+            analyticsMetadata: nil,
+            authFlow: authFlowType.getClientFlowType(),
+            authParameters: authParameters,
+            clientId: userPoolClientId,
+            clientMetadata: clientMetadata,
+            userContextData: nil)
     }
 
     private func sendRequest(request: InitiateAuthInput,

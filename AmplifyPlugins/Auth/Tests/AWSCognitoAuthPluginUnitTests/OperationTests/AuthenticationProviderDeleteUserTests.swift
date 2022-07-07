@@ -367,7 +367,7 @@ class AuthenticationProviderDeleteUserTests: BaseUserBehaviorTest {
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
-    
+
 // TODO: ENABLE TESTS after adding hosted UI feature
     /// Test a deleteUser clears private session after signin via privatesession
     ///

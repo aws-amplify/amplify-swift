@@ -9,18 +9,18 @@ import Foundation
 import Amplify
 
 extension DeleteUserState {
-    
+
     struct Resolver: StateMachineResolver {
-        
+
         var defaultState: DeleteUserState = .notStarted
-        
+
         let signedInData: SignedInData
-        
+
         func resolve(oldState: DeleteUserState,
                      byApplying event: StateMachineEvent) -> StateResolution<DeleteUserState> {
-            
+
             switch oldState {
-                
+
             case .notStarted:
                 guard let deleterUserEvent = event.isDeleteUserEvent else {
                     return .from(oldState)
@@ -34,7 +34,7 @@ extension DeleteUserState {
                 default:
                     return .from(oldState)
                 }
-                
+
             case .deletingUser:
                 guard let deleterUserEvent = event.isDeleteUserEvent else {
                     return .from(oldState)
@@ -52,16 +52,16 @@ extension DeleteUserState {
                 default:
                     return .from(oldState)
                 }
-                
+
             case .signingOut(let signOutState):
                 return resolveSigningOutState(byApplying: event, to: signOutState)
-                
+
             case .userDeleted, .error:
                 return .from(oldState)
             }
-            
+
         }
-        
+
         private func resolveSigningOutState(
             byApplying event: StateMachineEvent,
             to signOutState: SignOutState
@@ -87,5 +87,5 @@ extension DeleteUserState {
             }
         }
     }
-    
+
 }

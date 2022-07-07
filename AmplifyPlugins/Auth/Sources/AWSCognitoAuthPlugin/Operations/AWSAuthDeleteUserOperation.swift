@@ -35,7 +35,7 @@ public class AWSAuthDeleteUserOperation: AmplifyOperation<
             finish()
             return
         }
-        
+
         fetchAuthSessionHelper.fetch(authStateMachine) { [weak self] result in
             switch result {
             case .success(let session):
@@ -43,14 +43,14 @@ public class AWSAuthDeleteUserOperation: AmplifyOperation<
                     self?.dispatch(AuthError.unknown("Unable to fetch auth session", nil))
                     return
                 }
-                
+
                 do {
                     let tokens = try cognitoTokenProvider.getCognitoTokens().get()
-                    
+
                     Task.init { [weak self] in
                         await self?.deleteUser(with: tokens.accessToken)
                     }
-                    
+
                 } catch let error as AuthError {
                     self?.dispatch(error)
                 } catch {
@@ -61,39 +61,39 @@ public class AWSAuthDeleteUserOperation: AmplifyOperation<
             }
         }
     }
-    
+
     private func deleteUser(with token: String) async {
-        
+
         stateListenerToken = authStateMachine.listen({ [weak self] state in
             guard let self = self else { return }
-            
+
             guard case .configured(let authNState, _) = state else {
                 self.dispatch(AuthError.invalidState(
                     "Auth state should be in configured state and authentication state should be in deleting user state",
                     AuthPluginErrorConstants.invalidStateError, nil))
                 return
             }
-            
+
             guard case .deletingUser(_, let deleteUserState) = authNState else {
                 return
             }
-            
+
             switch deleteUserState {
             case .userDeleted:
                 self.dispatchSuccess()
-                
+
                 if let stateListenerToken = self.stateListenerToken {
                     self.authStateMachine.cancel(listenerToken: stateListenerToken)
                 }
             case .error(let error):
                 self.dispatch(error)
-                
+
                 if let stateListenerToken = self.stateListenerToken {
                     self.authStateMachine.cancel(listenerToken: stateListenerToken)
                 }
             default: break
             }
-            
+
         }, onSubscribe: { [weak self] in
             let deleteUserEvent = DeleteUserEvent(eventType: .deleteUser(token))
             self?.authStateMachine.send(deleteUserEvent)

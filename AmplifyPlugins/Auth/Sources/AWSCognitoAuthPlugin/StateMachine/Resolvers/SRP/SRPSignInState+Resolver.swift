@@ -54,7 +54,15 @@ extension SRPSignInState {
                 }
                 // Assuming password could be nil
                 let password = signInEventData.password ?? ""
-                let action = InitiateAuthSRP(username: username, password: password)
+                var authFlowType = AuthFlowType.userSRP
+                if case .apiBased(let authFlowTypeSignInMethod) = signInEventData.signInMethod {
+                    authFlowType = authFlowTypeSignInMethod
+                }
+                let action = InitiateAuthSRP(
+                    username: username,
+                    password: password,
+                    authFlowType: authFlowType,
+                    clientMetadata: signInEventData.clientMetadata)
                 return StateResolution(
                     newState: SRPSignInState.initiatingSRPA(signInEventData),
                     actions: [action]
