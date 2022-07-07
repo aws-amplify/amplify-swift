@@ -311,6 +311,14 @@ class MockOIDCAuthProvider: AmplifyOIDCAuthProvider {
             completion(.success("token"))
         }
     }
+    
+    func getUserPoolAccessToken() async throws -> String {
+        if case let .success(token) = result {
+            return token
+        } else {
+            return "token"
+        }
+    }
 }
 
 class MockFunctionAuthProvider: AmplifyFunctionAuthProvider {
@@ -329,6 +337,14 @@ class MockFunctionAuthProvider: AmplifyFunctionAuthProvider {
             completion(result)
         } else {
             completion(.success("token"))
+        }
+    }
+    
+    func getUserPoolAccessToken() async throws -> String {
+        if case let .success(token) = result {
+            return token
+        } else {
+            return "token"
         }
     }
 }

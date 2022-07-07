@@ -29,6 +29,7 @@ public protocol AmplifyAuthTokenProvider {
     @available(*, deprecated, message: "Use getUserPoolAccessToken(completion:) instead")
     func getLatestAuthToken() -> Result<AuthToken, Error>
     func getUserPoolAccessToken(completion: @escaping (Result<AuthToken, Error>) -> Void)
+    func getUserPoolAccessToken() async throws -> String
 }
 
 /// Amplify OIDC Auth Provider

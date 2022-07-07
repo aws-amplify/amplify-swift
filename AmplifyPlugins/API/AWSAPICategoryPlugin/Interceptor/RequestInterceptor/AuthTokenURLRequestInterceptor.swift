@@ -17,7 +17,7 @@ struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
         self.authTokenProvider = authTokenProvider
     }
 
-    func intercept(_ request: URLRequest) throws -> URLRequest {
+    func intercept(_ request: URLRequest) async throws -> URLRequest {
 
         guard let mutableRequest = (request as NSURLRequest).mutableCopy() as? NSMutableURLRequest else {
             throw APIError.unknown("Could not get mutable request", "")
@@ -33,15 +33,14 @@ struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
                                 forHTTPHeaderField: URLRequestConstants.Header.contentType)
         mutableRequest.setValue(AWSAPIPluginsCore.baseUserAgent(),
                                 forHTTPHeaderField: URLRequestConstants.Header.userAgent)
-
-        let tokenResult = authTokenProvider.getToken()
-        guard case let .success(token) = tokenResult else {
-            if case let .failure(error) = tokenResult {
-                throw APIError.operationError("Failed to retrieve authorization token.", "", error)
-            }
-
-            return mutableRequest as URLRequest
+        
+        let token: String
+        do {
+            token = try await authTokenProvider.getUserPoolAccessToken()
+        } catch {
+            throw APIError.operationError("Failed to retrieve authorization token.", "", error)
         }
+        
         mutableRequest.setValue(token, forHTTPHeaderField: "authorization")
         return mutableRequest as URLRequest
     }

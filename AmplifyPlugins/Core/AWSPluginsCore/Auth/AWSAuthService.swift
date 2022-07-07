@@ -100,6 +100,32 @@ public class AWSAuthService: AWSAuthServiceBehavior {
             }
         }
     }
+    
+    /// Retrieves the Cognito token from the AuthCognitoTokensProvider
+    public func getUserPoolAccessToken() async throws -> String {
+        try await withCheckedThrowingContinuation { continuation in
+            Amplify.Auth.fetchAuthSession { [weak self] event in
+                switch event {
+                case .success(let session):
+                    guard let tokenResult = self?.getTokenString(from: session) else {
+                        let error = AuthError.unknown(
+                            "Did not receive a valid response from fetchAuthSession for get token."
+                        )
+                        continuation.resume(throwing: error)
+                        return
+                    }
+                    switch tokenResult {
+                    case .success(let token):
+                        continuation.resume(returning: token)
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                    }
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
 
     @available(*, deprecated, message: "Use getUserPoolAccessToken(completion:) instead")
     public func getToken() -> Result<String, AuthError> {
