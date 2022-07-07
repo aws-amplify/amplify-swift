@@ -63,7 +63,7 @@ struct UserPoolSignInHelper {
     }
 
     static func parseResponse(
-        _ response: RespondToAuthChallengeOutputResponse,
+        _ response: SignInResponseBehavior,
         for username: String) -> StateMachineEvent {
 
             if let authenticationResult = response.authenticationResult,

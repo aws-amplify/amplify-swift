@@ -44,4 +44,15 @@ extension RespondToAuthChallenge {
                 "username": username.masked()]
     }
 
+    func getResponseKey() throws -> String {
+        switch challenge {
+        case .customChallenge: return "ANSWER"
+        case .smsMfa: return "SMS_MFA_CODE"
+        default:
+            let message = "UnSupported challenge response \(challenge)"
+            let error = SignInError.invalidServiceResponse(message: message)
+            throw error
+        }
+    }
+
 }

@@ -52,12 +52,13 @@ extension SRPSignInState {
                     )
                     return errorStateWithCancelSignIn(error)
                 }
+                guard case .apiBased(let authFlowType) = signInEventData.signInMethod else {
+                    let error = SignInError.configuration(message: "Invalid auth flow type during SRP Sign In")
+                    return errorStateWithCancelSignIn(error)
+                }
+
                 // Assuming password could be nil
                 let password = signInEventData.password ?? ""
-                var authFlowType = AuthFlowType.userSRP
-                if case .apiBased(let authFlowTypeSignInMethod) = signInEventData.signInMethod {
-                    authFlowType = authFlowTypeSignInMethod
-                }
                 let action = InitiateAuthSRP(
                     username: username,
                     password: password,

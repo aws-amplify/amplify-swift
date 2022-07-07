@@ -11,7 +11,7 @@ import CryptoKit
 import AWSCognitoIdentityProvider
 
 struct InitiateCustomAuth: Action {
-    let identifier = "InitiateAuthSRP"
+    let identifier = "InitiateCustomAuth"
 
     let username: String
     let clientMetadata: [String: String]
@@ -87,7 +87,7 @@ struct InitiateCustomAuth: Action {
             let event: StateMachineEvent!
             do {
                 let response = try await cognitoClient.initiateAuth(input: request)
-                event = parseResponse(response, for: username)
+                event = UserPoolSignInHelper.parseResponse(response, for: username)
                 logVerbose("\(#fileID) InitiateAuth response success", environment: environment)
             } catch {
                 let authError = SignInError.service(error: error)
@@ -96,50 +96,6 @@ struct InitiateCustomAuth: Action {
             callback(event)
         }
     }
-
-    private func parseResponse(
-        _ response: InitiateAuthOutputResponse,
-        for username: String) -> StateMachineEvent {
-
-            if let authenticationResult = response.authenticationResult,
-               let idToken = authenticationResult.idToken,
-               let accessToken = authenticationResult.accessToken,
-               let refreshToken = authenticationResult.refreshToken {
-
-                let userPoolTokens = AWSCognitoUserPoolTokens(idToken: idToken,
-                                                              accessToken: accessToken,
-                                                              refreshToken: refreshToken,
-                                                              expiresIn: authenticationResult.expiresIn)
-                let signedInData = SignedInData(userId: "",
-                                                userName: username,
-                                                signedInDate: Date(),
-                                                signInMethod: .apiBased(.userSRP),
-                                                cognitoUserPoolTokens: userPoolTokens)
-                return SignInEvent(eventType: .finalizeSignIn(signedInData))
-
-            } else if let challengeName = response.challengeName, let session = response.session {
-                let parameters = response.challengeParameters
-                let response = RespondToAuthChallenge(challenge: challengeName,
-                                                      username: username,
-                                                      session: session,
-                                                      parameters: parameters)
-
-                switch challengeName {
-                case .smsMfa:
-                    return SignInEvent(eventType: .receivedSMSChallenge(response))
-                case .customChallenge:
-                    return SignInEvent(eventType: .receivedCustomChallenge(response))
-                default:
-                    let message = "UnSupported challenge response \(challengeName)"
-                    let error = SignInError.invalidServiceResponse(message: message)
-                    return SignInEvent(eventType: .throwAuthError(error))
-                }
-            } else {
-                let message = "Response did not contain signIn info"
-                let error = SignInError.invalidServiceResponse(message: message)
-                return SignInEvent(eventType: .throwAuthError(error))
-            }
-        }
 
     // TODO: Implement this
     private static func getDeviceId() -> String? {

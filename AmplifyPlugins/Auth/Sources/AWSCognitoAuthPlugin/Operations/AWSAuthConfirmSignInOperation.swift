@@ -58,7 +58,7 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
             case .resolvingSMSChallenge(let challengeState),
                     .resolvingCustomChallenge(let challengeState):
                 if case . waitingForAnswer = challengeState {
-                    self?.sendSMSAnswer()
+                    self?.sendChallengeAnswer()
                 } else {
                     self?.sendInvalidStateError()
                 }
@@ -75,7 +75,7 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
         finish()
     }
 
-    func sendSMSAnswer() {
+    func sendChallengeAnswer() {
         if isCancelled {
             finish()
             return
