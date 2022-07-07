@@ -41,5 +41,9 @@ extension AuthTokenURLRequestInterceptorTests {
         func getUserPoolAccessToken() async throws -> String {
             authorizationToken
         }
+        
+        func getUserPoolAccessToken() async throws -> String {
+            authorizationToken
+        }
     }
 }
