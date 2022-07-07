@@ -62,6 +62,14 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
             return token ?? "token"
         }
     }
+    
+    public func getUserPoolAccessToken() async throws -> String {
+        if let error = getTokenError {
+            throw error
+        } else {
+            return token ?? "token"
+        }
+    }
 
     public func getTokenClaims(tokenString: String) -> Result<[String: AnyObject], AuthError> {
         if let error = getTokenClaimsError {
