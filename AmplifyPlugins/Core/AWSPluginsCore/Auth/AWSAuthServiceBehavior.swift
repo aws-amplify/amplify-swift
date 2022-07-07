@@ -14,7 +14,7 @@ public protocol AWSAuthServiceBehavior: AnyObject {
     func getCredentialsProvider() -> CredentialsProvider
 
     // TODO: Remove this after calls to it are removed from API and DataStore plugins
-    @available(*, deprecated, message: "Use getUserPoolAccessToken(completion:) instead")
+    @available(*, deprecated, message: "Use getUserPoolAccessToken() instead")
     func getToken() -> Result<String, AuthError>
 
     func getTokenClaims(tokenString: String) -> Result<[String: AnyObject], AuthError>

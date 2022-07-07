@@ -108,7 +108,7 @@ public class AWSAuthService: AWSAuthServiceBehavior {
     }
 
     // TODO: Remove this after calls to it are removed from API and DataStore plugins
-    @available(*, deprecated, message: "Use getUserPoolAccessToken(completion:) instead")
+    @available(*, deprecated, message: "Use getUserPoolAccessToken() instead")
     public func getToken() -> Result<String, AuthError> {
         var result: Result<String, AuthError>?
         let semaphore = DispatchSemaphore(value: 0)
