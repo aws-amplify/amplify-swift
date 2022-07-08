@@ -26,9 +26,7 @@ enum IncomingModelSyncedEmitterEvent {
 ///     - Then send the mutation event which was used in the check above.
 @available(iOS 13.0, *)
 final class ModelSyncedEventEmitter {
-    private let queue = DispatchQueue(label: "com.amazonaws.ModelSyncedEventEmitterQueue",
-                                      target: DispatchQueue.global())
-    private let dispatchedModelSyncedEventLock = NSLock()
+    private let queue = DispatchQueue(label: "com.amazonaws.ModelSyncedEventEmitterQueue")
 
     private var syncOrchestratorSink: AnyCancellable?
     private var reconciliationQueueSink: AnyCancellable?
