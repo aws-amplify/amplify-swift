@@ -116,9 +116,10 @@ final class ModelSyncedEventEmitter {
         case .enqueued:
             recordsReceived += 1
         case .finished:
-            initialSyncOperationFinished = true
-            if recordsReceived == 0 {
+            if recordsReceived == 0 || recordsReceived == reconciledReceived {
                 sendModelSyncedEvent()
+            } else {
+                initialSyncOperationFinished = true
             }
         }
     }
