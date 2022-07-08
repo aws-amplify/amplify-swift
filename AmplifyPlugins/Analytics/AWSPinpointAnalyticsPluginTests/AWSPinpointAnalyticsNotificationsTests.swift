@@ -20,7 +20,7 @@ class AWSPinpointAnalyticsNotificationsTests: XCTestCase {
                                                                   endpointClient: endpointClient,
                                                                   userDefaults: userDefaults)
     }
-    
+
     func testAddPinpointMetadataForEventCampaign() {
         guard let event = PinpointEvent.makeEvent(eventSource: .campaign,
                                                   pushAction: .receivedForeground,
@@ -28,26 +28,25 @@ class AWSPinpointAnalyticsNotificationsTests: XCTestCase {
             XCTFail("Failed creating Pinpoint event")
             return
         }
-        
+
         event.addSourceMetadata(TestData.campaignMetadata)
         XCTAssertEqual(event.attributes[TestData.campaignAttributeKey], TestData.campaignAttributeValue)
     }
-    
+
     func testMakePinpintPushActionFromEvent() {
         let pushActions = [
             // Check that when the application is in an active state
             // the push event is used to return the appropriate push action
             pinpointNotifications.makePinpointPushAction(fromEvent: .opened, appState: .active),
             pinpointNotifications.makePinpointPushAction(fromEvent: .received, appState: .active),
-            
-            
+
             pinpointNotifications.makePinpointPushAction(fromEvent: .opened, appState: .inactive),
             pinpointNotifications.makePinpointPushAction(fromEvent: .received, appState: .inactive),
             pinpointNotifications.makePinpointPushAction(fromEvent: .opened, appState: .background),
-            pinpointNotifications.makePinpointPushAction(fromEvent: .received, appState: .background),
-            
+            pinpointNotifications.makePinpointPushAction(fromEvent: .received, appState: .background)
+
         ]
-        
+
         let expectedPushActions: [AWSPinpointPushAction] = [
             .openedNotification,
             .receivedForeground,
@@ -56,10 +55,10 @@ class AWSPinpointAnalyticsNotificationsTests: XCTestCase {
             .receivedBackground,
             .receivedBackground
         ]
-        
+
         XCTAssertEqual(pushActions, expectedPushActions)
     }
-    
+
     func testHandleDeepLink() {
         let expectedURL = URL(string: "https://deeplink.amplify.aws")
         var deepLinkURL: URL?
@@ -77,8 +76,7 @@ class AWSPinpointAnalyticsNotificationsTests: XCTestCase {
                                                             canOpenURL: mockCanOpenURL)
         XCTAssertEqual(deepLinkURL, expectedURL)
     }
-    
-    
+
     func testPinpointEventMakeFromValidEventSource() {
         let eventSource = AWSPinpointAnalyticsNotifications.EventSource.campaign
         let pushAction = AWSPinpointPushAction.openedNotification
@@ -87,41 +85,40 @@ class AWSPinpointAnalyticsNotificationsTests: XCTestCase {
                                             usingClient: analyticsClient)
         XCTAssertEqual(event?.eventType, "_\(eventSource.rawValue).\(pushAction.rawValue)")
     }
-    
+
     func testPinpointEventMakeFromUnknownPushEvent() {
         let event = PinpointEvent.makeEvent(eventSource: .campaign,
                                             pushAction: .unknown,
                                             usingClient: analyticsClient)
         XCTAssertNil(event)
     }
-    
+
     // MARK: public APIs tests
     func testInterceptDidFinishLaunchingWithOptions() async {
         let payload = [UIApplication.LaunchOptionsKey.remoteNotification: TestData.campaignPushPayload]
         _ = await pinpointNotifications.interceptDidFinishLaunchingWithOptions(launchOptions: payload)
-        
+
         let recordedEvent = await analyticsClient.lastRecordedEvent
         XCTAssertNotNil(recordedEvent)
-        
+
         let (expectedAttributeKey, expectedAttributeValue) = await analyticsClient.addGlobalAttributeCalls[0]
-        XCTAssertEqual(expectedAttributeKey,TestData.campaignAttributeKey)
-        XCTAssertEqual(expectedAttributeValue,TestData.campaignAttributeValue)
-        
+        XCTAssertEqual(expectedAttributeKey, TestData.campaignAttributeKey)
+        XCTAssertEqual(expectedAttributeValue, TestData.campaignAttributeValue)
+
     }
-    
+
     func testInterceptDidRegisterForRemoteNotificationsWithDeviceToken() async {
         let deviceToken = Data()
         await pinpointNotifications.interceptDidRegisterForRemoteNotificationsWithDeviceToken(deviceToken: deviceToken)
-        
+
         XCTAssertEqual(userDefaults.dataForKeyCountMap[EndpointClient.Constants.deviceTokenKey], 1)
-        
+
         XCTAssertEqual(userDefaults.data[EndpointClient.Constants.deviceTokenKey] as? Data, deviceToken)
-        
+
         let shouldHaveCalledEndpointProfileUpdate = await endpointClient.updateEndpointProfileCount == 1
         XCTAssertTrue(shouldHaveCalledEndpointProfileUpdate)
     }
 }
-
 
 // MARK: - Test data
 extension AWSPinpointAnalyticsNotificationsTests {
@@ -130,15 +127,15 @@ extension AWSPinpointAnalyticsNotificationsTests {
         static let journeyAttributeKey = "journey_id"
         static let campaignAttributeValue = "testCampaignId"
         static let journeyAttributeValue = "testJourneyId"
-        
+
         static var campaignMetadata = [
             campaignAttributeKey: campaignAttributeValue
         ]
-        
+
         static let journeyMetadata = [
             journeyAttributeKey: journeyAttributeValue
         ]
-        
+
         static let campaignPushPayload = [
             "data": [
                 "pinpoint": ["campaign": campaignMetadata]

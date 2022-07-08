@@ -22,10 +22,10 @@ protocol AnalyticsClientBehaviour: Actor {
     func removeGlobalMetric(forKey key: String)
     func removeGlobalMetric(forKey key: String, forEventType eventType: String)
     func record(_ event: PinpointEvent) async throws
-    
+
     func setGlobalEventSourceAttributes(_ attributes: [String: Any]) throws
     func removeAllGlobalEventSourceAttributes()
-    
+
     @discardableResult func submitEvents() async throws -> [PinpointEvent]
 
     nonisolated func createAppleMonetizationEvent(with transaction: SKPaymentTransaction,
@@ -35,7 +35,7 @@ protocol AnalyticsClientBehaviour: Actor {
                                                     withQuantity quantity: Int,
                                         withCurrency currency: String) -> PinpointEvent
     nonisolated func createEvent(withEventType eventType: String) -> PinpointEvent
-    
+
 }
 
 typealias SessionProvider = () -> PinpointSession
@@ -93,19 +93,19 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
         precondition(!key.isEmpty, "Attributes and metrics must have a valid key")
         eventTypeMetrics[eventType, default: [:]][key] = metric
     }
-    
+
     func setGlobalEventSourceAttributes(_ attributes: [String: Any]) throws {
         guard let attributes = attributes as? [String: String] else {
             return
         }
         globalEventSourceAttributes = attributes
         let sessionId = self.sessionProvider().sessionId
-        
+
         try eventRecorder.updateAttributesOfEvents(ofType: SessionClient.Constants.Events.start,
                                                    withSessionId: sessionId,
                                                    setAttributes: attributes)
     }
-    
+
     func removeGlobalAttribute(forKey key: String) {
         globalAttributes[key] = nil
     }
@@ -121,15 +121,14 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
     func removeGlobalMetric(forKey key: String, forEventType eventType: String) {
         eventTypeMetrics[eventType]?[key] = nil
     }
-    
+
     func removeAllGlobalEventSourceAttributes() {
         for key in globalEventSourceAttributes.keys {
             removeGlobalAttribute(forKey: key)
         }
         globalEventSourceAttributes = [:]
     }
-    
-    
+
     // MARK: - Monetization events
     nonisolated func createAppleMonetizationEvent(with transaction: SKPaymentTransaction,
                                                   with product: SKProduct) -> PinpointEvent {
@@ -226,7 +225,7 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
         for (key, metric) in globalMetrics {
             event.addMetric(metric, forKey: key)
         }
-        
+
         // Add event source attributes
         for (key, attribute) in globalEventSourceAttributes {
             // TODO: review this

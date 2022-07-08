@@ -18,12 +18,12 @@ public struct AWSPinpoint {
 /// Implemented by `PinpointContext` as a pass through to the methods on `analyticClient` and `endpointClient`.
 /// This protocol allows a way to create a Mock and ensure plugin implementation is testable.
 protocol AWSPinpointBehavior {
-    //MARK: Escape hatch
+    // MARK: Escape hatch
     /// Returns the low-level `PinpointClientProcotol` clients used to interact with AWS Pinpoint for Analytics and Targeting.
     /// - Returns:A `AWSPinpoint` containing the the lower level clients.
     func getEscapeHatch() -> AWSPinpoint
 
-    //MARK: Analytics
+    // MARK: Analytics
     /// Creates a `PinpointEvent` with the specificed eventType
     /// - Parameter eventType: The `PinpointEvent` to create
     /// - Returns: A new PinpointEvent with the specified event type
@@ -48,7 +48,7 @@ protocol AWSPinpointBehavior {
     /// - Returns: An array of successfully submitted events.
     @discardableResult func submitEvents() async throws -> [PinpointEvent]
 
-    //MARK: Targeting
+    // MARK: Targeting
     /// Returns the current endpoint profile.
     /// - Returns:A `PinpointEndpointProfile`  representing the current endpoint.
     func currentEndpointProfile() async -> PinpointEndpointProfile
