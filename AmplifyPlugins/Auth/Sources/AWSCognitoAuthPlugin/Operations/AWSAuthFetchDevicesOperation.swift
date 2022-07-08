@@ -40,13 +40,20 @@ public class AWSAuthFetchDevicesOperation: AmplifyOperation<AuthFetchDevicesRequ
         fetchAuthSessionHelper.fetch(authStateMachine) { [weak self] result in
             switch result {
             case .success(let session):
-                guard let cognitoTokenProvider = session as? AuthCognitoTokensProvider,
-                      let tokens = try? cognitoTokenProvider.getCognitoTokens().get() else {
-                          self?.dispatch(AuthError.unknown("Unable to fetch auth session", nil))
-                          return
-                      }
-                Task.init { [weak self] in
-                    await self?.fetchDevices(with: tokens.accessToken)
+                guard let cognitoTokenProvider = session as? AuthCognitoTokensProvider else {
+                    self?.dispatch(AuthError.unknown("Unable to fetch auth session", nil))
+                    return
+                }
+                
+                do {
+                    let tokens = try cognitoTokenProvider.getCognitoTokens().get()
+                    Task.init { [weak self] in
+                        await self?.fetchDevices(with: tokens.accessToken)
+                    }
+                } catch let error as AuthError {
+                    self?.dispatch(error)
+                } catch {
+                    self?.dispatch(AuthError.unknown("Unable to fetch auth session", error))
                 }
             case .failure(let error):
                 self?.dispatch(error)
