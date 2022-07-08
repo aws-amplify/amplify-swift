@@ -26,6 +26,7 @@
 		485CB5C227B61F1E006CCEC7 /* AuthSRPSignInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5BE27B61F1D006CCEC7 /* AuthSRPSignInTests.swift */; };
 		97829201286B802E000DE190 /* AuthResetPasswordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97829200286B802E000DE190 /* AuthResetPasswordTests.swift */; };
 		97829203286E41FA000DE190 /* AuthConfirmResetPasswordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97829202286E41FA000DE190 /* AuthConfirmResetPasswordTests.swift */; };
+		97B370C52878DA5A00F1C088 /* AuthFetchDeviceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B370C42878DA5A00F1C088 /* AuthFetchDeviceTests.swift */; };
 		B43C26CA27BC9D54003F3BF7 /* AuthSignUpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43C26C727BC9D54003F3BF7 /* AuthSignUpTests.swift */; };
 		B43C26CB27BC9D54003F3BF7 /* AuthConfirmSignUpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43C26C827BC9D54003F3BF7 /* AuthConfirmSignUpTests.swift */; };
 		B43C26CC27BC9D54003F3BF7 /* AuthResendSignUpCodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43C26C927BC9D54003F3BF7 /* AuthResendSignUpCodeTests.swift */; };
@@ -65,6 +66,7 @@
 		485CB5BE27B61F1D006CCEC7 /* AuthSRPSignInTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthSRPSignInTests.swift; sourceTree = "<group>"; };
 		97829200286B802E000DE190 /* AuthResetPasswordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthResetPasswordTests.swift; sourceTree = "<group>"; };
 		97829202286E41FA000DE190 /* AuthConfirmResetPasswordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfirmResetPasswordTests.swift; sourceTree = "<group>"; };
+		97B370C42878DA5A00F1C088 /* AuthFetchDeviceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFetchDeviceTests.swift; sourceTree = "<group>"; };
 		B43C26C727BC9D54003F3BF7 /* AuthSignUpTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthSignUpTests.swift; sourceTree = "<group>"; };
 		B43C26C827BC9D54003F3BF7 /* AuthConfirmSignUpTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthConfirmSignUpTests.swift; sourceTree = "<group>"; };
 		B43C26C927BC9D54003F3BF7 /* AuthResendSignUpCodeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthResendSignUpCodeTests.swift; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 		485CB5A027B61E04006CCEC7 /* AuthIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
+				97B370C32878DA3500F1C088 /* DeviceTests */,
 				4821B2F0286B5F74000EC1D7 /* AuthDeleteUserTests */,
 				485105A82840510B002D6FC8 /* AuthUserAttributesTests */,
 				484EDEB027F4FF46000284B4 /* AuthEventTests */,
@@ -238,6 +241,14 @@
 				97829202286E41FA000DE190 /* AuthConfirmResetPasswordTests.swift */,
 			);
 			path = ResetPasswordTests;
+			sourceTree = "<group>";
+		};
+		97B370C32878DA3500F1C088 /* DeviceTests */ = {
+			isa = PBXGroup;
+			children = (
+				97B370C42878DA5A00F1C088 /* AuthFetchDeviceTests.swift */,
+			);
+			path = DeviceTests;
 			sourceTree = "<group>";
 		};
 		B43C26C627BC9D54003F3BF7 /* SignUpTests */ = {
@@ -390,6 +401,7 @@
 				485CB5C227B61F1E006CCEC7 /* AuthSRPSignInTests.swift in Sources */,
 				B43C26CB27BC9D54003F3BF7 /* AuthConfirmSignUpTests.swift in Sources */,
 				485CB5C127B61F1E006CCEC7 /* AuthSignOutTests.swift in Sources */,
+				97B370C52878DA5A00F1C088 /* AuthFetchDeviceTests.swift in Sources */,
 				485CB5B127B61EAC006CCEC7 /* AWSAuthBaseTest.swift in Sources */,
 				485CB5C027B61F1E006CCEC7 /* SignedOutAuthSessionTests.swift in Sources */,
 				485CB5BA27B61F10006CCEC7 /* AuthSignInHelper.swift in Sources */,

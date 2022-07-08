@@ -13,8 +13,14 @@ extension AWSCognitoAuthPlugin: AuthCategoryDeviceBehavior {
     public func fetchDevices(
         options: AuthFetchDevicesOperation.Request.Options? = nil,
         listener: AuthFetchDevicesOperation.ResultListener?) -> AuthFetchDevicesOperation {
-
-            fatalError("Not implemented")
+            let options = options ?? AuthFetchDevicesRequest.Options()
+            let request = AuthFetchDevicesRequest(options: options)
+            let fetchDeviceOperation = AWSAuthFetchDevicesOperation(request,
+                                                                    authStateMachine: authStateMachine,
+                                                                    userPoolFactory: authEnvironment.cognitoUserPoolFactory,
+                                                                    resultListener: listener)
+            queue.addOperation(fetchDeviceOperation)
+            return fetchDeviceOperation
         }
 
     public func forgetDevice(
