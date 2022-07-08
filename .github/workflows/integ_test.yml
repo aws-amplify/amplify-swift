@@ -1,7 +1,7 @@
 name: Integration Tests
 on:
   push:
-    branches: [main]
+    branches: [chore/api-userpool-integ-tests]
 
 permissions:
     id-token: write
@@ -112,7 +112,6 @@ jobs:
           scheme: GraphQLWithIAMIntegrationTests
 
   api-graphqluserpool-integration-test:
-    if: ${{ false }}
     needs: [api-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
