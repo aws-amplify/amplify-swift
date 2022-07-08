@@ -43,7 +43,7 @@ extension RemoteSyncEngine {
             case .pausedMutationQueue:
                 return "pausedMutationQueue"
             case .clearedStateOutgoingMutations:
-                return "resetStateOutgoingMutations"
+                return "clearedStateOutgoingMutations"
             case .initializedSubscriptions:
                 return "initializedSubscriptions"
             case .performedInitialSync:

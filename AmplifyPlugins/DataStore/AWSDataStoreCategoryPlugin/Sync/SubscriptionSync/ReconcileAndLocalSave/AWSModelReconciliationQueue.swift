@@ -197,8 +197,8 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             modelReconciliationQueueSubject.send(completion: .finished)
         case .failure(let dataStoreError):
             if case let .api(error, _) = dataStoreError,
-               case let APIError.operationError(_, _, underlyingError) = error,
-               isUnauthorizedError(underlyingError) {
+               case let APIError.operationError(errorDescription, _, underlyingError) = error,
+               isUnauthorizedError(underlyingError) || errorDescription.range(of: "unauthorized", options: .caseInsensitive) != nil {
                 modelReconciliationQueueSubject.send(.disconnected(modelName: modelSchema.name, reason: .unauthorized))
                 return
             }

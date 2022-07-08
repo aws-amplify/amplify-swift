@@ -9,7 +9,7 @@ target 'AWSDataStoreCategoryPlugin' do
   pod 'Amplify', :path => '../../'
   pod 'AWSPluginsCore', :path => '../../'
   pod "SQLite.swift", "0.13.2"
-
+  pod "AppSyncRealTimeClient", :path => "~/aws-amplify/aws-appsync-realtime-client-ios/"
   target "AWSDataStoreCategoryPluginTests" do
     inherit! :complete
     

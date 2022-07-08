@@ -16,6 +16,26 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
     let syncReceived = HubPayload.EventName.DataStore.syncReceived
     let syncStarted = HubPayload.EventName.DataStore.syncStarted
 
+    func testSetup() throws {
+        setup(withModels: ModelsRegistration(), testType: .defaultAuthCognito)
+
+        print("Starting DataStore")
+
+        Amplify.Logging.logLevel = .verbose
+        let startSuccess = expectation(description: "started successfully")
+        Amplify.DataStore.start { completion in
+            switch completion {
+            case .success:
+                startSuccess.fulfill()
+            case .failure(let error):
+                XCTFail("Failed with error \(error)")
+            }
+        }
+
+        wait(for: [startSuccess], timeout: 5)
+        sleep(100)
+    }
+
     /// A user can persist data in the local store without signing in. Once the user signs in,
     /// the sync engine will start and sync the mutations to the cloud. Once the reconciliation is complete, retrieving
     /// the same data will contain ownerId
@@ -45,7 +65,7 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
         let syncReceivedListener = Amplify.Hub.listen(to: .dataStore, eventName: syncReceived) { payload in
             guard let mutationEvent = payload.data as? MutationEvent,
                 let todo = try? mutationEvent.decodeModel() as? TodoExplicitOwnerField else {
-                    XCTFail("Can't cast payload as mutation event")
+                    print("Can't cast payload as mutation event")
                     return
             }
             if todo.id == savedLocalTodo.id {

@@ -271,7 +271,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                 self.remoteSyncTopicPublisher.send(.clearedStateOutgoingMutations)
                 self.stateMachine.notify(action: .clearedStateOutgoingMutations(api, storageAdapter))
             }
-        }
+        }s
     }
 
     private func initializeSubscriptions(api: APICategoryGraphQLBehavior,

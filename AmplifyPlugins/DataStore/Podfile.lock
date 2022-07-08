@@ -62,6 +62,7 @@ DEPENDENCIES:
   - AmplifyPlugins/AWSAPIPlugin (from `../../`)
   - AmplifyPlugins/AWSCognitoAuthPlugin (from `../../`)
   - AmplifyTestCommon (from `../../`)
+  - AppSyncRealTimeClient (from `~/aws-amplify/aws-appsync-realtime-client-ios/`)
   - AWSMobileClient (~> 2.27.0)
   - AWSPluginsCore (from `../../`)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `2.1.0`)
@@ -71,7 +72,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - AppSyncRealTimeClient
     - AWSAuthCore
     - AWSCognitoIdentityProvider
     - AWSCognitoIdentityProviderASF
@@ -93,6 +93,8 @@ EXTERNAL SOURCES:
     :path: "../../"
   AmplifyTestCommon:
     :path: "../../"
+  AppSyncRealTimeClient:
+    :path: "~/aws-amplify/aws-appsync-realtime-client-ios/"
   AWSPluginsCore:
     :path: "../../"
   CwlPreconditionTesting:
@@ -125,6 +127,6 @@ SPEC CHECKSUMS:
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
   SwiftLint: f80f1be7fa96d30e0aa68e58d45d4ea1ccaac519
 
-PODFILE CHECKSUM: 07ff9134d58a47ca475ed1439261458407a9b1f3
+PODFILE CHECKSUM: 86272ea9b48c346ba8a9b27ccdaa3ca27dd6f2cf
 
 COCOAPODS: 1.11.3

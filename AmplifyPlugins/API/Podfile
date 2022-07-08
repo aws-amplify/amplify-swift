@@ -8,7 +8,7 @@ include_build_tools!
 target 'AWSAPICategoryPlugin' do
 	pod 'Amplify', :path => '../../'
   pod 'AWSPluginsCore', :path => '../../'
-  pod "AppSyncRealTimeClient", "~> 1.8"
+  pod "AppSyncRealTimeClient", :path => "~/aws-amplify/aws-appsync-realtime-client-ios/"
 
   target "AWSAPICategoryPluginTests" do
     inherit! :complete
