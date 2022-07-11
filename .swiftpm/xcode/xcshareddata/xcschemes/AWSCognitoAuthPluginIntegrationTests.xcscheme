@@ -21,6 +21,11 @@
                BlueprintName = "AWSCognitoAuthPluginIntegrationTests"
                ReferencedContainer = "container:">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "GraphQLAuthDirectiveIntegrationTests">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>
