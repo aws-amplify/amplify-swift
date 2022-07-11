@@ -13,13 +13,13 @@ typealias AccessToken = String
 struct DeleteUserEvent: StateMachineEvent {
 
     enum EventType {
-        
+
         case deleteUser(AccessToken)
-        
+
         case signOutDeletedUser
 
         case userSignedOutAndDeleted(SignedOutData)
-        
+
         case throwError(AuthError)
 
     }
@@ -62,6 +62,6 @@ extension DeleteUserEvent.EventType: Equatable {
             return true
         default: return false
         }
-        
+
     }
 }

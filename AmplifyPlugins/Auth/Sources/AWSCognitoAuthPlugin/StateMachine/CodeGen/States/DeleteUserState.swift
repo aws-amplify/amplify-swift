@@ -8,25 +8,25 @@
 import Amplify
 
 enum DeleteUserState: State {
-    
+
     /// Initial state for deleting the user
     case notStarted
-    
+
     /// Delete user in progress
     case deletingUser
-    
+
     /// Signing out the user after successfully deleting the user
     case signingOut(SignOutState)
-    
+
     /// User successfully deleted
     case userDeleted(SignedOutData)
-    
+
     /// Error occurred while deleting the user
     case error(AuthError)
 }
 
 extension DeleteUserState {
-    
+
     var type: String {
         switch self {
         case .notStarted: return "DeleteUserState.notStarted"
@@ -39,7 +39,7 @@ extension DeleteUserState {
 }
 
 extension DeleteUserState: Equatable {
-    
+
     static func == (lhs: DeleteUserState, rhs: DeleteUserState) -> Bool {
         switch (lhs, rhs) {
         case (.notStarted, .notStarted), (.deletingUser, .deletingUser),

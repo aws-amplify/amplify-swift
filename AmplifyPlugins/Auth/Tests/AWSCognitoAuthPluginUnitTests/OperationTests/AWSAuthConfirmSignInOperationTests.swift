@@ -14,7 +14,7 @@ import AWSCognitoIdentityProvider
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
-class AuthenticationProviderConfirmSigninTests: BaseUserBehaviorTest {
+class AuthenticationProviderConfirmSigninTests: BasePluginTest {
 
     override var initialState: AuthState {
         AuthState.configured(

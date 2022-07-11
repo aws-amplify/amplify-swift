@@ -101,7 +101,12 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
     }
 
     private func sendSignInEvent() {
-        let signInData = SignInEventData(username: request.username, password: request.password)
+        let signInData = SignInEventData(
+            username: request.username,
+            password: request.password,
+            clientMetadata: clientMetadata(),
+            signInMethod: .apiBased(authFlowType())
+        )
         let event = AuthenticationEvent.init(eventType: .signInRequested(signInData))
         authStateMachine.send(event)
     }
@@ -125,5 +130,13 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
         if let token = token {
             authStateMachine.cancel(listenerToken: token)
         }
+    }
+
+    private func authFlowType() -> AuthFlowType {
+        (request.options.pluginOptions as? AWSAuthSignInOptions)?.authFlowType ?? .unknown
+    }
+
+    private func clientMetadata() -> [String: String] {
+        (request.options.pluginOptions as? AWSAuthSignInOptions)?.metadata ?? [:]
     }
 }

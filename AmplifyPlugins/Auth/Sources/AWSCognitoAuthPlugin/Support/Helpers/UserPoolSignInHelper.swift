@@ -16,19 +16,32 @@ struct UserPoolSignInHelper {
 
         if case .signingInWithSRP(let srpState, _) = signInState,
            case .error(let signInError) = srpState {
-            if signInError.isUserUnConfirmed {
-                return .success(AuthSignInResult(nextStep: .confirmSignUp(nil)))
-            } else if signInError.isResetPassword {
-                return .success(AuthSignInResult(nextStep: .resetPassword(nil)))
-            } else {
-                return .failure(signInError.authError)
-            }
+            return validateError(signInError: signInError)
+        } else if case .signingInWithSRPCustom(let srpState, _) = signInState,
+                  case .error(let signInError) = srpState {
+            return validateError(signInError: signInError)
+        } else if case .signingInWithCustom(let customAuthState, _) = signInState,
+                  case .error(let signInError) = customAuthState {
+            return validateError(signInError: signInError)
         } else if case .resolvingSMSChallenge(let challengeState) = signInState,
                   case .waitingForAnswer(let challenge) = challengeState {
             let delivery = challenge.codeDeliveryDetails
-            return .success(.init(nextStep: .confirmSignInWithSMSMFACode(delivery, nil)))
+            return .success(.init(nextStep: .confirmSignInWithSMSMFACode(delivery, challenge.parameters)))
+        } else if case .resolvingCustomChallenge(let challengeState) = signInState,
+                  case .waitingForAnswer(let challenge) = challengeState {
+            return .success(.init(nextStep: .confirmSignInWithCustomChallenge(challenge.parameters)))
         }
         return nil
+    }
+
+    private static func validateError(signInError: SignInError) -> Result<AuthSignInResult, AuthError> {
+        if signInError.isUserUnConfirmed {
+            return .success(AuthSignInResult(nextStep: .confirmSignUp(nil)))
+        } else if signInError.isResetPassword {
+            return .success(AuthSignInResult(nextStep: .resetPassword(nil)))
+        } else {
+            return .failure(signInError.authError)
+        }
     }
 
     static func sendRespondToAuth(request: RespondToAuthChallengeInput,
@@ -50,7 +63,7 @@ struct UserPoolSignInHelper {
     }
 
     static func parseResponse(
-        _ response: RespondToAuthChallengeOutputResponse,
+        _ response: SignInResponseBehavior,
         for username: String) -> StateMachineEvent {
 
             if let authenticationResult = response.authenticationResult,
@@ -79,9 +92,11 @@ struct UserPoolSignInHelper {
                 switch challengeName {
                 case .smsMfa:
                     return SignInEvent(eventType: .receivedSMSChallenge(response))
+                case .customChallenge:
+                    return SignInEvent(eventType: .receivedCustomChallenge(response))
                 default:
                     let message = "UnSupported challenge response \(challengeName)"
-                    let error = SignInError.invalidServiceResponse(message: message)
+                    let error = SignInError.unknown(message: message)
                     return SignInEvent(eventType: .throwAuthError(error))
                 }
             } else {

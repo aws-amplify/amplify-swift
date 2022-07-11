@@ -12,13 +12,13 @@ import Foundation
 struct InformUserDeletedAndSignedOut: Action {
 
     let identifier = "InformUserDeletedAndSignedOut"
-    
+
     let result: Result<SignedOutData, AuthError>
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        
+
         let event: DeleteUserEvent
         switch result {
         case .success(let signedOutData):
@@ -26,7 +26,7 @@ struct InformUserDeletedAndSignedOut: Action {
         case .failure(let error):
             event = DeleteUserEvent(eventType: .throwError(error))
         }
-        
+
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         dispatcher.send(event)
     }

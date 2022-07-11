@@ -13,7 +13,7 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 
-class AuthenticationProviderDeleteUserTests: BaseUserBehaviorTest {
+class AuthenticationProviderDeleteUserTests: BasePluginTest {
 
     func testDeleteUserSuccess() {
         mockIdentityProvider = MockIdentityProvider(
@@ -367,7 +367,7 @@ class AuthenticationProviderDeleteUserTests: BaseUserBehaviorTest {
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
-    
+
 // TODO: ENABLE TESTS after adding hosted UI feature
     /// Test a deleteUser clears private session after signin via privatesession
     ///

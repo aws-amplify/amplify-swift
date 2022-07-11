@@ -58,7 +58,7 @@ extension AuthorizationState {
                         existingCredentials: credentials,
                         subState), actions: [action])
                 }
-                
+
                 if case .deleteUser = event.isDeleteUserEvent {
                     return .init(newState: .deletingUser)
                 }
@@ -183,7 +183,7 @@ extension AuthorizationState {
                         subState), actions: [action])
                 }
                 return .from(oldState)
-                
+
             case .deletingUser:
                 if case .userSignedOutAndDeleted = event.isDeleteUserEvent {
                     return .init(newState: .configured)

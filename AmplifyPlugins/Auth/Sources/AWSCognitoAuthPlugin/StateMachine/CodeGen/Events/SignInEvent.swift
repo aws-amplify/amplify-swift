@@ -35,6 +35,8 @@ struct SignInEvent: StateMachineEvent {
 
         case receivedSMSChallenge(RespondToAuthChallenge)
 
+        case receivedCustomChallenge(RespondToAuthChallenge)
+
         case verifySMSChallenge(String)
     }
 
@@ -53,6 +55,7 @@ struct SignInEvent: StateMachineEvent {
         case .cancelSRPSignIn: return "SignInEvent.cancelSRPSignIn"
         case .throwAuthError: return "SignInEvent.throwAuthError"
         case .receivedSMSChallenge: return "SignInEvent.respondWithSMSChallenge"
+        case .receivedCustomChallenge: return "SignInEvent.receivedCustomChallenge"
         case .verifySMSChallenge: return "SignInEvent.verifySMSChallenge"
         }
     }
@@ -80,6 +83,7 @@ extension SignInEvent.EventType: Equatable {
             (.cancelSRPSignIn, .cancelSRPSignIn),
             (.throwAuthError, .throwAuthError),
             (.receivedSMSChallenge, .receivedSMSChallenge),
+            (.receivedCustomChallenge, .receivedCustomChallenge),
             (.verifySMSChallenge, .verifySMSChallenge):
             return true
         default: return false
