@@ -104,16 +104,16 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
         token: AuthStateMachine.StateChangeListenerToken?) {
             switch challengeState {
             case .waitingForAnswer:
-            let answer = self.request.challengeResponse
-            let event = SignInChallengeEvent(eventType: .verifyChallengeAnswer(answer))
-            self.authStateMachine.send(event)
+                let answer = self.request.challengeResponse
+                let event = SignInChallengeEvent(eventType: .verifyChallengeAnswer(answer))
+                self.authStateMachine.send(event)
 
-        case .verifying:
-            self.cancelToken(token)
-            self.verifyResponse()
-        default: break
+            case .verifying:
+                self.cancelToken(token)
+                self.verifyResponse()
+            default: break
+            }
         }
-    }
 
     func verifyResponse() {
         if isCancelled {
@@ -168,7 +168,7 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
                         self.finish()
                     }
                 }
-
+                
                 guard let result = UserPoolSignInHelper.checkNextStep(signInState) else { return }
                 self.dispatch(result: result)
                 self.cancelToken(token)

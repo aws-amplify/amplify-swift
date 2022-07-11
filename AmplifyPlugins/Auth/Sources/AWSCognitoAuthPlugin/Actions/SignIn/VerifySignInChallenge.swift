@@ -25,7 +25,7 @@ struct VerifySignInChallenge: Action {
             let username = challenge.username
             let session = challenge.session
             let challengeType = challenge.challenge
-            let responseKey = try challenge.getResponseKey()
+            let responseKey = try challenge.getChallengeKey()
             let userPoolClientId = userpoolEnv.userPoolConfiguration.clientId
 
             var challengeResponses = ["USERNAME": username, responseKey: answer]

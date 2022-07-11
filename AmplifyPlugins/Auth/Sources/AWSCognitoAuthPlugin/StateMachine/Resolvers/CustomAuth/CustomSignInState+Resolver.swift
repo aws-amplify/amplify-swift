@@ -26,10 +26,6 @@ extension CustomSignInState {
                 return errorStateWithCancelSignIn(authError)
             }
 
-            if case .throwPasswordVerifierError(let authError) = customSignInEvent.eventType {
-                return errorStateWithCancelSignIn(authError)
-            }
-
             switch oldState {
 
             case .notStarted:

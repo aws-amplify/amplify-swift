@@ -44,7 +44,7 @@ extension RespondToAuthChallenge {
                 "username": username.masked()]
     }
 
-    func getResponseKey() throws -> String {
+    func getChallengeKey() throws -> String {
         switch challenge {
         case .customChallenge: return "ANSWER"
         case .smsMfa: return "SMS_MFA_CODE"
