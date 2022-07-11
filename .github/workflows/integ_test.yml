@@ -112,7 +112,6 @@ jobs:
           scheme: GraphQLWithIAMIntegrationTests
 
   api-graphqluserpool-integration-test:
-    if: ${{ false }}
     needs: [api-integration-test]
     runs-on: macos-latest
     environment: IntegrationTest
