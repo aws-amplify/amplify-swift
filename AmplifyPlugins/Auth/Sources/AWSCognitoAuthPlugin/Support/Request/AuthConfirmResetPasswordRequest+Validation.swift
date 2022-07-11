@@ -7,7 +7,7 @@
 import Amplify
 
 extension AuthConfirmResetPasswordRequest {
-    
+
     func hasError() -> AuthError? {
         guard !username.isEmpty else {
             return AuthError.validation(
@@ -29,5 +29,5 @@ extension AuthConfirmResetPasswordRequest {
         }
         return nil
     }
-    
+
 }

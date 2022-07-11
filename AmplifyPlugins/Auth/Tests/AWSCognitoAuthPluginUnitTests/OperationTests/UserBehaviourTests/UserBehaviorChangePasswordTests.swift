@@ -12,7 +12,7 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 
-class UserBehaviorChangePasswordTests: BaseUserBehaviorTest {
+class UserBehaviorChangePasswordTests: BasePluginTest {
 
     /// Test a successful changePassword call
     ///

@@ -5,19 +5,20 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension DeleteUserState: CustomDebugDictionaryConvertible {
+import Foundation
+
+extension CustomSignInState {
 
     var debugDictionary: [String: Any] {
+
         var additionalMetadataDictionary: [String: Any] = [:]
         switch self {
         case .notStarted:
             additionalMetadataDictionary = [:]
-        case .deletingUser:
-            additionalMetadataDictionary = [:]
-        case .signingOut(let signedOutState):
-            additionalMetadataDictionary = signedOutState.debugDictionary
-        case .userDeleted:
-            additionalMetadataDictionary = [:]
+        case .initiating(let signInEventData):
+            additionalMetadataDictionary = signInEventData.debugDictionary
+        case .signedIn(let signedInData):
+            additionalMetadataDictionary = signedInData.debugDictionary
         case .error(let error):
             additionalMetadataDictionary = [
                 "Error": error
@@ -25,5 +26,4 @@ extension DeleteUserState: CustomDebugDictionaryConvertible {
         }
         return [type: additionalMetadataDictionary]
     }
-
 }

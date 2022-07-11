@@ -12,12 +12,12 @@ import AWSCognitoIdentityProvider
 struct DeleteUser: Action {
 
     var identifier: String = "DeleteUser"
-    
+
     let accessToken: String
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        
+
         guard let environment = environment as? UserPoolEnvironment else {
             let message = AuthPluginErrorConstants.configurationError
             let error = AuthenticationError.configuration(message: message)

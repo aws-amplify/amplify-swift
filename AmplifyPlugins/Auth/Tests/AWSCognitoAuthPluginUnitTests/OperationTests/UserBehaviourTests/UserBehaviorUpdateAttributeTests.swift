@@ -10,7 +10,7 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 
-class UserBehaviorUpdateAttributesTests: BaseUserBehaviorTest {
+class UserBehaviorUpdateAttributesTests: BasePluginTest {
 
     /// Test a successful updateUserAttributes call with .done as next step
     ///

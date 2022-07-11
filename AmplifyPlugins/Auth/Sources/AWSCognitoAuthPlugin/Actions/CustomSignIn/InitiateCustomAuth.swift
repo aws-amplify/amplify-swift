@@ -10,21 +10,14 @@ import Foundation
 import CryptoKit
 import AWSCognitoIdentityProvider
 
-struct InitiateAuthSRP: Action {
-    let identifier = "InitiateAuthSRP"
+struct InitiateCustomAuth: Action {
+    let identifier = "InitiateCustomAuth"
 
     let username: String
-    let password: String
-    let authFlowType: AuthFlowType
     let clientMetadata: [String: String]
 
-    init(username: String,
-         password: String,
-         authFlowType: AuthFlowType = .userSRP,
-         clientMetadata: [String: String] = [:]) {
+    init(username: String, clientMetadata: [String: String]) {
         self.username = username
-        self.password = password
-        self.authFlowType = authFlowType
         self.clientMetadata = clientMetadata
     }
 
@@ -32,27 +25,12 @@ struct InitiateAuthSRP: Action {
                  environment: Environment) {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         do {
-            let srpEnv = try environment.srpEnvironment()
             let userPoolEnv = try environment.userPoolEnvironment()
-            let nHexValue = srpEnv.srpConfiguration.nHexValue
-            let gHexValue = srpEnv.srpConfiguration.gHexValue
-
-            let srpClient = try SRPSignInHelper.srpClient(srpEnv)
-            let srpKeyPair = srpClient.generateClientKeyPair()
-
-            let srpStateData = SRPStateData(username: username,
-                                            password: password,
-                                            NHexValue: nHexValue,
-                                            gHexValue: gHexValue,
-                                            srpKeyPair: srpKeyPair,
-                                            clientTimestamp: Date())
-            let request = request(environment: userPoolEnv,
-                                  publicHexValue: srpKeyPair.publicKeyHexValue)
+            let request = request(environment: userPoolEnv)
 
             try sendRequest(request: request,
-                            environment: userPoolEnv,
-                            srpStateData: srpStateData) { responseEvent in
-                logVerbose("\(#fileID) Sending event \(responseEvent)", environment: srpEnv)
+                            environment: userPoolEnv) { responseEvent in
+                logVerbose("\(#fileID) Sending event \(responseEvent)", environment: environment)
                 dispatcher.send(responseEvent)
 
             }
@@ -71,17 +49,11 @@ struct InitiateAuthSRP: Action {
         }
     }
 
-    private func request(environment: UserPoolEnvironment,
-                         publicHexValue: String) -> InitiateAuthInput {
+    private func request(environment: UserPoolEnvironment) -> InitiateAuthInput {
         let userPoolClientId = environment.userPoolConfiguration.clientId
         var authParameters = [
-            "USERNAME": username,
-            "SRP_A": publicHexValue
+            "USERNAME": username
         ]
-
-        if authFlowType == .customWithSRP {
-            authParameters["CHALLENGE_NAME"] = "SRP_A"
-        }
 
         if let clientSecret = environment.userPoolConfiguration.clientSecret {
             let clientSecretHash = SRPSignInHelper.clientSecretHash(
@@ -96,29 +68,27 @@ struct InitiateAuthSRP: Action {
             authParameters["DEVICE_KEY"] = deviceId
         }
 
-        return InitiateAuthInput(
-            analyticsMetadata: nil,
-            authFlow: authFlowType.getClientFlowType(),
-            authParameters: authParameters,
-            clientId: userPoolClientId,
-            clientMetadata: clientMetadata,
-            userContextData: nil)
+        return InitiateAuthInput(analyticsMetadata: nil,
+                                 authFlow: .customAuth,
+                                 authParameters: authParameters,
+                                 clientId: userPoolClientId,
+                                 clientMetadata: clientMetadata,
+                                 userContextData: nil)
     }
 
     private func sendRequest(request: InitiateAuthInput,
                              environment: UserPoolEnvironment,
-                             srpStateData: SRPStateData,
-                             callback: @escaping (SignInEvent) -> Void) throws {
+                             callback: @escaping (StateMachineEvent) -> Void) throws {
 
         let cognitoClient = try environment.cognitoUserPoolFactory()
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         Task {
-            let event: SignInEvent!
+            let event: StateMachineEvent!
             do {
                 let response = try await cognitoClient.initiateAuth(input: request)
+                event = UserPoolSignInHelper.parseResponse(response, for: username)
                 logVerbose("\(#fileID) InitiateAuth response success", environment: environment)
-                event = SignInEvent(eventType: .respondPasswordVerifier(srpStateData, response))
             } catch {
                 let authError = SignInError.service(error: error)
                 event = SignInEvent(eventType: .throwAuthError(authError))
@@ -134,19 +104,18 @@ struct InitiateAuthSRP: Action {
 
 }
 
-extension InitiateAuthSRP: DefaultLogger { }
+extension InitiateCustomAuth: DefaultLogger { }
 
-extension InitiateAuthSRP: CustomDebugDictionaryConvertible {
+extension InitiateCustomAuth: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "identifier": identifier,
-            "username": username.masked(),
-            "password": password.redacted()
+            "username": username.masked()
         ]
     }
 }
 
-extension InitiateAuthSRP: CustomDebugStringConvertible {
+extension InitiateCustomAuth: CustomDebugStringConvertible {
     var debugDescription: String {
         debugDictionary.debugDescription
     }

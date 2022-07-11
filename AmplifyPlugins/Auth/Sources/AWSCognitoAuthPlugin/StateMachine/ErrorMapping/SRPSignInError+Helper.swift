@@ -20,8 +20,14 @@ extension SignInError {
                case .userNotConfirmedException = serviceError {
                 return true
             } else if let cognitoError = serviceError as? SdkError<RespondToAuthChallengeOutputError>,
-                    case .service(let serviceError, _) = cognitoError,
-                    case .userNotConfirmedException = serviceError {
+                      case .service(let serviceError, _) = cognitoError,
+                      case .userNotConfirmedException = serviceError {
+                return true
+            } else if let cognitoError = serviceError as? InitiateAuthOutputError,
+                       case .userNotConfirmedException = cognitoError {
+                return true
+            } else if let cognitoError = serviceError as? RespondToAuthChallengeOutputError,
+                      case .userNotConfirmedException = cognitoError {
                 return true
             }
             return false
@@ -38,8 +44,14 @@ extension SignInError {
                case .passwordResetRequiredException = serviceError {
                 return true
             } else if let cognitoError = serviceError as? SdkError<RespondToAuthChallengeOutputError>,
-                    case .service(let serviceError, _) = cognitoError,
-                    case .passwordResetRequiredException = serviceError {
+                      case .service(let serviceError, _) = cognitoError,
+                      case .passwordResetRequiredException = serviceError {
+                return true
+            } else if let cognitoError = serviceError as? InitiateAuthOutputError,
+                      case .passwordResetRequiredException = cognitoError {
+                return true
+            } else if let cognitoError = serviceError as? RespondToAuthChallengeOutputError,
+                     case .passwordResetRequiredException = cognitoError {
                 return true
             }
             return false
@@ -69,7 +81,8 @@ extension SignInError: AuthErrorConvertible {
                 field,
                 AuthPluginErrorConstants.signInUsernameError.errorDescription,
                 AuthPluginErrorConstants.signInUsernameError.recoverySuggestion)
+        case .unknown(let message):
+            return .unknown(message, nil)
         }
     }
-
 }
