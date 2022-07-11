@@ -18,24 +18,24 @@ actor MockAnalyticsClient: AnalyticsClientBehaviour {
         addGlobalAttributeCalls.append((key, attribute))
     }
     func addGlobalAttribute(_ attribute: String, forKey key: String, forEventType eventType: String) {}
-    
+
     func addGlobalMetric(_ metric: Double, forKey key: String) {}
     func addGlobalMetric(_ metric: Double, forKey key: String, forEventType eventType: String) {}
-    
+
     var removeGlobalAttributeCalls = [(String, String?)]()
     func removeGlobalAttribute(forKey key: String) {
         removeGlobalAttributeCalls.append((key, nil))
     }
-    
+
     func removeGlobalAttribute(forKey key: String, forEventType eventType: String) {
         removeGlobalAttributeCalls.append((key, eventType))
     }
-    
+
     var removeGlobalMetricCalls = [(String, String?)]()
     func removeGlobalMetric(forKey key: String) {
         removeGlobalMetricCalls.append((key, nil))
     }
-    
+
     func removeGlobalMetric(forKey key: String, forEventType eventType: String) {
         removeGlobalMetricCalls.append((key, eventType))
     }
@@ -59,13 +59,13 @@ actor MockAnalyticsClient: AnalyticsClientBehaviour {
         }
         return PinpointEvent(eventType: eventType, session: PinpointSession(appId: "", uniqueId: ""))
     }
-    
-    func setGlobalEventSourceAttributes(_ attributes: [String : Any]) {
-        
+
+    func setGlobalEventSourceAttributes(_ attributes: [String: Any]) {
+
     }
-    
+
     func removeAllGlobalEventSourceAttributes() {
-        
+
     }
 
     private var recordExpectation: XCTestExpectation?
