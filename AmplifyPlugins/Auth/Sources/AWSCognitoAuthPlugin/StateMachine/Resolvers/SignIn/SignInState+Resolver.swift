@@ -40,10 +40,10 @@ extension SignInState {
             case .signingInWithSRP(let srpSignInState, let signInEventData):
 
                 if let signInEvent = event as? SignInEvent,
-                   case .receivedSMSChallenge(let challenge) = signInEvent.eventType {
+                   case .receivedChallenge(let challenge) = signInEvent.eventType {
                     let action = InitializeResolveChallenge(challenge: challenge)
                     let subState = SignInChallengeState.notStarted
-                    return .init(newState: .resolvingSMSChallenge(subState), actions: [action])
+                    return .init(newState: .resolvingChallenge(subState, challenge.challenge.authChallengeType), actions: [action])
                 }
 
                 let resolution = SRPSignInState.Resolver().resolve(oldState: srpSignInState,
@@ -55,10 +55,10 @@ extension SignInState {
             case .signingInWithCustom(let customSignInState, let signInEventData):
 
                 if let signInEvent = event as? SignInEvent,
-                   case .receivedCustomChallenge(let challenge) = signInEvent.eventType {
+                   case .receivedChallenge(let challenge) = signInEvent.eventType {
                     let action = InitializeResolveChallenge(challenge: challenge)
                     let subState = SignInChallengeState.notStarted
-                    return .init(newState: .resolvingCustomChallenge(subState), actions: [action])
+                    return .init(newState: .resolvingChallenge(subState, challenge.challenge.authChallengeType), actions: [action])
                 }
 
                 let resolution = CustomSignInState.Resolver().resolve(
@@ -67,26 +67,19 @@ extension SignInState {
                     resolution.newState, signInEventData)
                 return .init(newState: signingInWithCustom, actions: resolution.actions)
 
-            case .resolvingSMSChallenge(let challengeState):
+            case .resolvingChallenge(let challengeState, let challengeType):
                 let resolution = SignInChallengeState.Resolver().resolve(
                     oldState: challengeState,
                     byApplying: event)
-                return .init(newState: .resolvingSMSChallenge(resolution.newState),
-                             actions: resolution.actions)
-
-            case .resolvingCustomChallenge(let challengeState):
-                let resolution = SignInChallengeState.Resolver().resolve(
-                    oldState: challengeState,
-                    byApplying: event)
-                return .init(newState: .resolvingCustomChallenge(resolution.newState),
+                return .init(newState: .resolvingChallenge(resolution.newState, challengeType),
                              actions: resolution.actions)
 
             case .signingInWithSRPCustom(let srpSignInState, let signInEventData):
                 if let signInEvent = event as? SignInEvent,
-                   case .receivedCustomChallenge(let challenge) = signInEvent.eventType {
+                   case .receivedChallenge(let challenge) = signInEvent.eventType {
                     let action = InitializeResolveChallenge(challenge: challenge)
                     let subState = SignInChallengeState.notStarted
-                    return .init(newState: .resolvingCustomChallenge(subState), actions: [action])
+                    return .init(newState: .resolvingChallenge(subState, challenge.challenge.authChallengeType), actions: [action])
                 }
 
                 let resolution = SRPSignInState.Resolver().resolve(oldState: srpSignInState,

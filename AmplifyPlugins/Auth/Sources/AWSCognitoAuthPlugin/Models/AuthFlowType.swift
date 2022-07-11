@@ -8,7 +8,6 @@
 import Foundation
 import AWSCognitoIdentityProvider
 
-
 public enum AuthFlowType: String {
 
     /// Authentication flow for the Secure Remote Password (SRP) protocol
