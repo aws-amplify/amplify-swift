@@ -109,3 +109,6 @@ Next create `AWSCognitoAuthPluginIntegrationTests-credentials.json` and add it t
 The email should be a valid email you can use for testing, for example for making sure you receive a confirmation code when updating user's attributes with an email.
 
 After running tests pass that in `metadata`, you can verify the corresponding lambdas have been trigger with payloads containing this data.
+
+For Auth Device tests:
+Follow steps here (https://docs.amplify.aws/lib/auth/device_features/q/platform/ios/#configure-auth-category)[https://docs.amplify.aws/lib/auth/device_features/q/platform/ios/#configure-auth-category] and select "Always" for "Do you want to remember your user's devices?"
