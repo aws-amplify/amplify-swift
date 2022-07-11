@@ -18,8 +18,8 @@ extension CognitoIdentityProviderClientTypes.DeviceType {
         var attributes: [String: String] = [:]
         if deviceAttributes != nil {
             for attr in deviceAttributes! {
-                if attr.name != nil && attr.value != nil {
-                    attributes[attr.name!] = attr.value!
+                if let attrName = attr.name, let attrValue = attr.value {
+                    attributes[attrName] = attrValue
                 }
             }
         }
