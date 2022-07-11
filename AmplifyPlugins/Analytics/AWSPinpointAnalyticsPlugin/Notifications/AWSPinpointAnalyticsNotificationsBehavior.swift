@@ -22,14 +22,12 @@ public protocol AWSPinpointAnalyticsNotificationsBehavior {
     /// - Returns:
     func interceptDidFinishLaunchingWithOptions(launchOptions: LaunchOptions) async -> Bool
 
-
     /// Invoke this method from the `- application:didRegisterForRemoteNotificationsWithDeviceToken:` application delegate
     /// method.
     ///
     /// The Pinpoint targeting client must intercept this callback in order to report campaign analytics correctly.
     /// - Parameter deviceToken: A token that identifies the device to APNs.
     func interceptDidRegisterForRemoteNotificationsWithDeviceToken(deviceToken: Data) async
-
 
     /// Invoke this method from the appropiate app delegate methods.
     ///
