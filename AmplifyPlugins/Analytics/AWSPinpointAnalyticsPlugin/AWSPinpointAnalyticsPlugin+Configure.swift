@@ -38,12 +38,15 @@ extension AWSPinpointAnalyticsPlugin {
         var isDebug = false
         #if DEBUG
         isDebug = true
-        Amplify.Logging.verbose("Setting PinpointContextConfiguration.isDebug to true")
+        log.verbose("Setting PinpointContextConfiguration.isDebug to true")
         #endif
+
+        if configuration.region != configuration.targetingRegion {
+            log.warn("Different regions between Analytics and Targeting is not supported. The Analytics region will be used.")
+        }
 
         let contextConfiguration = PinpointContextConfiguration(appId: configuration.appId,
                                                                 region: configuration.region,
-                                                                targetingRegion: configuration.targetingRegion,
                                                                 credentialsProvider: credentialsProvider,
                                                                 isDebug: isDebug,
                                                                 shouldTrackAppSessions: configuration.trackAppSessions,
