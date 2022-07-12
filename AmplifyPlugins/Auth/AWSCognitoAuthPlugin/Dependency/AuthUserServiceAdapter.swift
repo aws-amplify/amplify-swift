@@ -146,16 +146,31 @@ class AuthUserServiceAdapter: AuthUserServiceBehavior {
                     completionHandler(.success(()))
                     return
                 }
-                if let awsMobileClientError = error as? AWSMobileClientError,
-                    case .notSignedIn = awsMobileClientError {
-                    let authError = AuthError.signedOut(
-                        AuthPluginErrorConstants.changePasswordSignedOutError.errorDescription,
-                        AuthPluginErrorConstants.changePasswordSignedOutError.recoverySuggestion, nil)
-                    completionHandler(.failure(authError))
-                } else {
+
+                guard let awsMobileClientError = error as? AWSMobileClientError else {
                     let authError = AuthErrorHelper.toAuthError(error)
                     completionHandler(.failure(authError))
+                    return
                 }
+
+                let authError: AuthError
+                switch awsMobileClientError {
+                case .notSignedIn:
+                    authError = AuthError.signedOut(
+                        AuthPluginErrorConstants.changePasswordSignedOutError.errorDescription,
+                        AuthPluginErrorConstants.changePasswordSignedOutError.recoverySuggestion,
+                        nil
+                )
+                case .unableToSignIn:
+                    authError = AuthError.sessionExpired(
+                        AuthPluginErrorConstants.changePasswordUnableToSignInError.errorDescription,
+                        AuthPluginErrorConstants.changePasswordUnableToSignInError.recoverySuggestion,
+                        nil
+                    )
+                default:
+                    authError = AuthErrorHelper.toAuthError(error)
+                }
+                completionHandler(.failure(authError))
         }
 
     }
