@@ -12,22 +12,44 @@ extension APIError {
 
     static let UnauthorizedMessageString: String = "Unauthorized"
 
-    /// Consolidates unauthorized error scenarios coming from `APIError.httpStatusError` and `APIError.operationError`.
-    /// For `.httpStatusError`, this checks if the status code is 401. For `.operationError`, this checks if the error
-    /// description contains "Unauthorized".
+    /// By default, this consolidates unauthorized error scenarios coming from `APIError.httpStatusError` and
+    /// `APIError.operationError`. For `.httpStatusError`, this checks if the status code is 401 or 403. For
+    /// `.operationError`, this checks if the error description contains "Unauthorized".
     ///
     /// **Warning** Customized server responses that indicate unauthorized may not match the internal mapping done
-    /// in this API and return `false`. Check APIError enum cases directly.
+    /// in this API and return `false`. Check APIError enum directly or create your own `UnauthorizedDeterming` rule.
     ///
     /// - Returns: `true` if unauthorized error, `false` otherwise
-    public func isUnauthorized() -> Bool {
-        if case .operationError(let errorDescription, _, _) = self,
-           errorDescription.range(of: APIError.UnauthorizedMessageString, options: .caseInsensitive) != nil {
-            return true
-        } else if case .httpStatusError(let statusCode, _) = self, statusCode == 401 {
-            return true
+    public func isUnauthorized(rule: UnauthorizedDetermining = .default) -> Bool {
+        rule.isUnauthenticated(self)
+    }
+
+    public struct UnauthorizedDetermining {
+        let isUnauthenticated: (APIError) -> Bool
+
+        public init(isUnauthenticated: @escaping (APIError) -> Bool) {
+            self.isUnauthenticated = isUnauthenticated
         }
 
-        return false
+        public static let `default` = UnauthorizedDetermining { error in
+            error.containsUnauthorizedMessageString || error.is401or403
+        }
+    }
+
+    private var is401or403: Bool {
+        switch self {
+        case .httpStatusError(let statusCode, _):
+            return statusCode == 401 || statusCode == 403
+        default:
+            return false
+        }
+    }
+
+    private var containsUnauthorizedMessageString: Bool {
+        switch self {
+        case .operationError(let errorDescription, _, _):
+            return errorDescription.range(of: APIError.UnauthorizedMessageString, options: .caseInsensitive) != nil
+        default: return false
+        }
     }
 }

@@ -29,4 +29,10 @@ class APIErrorUnauthorizedTests: XCTestCase {
 
         XCTAssertTrue(apiError.isUnauthorized())
     }
+
+    func testAPIErrorHTTPStatus403() throws {
+        let apiError = APIError.httpStatusError(403, .init())
+
+        XCTAssertTrue(apiError.isUnauthorized())
+    }
 }
