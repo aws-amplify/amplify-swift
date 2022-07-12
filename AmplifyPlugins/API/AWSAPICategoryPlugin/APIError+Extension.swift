@@ -13,7 +13,7 @@ extension APIError {
     static let UnauthorizedMessageString: String = "Unauthorized"
 
     /// Consolidates unauthorized error scenarios coming from `APIError.httpStatusError` and `APIError.operationError`.
-    /// For `.httpStatusError`, this checks if the status code is 403. For `.operationError`, this checks if the error
+    /// For `.httpStatusError`, this checks if the status code is 401. For `.operationError`, this checks if the error
     /// description contains "Unauthorized".
     ///
     /// **Warning** Customized server responses that indicate unauthorized may not match the internal mapping done
@@ -24,7 +24,7 @@ extension APIError {
         if case .operationError(let errorDescription, _, _) = self,
            errorDescription.range(of: APIError.UnauthorizedMessageString, options: .caseInsensitive) != nil {
             return true
-        } else if case .httpStatusError(let statusCode, _) = self, statusCode == 403 {
+        } else if case .httpStatusError(let statusCode, _) = self, statusCode == 401 {
             return true
         }
 
