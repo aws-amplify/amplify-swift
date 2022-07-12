@@ -525,13 +525,9 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         }, completionListener: { event in
             switch event {
             case .failure(let error):
-                guard case let .operationError(errorDescription, _, _) = error else {
-                    XCTFail("Should be operationError")
-                    return
+                if error.isUnauthorized() {
+                    completedInvoked.fulfill()
                 }
-
-                XCTAssertTrue(errorDescription.contains("unauthorized"))
-                completedInvoked.fulfill()
             case .success:
                 XCTFail("Unexpected success")
             }
