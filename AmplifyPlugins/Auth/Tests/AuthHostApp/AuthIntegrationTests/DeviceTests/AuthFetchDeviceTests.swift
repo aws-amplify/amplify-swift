@@ -26,13 +26,13 @@ class AuthFetchDeviceTests: AWSAuthBaseTest {
         sleep(2)
     }
 
-    /// Calling cancel in fetch devices operation should cancel
+    /// Calling fetch devices with a user signed in should return a successful result
     ///
     /// - Given: A valid username is registered and sign in - no device is remembered
     /// - When:
     ///    - I invoke fetchDevices with the username
     /// - Then:
-    ///    - I should not get a successful result with empty devices list
+    ///    - I should get a successful result with empty devices list
     ///
     func testSuccessfulFetchDevices() {
         
