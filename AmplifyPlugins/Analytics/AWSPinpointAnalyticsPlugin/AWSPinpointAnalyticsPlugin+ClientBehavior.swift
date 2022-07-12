@@ -119,8 +119,8 @@ extension AWSPinpointAnalyticsPlugin {
 
     /// Retrieve the escape hatch to perform actions directly on PinpointClient.
     ///
-    /// - Returns: AWSPinpoint instance
-    public func getEscapeHatch() -> AWSPinpoint {
-        pinpoint.getEscapeHatch()
+    /// - Returns: PinpointClientProtocol instance
+    public func getEscapeHatch() -> PinpointClientProtocol {
+        pinpoint.pinpointClient
     }
 }
