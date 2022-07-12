@@ -23,15 +23,25 @@ struct UserPoolSignInHelper {
         } else if case .signingInWithCustom(let customAuthState, _) = signInState,
                   case .error(let signInError) = customAuthState {
             return validateError(signInError: signInError)
-        } else if case .resolvingSMSChallenge(let challengeState) = signInState,
+        } else if case .resolvingChallenge(let challengeState, let challengeType) = signInState,
                   case .waitingForAnswer(let challenge) = challengeState {
-            let delivery = challenge.codeDeliveryDetails
-            return .success(.init(nextStep: .confirmSignInWithSMSMFACode(delivery, challenge.parameters)))
-        } else if case .resolvingCustomChallenge(let challengeState) = signInState,
-                  case .waitingForAnswer(let challenge) = challengeState {
-            return .success(.init(nextStep: .confirmSignInWithCustomChallenge(challenge.parameters)))
+            return validateResult(for: challengeType, with: challenge)
         }
         return nil
+    }
+
+    private static func validateResult(for challengeType: AuthChallengeType, with challenge: RespondToAuthChallenge) -> Result<AuthSignInResult, AuthError> {
+        switch challengeType {
+        case .smsMfa:
+            let delivery = challenge.codeDeliveryDetails
+            return .success(.init(nextStep: .confirmSignInWithSMSMFACode(delivery, challenge.parameters)))
+        case .customChallenge:
+            return .success(.init(nextStep: .confirmSignInWithCustomChallenge(challenge.parameters)))
+        case .newPasswordRequired:
+            return .success(.init(nextStep: .confirmSignInWithNewPassword(challenge.parameters)))
+        case .unknown:
+            return .failure(.unknown("Challenge not supported", nil))
+        }
     }
 
     private static func validateError(signInError: SignInError) -> Result<AuthSignInResult, AuthError> {
@@ -90,10 +100,8 @@ struct UserPoolSignInHelper {
                                                       parameters: parameters)
 
                 switch challengeName {
-                case .smsMfa:
-                    return SignInEvent(eventType: .receivedSMSChallenge(response))
-                case .customChallenge:
-                    return SignInEvent(eventType: .receivedCustomChallenge(response))
+                case .smsMfa, .customChallenge, .newPasswordRequired:
+                    return SignInEvent(eventType: .receivedChallenge(response))
                 default:
                     let message = "UnSupported challenge response \(challengeName)"
                     let error = SignInError.unknown(message: message)

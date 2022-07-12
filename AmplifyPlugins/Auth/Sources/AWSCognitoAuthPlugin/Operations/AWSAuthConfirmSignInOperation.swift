@@ -55,8 +55,7 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
             }
 
             switch signInState {
-            case .resolvingSMSChallenge(let challengeState),
-                    .resolvingCustomChallenge(let challengeState):
+            case .resolvingChallenge(let challengeState, _):
                 if case . waitingForAnswer = challengeState {
                     self?.sendChallengeAnswer()
                 } else {
@@ -89,8 +88,7 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
                   case .signingIn(let signInState) = authNState else { return }
 
             switch signInState {
-            case .resolvingSMSChallenge(let challengeState),
-                    .resolvingCustomChallenge(let challengeState):
+            case .resolvingChallenge(let challengeState, _):
                 self.verifyChallengeState(
                     challengeState: challengeState,
                     token: token)
@@ -144,7 +142,7 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
 
             case .signingIn(let signInState):
 
-                if case .resolvingSMSChallenge(let challengeState) = signInState,
+                if case .resolvingChallenge(let challengeState, _) = signInState,
                    case .error(_, let signInError) = challengeState {
                     let authError = signInError.authError
 

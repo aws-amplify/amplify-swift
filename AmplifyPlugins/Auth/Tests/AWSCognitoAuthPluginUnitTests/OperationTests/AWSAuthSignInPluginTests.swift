@@ -391,8 +391,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
-    /* TODO: Enable tests when newPasswordRequired challenge is supported
-
     /// Test a signIn with newPassword as signIn result response
     ///
     /// - Given: Given an auth plugin with mocked service. Mock newPassword response for signIn result
@@ -489,7 +487,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
-     */
 
     /// Test a signIn with customChallenge as signIn result response
     ///
