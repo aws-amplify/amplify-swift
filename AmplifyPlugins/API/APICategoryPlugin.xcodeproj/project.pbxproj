@@ -70,8 +70,8 @@
 		21A4F98F25A7BF9E00E1047D /* AppSyncListResponseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A4F98E25A7BF9E00E1047D /* AppSyncListResponseTests.swift */; };
 		21A90541261644F700EC141D /* GraphQLScalarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A90540261644F700EC141D /* GraphQLScalarTests.swift */; };
 		21A9054C2616453200EC141D /* GraphQLTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A9054B2616453200EC141D /* GraphQLTestBase.swift */; };
-		21B0AE7F287DEA7F0047C52F /* APIError+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B0AE7E287DEA7F0047C52F /* APIError+Extension.swift */; };
-		21B0AE81287DF6840047C52F /* APIError+ExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B0AE80287DF6840047C52F /* APIError+ExtensionTests.swift */; };
+		21B0AE7F287DEA7F0047C52F /* APIError+Unauthorized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B0AE7E287DEA7F0047C52F /* APIError+Unauthorized.swift */; };
+		21B0AE81287DF6840047C52F /* APIError+UnauthorizedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B0AE80287DF6840047C52F /* APIError+UnauthorizedTests.swift */; };
 		21D38B9B240C517C00EC2A8D /* AWSOIDCAuthProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D38B9A240C517C00EC2A8D /* AWSOIDCAuthProvider.swift */; };
 		21D5286724169E74005186BA /* IAMAuthInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D5286624169E74005186BA /* IAMAuthInterceptor.swift */; };
 		21D7A0DF237B54D90057D00D /* AWSGraphQLOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21D7A08D237B54D90057D00D /* AWSGraphQLOperation.swift */; };
@@ -407,8 +407,8 @@
 		21A4F98E25A7BF9E00E1047D /* AppSyncListResponseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncListResponseTests.swift; sourceTree = "<group>"; };
 		21A90540261644F700EC141D /* GraphQLScalarTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLScalarTests.swift; sourceTree = "<group>"; };
 		21A9054B2616453200EC141D /* GraphQLTestBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLTestBase.swift; sourceTree = "<group>"; };
-		21B0AE7E287DEA7F0047C52F /* APIError+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APIError+Extension.swift"; sourceTree = "<group>"; };
-		21B0AE80287DF6840047C52F /* APIError+ExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APIError+ExtensionTests.swift"; sourceTree = "<group>"; };
+		21B0AE7E287DEA7F0047C52F /* APIError+Unauthorized.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APIError+Unauthorized.swift"; sourceTree = "<group>"; };
+		21B0AE80287DF6840047C52F /* APIError+UnauthorizedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APIError+UnauthorizedTests.swift"; sourceTree = "<group>"; };
 		21D38B9A240C517C00EC2A8D /* AWSOIDCAuthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSOIDCAuthProvider.swift; sourceTree = "<group>"; };
 		21D5286624169E74005186BA /* IAMAuthInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAMAuthInterceptor.swift; sourceTree = "<group>"; };
 		21D7A08D237B54D90057D00D /* AWSGraphQLOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSGraphQLOperation.swift; sourceTree = "<group>"; };
@@ -907,7 +907,7 @@
 		21D7A08B237B54D90057D00D /* AWSAPICategoryPlugin */ = {
 			isa = PBXGroup;
 			children = (
-				21B0AE7E287DEA7F0047C52F /* APIError+Extension.swift */,
+				21B0AE7E287DEA7F0047C52F /* APIError+Unauthorized.swift */,
 				219F7B1B25BF92C6007107D3 /* AWSAPIPlugin.md */,
 				21D7A09A237B54D90057D00D /* AWSAPIPlugin.swift */,
 				6B382B442538E53700906593 /* AWSAPIPlugin+APIAuthProviderFactoryBehavior.swift */,
@@ -1162,7 +1162,7 @@
 		B4DFA5BE237A611D0013E17B /* AWSAPICategoryPluginTests */ = {
 			isa = PBXGroup;
 			children = (
-				21B0AE80287DF6840047C52F /* APIError+ExtensionTests.swift */,
+				21B0AE80287DF6840047C52F /* APIError+UnauthorizedTests.swift */,
 				211A81FE271851B000C5483D /* AWSAPICategoryPlugin+AuthInformationTests.swift */,
 				B4DFA5DE237A611D0013E17B /* AWSAPICategoryPlugin+ConfigureTests.swift */,
 				B4DFA5CC237A611D0013E17B /* AWSAPICategoryPlugin+GraphQLBehaviorTests.swift */,
@@ -2525,7 +2525,7 @@
 				6B33897023AABF1800561E5B /* NetworkReachability.swift in Sources */,
 				21D7A0FE237B54D90057D00D /* URLSessionDataTaskBehavior.swift in Sources */,
 				76148E0925D896EA007F3F21 /* URLComponents+sigv4Encoding.swift in Sources */,
-				21B0AE7F287DEA7F0047C52F /* APIError+Extension.swift in Sources */,
+				21B0AE7F287DEA7F0047C52F /* APIError+Unauthorized.swift in Sources */,
 				21A4F94C25A7ACE600E1047D /* GraphQLRequest+toListQuery.swift in Sources */,
 				216449482587E92B00C548A5 /* GraphQLResponseDecoder.swift in Sources */,
 				21D7A0E5237B54D90057D00D /* AWSAPICategoryPluginConfiguration.swift in Sources */,
@@ -2563,7 +2563,7 @@
 				B4DFA5E1237A611D0013E17B /* MockURLSessionTask.swift in Sources */,
 				FAA7A5AA24C0E01500CA863F /* AWSGraphQLSubscriptionOperationCancelTests.swift in Sources */,
 				211BEDFB25E59DC8004F367A /* AWSHTTPURLResponseTests.swift in Sources */,
-				21B0AE81287DF6840047C52F /* APIError+ExtensionTests.swift in Sources */,
+				21B0AE81287DF6840047C52F /* APIError+UnauthorizedTests.swift in Sources */,
 				B4DFA5F8237A611D0013E17B /* AWSAPICategoryPlugin+ConfigureTests.swift in Sources */,
 				B4DFA5F1237A611D0013E17B /* AWSAPICategoryPlugin+URLSessionBehaviorDelegateTests.swift in Sources */,
 				B4DFA5E7237A611D0013E17B /* AWSAPICategoryPlugin+InterceptorBehaviorTests.swift in Sources */,

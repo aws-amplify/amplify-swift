@@ -10,7 +10,7 @@ import XCTest
 @testable import Amplify
 @testable import AWSAPICategoryPlugin
 
-class APIErrorExtensionTests: XCTestCase {
+class APIErrorUnauthorizedTests: XCTestCase {
 
     func testAPIErrorUnauthorized() throws {
         let apiError = APIError.operationError("Unauthorized", "", nil)

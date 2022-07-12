@@ -179,7 +179,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
            let errors = payload?["errors"] as? AppSyncJSONValue,
            let graphQLErrors = try? GraphQLErrorDecoder.decodeAppSyncErrors(errors) {
 
-            if AWSGraphQLSubscriptionOperation.anyGraphQLErrorIsUnauthorized(graphQLErrors) {
+            if graphQLErrors.hasUnauthorizedError() {
                 errorDescription += ": \(APIError.UnauthorizedMessageString)"
             }
 
@@ -194,21 +194,16 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         dispatch(result: .failure(APIError.operationError(errorDescription, "", error)))
         finish()
     }
+}
 
-    private static func anyGraphQLErrorIsUnauthorized(_ graphQLErrors: [GraphQLError]) -> Bool {
-        graphQLErrors.contains { graphQLError in
-            if let errorTypeValue = errorTypeValueFrom(graphQLError: graphQLError),
+extension Array where Element == GraphQLError {
+    func hasUnauthorizedError() -> Bool {
+        contains { graphQLError in
+            if case let .string(errorTypeValue) = graphQLError.extensions?["errorType"],
                case .unauthorized = AppSyncErrorType(errorTypeValue) {
                 return true
             }
             return false
         }
-    }
-
-    private static func errorTypeValueFrom(graphQLError: GraphQLError) -> String? {
-        guard case let .string(errorTypeValue) = graphQLError.extensions?["errorType"] else {
-            return nil
-        }
-        return errorTypeValue
     }
 }
