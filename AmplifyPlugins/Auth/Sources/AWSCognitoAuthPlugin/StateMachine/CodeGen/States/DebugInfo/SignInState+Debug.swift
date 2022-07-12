@@ -19,8 +19,9 @@ extension SignInState {
             additionalMetadataDictionary = srpSignInState.debugDictionary.merging(
                 signInEventData.debugDictionary, uniquingKeysWith: {$1}
             )
-        case .resolvingSMSChallenge(let challengeState):
+        case .resolvingChallenge(let challengeState, let challengeType):
             additionalMetadataDictionary = challengeState.debugDictionary
+            additionalMetadataDictionary["challengeType"] = challengeType
         default:
             additionalMetadataDictionary = [:]
         }

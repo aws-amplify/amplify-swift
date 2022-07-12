@@ -18,7 +18,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
 
     override var initialState: AuthState {
         AuthState.configured(
-            AuthenticationState.signingIn(.resolvingSMSChallenge(.waitingForAnswer(.testData))),
+            AuthenticationState.signingIn(.resolvingChallenge(.waitingForAnswer(.testData), .smsMfa)),
             AuthorizationState.sessionEstablished(.testData))
     }
 
