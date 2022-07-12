@@ -17,8 +17,16 @@ extension APIError {
     /// `.operationError`, this checks if the error description contains "Unauthorized".
     ///
     /// **Warning** Customized server responses that indicate unauthorized may not match the internal mapping done
-    /// in this API and return `false`. Check APIError enum directly or create your own `UnauthorizedDeterming` rule.
+    /// in this API and return `false`. Check APIError enum directly or create your own `UnauthorizedDeterming` rule,
+    /// for example:
+    /// ```
+    /// static let customRule = UnauthorizedDetermining { error in
+    ///     // Your custom logic to determine if `error` is unauthorized.
+    ///     // return `true` or `false`.
+    /// }
+    /// ```
     ///
+    /// - Parameter rule: Used to determine if the `APIError` is an unauthorized error.
     /// - Returns: `true` if unauthorized error, `false` otherwise
     public func isUnauthorized(rule: UnauthorizedDetermining = .default) -> Bool {
         rule.isUnauthenticated(self)
