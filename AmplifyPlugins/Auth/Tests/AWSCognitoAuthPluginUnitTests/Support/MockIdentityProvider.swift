@@ -58,6 +58,9 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     
     typealias MockListDevicesOutputResponse = (ListDevicesInput) async throws
     -> ListDevicesOutputResponse
+    
+    typealias MockRememberDeviceResponse = (UpdateDeviceStatusInput) async throws
+    -> UpdateDeviceStatusOutputResponse
 
     let mockSignUpResponse: MockSignUpResponse?
     let mockRevokeTokenResponse: MockRevokeTokenResponse?
@@ -75,6 +78,7 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     let mockForgotPasswordOutputResponse: MockForgotPasswordOutputResponse?
     let mockConfirmForgotPasswordOutputResponse: MockConfirmForgotPasswordOutputResponse?
     let mockListDevicesOutputResponse: MockListDevicesOutputResponse?
+    let mockRememberDeviceResponse: MockRememberDeviceResponse?
 
     init(
         mockSignUpResponse: MockSignUpResponse? = nil,
@@ -92,7 +96,8 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         mockDeleteUserOutputResponse: MockDeleteUserOutputResponse? = nil,
         mockForgotPasswordOutputResponse: MockForgotPasswordOutputResponse? = nil,
         mockConfirmForgotPasswordOutputResponse: MockConfirmForgotPasswordOutputResponse? = nil,
-        mockListDevicesOutputResponse: MockListDevicesOutputResponse? = nil
+        mockListDevicesOutputResponse: MockListDevicesOutputResponse? = nil,
+        mockRememberDeviceResponse: MockRememberDeviceResponse? = nil
     ) {
         self.mockSignUpResponse = mockSignUpResponse
         self.mockRevokeTokenResponse = mockRevokeTokenResponse
@@ -110,6 +115,7 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         self.mockForgotPasswordOutputResponse = mockForgotPasswordOutputResponse
         self.mockConfirmForgotPasswordOutputResponse = mockConfirmForgotPasswordOutputResponse
         self.mockListDevicesOutputResponse = mockListDevicesOutputResponse
+        self.mockRememberDeviceResponse = mockRememberDeviceResponse
     }
 
     /// Throws InitiateAuthOutputError
@@ -182,5 +188,9 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     
     func listDevices(input: ListDevicesInput) async throws -> ListDevicesOutputResponse {
         return try await mockListDevicesOutputResponse!(input)
+    }
+    
+    func updateDeviceStatus(input: UpdateDeviceStatusInput) async throws -> UpdateDeviceStatusOutputResponse {
+        return try await mockRememberDeviceResponse!(input)
     }
 }
