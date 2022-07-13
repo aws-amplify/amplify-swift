@@ -198,7 +198,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
                                api: APICategoryGraphQLBehavior,
                                auth: AuthCategoryBehavior?,
                                authType: AWSAuthorizationType?,
-                               awsAuthService: AWSAuthServiceBehavior) -> GraphQLRequest<Payload> {
+                               awsAuthService: AWSAuthServiceBehavior) async -> GraphQLRequest<Payload> {
         let request: GraphQLRequest<Payload>
         if modelSchema.hasAuthenticationRules,
             let _ = auth,
@@ -288,7 +288,7 @@ extension IncomingAsyncSubscriptionEventPublisher {
                                      authTypeProvider: AWSAuthorizationTypeIterator) -> RetryableGraphQLOperation<Payload>.RequestFactory {
         var authTypes = authTypeProvider
         return {
-            return IncomingAsyncSubscriptionEventPublisher.makeAPIRequest(for: modelSchema,
+            return await IncomingAsyncSubscriptionEventPublisher.makeAPIRequest(for: modelSchema,
                                                                           subscriptionType: subscriptionType,
                                                                           api: api,
                                                                           auth: auth,
