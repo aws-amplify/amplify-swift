@@ -174,18 +174,36 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
     }
 
     private func onSubscriptionFailure(_ error: Error) {
-        let errorDescription = "Subscription item event failed with error"
+        var errorDescription = "Subscription item event failed with error"
         if case let ConnectionProviderError.subscription(_, payload) = error,
            let errors = payload?["errors"] as? AppSyncJSONValue,
            let graphQLErrors = try? GraphQLErrorDecoder.decodeAppSyncErrors(errors) {
+
+            if graphQLErrors.hasUnauthorizedError() {
+                errorDescription += ": \(APIError.UnauthorizedMessageString)"
+            }
+
             let graphQLResponseError = GraphQLResponseError<R>.error(graphQLErrors)
             dispatch(result: .failure(APIError.operationError(errorDescription, "", graphQLResponseError)))
             finish()
             return
+        } else if case ConnectionProviderError.unauthorized = error {
+            errorDescription += ": \(APIError.UnauthorizedMessageString)"
         }
 
         dispatch(result: .failure(APIError.operationError(errorDescription, "", error)))
         finish()
     }
+}
 
+extension Array where Element == GraphQLError {
+    func hasUnauthorizedError() -> Bool {
+        contains { graphQLError in
+            if case let .string(errorTypeValue) = graphQLError.extensions?["errorType"],
+               case .unauthorized = AppSyncErrorType(errorTypeValue) {
+                return true
+            }
+            return false
+        }
+    }
 }
