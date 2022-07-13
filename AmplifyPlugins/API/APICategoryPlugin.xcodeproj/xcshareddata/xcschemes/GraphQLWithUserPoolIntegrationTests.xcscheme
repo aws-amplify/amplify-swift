@@ -24,7 +24,7 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "GraphQLWithUserPoolIntegrationTests/testSetUpOnce()">
+                  Identifier = "GraphQLAuthDirectiveIntegrationTests">
                </Test>
             </SkippedTests>
          </TestableReference>

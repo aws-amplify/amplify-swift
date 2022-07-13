@@ -2,6 +2,92 @@
 
 version: 2.1
 
+orbs:
+  # Using inline orb for now
+  getting-started-smoke-test:
+    orbs:
+      macos: circleci/macos@2
+      node: circleci/node@5.0.2
+      ruby: circleci/ruby@1.6.0
+    commands:
+      run-with-retry:
+        description: Run command with retry
+        parameters:
+          label:
+            description: Display name
+            type: string
+          command:
+            description: Command to run
+            type: string
+          retry-count:
+            description: Number of retry
+            type: integer
+            default: 3
+          sleep:
+            description: Wait duration until next retry
+            type: integer
+            default: 5
+          no_output_timeout:
+            description: Elapsed time the command can run without output
+            type: string
+            default: 10m
+        steps:
+          - run:
+              name: << parameters.label >>
+              command: |
+                retry() {
+                  MAX_RETRY=<< parameters.retry-count >>
+                  n=0
+                  until [ $n -ge $MAX_RETRY ]
+                  do
+                      << parameters.command >> && break
+                      n=$[$n+1]
+                      sleep << parameters.sleep >>
+                  done
+                  if [ $n -ge $MAX_RETRY ]; then
+                    echo "failed: ${@}" >&2
+                    exit 1
+                  fi
+                }
+                retry
+              no_output_timeout: << parameters.no_output_timeout >>
+    jobs:
+      ios:
+        parameters:
+          xcode-version:
+            type: string
+            default: 13.3.0
+          simulator-device:
+            type: string
+            default: iPhone 13
+          simulator-os-version:
+            type: string
+            default: "15.4"
+        working_directory: ~/ios-canaries/canaries/example
+        macos:
+          xcode: <<parameters.xcode-version>>
+        environment:
+          FL_OUTPUT_DIR: output
+        # Add steps to the job
+        # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+        steps:
+          - checkout:
+              path: ~/ios-canaries
+          - node/install
+          - run: npm install -g @aws-amplify/cli
+          - run: amplify init --quickstart --frontend ios
+          - macos/preboot-simulator:
+              device: <<parameters.simulator-device>>
+              version: <<parameters.simulator-os-version>>
+          - ruby/install-deps
+          - run-with-retry:
+              label: Run pod install
+              command: pod install
+              no_output_timeout: 20m
+          - run-with-retry:
+              label: Run tests
+              command: bundle exec fastlane scan
+
 defaults: &defaults
   macos:
     xcode: '13.0.0'
@@ -249,6 +335,9 @@ deploy_requires: &deploy_requires
 
 workflows:
   build_test_deploy:
+    when:
+      not:
+        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
       - checkout_code
       - install_gems:
@@ -342,4 +431,20 @@ workflows:
             branches:
               only:
                 - release
-          
+
+  # Scheduled smoke test workflow
+  # Jobs are pulled from the getting-started-smoke-test inline orb defined below
+  canaries:
+    when:
+      and:
+        - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+        - equal: [ "Canaries", << pipeline.schedule.name >> ]
+    jobs:
+      - getting-started-smoke-test/ios:
+          xcode-version: "13.3.0"
+          simulator-os-version: "15.4"
+          simulator-device: "iPhone 13"
+      - getting-started-smoke-test/ios:
+          xcode-version: "12.5.1"
+          simulator-os-version: "14.5"
+          simulator-device: "iPhone 12"

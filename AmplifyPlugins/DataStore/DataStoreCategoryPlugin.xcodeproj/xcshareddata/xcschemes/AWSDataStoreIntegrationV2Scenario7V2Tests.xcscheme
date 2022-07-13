@@ -29,6 +29,9 @@
                   Identifier = "DataStoreConfigurationTests">
                </Test>
                <Test
+                  Identifier = "DataStoreConnectionOptionalAssociations">
+               </Test>
+               <Test
                   Identifier = "DataStoreConnectionScenario1Tests">
                </Test>
                <Test
@@ -99,6 +102,9 @@
                </Test>
                <Test
                   Identifier = "DataStoreScalarTests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreSchemaDriftTests">
                </Test>
                <Test
                   Identifier = "DataStoreTestBase">

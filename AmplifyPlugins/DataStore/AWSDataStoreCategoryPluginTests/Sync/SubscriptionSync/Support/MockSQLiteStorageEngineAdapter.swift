@@ -287,8 +287,9 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
 
     }
 
+    var mockPublisher = PassthroughSubject<StorageEngineEvent, DataStoreError>()
     var publisher: AnyPublisher<StorageEngineEvent, DataStoreError> {
-        return PassthroughSubject<StorageEngineEvent, DataStoreError>().eraseToAnyPublisher()
+        mockPublisher.eraseToAnyPublisher()
     }
 
     func startSync(completion: @escaping DataStoreCallback<Void>) {

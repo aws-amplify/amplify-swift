@@ -169,10 +169,10 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         let completeInvoked = expectation(description: "request completed")
         let uuid = UUID().uuidString
 
-        // create a Todo mutation with a missing/invalid "description" variable value
+        // create a Todo mutation with a missing/invalid "name" variable value
         let request = GraphQLRequest(document: CreateTodoMutation.document,
                                      variables: CreateTodoMutation.variables(id: uuid,
-                                                                             name: "",
+                                                                             name: nil,
                                                                              description: nil),
                                      responseType: AWSAPICategoryPluginTestCommon.Todo?.self,
                                      decodePath: CreateTodoMutation.decodePath)
@@ -184,17 +184,13 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                     return
                 }
 
-                guard case let .transformationError(rawResponse, error) = graphQLResponseError else {
-                    XCTFail("Missing transformation error")
+                guard case let .error(errors) = graphQLResponseError, let firstError = errors.first else {
+                    XCTFail("Missing errors")
                     return
                 }
-                guard case let .operationError(operationErrorDescription, _, operationError) = error else {
-                    XCTFail("Unexpected error type \(error)")
-                    return
-                }
-                XCTAssertNotNil(rawResponse)
-                XCTAssertNotNil(operationError)
-                XCTAssertEqual(operationErrorDescription, "valueNotFound")
+
+                XCTAssertEqual("Variable 'input' has coerced Null value for NonNull type 'String!'",
+                               firstError.message)
 
                 completeInvoked.fulfill()
             case .failure(let error):
@@ -447,17 +443,18 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         let operation = Amplify.API.query(request: request) { event in
             switch event {
             case .success(let graphQLResponse):
-                guard case let .success(data) = graphQLResponse else {
-                    XCTFail("Missing successful response")
-                    return
+                switch graphQLResponse {
+                case .success(let data):
+                    guard let listTodos = data.listTodos else {
+                        XCTFail("Missing listTodos")
+                        return
+                    }
+                    XCTAssertTrue(!listTodos.items.isEmpty)
+                    listCompleteInvoked.fulfill()
+                case .failure(let error):
+                    print("\(error.underlyingError)")
+                    XCTFail("Unexpected .failed event: \(error)")
                 }
-                guard let listTodos = data.listTodos else {
-                    XCTFail("Missing listTodos")
-                    return
-                }
-
-                XCTAssertTrue(!listTodos.items.isEmpty)
-                listCompleteInvoked.fulfill()
             case .failure(let error):
                 XCTFail("Unexpected .failed event: \(error)")
             }
