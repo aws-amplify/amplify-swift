@@ -29,14 +29,14 @@ extension APIError {
     /// - Parameter rule: Used to determine if the `APIError` is an unauthorized error.
     /// - Returns: `true` if unauthorized error, `false` otherwise
     public func isUnauthorized(rule: UnauthorizedDetermining = .default) -> Bool {
-        rule.isUnauthenticated(self)
+        rule.isUnauthorized(self)
     }
 
     public struct UnauthorizedDetermining {
-        let isUnauthenticated: (APIError) -> Bool
+        let isUnauthorized: (APIError) -> Bool
 
         public init(isUnauthenticated: @escaping (APIError) -> Bool) {
-            self.isUnauthenticated = isUnauthenticated
+            self.isUnauthorized = isUnauthenticated
         }
 
         public static let `default` = UnauthorizedDetermining { error in
