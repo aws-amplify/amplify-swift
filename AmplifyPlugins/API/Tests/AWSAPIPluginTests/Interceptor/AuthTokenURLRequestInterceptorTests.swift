@@ -33,10 +33,6 @@ class AuthTokenURLRequestInterceptorTests: XCTestCase {
 extension AuthTokenURLRequestInterceptorTests {
     class MockTokenProvider: AuthTokenProvider {
         let authorizationToken = "authorizationToken"
-
-        func getToken() -> Result<String, AuthError> {
-            .success(authorizationToken)
-        }
         
         func getUserPoolAccessToken() async throws -> String {
             authorizationToken

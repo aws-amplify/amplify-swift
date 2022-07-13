@@ -36,6 +36,7 @@ class AuthenticationTokenAuthInterceptorTests: XCTestCase {
 private class TestAuthTokenProvider: AmplifyAuthTokenProvider {
     let authToken = "token"
     
+    // TODO: Remove this after datastore dependencies are removed.
     func getLatestAuthToken() -> Result<AuthToken, Error> {
         .success(authToken)
     }
@@ -51,6 +52,8 @@ private class TestAuthTokenProvider: AmplifyAuthTokenProvider {
 
 private class TestFailingAuthTokenProvider: AmplifyAuthTokenProvider {
     let authToken = "token"
+    
+    // TODO: Remove this after datastore dependencies are removed.
     func getLatestAuthToken() -> Result<AuthToken, Error> {
         let error = APIError.networkError("Token error")
         return .failure(error)
