@@ -495,6 +495,46 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
+    /// The user is not signed in so establishing the subscription will fail with an unauthorized error.
+    func testOnCreateSubscriptionUnauthorized() {
+        Amplify.Logging.logLevel = .verbose
+        let connectingInvoked = expectation(description: "Connecting invoked")
+        let connectedInvoked = expectation(description: "Connection established")
+        connectedInvoked.isInverted = true
+        let completedInvoked = expectation(description: "Completed invoked")
+        let request = GraphQLRequest(document: OnCreateTodoSubscription.document,
+                                     variables: nil,
+                                     responseType: OnCreateTodoSubscription.Data.self)
+        let operation = Amplify.API.subscribe(
+            request: request,
+            valueListener: { event in
+                switch event {
+                case .connection(let state):
+                    switch state {
+                    case .connecting:
+                        connectingInvoked.fulfill()
+                    case .connected:
+                        connectedInvoked.fulfill()
+                    case .disconnected:
+                        break
+                    }
+                case .data:
+                    break
+                }
+        }, completionListener: { event in
+            switch event {
+            case .failure(let error):
+                if error.isUnauthorized() {
+                    completedInvoked.fulfill()
+                }
+            case .success:
+                XCTFail("Unexpected success")
+            }
+        })
+        XCTAssertNotNil(operation)
+        wait(for: [connectingInvoked, connectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
+    }
+
     /// Given: A successful subscription is created for CreateTodo's
     /// When: Call mutate API on CreateTodo
     /// Then: The subscription handler is called and Todo object is returned
