@@ -9,7 +9,7 @@ import Amplify
 import Foundation
 import AppSyncRealTimeClient
 
-class OIDCAuthProviderWrapper: OIDCAuthProvider {
+class OIDCAuthProviderWrapper: OIDCAuthProviderAsync {
 
     let authTokenProvider: AmplifyAuthTokenProvider
 
@@ -17,7 +17,7 @@ class OIDCAuthProviderWrapper: OIDCAuthProvider {
         self.authTokenProvider = authTokenProvider
     }
 
-    func getLatestAuthToken() -> Result<String, Error> {
-        return authTokenProvider.getLatestAuthToken()
+    func getLatestAuthToken() async throws -> String {
+        try await authTokenProvider.getUserPoolAccessToken()
     }
 }
