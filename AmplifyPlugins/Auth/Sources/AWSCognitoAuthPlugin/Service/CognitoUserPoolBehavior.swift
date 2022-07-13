@@ -66,4 +66,7 @@ protocol CognitoUserPoolBehavior {
     
     /// Lists the devices
     func listDevices(input: ListDevicesInput) async throws -> ListDevicesOutputResponse
+    
+    /// Updates the device status
+    func updateDeviceStatus(input: UpdateDeviceStatusInput) async throws -> UpdateDeviceStatusOutputResponse
 }
