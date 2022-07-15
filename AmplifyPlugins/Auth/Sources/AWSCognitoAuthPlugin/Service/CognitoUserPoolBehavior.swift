@@ -69,4 +69,7 @@ protocol CognitoUserPoolBehavior {
     
     /// Updates the device status
     func updateDeviceStatus(input: UpdateDeviceStatusInput) async throws -> UpdateDeviceStatusOutputResponse
+    
+    /// Forgets the specified device.
+    func forgetDevice(input: ForgetDeviceInput) async throws -> ForgetDeviceOutputResponse
 }

@@ -9,7 +9,7 @@ import XCTest
 @testable import Amplify
 import AWSCognitoAuthPlugin
 
-class AuthRememberDeviceTests: AWSAuthBaseTest {
+class AuthForgetDeviceTests: AWSAuthBaseTest {
     
     var unsubscribeToken: UnsubscribeToken!
     
@@ -26,17 +26,17 @@ class AuthRememberDeviceTests: AWSAuthBaseTest {
         sleep(2)
     }
 
-/// TODO: Verify this test when an API for deviceKey is implemented
-//    /// Calling remember device should return a successful result
+//    /// TODO: Verify this test when an API for deviceKey is implemented
+//    /// Calling forget device should return a successful result
 //    ///
 //    /// - Given: A valid username is registered and sign in
 //    /// - When:
-//    ///    - I invoke rememberDevice followed by fetchDevices
+//    ///    - I invoke rememberDevice, followed by forgetDevice and fetchDevice
 //    /// - Then:
-//    ///    - I should get a successful result for rememberDevice and fetchDevices should
-//    ///      contain the deviceKey used in rememberDevice
+//    ///    - I should get a successful result for forgetDevice and rememberDevice and fetchDevices should
+//    ///      return empty result
 //    ///
-//    func testSuccessfulRememberDevice() {
+//    func testSuccessfulForgetDevice() {
 //
 //        // register a user and signin
 //        let username = "integTest\(UUID().uuidString)"
@@ -76,16 +76,26 @@ class AuthRememberDeviceTests: AWSAuthBaseTest {
 //        wait(for: [rememberDeviceExpectation], timeout: networkTimeout)
 //
 //
+//        // forget device
+//        let forgetDeviceExpectation = expectation(description: "Received result from forgetDevice")
+//        _ = Amplify.Auth.forgetDevice { result in
+//            switch result {
+//            case .success:
+//                forgetDeviceExpectation.fulfill()
+//            case .failure(let error):
+//                XCTFail("error forgetting device \(error)")
+//            }
+//        }
+//        wait(for: [forgetDeviceExpectation], timeout: networkTimeout)
+//
+//
 //        // fetch devices
 //        let fetchDevicesExpectation = expectation(description: "Received result from fetchDevices")
 //        _ = Amplify.Auth.fetchDevices { result in
 //            switch result {
 //            case .success(let devices):
 //                XCTAssertNotNil(devices)
-//                XCTAssertGreaterThan(devices.count, 0)
-//                XCTAssertTrue(devices.contains { device in
-//                    device.id == deviceKey
-//                })
+//                XCTAssertEqual(devices.count, 0)
 //                fetchDevicesExpectation.fulfill()
 //            case .failure(let error):
 //                XCTFail("error fetching devices \(error)")
@@ -94,23 +104,22 @@ class AuthRememberDeviceTests: AWSAuthBaseTest {
 //        wait(for: [fetchDevicesExpectation], timeout: networkTimeout)
 //    }
     
-    
-    /// Calling cancel in rememberDevice operation should cancel
+    /// Calling cancel in forgetDevice operation should cancel
     ///
     /// - Given: A valid user session
     /// - When:
-    ///    - I invoke rememberDevice and then call cancel
+    ///    - I invoke forgetDevice and then call cancel
     /// - Then:
     ///    - I should not get any result back
     ///
-    func testCancelRememberDevice() {
+    func testCancelForgetDevice() {
         let operationExpectation = expectation(description: "Operation should not complete")
         operationExpectation.isInverted = true
-        let operation = Amplify.Auth.rememberDevice { result in
+        let operation = Amplify.Auth.forgetDevice { result in
             operationExpectation.fulfill()
             XCTFail("Received result \(result)")
         }
-        XCTAssertNotNil(operation, "rememberDevice operations should not be nil")
+        XCTAssertNotNil(operation, "forgetDevice operations should not be nil")
         operation.cancel()
         wait(for: [operationExpectation], timeout: networkTimeout)
     }
