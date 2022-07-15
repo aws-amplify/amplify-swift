@@ -34,13 +34,17 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     ///    - I should get a valid operation object
     ///
     func testConfirmResetPasswordRequest() {
+        let operationFinished = expectation(description: "Operation should finish")
         let pluginOptions = ["key": "value"]
         let options = AuthConfirmResetPasswordRequest.Options(pluginOptions: pluginOptions)
         let operation = plugin.confirmResetPassword(for: "username",
-                                                       with: "password",
-                                                       confirmationCode: "code",
-                                                       options: options)
+                                                    with: "password",
+                                                    confirmationCode: "code",
+                                                    options: options) { _ in
+            operationFinished.fulfill()
+        }
         XCTAssertNotNil(operation)
+        waitForExpectations(timeout: 1)
     }
 
     /// Test confirmResetPassword operation can be invoked without options
@@ -52,8 +56,15 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     ///    - I should get a valid operation object
     ///
     func testConfirmResetPasswordRequestWithoutOptions() {
-        let operation = plugin.confirmResetPassword(for: "username", with: "password", confirmationCode: "code")
+        let operationFinished = expectation(description: "Operation should finish")
+        let operation = plugin.confirmResetPassword(for: "username",
+                                                    with: "password",
+                                                    confirmationCode: "code",
+                                                    options: nil) { _ in
+            operationFinished.fulfill()
+        }
         XCTAssertNotNil(operation)
+        waitForExpectations(timeout: 1)
     }
 
     /// Test a successful confirmResetPassword call
