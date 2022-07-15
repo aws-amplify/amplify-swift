@@ -72,4 +72,11 @@ extension StateMachineEvent {
         return event
     }
 
+    var isHostedUIEvent: HostedUIEvent.EventType? {
+        guard let event = (self as? HostedUIEvent)?.eventType else {
+            return nil
+        }
+        return event
+    }
+
 }
