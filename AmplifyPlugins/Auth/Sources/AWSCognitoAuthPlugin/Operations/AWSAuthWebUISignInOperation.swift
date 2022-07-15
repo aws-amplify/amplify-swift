@@ -18,6 +18,8 @@ public class AWSAuthWebUISignInOperation: AmplifyOperation<
 
     let configuration: AuthConfiguration
 
+    var token: AuthStateMachine.StateChangeListenerToken?
+
     init(_ request: AuthWebUISignInRequest,
          authConfiguration: AuthConfiguration,
          authStateMachine: AuthStateMachine,
@@ -54,6 +56,35 @@ public class AWSAuthWebUISignInOperation: AmplifyOperation<
         }
     }
 
+    func prepareForSignIn() {
+        if isCancelled {
+            finish()
+            return
+        }
+
+        token = authStateMachine.listen { [weak self] in
+            guard let self = self else {
+                return
+            }
+            guard case .configured(let authNState, _) = $0 else { return }
+
+            switch authNState {
+            case .signedOut:
+                self.cancelToken(self.token)
+                self.doSignIn()
+
+            case .signingUp:
+                self.sendCancelSignUpEvent()
+
+            case .signingIn:
+                self.sendCancelSignInEvent()
+
+            default:
+                break
+            }
+        } onSubscribe: { }
+    }
+
     func doSignIn() {
         if isCancelled {
             finish()
@@ -76,7 +107,6 @@ public class AWSAuthWebUISignInOperation: AmplifyOperation<
             fatalError("TODO: Throw error")
         }
 
-        var token: AuthStateMachine.StateChangeListenerToken?
         token = authStateMachine.listen { [weak self] in
             guard let self = self else {
                 return
@@ -85,35 +115,30 @@ public class AWSAuthWebUISignInOperation: AmplifyOperation<
                                    let authZState) = $0 else { return }
 
             switch authNState {
-            case .signedOut:
-                self.sendSignInEvent(oauthConfiguration: oauthConfiguration)
-
-            case .signingUp:
-                self.sendCancelSignUpEvent()
-
             case .signedIn:
                 if case .sessionEstablished = authZState {
                     self.dispatch(AuthSignInResult(nextStep: .done))
-                    self.cancelToken(token)
+                    self.cancelToken(self.token)
                     self.finish()
                 }
 
             case .error(let error):
                 self.dispatch(AuthError.unknown("Sign in reached an error state", error))
-                self.cancelToken(token)
+                self.cancelToken(self.token)
                 self.finish()
-
             case .signingIn(let signInState):
                 guard let result = UserPoolSignInHelper.checkNextStep(signInState) else {
                     return
                 }
                 self.dispatch(result: result)
-                self.cancelToken(token)
+                self.cancelToken(self.token)
                 self.finish()
             default:
                 break
             }
-        } onSubscribe: { }
+        } onSubscribe: {
+            self.sendSignInEvent(oauthConfiguration: oauthConfiguration)
+        }
     }
 
     private func sendSignInEvent(oauthConfiguration: OAuthConfigurationData) {
@@ -130,6 +155,11 @@ public class AWSAuthWebUISignInOperation: AmplifyOperation<
 
     private func sendCancelSignUpEvent() {
         let event = AuthenticationEvent(eventType: .cancelSignUp)
+        authStateMachine.send(event)
+    }
+
+    private func sendCancelSignInEvent() {
+        let event = AuthenticationEvent(eventType: .cancelSignIn)
         authStateMachine.send(event)
     }
 

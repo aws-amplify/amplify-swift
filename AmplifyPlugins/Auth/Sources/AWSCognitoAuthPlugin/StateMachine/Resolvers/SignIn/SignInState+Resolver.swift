@@ -40,7 +40,22 @@ extension SignInState {
                     let action = InitializeHostedUISignIn(options: options)
                     return .init(newState: .signingInWithHostedUI(.notStarted), actions: [action])
                 }
+                if case .initiateHostedUISignIn(let options) = event.isSignInEvent {
+                    let action = InitializeHostedUISignIn(options: options)
+                    return .init(newState: .signingInWithHostedUI(.notStarted), actions: [action])
+                }
                 return .from(oldState)
+
+            case .signingInWithHostedUI(let hostedUIState):
+
+                if case .signInCompleted = event.isAuthenticationEvent {
+                    return .init(newState: .done)
+                }
+
+                let resolution = HostedUISignInState.Resolver().resolve(oldState: hostedUIState,
+                                                                        byApplying: event)
+                let newState = SignInState.signingInWithHostedUI(resolution.newState)
+                return .init(newState: newState, actions: resolution.actions)
 
             case .signingInWithSRP(let srpSignInState, let signInEventData):
 
