@@ -33,9 +33,13 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
     ///    - I should get a valid operation object
     ///
     func testFetchDevicesRequest() {
+        let operationFinished = expectation(description: "Operation should finish")
         let options = AuthFetchDevicesRequest.Options()
-        let operation = plugin.fetchDevices(options: options)
+        let operation = plugin.fetchDevices(options: options) { _ in
+            operationFinished.fulfill()
+        }
         XCTAssertNotNil(operation)
+        waitForExpectations(timeout: 1)
     }
 
     /// Test fetchDevices operation can be invoked without options
@@ -47,8 +51,12 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
     ///    - I should get a valid operation object
     ///
     func testFetchDevicesRequestWithoutOptions() {
-        let operation = plugin.fetchDevices()
+        let operationFinished = expectation(description: "Operation should finish")
+        let operation = plugin.fetchDevices() { _ in
+            operationFinished.fulfill()
+        }
         XCTAssertNotNil(operation)
+        waitForExpectations(timeout: 1)
     }
     
     /// Test a successful fetchDevices call

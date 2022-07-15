@@ -33,9 +33,13 @@ class DeviceBehaviorRememberDeviceTests: AWSAuthDeviceBehaviorTests {
     ///    - I should get a valid operation object
     ///
     func testRememberDeviceRequest() {
+        let operationFinished = expectation(description: "Operation should finish")
         let options = AuthRememberDeviceRequest.Options()
-        let operation = plugin.rememberDevice(options: options)
+        let operation = plugin.rememberDevice(options: options) { _ in
+            operationFinished.fulfill()
+        }
         XCTAssertNotNil(operation)
+        waitForExpectations(timeout: 1)
     }
     
     /// Test rememberDevice operation can be invoked without options
@@ -47,8 +51,12 @@ class DeviceBehaviorRememberDeviceTests: AWSAuthDeviceBehaviorTests {
     ///    - I should get a valid operation object
     ///
     func testRememberDeviceRequestWithoutOptions() {
-        let operation = plugin.rememberDevice()
+        let operationFinished = expectation(description: "Operation should finish")
+        let operation = plugin.rememberDevice() { _ in
+            operationFinished.fulfill()
+        }
         XCTAssertNotNil(operation)
+        waitForExpectations(timeout: 1)
     }
     
     /// Test a successful rememberDevice call
