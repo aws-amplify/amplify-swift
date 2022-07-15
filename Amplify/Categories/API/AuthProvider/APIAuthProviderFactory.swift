@@ -27,7 +27,7 @@ open class APIAuthProviderFactory {
 public protocol AmplifyAuthTokenProvider {
     typealias AuthToken = String
 
-    @available(*, deprecated, message: "Use getUserPoolAccessToken() instead")
+    @available(*, deprecated, renamed: "getUserPoolAccessToken")
     func getLatestAuthToken() -> Result<AuthToken, Error>
 
     func getUserPoolAccessToken() async throws -> String

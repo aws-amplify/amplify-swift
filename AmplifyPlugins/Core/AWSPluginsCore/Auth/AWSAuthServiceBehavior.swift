@@ -23,7 +23,7 @@ public protocol AWSAuthServiceBehavior: AnyObject {
         - File Path: `AmplifyPlugins/API/AWSAPICategoryPlugin/SubscriptionFactory/AWSOIDCAuthProvider.swift`
         - Uses: `getToken()`
      */
-    @available(*, deprecated, message: "Use getUserPoolAccessToken() instead")
+    @available(*, deprecated, renamed: "getUserPoolAccessToken")
     func getToken() -> Result<String, AuthError>
 
     func getTokenClaims(tokenString: String) -> Result<[String: AnyObject], AuthError>

@@ -117,7 +117,7 @@ public class AWSAuthService: AWSAuthServiceBehavior {
         - File Path: `AmplifyPlugins/API/AWSAPICategoryPlugin/SubscriptionFactory/AWSOIDCAuthProvider.swift`
         - Uses: `getToken()`
      */
-    @available(*, deprecated, message: "Use getUserPoolAccessToken() instead")
+    @available(*, deprecated, renamed: "getUserPoolAccessToken")
     public func getToken() -> Result<String, AuthError> {
         var result: Result<String, AuthError>?
         let semaphore = DispatchSemaphore(value: 0)
