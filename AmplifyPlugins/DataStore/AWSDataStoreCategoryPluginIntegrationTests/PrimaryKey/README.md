@@ -7,6 +7,8 @@ This configuration is used to run the tests in `AWSDataStorePrimaryKeyTest.swift
 
 1. `amplify init`
 
+Make sure `cli.json` contains the feature flag enabled: `"respectprimarykeyattributesonconnectionfield": true`
+
 2. `amplify add api`
 
 ```perl
