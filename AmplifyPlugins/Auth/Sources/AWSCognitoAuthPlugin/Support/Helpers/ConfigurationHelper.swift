@@ -27,10 +27,38 @@ struct ConfigurationHelper {
         if case .string(let clientSecretFromConfig) = cognitoUserPoolJSON.value(at: "AppClientSecret") {
             clientSecret = clientSecretFromConfig
         }
+
+        let hostedUIConfig = parseHostedConfiguration(
+            configuration: config.value(at: "Auth.Default.OAuth"))
+
         return UserPoolConfigurationData(poolId: poolId,
                                          clientId: appClientId,
                                          region: region,
-                                         clientSecret: clientSecret)
+                                         clientSecret: clientSecret,
+                                         hostedUIConfig: hostedUIConfig)
+    }
+
+    static func parseHostedConfiguration(configuration: JSONValue?) -> HostedUIConfigurationData? {
+
+        guard case .string(let domain)  = configuration?.value(at: "WebDomain"),
+              case .array(let scopes) = configuration?.value(at: "Scopes"),
+              case .string(let appClientId) = configuration?.value(at: "AppClientId"),
+              case .string(let signInRedirectURI) = configuration?.value(at: "SignInRedirectURI"),
+              case .string(let signOutRedirectURI) = configuration?.value(at: "SignOutRedirectURI")
+        else {
+            return nil
+        }
+        let scopesArray = scopes.map { value -> String in
+            if case .string(let scope) = value {
+                return scope
+            }
+            return ""
+        }
+        let oauth = OAuthConfigurationData(domain: domain,
+                                           scopes: scopesArray,
+                                           signInRedirectURI: signInRedirectURI,
+                                           signOutRedirectURI: signOutRedirectURI)
+        return HostedUIConfigurationData(clientId: appClientId, oauth: oauth, clientSecret: nil)
     }
 
     static func parseIdentityPoolData(_ config: JSONValue) -> IdentityPoolConfigurationData? {
