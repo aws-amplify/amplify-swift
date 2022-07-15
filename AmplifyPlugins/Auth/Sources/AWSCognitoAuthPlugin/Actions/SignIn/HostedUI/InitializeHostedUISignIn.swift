@@ -80,7 +80,8 @@ struct InitializeHostedUISignIn: Action {
         let signInData = HostedUISigningInState(signInURL: url,
                                                 state: state,
                                                 codeChallenge: proofKey,
-                                                presentationAnchor: presentationAnchor)
+                                                presentationAnchor: presentationAnchor,
+                                                options: options)
         let event = HostedUIEvent(eventType: .showHostedUI(signInData))
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         dispatcher.send(event)

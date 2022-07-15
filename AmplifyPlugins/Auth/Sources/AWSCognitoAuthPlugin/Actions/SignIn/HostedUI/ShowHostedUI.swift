@@ -13,10 +13,10 @@ class ShowHostedUI: NSObject, Action {
 
     var identifier: String = "ShowHostedUI"
 
-    let signInData: HostedUISigningInState
+    let signingInData: HostedUISigningInState
 
     init(signInData: HostedUISigningInState) {
-        self.signInData = signInData
+        self.signingInData = signInData
     }
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
@@ -41,7 +41,7 @@ class ShowHostedUI: NSObject, Action {
         }
 
         let aswebAuthenticationSession = ASWebAuthenticationSession(
-            url: signInData.signInURL,
+            url: signingInData.signInURL,
             callbackURLScheme: callbackURLScheme,
             completionHandler: { url, error in
 
@@ -58,7 +58,7 @@ class ShowHostedUI: NSObject, Action {
 
                     guard let code = queryItems?.first(where: { $0.name == "code" })?.value,
                           let state = queryItems?.first(where: { $0.name == "state" })?.value,
-                          self.signInData.state == state else {
+                          self.signingInData.state == state else {
 
                         let event = HostedUIEvent(eventType: .throwError(.hostedUI(.codeValidation)))
                         self.logVerbose("\(#fileID) Sending event \(event)", environment: environment)
@@ -68,7 +68,8 @@ class ShowHostedUI: NSObject, Action {
 
                     let result = HostedUIResult(code: code,
                                                 state: state,
-                                                codeVerifier: self.signInData.codeChallenge)
+                                                codeVerifier: self.signingInData.codeChallenge,
+                                                options: self.signingInData.options)
                     let event = HostedUIEvent(eventType: .fetchToken(result))
                     self.logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
                     dispatcher.send(event)
@@ -89,7 +90,7 @@ class ShowHostedUI: NSObject, Action {
 
 extension ShowHostedUI: ASWebAuthenticationPresentationContextProviding {
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        return signInData.presentationAnchor
+        return signingInData.presentationAnchor
     }
 }
 

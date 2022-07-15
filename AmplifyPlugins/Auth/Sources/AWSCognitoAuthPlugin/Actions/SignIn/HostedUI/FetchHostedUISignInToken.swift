@@ -107,11 +107,13 @@ struct FetchHostedUISignInToken: Action {
                                                                   accessToken: accessToken,
                                                                   refreshToken: refreshToken,
                                                                   expiresIn: expiresIn)
-                    let signedInData = SignedInData(userId: "",
-                                                    userName: "",
+                    let user = try TokenParserHelper.getAuthUser(accessToken: accessToken)
+                    let signedInData = SignedInData(userId: user.userId,
+                                                    userName: user.username,
                                                     signedInDate: Date(),
-                                                    signInMethod: .apiBased(.userSRP),
+                                                    signInMethod: .hostedUI(result.options),
                                                     cognitoUserPoolTokens: userPoolTokens)
+
                     let event =  SignInEvent(eventType: .finalizeSignIn(signedInData))
                     logVerbose("\(#fileID) Sending event \(event)", environment: environment)
                     dispatcher.send(event)
@@ -123,6 +125,10 @@ struct FetchHostedUISignInToken: Action {
                     dispatcher.send(event)
                 }
             }
+        } catch let signInError as SignInError {
+            let event = HostedUIEvent(eventType: .throwError(signInError))
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+            dispatcher.send(event)
         } catch {
             let signInError = SignInError.service(error: error)
             let event = HostedUIEvent(eventType: .throwError(signInError))
@@ -132,12 +138,11 @@ struct FetchHostedUISignInToken: Action {
     }
 }
 
-
-
 extension FetchHostedUISignInToken: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
-            "identifier": identifier
+            "identifier": identifier,
+            "result": result.debugDescription
         ]
     }
 }
@@ -146,14 +151,4 @@ extension FetchHostedUISignInToken: CustomDebugStringConvertible {
     var debugDescription: String {
         debugDictionary.debugDescription
     }
-}
-
-
-struct HostedUIResult {
-
-    let code: String
-
-    let state: String
-
-    let codeVerifier: String
 }

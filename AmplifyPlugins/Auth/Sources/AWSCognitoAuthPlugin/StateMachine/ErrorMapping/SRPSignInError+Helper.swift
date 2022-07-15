@@ -107,6 +107,10 @@ extension HostedUIError: AuthErrorConvertible {
 
         case .serviceMessage(let message):
             return .service(message, "Received an error message from service", nil)
+
+        case .tokenParsing:
+            return .service("Token returned by service could not be parsed",
+                            "Check if the the configuration provided are correct", nil)
         }
     }
 }

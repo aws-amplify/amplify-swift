@@ -15,8 +15,9 @@ enum HostedUIError: Error {
 
     case codeValidation
 
+    case tokenParsing
+
     case serviceMessage(String)
 }
 
-extension HostedUIError: Equatable {
-}
+extension HostedUIError: Equatable { }
