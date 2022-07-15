@@ -10,7 +10,7 @@ import AWSPluginsCore
 import ClientRuntime
 import AWSCognitoIdentityProvider
 
-public class AWSAuthRememberDeviceOperation: AmplifyOperation<AuthRememberDeviceRequest, Void, AuthError>, AuthRememberDeviceOperation {
+public class AWSAuthForgetDeviceOperation: AmplifyOperation<AuthForgetDeviceRequest, Void, AuthError>, AuthForgetDeviceOperation {
     
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
     
@@ -18,7 +18,7 @@ public class AWSAuthRememberDeviceOperation: AmplifyOperation<AuthRememberDevice
     private let userPoolFactory: CognitoUserPoolFactory
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
     
-    init(_ request: AuthRememberDeviceRequest,
+    init(_ request: AuthForgetDeviceRequest,
          authStateMachine: AuthStateMachine,
          userPoolFactory: @escaping CognitoUserPoolFactory,
          resultListener: ResultListener?) {
@@ -26,7 +26,7 @@ public class AWSAuthRememberDeviceOperation: AmplifyOperation<AuthRememberDevice
         self.userPoolFactory = userPoolFactory
         self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.rememberDeviceAPI,
+                   eventName: HubPayload.EventName.Auth.forgetDeviceAPI,
                    request: request,
                    resultListener: resultListener)
     }
@@ -48,7 +48,7 @@ public class AWSAuthRememberDeviceOperation: AmplifyOperation<AuthRememberDevice
                 do {
                     let tokens = try cognitoTokenProvider.getCognitoTokens().get()
                     Task.init { [weak self] in
-                        await self?.rememberDevice(with: tokens.accessToken)
+                        await self?.forgetDevice(with: tokens.accessToken)
                     }
                 } catch let error as AuthError {
                     self?.dispatch(error)
@@ -61,15 +61,18 @@ public class AWSAuthRememberDeviceOperation: AmplifyOperation<AuthRememberDevice
         }
     }
     
-    func rememberDevice(with accessToken: String) async {
+    func forgetDevice(with accessToken: String) async {
         do {
             let userPoolService = try userPoolFactory()
+            let input : ForgetDeviceInput
+            if let device = request.device {
+                input = ForgetDeviceInput(accessToken: accessToken, deviceKey: device.id)
+            } else {
+                // TODO: pass in current device ID
+                input = ForgetDeviceInput(accessToken: accessToken, deviceKey: nil)
+            }
             
-            // TODO: Pass in device key when implemented
-            let input = UpdateDeviceStatusInput(accessToken: accessToken,
-                                                deviceKey: nil,
-                                                deviceRememberedStatus: .remembered)
-            _ = try await userPoolService.updateDeviceStatus(input: input)
+            _ = try await userPoolService.forgetDevice(input: input)
             
             if self.isCancelled {
                 finish()
@@ -77,9 +80,9 @@ public class AWSAuthRememberDeviceOperation: AmplifyOperation<AuthRememberDevice
             }
             
             self.dispatch()
-        } catch let error as UpdateDeviceStatusOutputError {
+        } catch let error as ForgetDeviceOutputError {
             self.dispatch(error.authError)
-        } catch let error as SdkError<UpdateDeviceStatusOutputError> {
+        } catch let error as SdkError<ForgetDeviceOutputError> {
             self.dispatch(error.authError)
         } catch let error as AuthError {
             self.dispatch(error)

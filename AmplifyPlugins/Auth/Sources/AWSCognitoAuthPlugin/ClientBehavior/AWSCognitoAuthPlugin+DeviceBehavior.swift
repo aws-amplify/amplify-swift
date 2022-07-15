@@ -28,7 +28,14 @@ extension AWSCognitoAuthPlugin: AuthCategoryDeviceBehavior {
         options: AuthForgetDeviceOperation.Request.Options? = nil,
         listener: AuthForgetDeviceOperation.ResultListener?) -> AuthForgetDeviceOperation {
 
-            fatalError("Not implemented")
+            let options = options ?? AuthForgetDeviceRequest.Options()
+            let request = AuthForgetDeviceRequest(device: device, options: options)
+            let forgetDeviceOperation = AWSAuthForgetDeviceOperation(request,
+                                                                    authStateMachine: authStateMachine,
+                                                                    userPoolFactory: authEnvironment.cognitoUserPoolFactory,
+                                                                    resultListener: listener)
+            queue.addOperation(forgetDeviceOperation)
+            return forgetDeviceOperation
         }
 
     public func rememberDevice(
