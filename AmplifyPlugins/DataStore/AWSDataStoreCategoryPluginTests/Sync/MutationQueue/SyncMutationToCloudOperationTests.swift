@@ -33,7 +33,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         ModelRegistry.register(modelType: Comment.self)
     }
 
-    func testRetryOnTimeoutOfWaiting() throws {
+    func testRetryOnTimeoutOfWaiting() async throws {
         let expectMutationRequestCompletion = expectation(description: "Expect to complete mutation request")
         let expectFirstCallToAPIMutate = expectation(description: "First call to API.mutate")
         let expectSecondCallToAPIMutate = expectation(description: "Second call to API.mutate")
@@ -67,7 +67,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
             expectMutationRequestCompletion.fulfill()
         }
 
-        let operation = SyncMutationToCloudOperation(mutationEvent: mutationEvent,
+        let operation = await SyncMutationToCloudOperation(mutationEvent: mutationEvent,
                                                      api: mockAPIPlugin,
                                                      authModeStrategy: AWSDefaultAuthModeStrategy(),
                                                      networkReachabilityPublisher: publisher,
@@ -103,7 +103,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         wait(for: [expectMutationRequestCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
-    func testRetryOnChangeReachability() throws {
+    func testRetryOnChangeReachability() async throws {
         let mockRequestRetryPolicy = MockRequestRetryablePolicy()
         let waitForeverToRetry = RequestRetryAdvice(shouldRetry: true, retryInterval: .seconds(secondsInADay))
         mockRequestRetryPolicy.pushOnRetryRequestAdvice(response: waitForeverToRetry)
@@ -139,7 +139,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         let completion: GraphQLOperation<MutationSync<AnyModel>>.ResultListener = { _ in
             expectMutationRequestCompletion.fulfill()
         }
-        let operation = SyncMutationToCloudOperation(mutationEvent: mutationEvent,
+        let operation = await SyncMutationToCloudOperation(mutationEvent: mutationEvent,
                                                      api: mockAPIPlugin,
                                                      authModeStrategy: AWSDefaultAuthModeStrategy(),
                                                      networkReachabilityPublisher: publisher,
@@ -176,7 +176,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
         wait(for: [expectMutationRequestCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
-    func testAbilityToCancel() throws {
+    func testAbilityToCancel() async throws {
         let mockRequestRetryPolicy = MockRequestRetryablePolicy()
         let waitForeverToRetry = RequestRetryAdvice(shouldRetry: true, retryInterval: .seconds(secondsInADay))
         mockRequestRetryPolicy.pushOnRetryRequestAdvice(response: waitForeverToRetry)
@@ -212,7 +212,7 @@ class SyncMutationToCloudOperationTests: XCTestCase {
                 break
             }
         }
-        let operation = SyncMutationToCloudOperation(mutationEvent: mutationEvent,
+        let operation = await SyncMutationToCloudOperation(mutationEvent: mutationEvent,
                                                      api: mockAPIPlugin,
                                                      authModeStrategy: AWSDefaultAuthModeStrategy(),
                                                      networkReachabilityPublisher: publisher,

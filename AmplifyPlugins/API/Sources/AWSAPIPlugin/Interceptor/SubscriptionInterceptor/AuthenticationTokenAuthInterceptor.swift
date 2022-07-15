@@ -19,9 +19,9 @@ class AuthenticationTokenAuthInterceptor: AuthInterceptorAsync {
         self.authTokenProvider = authTokenProvider
     }
 
-    func interceptMessage(_ message: AppSyncMessage, for endpoint: URL) -> AppSyncMessage {
+    func interceptMessage(_ message: AppSyncMessage, for endpoint: URL) async -> AppSyncMessage {
         let host = endpoint.host!
-        guard let authToken = getAuthToken() else {
+        guard let authToken = await getAuthToken() else {
             log.warn("Missing authentication token for subscription")
             return message
         }
@@ -45,9 +45,9 @@ class AuthenticationTokenAuthInterceptor: AuthInterceptorAsync {
     func interceptConnection(
         _ request: AppSyncConnectionRequest,
         for endpoint: URL
-    ) -> AppSyncConnectionRequest {
+    ) async -> AppSyncConnectionRequest {
         let host = endpoint.host!
-        guard let authToken = getAuthToken() else {
+        guard let authToken = await getAuthToken() else {
             log.warn("Missing authentication token for subscription request")
             return request
         }
@@ -71,8 +71,8 @@ class AuthenticationTokenAuthInterceptor: AuthInterceptorAsync {
         return signedRequest
     }
 
-    private func getAuthToken() -> AmplifyAuthTokenProvider.AuthToken? {
-        try? authTokenProvider.getLatestAuthToken().get()
+    private func getAuthToken() async -> AmplifyAuthTokenProvider.AuthToken? {
+        try? await authTokenProvider.getUserPoolAccessToken()
     }
 }
 

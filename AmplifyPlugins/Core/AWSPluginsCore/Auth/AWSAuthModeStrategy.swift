@@ -31,7 +31,7 @@ public enum AuthModeStrategyType {
 
 /// Methods for checking user current status
 public protocol AuthModeStrategyDelegate: AnyObject {
-    func isUserLoggedIn() -> Bool
+    func isUserLoggedIn() async -> Bool
 }
 
 /// Represents an authorization strategy used by DataStore
@@ -41,8 +41,7 @@ public protocol AuthModeStrategy: AnyObject {
 
     init()
 
-    func authTypesFor(schema: ModelSchema,
-                      operation: ModelOperation) -> AWSAuthorizationTypeIterator
+    func authTypesFor(schema: ModelSchema, operation: ModelOperation) async -> AWSAuthorizationTypeIterator
 }
 
 /// AuthorizationType iterator with an extra `count` property used
@@ -188,13 +187,13 @@ public class AWSMultiAuthModeStrategy: AuthModeStrategy {
     ///   - operation: model operation
     /// - Returns: an iterator for the applicable auth rules
     public func authTypesFor(schema: ModelSchema,
-                             operation: ModelOperation) -> AWSAuthorizationTypeIterator {
+                             operation: ModelOperation) async -> AWSAuthorizationTypeIterator {
         var applicableAuthRules = schema.authRules
             .filter(modelOperation: operation)
             .sorted(by: AWSMultiAuthModeStrategy.comparator)
 
         // if there isn't a user signed in, returns only public or custom rules
-        if let authDelegate = authDelegate, !authDelegate.isUserLoggedIn() {
+        if let authDelegate = authDelegate, await !authDelegate.isUserLoggedIn() {
             applicableAuthRules = applicableAuthRules.filter { rule in
                 return rule.allow == .public || rule.allow == .custom
             }

@@ -62,7 +62,9 @@ final class InitialSyncOperation: AsynchronousOperation {
         let lastSyncTime = getLastSyncTime()
         let syncType: SyncType = lastSyncTime == nil ? .fullSync : .deltaSync
         initialSyncOperationTopic.send(.started(modelName: modelSchema.name, syncType: syncType))
-        query(lastSyncTime: lastSyncTime)
+        Task {
+            await query(lastSyncTime: lastSyncTime)
+        }
     }
 
     private func getLastSyncTime() -> Int? {
@@ -109,7 +111,7 @@ final class InitialSyncOperation: AsynchronousOperation {
         }
     }
 
-    private func query(lastSyncTime: Int?, nextToken: String? = nil) {
+    private func query(lastSyncTime: Int?, nextToken: String? = nil) async {
         guard !isCancelled else {
             finish(result: .successfulVoid)
             return
@@ -139,8 +141,7 @@ final class InitialSyncOperation: AsynchronousOperation {
             }
         }
 
-        var authTypes = authModeStrategy.authTypesFor(schema: modelSchema,
-                                                                             operation: .read)
+        var authTypes = await authModeStrategy.authTypesFor(schema: modelSchema, operation: .read)
 
         RetryableGraphQLOperation(requestFactory: {
             GraphQLRequest<SyncQueryResult>.syncQuery(modelSchema: self.modelSchema,
@@ -188,8 +189,8 @@ final class InitialSyncOperation: AsynchronousOperation {
         }
 
         if let nextToken = syncQueryResult.nextToken, recordsReceived < syncMaxRecords {
-            DispatchQueue.global().async {
-                self.query(lastSyncTime: lastSyncTime, nextToken: nextToken)
+            Task {
+                await self.query(lastSyncTime: lastSyncTime, nextToken: nextToken)
             }
         } else {
             updateModelSyncMetadata(lastSyncTime: syncQueryResult.startedAt)

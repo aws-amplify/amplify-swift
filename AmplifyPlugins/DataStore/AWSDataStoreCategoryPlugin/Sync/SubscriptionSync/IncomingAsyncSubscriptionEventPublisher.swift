@@ -51,7 +51,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
          modelPredicate: QueryPredicate?,
          auth: AuthCategoryBehavior?,
          authModeStrategy: AuthModeStrategy,
-         awsAuthService: AWSAuthServiceBehavior? = nil) {
+         awsAuthService: AWSAuthServiceBehavior? = nil) async {
         self.onCreateConnected = false
         self.onUpdateConnected = false
         self.onDeleteConnected = false
@@ -72,7 +72,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
 
         // onCreate operation
         let onCreateValueListener = onCreateValueListenerHandler(event:)
-        let onCreateAuthTypeProvider = authModeStrategy.authTypesFor(schema: modelSchema,
+        let onCreateAuthTypeProvider = await authModeStrategy.authTypesFor(schema: modelSchema,
                                                                      operation: .create)
         self.onCreateValueListener = onCreateValueListener
         self.onCreateOperation = RetryableGraphQLSubscriptionOperation(
@@ -93,7 +93,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
 
         // onUpdate operation
         let onUpdateValueListener = onUpdateValueListenerHandler(event:)
-        let onUpdateAuthTypeProvider = authModeStrategy.authTypesFor(schema: modelSchema,
+        let onUpdateAuthTypeProvider = await authModeStrategy.authTypesFor(schema: modelSchema,
                                                                      operation: .update)
         self.onUpdateValueListener = onUpdateValueListener
         self.onUpdateOperation = RetryableGraphQLSubscriptionOperation(
@@ -114,7 +114,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
 
         // onDelete operation
         let onDeleteValueListener = onDeleteValueListenerHandler(event:)
-        let onDeleteAuthTypeProvider = authModeStrategy.authTypesFor(schema: modelSchema,
+        let onDeleteAuthTypeProvider = await authModeStrategy.authTypesFor(schema: modelSchema,
                                                                      operation: .delete)
         self.onDeleteValueListener = onDeleteValueListener
         self.onDeleteOperation = RetryableGraphQLSubscriptionOperation(
