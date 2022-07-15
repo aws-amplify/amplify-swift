@@ -126,7 +126,8 @@ extension RefreshSessionState {
                     let amplifyCredentials = AmplifyCredentials.identityPoolOnly(
                         identityID: identityID,
                         credentials: credentials)
-                    return .init(newState: .refreshed(amplifyCredentials))
+                    let action = InformSessionRefreshed(credentials: amplifyCredentials)
+                    return .init(newState: .refreshed(amplifyCredentials), actions: [action])
                 }
                 return .from(oldState)
 
