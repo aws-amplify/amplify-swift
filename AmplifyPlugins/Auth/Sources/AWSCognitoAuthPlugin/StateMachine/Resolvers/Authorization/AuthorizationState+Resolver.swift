@@ -75,8 +75,7 @@ extension AuthorizationState {
                         return .init(newState: .fetchingAuthSessionWithUserPool(.notStarted, tokens),
                                      actions: [action])
                     case .cancelSignIn:
-                        let action = InitializeFetchUnAuthSession()
-                        return .init(newState: .fetchingUnAuthSession(.notStarted), actions: [action])
+                        return .init(newState: .configured)
                     default: return .from(.signingIn)
                     }
                 }

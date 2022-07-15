@@ -10,7 +10,11 @@ import Foundation
 struct HostedUIEvent: StateMachineEvent {
     enum EventType {
 
-        case showHostedUI(HostedUISignInData)
+        case showHostedUI(HostedUISigningInState)
+
+        case fetchToken(HostedUIResult)
+
+        case throwError(SignInError)
     }
 
     let id: String
@@ -19,9 +23,9 @@ struct HostedUIEvent: StateMachineEvent {
 
     var type: String {
         switch eventType {
-
-        case .showHostedUI:
-            return "HostedUIEvent.showHostedUI"
+        case .showHostedUI: return "HostedUIEvent.showHostedUI"
+        case .fetchToken: return "HostedUIEvent.fetchToken"
+        case .throwError: return "HostedUIEvent.throwError"
         }
     }
 
@@ -39,9 +43,13 @@ struct HostedUIEvent: StateMachineEvent {
 extension HostedUIEvent.EventType: Equatable {
     static func == (lhs: HostedUIEvent.EventType, rhs: HostedUIEvent.EventType) -> Bool {
         switch (lhs, rhs) {
-        case (.showHostedUI, .showHostedUI):
+        case (.showHostedUI, .showHostedUI),
+            (.fetchToken, .fetchToken):
             return true
-//        default: return false
+        case (.throwError(let lhsError),.throwError(let rhsError)):
+            return lhsError == rhsError
+
+        default: return false
         }
     }
 }
