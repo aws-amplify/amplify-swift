@@ -233,7 +233,8 @@ let dataStoreTargets: [Target] = [
             .product(name: "SQLite", package: "SQLite.swift")],
         path: "AmplifyPlugins/DataStore/AWSDataStoreCategoryPlugin",
         exclude: [
-            "Info.plist"
+            "Info.plist",
+            "Sync/MutationSync/OutgoingMutationQueue/SyncMutationToCloudOperation.mmd"
         ],
         swiftSettings: swiftSettings
     ),
@@ -284,7 +285,10 @@ let storageTargets: [Target] = [
             "AmplifyTestCommon",
             "AWSPluginsTestCommon"
         ],
-        path: "AmplifyPlugins/Storage/AWSS3StoragePluginTests"
+        path: "AmplifyPlugins/Storage/AWSS3StoragePluginTests",
+        exclude: [
+            "Resources/Info.plist"
+        ]
     ),
     .testTarget(
         name: "AWSS3StoragePluginFunctionalTests",
@@ -295,7 +299,11 @@ let storageTargets: [Target] = [
             "AWSPluginsTestCommon",
             "AWSCognitoAuthPlugin"
         ],
-        path: "AmplifyPlugins/Storage/AWSS3StoragePluginFunctionalTests"
+        path: "AmplifyPlugins/Storage/AWSS3StoragePluginFunctionalTests",
+        exclude: [
+            "README.md",
+            "Info.plist"
+        ]
     )
 ]
 
@@ -318,7 +326,11 @@ let geoTargets: [Target] = [
             "AmplifyTestCommon",
             "AWSPluginsTestCommon"
             ],
-        path: "AmplifyPlugins/Geo/AWSLocationGeoPluginTests"
+        path: "AmplifyPlugins/Geo/AWSLocationGeoPluginTests",
+        exclude: [
+            "Resources/Info.plist"
+        ],
+        resources: []
     )
 ]
 
@@ -343,7 +355,8 @@ let analyticsTargets: [Target] = [
             "AmplifyTestCommon"
             // "AWSPluginsTestCommon"
         ],
-        path: "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPluginTests"
+        path: "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPluginTests",
+        exclude: ["Resources/Info.plist"]
     ),
     .testTarget(
         name: "AWSPinpointAnalyticsPluginIntegrationTests",
