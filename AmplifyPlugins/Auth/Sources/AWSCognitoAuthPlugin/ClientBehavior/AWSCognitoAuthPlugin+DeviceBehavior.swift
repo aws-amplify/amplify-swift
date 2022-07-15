@@ -31,9 +31,9 @@ extension AWSCognitoAuthPlugin: AuthCategoryDeviceBehavior {
             let options = options ?? AuthForgetDeviceRequest.Options()
             let request = AuthForgetDeviceRequest(device: device, options: options)
             let forgetDeviceOperation = AWSAuthForgetDeviceOperation(request,
-                                                                    authStateMachine: authStateMachine,
-                                                                    userPoolFactory: authEnvironment.cognitoUserPoolFactory,
-                                                                    resultListener: listener)
+                                                                     authStateMachine: authStateMachine,
+                                                                     userPoolFactory: authEnvironment.cognitoUserPoolFactory,
+                                                                     resultListener: listener)
             queue.addOperation(forgetDeviceOperation)
             return forgetDeviceOperation
         }
@@ -44,9 +44,9 @@ extension AWSCognitoAuthPlugin: AuthCategoryDeviceBehavior {
             let options = options ?? AuthRememberDeviceRequest.Options()
             let request = AuthRememberDeviceRequest(options: options)
             let rememberDeviceOperation = AWSAuthRememberDeviceOperation(request,
-                                                                    authStateMachine: authStateMachine,
-                                                                    userPoolFactory: authEnvironment.cognitoUserPoolFactory,
-                                                                    resultListener: listener)
+                                                                         authStateMachine: authStateMachine,
+                                                                         userPoolFactory: authEnvironment.cognitoUserPoolFactory,
+                                                                         resultListener: listener)
             queue.addOperation(rememberDeviceOperation)
             return rememberDeviceOperation
         }
