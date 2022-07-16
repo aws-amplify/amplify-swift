@@ -179,12 +179,18 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
     }
 
     func register(multipartUploadSession: StorageMultipartUploadSession) {
-        multipartUploadSessions.append(multipartUploadSession)
+        dispatchPrecondition(condition: .notOnQueue(queue))
+        queue.sync {
+            multipartUploadSessions.append(multipartUploadSession)
+        }
     }
 
     func unregister(multipartUploadSession: StorageMultipartUploadSession) {
-        guard let index = multipartUploadSessions.firstIndex(of: multipartUploadSession) else { return }
-        multipartUploadSessions.remove(at: index)
+        dispatchPrecondition(condition: .notOnQueue(queue))
+        queue.sync {
+            guard let index = multipartUploadSessions.firstIndex(of: multipartUploadSession) else { return }
+            multipartUploadSessions.remove(at: index)
+        }
     }
 
     func findTask(taskIdentifier: TaskIdentifier) -> StorageTransferTask? {
@@ -196,10 +202,13 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
     }
 
     func findMultipartUploadSession(uploadId: UploadID) -> StorageMultipartUploadSession? {
-        let session = multipartUploadSessions.first { session in
-            session.uploadId == uploadId
+        dispatchPrecondition(condition: .notOnQueue(queue))
+        return queue.sync {
+            let session = multipartUploadSessions.first { session in
+                session.uploadId == uploadId
+            }
+            return session
         }
-        return session
     }
 
     func createTransferTask(transferType: StorageTransferType,
