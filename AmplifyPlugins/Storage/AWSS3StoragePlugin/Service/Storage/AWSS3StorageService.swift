@@ -30,6 +30,8 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
     let storageTransferDatabase: StorageTransferDatabase
     let fileSystem: FileSystem
 
+
+    private let queue = DispatchQueue(label: "com.amazon.aws.amplify.storage-tasks", target: .global())
     var tasks: [Int: StorageTransferTask] = [:]
     var multipartUploadSessions: [StorageMultipartUploadSession] = []
 
@@ -162,12 +164,18 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
 
     func register(task: StorageTransferTask) {
         guard let taskIdentifier = task.taskIdentifier else { return }
-        tasks[taskIdentifier] = task
+        dispatchPrecondition(condition: .notOnQueue(queue))
+        queue.sync {
+            tasks[taskIdentifier] = task
+        }
     }
 
     func unregister(task: StorageTransferTask) {
         guard let taskIdentifier = task.taskIdentifier else { return }
-        tasks[taskIdentifier] = nil
+        dispatchPrecondition(condition: .notOnQueue(queue))
+        queue.sync {
+            tasks[taskIdentifier] = nil
+        }
     }
 
     func register(multipartUploadSession: StorageMultipartUploadSession) {
@@ -180,8 +188,11 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
     }
 
     func findTask(taskIdentifier: TaskIdentifier) -> StorageTransferTask? {
-        let task = tasks[taskIdentifier]
-        return task
+        dispatchPrecondition(condition: .notOnQueue(queue))
+        return queue.sync {
+            let task = tasks[taskIdentifier]
+            return task
+        }
     }
 
     func findMultipartUploadSession(uploadId: UploadID) -> StorageMultipartUploadSession? {
