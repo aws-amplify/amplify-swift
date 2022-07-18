@@ -39,6 +39,18 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
     public func getToken() -> Result<String, AuthError> {
         .success("")
     }
+    
+    public func getIdentityID(completion: @escaping (Result<String, AuthError>) -> Void) {
+        if let error = getIdentityIdError {
+            completion(.failure(error))
+        }
+
+        completion(.success(identityId ?? "IdentityId"))
+    }
+    
+    public func getUserPoolAccessToken() async throws -> String {
+        ""
+    }
 
     public func getTokenClaims(tokenString: String) -> Result<[String: AnyObject], AuthError> {
         if let error = getTokenClaimsError {
