@@ -8,11 +8,11 @@
 import Foundation
 import Amplify
 
-public class AWSAuthWebUISignInOperation: AmplifyOperation<
+public class AWSAuthSocialWebUISignInOperation: AmplifyOperation<
     AuthWebUISignInRequest,
     AuthSignInResult,
     AuthError
->, AuthWebUISignInOperation {
+>, AuthSocialWebUISignInOperation {
 
     let helper: HostedUISignInHelper
 
@@ -25,7 +25,7 @@ public class AWSAuthWebUISignInOperation: AmplifyOperation<
                                            authstateMachine: authStateMachine,
                                            configuration: authConfiguration)
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.webUISignInAPI,
+                   eventName: HubPayload.EventName.Auth.socialWebUISignInAPI,
                    request: request,
                    resultListener: resultListener)
     }
@@ -40,6 +40,5 @@ public class AWSAuthWebUISignInOperation: AmplifyOperation<
             self.dispatch(result: result)
             self.finish()
         }
-
     }
 }
