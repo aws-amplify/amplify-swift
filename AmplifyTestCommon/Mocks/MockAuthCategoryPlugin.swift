@@ -10,6 +10,14 @@ import Amplify
 
 class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
 
+    public func getCurrentUser() async -> AuthUser? {
+        return nil
+    }
+
+    public func getCurrentUser(closure: @escaping (Result<AuthUser?, Error>) -> Void) {
+        closure(.success(nil))
+    }
+
     func signIn(username: String,
                 password: String,
                 options: AuthSignInOperation.Request.Options?,
@@ -94,10 +102,6 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
                                      listener: AuthConfirmResetPasswordOperation.ResultListener?)
         -> AuthConfirmResetPasswordOperation {
             fatalError()
-    }
-
-    public func getCurrentUser() -> AuthUser? {
-        fatalError()
     }
 
     public func fetchUserAttributes(

@@ -9,8 +9,12 @@ import Foundation
 
 extension AuthCategory: AuthCategoryUserBehavior {
 
-    public func getCurrentUser() -> AuthUser? {
-        return plugin.getCurrentUser()
+    public func getCurrentUser() async -> AuthUser? {
+        return await plugin.getCurrentUser()
+    }
+
+    public func getCurrentUser(closure: @escaping (Result<AuthUser?, Error>) -> Void) {
+        plugin.getCurrentUser(closure: closure)
     }
 
     @discardableResult

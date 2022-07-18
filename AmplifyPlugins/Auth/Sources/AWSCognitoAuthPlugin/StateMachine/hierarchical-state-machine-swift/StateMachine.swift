@@ -162,6 +162,16 @@ class StateMachine<
         }
     }
 
+    var currentMachineState: StateType {
+        get async {
+            await withCheckedContinuation { continuation in
+                self.operationQueue.addOperation {
+                    continuation.resume(returning: self.currentState)
+                }
+            }
+        }
+    }
+
     // MARK: - Isolated methods
 
     /// Must be invoked on operationQueue
