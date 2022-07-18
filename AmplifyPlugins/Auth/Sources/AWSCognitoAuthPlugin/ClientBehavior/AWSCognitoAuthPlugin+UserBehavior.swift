@@ -111,7 +111,26 @@ public extension AWSCognitoAuthPlugin {
         return operation
     }
 
-    func getCurrentUser() -> AuthUser? {
-        fatalError("Not implemented")
+    func getCurrentUser() async -> AuthUser? {
+        let authState = await authStateMachine.currentMachineState
+        if case .configured(let authenticationState, _) = authState,
+           case .signedIn(let signInData) = authenticationState {
+            let authUser = AWSCognitoAuthUser(username: signInData.userName, userId: signInData.userId)
+            return authUser
+        } else {
+            return nil
+        }
+    }
+
+    func getCurrentUser(closure: @escaping (Result<AuthUser?, Error>) -> Void) {
+        authStateMachine.getCurrentState { authState in
+            if case .configured(let authenticationState, _) = authState,
+               case .signedIn(let signInData) = authenticationState {
+                let authUser = AWSCognitoAuthUser(username: signInData.userName, userId: signInData.userId)
+                closure(.success(authUser))
+            } else {
+                closure(.success(nil))
+            }
+        }
     }
 }
