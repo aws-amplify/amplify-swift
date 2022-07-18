@@ -499,7 +499,7 @@ class SQLStatementTests: XCTestCase {
                                          name: "the-name")
         let statement = UpdateStatement(model: model, modelSchema: model.schema)
         let expectedStatement = """
-        update ModelCustomPkDefined
+        update "ModelCustomPkDefined"
         set
           "id" = ?,
           "dob" = ?,
@@ -531,7 +531,7 @@ class SQLStatementTests: XCTestCase {
                                      name: "the-name")
         let statement = UpdateStatement(model: model, modelSchema: model.schema)
         let expectedStatement = """
-        update ModelCompositePk
+        update "ModelCompositePk"
         set
           "id" = ?,
           "dob" = ?,
@@ -548,7 +548,6 @@ class SQLStatementTests: XCTestCase {
         XCTAssertEqual(variables[3] as? String, "the-name")
         XCTAssertEqual(variables[5] as? String, model.identifier(schema: model.schema).stringValue)
     }
-
 
     // MARK: - Delete Statements
 

@@ -31,7 +31,7 @@ extension Temporal {
         pointer.initialize(to: os_unfair_lock())
         return pointer
     }()
-    
+
     /// Internal helper function to retrieve and/or create `DateFormatter`s
     /// - Parameters:
     ///   - format: The `DateFormatter().dateFormat`
@@ -43,7 +43,7 @@ extension Temporal {
     ) -> DateFormatter {
         // lock before read from cache
         os_unfair_lock_lock(lock)
-        
+
         // unlock at return
         defer { os_unfair_lock_unlock(lock) }
 
