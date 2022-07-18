@@ -17,6 +17,7 @@ class AuthTokenProviderWrapper: AuthTokenProvider {
         self.wrappedAuthTokenProvider = tokenAuthProvider
     }
 
+    @available(*, deprecated, renamed: "getUserPoolAccessToken")
     func getToken() -> Result<String, AuthError> {
         let result = wrappedAuthTokenProvider.getLatestAuthToken()
         switch result {
@@ -28,5 +29,8 @@ class AuthTokenProviderWrapper: AuthTokenProvider {
                                               error))
         }
     }
-
+    
+    func getUserPoolAccessToken() async throws -> String {
+        try await wrappedAuthTokenProvider.getUserPoolAccessToken()
+    }
 }

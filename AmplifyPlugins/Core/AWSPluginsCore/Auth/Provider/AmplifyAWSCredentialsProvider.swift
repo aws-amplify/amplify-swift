@@ -29,26 +29,6 @@ public class AmplifyAWSCredentialsProvider: CredentialsProvider {
             }
         }
     }
-
-    public func getCredentials() throws -> Future<AWSCredentials> {
-        let future = Future<AWSCredentials>()
-        _  = Amplify.Auth.fetchAuthSession { result in
-
-            do {
-                let session = try result.get()
-                if let awsCredentialsProvider = session as? AuthAWSCredentialsProvider {
-                    let credentials = try awsCredentialsProvider.getAWSCredentials().get()
-                    future.fulfill(credentials.toAWSSDKCredentials())
-                } else {
-                    let error = AuthError.unknown("Auth session does not include AWS credentials information")
-                    future.fail(error)
-                }
-            } catch {
-                future.fail(error)
-            }
-        }
-        return future
-    }
 }
 
 extension AuthAWSCredentials {

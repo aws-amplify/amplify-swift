@@ -35,8 +35,13 @@ class AuthenticationTokenAuthInterceptorTests: XCTestCase {
 // MARK: - Test token providers
 private class TestAuthTokenProvider: AmplifyAuthTokenProvider {
     let authToken = "token"
+    
     func getLatestAuthToken() -> Result<AuthToken, Error> {
         .success(authToken)
+    }
+    
+    func getUserPoolAccessToken() async throws -> String {
+        authToken
     }
 }
 
@@ -45,5 +50,9 @@ private class TestFailingAuthTokenProvider: AmplifyAuthTokenProvider {
     func getLatestAuthToken() -> Result<AuthToken, Error> {
         let error = APIError.networkError("Token error")
         return .failure(error)
+    }
+    
+    func getUserPoolAccessToken() async throws -> String {
+        authToken
     }
 }
