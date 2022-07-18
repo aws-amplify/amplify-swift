@@ -26,6 +26,8 @@ public struct AWSAuthSignInOptions {
 
 public enum AuthFlowType {
 
+    case userPasswordAuth
+   
     case userSRP
 
     case custom

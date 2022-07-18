@@ -110,6 +110,7 @@ public class AWSAuthSignInOperation: AmplifyOperation<
         switch authTypeString {
         case "CUSTOM_AUTH": return .custom
         case "USER_SRP_AUTH": return .userSRP
+        case "USER_PASSWORD_AUTH": return .userPasswordAuth
         default:
             return nil
         }
