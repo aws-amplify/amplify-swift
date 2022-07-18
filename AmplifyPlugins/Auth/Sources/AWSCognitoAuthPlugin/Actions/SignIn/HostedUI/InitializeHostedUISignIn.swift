@@ -70,6 +70,14 @@ struct InitializeHostedUISignIn: Action {
             URLQueryItem(name: "code_challenge", value: codeChallenge),
         ]
 
+        if let idpIdentifier = options.providerInfo.idpIdentifier {
+            components.queryItems?.append(
+                .init(name: "idp_identifier", value: idpIdentifier))
+        } else if let authProvider = options.providerInfo.authProvider {
+            components.queryItems?.append(
+                .init(name: "identity_provider", value: authProvider.cognitoString))
+        }
+
         guard let url = components.url else {
             let event = HostedUIEvent(eventType: .throwError(.hostedUI(.signInURI)))
             logVerbose("\(#fileID) Sending event \(event)", environment: environment)
