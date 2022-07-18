@@ -82,6 +82,9 @@ class ShowHostedUI: NSObject, Action {
                 }
 
         })
+        aswebAuthenticationSession.prefersEphemeralWebBrowserSession = signingInData
+            .options
+            .preferPrivateSession
         aswebAuthenticationSession.presentationContextProvider = self
         aswebAuthenticationSession.start()
     }
