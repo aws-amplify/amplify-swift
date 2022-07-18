@@ -31,7 +31,7 @@ extension AWSPinpointAnalyticsPlugin {
     }
 
     /// Configure AWSPinpointAnalyticsPlugin programatically using AWSPinpointAnalyticsPluginConfiguration
-    public func configure(using configuration: AWSPinpointAnalyticsPluginConfiguration) throws {
+    public func configure(using configuration: AWSPinpointAnalyticsPluginConfiguration) async throws {
         let authService = AWSAuthService()
         let credentialsProvider = authService.getCredentialsProvider()
 
@@ -48,7 +48,7 @@ extension AWSPinpointAnalyticsPlugin {
                                                                 isDebug: isDebug,
                                                                 shouldTrackAppSessions: configuration.trackAppSessions,
                                                                 sessionBackgroundTimeout: TimeInterval(configuration.autoSessionTrackingInterval))
-        let pinpoint = try PinpointContext(with: contextConfiguration)
+        let pinpoint = try await PinpointContext(with: contextConfiguration)
 
         var autoFlushEventsTimer: DispatchSourceTimer?
         if configuration.autoFlushEventsInterval != 0 {
