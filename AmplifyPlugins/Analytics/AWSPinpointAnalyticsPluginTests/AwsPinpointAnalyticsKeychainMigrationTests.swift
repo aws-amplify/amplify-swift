@@ -33,7 +33,7 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
         }
     }
     
-    func testDeviceTokenMigrateFromUserDefaultsToKeychain() async {
+    func testDeviceTokenMigrateFromUserDefaultsToKeychain() {
         let deviceToken = "000102030405060708090a0b0c0d0e0f"
         let deviceTokenData = deviceToken.data(using: .utf8)
         userDefaults.setValue(deviceTokenData, forKey: EndpointClient.Constants.deviceTokenKey)
@@ -42,7 +42,7 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
         XCTAssertNil(currentKeychainDeviceToken)
         XCTAssertNotNil(userDefaults.data(forKey:EndpointClient.Constants.deviceTokenKey))
         
-        _ = await EndpointClient(configuration: .init(appId: currentApplicationId,
+        _ = EndpointClient(configuration: .init(appId: currentApplicationId,
                                                              uniqueDeviceId: currentEndpointId,
                                                              isDebug: false,
                                                              isOptOut: false),
@@ -57,7 +57,7 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
         XCTAssertNotNil(currentKeychainDeviceToken)
     }
     
-    func testEndpointProfileMigrateFromUserDefaultsToKeychain() async {
+    func testEndpointProfileMigrateFromUserDefaultsToKeychain() {
         let profile = PinpointEndpointProfile(applicationId: "appId", endpointId: "endpointId")
         let profileData = try? archiver.encode(profile)
         userDefaults.setValue(profileData, forKey: EndpointClient.Constants.endpointProfileKey)
@@ -66,7 +66,7 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
         XCTAssertNil(currentKeychainProfile)
         XCTAssertNotNil(userDefaults.data(forKey:EndpointClient.Constants.endpointProfileKey))
         
-        _ = await EndpointClient(configuration: .init(appId: currentApplicationId,
+        _ = EndpointClient(configuration: .init(appId: currentApplicationId,
                                                              uniqueDeviceId: currentEndpointId,
                                                              isDebug: false,
                                                              isOptOut: false),
@@ -81,7 +81,7 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
         XCTAssertNotNil(currentKeychainProfile)
     }
     
-    func testAttributesMigrateFromUserDefaultsToKeychain() async {
+    func testAttributesMigrateFromUserDefaultsToKeychain() {
         let attributes: [String: [String]] = ["Attributes1": ["Value1"]]
         userDefaults.setValue(attributes, forKey: EndpointClient.Constants.attributesKey)
         
@@ -89,7 +89,7 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
         XCTAssertNil(currentAttributes)
         XCTAssertNotNil(userDefaults.object(forKey:EndpointClient.Constants.attributesKey))
         
-        _ = await EndpointClient(configuration: .init(appId: currentApplicationId,
+        _ = EndpointClient(configuration: .init(appId: currentApplicationId,
                                                              uniqueDeviceId: currentEndpointId,
                                                              isDebug: false,
                                                              isOptOut: false),
@@ -104,7 +104,7 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
         XCTAssertNotNil(currentAttributes)
     }
 
-    func testMetricsMigrateFromUserDefaultsToKeychain() async {
+    func testMetricsMigrateFromUserDefaultsToKeychain() {
         let metrics = ["Attributes1": 123]
         userDefaults.setValue(metrics, forKey: EndpointClient.Constants.metricsKey)
         
@@ -112,7 +112,7 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
         XCTAssertNil(currentMetrics)
         XCTAssertNotNil(userDefaults.object(forKey:EndpointClient.Constants.metricsKey))
         
-        _ = await EndpointClient(configuration: .init(appId: currentApplicationId,
+        _ = EndpointClient(configuration: .init(appId: currentApplicationId,
                                                              uniqueDeviceId: currentEndpointId,
                                                              isDebug: false,
                                                              isOptOut: false),

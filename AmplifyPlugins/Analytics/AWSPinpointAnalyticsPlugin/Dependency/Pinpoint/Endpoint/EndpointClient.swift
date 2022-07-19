@@ -54,7 +54,7 @@ actor EndpointClient: EndpointClientBehaviour {
          currentDevice: Device = DeviceProvider.current,
          userDefaults: UserDefaultsBehaviour = UserDefaults.standard,
          keychain: KeychainStoreBehavior = KeychainStore()
-    ) async {
+    ) {
         self.configuration = configuration
         self.pinpointClient = pinpointClient
         self.archiver = archiver
@@ -62,7 +62,7 @@ actor EndpointClient: EndpointClientBehaviour {
         self.userDefaults = userDefaults
         self.keychain = keychain
 
-        self.migrateLegacyKeyValueStore()
+        EndpointClient.migrateLegacyKeyValueStore(userDefaults, keychain, archiver)
         if let attributesData = try? keychain.getData(Constants.attributesKey),
            let attributes = try? archiver.decode(GlobalAttributes.self, from: attributesData) {
             globalAttributes = attributes
@@ -245,7 +245,7 @@ actor EndpointClient: EndpointClientBehaviour {
         return endpointProfile.isOptOut ? EndpointClient.Constants.OptOut.all : EndpointClient.Constants.OptOut.none
     }
     
-    private func migrateLegacyKeyValueStore() {
+    private static func migrateLegacyKeyValueStore(_ userDefaults: UserDefaultsBehaviour, _ keychain: KeychainStoreBehavior, _ archiver: AmplifyArchiverBehaviour) {
         if let endpointProfileData = userDefaults.data(forKey: Constants.endpointProfileKey) {
             do {
                 try keychain.set(endpointProfileData, key: Constants.endpointProfileKey)

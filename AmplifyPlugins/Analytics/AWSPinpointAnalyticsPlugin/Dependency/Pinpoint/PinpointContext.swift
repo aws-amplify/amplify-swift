@@ -134,7 +134,7 @@ class PinpointContext {
          userDefaults: UserDefaultsBehaviour = UserDefaults.standard,
          keychainStore: KeychainStoreBehavior = KeychainStore(service: PinpointContext.Constants.Keychain.service),
          fileManager: FileManagerBehaviour = FileManager.default,
-         archiver: AmplifyArchiverBehaviour = AmplifyArchiver()) async throws {
+         archiver: AmplifyArchiverBehaviour = AmplifyArchiver()) throws {
         storage = PinpointContextStorage(userDefaults: userDefaults,
                                          keychainStore: keychainStore,
                                          fileManager: fileManager,
@@ -144,7 +144,7 @@ class PinpointContext {
         let targetingPinpointClient = try PinpointClient(region: configuration.targetingRegion,
                                                          credentialsProvider: configuration.credentialsProvider)
 
-        endpointClient = await EndpointClient(configuration: .init(appId: configuration.appId,
+        endpointClient = EndpointClient(configuration: .init(appId: configuration.appId,
                                                              uniqueDeviceId: uniqueId,
                                                              isDebug: configuration.isDebug,
                                                              isOptOut: configuration.isApplicationLevelOptOut),

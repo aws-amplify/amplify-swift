@@ -36,7 +36,7 @@ class EndpointClientTests: XCTestCase {
     }
 
     func testCurrentEndpointProfile_withValidStoredProfile_shouldReturnUpdatedStored() async {
-        endpointClient = await EndpointClient(configuration: .init(appId: currentApplicationId,
+        endpointClient = EndpointClient(configuration: .init(appId: currentApplicationId,
                                                              uniqueDeviceId: currentEndpointId,
                                                              isDebug: false,
                                                              isOptOut: false),
@@ -84,7 +84,7 @@ class EndpointClientTests: XCTestCase {
     }
 
     func testCurrentEndpointProfile_withInvalidStoredProfile_shouldRemoveStored_andReturnNew() async {
-        endpointClient = await EndpointClient(configuration: .init(appId: currentApplicationId,
+        endpointClient = EndpointClient(configuration: .init(appId: currentApplicationId,
                                                              uniqueDeviceId: currentEndpointId,
                                                              isDebug: false,
                                                              isOptOut: false),
@@ -129,7 +129,7 @@ class EndpointClientTests: XCTestCase {
     }
 
     func testCurrentEndpointProfile_shouldUpdateAttributesAndMetrics() async {
-        endpointClient = await EndpointClient(configuration: .init(appId: currentApplicationId,
+        endpointClient = EndpointClient(configuration: .init(appId: currentApplicationId,
                                                              uniqueDeviceId: currentEndpointId,
                                                              isDebug: false,
                                                              isOptOut: false),
@@ -157,7 +157,7 @@ class EndpointClientTests: XCTestCase {
     }
 
     func testUpdateEndpointProfile_shouldSendUpdateRequestAndSave() async {
-        endpointClient = await EndpointClient(configuration: .init(appId: currentApplicationId,
+        endpointClient = EndpointClient(configuration: .init(appId: currentApplicationId,
                                                              uniqueDeviceId: currentEndpointId,
                                                              isDebug: false,
                                                              isOptOut: false),
@@ -175,7 +175,7 @@ class EndpointClientTests: XCTestCase {
     }
 
     func testUpdateEndpointProfile_withProfile_shouldUpdateandSendUpdateRequestAndSave() async {
-        endpointClient = await EndpointClient(configuration: .init(appId: currentApplicationId,
+        endpointClient = EndpointClient(configuration: .init(appId: currentApplicationId,
                                                              uniqueDeviceId: currentEndpointId,
                                                              isDebug: false,
                                                              isOptOut: false),
@@ -207,7 +207,7 @@ class EndpointClientTests: XCTestCase {
     }
 
     func testConvertToPublicEndpoint_shouldReturnPublicEndpoint() async {
-        endpointClient = await EndpointClient(configuration: .init(appId: currentApplicationId,
+        endpointClient = EndpointClient(configuration: .init(appId: currentApplicationId,
                                                              uniqueDeviceId: currentEndpointId,
                                                              isDebug: false,
                                                              isOptOut: false),
