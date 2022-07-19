@@ -169,6 +169,7 @@ final class ModelSyncedEventEmitter {
     private func sendModelSyncedEvent() {
         modelSyncedEventBuilder.modelName = modelSchema.name
         let modelSyncedEvent = modelSyncedEventBuilder.build()
+        log.verbose("[Lifecycle event 3]: modelSyncedEvent model: \(modelSchema.name)")
         modelSyncedEventTopic.send(.modelSyncedEvent(modelSyncedEvent))
         dispatchedModelSyncedEvent = true
         syncOrchestratorSink?.cancel()

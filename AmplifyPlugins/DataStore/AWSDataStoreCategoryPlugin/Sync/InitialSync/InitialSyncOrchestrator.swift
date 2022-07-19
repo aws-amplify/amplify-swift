@@ -174,7 +174,7 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
         let syncQueriesStartedEvent = SyncQueriesStartedEvent(models: modelNames)
         let syncQueriesStartedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesStarted,
                                                         data: syncQueriesStartedEvent)
-        log.verbose("Emitting DataStore event: syncQueriesStarted")
+        log.verbose("[Lifecycle event 2]: syncQueriesStarted")
         Amplify.Hub.dispatch(to: .dataStore, payload: syncQueriesStartedEventPayload)
     }
 }
