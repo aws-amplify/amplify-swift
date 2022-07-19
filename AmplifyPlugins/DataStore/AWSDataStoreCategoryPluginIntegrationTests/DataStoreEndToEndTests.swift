@@ -29,7 +29,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 
     func testCreate() throws {
         setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try startAmplifyAndWaitForReady()
         var cancellables = Set<AnyCancellable>()
         let date = Temporal.DateTime.now()
         let newPost = Post(

@@ -401,7 +401,7 @@ extension AWSDataStoreAuthBaseTest {
 
         wait(for: [expectations.mutationSave, expectations.mutationSaveProcessed], timeout: 60)
 
-        Amplify.DataStore.delete(M.self, withId: model.id).sink {
+        Amplify.DataStore.delete(M.self, withId: model.identifier).sink {
             if case let .failure(error) = $0 {
                 onFailure(error)
             }
