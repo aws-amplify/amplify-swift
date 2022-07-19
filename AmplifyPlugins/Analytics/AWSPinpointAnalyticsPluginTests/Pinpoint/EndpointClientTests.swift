@@ -24,6 +24,15 @@ class EndpointClientTests: XCTestCase {
         pinpointClient = MockPinpointClient()
         device = MockDevice()
         keychain = MockKeychainStore()
+        endpointClient = EndpointClient(configuration: .init(appId: currentApplicationId,
+                                                             uniqueDeviceId: currentEndpointId,
+                                                             isDebug: false,
+                                                             isOptOut: false),
+                                        pinpointClient: pinpointClient,
+                                        archiver: archiver,
+                                        currentDevice: device,
+                                        userDefaults: userDefaults,
+                                        keychain: keychain)
     }
 
     override func tearDown() {
@@ -36,15 +45,6 @@ class EndpointClientTests: XCTestCase {
     }
 
     func testCurrentEndpointProfile_withValidStoredProfile_shouldReturnUpdatedStored() async {
-        endpointClient = EndpointClient(configuration: .init(appId: currentApplicationId,
-                                                             uniqueDeviceId: currentEndpointId,
-                                                             isDebug: false,
-                                                             isOptOut: false),
-                                        pinpointClient: pinpointClient,
-                                        archiver: archiver,
-                                        currentDevice: device,
-                                        userDefaults: userDefaults,
-                                        keychain: keychain)
         let oldEffectiveDate = Date().addingTimeInterval(-1000)
         let oldDemographic = PinpointClientTypes.EndpointDemographic(appVersion: "oldVersion")
         let storedEndpointProfile = PinpointEndpointProfile(applicationId: currentApplicationId,
@@ -64,7 +64,7 @@ class EndpointClientTests: XCTestCase {
 
         let endpointProfile = await endpointClient.currentEndpointProfile()
 
-        XCTAssertEqual(userDefaults.dataForKeyCount, 2)
+        XCTAssertEqual(userDefaults.dataForKeyCount, 4)
         XCTAssertEqual(userDefaults.dataForKeyCountMap[EndpointClient.Constants.endpointProfileKey], 1)
         XCTAssertEqual(userDefaults.dataForKeyCountMap[EndpointClient.Constants.deviceTokenKey], 1)
         XCTAssertEqual(keychain.dataValues.count, 2)
@@ -84,15 +84,6 @@ class EndpointClientTests: XCTestCase {
     }
 
     func testCurrentEndpointProfile_withInvalidStoredProfile_shouldRemoveStored_andReturnNew() async {
-        endpointClient = EndpointClient(configuration: .init(appId: currentApplicationId,
-                                                             uniqueDeviceId: currentEndpointId,
-                                                             isDebug: false,
-                                                             isOptOut: false),
-                                        pinpointClient: pinpointClient,
-                                        archiver: archiver,
-                                        currentDevice: device,
-                                        userDefaults: userDefaults,
-                                        keychain: keychain)
         let oldEffectiveDate = Date().addingTimeInterval(-1000)
         let oldDemographic = PinpointClientTypes.EndpointDemographic(appVersion: "oldVersion")
         let storedEndpointProfile = PinpointEndpointProfile(applicationId: "oldApplicationId",
@@ -129,15 +120,6 @@ class EndpointClientTests: XCTestCase {
     }
 
     func testCurrentEndpointProfile_shouldUpdateAttributesAndMetrics() async {
-        endpointClient = EndpointClient(configuration: .init(appId: currentApplicationId,
-                                                             uniqueDeviceId: currentEndpointId,
-                                                             isDebug: false,
-                                                             isOptOut: false),
-                                        pinpointClient: pinpointClient,
-                                        archiver: archiver,
-                                        currentDevice: device,
-                                        userDefaults: userDefaults,
-                                        keychain: keychain)
         let storedEndpointProfile = PinpointEndpointProfile(applicationId: "oldApplicationId",
                                                             endpointId: "oldEndpoint")
         storedEndpointProfile.addAttribute("value", forKey: "oldAttribute")
@@ -157,15 +139,6 @@ class EndpointClientTests: XCTestCase {
     }
 
     func testUpdateEndpointProfile_shouldSendUpdateRequestAndSave() async {
-        endpointClient = EndpointClient(configuration: .init(appId: currentApplicationId,
-                                                             uniqueDeviceId: currentEndpointId,
-                                                             isDebug: false,
-                                                             isOptOut: false),
-                                        pinpointClient: pinpointClient,
-                                        archiver: archiver,
-                                        currentDevice: device,
-                                        userDefaults: userDefaults,
-                                        keychain: keychain)
         keychain.resetCounters()
         try? await endpointClient.updateEndpointProfile()
 
@@ -175,15 +148,6 @@ class EndpointClientTests: XCTestCase {
     }
 
     func testUpdateEndpointProfile_withProfile_shouldUpdateandSendUpdateRequestAndSave() async {
-        endpointClient = EndpointClient(configuration: .init(appId: currentApplicationId,
-                                                             uniqueDeviceId: currentEndpointId,
-                                                             isDebug: false,
-                                                             isOptOut: false),
-                                        pinpointClient: pinpointClient,
-                                        archiver: archiver,
-                                        currentDevice: device,
-                                        userDefaults: userDefaults,
-                                        keychain: keychain)
         keychain.resetCounters()
         await endpointClient.addAttributes(["value"], forKey: "attribute")
         await endpointClient.addMetric(1, forKey: "metric")
@@ -207,15 +171,6 @@ class EndpointClientTests: XCTestCase {
     }
 
     func testConvertToPublicEndpoint_shouldReturnPublicEndpoint() async {
-        endpointClient = EndpointClient(configuration: .init(appId: currentApplicationId,
-                                                             uniqueDeviceId: currentEndpointId,
-                                                             isDebug: false,
-                                                             isOptOut: false),
-                                        pinpointClient: pinpointClient,
-                                        archiver: archiver,
-                                        currentDevice: device,
-                                        userDefaults: userDefaults,
-                                        keychain: keychain)
         let endpointProfile = await endpointClient.currentEndpointProfile()
         let publicEndpoint = endpointClient.convertToPublicEndpoint(endpointProfile)
         let mockModel = MockDevice()

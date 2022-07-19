@@ -53,7 +53,7 @@ actor EndpointClient: EndpointClientBehaviour {
          archiver: AmplifyArchiverBehaviour = AmplifyArchiver(),
          currentDevice: Device = DeviceProvider.current,
          userDefaults: UserDefaultsBehaviour = UserDefaults.standard,
-         keychain: KeychainStoreBehavior = KeychainStore()
+         keychain: KeychainStoreBehavior = KeychainStore(service: PinpointContext.Constants.Keychain.service)
     ) {
         self.configuration = configuration
         self.pinpointClient = pinpointClient
@@ -62,13 +62,13 @@ actor EndpointClient: EndpointClientBehaviour {
         self.userDefaults = userDefaults
         self.keychain = keychain
 
-        EndpointClient.migrateLegacyKeyValueStore(userDefaults, keychain, archiver)
-        if let attributesData = try? keychain.getData(Constants.attributesKey),
+        Self.migrateStoredValues(from: userDefaults, to: keychain, using: archiver)
+        if let attributesData = Self.getStoredData(from: keychain, forKey: Constants.attributesKey, fallbackTo: userDefaults),
            let attributes = try? archiver.decode(GlobalAttributes.self, from: attributesData) {
             globalAttributes = attributes
         }
 
-        if let metricsData = try? keychain.getData(Constants.metricsKey),
+        if let metricsData = Self.getStoredData(from: keychain, forKey: Constants.metricsKey, fallbackTo: userDefaults),
            let metrics = try? archiver.decode(GlobalMetrics.self, from: metricsData) {
             globalMetrics = metrics
         }
@@ -148,10 +148,12 @@ actor EndpointClient: EndpointClientBehaviour {
         }
 
         // 2. Look for a valid PinpointEndpointProfile object stored in the Keychain. It needs to match the current applicationId, otherwise we'll discard it.
-        if let endpointProfileData = try? keychain.getData(Constants.endpointProfileKey),
-           let decodedEndpointProfile = try? archiver.decode(PinpointEndpointProfile.self, from: endpointProfileData),
+        if let endpointProfileData = Self.getStoredData(from: keychain, forKey: Constants.endpointProfileKey, fallbackTo: userDefaults),
+            let decodedEndpointProfile = try? archiver.decode(PinpointEndpointProfile.self, from: endpointProfileData),
            decodedEndpointProfile.applicationId == configuration.appId {
             return await configure(endpointProfile: decodedEndpointProfile)
+        } else {
+            try? keychain.remove(Constants.endpointProfileKey)
         }
 
         // Create a new PinpointEndpointProfile
@@ -161,7 +163,7 @@ actor EndpointClient: EndpointClientBehaviour {
 
     private func configure(endpointProfile: PinpointEndpointProfile) async -> PinpointEndpointProfile {
         var deviceToken: PinpointEndpointProfile.DeviceToken?
-        if let tokenData = try? keychain.getData(Constants.deviceTokenKey) {
+        if let tokenData = Self.getStoredData(from: keychain, forKey: Constants.deviceTokenKey, fallbackTo: userDefaults) {
             deviceToken = tokenData.asHexString()
         }
 
@@ -187,7 +189,7 @@ actor EndpointClient: EndpointClientBehaviour {
         do {
             let output = try await pinpointClient.updateEndpoint(input: input)
             if let encodedData = try? archiver.encode(endpointProfile) {
-                try keychain.set(encodedData, key: Constants.endpointProfileKey)
+                try? keychain.set(encodedData, key: Constants.endpointProfileKey)
             }
             self.endpointProfile = endpointProfile
             log.verbose("Endpoint Updated Successfully! \(output)")
@@ -245,7 +247,7 @@ actor EndpointClient: EndpointClientBehaviour {
         return endpointProfile.isOptOut ? EndpointClient.Constants.OptOut.all : EndpointClient.Constants.OptOut.none
     }
     
-    private static func migrateLegacyKeyValueStore(_ userDefaults: UserDefaultsBehaviour, _ keychain: KeychainStoreBehavior, _ archiver: AmplifyArchiverBehaviour) {
+    private static func migrateStoredValues(from userDefaults: UserDefaultsBehaviour, to keychain: KeychainStoreBehavior, using archiver: AmplifyArchiverBehaviour) {
         if let endpointProfileData = userDefaults.data(forKey: Constants.endpointProfileKey) {
             do {
                 try keychain.set(endpointProfileData, key: Constants.endpointProfileKey)
@@ -283,6 +285,18 @@ actor EndpointClient: EndpointClientBehaviour {
             } catch {
                 log.error("Unable to migrate Analytics key-value store for key \(Constants.metricsKey)")
             }
+        }
+    }
+    
+    private static func getStoredData(
+        from keychain: KeychainStoreBehavior,
+        forKey key: String,
+        fallbackTo defaultSource: UserDefaultsBehaviour
+    ) -> Data? {
+        if let data = try? keychain.getData(key) {
+            return data
+        } else {
+            return defaultSource.data(forKey: key)
         }
     }
 }
