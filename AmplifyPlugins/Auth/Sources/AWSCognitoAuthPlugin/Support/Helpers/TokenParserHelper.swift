@@ -11,7 +11,7 @@ struct TokenParserHelper {
 
     static func getAuthUser(accessToken: String) throws -> AWSAuthUser {
         let tokenSplit = accessToken.split(separator: ".")
-        guard accessToken.count > 2 else {
+        guard tokenSplit.count > 2 else {
             throw SignInError.hostedUI(.tokenParsing)
         }
         let base64 = tokenSplit[1]

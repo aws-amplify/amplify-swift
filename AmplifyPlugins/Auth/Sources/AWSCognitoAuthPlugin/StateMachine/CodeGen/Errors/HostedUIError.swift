@@ -11,6 +11,8 @@ enum HostedUIError: Error {
 
     case signInURI
 
+    case signOutURI
+
     case proofCalculation
 
     case codeValidation
@@ -18,6 +20,12 @@ enum HostedUIError: Error {
     case tokenParsing
 
     case serviceMessage(String)
+
+    case cancelled
+
+    case invalidContext
+
+    case unknown
 }
 
 extension HostedUIError: Equatable { }

@@ -111,6 +111,24 @@ extension HostedUIError: AuthErrorConvertible {
         case .tokenParsing:
             return .service("Token returned by service could not be parsed",
                             "Check if the the configuration provided are correct", nil)
+        case .cancelled:
+            return .service("Token returned by service could not be parsed",
+                            "Check if the the configuration provided are correct",
+                            AWSCognitoAuthError.userCancelled)
+        case .invalidContext:
+            return .service("",
+                            "",
+                            AWSCognitoAuthError.userCancelled)
+        case .unknown:
+            return .service("",
+                            "",
+                            AWSCognitoAuthError.userCancelled)
+
+        case .signOutURI:
+            return .service("",
+                            "",
+                            AWSCognitoAuthError.userCancelled)
+
         }
     }
 }
