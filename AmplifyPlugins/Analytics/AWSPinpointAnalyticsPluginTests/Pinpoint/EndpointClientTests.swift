@@ -64,7 +64,7 @@ class EndpointClientTests: XCTestCase {
 
         let endpointProfile = await endpointClient.currentEndpointProfile()
 
-        XCTAssertEqual(userDefaults.dataForKeyCount, 4)
+        XCTAssertEqual(userDefaults.dataForKeyCount, 2)
         XCTAssertEqual(userDefaults.dataForKeyCountMap[EndpointClient.Constants.endpointProfileKey], 1)
         XCTAssertEqual(userDefaults.dataForKeyCountMap[EndpointClient.Constants.deviceTokenKey], 1)
         XCTAssertEqual(keychain.dataValues.count, 2)

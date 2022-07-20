@@ -63,13 +63,11 @@ actor EndpointClient: EndpointClientBehaviour {
         self.keychain = keychain
 
         Self.migrateStoredValues(from: userDefaults, to: keychain, using: archiver)
-        if let attributesData = Self.getStoredData(from: keychain, forKey: Constants.attributesKey, fallbackTo: userDefaults),
-           let attributes = try? archiver.decode(GlobalAttributes.self, from: attributesData) {
+        if let attributes = Self.getStoredAttributes(from: keychain, fallbackTo: userDefaults, using: archiver) {
             globalAttributes = attributes
         }
 
-        if let metricsData = Self.getStoredData(from: keychain, forKey: Constants.metricsKey, fallbackTo: userDefaults),
-           let metrics = try? archiver.decode(GlobalMetrics.self, from: metricsData) {
+        if let metrics = Self.getStoredMetrics(from: keychain, fallbackTo: userDefaults, using: archiver) {
             globalMetrics = metrics
         }
     }
@@ -298,6 +296,30 @@ actor EndpointClient: EndpointClientBehaviour {
         } else {
             return defaultSource.data(forKey: key)
         }
+    }
+    
+    private static func getStoredAttributes(
+        from keychain: KeychainStoreBehavior,
+        fallbackTo defaultSource: UserDefaultsBehaviour,
+        using archiver: AmplifyArchiverBehaviour
+    ) -> GlobalAttributes? {
+        guard let data = try? keychain.getData(Constants.attributesKey) else {
+            return defaultSource.object(forKey: Constants.attributesKey) as? GlobalAttributes
+        }
+        
+        return try? archiver.decode(GlobalAttributes.self, from: data)
+    }
+    
+    private static func getStoredMetrics(
+        from keychain: KeychainStoreBehavior,
+        fallbackTo defaultSource: UserDefaultsBehaviour,
+        using archiver: AmplifyArchiverBehaviour
+    ) -> GlobalMetrics? {
+        guard let data = try? keychain.getData(Constants.metricsKey) else {
+            return defaultSource.object(forKey: Constants.metricsKey) as? GlobalMetrics
+        }
+        
+        return try? archiver.decode(GlobalMetrics.self, from: data)
     }
 }
 
