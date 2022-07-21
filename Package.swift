@@ -109,7 +109,7 @@ let apiTargets: [Target] = [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
             .product(name: "AppSyncRealTimeClient", package: "AppSyncRealTimeClient")],
-        path: "AmplifyPlugins/API/AWSAPICategoryPlugin",
+        path: "AmplifyPlugins/API/Sources/AWSAPIPlugin",
         exclude: [
             "Info.plist",
             "AWSAPIPlugin.md"
@@ -123,47 +123,8 @@ let apiTargets: [Target] = [
             "AmplifyTestCommon",
             "AWSPluginsTestCommon"
         ],
-        path: "AmplifyPlugins/API/AWSAPICategoryPluginTests",
+        path: "AmplifyPlugins/API/Tests/AWSAPIPluginTests",
         exclude: [
-            "Info.plist"
-        ]
-    ),
-    .testTarget(
-        name: "AWSAPICategoryPluginFunctionalTests",
-        dependencies: [
-            "AWSAPIPlugin",
-            "AmplifyTestCommon"
-        ],
-        path: "AmplifyPlugins/API/AWSAPICategoryPluginFunctionalTests",
-        exclude: [
-            "Info.plist",
-            "GraphQLModelBased/README.md",
-            "GraphQLSyncBased/README.md"
-        ]
-    ),
-    .testTarget(
-        name: "GraphQLWithIAMIntegrationTests",
-        dependencies: [
-            "AWSAPIPlugin",
-            "AWSCognitoAuthPlugin",
-            "AmplifyTestCommon"
-        ],
-        path: "AmplifyPlugins/API/AWSAPICategoryPluginIntegrationTests/GraphQL/GraphQLWithIAMIntegrationTests/",
-        exclude: [
-            "README.md",
-            "Info.plist"
-        ]
-    ),
-    .testTarget(
-        name: "RESTWithIAMIntegrationTests",
-        dependencies: [
-            "AWSAPIPlugin",
-            "AWSCognitoAuthPlugin",
-            "AmplifyTestCommon"
-        ],
-        path: "AmplifyPlugins/API/AWSAPICategoryPluginIntegrationTests/REST/RESTWithIAMIntegrationTests/",
-        exclude: [
-            "README.md",
             "Info.plist"
         ]
     )
@@ -407,7 +368,6 @@ let package = Package(
             name: "AWSPinpointAnalyticsPlugin",
             targets: ["AWSPinpointAnalyticsPlugin"]
         )
-
     ],
     dependencies: dependencies,
     targets: targets
