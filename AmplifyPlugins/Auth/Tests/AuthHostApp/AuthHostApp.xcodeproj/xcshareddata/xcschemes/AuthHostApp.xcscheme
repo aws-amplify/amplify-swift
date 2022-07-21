@@ -47,6 +47,9 @@
                <Test
                   Identifier = "AuthCustomSignInTests/testSuccessfulSignInWithCustomAuthSRP()">
                </Test>
+               <Test
+                  Identifier = "AuthSRPSignInTests/testNewPasswordRequired()">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>
