@@ -109,7 +109,7 @@ let apiTargets: [Target] = [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
             .product(name: "AppSyncRealTimeClient", package: "AppSyncRealTimeClient")],
-        path: "AmplifyPlugins/API/AWSAPICategoryPlugin",
+        path: "AmplifyPlugins/API/Sources/AWSAPICategoryPlugin",
         exclude: [
             "Info.plist",
             "AWSAPIPlugin.md"
@@ -123,7 +123,7 @@ let apiTargets: [Target] = [
             "AmplifyTestCommon",
             "AWSPluginsTestCommon"
         ],
-        path: "AmplifyPlugins/API/AWSAPICategoryPluginTests",
+        path: "AmplifyPlugins/API/Tests/AWSAPICategoryPluginTests",
         exclude: [
             "Info.plist"
         ]
@@ -134,7 +134,7 @@ let apiTargets: [Target] = [
             "AWSAPIPlugin",
             "AmplifyTestCommon"
         ],
-        path: "AmplifyPlugins/API/AWSAPICategoryPluginFunctionalTests",
+        path: "AmplifyPlugins/API/Tests/AWSAPICategoryPluginFunctionalTests",
         exclude: [
             "Info.plist",
             "GraphQLModelBased/README.md",
@@ -148,7 +148,7 @@ let apiTargets: [Target] = [
             "AWSCognitoAuthPlugin",
             "AmplifyTestCommon"
         ],
-        path: "AmplifyPlugins/API/AWSAPICategoryPluginIntegrationTests/GraphQL/GraphQLWithIAMIntegrationTests/",
+        path: "AmplifyPlugins/API/Tests/AWSAPICategoryPluginIntegrationTests/GraphQL/GraphQLWithIAMIntegrationTests/",
         exclude: [
             "README.md",
             "Info.plist"
@@ -161,7 +161,7 @@ let apiTargets: [Target] = [
             "AWSCognitoAuthPlugin",
             "AmplifyTestCommon"
         ],
-        path: "AmplifyPlugins/API/AWSAPICategoryPluginIntegrationTests/REST/RESTWithIAMIntegrationTests/",
+        path: "AmplifyPlugins/API/Tests/AWSAPICategoryPluginIntegrationTests/REST/RESTWithIAMIntegrationTests/",
         exclude: [
             "README.md",
             "Info.plist"
