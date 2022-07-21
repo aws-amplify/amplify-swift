@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import AWSPluginsCore
 @testable import AWSAPIPlugin
 @testable import Amplify
 @testable import APIHostApp

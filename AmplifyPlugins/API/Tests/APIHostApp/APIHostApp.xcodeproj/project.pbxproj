@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		21698AA328899921004BD994 /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698A9F28899921004BD994 /* Todo.swift */; };
-		21698AA428899921004BD994 /* AnyModelIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AA028899921004BD994 /* AnyModelIntegrationTests.swift */; };
 		21698AB72889996A004BD994 /* GraphQLConnectionScenario1Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AA82889996A004BD994 /* GraphQLConnectionScenario1Tests.swift */; };
 		21698AB92889996A004BD994 /* GraphQLConnectionScenario3Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AAA2889996A004BD994 /* GraphQLConnectionScenario3Tests.swift */; };
 		21698ABA2889996A004BD994 /* GraphQLScalarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AAB2889996A004BD994 /* GraphQLScalarTests.swift */; };
@@ -23,8 +22,6 @@
 		21698AC32889996A004BD994 /* GraphQLModelBasedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AB42889996A004BD994 /* GraphQLModelBasedTests.swift */; };
 		21698AC42889996A004BD994 /* GraphQLConnectionScenario5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AB52889996A004BD994 /* GraphQLConnectionScenario5Tests.swift */; };
 		21698AC52889996A004BD994 /* GraphQLConnectionScenario2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AB62889996A004BD994 /* GraphQLConnectionScenario2Tests.swift */; };
-		21698ACA288999AE004BD994 /* GraphQLSyncBasedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AC7288999AE004BD994 /* GraphQLSyncBasedTests.swift */; };
-		21698ACC288999AE004BD994 /* GraphQLSyncCustomPrimaryKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AC9288999AE004BD994 /* GraphQLSyncCustomPrimaryKeyTests.swift */; };
 		21698BA628899B3F004BD994 /* GraphQLWithLambdaAuthIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BA328899B3F004BD994 /* GraphQLWithLambdaAuthIntegrationTests.swift */; };
 		21698BB328899B61004BD994 /* GraphQLWithIAMIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BAF28899B61004BD994 /* GraphQLWithIAMIntegrationTests.swift */; };
 		21698BB628899B61004BD994 /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BB228899B61004BD994 /* Todo.swift */; };
@@ -32,7 +29,6 @@
 		21698BCA28899BC8004BD994 /* RESTWithIAMIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BC728899BC8004BD994 /* RESTWithIAMIntegrationTests.swift */; };
 		21698BD128899BCF004BD994 /* RESTWithUserPoolIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BCE28899BCF004BD994 /* RESTWithUserPoolIntegrationTests.swift */; };
 		21698BD428899BFD004BD994 /* AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BD328899BFC004BD994 /* AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests.swift */; };
-		21698BD928899EBB004BD994 /* AWSPluginsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 21698BD828899EBB004BD994 /* AWSPluginsCore */; };
 		21698BDB28899ED5004BD994 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 21698BDA28899ED5004BD994 /* Amplify */; };
 		21698BDD28899ED5004BD994 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 21698BDC28899ED5004BD994 /* AWSAPIPlugin */; };
 		21698BF02889A163004BD994 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 21698BEF2889A163004BD994 /* AWSCognitoAuthPlugin */; };
@@ -169,7 +165,6 @@
 		21698A882889980F004BD994 /* AWSAPIPluginGraphQLAPIKeyIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginGraphQLAPIKeyIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		21698A9528899818004BD994 /* AWSAPIPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		21698A9F28899921004BD994 /* Todo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Todo.swift; sourceTree = "<group>"; };
-		21698AA028899921004BD994 /* AnyModelIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyModelIntegrationTests.swift; sourceTree = "<group>"; };
 		21698AA82889996A004BD994 /* GraphQLConnectionScenario1Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLConnectionScenario1Tests.swift; sourceTree = "<group>"; };
 		21698AA92889996A004BD994 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		21698AAA2889996A004BD994 /* GraphQLConnectionScenario3Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLConnectionScenario3Tests.swift; sourceTree = "<group>"; };
@@ -185,9 +180,6 @@
 		21698AB42889996A004BD994 /* GraphQLModelBasedTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLModelBasedTests.swift; sourceTree = "<group>"; };
 		21698AB52889996A004BD994 /* GraphQLConnectionScenario5Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLConnectionScenario5Tests.swift; sourceTree = "<group>"; };
 		21698AB62889996A004BD994 /* GraphQLConnectionScenario2Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLConnectionScenario2Tests.swift; sourceTree = "<group>"; };
-		21698AC7288999AE004BD994 /* GraphQLSyncBasedTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLSyncBasedTests.swift; sourceTree = "<group>"; };
-		21698AC8288999AE004BD994 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		21698AC9288999AE004BD994 /* GraphQLSyncCustomPrimaryKeyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLSyncCustomPrimaryKeyTests.swift; sourceTree = "<group>"; };
 		21698BA228899B3F004BD994 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		21698BA328899B3F004BD994 /* GraphQLWithLambdaAuthIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLWithLambdaAuthIntegrationTests.swift; sourceTree = "<group>"; };
 		21698BAF28899B61004BD994 /* GraphQLWithIAMIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLWithIAMIntegrationTests.swift; sourceTree = "<group>"; };
@@ -320,7 +312,6 @@
 			files = (
 				21698BDD28899ED5004BD994 /* AWSAPIPlugin in Frameworks */,
 				21698BF02889A163004BD994 /* AWSCognitoAuthPlugin in Frameworks */,
-				21698BD928899EBB004BD994 /* AWSPluginsCore in Frameworks */,
 				21698CC02889D5A9004BD994 /* CwlPreconditionTesting in Frameworks */,
 				21698BDB28899ED5004BD994 /* Amplify in Frameworks */,
 			);
@@ -332,9 +323,7 @@
 		21698A7C28899805004BD994 /* AWSAPIPluginFunctionalTests */ = {
 			isa = PBXGroup;
 			children = (
-				21698AC628899978004BD994 /* GraphQLSyncBased */,
 				21698AA728899942004BD994 /* GraphQLModelBased */,
-				21698AA028899921004BD994 /* AnyModelIntegrationTests.swift */,
 				21698A9F28899921004BD994 /* Todo.swift */,
 			);
 			path = AWSAPIPluginFunctionalTests;
@@ -377,16 +366,6 @@
 				21698AA92889996A004BD994 /* README.md */,
 			);
 			path = GraphQLModelBased;
-			sourceTree = "<group>";
-		};
-		21698AC628899978004BD994 /* GraphQLSyncBased */ = {
-			isa = PBXGroup;
-			children = (
-				21698AC7288999AE004BD994 /* GraphQLSyncBasedTests.swift */,
-				21698AC9288999AE004BD994 /* GraphQLSyncCustomPrimaryKeyTests.swift */,
-				21698AC8288999AE004BD994 /* README.md */,
-			);
-			path = GraphQLSyncBased;
 			sourceTree = "<group>";
 		};
 		21698B9528899AE3004BD994 /* GraphQL */ = {
@@ -758,7 +737,6 @@
 			);
 			name = APIHostApp;
 			packageProductDependencies = (
-				21698BD828899EBB004BD994 /* AWSPluginsCore */,
 				21698BDA28899ED5004BD994 /* Amplify */,
 				21698BDC28899ED5004BD994 /* AWSAPIPlugin */,
 				21698BEF2889A163004BD994 /* AWSCognitoAuthPlugin */,
@@ -887,9 +865,7 @@
 				21698AA328899921004BD994 /* Todo.swift in Sources */,
 				21698AB92889996A004BD994 /* GraphQLConnectionScenario3Tests.swift in Sources */,
 				21698ABE2889996A004BD994 /* GraphQLTestBase.swift in Sources */,
-				21698ACC288999AE004BD994 /* GraphQLSyncCustomPrimaryKeyTests.swift in Sources */,
 				21698AC22889996A004BD994 /* GraphQLConnectionScenario4Tests.swift in Sources */,
-				21698AA428899921004BD994 /* AnyModelIntegrationTests.swift in Sources */,
 				21698AC52889996A004BD994 /* GraphQLConnectionScenario2Tests.swift in Sources */,
 				21698CD02889E126004BD994 /* TestConfigHelper.swift in Sources */,
 				21698ABD2889996A004BD994 /* GraphQLConnectionScenario6Tests.swift in Sources */,
@@ -897,7 +873,6 @@
 				21698AC12889996A004BD994 /* GraphQLConnectionScenario3Tests+Subscribe.swift in Sources */,
 				21698ABA2889996A004BD994 /* GraphQLScalarTests.swift in Sources */,
 				21698AB72889996A004BD994 /* GraphQLConnectionScenario1Tests.swift in Sources */,
-				21698ACA288999AE004BD994 /* GraphQLSyncBasedTests.swift in Sources */,
 				21698ABB2889996A004BD994 /* GraphQLModelBasedTests+List.swift in Sources */,
 				21698AC42889996A004BD994 /* GraphQLConnectionScenario5Tests.swift in Sources */,
 			);
@@ -1409,10 +1384,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		21698BD828899EBB004BD994 /* AWSPluginsCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSPluginsCore;
-		};
 		21698BDA28899ED5004BD994 /* Amplify */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Amplify;

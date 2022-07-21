@@ -367,12 +367,7 @@ let package = Package(
         .library(
             name: "AWSPinpointAnalyticsPlugin",
             targets: ["AWSPinpointAnalyticsPlugin"]
-        ),
-        .library(
-            name: "AWSPluginsCore",
-            targets: ["AWSPluginsCore"]
-        ),
-
+        )
     ],
     dependencies: dependencies,
     targets: targets

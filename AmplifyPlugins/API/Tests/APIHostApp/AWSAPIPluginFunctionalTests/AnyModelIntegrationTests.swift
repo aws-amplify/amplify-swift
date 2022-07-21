@@ -10,7 +10,6 @@ import Foundation
 import AWSAPIPlugin
 @testable import APIHostApp
 @testable import Amplify
-import AWSPluginsCore
 
 class AnyModelIntegrationTests: XCTestCase {
     let networkTimeout: TimeInterval = 180.0
