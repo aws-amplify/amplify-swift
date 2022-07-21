@@ -143,4 +143,51 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
         wait(for: [signInExpectation, sessionExpiredExpectation], timeout: networkTimeout, enforceOrder: true)
     }
 
+    /// Test hub event for successful deletion of a valid user
+    ///
+    /// - Given: A user registered in Cognito user pool
+    /// - When:
+    ///    - I invoke Amplify.Auth.deleteUser
+    /// - Then:
+    ///    - I should get successful deleteUser flow event
+    ///
+    func testSuccessfulDeletedUserEvent() {
+
+        let username = "integTest\(UUID().uuidString)"
+        let password = "P123@\(UUID().uuidString)"
+
+        let signInExpectation = expectation(description: "SignIn operation should complete")
+        let deletedUserExpectation = expectation(description: "UserDeleted event should be fired")
+
+        unsubscribeToken = Amplify.Hub.listen(to: .auth) { payload in
+            switch payload.eventName {
+            case HubPayload.EventName.Auth.signedIn:
+                signInExpectation.fulfill()
+            case HubPayload.EventName.Auth.userDeleted:
+                deletedUserExpectation.fulfill()
+            default:
+                break
+            }
+        }
+
+        AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail) { _, error in
+                if let unwrappedError = error {
+                    XCTFail("Unable to sign in with error: \(unwrappedError)")
+                }
+            }
+        wait(for: [signInExpectation], timeout: networkTimeout)
+
+        _ = Amplify.Auth.deleteUser { result in
+            switch result {
+            case .success:
+                print("Success deleteUser")
+            case .failure(let error):
+                XCTFail("deleteUser should not fail - \(error)")
+            }
+        }
+        wait(for: [deletedUserExpectation], timeout: networkTimeout)
+    }
 }
