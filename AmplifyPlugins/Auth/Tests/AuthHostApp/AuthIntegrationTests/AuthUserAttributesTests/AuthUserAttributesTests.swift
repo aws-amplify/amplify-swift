@@ -134,7 +134,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
     func testSuccessfulUpdateOfMultipleAttributes() throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        let updatedEmail = "\(username)@amazon.com"
+        let updatedFamilyName = "\(username)@amazon.com"
         let updatedName = "Name\(UUID().uuidString)"
 
         let signInExpectation = expectation(description: "SignIn operation should complete")
@@ -150,7 +150,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         let pluginOptions = AWSUpdateUserAttributesOptions(metadata: ["mydata": "myvalue"])
         let options = AuthUpdateUserAttributesRequest.Options(pluginOptions: pluginOptions)
         let attributes = [
-            AuthUserAttribute(.email, value: updatedEmail),
+            AuthUserAttribute(.familyName, value: updatedFamilyName),
             AuthUserAttribute(.name, value: updatedName)
         ]
         _ = Amplify.Auth.update(
@@ -169,8 +169,8 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         _ = Amplify.Auth.fetchUserAttributes(listener: { result in
             switch result {
             case .success(let attributes):
-                if let emailAttribute = attributes.filter({ $0.key == .email }).first {
-                    XCTAssertEqual(emailAttribute.value, updatedEmail)
+                if let emailAttribute = attributes.filter({ $0.key == .familyName }).first {
+                    XCTAssertEqual(emailAttribute.value, updatedFamilyName)
                 } else {
                     XCTFail("Email attribute not found")
                 }

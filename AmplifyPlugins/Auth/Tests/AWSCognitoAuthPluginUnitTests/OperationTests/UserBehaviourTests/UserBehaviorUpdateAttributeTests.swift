@@ -47,32 +47,26 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
-    /// Test a updateUserAttributes call with invalid result
+    /// Test a updateUserAttributes call with empty code delivery result
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a invalid response
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock an empty response
     /// - When:
     ///    - I invoke updateUserAttributes with AuthUserAttribute
     /// - Then:
-    ///    - I should get an .unknown error
+    ///    - I should NOT get an error
     ///
-    func testUpdateUserAttributesWithInvalidResult() {
+    func testUpdateUserAttributesWithEmptyResult() {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
             UpdateUserAttributesOutputResponse()
         })
         let resultExpectation = expectation(description: "Should receive a result")
         _ = plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com")) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
             switch result {
             case .success:
-                XCTFail("Should return an error if the result from service is invalid")
+                resultExpectation.fulfill()
             case .failure(let error):
-                guard case .unknown = error else {
-                    XCTFail("Should produce an unknown error")
-                    return
-                }
+                XCTFail("Should not product any error")
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
