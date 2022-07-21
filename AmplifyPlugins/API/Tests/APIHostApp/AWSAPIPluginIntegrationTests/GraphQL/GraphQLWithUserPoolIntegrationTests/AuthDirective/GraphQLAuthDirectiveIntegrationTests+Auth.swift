@@ -7,10 +7,10 @@
 
 import XCTest
 import AWSPluginsCore
-import AWSAPICategoryPlugin
+import AWSAPIPlugin
 
 @testable import Amplify
-@testable import AWSAPICategoryPluginTestCommon
+// @testable import AWSAPICategoryPluginTestCommon
 @testable import APIHostApp
 
 extension GraphQLAuthDirectiveIntegrationTests {

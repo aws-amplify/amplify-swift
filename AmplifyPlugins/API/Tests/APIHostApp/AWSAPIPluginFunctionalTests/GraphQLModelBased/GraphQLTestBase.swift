@@ -7,6 +7,7 @@
 
 import XCTest
 import Amplify
+@testable import APIHostApp
 
 class GraphQLTestBase: XCTestCase {
     func mutateModel<M: Model>(request: GraphQLRequest<M>) -> Result<M, Error> {

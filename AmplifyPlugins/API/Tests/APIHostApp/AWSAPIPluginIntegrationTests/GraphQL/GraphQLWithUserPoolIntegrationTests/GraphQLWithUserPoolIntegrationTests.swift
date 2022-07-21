@@ -7,10 +7,10 @@
 
 import XCTest
 import Foundation
-import AWSAPICategoryPlugin
+import AWSAPIPlugin
 
 @testable import Amplify
-@testable import AWSAPICategoryPluginTestCommon
+// @testable import AWSAPICategoryPluginTestCommon
 @testable import APIHostApp
 
 // swiftlint:disable type_body_length

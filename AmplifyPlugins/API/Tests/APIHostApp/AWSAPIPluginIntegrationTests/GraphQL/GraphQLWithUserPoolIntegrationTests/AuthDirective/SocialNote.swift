@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import Foundation
 
 public struct SocialNote: Model {
   public let id: String

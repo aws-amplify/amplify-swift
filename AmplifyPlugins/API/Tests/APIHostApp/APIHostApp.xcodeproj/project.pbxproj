@@ -25,27 +25,13 @@
 		21698AC52889996A004BD994 /* GraphQLConnectionScenario2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AB62889996A004BD994 /* GraphQLConnectionScenario2Tests.swift */; };
 		21698ACA288999AE004BD994 /* GraphQLSyncBasedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AC7288999AE004BD994 /* GraphQLSyncBasedTests.swift */; };
 		21698ACC288999AE004BD994 /* GraphQLSyncCustomPrimaryKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AC9288999AE004BD994 /* GraphQLSyncCustomPrimaryKeyTests.swift */; };
-		21698BA428899B3F004BD994 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 21698BA128899B3F004BD994 /* Info.plist */; };
-		21698BA528899B3F004BD994 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 21698BA228899B3F004BD994 /* README.md */; };
 		21698BA628899B3F004BD994 /* GraphQLWithLambdaAuthIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BA328899B3F004BD994 /* GraphQLWithLambdaAuthIntegrationTests.swift */; };
 		21698BB328899B61004BD994 /* GraphQLWithIAMIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BAF28899B61004BD994 /* GraphQLWithIAMIntegrationTests.swift */; };
-		21698BB428899B61004BD994 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 21698BB028899B61004BD994 /* README.md */; };
-		21698BB528899B61004BD994 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 21698BB128899B61004BD994 /* Info.plist */; };
 		21698BB628899B61004BD994 /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BB228899B61004BD994 /* Todo.swift */; };
-		21698BBA28899B65004BD994 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 21698BB728899B65004BD994 /* Info.plist */; };
-		21698BBB28899B66004BD994 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 21698BB828899B65004BD994 /* README.md */; };
-		21698BBC28899B66004BD994 /* GraphQLWithLambdaAuthIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BB928899B65004BD994 /* GraphQLWithLambdaAuthIntegrationTests.swift */; };
 		21698BC028899B6D004BD994 /* GraphQLWithUserPoolIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BBD28899B6D004BD994 /* GraphQLWithUserPoolIntegrationTests.swift */; };
-		21698BC128899B6D004BD994 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 21698BBE28899B6D004BD994 /* README.md */; };
-		21698BC228899B6D004BD994 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 21698BBF28899B6D004BD994 /* Info.plist */; };
 		21698BCA28899BC8004BD994 /* RESTWithIAMIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BC728899BC8004BD994 /* RESTWithIAMIntegrationTests.swift */; };
-		21698BCB28899BC8004BD994 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 21698BC828899BC8004BD994 /* Info.plist */; };
-		21698BCC28899BC8004BD994 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 21698BC928899BC8004BD994 /* README.md */; };
-		21698BD028899BCF004BD994 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 21698BCD28899BCF004BD994 /* README.md */; };
 		21698BD128899BCF004BD994 /* RESTWithUserPoolIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BCE28899BCF004BD994 /* RESTWithUserPoolIntegrationTests.swift */; };
-		21698BD228899BCF004BD994 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 21698BCF28899BCF004BD994 /* Info.plist */; };
 		21698BD428899BFD004BD994 /* AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BD328899BFC004BD994 /* AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests.swift */; };
-		21698BD628899C04004BD994 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 21698BD528899C04004BD994 /* Info.plist */; };
 		21698BD928899EBB004BD994 /* AWSPluginsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 21698BD828899EBB004BD994 /* AWSPluginsCore */; };
 		21698BDB28899ED5004BD994 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 21698BDA28899ED5004BD994 /* Amplify */; };
 		21698BDD28899ED5004BD994 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 21698BDC28899ED5004BD994 /* AWSAPIPlugin */; };
@@ -111,9 +97,29 @@
 		21698C942889CFC0004BD994 /* Project1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698C902889CFC0004BD994 /* Project1.swift */; };
 		21698C952889CFC0004BD994 /* Team1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698C912889CFC0004BD994 /* Team1.swift */; };
 		21698C9C2889D0FB004BD994 /* HubListenerTestUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698C972889D0FB004BD994 /* HubListenerTestUtilities.swift */; };
-		21698C9E2889D0FB004BD994 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698C992889D0FB004BD994 /* TestConfigHelper.swift */; };
 		21698C9F2889D0FB004BD994 /* AuthSignInHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698C9A2889D0FB004BD994 /* AuthSignInHelper.swift */; };
 		21698CA02889D0FB004BD994 /* TypeRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698C9B2889D0FB004BD994 /* TypeRegistry.swift */; };
+		21698CB02889D50D004BD994 /* ListStringContainer+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CA22889D50C004BD994 /* ListStringContainer+Schema.swift */; };
+		21698CB12889D50D004BD994 /* ScalarContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CA32889D50C004BD994 /* ScalarContainer.swift */; };
+		21698CB22889D50D004BD994 /* Nested+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CA42889D50C004BD994 /* Nested+Schema.swift */; };
+		21698CB32889D50D004BD994 /* ListIntContainer+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CA52889D50C004BD994 /* ListIntContainer+Schema.swift */; };
+		21698CB42889D50D004BD994 /* ScalarContainer+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CA62889D50C004BD994 /* ScalarContainer+Schema.swift */; };
+		21698CB52889D50D004BD994 /* EnumTestModel+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CA72889D50C004BD994 /* EnumTestModel+Schema.swift */; };
+		21698CB62889D50D004BD994 /* ListIntContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CA82889D50C004BD994 /* ListIntContainer.swift */; };
+		21698CB72889D50D004BD994 /* NestedTypeTestModel+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CA92889D50C004BD994 /* NestedTypeTestModel+Schema.swift */; };
+		21698CB82889D50D004BD994 /* ListStringContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CAA2889D50C004BD994 /* ListStringContainer.swift */; };
+		21698CB92889D50D004BD994 /* TestEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CAB2889D50C004BD994 /* TestEnum.swift */; };
+		21698CBA2889D50D004BD994 /* Nested.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CAC2889D50C004BD994 /* Nested.swift */; };
+		21698CBB2889D50D004BD994 /* NestedTypeTestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CAD2889D50C004BD994 /* NestedTypeTestModel.swift */; };
+		21698CBC2889D50D004BD994 /* Scalar+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CAE2889D50D004BD994 /* Scalar+Equatable.swift */; };
+		21698CBD2889D50D004BD994 /* EnumTestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CAF2889D50D004BD994 /* EnumTestModel.swift */; };
+		21698CC02889D5A9004BD994 /* CwlPreconditionTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 21698CBF2889D5A9004BD994 /* CwlPreconditionTesting */; };
+		21698CC72889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CC22889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift */; };
+		21698CC92889D75F004BD994 /* SocialNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CC42889D75F004BD994 /* SocialNote.swift */; };
+		21698CCB2889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CC62889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift */; };
+		21698CD02889E126004BD994 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698C992889D0FB004BD994 /* TestConfigHelper.swift */; };
+		21698CD12889E201004BD994 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698C992889D0FB004BD994 /* TestConfigHelper.swift */; };
+		21698CD22889E202004BD994 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698C992889D0FB004BD994 /* TestConfigHelper.swift */; };
 		21E73E6F28898D7900D7DB7E /* APIHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E73E6E28898D7900D7DB7E /* APIHostAppApp.swift */; };
 		21E73E7128898D7900D7DB7E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E73E7028898D7900D7DB7E /* ContentView.swift */; };
 		21E73E7328898D7A00D7DB7E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21E73E7228898D7A00D7DB7E /* Assets.xcassets */; };
@@ -182,27 +188,18 @@
 		21698AC7288999AE004BD994 /* GraphQLSyncBasedTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLSyncBasedTests.swift; sourceTree = "<group>"; };
 		21698AC8288999AE004BD994 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		21698AC9288999AE004BD994 /* GraphQLSyncCustomPrimaryKeyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLSyncCustomPrimaryKeyTests.swift; sourceTree = "<group>"; };
-		21698BA128899B3F004BD994 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		21698BA228899B3F004BD994 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		21698BA328899B3F004BD994 /* GraphQLWithLambdaAuthIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLWithLambdaAuthIntegrationTests.swift; sourceTree = "<group>"; };
 		21698BAF28899B61004BD994 /* GraphQLWithIAMIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLWithIAMIntegrationTests.swift; sourceTree = "<group>"; };
 		21698BB028899B61004BD994 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		21698BB128899B61004BD994 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		21698BB228899B61004BD994 /* Todo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Todo.swift; sourceTree = "<group>"; };
-		21698BB728899B65004BD994 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		21698BB828899B65004BD994 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		21698BB928899B65004BD994 /* GraphQLWithLambdaAuthIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLWithLambdaAuthIntegrationTests.swift; sourceTree = "<group>"; };
 		21698BBD28899B6D004BD994 /* GraphQLWithUserPoolIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLWithUserPoolIntegrationTests.swift; sourceTree = "<group>"; };
 		21698BBE28899B6D004BD994 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		21698BBF28899B6D004BD994 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		21698BC728899BC8004BD994 /* RESTWithIAMIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RESTWithIAMIntegrationTests.swift; sourceTree = "<group>"; };
-		21698BC828899BC8004BD994 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		21698BC928899BC8004BD994 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		21698BCD28899BCF004BD994 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		21698BCE28899BCF004BD994 /* RESTWithUserPoolIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RESTWithUserPoolIntegrationTests.swift; sourceTree = "<group>"; };
-		21698BCF28899BCF004BD994 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		21698BD328899BFC004BD994 /* AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests.swift; sourceTree = "<group>"; };
-		21698BD528899C04004BD994 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		21698C062889B173004BD994 /* TestExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TestExtensions.swift; path = ../../../../../AmplifyTestCommon/TestExtensions.swift; sourceTree = "<group>"; };
 		21698C072889B173004BD994 /* TestCommonConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TestCommonConstants.swift; path = ../../../../../AmplifyTestCommon/TestCommonConstants.swift; sourceTree = "<group>"; };
 		21698C0B2889B1AD004BD994 /* PostStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostStatus.swift; path = ../../../../../../AmplifyTestCommon/Models/PostStatus.swift; sourceTree = "<group>"; };
@@ -269,6 +266,25 @@
 		21698C992889D0FB004BD994 /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TestConfigHelper.swift; path = ../../../../../../AmplifyTestCommon/Helpers/TestConfigHelper.swift; sourceTree = "<group>"; };
 		21698C9A2889D0FB004BD994 /* AuthSignInHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AuthSignInHelper.swift; path = ../../../../../../AmplifyTestCommon/Helpers/AuthSignInHelper.swift; sourceTree = "<group>"; };
 		21698C9B2889D0FB004BD994 /* TypeRegistry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TypeRegistry.swift; path = ../../../../../../AmplifyTestCommon/Helpers/TypeRegistry.swift; sourceTree = "<group>"; };
+		21698CA22889D50C004BD994 /* ListStringContainer+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "ListStringContainer+Schema.swift"; path = "../../../../../../../AmplifyTestCommon/Models/Scalar/ListStringContainer+Schema.swift"; sourceTree = "<group>"; };
+		21698CA32889D50C004BD994 /* ScalarContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ScalarContainer.swift; path = ../../../../../../../AmplifyTestCommon/Models/Scalar/ScalarContainer.swift; sourceTree = "<group>"; };
+		21698CA42889D50C004BD994 /* Nested+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Nested+Schema.swift"; path = "../../../../../../../AmplifyTestCommon/Models/Scalar/Nested+Schema.swift"; sourceTree = "<group>"; };
+		21698CA52889D50C004BD994 /* ListIntContainer+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "ListIntContainer+Schema.swift"; path = "../../../../../../../AmplifyTestCommon/Models/Scalar/ListIntContainer+Schema.swift"; sourceTree = "<group>"; };
+		21698CA62889D50C004BD994 /* ScalarContainer+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "ScalarContainer+Schema.swift"; path = "../../../../../../../AmplifyTestCommon/Models/Scalar/ScalarContainer+Schema.swift"; sourceTree = "<group>"; };
+		21698CA72889D50C004BD994 /* EnumTestModel+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "EnumTestModel+Schema.swift"; path = "../../../../../../../AmplifyTestCommon/Models/Scalar/EnumTestModel+Schema.swift"; sourceTree = "<group>"; };
+		21698CA82889D50C004BD994 /* ListIntContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ListIntContainer.swift; path = ../../../../../../../AmplifyTestCommon/Models/Scalar/ListIntContainer.swift; sourceTree = "<group>"; };
+		21698CA92889D50C004BD994 /* NestedTypeTestModel+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NestedTypeTestModel+Schema.swift"; path = "../../../../../../../AmplifyTestCommon/Models/Scalar/NestedTypeTestModel+Schema.swift"; sourceTree = "<group>"; };
+		21698CAA2889D50C004BD994 /* ListStringContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ListStringContainer.swift; path = ../../../../../../../AmplifyTestCommon/Models/Scalar/ListStringContainer.swift; sourceTree = "<group>"; };
+		21698CAB2889D50C004BD994 /* TestEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TestEnum.swift; path = ../../../../../../../AmplifyTestCommon/Models/Scalar/TestEnum.swift; sourceTree = "<group>"; };
+		21698CAC2889D50C004BD994 /* Nested.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Nested.swift; path = ../../../../../../../AmplifyTestCommon/Models/Scalar/Nested.swift; sourceTree = "<group>"; };
+		21698CAD2889D50C004BD994 /* NestedTypeTestModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NestedTypeTestModel.swift; path = ../../../../../../../AmplifyTestCommon/Models/Scalar/NestedTypeTestModel.swift; sourceTree = "<group>"; };
+		21698CAE2889D50D004BD994 /* Scalar+Equatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Scalar+Equatable.swift"; path = "../../../../../../../AmplifyTestCommon/Models/Scalar/Scalar+Equatable.swift"; sourceTree = "<group>"; };
+		21698CAF2889D50D004BD994 /* EnumTestModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EnumTestModel.swift; path = ../../../../../../../AmplifyTestCommon/Models/Scalar/EnumTestModel.swift; sourceTree = "<group>"; };
+		21698CC22889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GraphQLAuthDirectiveIntegrationTests+Auth.swift"; sourceTree = "<group>"; };
+		21698CC32889D75F004BD994 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		21698CC42889D75F004BD994 /* SocialNote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocialNote.swift; sourceTree = "<group>"; };
+		21698CC52889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Support.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GraphQLAuthDirectiveIntegrationTests+Support.swift"; sourceTree = "<group>"; };
+		21698CC62889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLAuthDirectiveIntegrationTests.swift; sourceTree = "<group>"; };
 		21E73E6B28898D7900D7DB7E /* APIHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = APIHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		21E73E6E28898D7900D7DB7E /* APIHostAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIHostAppApp.swift; sourceTree = "<group>"; };
 		21E73E7028898D7900D7DB7E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -305,6 +321,7 @@
 				21698BDD28899ED5004BD994 /* AWSAPIPlugin in Frameworks */,
 				21698BF02889A163004BD994 /* AWSCognitoAuthPlugin in Frameworks */,
 				21698BD928899EBB004BD994 /* AWSPluginsCore in Frameworks */,
+				21698CC02889D5A9004BD994 /* CwlPreconditionTesting in Frameworks */,
 				21698BDB28899ED5004BD994 /* Amplify in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -327,7 +344,6 @@
 			isa = PBXGroup;
 			children = (
 				21698BD328899BFC004BD994 /* AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests.swift */,
-				21698BD528899C04004BD994 /* Info.plist */,
 			);
 			path = AWSAPIPluginGraphQLAPIKeyIntegrationTests;
 			sourceTree = "<group>";
@@ -387,7 +403,6 @@
 			isa = PBXGroup;
 			children = (
 				21698BAF28899B61004BD994 /* GraphQLWithIAMIntegrationTests.swift */,
-				21698BB128899B61004BD994 /* Info.plist */,
 				21698BB028899B61004BD994 /* README.md */,
 				21698BB228899B61004BD994 /* Todo.swift */,
 			);
@@ -397,11 +412,7 @@
 		21698B9728899AF7004BD994 /* GraphQLWithLambdaAuthIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
-				21698BB928899B65004BD994 /* GraphQLWithLambdaAuthIntegrationTests.swift */,
-				21698BB728899B65004BD994 /* Info.plist */,
-				21698BB828899B65004BD994 /* README.md */,
 				21698BA328899B3F004BD994 /* GraphQLWithLambdaAuthIntegrationTests.swift */,
-				21698BA128899B3F004BD994 /* Info.plist */,
 				21698BA228899B3F004BD994 /* README.md */,
 			);
 			path = GraphQLWithLambdaAuthIntegrationTests;
@@ -412,7 +423,6 @@
 			children = (
 				21698BC328899B71004BD994 /* AuthDirective */,
 				21698BBD28899B6D004BD994 /* GraphQLWithUserPoolIntegrationTests.swift */,
-				21698BBF28899B6D004BD994 /* Info.plist */,
 				21698BBE28899B6D004BD994 /* README.md */,
 			);
 			path = GraphQLWithUserPoolIntegrationTests;
@@ -421,6 +431,11 @@
 		21698BC328899B71004BD994 /* AuthDirective */ = {
 			isa = PBXGroup;
 			children = (
+				21698CC62889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift */,
+				21698CC22889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift */,
+				21698CC52889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Support.swift */,
+				21698CC32889D75F004BD994 /* README.md */,
+				21698CC42889D75F004BD994 /* SocialNote.swift */,
 			);
 			path = AuthDirective;
 			sourceTree = "<group>";
@@ -437,7 +452,6 @@
 		21698BC528899BA2004BD994 /* RESTWithIAMIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
-				21698BC828899BC8004BD994 /* Info.plist */,
 				21698BC928899BC8004BD994 /* README.md */,
 				21698BC728899BC8004BD994 /* RESTWithIAMIntegrationTests.swift */,
 			);
@@ -447,7 +461,6 @@
 		21698BC628899BAB004BD994 /* RESTWithUserPoolIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
-				21698BCF28899BCF004BD994 /* Info.plist */,
 				21698BCD28899BCF004BD994 /* README.md */,
 				21698BCE28899BCF004BD994 /* RESTWithUserPoolIntegrationTests.swift */,
 			);
@@ -464,6 +477,7 @@
 		21698C0A2889B18E004BD994 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				21698CA12889D4F3004BD994 /* Scalars */,
 				21698C492889B1C2004BD994 /* Connection */,
 				21698C0C2889B1AE004BD994 /* AmplifyModels.swift */,
 				21698C142889B1AE004BD994 /* Article.swift */,
@@ -595,6 +609,27 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
+		21698CA12889D4F3004BD994 /* Scalars */ = {
+			isa = PBXGroup;
+			children = (
+				21698CAF2889D50D004BD994 /* EnumTestModel.swift */,
+				21698CA72889D50C004BD994 /* EnumTestModel+Schema.swift */,
+				21698CA82889D50C004BD994 /* ListIntContainer.swift */,
+				21698CA52889D50C004BD994 /* ListIntContainer+Schema.swift */,
+				21698CAA2889D50C004BD994 /* ListStringContainer.swift */,
+				21698CA22889D50C004BD994 /* ListStringContainer+Schema.swift */,
+				21698CAC2889D50C004BD994 /* Nested.swift */,
+				21698CA42889D50C004BD994 /* Nested+Schema.swift */,
+				21698CAD2889D50C004BD994 /* NestedTypeTestModel.swift */,
+				21698CA92889D50C004BD994 /* NestedTypeTestModel+Schema.swift */,
+				21698CAE2889D50D004BD994 /* Scalar+Equatable.swift */,
+				21698CA32889D50C004BD994 /* ScalarContainer.swift */,
+				21698CA62889D50C004BD994 /* ScalarContainer+Schema.swift */,
+				21698CAB2889D50C004BD994 /* TestEnum.swift */,
+			);
+			path = Scalars;
+			sourceTree = "<group>";
+		};
 		21E73E6228898D7800D7DB7E = {
 			isa = PBXGroup;
 			children = (
@@ -660,6 +695,7 @@
 				21698A7728899804004BD994 /* Sources */,
 				21698A7828899804004BD994 /* Frameworks */,
 				21698A7928899804004BD994 /* Resources */,
+				21698CC12889D5FE004BD994 /* Copy Configuration folder */,
 			);
 			buildRules = (
 			);
@@ -726,6 +762,7 @@
 				21698BDA28899ED5004BD994 /* Amplify */,
 				21698BDC28899ED5004BD994 /* AWSAPIPlugin */,
 				21698BEF2889A163004BD994 /* AWSCognitoAuthPlugin */,
+				21698CBF2889D5A9004BD994 /* CwlPreconditionTesting */,
 			);
 			productName = APIHostApp;
 			productReference = 21E73E6B28898D7900D7DB7E /* APIHostApp.app */;
@@ -770,6 +807,9 @@
 				Base,
 			);
 			mainGroup = 21E73E6228898D7800D7DB7E;
+			packageReferences = (
+				21698CBE2889D5A9004BD994 /* XCRemoteSwiftPackageReference "CwlPreconditionTesting" */,
+			);
 			productRefGroup = 21E73E6C28898D7900D7DB7E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -794,7 +834,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				21698BD628899C04004BD994 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -802,18 +841,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				21698BC228899B6D004BD994 /* Info.plist in Resources */,
-				21698BBB28899B66004BD994 /* README.md in Resources */,
-				21698BCC28899BC8004BD994 /* README.md in Resources */,
-				21698BCB28899BC8004BD994 /* Info.plist in Resources */,
-				21698BB528899B61004BD994 /* Info.plist in Resources */,
-				21698BB428899B61004BD994 /* README.md in Resources */,
-				21698BC128899B6D004BD994 /* README.md in Resources */,
-				21698BA528899B3F004BD994 /* README.md in Resources */,
-				21698BD228899BCF004BD994 /* Info.plist in Resources */,
-				21698BBA28899B65004BD994 /* Info.plist in Resources */,
-				21698BD028899BCF004BD994 /* README.md in Resources */,
-				21698BA428899B3F004BD994 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -827,6 +854,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		21698CC12889D5FE004BD994 /* Copy Configuration folder */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration folder";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		21698A7728899804004BD994 /* Sources */ = {
@@ -843,6 +891,7 @@
 				21698AC22889996A004BD994 /* GraphQLConnectionScenario4Tests.swift in Sources */,
 				21698AA428899921004BD994 /* AnyModelIntegrationTests.swift in Sources */,
 				21698AC52889996A004BD994 /* GraphQLConnectionScenario2Tests.swift in Sources */,
+				21698CD02889E126004BD994 /* TestConfigHelper.swift in Sources */,
 				21698ABD2889996A004BD994 /* GraphQLConnectionScenario6Tests.swift in Sources */,
 				21698AC32889996A004BD994 /* GraphQLModelBasedTests.swift in Sources */,
 				21698AC12889996A004BD994 /* GraphQLConnectionScenario3Tests+Subscribe.swift in Sources */,
@@ -859,6 +908,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				21698BD428899BFD004BD994 /* AWSAPICategoryPluginGraphQLAPIKeyIntegrationTests.swift in Sources */,
+				21698CD12889E201004BD994 /* TestConfigHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -868,11 +918,14 @@
 			files = (
 				21698BB328899B61004BD994 /* GraphQLWithIAMIntegrationTests.swift in Sources */,
 				21698BB628899B61004BD994 /* Todo.swift in Sources */,
+				21698CCB2889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift in Sources */,
+				21698CD22889E202004BD994 /* TestConfigHelper.swift in Sources */,
+				21698CC72889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift in Sources */,
 				21698BC028899B6D004BD994 /* GraphQLWithUserPoolIntegrationTests.swift in Sources */,
+				21698CC92889D75F004BD994 /* SocialNote.swift in Sources */,
 				21698BA628899B3F004BD994 /* GraphQLWithLambdaAuthIntegrationTests.swift in Sources */,
 				21698BCA28899BC8004BD994 /* RESTWithIAMIntegrationTests.swift in Sources */,
 				21698BD128899BCF004BD994 /* RESTWithUserPoolIntegrationTests.swift in Sources */,
-				21698BBC28899B66004BD994 /* GraphQLWithLambdaAuthIntegrationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -888,17 +941,18 @@
 				21698C9F2889D0FB004BD994 /* AuthSignInHelper.swift in Sources */,
 				21698C342889B1AE004BD994 /* CustomerOrder.swift in Sources */,
 				21698C822889CF8A004BD994 /* Comment3.swift in Sources */,
+				21698CB42889D50D004BD994 /* ScalarContainer+Schema.swift in Sources */,
 				21698C3C2889B1AE004BD994 /* ScenarioATest6Post.swift in Sources */,
 				21698C3E2889B1AE004BD994 /* Post.swift in Sources */,
 				21698C362889B1AE004BD994 /* OGCScenarioBMGroupPost+Schema.swift in Sources */,
 				21698C332889B1AE004BD994 /* Article.swift in Sources */,
 				21698C482889B1AE004BD994 /* OGCScenarioBPost.swift in Sources */,
 				21698C702889CF5E004BD994 /* Post5+Schema.swift in Sources */,
-				21698C9E2889D0FB004BD994 /* TestConfigHelper.swift in Sources */,
 				21698C8B2889CFA9004BD994 /* Project2.swift in Sources */,
 				21698C462889B1AE004BD994 /* OGCScenarioBMGroupPost.swift in Sources */,
 				21698C402889B1AE004BD994 /* UserFollowers.swift in Sources */,
 				21698C652889CE60004BD994 /* Post6+Schema.swift in Sources */,
+				21698CBD2889D50D004BD994 /* EnumTestModel.swift in Sources */,
 				21698C432889B1AE004BD994 /* RecordCover+Schema.swift in Sources */,
 				21698C3F2889B1AE004BD994 /* UserFollowers+Schema.swift in Sources */,
 				21698C352889B1AE004BD994 /* Record.swift in Sources */,
@@ -913,16 +967,24 @@
 				21698C922889CFC0004BD994 /* Team1+Schema.swift in Sources */,
 				21698C7C2889CF6D004BD994 /* Post4.swift in Sources */,
 				21698C7B2889CF6D004BD994 /* Post4+Schema.swift in Sources */,
+				21698CB92889D50D004BD994 /* TestEnum.swift in Sources */,
+				21698CB22889D50D004BD994 /* Nested+Schema.swift in Sources */,
 				21698C662889CE60004BD994 /* Blog6.swift in Sources */,
+				21698CBC2889D50D004BD994 /* Scalar+Equatable.swift in Sources */,
 				21698C692889CE60004BD994 /* Post6.swift in Sources */,
 				21698C682889CE60004BD994 /* Comment6+Schema.swift in Sources */,
+				21698CB02889D50D004BD994 /* ListStringContainer+Schema.swift in Sources */,
+				21698CB52889D50D004BD994 /* EnumTestModel+Schema.swift in Sources */,
 				21698C452889B1AE004BD994 /* Record+Schema.swift in Sources */,
 				21698C382889B1AE004BD994 /* Article+Schema.swift in Sources */,
 				21698C672889CE60004BD994 /* Comment6.swift in Sources */,
 				21698C952889CFC0004BD994 /* Team1.swift in Sources */,
+				21698CB32889D50D004BD994 /* ListIntContainer+Schema.swift in Sources */,
 				21698C3B2889B1AE004BD994 /* ScenarioATest6Post+Schema.swift in Sources */,
 				21698C2F2889B1AE004BD994 /* UserFollowing.swift in Sources */,
 				21698C7A2889CF6D004BD994 /* Comment4.swift in Sources */,
+				21698CB62889D50D004BD994 /* ListIntContainer.swift in Sources */,
+				21698CBB2889D50D004BD994 /* NestedTypeTestModel.swift in Sources */,
 				21698C312889B1AE004BD994 /* User+Schema.swift in Sources */,
 				21698C2A2889B1AE004BD994 /* PostStatus.swift in Sources */,
 				21698C3D2889B1AE004BD994 /* MockModels.swift in Sources */,
@@ -930,20 +992,24 @@
 				21698C742889CF5E004BD994 /* User5+Schema.swift in Sources */,
 				21698C8A2889CFA9004BD994 /* Team2.swift in Sources */,
 				21698CA02889D0FB004BD994 /* TypeRegistry.swift in Sources */,
+				21698CB82889D50D004BD994 /* ListStringContainer.swift in Sources */,
 				21698C372889B1AE004BD994 /* Comment+Schema.swift in Sources */,
 				21698C082889B173004BD994 /* TestExtensions.swift in Sources */,
 				21698C092889B173004BD994 /* TestCommonConstants.swift in Sources */,
 				21698C732889CF5E004BD994 /* PostEditor5.swift in Sources */,
 				21698C422889B1AE004BD994 /* QPredGen+Schema.swift in Sources */,
 				21698C442889B1AE004BD994 /* Post+Schema.swift in Sources */,
+				21698CB12889D50D004BD994 /* ScalarContainer.swift in Sources */,
 				21698C852889CF8A004BD994 /* Comment3+Schema.swift in Sources */,
 				21698C3A2889B1AE004BD994 /* Comment.swift in Sources */,
 				21698C712889CF5E004BD994 /* User5.swift in Sources */,
 				21698C2B2889B1AE004BD994 /* AmplifyModels.swift in Sources */,
 				21698C302889B1AE004BD994 /* OGCScenarioBPost+Schema.swift in Sources */,
+				21698CB72889D50D004BD994 /* NestedTypeTestModel+Schema.swift in Sources */,
 				21E73E6F28898D7900D7DB7E /* APIHostAppApp.swift in Sources */,
 				21698C2E2889B1AE004BD994 /* CustomerOrder+Schema.swift in Sources */,
 				21698C472889B1AE004BD994 /* User.swift in Sources */,
+				21698CBA2889D50D004BD994 /* Nested.swift in Sources */,
 				21698C752889CF5E004BD994 /* Post5.swift in Sources */,
 				21698C7D2889CF6D004BD994 /* Comment4+Schema.swift in Sources */,
 			);
@@ -1331,6 +1397,17 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		21698CBE2889D5A9004BD994 /* XCRemoteSwiftPackageReference "CwlPreconditionTesting" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mattgallagher/CwlPreconditionTesting.git";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 2.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		21698BD828899EBB004BD994 /* AWSPluginsCore */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1347,6 +1424,11 @@
 		21698BEF2889A163004BD994 /* AWSCognitoAuthPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AWSCognitoAuthPlugin;
+		};
+		21698CBF2889D5A9004BD994 /* CwlPreconditionTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 21698CBE2889D5A9004BD994 /* XCRemoteSwiftPackageReference "CwlPreconditionTesting" */;
+			productName = CwlPreconditionTesting;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

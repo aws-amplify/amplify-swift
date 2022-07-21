@@ -7,10 +7,11 @@
 
 import XCTest
 import AWSPluginsCore
-import AWSAPICategoryPlugin
+import AWSAPIPlugin
+import AWSCognitoAuthPlugin
 
 @testable import Amplify
-@testable import AWSAPICategoryPluginTestCommon
+// @testable import AWSAPICategoryPluginTestCommon
 @testable import APIHostApp
 
 class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
@@ -49,7 +50,7 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
 
     override func tearDown() {
         signOut()
-        await Amplify.reset()
+        // await Amplify.reset()
     }
 
     /// Models created with:

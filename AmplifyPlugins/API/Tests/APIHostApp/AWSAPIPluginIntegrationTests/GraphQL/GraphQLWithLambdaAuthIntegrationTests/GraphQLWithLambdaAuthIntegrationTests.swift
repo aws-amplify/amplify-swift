@@ -10,7 +10,7 @@ import AWSAPIPlugin
 
 @testable import Amplify
 @testable import APIHostApp
-@testable import AWSAPICategoryPluginTestCommon
+// @testable import AWSAPICategoryPluginTestCommon
 
 class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
     let amplifyConfigurationFile = "testconfiguration/GraphQLWithLambdaAuthIntegrationTests-amplifyconfiguration"

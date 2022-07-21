@@ -13,7 +13,7 @@ import XCTest
 // swiftlint:disable type_body_length
 class GraphQLModelBasedTests: XCTestCase {
 
-    static let amplifyConfiguration = "GraphQLModelBasedTests-amplifyconfiguration"
+    static let amplifyConfiguration = "testconfiguration/GraphQLModelBasedTests-amplifyconfiguration"
 
     override func setUp() async throws {
         await Amplify.reset()

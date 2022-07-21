@@ -6,7 +6,8 @@
 //
 
 import XCTest
-import AWSAPICategoryPlugin
+import AWSAPIPlugin
+import AWSCognitoAuthPlugin
 
 @testable import Amplify
 @testable import APIHostApp
