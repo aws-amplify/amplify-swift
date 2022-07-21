@@ -116,7 +116,9 @@ extension ShowHostedUISignOut: ASWebAuthenticationPresentationContextProviding {
 extension ShowHostedUISignOut: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
-            "identifier": identifier
+            "identifier": identifier,
+            "signInData": signInData.debugDictionary,
+            "signOutEvent": signOutEvent.debugDictionary
         ]
     }
 }
