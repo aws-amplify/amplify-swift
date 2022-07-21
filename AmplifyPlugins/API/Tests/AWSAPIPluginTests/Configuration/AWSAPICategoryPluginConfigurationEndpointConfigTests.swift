@@ -9,7 +9,7 @@ import XCTest
 import AWSPluginsCore
 @testable import Amplify
 @testable import AWSAPIPlugin
-@testable import APIHostApp
+@testable import AmplifyTestCommon
 
 // swiftlint:disable:next type_name
 class AWSAPICategoryPluginConfigurationEndpointConfigTests: XCTestCase {

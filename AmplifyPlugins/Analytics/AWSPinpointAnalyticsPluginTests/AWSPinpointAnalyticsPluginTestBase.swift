@@ -6,7 +6,7 @@
 //
 
 @testable import Amplify
-@testable import APIHostApp
+@testable import AmplifyTestCommon
 @testable import AWSPinpointAnalyticsPlugin
 import XCTest
 

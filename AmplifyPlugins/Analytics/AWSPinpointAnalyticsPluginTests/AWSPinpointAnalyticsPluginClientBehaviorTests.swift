@@ -8,7 +8,7 @@
 import Amplify
 import AWSPinpoint
 @testable import AWSPinpointAnalyticsPlugin
-@testable import APIHostApp
+@testable import AmplifyTestCommon
 import XCTest
 
 // swiftlint:disable:next type_name
