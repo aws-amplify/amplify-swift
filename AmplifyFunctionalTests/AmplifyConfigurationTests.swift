@@ -8,8 +8,7 @@
 import XCTest
 @testable import Amplify
 
-@testable import AmplifyTestCommon
-
+@testable import APIHostApp
 class AmplifyConfigurationTests: XCTestCase {
 
     override static func setUp() async throws {

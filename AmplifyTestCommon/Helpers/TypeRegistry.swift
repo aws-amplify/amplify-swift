@@ -7,7 +7,6 @@
 
 import Foundation
 @testable import Amplify
-import XCTest
 
 extension TypeRegistry: InstanceFactory {}
 

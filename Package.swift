@@ -127,45 +127,6 @@ let apiTargets: [Target] = [
         exclude: [
             "Info.plist"
         ]
-    ),
-    .testTarget(
-        name: "AWSAPIPluginFunctionalTests",
-        dependencies: [
-            "AWSAPIPlugin",
-            "AmplifyTestCommon"
-        ],
-        path: "AmplifyPlugins/API/Tests/AWSAPIPluginFunctionalTests",
-        exclude: [
-            "Info.plist",
-            "GraphQLModelBased/README.md",
-            "GraphQLSyncBased/README.md"
-        ]
-    ),
-    .testTarget(
-        name: "GraphQLWithIAMIntegrationTests",
-        dependencies: [
-            "AWSAPIPlugin",
-            "AWSCognitoAuthPlugin",
-            "AmplifyTestCommon"
-        ],
-        path: "AmplifyPlugins/API/Tests/AWSAPIPluginIntegrationTests/GraphQL/GraphQLWithIAMIntegrationTests/",
-        exclude: [
-            "README.md",
-            "Info.plist"
-        ]
-    ),
-    .testTarget(
-        name: "RESTWithIAMIntegrationTests",
-        dependencies: [
-            "AWSAPIPlugin",
-            "AWSCognitoAuthPlugin",
-            "AmplifyTestCommon"
-        ],
-        path: "AmplifyPlugins/API/Tests/AWSAPIPluginIntegrationTests/REST/RESTWithIAMIntegrationTests/",
-        exclude: [
-            "README.md",
-            "Info.plist"
-        ]
     )
 ]
 
@@ -406,7 +367,11 @@ let package = Package(
         .library(
             name: "AWSPinpointAnalyticsPlugin",
             targets: ["AWSPinpointAnalyticsPlugin"]
-        )
+        ),
+        .library(
+            name: "AWSPluginsCore",
+            targets: ["AWSPluginsCore"]
+        ),
 
     ],
     dependencies: dependencies,

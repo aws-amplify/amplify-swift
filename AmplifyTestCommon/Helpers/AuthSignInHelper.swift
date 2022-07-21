@@ -6,7 +6,6 @@
 //
 
 import Amplify
-import XCTest
 
 public typealias CompletionType = (Bool, AuthError?) -> Void
 
