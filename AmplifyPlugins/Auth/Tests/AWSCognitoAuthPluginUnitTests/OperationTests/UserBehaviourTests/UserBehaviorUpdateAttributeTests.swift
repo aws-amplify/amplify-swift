@@ -47,7 +47,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
-    /// Test a updateUserAttributes call with invalid result
+    /// Test a updateUserAttributes call with empty code delivery result
     ///
     /// - Given: an auth plugin with mocked service. Mocked service calls should mock an empty response
     /// - When:
