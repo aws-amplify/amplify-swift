@@ -10,7 +10,7 @@ import AWSPinpoint
 
 @testable import Amplify
 @testable import AWSPinpointAnalyticsPlugin
-@testable import APIHostApp
+@testable import AmplifyTestCommon
 import AWSCognitoAuthPlugin
 
 // swiftlint:disable:next type_name
