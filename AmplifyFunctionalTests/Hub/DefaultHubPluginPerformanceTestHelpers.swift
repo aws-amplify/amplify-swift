@@ -7,7 +7,7 @@
 
 import XCTest
 @testable import Amplify
-@testable import APIHostApp
+@testable import AmplifyTestCommon
 
 struct DefaultHubPluginPerformanceTestHelpers {
 
