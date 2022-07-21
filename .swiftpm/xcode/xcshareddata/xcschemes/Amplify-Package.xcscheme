@@ -493,6 +493,16 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSAPIPluginFunctionalTests"
+               BuildableName = "AWSAPIPluginFunctionalTests"
+               BlueprintName = "AWSAPIPluginFunctionalTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

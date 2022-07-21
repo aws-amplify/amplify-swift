@@ -109,7 +109,7 @@ let apiTargets: [Target] = [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
             .product(name: "AppSyncRealTimeClient", package: "AppSyncRealTimeClient")],
-        path: "AmplifyPlugins/API/Sources/AWSAPICategoryPlugin",
+        path: "AmplifyPlugins/API/Sources/AWSAPIPlugin",
         exclude: [
             "Info.plist",
             "AWSAPIPlugin.md"
@@ -123,18 +123,18 @@ let apiTargets: [Target] = [
             "AmplifyTestCommon",
             "AWSPluginsTestCommon"
         ],
-        path: "AmplifyPlugins/API/Tests/AWSAPICategoryPluginTests",
+        path: "AmplifyPlugins/API/Tests/AWSAPIPluginTests",
         exclude: [
             "Info.plist"
         ]
     ),
     .testTarget(
-        name: "AWSAPICategoryPluginFunctionalTests",
+        name: "AWSAPIPluginFunctionalTests",
         dependencies: [
             "AWSAPIPlugin",
             "AmplifyTestCommon"
         ],
-        path: "AmplifyPlugins/API/Tests/AWSAPICategoryPluginFunctionalTests",
+        path: "AmplifyPlugins/API/Tests/AWSAPIPluginFunctionalTests",
         exclude: [
             "Info.plist",
             "GraphQLModelBased/README.md",
@@ -148,7 +148,7 @@ let apiTargets: [Target] = [
             "AWSCognitoAuthPlugin",
             "AmplifyTestCommon"
         ],
-        path: "AmplifyPlugins/API/Tests/AWSAPICategoryPluginIntegrationTests/GraphQL/GraphQLWithIAMIntegrationTests/",
+        path: "AmplifyPlugins/API/Tests/AWSAPIPluginIntegrationTests/GraphQL/GraphQLWithIAMIntegrationTests/",
         exclude: [
             "README.md",
             "Info.plist"
@@ -161,7 +161,7 @@ let apiTargets: [Target] = [
             "AWSCognitoAuthPlugin",
             "AmplifyTestCommon"
         ],
-        path: "AmplifyPlugins/API/Tests/AWSAPICategoryPluginIntegrationTests/REST/RESTWithIAMIntegrationTests/",
+        path: "AmplifyPlugins/API/Tests/AWSAPIPluginIntegrationTests/REST/RESTWithIAMIntegrationTests/",
         exclude: [
             "README.md",
             "Info.plist"
