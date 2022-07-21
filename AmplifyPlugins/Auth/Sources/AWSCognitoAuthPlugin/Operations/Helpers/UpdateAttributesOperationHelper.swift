@@ -27,14 +27,8 @@ struct UpdateAttributesOperationHelper {
 
             let result = try await userPoolService.updateUserAttributes(input: input)
 
-            guard let codeDeliveryDetailsList = result.codeDeliveryDetailsList else {
-                let authError = AuthError.unknown("Unable to get Auth code delivery details",
-                                                  nil)
-                throw authError
-            }
-
             var finalResult = [AuthUserAttributeKey: AuthUpdateAttributeResult]()
-            for item in codeDeliveryDetailsList {
+            for item in result.codeDeliveryDetailsList ?? [] {
                 if let attribute = item.attributeName {
                     let authCodeDeliveryDetails = item.toAuthCodeDeliveryDetails()
                     let nextStep = AuthUpdateAttributeStep.confirmAttributeWithCode(authCodeDeliveryDetails, nil)
