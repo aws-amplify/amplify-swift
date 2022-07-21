@@ -11,7 +11,7 @@ import AWSPluginsCore
 class MockKeychainStore: KeychainStoreBehavior {
     var stringValues: [String: String] = [:]
     var dataValues: [String: Data] = [:]
-    
+
     var stringForKeyCount = 0
     var stringForKeyCountMap: [String: Int] = [:]
     func getString(_ key: String) throws -> String {
@@ -19,7 +19,7 @@ class MockKeychainStore: KeychainStoreBehavior {
         stringForKeyCountMap[key] = stringForKeyCountMap[key, default: 0] + 1
         return stringValues[key]!
     }
-    
+
     var dataForKeyCount = 0
     var dataForKeyCountMap: [String: Int] = [:]
     func getData(_ key: String) throws -> Data {
@@ -30,36 +30,36 @@ class MockKeychainStore: KeychainStoreBehavior {
         }
         return data
     }
-    
+
     var saveStringCount = 0
     func set(_ value: String, key: String) throws {
         saveStringCount += 1
         stringValues[key] = value
     }
-    
+
     var saveDataCount = 0
     func set(_ value: Data, key: String) throws {
         saveDataCount += 1
         dataValues[key] = value
     }
-    
+
     var removeObjectCount = 0
     func remove(_ key: String) throws {
         removeObjectCount += 1
         if stringValues.keys.contains(where: { $0 == key }) {
             stringValues.removeValue(forKey: key)
         }
-        
+
         if dataValues.keys.contains(where: { $0 == key }) {
             dataValues.removeValue(forKey: key)
         }
     }
-    
+
     func removeAll() throws {
         stringValues.removeAll()
         dataValues.removeAll()
     }
-    
+
     func resetCounters() {
         dataForKeyCount = 0
         stringForKeyCount = 0
@@ -68,4 +68,3 @@ class MockKeychainStore: KeychainStoreBehavior {
         saveDataCount = 0
     }
 }
-

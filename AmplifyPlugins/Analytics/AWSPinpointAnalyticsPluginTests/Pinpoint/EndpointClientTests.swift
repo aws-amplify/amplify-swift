@@ -99,7 +99,6 @@ class EndpointClientTests: XCTestCase {
             XCTFail("Fail to setup test data")
         }
         archiver.decoded = storedEndpointProfile
-        
 
         let endpointProfile = await endpointClient.currentEndpointProfile()
 

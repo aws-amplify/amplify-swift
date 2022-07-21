@@ -37,7 +37,7 @@ extension PinpointEvent {
             0 // RetryCount
         ]
     }
-    
+
     static func archiveEventAttributes(_ attributes: [String: String]) -> Binding? {
         guard let encodedAttributes = try? archiver.encode(attributes) else {
             return nil

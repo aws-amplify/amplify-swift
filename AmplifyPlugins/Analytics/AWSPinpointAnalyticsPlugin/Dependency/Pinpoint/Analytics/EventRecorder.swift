@@ -17,8 +17,7 @@ protocol AnalyticsEventRecording {
     /// Saves a pinpoint event to storage
     /// - Parameter event: A PinpointEvent
     func save(_ event: PinpointEvent) throws
-    
-    
+
     /// Updates attributes of the events with the provided session id
     /// - Parameters:
     ///   - ofType: event type
@@ -27,7 +26,7 @@ protocol AnalyticsEventRecording {
     func updateAttributesOfEvents(ofType: String,
                                   withSessionId: PinpointSession.SessionId,
                                   setAttributes: [String: String]) throws
-    
+
     /// Submit all locally stored events
     /// - Returns: A collection of events submitted to Pinpoint
     func submitAllEvents() async throws -> [PinpointEvent]
@@ -66,7 +65,7 @@ class EventRecorder: AnalyticsEventRecording {
         try storage.saveEvent(event)
         try self.storage.checkDiskSize(limit: Constants.pinpointClientByteLimitDefault)
     }
-    
+
     func updateAttributesOfEvents(ofType eventType: String,
                                   withSessionId sessionId: PinpointSession.SessionId,
                                   setAttributes attributes: [String: String]) throws {
@@ -203,7 +202,7 @@ class EventRecorder: AnalyticsEventRecording {
 
     private func retry(times: Int = Constants.defaultNumberOfRetriesForStorageOperations,
                        onErrorMessage: String,
-                       _ closure: () throws -> ()) {
+                       _ closure: () throws -> Void) {
         do {
             try closure()
         } catch {

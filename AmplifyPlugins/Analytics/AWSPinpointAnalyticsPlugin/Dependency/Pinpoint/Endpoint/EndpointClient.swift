@@ -41,7 +41,7 @@ actor EndpointClient: EndpointClientBehaviour {
 
     typealias GlobalAttributes = [String: [String]]
     typealias GlobalMetrics = [String: Double]
-    
+
     private var globalAttributes: GlobalAttributes = [:]
     private var globalMetrics: GlobalMetrics = [:]
 
@@ -63,11 +63,11 @@ actor EndpointClient: EndpointClientBehaviour {
         self.keychain = keychain
 
         Self.migrateStoredValues(from: userDefaults, to: keychain, using: archiver)
-        if let attributes = Self.getStoredAttributes(from: keychain, fallbackTo: userDefaults, using: archiver) {
+        if let attributes = Self.getStoredGlobalValues(key: Constants.attributesKey, as: GlobalAttributes.self, from: keychain, fallbackTo: userDefaults, using: archiver) {
             globalAttributes = attributes
         }
 
-        if let metrics = Self.getStoredMetrics(from: keychain, fallbackTo: userDefaults, using: archiver) {
+        if let metrics = Self.getStoredGlobalValues(key: Constants.metricsKey, as: GlobalMetrics.self, from: keychain, fallbackTo: userDefaults, using: archiver) {
             globalMetrics = metrics
         }
     }
@@ -146,14 +146,11 @@ actor EndpointClient: EndpointClientBehaviour {
         }
 
         // 2. Look for a valid PinpointEndpointProfile object stored in the Keychain. It needs to match the current applicationId, otherwise we'll discard it.
-        if let endpointProfileData = Self.getStoredData(from: keychain, forKey: Constants.endpointProfileKey, fallbackTo: userDefaults),
-            let decodedEndpointProfile = try? archiver.decode(PinpointEndpointProfile.self, from: endpointProfileData),
-           decodedEndpointProfile.applicationId == configuration.appId {
+        if let endpointProfileData = Self.getStoredData(from: keychain, forKey: Constants.endpointProfileKey, fallbackTo: userDefaults), let decodedEndpointProfile = try? archiver.decode(PinpointEndpointProfile.self, from: endpointProfileData), decodedEndpointProfile.applicationId == configuration.appId {
             return await configure(endpointProfile: decodedEndpointProfile)
-        } else {
-            try? keychain.remove(Constants.endpointProfileKey)
         }
 
+        try? keychain.remove(Constants.endpointProfileKey)
         // Create a new PinpointEndpointProfile
         return await configure(endpointProfile: PinpointEndpointProfile(applicationId: configuration.appId,
                                                                   endpointId: configuration.uniqueDeviceId))
@@ -244,7 +241,7 @@ actor EndpointClient: EndpointClientBehaviour {
     nonisolated private func getOptOut(from endpointProfile: PinpointEndpointProfile) -> String {
         return endpointProfile.isOptOut ? EndpointClient.Constants.OptOut.all : EndpointClient.Constants.OptOut.none
     }
-    
+
     private static func migrateStoredValues(from userDefaults: UserDefaultsBehaviour, to keychain: KeychainStoreBehavior, using archiver: AmplifyArchiverBehaviour) {
         if let endpointProfileData = userDefaults.data(forKey: Constants.endpointProfileKey) {
             do {
@@ -254,7 +251,7 @@ actor EndpointClient: EndpointClientBehaviour {
                 log.error("Unable to migrate Analytics key-value store for key \(Constants.endpointProfileKey)")
             }
         }
-        
+
         let keychainTokenData = try? keychain.getData(Constants.deviceTokenKey)
         if let tokenData = userDefaults.data(forKey: Constants.deviceTokenKey), keychainTokenData == nil {
             do {
@@ -264,7 +261,7 @@ actor EndpointClient: EndpointClientBehaviour {
                 log.error("Unable to migrate Analytics key-value store for key \(Constants.deviceTokenKey)")
             }
         }
-        
+
         if let attributes = userDefaults.object(forKey: Constants.attributesKey) as? GlobalAttributes,
            let attributesData = try? archiver.encode(attributes) {
             do {
@@ -274,7 +271,7 @@ actor EndpointClient: EndpointClientBehaviour {
                 log.error("Unable to migrate Analytics key-value store for key \(Constants.attributesKey)")
             }
         }
-        
+
         if let metrics = userDefaults.object(forKey: Constants.metricsKey) as? GlobalMetrics,
            let metricsData = try? archiver.encode(metrics) {
             do {
@@ -285,7 +282,7 @@ actor EndpointClient: EndpointClientBehaviour {
             }
         }
     }
-    
+
     private static func getStoredData(
         from keychain: KeychainStoreBehavior,
         forKey key: String,
@@ -297,29 +294,19 @@ actor EndpointClient: EndpointClientBehaviour {
             return defaultSource.data(forKey: key)
         }
     }
-    
-    private static func getStoredAttributes(
+
+    private static func getStoredGlobalValues<T: Decodable>(
+        key: String,
+        as: T.Type,
         from keychain: KeychainStoreBehavior,
         fallbackTo defaultSource: UserDefaultsBehaviour,
         using archiver: AmplifyArchiverBehaviour
-    ) -> GlobalAttributes? {
-        guard let data = try? keychain.getData(Constants.attributesKey) else {
-            return defaultSource.object(forKey: Constants.attributesKey) as? GlobalAttributes
+    ) -> T? {
+        guard let data = try? keychain.getData(key) else {
+            return defaultSource.object(forKey: key) as? T
         }
-        
-        return try? archiver.decode(GlobalAttributes.self, from: data)
-    }
-    
-    private static func getStoredMetrics(
-        from keychain: KeychainStoreBehavior,
-        fallbackTo defaultSource: UserDefaultsBehaviour,
-        using archiver: AmplifyArchiverBehaviour
-    ) -> GlobalMetrics? {
-        guard let data = try? keychain.getData(Constants.metricsKey) else {
-            return defaultSource.object(forKey: Constants.metricsKey) as? GlobalMetrics
-        }
-        
-        return try? archiver.decode(GlobalMetrics.self, from: data)
+
+        return try? archiver.decode(T.self, from: data)
     }
 }
 

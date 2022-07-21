@@ -16,7 +16,7 @@ class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotificationsBehavi
     private let analyticsClient: AnalyticsClientBehaviour
     private let endpointClient: EndpointClientBehaviour
     private let userDefaults: UserDefaultsBehaviour
-    
+
     internal init(analyticsClient: AnalyticsClientBehaviour,
                   endpointClient: EndpointClientBehaviour,
                   userDefaults: UserDefaultsBehaviour) {
@@ -24,16 +24,16 @@ class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotificationsBehavi
         self.endpointClient = endpointClient
         self.userDefaults = userDefaults
     }
-    
+
     // MARK: - Public APIs
     func interceptDidFinishLaunchingWithOptions(launchOptions: LaunchOptions) async -> Bool {
         guard let notificationPayload = remoteNotificationPayload(fromLaunchOptions: launchOptions),
               isValidPinpointNotification(payload: notificationPayload) else {
             return true
         }
-        
+
         let (eventSource, pinpointMetadata) = pinpointMetadata(fromPayload: notificationPayload)
-        
+
         await self.addGlobalEventSourceMetadata(eventMetadata: pinpointMetadata,
                                                 eventSource: eventSource)
         await recordEventForNotification(metadata: pinpointMetadata,
@@ -42,13 +42,13 @@ class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotificationsBehavi
                                          pushAction: .openedNotification)
         return true
     }
-    
+
     func interceptDidRegisterForRemoteNotificationsWithDeviceToken(deviceToken: Data) async {
         let currentToken = self.userDefaults.data(forKey: EndpointClient.Constants.deviceTokenKey)
         guard currentToken != deviceToken else {
             return
         }
-        
+
         self.userDefaults.save(deviceToken, forKey: EndpointClient.Constants.deviceTokenKey)
         do {
             try await self.endpointClient.updateEndpointProfile()
@@ -56,13 +56,13 @@ class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotificationsBehavi
             log.error("Failed updating endpoint profile with error: \(error)")
         }
     }
-    
+
     func interceptDidReceiveRemoteNotification(userInfo: UserInfo,
                                                pushEvent: AWSPinpointPushEvent = .received,
                                                shouldHandleNotificationDeepLink: Bool) async {
         let (eventSource, metadata) = pinpointMetadata(fromPayload: userInfo)
         let pushAction = makePinpointPushAction(fromEvent: pushEvent)
-        
+
         switch pushAction {
         case .openedNotification:
             log.verbose("App launched from received notification.")
@@ -71,11 +71,11 @@ class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotificationsBehavi
                                                   eventSource: eventSource,
                                                   pushEvent: .opened,
                                                   pushAction: pushAction)
-            
+
             if shouldHandleNotificationDeepLink {
                 self.handleDeepLinkForNotification(userInfo: userInfo)
             }
-            
+
         case .receivedBackground:
             log.verbose("Received notification with app in background.")
             await self.addGlobalEventSourceMetadata(eventMetadata: metadata, eventSource: eventSource)
@@ -97,7 +97,7 @@ class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotificationsBehavi
             log.verbose("Received notification with app in unknown state.")
         }
     }
-    
+
     // MARK: Helpers
     /// Given a notification payload, returns a Pinpoint payload if available
     /// - Parameter notification: remote notification payload
@@ -109,7 +109,7 @@ class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotificationsBehavi
         }
         return pinpointMetadata
     }
-    
+
     private func recordEventForNotification(metadata: UserInfo?,
                                             eventSource: EventSource,
                                             pushEvent: AWSPinpointPushEvent,
@@ -121,21 +121,21 @@ class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotificationsBehavi
             log.error("Invalid Pinpoint push notification event.")
             return
         }
-        
+
         if let identifier = identifier {
             pushNotificationEvent.addAttribute(identifier, forKey: PinpointContext.Constants.Notifications.actionIdentifierKey)
         }
-        
+
         pushNotificationEvent.addApplicationState()
         pushNotificationEvent.addSourceMetadata(metadata)
-        
+
         do {
             try await self.analyticsClient.record(pushNotificationEvent)
         } catch {
             log.error("Failed recording event with error \(error)")
         }
     }
-    
+
     private func remoteNotificationPayload(fromLaunchOptions launchOptions: LaunchOptions) -> UserInfo? {
 #if canImport(UIKit)
         return launchOptions[UIApplication.LaunchOptionsKey.remoteNotification] as? UserInfo
@@ -143,7 +143,7 @@ class AWSPinpointAnalyticsNotifications: AWSPinpointAnalyticsNotificationsBehavi
         return nil
 #endif
     }
-    
+
 }
 
 // MARK: - AWSPinpointNotifications + metadata helpers
@@ -151,18 +151,17 @@ extension AWSPinpointAnalyticsNotifications {
     private func isValidPinpointNotification(payload: UserInfo) -> Bool {
         pinpointPayloadFromNotificationPayload(notification: payload) != nil
     }
-    
-    
+
     /// Given a Pinpoint notification payload, returns the event source and the metadata associated
     /// - Parameter payload: Pinpoint notification payload
     /// - Returns: the event source (campaign, journey) and its metadata
-    private func pinpointMetadata(fromPayload payload: UserInfo) -> (EventSource, [String : Any]?) {
+    private func pinpointMetadata(fromPayload payload: UserInfo) -> (EventSource, [String: Any]?) {
         var metadata: (EventSource, UserInfo?) = (.unknown, nil)
-        
+
         guard let pinpointPayload = pinpointPayloadFromNotificationPayload(notification: payload) else {
             return metadata
         }
-        
+
         if let campaignMetadata = pinpointPayload[EventSource.campaign.rawValue] as? UserInfo {
             metadata = (.campaign, campaignMetadata)
             self.log.verbose("Found Pinpoint campaign with attributes: \(campaignMetadata)")
@@ -171,14 +170,14 @@ extension AWSPinpointAnalyticsNotifications {
             metadata = (.journey, journeyMetadata)
             self.log.verbose("Found Pinpoint journey with attributes: \(journeyMetadata)")
         }
-        
+
         if metadata.1 == nil {
             fatalError("Pinpoint push notification payload not found.")
         }
-        
+
         return metadata
     }
-    
+
     private func addGlobalEventSourceMetadata(eventMetadata: UserInfo?,
                                               eventSource: EventSource) async {
         guard let eventMetadata = eventMetadata, !eventMetadata.isEmpty else {
@@ -193,13 +192,13 @@ extension AWSPinpointAnalyticsNotifications {
             await self.analyticsClient.removeAllGlobalEventSourceAttributes()
             previousEventSource = eventSource
         }
-        
+
         do {
             try await self.analyticsClient.setGlobalEventSourceAttributes(eventMetadata)
         } catch {
             self.log.error("Failed setting event source metadata")
         }
-        
+
         for (key, value) in eventMetadata {
             guard let value = value as? String else {
                 log.debug("Skipping metadata with key \(key) because has a value of type \(type(of: value)).")
@@ -207,7 +206,7 @@ extension AWSPinpointAnalyticsNotifications {
             }
             await self.analyticsClient.addGlobalAttribute(value, forKey: key)
         }
-        
+
     }
 }
 
@@ -215,7 +214,7 @@ extension AWSPinpointAnalyticsNotifications {
 extension AWSPinpointAnalyticsNotifications {
     typealias CanOpenURL = (URL) -> Bool
     func handleDeepLinkForNotification(userInfo: UserInfo,
-                                       canOpenURL: CanOpenURL? = nil){
+                                       canOpenURL: CanOpenURL? = nil) {
 #if canImport(UIKit)
         let canOpenURL = canOpenURL ?? UIApplication.shared.canOpenURL
         let openDeepLink = { (url: URL) in UIApplication.shared.open(url) }
@@ -298,7 +297,7 @@ extension AWSPinpointAnalyticsNotifications {
 
 // MARK: - PinpointEvent + makeWithActionType / addApplicationState
 extension PinpointEvent {
-    
+
     /// Creates a PinpointEvent given an event source and a push notification action.
     /// - Parameters:
     ///   - eventSource: event source
@@ -308,25 +307,24 @@ extension PinpointEvent {
     static func makeEvent(eventSource: AWSPinpointAnalyticsNotifications.EventSource,
                           pushAction: AWSPinpointPushAction,
                           usingClient analyticClient: AnalyticsClientBehaviour) -> PinpointEvent? {
-        
+
         guard pushAction != .unknown else {
             return nil
         }
-        
+
         let eventPrefix = eventSource.rawValue
         let eventSuffix = pushAction.rawValue
         let eventType = "_\(eventPrefix).\(eventSuffix)"
-        
+
         return analyticClient.createEvent(withEventType: eventType)
     }
-    
-    
+
     /// Adds the application state as event attribute on supported platforms.
     func addApplicationState() {
 #if canImport(UIKit)
         let appState = UIApplication.shared.applicationState
         let attributeValue: String
-        
+
         switch appState {
         case .active:
             attributeValue = "UIApplicationStateActive"
@@ -337,23 +335,22 @@ extension PinpointEvent {
         @unknown default:
             return
         }
-        
+
         self.addAttribute(attributeValue,
                           forKey: PinpointContext.Constants.Notifications.attributeApplicationState)
 #endif
     }
-    
+
     func addSourceMetadata(_ metadata: AWSPinpointAnalyticsNotifications.UserInfo?) {
         guard let metadata = metadata else {
             return
         }
-        
+
         for (key, value) in metadata.compactMap({ $0 as? (String, String) }) {
             self.addAttribute(value, forKey: key)
         }
     }
 }
-
 
 // MARK: - Constants + notifications
 extension PinpointContext.Constants {

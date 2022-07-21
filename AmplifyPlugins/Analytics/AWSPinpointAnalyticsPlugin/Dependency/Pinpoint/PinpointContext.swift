@@ -151,7 +151,7 @@ class PinpointContext {
                                         pinpointClient: targetingPinpointClient,
                                         currentDevice: currentDevice,
                                         userDefaults: userDefaults,
-                                        keychain: KeychainStore(service: Constants.Keychain.service))
+                                        keychain: keychainStore)
 
         sessionClient = SessionClient(archiver: archiver,
                                       configuration: .init(appId: configuration.appId,
