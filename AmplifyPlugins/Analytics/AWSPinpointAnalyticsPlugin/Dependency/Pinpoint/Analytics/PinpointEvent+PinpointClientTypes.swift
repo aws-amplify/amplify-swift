@@ -6,6 +6,7 @@
 //
 
 import AWSPinpoint
+import AWSPluginsCore
 import Foundation
 
 extension PinpointEvent {
@@ -17,13 +18,14 @@ extension PinpointEvent {
     }
 
     var clientTypeEvent: PinpointClientTypes.Event {
-        // TODO: get the swift sdk version and name
         return PinpointClientTypes.Event(appPackageName: Bundle.main.appPackageName,
                                          appTitle: Bundle.main.appName,
                                          appVersionCode: Bundle.main.appVersion,
                                          attributes: attributes,
+                                         clientSdkVersion: AmplifyAWSServiceConfiguration.version,
                                          eventType: eventType,
                                          metrics: metrics,
+                                         sdkName: AmplifyAWSServiceConfiguration.platformName,
                                          session: clientTypeSession,
                                          timestamp: eventDate.asISO8601String)
     }

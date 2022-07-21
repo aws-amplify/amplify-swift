@@ -14,11 +14,11 @@ import AWSCognitoIdentityProvider
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
-class AuthenticationProviderConfirmSigninTests: BaseUserBehaviorTest {
+class AuthenticationProviderConfirmSigninTests: BasePluginTest {
 
     override var initialState: AuthState {
         AuthState.configured(
-            AuthenticationState.signingIn(.resolvingSMSChallenge(.waitingForAnswer(.testData))),
+            AuthenticationState.signingIn(.resolvingChallenge(.waitingForAnswer(.testData), .smsMfa)),
             AuthorizationState.sessionEstablished(.testData))
     }
 

@@ -11,13 +11,17 @@ struct SignInEventData {
 
     let password: String?
 
+    let clientMetadata: [String: String]
+
     let signInMethod: SignInMethod
 
     init(username: String?,
          password: String?,
+         clientMetadata: [String: String] = [:],
          signInMethod: SignInMethod = .unknown) {
         self.username = username
         self.password = password
+        self.clientMetadata = clientMetadata
         self.signInMethod = signInMethod
     }
 }

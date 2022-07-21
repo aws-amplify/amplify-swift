@@ -12,7 +12,7 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 
-class AWSCognitoAuthUserBehaviorTests: BaseUserBehaviorTest {
+class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
 
     override func setUp() {
         super.setUp()

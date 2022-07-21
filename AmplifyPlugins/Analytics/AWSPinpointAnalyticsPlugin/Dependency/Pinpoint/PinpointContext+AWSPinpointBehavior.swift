@@ -6,9 +6,15 @@
 //
 
 import Amplify
+import AWSPinpoint
 import Foundation
 
 extension PinpointContext: AWSPinpointBehavior {
+
+    var pinpointClient: PinpointClientProtocol {
+        analyticsClient.pinpointClient
+    }
+
     func createEvent(withEventType eventType: String) -> PinpointEvent {
         analyticsClient.createEvent(withEventType: eventType)
     }

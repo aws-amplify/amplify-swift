@@ -26,7 +26,7 @@ enum AuthenticationState: State {
 
     /// System is signed in
     case signedIn(SignedInData)
-    
+
     /// System is deleting the user
     case deletingUser(SignedInData, DeleteUserState)
 

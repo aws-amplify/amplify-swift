@@ -25,5 +25,5 @@ extension DeleteUserState: CustomDebugDictionaryConvertible {
         }
         return [type: additionalMetadataDictionary]
     }
-    
+
 }

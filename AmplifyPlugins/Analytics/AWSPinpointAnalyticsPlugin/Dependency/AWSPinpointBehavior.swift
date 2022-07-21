@@ -9,19 +9,12 @@ import Amplify
 import AWSPinpoint
 import Foundation
 
-/// Groups the `PinpointClientProtocol` instances used for Analytics and Targeting
-public struct AWSPinpoint {
-    let analyticsClient: PinpointClientProtocol
-    let targetingClient: PinpointClientProtocol
-}
-
 /// Implemented by `PinpointContext` as a pass through to the methods on `analyticClient` and `endpointClient`.
 /// This protocol allows a way to create a Mock and ensure plugin implementation is testable.
 protocol AWSPinpointBehavior {
     // MARK: Escape hatch
-    /// Returns the low-level `PinpointClientProcotol` clients used to interact with AWS Pinpoint for Analytics and Targeting.
-    /// - Returns:A `AWSPinpoint` containing the the lower level clients.
-    func getEscapeHatch() -> AWSPinpoint
+    /// The low-level `PinpointClientProcotol` client used to interact with AWS Pinpoint for Analytics and Targeting.
+    var pinpointClient: PinpointClientProtocol { get }
 
     // MARK: Analytics
     /// Creates a `PinpointEvent` with the specificed eventType

@@ -52,9 +52,18 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
 
     typealias MockDeleteUserOutputResponse = (DeleteUserInput) async throws
     -> DeleteUserOutputResponse
-    
+
     typealias MockConfirmForgotPasswordOutputResponse = (ConfirmForgotPasswordInput) async throws
     -> ConfirmForgotPasswordOutputResponse
+    
+    typealias MockListDevicesOutputResponse = (ListDevicesInput) async throws
+    -> ListDevicesOutputResponse
+    
+    typealias MockRememberDeviceResponse = (UpdateDeviceStatusInput) async throws
+    -> UpdateDeviceStatusOutputResponse
+    
+    typealias MockForgetDeviceResponse = (ForgetDeviceInput) async throws
+    -> ForgetDeviceOutputResponse
 
     let mockSignUpResponse: MockSignUpResponse?
     let mockRevokeTokenResponse: MockRevokeTokenResponse?
@@ -71,6 +80,9 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     let mockDeleteUserOutputResponse: MockDeleteUserOutputResponse?
     let mockForgotPasswordOutputResponse: MockForgotPasswordOutputResponse?
     let mockConfirmForgotPasswordOutputResponse: MockConfirmForgotPasswordOutputResponse?
+    let mockListDevicesOutputResponse: MockListDevicesOutputResponse?
+    let mockRememberDeviceResponse: MockRememberDeviceResponse?
+    let mockForgetDeviceResponse: MockForgetDeviceResponse?
 
     init(
         mockSignUpResponse: MockSignUpResponse? = nil,
@@ -87,7 +99,10 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         mockResendConfirmationCodeOutputResponse: MockResendConfirmationCodeOutputResponse? = nil,
         mockDeleteUserOutputResponse: MockDeleteUserOutputResponse? = nil,
         mockForgotPasswordOutputResponse: MockForgotPasswordOutputResponse? = nil,
-        mockConfirmForgotPasswordOutputResponse: MockConfirmForgotPasswordOutputResponse? = nil
+        mockConfirmForgotPasswordOutputResponse: MockConfirmForgotPasswordOutputResponse? = nil,
+        mockListDevicesOutputResponse: MockListDevicesOutputResponse? = nil,
+        mockRememberDeviceResponse: MockRememberDeviceResponse? = nil,
+        mockForgetDeviceResponse: MockForgetDeviceResponse? = nil
     ) {
         self.mockSignUpResponse = mockSignUpResponse
         self.mockRevokeTokenResponse = mockRevokeTokenResponse
@@ -104,6 +119,9 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
         self.mockDeleteUserOutputResponse = mockDeleteUserOutputResponse
         self.mockForgotPasswordOutputResponse = mockForgotPasswordOutputResponse
         self.mockConfirmForgotPasswordOutputResponse = mockConfirmForgotPasswordOutputResponse
+        self.mockListDevicesOutputResponse = mockListDevicesOutputResponse
+        self.mockRememberDeviceResponse = mockRememberDeviceResponse
+        self.mockForgetDeviceResponse = mockForgetDeviceResponse
     }
 
     /// Throws InitiateAuthOutputError
@@ -165,12 +183,24 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     func deleteUser(input: DeleteUserInput) async throws -> DeleteUserOutputResponse {
         return try await mockDeleteUserOutputResponse!(input)
     }
-    
+
     func forgotPassword(input: ForgotPasswordInput) async throws -> ForgotPasswordOutputResponse {
         return try await mockForgotPasswordOutputResponse!(input)
     }
-    
+
     func confirmForgotPassword(input: ConfirmForgotPasswordInput) async throws -> ConfirmForgotPasswordOutputResponse {
         return try await mockConfirmForgotPasswordOutputResponse!(input)
+    }
+    
+    func listDevices(input: ListDevicesInput) async throws -> ListDevicesOutputResponse {
+        return try await mockListDevicesOutputResponse!(input)
+    }
+    
+    func updateDeviceStatus(input: UpdateDeviceStatusInput) async throws -> UpdateDeviceStatusOutputResponse {
+        return try await mockRememberDeviceResponse!(input)
+    }
+    
+    func forgetDevice(input: ForgetDeviceInput) async throws -> ForgetDeviceOutputResponse {
+        return try await mockForgetDeviceResponse!(input)
     }
 }

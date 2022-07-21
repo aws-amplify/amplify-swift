@@ -54,20 +54,27 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
                 return
             }
 
-            if case .resolvingSMSChallenge(let challengeState) = signInState,
-               case .waitingForAnswer = challengeState {
-                self?.sendSMSAnswer()
-
-            } else {
-                self?.dispatch(AuthError.invalidState(
-                    "SignIn process is not waiting to confirm signIn",
-                    AuthPluginErrorConstants.invalidStateError, nil))
-                self?.finish()
+            switch signInState {
+            case .resolvingChallenge(let challengeState, _):
+                if case . waitingForAnswer = challengeState {
+                    self?.sendChallengeAnswer()
+                } else {
+                    self?.sendInvalidStateError()
+                }
+            default:
+                self?.sendInvalidStateError()
             }
         }
     }
 
-    func sendSMSAnswer() {
+    func sendInvalidStateError() {
+        dispatch(AuthError.invalidState(
+            "SignIn process is not waiting to confirm signIn",
+            AuthPluginErrorConstants.invalidStateError, nil))
+        finish()
+    }
+
+    func sendChallengeAnswer() {
         if isCancelled {
             finish()
             return
@@ -78,9 +85,21 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
 
             guard let self = self else { return }
             guard case .configured(let authNState, _ ) = $0,
-                  case .signingIn(let signInState) = authNState,
-                  case .resolvingSMSChallenge(let challengeState) = signInState else { return }
+                  case .signingIn(let signInState) = authNState else { return }
 
+            switch signInState {
+            case .resolvingChallenge(let challengeState, _):
+                self.verifyChallengeState(
+                    challengeState: challengeState,
+                    token: token)
+            default: break
+            }
+        } onSubscribe: { }
+    }
+
+    func verifyChallengeState(
+        challengeState: SignInChallengeState,
+        token: AuthStateMachine.StateChangeListenerToken?) {
             switch challengeState {
             case .waitingForAnswer:
                 let answer = self.request.challengeResponse
@@ -92,9 +111,7 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
                 self.verifyResponse()
             default: break
             }
-
-        } onSubscribe: { }
-    }
+        }
 
     func verifyResponse() {
         if isCancelled {
@@ -125,7 +142,7 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
 
             case .signingIn(let signInState):
 
-                if case .resolvingSMSChallenge(let challengeState) = signInState,
+                if case .resolvingChallenge(let challengeState, _) = signInState,
                    case .error(_, let signInError) = challengeState {
                     let authError = signInError.authError
 
@@ -149,7 +166,7 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
                         self.finish()
                     }
                 }
-
+                
                 guard let result = UserPoolSignInHelper.checkNextStep(signInState) else { return }
                 self.dispatch(result: result)
                 self.cancelToken(token)

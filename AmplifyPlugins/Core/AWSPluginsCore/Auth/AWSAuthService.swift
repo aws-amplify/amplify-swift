@@ -38,32 +38,6 @@ public class AWSAuthService: AWSAuthServiceBehavior {
         }
     }
 
-    @available(*, deprecated, message: "Use getIdentityID(completion:) instead")
-    public func getIdentityId() -> Result<String, AuthError> {
-        var result: Result<String, AuthError>?
-        let semaphore = DispatchSemaphore(value: 0)
-        _ = Amplify.Auth.fetchAuthSession { event in
-            defer {
-                semaphore.signal()
-            }
-
-            switch event {
-            case .success(let session):
-                result = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
-            case .failure(let error):
-                result = .failure(error)
-
-            }
-        }
-        semaphore.wait()
-        guard let validResult = result else {
-            return .failure(AuthError.unknown("""
-               Did not receive a valid response from fetchAuthSession for identityId.
-               """))
-        }
-        return validResult
-    }
-
     // This algorithm was heavily based on the implementation here:
     // swiftlint:disable:next line_length
     //  https://github.com/aws-amplify/aws-sdk-ios/blob/main/AWSAuthSDK/Sources/AWSMobileClient/AWSMobileClientExtensions.swift#L29
@@ -106,28 +80,44 @@ public class AWSAuthService: AWSAuthServiceBehavior {
         }
         return .success(convertedDictionary)
     }
-
+    
     /// Retrieves the Cognito token from the AuthCognitoTokensProvider
-    /// - Parameter completion: Completion handler defined for the input `Result<String, AuthError>`
-    public func getUserPoolAccessToken(completion: @escaping (Result<String, AuthError>) -> Void) {
-        Amplify.Auth.fetchAuthSession { [weak self] event in
-            switch event {
-            case .success(let session):
-                guard
-                    let tokenResult = self?.getTokenString(from: session)
-                else {
-                    return completion(.failure(.unknown("""
-                    Did not receive a valid response from fetchAuthSession for get token.
-                    """)))
+    public func getUserPoolAccessToken() async throws -> String {
+        try await withCheckedThrowingContinuation { continuation in
+            Amplify.Auth.fetchAuthSession { [weak self] event in
+                switch event {
+                case .success(let session):
+                    guard let tokenResult = self?.getTokenString(from: session) else {
+                        let error = AuthError.unknown(
+                            "Did not receive a valid response from fetchAuthSession for get token."
+                        )
+                        continuation.resume(throwing: error)
+                        return
+                    }
+                    switch tokenResult {
+                    case .success(let token):
+                        continuation.resume(returning: token)
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                    }
+                case .failure(let error):
+                    continuation.resume(throwing: error)
                 }
-                completion(tokenResult)
-            case .failure(let error):
-                completion(.failure(error))
             }
         }
     }
 
-    @available(*, deprecated, message: "Use getUserPoolAccessToken(completion:) instead")
+    // TODO: Remove this after calls to it are removed from API and DataStore plugins
+    // MARK: List of Amplify internal usages of now deprecated AWSAuthServiceBehavior methods.
+    /**
+     `IncomingAsyncSubscriptionEventPublisher`
+        - File Path: `AmplifyPlugins/DataStore/AWSDataStoreCategoryPlugin/Sync/SubscriptionSync/IncomingAsyncSubscriptionEventPublisher.swift`
+        - Uses: `getToken()`
+     `AWSOIDCAuthProvider`
+        - File Path: `AmplifyPlugins/API/AWSAPICategoryPlugin/SubscriptionFactory/AWSOIDCAuthProvider.swift`
+        - Uses: `getToken()`
+     */
+    @available(*, deprecated, renamed: "getUserPoolAccessToken")
     public func getToken() -> Result<String, AuthError> {
         var result: Result<String, AuthError>?
         let semaphore = DispatchSemaphore(value: 0)

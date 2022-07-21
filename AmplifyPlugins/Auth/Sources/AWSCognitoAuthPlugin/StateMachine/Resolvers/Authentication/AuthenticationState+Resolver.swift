@@ -6,13 +6,13 @@
 //
 
 extension AuthenticationState {
-    
+
     struct Resolver: StateMachineResolver {
         typealias StateType = AuthenticationState
         let defaultState = AuthenticationState.notConfigured
-        
+
         init() { }
-        
+
         func resolve(
             oldState: StateType,
             byApplying event: StateMachineEvent
@@ -57,7 +57,7 @@ extension AuthenticationState {
                 } else {
                     return .from(oldState)
                 }
-                
+
             case .deletingUser(let signedInData, let deleteUserState):
                 if case let .userSignedOutAndDeleted(signedOutData) = event.isDeleteUserEvent {
                     return .init(newState: AuthenticationState.signedOut(signedOutData))
@@ -67,16 +67,16 @@ extension AuthenticationState {
                         to: deleteUserState,
                         with: signedInData)
                 }
-                
+
             case .error:
                 return .from(oldState)
             }
         }
-        
+
         private func resolveNotConfigured(
             byApplying authEvent: AuthenticationEvent
         ) -> StateResolution<StateType> {
-            
+
             switch authEvent.eventType {
             case .configure(let authConfig, let cognitoCredentials):
                 let action = ConfigureAuthentication(configuration: authConfig, storedCredentials: cognitoCredentials)
@@ -89,7 +89,7 @@ extension AuthenticationState {
                 return .from(.notConfigured)
             }
         }
-        
+
         private func resolveConfigured(
             byApplying authEvent: AuthenticationEvent
         ) -> StateResolution<StateType> {
@@ -102,7 +102,7 @@ extension AuthenticationState {
                 return .from(.configured)
             }
         }
-        
+
         private func resolveSignedOut(
             byApplying authEvent: AuthenticationEvent,
             to currentSignedOutData: SignedOutData
@@ -115,7 +115,7 @@ extension AuthenticationState {
                 return .from(.signedOut(currentSignedOutData))
             }
         }
-        
+
         private func resolveSignedIn(
             byApplying authEvent: AuthenticationEvent,
             to currentSignedInData: SignedInData
@@ -130,12 +130,12 @@ extension AuthenticationState {
                     actions: [action]
                 )
                 return resolution
-                
+
             default:
                 return .from(.signedIn(currentSignedInData))
             }
         }
-        
+
         private func resolveDeleteUser(
             byApplying deleteUserEvent: StateMachineEvent,
             to oldState: DeleteUserState,
@@ -145,7 +145,7 @@ extension AuthenticationState {
                 let newState = AuthenticationState.deletingUser(signedInData, resolution.newState)
                 return .init(newState: newState, actions: resolution.actions)
             }
-        
+
         private func resolveSigningUpState(oldState: AuthenticationState,
                                            event: StateMachineEvent)  -> StateResolution<StateType> {
             if let authEvent = event as? AuthenticationEvent,
@@ -165,7 +165,7 @@ extension AuthenticationState {
             let newState = AuthenticationState.signingUp(resolution.newState)
             return .init(newState: newState, actions: resolution.actions)
         }
-        
+
         private func resolveSigningInState(oldState: AuthenticationState,
                                            event: StateMachineEvent) -> StateResolution<StateType> {
             if let authEvent = event as? AuthenticationEvent,
@@ -178,23 +178,23 @@ extension AuthenticationState {
                 let signedOutData = SignedOutData(lastKnownUserName: nil)
                 return .from(.signedOut(signedOutData))
             }
-            
+
             guard case .signingIn(let signInState) = oldState else {
                 return .from(oldState)
             }
-            
+
             // Move to signedIn state if signin flow completed
             if let authEvent = event as? AuthenticationEvent,
                case .signInCompleted(let signedInData) = authEvent.eventType {
                 return .init(newState: .signedIn(signedInData))
             }
-            
+
             let resolution = SignInState.Resolver().resolve(oldState: signInState,
                                                             byApplying: event)
             return .init(newState: .signingIn(resolution.newState), actions: resolution.actions)
-            
+
         }
-        
+
         private func resolveSigningOutState(
             byApplying event: StateMachineEvent,
             to signOutState: SignOutState

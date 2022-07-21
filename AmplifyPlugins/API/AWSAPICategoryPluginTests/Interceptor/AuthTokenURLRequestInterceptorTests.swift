@@ -12,12 +12,12 @@ import AWSPluginsCore
 @testable import AWSAPIPlugin
 
 class AuthTokenURLRequestInterceptorTests: XCTestCase {
-    func testAuthTokenInterceptor() throws {
+    func testAuthTokenInterceptor() async throws {
         let mockTokenProvider = MockTokenProvider()
         let interceptor = AuthTokenURLRequestInterceptor(authTokenProvider: mockTokenProvider)
         let request = URLRequest(url: URL(string: "http://anapiendpoint.ca")!)
 
-        guard let headers = try interceptor.intercept(request).allHTTPHeaderFields else {
+        guard let headers = try await interceptor.intercept(request).allHTTPHeaderFields else {
             XCTFail("Failed retrieving headers")
             return
         }
@@ -36,6 +36,10 @@ extension AuthTokenURLRequestInterceptorTests {
 
         func getToken() -> Result<String, AuthError> {
             .success(authorizationToken)
+        }
+        
+        func getUserPoolAccessToken() async throws -> String {
+            authorizationToken
         }
     }
 }

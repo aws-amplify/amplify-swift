@@ -64,12 +64,10 @@ typealias Byte = Int
 // MARK: - PinpointContext
 /// The configuration object containing the necessary and optional configurations required to use AWSPinpoint
 struct PinpointContextConfiguration {
-    /// The Pinpoint AppId.
+    /// The Pinpoint Application ID
     let appId: String
-    /// The region used for Pinpoint Analytics
+    /// The Pinpoint region
     let region: String
-    /// The region used for Pinpoint Targeting
-    let targetingRegion: String
     /// Used to retrieve the proper AWSCredentials when creating the PinpointCLient
     let credentialsProvider: CredentialsProvider
     /// The max storage size to use for event storage in bytes. Defaults to 5 MB.
@@ -92,7 +90,6 @@ struct PinpointContextConfiguration {
 
     init(appId: String,
          region: String,
-         targetingRegion: String,
          credentialsProvider: CredentialsProvider,
          maxStorageSize: Byte = (1024 * 1024 * 5),
          isDebug: Bool = false,
@@ -101,7 +98,6 @@ struct PinpointContextConfiguration {
          sessionBackgroundTimeout: TimeInterval = 5) {
         self.appId = appId
         self.region = region
-        self.targetingRegion = targetingRegion
         self.credentialsProvider = credentialsProvider
         self.sessionBackgroundTimeout = sessionBackgroundTimeout
         self.maxStorageSize = maxStorageSize
@@ -141,14 +137,14 @@ class PinpointContext {
                                          archiver: archiver)
         uniqueId = Self.retrieveUniqueId(applicationId: configuration.appId, storage: storage)
 
-        let targetingPinpointClient = try PinpointClient(region: configuration.targetingRegion,
-                                                         credentialsProvider: configuration.credentialsProvider)
+        let pinpointClient = try PinpointClient(region: configuration.region,
+                                                credentialsProvider: configuration.credentialsProvider)
 
         endpointClient = EndpointClient(configuration: .init(appId: configuration.appId,
                                                              uniqueDeviceId: uniqueId,
                                                              isDebug: configuration.isDebug,
                                                              isOptOut: configuration.isApplicationLevelOptOut),
-                                        pinpointClient: targetingPinpointClient,
+                                        pinpointClient: pinpointClient,
                                         currentDevice: currentDevice,
                                         userDefaults: userDefaults,
                                         keychain: keychainStore)
@@ -167,14 +163,8 @@ class PinpointContext {
             return sessionClient.currentSession
         }
 
-        var analyticsPinpointClient = targetingPinpointClient
-        if configuration.region != configuration.targetingRegion {
-            analyticsPinpointClient = try PinpointClient(region: configuration.region,
-                                                         credentialsProvider: configuration.credentialsProvider)
-        }
-
         analyticsClient = try AnalyticsClient(applicationId: configuration.appId,
-                                              pinpointClient: analyticsPinpointClient,
+                                              pinpointClient: pinpointClient,
                                               endpointClient: endpointClient,
                                               sessionProvider: sessionProvider)
         sessionClient.analyticsClient = analyticsClient
@@ -185,13 +175,6 @@ class PinpointContext {
             sessionClient.startPinpointSession()
         }
         self.configuration = configuration
-    }
-
-    func getEscapeHatch() -> AWSPinpoint {
-        return AWSPinpoint(
-            analyticsClient: analyticsClient.pinpointClient,
-            targetingClient: endpointClient.pinpointClient
-        )
     }
 
     private static func legacyPreferencesFilePath(applicationId: String,

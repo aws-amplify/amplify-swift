@@ -74,6 +74,9 @@ public class AWSAuthSignOutOperation: AmplifySignOutOperation, AuthSignOutOperat
                     self.authStateMachine.cancel(listenerToken: token)
                 }
 
+            case .signingIn:
+                self.authStateMachine.send(AuthenticationEvent.init(eventType: .cancelSignIn))
+
             default:
                 break
             }

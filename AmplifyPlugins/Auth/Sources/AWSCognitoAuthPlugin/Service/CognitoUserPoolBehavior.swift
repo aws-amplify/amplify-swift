@@ -47,7 +47,7 @@ protocol CognitoUserPoolBehavior {
     /// Changes the password for a specified user in a user pool.
     /// Throws ChangePasswordOutputError
     func changePassword(input: ChangePasswordInput) async throws -> ChangePasswordOutputResponse
-    
+
     /// Delete the signed in user from the user pool.
     /// Throws DeleteUserOutputError
     func deleteUser(input: DeleteUserInput) async throws -> DeleteUserOutputResponse
@@ -59,8 +59,17 @@ protocol CognitoUserPoolBehavior {
     /// Resets password
     /// Throws ForgotPasswordOutputError
     func forgotPassword(input: ForgotPasswordInput) async throws -> ForgotPasswordOutputResponse
-    
+
     /// Confirm Reset password
     /// Throws ConfirmForgotPasswordOutputError
     func confirmForgotPassword(input: ConfirmForgotPasswordInput) async throws -> ConfirmForgotPasswordOutputResponse
+    
+    /// Lists the devices
+    func listDevices(input: ListDevicesInput) async throws -> ListDevicesOutputResponse
+    
+    /// Updates the device status
+    func updateDeviceStatus(input: UpdateDeviceStatusInput) async throws -> UpdateDeviceStatusOutputResponse
+    
+    /// Forgets the specified device.
+    func forgetDevice(input: ForgetDeviceInput) async throws -> ForgetDeviceOutputResponse
 }

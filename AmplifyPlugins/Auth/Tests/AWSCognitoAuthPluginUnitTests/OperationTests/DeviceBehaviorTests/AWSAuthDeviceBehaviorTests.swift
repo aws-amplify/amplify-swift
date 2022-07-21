@@ -5,17 +5,19 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
+
 import XCTest
 import AWSCognitoIdentity
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
+import AWSCognitoIdentityProvider
 
-class BaseUserBehaviorTest: XCTestCase {
+class AWSAuthDeviceBehaviorTests: XCTestCase {
 
-    let apiTimeout = 2.0
+    let networkTimeout = TimeInterval(10)
     var mockIdentityProvider: CognitoUserPoolBehavior!
     var plugin: AWSCognitoAuthPlugin!
-
     var initialState: AuthState {
         AuthState.configured(
             AuthenticationState.signedIn(

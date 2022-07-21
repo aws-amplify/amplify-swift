@@ -27,7 +27,7 @@ enum AuthorizationState: State {
     case waitingToStore(AmplifyCredentials)
 
     case sessionEstablished(AmplifyCredentials)
-    
+
     case deletingUser
 
     case error(AuthorizationError)
