@@ -26,7 +26,7 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
         }
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         await Amplify.reset()
     }
 
@@ -238,6 +238,10 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
 
 // MARK: - API Auth provider
 private class CustomTokenProvider: AmplifyFunctionAuthProvider {
+    func getUserPoolAccessToken() async throws -> String {
+        return "custom-lambda-token"
+    }
+    
     func getLatestAuthToken() -> Result<AuthToken, Error> {
         .success("custom-lambda-token")
     }
