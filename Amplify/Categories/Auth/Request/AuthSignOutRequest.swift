@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AuthenticationServices
 
 /// Request for sign out user
 public struct AuthSignOutRequest: AmplifyOperationRequest {
@@ -30,10 +31,22 @@ public extension AuthSignOutRequest {
 
         public let globalSignOut: Bool
 
+        public let presentationAnchorForWebUI: AuthUIPresentationAnchor?
+
         public init(globalSignOut: Bool = false,
+                    presentationAnchor: AuthUIPresentationAnchor? = nil,
                     pluginOptions: Any? = nil) {
             self.globalSignOut = globalSignOut
             self.pluginOptions = pluginOptions
+            self.presentationAnchorForWebUI = presentationAnchor
         }
+    }
+
+
+}
+
+extension AuthSignOutRequest.Options {
+    public static func presentationAnchor(_ anchor: AuthUIPresentationAnchor) -> AuthSignOutRequest.Options {
+        return AuthSignOutRequest.Options(presentationAnchor: anchor)
     }
 }

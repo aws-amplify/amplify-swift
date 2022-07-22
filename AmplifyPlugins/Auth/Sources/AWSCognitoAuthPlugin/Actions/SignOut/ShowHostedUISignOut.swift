@@ -9,14 +9,16 @@ import Amplify
 import Foundation
 import AuthenticationServices
 
-class ShowHostedUI: NSObject, Action {
+class ShowHostedUISignOut: NSObject, Action {
 
-    var identifier: String = "ShowHostedUI"
+    var identifier: String = "ShowHostedUISignOut"
 
-    let signingInData: HostedUISigningInState
+    let signOutEvent: SignOutEventData
+    let signInData: SignedInData
 
-    init(signInData: HostedUISigningInState) {
-        self.signingInData = signInData
+    init(signOutEvent: SignOutEventData, signInData: SignedInData) {
+        self.signInData = signInData
+        self.signOutEvent = signOutEvent
     }
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
@@ -26,22 +28,44 @@ class ShowHostedUI: NSObject, Action {
               let hostedUIConfig = environment.userPoolConfiguration.hostedUIConfig else {
             let message = AuthPluginErrorConstants.configurationError
             let error = AuthenticationError.configuration(message: message)
-            let event = AuthenticationEvent(eventType: .error(error))
+            let event = SignOutEvent(eventType: .signedOutFailure(error))
             logVerbose("\(#fileID) Sending event \(event)", environment: environment)
             dispatcher.send(event)
             return
         }
 
-        guard let callbackURL = URL(string: hostedUIConfig.oauth.signInRedirectURI),
+        guard let callbackURL = URL(string: hostedUIConfig.oauth.signOutRedirectURI),
               let callbackURLScheme = callbackURL.scheme else {
-            let event = SignInEvent(eventType: .throwAuthError(.hostedUI(.signInURI)))
+            let error = AuthenticationError.configuration(message: "Callback URL could not be retrieved")
+            let event = SignOutEvent(eventType: .signedOutFailure(error))
             logVerbose("\(#fileID) Sending event \(event)", environment: environment)
             dispatcher.send(event)
             return
         }
+
+        let signOutURI = hostedUIConfig.oauth
+            .signOutRedirectURI
+            .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+        var components = URLComponents()
+        components.scheme = "https"
+        components.path = "/logout"
+        components.host = hostedUIConfig.oauth.domain
+        components.queryItems = [
+            URLQueryItem(name: "client_id", value: hostedUIConfig.clientId),
+            URLQueryItem(name: "logout_uri", value: signOutURI),
+        ]
+
+        guard let logutURL = components.url else {
+            let error = AuthenticationError.configuration(message: "Could not create logout URL")
+            let event = SignOutEvent(eventType: .signedOutFailure(error))
+            logVerbose("\(#fileID) Sending event \(event)", environment: environment)
+            dispatcher.send(event)
+            return
+        }
+
 
         let aswebAuthenticationSession = ASWebAuthenticationSession(
-            url: signingInData.signInURL,
+            url: logutURL,
             callbackURLScheme: callbackURLScheme,
             completionHandler: { url, error in
 
@@ -56,21 +80,12 @@ class ShowHostedUI: NSObject, Action {
                         return
                     }
 
-                    guard let code = queryItems?.first(where: { $0.name == "code" })?.value,
-                          let state = queryItems?.first(where: { $0.name == "state" })?.value,
-                          self.signingInData.state == state else {
-
-                        let event = HostedUIEvent(eventType: .throwError(.hostedUI(.codeValidation)))
-                        self.logVerbose("\(#fileID) Sending event \(event)", environment: environment)
-                        dispatcher.send(event)
-                        return
+                    let event: SignOutEvent
+                    if self.signOutEvent.globalSignOut {
+                        event = SignOutEvent(eventType: .signOutGlobally(self.signInData))
+                    } else {
+                        event = SignOutEvent(eventType: .revokeToken(self.signInData))
                     }
-
-                    let result = HostedUIResult(code: code,
-                                                state: state,
-                                                codeVerifier: self.signingInData.codeChallenge,
-                                                options: self.signingInData.options)
-                    let event = HostedUIEvent(eventType: .fetchToken(result))
                     self.logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
                     dispatcher.send(event)
                 }
@@ -82,30 +97,31 @@ class ShowHostedUI: NSObject, Action {
                 }
 
         })
-        aswebAuthenticationSession.prefersEphemeralWebBrowserSession = signingInData
-            .options
-            .preferPrivateSession
         aswebAuthenticationSession.presentationContextProvider = self
-        aswebAuthenticationSession.start()
+        DispatchQueue.main.async {
+            aswebAuthenticationSession.start()
+        }
     }
 
 }
 
-extension ShowHostedUI: ASWebAuthenticationPresentationContextProviding {
+extension ShowHostedUISignOut: ASWebAuthenticationPresentationContextProviding {
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        return signingInData.presentationAnchor
+        return ASPresentationAnchor()
     }
 }
 
-extension ShowHostedUI: CustomDebugDictionaryConvertible {
+extension ShowHostedUISignOut: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
-            "identifier": identifier
+            "identifier": identifier,
+            "signInData": signInData.debugDictionary,
+            "signOutEvent": signOutEvent.debugDictionary
         ]
     }
 }
 
-extension ShowHostedUI {
+extension ShowHostedUISignOut {
     override var debugDescription: String {
         debugDictionary.debugDescription
     }

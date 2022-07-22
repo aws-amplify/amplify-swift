@@ -11,14 +11,11 @@ import AWSCognitoIdentityProvider
 struct SignOutEvent: StateMachineEvent {
     var data: Any?
 
-    enum EventType: Equatable {
-        static func == (lhs: SignOutEvent.EventType, rhs: SignOutEvent.EventType) -> Bool {
-            return false
-        }
-
+    enum EventType {
         case signOutGlobally(SignedInData)
         case revokeToken(SignedInData)
         case signOutLocally(SignedInData)
+        case invokeHostedUISignOut(SignOutEventData, SignedInData)
         case signedOutSuccess
         case signedOutFailure(AuthenticationError)
     }
@@ -33,6 +30,8 @@ struct SignOutEvent: StateMachineEvent {
             return "SignOutEvent.signOutGlobally"
         case .revokeToken:
             return "SignOutEvent.revokeToken"
+        case .invokeHostedUISignOut:
+            return "SignOutEvent.invokeHostedUISignOut"
         case .signOutLocally:
             return "SignOutEvent.signOutLocally"
         case .signedOutSuccess:
@@ -51,4 +50,21 @@ struct SignOutEvent: StateMachineEvent {
         self.eventType = eventType
         self.time = time
     }
+}
+
+extension SignOutEvent.EventType: Equatable {
+
+    static func == (lhs: SignOutEvent.EventType, rhs: SignOutEvent.EventType) -> Bool {
+        switch (lhs, rhs) {
+        case (.signOutGlobally, .signOutGlobally),
+            (.revokeToken, .revokeToken),
+            (.signOutLocally, .signOutLocally),
+            (.signedOutSuccess, .signedOutSuccess),
+            (.signedOutFailure, .signedOutFailure):
+            return true
+        default:
+            return false
+        }
+    }
+    
 }
