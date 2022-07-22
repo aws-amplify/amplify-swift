@@ -10,14 +10,14 @@ import Foundation
 import CryptoKit
 
 struct FetchHostedUISignInToken: Action {
-    
+
     var identifier: String = "FetchHostedUISignInToken"
-    
+
     let result: HostedUIResult
-    
+
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        
+
         guard let environment = environment as? AuthEnvironment,
               let hostedUIEnvironment = environment.hostedUIEnvironment else {
             let message = AuthPluginErrorConstants.configurationError
