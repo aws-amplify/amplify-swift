@@ -1,6 +1,8 @@
 # Changelog
 ## Unreleased
 ## 1.27.1 (2022-07-22)
+### Bug Fixes
+- **Auth:** Mapping correct error when Device Operations fail due to user not signed in (#2023).
 
 ## 1.27.0 (2022-07-14)
 
