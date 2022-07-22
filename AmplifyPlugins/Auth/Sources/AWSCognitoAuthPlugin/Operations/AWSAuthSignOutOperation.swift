@@ -34,45 +34,54 @@ public class AWSAuthSignOutOperation: AmplifySignOutOperation, AuthSignOutOperat
             finish()
             return
         }
-        doSignOut()
+
+        authStateMachine.getCurrentState { [weak self] state in
+            guard let self = self else { return }
+
+            guard case .configured(let authNState, _) = state else {
+                self.dispatch(
+                    AuthError.invalidState(
+                        "Auth State not in a valid state",
+                        AuthPluginErrorConstants.invalidStateError,
+                        nil))
+                return
+            }
+
+            switch authNState {
+            case .signedOut:
+                self.dispatchSuccess()
+                self.finish()
+
+            default:
+                self.doSignOut()
+
+            }
+        }
     }
 
     func doSignOut() {
         stateListenerToken = authStateMachine.listen {[weak self] in
-            guard let self = self else {
-                return
-            }
+            guard let self = self else { return }
             guard case .configured(let authNState, let authZState) = $0 else {
                 return
             }
 
             switch authNState {
             case .signedOut:
-                defer {
-                    self.finish()
+                
+                self.dispatchSuccess()
+                if let token = self.stateListenerToken {
+                    self.authStateMachine.cancel(listenerToken: token)
                 }
-                if case .sessionEstablished = authZState {
-                    self.dispatchSuccess()
-                    if let token = self.stateListenerToken {
-                        self.authStateMachine.cancel(listenerToken: token)
-                    }
-                }
-                if case .configured = authZState {
-                    self.dispatchSuccess()
-                    if let token = self.stateListenerToken {
-                        self.authStateMachine.cancel(listenerToken: token)
-                    }
-                }
+                self.finish()
 
             case .error(let error):
-                defer {
-                    self.finish()
-                }
 
                 self.dispatch(error.authError)
                 if let token = self.stateListenerToken {
                     self.authStateMachine.cancel(listenerToken: token)
                 }
+                self.finish()
 
             case .signingIn:
                 self.authStateMachine.send(AuthenticationEvent.init(eventType: .cancelSignIn))

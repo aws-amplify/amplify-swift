@@ -69,6 +69,7 @@ class FetchAuthSessionOperationHelper {
                 default:
                     let event = AuthorizationEvent(eventType: .refreshSession)
                     authStateMachine.send(event)
+                    self.listenForSession(authStateMachine: authStateMachine, completion: completion)
                 }
 
             case .refreshingSession, .fetchingUnAuthSession, .fetchingAuthSessionWithUserPool, .signingIn:
