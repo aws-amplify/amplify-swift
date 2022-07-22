@@ -27,7 +27,7 @@ public class AWSAuthConfirmSignUpOperation: AmplifyConfirmSignUpOperation,
 
         self.stateMachine = stateMachine
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.signUpAPI,
+                   eventName: HubPayload.EventName.Auth.confirmSignUpAPI,
                    request: request,
                    resultListener: resultListener)
     }
