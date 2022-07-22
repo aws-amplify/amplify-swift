@@ -25,7 +25,7 @@ public class AWSAuthDeleteUserOperation: AmplifyOperation<
         self.authStateMachine = authStateMachine
         self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.confirmUserAttributesAPI,
+                   eventName: HubPayload.EventName.Auth.deleteUserAPI,
                    request: request,
                    resultListener: resultListener)
     }
