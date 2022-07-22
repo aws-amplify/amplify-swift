@@ -46,8 +46,6 @@ class ShowHostedUISignOut: NSObject, Action {
         let signOutURI = hostedUIConfig.oauth
             .signOutRedirectURI
             .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
-
-        let state = UUID().uuidString.lowercased()
         var components = URLComponents()
         components.scheme = "https"
         components.path = "/logout"
