@@ -23,7 +23,7 @@ extension HostedUISignInState {
 
             case .notStarted:
                 if case .showHostedUI(let signedInData) = event.isHostedUIEvent {
-                    let action = ShowHostedUI(signInData: signedInData)
+                    let action = ShowHostedUISignIn(signInData: signedInData)
                     return .init(newState: .showingUI(signedInData), actions: [action])
                 }
                 return .from(oldState)

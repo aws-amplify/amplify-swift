@@ -19,7 +19,11 @@ struct InitiateSignOut: Action {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         let event: SignOutEvent
-        if signOutEventData.globalSignOut {
+        if case .hostedUI(let options) = signedInData.signInMethod,
+           options.preferPrivateSession == false {
+            event = SignOutEvent(eventType: .invokeHostedUISignOut(signOutEventData,
+                                                                   signedInData))
+        } else if signOutEventData.globalSignOut {
             event = SignOutEvent(eventType: .signOutGlobally(signedInData))
         } else {
             event = SignOutEvent(eventType: .revokeToken(signedInData))
@@ -35,7 +39,7 @@ extension InitiateSignOut: CustomDebugDictionaryConvertible {
         [
             "identifier": identifier,
             "signOutEventData": signOutEventData.debugDictionary,
-            "singedInData": signedInData.debugDictionary
+            "signedInData": signedInData.debugDictionary
         ]
     }
 }

@@ -13,15 +13,12 @@ public typealias AmplifySignOutOperation = AmplifyOperation<AuthSignOutRequest, 
 public class AWSAuthSignOutOperation: AmplifySignOutOperation, AuthSignOutOperation {
 
     let authStateMachine: AuthStateMachine
-    let credentialStoreStateMachine: CredentialStoreStateMachine
     var stateListenerToken: CredentialStoreStateMachineToken?
 
     init(_ request: AuthSignOutRequest,
          authStateMachine: AuthStateMachine,
-         credentialStoreStateMachine: CredentialStoreStateMachine,
          resultListener: ResultListener?) {
         self.authStateMachine = authStateMachine
-        self.credentialStoreStateMachine = credentialStoreStateMachine
 
         super.init(categoryType: .auth,
                    eventName: HubPayload.EventName.Auth.signOutAPI,
