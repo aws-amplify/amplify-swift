@@ -143,6 +143,10 @@ struct AuthPluginErrorConstants {
     static let changePasswordUnableToSignInError: AuthPluginErrorString = (
     "Could not change password, the user session is expired",
     "Re-authenticate the user by using one of the signIn apis")
+
+    static let userSignedOutError: AuthPluginErrorString = (
+    "There is no user signed in to the Auth category",
+    "SignIn to Auth category by using one of the sign in methods and then try again")
 }
 
 // Field validation errors

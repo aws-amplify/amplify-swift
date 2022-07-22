@@ -92,7 +92,15 @@ body:
       label: Relevant log output
       description: >-
         Include any relevant log output under
-        `~/.amplify/logs/amplify-cli-<issue-date>.log`
+        `~/.amplify/logs/amplify-cli-<issue-date>.log` (See: [Logs Guidance](https://github.com/aws-amplify/amplify-ios/blob/main/LogsGuidance.md))
+      value: |
+        <details>
+        <summary>Log Messages</summary>
+
+        ```
+        INSERT LOG MESSAGES HERE
+        ```
+        </details>
       render: shell
   - type: dropdown
     id: regression
