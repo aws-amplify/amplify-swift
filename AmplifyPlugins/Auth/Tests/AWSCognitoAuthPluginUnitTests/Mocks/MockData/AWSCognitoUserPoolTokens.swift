@@ -1,14 +1,12 @@
 //
-//  File.swift
-//  
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
 //
-//  Created by Roy, Jithin on 7/22/22.
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import Foundation
 import AWSCognitoAuthPlugin
-
-
 
 extension AWSCognitoUserPoolTokens {
 
@@ -19,10 +17,11 @@ extension AWSCognitoUserPoolTokens {
             "iat": "1516239022",
             "exp": String(Date(timeIntervalSinceNow: 121).timeIntervalSince1970)
         ]
-        return AWSCognitoUserPoolTokens(idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
-                                              accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
-                                              refreshToken: "refreshToken",
-                                              expiresIn: 121)
+        return AWSCognitoUserPoolTokens(
+            idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
+            accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
+            refreshToken: "refreshToken",
+            expiresIn: 121)
     }
 }
 
