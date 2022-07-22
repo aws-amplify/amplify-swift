@@ -37,6 +37,11 @@ extension SignOutState {
                 return resolveClearingCredentialStore(byApplying: event,
                                                       from: oldState,
                                                       signedInData: signedInData)
+            case .signingOutHostedUI:
+                guard let signOutEvent = event as? SignOutEvent else {
+                    return .from(oldState)
+                }
+                return resolveHostedUISignOut(byApplying: signOutEvent, from: oldState)
             case .signedOut:
                 return .from(oldState)
             case .error:
@@ -59,6 +64,33 @@ extension SignOutState {
                     newState: SignOutState.revokingToken,
                     actions: [action]
                 )
+            case .invokeHostedUISignOut(let signOutEventData, let signedInData):
+                let action = ShowHostedUISignOut(signOutEvent: signOutEventData,
+                                                 signInData: signedInData)
+                return .init(newState: .signingOutHostedUI, actions: [action])
+            default:
+                return .from(oldState)
+            }
+        }
+
+        private func resolveHostedUISignOut(byApplying signOutEvent: SignOutEvent,
+                                            from oldState: SignOutState)
+        -> StateResolution<SignOutState> {
+            switch signOutEvent.eventType {
+            case .signOutGlobally(let signedInData):
+                let action = SignOutGlobally(signedInData: signedInData)
+                return StateResolution(
+                    newState: SignOutState.signingOutGlobally,
+                    actions: [action]
+                )
+            case .revokeToken(let signedInData):
+                let action = RevokeToken(signedInData: signedInData)
+                return StateResolution(
+                    newState: SignOutState.revokingToken,
+                    actions: [action]
+                )
+            case .signedOutFailure(let error):
+                return .from(.error(error))
             default:
                 return .from(oldState)
             }

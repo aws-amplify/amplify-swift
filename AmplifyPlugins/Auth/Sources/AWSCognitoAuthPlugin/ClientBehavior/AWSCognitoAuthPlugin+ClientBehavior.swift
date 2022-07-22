@@ -84,7 +84,17 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
                                 presentationAnchor: AuthUIPresentationAnchor,
                                 options: AuthSocialWebUISignInOperation.Request.Options?,
                                 listener: AuthSocialWebUISignInOperation.ResultListener?) -> AuthSocialWebUISignInOperation {
-        fatalError("Not implemented")
+        let options = options ?? AuthWebUISignInRequest.Options()
+        let request = AuthWebUISignInRequest(presentationAnchor: presentationAnchor,
+                                             authProvider: authProvider,
+                                             options: options)
+        let signInWithWebUIOperation = AWSAuthSocialWebUISignInOperation(
+            request,
+            authConfiguration: authConfiguration,
+            authStateMachine: authStateMachine,
+            resultListener: listener)
+        queue.addOperation(signInWithWebUIOperation)
+        return signInWithWebUIOperation
     }
 #endif
 
@@ -110,7 +120,6 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         let request = AuthSignOutRequest(options: options)
         let signOutOperation = AWSAuthSignOutOperation(request,
                                                        authStateMachine: authStateMachine,
-                                                       credentialStoreStateMachine: credentialStoreStateMachine,
                                                        resultListener: listener)
         queue.addOperation(signOutOperation)
         return signOutOperation

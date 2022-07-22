@@ -12,6 +12,7 @@ enum SignOutState: State {
     case signingOutGlobally
     case revokingToken
     case signingOutLocally(SignedInData)
+    case signingOutHostedUI
     case signedOut(SignedOutData)
     case error(AuthenticationError)
 }
@@ -23,6 +24,7 @@ extension SignOutState {
         case .signingOutGlobally: return "SignOutState.signingOutGlobally"
         case .revokingToken: return "SignOutState.revokingToken"
         case .signingOutLocally: return "SignOutState.signingOutLocally"
+        case .signingOutHostedUI: return "SignOutState.signingOutHostedUI"
         case .signedOut: return "SignOutState.signedOut"
         case .error: return "SignOutState.error"
         }
@@ -37,6 +39,8 @@ extension SignOutState {
         case (.revokingToken, .revokingToken):
             return true
         case (.signingOutLocally, .signingOutLocally):
+            return true
+        case (.signingOutHostedUI, .signingOutHostedUI):
             return true
         case (.signedOut(let lhsData), .signedOut(let rhsData)):
             return lhsData == rhsData
