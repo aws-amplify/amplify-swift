@@ -51,6 +51,11 @@ extension RefreshSessionState {
                         identityID
                     ), actions: [action])
                 }
+
+                if case .throwError(let error) = event.isRefreshSessionEvent {
+                    let action = InformSessionError(error: error)
+                    return .init(newState: .error(error), actions: [action])
+                }
                 return .from(oldState)
 
             case .refreshingUserPoolToken:

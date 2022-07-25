@@ -80,6 +80,10 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
                     self.dispatch(AuthSignInResult(nextStep: .done))
                     self.cancelToken(token)
                     self.finish()
+                } else if case .error(let error) = authZState {
+                    self.dispatch(AuthError.unknown("Sign in reached an error state", error))
+                    self.cancelToken(token)
+                    self.finish()
                 }
 
             case .error(let error):
