@@ -160,7 +160,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		21698A3B2889905F004BD994 /* amplify-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios"; path = ../../../../..; sourceTree = "<group>"; };
 		21698A7B28899804004BD994 /* AWSAPIPluginFunctionalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginFunctionalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		21698A882889980F004BD994 /* AWSAPIPluginGraphQLAPIKeyIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginGraphQLAPIKeyIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		21698A9528899818004BD994 /* AWSAPIPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -282,6 +281,8 @@
 		21E73E7028898D7900D7DB7E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		21E73E7228898D7A00D7DB7E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		21E73E7528898D7A00D7DB7E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		5CA57989288F29E300423D02 /* amplify-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios"; path = ../../../..; sourceTree = "<group>"; };
+		5CA5798A288F2AB200423D02 /* aws-appsync-realtime-client-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "aws-appsync-realtime-client-ios"; path = "../../../../../aws-appsync-realtime-client-ios"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -612,7 +613,7 @@
 		21E73E6228898D7800D7DB7E = {
 			isa = PBXGroup;
 			children = (
-				21E73E7C28898DF200D7DB7E /* Packages */,
+				5CA57988288F29E300423D02 /* Packages */,
 				21E73E6D28898D7900D7DB7E /* APIHostApp */,
 				21698A7C28899805004BD994 /* AWSAPIPluginFunctionalTests */,
 				21698A9628899818004BD994 /* AWSAPIPluginIntegrationTests */,
@@ -656,12 +657,13 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		21E73E7C28898DF200D7DB7E /* Packages */ = {
+		5CA57988288F29E300423D02 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				21698A3B2889905F004BD994 /* amplify-ios */,
+				5CA57989288F29E300423D02 /* amplify-ios */,
+				5CA5798A288F2AB200423D02 /* aws-appsync-realtime-client-ios */,
 			);
-			path = Packages;
+			name = Packages;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

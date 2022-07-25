@@ -44,10 +44,6 @@ private class TestAuthTokenProvider: AmplifyAuthTokenProvider {
     func getUserPoolAccessToken() async throws -> String {
         authToken
     }
-    
-    func getUserPoolAccessToken() async throws -> String {
-        authToken
-    }
 }
 
 private class TestFailingAuthTokenProvider: AmplifyAuthTokenProvider {
@@ -60,10 +56,6 @@ private class TestFailingAuthTokenProvider: AmplifyAuthTokenProvider {
     }
     
     func getUserPoolAccessToken() async throws -> String {
-        authToken
-    }
-    
-    func getUserPoolAccessToken() async throws -> String {
-        authToken
+        throw APIError.networkError("Token error")
     }
 }
