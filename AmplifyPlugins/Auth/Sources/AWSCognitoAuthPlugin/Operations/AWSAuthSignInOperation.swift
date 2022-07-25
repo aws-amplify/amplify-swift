@@ -21,6 +21,8 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
 
     let authStateMachine: AuthStateMachine
 
+    var statemachineToken:AuthStateMachineToken? = nil
+
     init(_ request: AuthSignInRequest,
          authStateMachine: AuthStateMachine,
          resultListener: ResultListener?) {
@@ -37,21 +39,50 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
             finish()
             return
         }
-        authStateMachine.getCurrentState { [weak self] in
-            guard case .configured(let authenticationState, _) = $0 else {
+        didConfigure {
+            self.isCurrentStateValid { result in
+                switch result {
+                case .success:
+                    self.doSignIn()
+                case .failure(let error):
+                    self.dispatch(error)
+                    self.finish()
+                }
+            }
+        }
+    }
+
+    func didConfigure(completion: @escaping () -> Void) {
+        statemachineToken = authStateMachine.listen({ state in
+            guard case .configured = state else { return }
+            self.authStateMachine.cancel(listenerToken: self.statemachineToken!)
+            completion()
+        }, onSubscribe: {})
+    }
+
+    func isCurrentStateValid(completion: @escaping ((Result<Void, AuthError>) -> Void)) {
+        statemachineToken = authStateMachine.listen({ state in
+            guard case .configured(let authenticationState, _) = state else {
                 return
             }
 
             switch authenticationState {
             case .signedIn:
-                self?.dispatch(AuthError.invalidState(
+                let error = AuthError.invalidState(
                     "There is already a user in signedIn state. SignOut the user first before calling signIn",
-                    AuthPluginErrorConstants.invalidStateError, nil))
-                self?.finish()
-            default:
-                self?.doSignIn()
+                    AuthPluginErrorConstants.invalidStateError, nil)
+                self.authStateMachine.cancel(listenerToken: self.statemachineToken!)
+                completion(.failure(error))
+
+            case .signedOut:
+                self.authStateMachine.cancel(listenerToken: self.statemachineToken!)
+                completion(.success(Void()))
+
+            case .signingUp:
+                self.sendCancelSignUpEvent()
+            default: break
             }
-        }
+        }, onSubscribe: {})
     }
 
     func doSignIn() {
@@ -69,11 +100,6 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
                                    let authZState) = $0 else { return }
 
             switch authNState {
-            case .signedOut:
-                self.sendSignInEvent()
-
-            case .signingUp:
-                self.sendCancelSignUpEvent()
 
             case .signedIn:
                 if case .sessionEstablished = authZState {
@@ -101,7 +127,7 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
             default:
                 break
             }
-        } onSubscribe: { }
+        } onSubscribe: { self.sendSignInEvent() }
     }
 
     private func sendSignInEvent() {
