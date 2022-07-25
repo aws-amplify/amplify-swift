@@ -20,6 +20,14 @@ struct AuthEnvironment: Environment {
 
 extension AuthEnvironment: AuthenticationEnvironment {
 
+    var hostedUIEnvironment: HostedUIEnvironment? {
+        guard let environment = authenticationEnvironment else {
+            fatalError("Could not find authentication environment")
+        }
+        return environment.hostedUIEnvironment
+    }
+
+
     var userPoolEnvironment: UserPoolEnvironment {
         guard let authNEnv = authenticationEnvironment else {
             fatalError("Could not find authentication environment")
