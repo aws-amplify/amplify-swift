@@ -119,14 +119,14 @@ extension AuthorizationState {
                         identityID: identityID,
                         credentials: credentials)
                     return .init(newState: .waitingToStore(amplifyCredentials))
-                }
-
-                if case .receivedSessionError(let error) = event.isAuthorizationEvent {
-                    return .init(newState: .error(.sessionError(error, .noCredentials)))
-                }
-
-                if case .throwError(let error) = event.isAuthorizationEvent {
-                    return .init(newState: .error(error))
+                } else if case .receivedSessionError(_) = event.isAuthorizationEvent {
+                    // TODO: Handle session errors correctly and pass them back to the user
+                    let amplifyCredentials = AmplifyCredentials.userPoolOnly(tokens: tokens)
+                    return .init(newState: .waitingToStore(amplifyCredentials))
+                } else if case .throwError(_) = event.isAuthorizationEvent {
+                    // TODO: Handle session errors correctly and pass them back to the user
+                    let amplifyCredentials = AmplifyCredentials.userPoolOnly(tokens: tokens)
+                    return .init(newState: .waitingToStore(amplifyCredentials))
                 }
 
                 let resolver = FetchAuthSessionState.Resolver()

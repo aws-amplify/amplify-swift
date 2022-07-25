@@ -88,6 +88,7 @@ struct UserPoolSignInHelper {
                 let signedInData = SignedInData(userId: "",
                                                 userName: username,
                                                 signedInDate: Date(),
+                                                // TODO: remove hardcoded sign in method
                                                 signInMethod: .apiBased(.userSRP),
                                                 cognitoUserPoolTokens: userPoolTokens)
                 return SignInEvent(eventType: .finalizeSignIn(signedInData))

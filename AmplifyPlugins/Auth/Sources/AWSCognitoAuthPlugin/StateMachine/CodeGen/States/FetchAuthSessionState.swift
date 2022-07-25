@@ -16,6 +16,8 @@ enum FetchAuthSessionState: State {
     case fetchingAWSCredentials(String, LoginsMapProvider)
 
     case fetched(IdentityID, AuthAWSCognitoCredentials)
+
+    case error(FetchSessionError)
 }
 
 extension FetchAuthSessionState: Equatable {
@@ -25,7 +27,8 @@ extension FetchAuthSessionState: Equatable {
         case (.notStarted, .notStarted),
             (.fetchingIdentityID, .fetchingIdentityID),
             (.fetchingAWSCredentials, .fetchingAWSCredentials),
-            (.fetched, .fetched):
+            (.fetched, .fetched),
+            (.error, .error):
             return true
 
         default:
@@ -43,6 +46,8 @@ extension FetchAuthSessionState: Equatable {
             return "FetchSessionState.fetchingAWSCredentials"
         case .fetched:
             return "FetchSessionState.fetched"
+        case .error:
+            return "FetchSessionState.error"
         }
     }
 }
