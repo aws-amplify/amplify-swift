@@ -89,6 +89,19 @@ extension AWSCognitoAuthPlugin {
         }
     }
 
+    private func makeHostedUISession() -> HostedUISessionBehavior {
+        return HostedUIASWebAuthenticationSession()
+    }
+
+    private func makeURLSession() -> URLSession {
+        return URLSession.shared
+    }
+
+    private func makeRamdonString() -> RandomStringBehavior {
+        return RandomStringGenerator()
+    }
+
+
     private func makeCredentialStore() -> AmplifyAuthCredentialStoreBehavior {
         AWSCognitoAuthCredentialStore(authConfiguration: authConfiguration)
     }
@@ -146,8 +159,20 @@ extension AWSCognitoAuthPlugin {
         let srpSignInEnvironment = BasicSRPSignInEnvironment(srpAuthEnvironment: srpAuthEnvironment)
         let userPoolEnvironment = BasicUserPoolEnvironment(userPoolConfiguration: userPoolConfigData,
                                                            cognitoUserPoolFactory: makeUserPool)
+        let hostedUIEnvironment = hostedUIEnvironment(userPoolConfigData)
         return BasicAuthenticationEnvironment(srpSignInEnvironment: srpSignInEnvironment,
-                                              userPoolEnvironment: userPoolEnvironment)
+                                              userPoolEnvironment: userPoolEnvironment,
+                                              hostedUIEnvironment: hostedUIEnvironment)
+    }
+
+    private func hostedUIEnvironment(_ configuration: UserPoolConfigurationData) -> HostedUIEnvironment? {
+        guard let hostedUIConfig = configuration.hostedUIConfig else {
+            return nil
+        }
+        return BasicHostedUIEnvironment(configuration: hostedUIConfig,
+                                        hostedUISessionFactory: makeHostedUISession,
+                                        urlSessionFactory: makeURLSession,
+                                        randomStringFactory: makeRamdonString)
     }
 
     private func authorizationEnvironment(identityPoolConfigData: IdentityPoolConfigurationData) -> AuthorizationEnvironment {

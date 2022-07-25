@@ -15,6 +15,8 @@ class ShowHostedUISignIn: NSObject, Action {
 
     let signingInData: HostedUISigningInState
 
+    var sessionAdapter: HostedUISessionBehavior? = nil
+
     init(signInData: HostedUISigningInState) {
         self.signingInData = signInData
     }
@@ -23,7 +25,7 @@ class ShowHostedUISignIn: NSObject, Action {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         guard let environment = environment as? AuthEnvironment,
-              let hostedUIConfig = environment.userPoolConfiguration.hostedUIConfig else {
+              let hostedUIEnvironment = environment.hostedUIEnvironment else {
             let message = AuthPluginErrorConstants.configurationError
             let error = AuthenticationError.configuration(message: message)
             let event = AuthenticationEvent(eventType: .error(error))
@@ -31,6 +33,8 @@ class ShowHostedUISignIn: NSObject, Action {
             dispatcher.send(event)
             return
         }
+
+        let hostedUIConfig = hostedUIEnvironment.configuration
 
         guard let callbackURL = URL(string: hostedUIConfig.oauth.signInRedirectURI),
               let callbackURLScheme = callbackURL.scheme else {
@@ -40,25 +44,21 @@ class ShowHostedUISignIn: NSObject, Action {
             return
         }
 
-
-        let aswebAuthenticationSession = ASWebAuthenticationSession(
+        sessionAdapter = hostedUIEnvironment.hostedUISessionFactory()
+        sessionAdapter?.showHostedUI(
             url: signingInData.signInURL,
-            callbackURLScheme: callbackURLScheme,
-            completionHandler: { url, error in
-
-                if let url = url {
-                    let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
-                    let queryItems = urlComponents?.queryItems
-
-                    if let error = queryItems?.first(where: { $0.name == "error" })?.value {
-                        let event = HostedUIEvent(eventType: .throwError(.hostedUI(.serviceMessage(error))))
-                        self.logVerbose("\(#fileID) Sending event \(event)", environment: environment)
-                        dispatcher.send(event)
-                        return
-                    }
-
-                    guard let code = queryItems?.first(where: { $0.name == "code" })?.value,
-                          let state = queryItems?.first(where: { $0.name == "state" })?.value,
+            callbackScheme: callbackURLScheme,
+            inPrivate: signingInData.options.preferPrivateSession,
+            presentationAnchor: signingInData.presentationAnchor) { result in
+                switch result {
+                case .failure(let error):
+                    self.logVerbose("\(#fileID) Received error \(error)", environment: environment)
+                    let event = HostedUIEvent(eventType: .throwError(.hostedUI(error)))
+                    self.logVerbose("\(#fileID) Sending event \(event)", environment: environment)
+                    dispatcher.send(event)
+                case .success(let queryItems):
+                    guard let code = queryItems.first(where: { $0.name == "code" })?.value,
+                          let state = queryItems.first(where: { $0.name == "state" })?.value,
                           self.signingInData.state == state else {
 
                         let event = HostedUIEvent(eventType: .throwError(.hostedUI(.codeValidation)))
@@ -75,29 +75,9 @@ class ShowHostedUISignIn: NSObject, Action {
                     self.logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
                     dispatcher.send(event)
                 }
-
-                if let error = error {
-                    let event = HostedUIEvent(eventType: .throwError(.service(error: error)))
-                    self.logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-                    dispatcher.send(event)
-                }
-
-        })
-        aswebAuthenticationSession.prefersEphemeralWebBrowserSession = signingInData
-            .options
-            .preferPrivateSession
-        aswebAuthenticationSession.presentationContextProvider = self
-        DispatchQueue.main.async {
-            aswebAuthenticationSession.start()
-        }
+            }
     }
 
-}
-
-extension ShowHostedUISignIn: ASWebAuthenticationPresentationContextProviding {
-    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        return signingInData.presentationAnchor
-    }
 }
 
 extension ShowHostedUISignIn: CustomDebugDictionaryConvertible {
