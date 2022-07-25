@@ -57,15 +57,28 @@ enum Defaults {
     }
 
     static func makeIdentity() throws -> CognitoIdentityBehavior {
-        return try CognitoIdentityClient(region: regionString)
+        let getId: MockIdentity.MockGetIdResponse = { _ in
+            return .init(identityId: "mockIdentityId")
+        }
+
+        let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
+            let credentials = CognitoIdentityClientTypes.Credentials(accessKeyId: "accessKey",
+                                                                     expiration: Date(),
+                                                                     secretKey: "secret",
+                                                                     sessionToken: "session")
+            return .init(credentials: credentials, identityId: "responseIdentityID")
+        }
+        return MockIdentity(mockGetIdResponse: getId, mockGetCredentialsResponse: getCredentials)
     }
 
-    static func makeDefaultUserPoolConfigData() -> UserPoolConfigurationData {
+    static func makeDefaultUserPoolConfigData(withHostedUI: HostedUIConfigurationData? = nil)
+    -> UserPoolConfigurationData {
         UserPoolConfigurationData(poolId: userPoolId,
                                   clientId: appClientId,
                                   region: regionString,
                                   clientSecret: appClientSecret,
-                                  pinpointAppId: "")
+                                  pinpointAppId: "",
+                                  hostedUIConfig: withHostedUI)
     }
 
     static func makeIdentityConfigData() -> IdentityPoolConfigurationData {
@@ -73,8 +86,8 @@ enum Defaults {
                                       region: regionString)
     }
 
-    static func makeDefaultAuthConfigData() -> AuthConfiguration {
-        let userPoolConfigData = makeDefaultUserPoolConfigData()
+    static func makeDefaultAuthConfigData(withHostedUI: HostedUIConfigurationData? = nil) -> AuthConfiguration {
+        let userPoolConfigData = makeDefaultUserPoolConfigData(withHostedUI: withHostedUI)
         let identityConfigDate = makeIdentityConfigData()
         return .userPoolsAndIdentityPools(userPoolConfigData, identityConfigDate)
     }
@@ -103,7 +116,8 @@ enum Defaults {
     static func makeDefaultAuthEnvironment(
         authZEnvironment: BasicAuthorizationEnvironment? = nil,
         identityPoolFactory: @escaping () throws -> CognitoIdentityBehavior = makeIdentity,
-        userPoolFactory: @escaping () throws -> CognitoUserPoolBehavior = makeDefaultUserPool
+        userPoolFactory: @escaping () throws -> CognitoUserPoolBehavior = makeDefaultUserPool,
+        hostedUIEnvironment: HostedUIEnvironment? = nil
     ) -> AuthEnvironment {
         let userPoolConfigData = makeDefaultUserPoolConfigData()
         let identityPoolConfigData = makeIdentityConfigData()
@@ -115,7 +129,8 @@ enum Defaults {
         let userPoolEnvironment = BasicUserPoolEnvironment(userPoolConfiguration: userPoolConfigData,
                                                            cognitoUserPoolFactory: userPoolFactory)
         let authenticationEnvironment = BasicAuthenticationEnvironment(srpSignInEnvironment: srpSignInEnvironment,
-                                                                       userPoolEnvironment: userPoolEnvironment)
+                                                                       userPoolEnvironment: userPoolEnvironment,
+                                                                       hostedUIEnvironment: hostedUIEnvironment)
         let authorizationEnvironment = BasicAuthorizationEnvironment(
             identityPoolConfiguration: identityPoolConfigData,
             cognitoIdentityFactory: identityPoolFactory)
@@ -162,7 +177,6 @@ enum Defaults {
                               userName: String,
                               signedInDate: Date = Date(),
                               signInMethod: SignInMethod = .unknown) -> AuthState {
-        let authConfig = makeAuthConfiguration()
         let tokens = makeCognitoUserPoolTokens()
 
         let signedInData = SignedInData(userId: userId,
