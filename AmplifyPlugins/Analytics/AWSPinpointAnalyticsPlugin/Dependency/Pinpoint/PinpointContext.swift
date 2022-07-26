@@ -8,8 +8,8 @@
 import Amplify
 import AWSClientRuntime
 import AWSPinpoint
-import AWSPluginsCore
 import Foundation
+@_spi(KeychainStore) import AWSPluginsCore
 
 // MARK: - UserDefaultsBehaviour
 protocol UserDefaultsBehaviour {
@@ -233,7 +233,7 @@ class PinpointContext {
     private static func retrieveUniqueId(applicationId: String,
                                          storage: PinpointContextStorage) -> String {
         // 1. Look for the UniqueId in the Keychain
-        if let deviceUniqueId = try? storage.keychainStore.getString(Constants.Keychain.uniqueIdKey) {
+        if let deviceUniqueId = try? storage.keychainStore._getString(Constants.Keychain.uniqueIdKey) {
             return deviceUniqueId
         }
 
@@ -241,7 +241,7 @@ class PinpointContext {
         if let legacyUniqueId = legacyUniqueId(applicationId: applicationId, storage: storage) {
             do {
                 // Attempt to migrate to Keychain
-                try storage.keychainStore.set(legacyUniqueId, key: Constants.Keychain.uniqueIdKey)
+                try storage.keychainStore._set(legacyUniqueId, key: Constants.Keychain.uniqueIdKey)
                 log.verbose("Migrated Legacy Pinpoint UniqueId to Keychain: \(legacyUniqueId)")
 
                 // Delete the old file
@@ -264,7 +264,7 @@ class PinpointContext {
         if let userDefaultsUniqueId = storage.userDefaults.string(forKey: Constants.Keychain.uniqueIdKey) {
             // Attempt to migrate to Keychain
             do {
-                try storage.keychainStore.set(userDefaultsUniqueId, key: Constants.Keychain.uniqueIdKey)
+                try storage.keychainStore._set(userDefaultsUniqueId, key: Constants.Keychain.uniqueIdKey)
                 log.verbose("Migrated Pinpoint UniqueId from UserDefaults to Keychain: \(userDefaultsUniqueId)")
 
                 // Delete the UserDefault entry
@@ -279,7 +279,7 @@ class PinpointContext {
         // 4. Create a new ID
         let newUniqueId = UUID().uuidString
         do {
-            try storage.keychainStore.set(newUniqueId, key: Constants.Keychain.uniqueIdKey)
+            try storage.keychainStore._set(newUniqueId, key: Constants.Keychain.uniqueIdKey)
             log.verbose("Created new Pinpoint UniqueId and saved it to Keychain: \(newUniqueId)")
         } catch {
             log.error("Failed to save UniqueId in Keychain")

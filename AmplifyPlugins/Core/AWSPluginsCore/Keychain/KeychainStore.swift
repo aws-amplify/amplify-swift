@@ -10,17 +10,18 @@ import Security
 
 public protocol KeychainStoreBehavior {
 
-    /** Getting data */
-    func getString(_ key: String) throws -> String
-    func getData(_ key: String) throws -> Data
-
-    /** Setting data */
-    func set(_ value: String, key: String) throws
-    func set(_ value: Data, key: String) throws
-
-    /** Removing data */
-    func remove(_ key: String) throws
-    func removeAll() throws
+    @_spi(KeychainStore)
+    func _getString(_ key: String) throws -> String
+    @_spi(KeychainStore)
+    func _getData(_ key: String) throws -> Data
+    @_spi(KeychainStore)
+    func _set(_ value: String, key: String) throws
+    @_spi(KeychainStore)
+    func _set(_ value: Data, key: String) throws
+    @_spi(KeychainStore)
+    func _remove(_ key: String) throws
+    @_spi(KeychainStore)
+    func _removeAll() throws
 }
 
 public struct KeychainStore: KeychainStoreBehavior {
@@ -48,9 +49,10 @@ public struct KeychainStore: KeychainStoreBehavior {
         self.init(attributes: attributes)
     }
 
-    public func getString(_ key: String) throws -> String {
+    @_spi(KeychainStore)
+    public func _getString(_ key: String) throws -> String {
 
-        let data = try getData(key)
+        let data = try _getData(key)
 
         guard let string = String(data: data, encoding: .utf8) else {
             throw KeychainStoreError.conversionError("Unable to create String from Data retrieved")
@@ -59,7 +61,8 @@ public struct KeychainStore: KeychainStoreBehavior {
 
     }
 
-    public func getData(_ key: String) throws -> Data {
+    @_spi(KeychainStore)
+    public func _getData(_ key: String) throws -> Data {
         var query = attributes.query()
 
         query[Constants.MatchLimit] = Constants.MatchLimitOne
@@ -83,14 +86,16 @@ public struct KeychainStore: KeychainStoreBehavior {
         }
     }
 
-    public func set(_ value: String, key: String) throws {
+    @_spi(KeychainStore)
+    public func _set(_ value: String, key: String) throws {
         guard let data = value.data(using: .utf8, allowLossyConversion: false) else {
             throw KeychainStoreError.conversionError("Unable to create Data from String retrieved")
         }
-        try set(data, key: key)
+        try _set(data, key: key)
     }
 
-    public func set(_ value: Data, key: String) throws {
+    @_spi(KeychainStore)
+    public func _set(_ value: Data, key: String) throws {
         var query = attributes.query()
         query[Constants.AttributeAccount] = key
 
@@ -117,8 +122,8 @@ public struct KeychainStore: KeychainStoreBehavior {
         }
     }
 
-    // MARK: 
-    public func remove(_ key: String) throws {
+    @_spi(KeychainStore)
+    public func _remove(_ key: String) throws {
         var query = attributes.query()
         query[Constants.AttributeAccount] = key
 
@@ -127,8 +132,9 @@ public struct KeychainStore: KeychainStoreBehavior {
             throw KeychainStoreError.securityError(status)
         }
     }
-
-    public func removeAll() throws {
+    
+    @_spi(KeychainStore)
+    public func _removeAll() throws {
         var query = attributes.query()
 #if !os(iOS) && !os(watchOS) && !os(tvOS)
         query[Constants.MatchLimit] = Constants.MatchLimitAll
@@ -155,6 +161,10 @@ extension KeychainStore {
         static let AttributeGeneric = String(kSecAttrGeneric)
         static let AttributeLabel = String(kSecAttrLabel)
         static let AttributeComment = String(kSecAttrComment)
+        static let AttributeAccessible = String(kSecAttrAccessible)
+        
+        /** Attribute Accessible Constants */
+        static let AttributeAccessibleAfterFirstUnlock = String(kSecAttrAccessibleAfterFirstUnlock)
 
         /** Search Constants */
         static let MatchLimit = String(kSecMatchLimit)
