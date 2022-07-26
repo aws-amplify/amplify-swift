@@ -27,7 +27,8 @@ extension SignUpEventData: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "username": username.masked(),
-            "password": password.redacted()
+            "password": password.redacted(),
+            "attributes": attributes
         ]
     }
 }

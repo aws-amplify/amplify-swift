@@ -320,4 +320,65 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
         wait(for: [operationExpectation], timeout: networkTimeout)
     }
 
+    ///  Test  signIn for a user created by admin with temporary password
+    ///  The workflow will return a next step confirmSignInWithNewPassword, which should then work with confirm sign in
+    ///
+    /// - Given: A user created by admin with temporary password  in Cognito user pool
+    /// - When:
+    ///    - I invoke Amplify.Auth.signIn
+    /// - Then:
+    ///    - I should get next step as confirmSignInWithNewPassword
+    ///   Then:
+    ///      I should call Amplify.Auth.confirm signIn with the new password and required attributes,
+    ///      which should succeed with next step as done
+    ///
+    /// - SETUP
+    ///         Create new user in Cognito, only specify username and password, which should entered below in the test.
+    ///         Make sure that you do not enter email and phone number, so that adding a new attribute could also be tested
+    ///
+    ///   DISABLED TEST, because it needs special setup
+    func testNewPasswordRequired() {
+
+        let username = "YOUR USERNAME CREATED IN COGNITO FOR TESTING TEMP PASSWORD FLOW"
+        let tempPassword = "YOUR TEMP PASSWORD THAT WAS SET"
+        let newPassword = "@mplifyI$Awesom3"
+
+        let operationExpectation = expectation(description: "Operation should complete")
+
+        Amplify.Auth.signIn(username: username, password: tempPassword, options: .none) { result in
+            switch result {
+            case .success(let data):
+                if case .confirmSignInWithNewPassword = data.nextStep {
+                    operationExpectation.fulfill()
+                }
+            case .failure(let error):
+                XCTFail("SignIn with invalid auth flow should not succeed: \(error)")
+            }
+        }
+
+        wait(for: [operationExpectation], timeout: networkTimeout)
+
+
+        let confirmOperationExpectation = expectation(description: "Confirm new password should succeed")
+
+        Amplify.Auth.confirmSignIn(
+            challengeResponse: newPassword,
+            options: .init(
+                userAttributes: [
+                    AuthUserAttribute(.email, value: defaultTestEmail)
+                ])) { result in
+                    switch result {
+                    case .success(let data):
+                        if case .done = data.nextStep {
+                            confirmOperationExpectation.fulfill()
+                        }
+                    case .failure(let error):
+                        XCTFail("Failed to confirm new password with error: \(error)")
+                    }
+                }
+
+        wait(for: [confirmOperationExpectation], timeout: networkTimeout)
+
+    }
+
 }

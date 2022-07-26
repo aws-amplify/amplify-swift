@@ -15,7 +15,7 @@ struct VerifySignInChallenge: Action {
 
     let challenge: RespondToAuthChallenge
 
-    let answer: String
+    let confirmSignEventData: ConfirmSignInEventData
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
         logVerbose("\(#fileID) Starting execution", environment: environment)
@@ -28,7 +28,15 @@ struct VerifySignInChallenge: Action {
             let responseKey = try challenge.getChallengeKey()
             let userPoolClientId = userpoolEnv.userPoolConfiguration.clientId
 
-            var challengeResponses = ["USERNAME": username, responseKey: answer]
+            var challengeResponses = [
+                "USERNAME": username,
+                responseKey: confirmSignEventData.answer
+            ]
+
+            // Add the attributes to the challenge response
+            confirmSignEventData.attributes.forEach {
+                challengeResponses[$0.key] = $0.value
+            }
 
             if let clientSecret = userpoolEnv.userPoolConfiguration.clientSecret {
 

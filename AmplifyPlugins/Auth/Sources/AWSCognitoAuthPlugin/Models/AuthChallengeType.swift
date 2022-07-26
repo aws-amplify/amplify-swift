@@ -8,7 +8,7 @@
 import Foundation
 import AWSCognitoIdentityProvider
 
-public enum AuthChallengeType {
+enum AuthChallengeType {
 
     case smsMfa
 

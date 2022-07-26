@@ -13,7 +13,7 @@ struct SignInChallengeEvent: StateMachineEvent {
 
         case waitForAnswer(RespondToAuthChallenge)
 
-        case verifyChallengeAnswer(String)
+        case verifyChallengeAnswer(ConfirmSignInEventData)
 
         case verified
 

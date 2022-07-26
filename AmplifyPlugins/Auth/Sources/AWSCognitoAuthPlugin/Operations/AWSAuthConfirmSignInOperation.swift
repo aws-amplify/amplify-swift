@@ -102,8 +102,17 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
         token: AuthStateMachine.StateChangeListenerToken?) {
             switch challengeState {
             case .waitingForAnswer:
-                let answer = self.request.challengeResponse
-                let event = SignInChallengeEvent(eventType: .verifyChallengeAnswer(answer))
+                // Convert the attributes to [String: String]
+                let attributePrefix = AuthPluginConstants.cognitoIdentityUserUserAttributePrefix
+                let attributes = request.options.userAttributes?.reduce(
+                    into: [String: String]()) {
+                        $0[attributePrefix + $1.key.rawValue] = $1.value
+                    } ?? [:]
+                let confirmSignInData = ConfirmSignInEventData(
+                    answer: self.request.challengeResponse,
+                    attributes: attributes)
+                let event = SignInChallengeEvent(
+                    eventType: .verifyChallengeAnswer(confirmSignInData))
                 self.authStateMachine.send(event)
 
             case .verifying:
