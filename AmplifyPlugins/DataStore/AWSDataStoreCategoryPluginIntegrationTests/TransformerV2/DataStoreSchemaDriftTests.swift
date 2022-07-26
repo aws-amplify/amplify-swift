@@ -6,12 +6,11 @@
 //
 
 import XCTest
-import AmplifyPlugins
 import Combine
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 /*
  # 16 Schema drift scenario
@@ -43,8 +42,8 @@ class DataStoreSchemaDriftTests: SyncEngineIntegrationV2TestBase {
         let version: String = "1"
     }
 
-    func testSchemaDrift() throws {
-        setUp(withModels: TestModelRegistration())
+    func testSchemaDrift() async throws {
+        await setUp(withModels: TestModelRegistration())
         let startSuccess = expectation(description: "start success")
         try startAmplify {
             startSuccess.fulfill()

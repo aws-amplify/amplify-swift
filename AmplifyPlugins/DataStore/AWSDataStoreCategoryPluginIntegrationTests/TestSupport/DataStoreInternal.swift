@@ -6,7 +6,8 @@
 //
 
 @testable import Amplify
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
+import Foundation
 
 struct DataStoreInternal {
 
