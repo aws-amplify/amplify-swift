@@ -20,8 +20,7 @@ extension DataStoreCategory: DataStoreBaseBehavior {
 
     public func query<M: Model>(_ modelType: M.Type,
                                 byIdentifier id: String,
-                                completion: (DataStoreResult<M?>) -> Void) where M: ModelIdentifiable,
-                                                                                 M.IdentifierFormat == ModelIdentifierFormat.Default {
+                                completion: (DataStoreResult<M?>) -> Void) where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default {
         plugin.query(modelType, byIdentifier: id, completion: completion)
     }
 
@@ -54,16 +53,16 @@ extension DataStoreCategory: DataStoreBaseBehavior {
 
     public func delete<M: Model>(_ modelType: M.Type,
                                  withIdentifier id: String,
-                                 where predicate: QueryPredicate?,
-                                 completion: @escaping DataStoreCallback<Void>) where M: ModelIdentifiable,
-                                                                                      M.IdentifierFormat == ModelIdentifierFormat.Default {
+                                 where predicate: QueryPredicate? = nil,
+                                 completion: @escaping DataStoreCallback<Void>)
+    where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default {
 
         plugin.delete(modelType, withIdentifier: id, where: predicate, completion: completion)
     }
 
     public func delete<M: Model>(_ modelType: M.Type,
                                  withIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
-                                 where predicate: QueryPredicate?,
+                                 where predicate: QueryPredicate? = nil,
                                  completion: @escaping DataStoreCallback<Void>) where M: ModelIdentifiable {
         plugin.delete(modelType, withIdentifier: id, where: predicate, completion: completion)
     }
