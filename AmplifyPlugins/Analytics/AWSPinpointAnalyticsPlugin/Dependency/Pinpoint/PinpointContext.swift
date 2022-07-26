@@ -146,7 +146,8 @@ class PinpointContext {
                                                              isOptOut: configuration.isApplicationLevelOptOut),
                                         pinpointClient: pinpointClient,
                                         currentDevice: currentDevice,
-                                        userDefaults: userDefaults)
+                                        userDefaults: userDefaults,
+                                        keychain: keychainStore)
 
         sessionClient = SessionClient(archiver: archiver,
                                       configuration: .init(appId: configuration.appId,
