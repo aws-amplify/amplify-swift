@@ -147,7 +147,7 @@ actor EndpointClient: EndpointClientBehaviour {
 
         // 2. Look for a valid PinpointEndpointProfile object stored in the Keychain. It needs to match the current applicationId, otherwise we'll discard it.
         if let endpointProfileData = Self.getStoredData(from: keychain, forKey: Constants.endpointProfileKey, fallbackTo: userDefaults),
-            let decodedEndpointProfile = try? archiver.decode(PinpointEndpointProfile.self, from: endpointProfileData), decodedEndpointProfile.applicationId == configuration.appId {
+		   let decodedEndpointProfile = try? archiver.decode(PinpointEndpointProfile.self, from: endpointProfileData), decodedEndpointProfile.applicationId == configuration.appId {
             return await configure(endpointProfile: decodedEndpointProfile)
         }
 
