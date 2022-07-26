@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/awslabs/aws-sdk-swift.git",
         "state": {
           "branch": null,
-          "revision": "e907e654466a8bfafbcd79a78cb87964abecb1a0",
-          "version": "0.2.4"
+          "revision": "497c2034a00a507806611eec42727fb8ec9b5d69",
+          "version": "0.2.5"
         }
       },
       {
@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/awslabs/smithy-swift.git",
         "state": {
           "branch": null,
-          "revision": "5c76b8f05f70f2b24276a2ae192fa8bd9c04beb6",
-          "version": "0.2.3"
+          "revision": "46e2e69abc12ad820fcb31834045a1c9e1d053c1",
+          "version": "0.2.4"
         }
       },
       {

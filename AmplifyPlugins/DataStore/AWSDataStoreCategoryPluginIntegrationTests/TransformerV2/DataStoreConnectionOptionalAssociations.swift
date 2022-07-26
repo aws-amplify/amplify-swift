@@ -6,12 +6,10 @@
 //
 
 import XCTest
-import AmplifyPlugins
-import AWSMobileClient
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-@testable import AWSDataStoreCategoryPlugin
+@testable import AWSDataStorePlugin
 
 /*
 
@@ -69,8 +67,8 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         let version: String = "1"
     }
 
-    func testSaveCommentThenQuery() throws {
-        setUp(withModels: TestModelRegistration())
+    func testSaveCommentThenQuery() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         guard let comment = saveComment() else {
@@ -80,8 +78,8 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         _ = queryComment(id: comment.id)
     }
 
-    func testSavePostThenQuery() throws {
-        setUp(withModels: TestModelRegistration())
+    func testSavePostThenQuery() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         guard let post = savePost() else {
@@ -91,8 +89,8 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         _ = queryPost(id: post.id)
     }
 
-    func testSaveBlogThenQuery() throws {
-        setUp(withModels: TestModelRegistration())
+    func testSaveBlogThenQuery() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
 
         guard let blog = saveBlog() else {
@@ -102,8 +100,8 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         _ = queryBlog(id: blog.id)
     }
 
-    func testSaveCommentThenUpdateWithPost() throws {
-        setUp(withModels: TestModelRegistration())
+    func testSaveCommentThenUpdateWithPost() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard var comment = saveComment(),
               let post = savePost() else {
@@ -128,8 +126,8 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         XCTAssertEqual(queriedPost.comments?.count, 1)
     }
 
-    func testSavePostThenUpdateWithBlog() throws {
-        setUp(withModels: TestModelRegistration())
+    func testSavePostThenUpdateWithBlog() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard var post = savePost(),
               let blog = saveBlog() else {
@@ -154,8 +152,8 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         XCTAssertEqual(queriedBlog.posts?.count, 1)
     }
 
-    func testUpdateCommentWithPostAndPostWithBlog() throws {
-        setUp(withModels: TestModelRegistration())
+    func testUpdateCommentWithPostAndPostWithBlog() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard var comment = saveComment(),
               var post = savePost(),
@@ -177,8 +175,8 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         XCTAssertEqual(queriedComment.post?.blog?.id, blog.id)
     }
 
-    func testRemovePostFromCommentAndBlogFromPost() throws {
-        setUp(withModels: TestModelRegistration())
+    func testRemovePostFromCommentAndBlogFromPost() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let blog = saveBlog(),
               let post = savePost(withBlog: blog),
@@ -215,8 +213,8 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         XCTAssertNil(queriedPostWithoutBlog.blog)
     }
 
-    func testQueryAllPost() throws {
-        setUp(withModels: TestModelRegistration())
+    func testQueryAllPost() async throws {
+        await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let querySuccess = expectation(description: "query success")
         Amplify.DataStore.query(Post8.self) { result in
