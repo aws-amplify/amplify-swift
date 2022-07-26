@@ -11,16 +11,44 @@ import Security
 public protocol KeychainStoreBehavior {
 
     @_spi(KeychainStore)
+    /// Get a string value from the Keychain based on the key.
+    /// This System Programming Interface (SPI) may have breaking changes in future updates.
+    /// - Parameter key: A String key use to look up the value in the Keychain
+    /// - Returns: A string value
     func _getString(_ key: String) throws -> String
+    
     @_spi(KeychainStore)
+    /// Get a data value from the Keychain based on the key.
+    /// This System Programming Interface (SPI) may have breaking changes in future updates.
+    /// - Parameter key: A String key use to look up the value in the Keychain
+    /// - Returns: A data value
     func _getData(_ key: String) throws -> Data
+    
     @_spi(KeychainStore)
+    /// Set a key-value pair in the Keychain.
+    /// This System Programming Interface (SPI) may have breaking changes in future updates.
+    /// - Parameters:
+    ///   - value: A string value to store in Keychain
+    ///   - key: A String key for the value to store in the Keychain
     func _set(_ value: String, key: String) throws
+    
     @_spi(KeychainStore)
+    /// Set a key-value pair in the Keychain.
+    /// This iSystem Programming Interface (SPI) may have breaking changes in future updates.
+    /// - Parameters:
+    ///   - value: A data value to store in Keychain
+    ///   - key: A String key for the value to store in the Keychain
     func _set(_ value: Data, key: String) throws
+    
     @_spi(KeychainStore)
+    /// Remove key-value pair from Keychain based on the provided key.
+    /// This System Programming Interface (SPI) may have breaking changes in future updates.
+    /// - Parameter key: A String key to delete the key-value pair
     func _remove(_ key: String) throws
+    
     @_spi(KeychainStore)
+    /// Removes all key-value pair in the Keychain.
+    /// This System Programming Interface (SPI) may have breaking changes in future updates.
     func _removeAll() throws
 }
 
@@ -50,6 +78,10 @@ public struct KeychainStore: KeychainStoreBehavior {
     }
 
     @_spi(KeychainStore)
+    /// Get a string value from the Keychain based on the key.
+    /// This System Programming Interface (SPI) may have breaking changes in future updates.
+    /// - Parameter key: A String key use to look up the value in the Keychain
+    /// - Returns: A string value
     public func _getString(_ key: String) throws -> String {
 
         let data = try _getData(key)
@@ -62,6 +94,10 @@ public struct KeychainStore: KeychainStoreBehavior {
     }
 
     @_spi(KeychainStore)
+    /// Get a data value from the Keychain based on the key.
+    /// This System Programming Interface (SPI) may have breaking changes in future updates.
+    /// - Parameter key: A String key use to look up the value in the Keychain
+    /// - Returns: A data value
     public func _getData(_ key: String) throws -> Data {
         var query = attributes.query()
 
@@ -87,6 +123,11 @@ public struct KeychainStore: KeychainStoreBehavior {
     }
 
     @_spi(KeychainStore)
+    /// Set a key-value pair in the Keychain.
+    /// This System Programming Interface (SPI) may have breaking changes in future updates.
+    /// - Parameters:
+    ///   - value: A string value to store in Keychain
+    ///   - key: A String key for the value to store in the Keychain
     public func _set(_ value: String, key: String) throws {
         guard let data = value.data(using: .utf8, allowLossyConversion: false) else {
             throw KeychainStoreError.conversionError("Unable to create Data from String retrieved")
@@ -95,6 +136,11 @@ public struct KeychainStore: KeychainStoreBehavior {
     }
 
     @_spi(KeychainStore)
+    /// Set a key-value pair in the Keychain.
+    /// This iSystem Programming Interface (SPI) may have breaking changes in future updates.
+    /// - Parameters:
+    ///   - value: A data value to store in Keychain
+    ///   - key: A String key for the value to store in the Keychain
     public func _set(_ value: Data, key: String) throws {
         var query = attributes.query()
         query[Constants.AttributeAccount] = key
@@ -123,6 +169,9 @@ public struct KeychainStore: KeychainStoreBehavior {
     }
 
     @_spi(KeychainStore)
+    /// Remove key-value pair from Keychain based on the provided key.
+    /// This System Programming Interface (SPI) may have breaking changes in future updates.
+    /// - Parameter key: A String key to delete the key-value pair
     public func _remove(_ key: String) throws {
         var query = attributes.query()
         query[Constants.AttributeAccount] = key
@@ -134,6 +183,8 @@ public struct KeychainStore: KeychainStoreBehavior {
     }
     
     @_spi(KeychainStore)
+    /// Removes all key-value pair in the Keychain.
+    /// This System Programming Interface (SPI) may have breaking changes in future updates.
     public func _removeAll() throws {
         var query = attributes.query()
 #if !os(iOS) && !os(watchOS) && !os(tvOS)
