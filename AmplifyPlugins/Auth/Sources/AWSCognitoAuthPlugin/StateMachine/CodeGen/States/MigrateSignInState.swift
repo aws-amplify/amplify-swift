@@ -10,7 +10,7 @@ import Foundation
 enum MigrateSignInState: State {
 
     case notStarted
-    case initiating(SignInEventData)
+    case signingIn(SignInEventData)
     case signedIn(SignedInData)
     case error(SignInError)
 }
@@ -20,7 +20,7 @@ extension MigrateSignInState {
     var type: String {
         switch self {
         case .notStarted: return "MigrateSignInState.notStarted"
-        case .initiating: return "MigrateSignInState.initiating"
+        case .signingIn: return "MigrateSignInState.signingIn"
         case .signedIn: return "MigrateSignInState.signedIn"
         case .error: return "MigrateSignInState.error"
         }
@@ -30,7 +30,7 @@ extension MigrateSignInState {
         switch (lhs, rhs) {
         case (.notStarted, .notStarted):
             return true
-        case (.initiating(let lhsData), .initiating(let rhsData)):
+        case (.signingIn(let lhsData), .signingIn(let rhsData)):
             return lhsData == rhsData
         case (.signedIn(let lhsData), .signedIn(let rhsData)):
             return lhsData == rhsData

@@ -20,7 +20,7 @@ extension CustomSignInState {
     var type: String {
         switch self {
         case .notStarted: return "CustomSignInState.notStarted"
-        case .initiating: return "CustomSignInState.initiating"
+        case .initiating: return "CustomSignInState.signingIn"
         case .signedIn: return "CustomSignInState.signedIn"
         case .error: return "CustomSignInState.error"
         }

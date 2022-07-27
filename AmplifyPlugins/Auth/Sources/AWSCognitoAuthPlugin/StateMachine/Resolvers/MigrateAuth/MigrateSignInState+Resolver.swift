@@ -18,20 +18,20 @@ extension MigrateSignInState {
             byApplying event: StateMachineEvent
         ) -> StateResolution<MigrateSignInState> {
 
-            guard let customSignInEvent = event as? SignInEvent else {
+            guard let signInEvent = event as? SignInEvent else {
                 return .from(oldState)
             }
 
-            if case .throwAuthError(let authError) = customSignInEvent.eventType {
+            if case .throwAuthError(let authError) = signInEvent.eventType {
                 return errorStateWithCancelSignIn(authError)
             }
 
             switch oldState {
 
             case .notStarted:
-                return resolveNotStarted(byApplying: customSignInEvent)
-            case .initiating:
-                return resolveInitiating(from: oldState, byApplying: customSignInEvent)
+                return resolveNotStarted(byApplying: signInEvent)
+            case .signingIn:
+                return resolveInitiating(from: oldState, byApplying: signInEvent)
             default:
                 return .from(oldState)
 
@@ -60,7 +60,7 @@ extension MigrateSignInState {
                     password: password,
                     clientMetadata: signInEventData.clientMetadata)
                 return StateResolution(
-                    newState: MigrateSignInState.initiating(signInEventData),
+                    newState: MigrateSignInState.signingIn(signInEventData),
                     actions: [action]
                 )
             default:
