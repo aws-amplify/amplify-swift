@@ -34,9 +34,12 @@ extension SignOutState {
                 }
                 return resolveRevokingToken(byApplying: signOutEvent, from: oldState)
             case .signingOutLocally(let signedInData):
-                return resolveClearingCredentialStore(byApplying: event,
-                                                      from: oldState,
-                                                      signedInData: signedInData)
+                guard let signOutEvent = event as? SignOutEvent else {
+                    return .from(oldState)
+                }
+                return resolveSigningOutLocally(byApplying: signOutEvent,
+                                                from: oldState,
+                                                signedInData: signedInData)
             case .signingOutHostedUI:
                 guard let signOutEvent = event as? SignOutEvent else {
                     return .from(oldState)
@@ -116,7 +119,9 @@ extension SignOutState {
                                           from oldState: SignOutState) -> StateResolution<SignOutState> {
             switch signOutEvent.eventType {
             case .signOutLocally(let signedInData):
-                return .from(.signingOutLocally(signedInData))
+                let action = SignOutLocally()
+                return .init(newState: .signingOutLocally(signedInData),
+                             actions: [action])
             case .signedOutFailure(let error):
                 return .from(.error(error))
             default:
@@ -124,18 +129,16 @@ extension SignOutState {
             }
         }
 
-        private func resolveClearingCredentialStore(byApplying event: StateMachineEvent,
-                                                    from oldState: SignOutState,
-                                                    signedInData: SignedInData)
+        private func resolveSigningOutLocally(
+            byApplying event: SignOutEvent,
+            from oldState: SignOutState,
+            signedInData: SignedInData)
         -> StateResolution<SignOutState> {
-            guard let authEvent = event.isAuthEvent else {
-                return .from(oldState)
-            }
-            switch authEvent {
-            case .receivedCachedCredentials:
+            switch event.eventType {
+            case .signedOutSuccess:
                 let signedOutData = SignedOutData(lastKnownUserName: signedInData.userName)
                 return .from(.signedOut(signedOutData))
-            case .cachedCredentialsFailed:
+            case .signedOutFailure:
                 let error = AuthenticationError.unknown(message: "Failed in clearing data from store")
                 return .from(.error(error))
             default:

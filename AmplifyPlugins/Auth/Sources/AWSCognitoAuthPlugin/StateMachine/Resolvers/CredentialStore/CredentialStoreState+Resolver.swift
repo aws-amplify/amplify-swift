@@ -59,8 +59,8 @@ extension CredentialStoreState {
         ) -> StateResolution<StateType> {
 
             switch credentialStoreEvent.eventType {
-            case .loadCredentialStore:
-                let action = LoadCredentialStore()
+            case .loadCredentialStore(let type):
+                let action = LoadCredentialStore(credentialStoreType: type)
                 let resolution = StateResolution(
                     newState: CredentialStoreState.loadingStoredCredentials,
                     actions: [action]
@@ -114,8 +114,8 @@ extension CredentialStoreState {
             byApplying credentialStoreEvent: CredentialStoreEvent
         ) -> StateResolution<StateType> {
             switch credentialStoreEvent.eventType {
-            case .loadCredentialStore:
-                let action = LoadCredentialStore()
+            case .loadCredentialStore(let type):
+                let action = LoadCredentialStore(credentialStoreType: type)
                 let resolution = StateResolution(
                     newState: CredentialStoreState.loadingStoredCredentials,
                     actions: [action]
@@ -128,8 +128,8 @@ extension CredentialStoreState {
                     actions: [action]
                 )
                 return resolution
-            case .clearCredentialStore:
-                let action = ClearCredentialStore()
+            case .clearCredentialStore(let type):
+                let action = ClearCredentialStore(dataStoreType: type)
                 let resolution = StateResolution(
                     newState: CredentialStoreState.clearingCredentials,
                     actions: [action]
