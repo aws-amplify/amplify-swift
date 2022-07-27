@@ -44,7 +44,7 @@ class LoadCredentialsTests: XCTestCase {
 
         let environment = CredentialEnvironment(authConfiguration: authConfig, credentialStoreEnvironment: credentialStoreEnv)
 
-        let action = LoadCredentialStore()
+        let action = LoadCredentialStore(credentialStoreType: .amplifyCredentials)
         action.execute(withDispatcher: MockDispatcher { event in
 
             guard let event = event as? CredentialStoreEvent else {
@@ -54,7 +54,11 @@ class LoadCredentialsTests: XCTestCase {
 
             if case let .completedOperation(credentials)  = event.eventType {
                 XCTAssertNotNil(credentials)
-                XCTAssertEqual(credentials, testData)
+                if case .amplifyCredentials(let fetchedCredentials) = credentials {
+                    XCTAssertEqual(fetchedCredentials, testData)
+                } else {
+                    XCTFail("Fetched incorrect credentials")
+                }
                 loadCredentialHandlerInvoked.fulfill()
             }
         }, environment: environment)
@@ -76,7 +80,7 @@ class LoadCredentialsTests: XCTestCase {
 
         let environment = MockInvalidEnvironment()
 
-        let action = LoadCredentialStore()
+        let action = LoadCredentialStore(credentialStoreType: .amplifyCredentials)
         action.execute(withDispatcher: MockDispatcher { event in
 
             guard let event = event as? CredentialStoreEvent else {
@@ -127,7 +131,7 @@ class LoadCredentialsTests: XCTestCase {
 
         let environment = CredentialEnvironment(authConfiguration: authConfig, credentialStoreEnvironment: credentialStoreEnv)
 
-        let action = LoadCredentialStore()
+        let action = LoadCredentialStore(credentialStoreType: .amplifyCredentials)
         action.execute(withDispatcher: MockDispatcher { event in
 
             guard let event = event as? CredentialStoreEvent else {
@@ -181,7 +185,7 @@ class LoadCredentialsTests: XCTestCase {
 
         let environment = CredentialEnvironment(authConfiguration: authConfig, credentialStoreEnvironment: credentialStoreEnv)
 
-        let action = LoadCredentialStore()
+        let action = LoadCredentialStore(credentialStoreType: .amplifyCredentials)
         action.execute(withDispatcher: MockDispatcher { event in
 
             guard let event = event as? CredentialStoreEvent else {
