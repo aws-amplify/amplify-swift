@@ -20,7 +20,8 @@ extension DataStoreCategory: DataStoreBaseBehavior {
 
     public func query<M: Model>(_ modelType: M.Type,
                                 byIdentifier id: String,
-                                completion: (DataStoreResult<M?>) -> Void) where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default {
+                                completion: (DataStoreResult<M?>) -> Void) where M: ModelIdentifiable,
+                                                                                 M.IdentifierFormat == ModelIdentifierFormat.Default {
         plugin.query(modelType, byIdentifier: id, completion: completion)
     }
 
