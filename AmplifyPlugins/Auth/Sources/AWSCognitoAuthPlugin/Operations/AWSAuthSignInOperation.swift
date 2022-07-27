@@ -20,15 +20,12 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
                                      AuthSignInOperation {
 
     let authStateMachine: AuthStateMachine
-    let credentialStoreBehaviour: CredentialStoreStateBehaviour
 
     init(_ request: AuthSignInRequest,
          authStateMachine: AuthStateMachine,
-         credentialStoreClientFactory: CredentialStoreClientFactory,
          resultListener: ResultListener?) {
 
         self.authStateMachine = authStateMachine
-        self.credentialStoreBehaviour = credentialStoreClientFactory()
         super.init(categoryType: .auth,
                    eventName: HubPayload.EventName.Auth.signInAPI,
                    request: request,
@@ -108,28 +105,14 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
     }
 
     private func sendSignInEvent() {
-        Task {
-            var deviceMetadata = DeviceMetadata.noData
-
-            // Fetch Device metadata from the keychain if it exists
-            if let username = request.username,
-               let data = try? await credentialStoreBehaviour.fetchData(
-                type: .deviceMetadata(username: username)),
-               case .deviceMetadata(let fetchedDeviceMetadata, _) = data {
-                deviceMetadata = fetchedDeviceMetadata
-            }
-
-            let signInData = SignInEventData(
-                username: request.username,
-                password: request.password,
-                clientMetadata: clientMetadata(),
-                deviceMetadata: deviceMetadata,
-                signInMethod: .apiBased(authFlowType())
-            )
-            let event = AuthenticationEvent.init(eventType: .signInRequested(signInData))
-            authStateMachine.send(event)
-        }
-
+        let signInData = SignInEventData(
+            username: request.username,
+            password: request.password,
+            clientMetadata: clientMetadata(),
+            signInMethod: .apiBased(authFlowType())
+        )
+        let event = AuthenticationEvent.init(eventType: .signInRequested(signInData))
+        authStateMachine.send(event)
     }
 
     private func sendCancelSignUpEvent() {

@@ -20,19 +20,25 @@ extension SignInState {
 
             switch oldState {
             case .notStarted:
-                if case .initiateSignInWithSRP(let signInEventData) = event.isSignInEvent {
-                    let action = StartSRPFlow(signInEventData: signInEventData)
+                if case .initiateSignInWithSRP(let signInEventData, let deviceMetadata) = event.isSignInEvent {
+                    let action = StartSRPFlow(
+                        signInEventData: signInEventData,
+                        deviceMetadata: deviceMetadata)
                     return .init(newState: .signingInWithSRP(.notStarted, signInEventData),
                                  actions: [action])
                 }
-                if case .initiateCustomSignIn(let signInEventData) = event.isSignInEvent {
-                    let action = StartCustomSignInFlow(signInEventData: signInEventData)
+                if case .initiateCustomSignIn(let signInEventData, let deviceMetadata) = event.isSignInEvent {
+                    let action = StartCustomSignInFlow(
+                        signInEventData: signInEventData,
+                        deviceMetadata: deviceMetadata)
                     return .init(
                         newState: .signingInWithCustom(.notStarted, signInEventData),
                         actions: [action])
                 }
-                if case .initiateCustomSignInWithSRP(let signInEventData) = event.isSignInEvent {
-                    let action = StartSRPFlow(signInEventData: signInEventData)
+                if case .initiateCustomSignInWithSRP(let signInEventData, let deviceMetadata) = event.isSignInEvent {
+                    let action = StartSRPFlow(
+                        signInEventData: signInEventData,
+                        deviceMetadata: deviceMetadata)
                     return .init(newState: .signingInWithSRPCustom(.notStarted, signInEventData),
                                  actions: [action])
                 }

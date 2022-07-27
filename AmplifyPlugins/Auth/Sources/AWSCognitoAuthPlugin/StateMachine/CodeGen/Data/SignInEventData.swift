@@ -13,19 +13,15 @@ struct SignInEventData {
 
     let clientMetadata: [String: String]
 
-    let deviceMetadata: DeviceMetadata
-
     let signInMethod: SignInMethod
 
     init(username: String?,
          password: String?,
          clientMetadata: [String: String] = [:],
-         deviceMetadata: DeviceMetadata = .noData,
          signInMethod: SignInMethod = .unknown) {
         self.username = username
         self.password = password
         self.clientMetadata = clientMetadata
-        self.deviceMetadata = deviceMetadata
         self.signInMethod = signInMethod
     }
 }
@@ -38,7 +34,6 @@ extension SignInEventData: CustomDebugDictionaryConvertible {
             "username": username.masked(),
             "password": password.redacted(),
             "clientMetadata": clientMetadata,
-            "deviceMetadata": deviceMetadata,
             "signInMethod": signInMethod
         ]
     }

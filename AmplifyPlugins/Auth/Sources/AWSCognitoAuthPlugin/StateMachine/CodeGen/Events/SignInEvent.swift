@@ -17,11 +17,11 @@ struct SignInEvent: StateMachineEvent {
 
     enum EventType {
 
-        case initiateSignInWithSRP(SignInEventData)
+        case initiateSignInWithSRP(SignInEventData, DeviceMetadata)
 
-        case initiateCustomSignIn(SignInEventData)
+        case initiateCustomSignIn(SignInEventData, DeviceMetadata)
 
-        case initiateCustomSignInWithSRP(SignInEventData)
+        case initiateCustomSignInWithSRP(SignInEventData, DeviceMetadata)
 
         case initiateHostedUISignIn(HostedUIOptions)
 
