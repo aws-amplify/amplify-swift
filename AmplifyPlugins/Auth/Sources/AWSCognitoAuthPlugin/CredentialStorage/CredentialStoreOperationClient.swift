@@ -48,14 +48,6 @@ class CredentialStoreOperationClient: CredentialStoreStateBehaviour {
         let credentials: CredentialStoreData = try await withCheckedThrowingContinuation({ continuation in
             self.credentialStoreStateListenerToken = credentialStoreStateMachine.listen { state in
 
-                Amplify.log.verbose("""
-                    Credential Store state change:
-
-                    \(state)
-
-                    """
-                )
-
                 switch state {
                 case .success(let credentialStoreData):
 
