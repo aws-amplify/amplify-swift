@@ -13,7 +13,7 @@ struct AWSCognitoAuthCredentialStore {
     // Credential store constants
     private let service = "com.amplify.credentialStore"
     private let sessionKey = "session"
-    private let deviceMetadataKey = "deviceMetadta"
+    private let deviceMetadataKey = "deviceMetadata"
     private let authConfigurationKey = "authConfiguration"
 
     // User defaults constants
