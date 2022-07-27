@@ -29,7 +29,7 @@ extension AuthorizationState: CustomDebugDictionaryConvertible {
             additionalMetadataDictionary = ["Error": error]
 
         case .sessionEstablished(let credentials),
-                .waitingToStore(let credentials):
+                .storingCredentials(let credentials):
             return [type: credentials.debugDescription]
 
         }

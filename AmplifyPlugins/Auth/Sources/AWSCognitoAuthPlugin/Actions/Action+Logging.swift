@@ -8,6 +8,12 @@
 import Foundation
 
 extension Action {
+
+    func logError(_ message: String, environment: Environment) {
+        let logger = (environment as? AuthEnvironment)?.logger
+        logger?.error("\(message)")
+    }
+
     func logVerbose(_ message: String, environment: Environment) {
         let logger = (environment as? AuthEnvironment)?.logger
         logger?.verbose("\(message)")

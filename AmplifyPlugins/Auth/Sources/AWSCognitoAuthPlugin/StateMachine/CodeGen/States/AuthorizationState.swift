@@ -24,7 +24,7 @@ enum AuthorizationState: State {
 
     case refreshingSession(existingCredentials: AmplifyCredentials, RefreshSessionState)
 
-    case waitingToStore(AmplifyCredentials)
+    case storingCredentials(AmplifyCredentials)
 
     case sessionEstablished(AmplifyCredentials)
 
@@ -50,8 +50,8 @@ extension AuthorizationState {
             return "AuthorizationState.sessionEstablished"
         case .refreshingSession:
             return "AuthorizationState.refreshingSession"
-        case .waitingToStore:
-            return "AuthorizationState.waitingToStore"
+        case .storingCredentials:
+            return "AuthorizationState.storingCredentials"
         case .fetchingAuthSessionWithUserPool:
             return "AuthorizationState.fetchingAuthSessionWithUserPool"
         case .deletingUser:

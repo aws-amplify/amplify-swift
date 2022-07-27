@@ -16,16 +16,17 @@ class AuthStateConfiguringTests: XCTestCase {
     let oldState = AuthState.configuringAuth
 
     func testConfigureFetchCachedCredentialsReceived() {
-        let expected = AuthState.waitingForCachedCredentials(AuthConfiguration.testData)
-        let resolution = resolver.resolve(oldState: oldState,
-                                          byApplying: AuthEvent.fetchCachedCredentials)
+        let expected = AuthState.validatingCredentialsAndConfiguration
+        let resolution = resolver.resolve(
+            oldState: oldState,
+            byApplying: AuthEvent.validateCredentialAndConfiguration)
         XCTAssertEqual(resolution.newState, expected)
     }
 
     func testUnSupported() {
         func assertIfUnsupported(_ event: AuthEvent) {
             switch event.eventType {
-            case .fetchCachedCredentials:
+            case .validateCredentialAndConfiguration:
                 // Supported
                 break
             default:
