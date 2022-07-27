@@ -60,7 +60,8 @@ extension AWSCognitoAuthPlugin {
         self.authEnvironment = authEnvironment
         self.authStateMachine = authStateMachine
         self.credentialStoreStateMachine = credentialStoreStateMachine
-        self.setupStateMachine()
+        self.internalConfigure()
+        self.listenToStateMachineChanges()
         self.hubEventHandler = hubEventHandler
     }
 
@@ -97,7 +98,7 @@ extension AWSCognitoAuthPlugin {
         return URLSession.shared
     }
 
-    private func makeRamdonString() -> RandomStringBehavior {
+    private func makeRandomString() -> RandomStringBehavior {
         return RandomStringGenerator()
     }
 
@@ -172,7 +173,7 @@ extension AWSCognitoAuthPlugin {
         return BasicHostedUIEnvironment(configuration: hostedUIConfig,
                                         hostedUISessionFactory: makeHostedUISession,
                                         urlSessionFactory: makeURLSession,
-                                        randomStringFactory: makeRamdonString)
+                                        randomStringFactory: makeRandomString)
     }
 
     private func authorizationEnvironment(identityPoolConfigData: IdentityPoolConfigurationData) -> AuthorizationEnvironment {
@@ -188,6 +189,15 @@ extension AWSCognitoAuthPlugin {
                 legacyKeychainStoreFactory: makeLegacyKeychainStore(service:)
             )
         )
+    }
+
+    private func internalConfigure() {
+        let request = AuthConfigureRequest(authConfiguration: authConfiguration)
+        let operation = AuthConfigureOperation(
+            request: request,
+            authStateMachine: authStateMachine,
+            credentialStoreStateMachine: credentialStoreStateMachine)
+        self.queue.addOperation(operation)
     }
 
 }

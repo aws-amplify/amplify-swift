@@ -29,24 +29,10 @@ extension AuthState {
 
             case .configuringAuth:
                 switch isAuthEvent(event)?.eventType {
-                case .fetchCachedCredentials(let authConfiguration):
-                    let newState = AuthState.waitingForCachedCredentials(authConfiguration)
-                    return .init(newState: newState)
-                default:
-                    return .from(oldState)
-                }
-            case .waitingForCachedCredentials(let authConfiguration):
-                switch isAuthEvent(event)?.eventType {
-                case .receivedCachedCredentials(let credentials):
+                case .validateCredentialAndConfiguration(let authConfiguration, let credentials):
                     let action = ValidateCredentialsAndConfiguration(
                         authConfiguration: authConfiguration,
                         cachedCredentials: credentials)
-                    let newState = AuthState.validatingCredentialsAndConfiguration
-                    return .init(newState: newState, actions: [action])
-                case .cachedCredentialsFailed:
-                    let action = ValidateCredentialsAndConfiguration(
-                        authConfiguration: authConfiguration,
-                        cachedCredentials: .noCredentials)
                     let newState = AuthState.validatingCredentialsAndConfiguration
                     return .init(newState: newState, actions: [action])
                 default:
