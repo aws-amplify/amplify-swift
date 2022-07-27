@@ -49,6 +49,7 @@ struct ConfigurationHelper {
                                          clientId: appClientId,
                                          region: region,
                                          clientSecret: clientSecret,
+                                         authFlowType: authFlowType,
                                          hostedUIConfig: hostedUIConfig)
     }
 
@@ -73,7 +74,6 @@ struct ConfigurationHelper {
                                            signInRedirectURI: signInRedirectURI,
                                            signOutRedirectURI: signOutRedirectURI)
         return HostedUIConfigurationData(clientId: appClientId, oauth: oauth, clientSecret: nil)
-                                         authFlowType: authFlowType)
     }
 
     static func parseIdentityPoolData(_ config: JSONValue) -> IdentityPoolConfigurationData? {
