@@ -11,7 +11,7 @@ struct ClearCredentialStore: Action {
 
     let identifier = "ClearCredentialStore"
 
-    let dataStoreType: CredentialStoreRetrievalDataType
+    let dataStoreType: CredentialStoreDataType
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
@@ -36,7 +36,7 @@ struct ClearCredentialStore: Action {
                 credentialStoreData = .amplifyCredentials(.noCredentials)
             case .deviceMetadata(let username):
                 try amplifyCredentialStore.removeDevice(for: username)
-                credentialStoreData = .deviceMetadata(.noData, "")
+                credentialStoreData = .deviceMetadata(.noData, username)
             }
 
             let event = CredentialStoreEvent(

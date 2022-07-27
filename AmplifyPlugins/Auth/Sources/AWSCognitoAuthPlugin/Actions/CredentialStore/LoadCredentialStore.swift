@@ -11,7 +11,7 @@ struct LoadCredentialStore: Action {
 
     let identifier = "LoadCredentialStore"
 
-    let credentialStoreType: CredentialStoreRetrievalDataType
+    let credentialStoreType: CredentialStoreDataType
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 

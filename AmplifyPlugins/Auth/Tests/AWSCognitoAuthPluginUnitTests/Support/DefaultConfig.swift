@@ -215,7 +215,7 @@ enum Defaults {
 
 struct MockCredentialStoreOperationClient: CredentialStoreStateBehaviour {
 
-    func fetchData(type: CredentialStoreRetrievalDataType) async throws -> CredentialStoreData {
+    func fetchData(type: CredentialStoreDataType) async throws -> CredentialStoreData {
         .amplifyCredentials(.testData)
     }
 
@@ -223,7 +223,7 @@ struct MockCredentialStoreOperationClient: CredentialStoreStateBehaviour {
 
     }
 
-    func deleteData(type: CredentialStoreRetrievalDataType) async throws {
+    func deleteData(type: CredentialStoreDataType) async throws {
 
     }
 }
