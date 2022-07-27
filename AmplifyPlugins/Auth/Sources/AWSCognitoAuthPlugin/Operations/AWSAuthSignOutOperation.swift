@@ -96,7 +96,9 @@ public class AWSAuthSignOutOperation: AmplifySignOutOperation, AuthSignOutOperat
     }
 
     private func sendSignOutEvent() {
-        let signOutData = SignOutEventData(globalSignOut: request.options.globalSignOut)
+        let signOutData = SignOutEventData(
+            globalSignOut: request.options.globalSignOut,
+            presentationAnchor: request.options.presentationAnchorForWebUI)
         let event = AuthenticationEvent(eventType: .signOutRequested(signOutData))
         authStateMachine.send(event)
     }
