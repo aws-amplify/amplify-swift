@@ -9,6 +9,7 @@ import Amplify
 import AWSPluginsCore
 
 extension AWSDataStorePlugin: DataStoreBaseBehavior {
+
     // MARK: - Save
     public func save<M: Model>(_ model: M,
                                where condition: QueryPredicate? = nil,
@@ -179,7 +180,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
     public func delete<M: Model>(_ modelType: M.Type,
                                  withIdentifier identifier: String,
-                                 where predicate: QueryPredicate?,
+                                 where predicate: QueryPredicate? = nil,
                                  completion: @escaping DataStoreCallback<Void>) where M: ModelIdentifiable,
                                                                                       M.IdentifierFormat == ModelIdentifierFormat.Default {
        deleteByIdentifier(modelType,
@@ -191,7 +192,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
     public func delete<M: Model>(_ modelType: M.Type,
                                  withIdentifier identifier: ModelIdentifier<M, M.IdentifierFormat>,
-                                 where predicate: QueryPredicate?,
+                                 where predicate: QueryPredicate? = nil,
                                  completion: @escaping DataStoreCallback<Void>) where M: ModelIdentifiable {
         deleteByIdentifier(modelType,
                            modelSchema: modelType.schema,
