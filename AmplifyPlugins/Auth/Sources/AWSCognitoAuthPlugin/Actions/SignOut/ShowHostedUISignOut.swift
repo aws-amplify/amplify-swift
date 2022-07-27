@@ -52,7 +52,7 @@ class ShowHostedUISignOut: NSObject, Action {
             sessionAdapter?.showHostedUI(url: logoutURL,
                                          callbackScheme: callbackURLScheme,
                                          inPrivate: false,
-                                         presentationAnchor: nil,
+                                         presentationAnchor: signOutEvent.presentationAnchor,
                                          callback: { result in
                 switch result {
                 case .failure(let error):

@@ -54,24 +54,26 @@ extension AuthCategory: AuthCategoryBehavior {
 
 #if canImport(AuthenticationServices)
     @discardableResult
-    public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor,
-                                options: AuthWebUISignInOperation.Request.Options? = nil,
-                                listener: AuthWebUISignInOperation.ResultListener?) -> AuthWebUISignInOperation {
-        return plugin.signInWithWebUI(presentationAnchor: presentationAnchor,
-                                      options: options,
-                                      listener: listener)
-    }
-
-    @discardableResult
-    public func signInWithWebUI(for authProvider: AuthProvider,
-                                presentationAnchor: AuthUIPresentationAnchor,
-                                options: AuthSocialWebUISignInOperation.Request.Options? = nil,
-                                listener: AuthSocialWebUISignInOperation.ResultListener?)
-        -> AuthSocialWebUISignInOperation {
-            return plugin.signInWithWebUI(for: authProvider,
-                                          presentationAnchor: presentationAnchor,
+    public func signInWithWebUI(
+        presentationAnchor: AuthUIPresentationAnchor = AuthUIPresentationAnchor(),
+        options: AuthWebUISignInOperation.Request.Options? = nil,
+        listener: AuthWebUISignInOperation.ResultListener?) -> AuthWebUISignInOperation {
+            return plugin.signInWithWebUI(presentationAnchor: presentationAnchor,
                                           options: options,
                                           listener: listener)
+        }
+
+    @discardableResult
+    public func signInWithWebUI(
+        for authProvider: AuthProvider,
+        presentationAnchor: AuthUIPresentationAnchor = AuthUIPresentationAnchor(),
+        options: AuthSocialWebUISignInOperation.Request.Options? = nil,
+        listener: AuthSocialWebUISignInOperation.ResultListener?)
+    -> AuthSocialWebUISignInOperation {
+        return plugin.signInWithWebUI(for: authProvider,
+                                      presentationAnchor: presentationAnchor,
+                                      options: options,
+                                      listener: listener)
     }
 #endif
 
@@ -117,11 +119,11 @@ extension AuthCategory: AuthCategoryBehavior {
                                      confirmationCode: String,
                                      options: AuthConfirmResetPasswordOperation.Request.Options? = nil,
                                      listener: AuthConfirmResetPasswordOperation.ResultListener?)
-        -> AuthConfirmResetPasswordOperation {
-            return plugin.confirmResetPassword(for: username,
-                                               with: newPassword,
-                                               confirmationCode: confirmationCode,
-                                               options: options,
-                                               listener: listener)
+    -> AuthConfirmResetPasswordOperation {
+        return plugin.confirmResetPassword(for: username,
+                                           with: newPassword,
+                                           confirmationCode: confirmationCode,
+                                           options: options,
+                                           listener: listener)
     }
 }

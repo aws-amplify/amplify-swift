@@ -29,8 +29,11 @@ public extension AuthSignOutRequest {
         /// key/values
         public let pluginOptions: Any?
 
+        /// SignOut the user from all devices. Check the plugin specific definition on what global signOut means.
         public let globalSignOut: Bool
 
+        /// Provide a presentation anchor if you have signedIn using `signInWithWebUI`. The signOut webUI will be presented
+        /// in the presentation anchor provided.
         public let presentationAnchorForWebUI: AuthUIPresentationAnchor?
 
         public init(globalSignOut: Bool = false,
