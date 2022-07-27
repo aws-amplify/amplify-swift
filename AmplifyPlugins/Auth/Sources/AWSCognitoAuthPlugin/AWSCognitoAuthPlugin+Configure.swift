@@ -102,7 +102,6 @@ extension AWSCognitoAuthPlugin {
         return RandomStringGenerator()
     }
 
-
     private func makeCredentialStore() -> AmplifyAuthCredentialStoreBehavior {
         AWSCognitoAuthCredentialStore(authConfiguration: authConfiguration)
     }

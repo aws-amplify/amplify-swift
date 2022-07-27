@@ -72,6 +72,13 @@ extension SignInState {
                     return .init(newState: .resolvingChallenge(subState, challenge.challenge.authChallengeType), actions: [action])
                 }
 
+                if let signInEvent = event as? SignInEvent,
+                   case .confirmDevice(let signedInData) = signInEvent.eventType {
+                    let action = ConfirmDevice(signedInData: signedInData)
+                    return .init(newState: .confirmingDevice,
+                                 actions: [action])
+                }
+
                 let resolution = SRPSignInState.Resolver().resolve(oldState: srpSignInState,
                                                                    byApplying: event)
                 let signingInWithSRP = SignInState.signingInWithSRP(resolution.newState,
@@ -87,6 +94,13 @@ extension SignInState {
                     return .init(newState: .resolvingChallenge(subState, challenge.challenge.authChallengeType), actions: [action])
                 }
 
+                if let signInEvent = event as? SignInEvent,
+                   case .confirmDevice(let signedInData) = signInEvent.eventType {
+                    let action = ConfirmDevice(signedInData: signedInData)
+                    return .init(newState: .confirmingDevice,
+                                 actions: [action])
+                }
+
                 let resolution = CustomSignInState.Resolver().resolve(
                     oldState: customSignInState, byApplying: event)
                 let signingInWithCustom = SignInState.signingInWithCustom(
@@ -94,6 +108,23 @@ extension SignInState {
                 return .init(newState: signingInWithCustom, actions: resolution.actions)
 
             case .resolvingChallenge(let challengeState, let challengeType):
+
+                if let signInEvent = event as? SignInEvent,
+                   case .confirmDevice(let signedInData) = signInEvent.eventType {
+                    let action = ConfirmDevice(signedInData: signedInData)
+                    return .init(newState: .confirmingDevice,
+                                 actions: [action])
+                }
+
+                // This could when we have nested challenges
+                // Example newPasswordRequired -> sms_mfa
+                if let signInEvent = event as? SignInEvent,
+                   case .receivedChallenge(let challenge) = signInEvent.eventType {
+                    let action = InitializeResolveChallenge(challenge: challenge)
+                    let subState = SignInChallengeState.notStarted
+                    return .init(newState: .resolvingChallenge(subState, challenge.challenge.authChallengeType), actions: [action])
+                }
+
                 let resolution = SignInChallengeState.Resolver().resolve(
                     oldState: challengeState,
                     byApplying: event)
@@ -106,6 +137,13 @@ extension SignInState {
                     let action = InitializeResolveChallenge(challenge: challenge)
                     let subState = SignInChallengeState.notStarted
                     return .init(newState: .resolvingChallenge(subState, challenge.challenge.authChallengeType), actions: [action])
+                }
+
+                if let signInEvent = event as? SignInEvent,
+                   case .confirmDevice(let signedInData) = signInEvent.eventType {
+                    let action = ConfirmDevice(signedInData: signedInData)
+                    return .init(newState: .confirmingDevice,
+                                 actions: [action])
                 }
 
                 let resolution = SRPSignInState.Resolver().resolve(oldState: srpSignInState,
