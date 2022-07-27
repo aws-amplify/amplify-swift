@@ -228,5 +228,8 @@ extension KeychainStore {
 
         /** Value Type Key Constants */
         static let ValueData = String(kSecValueData)
+        
+        /** Indicates whether to treat macOS keychain items like iOS keychain items without setting kSecAttrSynchronizable */
+        static let UseDataProtectionKeyChain = String(kSecUseDataProtectionKeychain)
     }
 }
