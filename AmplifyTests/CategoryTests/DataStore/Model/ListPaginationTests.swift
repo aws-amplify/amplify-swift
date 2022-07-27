@@ -74,6 +74,16 @@ extension ListTests {
             XCTFail("Should not be loaded")
             return
         }
+        let fetchCompleted = expectation(description: "Fetch completed")
+        list.fetch { result in
+            switch result {
+            case .success:
+                fetchCompleted.fulfill()
+            case .failure(let error):
+                XCTFail("Failed with error \(error)")
+            }
+        }
+        wait(for: [fetchCompleted], timeout: 1)
         XCTAssertTrue(list.hasNextPage())
         guard case .loaded = list.loadedState else {
             XCTFail("Should be loaded")
@@ -105,6 +115,16 @@ extension ListTests {
             XCTFail("Should not be loaded")
             return
         }
+        let fetchCompleted = expectation(description: "Fetch completed")
+        list.fetch { result in
+            switch result {
+            case .success:
+                fetchCompleted.fulfill()
+            case .failure(let error):
+                XCTFail("Failed with error \(error)")
+            }
+        }
+        wait(for: [fetchCompleted], timeout: 1)
         let getNextPageComplete = expectation(description: "get next page completed")
         list.getNextPage { result in
             switch result {

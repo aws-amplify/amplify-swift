@@ -110,7 +110,12 @@ extension GraphQLResponseDecoderTests {
 
         let result = try decoder.decodeToResponseType(graphQLData)
         XCTAssertNotNil(result)
-        XCTAssertEqual(result.count, 2)
+        let fetchCompleted = expectation(description: "Fetch completed")
+        result.fetch { _ in
+            XCTAssertEqual(result.count, 2)
+            fetchCompleted.fulfill()
+        }
+        wait(for: [fetchCompleted], timeout: 1)
         XCTAssertFalse(result.hasNextPage())
     }
 

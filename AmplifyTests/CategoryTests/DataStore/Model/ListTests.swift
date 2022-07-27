@@ -56,14 +56,6 @@ class ListTests: XCTestCase {
             self.nextPage = nextPage
         }
 
-        public func load() -> Result<[Element], CoreError> {
-            if let error = error {
-                return .failure(error)
-            } else {
-                return .success(elements)
-            }
-        }
-
         public func load(completion: (Result<[Element], CoreError>) -> Void) {
             if let error = error {
                 completion(.failure(error))
@@ -103,6 +95,16 @@ class ListTests: XCTestCase {
 
         let serializedData = try ListTests.encode(json: data)
         let list = try ListTests.decode(serializedData, responseType: BasicModel.self)
+        let fetchCompleted = expectation(description: "Fetch completed")
+        list.fetch { result in
+            switch result {
+            case .success:
+                fetchCompleted.fulfill()
+            case .failure(let error):
+                XCTFail("Failed with error \(error)")
+            }
+        }
+        wait(for: [fetchCompleted], timeout: 1)
         XCTAssertEqual(list.count, 2)
         XCTAssertEqual(list.startIndex, 0)
         XCTAssertEqual(list.endIndex, 2)
@@ -130,6 +132,16 @@ class ListTests: XCTestCase {
         let serializedData = try ListTests.encode(json: data)
         let list = try ListTests.decode(serializedData, responseType: BasicModel.self)
         XCTAssertNotNil(list)
+        let fetchCompleted = expectation(description: "Fetch completed")
+        list.fetch { result in
+            switch result {
+            case .success:
+                fetchCompleted.fulfill()
+            case .failure(let error):
+                XCTFail("Failed with error \(error)")
+            }
+        }
+        wait(for: [fetchCompleted], timeout: 1)
         XCTAssertEqual(list.count, 2)
         XCTAssertEqual(list.startIndex, 0)
         XCTAssertEqual(list.endIndex, 2)
