@@ -11,6 +11,8 @@ struct LoadCredentialStore: Action {
 
     let identifier = "LoadCredentialStore"
 
+    let credentialStoreType: CredentialStoreRetrievalDataType
+
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
@@ -28,8 +30,18 @@ struct LoadCredentialStore: Action {
         let amplifyCredentialStore = credentialStoreEnvironment.amplifyCredentialStoreFactory()
 
         do {
-            let storedCredentials = try amplifyCredentialStore.retrieveCredential()
-            let event = CredentialStoreEvent(eventType: .completedOperation(storedCredentials as! AmplifyCredentials))
+            let credentialStoreData: CredentialStoreData
+            switch credentialStoreType {
+            case .amplifyCredentials:
+                let storedCredentials = try amplifyCredentialStore.retrieveCredential() as! AmplifyCredentials
+                credentialStoreData = .amplifyCredentials(storedCredentials)
+            case .deviceMetadata(let username):
+                let deviceMetadata = try amplifyCredentialStore.retrieveDevice(for: username) as! DeviceMetadata
+                credentialStoreData = .deviceMetadata(deviceMetadata, username)
+            }
+
+            let event = CredentialStoreEvent(
+                eventType: .completedOperation(credentialStoreData))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
         } catch let error as CredentialStoreError {

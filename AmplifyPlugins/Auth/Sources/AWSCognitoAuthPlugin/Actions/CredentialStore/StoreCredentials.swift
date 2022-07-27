@@ -11,7 +11,7 @@ struct StoreCredentials: Action {
 
     let identifier = "StoreCredentials"
 
-    let credentials: AmplifyCredentials
+    let credentials: CredentialStoreData
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
@@ -29,8 +29,16 @@ struct StoreCredentials: Action {
         let amplifyCredentialStore = credentialStoreEnvironment.amplifyCredentialStoreFactory()
 
         do {
-            try amplifyCredentialStore.saveCredential(credentials)
-            let event = CredentialStoreEvent(eventType: .completedOperation(credentials))
+
+            switch credentials {
+            case .amplifyCredentials(let amplifyCredentials):
+                try amplifyCredentialStore.saveCredential(amplifyCredentials)
+            case .deviceMetadata(let deviceMetadata, let username):
+                try amplifyCredentialStore.saveDevice(deviceMetadata, for: username)
+            }
+
+            let event = CredentialStoreEvent(
+                eventType: .completedOperation(credentials))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
         } catch let error as CredentialStoreError {
