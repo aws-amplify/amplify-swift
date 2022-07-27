@@ -22,7 +22,6 @@ extension FetchAuthSessionState {
             guard let eventType = isFetchAuthSessionEvent(event)?.eventType else {
                 return .from(oldState)
             }
-
             switch oldState {
 
             case .notStarted:

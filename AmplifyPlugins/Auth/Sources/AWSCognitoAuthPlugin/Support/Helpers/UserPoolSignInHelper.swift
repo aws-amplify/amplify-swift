@@ -20,7 +20,10 @@ struct UserPoolSignInHelper {
         } else if case .signingInWithSRPCustom(let srpState, _) = signInState,
                   case .error(let signInError) = srpState {
             return validateError(signInError: signInError)
-        } else if case .signingInWithCustom(let customAuthState, _) = signInState,
+        }  else if case .signingInViaMigrateAuth(let migratedAuthState, _) = signInState,
+                   case .error(let signInError) = migratedAuthState {
+             return validateError(signInError: signInError)
+         } else if case .signingInWithCustom(let customAuthState, _) = signInState,
                   case .error(let signInError) = customAuthState {
             return validateError(signInError: signInError)
         } else if case .resolvingChallenge(let challengeState, let challengeType) = signInState,

@@ -58,8 +58,7 @@ struct InitializeSignInFlow: Action {
         case .customWithSRP:
             return .init(eventType: .initiateCustomSignInWithSRP(signInEventData))
         case .userPassword:
-            // TODO: Implementation pending
-            fatalError("Not implemented")
+            return .init(eventType: .initiateMigrateAuth(signInEventData))
         case .unknown:
             // Default to SRP signIn if we could not figure out the authflow type
             return .init(eventType: .initiateSignInWithSRP(signInEventData))

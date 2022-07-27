@@ -148,6 +148,12 @@ extension AuthPluginErrorConstants {
         "Make sure that a valid username is passed during sigIn"
     )
 
+    static let signInPasswordError: AuthPluginValidationErrorString = (
+        "password",
+        "Password is required to signIn",
+        "Make sure that a valid password is passed during sigIn"
+    )
+
     static let signUpUsernameError: AuthPluginValidationErrorString = (
         "username",
         "Username is required to signUp",

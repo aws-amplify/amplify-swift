@@ -25,6 +25,8 @@ struct SignInEvent: StateMachineEvent {
 
         case initiateHostedUISignIn(HostedUIOptions)
 
+        case initiateMigrateAuth(SignInEventData)
+
         case respondPasswordVerifier(SRPStateData, InitiateAuthOutputResponse)
 
         case throwPasswordVerifierError(SignInError)
@@ -50,6 +52,7 @@ struct SignInEvent: StateMachineEvent {
         case .initiateCustomSignIn: return "SignInEvent.initiateCustomSignIn"
         case .initiateCustomSignInWithSRP: return "SignInEvent.initiateCustomSignInWithSRP"
         case .initiateHostedUISignIn: return "SignInEvent.initiateHostedUISignIn"
+        case .initiateMigrateAuth: return "SignInEvent.initiateMigrateAuth"
         case .respondPasswordVerifier: return "SignInEvent.respondPasswordVerifier"
         case .throwPasswordVerifierError: return "SignInEvent.throwPasswordVerifierError"
         case .finalizeSignIn: return "SignInEvent.finalizeSignIn"
@@ -78,6 +81,7 @@ extension SignInEvent.EventType: Equatable {
             (.initiateHostedUISignIn, .initiateHostedUISignIn),
             (.initiateCustomSignIn, .initiateCustomSignIn),
             (.initiateCustomSignInWithSRP, .initiateCustomSignInWithSRP),
+            (.initiateMigrateAuth, .initiateMigrateAuth),
             (.respondPasswordVerifier, .respondPasswordVerifier),
             (.throwPasswordVerifierError, .throwPasswordVerifierError),
             (.finalizeSignIn, .finalizeSignIn),
