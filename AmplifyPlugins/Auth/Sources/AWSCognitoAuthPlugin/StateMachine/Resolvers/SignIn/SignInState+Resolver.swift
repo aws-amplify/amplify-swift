@@ -48,8 +48,8 @@ extension SignInState {
 
             case .signingInWithHostedUI(let hostedUIState):
 
-                if case .signInCompleted = event.isAuthenticationEvent {
-                    return .init(newState: .done)
+                if case .signInCompleted(let signedInData) = event.isAuthenticationEvent {
+                    return .init(newState: .signedIn(signedInData))
                 }
 
                 let resolution = HostedUISignInState.Resolver().resolve(oldState: hostedUIState,
@@ -107,6 +107,14 @@ extension SignInState {
                 let signingInWithSRP = SignInState.signingInWithSRPCustom(resolution.newState,
                                                                           signInEventData)
                 return .init(newState: signingInWithSRP, actions: resolution.actions)
+
+            case .confirmingDevice:
+
+                if case .finalizeSignIn(let signedInData) = event.isSignInEvent {
+                    return .init(newState: .signedIn(signedInData),
+                                 actions: [SignInComplete(signedInData: signedInData)])
+                }
+                return .from(oldState)
 
             default:
                 return .from(oldState)
