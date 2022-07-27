@@ -48,8 +48,8 @@ extension SignInState {
 
             case .signingInWithHostedUI(let hostedUIState):
 
-                if case .signInCompleted = event.isAuthenticationEvent {
-                    return .init(newState: .done)
+                if case .signInCompleted(let signedInData) = event.isAuthenticationEvent {
+                    return .init(newState: .signedIn(signedInData))
                 }
 
                 let resolution = HostedUISignInState.Resolver().resolve(oldState: hostedUIState,
@@ -64,6 +64,13 @@ extension SignInState {
                     let action = InitializeResolveChallenge(challenge: challenge)
                     let subState = SignInChallengeState.notStarted
                     return .init(newState: .resolvingChallenge(subState, challenge.challenge.authChallengeType), actions: [action])
+                }
+
+                if let signInEvent = event as? SignInEvent,
+                   case .confirmDevice(let signedInData) = signInEvent.eventType {
+                    let action = ConfirmDevice(signedInData: signedInData)
+                    return .init(newState: .confirmingDevice,
+                                 actions: [action])
                 }
 
                 let resolution = SRPSignInState.Resolver().resolve(oldState: srpSignInState,
@@ -81,6 +88,13 @@ extension SignInState {
                     return .init(newState: .resolvingChallenge(subState, challenge.challenge.authChallengeType), actions: [action])
                 }
 
+                if let signInEvent = event as? SignInEvent,
+                   case .confirmDevice(let signedInData) = signInEvent.eventType {
+                    let action = ConfirmDevice(signedInData: signedInData)
+                    return .init(newState: .confirmingDevice,
+                                 actions: [action])
+                }
+
                 let resolution = CustomSignInState.Resolver().resolve(
                     oldState: customSignInState, byApplying: event)
                 let signingInWithCustom = SignInState.signingInWithCustom(
@@ -88,6 +102,23 @@ extension SignInState {
                 return .init(newState: signingInWithCustom, actions: resolution.actions)
 
             case .resolvingChallenge(let challengeState, let challengeType):
+
+                if let signInEvent = event as? SignInEvent,
+                   case .confirmDevice(let signedInData) = signInEvent.eventType {
+                    let action = ConfirmDevice(signedInData: signedInData)
+                    return .init(newState: .confirmingDevice,
+                                 actions: [action])
+                }
+
+                // This could when we have nested challenges
+                // Example newPasswordRequired -> sms_mfa
+                if let signInEvent = event as? SignInEvent,
+                   case .receivedChallenge(let challenge) = signInEvent.eventType {
+                    let action = InitializeResolveChallenge(challenge: challenge)
+                    let subState = SignInChallengeState.notStarted
+                    return .init(newState: .resolvingChallenge(subState, challenge.challenge.authChallengeType), actions: [action])
+                }
+
                 let resolution = SignInChallengeState.Resolver().resolve(
                     oldState: challengeState,
                     byApplying: event)
@@ -102,11 +133,26 @@ extension SignInState {
                     return .init(newState: .resolvingChallenge(subState, challenge.challenge.authChallengeType), actions: [action])
                 }
 
+                if let signInEvent = event as? SignInEvent,
+                   case .confirmDevice(let signedInData) = signInEvent.eventType {
+                    let action = ConfirmDevice(signedInData: signedInData)
+                    return .init(newState: .confirmingDevice,
+                                 actions: [action])
+                }
+
                 let resolution = SRPSignInState.Resolver().resolve(oldState: srpSignInState,
                                                                    byApplying: event)
                 let signingInWithSRP = SignInState.signingInWithSRPCustom(resolution.newState,
                                                                           signInEventData)
                 return .init(newState: signingInWithSRP, actions: resolution.actions)
+
+            case .confirmingDevice:
+
+                if case .finalizeSignIn(let signedInData) = event.isSignInEvent {
+                    return .init(newState: .signedIn(signedInData),
+                                 actions: [SignInComplete(signedInData: signedInData)])
+                }
+                return .from(oldState)
 
             default:
                 return .from(oldState)

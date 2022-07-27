@@ -13,13 +13,11 @@ extension AuthEvent {
 
     static let allEvents: [AuthEvent] = [
         configureAuth,
+        validateCredentialAndConfiguration,
         configureAuthentication,
         configureAuthorization,
         authenticationConfigured,
-        authorizationConfigured,
-        fetchCachedCredentials,
-        receivedCachedCredentials,
-        cachedCredentialsFailed
+        authorizationConfigured
     ]
 
     static let configureAuth = AuthEvent(
@@ -42,15 +40,8 @@ extension AuthEvent {
         id: "authorizationConfigured",
         eventType: .authorizationConfigured)
 
-    static let fetchCachedCredentials = AuthEvent(
-        id: "fetchCachedCredentials",
-        eventType: .fetchCachedCredentials(.testData))
+    static let validateCredentialAndConfiguration = AuthEvent(
+        id: "validateCredentialAndConfiguration",
+        eventType: .validateCredentialAndConfiguration(.testData, .testData))
 
-    static let receivedCachedCredentials = AuthEvent(
-        id: "receivedCachedCredentials",
-        eventType: .receivedCachedCredentials(.testData))
-
-    static let cachedCredentialsFailed = AuthEvent(
-        id: "cachedCredentialsFailed",
-        eventType: .cachedCredentialsFailed)
 }

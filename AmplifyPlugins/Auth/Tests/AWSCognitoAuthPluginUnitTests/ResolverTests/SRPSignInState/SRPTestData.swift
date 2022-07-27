@@ -19,6 +19,7 @@ extension SRPStateData {
         NHexValue: "",
         gHexValue: "",
         srpKeyPair: SRPKeys(publicKeyHexValue: "", privateKeyHexValue: ""),
+        deviceMetadata: .noData,
         clientTimestamp: Date()
     )
 }
@@ -168,6 +169,7 @@ extension SRPStateData {
                 "98bab9079c01ab6acd0e75518d0cda640b9a1f011c9a7cefab68b6ddce666c874659" +
                 "8a502c0e6adef0722bac",
             privateKeyHexValue: "c142c2d2471fd53bca99c2fdec84e522adec8ee2dcda0d9fff9dbea52ac4a65f"),
+        deviceMetadata: .noData,
         clientTimestamp: Date(timeIntervalSinceReferenceDate: 656_187_908.969623)
     )
 }

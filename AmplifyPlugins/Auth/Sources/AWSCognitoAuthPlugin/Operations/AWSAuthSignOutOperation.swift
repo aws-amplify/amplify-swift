@@ -59,7 +59,7 @@ public class AWSAuthSignOutOperation: AmplifySignOutOperation, AuthSignOutOperat
     func doSignOut() {
         stateListenerToken = authStateMachine.listen {[weak self] in
             guard let self = self else { return }
-            guard case .configured(let authNState, let authZState) = $0 else {
+            guard case .configured(let authNState, _) = $0 else {
                 return
             }
 

@@ -26,6 +26,11 @@ protocol SRPClientBehavior {
 
     static func generateAuthenticationKey(
         sharedSecretHexValue: String, uHexValue: String) throws -> Data
+
+    func generateDevicePasswordVerifier(
+        deviceGroupKey: String,
+        deviceKey: String,
+        password: String) -> (salt: String, passwordVerifier: String)
 }
 
 enum SRPError: Error {

@@ -77,23 +77,11 @@ class AWSAuthSignInOperationTests: XCTestCase {
                 mockInitiateAuthResponse: initiateAuth,
                 mockRespondToAuthChallengeResponse: respondToChallenge
             )})
-        _ = statemachine.listen {
-            print($0)
-            switch $0 {
-            case .configured(_, let authorizationState):
-
-                if case .waitingToStore(let credentials) = authorizationState {
-                    let authEvent = AuthEvent.init(
-                        eventType: .receivedCachedCredentials(credentials))
-                    statemachine.send(authEvent)
-                }
-            default: break
-            }
-        } onSubscribe: {}
 
         let operation = AWSAuthSignInOperation(
             request,
-            authStateMachine: statemachine) {  result in
+            authStateMachine: statemachine,
+            credentialStoreClientFactory: Defaults.makeCredentialStoreOperationBehaviour) {  result in
                 switch result {
                 case .success(let signUpResult):
                     print("Sign In Result: \(signUpResult)")
@@ -141,7 +129,8 @@ class AWSAuthSignInOperationTests: XCTestCase {
 
         let operation = AWSAuthSignInOperation(
             request,
-            authStateMachine: statemachine) {  result in
+            authStateMachine: statemachine,
+            credentialStoreClientFactory: Defaults.makeCredentialStoreOperationBehaviour) {  result in
                 switch result {
                 case .success(let signInResult):
                     switch signInResult.nextStep {

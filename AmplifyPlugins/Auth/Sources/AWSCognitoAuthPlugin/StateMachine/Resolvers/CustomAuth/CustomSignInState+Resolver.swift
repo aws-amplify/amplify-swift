@@ -49,7 +49,8 @@ extension CustomSignInState {
                 }
                 let action = InitiateCustomAuth(
                     username: username,
-                    clientMetadata: signInEventData.clientMetadata)
+                    clientMetadata: signInEventData.clientMetadata,
+                    deviceMetadata: DeviceMetadata.noData)
                 return StateResolution(
                     newState: CustomSignInState.initiating(signInEventData),
                     actions: [action]

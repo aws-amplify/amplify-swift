@@ -69,6 +69,7 @@ extension SRPSignInState {
                     username: username,
                     password: password,
                     authFlowType: authFlowType,
+                    deviceMetadata: signInEventData.deviceMetadata,
                     clientMetadata: signInEventData.clientMetadata)
                 return StateResolution(
                     newState: SRPSignInState.initiatingSRPA(signInEventData),

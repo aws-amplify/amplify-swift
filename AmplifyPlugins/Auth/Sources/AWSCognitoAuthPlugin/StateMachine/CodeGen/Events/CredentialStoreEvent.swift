@@ -7,19 +7,29 @@
 
 import Foundation
 
+enum CredentialStoreData: Codable, Equatable {
+    case amplifyCredentials(AmplifyCredentials)
+    case deviceMetadata(DeviceMetadata, Username)
+}
+
+enum CredentialStoreRetrievalDataType: Codable, Equatable {
+    case amplifyCredentials
+    case deviceMetadata(username: String)
+}
+
 struct CredentialStoreEvent: StateMachineEvent {
 
     enum EventType: Equatable {
 
         case migrateLegacyCredentialStore
 
-        case loadCredentialStore
+        case loadCredentialStore(CredentialStoreRetrievalDataType)
 
-        case storeCredentials(AmplifyCredentials)
+        case storeCredentials(CredentialStoreData)
 
-        case clearCredentialStore
+        case clearCredentialStore(CredentialStoreRetrievalDataType)
 
-        case completedOperation(AmplifyCredentials)
+        case completedOperation(CredentialStoreData)
 
         case throwError(CredentialStoreError)
 
