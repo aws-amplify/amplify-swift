@@ -72,4 +72,9 @@ protocol CognitoUserPoolBehavior {
     
     /// Forgets the specified device.
     func forgetDevice(input: ForgetDeviceInput) async throws -> ForgetDeviceOutputResponse
+
+    /// Confirms tracking of the device. This API call is the call that begins device tracking.
+    /// Throws ConfirmDeviceOutputError
+    func confirmDevice(input: ConfirmDeviceInput) async throws -> ConfirmDeviceOutputResponse
+
 }
