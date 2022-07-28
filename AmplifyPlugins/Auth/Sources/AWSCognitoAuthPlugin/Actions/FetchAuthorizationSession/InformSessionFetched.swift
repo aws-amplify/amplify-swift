@@ -15,12 +15,12 @@ struct InformSessionFetched: Action {
 
     let identityID: IdentityID
 
-    let credetentials: AuthAWSCognitoCredentials
+    let credentials: AuthAWSCognitoCredentials
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        let event = AuthorizationEvent(eventType: .fetched(identityID, credetentials))
+        let event = AuthorizationEvent(eventType: .fetched(identityID, credentials))
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         dispatcher.send(event)
     }

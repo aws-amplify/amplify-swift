@@ -8,13 +8,15 @@
 import Foundation
 import Amplify
 
+typealias CredentialStoreClientFactory = () -> CredentialStoreStateBehaviour
+
 struct AuthEnvironment: Environment {
     let configuration: AuthConfiguration
     let userPoolConfigData: UserPoolConfigurationData?
     let identityPoolConfigData: IdentityPoolConfigurationData?
     let authenticationEnvironment: AuthenticationEnvironment?
     let authorizationEnvironment: AuthorizationEnvironment?
-
+    let credentialStoreClientFactory: CredentialStoreClientFactory
     let logger: Logger
 }
 

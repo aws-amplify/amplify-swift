@@ -53,6 +53,10 @@ enum Defaults {
         return authConfig
     }
 
+    static func makeCredentialStoreOperationBehaviour() -> CredentialStoreStateBehaviour {
+        return MockCredentialStoreOperationClient()
+    }
+
     static func makeDefaultUserPool() throws -> CognitoUserPoolBehavior {
         return try CognitoIdentityProviderClient(region: regionString)
     }
@@ -141,6 +145,7 @@ enum Defaults {
             identityPoolConfigData: identityPoolConfigData,
             authenticationEnvironment: authenticationEnvironment,
             authorizationEnvironment: authZEnvironment ?? authorizationEnvironment,
+            credentialStoreClientFactory: makeCredentialStoreOperationBehaviour,
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
         )
         Amplify.Logging.logLevel = .verbose
@@ -211,6 +216,21 @@ enum Defaults {
 
 }
 
+struct MockCredentialStoreOperationClient: CredentialStoreStateBehaviour {
+
+    func fetchData(type: CredentialStoreRetrievalDataType) async throws -> CredentialStoreData {
+        .amplifyCredentials(.testData)
+    }
+
+    func storeData(data: CredentialStoreData) async throws {
+
+    }
+
+    func deleteData(type: CredentialStoreRetrievalDataType) async throws {
+
+    }
+}
+
 struct MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
     func saveCredential(_ credential: Codable) throws {
 
@@ -226,6 +246,18 @@ struct MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
 
     func getKeychainStore() -> KeychainStoreBehavior {
         return MockLegacyStore()
+    }
+
+    func saveDevice(_ deviceMetadata: Codable, for username: String) throws {
+
+    }
+
+    func retrieveDevice(for username: String) throws -> Codable {
+        return DeviceMetadata.noData
+    }
+
+    func removeDevice(for username: String) throws {
+
     }
 }
 
