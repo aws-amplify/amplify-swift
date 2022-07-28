@@ -88,13 +88,22 @@ struct UserPoolSignInHelper {
                                                               accessToken: accessToken,
                                                               refreshToken: refreshToken,
                                                               expiresIn: authenticationResult.expiresIn)
-                let signedInData = SignedInData(userId: "",
-                                                userName: username,
-                                                signedInDate: Date(),
-                                                // TODO: remove hardcoded sign in method
-                                                signInMethod: .apiBased(.userSRP),
-                                                cognitoUserPoolTokens: userPoolTokens)
-                return SignInEvent(eventType: .finalizeSignIn(signedInData))
+                let signedInData = SignedInData(
+                    userId: "",
+                    userName: username,
+                    signedInDate: Date(),
+                    // TODO: remove hardcoded sign in method
+                    signInMethod: .apiBased(.userSRP),
+                    deviceMetadata: authenticationResult.deviceMetadata,
+                    cognitoUserPoolTokens: userPoolTokens)
+
+                switch signedInData.deviceMetadata {
+                case .noData:
+                    return SignInEvent(eventType: .finalizeSignIn(signedInData))
+                case .metadata:
+                    return SignInEvent(eventType: .confirmDevice(signedInData))
+                }
+
 
             } else if let challengeName = response.challengeName, let session = response.session {
                 let parameters = response.challengeParameters
