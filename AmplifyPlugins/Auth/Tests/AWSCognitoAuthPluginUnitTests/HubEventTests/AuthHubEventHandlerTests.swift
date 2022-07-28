@@ -175,8 +175,6 @@ class AuthHubEventHandlerTests: XCTestCase {
         
         wait(for: [hubEventExpectation], timeout: networkTimeout)
     }
-    
-    /* TODO: Enable these tests when the API's have been implemented
 
     /// Test whether HubEvent emits a mocked signedIn event for webUI signIn
     ///
@@ -250,7 +248,6 @@ class AuthHubEventHandlerTests: XCTestCase {
         Amplify.Hub.dispatch(to: .auth, payload: mockPayload)
 
     }
-     */
     
     private func configurePluginForSignInEvent() {
         let mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
