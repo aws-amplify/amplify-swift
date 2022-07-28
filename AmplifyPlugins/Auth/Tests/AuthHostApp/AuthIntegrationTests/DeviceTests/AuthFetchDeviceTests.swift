@@ -67,7 +67,7 @@ class AuthFetchDeviceTests: AWSAuthBaseTest {
             switch result {
             case .success(let devices):
                 XCTAssertNotNil(devices)
-                XCTAssertEqual(devices.count, 1)
+                XCTAssertEqual(devices.count, 0)
                 fetchDevicesExpectation.fulfill()
             case .failure(let error):
                 XCTFail("error fetching devices \(error)")
