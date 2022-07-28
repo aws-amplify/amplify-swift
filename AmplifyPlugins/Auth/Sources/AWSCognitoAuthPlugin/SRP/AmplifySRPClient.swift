@@ -105,7 +105,7 @@ struct AmplifySRPClient: SRPClientBehavior {
     func generateDevicePasswordVerifier(
         deviceGroupKey: String,
         deviceKey: String,
-        password: String) -> (salt: Data, passwordVerifier: Data) {
+        password: String) -> (salt: BigInt, passwordVerifier: BigInt) {
 
             let passwordVerifier = SRPClientState.calculateDevicePasswordVerifier(
                 deviceGroupKey: deviceGroupKey,
@@ -113,12 +113,7 @@ struct AmplifySRPClient: SRPClientBehavior {
                 password: password,
                 commonState: commonState)
 
-            let verifierData = Data(AmplifyBigIntHelper.getSignedData(
-                num: passwordVerifier.passwordVerifier))
-            let saltData = Data(AmplifyBigIntHelper.getSignedData(
-                num: passwordVerifier.salt))
-
-            return (saltData, verifierData)
+            return (passwordVerifier.salt, passwordVerifier.passwordVerifier)
         }
 
 }

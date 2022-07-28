@@ -79,16 +79,6 @@ extension SignInState {
                                  actions: [action])
                 }
 
-                if let signInEvent = event as? SignInEvent,
-                   case .initiateDeviceSRP(let challengeResponse) = signInEvent.eventType,
-                   case .respondingPasswordVerifier(let srpStateData) = srpSignInState {
-                    let action = StartDeviceSRPFlow(
-                        srpStateData: srpStateData,
-                        authResponse: challengeResponse)
-                    return .init(newState: .resolvingDeviceSrpa(.notStarted),
-                                 actions: [action])
-                }
-
                 let resolution = SRPSignInState.Resolver().resolve(oldState: srpSignInState,
                                                                    byApplying: event)
                 let signingInWithSRP = SignInState.signingInWithSRP(resolution.newState,
