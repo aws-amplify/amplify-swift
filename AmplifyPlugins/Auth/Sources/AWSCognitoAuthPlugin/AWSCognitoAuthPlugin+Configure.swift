@@ -111,6 +111,11 @@ extension AWSCognitoAuthPlugin {
         KeychainStore(service: service)
     }
 
+    private func makeCredentialStoreClient() -> CredentialStoreStateBehaviour {
+        CredentialStoreOperationClient(
+            credentialStoreStateMachine: self.credentialStoreStateMachine)
+    }
+
     private func makeAuthEnvironment(authConfiguration: AuthConfiguration) -> AuthEnvironment {
 
         switch authConfiguration {
@@ -124,6 +129,7 @@ extension AWSCognitoAuthPlugin {
                 identityPoolConfigData: nil,
                 authenticationEnvironment: authenticationEnvironment,
                 authorizationEnvironment: nil,
+                credentialStoreClientFactory: makeCredentialStoreClient,
                 logger: log)
 
         case .identityPools(let identityPoolConfigurationData):
@@ -135,6 +141,7 @@ extension AWSCognitoAuthPlugin {
                 identityPoolConfigData: identityPoolConfigurationData,
                 authenticationEnvironment: nil,
                 authorizationEnvironment: authorizationEnvironment,
+                credentialStoreClientFactory: makeCredentialStoreClient,
                 logger: log)
 
         case .userPoolsAndIdentityPools(let userPoolConfigurationData,
@@ -149,6 +156,7 @@ extension AWSCognitoAuthPlugin {
                 identityPoolConfigData: identityPoolConfigurationData,
                 authenticationEnvironment: authenticationEnvironment,
                 authorizationEnvironment: authorizationEnvironment,
+                credentialStoreClientFactory: makeCredentialStoreClient,
                 logger: log)
         }
     }
