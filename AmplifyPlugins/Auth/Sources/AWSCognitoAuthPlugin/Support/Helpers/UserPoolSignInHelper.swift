@@ -118,8 +118,6 @@ struct UserPoolSignInHelper {
                     return SignInEvent(eventType: .receivedChallenge(respondToAuthChallenge))
                 case .deviceSrpAuth:
                     return SignInEvent(eventType: .initiateDeviceSRP(response))
-//                case .devicePasswordVerifier:
-//                    return SignInEvent(eventType: .respondDevicePasswordVerifier(response))
                 default:
                     let message = "UnSupported challenge response \(challengeName)"
                     let error = SignInError.unknown(message: message)
