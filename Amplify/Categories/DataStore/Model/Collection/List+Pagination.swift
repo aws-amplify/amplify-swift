@@ -17,8 +17,9 @@ extension List {
         case .loaded:
             return listProvider.hasNextPage()
         case .notLoaded:
-            let error: CoreError = .listOperation("Call `fetch` to lazy load the list before using this method", "", nil)
-            Amplify.log.error(error: error)
+            let message = "Call `fetch` to lazy load the list before using this method."
+            Amplify.log.error(message)
+            assertionFailure(message)
             return false
         }
     }
@@ -30,8 +31,10 @@ extension List {
         case .loaded:
             listProvider.getNextPage(completion: completion)
         case .notLoaded:
-            let error: CoreError = .listOperation("Call `fetch` to lazy load the list before using this method", "", nil)
+            let message = "Call `fetch` to lazy load the list before using this method."
+            let error: CoreError = .listOperation(message, "", nil)
             Amplify.log.error(error: error)
+            assertionFailure(message)
             completion(.failure(error))
         }
     }

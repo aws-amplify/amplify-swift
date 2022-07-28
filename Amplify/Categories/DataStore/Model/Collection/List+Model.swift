@@ -42,10 +42,9 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
             case .loaded(let elements):
                 return elements
             case .notLoaded:
-                let error: CoreError = .listOperation("Call `fetch` to lazy load the list before accessing `elements`",
-                                                      "",
-                                                      nil)
-                Amplify.log.error(error: error)
+                let message = "Call `fetch` to lazy load the list before accessing `elements`."
+                Amplify.log.error(message)
+                assertionFailure(message)
                 return []
             }
         }

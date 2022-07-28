@@ -46,18 +46,26 @@ class ListTests: XCTestCase {
     class MockListProvider<Element: Model>: ModelListProvider {
         let elements: [Element]
         var error: CoreError?
+        var errorOnLoad: CoreError?
+        var errorOnNextPage: CoreError?
         var nextPage: List<Element>?
 
         public init(elements: [Element] = [Element](),
                     error: CoreError? = nil,
+                    errorOnLoad: CoreError? = nil,
+                    errorOnNextPage: CoreError? = nil,
                     nextPage: List<Element>? = nil) {
             self.elements = elements
             self.error = error
+            self.errorOnLoad = errorOnLoad
+            self.errorOnNextPage = errorOnNextPage
             self.nextPage = nextPage
         }
 
         public func load(completion: (Result<[Element], CoreError>) -> Void) {
             if let error = error {
+                completion(.failure(error))
+            } else if let error = errorOnLoad {
                 completion(.failure(error))
             } else {
                 completion(.success(elements))
@@ -70,6 +78,8 @@ class ListTests: XCTestCase {
 
         public func getNextPage(completion: (Result<List<Element>, CoreError>) -> Void) {
             if let error = error {
+                completion(.failure(error))
+            } else if let error = errorOnNextPage {
                 completion(.failure(error))
             } else if let nextPage = nextPage {
                 completion(.success(nextPage))
@@ -172,26 +182,35 @@ class ListTests: XCTestCase {
         let serializedData = try ListTests.encode(json: data)
         let list = try ListTests.decode(serializedData, responseType: BasicModel.self)
         XCTAssertNotNil(list)
-        XCTAssertEqual(list.count, 0)
-        let json = try? ListTests.toJSON(list: list)
-        XCTAssertEqual(json, "[]")
+        let fetchCompleted = expectation(description: "Fetch completed")
+        list.fetch { result in
+            XCTAssertEqual(list.count, 0)
+            let json = try? ListTests.toJSON(list: list)
+            XCTAssertEqual(json, "[]")
+            fetchCompleted.fulfill()
+        }
+        wait(for: [fetchCompleted], timeout: 1)
     }
 
-    func testImplicitLoadFailure() {
+    func testLoadFailure() {
         let mockListProvider = MockListProvider<BasicModel>(
-            elements: [BasicModel](),
-            error: .listOperation("", "", DataStoreError.internalOperation("", "", nil)))
+            errorOnLoad: .listOperation("", "", DataStoreError.internalOperation("", "", nil)))
             .eraseToAnyModelListProvider()
         let list = List(listProvider: mockListProvider)
         guard case .notLoaded = list.loadedState else {
             XCTFail("Should not be loaded")
             return
         }
-        XCTAssertEqual(list.count, 0)
-        guard case .notLoaded = list.loadedState else {
-            XCTFail("Should not be loaded")
-            return
+        let fetchCompleted = expectation(description: "Fetch completed")
+        list.fetch { result in
+            switch result {
+            case .success:
+                XCTFail("Expected to fail on load")
+            case .failure:
+                fetchCompleted.fulfill()
+            }
         }
+        wait(for: [fetchCompleted], timeout: 1)
     }
 
     // MARK: - Helpers
