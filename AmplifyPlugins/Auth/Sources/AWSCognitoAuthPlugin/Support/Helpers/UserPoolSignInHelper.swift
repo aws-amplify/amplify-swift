@@ -105,16 +105,21 @@ struct UserPoolSignInHelper {
                 }
 
 
-            } else if let challengeName = response.challengeName, let session = response.session {
+            } else if let challengeName = response.challengeName {
                 let parameters = response.challengeParameters
-                let response = RespondToAuthChallenge(challenge: challengeName,
-                                                      username: username,
-                                                      session: session,
-                                                      parameters: parameters)
-
+                let respondToAuthChallenge = RespondToAuthChallenge(
+                    challenge: challengeName,
+                    username: username,
+                    session: response.session,
+                    parameters: parameters)
+                
                 switch challengeName {
                 case .smsMfa, .customChallenge, .newPasswordRequired:
-                    return SignInEvent(eventType: .receivedChallenge(response))
+                    return SignInEvent(eventType: .receivedChallenge(respondToAuthChallenge))
+                case .deviceSrpAuth:
+                    return SignInEvent(eventType: .initiateDeviceSRP(response))
+//                case .devicePasswordVerifier:
+//                    return SignInEvent(eventType: .respondDevicePasswordVerifier(response))
                 default:
                     let message = "UnSupported challenge response \(challengeName)"
                     let error = SignInError.unknown(message: message)

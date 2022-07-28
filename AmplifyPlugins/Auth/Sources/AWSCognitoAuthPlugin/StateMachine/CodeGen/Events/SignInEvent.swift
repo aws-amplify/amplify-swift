@@ -27,6 +27,12 @@ struct SignInEvent: StateMachineEvent {
 
         case respondPasswordVerifier(SRPStateData, InitiateAuthOutputResponse)
 
+        case initiateDeviceSRP(SignInResponseBehavior)
+
+        case respondDeviceSRPChallenge(SRPStateData, SignInResponseBehavior)
+
+        case respondDevicePasswordVerifier(SRPStateData, SignInResponseBehavior)
+
         case throwPasswordVerifierError(SignInError)
 
         case finalizeSignIn(SignedInData)
@@ -52,6 +58,9 @@ struct SignInEvent: StateMachineEvent {
         case .initiateCustomSignIn: return "SignInEvent.initiateCustomSignIn"
         case .initiateCustomSignInWithSRP: return "SignInEvent.initiateCustomSignInWithSRP"
         case .initiateHostedUISignIn: return "SignInEvent.initiateHostedUISignIn"
+        case .initiateDeviceSRP: return "SignInEvent.initiateDeviceSRP"
+        case .respondDeviceSRPChallenge: return "SignInEvent.respondDeviceSRPChallenge"
+        case .respondDevicePasswordVerifier: return "SignInEvent.respondDevicePasswordVerifier"
         case .respondPasswordVerifier: return "SignInEvent.respondPasswordVerifier"
         case .throwPasswordVerifierError: return "SignInEvent.throwPasswordVerifierError"
         case .confirmDevice: return "SignInEvent.confirmDevice"
@@ -81,6 +90,9 @@ extension SignInEvent.EventType: Equatable {
             (.initiateHostedUISignIn, .initiateHostedUISignIn),
             (.initiateCustomSignIn, .initiateCustomSignIn),
             (.initiateCustomSignInWithSRP, .initiateCustomSignInWithSRP),
+            (.initiateDeviceSRP, .initiateDeviceSRP),
+            (.respondDeviceSRPChallenge, .respondDeviceSRPChallenge),
+            (.respondDevicePasswordVerifier, .respondDevicePasswordVerifier),
             (.respondPasswordVerifier, .respondPasswordVerifier),
             (.throwPasswordVerifierError, .throwPasswordVerifierError),
             (.finalizeSignIn, .finalizeSignIn),
