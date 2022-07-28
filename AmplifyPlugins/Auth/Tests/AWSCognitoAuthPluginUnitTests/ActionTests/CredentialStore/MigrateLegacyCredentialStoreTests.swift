@@ -23,9 +23,9 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
         let mockedData = "mock"
         let saveCredentialHandlerInvoked = expectation(description: "saveCredentialHandlerInvoked")
 
-        let mockLegacyCredentialStoreBehavior = MockCredentialStoreBehavior(data: mockedData)
-        let legacyCredentialStoreFactory: BasicCredentialStoreEnvironment.CredentialStoreFactory = { _ in
-            return mockLegacyCredentialStoreBehavior
+        let mockLegacyKeychainStoreBehavior = MockKeychainStoreBehavior(data: mockedData)
+        let legacyKeychainStoreFactory: BasicCredentialStoreEnvironment.KeychainStoreFactory = { _ in
+            return mockLegacyKeychainStoreBehavior
         }
         let mockAmplifyCredentialStoreBehavior = MockAmplifyCredentialStoreBehavior(
             saveCredentialHandler: { codableCredentials in
@@ -61,7 +61,7 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
 
         let credentialStoreEnv = BasicCredentialStoreEnvironment(
             amplifyCredentialStoreFactory: amplifyCredentialStoreFactory,
-            legacyCredentialStoreFactory: legacyCredentialStoreFactory)
+            legacyKeychainStoreFactory: legacyKeychainStoreFactory)
 
         let environment = CredentialEnvironment(authConfiguration: authConfig,
                                                 credentialStoreEnvironment: credentialStoreEnv)
@@ -82,14 +82,14 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
         let migrationCompletionInvoked = expectation(description: "migrationCompletionInvoked")
         migrationCompletionInvoked.expectedFulfillmentCount = 2
 
-        let mockLegacyCredentialStoreBehavior = MockCredentialStoreBehavior(
+        let mockLegacyKeychainStoreBehavior = MockKeychainStoreBehavior(
             data: "mock",
             removeAllHandler: {
                 migrationCompletionInvoked.fulfill()
             }
         )
-        let legacyCredentialStoreFactory: BasicCredentialStoreEnvironment.CredentialStoreFactory = { _ in
-            return mockLegacyCredentialStoreBehavior
+        let legacyKeychainStoreFactory: BasicCredentialStoreEnvironment.KeychainStoreFactory = { _ in
+            return mockLegacyKeychainStoreBehavior
         }
         let mockAmplifyCredentialStoreBehavior = MockAmplifyCredentialStoreBehavior()
 
@@ -102,7 +102,7 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
 
         let credentialStoreEnv = BasicCredentialStoreEnvironment(
             amplifyCredentialStoreFactory: amplifyCredentialStoreFactory,
-            legacyCredentialStoreFactory: legacyCredentialStoreFactory)
+            legacyKeychainStoreFactory: legacyKeychainStoreFactory)
 
         let environment = CredentialEnvironment(authConfiguration: authConfig,
                                                 credentialStoreEnvironment: credentialStoreEnv)

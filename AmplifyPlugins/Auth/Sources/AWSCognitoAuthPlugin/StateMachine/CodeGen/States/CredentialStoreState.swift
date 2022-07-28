@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AWSPluginsCore
 
 enum CredentialStoreState: State {
 
@@ -21,7 +22,7 @@ enum CredentialStoreState: State {
 
     case success(AmplifyCredentials)
 
-    case error(CredentialStoreError)
+    case error(KeychainStoreError)
 
     case idle
 

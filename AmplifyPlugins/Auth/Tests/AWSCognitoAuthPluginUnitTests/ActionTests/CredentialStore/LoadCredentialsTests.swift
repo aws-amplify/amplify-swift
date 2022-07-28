@@ -8,6 +8,7 @@
 import XCTest
 
 @testable import AWSCognitoAuthPlugin
+import AWSPluginsCore
 
 class LoadCredentialsTests: XCTestCase {
 
@@ -22,9 +23,9 @@ class LoadCredentialsTests: XCTestCase {
         let testData = AmplifyCredentials.testData
         let loadCredentialHandlerInvoked = expectation(description: "loadCredentialHandlerInvoked")
 
-        let mockLegacyCredentialStoreBehavior = MockCredentialStoreBehavior(data: mockedData)
-        let legacyCredentialStoreFactory: BasicCredentialStoreEnvironment.CredentialStoreFactory = { _ in
-            return mockLegacyCredentialStoreBehavior
+        let mockLegacyKeychainStoreBehavior = MockKeychainStoreBehavior(data: mockedData)
+        let legacyKeychainStoreFactory: BasicCredentialStoreEnvironment.KeychainStoreFactory = { _ in
+            return mockLegacyKeychainStoreBehavior
         }
         let mockAmplifyCredentialStoreBehavior = MockAmplifyCredentialStoreBehavior(
             getCredentialHandler: {
@@ -39,7 +40,7 @@ class LoadCredentialsTests: XCTestCase {
                                                                      Defaults.makeIdentityConfigData())
 
         let credentialStoreEnv = BasicCredentialStoreEnvironment(amplifyCredentialStoreFactory: amplifyCredentialStoreFactory,
-                                                                 legacyCredentialStoreFactory: legacyCredentialStoreFactory)
+                                                                 legacyKeychainStoreFactory: legacyKeychainStoreFactory)
 
         let environment = CredentialEnvironment(authConfiguration: authConfig, credentialStoreEnvironment: credentialStoreEnv)
 
@@ -70,7 +71,7 @@ class LoadCredentialsTests: XCTestCase {
     func testLoadCredentialsInvalidEnvironment() {
         let expectation = expectation(description: "throwLoadCredentialConfigurationError")
 
-        let expectedError = CredentialStoreError.configuration(
+        let expectedError = KeychainStoreError.configuration(
             message: AuthPluginErrorConstants.configurationError)
 
         let environment = MockInvalidEnvironment()
@@ -103,11 +104,11 @@ class LoadCredentialsTests: XCTestCase {
         let mockedData = "mock"
         let expectation = expectation(description: "loadCredentialErrorInvoked")
 
-        let expectedError = CredentialStoreError.securityError(30_534)
+        let expectedError = KeychainStoreError.securityError(30_534)
 
-        let mockLegacyCredentialStoreBehavior = MockCredentialStoreBehavior(data: mockedData)
-        let legacyCredentialStoreFactory: BasicCredentialStoreEnvironment.CredentialStoreFactory = { _ in
-            return mockLegacyCredentialStoreBehavior
+        let mockLegacyKeychainStoreBehavior = MockKeychainStoreBehavior(data: mockedData)
+        let legacyKeychainStoreFactory: BasicCredentialStoreEnvironment.KeychainStoreFactory = { _ in
+            return mockLegacyKeychainStoreBehavior
         }
         let mockAmplifyCredentialStoreBehavior = MockAmplifyCredentialStoreBehavior(
             getCredentialHandler: {
@@ -122,7 +123,7 @@ class LoadCredentialsTests: XCTestCase {
                                                                      Defaults.makeIdentityConfigData())
 
         let credentialStoreEnv = BasicCredentialStoreEnvironment(amplifyCredentialStoreFactory: amplifyCredentialStoreFactory,
-                                                                 legacyCredentialStoreFactory: legacyCredentialStoreFactory)
+                                                                 legacyKeychainStoreFactory: legacyKeychainStoreFactory)
 
         let environment = CredentialEnvironment(authConfiguration: authConfig, credentialStoreEnvironment: credentialStoreEnv)
 
@@ -155,11 +156,11 @@ class LoadCredentialsTests: XCTestCase {
         let expectation = expectation(description: "loadCredentialErrorInvoked")
 
         let unknownError = AuthorizationError.invalidState(message: "")
-        let expectedError = CredentialStoreError.unknown("An unknown error occurred", unknownError)
+        let expectedError = KeychainStoreError.unknown("An unknown error occurred", unknownError)
 
-        let mockLegacyCredentialStoreBehavior = MockCredentialStoreBehavior(data: mockedData)
-        let legacyCredentialStoreFactory: BasicCredentialStoreEnvironment.CredentialStoreFactory = { _ in
-            return mockLegacyCredentialStoreBehavior
+        let mockLegacyKeychainStoreBehavior = MockKeychainStoreBehavior(data: mockedData)
+        let legacyKeychainStoreFactory: BasicCredentialStoreEnvironment.KeychainStoreFactory = { _ in
+            return mockLegacyKeychainStoreBehavior
         }
         let mockAmplifyCredentialStoreBehavior = MockAmplifyCredentialStoreBehavior(
             getCredentialHandler: {
@@ -176,7 +177,7 @@ class LoadCredentialsTests: XCTestCase {
 
         let credentialStoreEnv = BasicCredentialStoreEnvironment(
             amplifyCredentialStoreFactory: amplifyCredentialStoreFactory,
-                                                                 legacyCredentialStoreFactory: legacyCredentialStoreFactory)
+                                                                 legacyKeychainStoreFactory: legacyKeychainStoreFactory)
 
         let environment = CredentialEnvironment(authConfiguration: authConfig, credentialStoreEnvironment: credentialStoreEnv)
 

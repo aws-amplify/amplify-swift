@@ -7,6 +7,7 @@
 
 import Foundation
 import Amplify
+import AWSPluginsCore
 
 public typealias AmplifySignOutOperation = AmplifyOperation<AuthSignOutRequest, Void, AuthError>
 
@@ -108,13 +109,13 @@ public class AWSAuthSignOutOperation: AmplifySignOutOperation, AuthSignOutOperat
         authStateMachine.send(event)
     }
 
-    private func sendSignedOutFailedEvent(_ credentialStoreError: CredentialStoreError) {
+    private func sendSignedOutFailedEvent(_ keychainStoreError: KeychainStoreError) {
         let authenticationError: AuthenticationError
-        switch credentialStoreError {
+        switch keychainStoreError {
         case .configuration(let message):
             authenticationError = .configuration(message: message)
         default:
-            authenticationError = .unknown(message: credentialStoreError.errorDescription)
+            authenticationError = .unknown(message: keychainStoreError.errorDescription)
         }
         let event = SignOutEvent(eventType: .signedOutFailure(authenticationError))
         authStateMachine.send(event)
