@@ -40,7 +40,7 @@ extension CustomSignInState {
 
         private func resolveNotStarted(byApplying signInEvent: SignInEvent) -> StateResolution<CustomSignInState> {
             switch signInEvent.eventType {
-            case .initiateCustomSignIn(let signInEventData):
+            case .initiateCustomSignIn(let signInEventData, let deviceMetadata):
                 guard let username = signInEventData.username, !username.isEmpty else {
                     let error = SignInError.inputValidation(
                         field: AuthPluginErrorConstants.signInUsernameError.field
@@ -49,7 +49,8 @@ extension CustomSignInState {
                 }
                 let action = InitiateCustomAuth(
                     username: username,
-                    clientMetadata: signInEventData.clientMetadata)
+                    clientMetadata: signInEventData.clientMetadata,
+                    deviceMetadata: deviceMetadata)
                 return StateResolution(
                     newState: CustomSignInState.initiating(signInEventData),
                     actions: [action]

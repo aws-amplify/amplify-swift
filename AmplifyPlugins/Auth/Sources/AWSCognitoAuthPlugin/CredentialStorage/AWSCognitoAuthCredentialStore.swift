@@ -13,6 +13,7 @@ struct AWSCognitoAuthCredentialStore {
     // Credential store constants
     private let service = "com.amplify.credentialStore"
     private let sessionKey = "session"
+    private let deviceMetadataKey = "deviceMetadata"
     private let authConfigurationKey = "authConfiguration"
 
     // User defaults constants
@@ -90,6 +91,12 @@ struct AWSCognitoAuthCredentialStore {
         return "\(storeKey(for: authConfiguration)).\(sessionKey)"
     }
 
+    private func generateDeviceMetadataKey(
+        for username: String,
+        with configuration: AuthConfiguration) -> String {
+            return "\(storeKey(for: authConfiguration)).\(username).\(deviceMetadataKey)"
+    }
+
     private func saveAuthConfiguration(authConfig: AuthConfiguration) {
         if let encodedAuthConfigData = try? encode(object: authConfig) {
             try? keychain.set(encodedAuthConfigData, key: authConfigurationKey)
@@ -126,6 +133,27 @@ extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
     func deleteCredential() throws {
         let authCredentialStoreKey = generateSessionKey(for: authConfiguration)
         try keychain.remove(authCredentialStoreKey)
+    }
+
+    func saveDevice(_ deviceMetadata: Codable, for username: String) throws {
+        guard let deviceMetadata = deviceMetadata as? DeviceMetadata else {
+            throw CredentialStoreError.codingError("Error occurred while device metadata", nil)
+        }
+        let key = generateDeviceMetadataKey(for: username, with: authConfiguration)
+        let encodedMetadata = try encode(object: deviceMetadata)
+        try keychain.set(encodedMetadata, key: key)
+    }
+
+    func retrieveDevice(for username: String) throws -> Codable {
+        let key = generateDeviceMetadataKey(for: username, with: authConfiguration)
+        let encodedDeviceMetadata = try keychain.getData(key)
+        let deviceMetadata: DeviceMetadata = try decode(data: encodedDeviceMetadata)
+        return deviceMetadata
+    }
+
+    func removeDevice(for username: String) throws {
+        let key = generateDeviceMetadataKey(for: username, with: authConfiguration)
+        try keychain.remove(key)
     }
 
     private func clearAllCredentials() throws {
