@@ -15,14 +15,22 @@ import AuthenticationServices
 class AWSAuthHostedUISignInTests: XCTestCase {
 
     var plugin: AWSCognitoAuthPlugin?
+    let networkTimeout = TimeInterval(5)
+    var mockHostedUIResult: Result<[URLQueryItem], HostedUIError>!
+    var mockTokenResult = ["id_token": AWSCognitoUserPoolTokens.mockData.idToken,
+                           "access_token": AWSCognitoUserPoolTokens.mockData.accessToken,
+                           "refresh_token": AWSCognitoUserPoolTokens.mockData.refreshToken,
+                           "expires_in": 10] as [String : Any]
+    var mockState = "someState"
+    var mockProof = "someProof"
+    var mockJson: Data!
 
-    override func setUp() {
-        plugin = AWSCognitoAuthPlugin()
-    }
-
-    var initialState: AuthState {
-        AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured)
-    }
+    var configuration = HostedUIConfigurationData(clientId: "clientId", oauth: .init(
+        domain: "cognitodomain",
+        scopes: ["name"],
+        signInRedirectURI: "myapp://",
+        signOutRedirectURI: "myapp://"))
+    let initialState = AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured)
 
     func urlSessionMock() -> URLSession {
         let configuration = URLSessionConfiguration.ephemeral
@@ -30,36 +38,20 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         return URLSession(configuration: configuration)
     }
 
-    func testSuccessfulSignIn() {
-        let configuration = HostedUIConfigurationData(clientId: "clientId", oauth: .init(
-            domain: "cognitodomain.com",
-            scopes: ["name"],
-            signInRedirectURI: "myapp://",
-            signOutRedirectURI: "myapp://"))
+    override func setUp() {
+        plugin = AWSCognitoAuthPlugin()
+        mockJson = try! JSONSerialization.data(withJSONObject: mockTokenResult)
+        MockURLProtocol.requestHandler = { request in
+            return (HTTPURLResponse(), self.mockJson)
+        }
 
-        let state = "someState"
-        let proof = "someProof"
+
         func sessionFactory() -> HostedUISessionBehavior {
-            MockHostedUISession(result: .success(
-                [
-                    .init(name: "state", value: state),
-                    .init(name: "code", value: proof)
-                ]
-            ))
+            MockHostedUISession(result: mockHostedUIResult)
         }
 
         func mockRandomString() -> RandomStringBehavior {
-            return MockRandomStringGenerator(mockString: proof, mockUUID: state)
-        }
-
-        let mockTokens = AWSCognitoUserPoolTokens.mockData
-        let mockTokenResult = ["id_token": mockTokens.idToken,
-                               "access_token": mockTokens.accessToken,
-                               "refresh_token": mockTokens.refreshToken,
-                               "expires_in": 10] as [String : Any]
-        let mockJson = try! JSONSerialization.data(withJSONObject: mockTokenResult)
-        MockURLProtocol.requestHandler = { request in
-            return (HTTPURLResponse(), mockJson)
+            return MockRandomStringGenerator(mockString: mockState, mockUUID: mockState)
         }
 
         let environment = BasicHostedUIEnvironment(configuration: configuration,
@@ -89,10 +81,16 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             authStateMachine: stateMachine,
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
             hubEventHandler: MockAuthHubEventBehavior())
+    }
 
-        let expectation  = expectation(description: "")
+    func testSuccessfulSignIn() {
+        mockHostedUIResult = .success([
+            .init(name: "state", value: mockState),
+            .init(name: "code", value: mockProof)
+        ])
+        let expectation  = expectation(description: "SignIn operation should complete")
         _ = plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(),
-                               options: nil) { result in
+                                    options: nil) { result in
             defer {
                 expectation.fulfill()
             }
@@ -104,7 +102,181 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             }
 
         }
-        wait(for: [expectation], timeout: 10)
+        wait(for: [expectation], timeout: networkTimeout)
+    }
+
+    func testUserCancelSignIn() {
+        mockHostedUIResult = .failure(.cancelled)
+        let expectation  = expectation(description: "SignIn operation should complete")
+        _ = plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(),
+                                    options: nil) { result in
+            defer {
+                expectation.fulfill()
+            }
+            switch result {
+            case .success:
+                XCTFail("Should not succeed")
+            case .failure(let error):
+                guard case .service(_, _, let underlyingError) = error,
+                      case .userCancelled = (underlyingError as? AWSCognitoAuthError) else {
+                    XCTFail("Should not fail with error = \(error)")
+                    return
+                }
+            }
+        }
+        wait(for: [expectation], timeout: networkTimeout)
+    }
+
+    func testRestartAfterError() {
+        mockHostedUIResult = .failure(.cancelled)
+        let errorExpectation  = expectation(description: "SignIn operation should complete")
+        _ = plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(),
+                                    options: nil) { result in
+            defer {
+                errorExpectation.fulfill()
+            }
+            switch result {
+            case .success:
+                XCTFail("Should not succeed")
+            case .failure(let error):
+                guard case .service(_, _, let underlyingError) = error,
+                      case .userCancelled = (underlyingError as? AWSCognitoAuthError) else {
+                    XCTFail("Should not fail with error = \(error)")
+                    return
+                }
+            }
+
+        }
+        wait(for: [errorExpectation], timeout: networkTimeout)
+        mockHostedUIResult = .success([
+            .init(name: "state", value: mockState),
+            .init(name: "code", value: mockProof)
+        ])
+        let signInExpectation = expectation(description: "SignIn operation should complete")
+        _ = plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(),
+                                    options: nil) { result in
+            defer {
+                signInExpectation.fulfill()
+            }
+            switch result {
+            case .success(let result):
+                XCTAssertTrue(result.isSignedIn)
+            case .failure(let error):
+                XCTFail("Should not fail with error = \(error)")
+            }
+        }
+        wait(for: [signInExpectation], timeout: networkTimeout)
+    }
+
+    func testInvalidCodeSignIn() {
+        mockHostedUIResult = .success([
+            .init(name: "state", value: "differentState"),
+            .init(name: "code", value: mockProof)
+        ])
+        let expectation  = expectation(description: "SignIn operation should complete")
+        _ = plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(),
+                                    options: nil) { result in
+            defer {
+                expectation.fulfill()
+            }
+            switch result {
+            case .success:
+                XCTFail("Should not succeed")
+            case .failure(let error):
+                guard case .service = error else {
+                    XCTFail("Should not fail with error = \(error)")
+                    return
+                }
+            }
+        }
+        wait(for: [expectation], timeout: networkTimeout)
+    }
+
+    func testInvalidPresentationContextError() {
+        mockHostedUIResult = .failure(.invalidContext)
+        let expectation  = expectation(description: "SignIn operation should complete")
+        _ = plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(),
+                                    options: nil) { result in
+            defer {
+                expectation.fulfill()
+            }
+            switch result {
+            case .success:
+                XCTFail("Should not succeed")
+            case .failure(let error):
+                guard case .invalidState = error else {
+                    XCTFail("Should not fail with error = \(error)")
+                    return
+                }
+            }
+        }
+        wait(for: [expectation], timeout: networkTimeout)
+    }
+
+    func testTokenParsingFailure() {
+        mockHostedUIResult = .success([
+            .init(name: "state", value: mockState),
+            .init(name: "code", value: mockProof)
+        ])
+        mockTokenResult = [
+            "refresh_token": AWSCognitoUserPoolTokens.mockData.refreshToken,
+            "expires_in": 10] as [String : Any]
+        mockJson = try! JSONSerialization.data(withJSONObject: mockTokenResult)
+        MockURLProtocol.requestHandler = { request in
+            return (HTTPURLResponse(), self.mockJson)
+        }
+
+        let expectation  = expectation(description: "SignIn operation should complete")
+        _ = plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(),
+                                    options: nil) { result in
+            defer {
+                expectation.fulfill()
+            }
+            switch result {
+            case .success:
+                XCTFail("Should not successeed")
+            case .failure(let error):
+                guard case .service = error else {
+                    XCTFail("Should not fail with error = \(error)")
+                    return
+                }
+            }
+
+        }
+        wait(for: [expectation], timeout: networkTimeout)
+    }
+
+    func testTokenErrorResponse() {
+        mockHostedUIResult = .success([
+            .init(name: "state", value: mockState),
+            .init(name: "code", value: mockProof)
+        ])
+        mockTokenResult = [
+            "error": "invalid_grant",
+            "error_description": "Some error"] as [String : Any]
+        mockJson = try! JSONSerialization.data(withJSONObject: mockTokenResult)
+        MockURLProtocol.requestHandler = { request in
+            return (HTTPURLResponse(), self.mockJson)
+        }
+
+        let expectation  = expectation(description: "SignIn operation should complete")
+        _ = plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(),
+                                    options: nil) { result in
+            defer {
+                expectation.fulfill()
+            }
+            switch result {
+            case .success:
+                XCTFail("Should not successeed")
+            case .failure(let error):
+                guard case .service = error else {
+                    XCTFail("Should not fail with error = \(error)")
+                    return
+                }
+            }
+
+        }
+        wait(for: [expectation], timeout: networkTimeout)
     }
     
 }

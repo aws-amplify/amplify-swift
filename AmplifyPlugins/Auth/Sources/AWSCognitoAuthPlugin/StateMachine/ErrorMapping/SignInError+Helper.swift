@@ -94,41 +94,46 @@ extension HostedUIError: AuthErrorConvertible {
     var authError: AuthError {
         switch self {
         case .signInURI:
-            return .configuration("SignIn URI could not be created",
-                                  "Check the configuration to make sure that HostedUI related information are present", nil)
-            
-        case .proofCalculation:
-            return .invalidState("Proof calculation failed",
-                                 "Try again after sometime", nil)
-            
-        case .codeValidation:
-            return .validation("Code", "Code validation failed",
-                               "Code returned by HostedUI could not be validated", nil)
-            
-        case .serviceMessage(let message):
-            return .service(message, "Received an error message from service", nil)
-            
-        case .tokenParsing:
-            return .service("Token returned by service could not be parsed",
-                            "Check if the the configuration provided are correct", nil)
-        case .cancelled:
-            return .service("Token returned by service could not be parsed",
-                            "Check if the the configuration provided are correct",
-                            AWSCognitoAuthError.userCancelled)
-            // TODO: Update with correct messages
-        case .invalidContext:
-            return .service("",
-                            "",
-                            AWSCognitoAuthError.userCancelled)
-        case .unknown:
-            return .service("",
-                            "",
-                            AWSCognitoAuthError.userCancelled)
-            
+            return .configuration(
+                AuthPluginErrorConstants.hostedUISignInURI.errorDescription,
+                AuthPluginErrorConstants.hostedUISignInURI.recoverySuggestion)
+
         case .signOutURI:
-            return .service("",
-                            "",
-                            AWSCognitoAuthError.userCancelled)
+            return .service(
+                AuthPluginErrorConstants.hostedUISignOutURI.errorDescription,
+                AuthPluginErrorConstants.hostedUISignOutURI.recoverySuggestion)
+
+        case .proofCalculation:
+            return .invalidState(
+                AuthPluginErrorConstants.hostedUIProofCalculation.errorDescription,
+                AuthPluginErrorConstants.hostedUIProofCalculation.recoverySuggestion)
+
+        case .codeValidation:
+            return .service(
+                AuthPluginErrorConstants.hostedUISecurityFailedError.errorDescription,
+                AuthPluginErrorConstants.hostedUISecurityFailedError.recoverySuggestion)
+
+        case .tokenParsing:
+            return .service(
+                AuthPluginErrorConstants.tokenParsingError.errorDescription,
+                AuthPluginErrorConstants.tokenParsingError.recoverySuggestion)
+
+        case .cancelled:
+            return .service(
+                AuthPluginErrorConstants.hostedUIUserCancelledError.errorDescription,
+                AuthPluginErrorConstants.hostedUIUserCancelledError.recoverySuggestion,
+                AWSCognitoAuthError.userCancelled)
+
+        case .invalidContext:
+            return .invalidState(
+                AuthPluginErrorConstants.hostedUIInvalidPresentation.errorDescription,
+                AuthPluginErrorConstants.hostedUIInvalidPresentation.recoverySuggestion)
+
+        case .serviceMessage(let message):
+            return .service(message, AuthPluginErrorConstants.serviceError)
+
+        case .unknown:
+            return .unknown("WebUI signIn encountered an unknown error", nil)
             
         }
     }
