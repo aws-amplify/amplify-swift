@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import AmplifyBigInteger
 import AWSCognitoIdentityProvider
 import Foundation
 
@@ -41,8 +42,13 @@ struct ConfirmDevice: Action {
                     deviceKey: deviceMetadata.deviceKey,
                     password: deviceMetadata.deviceSecret)
 
-                let base64EncodedVerifier = try devicePasswordVerifierConfig.passwordVerifier.base64EncodedString()
-                let base64EncodedSalt = try devicePasswordVerifierConfig.salt.base64EncodedString()
+                let verifierData = Data(AmplifyBigIntHelper.getSignedData(
+                    num: devicePasswordVerifierConfig.passwordVerifier))
+                let saltData = Data(AmplifyBigIntHelper.getSignedData(
+                    num: devicePasswordVerifierConfig.salt))
+
+                let base64EncodedVerifier = verifierData.base64EncodedString()
+                let base64EncodedSalt = saltData.base64EncodedString()
                 let verifier = CognitoIdentityProviderClientTypes.DeviceSecretVerifierConfigType(
                     passwordVerifier: base64EncodedVerifier,
                     salt: base64EncodedSalt)
