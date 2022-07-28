@@ -36,13 +36,13 @@ struct ConfirmDevice: Action {
 
                 let srpClient = try SRPSignInHelper.srpClient(srpEnv)
 
-                let devicePasswordVerifierConfig = srpClient.generateDevicePasswordVerifier(
+                let passwordVerifier = srpClient.generateDevicePasswordVerifier(
                     deviceGroupKey: deviceMetadata.deviceGroupKey,
                     deviceKey: deviceMetadata.deviceKey,
                     password: deviceMetadata.deviceSecret)
 
-                let base64EncodedVerifier = try devicePasswordVerifierConfig.passwordVerifier.base64EncodedString()
-                let base64EncodedSalt = try devicePasswordVerifierConfig.salt.base64EncodedString()
+                let base64EncodedVerifier = passwordVerifier.passwordVerifier.base64EncodedString()
+                let base64EncodedSalt = passwordVerifier.salt.base64EncodedString()
                 let verifier = CognitoIdentityProviderClientTypes.DeviceSecretVerifierConfigType(
                     passwordVerifier: base64EncodedVerifier,
                     salt: base64EncodedSalt)
@@ -81,7 +81,7 @@ struct ConfirmDevice: Action {
         return UIDevice.current.name
 #else
         // TODO: Get a device name implementation for all apple platforms
-        return ""
+        fatalError("Need to create an implementation for get device names for all platform devices.")
 #endif
     }
 }

@@ -87,7 +87,7 @@ public struct SRPClientState {
         deviceGroupKey: String,
         deviceKey: String,
         password: String,
-        commonState: SRPCommonState) -> (salt: String, passwordVerifier: String) {
+        commonState: SRPCommonState) -> (salt: BigInt, passwordVerifier: BigInt) {
 
             // Salt (16 random bytes)
             let salt = generateRandomUnsigned(of: 16)
@@ -104,7 +104,7 @@ public struct SRPClientState {
             //PasswordVerifier = g(salt + FULL_PASSWORD) (mod N)
             let passwordVerifier = commonState.generator.pow(x, modulus: commonState.prime)
 
-            return (salt.asString, passwordVerifier.asString)
+            return (salt, passwordVerifier)
         }
 
 }

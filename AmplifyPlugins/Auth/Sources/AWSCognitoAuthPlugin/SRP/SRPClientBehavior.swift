@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AmplifySRP
 
 protocol SRPClientBehavior {
 
@@ -30,7 +31,7 @@ protocol SRPClientBehavior {
     func generateDevicePasswordVerifier(
         deviceGroupKey: String,
         deviceKey: String,
-        password: String) -> (salt: String, passwordVerifier: String)
+        password: String) -> (salt: Data, passwordVerifier: Data)
 }
 
 enum SRPError: Error {
