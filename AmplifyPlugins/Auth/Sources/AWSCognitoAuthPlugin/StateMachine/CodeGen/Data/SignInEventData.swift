@@ -32,7 +32,9 @@ extension SignInEventData: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "username": username.masked(),
-            "password": password.redacted()
+            "password": password.redacted(),
+            "clientMetadata": clientMetadata,
+            "signInMethod": signInMethod
         ]
     }
 }

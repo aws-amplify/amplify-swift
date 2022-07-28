@@ -53,7 +53,7 @@ struct VerifyPasswordSRP: Action {
                                   environment: userPoolEnv)
             try UserPoolSignInHelper.sendRespondToAuth(
                 request: request,
-                for: stateData.username,
+                for: username,
                 environment: userPoolEnv) { responseEvent in
                     logVerbose("\(#fileID) Sending event \(responseEvent)",
                                environment: environment)
@@ -92,6 +92,10 @@ struct VerifyPasswordSRP: Action {
                 clientSecret: clientSecret
             )
             challengeResponses["SECRET_HASH"] = clientSecretHash
+        }
+
+        if case .metadata(let data) = stateData.deviceMetadata {
+            challengeResponses["DEVICE_KEY"] = data.deviceKey
         }
 
         challengeResponses["TIMESTAMP"] = dateStr
