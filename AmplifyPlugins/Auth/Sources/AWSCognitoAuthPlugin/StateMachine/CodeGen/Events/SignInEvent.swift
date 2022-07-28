@@ -33,6 +33,8 @@ struct SignInEvent: StateMachineEvent {
 
         case finalizeSignIn(SignedInData)
 
+        case confirmDevice(SignedInData)
+
         case cancelSRPSignIn(SignedInData)
 
         case throwAuthError(SignInError)
@@ -55,6 +57,7 @@ struct SignInEvent: StateMachineEvent {
         case .initiateMigrateAuth: return "SignInEvent.initiateMigrateAuth"
         case .respondPasswordVerifier: return "SignInEvent.respondPasswordVerifier"
         case .throwPasswordVerifierError: return "SignInEvent.throwPasswordVerifierError"
+        case .confirmDevice: return "SignInEvent.confirmDevice"
         case .finalizeSignIn: return "SignInEvent.finalizeSignIn"
         case .cancelSRPSignIn: return "SignInEvent.cancelSRPSignIn"
         case .throwAuthError: return "SignInEvent.throwAuthError"
@@ -85,6 +88,7 @@ extension SignInEvent.EventType: Equatable {
             (.respondPasswordVerifier, .respondPasswordVerifier),
             (.throwPasswordVerifierError, .throwPasswordVerifierError),
             (.finalizeSignIn, .finalizeSignIn),
+            (.confirmDevice, .confirmDevice),
             (.cancelSRPSignIn, .cancelSRPSignIn),
             (.throwAuthError, .throwAuthError),
             (.receivedChallenge, .receivedChallenge),
