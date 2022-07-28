@@ -33,7 +33,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
     var tasks: [Int: StorageTransferTask] = [:]
     var multipartUploadSessions: [StorageMultipartUploadSession] = []
 
-    private let serviceDispatchQueue = DispatchQueue(label: "com.amazon.aws.amplify.multipartupload-session", target: .global())
+    private let serviceDispatchQueue = DispatchQueue(label: "com.amazon.aws.amplify.storage.service", target: .global())
 
     var identifier: String {
         storageConfiguration.sessionIdentifier
