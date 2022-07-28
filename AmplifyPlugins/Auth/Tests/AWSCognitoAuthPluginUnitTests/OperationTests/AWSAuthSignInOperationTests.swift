@@ -25,12 +25,6 @@ class AWSAuthSignInOperationTests: XCTestCase {
         queue?.maxConcurrentOperationCount = 1
     }
 
-    override func tearDown() async throws {
-        try await super.tearDown()
-        await Amplify.reset()
-        sleep(2)
-    }
-
     func testSRPSignInOperationSuccess() throws {
         let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
