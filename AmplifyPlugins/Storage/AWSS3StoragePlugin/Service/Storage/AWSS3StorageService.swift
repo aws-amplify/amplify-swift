@@ -33,6 +33,8 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
     var tasks: [Int: StorageTransferTask] = [:]
     var multipartUploadSessions: [StorageMultipartUploadSession] = []
 
+    private let serviceDispatchQueue = DispatchQueue(label: "com.amazon.aws.amplify.multipartupload-session", target: .global())
+
     var identifier: String {
         storageConfiguration.sessionIdentifier
     }
@@ -171,12 +173,18 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
     }
 
     func register(multipartUploadSession: StorageMultipartUploadSession) {
-        multipartUploadSessions.append(multipartUploadSession)
+        dispatchPrecondition(condition: .notOnQueue(serviceDispatchQueue))
+        serviceDispatchQueue.sync {
+            multipartUploadSessions.append(multipartUploadSession)
+        }
     }
 
     func unregister(multipartUploadSession: StorageMultipartUploadSession) {
-        guard let index = multipartUploadSessions.firstIndex(of: multipartUploadSession) else { return }
-        multipartUploadSessions.remove(at: index)
+        dispatchPrecondition(condition: .notOnQueue(serviceDispatchQueue))
+        serviceDispatchQueue.sync {
+            guard let index = multipartUploadSessions.firstIndex(of: multipartUploadSession) else { return }
+            multipartUploadSessions.remove(at: index)
+        }
     }
 
     func findTask(taskIdentifier: TaskIdentifier) -> StorageTransferTask? {
@@ -185,10 +193,13 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
     }
 
     func findMultipartUploadSession(uploadId: UploadID) -> StorageMultipartUploadSession? {
-        let session = multipartUploadSessions.first { session in
-            session.uploadId == uploadId
+        dispatchPrecondition(condition: .notOnQueue(serviceDispatchQueue))
+        return serviceDispatchQueue.sync {
+            let session = multipartUploadSessions.first { session in
+                session.uploadId == uploadId
+            }
+            return session
         }
-        return session
     }
 
     func createTransferTask(transferType: StorageTransferType,
