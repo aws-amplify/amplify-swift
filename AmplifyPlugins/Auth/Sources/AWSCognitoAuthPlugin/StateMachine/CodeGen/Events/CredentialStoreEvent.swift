@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AWSPluginsCore
 
 struct CredentialStoreEvent: StateMachineEvent {
 
@@ -21,7 +22,7 @@ struct CredentialStoreEvent: StateMachineEvent {
 
         case completedOperation(AmplifyCredentials)
 
-        case throwError(CredentialStoreError)
+        case throwError(KeychainStoreError)
 
         case moveToIdleState
 

@@ -54,8 +54,8 @@ class EndpointClientTests: XCTestCase {
                                                             demographic: oldDemographic)
         let newToken = "newToken".data(using: .utf8)
         do {
-            try keychain.set(Data(), key: EndpointClient.Constants.endpointProfileKey)
-            try keychain.set(newToken!, key: EndpointClient.Constants.deviceTokenKey)
+            try keychain._set(Data(), key: EndpointClient.Constants.endpointProfileKey)
+            try keychain._set(newToken!, key: EndpointClient.Constants.deviceTokenKey)
         } catch {
             XCTFail("Fail to setup test data")
         }
@@ -94,7 +94,7 @@ class EndpointClientTests: XCTestCase {
         keychain.resetCounters()
         let newToken = "newToken".data(using: .utf8)
         do {
-            try keychain.set(newToken!, key: EndpointClient.Constants.deviceTokenKey)
+            try keychain._set(newToken!, key: EndpointClient.Constants.deviceTokenKey)
         } catch {
             XCTFail("Fail to setup test data")
         }

@@ -9,6 +9,7 @@ import Amplify
 import AWSPinpoint
 import Foundation
 import AWSPluginsCore
+@_spi(KeychainStore) import AWSPluginsCore
 
 protocol EndpointClientBehaviour: Actor {
     nonisolated var pinpointClient: PinpointClientProtocol { get }
@@ -98,7 +99,7 @@ actor EndpointClient: EndpointClientBehaviour {
         globalAttributes[key] = attributes
         do {
             if let data = try? archiver.encode(globalAttributes) {
-                try keychain.set(data, key: Constants.attributesKey)
+                try keychain._set(data, key: Constants.attributesKey)
             }
         } catch {
             log.error("Unable to store Analytics global attributes")
@@ -114,7 +115,7 @@ actor EndpointClient: EndpointClientBehaviour {
         globalMetrics[key] = metric
         do {
             if let data = try? archiver.encode(globalMetrics) {
-                try keychain.set(data, key: Constants.metricsKey)
+                try keychain._set(data, key: Constants.metricsKey)
             }
         } catch {
             log.error("Unable to store Analytics global metrics")
@@ -151,7 +152,7 @@ actor EndpointClient: EndpointClientBehaviour {
             return await configure(endpointProfile: decodedEndpointProfile)
         }
 
-        try? keychain.remove(Constants.endpointProfileKey)
+        try? keychain._remove(Constants.endpointProfileKey)
         // Create a new PinpointEndpointProfile
         return await configure(endpointProfile: PinpointEndpointProfile(applicationId: configuration.appId,
                                                                   endpointId: configuration.uniqueDeviceId))
@@ -185,7 +186,7 @@ actor EndpointClient: EndpointClientBehaviour {
         do {
             let output = try await pinpointClient.updateEndpoint(input: input)
             if let encodedData = try? archiver.encode(endpointProfile) {
-                try? keychain.set(encodedData, key: Constants.endpointProfileKey)
+                try? keychain._set(encodedData, key: Constants.endpointProfileKey)
             }
             self.endpointProfile = endpointProfile
             log.verbose("Endpoint Updated Successfully! \(output)")
@@ -246,17 +247,17 @@ actor EndpointClient: EndpointClientBehaviour {
     private static func migrateStoredValues(from userDefaults: UserDefaultsBehaviour, to keychain: KeychainStoreBehavior, using archiver: AmplifyArchiverBehaviour) {
         if let endpointProfileData = userDefaults.data(forKey: Constants.endpointProfileKey) {
             do {
-                try keychain.set(endpointProfileData, key: Constants.endpointProfileKey)
+                try keychain._set(endpointProfileData, key: Constants.endpointProfileKey)
                 userDefaults.removeObject(forKey: Constants.endpointProfileKey)
             } catch {
                 log.error("Unable to migrate Analytics key-value store for key \(Constants.endpointProfileKey)")
             }
         }
-
-        let keychainTokenData = try? keychain.getData(Constants.deviceTokenKey)
+        
+        let keychainTokenData = try? keychain._getData(Constants.deviceTokenKey)
         if let tokenData = userDefaults.data(forKey: Constants.deviceTokenKey), keychainTokenData == nil {
             do {
-                try keychain.set(tokenData, key: Constants.deviceTokenKey)
+                try keychain._set(tokenData, key: Constants.deviceTokenKey)
                 userDefaults.removeObject(forKey: Constants.deviceTokenKey)
             } catch {
                 log.error("Unable to migrate Analytics key-value store for key \(Constants.deviceTokenKey)")
@@ -266,7 +267,7 @@ actor EndpointClient: EndpointClientBehaviour {
         if let attributes = userDefaults.object(forKey: Constants.attributesKey) as? GlobalAttributes,
            let attributesData = try? archiver.encode(attributes) {
             do {
-                try keychain.set(attributesData, key: Constants.attributesKey)
+                try keychain._set(attributesData, key: Constants.attributesKey)
                 userDefaults.removeObject(forKey: Constants.attributesKey)
             } catch {
                 log.error("Unable to migrate Analytics key-value store for key \(Constants.attributesKey)")
@@ -276,7 +277,7 @@ actor EndpointClient: EndpointClientBehaviour {
         if let metrics = userDefaults.object(forKey: Constants.metricsKey) as? GlobalMetrics,
            let metricsData = try? archiver.encode(metrics) {
             do {
-                try keychain.set(metricsData, key: Constants.metricsKey)
+                try keychain._set(metricsData, key: Constants.metricsKey)
                 userDefaults.removeObject(forKey: Constants.metricsKey)
             } catch {
                 log.error("Unable to migrate Analytics key-value store for key \(Constants.metricsKey)")
@@ -289,7 +290,7 @@ actor EndpointClient: EndpointClientBehaviour {
         forKey key: String,
         fallbackTo defaultSource: UserDefaultsBehaviour
     ) -> Data? {
-        if let data = try? keychain.getData(key) {
+        if let data = try? keychain._getData(key) {
             return data
         } else {
             return defaultSource.data(forKey: key)
@@ -303,7 +304,7 @@ actor EndpointClient: EndpointClientBehaviour {
         fallbackTo defaultSource: UserDefaultsBehaviour,
         using archiver: AmplifyArchiverBehaviour
     ) -> T? {
-        guard let data = try? keychain.getData(key) else {
+        guard let data = try? keychain._getData(key) else {
             return defaultSource.object(forKey: key) as? T
         }
 

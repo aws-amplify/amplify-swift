@@ -14,7 +14,7 @@ class MockKeychainStore: KeychainStoreBehavior {
 
     var stringForKeyCount = 0
     var stringForKeyCountMap: [String: Int] = [:]
-    func getString(_ key: String) throws -> String {
+    func _getString(_ key: String) throws -> String {
         stringForKeyCount += 1
         stringForKeyCountMap[key] = stringForKeyCountMap[key, default: 0] + 1
         return stringValues[key]!
@@ -22,7 +22,7 @@ class MockKeychainStore: KeychainStoreBehavior {
 
     var dataForKeyCount = 0
     var dataForKeyCountMap: [String: Int] = [:]
-    func getData(_ key: String) throws -> Data {
+    func _getData(_ key: String) throws -> Data {
         dataForKeyCount += 1
         dataForKeyCountMap[key] = dataForKeyCountMap[key, default: 0] + 1
         guard let data = dataValues[key] else {
@@ -32,19 +32,19 @@ class MockKeychainStore: KeychainStoreBehavior {
     }
 
     var saveStringCount = 0
-    func set(_ value: String, key: String) throws {
+    func _set(_ value: String, key: String) throws {
         saveStringCount += 1
         stringValues[key] = value
     }
 
     var saveDataCount = 0
-    func set(_ value: Data, key: String) throws {
+    func _set(_ value: Data, key: String) throws {
         saveDataCount += 1
         dataValues[key] = value
     }
 
     var removeObjectCount = 0
-    func remove(_ key: String) throws {
+    func _remove(_ key: String) throws {
         removeObjectCount += 1
         if stringValues.keys.contains(where: { $0 == key }) {
             stringValues.removeValue(forKey: key)
@@ -54,8 +54,8 @@ class MockKeychainStore: KeychainStoreBehavior {
             dataValues.removeValue(forKey: key)
         }
     }
-
-    func removeAll() throws {
+    
+    func _removeAll() throws {
         stringValues.removeAll()
         dataValues.removeAll()
     }

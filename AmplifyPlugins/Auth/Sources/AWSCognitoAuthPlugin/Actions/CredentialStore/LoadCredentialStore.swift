@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AWSPluginsCore
 
 struct LoadCredentialStore: Action {
 
@@ -17,7 +18,7 @@ struct LoadCredentialStore: Action {
 
         guard let credentialEnvironment = environment as? CredentialEnvironment else {
             let event = CredentialStoreEvent(
-                eventType: .throwError(CredentialStoreError.configuration(
+                eventType: .throwError(KeychainStoreError.configuration(
                     message: AuthPluginErrorConstants.configurationError)))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
@@ -32,14 +33,14 @@ struct LoadCredentialStore: Action {
             let event = CredentialStoreEvent(eventType: .completedOperation(storedCredentials as! AmplifyCredentials))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
-        } catch let error as CredentialStoreError {
+        } catch let error as KeychainStoreError {
             let event = CredentialStoreEvent(eventType: .throwError(error))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
         } catch {
             let event = CredentialStoreEvent(
                 eventType: .throwError(
-                    CredentialStoreError.unknown("An unknown error occurred", error)
+                    KeychainStoreError.unknown("An unknown error occurred", error)
                 )
             )
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
