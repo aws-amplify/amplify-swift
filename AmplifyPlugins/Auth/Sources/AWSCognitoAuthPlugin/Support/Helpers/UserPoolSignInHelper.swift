@@ -104,15 +104,6 @@ struct UserPoolSignInHelper {
                     return SignInEvent(eventType: .confirmDevice(signedInData))
                 }
 
-
-                switch signedInData.deviceMetadata {
-                case .noData:
-                    return SignInEvent(eventType: .finalizeSignIn(signedInData))
-                case .metadata:
-                    return SignInEvent(eventType: .confirmDevice(signedInData))
-                }
-
-
             } else if let challengeName = response.challengeName {
                 let parameters = response.challengeParameters
                 let respondToAuthChallenge = RespondToAuthChallenge(
