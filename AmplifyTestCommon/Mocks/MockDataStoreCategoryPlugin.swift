@@ -50,6 +50,19 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     }
 
     func query<M: Model>(_ modelType: M.Type,
+                         byIdentifier id: String,
+                         completion: (DataStoreResult<M?>) -> Void) where M: ModelIdentifiable,
+                                                                          M.IdentifierFormat == ModelIdentifierFormat.Default {
+        notify("queryByIdentifier")
+
+        if let responder = responders[.queryByIdListener] as? QueryByIdResponder<M> {
+            if let callback = responder.callback((modelType: modelType, id: id)) {
+                completion(callback)
+            }
+        }
+    }
+
+    func query<M: Model>(_ modelType: M.Type,
                          where predicate: QueryPredicate?,
                          sort sortInput: QuerySortInput?,
                          paginate paginationInput: QueryPaginationInput?,
@@ -66,6 +79,18 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         }
     }
 
+    func query<M>(_ modelType: M.Type,
+                  byIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
+                  completion: (DataStoreResult<M?>) -> Void) where M: Model, M: ModelIdentifiable {
+        notify("queryWithIdentifier")
+
+       if let responder = responders[.queryByIdListener] as? QueryByIdResponder<M> {
+           if let callback = responder.callback((modelType: modelType, id: id.stringValue)) {
+               completion(callback)
+           }
+       }
+    }
+
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: String,
                           where predicate: QueryPredicate? = nil,
@@ -80,8 +105,35 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     }
 
     func delete<M: Model>(_ modelType: M.Type,
-                          where predicate: QueryPredicate,
-                          completion: (DataStoreResult<Void>) -> Void) {
+                          withIdentifier id: String,
+                          where predicate: QueryPredicate? = nil,
+                          completion: @escaping (DataStoreResult<Void>) -> Void) where M: ModelIdentifiable,
+                                                                             M.IdentifierFormat == ModelIdentifierFormat.Default {
+        notify("deleteByIdentifier")
+
+        if let responder = responders[.deleteByIdListener] as? DeleteByIdResponder<M> {
+            if let callback = responder.callback((modelType: modelType, id: id)) {
+                completion(callback)
+            }
+        }
+    }
+
+    func delete<M>(_ modelType: M.Type,
+                   withIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
+                   where predicate: QueryPredicate?,
+                   completion: @escaping DataStoreCallback<Void>) where M: Model, M: ModelIdentifiable {
+        notify("deleteByIdentifier")
+
+        if let responder = responders[.deleteByIdListener] as? DeleteByIdResponder<M> {
+            if let callback = responder.callback((modelType: modelType, id: id.stringValue)) {
+                completion(callback)
+            }
+        }
+    }
+
+    func delete<M: Model>(_ modelType: M.Type,
+                           where predicate: QueryPredicate,
+                           completion: (DataStoreResult<Void>) -> Void) {
         notify("deleteModelTypeByPredicate")
 
         if let responder = responders[.deleteModelTypeListener] as? DeleteModelTypeResponder<M> {

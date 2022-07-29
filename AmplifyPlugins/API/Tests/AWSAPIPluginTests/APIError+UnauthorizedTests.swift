@@ -8,7 +8,7 @@
 import XCTest
 
 @testable import Amplify
-@testable import AWSAPIPlugin
+@testable import AWSAPICategoryPlugin
 
 class APIErrorUnauthorizedTests: XCTestCase {
 

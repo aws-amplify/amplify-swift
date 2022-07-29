@@ -14,6 +14,10 @@ import XCTest
 // swiftlint:disable file_length
 // swiftlint:disable type_name
 class QueryPredicateEvaluateGeneratedStringTests: XCTestCase {
+    override func setUp() {
+        ModelRegistry.register(modelType: QPredGen.self)
+    }
+
     func testStringanotEqualStringa() throws {
         let predicate = QPredGen.keys.myString.ne("a")
         var instance = QPredGen(name: "test")

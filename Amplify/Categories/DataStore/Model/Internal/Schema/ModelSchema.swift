@@ -12,17 +12,26 @@ public typealias ModelFieldName = String
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 ///   directly by host applications. The behavior of this may change without warning.
 public enum ModelAttribute: Equatable {
-
     /// Represents a database index, often used for frequent query optimizations.
     case index(fields: [ModelFieldName], name: String?)
 
     /// This model is used by the Amplify system or a plugin, and should not be used by the app developer
     case isSystem
+
+    /// Defines the primary key for the schema.
+    case primaryKey(fields: [ModelFieldName])
+
+    /// Convenience factory method to initialize a `.primaryKey` attribute by
+    /// using the model coding keys
+    public static func primaryKey(fields: [CodingKey]) -> ModelAttribute {
+        return .primaryKey(fields: fields.map { $0.stringValue })
+    }
 }
 
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 ///   directly by host applications. The behavior of this may change without warning.
 public enum ModelFieldAttribute {
+    @available(*, deprecated, message: "Use the primaryKey member of the schema")
     case primaryKey
 }
 
@@ -39,8 +48,9 @@ public struct ModelField {
     public let association: ModelAssociation?
     public let authRules: AuthRules
 
+    @available(*, deprecated, message: "Use the primaryKey member of the schema")
     public var isPrimaryKey: Bool {
-        return name == "id"
+        return attributes.contains { $0 == .primaryKey }
     }
 
     public init(name: String,
@@ -84,14 +94,16 @@ public struct ModelSchema {
     public let authRules: AuthRules
     public let fields: ModelFields
     public let attributes: [ModelAttribute]
+    public let indexes: [ModelAttribute]
 
     public let sortedFields: [ModelField]
 
-    public var primaryKey: ModelField {
-        guard let primaryKey = fields.first(where: { $1.isPrimaryKey }) else {
+    private var _primaryKey: ModelPrimaryKey?
+    public var primaryKey: ModelPrimaryKey {
+        guard let primaryKey = _primaryKey else {
             return Fatal.preconditionFailure("Primary Key not defined for `\(name)`")
         }
-        return primaryKey.value
+        return primaryKey
     }
 
     public init(name: String,
@@ -100,7 +112,8 @@ public struct ModelSchema {
                 syncPluralName: String? = nil,
                 authRules: AuthRules = [],
                 attributes: [ModelAttribute] = [],
-                fields: ModelFields = [:]) {
+                fields: ModelFields = [:],
+                primaryKeyFieldKeys: [ModelFieldName] = []) {
         self.name = name
         self.pluralName = pluralName
         self.listPluralName = listPluralName
@@ -108,23 +121,38 @@ public struct ModelSchema {
         self.authRules = authRules
         self.attributes = attributes
         self.fields = fields
+        self.indexes = attributes.indexes
+        self._primaryKey = ModelPrimaryKey(allFields: fields,
+                                           attributes: attributes,
+                                           primaryKeyFieldKeys: primaryKeyFieldKeys)
 
-        self.sortedFields = fields.sortedFields()
+        let indexOfPrimaryKeyField = _primaryKey?.indexOfField ?? { (_: String) in nil }
+        self.sortedFields = fields.sortedFields(indexOfPrimaryKeyField: indexOfPrimaryKeyField)
     }
 
     public func field(withName name: String) -> ModelField? {
         return fields[name]
     }
-
 }
 
 // MARK: - ModelAttribute + Index
 
+extension ModelAttribute {
+    /// Convenience method to check if a model attribute is a primary key index
+    var isPrimaryKeyIndex: Bool {
+        if case let .index(fields: fields, name: name) = self,
+           name == nil, fields.count >= 1 {
+            return true
+        }
+        return false
+    }
+}
+
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 ///   directly by host applications. The behavior of this may change without warning.
-public extension ModelSchema {
+extension Array where Element == ModelAttribute {
     var indexes: [ModelAttribute] {
-        attributes.filter {
+        filter {
             switch $0 {
             case .index:
                 return true
@@ -133,13 +161,15 @@ public extension ModelSchema {
             }
         }
     }
+}
 
+public extension ModelSchema {
     /// Returns the list of fields that make up the primary key for the model.
     /// In case of a custom primary key, the model has a `@key` directive
     /// without a name and at least 1 field
-    var customPrimaryIndexFields: [ModelFieldName]? {
+    var primaryKeyIndexFields: [ModelFieldName]? {
         attributes.compactMap {
-            if case let .index(fields, name) = $0, name == nil, fields.count >= 1 {
+            if case let .index(fields, name) = $0, $0.isPrimaryKeyIndex {
                 return fields
             }
             return nil
@@ -153,18 +183,23 @@ extension Dictionary where Key == String, Value == ModelField {
 
     /// Returns an array of the values sorted by some pre-defined rules:
     ///
-    /// 1. primary key always comes first
+    /// 1. primary key always comes first (sorted based on their schema declaration order in case of a composite key)
     /// 2. foreign keys always come at the end
     /// 3. the remaining fields are sorted alphabetically
     ///
     /// This is useful so code that uses the fields to generate queries and other
     /// persistence-related operations guarantee that the results are always consistent.
-    func sortedFields() -> [Value] {
+    func sortedFields(indexOfPrimaryKeyField: (ModelFieldName) -> Int?) -> [Value] {
         return values.sorted { one, other in
-            if one.isPrimaryKey {
+            if let oneIndex = indexOfPrimaryKeyField(one.name),
+               let otherIndex = indexOfPrimaryKeyField(other.name) {
+                return oneIndex < otherIndex
+            }
+
+            if indexOfPrimaryKeyField(one.name) != nil {
                 return true
             }
-            if other.isPrimaryKey {
+            if indexOfPrimaryKeyField(other.name) != nil {
                 return false
             }
             if one.hasAssociation && !other.hasAssociation {

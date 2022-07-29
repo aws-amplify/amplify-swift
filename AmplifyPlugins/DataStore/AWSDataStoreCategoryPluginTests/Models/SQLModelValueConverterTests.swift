@@ -11,6 +11,7 @@ import XCTest
 @testable import Amplify
 @testable import AWSDataStorePlugin
 @testable import SQLite
+import AmplifyTestCommon
 
 class SQLModelValueConverterTests: BaseDataStoreTests {
 
@@ -110,6 +111,46 @@ class SQLModelValueConverterTests: BaseDataStoreTests {
                 XCTFail(error.errorDescription)
             }
         }
+    }
+
+    /// - Given: a `CommentWithCompositeKey` model as JSONValue
+    /// - When:
+    ///   - the `sqlValues()` is called
+    /// - Then:
+    ///   - the returning array of Bindings should include all the `CommentWithCompositeKey` model fields
+    ///   plus the identifier value of the associated `PostWithCompositeKey` model
+    func testJSONModelConversionToBindings() {
+        ModelRegistry.register(modelType: CommentWithCompositeKey.self)
+        ModelRegistry.register(modelType: PostWithCompositeKey.self)
+
+        let commentId = "comment-id-123"
+        let postId = "post-id-123"
+        let postTitle = "post-title"
+        let commentContent = "a comment"
+        let createdAt = Temporal.DateTime.now().iso8601String
+        let updatedAt = Temporal.DateTime.now().iso8601String
+
+        let model: [String: JSONValue] = [
+            "id": .string(commentId),
+            "content": .string(commentContent),
+            "post": .object([
+                "id": .string(postId),
+                "title": .string(postTitle),
+                "__typename": "PostWithCompositeKey"
+            ]),
+            "createdAt": .string(createdAt),
+            "updatedAt": .string(updatedAt),
+            "__typename": "CommentWithCompositeKey"
+        ]
+        let bindings = DynamicModel(id: commentId, values: model).sqlValues(modelSchema: CommentWithCompositeKey.schema)
+        let expectedPostIdentifier = PostWithCompositeKey.Identifier.identifier(id: postId, title: postTitle)
+
+        XCTAssertEqual(bindings[0] as? String, commentId)
+        XCTAssertEqual(bindings[1] as? String, commentContent)
+        XCTAssertEqual(bindings[2] as? String, createdAt)
+        XCTAssertEqual(bindings[3] as? String, updatedAt)
+        XCTAssertEqual(bindings[4] as? String, expectedPostIdentifier.stringValue)
+
     }
 
 }
