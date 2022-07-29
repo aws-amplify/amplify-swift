@@ -24,6 +24,11 @@ open class AmplifyInProcessReportingOperation<
     Failure: AmplifyError
 >: AmplifyOperation<Request, Success, Failure> {
     public typealias InProcess = InProcess
+    public enum SequenceElement {
+        case inProcess(InProcess)
+        case success(Success)
+        case failure(Failure)
+    }
 
     var inProcessListenerUnsubscribeToken: UnsubscribeToken?
 
@@ -99,7 +104,28 @@ open class AmplifyInProcessReportingOperation<
 #if canImport(Combine)
         publish(completion: .finished)
 #endif
+        Task {
+            if let asyncChannel = internalChannel {
+                switch result {
+                case .success(let success):
+                    try await asyncChannel.send(.success(success))
+                case .failure(let failure):
+                    try await asyncChannel.send(.failure(failure))
+                }
+            }
+        }
         super.dispatch(result: result)
+    }
+
+    private var internalChannel: AsyncChannel<SequenceElement>?
+    public var sequence: some AsyncSequence {
+        if let channel = internalChannel {
+            return channel
+        } else {
+            let channel = AsyncChannel<SequenceElement>()
+            internalChannel = channel
+            return channel
+        }
     }
 
 }
@@ -115,6 +141,11 @@ public extension AmplifyInProcessReportingOperation {
 #if canImport(Combine)
         publish(inProcessValue: data)
 #endif
+        Task {
+            if let asyncChannel = internalChannel {
+                try await asyncChannel.send(.inProcess(data))
+            }
+        }
 
         let channel = HubChannel(from: categoryType)
         let context = AmplifyOperationContext(operationId: id, request: request)
