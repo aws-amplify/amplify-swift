@@ -31,7 +31,7 @@ protocol SRPClientBehavior {
     func generateDevicePasswordVerifier(
         deviceGroupKey: String,
         deviceKey: String,
-        password: String) -> (salt: BigInt, passwordVerifier: BigInt)
+        password: String) -> (salt: Data, passwordVerifier: Data)
 }
 
 enum SRPError: Error {

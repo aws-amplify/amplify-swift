@@ -80,6 +80,16 @@ extension SignInState {
                                  actions: [action])
                 }
 
+                if let signInEvent = event as? SignInEvent,
+                   case .initiateDeviceSRP(let challengeResponse) = signInEvent.eventType,
+                   case .respondingPasswordVerifier(let srpStateData) = srpSignInState {
+                    let action = StartDeviceSRPFlow(
+                        srpStateData: srpStateData,
+                        authResponse: challengeResponse)
+                    return .init(newState: .resolvingDeviceSrpa(.notStarted),
+                                 actions: [action])
+                }
+
                 let resolution = SRPSignInState.Resolver().resolve(oldState: srpSignInState,
                                                                    byApplying: event)
                 let signingInWithSRP = SignInState.signingInWithSRP(resolution.newState,
@@ -167,6 +177,20 @@ extension SignInState {
                 let signingInWithSRP = SignInState.signingInWithSRPCustom(resolution.newState,
                                                                           signInEventData)
                 return .init(newState: signingInWithSRP, actions: resolution.actions)
+
+            case .resolvingDeviceSrpa(let deviceSrpState):
+
+                if let signInEvent = event as? SignInEvent,
+                   case .receivedChallenge(let challenge) = signInEvent.eventType {
+                    let action = InitializeResolveChallenge(challenge: challenge)
+                    let subState = SignInChallengeState.notStarted
+                    return .init(newState: .resolvingChallenge(subState, challenge.challenge.authChallengeType), actions: [action])
+                }
+
+                let resolution = DeviceSRPState.Resolver().resolve(oldState: deviceSrpState,
+                                                                   byApplying: event)
+                let resolvingDeviceSrpa = SignInState.resolvingDeviceSrpa(resolution.newState)
+                return .init(newState: resolvingDeviceSrpa, actions: resolution.actions)
 
             case .confirmingDevice:
 
