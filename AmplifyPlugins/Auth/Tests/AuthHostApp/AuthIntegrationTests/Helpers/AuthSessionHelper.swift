@@ -8,14 +8,15 @@
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 import AWSPluginsCore
+@_spi(KeychainStore) import AWSPluginsCore
 import CryptoKit
 import Foundation
 
 struct AuthSessionHelper {
 
     static func clearSession() {
-        let store = CredentialStore(service: "com.amplify.credentialStore")
-        try? store.removeAll()
+        let store = KeychainStore(service: "com.amplify.credentialStore")
+        try? store._removeAll()
     }
 
     static func invalidateSession(with amplifyConfiguration: AmplifyConfiguration) {

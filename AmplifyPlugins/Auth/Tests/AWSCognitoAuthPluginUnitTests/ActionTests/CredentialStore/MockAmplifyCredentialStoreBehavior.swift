@@ -48,7 +48,7 @@ class MockAmplifyCredentialStoreBehavior: AmplifyAuthCredentialStoreBehavior {
     }
 
     func getCredentialStore() -> KeychainStoreBehavior {
-        return MockCredentialStoreBehavior(data: "mock")
+        return MockKeychainStoreBehavior(data: "mock")
     }
 
     func saveDevice(_ deviceMetadata: Codable, for username: String) throws {

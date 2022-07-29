@@ -138,23 +138,23 @@ extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
 
     func saveDevice(_ deviceMetadata: Codable, for username: String) throws {
         guard let deviceMetadata = deviceMetadata as? DeviceMetadata else {
-            throw CredentialStoreError.codingError("Error occurred while device metadata", nil)
+            throw KeychainStoreError.codingError("Error occurred while device metadata", nil)
         }
         let key = generateDeviceMetadataKey(for: username, with: authConfiguration)
         let encodedMetadata = try encode(object: deviceMetadata)
-        try keychain.set(encodedMetadata, key: key)
+        try keychain._set(encodedMetadata, key: key)
     }
 
     func retrieveDevice(for username: String) throws -> Codable {
         let key = generateDeviceMetadataKey(for: username, with: authConfiguration)
-        let encodedDeviceMetadata = try keychain.getData(key)
+        let encodedDeviceMetadata = try keychain._getData(key)
         let deviceMetadata: DeviceMetadata = try decode(data: encodedDeviceMetadata)
         return deviceMetadata
     }
 
     func removeDevice(for username: String) throws {
         let key = generateDeviceMetadataKey(for: username, with: authConfiguration)
-        try keychain.remove(key)
+        try keychain._remove(key)
     }
 
     private func clearAllCredentials() throws {

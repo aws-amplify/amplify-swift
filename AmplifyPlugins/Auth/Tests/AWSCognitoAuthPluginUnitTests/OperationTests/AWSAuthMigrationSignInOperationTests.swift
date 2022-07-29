@@ -50,19 +50,6 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
             identityPoolFactory: { mockIdentity },
             userPoolFactory: { self.mockIdentityProvider })
 
-        _ = statemachine.listen { state in
-            switch state {
-            case .configured(_, let authorizationState):
-
-                if case .waitingToStore(let credentials) = authorizationState {
-                    let authEvent = AuthEvent.init(
-                        eventType: .receivedCachedCredentials(credentials))
-                    statemachine.send(authEvent)
-                }
-            default: break
-            }
-        } onSubscribe: {}
-
         plugin?.configure(
             authConfiguration: Defaults.makeDefaultAuthConfigData(),
             authEnvironment: environment,
