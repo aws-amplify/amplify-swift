@@ -21,12 +21,21 @@ struct ConfigureAuthentication: Action {
         let authenticationEvent: AuthenticationEvent
         switch storedCredentials {
         case .userPoolOnly(let tokens), .userPoolAndIdentityPool(let tokens, _, _):
-            let signedInData = SignedInData(userId: "",
-                                            userName: "",
-                                            signedInDate: Date(),
-                                            signInMethod: .apiBased(.userSRP),
-                                            cognitoUserPoolTokens: tokens)
-            authenticationEvent = AuthenticationEvent(eventType: .initializedSignedIn(signedInData))
+            do {
+                let authUser = try TokenParserHelper.getAuthUser(accessToken: tokens.accessToken)
+                let signedInData = SignedInData(
+                    userId: authUser.userId,
+                    userName: authUser.username,
+                    signedInDate: Date(),
+                    signInMethod: .apiBased(.userSRP),
+                    cognitoUserPoolTokens: tokens)
+                authenticationEvent = AuthenticationEvent(eventType: .initializedSignedIn(signedInData))
+            }
+            catch {
+                authenticationEvent = AuthenticationEvent(
+                    eventType: .error(AuthenticationError.configuration(
+                        message: "Token parsing error: \(error)")))
+            }
         default:
             let signedOutData = SignedOutData(lastKnownUserName: nil)
             authenticationEvent = AuthenticationEvent(eventType: .initializedSignedOut(signedOutData))

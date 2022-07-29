@@ -68,7 +68,7 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
             initiateAuthExpectation.fulfill()
-            return .init(authenticationResult: .init(accessToken: "accesToken",
+            return .init(authenticationResult: .init(accessToken: Defaults.validAccessToken,
                                                      expiresIn: 2,
                                                      idToken: "idToken",
                                                      refreshToken: "refreshToken"))
