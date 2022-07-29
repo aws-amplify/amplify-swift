@@ -8,8 +8,9 @@
 import Foundation
 
 @testable import AWSCognitoAuthPlugin
+import AWSPluginsCore
 
-class MockCredentialStoreBehavior: CredentialStoreBehavior {
+class MockKeychainStoreBehavior: KeychainStoreBehavior {
 
     typealias VoidHandler = () -> Void
 
@@ -22,22 +23,22 @@ class MockCredentialStoreBehavior: CredentialStoreBehavior {
         self.removeAllHandler = removeAllHandler
     }
 
-    func getString(_ key: String) throws -> String {
+    func _getString(_ key: String) throws -> String {
         return data
     }
 
-    func getData(_ key: String) throws -> Data {
+    func _getData(_ key: String) throws -> Data {
         return data.data(using: .utf8)!
     }
 
-    func set(_ value: String, key: String) throws { }
+    func _set(_ value: String, key: String) throws { }
 
-    func set(_ value: Data, key: String) throws { }
+    func _set(_ value: Data, key: String) throws { }
 
-    func remove(_ key: String) throws {
+    func _remove(_ key: String) throws {
     }
 
-    func removeAll() throws {
+    func _removeAll() throws {
         removeAllHandler?()
     }
 }

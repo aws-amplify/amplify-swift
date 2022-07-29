@@ -53,7 +53,6 @@ class AuthHubEventHandler: AuthHubEventBehavior {
                 }
                 self?.handleSignInEvent(result)
 
-            /* TODO: Need to implement these hub events
             case HubPayload.EventName.Auth.webUISignInAPI:
                 guard let event = payload.data as? AWSAuthWebUISignInOperation.OperationResult,
                     case let .success(result) = event else {
@@ -68,7 +67,6 @@ class AuthHubEventHandler: AuthHubEventBehavior {
                 }
                 self?.handleSignInEvent(result)
 
-             */
             case HubPayload.EventName.Auth.deleteUserAPI:
                 guard let event = payload.data as? AWSAuthDeleteUserOperation.OperationResult,
                     case .success = event else {

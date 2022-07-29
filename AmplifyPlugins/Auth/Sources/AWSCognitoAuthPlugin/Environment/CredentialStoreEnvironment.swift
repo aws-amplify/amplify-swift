@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSPluginsCore
+
 struct CredentialEnvironment: Environment {
     let authConfiguration: AuthConfiguration
     let credentialStoreEnvironment: CredentialStoreEnvironment
@@ -12,30 +14,30 @@ struct CredentialEnvironment: Environment {
 
 protocol CredentialStoreEnvironment: Environment {
     typealias AmplifyAuthCredentialStoreFactory = () -> AmplifyAuthCredentialStoreBehavior
-    typealias CredentialStoreFactory = (_ service: String) -> CredentialStoreBehavior
+    typealias KeychainStoreFactory = (_ service: String) -> KeychainStoreBehavior
 
     var amplifyCredentialStoreFactory: AmplifyAuthCredentialStoreFactory { get }
-    var legacyCredentialStoreFactory: CredentialStoreFactory { get }
+    var legacyKeychainStoreFactory: KeychainStoreFactory { get }
     var eventIDFactory: EventIDFactory { get }
 }
 
 struct BasicCredentialStoreEnvironment: CredentialStoreEnvironment {
 
     typealias AmplifyAuthCredentialStoreFactory = () -> AmplifyAuthCredentialStoreBehavior
-    typealias CredentialStoreFactory = (_ service: String) -> CredentialStoreBehavior
+    typealias KeychainStoreFactory = (_ service: String) -> KeychainStoreBehavior
 
     // Required
     let amplifyCredentialStoreFactory: AmplifyAuthCredentialStoreFactory
-    let legacyCredentialStoreFactory: CredentialStoreFactory
+    let legacyKeychainStoreFactory: KeychainStoreFactory
 
     // Optional
     let eventIDFactory: EventIDFactory
 
     init(amplifyCredentialStoreFactory: @escaping AmplifyAuthCredentialStoreFactory,
-         legacyCredentialStoreFactory: @escaping CredentialStoreFactory,
+         legacyKeychainStoreFactory: @escaping KeychainStoreFactory,
          eventIDFactory: @escaping EventIDFactory = UUIDFactory.factory) {
         self.amplifyCredentialStoreFactory = amplifyCredentialStoreFactory
-        self.legacyCredentialStoreFactory = legacyCredentialStoreFactory
+        self.legacyKeychainStoreFactory = legacyKeychainStoreFactory
         self.eventIDFactory = eventIDFactory
     }
 }

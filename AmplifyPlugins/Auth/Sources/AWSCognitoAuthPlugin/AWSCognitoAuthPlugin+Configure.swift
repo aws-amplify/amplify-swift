@@ -106,8 +106,8 @@ extension AWSCognitoAuthPlugin {
         AWSCognitoAuthCredentialStore(authConfiguration: authConfiguration)
     }
 
-    private func makeLegacyCredentialStore(service: String) -> CredentialStoreBehavior {
-        CredentialStore(service: service)
+    private func makeLegacyKeychainStore(service: String) -> KeychainStoreBehavior {
+        KeychainStore(service: service)
     }
 
     private func makeCredentialStoreClient() -> CredentialStoreStateBehaviour {
@@ -193,7 +193,7 @@ extension AWSCognitoAuthPlugin {
             authConfiguration: authConfiguration,
             credentialStoreEnvironment: BasicCredentialStoreEnvironment(
                 amplifyCredentialStoreFactory: makeCredentialStore,
-                legacyCredentialStoreFactory: makeLegacyCredentialStore(service:)
+                legacyKeychainStoreFactory: makeLegacyKeychainStore(service:)
             )
         )
     }

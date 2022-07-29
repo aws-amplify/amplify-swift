@@ -46,62 +46,66 @@ struct FetchHostedUISignInToken: Action {
                 else if let data = data {
                     handleData(data, dispatcher: dispatcher, environment: environment)
                 } else {
-                    let signInError = SignInError.unknown(message: "Could not fetch Token: \(urlResponse.debugDescription)")
-                    let event = HostedUIEvent(eventType: .throwError(signInError))
+                    let event = HostedUIEvent(eventType: .throwError(.hostedUI(.tokenParsing)))
                     logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
                     dispatcher.send(event)
                 }
             }
             task.resume()
+        } catch let hostedUIError as HostedUIError {
+            let signInError = SignInError.hostedUI(hostedUIError)
+            let event = HostedUIEvent(eventType: .throwError(signInError))
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+            dispatcher.send(event)
         } catch {
-
+            let signInError = SignInError.service(error: error)
+            let event = HostedUIEvent(eventType: .throwError(signInError))
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+            dispatcher.send(event)
         }
     }
     
     func handleData(_ data: Data, dispatcher: EventDispatcher, environment: Environment) {
         do {
 
-            guard  let json = try JSONSerialization.jsonObject(with: data,
-                                                               options: []) as? [String: Any] else {
-                let signInError = SignInError.unknown(message: "Could not fetch Token")
-                let event = HostedUIEvent(eventType: .throwError(signInError))
-                logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-                dispatcher.send(event)
-                return
+            guard let json = try JSONSerialization.jsonObject(
+                with: data,
+                options: []) as? [String: Any] else {
+                throw HostedUIError.tokenParsing
             }
             
             if let errorString = json["error"] as? String {
                 let description = json["error_description"] as? String ?? ""
-                let hostedUIError = HostedUIError.serviceMessage("\(errorString) \(description)")
-                let event = HostedUIEvent(eventType: .throwError(.hostedUI(hostedUIError)))
-                logVerbose("\(#fileID) Sending event \(event)", environment: environment)
-                dispatcher.send(event)
+                throw HostedUIError.serviceMessage("\(errorString) \(description)")
 
             } else if let idToken = json["id_token"] as? String,
                       let accessToken = json["access_token"] as? String,
                       let refreshToken = json["refresh_token"] as? String,
                       let expiresIn = json["expires_in"] as? Int {
-                let userPoolTokens = AWSCognitoUserPoolTokens(idToken: idToken,
-                                                              accessToken: accessToken,
-                                                              refreshToken: refreshToken,
-                                                              expiresIn: expiresIn)
+                let userPoolTokens = AWSCognitoUserPoolTokens(
+                    idToken: idToken,
+                    accessToken: accessToken,
+                    refreshToken: refreshToken,
+                    expiresIn: expiresIn)
                 let user = try TokenParserHelper.getAuthUser(accessToken: accessToken)
-                let signedInData = SignedInData(userId: user.userId,
-                                                userName: user.username,
-                                                signedInDate: Date(),
-                                                signInMethod: .hostedUI(result.options),
-                                                cognitoUserPoolTokens: userPoolTokens)
+                let signedInData = SignedInData(
+                    userId: user.userId,
+                    userName: user.username,
+                    signedInDate: Date(),
+                    signInMethod: .hostedUI(result.options),
+                    cognitoUserPoolTokens: userPoolTokens)
 
                 let event =  SignInEvent(eventType: .finalizeSignIn(signedInData))
                 logVerbose("\(#fileID) Sending event \(event)", environment: environment)
                 dispatcher.send(event)
 
             } else {
-                let signInError = SignInError.unknown(message: "Could not fetch Token")
-                let event = HostedUIEvent(eventType: .throwError(signInError))
-                logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-                dispatcher.send(event)
+                throw HostedUIError.tokenParsing
             }
+        } catch let hostedUIError as HostedUIError {
+            let event = HostedUIEvent(eventType: .throwError(.hostedUI(hostedUIError)))
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+            dispatcher.send(event)
         } catch let signInError as SignInError {
             let event = HostedUIEvent(eventType: .throwError(signInError))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)

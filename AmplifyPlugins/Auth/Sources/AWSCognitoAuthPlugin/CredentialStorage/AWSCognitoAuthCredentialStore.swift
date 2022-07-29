@@ -7,6 +7,7 @@
 
 import Foundation
 import Amplify
+@_spi(KeychainStore) import AWSPluginsCore
 
 struct AWSCognitoAuthCredentialStore {
 
@@ -22,12 +23,12 @@ struct AWSCognitoAuthCredentialStore {
     private let isKeychainConfiguredKey = "isKeychainConfigured"
 
     private let authConfiguration: AuthConfiguration
-    private let keychain: CredentialStoreBehavior
+    private let keychain: KeychainStoreBehavior
     private let userDefaults = UserDefaults.standard
 
     init(authConfiguration: AuthConfiguration, accessGroup: String? = nil) {
         self.authConfiguration = authConfiguration
-        self.keychain = CredentialStore(service: service, accessGroup: accessGroup)
+        self.keychain = KeychainStore(service: service, accessGroup: accessGroup)
 
         if !userDefaults.bool(forKey: isKeychainConfiguredKey) {
             try? clearAllCredentials()
@@ -62,12 +63,12 @@ struct AWSCognitoAuthCredentialStore {
         {
 
             // retrieve data from the old namespace and save with the new namespace
-            if let oldCognitoCredentialsData = try? keychain.getData(oldNameSpace) {
-                try? keychain.set(oldCognitoCredentialsData, key: newNameSpace)
+            if let oldCognitoCredentialsData = try? keychain._getData(oldNameSpace) {
+                try? keychain._set(oldCognitoCredentialsData, key: newNameSpace)
             }
         } else if oldAuthConfigData != currentAuthConfig {
             // Clear the old credentials
-            try? keychain.remove(oldNameSpace)
+            try? keychain._remove(oldNameSpace)
         }
     }
 
@@ -99,12 +100,12 @@ struct AWSCognitoAuthCredentialStore {
 
     private func saveAuthConfiguration(authConfig: AuthConfiguration) {
         if let encodedAuthConfigData = try? encode(object: authConfig) {
-            try? keychain.set(encodedAuthConfigData, key: authConfigurationKey)
+            try? keychain._set(encodedAuthConfigData, key: authConfigurationKey)
         }
     }
 
     private func getAuthConfiguration() -> AuthConfiguration? {
-        if let userPoolConfigData = try? keychain.getData(authConfigurationKey) {
+        if let userPoolConfigData = try? keychain._getData(authConfigurationKey) {
             return try? decode(data: userPoolConfigData)
         }
         return nil
@@ -116,23 +117,23 @@ extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
 
     func saveCredential(_ credential: Codable) throws {
         guard let amplifyCredentials = credential as? AmplifyCredentials else {
-            throw CredentialStoreError.codingError("Error occurred while saving credentials", nil)
+            throw KeychainStoreError.codingError("Error occurred while saving credentials", nil)
         }
         let authCredentialStoreKey = generateSessionKey(for: authConfiguration)
         let encodedCredentials = try encode(object: amplifyCredentials)
-        try keychain.set(encodedCredentials, key: authCredentialStoreKey)
+        try keychain._set(encodedCredentials, key: authCredentialStoreKey)
     }
 
     func retrieveCredential() throws -> Codable {
         let authCredentialStoreKey = generateSessionKey(for: authConfiguration)
-        let authCredentialData = try keychain.getData(authCredentialStoreKey)
+        let authCredentialData = try keychain._getData(authCredentialStoreKey)
         let awsCredential: AmplifyCredentials = try decode(data: authCredentialData)
         return awsCredential
     }
 
     func deleteCredential() throws {
         let authCredentialStoreKey = generateSessionKey(for: authConfiguration)
-        try keychain.remove(authCredentialStoreKey)
+        try keychain._remove(authCredentialStoreKey)
     }
 
     func saveDevice(_ deviceMetadata: Codable, for username: String) throws {
@@ -157,7 +158,7 @@ extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
     }
 
     private func clearAllCredentials() throws {
-        try keychain.removeAll()
+        try keychain._removeAll()
     }
 
 }
@@ -169,7 +170,7 @@ private extension AWSCognitoAuthCredentialStore {
         do {
             return try JSONEncoder().encode(object)
         } catch {
-            throw CredentialStoreError.codingError("Error occurred while encoding AWSCredentials", error)
+            throw KeychainStoreError.codingError("Error occurred while encoding AWSCredentials", error)
         }
     }
 
@@ -177,7 +178,7 @@ private extension AWSCognitoAuthCredentialStore {
         do {
             return try JSONDecoder().decode(T.self, from: data)
         } catch {
-            throw CredentialStoreError.codingError("Error occurred while decoding AWSCredentials", error)
+            throw KeychainStoreError.codingError("Error occurred while decoding AWSCredentials", error)
         }
     }
 
