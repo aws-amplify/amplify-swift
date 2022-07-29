@@ -27,7 +27,6 @@ struct VerifyDevicePasswordSRP: Action {
 
             let inputUsername = stateData.username
             let username = parameters["USERNAME"] ?? inputUsername
-            let userIdForSRP = parameters["USER_ID_FOR_SRP"] ?? inputUsername
 
             let saltHex = try saltHex(parameters)
             let secretBlockString = try secretBlockString(parameters)

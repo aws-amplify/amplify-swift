@@ -39,10 +39,11 @@ class AWSAuthSignInOperationTests: XCTestCase {
 
         let respondToChallenge: MockIdentityProvider.MockRespondToAuthChallengeResponse = { _ in
             respondToChallengeExpectation.fulfill()
-            return .init(authenticationResult: .init(accessToken: "accesToken",
-                                                     expiresIn: 2,
-                                                     idToken: "idToken",
-                                                     refreshToken: "refreshToken"))
+            return .init(authenticationResult: .init(
+                accessToken: Defaults.validAccessToken,
+                expiresIn: 2,
+                idToken: "idToken",
+                refreshToken: "refreshToken"))
         }
 
         let getId: MockIdentity.MockGetIdResponse = { _ in
