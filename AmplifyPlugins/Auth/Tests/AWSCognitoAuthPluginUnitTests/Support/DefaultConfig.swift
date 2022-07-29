@@ -150,11 +150,13 @@ enum Defaults {
     static func makeDefaultAuthStateMachine(
         initialState: AuthState? = nil,
         identityPoolFactory: @escaping () throws -> CognitoIdentityBehavior = makeIdentity,
-        userPoolFactory: @escaping () throws -> CognitoUserPoolBehavior = makeDefaultUserPool) ->
+        userPoolFactory: @escaping () throws -> CognitoUserPoolBehavior = makeDefaultUserPool,
+        hostedUIEnvironment: HostedUIEnvironment? = nil) ->
     AuthStateMachine {
 
         let environment = makeDefaultAuthEnvironment(identityPoolFactory: identityPoolFactory,
-                                                     userPoolFactory: userPoolFactory)
+                                                     userPoolFactory: userPoolFactory,
+                                                     hostedUIEnvironment: hostedUIEnvironment)
         return AuthStateMachine(resolver: AuthState.Resolver(),
                                 environment: environment,
                                 initialState: initialState)
