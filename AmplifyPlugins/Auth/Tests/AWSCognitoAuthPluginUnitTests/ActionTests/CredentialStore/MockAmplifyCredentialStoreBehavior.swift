@@ -46,9 +46,9 @@ class MockAmplifyCredentialStoreBehavior: AmplifyAuthCredentialStoreBehavior {
     func deleteCredential() throws {
         try clearCredentialHandler?()
     }
-    
-    func getCredentialStore() -> CredentialStoreBehavior {
-        return MockCredentialStoreBehavior(data: "mock")
+
+    func getCredentialStore() -> KeychainStoreBehavior {
+        return MockKeychainStoreBehavior(data: "mock")
     }
 
     func saveDevice(_ deviceMetadata: Codable, for username: String) throws {
