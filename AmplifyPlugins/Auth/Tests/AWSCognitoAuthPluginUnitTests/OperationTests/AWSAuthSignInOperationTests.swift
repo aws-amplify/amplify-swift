@@ -74,8 +74,7 @@ class AWSAuthSignInOperationTests: XCTestCase {
 
         let operation = AWSAuthSignInOperation(
             request,
-            authStateMachine: statemachine,
-            credentialStoreClientFactory: Defaults.makeCredentialStoreOperationBehaviour) {  result in
+            authStateMachine: statemachine) {  result in
                 switch result {
                 case .success(let signUpResult):
                     print("Sign In Result: \(signUpResult)")
@@ -123,8 +122,7 @@ class AWSAuthSignInOperationTests: XCTestCase {
 
         let operation = AWSAuthSignInOperation(
             request,
-            authStateMachine: statemachine,
-            credentialStoreClientFactory: Defaults.makeCredentialStoreOperationBehaviour) {  result in
+            authStateMachine: statemachine) {  result in
                 switch result {
                 case .success(let signInResult):
                     switch signInResult.nextStep {

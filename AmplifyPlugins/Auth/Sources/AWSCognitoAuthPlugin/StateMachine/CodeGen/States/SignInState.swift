@@ -16,6 +16,7 @@ enum SignInState: State {
     case resolvingChallenge(SignInChallengeState, AuthChallengeType)
     case signingInWithHostedUI(HostedUISignInState)
     case confirmingDevice
+    case resolvingDeviceSrpa(DeviceSRPState)
     case signedIn(SignedInData)
     case error
 }
@@ -32,6 +33,7 @@ extension SignInState {
         case .signingInViaMigrateAuth: return "SignInState.signingInViaMigrateAuth"
         case .resolvingChallenge: return "SignInState.resolvingChallenge"
         case .confirmingDevice: return "SignInState.confirmingDevice"
+        case .resolvingDeviceSrpa: return "SignInState.resolvingDeviceSrpa"
         case .signedIn: return "SignInState.signedIn"
         case .error: return "SignInState.error"
         }
