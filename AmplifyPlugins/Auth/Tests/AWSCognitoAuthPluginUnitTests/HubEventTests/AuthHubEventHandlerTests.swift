@@ -175,8 +175,6 @@ class AuthHubEventHandlerTests: XCTestCase {
         
         wait(for: [hubEventExpectation], timeout: networkTimeout)
     }
-    
-    /* TODO: Enable these tests when the API's have been implemented
 
     /// Test whether HubEvent emits a mocked signedIn event for webUI signIn
     ///
@@ -187,7 +185,11 @@ class AuthHubEventHandlerTests: XCTestCase {
     ///    - I should receive a signedIn hub event
     ///
     func testWebUISignedInHubEvent() {
-        _ = AuthHubEventHandler()
+        let mockIdentityProvider = MockIdentityProvider()
+
+        let initialState = AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured)
+
+        configurePlugin(initialState: initialState, userPoolFactory: mockIdentityProvider)
         let hubEventExpectation = expectation(description: "Should receive the hub event")
         _ = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {
@@ -197,7 +199,12 @@ class AuthHubEventHandlerTests: XCTestCase {
                 break
             }
         }
-        mockSuccessfulWebUISignedInEvent()
+        _ = plugin.signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor(),
+                                   options: nil, listener: { result in
+            if case .failure(let error) = result {
+                XCTFail("Received failure with error \(error)")
+            }
+        })
         wait(for: [hubEventExpectation], timeout: 10)
     }
 
@@ -210,7 +217,11 @@ class AuthHubEventHandlerTests: XCTestCase {
     ///    - I should receive a signedIn hub event
     ///
     func testSocialWebUISignedInHubEvent() {
-        _ = AuthHubEventHandler()
+        let mockIdentityProvider = MockIdentityProvider()
+
+        let initialState = AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured)
+
+        configurePlugin(initialState: initialState, userPoolFactory: mockIdentityProvider)
         let hubEventExpectation = expectation(description: "Should receive the hub event")
         _ = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {
@@ -220,37 +231,16 @@ class AuthHubEventHandlerTests: XCTestCase {
                 break
             }
         }
-        mockSuccessfulSocialWebUISignedInEvent()
+        _ = plugin.signInWithWebUI(for: .amazon,
+                                   presentationAnchor: AuthUIPresentationAnchor(),
+                                   options: nil, listener: { result in
+            if case .failure(let error) = result {
+                XCTFail("Received failure with error \(error)")
+            }
+        })
         wait(for: [hubEventExpectation], timeout: 10)
     }
-    
-    private func mockSuccessfulSocialWebUISignedInEvent() {
-        let mockResult = AuthSignInResult(nextStep: .done)
-        let mockEvent = AWSAuthSocialWebUISignInOperation.OperationResult.success(mockResult)
-        let mockRequest = AuthWebUISignInRequest(presentationAnchor: UIWindow(),
-                                                 authProvider: .amazon,
-                                                 options: AuthWebUISignInRequest.Options())
-        let mockContext = AmplifyOperationContext(operationId: UUID(), request: mockRequest)
-        let mockPayload = HubPayload(eventName: HubPayload.EventName.Auth.socialWebUISignInAPI,
-                                     context: mockContext,
-                                     data: mockEvent)
-        Amplify.Hub.dispatch(to: .auth, payload: mockPayload)
 
-    }
-
-    private func mockSuccessfulWebUISignedInEvent() {
-        let mockResult = AuthSignInResult(nextStep: .done)
-        let mockEvent = AWSAuthWebUISignInOperation.OperationResult.success(mockResult)
-        let mockRequest = AuthWebUISignInRequest(presentationAnchor: UIWindow(),
-                                                 options: AuthWebUISignInRequest.Options())
-        let mockContext = AmplifyOperationContext(operationId: UUID(), request: mockRequest)
-        let mockPayload = HubPayload(eventName: HubPayload.EventName.Auth.webUISignInAPI,
-                                     context: mockContext,
-                                     data: mockEvent)
-        Amplify.Hub.dispatch(to: .auth, payload: mockPayload)
-
-    }
-     */
     
     private func configurePluginForSignInEvent() {
         let mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
@@ -285,8 +275,8 @@ class AuthHubEventHandlerTests: XCTestCase {
         
         let mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
-            return .testData()
-        })
+                return .testData()
+            })
         
         configurePlugin(initialState: initialState, userPoolFactory: mockIdentityProvider)
     }
@@ -351,10 +341,50 @@ class AuthHubEventHandlerTests: XCTestCase {
         
         configurePlugin(initialState: initialState, userPoolFactory: mockIdentityProvider)
     }
-    
+
+    private func urlSessionMock() -> URLSession {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [MockURLProtocol.self]
+        return URLSession(configuration: configuration)
+    }
+
     private func configurePlugin(initialState: AuthState, userPoolFactory: CognitoUserPoolBehavior) {
         plugin = AWSCognitoAuthPlugin()
-        
+
+        let mockTokenResult = ["id_token": AWSCognitoUserPoolTokens.mockData.idToken,
+                               "access_token": AWSCognitoUserPoolTokens.mockData.accessToken,
+                               "refresh_token": AWSCognitoUserPoolTokens.mockData.refreshToken,
+                               "expires_in": 10] as [String : Any]
+        let mockJson = try! JSONSerialization.data(withJSONObject: mockTokenResult)
+        let mockState = "someState"
+        let mockProof = "someProof"
+        let hostedUIconfig = HostedUIConfigurationData(clientId: "clientId", oauth: .init(
+            domain: "cognitodomain",
+            scopes: ["name"],
+            signInRedirectURI: "myapp://",
+            signOutRedirectURI: "myapp://"))
+        let mockHostedUIResult:Result<[URLQueryItem], HostedUIError> = .success([
+            .init(name: "state", value: mockState),
+            .init(name: "code", value: mockProof)
+        ])
+        MockURLProtocol.requestHandler = { request in
+            return (HTTPURLResponse(), mockJson)
+        }
+
+
+        func sessionFactory() -> HostedUISessionBehavior {
+            MockHostedUISession(result: mockHostedUIResult)
+        }
+
+        func mockRandomString() -> RandomStringBehavior {
+            return MockRandomStringGenerator(mockString: mockState, mockUUID: mockState)
+        }
+
+        let hostedUIEnv = BasicHostedUIEnvironment(configuration: hostedUIconfig,
+                                                   hostedUISessionFactory: sessionFactory,
+                                                   urlSessionFactory: urlSessionMock,
+                                                   randomStringFactory: mockRandomString)
+
         let getId: MockIdentity.MockGetIdResponse = { _ in
             return .init(identityId: "mockIdentityId")
         }
@@ -373,12 +403,14 @@ class AuthHubEventHandlerTests: XCTestCase {
         
         let environment = Defaults.makeDefaultAuthEnvironment(
             identityPoolFactory: { mockIdentity },
-            userPoolFactory: { userPoolFactory })
+            userPoolFactory: { userPoolFactory },
+            hostedUIEnvironment: hostedUIEnv)
         
         let statemachine = Defaults.makeDefaultAuthStateMachine(
             initialState: initialState,
             identityPoolFactory: { mockIdentity },
-            userPoolFactory: { userPoolFactory })
+            userPoolFactory: { userPoolFactory },
+            hostedUIEnvironment: hostedUIEnv)
         
         _ = statemachine.listen { state in
             switch state {
@@ -396,7 +428,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         let authHandler = AuthHubEventHandler()
         
         plugin?.configure(
-            authConfiguration: Defaults.makeDefaultAuthConfigData(),
+            authConfiguration: Defaults.makeDefaultAuthConfigData(withHostedUI: hostedUIconfig),
             authEnvironment: environment,
             authStateMachine: statemachine,
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
