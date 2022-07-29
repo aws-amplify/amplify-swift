@@ -33,7 +33,7 @@ struct ConfigureAuthentication: Action {
             }
             catch {
                 authenticationEvent = AuthenticationEvent(
-                    eventType: .error(AuthenticationError.configuration(
+                    eventType: .error(AuthenticationError.service(
                         message: "Token parsing error: \(error)")))
             }
         default:
