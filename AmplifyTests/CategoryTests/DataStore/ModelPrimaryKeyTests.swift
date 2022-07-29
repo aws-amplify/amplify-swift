@@ -7,7 +7,7 @@
 
 import Foundation
 import XCTest
-
+import AWSPluginsCore
 import AmplifyTestCommon
 @testable import Amplify
 
