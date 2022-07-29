@@ -13,7 +13,7 @@ enum CredentialStoreData: Codable, Equatable {
     case deviceMetadata(DeviceMetadata, Username)
 }
 
-enum CredentialStoreRetrievalDataType: Codable, Equatable {
+enum CredentialStoreDataType: Codable, Equatable {
     case amplifyCredentials
     case deviceMetadata(username: String)
 }
@@ -24,11 +24,11 @@ struct CredentialStoreEvent: StateMachineEvent {
 
         case migrateLegacyCredentialStore
 
-        case loadCredentialStore(CredentialStoreRetrievalDataType)
+        case loadCredentialStore(CredentialStoreDataType)
 
         case storeCredentials(CredentialStoreData)
 
-        case clearCredentialStore(CredentialStoreRetrievalDataType)
+        case clearCredentialStore(CredentialStoreDataType)
 
         case completedOperation(CredentialStoreData)
 

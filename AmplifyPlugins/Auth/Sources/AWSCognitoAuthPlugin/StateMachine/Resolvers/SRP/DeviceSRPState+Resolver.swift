@@ -32,7 +32,7 @@ extension DeviceSRPState {
             switch oldState {
             case .notStarted:
                 return resolveNotStarted(byApplying: deviceSrpSignInEvent)
-            case .initiatingDeviceSRPA(let srpStateData):
+            case .initiatingDeviceSRP(let srpStateData):
                 return resolveRespondingDeviceSRPA(
                     byApplying: deviceSrpSignInEvent,
                     from: oldState)
@@ -56,7 +56,7 @@ extension DeviceSRPState {
                         deviceMetadata: srpStateData.deviceMetadata,
                         authResponse: authResponse)
                     return StateResolution(
-                        newState: DeviceSRPState.initiatingDeviceSRPA(srpStateData),
+                        newState: DeviceSRPState.initiatingDeviceSRP(srpStateData),
                         actions: [action]
                     )
                 default:
@@ -101,7 +101,7 @@ extension DeviceSRPState {
 
         private func errorState(_ error: SignInError)
         -> StateResolution<DeviceSRPState> {
-            let action = CancelSignIn()
+            let action = ThrowSignInError(error: error)
             return StateResolution(
                 newState: DeviceSRPState.error(error),
                 actions: [action]

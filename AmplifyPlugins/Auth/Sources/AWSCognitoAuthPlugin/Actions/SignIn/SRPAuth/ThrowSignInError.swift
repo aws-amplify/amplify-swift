@@ -8,22 +8,26 @@
 import Amplify
 import Foundation
 
-struct CancelSignIn: Action {
-    let identifier = "CancelSignIn"
+struct ThrowSignInError: Action {
+    let identifier = "ThrowSignInError"
+
+    let error: Error
 
     func execute(withDispatcher dispatcher: EventDispatcher,
                  environment: Environment) {
+
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        let event = AuthenticationEvent(eventType: .cancelSignIn)
+        let event = AuthenticationEvent(
+            eventType: .error(.service(message: "\(error)")))
         logVerbose("\(#fileID) Sending event \(event)", environment: environment)
         dispatcher.send(event)
 
     }
 }
 
-extension CancelSignIn: DefaultLogger { }
+extension ThrowSignInError: DefaultLogger { }
 
-extension CancelSignIn: CustomDebugDictionaryConvertible {
+extension ThrowSignInError: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "identifier": identifier
@@ -31,7 +35,7 @@ extension CancelSignIn: CustomDebugDictionaryConvertible {
     }
 }
 
-extension CancelSignIn: CustomDebugStringConvertible {
+extension ThrowSignInError: CustomDebugStringConvertible {
     var debugDescription: String {
         debugDictionary.debugDescription
     }

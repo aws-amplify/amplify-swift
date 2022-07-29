@@ -91,7 +91,7 @@ struct InitiateCustomAuth: Action {
             let event: StateMachineEvent!
             do {
                 let response = try await cognitoClient.initiateAuth(input: request)
-                event = UserPoolSignInHelper.parseResponse(response, for: username)
+                event = try UserPoolSignInHelper.parseResponse(response, for: username)
                 logVerbose("\(#fileID) InitiateAuth response success", environment: environment)
             } catch {
                 let authError = SignInError.service(error: error)
