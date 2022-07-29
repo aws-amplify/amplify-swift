@@ -71,7 +71,7 @@ extension InitiateAuthOutputResponse {
 extension RespondToAuthChallengeOutputResponse {
     static func testData() -> RespondToAuthChallengeOutputResponse {
         let result = CognitoIdentityProviderClientTypes.AuthenticationResultType(
-            accessToken: "accessTokenXXX",
+            accessToken: Defaults.validAccessToken,
             expiresIn: 3_600,
             idToken: "idTokenXXX",
             newDeviceMetadata: nil,
