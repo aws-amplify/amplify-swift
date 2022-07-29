@@ -79,7 +79,7 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
             }
         }
 
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
 
         Amplify.DataStore.save(post) { _ in }
         await waitForExpectations(timeout: 5.0, handler: nil)

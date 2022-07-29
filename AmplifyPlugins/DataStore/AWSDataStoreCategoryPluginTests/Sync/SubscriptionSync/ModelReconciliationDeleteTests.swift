@@ -56,7 +56,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
         await tryOrFail {
             try setUpDataStore(modelRegistration: MockModelRegistration())
             mockRemoteSyncEngineFor_testUpdateAfterDelete()
-            try startAmplifyAndWaitForSync()
+            try await startAmplifyAndWaitForSync()
         }
         wait(for: [expectationListener], timeout: 2.0)
 
@@ -148,7 +148,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
         await tryOrFail {
             try setUpDataStore(modelRegistration: MockModelRegistration())
             mockRemoteSyncEngineFor_testDeleteWithNoLocalModel()
-            try startAmplifyAndWaitForSync()
+            try await startAmplifyAndWaitForSync()
         }
         wait(for: [expectationListener], timeout: 1.0)
 

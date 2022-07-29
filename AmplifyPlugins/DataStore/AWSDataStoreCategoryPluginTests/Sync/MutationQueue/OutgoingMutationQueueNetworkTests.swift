@@ -80,7 +80,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
     ///   - I restore the network
     /// - Then:
     ///   - The sync engine submits the most recent update to the service
-    func testLastMutationSentWhenNoNetwork() throws {
+    func testLastMutationSentWhenNoNetwork() async throws {
         // NOTE: The state descriptions in this test are approximate, especially as regards the
         // values of the MutationEvent table. Processing happens asynchronously, so it is important
         // to only assert the behavior we care about (which is that the final update happens after
@@ -132,7 +132,9 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         // Start by accepting the initial "create" mutation
         apiPlugin.responders = [.mutateRequestListener: acceptInitialMutation]
 
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
+        
+        print("blah")
 
         // Save initial model
         let createdNewItem = expectation(description: "createdNewItem")
