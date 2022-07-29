@@ -20,8 +20,8 @@ extension FetchAuthSessionState {
             additionalMetadataDictionary = [:]
         case .fetched:
             additionalMetadataDictionary = [:]
-        case .error:
-            additionalMetadataDictionary = [:]
+        case .error(let error):
+            additionalMetadataDictionary = ["error": error]
         }
         return [type: additionalMetadataDictionary]
     }

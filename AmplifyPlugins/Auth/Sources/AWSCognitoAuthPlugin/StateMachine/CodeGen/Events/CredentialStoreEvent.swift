@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AWSPluginsCore
 
 enum CredentialStoreData: Codable, Equatable {
     case amplifyCredentials(AmplifyCredentials)
@@ -31,7 +32,7 @@ struct CredentialStoreEvent: StateMachineEvent {
 
         case completedOperation(CredentialStoreData)
 
-        case throwError(CredentialStoreError)
+        case throwError(KeychainStoreError)
 
         case moveToIdleState
 

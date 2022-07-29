@@ -11,6 +11,7 @@ import AWSCognitoIdentityProvider
 import AWSCognitoIdentity
 import ClientRuntime
 import Amplify
+import AWSPluginsCore
 
 enum Defaults {
 
@@ -100,19 +101,19 @@ enum Defaults {
         return MockAmplifyStore()
     }
 
-    static func makeLegacyStore(service: String) -> CredentialStoreBehavior {
+    static func makeLegacyStore(service: String) -> KeychainStoreBehavior {
         return MockLegacyStore()
     }
 
     static func makeDefaultCredentialStoreEnvironment(
         amplifyStoreFactory: @escaping () -> AmplifyAuthCredentialStoreBehavior = makeAmplifyStore,
-        legacyStoreFactory: @escaping (String) -> CredentialStoreBehavior = makeLegacyStore(service: )
+        legacyStoreFactory: @escaping (String) -> KeychainStoreBehavior = makeLegacyStore(service: )
     ) -> CredentialEnvironment {
         CredentialEnvironment(
             authConfiguration: makeDefaultAuthConfigData(),
             credentialStoreEnvironment: BasicCredentialStoreEnvironment(
                 amplifyCredentialStoreFactory: amplifyStoreFactory,
-                legacyCredentialStoreFactory: legacyStoreFactory
+                legacyKeychainStoreFactory: legacyStoreFactory
             )
         )
     }
@@ -154,11 +155,13 @@ enum Defaults {
     static func makeDefaultAuthStateMachine(
         initialState: AuthState? = nil,
         identityPoolFactory: @escaping () throws -> CognitoIdentityBehavior = makeIdentity,
-        userPoolFactory: @escaping () throws -> CognitoUserPoolBehavior = makeDefaultUserPool) ->
+        userPoolFactory: @escaping () throws -> CognitoUserPoolBehavior = makeDefaultUserPool,
+        hostedUIEnvironment: HostedUIEnvironment? = nil) ->
     AuthStateMachine {
 
         let environment = makeDefaultAuthEnvironment(identityPoolFactory: identityPoolFactory,
-                                                     userPoolFactory: userPoolFactory)
+                                                     userPoolFactory: userPoolFactory,
+                                                     hostedUIEnvironment: hostedUIEnvironment)
         return AuthStateMachine(resolver: AuthState.Resolver(),
                                 environment: environment,
                                 initialState: initialState)
@@ -241,7 +244,7 @@ struct MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
 
     }
 
-    func getCredentialStore() -> CredentialStoreBehavior {
+    func getKeychainStore() -> KeychainStoreBehavior {
         return MockLegacyStore()
     }
 
@@ -258,28 +261,28 @@ struct MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
     }
 }
 
-struct MockLegacyStore: CredentialStoreBehavior {
-    func getString(_ key: String) throws -> String {
+struct MockLegacyStore: KeychainStoreBehavior {
+    func _getString(_ key: String) throws -> String {
         return ""
     }
 
-    func getData(_ key: String) throws -> Data {
+    func _getData(_ key: String) throws -> Data {
         return Data()
     }
 
-    func set(_ value: String, key: String) throws {
+    func _set(_ value: String, key: String) throws {
 
     }
 
-    func set(_ value: Data, key: String) throws {
+    func _set(_ value: Data, key: String) throws {
 
     }
 
-    func remove(_ key: String) throws {
+    func _remove(_ key: String) throws {
 
     }
 
-    func removeAll() throws {
+    func _removeAll() throws {
 
     }
 

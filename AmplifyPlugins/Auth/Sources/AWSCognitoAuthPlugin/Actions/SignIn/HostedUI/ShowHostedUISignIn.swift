@@ -44,9 +44,11 @@ class ShowHostedUISignIn: NSObject, Action {
             return
         }
 
+        let url = signingInData.signInURL
+        self.logVerbose("\(#fileID) Showing url \(url.absoluteString)", environment: environment)
         sessionAdapter = hostedUIEnvironment.hostedUISessionFactory()
         sessionAdapter?.showHostedUI(
-            url: signingInData.signInURL,
+            url: url,
             callbackScheme: callbackURLScheme,
             inPrivate: signingInData.options.preferPrivateSession,
             presentationAnchor: signingInData.presentationAnchor) { result in

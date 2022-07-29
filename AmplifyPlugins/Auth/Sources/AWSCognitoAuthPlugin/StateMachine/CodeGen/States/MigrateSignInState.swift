@@ -5,32 +5,32 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import AWSCognitoIdentityProvider
+import Foundation
 
-enum CustomSignInState: State {
+enum MigrateSignInState: State {
 
     case notStarted
-    case initiating(SignInEventData)
+    case signingIn(SignInEventData)
     case signedIn(SignedInData)
     case error(SignInError)
 }
 
-extension CustomSignInState {
+extension MigrateSignInState {
 
     var type: String {
         switch self {
-        case .notStarted: return "CustomSignInState.notStarted"
-        case .initiating: return "CustomSignInState.signingIn"
-        case .signedIn: return "CustomSignInState.signedIn"
-        case .error: return "CustomSignInState.error"
+        case .notStarted: return "MigrateSignInState.notStarted"
+        case .signingIn: return "MigrateSignInState.signingIn"
+        case .signedIn: return "MigrateSignInState.signedIn"
+        case .error: return "MigrateSignInState.error"
         }
     }
 
-    static func == (lhs: CustomSignInState, rhs: CustomSignInState) -> Bool {
+    static func == (lhs: MigrateSignInState, rhs: MigrateSignInState) -> Bool {
         switch (lhs, rhs) {
         case (.notStarted, .notStarted):
             return true
-        case (.initiating(let lhsData), .initiating(let rhsData)):
+        case (.signingIn(let lhsData), .signingIn(let rhsData)):
             return lhsData == rhsData
         case (.signedIn(let lhsData), .signedIn(let rhsData)):
             return lhsData == rhsData

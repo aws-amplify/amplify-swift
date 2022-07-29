@@ -27,6 +27,8 @@ extension KeychainStoreAttributes {
         if let accessGroup = accessGroup {
             query[KeychainStore.Constants.AttributeAccessGroup] = accessGroup
         }
+        query[KeychainStore.Constants.AttributeAccessible] = KeychainStore.Constants.AttributeAccessibleAfterFirstUnlock
+        query[KeychainStore.Constants.UseDataProtectionKeyChain] = kCFBooleanTrue
         return query
     }
 

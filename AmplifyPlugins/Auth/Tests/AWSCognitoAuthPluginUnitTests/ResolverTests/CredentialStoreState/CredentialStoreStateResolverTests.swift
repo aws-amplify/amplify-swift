@@ -6,7 +6,7 @@
 //
 
 import XCTest
-
+import AWSPluginsCore
 @testable import AWSCognitoAuthPlugin
 
 typealias CredentialStoreStateSequence = StateSequence<CredentialStoreState, CredentialStoreEvent>
@@ -25,7 +25,7 @@ extension CredentialStoreStateSequence {
 
 class CredentialStoreStateResolverTests: XCTestCase {
     func testValidCredentialStoreStateSequences() throws {
-        let credentialStoreError = CredentialStoreError.configuration(message: "someError")
+        let credentialStoreError = KeychainStoreError.configuration(message: "someError")
         let testData = AmplifyCredentials.testData
 
         let validSequences: [CredentialStoreStateSequence] = [

@@ -8,6 +8,7 @@
 import Foundation
 
 @testable import AWSCognitoAuthPlugin
+import AWSPluginsCore
 
 class MockAmplifyCredentialStoreBehavior: AmplifyAuthCredentialStoreBehavior {
 
@@ -37,7 +38,7 @@ class MockAmplifyCredentialStoreBehavior: AmplifyAuthCredentialStoreBehavior {
 
     func retrieveCredential() throws -> Codable {
         guard let credentials = try getCredentialHandler?() else {
-            throw CredentialStoreError.unknown("", nil)
+            throw KeychainStoreError.unknown("", nil)
         }
         return credentials
     }
@@ -45,7 +46,7 @@ class MockAmplifyCredentialStoreBehavior: AmplifyAuthCredentialStoreBehavior {
     func deleteCredential() throws {
         try clearCredentialHandler?()
     }
-
+    
     func getCredentialStore() -> CredentialStoreBehavior {
         return MockCredentialStoreBehavior(data: "mock")
     }

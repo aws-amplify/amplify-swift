@@ -46,9 +46,10 @@ extension SignInState {
                     let action = InitializeHostedUISignIn(options: options)
                     return .init(newState: .signingInWithHostedUI(.notStarted), actions: [action])
                 }
-                if case .initiateHostedUISignIn(let options) = event.isSignInEvent {
-                    let action = InitializeHostedUISignIn(options: options)
-                    return .init(newState: .signingInWithHostedUI(.notStarted), actions: [action])
+                if case .initiateMigrateAuth(let signInEventData) = event.isSignInEvent {
+                    let action = StartMigrateAuthFlow(signInEventData: signInEventData)
+                    return .init(newState: .signingInViaMigrateAuth(.notStarted, signInEventData),
+                                 actions: [action])
                 }
                 return .from(oldState)
 
@@ -117,6 +118,21 @@ extension SignInState {
                     resolution.newState, signInEventData)
                 return .init(newState: signingInWithCustom, actions: resolution.actions)
 
+            case .signingInViaMigrateAuth(let migrateSignInState, let signInEventData):
+
+                if let signInEvent = event as? SignInEvent,
+                   case .receivedChallenge(let challenge) = signInEvent.eventType {
+                    let action = InitializeResolveChallenge(challenge: challenge)
+                    let subState = SignInChallengeState.notStarted
+                    return .init(newState: .resolvingChallenge(subState, challenge.challenge.authChallengeType), actions: [action])
+                }
+
+                let resolution = MigrateSignInState.Resolver().resolve(
+                    oldState: migrateSignInState, byApplying: event)
+                let signingInWithMigration = SignInState.signingInViaMigrateAuth(
+                    resolution.newState, signInEventData)
+                return .init(newState: signingInWithMigration, actions: resolution.actions)
+
             case .resolvingChallenge(let challengeState, let challengeType):
 
                 if let signInEvent = event as? SignInEvent,
@@ -161,7 +177,6 @@ extension SignInState {
                 let signingInWithSRP = SignInState.signingInWithSRPCustom(resolution.newState,
                                                                           signInEventData)
                 return .init(newState: signingInWithSRP, actions: resolution.actions)
-
             case .resolvingDeviceSrpa(let deviceSrpState):
 
                 if let signInEvent = event as? SignInEvent,
@@ -183,8 +198,7 @@ extension SignInState {
                                  actions: [SignInComplete(signedInData: signedInData)])
                 }
                 return .from(oldState)
-
-            default:
+            case .signedIn, .error:
                 return .from(oldState)
             }
         }

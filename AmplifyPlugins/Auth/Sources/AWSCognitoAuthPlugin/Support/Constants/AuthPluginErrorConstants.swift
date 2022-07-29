@@ -36,6 +36,26 @@ enum AuthPluginErrorConstants {
         "User cancelled the signOut flow and could not be completed.",
         "Present the signOut UI again for the user to sign out.")
 
+    static let hostedUIInvalidPresentation: AuthPluginErrorString = (
+        "Presentation context provided is invalid or not present",
+        "Retry by providing a presentation context to present the webUI")
+
+    static let hostedUISignInURI: AuthPluginErrorString = (
+        "SignIn URI could not be created",
+        "Check the configuration to make sure that HostedUI related information are present")
+
+    static let hostedUISignOutURI: AuthPluginErrorString = (
+        "SignOut URI could not be created",
+        "Check the configuration to make sure that HostedUI related information are present")
+
+    static let hostedUIProofCalculation: AuthPluginErrorString = (
+        "Proof calculation failed",
+        "Reach out with amplify team via github to raise an issue")
+
+    static let tokenParsingError: AuthPluginErrorString = (
+        "Token returned by service could not be parsed",
+        "Check if the the configuration provided are correct")
+
     static let userInvalidError: AuthPluginErrorString = (
         "Could not validate the user",
         "Get the current user Auth.getCurrentUser() and make the request")
@@ -146,6 +166,12 @@ extension AuthPluginErrorConstants {
         "username",
         "Username is required to signIn",
         "Make sure that a valid username is passed during sigIn"
+    )
+
+    static let signInPasswordError: AuthPluginValidationErrorString = (
+        "password",
+        "Password is required to signIn",
+        "Make sure that a valid password is passed during sigIn"
     )
 
     static let signUpUsernameError: AuthPluginValidationErrorString = (
@@ -292,6 +318,10 @@ extension AuthPluginErrorConstants {
 
     static let invalidSMSRoleError: RecoverySuggestion = """
     Check the role provided for SMS configuration in Cognito Service
+    """
+
+    static let serviceError: RecoverySuggestion = """
+    Received an error message from the service
     """
 
 }
