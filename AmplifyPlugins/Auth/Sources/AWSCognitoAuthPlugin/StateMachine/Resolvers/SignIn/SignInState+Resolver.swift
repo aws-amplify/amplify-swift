@@ -177,7 +177,6 @@ extension SignInState {
                 let signingInWithSRP = SignInState.signingInWithSRPCustom(resolution.newState,
                                                                           signInEventData)
                 return .init(newState: signingInWithSRP, actions: resolution.actions)
-
             case .resolvingDeviceSrpa(let deviceSrpState):
 
                 if let signInEvent = event as? SignInEvent,
@@ -199,7 +198,6 @@ extension SignInState {
                                  actions: [SignInComplete(signedInData: signedInData)])
                 }
                 return .from(oldState)
-
             case .signedIn, .error:
                 return .from(oldState)
             }

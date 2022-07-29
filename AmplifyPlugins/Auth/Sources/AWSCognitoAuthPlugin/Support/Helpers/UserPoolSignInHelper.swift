@@ -70,7 +70,8 @@ struct UserPoolSignInHelper {
         Task {
             do {
                 let response = try await client.respondToAuthChallenge(input: request)
-                callback(self.parseResponse(response, for: username))
+                let event = try self.parseResponse(response, for: username)
+                callback(event)
             } catch {
                 let authError = SignInError.service(error: error)
                 callback(SignInEvent(eventType: .throwAuthError(authError)))
@@ -80,7 +81,7 @@ struct UserPoolSignInHelper {
 
     static func parseResponse(
         _ response: SignInResponseBehavior,
-        for username: String) -> StateMachineEvent {
+        for username: String) throws -> StateMachineEvent {
 
             if let authenticationResult = response.authenticationResult,
                let idToken = authenticationResult.idToken,
@@ -91,9 +92,10 @@ struct UserPoolSignInHelper {
                                                               accessToken: accessToken,
                                                               refreshToken: refreshToken,
                                                               expiresIn: authenticationResult.expiresIn)
+                let user = try TokenParserHelper.getAuthUser(accessToken: accessToken)
                 let signedInData = SignedInData(
-                    userId: "",
-                    userName: username,
+                    userId: user.userId,
+                    userName: user.username,
                     signedInDate: Date(),
                     // TODO: remove hardcoded sign in method
                     signInMethod: .apiBased(.userSRP),

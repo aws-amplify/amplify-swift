@@ -252,7 +252,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutputResponse(
                 authenticationResult: .init(
-                    accessToken: "accessToken",
+                    accessToken: Defaults.validAccessToken,
                     expiresIn: 300,
                     idToken: "idToken",
                     newDeviceMetadata: nil,

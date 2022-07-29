@@ -11,9 +11,9 @@ import Security
 
 protocol CredentialStoreStateBehaviour {
 
-    func fetchData(type: CredentialStoreRetrievalDataType) async throws -> CredentialStoreData
+    func fetchData(type: CredentialStoreDataType) async throws -> CredentialStoreData
     func storeData(data: CredentialStoreData) async throws
-    func deleteData(type: CredentialStoreRetrievalDataType) async throws
+    func deleteData(type: CredentialStoreDataType) async throws
 
 }
 
@@ -26,7 +26,7 @@ class CredentialStoreOperationClient: CredentialStoreStateBehaviour {
         self.credentialStoreStateMachine = credentialStoreStateMachine
     }
 
-    func fetchData(type: CredentialStoreRetrievalDataType) async throws -> CredentialStoreData {
+    func fetchData(type: CredentialStoreDataType) async throws -> CredentialStoreData {
         let credentialStoreEvent = CredentialStoreEvent(
             eventType: .loadCredentialStore(type))
         return try await sendEventAndListenToStateChanges(event: credentialStoreEvent)
@@ -38,7 +38,7 @@ class CredentialStoreOperationClient: CredentialStoreStateBehaviour {
         _ = try await sendEventAndListenToStateChanges(event: credentialStoreEvent)
     }
 
-    func deleteData(type: CredentialStoreRetrievalDataType) async throws {
+    func deleteData(type: CredentialStoreDataType) async throws {
         let credentialStoreEvent = CredentialStoreEvent(
             eventType: .clearCredentialStore(type))
         _ = try await sendEventAndListenToStateChanges(event: credentialStoreEvent)

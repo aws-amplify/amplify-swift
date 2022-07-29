@@ -29,8 +29,8 @@ extension AuthorizationState {
 
             case .configured:
 
-                if let authenEvent = event.isAuthenticationEvent,
-                   case .signInRequested = authenEvent {
+                if let authNEvent = event.isAuthenticationEvent,
+                   case .signInRequested = authNEvent {
                     return .init(newState: .signingIn)
                 }
 
@@ -42,10 +42,10 @@ extension AuthorizationState {
                 return .from(oldState)
 
             case .sessionEstablished(let credentials):
-                if let authenEvent = event.isAuthenticationEvent {
-                    if case .signInRequested = authenEvent {
+                if let authNEvent = event.isAuthenticationEvent {
+                    if case .signInRequested = authNEvent {
                         return .from(.signingIn)
-                    } else if case .signOutRequested = authenEvent {
+                    } else if case .signOutRequested = authNEvent {
                         return .from(.signingOut)
                     }
                 }
@@ -74,6 +74,8 @@ extension AuthorizationState {
                         let tokens = event.cognitoUserPoolTokens
                         return .init(newState: .fetchingAuthSessionWithUserPool(.notStarted, tokens),
                                      actions: [action])
+                    case .error(let error):
+                        return .init(newState: .error(AuthorizationError.service(error: error)))
                     case .cancelSignIn:
                         return .init(newState: .configured)
                     default: return .from(.signingIn)
@@ -168,11 +170,13 @@ extension AuthorizationState {
                 return .from(oldState)
 
             case .error(let error):
-                if let authenEvent = event.isAuthenticationEvent {
-                    if case .signInRequested = authenEvent {
+                if let authNEvent = event.isAuthenticationEvent {
+                    if case .signInRequested = authNEvent {
                         return .from(.signingIn)
-                    } else if case .signOutRequested = authenEvent {
+                    } else if case .signOutRequested = authNEvent {
                         return .from(.signingOut)
+                    } else if case .cancelSignIn = authNEvent {
+                        return .from(.configured)
                     }
                 }
                 if case .fetchUnAuthSession = event.isAuthorizationEvent {
