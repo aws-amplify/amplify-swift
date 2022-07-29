@@ -69,6 +69,10 @@ extension AuthenticationState {
                 }
 
             case .error:
+                if let authEvent = event as? AuthenticationEvent,
+                   case .cancelSignIn = authEvent.eventType {
+                    return .init(newState: .signedOut(SignedOutData()))
+                }
                 return .from(oldState)
             }
         }
@@ -170,7 +174,8 @@ extension AuthenticationState {
                                            event: StateMachineEvent) -> StateResolution<StateType> {
             if let authEvent = event as? AuthenticationEvent,
                case .error(let error) = authEvent.eventType {
-                return .from(.error(error))
+                let action = CancelSignIn()
+                return .init(newState: .error(error), actions: [action])
             }
             /// Move to signedOut state if cancelSignIn
             if let authEvent = event as? AuthenticationEvent,

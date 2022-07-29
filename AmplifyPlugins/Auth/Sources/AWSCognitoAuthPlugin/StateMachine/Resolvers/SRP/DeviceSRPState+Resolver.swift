@@ -101,7 +101,7 @@ extension DeviceSRPState {
 
         private func errorState(_ error: SignInError)
         -> StateResolution<DeviceSRPState> {
-            let action = CancelSignIn()
+            let action = ThrowSignInError(error: error)
             return StateResolution(
                 newState: DeviceSRPState.error(error),
                 actions: [action]
