@@ -65,6 +65,10 @@ enum Defaults {
         return try CognitoIdentityProviderClient(region: regionString)
     }
 
+    static func makeDefaultASF() -> CognitoUserPoolASFBehavior {
+        return MockASF()
+    }
+
     static func makeIdentity() throws -> CognitoIdentityBehavior {
         let getId: MockIdentity.MockGetIdResponse = { _ in
             return .init(identityId: "mockIdentityId")
@@ -136,7 +140,8 @@ enum Defaults {
         )
         let srpSignInEnvironment = BasicSRPSignInEnvironment(srpAuthEnvironment: srpAuthEnvironment)
         let userPoolEnvironment = BasicUserPoolEnvironment(userPoolConfiguration: userPoolConfigData,
-                                                           cognitoUserPoolFactory: userPoolFactory)
+                                                           cognitoUserPoolFactory: userPoolFactory,
+                                                           cognitoUserPoolASFFactory: makeDefaultASF)
         let authenticationEnvironment = BasicAuthenticationEnvironment(srpSignInEnvironment: srpSignInEnvironment,
                                                                        userPoolEnvironment: userPoolEnvironment,
                                                                        hostedUIEnvironment: hostedUIEnvironment)
@@ -289,5 +294,15 @@ struct MockLegacyStore: KeychainStoreBehavior {
     func _removeAll() throws {
 
     }
+
+}
+
+struct MockASF: CognitoUserPoolASFBehavior {
+    func userContextData(deviceInfo: ASFDeviceBehavior,
+                         appInfo: ASFAppInfoBehavior,
+                         configuration: UserPoolConfigurationData) -> String {
+        return ""
+    }
+
 
 }

@@ -48,8 +48,10 @@ class ConfirmSignUpStateTests: XCTestCase {
             MockIdentityProvider(mockConfirmSignUpResponse: confirmSignUpCallback)
         }
 
-        let environment = BasicUserPoolEnvironment(userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-                                                   cognitoUserPoolFactory: cognitoUserPoolFactory)
+        let environment = BasicUserPoolEnvironment(
+            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
+            cognitoUserPoolFactory: cognitoUserPoolFactory,
+            cognitoUserPoolASFFactory: Defaults.makeDefaultASF)
 
         let confirmSignUpEventData = ConfirmSignUpEventData(username: username, confirmationCode: confirmationCode)
         let action = ConfirmSignUp(confirmSignUpEventData: confirmSignUpEventData)

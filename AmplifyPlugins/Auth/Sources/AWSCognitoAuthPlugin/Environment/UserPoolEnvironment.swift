@@ -8,15 +8,20 @@
 import Foundation
 
 protocol UserPoolEnvironment: Environment {
+
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
+
+    typealias CognitoUserPoolASFFactory = () throws -> CognitoUserPoolASFBehavior
+
     var userPoolConfiguration: UserPoolConfigurationData { get }
     var cognitoUserPoolFactory: CognitoUserPoolFactory { get }
+    var cognitoUserPoolASFFactory: CognitoUserPoolASFFactory { get }
 }
 
 struct BasicUserPoolEnvironment: UserPoolEnvironment {
-    typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
     let userPoolConfiguration: UserPoolConfigurationData
     let cognitoUserPoolFactory: CognitoUserPoolFactory
+    let cognitoUserPoolASFFactory: CognitoUserPoolASFFactory
 }
 
 extension AuthEnvironment: UserPoolEnvironment {
@@ -26,5 +31,9 @@ extension AuthEnvironment: UserPoolEnvironment {
 
     var cognitoUserPoolFactory: CognitoUserPoolFactory {
         userPoolEnvironment.cognitoUserPoolFactory
+    }
+
+    var cognitoUserPoolASFFactory: CognitoUserPoolASFFactory {
+        userPoolEnvironment.cognitoUserPoolASFFactory
     }
 }
