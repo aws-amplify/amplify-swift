@@ -503,6 +503,16 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSDataStorePluginTests"
+               BuildableName = "AWSDataStorePluginTests"
+               BlueprintName = "AWSDataStorePluginTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

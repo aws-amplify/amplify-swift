@@ -20,6 +20,20 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSDataStorePluginTests"
+               BuildableName = "AWSDataStorePluginTests"
+               BlueprintName = "AWSDataStorePluginTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -32,16 +46,11 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSDataStoreCategoryPluginTests"
-               BuildableName = "AWSDataStoreCategoryPluginTests"
-               BlueprintName = "AWSDataStoreCategoryPluginTests"
+               BlueprintIdentifier = "AWSDataStorePluginTests"
+               BuildableName = "AWSDataStorePluginTests"
+               BlueprintName = "AWSDataStorePluginTests"
                ReferencedContainer = "container:">
             </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "MutationEventExtensionsTest">
-               </Test>
-            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>
