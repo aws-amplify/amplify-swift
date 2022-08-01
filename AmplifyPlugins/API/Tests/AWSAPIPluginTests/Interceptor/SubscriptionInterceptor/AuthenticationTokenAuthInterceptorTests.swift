@@ -44,20 +44,18 @@ private class TestAuthTokenProvider: AmplifyAuthTokenProvider {
     func getUserPoolAccessToken() async throws -> String {
         authToken
     }
-    
-    func getUserPoolAccessToken() async throws -> String {
-        authToken
-    }
 }
 
 private class TestFailingAuthTokenProvider: AmplifyAuthTokenProvider {
+    
+    // TODO: Remove this after datastore dependencies are removed.
+    func getLatestAuthToken() -> Result<AuthToken, Error> {
+        .success(authToken)
+    }
+    
     let authToken = "token"
     
     func getUserPoolAccessToken() async throws -> String {
         throw "Token error"
-    }
-    
-    func getUserPoolAccessToken() async throws -> String {
-        authToken
     }
 }

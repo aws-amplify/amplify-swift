@@ -33,8 +33,4 @@ class AuthTokenProviderWrapper: AuthTokenProvider {
     func getUserPoolAccessToken() async throws -> String {
         try await wrappedAuthTokenProvider.getUserPoolAccessToken()
     }
-    
-    func getUserPoolAccessToken() async throws -> String {
-        try await wrappedAuthTokenProvider.getUserPoolAccessToken()
-    }
 }
