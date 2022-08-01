@@ -17,11 +17,11 @@ struct SignInEvent: StateMachineEvent {
 
     enum EventType {
 
-        case initiateSignInWithSRP(SignInEventData)
+        case initiateSignInWithSRP(SignInEventData, DeviceMetadata)
 
-        case initiateCustomSignIn(SignInEventData)
+        case initiateCustomSignIn(SignInEventData, DeviceMetadata)
 
-        case initiateCustomSignInWithSRP(SignInEventData)
+        case initiateCustomSignInWithSRP(SignInEventData, DeviceMetadata)
 
         case initiateHostedUISignIn(HostedUIOptions)
 
@@ -29,9 +29,17 @@ struct SignInEvent: StateMachineEvent {
 
         case respondPasswordVerifier(SRPStateData, InitiateAuthOutputResponse)
 
+        case initiateDeviceSRP(SignInResponseBehavior)
+
+        case respondDeviceSRPChallenge(SRPStateData, SignInResponseBehavior)
+
+        case respondDevicePasswordVerifier(SRPStateData, SignInResponseBehavior)
+
         case throwPasswordVerifierError(SignInError)
 
         case finalizeSignIn(SignedInData)
+
+        case confirmDevice(SignedInData)
 
         case cancelSRPSignIn(SignedInData)
 
@@ -53,8 +61,12 @@ struct SignInEvent: StateMachineEvent {
         case .initiateCustomSignInWithSRP: return "SignInEvent.initiateCustomSignInWithSRP"
         case .initiateHostedUISignIn: return "SignInEvent.initiateHostedUISignIn"
         case .initiateMigrateAuth: return "SignInEvent.initiateMigrateAuth"
+        case .initiateDeviceSRP: return "SignInEvent.initiateDeviceSRP"
+        case .respondDeviceSRPChallenge: return "SignInEvent.respondDeviceSRPChallenge"
+        case .respondDevicePasswordVerifier: return "SignInEvent.respondDevicePasswordVerifier"
         case .respondPasswordVerifier: return "SignInEvent.respondPasswordVerifier"
         case .throwPasswordVerifierError: return "SignInEvent.throwPasswordVerifierError"
+        case .confirmDevice: return "SignInEvent.confirmDevice"
         case .finalizeSignIn: return "SignInEvent.finalizeSignIn"
         case .cancelSRPSignIn: return "SignInEvent.cancelSRPSignIn"
         case .throwAuthError: return "SignInEvent.throwAuthError"
@@ -82,9 +94,13 @@ extension SignInEvent.EventType: Equatable {
             (.initiateCustomSignIn, .initiateCustomSignIn),
             (.initiateCustomSignInWithSRP, .initiateCustomSignInWithSRP),
             (.initiateMigrateAuth, .initiateMigrateAuth),
+            (.initiateDeviceSRP, .initiateDeviceSRP),
+            (.respondDeviceSRPChallenge, .respondDeviceSRPChallenge),
+            (.respondDevicePasswordVerifier, .respondDevicePasswordVerifier),
             (.respondPasswordVerifier, .respondPasswordVerifier),
             (.throwPasswordVerifierError, .throwPasswordVerifierError),
             (.finalizeSignIn, .finalizeSignIn),
+            (.confirmDevice, .confirmDevice),
             (.cancelSRPSignIn, .cancelSRPSignIn),
             (.throwAuthError, .throwAuthError),
             (.receivedChallenge, .receivedChallenge),

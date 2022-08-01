@@ -13,11 +13,7 @@ struct AuthEvent: StateMachineEvent {
 
         case configureAuth(AuthConfiguration)
 
-        case fetchCachedCredentials(AuthConfiguration)
-
-        case receivedCachedCredentials(AmplifyCredentials)
-
-        case cachedCredentialsFailed
+        case validateCredentialAndConfiguration(AuthConfiguration, AmplifyCredentials)
 
         case configureAuthentication(AuthConfiguration, AmplifyCredentials)
 
@@ -37,13 +33,11 @@ struct AuthEvent: StateMachineEvent {
     var type: String {
         switch eventType {
         case .configureAuth: return "AuthEvent.configureAuth"
-        case .fetchCachedCredentials: return "AuthEvent.fetchCachedCredentials"
         case .configureAuthentication: return "AuthEvent.configureAuthentication"
         case .configureAuthorization: return "AuthEvent.configureAuthorization"
         case .authenticationConfigured: return "AuthEvent.authenticationConfigured"
         case .authorizationConfigured: return "AuthEvent.authorizationConfigured"
-        case .receivedCachedCredentials: return "AuthEvent.receivedCachedCredentials"
-        case .cachedCredentialsFailed: return "AuthEvent.cachedCredentialsFailed"
+        case .validateCredentialAndConfiguration: return "AuthEvent.validateCredentialAndConfiguration"
         }
     }
 

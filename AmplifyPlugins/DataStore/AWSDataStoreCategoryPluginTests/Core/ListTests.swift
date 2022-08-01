@@ -16,46 +16,6 @@ class ListTests: BaseDataStoreTests {
 
     /// - Given: a list a `Post` and a few comments associated with it
     /// - When:
-    ///   - the `post.comments` is accessed synchronously
-    /// - Then:
-    ///   - the list should be correctly loaded and populated
-    func testSynchronousLazyLoad() {
-        let expect = expectation(description: "a lazy list should return the correct results")
-
-        let postId = preparePostDataForTest()
-
-        Amplify.DataStore.query(Post.self, byId: postId) {
-            switch $0 {
-            case .success(let result):
-                if let post = result {
-                    if let comments = post.comments {
-                        guard case .notLoaded = comments.loadedState else {
-                            XCTFail("Should not be loaded")
-                            return
-                        }
-                        XCTAssertEqual(comments.count, 2)
-                        guard case .loaded = comments.loadedState else {
-                            XCTFail("Should be loaded")
-                            return
-                        }
-                    } else {
-                        XCTFail("post.comments should not be nil")
-                    }
-                } else {
-                    XCTFail("Failed to query recently saved post by id")
-                }
-                expect.fulfill()
-            case .failure(let error):
-                XCTFail(error.errorDescription)
-                expect.fulfill()
-            }
-        }
-
-        wait(for: [expect], timeout: 1)
-    }
-
-    /// - Given: a list a `Post` and a few comments associated with it
-    /// - When:
     ///   - the `post.comments` is accessed asynchronously with a callback
     /// - Then:
     ///   - the list should be correctly loaded and populated

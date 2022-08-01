@@ -12,6 +12,8 @@ struct ClearCredentialStore: Action {
 
     let identifier = "ClearCredentialStore"
 
+    let dataStoreType: CredentialStoreDataType
+
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
@@ -27,8 +29,19 @@ struct ClearCredentialStore: Action {
         let amplifyCredentialStore = credentialStoreEnvironment.amplifyCredentialStoreFactory()
 
         do {
-            try amplifyCredentialStore.deleteCredential()
-            let event = CredentialStoreEvent(eventType: .completedOperation(.noCredentials))
+
+            let credentialStoreData: CredentialStoreData
+            switch dataStoreType {
+            case .amplifyCredentials:
+                try amplifyCredentialStore.deleteCredential()
+                credentialStoreData = .amplifyCredentials(.noCredentials)
+            case .deviceMetadata(let username):
+                try amplifyCredentialStore.removeDevice(for: username)
+                credentialStoreData = .deviceMetadata(.noData, username)
+            }
+
+            let event = CredentialStoreEvent(
+                eventType: .completedOperation(credentialStoreData))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
         } catch let error as KeychainStoreError {

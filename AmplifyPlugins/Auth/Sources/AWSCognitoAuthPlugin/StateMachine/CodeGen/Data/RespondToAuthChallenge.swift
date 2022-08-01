@@ -15,7 +15,7 @@ struct RespondToAuthChallenge: Equatable {
 
     let username: String
 
-    let session: String
+    let session: String?
 
     let parameters: [String: String]?
 

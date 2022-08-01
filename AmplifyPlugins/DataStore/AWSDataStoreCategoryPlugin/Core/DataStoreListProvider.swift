@@ -43,29 +43,6 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
         self.loadedState = .loaded(elements)
     }
 
-    public func load() -> Result<[Element], CoreError> {
-        let semaphore = DispatchSemaphore(value: 0)
-        var loadResult: Result<[Element], CoreError> = .failure(
-            .listOperation("DataStore query failed to complete.",
-                           AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
-                           nil))
-        load { result in
-            defer {
-                semaphore.signal()
-            }
-            switch result {
-            case .success(let elements):
-                loadResult = .success(elements)
-            case .failure(let error):
-                Amplify.DataStore.log.error(error: error)
-                assertionFailure(error.errorDescription)
-                loadResult = .failure(error)
-            }
-        }
-        semaphore.wait()
-        return loadResult
-    }
-
     public func load(completion: (Result<[Element], CoreError>) -> Void) {
         switch loadedState {
         case .loaded(let elements):

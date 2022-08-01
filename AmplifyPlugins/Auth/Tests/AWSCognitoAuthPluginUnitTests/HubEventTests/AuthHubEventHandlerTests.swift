@@ -252,7 +252,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutputResponse(
                 authenticationResult: .init(
-                    accessToken: "accessToken",
+                    accessToken: Defaults.validAccessToken,
                     expiresIn: 300,
                     idToken: "idToken",
                     newDeviceMetadata: nil,
@@ -411,19 +411,6 @@ class AuthHubEventHandlerTests: XCTestCase {
             identityPoolFactory: { mockIdentity },
             userPoolFactory: { userPoolFactory },
             hostedUIEnvironment: hostedUIEnv)
-        
-        _ = statemachine.listen { state in
-            switch state {
-            case .configured(_, let authorizationState):
-                
-                if case .waitingToStore(let credentials) = authorizationState {
-                    let authEvent = AuthEvent.init(
-                        eventType: .receivedCachedCredentials(credentials))
-                    statemachine.send(authEvent)
-                }
-            default: break
-            }
-        } onSubscribe: {}
         
         let authHandler = AuthHubEventHandler()
         

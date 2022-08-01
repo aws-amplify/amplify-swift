@@ -13,18 +13,7 @@ struct CancelSignIn: Action {
 
     func execute(withDispatcher dispatcher: EventDispatcher,
                  environment: Environment) {
-
         logVerbose("\(#fileID) Starting execution", environment: environment)
-
-        guard let environment = environment as? AuthEnvironment else {
-            let message = AuthPluginErrorConstants.configurationError
-            let error = AuthenticationError.configuration(message: message)
-            let event = AuthenticationEvent(eventType: .error(error))
-            logVerbose("\(#fileID) Sending event \(event)", environment: environment)
-            dispatcher.send(event)
-
-            return
-        }
         let event = AuthenticationEvent(eventType: .cancelSignIn)
         logVerbose("\(#fileID) Sending event \(event)", environment: environment)
         dispatcher.send(event)

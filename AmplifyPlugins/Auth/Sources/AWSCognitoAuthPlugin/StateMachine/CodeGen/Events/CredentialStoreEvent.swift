@@ -8,19 +8,29 @@
 import Foundation
 import AWSPluginsCore
 
+enum CredentialStoreData: Codable, Equatable {
+    case amplifyCredentials(AmplifyCredentials)
+    case deviceMetadata(DeviceMetadata, Username)
+}
+
+enum CredentialStoreDataType: Codable, Equatable {
+    case amplifyCredentials
+    case deviceMetadata(username: String)
+}
+
 struct CredentialStoreEvent: StateMachineEvent {
 
     enum EventType: Equatable {
 
         case migrateLegacyCredentialStore
 
-        case loadCredentialStore
+        case loadCredentialStore(CredentialStoreDataType)
 
-        case storeCredentials(AmplifyCredentials)
+        case storeCredentials(CredentialStoreData)
 
-        case clearCredentialStore
+        case clearCredentialStore(CredentialStoreDataType)
 
-        case completedOperation(AmplifyCredentials)
+        case completedOperation(CredentialStoreData)
 
         case throwError(KeychainStoreError)
 

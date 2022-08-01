@@ -42,15 +42,10 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
             case .loaded(let elements):
                 return elements
             case .notLoaded:
-                let result = listProvider.load()
-                switch result {
-                case .success(let elements):
-                    loadedState = .loaded(elements)
-                    return elements
-                case .failure(let error):
-                    Amplify.log.error(error: error)
-                    return []
-                }
+                let message = "Call `fetch` to lazy load the list before accessing `elements`."
+                Amplify.log.error(message)
+                assertionFailure(message)
+                return []
             }
         }
         set {

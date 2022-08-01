@@ -42,7 +42,7 @@ class ClearCredentialsTests: XCTestCase {
 
         let environment = CredentialEnvironment(authConfiguration: authConfig, credentialStoreEnvironment: credentialStoreEnv)
 
-        let action = ClearCredentialStore()
+        let action = ClearCredentialStore(dataStoreType: .amplifyCredentials)
         action.execute(withDispatcher: MockDispatcher { _ in },
                         environment: environment)
 
@@ -63,7 +63,7 @@ class ClearCredentialsTests: XCTestCase {
 
         let environment = MockInvalidEnvironment()
 
-        let action = ClearCredentialStore()
+        let action = ClearCredentialStore(dataStoreType: .amplifyCredentials)
         action.execute(withDispatcher: MockDispatcher { event in
 
             guard let event = event as? CredentialStoreEvent else {
@@ -114,7 +114,7 @@ class ClearCredentialsTests: XCTestCase {
 
         let environment = CredentialEnvironment(authConfiguration: authConfig, credentialStoreEnvironment: credentialStoreEnv)
 
-        let action = ClearCredentialStore()
+        let action = ClearCredentialStore(dataStoreType: .amplifyCredentials)
         action.execute(withDispatcher: MockDispatcher { event in
 
             guard let event = event as? CredentialStoreEvent else {
@@ -166,7 +166,7 @@ class ClearCredentialsTests: XCTestCase {
 
         let environment = CredentialEnvironment(authConfiguration: authConfig, credentialStoreEnvironment: credentialStoreEnv)
 
-        let action = ClearCredentialStore()
+        let action = ClearCredentialStore(dataStoreType: .amplifyCredentials)
         action.execute(withDispatcher: MockDispatcher { event in
 
             guard let event = event as? CredentialStoreEvent else {

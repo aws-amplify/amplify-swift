@@ -15,10 +15,14 @@ struct InitiateCustomAuth: Action {
 
     let username: String
     let clientMetadata: [String: String]
+    let deviceMetadata: DeviceMetadata
 
-    init(username: String, clientMetadata: [String: String]) {
+    init(username: String,
+         clientMetadata: [String: String],
+         deviceMetadata: DeviceMetadata) {
         self.username = username
         self.clientMetadata = clientMetadata
+        self.deviceMetadata = deviceMetadata
     }
 
     func execute(withDispatcher dispatcher: EventDispatcher,
@@ -64,8 +68,8 @@ struct InitiateCustomAuth: Action {
             authParameters["SECRET_HASH"] = clientSecretHash
         }
 
-        if let deviceId = Self.getDeviceId() {
-            authParameters["DEVICE_KEY"] = deviceId
+        if case .metadata(let data) = deviceMetadata {
+            authParameters["DEVICE_KEY"] = data.deviceKey
         }
 
         return InitiateAuthInput(analyticsMetadata: nil,
@@ -87,7 +91,7 @@ struct InitiateCustomAuth: Action {
             let event: StateMachineEvent!
             do {
                 let response = try await cognitoClient.initiateAuth(input: request)
-                event = UserPoolSignInHelper.parseResponse(response, for: username)
+                event = try UserPoolSignInHelper.parseResponse(response, for: username)
                 logVerbose("\(#fileID) InitiateAuth response success", environment: environment)
             } catch {
                 let authError = SignInError.service(error: error)
@@ -95,11 +99,6 @@ struct InitiateCustomAuth: Action {
             }
             callback(event)
         }
-    }
-
-    // TODO: Implement this
-    private static func getDeviceId() -> String? {
-        return nil
     }
 
 }

@@ -70,7 +70,8 @@ struct UserPoolSignInHelper {
         Task {
             do {
                 let response = try await client.respondToAuthChallenge(input: request)
-                callback(self.parseResponse(response, for: username))
+                let event = try self.parseResponse(response, for: username)
+                callback(event)
             } catch {
                 let authError = SignInError.service(error: error)
                 callback(SignInEvent(eventType: .throwAuthError(authError)))
@@ -80,7 +81,7 @@ struct UserPoolSignInHelper {
 
     static func parseResponse(
         _ response: SignInResponseBehavior,
-        for username: String) -> StateMachineEvent {
+        for username: String) throws -> StateMachineEvent {
 
             if let authenticationResult = response.authenticationResult,
                let idToken = authenticationResult.idToken,
@@ -91,24 +92,36 @@ struct UserPoolSignInHelper {
                                                               accessToken: accessToken,
                                                               refreshToken: refreshToken,
                                                               expiresIn: authenticationResult.expiresIn)
-                let signedInData = SignedInData(userId: "",
-                                                userName: username,
-                                                signedInDate: Date(),
-                                                // TODO: remove hardcoded sign in method
-                                                signInMethod: .apiBased(.userSRP),
-                                                cognitoUserPoolTokens: userPoolTokens)
-                return SignInEvent(eventType: .finalizeSignIn(signedInData))
+                let user = try TokenParserHelper.getAuthUser(accessToken: accessToken)
+                let signedInData = SignedInData(
+                    userId: user.userId,
+                    userName: user.username,
+                    signedInDate: Date(),
+                    // TODO: remove hardcoded sign in method
+                    signInMethod: .apiBased(.userSRP),
+                    deviceMetadata: authenticationResult.deviceMetadata,
+                    cognitoUserPoolTokens: userPoolTokens)
 
-            } else if let challengeName = response.challengeName, let session = response.session {
+                switch signedInData.deviceMetadata {
+                case .noData:
+                    return SignInEvent(eventType: .finalizeSignIn(signedInData))
+                case .metadata:
+                    return SignInEvent(eventType: .confirmDevice(signedInData))
+                }
+
+            } else if let challengeName = response.challengeName {
                 let parameters = response.challengeParameters
-                let response = RespondToAuthChallenge(challenge: challengeName,
-                                                      username: username,
-                                                      session: session,
-                                                      parameters: parameters)
-
+                let respondToAuthChallenge = RespondToAuthChallenge(
+                    challenge: challengeName,
+                    username: username,
+                    session: response.session,
+                    parameters: parameters)
+                
                 switch challengeName {
                 case .smsMfa, .customChallenge, .newPasswordRequired:
-                    return SignInEvent(eventType: .receivedChallenge(response))
+                    return SignInEvent(eventType: .receivedChallenge(respondToAuthChallenge))
+                case .deviceSrpAuth:
+                    return SignInEvent(eventType: .initiateDeviceSRP(response))
                 default:
                     let message = "UnSupported challenge response \(challengeName)"
                     let error = SignInError.unknown(message: message)

@@ -13,6 +13,7 @@ struct SRPStateData {
     let NHexValue: String
     let gHexValue: String
     let srpKeyPair: SRPKeys
+    let deviceMetadata: DeviceMetadata
     let clientTimestamp: Date
 
     init(
@@ -21,6 +22,7 @@ struct SRPStateData {
         NHexValue: String,
         gHexValue: String,
         srpKeyPair: SRPKeys,
+        deviceMetadata: DeviceMetadata,
         clientTimestamp: Date
     ) {
         self.username = username
@@ -28,6 +30,7 @@ struct SRPStateData {
         self.NHexValue = NHexValue
         self.gHexValue = gHexValue
         self.srpKeyPair = srpKeyPair
+        self.deviceMetadata = deviceMetadata
         self.clientTimestamp = clientTimestamp
     }
 
@@ -50,6 +53,7 @@ extension SRPStateData: CustomDebugDictionaryConvertible {
                 <privateKey \(srpKeyPair.privateKeyHexValue)>, \
                 <publicKey \(srpKeyPair.publicKeyHexValue)>
                 """,
+            "deviceMetadata": deviceMetadata,
             "clientTimestamp": clientTimestamp
         ]
     }

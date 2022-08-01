@@ -9,7 +9,7 @@ import Foundation
 
 extension AWSCognitoAuthPlugin {
 
-    func setupStateMachine() {
+    func listenToStateMachineChanges() {
 
         self.authStateListenerToken = authStateMachine.listen { state in
             self.log.verbose("""
@@ -18,20 +18,6 @@ extension AWSCognitoAuthPlugin {
             \(state)
 
             """)
-
-            switch state {
-            case .waitingForCachedCredentials:
-                let credentialStoreEvent = CredentialStoreEvent(eventType: .loadCredentialStore)
-                self.credentialStoreStateMachine.send(credentialStoreEvent)
-            case .configured(_, let authorizationState):
-
-                if case .waitingToStore(let credentials) = authorizationState {
-                    let credentialStoreEvent = CredentialStoreEvent(
-                        eventType: .storeCredentials(credentials))
-                    self.credentialStoreStateMachine.send(credentialStoreEvent)
-                }
-            default: break
-            }
 
         } onSubscribe: { }
 
@@ -43,26 +29,7 @@ extension AWSCognitoAuthPlugin {
 
             """)
 
-            switch state {
-            case .success(let credentials):
-                let authEvent = AuthEvent.init(eventType: .receivedCachedCredentials(credentials))
-                self.authStateMachine.send(authEvent)
-            case .error:
-                let authEvent = AuthEvent.init(eventType: .cachedCredentialsFailed)
-                self.authStateMachine.send(authEvent)
-            default: break
-            }
         } onSubscribe: { }
 
-        internalConfigure()
-    }
-
-    func internalConfigure() {
-        let request = AuthConfigureRequest(authConfiguration: authConfiguration)
-        let operation = AuthConfigureOperation(
-            request: request,
-            authStateMachine: authStateMachine,
-            credentialStoreStateMachine: credentialStoreStateMachine)
-        self.queue.addOperation(operation)
     }
 }

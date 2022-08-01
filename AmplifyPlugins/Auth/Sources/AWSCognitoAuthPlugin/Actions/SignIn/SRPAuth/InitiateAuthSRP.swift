@@ -16,15 +16,18 @@ struct InitiateAuthSRP: Action {
     let username: String
     let password: String
     let authFlowType: AuthFlowType
+    let deviceMetadata: DeviceMetadata
     let clientMetadata: [String: String]
 
     init(username: String,
          password: String,
          authFlowType: AuthFlowType = .userSRP,
+         deviceMetadata: DeviceMetadata = .noData,
          clientMetadata: [String: String] = [:]) {
         self.username = username
         self.password = password
         self.authFlowType = authFlowType
+        self.deviceMetadata = deviceMetadata
         self.clientMetadata = clientMetadata
     }
 
@@ -40,12 +43,14 @@ struct InitiateAuthSRP: Action {
             let srpClient = try SRPSignInHelper.srpClient(srpEnv)
             let srpKeyPair = srpClient.generateClientKeyPair()
 
-            let srpStateData = SRPStateData(username: username,
-                                            password: password,
-                                            NHexValue: nHexValue,
-                                            gHexValue: gHexValue,
-                                            srpKeyPair: srpKeyPair,
-                                            clientTimestamp: Date())
+            let srpStateData = SRPStateData(
+                username: username,
+                password: password,
+                NHexValue: nHexValue,
+                gHexValue: gHexValue,
+                srpKeyPair: srpKeyPair,
+                deviceMetadata: deviceMetadata,
+                clientTimestamp: Date())
             let request = request(environment: userPoolEnv,
                                   publicHexValue: srpKeyPair.publicKeyHexValue)
 
@@ -92,8 +97,8 @@ struct InitiateAuthSRP: Action {
             authParameters["SECRET_HASH"] = clientSecretHash
         }
 
-        if let deviceId = Self.getDeviceId() {
-            authParameters["DEVICE_KEY"] = deviceId
+        if case .metadata(let data) = deviceMetadata {
+            authParameters["DEVICE_KEY"] = data.deviceKey
         }
 
         return InitiateAuthInput(
@@ -126,12 +131,6 @@ struct InitiateAuthSRP: Action {
             callback(event)
         }
     }
-
-    // TODO: Implement this
-    private static func getDeviceId() -> String? {
-        return nil
-    }
-
 }
 
 extension InitiateAuthSRP: DefaultLogger { }

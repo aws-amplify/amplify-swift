@@ -84,7 +84,7 @@ struct MigrateLegacyCredentialStore: Action {
                 try amplifyCredentialStore.saveCredential(credentials)
             }
 
-            let event = CredentialStoreEvent(eventType: .loadCredentialStore)
+            let event = CredentialStoreEvent(eventType: .loadCredentialStore(.amplifyCredentials))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
         } catch let error as KeychainStoreError {

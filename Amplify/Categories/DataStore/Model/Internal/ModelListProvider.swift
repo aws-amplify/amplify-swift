@@ -23,9 +23,6 @@ public protocol ModelListMarker { }
 public protocol ModelListProvider {
     associatedtype Element: Model
 
-    /// Retrieve the array of `Element` from the data source.
-    func load() -> Result<[Element], CoreError>
-
     ///  Retrieve the array of `Element` from the data source asychronously.
     func load(completion: @escaping (Result<[Element], CoreError>) -> Void)
 
@@ -44,7 +41,6 @@ public protocol ModelListProvider {
 /// application making any change to these `public` types should be backward compatible, otherwise it will be a breaking
 /// change.
 public struct AnyModelListProvider<Element: Model>: ModelListProvider {
-    private let loadClosure: () -> Result<[Element], CoreError>
     private let loadWithCompletionClosure: (@escaping (Result<[Element], CoreError>) -> Void) -> Void
     private let hasNextPageClosure: () -> Bool
     private let getNextPageClosure: (@escaping (Result<List<Element>, CoreError>) -> Void) -> Void
@@ -52,15 +48,11 @@ public struct AnyModelListProvider<Element: Model>: ModelListProvider {
     public init<Provider: ModelListProvider>(
         provider: Provider
     ) where Provider.Element == Self.Element {
-        self.loadClosure = provider.load
         self.loadWithCompletionClosure = provider.load(completion:)
         self.hasNextPageClosure = provider.hasNextPage
         self.getNextPageClosure = provider.getNextPage(completion:)
     }
 
-    public func load() -> Result<[Element], CoreError> {
-        loadClosure()
-    }
 
     public func load(completion: @escaping (Result<[Element], CoreError>) -> Void) {
         loadWithCompletionClosure(completion)

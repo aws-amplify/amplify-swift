@@ -29,8 +29,8 @@ extension AuthorizationState {
 
             case .configured:
 
-                if let authenEvent = event.isAuthenticationEvent,
-                   case .signInRequested = authenEvent {
+                if let authNEvent = event.isAuthenticationEvent,
+                   case .signInRequested = authNEvent {
                     return .init(newState: .signingIn)
                 }
 
@@ -42,12 +42,12 @@ extension AuthorizationState {
                 return .from(oldState)
 
             case .sessionEstablished(let credentials):
-                if let authenEvent = event.isAuthenticationEvent {
-                   if case .signInRequested = authenEvent {
-                    return .from(.signingIn)
-                   } else if case .signOutRequested = authenEvent {
-                       return .from(.signingOut)
-                   }
+                if let authNEvent = event.isAuthenticationEvent {
+                    if case .signInRequested = authNEvent {
+                        return .from(.signingIn)
+                    } else if case .signOutRequested = authNEvent {
+                        return .from(.signingOut)
+                    }
                 }
 
                 if case .refreshSession = event.isAuthorizationEvent {
@@ -74,6 +74,8 @@ extension AuthorizationState {
                         let tokens = event.cognitoUserPoolTokens
                         return .init(newState: .fetchingAuthSessionWithUserPool(.notStarted, tokens),
                                      actions: [action])
+                    case .error(let error):
+                        return .init(newState: .error(AuthorizationError.service(error: error)))
                     case .cancelSignIn:
                         return .init(newState: .configured)
                     default: return .from(.signingIn)
@@ -83,8 +85,8 @@ extension AuthorizationState {
 
             case .signingOut:
                 if let signOutEvent = event.isSignOutEvent,
-                    case .signOutLocally = signOutEvent {
-                    return .init(newState: .waitingToStore(.noCredentials))
+                    case .signedOutSuccess = signOutEvent {
+                    return .init(newState: .sessionEstablished(.noCredentials))
                 }
                 return .from(oldState)
 
@@ -95,7 +97,9 @@ extension AuthorizationState {
                     let amplifyCredentials = AmplifyCredentials.identityPoolOnly(
                         identityID: identityID,
                         credentials: credentials)
-                    return .init(newState: .waitingToStore(amplifyCredentials))
+                    let action = PersistCredentials(credentials: amplifyCredentials)
+                    return .init(newState: .storingCredentials(amplifyCredentials),
+                                 actions: [action])
                 }
 
                 if case .receivedSessionError(let error) = event.isAuthorizationEvent {
@@ -117,15 +121,21 @@ extension AuthorizationState {
                         tokens: tokens,
                         identityID: identityID,
                         credentials: credentials)
-                    return .init(newState: .waitingToStore(amplifyCredentials))
+                    let action = PersistCredentials(credentials: amplifyCredentials)
+                    return .init(newState: .storingCredentials(amplifyCredentials),
+                                 actions: [action])
                 } else if case .receivedSessionError(_) = event.isAuthorizationEvent {
                     // TODO: Handle session errors correctly and pass them back to the user
                     let amplifyCredentials = AmplifyCredentials.userPoolOnly(tokens: tokens)
-                    return .init(newState: .waitingToStore(amplifyCredentials))
+                    let action = PersistCredentials(credentials: amplifyCredentials)
+                    return .init(newState: .storingCredentials(amplifyCredentials),
+                                 actions: [action])
                 } else if case .throwError(_) = event.isAuthorizationEvent {
                     // TODO: Handle session errors correctly and pass them back to the user
                     let amplifyCredentials = AmplifyCredentials.userPoolOnly(tokens: tokens)
-                    return .init(newState: .waitingToStore(amplifyCredentials))
+                    let action = PersistCredentials(credentials: amplifyCredentials)
+                    return .init(newState: .storingCredentials(amplifyCredentials),
+                                 actions: [action])
                 }
 
                 let resolver = FetchAuthSessionState.Resolver()
@@ -135,7 +145,9 @@ extension AuthorizationState {
 
             case .refreshingSession(let existingCredentials, let refreshState):
                 if case .refreshed(let amplifyCredentials) = event.isAuthorizationEvent {
-                    return .init(newState: .waitingToStore(amplifyCredentials))
+                    let action = PersistCredentials(credentials: amplifyCredentials)
+                    return .init(newState: .storingCredentials(amplifyCredentials),
+                                 actions: [action])
                 }
 
                 if case .receivedSessionError(let error) = event.isAuthorizationEvent {
@@ -151,19 +163,21 @@ extension AuthorizationState {
                     existingCredentials: existingCredentials,
                     resolution.newState), actions: resolution.actions)
 
-            case .waitingToStore:
-                if case .receivedCachedCredentials(let credentials) = event.isAuthEvent {
+            case .storingCredentials:
+                if case .sessionEstablished(let credentials) = event.isAuthorizationEvent {
                     return .init(newState: .sessionEstablished(credentials))
                 }
                 return .from(oldState)
 
             case .error(let error):
-                if let authenEvent = event.isAuthenticationEvent {
-                   if case .signInRequested = authenEvent {
-                    return .from(.signingIn)
-                   } else if case .signOutRequested = authenEvent {
-                       return .from(.signingOut)
-                   }
+                if let authNEvent = event.isAuthenticationEvent {
+                    if case .signInRequested = authNEvent {
+                        return .from(.signingIn)
+                    } else if case .signOutRequested = authNEvent {
+                        return .from(.signingOut)
+                    } else if case .cancelSignIn = authNEvent {
+                        return .from(.configured)
+                    }
                 }
                 if case .fetchUnAuthSession = event.isAuthorizationEvent {
                     let action = InitializeFetchUnAuthSession()
@@ -186,10 +200,6 @@ extension AuthorizationState {
             case .deletingUser:
                 if case .userSignedOutAndDeleted = event.isDeleteUserEvent {
                     return .init(newState: .configured)
-                }
-                if let signOutEvent = event.isSignOutEvent,
-                    case .signOutLocally = signOutEvent {
-                    return .init(newState: .waitingToStore(.noCredentials))
                 }
                 return .from(oldState)
             }
