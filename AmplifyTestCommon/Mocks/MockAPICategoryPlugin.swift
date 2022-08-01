@@ -296,6 +296,7 @@ class MockAPIAuthProviderFactory: APIAuthProviderFactory {
 class MockOIDCAuthProvider: AmplifyOIDCAuthProvider {
     var result: Result<AuthToken, Error>?
 
+    //TODO: Remove this after datastore dependencies are removed.
     func getLatestAuthToken() -> Result<AuthToken, Error> {
         if let result = result {
             return result
@@ -316,6 +317,7 @@ class MockOIDCAuthProvider: AmplifyOIDCAuthProvider {
 class MockFunctionAuthProvider: AmplifyFunctionAuthProvider {
     var result: Result<AuthToken, Error>?
 
+    //TODO: Remove this after datastore dependencies are removed.
     func getLatestAuthToken() -> Result<AuthToken, Error> {
         if let result = result {
             return result

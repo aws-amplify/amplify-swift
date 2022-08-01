@@ -11,7 +11,7 @@ let dependencies: [Package.Dependency] = [
     .package(
         name: "AppSyncRealTimeClient",
         url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git",
-        from: "2.0.0"
+        from: "2.1.1"
     ),
     .package(
         name: "AWSSwiftSDK",
