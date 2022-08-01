@@ -128,10 +128,6 @@ class AWSAPICategoryPluginConfigurationTests: XCTestCase {
         func getUserPoolAccessToken() async throws -> String {
             "token"
         }
-        
-        func getUserPoolAccessToken() async throws -> String {
-            "token"
-        }
     }
 
 }
