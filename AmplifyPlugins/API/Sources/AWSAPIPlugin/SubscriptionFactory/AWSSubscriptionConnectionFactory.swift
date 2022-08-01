@@ -72,7 +72,7 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
             authInterceptor = APIKeyAuthInterceptor(apiKeyConfiguration.apiKey)
         case .amazonCognitoUserPools:
             let provider = AWSOIDCAuthProvider(authService: authService)
-            authInterceptor = OIDCAuthInterceptor(provider)
+            authInterceptor = OIDCAuthInterceptorAsync(provider)
         case .awsIAM(let awsIAMConfiguration):
             authInterceptor = IAMAuthInterceptor(authService.getCredentialsProvider(),
                                                  region: awsIAMConfiguration.region)
@@ -83,7 +83,7 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
                     "When instantiating AWSAPIPlugin pass in an instance of APIAuthProvider", nil)
             }
             let wrappedProvider = OIDCAuthProviderWrapper(authTokenProvider: oidcAuthProvider)
-            authInterceptor = OIDCAuthInterceptor(wrappedProvider)
+            authInterceptor = OIDCAuthInterceptorAsync(wrappedProvider)
         case .function:
             guard let functionAuthProvider = apiAuthProviderFactory.functionAuthProvider() else {
                 throw APIError.invalidConfiguration(

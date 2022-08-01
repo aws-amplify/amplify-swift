@@ -9,7 +9,7 @@ import Foundation
 import AWSPluginsCore
 import AppSyncRealTimeClient
 
-class AWSOIDCAuthProvider: OIDCAuthProvider {
+class AWSOIDCAuthProvider: OIDCAuthProviderAsync {
 
     var authService: AWSAuthServiceBehavior
 
@@ -17,12 +17,7 @@ class AWSOIDCAuthProvider: OIDCAuthProvider {
         self.authService = authService
     }
 
-    func getLatestAuthToken() -> Result<String, Error> {
-        switch authService.getToken() {
-        case .success(let token):
-            return .success(token)
-        case .failure(let authError):
-            return .failure(authError)
-        }
+    func getLatestAuthToken() async throws -> String {
+        try await authService.getUserPoolAccessToken()
     }
 }

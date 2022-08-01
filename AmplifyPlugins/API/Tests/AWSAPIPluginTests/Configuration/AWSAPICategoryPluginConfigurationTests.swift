@@ -124,9 +124,6 @@ class AWSAPICategoryPluginConfigurationTests: XCTestCase {
     }
 
     struct MockTokenProvider: AuthTokenProvider {
-        func getToken() -> Result<String, AuthError> {
-            .success("token")
-        }
         
         func getUserPoolAccessToken() async throws -> String {
             "token"
