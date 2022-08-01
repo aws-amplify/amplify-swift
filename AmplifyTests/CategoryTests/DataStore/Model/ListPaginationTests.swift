@@ -9,6 +9,7 @@ import XCTest
 @testable import Amplify
 
 extension ListTests {
+    
     func testFetchSuccess() {
         let mockListProvider = MockListProvider<BasicModel>(elements: [BasicModel]()).eraseToAnyModelListProvider()
         let list = List(listProvider: mockListProvider)
@@ -74,27 +75,21 @@ extension ListTests {
             XCTFail("Should not be loaded")
             return
         }
-        XCTAssertTrue(list.hasNextPage())
+        let fetchCompleted = expectation(description: "Fetch completed")
+        list.fetch { result in
+            switch result {
+            case .success:
+                fetchCompleted.fulfill()
+            case .failure(let error):
+                XCTFail("Failed with error \(error)")
+            }
+        }
+        wait(for: [fetchCompleted], timeout: 1)
         guard case .loaded = list.loadedState else {
             XCTFail("Should be loaded")
             return
         }
         XCTAssertTrue(list.hasNextPage())
-    }
-
-    func testHasNextPageFailure() {
-        let mockListProvider = MockListProvider<BasicModel>(
-            error: CoreError.clientValidation("", "", nil)).eraseToAnyModelListProvider()
-        let list = List(listProvider: mockListProvider)
-        guard case .notLoaded = list.loadedState else {
-            XCTFail("Should not be loaded")
-            return
-        }
-        XCTAssertFalse(list.hasNextPage())
-        guard case .notLoaded = list.loadedState else {
-            XCTFail("Should not be loaded")
-            return
-        }
     }
 
     func testGetNextPageSuccess() {
@@ -105,6 +100,16 @@ extension ListTests {
             XCTFail("Should not be loaded")
             return
         }
+        let fetchCompleted = expectation(description: "Fetch completed")
+        list.fetch { result in
+            switch result {
+            case .success:
+                fetchCompleted.fulfill()
+            case .failure(let error):
+                XCTFail("Failed with error \(error)")
+            }
+        }
+        wait(for: [fetchCompleted], timeout: 1)
         let getNextPageComplete = expectation(description: "get next page completed")
         list.getNextPage { result in
             switch result {
@@ -133,26 +138,30 @@ extension ListTests {
 
     func testGetNextPageFailure() {
         let mockListProvider = MockListProvider<BasicModel>(
-            error: CoreError.clientValidation("", "", nil)).eraseToAnyModelListProvider()
+            errorOnNextPage: CoreError.clientValidation("", "", nil)).eraseToAnyModelListProvider()
         let list = List(listProvider: mockListProvider)
         guard case .notLoaded = list.loadedState else {
             XCTFail("Should not be loaded")
             return
         }
         let getNextPageComplete = expectation(description: "get next page completed")
-        list.getNextPage { result in
+        
+        list.fetch { result in
             switch result {
             case .success:
-                XCTFail("Should have failed")
-            case .failure:
-                getNextPageComplete.fulfill()
+                list.getNextPage { result in
+                    switch result {
+                    case .success:
+                        XCTFail("Should have failed")
+                    case .failure:
+                        getNextPageComplete.fulfill()
+                    }
+                }
+            case .failure(let coreError):
+                XCTFail("\(coreError)")
             }
         }
         wait(for: [getNextPageComplete], timeout: 1)
-        guard case .notLoaded = list.loadedState else {
-            XCTFail("Should not be loaded")
-            return
-        }
     }
 
 }

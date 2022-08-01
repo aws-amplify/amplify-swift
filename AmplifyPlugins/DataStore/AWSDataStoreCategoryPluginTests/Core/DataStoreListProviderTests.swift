@@ -55,22 +55,7 @@ class DataStoreListProviderTests: XCTestCase {
         }
     }
 
-    func testLoadedStateSynchronousLoadSuccess() {
-        let elements = [Post4(title: "title"), Post4(title: "title")]
-        let provider = DataStoreListProvider<Post4>(elements)
-        guard case .loaded = provider.loadedState else {
-            XCTFail("Should be loaded")
-            return
-        }
-        let results = provider.load()
-        guard case .success(let posts) = results else {
-            XCTFail("Should be .success")
-            return
-        }
-        XCTAssertEqual(posts.count, 2)
-    }
-
-    func testNotLoadedStateSynchronousLoadSuccess() {
+    func testNotLoadedStateLoadSuccess() {
         mockDataStorePlugin.responders[.queryModelsListener] =
             QueryModelsResponder<Comment4> { _, _, _, _ in
                 return .success([Comment4(content: "content"),
@@ -83,35 +68,24 @@ class DataStoreListProviderTests: XCTestCase {
             return
         }
 
-        let results = provider.load()
-        guard case .success(let comments) = results else {
-            XCTFail("Should be .success")
-            return
-        }
-        XCTAssertEqual(comments.count, 2)
-        guard case .loaded = provider.loadedState else {
-            XCTFail("Should be loaded")
-            return
-        }
-    }
-
-    func testNotLoadedStateSynchronousLoadAssert() throws {
-        mockDataStorePlugin.responders[.queryModelsListener] =
-            QueryModelsResponder<Comment4> { _, _, _, _ in
-                return .failure(DataStoreError.internalOperation("", "", nil))
+        let loadCompleted = expectation(description: "Load Completed")
+        provider.load { results in
+            guard case .success(let comments) = results else {
+                XCTFail("Should be .success")
+                return
             }
-
-        let provider = DataStoreListProvider<Comment4>(associatedId: "postId", associatedField: "post")
-        guard case .notLoaded = provider.loadedState else {
-            XCTFail("Should not be loaded")
-            return
+            XCTAssertEqual(comments.count, 2)
+            guard case .loaded = provider.loadedState else {
+                XCTFail("Should be loaded")
+                return
+            }
+            loadCompleted.fulfill()
         }
-        try XCTAssertThrowFatalError {
-            _ = provider.load()
-        }
+        wait(for: [loadCompleted], timeout: 1)
     }
 
-    func testLoadedStateLoadWithCompletionSuccess() {
+
+    func testLoadedStateLoadSuccess() {
         let elements = [Post4(title: "title"), Post4(title: "title")]
         let listProvider = DataStoreListProvider<Post4>(elements)
         let loadComplete = expectation(description: "Load completed")
@@ -131,7 +105,7 @@ class DataStoreListProviderTests: XCTestCase {
         wait(for: [loadComplete], timeout: 1)
     }
 
-    func testNotLoadedStateLoadWithCompletionFailure() {
+    func testNotLoadedStateLoadFailure() {
         mockDataStorePlugin.responders[.queryModelsListener] =
             QueryModelsResponder<Comment4> { _, _, _, _ in
                 return .failure(DataStoreError.internalOperation("", "", nil))
