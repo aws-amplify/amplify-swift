@@ -23,6 +23,13 @@ struct ConfigurationHelper {
             return nil
         }
         
+        let endpoint: String? = {
+            if case .string(let endpoint) = config.value(at: "endpoint") {
+                return endpoint
+            }
+            return nil
+        }()
+
         var authFlowType = AuthFlowType.unknown
         if case .boolean(let isMigrationEnabled) = cognitoUserPoolJSON.value(at: "MigrationEnabled"),
            isMigrationEnabled == true {
@@ -48,6 +55,7 @@ struct ConfigurationHelper {
         return UserPoolConfigurationData(poolId: poolId,
                                          clientId: appClientId,
                                          region: region,
+                                         endpoint: endpoint,
                                          clientSecret: clientSecret,
                                          authFlowType: authFlowType,
                                          hostedUIConfig: hostedUIConfig)

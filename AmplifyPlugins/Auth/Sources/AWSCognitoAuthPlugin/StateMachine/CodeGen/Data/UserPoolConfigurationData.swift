@@ -10,21 +10,26 @@ struct UserPoolConfigurationData: Equatable {
     let poolId: String
     let clientId: String
     let region: String
+    let endpoint: String?
     let clientSecret: String?
     let pinpointAppId: String?
     let hostedUIConfig: HostedUIConfigurationData?
     let authFlowType: AuthFlowType
 
-    init(poolId: String,
-                clientId: String,
-                region: String,
-                clientSecret: String? = nil,
-                pinpointAppId: String? = nil,
-                authFlowType: AuthFlowType = .unknown,
-                hostedUIConfig: HostedUIConfigurationData? = nil) {
+    init(
+        poolId: String,
+        clientId: String,
+        region: String,
+        endpoint: String?,
+        clientSecret: String? = nil,
+        pinpointAppId: String? = nil,
+        authFlowType: AuthFlowType = .unknown,
+        hostedUIConfig: HostedUIConfigurationData? = nil
+    ) {
         self.poolId = poolId
         self.clientId = clientId
         self.region = region
+        self.endpoint = endpoint
         self.clientSecret = clientSecret
         self.pinpointAppId = pinpointAppId
         self.hostedUIConfig = hostedUIConfig
@@ -47,9 +52,10 @@ extension UserPoolConfigurationData: CustomDebugDictionaryConvertible {
             "poolId": poolId.masked(interiorCount: 4, retainingCount: 4),
             "clientId": clientId.masked(interiorCount: 4, retainingCount: 4),
             "region": region.redacted(),
+            "endpoint": endpoint ?? "N/A",
             "clientSecret": clientSecret.masked(interiorCount: 4),
             "pinpointAppId": pinpointAppId.masked(interiorCount: 4, retainingCount: 4),
-            "hostedUI": hostedUIConfig?.debugDescription ?? "NA"
+            "hostedUI": hostedUIConfig?.debugDescription ?? "N/A"
         ]
     }
 }

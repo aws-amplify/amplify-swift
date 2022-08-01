@@ -12,6 +12,8 @@ import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
 
+import ClientRuntime
+
 extension AWSCognitoAuthPlugin {
 
     /// Configures AWSCognitoAuthPlugin with the specified configuration.
@@ -65,12 +67,24 @@ extension AWSCognitoAuthPlugin {
     }
 
     // MARK: - Configure Helpers
-
     private func makeUserPool() throws -> CognitoUserPoolBehavior {
         switch authConfiguration {
         case .userPools(let userPoolConfig), .userPoolsAndIdentityPools(let userPoolConfig, _):
-            let configuration = try CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration(
-                region: userPoolConfig.region, frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData())
+
+            let configuration: CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration
+            if let customEndpoint = userPoolConfig.endpoint {
+                let resolvedEndpoint = try createUserPoolEndpoint(from: customEndpoint)
+                let endpointResolver = AWSEndpointResolving(resolvedEndpoint)
+                configuration = try .init(
+                    region: userPoolConfig.region,
+                    endpointResolver: endpointResolver,
+                    frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData()
+                )
+            } else {
+                configuration = try CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration(
+                    region: userPoolConfig.region, frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData())
+            }
+
             return CognitoIdentityProviderClient(config: configuration)
 
         default:
@@ -190,6 +204,84 @@ extension AWSCognitoAuthPlugin {
         )
     }
 
+    /// If a custom endpoint is present, call this method to confirm proper formatting
+    /// and resolve the `userPoolConfiguration` to a `ClientRuntime.Endpoint`.
+    ///
+    /// With a `ClientRuntime.Endpoint`, you can create a `AWSEndpointResolving`,
+    /// to pass as the `endpointResolver` to
+    /// `CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration`.
+    ///
+    ///       if configuration.endpoint != nil {
+    ///           let endpoint = try createUserPoolEndpoint(from: configuration)
+    ///           let endpointResolver = AWSEndpointResolving(resolvedEndpoint)
+    ///           let identityProviderConfiguration = CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration(
+    ///             region: ...,
+    ///             endpointResolver: endpointResolver,
+    ///             frameworkMetadata: ...
+    ///           )
+    ///       }
+    /// - Parameter endpoint: The value from the `endpoint` key of the `amplifyconfiguration.json` file
+    /// - Returns: A `ClientRuntime.Endpoint` used to instantiate a `EndpointResolving`.
+    private func createUserPoolEndpoint(
+        from endpoint: String
+    ) throws -> ClientRuntime.Endpoint {
+        // Used as the `ErrorDescription` input in the various errors below
+        var errorDescription: String {
+            "Error configuring \(String(describing: self))"
+        }
+
+        // We want to enforce that the endpoint is excluded from the
+        // configuration so as not to give the impression that other
+        // schemes are supported. While we could check for, and allow,
+        // explicit `https` input as a convenience, that would provide
+        // two valid paths and be an unnecessary source of confusion.
+        // So we're going to fail if any scheme is included
+        // in the configuration.
+        let scheme = URLComponents(string: endpoint)?.scheme
+        guard scheme?.isEmpty == true else {
+            throw AuthError.configuration(
+                errorDescription,
+                """
+                Invalid scheme for value `endpoint`: \(endpoint).
+                AWSCognitoAuthPlugin only supports the https scheme.
+                > Remove the scheme in your `endpoint` value.
+                e.g.
+                "endpoint": "\(URL(string: endpoint)?.host ?? "foo.com")"
+                """
+            )
+        }
+
+        // Next let's prepend the https scheme and confirm that the url
+        // itself is valid. If not, we'll throw an error.
+        guard
+            let components = URLComponents(string: "https://\(endpoint)"),
+            components.url != nil,
+            let host = components.host
+        else {
+            throw AuthError.configuration(
+                errorDescription,
+                """
+                Invalid value for `endpoint`: \(endpoint)
+                Expected valid url, received: \(endpoint)
+                > Replace \(endpoint) with a valid URL.
+                """
+            )
+        }
+
+        // Finally, let's confirm that the endpoint doesn't contain a path.
+        guard components.path.isEmpty else {
+            throw AuthError.configuration(
+                errorDescription,
+                """
+                Invalid value for `endpoint`: \(endpoint).
+                Expected empty path, received path value: \(components.path) for endpoint: \(endpoint).
+                > Remove the path value from your endpoint.
+                """
+            )
+        }
+
+        return ClientRuntime.Endpoint(host: host)
+    }
 }
 
 extension CognitoIdentityProviderClient: CognitoUserPoolBehavior {}
