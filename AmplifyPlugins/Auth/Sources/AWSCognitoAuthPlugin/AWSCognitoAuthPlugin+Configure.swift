@@ -102,7 +102,7 @@ extension AWSCognitoAuthPlugin {
         return RandomStringGenerator()
     }
 
-    private func makeCognitoASF() -> CognitoUserPoolASFBehavior {
+    private func makeCognitoASF() -> AdvancedSecurityBehavior {
         fatalError()
     }
 

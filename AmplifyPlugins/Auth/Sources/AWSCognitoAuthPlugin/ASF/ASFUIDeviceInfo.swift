@@ -17,15 +17,24 @@ struct ASFUIDeviceInfo: ASFDeviceBehavior {
     }
 
     var model: String {
-       UIDevice.current.model
+        UIDevice.current.model
     }
 
     var name: String  {
+        return UIDevice.current.name
+
+    }
+
+    var type: String {
         var systemInfo = utsname()
         uname(&systemInfo)
         return String(bytes: Data(bytes: &systemInfo.machine,
                                   count: Int(_SYS_NAMELEN)),
                       encoding: .utf8) ?? ProcessInfo.processInfo.hostName
+    }
+
+    var platform: String {
+        return UIDevice.current.systemName
     }
 
     var version: String  {
@@ -44,11 +53,15 @@ struct ASFUIDeviceInfo: ASFDeviceBehavior {
         String(format: "%.0f", UIScreen.main.nativeBounds.size.width)
     }
 
+    var locale: String {
+        return Locale.preferredLanguages[0]
+    }
+    
     func deviceInfo() -> String {
         var build = "release"
 #if DEBUG
         build = "debug"
 #endif
-        return "Apple/\(model)/\(name)/-:\(version)/-/-:-/\(build)"
+        return "Apple/\(model)/\(type)/-:\(version)/-/-:-/\(build)"
     }
 }

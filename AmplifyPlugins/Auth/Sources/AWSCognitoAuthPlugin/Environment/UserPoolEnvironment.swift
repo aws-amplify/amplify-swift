@@ -11,7 +11,7 @@ protocol UserPoolEnvironment: Environment {
 
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
 
-    typealias CognitoUserPoolASFFactory = () throws -> CognitoUserPoolASFBehavior
+    typealias CognitoUserPoolASFFactory = () throws -> AdvancedSecurityBehavior
 
     var userPoolConfiguration: UserPoolConfigurationData { get }
     var cognitoUserPoolFactory: CognitoUserPoolFactory { get }

@@ -65,7 +65,7 @@ enum Defaults {
         return try CognitoIdentityProviderClient(region: regionString)
     }
 
-    static func makeDefaultASF() -> CognitoUserPoolASFBehavior {
+    static func makeDefaultASF() -> AdvancedSecurityBehavior {
         return MockASF()
     }
 
@@ -297,7 +297,7 @@ struct MockLegacyStore: KeychainStoreBehavior {
 
 }
 
-struct MockASF: CognitoUserPoolASFBehavior {
+struct MockASF: AdvancedSecurityBehavior {
     func userContextData(deviceInfo: ASFDeviceBehavior,
                          appInfo: ASFAppInfoBehavior,
                          configuration: UserPoolConfigurationData) -> String {
