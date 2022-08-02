@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(UIKit)
 import Foundation
 import UIKit
 
@@ -65,3 +66,4 @@ struct ASFUIDeviceInfo: ASFDeviceBehavior {
         return "Apple/\(model)/\(type)/-:\(version)/-/-:-/\(build)"
     }
 }
+#endif
