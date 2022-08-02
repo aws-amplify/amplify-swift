@@ -53,6 +53,15 @@ public protocol ModelIdentifierProtocol {
     var predicate: QueryPredicate { get }
 }
 
+extension Model.Identifier: ModelIdentifierProtocol {
+   public var fields: Fields {
+       [(name: ModelIdentifierFormat.Default.name, value: self)]
+   }
+   public var stringValue: String {
+       self
+   }
+}
+
 public extension ModelIdentifierProtocol {
     var stringValue: String {
         if fields.count == 1, let field = fields.first {
