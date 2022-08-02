@@ -96,6 +96,8 @@ public final class RetryableGraphQLOperation<Payload: Decodable>: Operation, Ret
     public var underlyingOperation: GraphQLOperation<Payload>?
     public var resultListener: OperationResultListener
     public var operationFactory: OperationFactory
+    
+    private let taskQueue = TaskQueue<Void>()
 
     public init(requestFactory: @escaping RequestFactory,
                 maxRetries: Int,
@@ -109,13 +111,17 @@ public final class RetryableGraphQLOperation<Payload: Decodable>: Operation, Ret
     }
     
     public override func main() {
-        Task {
-            start(request: await requestFactory())
+        taskQueue.async { [weak self] in
+            guard let self = self else { return }
+            self.start(request: await self.requestFactory())
         }
     }
 
     public override func cancel() {
-        underlyingOperation?.cancel()
+        taskQueue.async { [weak self] in
+            guard let self = self else { return }
+            self.underlyingOperation?.cancel()
+        }
     }
 
     public func shouldRetry(error: APIError?) -> Bool {
@@ -147,6 +153,8 @@ public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable>: Op
     public var requestFactory: RequestFactory
     public var resultListener: OperationResultListener
     public var operationFactory: OperationFactory
+    
+    private let taskQueue = TaskQueue<Void>()
 
     public init(requestFactory: @escaping RequestFactory,
                 maxRetries: Int,
@@ -159,13 +167,17 @@ public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable>: Op
         self.resultListener = resultListener
     }
     public override func main() {
-        Task {
-            start(request: await requestFactory())
+        taskQueue.async { [weak self] in
+            guard let self = self else { return }
+            self.start(request: await self.requestFactory())
         }
     }
 
     public override func cancel() {
-        underlyingOperation?.cancel()
+        taskQueue.async { [weak self] in
+            guard let self = self else { return }
+            self.underlyingOperation?.cancel()
+        }
     }
 
     public func shouldRetry(error: APIError?) -> Bool {
