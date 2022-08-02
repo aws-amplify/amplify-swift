@@ -50,7 +50,8 @@ class RefreshUserPoolTokensTests: XCTestCase {
 
         let environment = BasicUserPoolEnvironment(
             userPoolConfiguration: UserPoolConfigurationData.testData,
-                                                   cognitoUserPoolFactory: identityProviderFactory)
+            cognitoUserPoolFactory: identityProviderFactory,
+            cognitoUserPoolASFFactory: Defaults.makeDefaultASF)
 
         let action = RefreshUserPoolTokens(existingTokens: .testData)
 
@@ -88,7 +89,8 @@ class RefreshUserPoolTokensTests: XCTestCase {
 
         let environment = BasicUserPoolEnvironment(
             userPoolConfiguration: UserPoolConfigurationData.testData,
-                                                   cognitoUserPoolFactory: identityProviderFactory)
+            cognitoUserPoolFactory: identityProviderFactory,
+            cognitoUserPoolASFFactory: Defaults.makeDefaultASF)
 
         let action = RefreshUserPoolTokens(existingTokens: .testData)
 
@@ -120,7 +122,8 @@ class RefreshUserPoolTokensTests: XCTestCase {
 
         let environment = BasicUserPoolEnvironment(
             userPoolConfiguration: UserPoolConfigurationData.testData,
-                                                   cognitoUserPoolFactory: identityProviderFactory)
+            cognitoUserPoolFactory: identityProviderFactory,
+            cognitoUserPoolASFFactory: Defaults.makeDefaultASF)
 
         let action = RefreshUserPoolTokens(existingTokens: .testData)
 

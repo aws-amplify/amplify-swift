@@ -65,6 +65,10 @@ enum Defaults {
         return try CognitoIdentityProviderClient(region: regionString)
     }
 
+    static func makeDefaultASF() -> AdvancedSecurityBehavior {
+        return MockASF()
+    }
+
     static func makeIdentity() throws -> CognitoIdentityBehavior {
         let getId: MockIdentity.MockGetIdResponse = { _ in
             return .init(identityId: "mockIdentityId")
@@ -136,7 +140,8 @@ enum Defaults {
         )
         let srpSignInEnvironment = BasicSRPSignInEnvironment(srpAuthEnvironment: srpAuthEnvironment)
         let userPoolEnvironment = BasicUserPoolEnvironment(userPoolConfiguration: userPoolConfigData,
-                                                           cognitoUserPoolFactory: userPoolFactory)
+                                                           cognitoUserPoolFactory: userPoolFactory,
+                                                           cognitoUserPoolASFFactory: makeDefaultASF)
         let authenticationEnvironment = BasicAuthenticationEnvironment(srpSignInEnvironment: srpSignInEnvironment,
                                                                        userPoolEnvironment: userPoolEnvironment,
                                                                        hostedUIEnvironment: hostedUIEnvironment)
@@ -180,9 +185,9 @@ enum Defaults {
     static func authStateMachineWith(environment: AuthEnvironment = makeDefaultAuthEnvironment(),
                                      initialState: AuthState? = nil)
     -> AuthStateMachine {
-            return AuthStateMachine(resolver: AuthState.Resolver(),
-                                    environment: environment,
-                                    initialState: initialState)
+        return AuthStateMachine(resolver: AuthState.Resolver(),
+                                environment: environment,
+                                initialState: initialState)
     }
 
     static func makeAuthState(userId: String,
@@ -212,9 +217,9 @@ enum Defaults {
     }
 
     static func makeCognitoUserPoolTokens(idToken: String = "XX",
-                                             accessToken: String = "",
-                                             refreshToken: String = "XX",
-                                             expiresIn: Int = 300) -> AWSCognitoUserPoolTokens {
+                                          accessToken: String = "",
+                                          refreshToken: String = "XX",
+                                          expiresIn: Int = 300) -> AWSCognitoUserPoolTokens {
         AWSCognitoUserPoolTokens(idToken: idToken, accessToken: accessToken, refreshToken: refreshToken, expiresIn: expiresIn)
     }
 
@@ -289,5 +294,16 @@ struct MockLegacyStore: KeychainStoreBehavior {
     func _removeAll() throws {
 
     }
+
+}
+
+struct MockASF: AdvancedSecurityBehavior {
+    func userContextData(for username: String,
+                         deviceInfo: ASFDeviceBehavior,
+                         appInfo: ASFAppInfoBehavior,
+                         configuration: UserPoolConfigurationData) throws -> String {
+        return ""
+    }
+
 
 }

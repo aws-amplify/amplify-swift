@@ -48,8 +48,10 @@ class SignUpStateTests: XCTestCase {
             MockIdentityProvider(mockSignUpResponse: signUpCallback)
         }
 
-        let environment = BasicUserPoolEnvironment(userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
-                                                   cognitoUserPoolFactory: cognitoUserPoolFactory)
+        let environment = BasicUserPoolEnvironment(
+            userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
+            cognitoUserPoolFactory: cognitoUserPoolFactory,
+            cognitoUserPoolASFFactory: Defaults.makeDefaultASF)
         let signUpEventData = SignUpEventData(username: username,
                                               password: password,
                                               attributes: [:])

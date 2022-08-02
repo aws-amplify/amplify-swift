@@ -102,6 +102,10 @@ extension AWSCognitoAuthPlugin {
         return RandomStringGenerator()
     }
 
+    private func makeCognitoASF() -> AdvancedSecurityBehavior {
+        fatalError()
+    }
+
     private func makeCredentialStore() -> AmplifyAuthCredentialStoreBehavior {
         AWSCognitoAuthCredentialStore(authConfiguration: authConfiguration)
     }
@@ -166,7 +170,8 @@ extension AWSCognitoAuthPlugin {
                                                          cognitoUserPoolFactory: makeUserPool)
         let srpSignInEnvironment = BasicSRPSignInEnvironment(srpAuthEnvironment: srpAuthEnvironment)
         let userPoolEnvironment = BasicUserPoolEnvironment(userPoolConfiguration: userPoolConfigData,
-                                                           cognitoUserPoolFactory: makeUserPool)
+                                                           cognitoUserPoolFactory: makeUserPool,
+                                                           cognitoUserPoolASFFactory: makeCognitoASF)
         let hostedUIEnvironment = hostedUIEnvironment(userPoolConfigData)
         return BasicAuthenticationEnvironment(srpSignInEnvironment: srpSignInEnvironment,
                                               userPoolEnvironment: userPoolEnvironment,
