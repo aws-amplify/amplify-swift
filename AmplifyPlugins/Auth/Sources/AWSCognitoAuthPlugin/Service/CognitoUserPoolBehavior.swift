@@ -63,13 +63,13 @@ protocol CognitoUserPoolBehavior {
     /// Confirm Reset password
     /// Throws ConfirmForgotPasswordOutputError
     func confirmForgotPassword(input: ConfirmForgotPasswordInput) async throws -> ConfirmForgotPasswordOutputResponse
-    
+
     /// Lists the devices
     func listDevices(input: ListDevicesInput) async throws -> ListDevicesOutputResponse
-    
+
     /// Updates the device status
     func updateDeviceStatus(input: UpdateDeviceStatusInput) async throws -> UpdateDeviceStatusOutputResponse
-    
+
     /// Forgets the specified device.
     func forgetDevice(input: ForgetDeviceInput) async throws -> ForgetDeviceOutputResponse
 

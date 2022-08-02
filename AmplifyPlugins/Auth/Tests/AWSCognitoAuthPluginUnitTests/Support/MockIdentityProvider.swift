@@ -55,13 +55,13 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
 
     typealias MockConfirmForgotPasswordOutputResponse = (ConfirmForgotPasswordInput) async throws
     -> ConfirmForgotPasswordOutputResponse
-    
+
     typealias MockListDevicesOutputResponse = (ListDevicesInput) async throws
     -> ListDevicesOutputResponse
-    
+
     typealias MockRememberDeviceResponse = (UpdateDeviceStatusInput) async throws
     -> UpdateDeviceStatusOutputResponse
-    
+
     typealias MockForgetDeviceResponse = (ForgetDeviceInput) async throws
     -> ForgetDeviceOutputResponse
 
@@ -197,15 +197,15 @@ struct MockIdentityProvider: CognitoUserPoolBehavior {
     func confirmForgotPassword(input: ConfirmForgotPasswordInput) async throws -> ConfirmForgotPasswordOutputResponse {
         return try await mockConfirmForgotPasswordOutputResponse!(input)
     }
-    
+
     func listDevices(input: ListDevicesInput) async throws -> ListDevicesOutputResponse {
         return try await mockListDevicesOutputResponse!(input)
     }
-    
+
     func updateDeviceStatus(input: UpdateDeviceStatusInput) async throws -> UpdateDeviceStatusOutputResponse {
         return try await mockRememberDeviceResponse!(input)
     }
-    
+
     func forgetDevice(input: ForgetDeviceInput) async throws -> ForgetDeviceOutputResponse {
         return try await mockForgetDeviceResponse!(input)
     }

@@ -50,7 +50,7 @@ struct OAuthConfigurationData: Equatable {
     let scopes: [String]
     let signInRedirectURI: String
     let signOutRedirectURI: String
-    
+
     init(domain: String,
          scopes: [String],
          signInRedirectURI: String,

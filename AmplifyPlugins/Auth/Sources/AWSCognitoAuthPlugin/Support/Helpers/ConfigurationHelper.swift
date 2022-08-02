@@ -22,7 +22,7 @@ struct ConfigurationHelper {
         else {
             return nil
         }
-        
+
         var authFlowType = AuthFlowType.unknown
         if case .boolean(let isMigrationEnabled) = cognitoUserPoolJSON.value(at: "MigrationEnabled"),
            isMigrationEnabled == true {

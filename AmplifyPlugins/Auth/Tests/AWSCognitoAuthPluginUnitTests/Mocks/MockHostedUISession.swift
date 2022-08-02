@@ -25,6 +25,4 @@ class MockHostedUISession: HostedUISessionBehavior {
         callback(result)
     }
 
-
-
 }

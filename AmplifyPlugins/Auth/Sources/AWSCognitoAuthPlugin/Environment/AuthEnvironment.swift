@@ -29,7 +29,6 @@ extension AuthEnvironment: AuthenticationEnvironment {
         return environment.hostedUIEnvironment
     }
 
-
     var userPoolEnvironment: UserPoolEnvironment {
         guard let authNEnv = authenticationEnvironment else {
             fatalError("Could not find authentication environment")
