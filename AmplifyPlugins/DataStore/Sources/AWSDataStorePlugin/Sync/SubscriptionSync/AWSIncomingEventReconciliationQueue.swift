@@ -151,19 +151,29 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         }
     }
 
-    func cancel() {
-        cancel(completion: nil)
-    }
+//
 
-    private func cancel(completion: BasicClosure?) {
+    func cancel() {
         modelReconciliationQueueSinks.values.forEach { $0.cancel() }
         reconciliationQueues.values.forEach { $0.cancel()}
-        connectionStatusSerialQueue.async {
+        connectionStatusSerialQueue.sync {
             self.reconciliationQueues = [:]
             self.modelReconciliationQueueSinks = [:]
-            completion?()
         }
     }
+
+//    func cancel() {
+//        cancel(completion: nil)
+//    }
+//
+//    private func cancel(completion: BasicClosure?) {
+//        modelReconciliationQueueSinks.values.forEach { $0.cancel() }
+//        reconciliationQueues.values.forEach { $0.cancel()}
+//        connectionStatusSerialQueue.sync {
+//            self.reconciliationQueues = [:]
+//            self.modelReconciliationQueueSinks = [:]
+//        }
+//    }
 
     private func dispatchSyncQueriesReady() {
         let syncQueriesReadyPayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesReady)
@@ -189,7 +199,6 @@ extension AWSIncomingEventReconciliationQueue {
 extension AWSIncomingEventReconciliationQueue: Resettable {
 
     func reset() async {
-        let group = DispatchGroup()
         for queue in reconciliationQueues.values {
             guard let queue = queue as? Resettable else {
                 continue
@@ -205,13 +214,8 @@ extension AWSIncomingEventReconciliationQueue: Resettable {
         Amplify.log.verbose("Resetting reconcileAndSaveQueue: finished")
 
         Amplify.log.verbose("Cancelling AWSIncomingEventReconciliationQueue")
-        group.enter()
-        cancel {
-            Amplify.log.verbose("Cancelling AWSIncomingEventReconciliationQueue: finished")
-            group.leave()
-        }
-
-        group.wait()
+        cancel()
+        Amplify.log.verbose("Cancelling AWSIncomingEventReconciliationQueue: finished")
     }
 
 }
