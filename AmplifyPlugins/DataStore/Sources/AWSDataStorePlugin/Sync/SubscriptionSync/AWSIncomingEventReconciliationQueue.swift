@@ -47,7 +47,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
          auth: AuthCategoryBehavior? = nil,
          authModeStrategy: AuthModeStrategy,
          modelReconciliationQueueFactory: ModelReconciliationQueueFactory? = nil) async {
-        self.modelReconciliationQueueSinks = [:]
+        self.modelReconciliationQueueSinks.set([:])
         self.eventReconciliationQueueTopic = PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>()
         self.reconciliationQueues.set([:])
         self.reconciliationQueueConnectionStatus = [:]
