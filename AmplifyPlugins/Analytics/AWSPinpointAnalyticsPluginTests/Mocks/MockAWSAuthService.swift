@@ -35,11 +35,6 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
 
         return .success(identityId ?? "IdentityId")
     }
-
-    //TODO: Remove this after datastore dependencies are removed.
-    public func getToken() -> Result<String, AuthError> {
-        .success("")
-    }
     
     public func getIdentityID(completion: @escaping (Result<String, AuthError>) -> Void) {
         if let error = getIdentityIdError {

@@ -295,15 +295,6 @@ class MockAPIAuthProviderFactory: APIAuthProviderFactory {
 
 class MockOIDCAuthProvider: AmplifyOIDCAuthProvider {
     var result: Result<AuthToken, Error>?
-
-    //TODO: Remove this after datastore dependencies are removed.
-    func getLatestAuthToken() -> Result<AuthToken, Error> {
-        if let result = result {
-            return result
-        } else {
-            return .success("token")
-        }
-    }
     
     func getUserPoolAccessToken() async throws -> String {
         if case let .success(token) = result {
@@ -316,15 +307,6 @@ class MockOIDCAuthProvider: AmplifyOIDCAuthProvider {
 
 class MockFunctionAuthProvider: AmplifyFunctionAuthProvider {
     var result: Result<AuthToken, Error>?
-
-    //TODO: Remove this after datastore dependencies are removed.
-    func getLatestAuthToken() -> Result<AuthToken, Error> {
-        if let result = result {
-            return result
-        } else {
-            return .success("token")
-        }
-    }
     
     func getUserPoolAccessToken() async throws -> String {
         if case let .success(token) = result {

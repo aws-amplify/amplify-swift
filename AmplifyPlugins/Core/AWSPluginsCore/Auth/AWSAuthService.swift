@@ -107,40 +107,6 @@ public class AWSAuthService: AWSAuthServiceBehavior {
         }
     }
 
-    // TODO: Remove this after calls to it are removed from API and DataStore plugins
-    // MARK: List of Amplify internal usages of now deprecated AWSAuthServiceBehavior methods.
-    /**
-     `IncomingAsyncSubscriptionEventPublisher`
-        - File Path: `AmplifyPlugins/DataStore/AWSDataStoreCategoryPlugin/Sync/SubscriptionSync/IncomingAsyncSubscriptionEventPublisher.swift`
-        - Uses: `getToken()`
-     */
-    @available(*, deprecated, renamed: "getUserPoolAccessToken")
-    public func getToken() -> Result<String, AuthError> {
-        var result: Result<String, AuthError>?
-        let semaphore = DispatchSemaphore(value: 0)
-        _ = Amplify.Auth.fetchAuthSession { [weak self] event in
-
-            defer {
-                semaphore.signal()
-            }
-
-            switch event {
-            case .success(let session):
-                result = self?.getTokenString(from: session)
-            case .failure(let error):
-                result = .failure(error)
-
-            }
-        }
-        semaphore.wait()
-        guard let validResult = result else {
-            return .failure(AuthError.unknown("""
-               Did not receive a valid response from fetchAuthSession for get token.
-               """))
-        }
-        return validResult
-    }
-
     private func getTokenString(from authSession: AuthSession) -> Result<String, AuthError>? {
         if let result = (authSession as? AuthCognitoTokensProvider)?.getCognitoTokens() {
             switch result {
