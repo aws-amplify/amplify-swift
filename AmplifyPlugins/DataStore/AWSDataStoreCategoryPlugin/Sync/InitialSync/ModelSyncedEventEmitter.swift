@@ -27,7 +27,6 @@ enum IncomingModelSyncedEmitterEvent {
 final class ModelSyncedEventEmitter {
     private let queue = DispatchQueue(label: "com.amazonaws.ModelSyncedEventEmitterQueue",
                                       target: DispatchQueue.global())
-    private let dispatchedModelSyncedEventLock = NSLock()
 
     private var syncOrchestratorSink: AnyCancellable?
     private var reconciliationQueueSink: AnyCancellable?
@@ -115,9 +114,10 @@ final class ModelSyncedEventEmitter {
         case .enqueued:
             recordsReceived += 1
         case .finished:
-            initialSyncOperationFinished = true
-            if recordsReceived == 0 {
+            if recordsReceived == 0 || recordsReceived == reconciledReceived {
                 sendModelSyncedEvent()
+            } else {
+                initialSyncOperationFinished = true
             }
         }
     }
@@ -168,6 +168,7 @@ final class ModelSyncedEventEmitter {
     private func sendModelSyncedEvent() {
         modelSyncedEventBuilder.modelName = modelSchema.name
         let modelSyncedEvent = modelSyncedEventBuilder.build()
+        log.verbose("[Lifecycle event 3]: modelSyncedEvent model: \(modelSchema.name)")
         modelSyncedEventTopic.send(.modelSyncedEvent(modelSyncedEvent))
         dispatchedModelSyncedEvent = true
         syncOrchestratorSink?.cancel()

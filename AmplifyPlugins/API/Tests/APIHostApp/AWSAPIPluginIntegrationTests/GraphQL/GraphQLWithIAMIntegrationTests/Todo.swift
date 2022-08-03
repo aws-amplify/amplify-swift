@@ -8,14 +8,11 @@
 import Foundation
 import Amplify
 
-/// TODO: Replace with AmplifyTestCommon's DataStore's geneated model
-/// This model corresponds to the resources created for the Todo graphQL endpoint. As a developer, this is
-/// hand-written from the codegen that created the API.swift that depends on AppSync sdk.
 struct Todo: Decodable {
    let typename: String
    let id: String
    let name: String
-   let description: String
+   let description: String?
 
    enum CodingKeys: String, CodingKey {
        case typename = "__typename"
@@ -48,14 +45,16 @@ class CreateTodoMutation {
             }\n}
         """
 
-    static func variables(id: String? = nil, name: String, description: String? = nil) -> [String: Any] {
+    static func variables(id: String? = nil, name: String?, description: String? = nil) -> [String: Any] {
         var input: [String: Any] = [:]
 
         if let id = id {
             input.updateValue(id, forKey: "id")
         }
 
-        input.updateValue(name, forKey: "name")
+        if let name = name {
+            input.updateValue(name, forKey: "name")
+        }
 
         if let description = description {
             input.updateValue(description, forKey: "description")

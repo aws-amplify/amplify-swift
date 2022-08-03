@@ -74,6 +74,7 @@ final class SyncEventEmitter {
             syncEventEmitterTopic.send(.mutationEventDropped(modelName: modelName, error: error))
         case .modelSyncedEvent(let modelSyncedEvent):
             modelSyncedReceived += 1
+            log.verbose("[Lifecycle event 3]: modelSyncedReceived progress: \(modelSyncedReceived)/\(syncableModels)")
             syncEventEmitterTopic.send(.modelSyncedEvent(modelSyncedEvent))
             if shouldDispatchSyncQueriesReadyEvent {
                 syncEventEmitterTopic.send(.syncQueriesReadyEvent)

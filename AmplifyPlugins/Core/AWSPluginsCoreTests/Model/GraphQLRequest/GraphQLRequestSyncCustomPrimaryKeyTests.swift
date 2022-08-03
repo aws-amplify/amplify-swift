@@ -31,9 +31,9 @@ class GraphQLRequestSyncCustomPrimaryKeyTests: XCTestCase {
         let documentStringValue = """
         query GetCustomerOrder($id: ID!, $orderId: String!) {
           getCustomerOrder(id: $id, orderId: $orderId) {
+            orderId
             id
             email
-            orderId
             __typename
             _version
             _deleted
@@ -71,9 +71,9 @@ class GraphQLRequestSyncCustomPrimaryKeyTests: XCTestCase {
         let documentStringValue = """
         mutation CreateCustomerOrder($input: CreateCustomerOrderInput!) {
           createCustomerOrder(input: $input) {
+            orderId
             id
             email
-            orderId
             __typename
             _version
             _deleted
@@ -122,9 +122,9 @@ class GraphQLRequestSyncCustomPrimaryKeyTests: XCTestCase {
         let documentStringValue = """
         mutation UpdateCustomerOrder($input: UpdateCustomerOrderInput!) {
           updateCustomerOrder(input: $input) {
+            orderId
             id
             email
-            orderId
             __typename
             _version
             _deleted
@@ -178,9 +178,9 @@ class GraphQLRequestSyncCustomPrimaryKeyTests: XCTestCase {
         let documentStringValue = """
         mutation DeleteCustomerOrder($input: DeleteCustomerOrderInput!) {
           deleteCustomerOrder(input: $input) {
+            orderId
             id
             email
-            orderId
             __typename
             _version
             _deleted

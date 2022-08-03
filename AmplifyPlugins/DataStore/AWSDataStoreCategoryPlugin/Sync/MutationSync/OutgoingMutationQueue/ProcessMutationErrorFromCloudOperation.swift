@@ -304,7 +304,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
     private func saveDeleteMutation(remoteModel: MutationSync<AnyModel>) {
         log.verbose(#function)
         let modelName = remoteModel.model.modelName
-        let id = remoteModel.model.id
+        let id = remoteModel.model.identifier
 
         guard let modelType = ModelRegistry.modelType(from: modelName) else {
             let error = DataStoreError.invalidModelName("Invalid Model \(modelName)")
