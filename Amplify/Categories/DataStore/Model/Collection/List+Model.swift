@@ -65,7 +65,12 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
 
     public init(listProvider: AnyModelListProvider<ModelType>) {
         self.listProvider = listProvider
-        self.loadedState = .notLoaded
+        switch self.listProvider.getState() {
+        case .loaded(let elements):
+            self.loadedState = .loaded(elements)
+        case .notLoaded:
+            self.loadedState = .notLoaded
+        }
     }
 
     public convenience init(elements: [Element]) {

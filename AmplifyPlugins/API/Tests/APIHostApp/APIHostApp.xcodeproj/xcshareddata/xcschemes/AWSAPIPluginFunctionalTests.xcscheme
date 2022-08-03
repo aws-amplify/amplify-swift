@@ -37,6 +37,11 @@
                BlueprintName = "AWSAPIPluginFunctionalTests"
                ReferencedContainer = "container:APIHostApp.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "GraphQLConnectionScenario1Tests/testListProjectsByTeamID()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

@@ -198,7 +198,6 @@ extension GraphQLModelBasedTests {
             XCTFail("Could not get post")
             return
         }
-        XCTAssertTrue(retrievedPost.comments.isEmpty)
         let fetchCommentsFailed = expectation(description: "Fetch comments failed")
         retrievedPost.comments?.fetch { result in
             switch result {

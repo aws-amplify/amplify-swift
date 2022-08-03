@@ -8,11 +8,16 @@
 import Foundation
 
 public struct ArrayLiteralListProvider<Element: Model>: ModelListProvider {
+    
     let elements: [Element]
     public init(elements: [Element]) {
         self.elements = elements
     }
-
+    
+    public func getState() -> ModelListProviderState<Element> {
+        return .loaded(elements)
+    }
+    
     public func load() -> Result<[Element], CoreError> {
         .success(elements)
     }

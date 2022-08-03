@@ -65,14 +65,24 @@ extension GraphQLConnectionScenario3Tests {
             return
         }
         var resultsArray: [Comment3] = []
+        let fetchSuccess = expectation(description: "Fetch successful")
+        comments.fetch { results in
+            switch results {
+            case .success:
+                fetchSuccess.fulfill()
+            case .failure:
+                XCTFail("Failed to lazy load comments")
+            }
+        }
+        wait(for: [fetchSuccess], timeout: TestCommonConstants.networkTimeout)
         for comment in comments {
             resultsArray.append(comment)
         }
         while comments.hasNextPage() {
-            let semaphore = DispatchSemaphore(value: 0)
+            let getNextPageSuccess = expectation(description: "Get next page successfully")
             comments.getNextPage { result in
                 defer {
-                    semaphore.signal()
+                    getNextPageSuccess.fulfill()
                 }
                 switch result {
                 case .success(let listResult):
@@ -83,7 +93,7 @@ extension GraphQLConnectionScenario3Tests {
                 }
 
             }
-            semaphore.wait()
+            wait(for: [getNextPageSuccess], timeout: TestCommonConstants.networkTimeout)
         }
         XCTAssertEqual(resultsArray.count, 2)
     }
