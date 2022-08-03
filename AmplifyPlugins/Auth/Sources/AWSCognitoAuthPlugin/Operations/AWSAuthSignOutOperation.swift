@@ -66,7 +66,7 @@ public class AWSAuthSignOutOperation: AmplifySignOutOperation, AuthSignOutOperat
 
             switch authNState {
             case .signedOut:
-                
+
                 self.dispatchSuccess()
                 if let token = self.stateListenerToken {
                     self.authStateMachine.cancel(listenerToken: token)

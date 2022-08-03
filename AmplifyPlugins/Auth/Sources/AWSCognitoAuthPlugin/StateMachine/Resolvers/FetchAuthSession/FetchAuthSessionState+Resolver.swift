@@ -40,7 +40,7 @@ extension FetchAuthSessionState {
                 }
 
             case .fetchingIdentityID(let loginsmapProvider):
-                
+
                 switch eventType {
                 case .fetchedIdentityID(let identityID):
                     let action = FetchAuthAWSCredentials(

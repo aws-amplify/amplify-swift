@@ -437,7 +437,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
-
     /// Test a signIn with additional info in next step
     ///
     /// - Given: Given an auth plugin with mocked service. Mock additional info in new password

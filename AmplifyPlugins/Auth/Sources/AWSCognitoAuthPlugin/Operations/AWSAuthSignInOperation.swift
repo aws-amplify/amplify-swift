@@ -21,7 +21,7 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
 
     let authStateMachine: AuthStateMachine
 
-    var statemachineToken:AuthStateMachineToken? = nil
+    var statemachineToken: AuthStateMachineToken?
 
     init(_ request: AuthSignInRequest,
          authStateMachine: AuthStateMachine,

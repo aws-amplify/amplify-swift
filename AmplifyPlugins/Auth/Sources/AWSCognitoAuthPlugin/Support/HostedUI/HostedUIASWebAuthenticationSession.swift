@@ -11,7 +11,7 @@ import AuthenticationServices
 
 class HostedUIASWebAuthenticationSession: NSObject, HostedUISessionBehavior {
 
-    weak var webPresentation: AuthUIPresentationAnchor? = nil
+    weak var webPresentation: AuthUIPresentationAnchor?
 
     func showHostedUI(url: URL,
                       callbackScheme: String,

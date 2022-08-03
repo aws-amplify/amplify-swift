@@ -28,7 +28,7 @@ extension HostedUISignInState {
                 }
                 return .from(oldState)
 
-            case .showingUI(_):
+            case .showingUI:
                 if case .throwError(let error) = event.isHostedUIEvent {
                     let action = CancelSignIn()
                     return .init(newState: .error(error), actions: [action])

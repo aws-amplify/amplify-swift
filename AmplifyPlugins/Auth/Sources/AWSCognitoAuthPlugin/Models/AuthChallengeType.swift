@@ -20,7 +20,6 @@ enum AuthChallengeType {
 
 }
 
-
 extension CognitoIdentityProviderClientTypes.ChallengeNameType {
     var authChallengeType: AuthChallengeType {
         switch self {

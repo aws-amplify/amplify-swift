@@ -20,7 +20,7 @@ struct UserPoolSignInHelper {
         } else if case .signingInWithSRPCustom(let srpState, _) = signInState,
                   case .error(let signInError) = srpState {
             return validateError(signInError: signInError)
-        }  else if case .signingInViaMigrateAuth(let migratedAuthState, _) = signInState,
+        } else if case .signingInViaMigrateAuth(let migratedAuthState, _) = signInState,
                    case .error(let signInError) = migratedAuthState {
              return validateError(signInError: signInError)
          } else if case .signingInWithCustom(let customAuthState, _) = signInState,
@@ -116,7 +116,7 @@ struct UserPoolSignInHelper {
                     username: username,
                     session: response.session,
                     parameters: parameters)
-                
+
                 switch challengeName {
                 case .smsMfa, .customChallenge, .newPasswordRequired:
                     return SignInEvent(eventType: .receivedChallenge(respondToAuthChallenge))

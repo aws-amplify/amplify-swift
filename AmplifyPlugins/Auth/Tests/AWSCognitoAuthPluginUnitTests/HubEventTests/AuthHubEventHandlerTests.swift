@@ -16,7 +16,7 @@ class AuthHubEventHandlerTests: XCTestCase {
 
     let networkTimeout = TimeInterval(10)
     var plugin: AWSCognitoAuthPlugin!
-    
+
     /// Test whether HubEvent emits a signedIn event for mocked signIn operation
     ///
     /// - Given: A listener to hub events
@@ -28,11 +28,11 @@ class AuthHubEventHandlerTests: XCTestCase {
     func testSignedInHubEvent() {
 
         configurePluginForSignInEvent()
-        
+
         let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
                                                  metadata: ["somekey": "somevalue"])
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
-        
+
         let hubEventExpectation = expectation(description: "Should receive the hub event")
         _ = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {
@@ -42,13 +42,13 @@ class AuthHubEventHandlerTests: XCTestCase {
                 break
             }
         }
-        
+
         _ = plugin.signIn(username: "username", password: "password", options: options) { result in
             if case .failure(let error) = result {
                 XCTFail("Received failure with error \(error)")
             }
         }
-        
+
         wait(for: [hubEventExpectation], timeout: networkTimeout)
     }
 
@@ -63,7 +63,7 @@ class AuthHubEventHandlerTests: XCTestCase {
     func testSignedOutHubEvent() {
 
         configurePluginForSignOutEvent()
-        
+
         let hubEventExpectation = expectation(description: "Should receive the hub event")
         _ = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {
@@ -73,16 +73,16 @@ class AuthHubEventHandlerTests: XCTestCase {
                 break
             }
         }
-        
+
         _ = plugin.signOut(options: nil) { result in
             if case .failure(let error) = result {
                 XCTFail("Received failure with error \(error)")
             }
         }
-        
+
         wait(for: [hubEventExpectation], timeout: networkTimeout)
     }
-    
+
     /// Test whether HubEvent emits a confirmSignedIn event for mocked signIn operation
     ///
     /// - Given: A listener to hub events
@@ -94,7 +94,7 @@ class AuthHubEventHandlerTests: XCTestCase {
     func testConfirmSignedInHubEvent() {
 
         configurePluginForConfirmSignInEvent()
-        
+
         let hubEventExpectation = expectation(description: "Should receive the hub event")
         _ = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {
@@ -104,16 +104,16 @@ class AuthHubEventHandlerTests: XCTestCase {
                 break
             }
         }
-        
+
         _ = plugin.confirmSignIn(challengeResponse: "code") { result in
             if case .failure(let error) = result {
                 XCTFail("Received failure with error \(error)")
             }
         }
-        
+
         wait(for: [hubEventExpectation], timeout: networkTimeout)
     }
-    
+
     /// Test whether HubEvent emits a deletedUser event for mocked delete user operation
     ///
     /// - Given: A listener to hub events
@@ -125,7 +125,7 @@ class AuthHubEventHandlerTests: XCTestCase {
     func testUserDeletedHubEvent() {
 
         configurePluginForDeleteUserEvent()
-        
+
         let hubEventExpectation = expectation(description: "Should receive the hub event")
         _ = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {
@@ -135,16 +135,16 @@ class AuthHubEventHandlerTests: XCTestCase {
                 break
             }
         }
-        
+
         _ = plugin.deleteUser { result in
             if case .failure(let error) = result {
                 XCTFail("Received failure with error \(error)")
             }
         }
-        
+
         wait(for: [hubEventExpectation], timeout: networkTimeout)
     }
-    
+
     /// Test whether HubEvent emits a sessionExpired event for mocked fetchSession operation with expired tokens
     ///
     /// - Given: A listener to hub events
@@ -156,7 +156,7 @@ class AuthHubEventHandlerTests: XCTestCase {
     func testSessionExpiredHubEvent() {
 
         configurePluginForSessionExpiredEvent()
-        
+
         let hubEventExpectation = expectation(description: "Should receive the hub event")
         _ = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {
@@ -166,13 +166,13 @@ class AuthHubEventHandlerTests: XCTestCase {
                 break
             }
         }
-        
+
         _ = plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options()) { result in
             if case .failure(let error) = result {
                 XCTFail("Received failure with error \(error)")
             }
         }
-        
+
         wait(for: [hubEventExpectation], timeout: networkTimeout)
     }
 
@@ -241,7 +241,6 @@ class AuthHubEventHandlerTests: XCTestCase {
         wait(for: [hubEventExpectation], timeout: 10)
     }
 
-    
     private func configurePluginForSignInEvent() {
         let mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
@@ -262,25 +261,25 @@ class AuthHubEventHandlerTests: XCTestCase {
                 challengeParameters: [:],
                 session: "session")
         })
-        
+
         let initialState = AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured)
-        
+
         configurePlugin(initialState: initialState, userPoolFactory: mockIdentityProvider)
     }
-    
+
     private func configurePluginForConfirmSignInEvent() {
         let initialState = AuthState.configured(
             AuthenticationState.signingIn(.resolvingChallenge(.waitingForAnswer(.testData), .smsMfa)),
             AuthorizationState.sessionEstablished(.testData))
-        
+
         let mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 return .testData()
             })
-        
+
         configurePlugin(initialState: initialState, userPoolFactory: mockIdentityProvider)
     }
-    
+
     private func configurePluginForDeleteUserEvent() {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(
@@ -290,7 +289,7 @@ class AuthHubEventHandlerTests: XCTestCase {
                              signInMethod: .apiBased(.userSRP),
                              cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData)),
             AuthorizationState.sessionEstablished(AmplifyCredentials.testData))
-        
+
         let mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
                 try RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
@@ -301,10 +300,10 @@ class AuthHubEventHandlerTests: XCTestCase {
                 try DeleteUserOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
             }
         )
-        
+
         configurePlugin(initialState: initialState, userPoolFactory: mockIdentityProvider)
     }
-    
+
     private func configurePluginForSignOutEvent() {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(
@@ -314,7 +313,7 @@ class AuthHubEventHandlerTests: XCTestCase {
                              signInMethod: .apiBased(.userSRP),
                              cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData)),
             AuthorizationState.sessionEstablished(AmplifyCredentials.testData))
-        
+
         let mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
                 try RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
@@ -323,22 +322,22 @@ class AuthHubEventHandlerTests: XCTestCase {
                 try GlobalSignOutOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
             }
         )
-        
+
         configurePlugin(initialState: initialState, userPoolFactory: mockIdentityProvider)
     }
-    
+
     private func configurePluginForSessionExpiredEvent() {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
                 AmplifyCredentials.testDataWithExpiredTokens))
-        
+
         let mockIdentityProvider = MockIdentityProvider(
             mockInitiateAuthResponse: { _ in
                 throw try InitiateAuthOutputError.notAuthorizedException(
                     NotAuthorizedException.init(httpResponse: .init(body: .empty, statusCode: .ok)))
             })
-        
+
         configurePlugin(initialState: initialState, userPoolFactory: mockIdentityProvider)
     }
 
@@ -354,7 +353,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         let mockTokenResult = ["id_token": AWSCognitoUserPoolTokens.mockData.idToken,
                                "access_token": AWSCognitoUserPoolTokens.mockData.accessToken,
                                "refresh_token": AWSCognitoUserPoolTokens.mockData.refreshToken,
-                               "expires_in": 10] as [String : Any]
+                               "expires_in": 10] as [String: Any]
         let mockJson = try! JSONSerialization.data(withJSONObject: mockTokenResult)
         let mockState = "someState"
         let mockProof = "someProof"
@@ -363,14 +362,13 @@ class AuthHubEventHandlerTests: XCTestCase {
             scopes: ["name"],
             signInRedirectURI: "myapp://",
             signOutRedirectURI: "myapp://"))
-        let mockHostedUIResult:Result<[URLQueryItem], HostedUIError> = .success([
+        let mockHostedUIResult: Result<[URLQueryItem], HostedUIError> = .success([
             .init(name: "state", value: mockState),
             .init(name: "code", value: mockProof)
         ])
-        MockURLProtocol.requestHandler = { request in
+        MockURLProtocol.requestHandler = { _ in
             return (HTTPURLResponse(), mockJson)
         }
-
 
         func sessionFactory() -> HostedUISessionBehavior {
             MockHostedUISession(result: mockHostedUIResult)
@@ -388,7 +386,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         let getId: MockIdentity.MockGetIdResponse = { _ in
             return .init(identityId: "mockIdentityId")
         }
-        
+
         let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
             let credentials = CognitoIdentityClientTypes.Credentials(accessKeyId: "accessKey",
                                                                      expiration: Date(),
@@ -396,24 +394,24 @@ class AuthHubEventHandlerTests: XCTestCase {
                                                                      sessionToken: "session")
             return .init(credentials: credentials, identityId: "responseIdentityID")
         }
-        
+
         let mockIdentity = MockIdentity(
             mockGetIdResponse: getId,
             mockGetCredentialsResponse: getCredentials)
-        
+
         let environment = Defaults.makeDefaultAuthEnvironment(
             identityPoolFactory: { mockIdentity },
             userPoolFactory: { userPoolFactory },
             hostedUIEnvironment: hostedUIEnv)
-        
+
         let statemachine = Defaults.makeDefaultAuthStateMachine(
             initialState: initialState,
             identityPoolFactory: { mockIdentity },
             userPoolFactory: { userPoolFactory },
             hostedUIEnvironment: hostedUIEnv)
-        
+
         let authHandler = AuthHubEventHandler()
-        
+
         plugin?.configure(
             authConfiguration: Defaults.makeDefaultAuthConfigData(withHostedUI: hostedUIconfig),
             authEnvironment: environment,
@@ -421,10 +419,10 @@ class AuthHubEventHandlerTests: XCTestCase {
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
             hubEventHandler: authHandler)
     }
-    
+
     override func tearDown() async throws {
         plugin = nil
         await Amplify.reset()
     }
-    
+
 }

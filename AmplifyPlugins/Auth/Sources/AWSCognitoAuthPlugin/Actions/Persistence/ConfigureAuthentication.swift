@@ -30,8 +30,7 @@ struct ConfigureAuthentication: Action {
                     signInMethod: .apiBased(.userSRP),
                     cognitoUserPoolTokens: tokens)
                 authenticationEvent = AuthenticationEvent(eventType: .initializedSignedIn(signedInData))
-            }
-            catch {
+            } catch {
                 authenticationEvent = AuthenticationEvent(
                     eventType: .error(AuthenticationError.service(
                         message: "Token parsing error: \(error)")))
