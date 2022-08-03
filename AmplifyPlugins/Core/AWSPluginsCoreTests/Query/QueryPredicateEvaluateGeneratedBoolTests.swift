@@ -11,6 +11,10 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 class QueryPredicateEvaluateGeneratedBoolTests: XCTestCase {
+    override func setUp() {
+        ModelRegistry.register(modelType: QPredGen.self)
+    }
+
     func testBooltruenotEqualBooltrue() throws {
         let predicate = QPredGen.keys.myBool.ne(true)
         var instance = QPredGen(name: "test")

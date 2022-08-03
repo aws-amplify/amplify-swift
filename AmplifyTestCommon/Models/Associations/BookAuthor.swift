@@ -8,9 +8,9 @@
 import Amplify
 import Foundation
 
-public class BookAuthor: Model {
+public struct BookAuthor: Model {
 
-    public let id: Model.Identifier
+    public let id: String
 
     // belongsTo
     public var author: Author
