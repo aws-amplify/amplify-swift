@@ -71,8 +71,6 @@
 		21698AC42889996A004BD994 /* GraphQLConnectionScenario5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AB52889996A004BD994 /* GraphQLConnectionScenario5Tests.swift */; };
 		21698AC52889996A004BD994 /* GraphQLConnectionScenario2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AB62889996A004BD994 /* GraphQLConnectionScenario2Tests.swift */; };
 		21698BA628899B3F004BD994 /* GraphQLWithLambdaAuthIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BA328899B3F004BD994 /* GraphQLWithLambdaAuthIntegrationTests.swift */; };
-		21698BB328899B61004BD994 /* GraphQLWithIAMIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BAF28899B61004BD994 /* GraphQLWithIAMIntegrationTests.swift */; };
-		21698BB628899B61004BD994 /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BB228899B61004BD994 /* Todo.swift */; };
 		21698BC028899B6D004BD994 /* GraphQLWithUserPoolIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BBD28899B6D004BD994 /* GraphQLWithUserPoolIntegrationTests.swift */; };
 		21698BCA28899BC8004BD994 /* RESTWithIAMIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BC728899BC8004BD994 /* RESTWithIAMIntegrationTests.swift */; };
 		21698BD128899BCF004BD994 /* RESTWithUserPoolIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BCE28899BCF004BD994 /* RESTWithUserPoolIntegrationTests.swift */; };
@@ -86,6 +84,8 @@
 		21698CC72889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CC22889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift */; };
 		21698CC92889D75F004BD994 /* SocialNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CC42889D75F004BD994 /* SocialNote.swift */; };
 		21698CCB2889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CC62889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift */; };
+		21B6A183289B03C70046723B /* GraphQLWithIAMIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BAF28899B61004BD994 /* GraphQLWithIAMIntegrationTests.swift */; };
+		21B6A184289B03C70046723B /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BB228899B61004BD994 /* Todo.swift */; };
 		21E73E6F28898D7900D7DB7E /* APIHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E73E6E28898D7900D7DB7E /* APIHostAppApp.swift */; };
 		21E73E7128898D7900D7DB7E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E73E7028898D7900D7DB7E /* ContentView.swift */; };
 		21E73E7328898D7A00D7DB7E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21E73E7228898D7A00D7DB7E /* Assets.xcassets */; };
@@ -108,6 +108,13 @@
 			remoteInfo = APIHostApp;
 		};
 		21698A9928899818004BD994 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 21E73E6328898D7800D7DB7E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 21E73E6A28898D7800D7DB7E;
+			remoteInfo = APIHostApp;
+		};
+		21B6A17D289B02AA0046723B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 21E73E6328898D7800D7DB7E /* Project object */;
 			proxyType = 1;
@@ -216,6 +223,7 @@
 		21698CC42889D75F004BD994 /* SocialNote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocialNote.swift; sourceTree = "<group>"; };
 		21698CC52889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Support.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GraphQLAuthDirectiveIntegrationTests+Support.swift"; sourceTree = "<group>"; };
 		21698CC62889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLAuthDirectiveIntegrationTests.swift; sourceTree = "<group>"; };
+		21B6A179289B02AA0046723B /* AWSAPIPluginGraphQLIAMTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginGraphQLIAMTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		21D335B7289867FC00657B12 /* amplify-ios-staging */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios-staging"; path = ../../../..; sourceTree = "<group>"; };
 		21E73E6B28898D7900D7DB7E /* APIHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = APIHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		21E73E6E28898D7900D7DB7E /* APIHostAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIHostAppApp.swift; sourceTree = "<group>"; };
@@ -240,6 +248,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		21698A9228899818004BD994 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		21B6A176289B02AA0046723B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -369,19 +384,8 @@
 			children = (
 				21698B9828899B02004BD994 /* GraphQLWithUserPoolIntegrationTests */,
 				21698B9728899AF7004BD994 /* GraphQLWithLambdaAuthIntegrationTests */,
-				21698B9628899AEE004BD994 /* GraphQLWithIAMIntegrationTests */,
 			);
 			path = GraphQL;
-			sourceTree = "<group>";
-		};
-		21698B9628899AEE004BD994 /* GraphQLWithIAMIntegrationTests */ = {
-			isa = PBXGroup;
-			children = (
-				21698BAF28899B61004BD994 /* GraphQLWithIAMIntegrationTests.swift */,
-				21698BB028899B61004BD994 /* README.md */,
-				21698BB228899B61004BD994 /* Todo.swift */,
-			);
-			path = GraphQLWithIAMIntegrationTests;
 			sourceTree = "<group>";
 		};
 		21698B9728899AF7004BD994 /* GraphQLWithLambdaAuthIntegrationTests */ = {
@@ -449,6 +453,16 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		21B6A17A289B02AA0046723B /* AWSAPIPluginGraphQLIAMTests */ = {
+			isa = PBXGroup;
+			children = (
+				21698BAF28899B61004BD994 /* GraphQLWithIAMIntegrationTests.swift */,
+				21698BB028899B61004BD994 /* README.md */,
+				21698BB228899B61004BD994 /* Todo.swift */,
+			);
+			path = AWSAPIPluginGraphQLIAMTests;
+			sourceTree = "<group>";
+		};
 		21D335B6289867FC00657B12 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
@@ -465,6 +479,7 @@
 				21698A7C28899805004BD994 /* AWSAPIPluginFunctionalTests */,
 				21698A9628899818004BD994 /* AWSAPIPluginIntegrationTests */,
 				21698A892889980F004BD994 /* AWSAPIPluginGraphQLAPIKeyIntegrationTests */,
+				21B6A17A289B02AA0046723B /* AWSAPIPluginGraphQLIAMTests */,
 				21E73E6C28898D7900D7DB7E /* Products */,
 				21698BD728899EBB004BD994 /* Frameworks */,
 			);
@@ -477,6 +492,7 @@
 				21698A7B28899804004BD994 /* AWSAPIPluginFunctionalTests.xctest */,
 				21698A882889980F004BD994 /* AWSAPIPluginGraphQLAPIKeyIntegrationTests.xctest */,
 				21698A9528899818004BD994 /* AWSAPIPluginIntegrationTests.xctest */,
+				21B6A179289B02AA0046723B /* AWSAPIPluginGraphQLIAMTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -560,6 +576,25 @@
 			productReference = 21698A9528899818004BD994 /* AWSAPIPluginIntegrationTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		21B6A178289B02AA0046723B /* AWSAPIPluginGraphQLIAMTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 21B6A181289B02AA0046723B /* Build configuration list for PBXNativeTarget "AWSAPIPluginGraphQLIAMTests" */;
+			buildPhases = (
+				21B6A175289B02AA0046723B /* Sources */,
+				21B6A176289B02AA0046723B /* Frameworks */,
+				21B6A177289B02AA0046723B /* Resources */,
+				21B6A182289B02EC0046723B /* Copy Configuration folder */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				21B6A17E289B02AA0046723B /* PBXTargetDependency */,
+			);
+			name = AWSAPIPluginGraphQLIAMTests;
+			productName = AWSAPIPluginGraphQLIAMTests;
+			productReference = 21B6A179289B02AA0046723B /* AWSAPIPluginGraphQLIAMTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		21E73E6A28898D7800D7DB7E /* APIHostApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 21E73E7928898D7A00D7DB7E /* Build configuration list for PBXNativeTarget "APIHostApp" */;
@@ -591,7 +626,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1340;
+				LastSwiftUpdateCheck = 1400;
 				LastUpgradeCheck = 1340;
 				TargetAttributes = {
 					21698A7A28899804004BD994 = {
@@ -607,6 +642,10 @@
 					21698A9428899818004BD994 = {
 						CreatedOnToolsVersion = 13.4.1;
 						LastSwiftMigration = 1340;
+						TestTargetID = 21E73E6A28898D7800D7DB7E;
+					};
+					21B6A178289B02AA0046723B = {
+						CreatedOnToolsVersion = 14.0;
 						TestTargetID = 21E73E6A28898D7800D7DB7E;
 					};
 					21E73E6A28898D7800D7DB7E = {
@@ -634,6 +673,7 @@
 				21698A7A28899804004BD994 /* AWSAPIPluginFunctionalTests */,
 				21698A872889980F004BD994 /* AWSAPIPluginGraphQLAPIKeyIntegrationTests */,
 				21698A9428899818004BD994 /* AWSAPIPluginIntegrationTests */,
+				21B6A178289B02AA0046723B /* AWSAPIPluginGraphQLIAMTests */,
 			);
 		};
 /* End PBXProject section */
@@ -660,6 +700,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		21B6A177289B02AA0046723B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		21E73E6928898D7800D7DB7E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -673,6 +720,24 @@
 
 /* Begin PBXShellScriptBuildPhase section */
 		21698CC12889D5FE004BD994 /* Copy Configuration folder */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration folder";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
+		21B6A182289B02EC0046723B /* Copy Configuration folder */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -775,8 +840,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				21698BB328899B61004BD994 /* GraphQLWithIAMIntegrationTests.swift in Sources */,
-				21698BB628899B61004BD994 /* Todo.swift in Sources */,
 				21698CCB2889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift in Sources */,
 				21698CC72889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift in Sources */,
 				21698BC028899B6D004BD994 /* GraphQLWithUserPoolIntegrationTests.swift in Sources */,
@@ -784,6 +847,15 @@
 				21698BA628899B3F004BD994 /* GraphQLWithLambdaAuthIntegrationTests.swift in Sources */,
 				21698BCA28899BC8004BD994 /* RESTWithIAMIntegrationTests.swift in Sources */,
 				21698BD128899BCF004BD994 /* RESTWithUserPoolIntegrationTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		21B6A175289B02AA0046723B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				21B6A183289B03C70046723B /* GraphQLWithIAMIntegrationTests.swift in Sources */,
+				21B6A184289B03C70046723B /* Todo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -815,6 +887,11 @@
 			isa = PBXTargetDependency;
 			target = 21E73E6A28898D7800D7DB7E /* APIHostApp */;
 			targetProxy = 21698A9928899818004BD994 /* PBXContainerItemProxy */;
+		};
+		21B6A17E289B02AA0046723B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 21E73E6A28898D7800D7DB7E /* APIHostApp */;
+			targetProxy = 21B6A17D289B02AA0046723B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -957,6 +1034,44 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
+			};
+			name = Release;
+		};
+		21B6A17F289B02AA0046723B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.api.AWSAPIPluginGraphQLIAMTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/APIHostApp";
+			};
+			name = Debug;
+		};
+		21B6A180289B02AA0046723B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.api.AWSAPIPluginGraphQLIAMTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/APIHostApp";
 			};
 			name = Release;
 		};
@@ -1156,6 +1271,15 @@
 			buildConfigurations = (
 				21698A9C28899818004BD994 /* Debug */,
 				21698A9D28899818004BD994 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		21B6A181289B02AA0046723B /* Build configuration list for PBXNativeTarget "AWSAPIPluginGraphQLIAMTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				21B6A17F289B02AA0046723B /* Debug */,
+				21B6A180289B02AA0046723B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
