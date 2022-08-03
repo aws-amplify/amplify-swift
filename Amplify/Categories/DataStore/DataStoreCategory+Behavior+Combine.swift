@@ -29,6 +29,7 @@ public extension DataStoreBaseBehavior {
     ///   - modelType: The type of the model to delete
     ///   - id: The ID of the model to delete
     /// - Returns: A DataStorePublisher with the results of the operation
+    @available(*, deprecated, message: "Use delete(:withIdentifier:where:)")
     func delete<M: Model>(
         _ modelType: M.Type,
         withId id: String,
@@ -36,6 +37,40 @@ public extension DataStoreBaseBehavior {
     ) -> DataStorePublisher<Void> {
         Future { promise in
             self.delete(modelType, withId: id, where: predicate) { promise($0) }
+        }.eraseToAnyPublisher()
+    }
+
+    /// Deletes the model with the specified identifier from the DataStore. If sync is enabled, this will delete the
+    /// model from the remote store as well.
+    ///
+    /// - Parameters:
+    ///   - modelType: The type of the model to delete
+    ///   - identifier: The identifier of the model to delete
+    /// - Returns: A DataStorePublisher with the results of the operation
+    func delete<M: Model>(
+        _ modelType: M.Type,
+        withIdentifier identifier: String,
+        where predicate: QueryPredicate? = nil
+    )  -> DataStorePublisher<Void> where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default {
+        Future { promise in
+            self.delete(modelType, withIdentifier: identifier, where: predicate) { promise($0) }
+        }.eraseToAnyPublisher()
+    }
+
+    /// Deletes the model with the specified identifier from the DataStore. If sync is enabled, this will delete the
+    /// model from the remote store as well.
+    ///
+    /// - Parameters:
+    ///   - modelType: The type of the model to delete
+    ///   - identifier: The identifier of the model to delete
+    /// - Returns: A DataStorePublisher with the results of the operation
+    func delete<M: Model>(
+        _ modelType: M.Type,
+        withIdentifier identifier: ModelIdentifier<M, M.IdentifierFormat>,
+        where predicate: QueryPredicate? = nil
+    )  -> DataStorePublisher<Void> where M: ModelIdentifiable {
+        Future { promise in
+            self.delete(modelType, withIdentifier: identifier, where: predicate) { promise($0) }
         }.eraseToAnyPublisher()
     }
 
@@ -77,12 +112,43 @@ public extension DataStoreBaseBehavior {
     ///   - modelType: The type of the model to query
     ///   - id: The ID of the model to query
     /// - Returns: A DataStorePublisher with the results of the operation
+    @available(*, deprecated, message: "Use query(:byIdentifier:)")
     func query<M: Model>(
         _ modelType: M.Type,
         byId id: String
     ) -> DataStorePublisher<M?> {
         Future { promise in
             self.query(modelType, byId: id) { promise($0) }
+        }.eraseToAnyPublisher()
+    }
+
+    /// Queries for a specific model instance by id
+    ///
+    /// - Parameters:
+    ///   - modelType: The type of the model to query
+    ///   - id: The ID of the model to query
+    /// - Returns: A DataStorePublisher with the results of the operation
+    func query<M: Model>(
+        _ modelType: M.Type,
+        byIdentifier identifier: String
+    ) -> DataStorePublisher<M?> where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default {
+        Future { promise in
+            self.query(modelType, byIdentifier: identifier) { promise($0) }
+        }.eraseToAnyPublisher()
+    }
+
+    /// Queries for a specific model instance by id
+    ///
+    /// - Parameters:
+    ///   - modelType: The type of the model to query
+    ///   - id: The ID of the model to query
+    /// - Returns: A DataStorePublisher with the results of the operation
+    func query<M: Model>(
+        _ modelType: M.Type,
+        byIdentifier identifier: ModelIdentifier<M, M.IdentifierFormat>
+    ) -> DataStorePublisher<M?> where M: ModelIdentifiable {
+        Future { promise in
+            self.query(modelType, byIdentifier: identifier) { promise($0) }
         }.eraseToAnyPublisher()
     }
 

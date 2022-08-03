@@ -133,6 +133,7 @@ public struct ModelSchemaDefinition {
 
     public var authRules: AuthRules
     internal var fields: ModelFields
+    internal var primarykeyFields: [ModelFieldName]
     internal var attributes: [ModelAttribute]
 
     init(name: String,
@@ -148,6 +149,7 @@ public struct ModelSchemaDefinition {
         self.fields = [:] as ModelFields
         self.authRules = authRules
         self.attributes = attributes
+        self.primarykeyFields = []
     }
 
     public mutating func fields(_ fields: ModelFieldDefinition...) {
@@ -159,6 +161,17 @@ public struct ModelSchemaDefinition {
 
     public mutating func attributes(_ attributes: ModelAttribute...) {
         self.attributes = attributes
+        let primaryKeyDefinition: [[ModelFieldName]] = attributes.compactMap {
+            if case let .primaryKey(fields: fields) = $0 {
+                return fields
+            }
+            return nil
+        }
+
+        if primaryKeyDefinition.count > 1 {
+            preconditionFailure("Multiple primary key definitions found on schema \(name)")
+        }
+        primarykeyFields = primaryKeyDefinition.first ?? []
     }
 
     internal func build() -> ModelSchema {
@@ -168,14 +181,14 @@ public struct ModelSchemaDefinition {
                            syncPluralName: syncPluralName,
                            authRules: authRules,
                            attributes: attributes,
-                           fields: fields)
+                           fields: fields,
+                           primaryKeyFieldKeys: primarykeyFields)
     }
 }
 
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 ///   directly by host applications. The behavior of this may change without warning.
 public enum ModelFieldDefinition {
-
     case field(name: String,
                type: ModelFieldType,
                nullability: ModelFieldNullability,
@@ -200,10 +213,12 @@ public enum ModelFieldDefinition {
                       authRules: authRules)
     }
 
+    @available(*, deprecated, message: "Use .primaryKey(fields:)")
     public static func id(_ key: CodingKey) -> ModelFieldDefinition {
         return id(key.stringValue)
     }
 
+    @available(*, deprecated, message: "Use .primaryKey(fields:)")
     public static func id(_ name: String = "id") -> ModelFieldDefinition {
         return .field(name: name,
                       type: .string,
@@ -239,6 +254,19 @@ public enum ModelFieldDefinition {
                       association: .hasOne(associatedWith: associatedKey, targetName: targetName))
     }
 
+    public static func hasOne(_ key: CodingKey,
+                              is nullability: ModelFieldNullability = .required,
+                              isReadOnly: Bool = false,
+                              ofType type: Model.Type,
+                              associatedWith associatedKey: CodingKey,
+                              targetNames: [String]) -> ModelFieldDefinition {
+        return .field(key,
+                      is: nullability,
+                      isReadOnly: isReadOnly,
+                      ofType: .model(type: type),
+                      association: .hasOne(associatedWith: associatedKey, targetNames: targetNames))
+    }
+
     public static func belongsTo(_ key: CodingKey,
                                  is nullability: ModelFieldNullability = .required,
                                  isReadOnly: Bool = false,
@@ -250,6 +278,19 @@ public enum ModelFieldDefinition {
                       isReadOnly: isReadOnly,
                       ofType: .model(type: type),
                       association: .belongsTo(associatedWith: associatedKey, targetName: targetName))
+    }
+
+    public static func belongsTo(_ key: CodingKey,
+                                 is nullability: ModelFieldNullability = .required,
+                                 isReadOnly: Bool = false,
+                                 ofType type: Model.Type,
+                                 associatedWith associatedKey: CodingKey? = nil,
+                                 targetNames: [String]) -> ModelFieldDefinition {
+        return .field(key,
+                      is: nullability,
+                      isReadOnly: isReadOnly,
+                      ofType: .model(type: type),
+                      association: .belongsTo(associatedWith: associatedKey, targetNames: targetNames))
     }
 
     public var modelField: ModelField {

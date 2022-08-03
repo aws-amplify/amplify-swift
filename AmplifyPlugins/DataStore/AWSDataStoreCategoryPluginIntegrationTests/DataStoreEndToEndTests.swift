@@ -59,7 +59,6 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                     outboxMutationProcessed.fulfill()
                 case .syncReceived(let mutationEvent):
                     guard let post = try? mutationEvent.decodeModel() as? Post, post.id == newPost.id else {
-                        XCTFail("Could not decode to expected post")
                         return
                     }
                     if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
@@ -439,17 +438,26 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         try startAmplifyAndWaitForSync()
 
         var posts = [Post]()
-        let count = 5
-        for _ in 0 ..< count {
-            let post = Post(title: "title",
+        let count = 2
+        for index in 0 ..< count {
+            let post = Post(title: "title \(index)",
                             content: "content",
                             createdAt: .now())
             posts.append(post)
         }
         let postsSyncedToCloud = expectation(description: "All posts saved and synced to cloud")
+        postsSyncedToCloud.expectedFulfillmentCount = count
         var postsSyncedToCloudCount = 0
+
+        let postsDeletedLocally = expectation(description: "All posts deleted locally")
+        postsDeletedLocally.expectedFulfillmentCount = count
+
         let postsDeletedFromCloud = expectation(description: "All posts deleted and synced to cloud")
+        postsDeletedFromCloud.expectedFulfillmentCount = count
         var postsDeletedFromCloudCount = 0
+
+        log.debug("Created posts: [\(posts.map { $0.identifier })]")
+
         let sink = Amplify.DataStore.publisher(for: Post.self).sink { completed in
             switch completed {
             case .finished:
@@ -458,23 +466,26 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 XCTFail("\(error)")
             }
         } receiveValue: { mutationEvent in
+            guard posts.contains(where: { $0.id == mutationEvent.modelId }) else {
+                return
+            }
+
             if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue,
-               posts.contains(where: { $0.id == mutationEvent.modelId }),
                mutationEvent.version == 1 {
                 postsSyncedToCloudCount += 1
                 self.log.debug("Post saved and synced from cloud \(mutationEvent.modelId) \(postsSyncedToCloudCount)")
-                if postsSyncedToCloudCount == count {
-                    postsSyncedToCloud.fulfill()
-                }
+                postsSyncedToCloud.fulfill()
             } else if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue,
-                      posts.contains(where: { $0.id == mutationEvent.modelId }),
+                      mutationEvent.version == 1 {
+                self.log.debug(
+                    "Post deleted locally \(mutationEvent.modelId)")
+                postsDeletedLocally.fulfill()
+            } else if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue,
                       mutationEvent.version == 2 {
                 postsDeletedFromCloudCount += 1
                 self.log.debug(
                     "Post deleted and synced from cloud \(mutationEvent.modelId) \(postsDeletedFromCloudCount)")
-                if postsDeletedFromCloudCount == count {
-                    postsDeletedFromCloud.fulfill()
-                }
+                postsDeletedFromCloud.fulfill()
             }
         }
 
@@ -489,7 +500,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         DispatchQueue.concurrentPerform(iterations: count) { index in
             _ = Amplify.DataStore.delete(capturedPosts[index])
         }
-        wait(for: [postsDeletedFromCloud], timeout: 100)
+        wait(for: [postsDeletedLocally, postsDeletedFromCloud], timeout: 100)
         sink.cancel()
     }
 

@@ -157,6 +157,7 @@ extension Statement: StatementModelConvertible {
         for skipColumn in sortedColumns {
             modelDictionary.updateValue(nil, forKeyPath: skipColumn)
         }
+        modelDictionary["__typename"] = modelSchema.name
 
         // swiftlint:disable:next force_cast
         return modelDictionary as! ModelValues

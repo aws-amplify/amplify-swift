@@ -11,6 +11,9 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 class QueryPredicateEvaluateTests: XCTestCase {
+    override func setUp() {
+        ModelRegistry.register(modelType: QPredGen.self)
+    }
     func testMultiGroupAndPlusOr() throws {
         let predicate = (QPredGen.keys.myBool.eq(true) && QPredGen.keys.name.eq("NotMatch")
                                                        && QPredGen.keys.myString.eq("NotMatch"))
