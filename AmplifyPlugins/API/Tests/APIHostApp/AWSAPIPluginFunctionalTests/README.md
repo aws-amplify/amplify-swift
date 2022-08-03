@@ -1,25 +1,32 @@
 ## Model Based GraphQL 
 
-The following steps demonstrate how to set up a GraphQL endpoint with AppSync. The auth configured will be API key. The set up is used to run the tests in `GraphQLModelBasedTests.swift`
+The following steps demonstrate how to set up a GraphQL endpoint with AppSync. The auth configured will be API key.
+
+The steps tested with Amplify CLI version 9.1.0. When running a later CLI version, you may also want to update the generated model files that are placed in the Models folder. 
+
+Run `amplify codegen models` from your amplify app, compare and replace if needed the ones in the Models folder.
 
 
 ### Set-up
 
-1. `amplify init`
+1. `amplify init`. Update `cli.json` values to use Transformer V1.
+
+- `"useexperimentalpipelinedtransformer": false`
+- `"transformerversion": 1`
 
 2. `amplify add api`
 
 ```perl
-? Please select from one of the below mentioned services: `GraphQL`
-? Provide API name: `<APIName>`
+? Select from one of the below mentioned services: `GraphQL`
+? Here is the GraphQL API that we will create. Select a setting to edit or continue Authorization modes: `API key (default, expiration time: 7 days from now)`
 ? Choose the default authorization type for the API `API key`
-? Enter a description for the API key:
-? After how many days from now the API key should expire (1-365): `365`
-? Do you want to configure advanced settings for the GraphQL API `No, I am done`
-? Do you have an annotated GraphQL schema? `Yes`
-? Provide your schema file path: `schema.graphql`
+✔ Enter a description for the API key: · 
+✔ After how many days from now the API key should expire (1-365): · `365`
+? Configure additional auth types? `No`
+? Here is the GraphQL API that we will create. Select a setting to edit or continue `Continue`
+? Choose a schema template: `Blank Schema`
 ```
-When asked to provide the schema, create the `schema.graphql` file
+Edit the schema to the following:
 ```
 enum PostStatus {
     PRIVATE
