@@ -9,6 +9,7 @@ import Foundation
 import XCTest
 
 import AmplifyTestCommon
+import AWSPluginsCore
 @testable import Amplify
 
 class ModelPrimaryKeyTests: XCTestCase {
