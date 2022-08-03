@@ -21,7 +21,7 @@ public protocol RetryableGraphQLOperationBehavior: Operation, DefaultLogger {
     /// GraphQLOperation concrete type
     associatedtype OperationType: AnyGraphQLOperation
 
-    typealias RequestFactory = () -> GraphQLRequest<Payload>
+    typealias RequestFactory = () async -> GraphQLRequest<Payload>
     typealias OperationFactory = (GraphQLRequest<Payload>, @escaping OperationResultListener) -> OperationType
     typealias OperationResultListener = OperationType.ResultListener
 
@@ -32,7 +32,7 @@ public protocol RetryableGraphQLOperationBehavior: Operation, DefaultLogger {
     var attempts: Int { get set }
 
     /// Underlying GraphQL operation instantiated by `operationFactory`
-    var underlyingOperation: OperationType? { get set }
+    var underlyingOperation: AtomicValue<OperationType?> { get set }
 
     /// Maximum number of allowed retries
     var maxRetries: Int { get }
@@ -64,7 +64,9 @@ extension RetryableGraphQLOperationBehavior {
         let wrappedResultListener: OperationResultListener = { result in
             if case let .failure(error) = result, self.shouldRetry(error: error as? APIError) {
                 self.log.debug("\(error)")
-                self.start(request: self.requestFactory())
+                Task {
+                    self.start(request: await self.requestFactory())
+                }
                 return
             }
 
@@ -78,7 +80,7 @@ extension RetryableGraphQLOperationBehavior {
             }
             self.resultListener(result)
         }
-        underlyingOperation = operationFactory(request, wrappedResultListener)
+        underlyingOperation.set(operationFactory(request, wrappedResultListener))
     }
 }
 
@@ -91,11 +93,11 @@ public final class RetryableGraphQLOperation<Payload: Decodable>: Operation, Ret
     public var maxRetries: Int
     public var attempts: Int = 0
     public var requestFactory: RequestFactory
-    public var underlyingOperation: GraphQLOperation<Payload>?
+    public var underlyingOperation: AtomicValue<GraphQLOperation<Payload>?> = AtomicValue(initialValue: nil)
     public var resultListener: OperationResultListener
     public var operationFactory: OperationFactory
 
-    public init(requestFactory: @escaping () -> GraphQLRequest<Payload>,
+    public init(requestFactory: @escaping RequestFactory,
                 maxRetries: Int,
                 resultListener: @escaping OperationResultListener,
                 _ operationFactory: @escaping OperationFactory) {
@@ -105,12 +107,15 @@ public final class RetryableGraphQLOperation<Payload: Decodable>: Operation, Ret
         self.operationFactory = operationFactory
         self.resultListener = resultListener
     }
+    
     public override func main() {
-        start(request: requestFactory())
+        Task {
+            start(request: await requestFactory())
+        }
     }
 
-    public override func cancel() {
-        underlyingOperation?.cancel()
+    override public func cancel() {
+        self.underlyingOperation.get()?.cancel()
     }
 
     public func shouldRetry(error: APIError?) -> Bool {
@@ -138,7 +143,7 @@ public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable>: Op
     public var id: UUID
     public var maxRetries: Int
     public var attempts: Int = 0
-    public var underlyingOperation: GraphQLSubscriptionOperation<Payload>?
+    public var underlyingOperation: AtomicValue<GraphQLSubscriptionOperation<Payload>?> = AtomicValue(initialValue: nil)
     public var requestFactory: RequestFactory
     public var resultListener: OperationResultListener
     public var operationFactory: OperationFactory
@@ -154,11 +159,13 @@ public final class RetryableGraphQLSubscriptionOperation<Payload: Decodable>: Op
         self.resultListener = resultListener
     }
     public override func main() {
-        start(request: requestFactory())
+        Task {
+            start(request: await requestFactory())
+        }
     }
 
     public override func cancel() {
-        underlyingOperation?.cancel()
+        self.underlyingOperation.get()?.cancel()
     }
 
     public func shouldRetry(error: APIError?) -> Bool {

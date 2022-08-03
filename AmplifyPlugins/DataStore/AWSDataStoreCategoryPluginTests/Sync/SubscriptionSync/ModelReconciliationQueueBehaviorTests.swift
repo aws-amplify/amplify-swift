@@ -20,14 +20,14 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
     ///    - I publish incoming events
     /// - Then:
     ///    - The queue does not process them
-    func testBuffersBeforeStart() throws {
+    func testBuffersBeforeStart() async throws {
         let eventsNotSaved = expectation(description: "Events not saved")
         eventsNotSaved.isInverted = true
         storageAdapter.responders[.saveUntypedModel] = SaveUntypedModelResponder { _, _ in
             eventsNotSaved.fulfill()
         }
 
-        let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
+        let queue = await AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
                                                 api: apiPlugin,
                                                 reconcileAndSaveQueue: reconcileAndSaveQueue,
@@ -59,7 +59,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
     ///    - I `start()` the queue
     /// - Then:
     ///    - It processes buffered events in order
-    func testProcessesBufferedEvents() throws {
+    func testProcessesBufferedEvents() async throws {
         let event1Saved = expectation(description: "Event 1 saved")
         let event2Saved = expectation(description: "Event 2 saved")
         let event3Saved = expectation(description: "Event 3 saved")
@@ -78,7 +78,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
             completion(.success(model))
         }
 
-        let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
+        let queue = await AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
                                                 api: apiPlugin,
                                                 reconcileAndSaveQueue: reconcileAndSaveQueue,
@@ -133,7 +133,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
     ///    - I `start()` the queue
     /// - Then:
     ///    - It processes buffered events in order, that evaluate true against the predicate
-    func testProcessesEventsWithSelectiveSync() throws {
+    func testProcessesEventsWithSelectiveSync() async throws {
         let event1Saved = expectation(description: "Event 1 saved")
         let event3Saved = expectation(description: "Event 3 saved")
         storageAdapter.responders[.saveUntypedModel] = SaveUntypedModelResponder { model, completion in
@@ -153,7 +153,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         let syncExpression = DataStoreSyncExpression.syncExpression(MockSynced.schema, where: {
             MockSynced.keys.id == "id-1" || MockSynced.keys.id == "id-3"
         })
-        let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
+        let queue = await AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
                                                 api: apiPlugin,
                                                 reconcileAndSaveQueue: reconcileAndSaveQueue,
@@ -205,7 +205,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
     ///    - I `start()` the queue
     /// - Then:
     ///    - It processes buffered events one at a time
-    func testProcessesBufferedEventsSerially() throws {
+    func testProcessesBufferedEventsSerially() async throws {
         // This test relies on knowledge of the Reconciliation queue's internal behavior: specifically, that it saves
         // an event's metadata as the last step.
 
@@ -247,7 +247,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                 completion(.success(mutationSyncMetadata))
         }
 
-        let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
+        let queue = await AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
                                                 api: apiPlugin,
                                                 reconcileAndSaveQueue: reconcileAndSaveQueue,
@@ -300,7 +300,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
     ///    - I submit a new event
     /// - Then:
     ///    - The new event immediately processes
-    func testProcessesNewEvents() throws {
+    func testProcessesNewEvents() async throws {
         // Return a successful MockSynced save
         storageAdapter.responders[.saveUntypedModel] = SaveUntypedModelResponder { model, completion in
             completion(.success(model))
@@ -321,7 +321,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
                 completion(.success(mutationSyncMetadata))
         }
 
-        let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
+        let queue = await AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
                                                 api: apiPlugin,
                                                 reconcileAndSaveQueue: reconcileAndSaveQueue,
@@ -426,9 +426,9 @@ extension ModelReconciliationQueueBehaviorTests {
         return .failure(dataStoreError)
     }
 
-    func testProcessingUnauthorizedError() {
+    func testProcessingUnauthorizedError() async {
         let eventSentViaPublisher = expectation(description: "Sent via publisher")
-        let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
+        let queue = await AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
                                                 api: apiPlugin,
                                                 reconcileAndSaveQueue: reconcileAndSaveQueue,
@@ -448,9 +448,9 @@ extension ModelReconciliationQueueBehaviorTests {
         wait(for: [eventSentViaPublisher], timeout: 1.0)
     }
 
-    func testProcessingOperationDisabledError() {
+    func testProcessingOperationDisabledError() async {
         let eventSentViaPublisher = expectation(description: "Sent via publisher")
-        let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
+        let queue = await AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
                                                 api: apiPlugin,
                                                 reconcileAndSaveQueue: reconcileAndSaveQueue,
@@ -470,9 +470,9 @@ extension ModelReconciliationQueueBehaviorTests {
         wait(for: [eventSentViaPublisher], timeout: 1.0)
     }
 
-    func testProcessingUnhandledErrors() {
+    func testProcessingUnhandledErrors() async {
         let eventSentViaPublisher = expectation(description: "Sent via publisher")
-        let queue = AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
+        let queue = await AWSModelReconciliationQueue(modelSchema: MockSynced.schema,
                                                 storageAdapter: storageAdapter,
                                                 api: apiPlugin,
                                                 reconcileAndSaveQueue: reconcileAndSaveQueue,

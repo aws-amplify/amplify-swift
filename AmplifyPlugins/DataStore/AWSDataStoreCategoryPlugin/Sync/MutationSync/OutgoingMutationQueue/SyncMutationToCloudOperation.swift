@@ -36,7 +36,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
          networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>? = nil,
          currentAttemptNumber: Int = 1,
          requestRetryablePolicy: RequestRetryablePolicy? = RequestRetryablePolicy(),
-         completion: @escaping GraphQLOperation<MutationSync<AnyModel>>.ResultListener) {
+         completion: @escaping GraphQLOperation<MutationSync<AnyModel>>.ResultListener) async {
         self.mutationEvent = mutationEvent
         self.api = api
         self.networkReachabilityPublisher = networkReachabilityPublisher
@@ -47,7 +47,8 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
 
         if let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName),
            let mutationType = GraphQLMutationType(rawValue: mutationEvent.mutationType) {
-            self.authTypesIterator = authModeStrategy.authTypesFor(schema: modelSchema,
+            
+            self.authTypesIterator = await authModeStrategy.authTypesFor(schema: modelSchema,
                                                                    operation: mutationType.toModelOperation())
         }
 

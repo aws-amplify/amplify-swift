@@ -24,9 +24,9 @@ class AuthModeStrategyTests: XCTestCase {
     // Given: multi-auth strategy and a model schema
     // When: authTypesFor for .create operation is called
     // Then: auth types are returned in order according to priority rules
-    func testMultiAuthShouldRespectAuthPriorityRules() {
+    func testMultiAuthShouldRespectAuthPriorityRules() async {
         let authMode = AWSMultiAuthModeStrategy()
-        var authTypesIterator = authMode.authTypesFor(schema: ModelWithOwnerAndPublicAuth.schema, operation: .create)
+        var authTypesIterator = await authMode.authTypesFor(schema: ModelWithOwnerAndPublicAuth.schema, operation: .create)
         XCTAssertEqual(authTypesIterator.count, 2)
         XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
         XCTAssertEqual(authTypesIterator.next(), .apiKey)
@@ -35,9 +35,9 @@ class AuthModeStrategyTests: XCTestCase {
     // Given: multi-auth strategy and a model schema without auth provider
     // When: auth types are requested
     // Then: default values based on the auth strategy should be returned
-    func testMultiAuthShouldReturnDefaultAuthTypes() {
+    func testMultiAuthShouldReturnDefaultAuthTypes() async {
         let authMode = AWSMultiAuthModeStrategy()
-        var authTypesIterator = authMode.authTypesFor(schema: ModelNoProvider.schema, operation: .read)
+        var authTypesIterator = await authMode.authTypesFor(schema: ModelNoProvider.schema, operation: .read)
         XCTAssertEqual(authTypesIterator.count, 2)
         XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
         XCTAssertEqual(authTypesIterator.next(), .apiKey)
@@ -46,9 +46,9 @@ class AuthModeStrategyTests: XCTestCase {
     // Given: multi-auth strategy and a model schema with 4 auth rules
     // When: authTypesFor for .create operation is called
     // Then: applicable auth types are ordered according to priority rules
-    func testMultiAuthPriorityAuthRulesOrder() {
+    func testMultiAuthPriorityAuthRulesOrder() async {
         let authMode = AWSMultiAuthModeStrategy()
-        var authTypesIterator = authMode.authTypesFor(schema: ModelAllStrategies.schema, operation: .read)
+        var authTypesIterator = await authMode.authTypesFor(schema: ModelAllStrategies.schema, operation: .read)
         XCTAssertEqual(authTypesIterator.count, 4)
         XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
         XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
@@ -59,9 +59,9 @@ class AuthModeStrategyTests: XCTestCase {
     // Given: multi-auth strategy and a model schema multiple public rules
     // When: authTypesFor for .create operation is called
     // Then: applicable auth types are ordered according to priority rules
-    func testMultiAuthPriorityAuthRulesOrderSameStrategy() {
+    func testMultiAuthPriorityAuthRulesOrderSameStrategy() async {
         let authMode = AWSMultiAuthModeStrategy()
-        var authTypesIterator = authMode.authTypesFor(schema: ModelWithMultiplePublicRules.schema, operation: .read)
+        var authTypesIterator = await authMode.authTypesFor(schema: ModelWithMultiplePublicRules.schema, operation: .read)
         XCTAssertEqual(authTypesIterator.count, 4)
         XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
         XCTAssertEqual(authTypesIterator.next(), .openIDConnect)
@@ -73,9 +73,9 @@ class AuthModeStrategyTests: XCTestCase {
     // When: authTypesFor for .create operation is called
     // Then: applicable auth types returned are only the
     //       auth types allowed on the given operation
-    func testMultiAuthPriorityAuthPerOperation() {
+    func testMultiAuthPriorityAuthPerOperation() async {
         let authMode = AWSMultiAuthModeStrategy()
-        var authTypesIterator = authMode.authTypesFor(schema: ModelAllStrategies.schema, operation: .create)
+        var authTypesIterator = await authMode.authTypesFor(schema: ModelAllStrategies.schema, operation: .create)
         XCTAssertEqual(authTypesIterator.count, 2)
         XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
         XCTAssertEqual(authTypesIterator.next(), .amazonCognitoUserPools)
@@ -84,12 +84,12 @@ class AuthModeStrategyTests: XCTestCase {
     // Given: multi-auth strategy a model schema
     // When: authTypesFor for .create operation is called for unauthenticated user
     // Then: applicable auth types returned are only public rules
-    func testMultiAuthPriorityUnauthenticatedUser() {
+    func testMultiAuthPriorityUnauthenticatedUser() async {
         let authMode = AWSMultiAuthModeStrategy()
         let delegate = UnauthenticatedUserDelegate()
         authMode.authDelegate = delegate
 
-        var authTypesIterator = authMode.authTypesFor(schema: ModelWithOwnerAndPublicAuth.schema,
+        var authTypesIterator = await authMode.authTypesFor(schema: ModelWithOwnerAndPublicAuth.schema,
                                                       operation: .create)
         XCTAssertEqual(authTypesIterator.count, 1)
         XCTAssertEqual(authTypesIterator.next(), .apiKey)
@@ -98,9 +98,9 @@ class AuthModeStrategyTests: XCTestCase {
     // Given: multi-auth model schema with a custom strategy
     // When: authTypesFor for .create operation is called
     // Then: applicable auth types returned respect the priority rules
-    func testMultiAuthPriorityWithCustomStrategy() {
+    func testMultiAuthPriorityWithCustomStrategy() async {
         let authMode = AWSMultiAuthModeStrategy()
-        var authTypesIterator = authMode.authTypesFor(schema: ModelWithCustomStrategy.schema,
+        var authTypesIterator = await authMode.authTypesFor(schema: ModelWithCustomStrategy.schema,
                                                       operation: .create)
         XCTAssertEqual(authTypesIterator.count, 3)
         XCTAssertEqual(authTypesIterator.next(), .function)
@@ -111,12 +111,12 @@ class AuthModeStrategyTests: XCTestCase {
     // Given: multi-auth model schema with a custom strategy
     // When: authTypesFor for .create operation is called for unauthenticated user
     // Then: applicable auth types returned are public rules or custom
-    func testMultiAuthPriorityUnauthenticatedUserWithCustom() {
+    func testMultiAuthPriorityUnauthenticatedUserWithCustom() async {
         let authMode = AWSMultiAuthModeStrategy()
         let delegate = UnauthenticatedUserDelegate()
         authMode.authDelegate = delegate
 
-        var authTypesIterator = authMode.authTypesFor(schema: ModelWithCustomStrategy.schema,
+        var authTypesIterator = await authMode.authTypesFor(schema: ModelWithCustomStrategy.schema,
                                                       operation: .create)
         XCTAssertEqual(authTypesIterator.count, 2)
         XCTAssertEqual(authTypesIterator.next(), .function)

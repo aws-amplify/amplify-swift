@@ -272,24 +272,26 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             }
         }
     }
-
+    
     private func initializeSubscriptions(api: APICategoryGraphQLBehavior,
                                          storageAdapter: StorageEngineAdapter) {
-        log.debug(#function)
-        let syncableModelSchemas = ModelRegistry.modelSchemas.filter { $0.isSyncable }
-        reconciliationQueue = reconciliationQueueFactory(syncableModelSchemas,
-                                                         api,
-                                                         storageAdapter,
-                                                         dataStoreConfiguration.syncExpressions,
-                                                         auth,
-                                                         authModeStrategy,
-                                                         nil)
-        reconciliationQueueSink = reconciliationQueue?
-            .publisher
-            .sink(
-                receiveCompletion: { [weak self] in self?.onReceiveCompletion(receiveCompletion: $0) },
-                receiveValue: { [weak self] in self?.onReceive(receiveValue: $0) }
-            )
+        Task {
+            log.debug(#function)
+            let syncableModelSchemas = ModelRegistry.modelSchemas.filter { $0.isSyncable }
+            reconciliationQueue = await reconciliationQueueFactory(syncableModelSchemas,
+                                                                   api,
+                                                                   storageAdapter,
+                                                                   dataStoreConfiguration.syncExpressions,
+                                                                   auth,
+                                                                   authModeStrategy,
+                                                                   nil)
+            reconciliationQueueSink = reconciliationQueue?
+                .publisher
+                .sink(
+                    receiveCompletion: { [weak self] in self?.onReceiveCompletion(receiveCompletion: $0) },
+                    receiveValue: { [weak self] in self?.onReceive(receiveValue: $0) }
+                )
+        }
     }
 
     private func performInitialSync() {

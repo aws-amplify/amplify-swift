@@ -34,9 +34,9 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
     }
     var operationQueue: OperationQueue!
 
-    func initEventQueue(modelSchemas: [ModelSchema]) -> AWSIncomingEventReconciliationQueue {
+    func initEventQueue(modelSchemas: [ModelSchema]) async -> AWSIncomingEventReconciliationQueue {
         let modelReconciliationQueueFactory = MockModelReconciliationQueue.init
-        return AWSIncomingEventReconciliationQueue(
+        return await AWSIncomingEventReconciliationQueue(
             modelSchemas: modelSchemas,
             api: apiPlugin,
             storageAdapter: storageAdapter,
@@ -47,10 +47,10 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
 
     // This test case attempts to hit a race condition, and may be required to execute multiple times
     // in order to demonstrate the bug
-    func testTwoConnectionStatusUpdatesAtSameTime() {
+    func testTwoConnectionStatusUpdatesAtSameTime() async {
         let expectInitialized = expectation(description: "eventQueue expected to send out initialized state")
 
-        let eventQueue = initEventQueue(modelSchemas: [Post.schema, Comment.schema])
+        let eventQueue = await initEventQueue(modelSchemas: [Post.schema, Comment.schema])
         eventQueue.start()
 
         // We need to keep this in scope for the duration of the test or else Combine will release the listeners.
@@ -73,15 +73,15 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             operationQueue.addOperation(cancellableOperation)
         }
         operationQueue.isSuspended = false
-        waitForExpectations(timeout: 2)
+        await waitForExpectations(timeout: 2)
 
         // Take action on the sink to prevent compiler warnings about unused variables.
         sink.cancel()
     }
 
-    func testSubscriptionFailedWithSingleModelUnauthorizedError() {
+    func testSubscriptionFailedWithSingleModelUnauthorizedError() async {
         let expectInitialized = expectation(description: "eventQueue expected to send out initialized state")
-        let eventQueue = initEventQueue(modelSchemas: [Post.schema])
+        let eventQueue = await initEventQueue(modelSchemas: [Post.schema])
         eventQueue.start()
 
         let sink = eventQueue.publisher.sink(receiveCompletion: { _ in
@@ -103,16 +103,16 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             operationQueue.addOperation(cancellableOperation)
         }
         operationQueue.isSuspended = false
-        waitForExpectations(timeout: 2)
+        await waitForExpectations(timeout: 2)
 
         sink.cancel()
     }
 
     // This test case tests that initialized event is received even if only one
     // model subscriptions out of two failed - Post subscription will fail but Comment will succeed
-    func testSubscriptionFailedWithMultipleModels() {
+    func testSubscriptionFailedWithMultipleModels() async {
         let expectInitialized = expectation(description: "eventQueue expected to send out initialized state")
-        let eventQueue = initEventQueue(modelSchemas: [Post.schema, Comment.schema])
+        let eventQueue = await initEventQueue(modelSchemas: [Post.schema, Comment.schema])
         eventQueue.start()
 
         let sink = eventQueue.publisher.sink(receiveCompletion: { _ in
@@ -137,14 +137,14 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             operationQueue.addOperation(cancellableOperation)
         }
         operationQueue.isSuspended = false
-        waitForExpectations(timeout: 2)
+        await waitForExpectations(timeout: 2)
 
         sink.cancel()
     }
 
-    func testSubscriptionFailedWithSingleModelOperationDisabled() {
+    func testSubscriptionFailedWithSingleModelOperationDisabled() async {
         let expectInitialized = expectation(description: "eventQueue expected to send out initialized state")
-        let eventQueue = initEventQueue(modelSchemas: [Post.schema])
+        let eventQueue = await initEventQueue(modelSchemas: [Post.schema])
         eventQueue.start()
 
         let sink = eventQueue.publisher.sink(receiveCompletion: { _ in
@@ -167,7 +167,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             operationQueue.addOperation(cancellableOperation)
         }
         operationQueue.isSuspended = false
-        waitForExpectations(timeout: 2)
+        await waitForExpectations(timeout: 2)
 
         sink.cancel()
     }
@@ -176,9 +176,9 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
     // model subscriptions out of two succeeded
     // Post subscription will fail with a "OperationDisabled",
     // but Comment subscription will succeed
-    func testSubscriptionFailedBecauseOfOperationDisabledWithMultipleModels() {
+    func testSubscriptionFailedBecauseOfOperationDisabledWithMultipleModels() async {
         let expectInitialized = expectation(description: "eventQueue expected to send out initialized state")
-        let eventQueue = initEventQueue(modelSchemas: [Post.schema])
+        let eventQueue = await initEventQueue(modelSchemas: [Post.schema])
         eventQueue.start()
 
         let sink = eventQueue.publisher.sink(receiveCompletion: { _ in
@@ -203,7 +203,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             operationQueue.addOperation(cancellableOperation)
         }
         operationQueue.isSuspended = false
-        waitForExpectations(timeout: 2)
+        await waitForExpectations(timeout: 2)
 
         sink.cancel()
 
