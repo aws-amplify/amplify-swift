@@ -49,19 +49,26 @@ class ListTests: XCTestCase {
         var errorOnLoad: CoreError?
         var errorOnNextPage: CoreError?
         var nextPage: List<Element>?
-
+        var state: ModelListProviderState<Element>?
+        
         public init(elements: [Element] = [Element](),
                     error: CoreError? = nil,
                     errorOnLoad: CoreError? = nil,
                     errorOnNextPage: CoreError? = nil,
-                    nextPage: List<Element>? = nil) {
+                    nextPage: List<Element>? = nil,
+                    state: ModelListProviderState<Element>? = nil) {
             self.elements = elements
             self.error = error
             self.errorOnLoad = errorOnLoad
             self.errorOnNextPage = errorOnNextPage
             self.nextPage = nextPage
+            self.state = state
         }
 
+        public func getState() -> ModelListProviderState<Element> {
+            state ?? .notLoaded
+        }
+        
         public func load(completion: (Result<[Element], CoreError>) -> Void) {
             if let error = error {
                 completion(.failure(error))
