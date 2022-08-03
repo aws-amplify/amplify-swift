@@ -42,7 +42,16 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
     init(_ elements: [Element]) {
         self.loadedState = .loaded(elements)
     }
-
+    
+    public func getState() -> ModelListProviderState<Element> {
+        switch loadedState {
+        case .notLoaded:
+            return .notLoaded
+        case .loaded(let elements):
+            return .loaded(elements)
+        }
+    }
+    
     public func load(completion: (Result<[Element], CoreError>) -> Void) {
         switch loadedState {
         case .loaded(let elements):

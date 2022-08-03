@@ -82,6 +82,15 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
 
     // MARK: APIs
 
+    public func getState() -> ModelListProviderState<Element> {
+        switch loadedState {
+        case .notLoaded:
+            return .notLoaded
+        case .loaded(let elements, _, _):
+            return .loaded(elements)
+        }
+    }
+    
     public func load(completion: @escaping (Result<[Element], CoreError>) -> Void) {
         switch loadedState {
         case .loaded(let elements, _, _):

@@ -16,6 +16,17 @@ import Combine
 /// change.
 public protocol ModelListMarker { }
 
+/// State of the ListProvider
+///
+/// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
+/// directly by host applications. The behavior of this may change without warning. Though it is not used by host
+/// application making any change to these `public` types should be backward compatible, otherwise it will be a breaking
+/// change.
+public enum ModelListProviderState<Element: Model> {
+    case notLoaded
+    case loaded([Element])
+}
+
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 /// directly by host applications. The behavior of this may change without warning. Though it is not used by host
 /// application making any change to these `public` types should be backward compatible, otherwise it will be a breaking
@@ -23,6 +34,8 @@ public protocol ModelListMarker { }
 public protocol ModelListProvider {
     associatedtype Element: Model
 
+    func getState() -> ModelListProviderState<Element>
+    
     ///  Retrieve the array of `Element` from the data source asychronously.
     func load(completion: @escaping (Result<[Element], CoreError>) -> Void)
 
@@ -41,6 +54,7 @@ public protocol ModelListProvider {
 /// application making any change to these `public` types should be backward compatible, otherwise it will be a breaking
 /// change.
 public struct AnyModelListProvider<Element: Model>: ModelListProvider {
+    private let getStateClosure: () -> ModelListProviderState<Element>
     private let loadWithCompletionClosure: (@escaping (Result<[Element], CoreError>) -> Void) -> Void
     private let hasNextPageClosure: () -> Bool
     private let getNextPageClosure: (@escaping (Result<List<Element>, CoreError>) -> Void) -> Void
@@ -48,12 +62,16 @@ public struct AnyModelListProvider<Element: Model>: ModelListProvider {
     public init<Provider: ModelListProvider>(
         provider: Provider
     ) where Provider.Element == Self.Element {
+        self.getStateClosure = provider.getState
         self.loadWithCompletionClosure = provider.load(completion:)
         self.hasNextPageClosure = provider.hasNextPage
         self.getNextPageClosure = provider.getNextPage(completion:)
     }
 
-
+    public func getState() -> ModelListProviderState<Element> {
+        getStateClosure()
+    }
+    
     public func load(completion: @escaping (Result<[Element], CoreError>) -> Void) {
         loadWithCompletionClosure(completion)
     }
