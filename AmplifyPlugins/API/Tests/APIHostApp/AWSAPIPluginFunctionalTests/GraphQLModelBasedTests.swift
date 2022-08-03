@@ -15,6 +15,16 @@ class GraphQLModelBasedTests: XCTestCase {
 
     static let amplifyConfiguration = "testconfiguration/GraphQLModelBasedTests-amplifyconfiguration"
 
+    final public class PostCommentModelRegistration: AmplifyModelRegistration {
+        public func registerModels(registry: ModelRegistry.Type) {
+            ModelRegistry.register(modelType: Post.self)
+            ModelRegistry.register(modelType: Comment.self)
+        }
+
+        public let version: String = "1"
+    }
+
+    
     override func setUp() async throws {
         await Amplify.reset()
         Amplify.Logging.logLevel = .verbose
@@ -279,7 +289,7 @@ class GraphQLModelBasedTests: XCTestCase {
                 case .success(let comment):
                     XCTAssertEqual(comment.content, "commentContent")
                     XCTAssertNotNil(comment.post)
-                    XCTAssertEqual(comment.post.id, uuid)
+                    XCTAssertEqual(comment.post?.id, uuid)
                     requestInvokedSuccessfully.fulfill()
                 case .failure(let error):
                     XCTFail("Unexpected response with error \(error)")
