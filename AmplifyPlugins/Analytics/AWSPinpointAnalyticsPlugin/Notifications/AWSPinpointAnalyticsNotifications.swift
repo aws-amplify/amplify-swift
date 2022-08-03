@@ -220,7 +220,7 @@ extension AWSPinpointAnalyticsNotifications {
         let openDeepLink = { (url: URL) in UIApplication.shared.open(url) }
 #else
         let canOpenURL = canOpenURL ?? { _ in false }
-        let openDeepLink = { _ in  }
+        let openDeepLink = { (url: URL) in  }
 #endif
 
         guard let payload = pinpointPayloadFromNotificationPayload(notification: userInfo) as? [String: String],
