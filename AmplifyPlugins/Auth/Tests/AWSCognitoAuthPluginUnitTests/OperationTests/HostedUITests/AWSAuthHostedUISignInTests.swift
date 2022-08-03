@@ -20,7 +20,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
     var mockTokenResult = ["id_token": AWSCognitoUserPoolTokens.mockData.idToken,
                            "access_token": AWSCognitoUserPoolTokens.mockData.accessToken,
                            "refresh_token": AWSCognitoUserPoolTokens.mockData.refreshToken,
-                           "expires_in": 10] as [String : Any]
+                           "expires_in": 10] as [String: Any]
     var mockState = "someState"
     var mockProof = "someProof"
     var mockJson: Data!
@@ -41,10 +41,9 @@ class AWSAuthHostedUISignInTests: XCTestCase {
     override func setUp() {
         plugin = AWSCognitoAuthPlugin()
         mockJson = try! JSONSerialization.data(withJSONObject: mockTokenResult)
-        MockURLProtocol.requestHandler = { request in
+        MockURLProtocol.requestHandler = { _ in
             return (HTTPURLResponse(), self.mockJson)
         }
-
 
         func sessionFactory() -> HostedUISessionBehavior {
             MockHostedUISession(result: mockHostedUIResult)
@@ -61,7 +60,6 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(hostedUIEnvironment: environment)
         let stateMachine = Defaults.authStateMachineWith(environment: authEnvironment,
                                                          initialState: initialState)
-
 
         plugin?.configure(
             authConfiguration: Defaults.makeDefaultAuthConfigData(withHostedUI: configuration),
@@ -208,9 +206,9 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         ])
         mockTokenResult = [
             "refresh_token": AWSCognitoUserPoolTokens.mockData.refreshToken,
-            "expires_in": 10] as [String : Any]
+            "expires_in": 10] as [String: Any]
         mockJson = try! JSONSerialization.data(withJSONObject: mockTokenResult)
-        MockURLProtocol.requestHandler = { request in
+        MockURLProtocol.requestHandler = { _ in
             return (HTTPURLResponse(), self.mockJson)
         }
 
@@ -241,9 +239,9 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         ])
         mockTokenResult = [
             "error": "invalid_grant",
-            "error_description": "Some error"] as [String : Any]
+            "error_description": "Some error"] as [String: Any]
         mockJson = try! JSONSerialization.data(withJSONObject: mockTokenResult)
-        MockURLProtocol.requestHandler = { request in
+        MockURLProtocol.requestHandler = { _ in
             return (HTTPURLResponse(), self.mockJson)
         }
 
@@ -266,5 +264,5 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         }
         wait(for: [expectation], timeout: networkTimeout)
     }
-    
+
 }

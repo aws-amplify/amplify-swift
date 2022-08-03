@@ -10,14 +10,14 @@ import Foundation
 import CryptoKit
 
 struct InitializeHostedUISignIn: Action {
-    
+
     var identifier: String = "InitializeHostedUISignIn"
-    
+
     let options: HostedUIOptions
-    
+
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        
+
         guard let environment = environment as? AuthEnvironment,
               let hostedUIEnvironment = environment.hostedUIEnvironment else {
             let message = AuthPluginErrorConstants.configurationError
@@ -27,13 +27,13 @@ struct InitializeHostedUISignIn: Action {
             dispatcher.send(event)
             return
         }
-        
+
         guard let presentationAnchor = options.presentationAnchor else {
             fatalError("""
         Should not happen, initialize hostedUISignIn should always start with presentationanchor
         """)
         }
-        
+
         let hostedUIConfig = hostedUIEnvironment.configuration
         let randomGenerator = hostedUIEnvironment.randomStringFactory()
         let state = randomGenerator.generateUUID()
@@ -43,7 +43,7 @@ struct InitializeHostedUISignIn: Action {
             dispatcher.send(event)
             return
         }
-        
+
         do {
             let url = try HostedUIRequestHelper.createSignInURL(state: state,
                                                                 proofKey: proofKey,

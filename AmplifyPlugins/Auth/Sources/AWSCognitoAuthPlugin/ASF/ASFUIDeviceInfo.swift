@@ -21,7 +21,7 @@ struct ASFUIDeviceInfo: ASFDeviceBehavior {
         UIDevice.current.model
     }
 
-    var name: String  {
+    var name: String {
         return UIDevice.current.name
 
     }
@@ -38,15 +38,15 @@ struct ASFUIDeviceInfo: ASFDeviceBehavior {
         return UIDevice.current.systemName
     }
 
-    var version: String  {
+    var version: String {
         UIDevice.current.systemVersion
     }
 
-    var thirdPartyId: String?  {
+    var thirdPartyId: String? {
         UIDevice.current.identifierForVendor?.uuidString
     }
 
-    var height: String  {
+    var height: String {
         String(format: "%.0f", UIScreen.main.nativeBounds.size.height)
     }
 
@@ -57,7 +57,7 @@ struct ASFUIDeviceInfo: ASFDeviceBehavior {
     var locale: String {
         return Locale.preferredLanguages[0]
     }
-    
+
     func deviceInfo() -> String {
         var build = "release"
 #if DEBUG

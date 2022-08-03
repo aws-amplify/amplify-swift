@@ -305,5 +305,4 @@ struct MockASF: AdvancedSecurityBehavior {
         return ""
     }
 
-
 }

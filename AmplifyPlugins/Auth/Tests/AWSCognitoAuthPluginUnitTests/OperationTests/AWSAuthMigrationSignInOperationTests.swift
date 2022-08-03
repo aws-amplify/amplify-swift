@@ -74,7 +74,6 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
                                                      refreshToken: "refreshToken"))
         }
 
-
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
 
@@ -90,7 +89,6 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
             finalCallBackExpectation.fulfill()
         }
 
-
         wait(for: [initiateAuthExpectation,
                    finalCallBackExpectation],
              timeout: networkTimeout,
@@ -105,7 +103,6 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
             initiateAuthExpectation.fulfill()
             throw InitiateAuthOutputError.internalErrorException(.init(message: "Error Occurred"))
         }
-
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
@@ -138,7 +135,6 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
             initiateAuthExpectation.fulfill()
             throw InitiateAuthOutputError.invalidLambdaResponseException(.init(message: "Error Occurred"))
         }
-
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
@@ -175,7 +171,6 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
             initiateAuthExpectation.fulfill()
             throw InitiateAuthOutputError.invalidParameterException(.init(message: "Error Occurred"))
         }
-
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
@@ -214,7 +209,6 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
                 .init(message: "Error Occurred"))
         }
 
-
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
 
@@ -252,7 +246,6 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
                 .init(message: "Error Occurred"))
         }
 
-
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
 
@@ -285,7 +278,6 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
             throw InitiateAuthOutputError.notAuthorizedException(
                 .init(message: "Error Occurred"))
         }
-
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
@@ -320,7 +312,6 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
                 .init(message: "Error Occurred"))
         }
 
-
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
 
@@ -354,7 +345,6 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
             throw InitiateAuthOutputError.resourceNotFoundException(
                 .init(message: "Error Occurred"))
         }
-
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
@@ -393,7 +383,6 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
                 .init(message: "Error Occurred"))
         }
 
-
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
 
@@ -430,7 +419,6 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
             throw InitiateAuthOutputError.unexpectedLambdaException(
                 .init(message: "Error Occurred"))
         }
-
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
@@ -469,7 +457,6 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
                 .init(message: "Error Occurred"))
         }
 
-
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
 
@@ -507,7 +494,6 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
                 .init(message: "Error Occurred"))
         }
 
-
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
 
@@ -540,7 +526,6 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
             throw InitiateAuthOutputError.userNotFoundException(
                 .init(message: "Error Occurred"))
         }
-
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)

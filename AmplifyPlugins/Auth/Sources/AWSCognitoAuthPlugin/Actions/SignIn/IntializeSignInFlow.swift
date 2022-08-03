@@ -92,8 +92,7 @@ struct InitializeSignInFlow: Action {
                 } else {
                     return .noData
                 }
-            }
-            catch {
+            } catch {
                 logError("Unable to fetch device metadata with error: \(error)",
                          environment: environment)
                 return .noData

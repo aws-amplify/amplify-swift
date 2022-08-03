@@ -24,7 +24,7 @@ class AWSAuthSignUpOperationTests: XCTestCase {
         queue = OperationQueue()
         queue?.maxConcurrentOperationCount = 1
     }
-    
+
     func testSignUpOperationSuccess() throws {
         let exp = expectation(description: #function)
         let functionExpectation = expectation(description: "API call should be invoked")

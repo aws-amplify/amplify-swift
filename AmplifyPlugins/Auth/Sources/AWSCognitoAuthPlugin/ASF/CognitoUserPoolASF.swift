@@ -62,7 +62,7 @@ struct CognitoUserPoolASF: AdvancedSecurityBehavior {
             Self.deviceHeightKey: deviceInfo.height,
             Self.deviceWidthKey: deviceInfo.width,
             Self.deviceLanguageKey: deviceInfo.locale,
-            Self.deviceFingerPrintKey: fingerPrint,
+            Self.deviceFingerPrintKey: fingerPrint
         ]
         if let appName = appInfo.name {
             contextData[Self.appNameKey] = appName
@@ -82,7 +82,7 @@ struct CognitoUserPoolASF: AdvancedSecurityBehavior {
             "username": username,
             "userPoolId": userPoolId,
             "timestamp": timestamp
-        ] as [String : Any]
+        ] as [String: Any]
         let jsonData = try JSONSerialization.data(withJSONObject: payload)
         guard let jsonString = String(data: jsonData, encoding: .utf8) else {
             throw ASFError.stringConversion

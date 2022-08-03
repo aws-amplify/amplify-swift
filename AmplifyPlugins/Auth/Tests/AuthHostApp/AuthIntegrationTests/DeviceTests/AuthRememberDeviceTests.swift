@@ -10,9 +10,9 @@ import XCTest
 import AWSCognitoAuthPlugin
 
 class AuthRememberDeviceTests: AWSAuthBaseTest {
-    
+
     var unsubscribeToken: UnsubscribeToken!
-    
+
     override func setUp() {
         super.setUp()
         initializeAmplify()
@@ -93,8 +93,7 @@ class AuthRememberDeviceTests: AWSAuthBaseTest {
 //        }
 //        wait(for: [fetchDevicesExpectation], timeout: networkTimeout)
 //    }
-    
-    
+
     /// Calling cancel in rememberDevice operation should cancel
     ///
     /// - Given: A valid user session

@@ -28,22 +28,20 @@ struct FetchHostedUISignInToken: Action {
             return
         }
 
-
         let hostedUIConfig = hostedUIEnvironment.configuration
         do {
             let request = try HostedUIRequestHelper.createTokenRequest(
                 configuration: hostedUIConfig,
                 result: result)
             let task = hostedUIEnvironment.urlSessionFactory().dataTask(with: request) {
-                data, urlResponse, error in
+                data, _, error in
 
                 if let error = error {
                     let signInError = SignInError.service(error: error)
                     let event = HostedUIEvent(eventType: .throwError(signInError))
                     logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
                     dispatcher.send(event)
-                }
-                else if let data = data {
+                } else if let data = data {
                     handleData(data, dispatcher: dispatcher, environment: environment)
                 } else {
                     let event = HostedUIEvent(eventType: .throwError(.hostedUI(.tokenParsing)))
@@ -64,7 +62,7 @@ struct FetchHostedUISignInToken: Action {
             dispatcher.send(event)
         }
     }
-    
+
     func handleData(_ data: Data, dispatcher: EventDispatcher, environment: Environment) {
         do {
 
@@ -73,7 +71,7 @@ struct FetchHostedUISignInToken: Action {
                 options: []) as? [String: Any] else {
                 throw HostedUIError.tokenParsing
             }
-            
+
             if let errorString = json["error"] as? String {
                 let description = json["error_description"] as? String ?? ""
                 throw HostedUIError.serviceMessage("\(errorString) \(description)")

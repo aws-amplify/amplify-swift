@@ -124,13 +124,13 @@ extension AuthorizationState {
                     let action = PersistCredentials(credentials: amplifyCredentials)
                     return .init(newState: .storingCredentials(amplifyCredentials),
                                  actions: [action])
-                } else if case .receivedSessionError(_) = event.isAuthorizationEvent {
+                } else if case .receivedSessionError = event.isAuthorizationEvent {
                     // TODO: Handle session errors correctly and pass them back to the user
                     let amplifyCredentials = AmplifyCredentials.userPoolOnly(tokens: tokens)
                     let action = PersistCredentials(credentials: amplifyCredentials)
                     return .init(newState: .storingCredentials(amplifyCredentials),
                                  actions: [action])
-                } else if case .throwError(_) = event.isAuthorizationEvent {
+                } else if case .throwError = event.isAuthorizationEvent {
                     // TODO: Handle session errors correctly and pass them back to the user
                     let amplifyCredentials = AmplifyCredentials.userPoolOnly(tokens: tokens)
                     let action = PersistCredentials(credentials: amplifyCredentials)

@@ -20,7 +20,7 @@ struct InitiateAuthDeviceSRP: Action {
     func execute(withDispatcher dispatcher: EventDispatcher,
                  environment: Environment) {
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        
+
         do {
             let srpEnv = try environment.srpEnvironment()
             let userPoolEnv = try environment.userPoolEnvironment()

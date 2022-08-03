@@ -66,5 +66,5 @@ extension SignOutEvent.EventType: Equatable {
             return false
         }
     }
-    
+
 }

@@ -11,13 +11,13 @@ import ClientRuntime
 import AWSCognitoIdentityProvider
 
 public class AWSAuthForgetDeviceOperation: AmplifyOperation<AuthForgetDeviceRequest, Void, AuthError>, AuthForgetDeviceOperation {
-    
+
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
-    
+
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
-    
+
     init(_ request: AuthForgetDeviceRequest,
          authStateMachine: AuthStateMachine,
          userPoolFactory: @escaping CognitoUserPoolFactory,
@@ -30,13 +30,13 @@ public class AWSAuthForgetDeviceOperation: AmplifyOperation<AuthForgetDeviceRequ
                    request: request,
                    resultListener: resultListener)
     }
-    
+
     override public func main() {
         if isCancelled {
             finish()
             return
         }
-        
+
         fetchAuthSessionHelper.fetch(authStateMachine) { [weak self] result in
             switch result {
             case .success(let session):
@@ -44,7 +44,7 @@ public class AWSAuthForgetDeviceOperation: AmplifyOperation<AuthForgetDeviceRequ
                     self?.dispatch(AuthError.unknown("Unable to fetch auth session", nil))
                     return
                 }
-                
+
                 do {
                     let tokens = try cognitoTokenProvider.getCognitoTokens().get()
                     Task.init { [weak self] in
@@ -60,25 +60,25 @@ public class AWSAuthForgetDeviceOperation: AmplifyOperation<AuthForgetDeviceRequ
             }
         }
     }
-    
+
     func forgetDevice(with accessToken: String) async {
         do {
             let userPoolService = try userPoolFactory()
-            let input : ForgetDeviceInput
+            let input: ForgetDeviceInput
             if let device = request.device {
                 input = ForgetDeviceInput(accessToken: accessToken, deviceKey: device.id)
             } else {
                 // TODO: pass in current device ID
                 input = ForgetDeviceInput(accessToken: accessToken, deviceKey: nil)
             }
-            
+
             _ = try await userPoolService.forgetDevice(input: input)
-            
+
             if self.isCancelled {
                 finish()
                 return
             }
-            
+
             self.dispatch()
         } catch let error as ForgetDeviceOutputError {
             self.dispatch(error.authError)
@@ -91,16 +91,15 @@ public class AWSAuthForgetDeviceOperation: AmplifyOperation<AuthForgetDeviceRequ
             self.dispatch(error)
         }
     }
-    
-    
+
     private func dispatch() {
         let result = OperationResult.success(())
         dispatch(result: result)
     }
-    
+
     private func dispatch(_ error: AuthError) {
         let result = OperationResult.failure(error)
         dispatch(result: result)
     }
-    
+
 }

@@ -175,7 +175,7 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
                         self.finish()
                     }
                 }
-                
+
                 guard let result = UserPoolSignInHelper.checkNextStep(signInState) else { return }
                 self.dispatch(result: result)
                 self.cancelToken(token)

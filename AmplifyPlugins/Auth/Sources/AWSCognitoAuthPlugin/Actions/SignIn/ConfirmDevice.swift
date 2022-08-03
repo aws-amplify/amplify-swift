@@ -58,16 +58,14 @@ struct ConfirmDevice: Action {
 
                 // Save the device metadata to keychain
                 let credentialStoreClient = (environment as? AuthEnvironment)?.credentialStoreClientFactory()
-                let _ = try await credentialStoreClient?.storeData(
+                _ = try await credentialStoreClient?.storeData(
                     data: .deviceMetadata(signedInData.deviceMetadata, signedInData.userName))
                 logVerbose("Successfully stored the device metadata in the keychain ",
                            environment: environment)
-            }
-            catch {
+            } catch {
                 logError("Failed to confirm the device \(error)",
                          environment: environment)
             }
-
 
             let event = SignInEvent(eventType: .finalizeSignIn(signedInData))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
@@ -100,5 +98,3 @@ extension ConfirmDevice: CustomDebugStringConvertible {
         debugDictionary.debugDescription
     }
 }
-
-

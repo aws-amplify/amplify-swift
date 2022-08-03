@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 enum SignInMethod {
 
     case apiBased(AuthFlowType)

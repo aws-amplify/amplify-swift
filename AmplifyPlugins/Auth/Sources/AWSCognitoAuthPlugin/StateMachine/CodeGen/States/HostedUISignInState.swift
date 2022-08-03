@@ -29,7 +29,6 @@ extension HostedUISignInState {
     }
 }
 
-
 struct HostedUISigningInState: Equatable {
 
     let signInURL: URL
@@ -42,4 +41,3 @@ struct HostedUISigningInState: Equatable {
 
     let options: HostedUIOptions
 }
-

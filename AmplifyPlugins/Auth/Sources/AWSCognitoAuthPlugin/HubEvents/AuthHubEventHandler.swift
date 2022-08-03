@@ -45,7 +45,6 @@ class AuthHubEventHandler: AuthHubEventBehavior {
                 }
                 self?.handleSignInEvent(result)
 
-            
             case HubPayload.EventName.Auth.confirmSignInAPI:
                 guard let event = payload.data as? AWSAuthConfirmSignInOperation.OperationResult,
                     case let .success(result) = event else {
@@ -73,7 +72,7 @@ class AuthHubEventHandler: AuthHubEventBehavior {
                         return
                 }
                 self?.sendUserDeletedEvent()
-             
+
             case HubPayload.EventName.Auth.signOutAPI:
                 guard let event = payload.data as? AWSAuthSignOutOperation.OperationResult,
                     case .success = event else {

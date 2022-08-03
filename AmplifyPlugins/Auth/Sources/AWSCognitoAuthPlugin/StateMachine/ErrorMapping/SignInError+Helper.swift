@@ -11,7 +11,7 @@ import ClientRuntime
 import AWSCognitoIdentityProvider
 
 extension SignInError {
-    
+
     var isUserUnConfirmed: Bool {
         switch self {
         case .service(error: let serviceError):
@@ -35,7 +35,7 @@ extension SignInError {
             return false
         }
     }
-    
+
     var isResetPassword: Bool {
         switch self {
         case .service(error: let serviceError):
@@ -90,7 +90,7 @@ extension SignInError: AuthErrorConvertible {
 }
 
 extension HostedUIError: AuthErrorConvertible {
-    
+
     var authError: AuthError {
         switch self {
         case .signInURI:
@@ -134,7 +134,7 @@ extension HostedUIError: AuthErrorConvertible {
 
         case .unknown:
             return .unknown("WebUI signIn encountered an unknown error", nil)
-            
+
         }
     }
 }
