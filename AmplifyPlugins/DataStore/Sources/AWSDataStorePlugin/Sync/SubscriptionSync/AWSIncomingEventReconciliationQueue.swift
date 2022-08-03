@@ -23,7 +23,7 @@ typealias IncomingEventReconciliationQueueFactory =
 
 final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
 
-    private var modelReconciliationQueueSinks: [String: AnyCancellable]
+    private var modelReconciliationQueueSinks: AtomicValue<[String: AnyCancellable]> = AtomicValue(initialValue: [:])
 
     private let eventReconciliationQueueTopic: PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>
     var publisher: AnyPublisher<IncomingEventReconciliationQueueEvent, DataStoreError> {
@@ -32,12 +32,12 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
 
     private let connectionStatusSerialQueue: DispatchQueue
     private var reconcileAndSaveQueue: ReconcileAndSaveOperationQueue
-    private var reconciliationQueues: [ModelName: ModelReconciliationQueue]
+    private var reconciliationQueues: AtomicValue<[ModelName: ModelReconciliationQueue]> = AtomicValue(initialValue: [:])
     private var reconciliationQueueConnectionStatus: [ModelName: Bool]
     private var modelReconciliationQueueFactory: ModelReconciliationQueueFactory
 
     private var isInitialized: Bool {
-        reconciliationQueueConnectionStatus.count == reconciliationQueues.count
+        reconciliationQueueConnectionStatus.count == reconciliationQueues.get().count
     }
 
     init(modelSchemas: [ModelSchema],
@@ -49,7 +49,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
          modelReconciliationQueueFactory: ModelReconciliationQueueFactory? = nil) async {
         self.modelReconciliationQueueSinks = [:]
         self.eventReconciliationQueueTopic = PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>()
-        self.reconciliationQueues = [:]
+        self.reconciliationQueues.set([:])
         self.reconciliationQueueConnectionStatus = [:]
         self.reconcileAndSaveQueue = ReconcileAndSaveQueue(modelSchemas)
         
@@ -78,30 +78,34 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
                                                              auth,
                                                              authModeStrategy,
                                                              nil)
-            guard reconciliationQueues[modelName] == nil else {
+            guard reconciliationQueues.get()[modelName] == nil else {
                 Amplify.DataStore.log
                     .warn("Duplicate model name found: \(modelName), not subscribing")
                 continue
             }
-            reconciliationQueues[modelName] = queue
+            reconciliationQueues.with { reconciliationQueues in
+                reconciliationQueues[modelName] = queue
+            }
             let modelReconciliationQueueSink = queue.publisher.sink(receiveCompletion: onReceiveCompletion(completed:),
                                                                     receiveValue: onReceiveValue(receiveValue:))
-            modelReconciliationQueueSinks[modelName] = modelReconciliationQueueSink
+            modelReconciliationQueueSinks.with { modelReconciliationQueueSinks in
+                modelReconciliationQueueSinks[modelName] = modelReconciliationQueueSink
+            }
         }
     }
 
     func start() {
-        reconciliationQueues.values.forEach { $0.start() }
+        reconciliationQueues.get().values.forEach { $0.start() }
         eventReconciliationQueueTopic.send(.started)
     }
 
     func pause() {
-        reconciliationQueues.values.forEach { $0.pause() }
+        reconciliationQueues.get().values.forEach { $0.pause() }
         eventReconciliationQueueTopic.send(.paused)
     }
 
     func offer(_ remoteModels: [MutationSync<AnyModel>], modelName: ModelName) {
-        guard let queue = reconciliationQueues[modelName] else {
+        guard let queue = reconciliationQueues.get()[modelName] else {
             // TODO: Error handling
             return
         }
@@ -151,29 +155,14 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
         }
     }
 
-//
-
     func cancel() {
-        modelReconciliationQueueSinks.values.forEach { $0.cancel() }
-        reconciliationQueues.values.forEach { $0.cancel()}
+        modelReconciliationQueueSinks.get().values.forEach { $0.cancel() }
+        reconciliationQueues.get().values.forEach { $0.cancel()}
         connectionStatusSerialQueue.sync {
-            self.reconciliationQueues = [:]
-            self.modelReconciliationQueueSinks = [:]
+            self.reconciliationQueues.set([:])
+            self.modelReconciliationQueueSinks.set([:])
         }
     }
-
-//    func cancel() {
-//        cancel(completion: nil)
-//    }
-//
-//    private func cancel(completion: BasicClosure?) {
-//        modelReconciliationQueueSinks.values.forEach { $0.cancel() }
-//        reconciliationQueues.values.forEach { $0.cancel()}
-//        connectionStatusSerialQueue.sync {
-//            self.reconciliationQueues = [:]
-//            self.modelReconciliationQueueSinks = [:]
-//        }
-//    }
 
     private func dispatchSyncQueriesReady() {
         let syncQueriesReadyPayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesReady)
@@ -199,7 +188,7 @@ extension AWSIncomingEventReconciliationQueue {
 extension AWSIncomingEventReconciliationQueue: Resettable {
 
     func reset() async {
-        for queue in reconciliationQueues.values {
+        for queue in reconciliationQueues.get().values {
             guard let queue = queue as? Resettable else {
                 continue
             }
