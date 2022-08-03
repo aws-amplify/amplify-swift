@@ -20,7 +20,7 @@ typealias ModelReconciliationQueueFactory = (
     AuthCategoryBehavior?,
     AuthModeStrategy,
     IncomingSubscriptionEventPublisher?
-) -> ModelReconciliationQueue
+) async -> ModelReconciliationQueue
 
 /// A queue of reconciliation operations, merged from incoming subscription events and responses to locally-sourced
 /// mutations for a single model type.
@@ -83,7 +83,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
          modelPredicate: QueryPredicate?,
          auth: AuthCategoryBehavior?,
          authModeStrategy: AuthModeStrategy,
-         incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil) {
+         incomingSubscriptionEvents: IncomingSubscriptionEventPublisher? = nil) async {
 
         self.modelSchema = modelSchema
         self.storageAdapter = storageAdapter
@@ -99,12 +99,19 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         incomingSubscriptionEventQueue.underlyingQueue = DispatchQueue.global()
         incomingSubscriptionEventQueue.isSuspended = true
 
-        let resolvedIncomingSubscriptionEvents = incomingSubscriptionEvents ??
-            AWSIncomingSubscriptionEventPublisher(modelSchema: modelSchema,
-                                                  api: api,
-                                                  modelPredicate: modelPredicate,
-                                                  auth: auth,
-                                                  authModeStrategy: authModeStrategy)
+        let resolvedIncomingSubscriptionEvents: IncomingSubscriptionEventPublisher
+        if let incomingSubscriptionEvents = incomingSubscriptionEvents {
+            resolvedIncomingSubscriptionEvents = incomingSubscriptionEvents
+        } else {
+            resolvedIncomingSubscriptionEvents = await AWSIncomingSubscriptionEventPublisher(
+                modelSchema: modelSchema,
+                api: api,
+                modelPredicate: modelPredicate,
+                auth: auth,
+                authModeStrategy: authModeStrategy
+            )
+        }
+        
         self.incomingSubscriptionEvents = resolvedIncomingSubscriptionEvents
         self.reconcileAndLocalSaveOperationSinks = AtomicValue(initialValue: Set<AnyCancellable?>())
         self.incomingEventsSink = resolvedIncomingSubscriptionEvents

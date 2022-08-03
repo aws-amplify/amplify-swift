@@ -38,6 +38,8 @@ class SyncEngineTestBase: XCTestCase {
     var remoteSyncEngineSink: AnyCancellable!
 
     var requestRetryablePolicy: MockRequestRetryablePolicy!
+    
+    var token: UnsubscribeToken!
 
     // MARK: - Setup
 
@@ -74,6 +76,20 @@ class SyncEngineTestBase: XCTestCase {
         try Amplify.add(plugin: apiPlugin)
         try Amplify.add(plugin: authPlugin)
         Amplify.Logging.logLevel = .verbose
+    }
+    
+    override func tearDown() async throws {
+        amplifyConfig = nil
+        apiPlugin = nil
+        authPlugin = nil
+        storageAdapter = nil
+        stateMachine = nil
+        reachabilityPublisher = nil
+        syncEngine = nil
+        remoteSyncEngineSink = nil
+        requestRetryablePolicy = nil
+        token = nil
+        await Amplify.reset()
     }
 
     /// Sets up a StorageAdapter backed by `connection`. Optionally registers and sets up models in
@@ -162,27 +178,40 @@ class SyncEngineTestBase: XCTestCase {
         try Amplify.configure(amplifyConfig)
         Amplify.DataStore.start(completion: {_ in})
     }
+    
+    private func startAmplifyAndWaitForSync(completion: @escaping (Swift.Result<Void, Error>)->Void) {
+        token = Amplify.Hub.listen(to: .dataStore) { [weak self] payload in
+            if payload.eventName == "DataStore.syncStarted" {
+                if let token = self?.token {
+                Amplify.Hub.removeListener(token)
+                completion(.success(()))
+                }
+            }
+        }
 
+        do {
+            guard try HubListenerTestUtilities.waitForListener(with: token, timeout: 5.0) else {
+                XCTFail("Never registered listener for sync started")
+                return
+            }
+
+            try startAmplify()
+        } catch {
+            Amplify.Hub.removeListener(token)
+            completion(.failure(error))
+        }
+    }
+    
     /// Starts amplify by invoking `Amplify.configure(amplifyConfig)`, and waits to receive a `syncStarted` Hub message
     /// before returning.
-    func startAmplifyAndWaitForSync() throws {
-
-        let syncStarted = expectation(description: "Sync started")
-        let token = Amplify.Hub.listen(to: .dataStore,
-                                       eventName: HubPayload.EventName.DataStore.syncStarted) { _ in
-                                        syncStarted.fulfill()
+    func startAmplifyAndWaitForSync() async throws {
+        return try await withCheckedThrowingContinuation { continuation in
+            startAmplifyAndWaitForSync { result in
+                continuation.resume(with: result)
+            }
         }
-
-        guard try HubListenerTestUtilities.waitForListener(with: token, timeout: 5.0) else {
-            XCTFail("Never registered listener for sync started")
-            return
-        }
-
-        try startAmplify()
-
-        wait(for: [syncStarted], timeout: 5.0)
-        Amplify.Hub.removeListener(token)
     }
+    
 
     // MARK: - Data methods
 

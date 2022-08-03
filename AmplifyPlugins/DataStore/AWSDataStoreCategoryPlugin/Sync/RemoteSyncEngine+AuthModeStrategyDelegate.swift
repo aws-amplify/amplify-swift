@@ -11,18 +11,19 @@ import Foundation
 import AWSPluginsCore
 
 extension RemoteSyncEngine: AuthModeStrategyDelegate {
-    func isUserLoggedIn() -> Bool {
-        // if OIDC is used as authentication provider
-        // use `getLatestAuthToken`
-        var isLoggedInWithOIDC = false
-
+    
+    func isUserLoggedIn() async -> Bool {
         if let authProviderFactory = api as? APICategoryAuthProviderFactoryBehavior,
            let oidcAuthProvider = authProviderFactory.apiAuthProviderFactory().oidcAuthProvider() {
-            switch oidcAuthProvider.getLatestAuthToken() {
-            case .failure:
-                isLoggedInWithOIDC = false
-            case .success:
+            
+            // if OIDC is used as authentication provider
+            // use `getUserPoolAccessToken`
+            var isLoggedInWithOIDC = false
+            do {
+                _ = try await oidcAuthProvider.getUserPoolAccessToken()
                 isLoggedInWithOIDC = true
+            } catch {
+                isLoggedInWithOIDC = false
             }
 
             return isLoggedInWithOIDC

@@ -80,7 +80,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
     ///   - I restore the network
     /// - Then:
     ///   - The sync engine submits the most recent update to the service
-    func testLastMutationSentWhenNoNetwork() throws {
+    func testLastMutationSentWhenNoNetwork() async throws {
         // NOTE: The state descriptions in this test are approximate, especially as regards the
         // values of the MutationEvent table. Processing happens asynchronously, so it is important
         // to only assert the behavior we care about (which is that the final update happens after
@@ -89,14 +89,6 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         var post = Post(title: "Test", content: "Newly created", createdAt: .now())
         let expectedFinalContent = "FINAL UPDATE"
         let version = AtomicValue(initialValue: 0)
-
-        let networkUnavailable = expectation(description: "networkUnavailable")
-        let networkAvailableAgain = expectation(description: "networkAvailableAgain")
-
-        setUpNetworkStatusListener(
-            fulfillingWhenNetworkUnavailable: networkUnavailable,
-            fulfillingWhenNetworkAvailableAgain: networkAvailableAgain
-        )
 
         // Set up API responder chain
 
@@ -118,21 +110,10 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
             listenerDelay: 0.25
         )
 
-        // Once we've rejected some mutations due to an unreachable network, we'll allow the final
-        // mutation to succeed. This is where we will assert that we've seen the last mutation
-        // to be processed
-        let expectedFinalContentReceived = expectation(description: "expectedFinalContentReceived")
-        let acceptSubsequentMutations = setUpSubsequentMutationRequestResponder(
-            for: try post.eraseToAnyModel(),
-            fulfilling: expectedFinalContentReceived,
-            whenContentContains: expectedFinalContent,
-            incrementing: version
-        )
-
         // Start by accepting the initial "create" mutation
         apiPlugin.responders = [.mutateRequestListener: acceptInitialMutation]
 
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
 
         // Save initial model
         let createdNewItem = expectation(description: "createdNewItem")
@@ -144,7 +125,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
             }
         }
 
-        wait(for: [createdNewItem, apiRespondedWithSuccess], timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
 
         // Set the responder to reject the mutation. Make sure to push a retry advice before sending
         // a new mutation.
@@ -173,7 +154,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
                 savedUpdate1.fulfill()
             }
         }
-        wait(for: [savedUpdate1], timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
 
         // At this point, the MutationEvent table (the backing store for the outgoing mutation
         // queue) has only a record for the interim update. It is marked as `inProcess: true`,
@@ -185,6 +166,11 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         // the RemoteSyncEngine will stop the outgoing mutation queue. We will set the retry
         // advice interval to be very high, so it will be preempted by the "network available"
         // message we send later.
+        
+        let networkUnavailable = expectation(description: "networkUnavailable")
+        setUpNetworkUnavailableListener(
+            fulfillingWhenNetworkUnavailable: networkUnavailable
+        )
 
         reachabilitySubject.send(ReachabilityUpdate(isOnline: false))
         let noNetworkCompletion = Subscribers
@@ -194,7 +180,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
 
         // Assert that DataStore has pushed the no-network event. This isn't strictly necessary for
         // correct operation of the queue.
-        wait(for: [networkUnavailable], timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
 
         // At this point, the MutationEvent table has only a record for update1. It is marked as
         // `inProcess: false`, because the mutation queue has been fully cancelled by the cleanup
@@ -217,7 +203,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
                 savedUpdate2.fulfill()
             }
         }
-        wait(for: [savedUpdate2], timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
 
         // At this point, the MutationEvent table has only a record for update2. It is marked as
         // `inProcess: false`, because the mutation queue has been fully cancelled.
@@ -236,7 +222,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
                 savedFinalUpdate.fulfill()
             }
         }
-        wait(for: [savedFinalUpdate], timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
 
         let syncStarted = expectation(description: "syncStarted")
         setUpSyncStartedListener(
@@ -247,13 +233,30 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         setUpOutboxEmptyListener(
             fulfillingWhenOutboxEmpty: outboxEmpty
         )
+        
+        // Once we've rejected some mutations due to an unreachable network, we'll allow the final
+        // mutation to succeed. This is where we will assert that we've seen the last mutation
+        // to be processed
+        let expectedFinalContentReceived = expectation(description: "expectedFinalContentReceived")
+        let acceptSubsequentMutations = setUpSubsequentMutationRequestResponder(
+            for: try post.eraseToAnyModel(),
+            fulfilling: expectedFinalContentReceived,
+            whenContentContains: expectedFinalContent,
+            incrementing: version
+        )
 
         // Turn on network. This will preempt the retry timer and immediately start processing
         // the queue. We expect the mutation queue to restart, poll the MutationEvent table, pick
         // up the final update, and process it.
+        let networkAvailableAgain = expectation(description: "networkAvailableAgain")
+
+        setUpNetworkAvailableListener(
+            fulfillingWhenNetworkAvailableAgain: networkAvailableAgain
+        )
+        
         apiPlugin.responders = [.mutateRequestListener: acceptSubsequentMutations]
         reachabilitySubject.send(ReachabilityUpdate(isOnline: true))
-        wait(for: [networkAvailableAgain, syncStarted, outboxEmpty, expectedFinalContentReceived], timeout: 5.0)
+        await waitForExpectations(timeout: 5.0)
     }
 
     // MARK: - Utilities
@@ -329,15 +332,9 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
 
     }
 
-    private func setUpNetworkStatusListener(
-        fulfillingWhenNetworkUnavailable networkUnavailable: XCTestExpectation,
-        fulfillingWhenNetworkAvailableAgain networkAvailableAgain: XCTestExpectation
+    private func setUpNetworkUnavailableListener(
+        fulfillingWhenNetworkUnavailable networkUnavailable: XCTestExpectation
     ) {
-        // We expect 2 "network available" notifications: the initial notification sent from the
-        // RemoteSyncEngine when it first `start()`s and subscribes to the reachability publisher,
-        // and the notification after we restore connectivity later in the test.
-        let shouldFulfillNetworkAvailableAgain = AtomicValue(initialValue: false)
-
         Amplify
             .Hub
             .publisher(for: .dataStore)
@@ -349,20 +346,34 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
                     return
                 }
 
-                if networkStatusEvent.active {
-                    if shouldFulfillNetworkAvailableAgain.get() {
-                        networkAvailableAgain.fulfill()
-                    }
-                } else {
-                    // If the received event is an "unavailable" message, we should fulfill the
-                    // "network available" expectation the next time we receive an "available" message.
-                    shouldFulfillNetworkAvailableAgain.set(true)
+                if !networkStatusEvent.active {
                     networkUnavailable.fulfill()
                 }
             }
             .store(in: &cancellables)
     }
-
+    
+    private func setUpNetworkAvailableListener(
+        fulfillingWhenNetworkAvailableAgain networkAvailableAgain: XCTestExpectation
+    ) {
+        Amplify
+            .Hub
+            .publisher(for: .dataStore)
+            .print("### DataStore listener \(Date()) - ")
+            .filter { $0.eventName == HubPayload.EventName.DataStore.networkStatus }
+            .sink { payload in
+                guard let networkStatusEvent = payload.data as? NetworkStatusEvent else {
+                    XCTFail("Failed to cast payload data as NetworkStatusEvent")
+                    return
+                }
+                
+                if networkStatusEvent.active {
+                    networkAvailableAgain.fulfill()
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
     private func setUpSyncStartedListener(
         fulfillingWhenSyncStarted syncStarted: XCTestExpectation
     ) {

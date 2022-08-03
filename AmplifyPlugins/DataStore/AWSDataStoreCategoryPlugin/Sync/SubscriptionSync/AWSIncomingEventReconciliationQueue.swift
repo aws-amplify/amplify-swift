@@ -19,7 +19,7 @@ typealias IncomingEventReconciliationQueueFactory =
     AuthCategoryBehavior?,
     AuthModeStrategy,
     ModelReconciliationQueueFactory?
-) -> IncomingEventReconciliationQueue
+) async -> IncomingEventReconciliationQueue
 
 final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueue {
 
@@ -46,13 +46,19 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
          syncExpressions: [DataStoreSyncExpression],
          auth: AuthCategoryBehavior? = nil,
          authModeStrategy: AuthModeStrategy,
-         modelReconciliationQueueFactory: ModelReconciliationQueueFactory? = nil) {
+         modelReconciliationQueueFactory: ModelReconciliationQueueFactory? = nil) async {
         self.modelReconciliationQueueSinks = [:]
         self.eventReconciliationQueueTopic = PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>()
         self.reconciliationQueues = [:]
         self.reconciliationQueueConnectionStatus = [:]
         self.reconcileAndSaveQueue = ReconcileAndSaveQueue(modelSchemas)
-        self.modelReconciliationQueueFactory = modelReconciliationQueueFactory ?? AWSModelReconciliationQueue.init
+        
+        if let modelReconciliationQueueFactory = modelReconciliationQueueFactory {
+            self.modelReconciliationQueueFactory = modelReconciliationQueueFactory
+        } else {
+            self.modelReconciliationQueueFactory = AWSModelReconciliationQueue.init
+        }
+        
         // TODO: Add target for SyncEngine system to help prevent thread explosion and increase performance
         // https://github.com/aws-amplify/amplify-ios/issues/399
         self.connectionStatusSerialQueue
@@ -64,7 +70,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
                 $0.modelSchema.name == modelName
             })
             let modelPredicate = syncExpression?.modelPredicate() ?? nil
-            let queue = self.modelReconciliationQueueFactory(modelSchema,
+            let queue = await self.modelReconciliationQueueFactory(modelSchema,
                                                              storageAdapter,
                                                              api,
                                                              reconcileAndSaveQueue,
@@ -169,7 +175,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
 // MARK: - Static factory
 extension AWSIncomingEventReconciliationQueue {
     static let factory: IncomingEventReconciliationQueueFactory = { modelSchemas, api, storageAdapter, syncExpressions, auth, authModeStrategy, _ in
-        AWSIncomingEventReconciliationQueue(modelSchemas: modelSchemas,
+        await AWSIncomingEventReconciliationQueue(modelSchemas: modelSchemas,
                                             api: api,
                                             storageAdapter: storageAdapter,
                                             syncExpressions: syncExpressions,

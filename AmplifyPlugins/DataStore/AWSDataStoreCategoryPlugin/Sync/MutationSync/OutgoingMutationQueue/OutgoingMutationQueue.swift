@@ -200,20 +200,22 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
             return
         }
 
-        let syncMutationToCloudOperation = SyncMutationToCloudOperation(
-            mutationEvent: mutationEvent,
-            api: api,
-            authModeStrategy: authModeStrategy
-        ) { [weak self] result in
-            self?.log.verbose(
-                "[SyncMutationToCloudOperation] mutationEvent finished: \(mutationEvent.id); result: \(result)")
-            self?.processSyncMutationToCloudResult(result, mutationEvent: mutationEvent, api: api)
-        }
+        Task {
+            let syncMutationToCloudOperation = await SyncMutationToCloudOperation(
+                mutationEvent: mutationEvent,
+                api: api,
+                authModeStrategy: authModeStrategy
+            ) { [weak self] result in
+                self?.log.verbose(
+                    "[SyncMutationToCloudOperation] mutationEvent finished: \(mutationEvent.id); result: \(result)")
+                self?.processSyncMutationToCloudResult(result, mutationEvent: mutationEvent, api: api)
+            }
 
-        dispatchOutboxMutationEnqueuedEvent(mutationEvent: mutationEvent)
-        dispatchOutboxStatusEvent(isEmpty: false)
-        operationQueue.addOperation(syncMutationToCloudOperation)
-        stateMachine.notify(action: .enqueuedEvent)
+            dispatchOutboxMutationEnqueuedEvent(mutationEvent: mutationEvent)
+            dispatchOutboxStatusEvent(isEmpty: false)
+            operationQueue.addOperation(syncMutationToCloudOperation)
+            stateMachine.notify(action: .enqueuedEvent)
+        }
     }
 
     private func processSyncMutationToCloudResult(_ result: GraphQLOperation<MutationSync<AnyModel>>.OperationResult,

@@ -13,20 +13,20 @@ import AppSyncRealTimeClient
 
 class AuthenticationTokenAuthInterceptorTests: XCTestCase {
 
-    func testAuthenticationTokenInterceptor() throws {
+    func testAuthenticationTokenInterceptor() async throws {
         let url = URL(string: "http://awssubscriptionurl.ca")!
         let request = AppSyncConnectionRequest(url: url)
         let interceptor = AuthenticationTokenAuthInterceptor(authTokenProvider: TestAuthTokenProvider())
-        let interceptedRequest = interceptor.interceptConnection(request, for: url)
+        let interceptedRequest = await interceptor.interceptConnection(request, for: url)
 
         XCTAssertNotNil(interceptedRequest.url.query)
     }
 
-    func testDoesNotAddAuthHeaderIfTokenProviderReturnsError() throws {
+    func testDoesNotAddAuthHeaderIfTokenProviderReturnsError() async throws {
         let url = URL(string: "http://awssubscriptionurl.ca")!
         let request = AppSyncConnectionRequest(url: url)
         let interceptor = AuthenticationTokenAuthInterceptor(authTokenProvider: TestFailingAuthTokenProvider())
-        let interceptedRequest = interceptor.interceptConnection(request, for: url)
+        let interceptedRequest = await interceptor.interceptConnection(request, for: url)
 
         XCTAssertNil(interceptedRequest.url.query)
     }
@@ -47,15 +47,15 @@ private class TestAuthTokenProvider: AmplifyAuthTokenProvider {
 }
 
 private class TestFailingAuthTokenProvider: AmplifyAuthTokenProvider {
-    let authToken = "token"
     
     // TODO: Remove this after datastore dependencies are removed.
     func getLatestAuthToken() -> Result<AuthToken, Error> {
-        let error = APIError.networkError("Token error")
-        return .failure(error)
+        .success(authToken)
     }
     
+    let authToken = "token"
+    
     func getUserPoolAccessToken() async throws -> String {
-        authToken
+        throw "Token error"
     }
 }
