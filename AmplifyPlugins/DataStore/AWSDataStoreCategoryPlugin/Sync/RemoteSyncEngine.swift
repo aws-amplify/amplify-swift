@@ -398,6 +398,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     /// Must be invoked from workQueue (as in during a `respond` call
     private func notifySyncStarted() {
         resetCurrentAttemptNumber()
+        log.verbose("[Lifecycle event 5]: syncStarted")
         Amplify.Hub.dispatch(to: .dataStore,
                              payload: HubPayload(eventName: HubPayload.EventName.DataStore.syncStarted))
 

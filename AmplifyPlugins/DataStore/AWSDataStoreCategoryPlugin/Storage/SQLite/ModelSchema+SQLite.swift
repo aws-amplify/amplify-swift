@@ -37,13 +37,53 @@ protocol SQLColumn {
     var isForeignKey: Bool { get }
 }
 
+extension ModelPrimaryKey: SQLColumn {
+    /// Convenience method to convert a ModelPrimaryKey to an
+    /// ModelField to be used in a SQL query
+    var asField: ModelField {
+        ModelField(name: name,
+                   type: .string,
+                   isRequired: true,
+                   attributes: [.primaryKey])
+    }
+
+    var sqlType: SQLDataType {
+        .text
+    }
+
+    var isForeignKey: Bool {
+        false
+    }
+
+    public var sqlName: String {
+        fields.count == 1 ? fields[0].name : ModelIdentifierFormat.Custom.sqlColumnName
+    }
+
+    public var name: String {
+        sqlName
+    }
+
+    public func columnName(forNamespace namespace: String? = nil) -> String {
+        if fields.count == 1, let field = fields.first {
+            return field.columnName(forNamespace: namespace)
+        }
+
+        let columnName = ModelIdentifierFormat.Custom.sqlColumnName.quoted()
+        if let namespace = namespace {
+            return "\(namespace.quoted()).\(columnName)"
+        }
+
+        return columnName
+    }
+}
+
 extension ModelField: SQLColumn {
 
     var sqlName: String {
-        if case let .belongsTo(_, targetName) = association {
-            return targetName ?? name + "Id"
-        } else if case let .hasOne(_, targetName) = association {
-            return targetName ?? name + "Id"
+        if case let .belongsTo(_, targetNames) = association {
+            return foreignKeySqlName(withAssociationTargets: targetNames)
+        } else if case let .hasOne(_, targetNames) = association {
+            return foreignKeySqlName(withAssociationTargets: targetNames)
         }
         return name
     }
@@ -63,6 +103,22 @@ extension ModelField: SQLColumn {
 
     var isForeignKey: Bool {
         isAssociationOwner
+    }
+
+    /// Default foreign value used to reference a model with a composite primary key.
+    /// It's only used for the local storage, the individual values will be sent to the cloud.
+    private func foreignKeySqlName(withAssociationTargets targetNames: [String]) -> String {
+        // default name for legacy models without a target name
+        if targetNames.isEmpty {
+            return name + "Id"
+
+        // association with a model with a single-field PK
+        } else if targetNames.count == 1,
+                  let keyName = targetNames.first {
+            return keyName
+        }
+        // composite PK
+        return "@@\(name)ForeignKey"
     }
 
     /// Get the name of the `ModelField` as a SQL column name. Columns can be optionally namespaced
@@ -107,7 +163,11 @@ extension ModelSchema {
     /// the owner of a foreign key to another `Model`. Fields that reference the inverse side of
     /// the relationship (i.e. the "one" side of a "one-to-many" relationship) are excluded.
     var columns: [ModelField] {
-        sortedFields.filter { !$0.hasAssociation || $0.isForeignKey }
+        let fields = sortedFields.filter { !$0.hasAssociation || $0.isForeignKey }
+        if primaryKey.isCompositeKey {
+            return [primaryKey.asField] + fields
+        }
+        return fields
     }
 
     /// Filter the fields that represent foreign keys.
@@ -117,8 +177,22 @@ extension ModelSchema {
 
     /// Create SQLite indexes corresponding to secondary indexes in the model schema
     func createIndexStatements() -> String {
+        // Store field names used to represent associations for a fast lookup
+        var associationsFields = Set<String>()
+        for (_, field) in self.fields {
+            if field.isAssociationOwner,
+               let association = field.association,
+               case let .belongsTo(_, targetNames: targetNames) = association {
+                associationsFields.formUnion(targetNames)
+            }
+        }
+
         var statement = ""
-        for case let .index(fields, name?) in indexes {
+        for case let .index(fields, name) in indexes {
+            // don't create an index on fields used to represent associations
+            if !associationsFields.isDisjoint(with: fields) {
+                continue
+            }
             statement += CreateIndexStatement(
                 modelSchema: self,
                 fields: fields,
