@@ -103,7 +103,7 @@ extension AWSCognitoAuthPlugin {
     }
 
     private func makeCognitoASF() -> AdvancedSecurityBehavior {
-        fatalError()
+        CognitoUserPoolASF()
     }
 
     private func makeCredentialStore() -> AmplifyAuthCredentialStoreBehavior {

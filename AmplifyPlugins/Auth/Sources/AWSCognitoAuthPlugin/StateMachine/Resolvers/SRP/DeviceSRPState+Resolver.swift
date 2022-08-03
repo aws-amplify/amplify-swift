@@ -32,7 +32,7 @@ extension DeviceSRPState {
             switch oldState {
             case .notStarted:
                 return resolveNotStarted(byApplying: deviceSrpSignInEvent)
-            case .initiatingDeviceSRP(let srpStateData):
+            case .initiatingDeviceSRP:
                 return resolveRespondingDeviceSRPA(
                     byApplying: deviceSrpSignInEvent,
                     from: oldState)

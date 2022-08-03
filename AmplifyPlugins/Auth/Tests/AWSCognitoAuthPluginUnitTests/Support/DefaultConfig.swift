@@ -241,11 +241,11 @@ struct MockCredentialStoreOperationClient: CredentialStoreStateBehaviour {
 }
 
 struct MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
-    func saveCredential(_ credential: Codable) throws {
+    func saveCredential(_ credential: AmplifyCredentials) throws {
 
     }
 
-    func retrieveCredential() throws -> Codable {
+    func retrieveCredential() throws -> AmplifyCredentials {
         return AmplifyCredentials.noCredentials
     }
 
@@ -257,15 +257,28 @@ struct MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
         return MockLegacyStore()
     }
 
-    func saveDevice(_ deviceMetadata: Codable, for username: String) throws {
+    func saveDevice(_ deviceMetadata: DeviceMetadata, for username: String) throws {
 
     }
 
-    func retrieveDevice(for username: String) throws -> Codable {
+    func retrieveDevice(for username: String) throws -> DeviceMetadata {
         return DeviceMetadata.noData
     }
 
     func removeDevice(for username: String) throws {
+
+    }
+
+
+    func saveASFDevice(_ deviceId: String, for username: String) throws {
+
+    }
+
+    func retrieveASFDevice(for username: String) throws -> String {
+        return ""
+    }
+
+    func removeASFDevice(for username: String) throws {
 
     }
 }

@@ -38,6 +38,10 @@ struct ClearCredentialStore: Action {
             case .deviceMetadata(let username):
                 try amplifyCredentialStore.removeDevice(for: username)
                 credentialStoreData = .deviceMetadata(username: username)
+                credentialStoreData = .deviceMetadata(.noData, username)
+            case .asfDeviceId(username: let username):
+                try amplifyCredentialStore.removeASFDevice(for: username)
+                credentialStoreData = .asfDeviceId(nil, username)
             }
 
             let event = CredentialStoreEvent(eventType: .credentialCleared(credentialStoreData))

@@ -34,11 +34,14 @@ struct LoadCredentialStore: Action {
             let credentialStoreData: CredentialStoreData
             switch credentialStoreType {
             case .amplifyCredentials:
-                let storedCredentials = try amplifyCredentialStore.retrieveCredential() as! AmplifyCredentials
+                let storedCredentials = try amplifyCredentialStore.retrieveCredential()
                 credentialStoreData = .amplifyCredentials(storedCredentials)
             case .deviceMetadata(let username):
-                let deviceMetadata = try amplifyCredentialStore.retrieveDevice(for: username) as! DeviceMetadata
+                let deviceMetadata = try amplifyCredentialStore.retrieveDevice(for: username)
                 credentialStoreData = .deviceMetadata(deviceMetadata, username)
+            case .asfDeviceId(let username):
+                let deviceId = try amplifyCredentialStore.retrieveASFDevice(for: username)
+                credentialStoreData = .asfDeviceId(deviceId, username)
             }
 
             let event = CredentialStoreEvent(
