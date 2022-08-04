@@ -95,9 +95,15 @@ extension InitiateAuthInput {
         var userContextData: CognitoIdentityProviderClientTypes.UserContextDataType? = nil
         if let asfDeviceId = asfDeviceId {
             let asfClient = environment.cognitoUserPoolASFFactory()
+            var deviceInfo: ASFDeviceBehavior
+            var appInfo: ASFAppInfoBehavior
 #if os(iOS)
-            let deviceInfo = ASFUIDeviceInfo(id: asfDeviceId)
-            let appInfo = ASFAppInfo()
+            deviceInfo = ASFUIDeviceInfo(id: asfDeviceId)
+            appInfo = ASFAppInfo()
+
+#else
+            // TODO: Add for other platforms
+#endif
             do {
                 let context = try asfClient.userContextData(for: username,
                                                             deviceInfo: deviceInfo,
@@ -107,9 +113,6 @@ extension InitiateAuthInput {
             } catch {
                 // Ignore the error and add nil as context data
             }
-#else
-            // TODO: Add for other platforms
-#endif
         }
 
         return InitiateAuthInput(

@@ -13,15 +13,14 @@ extension CognitoUserPoolASF {
         for username: String,
         environment: AuthEnvironment) async throws -> String {
             let credentialStoreClient = environment.credentialStoreClientFactory()
-            let data = try await credentialStoreClient.fetchData(
-                type: .asfDeviceId(username: username))
+            let data = try? await credentialStoreClient.fetchData(
+            type: .asfDeviceId(username: username))
             if case .asfDeviceId(let deviceId, _) = data,
                let deviceId = deviceId {
                 return deviceId
-            } else {
-                let uuid = UUID().uuidString
-                try await credentialStoreClient.storeData(data: .asfDeviceId(uuid, username))
-                return uuid
             }
+            let uuid = UUID().uuidString
+            try await credentialStoreClient.storeData(data: .asfDeviceId(uuid, username))
+            return uuid
         }
 }
