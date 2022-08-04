@@ -42,7 +42,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
     func testSetUp() async throws {
         do {
             await setUp(withModels: TestModelRegistration())
-            try startAmplifyAndWaitForSync()
+            try await startAmplifyAndWaitForSync()
         } catch {
             print("Error \(error)")
         }
@@ -51,7 +51,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
     
     func testSaveTeamAndProjectSyncToCloud() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         let team = Team1(name: "name1")
         let project = Project1(team: team)
         let syncedTeamReceived = expectation(description: "received team from sync path")
@@ -118,7 +118,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
 
     func testUpdateProjectWithAnotherTeam() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         let team = Team1(name: "name1")
         let anotherTeam = Team1(name: "name1")
         var project = Project1(team: team)
@@ -205,7 +205,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
 
     func testDeleteAndGetProjectReturnsNilWithSync() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name"),
               let project = saveProject(teamID: team.id, team: team) else {
             XCTFail("Could not save team and project")
@@ -286,7 +286,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
 
     func testDeleteWithValidCondition() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name"),
               let project = saveProject(teamID: team.id, team: team) else {
             XCTFail("Could not save team and project")
@@ -318,7 +318,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
 
     func testDeleteWithInvalidCondition() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name"),
               let project = saveProject(teamID: team.id, team: team) else {
             XCTFail("Could not save team and project")
@@ -354,7 +354,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
 
     func testListProjectsByTeamID() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         guard let team = saveTeam(name: "name") else {
             XCTFail("Could not save team")
             return

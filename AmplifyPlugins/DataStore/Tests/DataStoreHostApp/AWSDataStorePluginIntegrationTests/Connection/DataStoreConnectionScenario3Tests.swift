@@ -42,7 +42,7 @@ class DataStoreConnectionScenario3Tests: SyncEngineIntegrationTestBase {
 
     func testSavePostAndCommentSyncToCloud() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         let post = Post3(title: "title")
         let comment = Comment3(postID: post.id, content: "content")
         let syncedPostReceived = expectation(description: "received post from sync event")
@@ -101,7 +101,7 @@ class DataStoreConnectionScenario3Tests: SyncEngineIntegrationTestBase {
 
     func testSaveCommentAndGetPostWithComments() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
 
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
@@ -145,7 +145,7 @@ class DataStoreConnectionScenario3Tests: SyncEngineIntegrationTestBase {
 
     func testUpdateComment() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
 
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
@@ -175,7 +175,7 @@ class DataStoreConnectionScenario3Tests: SyncEngineIntegrationTestBase {
 
     func testDeleteAndGetComment() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
             return
@@ -212,7 +212,7 @@ class DataStoreConnectionScenario3Tests: SyncEngineIntegrationTestBase {
 
     func testListCommentsByPostID() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
 
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")

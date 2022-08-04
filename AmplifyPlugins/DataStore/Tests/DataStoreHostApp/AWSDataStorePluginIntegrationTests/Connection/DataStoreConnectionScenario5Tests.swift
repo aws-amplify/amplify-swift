@@ -55,7 +55,7 @@ class DataStoreConnectionScenario5Tests: SyncEngineIntegrationTestBase {
 
     func testListPostEditorByPost() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
             return
@@ -83,7 +83,7 @@ class DataStoreConnectionScenario5Tests: SyncEngineIntegrationTestBase {
 
     func testListPostEditorByUser() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
             return
@@ -111,7 +111,7 @@ class DataStoreConnectionScenario5Tests: SyncEngineIntegrationTestBase {
 
     func testGetPostThenLoadPostEditors() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
             return
@@ -158,7 +158,7 @@ class DataStoreConnectionScenario5Tests: SyncEngineIntegrationTestBase {
 
     func testGetUserThenLoadPostEditors() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
             return

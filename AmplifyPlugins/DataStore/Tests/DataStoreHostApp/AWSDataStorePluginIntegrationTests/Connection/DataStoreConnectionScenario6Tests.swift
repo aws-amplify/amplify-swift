@@ -51,7 +51,7 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
 
     func testGetBlogThenFetchPostsThenFetchComments() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         guard let blog = saveBlog(name: "name"),
               let post1 = savePost(title: "title", blog: blog),
               let post2 = savePost(title: "title", blog: blog),
@@ -101,7 +101,7 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
 
     func testGetCommentThenFetchPostThenFetchBlog() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         guard let blog = saveBlog(name: "name"),
               let post = savePost(title: "title", blog: blog),
               let comment = saveComment(post: post, content: "content") else {
@@ -151,7 +151,7 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
 
     func testGetPostThenFetchBlogAndComment() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         guard let blog = saveBlog(name: "name"),
               let post = savePost(title: "title", blog: blog),
               let comment = saveComment(post: post, content: "content") else {
@@ -216,7 +216,7 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
 
     func testDeleteAll() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForReady()
+        try await startAmplifyAndWaitForReady()
         var cancellables = Set<AnyCancellable>()
         let remoteEventReceived = expectation(description: "received mutation event with version 1")
         let commentId = UUID().uuidString

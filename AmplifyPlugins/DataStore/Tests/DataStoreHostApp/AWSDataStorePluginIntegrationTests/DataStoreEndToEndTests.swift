@@ -26,8 +26,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 
     func testSetUp() async throws {
         do {
-            await setUp(withModels: TestModelRegistration())
-            try startAmplifyAndWaitForSync()
+            await setUp(withModels: TestModelRegistration(), logLevel: .verbose)
+            try await startAmplifyAndWaitForSync()
         } catch {
             print("Error \(error)")
         }
@@ -35,7 +35,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     
     func testCreate() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         var cancellables = Set<AnyCancellable>()
         let date = Temporal.DateTime.now()
         let newPost = Post(
@@ -45,9 +45,12 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 
         let saveSuccess = expectation(description: "save was successful.")
         let outboxMutationEnqueued = expectation(description: "received OutboxMutationEnqueuedEvent")
+        outboxMutationEnqueued.assertForOverFulfill = false
         let outboxIsNotEmptyReceived = expectation(description: "received outboxStatusReceived(false)")
+        outboxIsNotEmptyReceived.assertForOverFulfill = false
         let outboxIsEmptyReceived = expectation(description: "received outboxStatusReceived(true)")
         let outboxMutationProcessed = expectation(description: "received outboxMutationProcessed")
+        outboxMutationProcessed.assertForOverFulfill = false
         let syncReceived = expectation(description: "SyncReceived(MutationEvent(version: 1))")
         let localEventReceived = expectation(description: "received mutation event with version nil")
         let remoteEventReceived = expectation(description: "received mutation event with version 1")
@@ -105,19 +108,12 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             }
         }
 
-        wait(for: [saveSuccess,
-                   outboxMutationEnqueued,
-                   outboxIsNotEmptyReceived,
-                   outboxIsEmptyReceived,
-                   outboxMutationProcessed,
-                   syncReceived,
-                   localEventReceived,
-                   remoteEventReceived], timeout: 10.0)
+        await waitForExpectations(timeout: 10.0)
     }
 
     func testCreateMutateDelete() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
 
         let date = Temporal.DateTime.now()
 
@@ -194,7 +190,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     ///    - the update with condition that matches existing data will be applied and returned.
     func testCreateThenMutateWithCondition() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
 
         let post = Post.keys
         let date = Temporal.DateTime.now()
@@ -263,7 +259,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     ///    - the save with condition reaches the remote and fails with conditional save failed
     func testCreateThenMutateWithConditionFailOnSync() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
 
         let post = Post.keys
         let date = Temporal.DateTime.now()
@@ -350,7 +346,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     ///
     func testStopStart() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         let stopStartSuccess = expectation(description: "stop then start successful")
         Amplify.DataStore.stop { result in
             switch result {
@@ -409,7 +405,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     ///
     func testClearStart() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         let clearStartSuccess = expectation(description: "clear then start successful")
         Amplify.DataStore.clear { result in
             switch result {
@@ -443,7 +439,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     ///
     func testConcurrentSave() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
 
         var posts = [Post]()
         let count = 2

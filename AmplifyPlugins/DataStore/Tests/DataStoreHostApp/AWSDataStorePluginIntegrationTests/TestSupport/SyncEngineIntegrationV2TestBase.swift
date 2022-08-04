@@ -86,15 +86,15 @@ class SyncEngineIntegrationV2TestBase: DataStoreTestBase {
         }
     }
 
-    func startAmplifyAndWaitForSync() throws {
-        try startAmplifyAndWait(for: HubPayload.EventName.DataStore.syncStarted)
+    func startAmplifyAndWaitForSync() async throws {
+        try await startAmplifyAndWait(for: HubPayload.EventName.DataStore.syncStarted)
     }
 
-    func startAmplifyAndWaitForReady() throws {
-        try startAmplifyAndWait(for: HubPayload.EventName.DataStore.ready)
+    func startAmplifyAndWaitForReady() async throws {
+        try await startAmplifyAndWait(for: HubPayload.EventName.DataStore.ready)
     }
 
-    private func startAmplifyAndWait(for eventName: String) throws {
+    private func startAmplifyAndWait(for eventName: String) async throws {
         let eventReceived = expectation(description: "DataStore \(eventName) event")
 
         var token: UnsubscribeToken!
@@ -117,7 +117,8 @@ class SyncEngineIntegrationV2TestBase: DataStoreTestBase {
             }
         }
 
-        wait(for: [eventReceived], timeout: 100.0)
+        await waitForExpectations(timeout: 100.0)
+        //wait(for: [eventReceived], timeout: 100.0)
     }
 
 }

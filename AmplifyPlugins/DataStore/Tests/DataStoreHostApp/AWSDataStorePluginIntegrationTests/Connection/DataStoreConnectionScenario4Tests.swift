@@ -43,7 +43,7 @@ class DataStoreConnectionScenario4Tests: SyncEngineIntegrationTestBase {
 
     func testCreateCommentAndGetCommentWithPost() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
             return
@@ -74,7 +74,7 @@ class DataStoreConnectionScenario4Tests: SyncEngineIntegrationTestBase {
 
     func testCreateCommentAndGetPostWithComments() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
             return
@@ -117,7 +117,7 @@ class DataStoreConnectionScenario4Tests: SyncEngineIntegrationTestBase {
 
     func testUpdateComment() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
             return
@@ -146,7 +146,7 @@ class DataStoreConnectionScenario4Tests: SyncEngineIntegrationTestBase {
 
     func testDeleteAndGetComment() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
             return
@@ -184,7 +184,7 @@ class DataStoreConnectionScenario4Tests: SyncEngineIntegrationTestBase {
 
     func testListCommentsByPostID() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         guard let post = savePost(title: "title") else {
             XCTFail("Could not create post")
             return

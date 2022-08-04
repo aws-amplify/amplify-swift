@@ -26,7 +26,7 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
 
     func testScalarContainer() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         let container = ScalarContainer(myString: "myString",
                                         myInt: 1,
                                         myDouble: 1.0,
@@ -72,7 +72,7 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
 
     func testListIntContainer() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         let container = ListIntContainer(
             test: 1,
             nullableInt: 1,
@@ -119,7 +119,7 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
 
     func testListStringContainer() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         let container = ListStringContainer(
             test: "test",
             nullableString: nil,
@@ -166,7 +166,7 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
 
     func testListContainerWithNil() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         let container = ListStringContainer(
             test: "test",
             nullableString: nil,
@@ -213,7 +213,7 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
 
     func testEnumTestModel() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         let container = EnumTestModel(enumVal: .valueOne,
                                       nullableEnumVal: .valueTwo,
                                       enumList: [.valueOne],
@@ -258,7 +258,7 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
 
     func testNestedEnumTestModel() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForSync()
+        try await startAmplifyAndWaitForSync()
         let container = NestedTypeTestModel(nestedVal: .init(valueOne: 1),
                                             nullableNestedVal: .init(),
                                             nestedList: [.init(valueTwo: "value2")],

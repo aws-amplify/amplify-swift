@@ -165,7 +165,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///
     func testObserveQueryWithDataStoreDeltaSync() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForReady()
+        try await startAmplifyAndWaitForReady()
         savePostAndWaitForSync(Post(title: "title", content: "content", createdAt: .now()))
         let numberOfPosts = queryNumberOfPosts()
         XCTAssertTrue(numberOfPosts > 0)
@@ -403,7 +403,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///
     func testObserveQueryShouldResetOnDataStoreStop() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForReady()
+        try await startAmplifyAndWaitForReady()
         let firstSnapshotWithIsSynced = expectation(description: "query snapshot with isSynced true")
         let observeQueryReceivedCompleted = expectation(description: "observeQuery received completed")
         observeQueryReceivedCompleted.isInverted = true
@@ -443,7 +443,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///
     func testObserveQueryShouldResetOnDataStoreClear() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForReady()
+        try await startAmplifyAndWaitForReady()
         let firstSnapshotWithIsSynced = expectation(description: "query snapshot with isSynced true")
         let observeQueryReceivedCompleted = expectation(description: "observeQuery received completed")
         observeQueryReceivedCompleted.isInverted = true
@@ -475,7 +475,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
 
     func testObserveQueryShouldStartOnDataStoreStart() async throws {
         await setUp(withModels: TestModelRegistration())
-        try startAmplifyAndWaitForReady()
+        try await startAmplifyAndWaitForReady()
         let firstSnapshot = expectation(description: "first query snapshot")
         let secondSnapshot = expectation(description: "second query snapshot")
         let observeQueryReceivedCompleted = expectation(description: "observeQuery received completed")
