@@ -26,36 +26,15 @@ struct VerifySignInChallenge: Action {
             let session = challenge.session
             let challengeType = challenge.challenge
             let responseKey = try challenge.getChallengeKey()
-            let userPoolClientId = userpoolEnv.userPoolConfiguration.clientId
 
-            var challengeResponses = [
-                "USERNAME": username,
-                responseKey: confirmSignEventData.answer
-            ]
-
-            // Add the attributes to the challenge response
-            confirmSignEventData.attributes.forEach {
-                challengeResponses[$0.key] = $0.value
-            }
-
-            if let clientSecret = userpoolEnv.userPoolConfiguration.clientSecret {
-
-                let clientSecretHash = SRPSignInHelper.clientSecretHash(
-                    username: username,
-                    userPoolClientId: userPoolClientId,
-                    clientSecret: clientSecret
-                )
-                challengeResponses["SECRET_HASH"] = clientSecretHash
-            }
-
-            let input = RespondToAuthChallengeInput(
-                analyticsMetadata: nil,
-                challengeName: challengeType,
-                challengeResponses: challengeResponses,
-                clientId: userPoolClientId,
-                clientMetadata: [:],
+            let input = RespondToAuthChallengeInput.verifyChallenge(
+                username: username,
+                challengeType: challengeType,
                 session: session,
-                userContextData: nil)
+                responseKey: responseKey,
+                answer: confirmSignEventData.answer,
+                attributes: confirmSignEventData.attributes,
+                environment: userpoolEnv)
 
             try UserPoolSignInHelper.sendRespondToAuth(
                 request: input,

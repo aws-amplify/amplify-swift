@@ -27,4 +27,14 @@ extension Environment {
         }
         return environment
     }
+
+    func authEnvironment() throws -> AuthEnvironment {
+
+        guard let environment = self as? AuthEnvironment else {
+            let message = AuthPluginErrorConstants.configurationError
+            let error = AuthenticationError.configuration(message: message)
+            throw error
+        }
+        return environment
+    }
 }

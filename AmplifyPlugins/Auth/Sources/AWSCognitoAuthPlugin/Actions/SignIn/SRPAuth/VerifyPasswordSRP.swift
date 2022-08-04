@@ -46,11 +46,13 @@ struct VerifyPasswordSRP: Action {
                                           serverPublicBHexString: serverPublicB,
                                           srpClient: srpClient,
                                           poolId: userPoolEnv.userPoolConfiguration.poolId)
-            let request = request(username: username,
-                                  session: authResponse.session,
-                                  secretBlock: secretBlockString,
-                                  signature: signature,
-                                  environment: userPoolEnv)
+            let request = RespondToAuthChallengeInput.passwordVerifier(
+                username: username,
+                stateData: stateData,
+                session: authResponse.session,
+                secretBlock: secretBlockString,
+                signature: signature,
+                environment: userPoolEnv)
             try UserPoolSignInHelper.sendRespondToAuth(
                 request: request,
                 for: username,
@@ -73,42 +75,6 @@ struct VerifyPasswordSRP: Action {
             )
             dispatcher.send(event)
         }
-    }
-
-    private func request(username: String,
-                         session: String?,
-                         secretBlock: String,
-                         signature: String,
-                         environment: UserPoolEnvironment)
-    -> RespondToAuthChallengeInput {
-        let dateStr = generateDateString(date: stateData.clientTimestamp)
-        let userPoolClientId = environment.userPoolConfiguration.clientId
-        var challengeResponses = ["USERNAME": username]
-        if let clientSecret = environment.userPoolConfiguration.clientSecret {
-
-            let clientSecretHash = SRPSignInHelper.clientSecretHash(
-                username: username,
-                userPoolClientId: userPoolClientId,
-                clientSecret: clientSecret
-            )
-            challengeResponses["SECRET_HASH"] = clientSecretHash
-        }
-
-        if case .metadata(let data) = stateData.deviceMetadata {
-            challengeResponses["DEVICE_KEY"] = data.deviceKey
-        }
-
-        challengeResponses["TIMESTAMP"] = dateStr
-        challengeResponses["PASSWORD_CLAIM_SECRET_BLOCK"] = secretBlock
-        challengeResponses["PASSWORD_CLAIM_SIGNATURE"] = signature
-        return RespondToAuthChallengeInput(
-            analyticsMetadata: nil,
-            challengeName: .passwordVerifier,
-            challengeResponses: challengeResponses,
-            clientId: userPoolClientId,
-            clientMetadata: nil,
-            session: session,
-            userContextData: nil)
     }
 }
 

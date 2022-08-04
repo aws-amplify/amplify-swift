@@ -28,54 +28,50 @@ struct InitiateCustomAuth: Action {
     func execute(withDispatcher dispatcher: EventDispatcher,
                  environment: Environment) {
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        do {
-            let userPoolEnv = try environment.userPoolEnvironment()
-            let request = InitiateAuthInput.customAuth(
-                username: username,
-                clientMetadata: clientMetadata,
-                deviceMetadata: deviceMetadata,
-                environment: userPoolEnv)
+        Task {
+            do {
+                let userPoolEnv = try environment.userPoolEnvironment()
+                let authEnv = try environment.authEnvironment()
+                let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
+                    for: username,
+                    credentialStoreClient: authEnv.credentialStoreClientFactory())
+                let request = InitiateAuthInput.customAuth(
+                    username: username,
+                    clientMetadata: clientMetadata,
+                    asfDeviceId: asfDeviceId,
+                    deviceMetadata: deviceMetadata,
+                    environment: userPoolEnv)
 
-            try sendRequest(request: request,
-                            environment: userPoolEnv) { responseEvent in
+                let responseEvent = try await sendRequest(request: request,
+                                                          environment: userPoolEnv)
                 logVerbose("\(#fileID) Sending event \(responseEvent)", environment: environment)
                 dispatcher.send(responseEvent)
 
-            }
 
-        } catch let error as SignInError {
-            logVerbose("\(#fileID) Raised error \(error)", environment: environment)
-            let event = SignInEvent(eventType: .throwAuthError(error))
-            dispatcher.send(event)
-        } catch {
-            logVerbose("\(#fileID) Caught error \(error)", environment: environment)
-            let authError = SignInError.service(error: error)
-            let event = SignInEvent(
-                eventType: .throwAuthError(authError)
-            )
-            dispatcher.send(event)
+            } catch let error as SignInError {
+                logVerbose("\(#fileID) Raised error \(error)", environment: environment)
+                let event = SignInEvent(eventType: .throwAuthError(error))
+                dispatcher.send(event)
+            } catch {
+                logVerbose("\(#fileID) Caught error \(error)", environment: environment)
+                let authError = SignInError.service(error: error)
+                let event = SignInEvent(
+                    eventType: .throwAuthError(authError)
+                )
+                dispatcher.send(event)
+            }
         }
+
     }
 
     private func sendRequest(request: InitiateAuthInput,
-                             environment: UserPoolEnvironment,
-                             callback: @escaping (StateMachineEvent) -> Void) throws {
+                             environment: UserPoolEnvironment) async throws -> StateMachineEvent {
 
         let cognitoClient = try environment.cognitoUserPoolFactory()
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
-        Task {
-            let event: StateMachineEvent!
-            do {
-                let response = try await cognitoClient.initiateAuth(input: request)
-                event = try UserPoolSignInHelper.parseResponse(response, for: username)
-                logVerbose("\(#fileID) InitiateAuth response success", environment: environment)
-            } catch {
-                let authError = SignInError.service(error: error)
-                event = SignInEvent(eventType: .throwAuthError(authError))
-            }
-            callback(event)
-        }
+        let response = try await cognitoClient.initiateAuth(input: request)
+        return try UserPoolSignInHelper.parseResponse(response, for: username)
     }
 
 }
