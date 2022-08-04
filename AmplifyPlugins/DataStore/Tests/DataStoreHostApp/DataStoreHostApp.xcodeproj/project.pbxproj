@@ -49,6 +49,7 @@
 		21977DB9289C1634005B49D6 /* ModelCustomPkDefined+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D96289C1634005B49D6 /* ModelCustomPkDefined+Schema.swift */; };
 		21977DBA289C1634005B49D6 /* CommentWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D97289C1634005B49D6 /* CommentWithCompositeKey.swift */; };
 		21977DBB289C1634005B49D6 /* TagWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D98289C1634005B49D6 /* TagWithCompositeKey.swift */; };
+		21977DBF289C171A005B49D6 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977DBE289C1719005B49D6 /* TestConfigHelper.swift */; };
 		21BBFB4A289BFF9400B32A39 /* AWSDataStorePluginConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F2289BFE3400B32A39 /* AWSDataStorePluginConfigurationTests.swift */; };
 		21BBFB4B289BFFA000B32A39 /* DataStoreConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F1289BFE3400B32A39 /* DataStoreConfigurationTests.swift */; };
 		21BBFB4C289BFFA300B32A39 /* DataStoreConsecutiveUpdatesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA16289BFE3400B32A39 /* DataStoreConsecutiveUpdatesTests.swift */; };
@@ -475,6 +476,7 @@
 		21977D96289C1634005B49D6 /* ModelCustomPkDefined+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCustomPkDefined+Schema.swift"; sourceTree = "<group>"; };
 		21977D97289C1634005B49D6 /* CommentWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentWithCompositeKey.swift; sourceTree = "<group>"; };
 		21977D98289C1634005B49D6 /* TagWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagWithCompositeKey.swift; sourceTree = "<group>"; };
+		21977DBE289C1719005B49D6 /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
 		21BBF9E6289BFE3400B32A39 /* DataStoreCustomPrimaryKeyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreCustomPrimaryKeyTests.swift; sourceTree = "<group>"; };
 		21BBF9E8289BFE3400B32A39 /* TestModelRegistration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestModelRegistration.swift; sourceTree = "<group>"; };
 		21BBF9E9289BFE3400B32A39 /* SyncEngineIntegrationTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncEngineIntegrationTestBase.swift; sourceTree = "<group>"; };
@@ -994,6 +996,14 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		21977DBD289C1704005B49D6 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				21977DBE289C1719005B49D6 /* TestConfigHelper.swift */,
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
 		21BBF9E7289BFE3400B32A39 /* TestSupport */ = {
 			isa = PBXGroup;
 			children = (
@@ -1281,6 +1291,7 @@
 		21BBFB73289C00AD00B32A39 /* AWSDataStorePluginCPKTests */ = {
 			isa = PBXGroup;
 			children = (
+				21977DBD289C1704005B49D6 /* Base */,
 				21977D75289C161D005B49D6 /* Models */,
 				21BBFA11289BFE3400B32A39 /* PrimaryKey */,
 			);
@@ -1826,6 +1837,7 @@
 				21BBFB6E289C00AC00B32A39 /* Sources */,
 				21BBFB6F289C00AC00B32A39 /* Frameworks */,
 				21BBFB70289C00AC00B32A39 /* Resources */,
+				21977DBC289C16EB005B49D6 /* Copy Configuration Files */,
 			);
 			buildRules = (
 			);
@@ -1981,6 +1993,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		21977DBC289C16EB005B49D6 /* Copy Configuration Files */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration Files";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
 		21BBFE1A289C088E00B32A39 /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2286,6 +2316,7 @@
 				21977DA5289C1634005B49D6 /* PostTagsWithCompositeKey+Schema.swift in Sources */,
 				21977D9F289C1634005B49D6 /* ModelExplicitDefaultPk.swift in Sources */,
 				21977DAA289C1634005B49D6 /* CommentWithCompositeKey+Schema.swift in Sources */,
+				21977DBF289C171A005B49D6 /* TestConfigHelper.swift in Sources */,
 				21977DA4289C1634005B49D6 /* ModelCompositeIntPk+Schema.swift in Sources */,
 				21977D99289C1634005B49D6 /* CommentWithCompositeKeyAndIndex+Schema.swift in Sources */,
 				21977DA1289C1634005B49D6 /* PostWithCompositeKeyAndIndex+Schema.swift in Sources */,

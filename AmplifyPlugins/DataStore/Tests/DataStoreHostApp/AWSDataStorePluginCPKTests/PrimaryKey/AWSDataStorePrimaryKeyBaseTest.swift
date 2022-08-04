@@ -9,6 +9,7 @@ import Foundation
 import XCTest
 import Combine
 import AWSDataStorePlugin
+import AWSAPIPlugin
 
 @testable import Amplify
 
@@ -21,10 +22,10 @@ class AWSDataStorePrimaryKeyBaseTest: XCTestCase {
         continueAfterFailure = false
     }
 
-    override func tearDownWithError() throws {
+    override func tearDown() async throws {
         clearDataStore()
         requests = []
-        Amplify.reset()
+        await Amplify.reset()
     }
 
     // MARK: - Test Helpers
