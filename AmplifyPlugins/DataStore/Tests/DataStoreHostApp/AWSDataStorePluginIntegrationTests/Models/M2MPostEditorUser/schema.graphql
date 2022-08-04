@@ -1,0 +1,23 @@
+type M2MPost @model {
+  id: ID!
+  title: String!
+  editors: [M2MPostEditor] @connection(keyName: "byPost", fields: ["id"])
+}
+
+
+type M2MPostEditor
+  @model(queries: null)
+  @key(name: "byPost", fields: ["postID", "editorID"])
+  @key(name: "byEditor", fields: ["editorID", "postID"]) {
+  id: ID!
+  postID: ID!
+  editorID: ID!
+  post: M2MPost! @connection(fields: ["postID"])
+  editor: M2MUser! @connection(fields: ["editorID"])
+}
+
+type M2MUser @model {
+  id: ID!
+  username: String!
+  posts: [M2MPostEditor] @connection(keyName: "byEditor", fields: ["id"])
+}

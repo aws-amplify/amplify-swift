@@ -84,20 +84,6 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSAPICategoryPluginFunctionalTests"
-               BuildableName = "AWSAPICategoryPluginFunctionalTests"
-               BlueprintName = "AWSAPICategoryPluginFunctionalTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "AWSAPIPluginTests"
                BuildableName = "AWSAPIPluginTests"
                BlueprintName = "AWSAPIPluginTests"
@@ -115,20 +101,6 @@
                BlueprintIdentifier = "AWSCognitoAuthPluginUnitTests"
                BuildableName = "AWSCognitoAuthPluginUnitTests"
                BlueprintName = "AWSCognitoAuthPluginUnitTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSDataStoreCategoryPluginIntegrationTests"
-               BuildableName = "AWSDataStoreCategoryPluginIntegrationTests"
-               BlueprintName = "AWSDataStoreCategoryPluginIntegrationTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -213,34 +185,6 @@
                BlueprintIdentifier = "AmplifyTests"
                BuildableName = "AmplifyTests"
                BlueprintName = "AmplifyTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "GraphQLWithIAMIntegrationTests"
-               BuildableName = "GraphQLWithIAMIntegrationTests"
-               BlueprintName = "GraphQLWithIAMIntegrationTests"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "RESTWithIAMIntegrationTests"
-               BuildableName = "RESTWithIAMIntegrationTests"
-               BlueprintName = "RESTWithIAMIntegrationTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -487,9 +431,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AWSAPIPluginFunctionalTests"
-               BuildableName = "AWSAPIPluginFunctionalTests"
-               BlueprintName = "AWSAPIPluginFunctionalTests"
+               BlueprintIdentifier = "AWSPinpointAnalyticsPluginIntegrationTests"
+               BuildableName = "AWSPinpointAnalyticsPluginIntegrationTests"
+               BlueprintName = "AWSPinpointAnalyticsPluginIntegrationTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>

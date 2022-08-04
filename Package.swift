@@ -192,7 +192,7 @@ let dataStoreTargets: [Target] = [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
             .product(name: "SQLite", package: "SQLite.swift")],
-        path: "AmplifyPlugins/DataStore/AWSDataStoreCategoryPlugin",
+        path: "AmplifyPlugins/DataStore/Sources/AWSDataStorePlugin",
         exclude: [
             "Info.plist",
             "Sync/MutationSync/OutgoingMutationQueue/SyncMutationToCloudOperation.mmd"
@@ -205,22 +205,8 @@ let dataStoreTargets: [Target] = [
             "AWSDataStorePlugin",
             "AmplifyTestCommon"
         ],
-        path: "AmplifyPlugins/DataStore/AWSDataStoreCategoryPluginTests",
+        path: "AmplifyPlugins/DataStore/Tests/AWSDataStorePluginTests",
         exclude: [
-            "Info.plist"
-        ]
-    ),
-    .testTarget(
-        name: "AWSDataStoreCategoryPluginIntegrationTests",
-        dependencies: [
-            "AWSDataStorePlugin",
-            "AWSAPIPlugin",
-            "AmplifyTestCommon"
-        ],
-        path: "AmplifyPlugins/DataStore/AWSDataStoreCategoryPluginIntegrationTests",
-        exclude: [
-            "TransformerV2/README.md",
-            "README.md",
             "Info.plist"
         ]
     )
