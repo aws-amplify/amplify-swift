@@ -8,7 +8,6 @@
 import Foundation
 import XCTest
 import Amplify
-import AmplifyTestCommon
 
 class AWSDataStorePrimaryKeyIntegrationTests: AWSDataStorePrimaryKeyBaseTest {
 

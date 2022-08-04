@@ -8,13 +8,9 @@
 import Foundation
 import XCTest
 import Combine
-
-import AmplifyPlugins
-import AWSDataStoreCategoryPlugin
-import AWSPluginsCore
+import AWSDataStorePlugin
 
 @testable import Amplify
-@testable import AmplifyTestCommon
 
 class AWSDataStorePrimaryKeyBaseTest: XCTestCase {
     var requests: Set<AnyCancellable> = []

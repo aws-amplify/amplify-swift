@@ -28,66 +28,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "21BBFB40289BFF6A00B32A39"
-               BuildableName = "AWSDataStorePluginIntegrationTests.xctest"
-               BlueprintName = "AWSDataStorePluginIntegrationTests"
-               ReferencedContainer = "container:DataStoreHostApp.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "21BBFB57289C005100B32A39"
-               BuildableName = "AWSDataStoreV2Tests.xctest"
-               BlueprintName = "AWSDataStoreV2Tests"
-               ReferencedContainer = "container:DataStoreHostApp.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "21BBFB64289C007700B32A39"
-               BuildableName = "AWSDataStorePluginV2Tests.xctest"
-               BlueprintName = "AWSDataStorePluginV2Tests"
-               ReferencedContainer = "container:DataStoreHostApp.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "21BBFB71289C00AC00B32A39"
-               BuildableName = "AWSDataStorePluginCPKTests.xctest"
-               BlueprintName = "AWSDataStorePluginCPKTests"
-               ReferencedContainer = "container:DataStoreHostApp.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "21BBFB7E289C00EC00B32A39"
-               BuildableName = "AWSDataStorePluginAuthTests.xctest"
-               BlueprintName = "AWSDataStorePluginAuthTests"
-               ReferencedContainer = "container:DataStoreHostApp.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "21BBFB8B289C010E00B32A39"
-               BuildableName = "AWSDataStorePluginFlutterTests.xctest"
-               BlueprintName = "AWSDataStorePluginFlutterTests"
-               ReferencedContainer = "container:DataStoreHostApp.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

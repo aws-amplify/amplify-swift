@@ -15,6 +15,40 @@
 		21182143289BFBC4001B5945 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 21182142289BFBC4001B5945 /* AWSAPIPlugin */; };
 		21182145289BFBC4001B5945 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 21182144289BFBC4001B5945 /* AWSCognitoAuthPlugin */; };
 		21182147289BFBC4001B5945 /* AWSDataStorePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 21182146289BFBC4001B5945 /* AWSDataStorePlugin */; };
+		21977D99289C1634005B49D6 /* CommentWithCompositeKeyAndIndex+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D76289C162E005B49D6 /* CommentWithCompositeKeyAndIndex+Schema.swift */; };
+		21977D9A289C1634005B49D6 /* PostWithCompositeKeyUnidirectional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D77289C162E005B49D6 /* PostWithCompositeKeyUnidirectional.swift */; };
+		21977D9B289C1634005B49D6 /* TagWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D78289C162E005B49D6 /* TagWithCompositeKey+Schema.swift */; };
+		21977D9C289C1634005B49D6 /* ModelCompositePkBelongsTo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D79289C162E005B49D6 /* ModelCompositePkBelongsTo.swift */; };
+		21977D9D289C1634005B49D6 /* ModelCustomPKDefined.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D7A289C162E005B49D6 /* ModelCustomPKDefined.swift */; };
+		21977D9E289C1634005B49D6 /* ModelExplicitCustomPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D7B289C162F005B49D6 /* ModelExplicitCustomPk+Schema.swift */; };
+		21977D9F289C1634005B49D6 /* ModelExplicitDefaultPk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D7C289C162F005B49D6 /* ModelExplicitDefaultPk.swift */; };
+		21977DA0289C1634005B49D6 /* CommentWithCompositeKeyAndIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D7D289C1632005B49D6 /* CommentWithCompositeKeyAndIndex.swift */; };
+		21977DA1289C1634005B49D6 /* PostWithCompositeKeyAndIndex+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D7E289C1632005B49D6 /* PostWithCompositeKeyAndIndex+Schema.swift */; };
+		21977DA2289C1634005B49D6 /* PostWithCompositeKeyAndIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D7F289C1632005B49D6 /* PostWithCompositeKeyAndIndex.swift */; };
+		21977DA3289C1634005B49D6 /* PostWithCompositeKeyUnidirectional+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D80289C1633005B49D6 /* PostWithCompositeKeyUnidirectional+Schema.swift */; };
+		21977DA4289C1634005B49D6 /* ModelCompositeIntPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D81289C1633005B49D6 /* ModelCompositeIntPk+Schema.swift */; };
+		21977DA5289C1634005B49D6 /* PostTagsWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D82289C1633005B49D6 /* PostTagsWithCompositeKey+Schema.swift */; };
+		21977DA6289C1634005B49D6 /* ModelCompositePk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D83289C1633005B49D6 /* ModelCompositePk.swift */; };
+		21977DA8289C1634005B49D6 /* ModelExplicitDefaultPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D85289C1633005B49D6 /* ModelExplicitDefaultPk+Schema.swift */; };
+		21977DA9289C1634005B49D6 /* PostWithTagsCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D86289C1633005B49D6 /* PostWithTagsCompositeKey+Schema.swift */; };
+		21977DAA289C1634005B49D6 /* CommentWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D87289C1633005B49D6 /* CommentWithCompositeKey+Schema.swift */; };
+		21977DAB289C1634005B49D6 /* ModelImplicitDefaultPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D88289C1633005B49D6 /* ModelImplicitDefaultPk+Schema.swift */; };
+		21977DAC289C1634005B49D6 /* ModelImplicitDefaultPk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D89289C1633005B49D6 /* ModelImplicitDefaultPk.swift */; };
+		21977DAD289C1634005B49D6 /* ModelCompositePkWithAssociation+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D8A289C1633005B49D6 /* ModelCompositePkWithAssociation+Schema.swift */; };
+		21977DAE289C1634005B49D6 /* PostWithTagsCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D8B289C1633005B49D6 /* PostWithTagsCompositeKey.swift */; };
+		21977DAF289C1634005B49D6 /* ModelCompositePkBelongsTo+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D8C289C1633005B49D6 /* ModelCompositePkBelongsTo+Schema.swift */; };
+		21977DB0289C1634005B49D6 /* CommentWithCompositeKeyUnidirectional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D8D289C1633005B49D6 /* CommentWithCompositeKeyUnidirectional.swift */; };
+		21977DB1289C1634005B49D6 /* ModelCompositeIntPk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D8E289C1633005B49D6 /* ModelCompositeIntPk.swift */; };
+		21977DB2289C1634005B49D6 /* PostWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D8F289C1633005B49D6 /* PostWithCompositeKey.swift */; };
+		21977DB3289C1634005B49D6 /* ModelExplicitCustomPk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D90289C1633005B49D6 /* ModelExplicitCustomPk.swift */; };
+		21977DB4289C1634005B49D6 /* ModelCompositePkWithAssociation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D91289C1633005B49D6 /* ModelCompositePkWithAssociation.swift */; };
+		21977DB5289C1634005B49D6 /* CommentWithCompositeKeyUnidirectional+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D92289C1633005B49D6 /* CommentWithCompositeKeyUnidirectional+Schema.swift */; };
+		21977DB6289C1634005B49D6 /* ModelCompositePk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D93289C1633005B49D6 /* ModelCompositePk+Schema.swift */; };
+		21977DB7289C1634005B49D6 /* PostTagsWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D94289C1633005B49D6 /* PostTagsWithCompositeKey.swift */; };
+		21977DB8289C1634005B49D6 /* PostWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D95289C1633005B49D6 /* PostWithCompositeKey+Schema.swift */; };
+		21977DB9289C1634005B49D6 /* ModelCustomPkDefined+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D96289C1634005B49D6 /* ModelCustomPkDefined+Schema.swift */; };
+		21977DBA289C1634005B49D6 /* CommentWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D97289C1634005B49D6 /* CommentWithCompositeKey.swift */; };
+		21977DBB289C1634005B49D6 /* TagWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D98289C1634005B49D6 /* TagWithCompositeKey.swift */; };
 		21BBFB4A289BFF9400B32A39 /* AWSDataStorePluginConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F2289BFE3400B32A39 /* AWSDataStorePluginConfigurationTests.swift */; };
 		21BBFB4B289BFFA000B32A39 /* DataStoreConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F1289BFE3400B32A39 /* DataStoreConfigurationTests.swift */; };
 		21BBFB4C289BFFA300B32A39 /* DataStoreConsecutiveUpdatesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA16289BFE3400B32A39 /* DataStoreConsecutiveUpdatesTests.swift */; };
@@ -25,7 +59,6 @@
 		21BBFB51289BFFB800B32A39 /* DataStoreObserveQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA15289BFE3400B32A39 /* DataStoreObserveQueryTests.swift */; };
 		21BBFB52289BFFBB00B32A39 /* DataStoreScalarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA0E289BFE3400B32A39 /* DataStoreScalarTests.swift */; };
 		21BBFB53289BFFC200B32A39 /* SubscriptionEndToEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA0C289BFE3400B32A39 /* SubscriptionEndToEndTests.swift */; };
-		21BBFB75289C00AD00B32A39 /* AWSDataStorePluginCPKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFB74289C00AD00B32A39 /* AWSDataStorePluginCPKTests.swift */; };
 		21BBFB95289C019F00B32A39 /* AWSDataStoreCategoryPluginFlutterIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA66289BFE4300B32A39 /* AWSDataStoreCategoryPluginFlutterIntegrationTests.swift */; };
 		21BBFB96289C01A200B32A39 /* DataStoreConnectionScenario3FlutterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA5E289BFE4300B32A39 /* DataStoreConnectionScenario3FlutterTests.swift */; };
 		21BBFB97289C01A400B32A39 /* DataStoreConnectionScenario6FlutterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA5F289BFE4300B32A39 /* DataStoreConnectionScenario6FlutterTests.swift */; };
@@ -346,40 +379,6 @@
 		21BBFDE1289C06E400B32A39 /* UserFollowing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCF9289C06E300B32A39 /* UserFollowing.swift */; };
 		21BBFDE2289C06E400B32A39 /* QPredGen+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCFA289C06E300B32A39 /* QPredGen+Schema.swift */; };
 		21BBFDE3289C06E400B32A39 /* OGCScenarioBMGroupPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCFB289C06E300B32A39 /* OGCScenarioBMGroupPost.swift */; };
-		21BBFDE4289C06E400B32A39 /* PostTagsWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCFD289C06E300B32A39 /* PostTagsWithCompositeKey.swift */; };
-		21BBFDE5289C06E400B32A39 /* CommentWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCFE289C06E300B32A39 /* CommentWithCompositeKey.swift */; };
-		21BBFDE7289C06E400B32A39 /* ModelCompositeIntPk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD00289C06E300B32A39 /* ModelCompositeIntPk.swift */; };
-		21BBFDE8289C06E400B32A39 /* PostWithCompositeKeyAndIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD01289C06E300B32A39 /* PostWithCompositeKeyAndIndex.swift */; };
-		21BBFDE9289C06E400B32A39 /* ModelImplicitDefaultPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD02289C06E300B32A39 /* ModelImplicitDefaultPk+Schema.swift */; };
-		21BBFDEA289C06E400B32A39 /* CommentWithCompositeKeyAndIndex+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD03289C06E300B32A39 /* CommentWithCompositeKeyAndIndex+Schema.swift */; };
-		21BBFDEB289C06E400B32A39 /* PostWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD04289C06E300B32A39 /* PostWithCompositeKey+Schema.swift */; };
-		21BBFDEC289C06E400B32A39 /* ModelExplicitCustomPk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD05289C06E300B32A39 /* ModelExplicitCustomPk.swift */; };
-		21BBFDED289C06E400B32A39 /* PostWithTagsCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD06289C06E300B32A39 /* PostWithTagsCompositeKey+Schema.swift */; };
-		21BBFDEE289C06E400B32A39 /* ModelExplicitDefaultPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD07289C06E300B32A39 /* ModelExplicitDefaultPk+Schema.swift */; };
-		21BBFDEF289C06E400B32A39 /* TagWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD08289C06E300B32A39 /* TagWithCompositeKey.swift */; };
-		21BBFDF0289C06E400B32A39 /* ModelExplicitCustomPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD09289C06E300B32A39 /* ModelExplicitCustomPk+Schema.swift */; };
-		21BBFDF1289C06E400B32A39 /* PostWithTagsCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD0A289C06E300B32A39 /* PostWithTagsCompositeKey.swift */; };
-		21BBFDF2289C06E400B32A39 /* CommentWithCompositeKeyUnidirectional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD0B289C06E300B32A39 /* CommentWithCompositeKeyUnidirectional.swift */; };
-		21BBFDF3289C06E400B32A39 /* ModelCustomPKDefined.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD0C289C06E300B32A39 /* ModelCustomPKDefined.swift */; };
-		21BBFDF4289C06E400B32A39 /* PostWithCompositeKeyUnidirectional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD0D289C06E300B32A39 /* PostWithCompositeKeyUnidirectional.swift */; };
-		21BBFDF5289C06E400B32A39 /* CommentWithCompositeKeyAndIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD0E289C06E300B32A39 /* CommentWithCompositeKeyAndIndex.swift */; };
-		21BBFDF6289C06E400B32A39 /* ModelCompositePkWithAssociation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD0F289C06E300B32A39 /* ModelCompositePkWithAssociation.swift */; };
-		21BBFDF7289C06E400B32A39 /* ModelCompositePk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD10289C06E300B32A39 /* ModelCompositePk.swift */; };
-		21BBFDF8289C06E400B32A39 /* CommentWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD11289C06E300B32A39 /* CommentWithCompositeKey+Schema.swift */; };
-		21BBFDF9289C06E400B32A39 /* ModelCompositeIntPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD12289C06E300B32A39 /* ModelCompositeIntPk+Schema.swift */; };
-		21BBFDFA289C06E400B32A39 /* ModelCompositePkWithAssociation+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD13289C06E300B32A39 /* ModelCompositePkWithAssociation+Schema.swift */; };
-		21BBFDFB289C06E400B32A39 /* ModelCompositePk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD14289C06E300B32A39 /* ModelCompositePk+Schema.swift */; };
-		21BBFDFC289C06E400B32A39 /* PostWithCompositeKeyUnidirectional+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD15289C06E300B32A39 /* PostWithCompositeKeyUnidirectional+Schema.swift */; };
-		21BBFDFD289C06E400B32A39 /* ModelCustomPkDefined+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD16289C06E300B32A39 /* ModelCustomPkDefined+Schema.swift */; };
-		21BBFDFE289C06E400B32A39 /* CommentWithCompositeKeyUnidirectional+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD17289C06E300B32A39 /* CommentWithCompositeKeyUnidirectional+Schema.swift */; };
-		21BBFDFF289C06E400B32A39 /* PostWithCompositeKeyAndIndex+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD18289C06E300B32A39 /* PostWithCompositeKeyAndIndex+Schema.swift */; };
-		21BBFE00289C06E400B32A39 /* ModelImplicitDefaultPk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD19289C06E300B32A39 /* ModelImplicitDefaultPk.swift */; };
-		21BBFE01289C06E400B32A39 /* TagWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD1A289C06E300B32A39 /* TagWithCompositeKey+Schema.swift */; };
-		21BBFE02289C06E400B32A39 /* ModelCompositePkBelongsTo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD1B289C06E300B32A39 /* ModelCompositePkBelongsTo.swift */; };
-		21BBFE03289C06E400B32A39 /* ModelCompositePkBelongsTo+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD1C289C06E300B32A39 /* ModelCompositePkBelongsTo+Schema.swift */; };
-		21BBFE04289C06E400B32A39 /* ModelExplicitDefaultPk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD1D289C06E300B32A39 /* ModelExplicitDefaultPk.swift */; };
-		21BBFE05289C06E400B32A39 /* PostTagsWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD1E289C06E300B32A39 /* PostTagsWithCompositeKey+Schema.swift */; };
-		21BBFE06289C06E400B32A39 /* PostWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD1F289C06E300B32A39 /* PostWithCompositeKey.swift */; };
 		21BBFE07289C06E400B32A39 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD20289C06E300B32A39 /* Comment.swift */; };
 		21BBFE08289C06E400B32A39 /* UserFollowing+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD21289C06E300B32A39 /* UserFollowing+Schema.swift */; };
 		21BBFE09289C06E400B32A39 /* Book+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD23289C06E400B32A39 /* Book+Schema.swift */; };
@@ -442,6 +441,41 @@
 		21182133289BFB4F001B5945 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		21182136289BFB4F001B5945 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		2118213E289BFB63001B5945 /* amplify-ios-staging */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios-staging"; path = ../../../..; sourceTree = "<group>"; };
+		21977D76289C162E005B49D6 /* CommentWithCompositeKeyAndIndex+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CommentWithCompositeKeyAndIndex+Schema.swift"; sourceTree = "<group>"; };
+		21977D77289C162E005B49D6 /* PostWithCompositeKeyUnidirectional.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithCompositeKeyUnidirectional.swift; sourceTree = "<group>"; };
+		21977D78289C162E005B49D6 /* TagWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TagWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		21977D79289C162E005B49D6 /* ModelCompositePkBelongsTo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCompositePkBelongsTo.swift; sourceTree = "<group>"; };
+		21977D7A289C162E005B49D6 /* ModelCustomPKDefined.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCustomPKDefined.swift; sourceTree = "<group>"; };
+		21977D7B289C162F005B49D6 /* ModelExplicitCustomPk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelExplicitCustomPk+Schema.swift"; sourceTree = "<group>"; };
+		21977D7C289C162F005B49D6 /* ModelExplicitDefaultPk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelExplicitDefaultPk.swift; sourceTree = "<group>"; };
+		21977D7D289C1632005B49D6 /* CommentWithCompositeKeyAndIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentWithCompositeKeyAndIndex.swift; sourceTree = "<group>"; };
+		21977D7E289C1632005B49D6 /* PostWithCompositeKeyAndIndex+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithCompositeKeyAndIndex+Schema.swift"; sourceTree = "<group>"; };
+		21977D7F289C1632005B49D6 /* PostWithCompositeKeyAndIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithCompositeKeyAndIndex.swift; sourceTree = "<group>"; };
+		21977D80289C1633005B49D6 /* PostWithCompositeKeyUnidirectional+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithCompositeKeyUnidirectional+Schema.swift"; sourceTree = "<group>"; };
+		21977D81289C1633005B49D6 /* ModelCompositeIntPk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCompositeIntPk+Schema.swift"; sourceTree = "<group>"; };
+		21977D82289C1633005B49D6 /* PostTagsWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostTagsWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		21977D83289C1633005B49D6 /* ModelCompositePk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCompositePk.swift; sourceTree = "<group>"; };
+		21977D84289C1633005B49D6 /* primarykey_schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = primarykey_schema.graphql; sourceTree = "<group>"; };
+		21977D85289C1633005B49D6 /* ModelExplicitDefaultPk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelExplicitDefaultPk+Schema.swift"; sourceTree = "<group>"; };
+		21977D86289C1633005B49D6 /* PostWithTagsCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithTagsCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		21977D87289C1633005B49D6 /* CommentWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CommentWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		21977D88289C1633005B49D6 /* ModelImplicitDefaultPk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelImplicitDefaultPk+Schema.swift"; sourceTree = "<group>"; };
+		21977D89289C1633005B49D6 /* ModelImplicitDefaultPk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelImplicitDefaultPk.swift; sourceTree = "<group>"; };
+		21977D8A289C1633005B49D6 /* ModelCompositePkWithAssociation+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCompositePkWithAssociation+Schema.swift"; sourceTree = "<group>"; };
+		21977D8B289C1633005B49D6 /* PostWithTagsCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithTagsCompositeKey.swift; sourceTree = "<group>"; };
+		21977D8C289C1633005B49D6 /* ModelCompositePkBelongsTo+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCompositePkBelongsTo+Schema.swift"; sourceTree = "<group>"; };
+		21977D8D289C1633005B49D6 /* CommentWithCompositeKeyUnidirectional.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentWithCompositeKeyUnidirectional.swift; sourceTree = "<group>"; };
+		21977D8E289C1633005B49D6 /* ModelCompositeIntPk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCompositeIntPk.swift; sourceTree = "<group>"; };
+		21977D8F289C1633005B49D6 /* PostWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithCompositeKey.swift; sourceTree = "<group>"; };
+		21977D90289C1633005B49D6 /* ModelExplicitCustomPk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelExplicitCustomPk.swift; sourceTree = "<group>"; };
+		21977D91289C1633005B49D6 /* ModelCompositePkWithAssociation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCompositePkWithAssociation.swift; sourceTree = "<group>"; };
+		21977D92289C1633005B49D6 /* CommentWithCompositeKeyUnidirectional+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CommentWithCompositeKeyUnidirectional+Schema.swift"; sourceTree = "<group>"; };
+		21977D93289C1633005B49D6 /* ModelCompositePk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCompositePk+Schema.swift"; sourceTree = "<group>"; };
+		21977D94289C1633005B49D6 /* PostTagsWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostTagsWithCompositeKey.swift; sourceTree = "<group>"; };
+		21977D95289C1633005B49D6 /* PostWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		21977D96289C1634005B49D6 /* ModelCustomPkDefined+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCustomPkDefined+Schema.swift"; sourceTree = "<group>"; };
+		21977D97289C1634005B49D6 /* CommentWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentWithCompositeKey.swift; sourceTree = "<group>"; };
+		21977D98289C1634005B49D6 /* TagWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagWithCompositeKey.swift; sourceTree = "<group>"; };
 		21BBF9E6289BFE3400B32A39 /* DataStoreCustomPrimaryKeyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreCustomPrimaryKeyTests.swift; sourceTree = "<group>"; };
 		21BBF9E8289BFE3400B32A39 /* TestModelRegistration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestModelRegistration.swift; sourceTree = "<group>"; };
 		21BBF9E9289BFE3400B32A39 /* SyncEngineIntegrationTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncEngineIntegrationTestBase.swift; sourceTree = "<group>"; };
@@ -605,7 +639,6 @@
 		21BBFB41289BFF6A00B32A39 /* AWSDataStorePluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSDataStorePluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		21BBFB65289C007700B32A39 /* AWSDataStorePluginV2Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSDataStorePluginV2Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		21BBFB72289C00AC00B32A39 /* AWSDataStorePluginCPKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSDataStorePluginCPKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		21BBFB74289C00AD00B32A39 /* AWSDataStorePluginCPKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStorePluginCPKTests.swift; sourceTree = "<group>"; };
 		21BBFB7F289C00EC00B32A39 /* AWSDataStorePluginAuthTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSDataStorePluginAuthTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		21BBFB8C289C010E00B32A39 /* AWSDataStorePluginFlutterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSDataStorePluginFlutterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		21BBFC27289C062000B32A39 /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
@@ -792,41 +825,6 @@
 		21BBFCF9289C06E300B32A39 /* UserFollowing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserFollowing.swift; sourceTree = "<group>"; };
 		21BBFCFA289C06E300B32A39 /* QPredGen+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "QPredGen+Schema.swift"; sourceTree = "<group>"; };
 		21BBFCFB289C06E300B32A39 /* OGCScenarioBMGroupPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OGCScenarioBMGroupPost.swift; sourceTree = "<group>"; };
-		21BBFCFD289C06E300B32A39 /* PostTagsWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostTagsWithCompositeKey.swift; sourceTree = "<group>"; };
-		21BBFCFE289C06E300B32A39 /* CommentWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentWithCompositeKey.swift; sourceTree = "<group>"; };
-		21BBFCFF289C06E300B32A39 /* primarykey_schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = primarykey_schema.graphql; sourceTree = "<group>"; };
-		21BBFD00289C06E300B32A39 /* ModelCompositeIntPk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCompositeIntPk.swift; sourceTree = "<group>"; };
-		21BBFD01289C06E300B32A39 /* PostWithCompositeKeyAndIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithCompositeKeyAndIndex.swift; sourceTree = "<group>"; };
-		21BBFD02289C06E300B32A39 /* ModelImplicitDefaultPk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelImplicitDefaultPk+Schema.swift"; sourceTree = "<group>"; };
-		21BBFD03289C06E300B32A39 /* CommentWithCompositeKeyAndIndex+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CommentWithCompositeKeyAndIndex+Schema.swift"; sourceTree = "<group>"; };
-		21BBFD04289C06E300B32A39 /* PostWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
-		21BBFD05289C06E300B32A39 /* ModelExplicitCustomPk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelExplicitCustomPk.swift; sourceTree = "<group>"; };
-		21BBFD06289C06E300B32A39 /* PostWithTagsCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithTagsCompositeKey+Schema.swift"; sourceTree = "<group>"; };
-		21BBFD07289C06E300B32A39 /* ModelExplicitDefaultPk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelExplicitDefaultPk+Schema.swift"; sourceTree = "<group>"; };
-		21BBFD08289C06E300B32A39 /* TagWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagWithCompositeKey.swift; sourceTree = "<group>"; };
-		21BBFD09289C06E300B32A39 /* ModelExplicitCustomPk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelExplicitCustomPk+Schema.swift"; sourceTree = "<group>"; };
-		21BBFD0A289C06E300B32A39 /* PostWithTagsCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithTagsCompositeKey.swift; sourceTree = "<group>"; };
-		21BBFD0B289C06E300B32A39 /* CommentWithCompositeKeyUnidirectional.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentWithCompositeKeyUnidirectional.swift; sourceTree = "<group>"; };
-		21BBFD0C289C06E300B32A39 /* ModelCustomPKDefined.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCustomPKDefined.swift; sourceTree = "<group>"; };
-		21BBFD0D289C06E300B32A39 /* PostWithCompositeKeyUnidirectional.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithCompositeKeyUnidirectional.swift; sourceTree = "<group>"; };
-		21BBFD0E289C06E300B32A39 /* CommentWithCompositeKeyAndIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentWithCompositeKeyAndIndex.swift; sourceTree = "<group>"; };
-		21BBFD0F289C06E300B32A39 /* ModelCompositePkWithAssociation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCompositePkWithAssociation.swift; sourceTree = "<group>"; };
-		21BBFD10289C06E300B32A39 /* ModelCompositePk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCompositePk.swift; sourceTree = "<group>"; };
-		21BBFD11289C06E300B32A39 /* CommentWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CommentWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
-		21BBFD12289C06E300B32A39 /* ModelCompositeIntPk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCompositeIntPk+Schema.swift"; sourceTree = "<group>"; };
-		21BBFD13289C06E300B32A39 /* ModelCompositePkWithAssociation+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCompositePkWithAssociation+Schema.swift"; sourceTree = "<group>"; };
-		21BBFD14289C06E300B32A39 /* ModelCompositePk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCompositePk+Schema.swift"; sourceTree = "<group>"; };
-		21BBFD15289C06E300B32A39 /* PostWithCompositeKeyUnidirectional+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithCompositeKeyUnidirectional+Schema.swift"; sourceTree = "<group>"; };
-		21BBFD16289C06E300B32A39 /* ModelCustomPkDefined+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCustomPkDefined+Schema.swift"; sourceTree = "<group>"; };
-		21BBFD17289C06E300B32A39 /* CommentWithCompositeKeyUnidirectional+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CommentWithCompositeKeyUnidirectional+Schema.swift"; sourceTree = "<group>"; };
-		21BBFD18289C06E300B32A39 /* PostWithCompositeKeyAndIndex+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithCompositeKeyAndIndex+Schema.swift"; sourceTree = "<group>"; };
-		21BBFD19289C06E300B32A39 /* ModelImplicitDefaultPk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelImplicitDefaultPk.swift; sourceTree = "<group>"; };
-		21BBFD1A289C06E300B32A39 /* TagWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TagWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
-		21BBFD1B289C06E300B32A39 /* ModelCompositePkBelongsTo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCompositePkBelongsTo.swift; sourceTree = "<group>"; };
-		21BBFD1C289C06E300B32A39 /* ModelCompositePkBelongsTo+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCompositePkBelongsTo+Schema.swift"; sourceTree = "<group>"; };
-		21BBFD1D289C06E300B32A39 /* ModelExplicitDefaultPk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelExplicitDefaultPk.swift; sourceTree = "<group>"; };
-		21BBFD1E289C06E300B32A39 /* PostTagsWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostTagsWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
-		21BBFD1F289C06E300B32A39 /* PostWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithCompositeKey.swift; sourceTree = "<group>"; };
 		21BBFD20289C06E300B32A39 /* Comment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		21BBFD21289C06E300B32A39 /* UserFollowing+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserFollowing+Schema.swift"; sourceTree = "<group>"; };
 		21BBFD23289C06E400B32A39 /* Book+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Book+Schema.swift"; sourceTree = "<group>"; };
@@ -954,6 +952,48 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		21977D75289C161D005B49D6 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				21977D97289C1634005B49D6 /* CommentWithCompositeKey.swift */,
+				21977D87289C1633005B49D6 /* CommentWithCompositeKey+Schema.swift */,
+				21977D7D289C1632005B49D6 /* CommentWithCompositeKeyAndIndex.swift */,
+				21977D76289C162E005B49D6 /* CommentWithCompositeKeyAndIndex+Schema.swift */,
+				21977D8D289C1633005B49D6 /* CommentWithCompositeKeyUnidirectional.swift */,
+				21977D92289C1633005B49D6 /* CommentWithCompositeKeyUnidirectional+Schema.swift */,
+				21977D8E289C1633005B49D6 /* ModelCompositeIntPk.swift */,
+				21977D81289C1633005B49D6 /* ModelCompositeIntPk+Schema.swift */,
+				21977D83289C1633005B49D6 /* ModelCompositePk.swift */,
+				21977D93289C1633005B49D6 /* ModelCompositePk+Schema.swift */,
+				21977D79289C162E005B49D6 /* ModelCompositePkBelongsTo.swift */,
+				21977D8C289C1633005B49D6 /* ModelCompositePkBelongsTo+Schema.swift */,
+				21977D91289C1633005B49D6 /* ModelCompositePkWithAssociation.swift */,
+				21977D8A289C1633005B49D6 /* ModelCompositePkWithAssociation+Schema.swift */,
+				21977D7A289C162E005B49D6 /* ModelCustomPKDefined.swift */,
+				21977D96289C1634005B49D6 /* ModelCustomPkDefined+Schema.swift */,
+				21977D90289C1633005B49D6 /* ModelExplicitCustomPk.swift */,
+				21977D7B289C162F005B49D6 /* ModelExplicitCustomPk+Schema.swift */,
+				21977D7C289C162F005B49D6 /* ModelExplicitDefaultPk.swift */,
+				21977D85289C1633005B49D6 /* ModelExplicitDefaultPk+Schema.swift */,
+				21977D89289C1633005B49D6 /* ModelImplicitDefaultPk.swift */,
+				21977D88289C1633005B49D6 /* ModelImplicitDefaultPk+Schema.swift */,
+				21977D94289C1633005B49D6 /* PostTagsWithCompositeKey.swift */,
+				21977D82289C1633005B49D6 /* PostTagsWithCompositeKey+Schema.swift */,
+				21977D8F289C1633005B49D6 /* PostWithCompositeKey.swift */,
+				21977D95289C1633005B49D6 /* PostWithCompositeKey+Schema.swift */,
+				21977D7F289C1632005B49D6 /* PostWithCompositeKeyAndIndex.swift */,
+				21977D7E289C1632005B49D6 /* PostWithCompositeKeyAndIndex+Schema.swift */,
+				21977D77289C162E005B49D6 /* PostWithCompositeKeyUnidirectional.swift */,
+				21977D80289C1633005B49D6 /* PostWithCompositeKeyUnidirectional+Schema.swift */,
+				21977D8B289C1633005B49D6 /* PostWithTagsCompositeKey.swift */,
+				21977D86289C1633005B49D6 /* PostWithTagsCompositeKey+Schema.swift */,
+				21977D84289C1633005B49D6 /* primarykey_schema.graphql */,
+				21977D98289C1634005B49D6 /* TagWithCompositeKey.swift */,
+				21977D78289C162E005B49D6 /* TagWithCompositeKey+Schema.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		21BBF9E7289BFE3400B32A39 /* TestSupport */ = {
@@ -1244,8 +1284,8 @@
 		21BBFB73289C00AD00B32A39 /* AWSDataStorePluginCPKTests */ = {
 			isa = PBXGroup;
 			children = (
+				21977D75289C161D005B49D6 /* Models */,
 				21BBFA11289BFE3400B32A39 /* PrimaryKey */,
-				21BBFB74289C00AD00B32A39 /* AWSDataStorePluginCPKTests.swift */,
 			);
 			path = AWSDataStorePluginCPKTests;
 			sourceTree = "<group>";
@@ -1286,7 +1326,6 @@
 				21BBFCD1289C06E300B32A39 /* Comment+Schema.swift */,
 				21BBFCC3289C06E300B32A39 /* CustomerOrder.swift */,
 				21BBFCF7289C06E300B32A39 /* CustomerOrder+Schema.swift */,
-				21BBFCFC289C06E300B32A39 /* CustomPrimaryKey */,
 				21BBFC29289C06E200B32A39 /* Deprecated */,
 				21BBFCAF289C06E300B32A39 /* M2MPostEditorUser */,
 				21BBFCCE289C06E300B32A39 /* MockModels.swift */,
@@ -1703,48 +1742,6 @@
 			path = 5;
 			sourceTree = "<group>";
 		};
-		21BBFCFC289C06E300B32A39 /* CustomPrimaryKey */ = {
-			isa = PBXGroup;
-			children = (
-				21BBFCFD289C06E300B32A39 /* PostTagsWithCompositeKey.swift */,
-				21BBFCFE289C06E300B32A39 /* CommentWithCompositeKey.swift */,
-				21BBFCFF289C06E300B32A39 /* primarykey_schema.graphql */,
-				21BBFD00289C06E300B32A39 /* ModelCompositeIntPk.swift */,
-				21BBFD01289C06E300B32A39 /* PostWithCompositeKeyAndIndex.swift */,
-				21BBFD02289C06E300B32A39 /* ModelImplicitDefaultPk+Schema.swift */,
-				21BBFD03289C06E300B32A39 /* CommentWithCompositeKeyAndIndex+Schema.swift */,
-				21BBFD04289C06E300B32A39 /* PostWithCompositeKey+Schema.swift */,
-				21BBFD05289C06E300B32A39 /* ModelExplicitCustomPk.swift */,
-				21BBFD06289C06E300B32A39 /* PostWithTagsCompositeKey+Schema.swift */,
-				21BBFD07289C06E300B32A39 /* ModelExplicitDefaultPk+Schema.swift */,
-				21BBFD08289C06E300B32A39 /* TagWithCompositeKey.swift */,
-				21BBFD09289C06E300B32A39 /* ModelExplicitCustomPk+Schema.swift */,
-				21BBFD0A289C06E300B32A39 /* PostWithTagsCompositeKey.swift */,
-				21BBFD0B289C06E300B32A39 /* CommentWithCompositeKeyUnidirectional.swift */,
-				21BBFD0C289C06E300B32A39 /* ModelCustomPKDefined.swift */,
-				21BBFD0D289C06E300B32A39 /* PostWithCompositeKeyUnidirectional.swift */,
-				21BBFD0E289C06E300B32A39 /* CommentWithCompositeKeyAndIndex.swift */,
-				21BBFD0F289C06E300B32A39 /* ModelCompositePkWithAssociation.swift */,
-				21BBFD10289C06E300B32A39 /* ModelCompositePk.swift */,
-				21BBFD11289C06E300B32A39 /* CommentWithCompositeKey+Schema.swift */,
-				21BBFD12289C06E300B32A39 /* ModelCompositeIntPk+Schema.swift */,
-				21BBFD13289C06E300B32A39 /* ModelCompositePkWithAssociation+Schema.swift */,
-				21BBFD14289C06E300B32A39 /* ModelCompositePk+Schema.swift */,
-				21BBFD15289C06E300B32A39 /* PostWithCompositeKeyUnidirectional+Schema.swift */,
-				21BBFD16289C06E300B32A39 /* ModelCustomPkDefined+Schema.swift */,
-				21BBFD17289C06E300B32A39 /* CommentWithCompositeKeyUnidirectional+Schema.swift */,
-				21BBFD18289C06E300B32A39 /* PostWithCompositeKeyAndIndex+Schema.swift */,
-				21BBFD19289C06E300B32A39 /* ModelImplicitDefaultPk.swift */,
-				21BBFD1A289C06E300B32A39 /* TagWithCompositeKey+Schema.swift */,
-				21BBFD1B289C06E300B32A39 /* ModelCompositePkBelongsTo.swift */,
-				21BBFD1C289C06E300B32A39 /* ModelCompositePkBelongsTo+Schema.swift */,
-				21BBFD1D289C06E300B32A39 /* ModelExplicitDefaultPk.swift */,
-				21BBFD1E289C06E300B32A39 /* PostTagsWithCompositeKey+Schema.swift */,
-				21BBFD1F289C06E300B32A39 /* PostWithCompositeKey.swift */,
-			);
-			path = CustomPrimaryKey;
-			sourceTree = "<group>";
-		};
 		21BBFD22289C06E400B32A39 /* Associations */ = {
 			isa = PBXGroup;
 			children = (
@@ -2024,10 +2021,8 @@
 				21BBFDB4289C06E400B32A39 /* Record.swift in Sources */,
 				21BBFDDB289C06E400B32A39 /* PostEditor5+Schema.swift in Sources */,
 				21BBFD89289C06E400B32A39 /* UserFollowers.swift in Sources */,
-				21BBFDE4289C06E400B32A39 /* PostTagsWithCompositeKey.swift in Sources */,
 				21BBFD4C289C06E400B32A39 /* Project4aV2+Schema.swift in Sources */,
 				21BBFC07289C036600B32A39 /* HubEventsIntegrationTestBase.swift in Sources */,
-				21BBFDF8289C06E400B32A39 /* CommentWithCompositeKey+Schema.swift in Sources */,
 				21BBFD72289C06E400B32A39 /* SchemaDrift.swift in Sources */,
 				21BBFD9A289C06E400B32A39 /* DynamicModel.swift in Sources */,
 				21BBFD43289C06E400B32A39 /* Post7V2.swift in Sources */,
@@ -2044,12 +2039,10 @@
 				21BBFDD0289C06E400B32A39 /* Comment4.swift in Sources */,
 				21BBFD8C289C06E400B32A39 /* EnumTestModel.swift in Sources */,
 				21BBFE07289C06E400B32A39 /* Comment.swift in Sources */,
-				21BBFDF6289C06E400B32A39 /* ModelCompositePkWithAssociation.swift in Sources */,
 				21BBFDE0289C06E400B32A39 /* ScenarioATest6Post.swift in Sources */,
 				21BBFDD6289C06E400B32A39 /* Team2.swift in Sources */,
 				21BBFD82289C06E400B32A39 /* Comment6V2+Schema.swift in Sources */,
 				21BBFD2D289C06E400B32A39 /* DeprecatedTodo.swift in Sources */,
-				21BBFE04289C06E400B32A39 /* ModelExplicitDefaultPk.swift in Sources */,
 				21BBFD5E289C06E400B32A39 /* Project1V2.swift in Sources */,
 				21BBFD81289C06E400B32A39 /* Post6V2.swift in Sources */,
 				21BBFE0B289C06E400B32A39 /* Author.swift in Sources */,
@@ -2059,19 +2052,13 @@
 				21BBFE10289C06E400B32A39 /* UserAccount+Schema.swift in Sources */,
 				21BBFDB2289C06E400B32A39 /* Post+Schema.swift in Sources */,
 				21BBFDBE289C06E400B32A39 /* User.swift in Sources */,
-				21BBFDF1289C06E400B32A39 /* PostWithTagsCompositeKey.swift in Sources */,
-				21BBFDE8289C06E400B32A39 /* PostWithCompositeKeyAndIndex.swift in Sources */,
-				21BBFDFE289C06E400B32A39 /* CommentWithCompositeKeyUnidirectional+Schema.swift in Sources */,
 				21BBFD55289C06E400B32A39 /* Blog8+Schema.swift in Sources */,
 				21BBFDE3289C06E400B32A39 /* OGCScenarioBMGroupPost.swift in Sources */,
 				21BBFD47289C06E400B32A39 /* Comment7V2+Schema.swift in Sources */,
 				21BBFD97289C06E400B32A39 /* ListIntContainer.swift in Sources */,
-				21BBFDE9289C06E400B32A39 /* ModelImplicitDefaultPk+Schema.swift in Sources */,
 				21BBFD35289C06E400B32A39 /* Menu+Schema.swift in Sources */,
 				21BBFD46289C06E400B32A39 /* Blog7V2.swift in Sources */,
-				21BBFDFB289C06E400B32A39 /* ModelCompositePk+Schema.swift in Sources */,
 				21BBFD7F289C06E400B32A39 /* Team2V2+Schema.swift in Sources */,
-				21BBFDE5289C06E400B32A39 /* CommentWithCompositeKey.swift in Sources */,
 				21BBFD4D289C06E400B32A39 /* Project4aV2.swift in Sources */,
 				21BBFD2E289C06E400B32A39 /* User+Schema.swift in Sources */,
 				21BBFD95289C06E400B32A39 /* NestedTypeTestModel.swift in Sources */,
@@ -2091,7 +2078,6 @@
 				21BBFDCF289C06E400B32A39 /* Comment4+Schema.swift in Sources */,
 				21BBFD6C289C06E400B32A39 /* Post3aV2.swift in Sources */,
 				21BBFD36289C06E400B32A39 /* Restaurant+Schema.swift in Sources */,
-				21BBFE01289C06E400B32A39 /* TagWithCompositeKey+Schema.swift in Sources */,
 				21BBFC0F289C038700B32A39 /* DataStoreConnectionScenario2Tests.swift in Sources */,
 				21BBFD7C289C06E400B32A39 /* Project2V2+Schema.swift in Sources */,
 				21BBFB4B289BFFA000B32A39 /* DataStoreConfigurationTests.swift in Sources */,
@@ -2102,7 +2088,6 @@
 				21BBFD42289C06E400B32A39 /* Team4bV2.swift in Sources */,
 				21BBFDA8289C06E400B32A39 /* Article.swift in Sources */,
 				21BBFD3B289C06E400B32A39 /* Comment3V2.swift in Sources */,
-				21BBFDF7289C06E400B32A39 /* ModelCompositePk.swift in Sources */,
 				21BBFE09289C06E400B32A39 /* Book+Schema.swift in Sources */,
 				21BBFD2F289C06E400B32A39 /* OGCScenarioBPost.swift in Sources */,
 				21BBFD99289C06E400B32A39 /* DynamicEmbedded.swift in Sources */,
@@ -2118,7 +2103,6 @@
 				21BBFD94289C06E400B32A39 /* NestedTypeTestModel+Schema.swift in Sources */,
 				21BBFD92289C06E400B32A39 /* TestEnum.swift in Sources */,
 				21BBFD78289C06E400B32A39 /* Meeting8V2.swift in Sources */,
-				21BBFDF0289C06E400B32A39 /* ModelExplicitCustomPk+Schema.swift in Sources */,
 				21BBFD79289C06E400B32A39 /* Registration8V2.swift in Sources */,
 				21BBFB4C289BFFA300B32A39 /* DataStoreConsecutiveUpdatesTests.swift in Sources */,
 				21BBFD64289C06E400B32A39 /* Post5V2+Schema.swift in Sources */,
@@ -2134,7 +2118,6 @@
 				21BBFD88289C06E400B32A39 /* Record+Schema.swift in Sources */,
 				21BBFB52289BFFBB00B32A39 /* DataStoreScalarTests.swift in Sources */,
 				21BBFC28289C062000B32A39 /* TestConfigHelper.swift in Sources */,
-				21BBFE03289C06E400B32A39 /* ModelCompositePkBelongsTo+Schema.swift in Sources */,
 				21BBFD3D289C06E400B32A39 /* Post3V2.swift in Sources */,
 				21BBFDE1289C06E400B32A39 /* UserFollowing.swift in Sources */,
 				21BBFC08289C036800B32A39 /* SyncEngineIntegrationV2TestBase.swift in Sources */,
@@ -2143,7 +2126,6 @@
 				21BBFDC3289C06E400B32A39 /* Post6.swift in Sources */,
 				21BBFD41289C06E400B32A39 /* Project4bV2.swift in Sources */,
 				21BBFC03289C035D00B32A39 /* TestModelRegistration.swift in Sources */,
-				21BBFDF5289C06E400B32A39 /* CommentWithCompositeKeyAndIndex.swift in Sources */,
 				21BBFDD4289C06E400B32A39 /* Comment3.swift in Sources */,
 				21BBFDB3289C06E400B32A39 /* CustomerOrder.swift in Sources */,
 				21BBFDA1289C06E400B32A39 /* M2MPost.swift in Sources */,
@@ -2153,45 +2135,37 @@
 				21BBFDD2289C06E400B32A39 /* Post3+Schema.swift in Sources */,
 				21BBFD68289C06E400B32A39 /* User5V2.swift in Sources */,
 				21BBFD63289C06E400B32A39 /* Priority.swift in Sources */,
-				21BBFDFD289C06E400B32A39 /* ModelCustomPkDefined+Schema.swift in Sources */,
 				21BBFD90289C06E400B32A39 /* EnumTestModel+Schema.swift in Sources */,
 				21BBFD56289C06E400B32A39 /* Comment8+Schema.swift in Sources */,
 				21BBFB4A289BFF9400B32A39 /* AWSDataStorePluginConfigurationTests.swift in Sources */,
 				21BBFD3F289C06E400B32A39 /* Project4bV2+Schema.swift in Sources */,
 				21BBFD49289C06E400B32A39 /* TodoCustomTimestampV2+Schema.swift in Sources */,
-				21BBFDF3289C06E400B32A39 /* ModelCustomPKDefined.swift in Sources */,
 				21BBFD73289C06E400B32A39 /* EnumDrift.swift in Sources */,
 				21BBFC04289C035F00B32A39 /* SyncEngineIntegrationTestBase.swift in Sources */,
 				21BBFD91289C06E400B32A39 /* Nested+Schema.swift in Sources */,
 				21BBFDAF289C06E400B32A39 /* QPredGen.swift in Sources */,
 				21BBFDC6289C06E400B32A39 /* Comment6+Schema.swift in Sources */,
 				21BBFDB8289C06E400B32A39 /* Group+Schema.swift in Sources */,
-				21BBFDEE289C06E400B32A39 /* ModelExplicitDefaultPk+Schema.swift in Sources */,
 				21BBFD39289C06E400B32A39 /* Restaurant.swift in Sources */,
 				21BBFDD7289C06E400B32A39 /* Project2.swift in Sources */,
 				21BBFC06289C036300B32A39 /* DataStoreInternal.swift in Sources */,
 				21BBFDDA289C06E400B32A39 /* User5.swift in Sources */,
-				21BBFDFF289C06E400B32A39 /* PostWithCompositeKeyAndIndex+Schema.swift in Sources */,
 				21BBFD44289C06E400B32A39 /* Post7V2+Schema.swift in Sources */,
-				21BBFE05289C06E400B32A39 /* PostTagsWithCompositeKey+Schema.swift in Sources */,
 				21BBFE11289C06E400B32A39 /* UserAccount.swift in Sources */,
 				21BBFD9B289C06E400B32A39 /* Section.swift in Sources */,
 				21BBFD5A289C06E400B32A39 /* MyNestedModel8.swift in Sources */,
 				21BBFD7D289C06E400B32A39 /* Team2V2.swift in Sources */,
-				21BBFE06289C06E400B32A39 /* PostWithCompositeKey.swift in Sources */,
 				21BBFC11289C038B00B32A39 /* DataStoreConnectionScenario1Tests.swift in Sources */,
 				21BBFDAE289C06E400B32A39 /* Team+Schema.swift in Sources */,
 				21BBFDBD289C06E400B32A39 /* MockModels.swift in Sources */,
 				21BBFD98289C06E400B32A39 /* ScenarioATest6Post+Schema.swift in Sources */,
 				21BBFD9D289C06E400B32A39 /* Todo.swift in Sources */,
-				21BBFDF9289C06E400B32A39 /* ModelCompositeIntPk+Schema.swift in Sources */,
 				21BBFD37289C06E400B32A39 /* Menu.swift in Sources */,
 				21BBFD9F289C06E400B32A39 /* Color.swift in Sources */,
 				21BBFDBA289C06E400B32A39 /* Row.swift in Sources */,
 				21BBFD33289C06E400B32A39 /* Dish.swift in Sources */,
 				21BBFD65289C06E400B32A39 /* Post5V2.swift in Sources */,
 				21BBFDCA289C06E400B32A39 /* Project1+Schema.swift in Sources */,
-				21BBFDF2289C06E400B32A39 /* CommentWithCompositeKeyUnidirectional.swift in Sources */,
 				21BBFDD9289C06E400B32A39 /* PostEditor5.swift in Sources */,
 				21BBFD6D289C06E400B32A39 /* Comment3aV2.swift in Sources */,
 				21BBFD54289C06E400B32A39 /* MyNestedModel8+Schema.swift in Sources */,
@@ -2214,14 +2188,11 @@
 				21BBFE14289C073100B32A39 /* HubListenerTestUtilities.swift in Sources */,
 				21BBFD45289C06E400B32A39 /* Blog7V2+Schema.swift in Sources */,
 				21BBFD7E289C06E400B32A39 /* Project2V2.swift in Sources */,
-				21BBFDED289C06E400B32A39 /* PostWithTagsCompositeKey+Schema.swift in Sources */,
 				21BBFD60289C06E400B32A39 /* Project1V2+Schema.swift in Sources */,
 				21BBFE16289C075000B32A39 /* TestCommonConstants.swift in Sources */,
 				21BBFD96289C06E400B32A39 /* ListIntContainer+Schema.swift in Sources */,
 				21BBFDB1289C06E400B32A39 /* OGCScenarioBPost+Schema.swift in Sources */,
-				21BBFDFC289C06E400B32A39 /* PostWithCompositeKeyUnidirectional+Schema.swift in Sources */,
 				21BBFD4B289C06E400B32A39 /* Team4aV2+Schema.swift in Sources */,
-				21BBFDEB289C06E400B32A39 /* PostWithCompositeKey+Schema.swift in Sources */,
 				21BBFDD1289C06E400B32A39 /* Post3.swift in Sources */,
 				21BBFB4E289BFFB100B32A39 /* DataStoreEndToEndTests.swift in Sources */,
 				21BBFD51289C06E400B32A39 /* Comment4V2.swift in Sources */,
@@ -2231,9 +2202,7 @@
 				21BBFD66289C06E400B32A39 /* User5V2+Schema.swift in Sources */,
 				21BBFD61289C06E400B32A39 /* Team1V2.swift in Sources */,
 				21BBFD93289C06E400B32A39 /* ScalarContainer+Schema.swift in Sources */,
-				21BBFDFA289C06E400B32A39 /* ModelCompositePkWithAssociation+Schema.swift in Sources */,
 				21BBFDA5289C06E400B32A39 /* M2MUser+Schema.swift in Sources */,
-				21BBFDE7289C06E400B32A39 /* ModelCompositeIntPk.swift in Sources */,
 				21BBFDB5289C06E400B32A39 /* RecordCover.swift in Sources */,
 				21BBFD80289C06E400B32A39 /* Post6V2+Schema.swift in Sources */,
 				21BBFD57289C06E400B32A39 /* Post8+Schema.swift in Sources */,
@@ -2256,24 +2225,18 @@
 				21BBFD75289C06E400B32A39 /* Meeting8V2+Schema.swift in Sources */,
 				21BBFD86289C06E400B32A39 /* TodoWithDefaultValueV2+Schema.swift in Sources */,
 				21BBFDA6289C06E400B32A39 /* M2MPost+Schema.swift in Sources */,
-				21BBFE02289C06E400B32A39 /* ModelCompositePkBelongsTo.swift in Sources */,
 				21BBFD5C289C06E400B32A39 /* Blog8.swift in Sources */,
 				21BBFE0C289C06E400B32A39 /* UserProfile.swift in Sources */,
 				21BBFE08289C06E400B32A39 /* UserFollowing+Schema.swift in Sources */,
 				21BBFDBF289C06E400B32A39 /* PostCommentModelRegistration.swift in Sources */,
-				21BBFE00289C06E400B32A39 /* ModelImplicitDefaultPk.swift in Sources */,
 				21BBFC0D289C037400B32A39 /* SyncMetadataTests.swift in Sources */,
-				21BBFDEC289C06E400B32A39 /* ModelExplicitCustomPk.swift in Sources */,
 				21BBFD74289C06E400B32A39 /* SchemaDrift+Schema.swift in Sources */,
 				21BBFD4F289C06E400B32A39 /* Post4V2.swift in Sources */,
-				21BBFDEF289C06E400B32A39 /* TagWithCompositeKey.swift in Sources */,
 				21BBFD48289C06E400B32A39 /* Comment7V2.swift in Sources */,
-				21BBFDEA289C06E400B32A39 /* CommentWithCompositeKeyAndIndex+Schema.swift in Sources */,
 				21BBFDC1289C06E400B32A39 /* Post.swift in Sources */,
 				21BBFD5F289C06E400B32A39 /* Team1V2+Schema.swift in Sources */,
 				21BBFDDE289C06E400B32A39 /* Post5.swift in Sources */,
 				21BBFDB6289C06E400B32A39 /* Row+Schema.swift in Sources */,
-				21BBFDF4289C06E400B32A39 /* PostWithCompositeKeyUnidirectional.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2302,9 +2265,42 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				21977DA6289C1634005B49D6 /* ModelCompositePk.swift in Sources */,
+				21977DA9289C1634005B49D6 /* PostWithTagsCompositeKey+Schema.swift in Sources */,
+				21977DB9289C1634005B49D6 /* ModelCustomPkDefined+Schema.swift in Sources */,
+				21977DAC289C1634005B49D6 /* ModelImplicitDefaultPk.swift in Sources */,
+				21977DA8289C1634005B49D6 /* ModelExplicitDefaultPk+Schema.swift in Sources */,
+				21977DB5289C1634005B49D6 /* CommentWithCompositeKeyUnidirectional+Schema.swift in Sources */,
+				21977DB8289C1634005B49D6 /* PostWithCompositeKey+Schema.swift in Sources */,
+				21977D9B289C1634005B49D6 /* TagWithCompositeKey+Schema.swift in Sources */,
+				21977DB7289C1634005B49D6 /* PostTagsWithCompositeKey.swift in Sources */,
+				21977DB2289C1634005B49D6 /* PostWithCompositeKey.swift in Sources */,
 				21BBFC24289C03EB00B32A39 /* AWSDataStorePrimaryKeyBaseTest.swift in Sources */,
+				21977DA0289C1634005B49D6 /* CommentWithCompositeKeyAndIndex.swift in Sources */,
+				21977DBA289C1634005B49D6 /* CommentWithCompositeKey.swift in Sources */,
+				21977D9E289C1634005B49D6 /* ModelExplicitCustomPk+Schema.swift in Sources */,
+				21977D9D289C1634005B49D6 /* ModelCustomPKDefined.swift in Sources */,
+				21977DB0289C1634005B49D6 /* CommentWithCompositeKeyUnidirectional.swift in Sources */,
+				21977DAF289C1634005B49D6 /* ModelCompositePkBelongsTo+Schema.swift in Sources */,
+				21977DAE289C1634005B49D6 /* PostWithTagsCompositeKey.swift in Sources */,
+				21977DB4289C1634005B49D6 /* ModelCompositePkWithAssociation.swift in Sources */,
+				21977D9C289C1634005B49D6 /* ModelCompositePkBelongsTo.swift in Sources */,
+				21977DA2289C1634005B49D6 /* PostWithCompositeKeyAndIndex.swift in Sources */,
+				21977DB6289C1634005B49D6 /* ModelCompositePk+Schema.swift in Sources */,
+				21977DA5289C1634005B49D6 /* PostTagsWithCompositeKey+Schema.swift in Sources */,
+				21977D9F289C1634005B49D6 /* ModelExplicitDefaultPk.swift in Sources */,
+				21977DAA289C1634005B49D6 /* CommentWithCompositeKey+Schema.swift in Sources */,
+				21977DA4289C1634005B49D6 /* ModelCompositeIntPk+Schema.swift in Sources */,
+				21977D99289C1634005B49D6 /* CommentWithCompositeKeyAndIndex+Schema.swift in Sources */,
+				21977DA1289C1634005B49D6 /* PostWithCompositeKeyAndIndex+Schema.swift in Sources */,
+				21977DBB289C1634005B49D6 /* TagWithCompositeKey.swift in Sources */,
+				21977DAD289C1634005B49D6 /* ModelCompositePkWithAssociation+Schema.swift in Sources */,
 				21BBFC23289C03E900B32A39 /* AWSDataStorePrimaryKeyTests.swift in Sources */,
-				21BBFB75289C00AD00B32A39 /* AWSDataStorePluginCPKTests.swift in Sources */,
+				21977DB3289C1634005B49D6 /* ModelExplicitCustomPk.swift in Sources */,
+				21977DB1289C1634005B49D6 /* ModelCompositeIntPk.swift in Sources */,
+				21977DA3289C1634005B49D6 /* PostWithCompositeKeyUnidirectional+Schema.swift in Sources */,
+				21977DAB289C1634005B49D6 /* ModelImplicitDefaultPk+Schema.swift in Sources */,
+				21977D9A289C1634005B49D6 /* PostWithCompositeKeyUnidirectional.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
