@@ -26,11 +26,11 @@ class LocalStoreIntegrationTestBase: XCTestCase {
     }
 
     override func tearDown() async throws {
-        let semaphore = DispatchSemaphore(value: 0)
+        let clearComplete = expectation(description: "clear completed")
         Amplify.DataStore.clear { _ in
-            semaphore.signal()
+            clearComplete.fulfill()
         }
-        semaphore.wait()
+        await waitForExpectations(timeout: 10)
         await Amplify.reset()
     }
 

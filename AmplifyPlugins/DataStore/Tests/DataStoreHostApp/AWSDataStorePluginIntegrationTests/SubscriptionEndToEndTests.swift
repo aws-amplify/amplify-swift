@@ -40,54 +40,71 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
         let updatedContent = "UPDATED CONTENT from SubscriptionTests at \(Date())"
 
         let createReceived = expectation(description: "createReceived")
-        let updateReceived = expectation(description: "updateReceived")
-        let deleteReceived = expectation(description: "deleteReceived")
-
-        let hubListener = Amplify.Hub.listen(
-            to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived
-        ) { payload in
+        var hubListener = Amplify.Hub.listen(to: .dataStore,
+                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
                 XCTFail("Can't cast payload as mutation event")
                 return
             }
-
             guard mutationEvent.modelId == id else {
                 print("Received unrelated mutation, skipping \(mutationEvent)")
                 return
             }
-
             switch mutationEvent.mutationType {
             case GraphQLMutationType.create.rawValue:
                 createReceived.fulfill()
             case GraphQLMutationType.update.rawValue:
-                updateReceived.fulfill()
+                break
             case GraphQLMutationType.delete.rawValue:
-                deleteReceived.fulfill()
+                break
             default:
                 break
             }
         }
-
         guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
         }
 
         sendCreateRequest(withId: id, content: originalContent)
-        wait(for: [createReceived], timeout: networkTimeout)
-
-        let createSyncData = getMutationSync(forPostWithId: id)
+        await waitForExpectations(timeout: networkTimeout)
+        let createSyncData = await getMutationSync(forPostWithId: id)
         XCTAssertNotNil(createSyncData)
         let createdPost = createSyncData?.model.instance as? Post
         XCTAssertNotNil(createdPost)
         XCTAssertEqual(createdPost?.content, originalContent)
         XCTAssertEqual(createSyncData?.syncMetadata.version, 1)
         XCTAssertEqual(createSyncData?.syncMetadata.deleted, false)
-
+        
+        let updateReceived = expectation(description: "updateReceived")
+        hubListener = Amplify.Hub.listen(to: .dataStore,
+                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+            guard let mutationEvent = payload.data as? MutationEvent else {
+                XCTFail("Can't cast payload as mutation event")
+                return
+            }
+            guard mutationEvent.modelId == id else {
+                print("Received unrelated mutation, skipping \(mutationEvent)")
+                return
+            }
+            switch mutationEvent.mutationType {
+            case GraphQLMutationType.create.rawValue:
+                break
+            case GraphQLMutationType.update.rawValue:
+                updateReceived.fulfill()
+            case GraphQLMutationType.delete.rawValue:
+                break
+            default:
+                break
+            }
+        }
+        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+            XCTFail("Listener not registered for hub")
+            return
+        }
         sendUpdateRequest(forId: id, content: updatedContent, version: 1)
-        wait(for: [updateReceived], timeout: networkTimeout)
-        let updateSyncData = getMutationSync(forPostWithId: id)
+        await waitForExpectations(timeout: networkTimeout)
+        let updateSyncData = await getMutationSync(forPostWithId: id)
         XCTAssertNotNil(updateSyncData)
         let updatedPost = updateSyncData?.model.instance as? Post
         XCTAssertNotNil(updatedPost)
@@ -95,9 +112,37 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
         XCTAssertEqual(updateSyncData?.syncMetadata.version, 2)
         XCTAssertEqual(updateSyncData?.syncMetadata.deleted, false)
 
+        let deleteReceived = expectation(description: "deleteReceived")
+
+        hubListener = Amplify.Hub.listen(to: .dataStore,
+                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+            guard let mutationEvent = payload.data as? MutationEvent else {
+                XCTFail("Can't cast payload as mutation event")
+                return
+            }
+            guard mutationEvent.modelId == id else {
+                print("Received unrelated mutation, skipping \(mutationEvent)")
+                return
+            }
+            switch mutationEvent.mutationType {
+            case GraphQLMutationType.create.rawValue:
+                break
+            case GraphQLMutationType.update.rawValue:
+                break
+            case GraphQLMutationType.delete.rawValue:
+                deleteReceived.fulfill()
+            default:
+                break
+            }
+        }
+        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+            XCTFail("Listener not registered for hub")
+            return
+        }
+        
         sendDeleteRequest(forId: id, version: 2)
-        wait(for: [deleteReceived], timeout: networkTimeout)
-        let deleteSyncData = getMutationSync(forPostWithId: id)
+        await waitForExpectations(timeout: networkTimeout)
+        let deleteSyncData = await getMutationSync(forPostWithId: id)
         XCTAssertNil(deleteSyncData)
     }
 
@@ -214,8 +259,8 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
         }
     }
 
-    func getMutationSync(forPostWithId id: Model.Identifier) -> MutationSync<AnyModel>? {
-        let semaphore = DispatchSemaphore(value: 0)
+    func getMutationSync(forPostWithId id: Model.Identifier) async -> MutationSync<AnyModel>? {
+        let queryComplete = expectation(description: "Query completed")
         var postFromQuery: Post?
         storageAdapter.query(Post.self, predicate: Post.keys.id == id) { result in
             switch result {
@@ -225,9 +270,9 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
                 // swiftlint:disable:next force_try
                 postFromQuery = try! posts.unique()
             }
-            semaphore.signal()
+            queryComplete.fulfill()
         }
-
+        await waitForExpectations(timeout: networkTimeout)
         guard let post = postFromQuery else {
             return nil
         }
