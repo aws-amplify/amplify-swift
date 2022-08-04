@@ -47,8 +47,8 @@ class CredentialStoreStateResolverTests: XCTestCase {
                 expected: .error(credentialStoreError)),
             CredentialStoreStateSequence(
                 oldState: .clearingCredentials,
-                event: CredentialStoreEvent(eventType: .completedOperation(.amplifyCredentials(testData))),
-                expected: .success(.amplifyCredentials(testData))),
+                event: CredentialStoreEvent(eventType: .credentialCleared(.amplifyCredentials)),
+                expected: .clearedCredential(.amplifyCredentials)),
             CredentialStoreStateSequence(
                 oldState: .clearingCredentials,
                 event: CredentialStoreEvent(eventType: .throwError(credentialStoreError)),
