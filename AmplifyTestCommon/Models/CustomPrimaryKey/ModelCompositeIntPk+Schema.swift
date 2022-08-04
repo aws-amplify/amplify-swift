@@ -43,10 +43,10 @@ extension ModelCompositeIntPk {
 
 extension ModelCompositeIntPk: ModelIdentifiable {
     public typealias IdentifierFormat = ModelIdentifierFormat.Custom
-    public typealias Identifier = ModelIdentifier<Self, ModelIdentifierFormat.Custom>
+    public typealias IdentifierProtocol = ModelIdentifier<Self, ModelIdentifierFormat.Custom>
 }
 
-extension ModelCompositeIntPk.Identifier {
+extension ModelCompositeIntPk.IdentifierProtocol {
     public static func identifier(id: String, serial: Int) -> Self {
         .make(fields: [(name: "id", value: id), (name: "serial", value: serial)])
     }

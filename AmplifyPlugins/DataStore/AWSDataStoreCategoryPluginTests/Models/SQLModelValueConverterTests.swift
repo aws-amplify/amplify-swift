@@ -143,7 +143,7 @@ class SQLModelValueConverterTests: BaseDataStoreTests {
             "__typename": "CommentWithCompositeKey"
         ]
         let bindings = DynamicModel(id: commentId, values: model).sqlValues(modelSchema: CommentWithCompositeKey.schema)
-        let expectedPostIdentifier = PostWithCompositeKey.Identifier.identifier(id: postId, title: postTitle)
+        let expectedPostIdentifier = PostWithCompositeKey.IdentifierProtocol.identifier(id: postId, title: postTitle)
 
         XCTAssertEqual(bindings[0] as? String, commentId)
         XCTAssertEqual(bindings[1] as? String, commentContent)

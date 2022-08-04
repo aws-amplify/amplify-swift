@@ -47,10 +47,10 @@ extension PostWithCompositeKeyUnidirectional {
 
 extension PostWithCompositeKeyUnidirectional: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Custom
-  public typealias Identifier = ModelIdentifier<Self, ModelIdentifierFormat.Custom>
+  public typealias IdentifierProtocol = ModelIdentifier<Self, ModelIdentifierFormat.Custom>
 }
 
-extension PostWithCompositeKeyUnidirectional.Identifier {
+extension PostWithCompositeKeyUnidirectional.IdentifierProtocol {
   public static func identifier(id: String,
       title: String) -> Self {
     .make(fields: [(name: "id", value: id), (name: "title", value: title)])

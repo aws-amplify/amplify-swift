@@ -44,10 +44,10 @@ extension PostWithTagsCompositeKey {
 
 extension PostWithTagsCompositeKey: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Custom
-  public typealias Identifier = ModelIdentifier<Self, ModelIdentifierFormat.Custom>
+  public typealias IdentifierProtocol = ModelIdentifier<Self, ModelIdentifierFormat.Custom>
 }
 
-extension PostWithTagsCompositeKey.Identifier {
+extension PostWithTagsCompositeKey.IdentifierProtocol {
   public static func identifier(postId: String,
       title: String) -> Self {
     .make(fields: [(name: "postId", value: postId), (name: "title", value: title)])
