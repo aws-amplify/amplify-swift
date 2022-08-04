@@ -236,21 +236,6 @@ let storageTargets: [Target] = [
         exclude: [
             "Resources/Info.plist"
         ]
-    ),
-    .testTarget(
-        name: "AWSS3StoragePluginFunctionalTests",
-        dependencies: [
-            "AWSS3StoragePlugin",
-            "AWSAPIPlugin",
-            "AmplifyTestCommon",
-            "AWSPluginsTestCommon",
-            "AWSCognitoAuthPlugin"
-        ],
-        path: "AmplifyPlugins/Storage/AWSS3StoragePluginFunctionalTests",
-        exclude: [
-            "README.md",
-            "Info.plist"
-        ]
     )
 ]
 
@@ -304,19 +289,6 @@ let analyticsTargets: [Target] = [
         ],
         path: "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPluginTests",
         exclude: ["Resources/Info.plist"]
-    ),
-    .testTarget(
-        name: "AWSPinpointAnalyticsPluginIntegrationTests",
-        dependencies: [
-            "AWSPinpointAnalyticsPlugin",
-            "AWSCognitoAuthPlugin",
-            "AmplifyTestCommon"
-        ],
-        path: "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPluginIntegrationTests",
-        exclude: [
-            "README.md",
-            "Info.plist"
-        ]
     )
 ]
 
