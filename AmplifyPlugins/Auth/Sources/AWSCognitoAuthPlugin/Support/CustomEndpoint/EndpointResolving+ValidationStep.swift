@@ -16,14 +16,6 @@ extension EndpointResolving {
 
 // MARK: Custom Endpoint validation steps.
 extension EndpointResolving.ValidationStep {
-    
-    // We want to enforce that the endpoint is excluded from the
-    // configuration so as not to give the impression that other
-    // schemes are supported. While we could check for, and allow,
-    // explicit `https` input as a convenience, that would provide
-    // two valid paths and be an unnecessary source of confusion.
-    // So we're going to fail if any scheme is included
-    // in the configuration.
     static func schemeIsEmpty() -> Self where Input == String, Output == Void {
         .init { endpoint in
             let scheme = URLComponents(string: endpoint)?.scheme
@@ -33,7 +25,18 @@ extension EndpointResolving.ValidationStep {
         }
     }
     
-    
+    static func validURL() -> Self where Input == String, Output == (URLComponents, String) {
+        .init { endpoint in
+            guard
+                let components = URLComponents(string: "https://\(endpoint)"),
+                components.url != nil,
+                let host = components.host
+            else {
+                throw AuthError.invalidURL(endpoint)
+            }
+            return (components, host)
+        }
+    }
     
     static func pathIsEmpty() -> Self where Input == (URLComponents, String), Output == Void {
         .init { (components, endpoint) in
