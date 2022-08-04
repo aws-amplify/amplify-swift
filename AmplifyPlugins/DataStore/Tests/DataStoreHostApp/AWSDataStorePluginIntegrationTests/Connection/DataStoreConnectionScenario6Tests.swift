@@ -8,7 +8,6 @@
 import XCTest
 import Combine
 @testable import Amplify
-@testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
 /*

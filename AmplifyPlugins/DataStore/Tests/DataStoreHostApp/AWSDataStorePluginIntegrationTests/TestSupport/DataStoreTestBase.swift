@@ -8,7 +8,6 @@
 import Foundation
 import XCTest
 import Amplify
-@testable import AmplifyTestCommon
 
 class DataStoreTestBase: XCTestCase {
     func saveModel<M: Model>(_ model: M) -> DataStoreResult<M> {

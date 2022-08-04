@@ -8,7 +8,6 @@
 import XCTest
 
 @testable import Amplify
-@testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
 class LocalStoreIntegrationTestBase: XCTestCase {

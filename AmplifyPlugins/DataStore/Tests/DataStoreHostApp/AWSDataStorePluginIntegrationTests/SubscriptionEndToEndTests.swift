@@ -10,7 +10,6 @@ import XCTest
 import AWSPluginsCore
 
 @testable import Amplify
-@testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
 class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {

@@ -6,7 +6,6 @@
 //
 
 import Amplify
-import AmplifyTestCommon
 
 struct TestModelV2Registration: AmplifyModelRegistration {
 

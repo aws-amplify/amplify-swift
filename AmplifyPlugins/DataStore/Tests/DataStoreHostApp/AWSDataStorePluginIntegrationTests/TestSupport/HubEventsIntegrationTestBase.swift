@@ -11,7 +11,6 @@ import AWSAPIPlugin
 import AWSPluginsCore
 
 @testable import Amplify
-@testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
 class HubEventsIntegrationTestBase: XCTestCase {

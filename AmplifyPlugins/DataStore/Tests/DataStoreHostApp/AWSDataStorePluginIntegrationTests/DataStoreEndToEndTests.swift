@@ -11,7 +11,6 @@ import AWSPluginsCore
 import Combine
 
 @testable import Amplify
-@testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
 class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {

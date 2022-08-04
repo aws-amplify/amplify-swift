@@ -167,6 +167,234 @@
 		21BBFC21289C03D800B32A39 /* DataStoreModelWithSecondaryIndexTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9FF289BFE3400B32A39 /* DataStoreModelWithSecondaryIndexTests.swift */; };
 		21BBFC23289C03E900B32A39 /* AWSDataStorePrimaryKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA13289BFE3400B32A39 /* AWSDataStorePrimaryKeyTests.swift */; };
 		21BBFC24289C03EB00B32A39 /* AWSDataStorePrimaryKeyBaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA14289BFE3400B32A39 /* AWSDataStorePrimaryKeyBaseTest.swift */; };
+		21BBFC28289C062000B32A39 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC27289C062000B32A39 /* TestConfigHelper.swift */; };
+		21BBFD2D289C06E400B32A39 /* DeprecatedTodo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC2A289C06E200B32A39 /* DeprecatedTodo.swift */; };
+		21BBFD2E289C06E400B32A39 /* User+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC2B289C06E200B32A39 /* User+Schema.swift */; };
+		21BBFD2F289C06E400B32A39 /* OGCScenarioBPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC2C289C06E300B32A39 /* OGCScenarioBPost.swift */; };
+		21BBFD30289C06E400B32A39 /* Article+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC2D289C06E300B32A39 /* Article+Schema.swift */; };
+		21BBFD31289C06E400B32A39 /* RecordCover+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC2E289C06E300B32A39 /* RecordCover+Schema.swift */; };
+		21BBFD32289C06E400B32A39 /* schema.graphql in Resources */ = {isa = PBXBuildFile; fileRef = 21BBFC30289C06E300B32A39 /* schema.graphql */; };
+		21BBFD33289C06E400B32A39 /* Dish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC31289C06E300B32A39 /* Dish.swift */; };
+		21BBFD34289C06E400B32A39 /* MenuType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC32289C06E300B32A39 /* MenuType.swift */; };
+		21BBFD35289C06E400B32A39 /* Menu+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC33289C06E300B32A39 /* Menu+Schema.swift */; };
+		21BBFD36289C06E400B32A39 /* Restaurant+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC34289C06E300B32A39 /* Restaurant+Schema.swift */; };
+		21BBFD37289C06E400B32A39 /* Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC35289C06E300B32A39 /* Menu.swift */; };
+		21BBFD38289C06E400B32A39 /* Dish+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC36289C06E300B32A39 /* Dish+Schema.swift */; };
+		21BBFD39289C06E400B32A39 /* Restaurant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC37289C06E300B32A39 /* Restaurant.swift */; };
+		21BBFD3A289C06E400B32A39 /* CustomerMultipleSecondaryIndexV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC39289C06E300B32A39 /* CustomerMultipleSecondaryIndexV2+Schema.swift */; };
+		21BBFD3B289C06E400B32A39 /* Comment3V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC3B289C06E300B32A39 /* Comment3V2.swift */; };
+		21BBFD3C289C06E400B32A39 /* Post3V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC3C289C06E300B32A39 /* Post3V2+Schema.swift */; };
+		21BBFD3D289C06E400B32A39 /* Post3V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC3D289C06E300B32A39 /* Post3V2.swift */; };
+		21BBFD3E289C06E400B32A39 /* Comment3V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC3E289C06E300B32A39 /* Comment3V2+Schema.swift */; };
+		21BBFD3F289C06E400B32A39 /* Project4bV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC40289C06E300B32A39 /* Project4bV2+Schema.swift */; };
+		21BBFD40289C06E400B32A39 /* Team4bV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC41289C06E300B32A39 /* Team4bV2+Schema.swift */; };
+		21BBFD41289C06E400B32A39 /* Project4bV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC42289C06E300B32A39 /* Project4bV2.swift */; };
+		21BBFD42289C06E400B32A39 /* Team4bV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC43289C06E300B32A39 /* Team4bV2.swift */; };
+		21BBFD43289C06E400B32A39 /* Post7V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC45289C06E300B32A39 /* Post7V2.swift */; };
+		21BBFD44289C06E400B32A39 /* Post7V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC46289C06E300B32A39 /* Post7V2+Schema.swift */; };
+		21BBFD45289C06E400B32A39 /* Blog7V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC47289C06E300B32A39 /* Blog7V2+Schema.swift */; };
+		21BBFD46289C06E400B32A39 /* Blog7V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC48289C06E300B32A39 /* Blog7V2.swift */; };
+		21BBFD47289C06E400B32A39 /* Comment7V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC49289C06E300B32A39 /* Comment7V2+Schema.swift */; };
+		21BBFD48289C06E400B32A39 /* Comment7V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC4A289C06E300B32A39 /* Comment7V2.swift */; };
+		21BBFD49289C06E400B32A39 /* TodoCustomTimestampV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC4B289C06E300B32A39 /* TodoCustomTimestampV2+Schema.swift */; };
+		21BBFD4B289C06E400B32A39 /* Team4aV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC4E289C06E300B32A39 /* Team4aV2+Schema.swift */; };
+		21BBFD4C289C06E400B32A39 /* Project4aV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC4F289C06E300B32A39 /* Project4aV2+Schema.swift */; };
+		21BBFD4D289C06E400B32A39 /* Project4aV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC50289C06E300B32A39 /* Project4aV2.swift */; };
+		21BBFD4E289C06E400B32A39 /* Team4aV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC51289C06E300B32A39 /* Team4aV2.swift */; };
+		21BBFD4F289C06E400B32A39 /* Post4V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC53289C06E300B32A39 /* Post4V2.swift */; };
+		21BBFD50289C06E400B32A39 /* Post4V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC54289C06E300B32A39 /* Post4V2+Schema.swift */; };
+		21BBFD51289C06E400B32A39 /* Comment4V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC55289C06E300B32A39 /* Comment4V2.swift */; };
+		21BBFD52289C06E400B32A39 /* Comment4V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC56289C06E300B32A39 /* Comment4V2+Schema.swift */; };
+		21BBFD53289C06E400B32A39 /* CustomerSecondaryIndexV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC57289C06E300B32A39 /* CustomerSecondaryIndexV2.swift */; };
+		21BBFD54289C06E400B32A39 /* MyNestedModel8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC59289C06E300B32A39 /* MyNestedModel8+Schema.swift */; };
+		21BBFD55289C06E400B32A39 /* Blog8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC5A289C06E300B32A39 /* Blog8+Schema.swift */; };
+		21BBFD56289C06E400B32A39 /* Comment8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC5B289C06E300B32A39 /* Comment8+Schema.swift */; };
+		21BBFD57289C06E400B32A39 /* Post8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC5C289C06E300B32A39 /* Post8+Schema.swift */; };
+		21BBFD58289C06E400B32A39 /* Comment8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC5D289C06E300B32A39 /* Comment8.swift */; };
+		21BBFD59289C06E400B32A39 /* MyCustomModel8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC5E289C06E300B32A39 /* MyCustomModel8.swift */; };
+		21BBFD5A289C06E400B32A39 /* MyNestedModel8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC5F289C06E300B32A39 /* MyNestedModel8.swift */; };
+		21BBFD5B289C06E400B32A39 /* MyCustomModel8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC60289C06E300B32A39 /* MyCustomModel8+Schema.swift */; };
+		21BBFD5C289C06E400B32A39 /* Blog8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC61289C06E300B32A39 /* Blog8.swift */; };
+		21BBFD5D289C06E400B32A39 /* Post8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC62289C06E300B32A39 /* Post8.swift */; };
+		21BBFD5E289C06E400B32A39 /* Project1V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC64289C06E300B32A39 /* Project1V2.swift */; };
+		21BBFD5F289C06E400B32A39 /* Team1V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC65289C06E300B32A39 /* Team1V2+Schema.swift */; };
+		21BBFD60289C06E400B32A39 /* Project1V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC66289C06E300B32A39 /* Project1V2+Schema.swift */; };
+		21BBFD61289C06E400B32A39 /* Team1V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC67289C06E300B32A39 /* Team1V2.swift */; };
+		21BBFD62289C06E400B32A39 /* TodoWithDefaultValueV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC68289C06E300B32A39 /* TodoWithDefaultValueV2.swift */; };
+		21BBFD63289C06E400B32A39 /* Priority.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC69289C06E300B32A39 /* Priority.swift */; };
+		21BBFD64289C06E400B32A39 /* Post5V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC6B289C06E300B32A39 /* Post5V2+Schema.swift */; };
+		21BBFD65289C06E400B32A39 /* Post5V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC6C289C06E300B32A39 /* Post5V2.swift */; };
+		21BBFD66289C06E400B32A39 /* User5V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC6D289C06E300B32A39 /* User5V2+Schema.swift */; };
+		21BBFD67289C06E400B32A39 /* PostEditor5V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC6E289C06E300B32A39 /* PostEditor5V2.swift */; };
+		21BBFD68289C06E400B32A39 /* User5V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC6F289C06E300B32A39 /* User5V2.swift */; };
+		21BBFD69289C06E400B32A39 /* PostEditor5V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC70289C06E300B32A39 /* PostEditor5V2+Schema.swift */; };
+		21BBFD6A289C06E400B32A39 /* CustomerWithMultipleFieldsinPK.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC71289C06E300B32A39 /* CustomerWithMultipleFieldsinPK.swift */; };
+		21BBFD6B289C06E400B32A39 /* CustomerSecondaryIndexV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC72289C06E300B32A39 /* CustomerSecondaryIndexV2+Schema.swift */; };
+		21BBFD6C289C06E400B32A39 /* Post3aV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC74289C06E300B32A39 /* Post3aV2.swift */; };
+		21BBFD6D289C06E400B32A39 /* Comment3aV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC75289C06E300B32A39 /* Comment3aV2.swift */; };
+		21BBFD6E289C06E400B32A39 /* Post3aV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC76289C06E300B32A39 /* Post3aV2+Schema.swift */; };
+		21BBFD6F289C06E400B32A39 /* Comment3aV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC77289C06E300B32A39 /* Comment3aV2+Schema.swift */; };
+		21BBFD70289C06E400B32A39 /* TodoCustomTimestampV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC78289C06E300B32A39 /* TodoCustomTimestampV2.swift */; };
+		21BBFD71289C06E400B32A39 /* CustomerMultipleSecondaryIndexV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC79289C06E300B32A39 /* CustomerMultipleSecondaryIndexV2.swift */; };
+		21BBFD72289C06E400B32A39 /* SchemaDrift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC7B289C06E300B32A39 /* SchemaDrift.swift */; };
+		21BBFD73289C06E400B32A39 /* EnumDrift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC7C289C06E300B32A39 /* EnumDrift.swift */; };
+		21BBFD74289C06E400B32A39 /* SchemaDrift+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC7D289C06E300B32A39 /* SchemaDrift+Schema.swift */; };
+		21BBFD75289C06E400B32A39 /* Meeting8V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC7F289C06E300B32A39 /* Meeting8V2+Schema.swift */; };
+		21BBFD76289C06E400B32A39 /* Attendee8V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC80289C06E300B32A39 /* Attendee8V2.swift */; };
+		21BBFD77289C06E400B32A39 /* Registration8V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC81289C06E300B32A39 /* Registration8V2+Schema.swift */; };
+		21BBFD78289C06E400B32A39 /* Meeting8V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC82289C06E300B32A39 /* Meeting8V2.swift */; };
+		21BBFD79289C06E400B32A39 /* Registration8V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC83289C06E300B32A39 /* Registration8V2.swift */; };
+		21BBFD7A289C06E400B32A39 /* Attendee8V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC84289C06E300B32A39 /* Attendee8V2+Schema.swift */; };
+		21BBFD7B289C06E400B32A39 /* CustomerWithMultipleFieldsinPK+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC85289C06E300B32A39 /* CustomerWithMultipleFieldsinPK+Schema.swift */; };
+		21BBFD7C289C06E400B32A39 /* Project2V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC87289C06E300B32A39 /* Project2V2+Schema.swift */; };
+		21BBFD7D289C06E400B32A39 /* Team2V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC88289C06E300B32A39 /* Team2V2.swift */; };
+		21BBFD7E289C06E400B32A39 /* Project2V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC89289C06E300B32A39 /* Project2V2.swift */; };
+		21BBFD7F289C06E400B32A39 /* Team2V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC8A289C06E300B32A39 /* Team2V2+Schema.swift */; };
+		21BBFD80289C06E400B32A39 /* Post6V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC8C289C06E300B32A39 /* Post6V2+Schema.swift */; };
+		21BBFD81289C06E400B32A39 /* Post6V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC8D289C06E300B32A39 /* Post6V2.swift */; };
+		21BBFD82289C06E400B32A39 /* Comment6V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC8E289C06E300B32A39 /* Comment6V2+Schema.swift */; };
+		21BBFD83289C06E400B32A39 /* Blog6V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC8F289C06E300B32A39 /* Blog6V2.swift */; };
+		21BBFD84289C06E400B32A39 /* Blog6V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC90289C06E300B32A39 /* Blog6V2+Schema.swift */; };
+		21BBFD85289C06E400B32A39 /* Comment6V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC91289C06E300B32A39 /* Comment6V2.swift */; };
+		21BBFD86289C06E400B32A39 /* TodoWithDefaultValueV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC92289C06E300B32A39 /* TodoWithDefaultValueV2+Schema.swift */; };
+		21BBFD87289C06E400B32A39 /* PostStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC93289C06E300B32A39 /* PostStatus.swift */; };
+		21BBFD88289C06E400B32A39 /* Record+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC94289C06E300B32A39 /* Record+Schema.swift */; };
+		21BBFD89289C06E400B32A39 /* UserFollowers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC95289C06E300B32A39 /* UserFollowers.swift */; };
+		21BBFD8A289C06E400B32A39 /* ListStringContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC97289C06E300B32A39 /* ListStringContainer.swift */; };
+		21BBFD8B289C06E400B32A39 /* ListStringContainer+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC98289C06E300B32A39 /* ListStringContainer+Schema.swift */; };
+		21BBFD8C289C06E400B32A39 /* EnumTestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC99289C06E300B32A39 /* EnumTestModel.swift */; };
+		21BBFD8D289C06E400B32A39 /* Scalar+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC9A289C06E300B32A39 /* Scalar+Equatable.swift */; };
+		21BBFD8E289C06E400B32A39 /* Nested.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC9B289C06E300B32A39 /* Nested.swift */; };
+		21BBFD8F289C06E400B32A39 /* ScalarContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC9C289C06E300B32A39 /* ScalarContainer.swift */; };
+		21BBFD90289C06E400B32A39 /* EnumTestModel+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC9D289C06E300B32A39 /* EnumTestModel+Schema.swift */; };
+		21BBFD91289C06E400B32A39 /* Nested+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC9E289C06E300B32A39 /* Nested+Schema.swift */; };
+		21BBFD92289C06E400B32A39 /* TestEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC9F289C06E300B32A39 /* TestEnum.swift */; };
+		21BBFD93289C06E400B32A39 /* ScalarContainer+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCA0289C06E300B32A39 /* ScalarContainer+Schema.swift */; };
+		21BBFD94289C06E400B32A39 /* NestedTypeTestModel+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCA1289C06E300B32A39 /* NestedTypeTestModel+Schema.swift */; };
+		21BBFD95289C06E400B32A39 /* NestedTypeTestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCA2289C06E300B32A39 /* NestedTypeTestModel.swift */; };
+		21BBFD96289C06E400B32A39 /* ListIntContainer+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCA3289C06E300B32A39 /* ListIntContainer+Schema.swift */; };
+		21BBFD97289C06E400B32A39 /* ListIntContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCA4289C06E300B32A39 /* ListIntContainer.swift */; };
+		21BBFD98289C06E400B32A39 /* ScenarioATest6Post+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCA5289C06E300B32A39 /* ScenarioATest6Post+Schema.swift */; };
+		21BBFD99289C06E400B32A39 /* DynamicEmbedded.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCA7289C06E300B32A39 /* DynamicEmbedded.swift */; };
+		21BBFD9A289C06E400B32A39 /* DynamicModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCA8289C06E300B32A39 /* DynamicModel.swift */; };
+		21BBFD9B289C06E400B32A39 /* Section.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCA9289C06E300B32A39 /* Section.swift */; };
+		21BBFD9C289C06E400B32A39 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCAA289C06E300B32A39 /* Category.swift */; };
+		21BBFD9D289C06E400B32A39 /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCAB289C06E300B32A39 /* Todo.swift */; };
+		21BBFD9E289C06E400B32A39 /* Todo+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCAC289C06E300B32A39 /* Todo+Schema.swift */; };
+		21BBFD9F289C06E400B32A39 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCAD289C06E300B32A39 /* Color.swift */; };
+		21BBFDA0289C06E400B32A39 /* OGCScenarioBMGroupPost+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCAE289C06E300B32A39 /* OGCScenarioBMGroupPost+Schema.swift */; };
+		21BBFDA1289C06E400B32A39 /* M2MPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCB0289C06E300B32A39 /* M2MPost.swift */; };
+		21BBFDA3289C06E400B32A39 /* M2MPostEditor+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCB2289C06E300B32A39 /* M2MPostEditor+Schema.swift */; };
+		21BBFDA4289C06E400B32A39 /* M2MUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCB3289C06E300B32A39 /* M2MUser.swift */; };
+		21BBFDA5289C06E400B32A39 /* M2MUser+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCB4289C06E300B32A39 /* M2MUser+Schema.swift */; };
+		21BBFDA6289C06E400B32A39 /* M2MPost+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCB5289C06E300B32A39 /* M2MPost+Schema.swift */; };
+		21BBFDA7289C06E400B32A39 /* M2MPostEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCB6289C06E300B32A39 /* M2MPostEditor.swift */; };
+		21BBFDA8289C06E400B32A39 /* Article.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCB7289C06E300B32A39 /* Article.swift */; };
+		21BBFDAA289C06E400B32A39 /* Project+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCBA289C06E300B32A39 /* Project+Schema.swift */; };
+		21BBFDAC289C06E400B32A39 /* Team.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCBC289C06E300B32A39 /* Team.swift */; };
+		21BBFDAD289C06E400B32A39 /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCBD289C06E300B32A39 /* Project.swift */; };
+		21BBFDAE289C06E400B32A39 /* Team+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCBE289C06E300B32A39 /* Team+Schema.swift */; };
+		21BBFDAF289C06E400B32A39 /* QPredGen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCBF289C06E300B32A39 /* QPredGen.swift */; };
+		21BBFDB0289C06E400B32A39 /* AmplifyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCC0289C06E300B32A39 /* AmplifyModels.swift */; };
+		21BBFDB1289C06E400B32A39 /* OGCScenarioBPost+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCC1289C06E300B32A39 /* OGCScenarioBPost+Schema.swift */; };
+		21BBFDB2289C06E400B32A39 /* Post+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCC2289C06E300B32A39 /* Post+Schema.swift */; };
+		21BBFDB3289C06E400B32A39 /* CustomerOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCC3289C06E300B32A39 /* CustomerOrder.swift */; };
+		21BBFDB4289C06E400B32A39 /* Record.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCC4289C06E300B32A39 /* Record.swift */; };
+		21BBFDB5289C06E400B32A39 /* RecordCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCC5289C06E300B32A39 /* RecordCover.swift */; };
+		21BBFDB6289C06E400B32A39 /* Row+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCC7289C06E300B32A39 /* Row+Schema.swift */; };
+		21BBFDB7289C06E400B32A39 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCC8289C06E300B32A39 /* Group.swift */; };
+		21BBFDB8289C06E400B32A39 /* Group+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCC9289C06E300B32A39 /* Group+Schema.swift */; };
+		21BBFDB9289C06E400B32A39 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCCA289C06E300B32A39 /* Transaction.swift */; };
+		21BBFDBA289C06E400B32A39 /* Row.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCCB289C06E300B32A39 /* Row.swift */; };
+		21BBFDBB289C06E400B32A39 /* Transaction+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCCC289C06E300B32A39 /* Transaction+Schema.swift */; };
+		21BBFDBC289C06E400B32A39 /* UserFollowers+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCCD289C06E300B32A39 /* UserFollowers+Schema.swift */; };
+		21BBFDBD289C06E400B32A39 /* MockModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCCE289C06E300B32A39 /* MockModels.swift */; };
+		21BBFDBE289C06E400B32A39 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCCF289C06E300B32A39 /* User.swift */; };
+		21BBFDBF289C06E400B32A39 /* PostCommentModelRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCD0289C06E300B32A39 /* PostCommentModelRegistration.swift */; };
+		21BBFDC0289C06E400B32A39 /* Comment+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCD1289C06E300B32A39 /* Comment+Schema.swift */; };
+		21BBFDC1289C06E400B32A39 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCD2289C06E300B32A39 /* Post.swift */; };
+		21BBFDC2289C06E400B32A39 /* Blog6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCD5289C06E300B32A39 /* Blog6.swift */; };
+		21BBFDC3289C06E400B32A39 /* Post6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCD6289C06E300B32A39 /* Post6.swift */; };
+		21BBFDC4289C06E400B32A39 /* Comment6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCD7289C06E300B32A39 /* Comment6.swift */; };
+		21BBFDC5289C06E400B32A39 /* Post6+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCD8289C06E300B32A39 /* Post6+Schema.swift */; };
+		21BBFDC6289C06E400B32A39 /* Comment6+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCD9289C06E300B32A39 /* Comment6+Schema.swift */; };
+		21BBFDC7289C06E400B32A39 /* Blog6+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCDA289C06E300B32A39 /* Blog6+Schema.swift */; };
+		21BBFDC8289C06E400B32A39 /* Team1+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCDC289C06E300B32A39 /* Team1+Schema.swift */; };
+		21BBFDC9289C06E400B32A39 /* Project1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCDD289C06E300B32A39 /* Project1.swift */; };
+		21BBFDCA289C06E400B32A39 /* Project1+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCDE289C06E300B32A39 /* Project1+Schema.swift */; };
+		21BBFDCB289C06E400B32A39 /* Team1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCDF289C06E300B32A39 /* Team1.swift */; };
+		21BBFDCD289C06E400B32A39 /* Post4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCE2289C06E300B32A39 /* Post4.swift */; };
+		21BBFDCE289C06E400B32A39 /* Post4+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCE3289C06E300B32A39 /* Post4+Schema.swift */; };
+		21BBFDCF289C06E400B32A39 /* Comment4+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCE4289C06E300B32A39 /* Comment4+Schema.swift */; };
+		21BBFDD0289C06E400B32A39 /* Comment4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCE5289C06E300B32A39 /* Comment4.swift */; };
+		21BBFDD1289C06E400B32A39 /* Post3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCE7289C06E300B32A39 /* Post3.swift */; };
+		21BBFDD2289C06E400B32A39 /* Post3+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCE8289C06E300B32A39 /* Post3+Schema.swift */; };
+		21BBFDD3289C06E400B32A39 /* Comment3+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCE9289C06E300B32A39 /* Comment3+Schema.swift */; };
+		21BBFDD4289C06E400B32A39 /* Comment3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCEA289C06E300B32A39 /* Comment3.swift */; };
+		21BBFDD5289C06E400B32A39 /* Project2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCEC289C06E300B32A39 /* Project2+Schema.swift */; };
+		21BBFDD6289C06E400B32A39 /* Team2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCED289C06E300B32A39 /* Team2.swift */; };
+		21BBFDD7289C06E400B32A39 /* Project2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCEE289C06E300B32A39 /* Project2.swift */; };
+		21BBFDD8289C06E400B32A39 /* Team2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCEF289C06E300B32A39 /* Team2+Schema.swift */; };
+		21BBFDD9289C06E400B32A39 /* PostEditor5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCF1289C06E300B32A39 /* PostEditor5.swift */; };
+		21BBFDDA289C06E400B32A39 /* User5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCF2289C06E300B32A39 /* User5.swift */; };
+		21BBFDDB289C06E400B32A39 /* PostEditor5+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCF3289C06E300B32A39 /* PostEditor5+Schema.swift */; };
+		21BBFDDC289C06E400B32A39 /* User5+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCF4289C06E300B32A39 /* User5+Schema.swift */; };
+		21BBFDDD289C06E400B32A39 /* Post5+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCF5289C06E300B32A39 /* Post5+Schema.swift */; };
+		21BBFDDE289C06E400B32A39 /* Post5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCF6289C06E300B32A39 /* Post5.swift */; };
+		21BBFDDF289C06E400B32A39 /* CustomerOrder+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCF7289C06E300B32A39 /* CustomerOrder+Schema.swift */; };
+		21BBFDE0289C06E400B32A39 /* ScenarioATest6Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCF8289C06E300B32A39 /* ScenarioATest6Post.swift */; };
+		21BBFDE1289C06E400B32A39 /* UserFollowing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCF9289C06E300B32A39 /* UserFollowing.swift */; };
+		21BBFDE2289C06E400B32A39 /* QPredGen+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCFA289C06E300B32A39 /* QPredGen+Schema.swift */; };
+		21BBFDE3289C06E400B32A39 /* OGCScenarioBMGroupPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCFB289C06E300B32A39 /* OGCScenarioBMGroupPost.swift */; };
+		21BBFDE4289C06E400B32A39 /* PostTagsWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCFD289C06E300B32A39 /* PostTagsWithCompositeKey.swift */; };
+		21BBFDE5289C06E400B32A39 /* CommentWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCFE289C06E300B32A39 /* CommentWithCompositeKey.swift */; };
+		21BBFDE7289C06E400B32A39 /* ModelCompositeIntPk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD00289C06E300B32A39 /* ModelCompositeIntPk.swift */; };
+		21BBFDE8289C06E400B32A39 /* PostWithCompositeKeyAndIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD01289C06E300B32A39 /* PostWithCompositeKeyAndIndex.swift */; };
+		21BBFDE9289C06E400B32A39 /* ModelImplicitDefaultPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD02289C06E300B32A39 /* ModelImplicitDefaultPk+Schema.swift */; };
+		21BBFDEA289C06E400B32A39 /* CommentWithCompositeKeyAndIndex+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD03289C06E300B32A39 /* CommentWithCompositeKeyAndIndex+Schema.swift */; };
+		21BBFDEB289C06E400B32A39 /* PostWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD04289C06E300B32A39 /* PostWithCompositeKey+Schema.swift */; };
+		21BBFDEC289C06E400B32A39 /* ModelExplicitCustomPk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD05289C06E300B32A39 /* ModelExplicitCustomPk.swift */; };
+		21BBFDED289C06E400B32A39 /* PostWithTagsCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD06289C06E300B32A39 /* PostWithTagsCompositeKey+Schema.swift */; };
+		21BBFDEE289C06E400B32A39 /* ModelExplicitDefaultPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD07289C06E300B32A39 /* ModelExplicitDefaultPk+Schema.swift */; };
+		21BBFDEF289C06E400B32A39 /* TagWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD08289C06E300B32A39 /* TagWithCompositeKey.swift */; };
+		21BBFDF0289C06E400B32A39 /* ModelExplicitCustomPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD09289C06E300B32A39 /* ModelExplicitCustomPk+Schema.swift */; };
+		21BBFDF1289C06E400B32A39 /* PostWithTagsCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD0A289C06E300B32A39 /* PostWithTagsCompositeKey.swift */; };
+		21BBFDF2289C06E400B32A39 /* CommentWithCompositeKeyUnidirectional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD0B289C06E300B32A39 /* CommentWithCompositeKeyUnidirectional.swift */; };
+		21BBFDF3289C06E400B32A39 /* ModelCustomPKDefined.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD0C289C06E300B32A39 /* ModelCustomPKDefined.swift */; };
+		21BBFDF4289C06E400B32A39 /* PostWithCompositeKeyUnidirectional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD0D289C06E300B32A39 /* PostWithCompositeKeyUnidirectional.swift */; };
+		21BBFDF5289C06E400B32A39 /* CommentWithCompositeKeyAndIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD0E289C06E300B32A39 /* CommentWithCompositeKeyAndIndex.swift */; };
+		21BBFDF6289C06E400B32A39 /* ModelCompositePkWithAssociation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD0F289C06E300B32A39 /* ModelCompositePkWithAssociation.swift */; };
+		21BBFDF7289C06E400B32A39 /* ModelCompositePk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD10289C06E300B32A39 /* ModelCompositePk.swift */; };
+		21BBFDF8289C06E400B32A39 /* CommentWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD11289C06E300B32A39 /* CommentWithCompositeKey+Schema.swift */; };
+		21BBFDF9289C06E400B32A39 /* ModelCompositeIntPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD12289C06E300B32A39 /* ModelCompositeIntPk+Schema.swift */; };
+		21BBFDFA289C06E400B32A39 /* ModelCompositePkWithAssociation+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD13289C06E300B32A39 /* ModelCompositePkWithAssociation+Schema.swift */; };
+		21BBFDFB289C06E400B32A39 /* ModelCompositePk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD14289C06E300B32A39 /* ModelCompositePk+Schema.swift */; };
+		21BBFDFC289C06E400B32A39 /* PostWithCompositeKeyUnidirectional+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD15289C06E300B32A39 /* PostWithCompositeKeyUnidirectional+Schema.swift */; };
+		21BBFDFD289C06E400B32A39 /* ModelCustomPkDefined+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD16289C06E300B32A39 /* ModelCustomPkDefined+Schema.swift */; };
+		21BBFDFE289C06E400B32A39 /* CommentWithCompositeKeyUnidirectional+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD17289C06E300B32A39 /* CommentWithCompositeKeyUnidirectional+Schema.swift */; };
+		21BBFDFF289C06E400B32A39 /* PostWithCompositeKeyAndIndex+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD18289C06E300B32A39 /* PostWithCompositeKeyAndIndex+Schema.swift */; };
+		21BBFE00289C06E400B32A39 /* ModelImplicitDefaultPk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD19289C06E300B32A39 /* ModelImplicitDefaultPk.swift */; };
+		21BBFE01289C06E400B32A39 /* TagWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD1A289C06E300B32A39 /* TagWithCompositeKey+Schema.swift */; };
+		21BBFE02289C06E400B32A39 /* ModelCompositePkBelongsTo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD1B289C06E300B32A39 /* ModelCompositePkBelongsTo.swift */; };
+		21BBFE03289C06E400B32A39 /* ModelCompositePkBelongsTo+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD1C289C06E300B32A39 /* ModelCompositePkBelongsTo+Schema.swift */; };
+		21BBFE04289C06E400B32A39 /* ModelExplicitDefaultPk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD1D289C06E300B32A39 /* ModelExplicitDefaultPk.swift */; };
+		21BBFE05289C06E400B32A39 /* PostTagsWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD1E289C06E300B32A39 /* PostTagsWithCompositeKey+Schema.swift */; };
+		21BBFE06289C06E400B32A39 /* PostWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD1F289C06E300B32A39 /* PostWithCompositeKey.swift */; };
+		21BBFE07289C06E400B32A39 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD20289C06E300B32A39 /* Comment.swift */; };
+		21BBFE08289C06E400B32A39 /* UserFollowing+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD21289C06E300B32A39 /* UserFollowing+Schema.swift */; };
+		21BBFE09289C06E400B32A39 /* Book+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD23289C06E400B32A39 /* Book+Schema.swift */; };
+		21BBFE0A289C06E400B32A39 /* BookAuthor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD24289C06E400B32A39 /* BookAuthor.swift */; };
+		21BBFE0B289C06E400B32A39 /* Author.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD25289C06E400B32A39 /* Author.swift */; };
+		21BBFE0C289C06E400B32A39 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD26289C06E400B32A39 /* UserProfile.swift */; };
+		21BBFE0D289C06E400B32A39 /* UserProfile+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD27289C06E400B32A39 /* UserProfile+Schema.swift */; };
+		21BBFE0E289C06E400B32A39 /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD28289C06E400B32A39 /* Book.swift */; };
+		21BBFE0F289C06E400B32A39 /* BookAuthor+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD29289C06E400B32A39 /* BookAuthor+Schema.swift */; };
+		21BBFE10289C06E400B32A39 /* UserAccount+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD2A289C06E400B32A39 /* UserAccount+Schema.swift */; };
+		21BBFE11289C06E400B32A39 /* UserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD2B289C06E400B32A39 /* UserAccount.swift */; };
+		21BBFE12289C06E400B32A39 /* Author+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD2C289C06E400B32A39 /* Author+Schema.swift */; };
+		21BBFE14289C073100B32A39 /* HubListenerTestUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFE13289C073100B32A39 /* HubListenerTestUtilities.swift */; };
+		21BBFE16289C075000B32A39 /* TestCommonConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFE15289C075000B32A39 /* TestCommonConstants.swift */; };
+		21BBFE18289C076E00B32A39 /* TestExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFE17289C076E00B32A39 /* TestExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -380,6 +608,240 @@
 		21BBFB74289C00AD00B32A39 /* AWSDataStorePluginCPKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStorePluginCPKTests.swift; sourceTree = "<group>"; };
 		21BBFB7F289C00EC00B32A39 /* AWSDataStorePluginAuthTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSDataStorePluginAuthTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		21BBFB8C289C010E00B32A39 /* AWSDataStorePluginFlutterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSDataStorePluginFlutterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		21BBFC27289C062000B32A39 /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
+		21BBFC2A289C06E200B32A39 /* DeprecatedTodo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeprecatedTodo.swift; sourceTree = "<group>"; };
+		21BBFC2B289C06E200B32A39 /* User+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "User+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC2C289C06E300B32A39 /* OGCScenarioBPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OGCScenarioBPost.swift; sourceTree = "<group>"; };
+		21BBFC2D289C06E300B32A39 /* Article+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Article+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC2E289C06E300B32A39 /* RecordCover+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RecordCover+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC30289C06E300B32A39 /* schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = schema.graphql; sourceTree = "<group>"; };
+		21BBFC31289C06E300B32A39 /* Dish.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dish.swift; sourceTree = "<group>"; };
+		21BBFC32289C06E300B32A39 /* MenuType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuType.swift; sourceTree = "<group>"; };
+		21BBFC33289C06E300B32A39 /* Menu+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Menu+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC34289C06E300B32A39 /* Restaurant+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Restaurant+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC35289C06E300B32A39 /* Menu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Menu.swift; sourceTree = "<group>"; };
+		21BBFC36289C06E300B32A39 /* Dish+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dish+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC37289C06E300B32A39 /* Restaurant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Restaurant.swift; sourceTree = "<group>"; };
+		21BBFC39289C06E300B32A39 /* CustomerMultipleSecondaryIndexV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CustomerMultipleSecondaryIndexV2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC3B289C06E300B32A39 /* Comment3V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment3V2.swift; sourceTree = "<group>"; };
+		21BBFC3C289C06E300B32A39 /* Post3V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post3V2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC3D289C06E300B32A39 /* Post3V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post3V2.swift; sourceTree = "<group>"; };
+		21BBFC3E289C06E300B32A39 /* Comment3V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment3V2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC40289C06E300B32A39 /* Project4bV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project4bV2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC41289C06E300B32A39 /* Team4bV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Team4bV2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC42289C06E300B32A39 /* Project4bV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project4bV2.swift; sourceTree = "<group>"; };
+		21BBFC43289C06E300B32A39 /* Team4bV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team4bV2.swift; sourceTree = "<group>"; };
+		21BBFC45289C06E300B32A39 /* Post7V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post7V2.swift; sourceTree = "<group>"; };
+		21BBFC46289C06E300B32A39 /* Post7V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post7V2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC47289C06E300B32A39 /* Blog7V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Blog7V2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC48289C06E300B32A39 /* Blog7V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blog7V2.swift; sourceTree = "<group>"; };
+		21BBFC49289C06E300B32A39 /* Comment7V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment7V2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC4A289C06E300B32A39 /* Comment7V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment7V2.swift; sourceTree = "<group>"; };
+		21BBFC4B289C06E300B32A39 /* TodoCustomTimestampV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TodoCustomTimestampV2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC4C289C06E300B32A39 /* schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = schema.graphql; sourceTree = "<group>"; };
+		21BBFC4E289C06E300B32A39 /* Team4aV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Team4aV2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC4F289C06E300B32A39 /* Project4aV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project4aV2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC50289C06E300B32A39 /* Project4aV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project4aV2.swift; sourceTree = "<group>"; };
+		21BBFC51289C06E300B32A39 /* Team4aV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team4aV2.swift; sourceTree = "<group>"; };
+		21BBFC53289C06E300B32A39 /* Post4V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post4V2.swift; sourceTree = "<group>"; };
+		21BBFC54289C06E300B32A39 /* Post4V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post4V2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC55289C06E300B32A39 /* Comment4V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment4V2.swift; sourceTree = "<group>"; };
+		21BBFC56289C06E300B32A39 /* Comment4V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment4V2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC57289C06E300B32A39 /* CustomerSecondaryIndexV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerSecondaryIndexV2.swift; sourceTree = "<group>"; };
+		21BBFC59289C06E300B32A39 /* MyNestedModel8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MyNestedModel8+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC5A289C06E300B32A39 /* Blog8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Blog8+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC5B289C06E300B32A39 /* Comment8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment8+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC5C289C06E300B32A39 /* Post8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post8+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC5D289C06E300B32A39 /* Comment8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment8.swift; sourceTree = "<group>"; };
+		21BBFC5E289C06E300B32A39 /* MyCustomModel8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyCustomModel8.swift; sourceTree = "<group>"; };
+		21BBFC5F289C06E300B32A39 /* MyNestedModel8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyNestedModel8.swift; sourceTree = "<group>"; };
+		21BBFC60289C06E300B32A39 /* MyCustomModel8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MyCustomModel8+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC61289C06E300B32A39 /* Blog8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blog8.swift; sourceTree = "<group>"; };
+		21BBFC62289C06E300B32A39 /* Post8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post8.swift; sourceTree = "<group>"; };
+		21BBFC64289C06E300B32A39 /* Project1V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project1V2.swift; sourceTree = "<group>"; };
+		21BBFC65289C06E300B32A39 /* Team1V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Team1V2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC66289C06E300B32A39 /* Project1V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project1V2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC67289C06E300B32A39 /* Team1V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team1V2.swift; sourceTree = "<group>"; };
+		21BBFC68289C06E300B32A39 /* TodoWithDefaultValueV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoWithDefaultValueV2.swift; sourceTree = "<group>"; };
+		21BBFC69289C06E300B32A39 /* Priority.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Priority.swift; sourceTree = "<group>"; };
+		21BBFC6B289C06E300B32A39 /* Post5V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post5V2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC6C289C06E300B32A39 /* Post5V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post5V2.swift; sourceTree = "<group>"; };
+		21BBFC6D289C06E300B32A39 /* User5V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "User5V2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC6E289C06E300B32A39 /* PostEditor5V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostEditor5V2.swift; sourceTree = "<group>"; };
+		21BBFC6F289C06E300B32A39 /* User5V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User5V2.swift; sourceTree = "<group>"; };
+		21BBFC70289C06E300B32A39 /* PostEditor5V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostEditor5V2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC71289C06E300B32A39 /* CustomerWithMultipleFieldsinPK.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerWithMultipleFieldsinPK.swift; sourceTree = "<group>"; };
+		21BBFC72289C06E300B32A39 /* CustomerSecondaryIndexV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CustomerSecondaryIndexV2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC74289C06E300B32A39 /* Post3aV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post3aV2.swift; sourceTree = "<group>"; };
+		21BBFC75289C06E300B32A39 /* Comment3aV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment3aV2.swift; sourceTree = "<group>"; };
+		21BBFC76289C06E300B32A39 /* Post3aV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post3aV2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC77289C06E300B32A39 /* Comment3aV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment3aV2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC78289C06E300B32A39 /* TodoCustomTimestampV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoCustomTimestampV2.swift; sourceTree = "<group>"; };
+		21BBFC79289C06E300B32A39 /* CustomerMultipleSecondaryIndexV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerMultipleSecondaryIndexV2.swift; sourceTree = "<group>"; };
+		21BBFC7B289C06E300B32A39 /* SchemaDrift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaDrift.swift; sourceTree = "<group>"; };
+		21BBFC7C289C06E300B32A39 /* EnumDrift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumDrift.swift; sourceTree = "<group>"; };
+		21BBFC7D289C06E300B32A39 /* SchemaDrift+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SchemaDrift+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC7F289C06E300B32A39 /* Meeting8V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Meeting8V2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC80289C06E300B32A39 /* Attendee8V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Attendee8V2.swift; sourceTree = "<group>"; };
+		21BBFC81289C06E300B32A39 /* Registration8V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Registration8V2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC82289C06E300B32A39 /* Meeting8V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Meeting8V2.swift; sourceTree = "<group>"; };
+		21BBFC83289C06E300B32A39 /* Registration8V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Registration8V2.swift; sourceTree = "<group>"; };
+		21BBFC84289C06E300B32A39 /* Attendee8V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Attendee8V2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC85289C06E300B32A39 /* CustomerWithMultipleFieldsinPK+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CustomerWithMultipleFieldsinPK+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC87289C06E300B32A39 /* Project2V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project2V2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC88289C06E300B32A39 /* Team2V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team2V2.swift; sourceTree = "<group>"; };
+		21BBFC89289C06E300B32A39 /* Project2V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project2V2.swift; sourceTree = "<group>"; };
+		21BBFC8A289C06E300B32A39 /* Team2V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Team2V2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC8C289C06E300B32A39 /* Post6V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post6V2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC8D289C06E300B32A39 /* Post6V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post6V2.swift; sourceTree = "<group>"; };
+		21BBFC8E289C06E300B32A39 /* Comment6V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment6V2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC8F289C06E300B32A39 /* Blog6V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blog6V2.swift; sourceTree = "<group>"; };
+		21BBFC90289C06E300B32A39 /* Blog6V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Blog6V2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC91289C06E300B32A39 /* Comment6V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment6V2.swift; sourceTree = "<group>"; };
+		21BBFC92289C06E300B32A39 /* TodoWithDefaultValueV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TodoWithDefaultValueV2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC93289C06E300B32A39 /* PostStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostStatus.swift; sourceTree = "<group>"; };
+		21BBFC94289C06E300B32A39 /* Record+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Record+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC95289C06E300B32A39 /* UserFollowers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserFollowers.swift; sourceTree = "<group>"; };
+		21BBFC97289C06E300B32A39 /* ListStringContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListStringContainer.swift; sourceTree = "<group>"; };
+		21BBFC98289C06E300B32A39 /* ListStringContainer+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ListStringContainer+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC99289C06E300B32A39 /* EnumTestModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumTestModel.swift; sourceTree = "<group>"; };
+		21BBFC9A289C06E300B32A39 /* Scalar+Equatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Scalar+Equatable.swift"; sourceTree = "<group>"; };
+		21BBFC9B289C06E300B32A39 /* Nested.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Nested.swift; sourceTree = "<group>"; };
+		21BBFC9C289C06E300B32A39 /* ScalarContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScalarContainer.swift; sourceTree = "<group>"; };
+		21BBFC9D289C06E300B32A39 /* EnumTestModel+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "EnumTestModel+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC9E289C06E300B32A39 /* Nested+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Nested+Schema.swift"; sourceTree = "<group>"; };
+		21BBFC9F289C06E300B32A39 /* TestEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestEnum.swift; sourceTree = "<group>"; };
+		21BBFCA0289C06E300B32A39 /* ScalarContainer+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ScalarContainer+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCA1289C06E300B32A39 /* NestedTypeTestModel+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NestedTypeTestModel+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCA2289C06E300B32A39 /* NestedTypeTestModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NestedTypeTestModel.swift; sourceTree = "<group>"; };
+		21BBFCA3289C06E300B32A39 /* ListIntContainer+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ListIntContainer+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCA4289C06E300B32A39 /* ListIntContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListIntContainer.swift; sourceTree = "<group>"; };
+		21BBFCA5289C06E300B32A39 /* ScenarioATest6Post+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ScenarioATest6Post+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCA7289C06E300B32A39 /* DynamicEmbedded.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicEmbedded.swift; sourceTree = "<group>"; };
+		21BBFCA8289C06E300B32A39 /* DynamicModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamicModel.swift; sourceTree = "<group>"; };
+		21BBFCA9289C06E300B32A39 /* Section.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Section.swift; sourceTree = "<group>"; };
+		21BBFCAA289C06E300B32A39 /* Category.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
+		21BBFCAB289C06E300B32A39 /* Todo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Todo.swift; sourceTree = "<group>"; };
+		21BBFCAC289C06E300B32A39 /* Todo+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Todo+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCAD289C06E300B32A39 /* Color.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
+		21BBFCAE289C06E300B32A39 /* OGCScenarioBMGroupPost+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OGCScenarioBMGroupPost+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCB0289C06E300B32A39 /* M2MPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = M2MPost.swift; sourceTree = "<group>"; };
+		21BBFCB1289C06E300B32A39 /* schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = schema.graphql; sourceTree = "<group>"; };
+		21BBFCB2289C06E300B32A39 /* M2MPostEditor+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "M2MPostEditor+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCB3289C06E300B32A39 /* M2MUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = M2MUser.swift; sourceTree = "<group>"; };
+		21BBFCB4289C06E300B32A39 /* M2MUser+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "M2MUser+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCB5289C06E300B32A39 /* M2MPost+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "M2MPost+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCB6289C06E300B32A39 /* M2MPostEditor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = M2MPostEditor.swift; sourceTree = "<group>"; };
+		21BBFCB7289C06E300B32A39 /* Article.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Article.swift; sourceTree = "<group>"; };
+		21BBFCB8289C06E300B32A39 /* schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = schema.graphql; sourceTree = "<group>"; };
+		21BBFCBA289C06E300B32A39 /* Project+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCBB289C06E300B32A39 /* schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = schema.graphql; sourceTree = "<group>"; };
+		21BBFCBC289C06E300B32A39 /* Team.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team.swift; sourceTree = "<group>"; };
+		21BBFCBD289C06E300B32A39 /* Project.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project.swift; sourceTree = "<group>"; };
+		21BBFCBE289C06E300B32A39 /* Team+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Team+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCBF289C06E300B32A39 /* QPredGen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QPredGen.swift; sourceTree = "<group>"; };
+		21BBFCC0289C06E300B32A39 /* AmplifyModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyModels.swift; sourceTree = "<group>"; };
+		21BBFCC1289C06E300B32A39 /* OGCScenarioBPost+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OGCScenarioBPost+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCC2289C06E300B32A39 /* Post+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCC3289C06E300B32A39 /* CustomerOrder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerOrder.swift; sourceTree = "<group>"; };
+		21BBFCC4289C06E300B32A39 /* Record.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Record.swift; sourceTree = "<group>"; };
+		21BBFCC5289C06E300B32A39 /* RecordCover.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordCover.swift; sourceTree = "<group>"; };
+		21BBFCC7289C06E300B32A39 /* Row+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Row+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCC8289C06E300B32A39 /* Group.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
+		21BBFCC9289C06E300B32A39 /* Group+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Group+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCCA289C06E300B32A39 /* Transaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
+		21BBFCCB289C06E300B32A39 /* Row.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Row.swift; sourceTree = "<group>"; };
+		21BBFCCC289C06E300B32A39 /* Transaction+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Transaction+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCCD289C06E300B32A39 /* UserFollowers+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserFollowers+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCCE289C06E300B32A39 /* MockModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockModels.swift; sourceTree = "<group>"; };
+		21BBFCCF289C06E300B32A39 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		21BBFCD0289C06E300B32A39 /* PostCommentModelRegistration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostCommentModelRegistration.swift; sourceTree = "<group>"; };
+		21BBFCD1289C06E300B32A39 /* Comment+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCD2289C06E300B32A39 /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
+		21BBFCD5289C06E300B32A39 /* Blog6.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blog6.swift; sourceTree = "<group>"; };
+		21BBFCD6289C06E300B32A39 /* Post6.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post6.swift; sourceTree = "<group>"; };
+		21BBFCD7289C06E300B32A39 /* Comment6.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment6.swift; sourceTree = "<group>"; };
+		21BBFCD8289C06E300B32A39 /* Post6+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post6+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCD9289C06E300B32A39 /* Comment6+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment6+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCDA289C06E300B32A39 /* Blog6+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Blog6+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCDC289C06E300B32A39 /* Team1+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Team1+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCDD289C06E300B32A39 /* Project1.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project1.swift; sourceTree = "<group>"; };
+		21BBFCDE289C06E300B32A39 /* Project1+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project1+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCDF289C06E300B32A39 /* Team1.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team1.swift; sourceTree = "<group>"; };
+		21BBFCE0289C06E300B32A39 /* connection-schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "connection-schema.graphql"; sourceTree = "<group>"; };
+		21BBFCE2289C06E300B32A39 /* Post4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post4.swift; sourceTree = "<group>"; };
+		21BBFCE3289C06E300B32A39 /* Post4+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post4+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCE4289C06E300B32A39 /* Comment4+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment4+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCE5289C06E300B32A39 /* Comment4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment4.swift; sourceTree = "<group>"; };
+		21BBFCE7289C06E300B32A39 /* Post3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post3.swift; sourceTree = "<group>"; };
+		21BBFCE8289C06E300B32A39 /* Post3+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post3+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCE9289C06E300B32A39 /* Comment3+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment3+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCEA289C06E300B32A39 /* Comment3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment3.swift; sourceTree = "<group>"; };
+		21BBFCEC289C06E300B32A39 /* Project2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCED289C06E300B32A39 /* Team2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team2.swift; sourceTree = "<group>"; };
+		21BBFCEE289C06E300B32A39 /* Project2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project2.swift; sourceTree = "<group>"; };
+		21BBFCEF289C06E300B32A39 /* Team2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Team2+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCF1289C06E300B32A39 /* PostEditor5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostEditor5.swift; sourceTree = "<group>"; };
+		21BBFCF2289C06E300B32A39 /* User5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User5.swift; sourceTree = "<group>"; };
+		21BBFCF3289C06E300B32A39 /* PostEditor5+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostEditor5+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCF4289C06E300B32A39 /* User5+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "User5+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCF5289C06E300B32A39 /* Post5+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post5+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCF6289C06E300B32A39 /* Post5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post5.swift; sourceTree = "<group>"; };
+		21BBFCF7289C06E300B32A39 /* CustomerOrder+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CustomerOrder+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCF8289C06E300B32A39 /* ScenarioATest6Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScenarioATest6Post.swift; sourceTree = "<group>"; };
+		21BBFCF9289C06E300B32A39 /* UserFollowing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserFollowing.swift; sourceTree = "<group>"; };
+		21BBFCFA289C06E300B32A39 /* QPredGen+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "QPredGen+Schema.swift"; sourceTree = "<group>"; };
+		21BBFCFB289C06E300B32A39 /* OGCScenarioBMGroupPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OGCScenarioBMGroupPost.swift; sourceTree = "<group>"; };
+		21BBFCFD289C06E300B32A39 /* PostTagsWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostTagsWithCompositeKey.swift; sourceTree = "<group>"; };
+		21BBFCFE289C06E300B32A39 /* CommentWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentWithCompositeKey.swift; sourceTree = "<group>"; };
+		21BBFCFF289C06E300B32A39 /* primarykey_schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = primarykey_schema.graphql; sourceTree = "<group>"; };
+		21BBFD00289C06E300B32A39 /* ModelCompositeIntPk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCompositeIntPk.swift; sourceTree = "<group>"; };
+		21BBFD01289C06E300B32A39 /* PostWithCompositeKeyAndIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithCompositeKeyAndIndex.swift; sourceTree = "<group>"; };
+		21BBFD02289C06E300B32A39 /* ModelImplicitDefaultPk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelImplicitDefaultPk+Schema.swift"; sourceTree = "<group>"; };
+		21BBFD03289C06E300B32A39 /* CommentWithCompositeKeyAndIndex+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CommentWithCompositeKeyAndIndex+Schema.swift"; sourceTree = "<group>"; };
+		21BBFD04289C06E300B32A39 /* PostWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		21BBFD05289C06E300B32A39 /* ModelExplicitCustomPk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelExplicitCustomPk.swift; sourceTree = "<group>"; };
+		21BBFD06289C06E300B32A39 /* PostWithTagsCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithTagsCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		21BBFD07289C06E300B32A39 /* ModelExplicitDefaultPk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelExplicitDefaultPk+Schema.swift"; sourceTree = "<group>"; };
+		21BBFD08289C06E300B32A39 /* TagWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagWithCompositeKey.swift; sourceTree = "<group>"; };
+		21BBFD09289C06E300B32A39 /* ModelExplicitCustomPk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelExplicitCustomPk+Schema.swift"; sourceTree = "<group>"; };
+		21BBFD0A289C06E300B32A39 /* PostWithTagsCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithTagsCompositeKey.swift; sourceTree = "<group>"; };
+		21BBFD0B289C06E300B32A39 /* CommentWithCompositeKeyUnidirectional.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentWithCompositeKeyUnidirectional.swift; sourceTree = "<group>"; };
+		21BBFD0C289C06E300B32A39 /* ModelCustomPKDefined.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCustomPKDefined.swift; sourceTree = "<group>"; };
+		21BBFD0D289C06E300B32A39 /* PostWithCompositeKeyUnidirectional.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithCompositeKeyUnidirectional.swift; sourceTree = "<group>"; };
+		21BBFD0E289C06E300B32A39 /* CommentWithCompositeKeyAndIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentWithCompositeKeyAndIndex.swift; sourceTree = "<group>"; };
+		21BBFD0F289C06E300B32A39 /* ModelCompositePkWithAssociation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCompositePkWithAssociation.swift; sourceTree = "<group>"; };
+		21BBFD10289C06E300B32A39 /* ModelCompositePk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCompositePk.swift; sourceTree = "<group>"; };
+		21BBFD11289C06E300B32A39 /* CommentWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CommentWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		21BBFD12289C06E300B32A39 /* ModelCompositeIntPk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCompositeIntPk+Schema.swift"; sourceTree = "<group>"; };
+		21BBFD13289C06E300B32A39 /* ModelCompositePkWithAssociation+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCompositePkWithAssociation+Schema.swift"; sourceTree = "<group>"; };
+		21BBFD14289C06E300B32A39 /* ModelCompositePk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCompositePk+Schema.swift"; sourceTree = "<group>"; };
+		21BBFD15289C06E300B32A39 /* PostWithCompositeKeyUnidirectional+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithCompositeKeyUnidirectional+Schema.swift"; sourceTree = "<group>"; };
+		21BBFD16289C06E300B32A39 /* ModelCustomPkDefined+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCustomPkDefined+Schema.swift"; sourceTree = "<group>"; };
+		21BBFD17289C06E300B32A39 /* CommentWithCompositeKeyUnidirectional+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CommentWithCompositeKeyUnidirectional+Schema.swift"; sourceTree = "<group>"; };
+		21BBFD18289C06E300B32A39 /* PostWithCompositeKeyAndIndex+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithCompositeKeyAndIndex+Schema.swift"; sourceTree = "<group>"; };
+		21BBFD19289C06E300B32A39 /* ModelImplicitDefaultPk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelImplicitDefaultPk.swift; sourceTree = "<group>"; };
+		21BBFD1A289C06E300B32A39 /* TagWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TagWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		21BBFD1B289C06E300B32A39 /* ModelCompositePkBelongsTo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCompositePkBelongsTo.swift; sourceTree = "<group>"; };
+		21BBFD1C289C06E300B32A39 /* ModelCompositePkBelongsTo+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCompositePkBelongsTo+Schema.swift"; sourceTree = "<group>"; };
+		21BBFD1D289C06E300B32A39 /* ModelExplicitDefaultPk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelExplicitDefaultPk.swift; sourceTree = "<group>"; };
+		21BBFD1E289C06E300B32A39 /* PostTagsWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostTagsWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		21BBFD1F289C06E300B32A39 /* PostWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithCompositeKey.swift; sourceTree = "<group>"; };
+		21BBFD20289C06E300B32A39 /* Comment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
+		21BBFD21289C06E300B32A39 /* UserFollowing+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserFollowing+Schema.swift"; sourceTree = "<group>"; };
+		21BBFD23289C06E400B32A39 /* Book+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Book+Schema.swift"; sourceTree = "<group>"; };
+		21BBFD24289C06E400B32A39 /* BookAuthor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookAuthor.swift; sourceTree = "<group>"; };
+		21BBFD25289C06E400B32A39 /* Author.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Author.swift; sourceTree = "<group>"; };
+		21BBFD26289C06E400B32A39 /* UserProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		21BBFD27289C06E400B32A39 /* UserProfile+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserProfile+Schema.swift"; sourceTree = "<group>"; };
+		21BBFD28289C06E400B32A39 /* Book.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Book.swift; sourceTree = "<group>"; };
+		21BBFD29289C06E400B32A39 /* BookAuthor+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BookAuthor+Schema.swift"; sourceTree = "<group>"; };
+		21BBFD2A289C06E400B32A39 /* UserAccount+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserAccount+Schema.swift"; sourceTree = "<group>"; };
+		21BBFD2B289C06E400B32A39 /* UserAccount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserAccount.swift; sourceTree = "<group>"; };
+		21BBFD2C289C06E400B32A39 /* Author+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Author+Schema.swift"; sourceTree = "<group>"; };
+		21BBFE13289C073100B32A39 /* HubListenerTestUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HubListenerTestUtilities.swift; sourceTree = "<group>"; };
+		21BBFE15289C075000B32A39 /* TestCommonConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestCommonConstants.swift; sourceTree = "<group>"; };
+		21BBFE17289C076E00B32A39 /* TestExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -751,6 +1213,8 @@
 		21BBFB42289BFF6A00B32A39 /* AWSDataStorePluginIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
+				21BBFC26289C060600B32A39 /* Base */,
+				21BBFC25289C054900B32A39 /* Models */,
 				21BBF9E7289BFE3400B32A39 /* TestSupport */,
 				21BBFA0F289BFE3400B32A39 /* SyncMetadataTests.swift */,
 				21BBFA0D289BFE3400B32A39 /* README.md */,
@@ -810,6 +1274,494 @@
 			path = AWSDataStorePluginFlutterTests;
 			sourceTree = "<group>";
 		};
+		21BBFC25289C054900B32A39 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFCC0289C06E300B32A39 /* AmplifyModels.swift */,
+				21BBFCB7289C06E300B32A39 /* Article.swift */,
+				21BBFC2D289C06E300B32A39 /* Article+Schema.swift */,
+				21BBFD22289C06E400B32A39 /* Associations */,
+				21BBFCD3289C06E300B32A39 /* Collection */,
+				21BBFD20289C06E300B32A39 /* Comment.swift */,
+				21BBFCD1289C06E300B32A39 /* Comment+Schema.swift */,
+				21BBFCC3289C06E300B32A39 /* CustomerOrder.swift */,
+				21BBFCF7289C06E300B32A39 /* CustomerOrder+Schema.swift */,
+				21BBFCFC289C06E300B32A39 /* CustomPrimaryKey */,
+				21BBFC29289C06E200B32A39 /* Deprecated */,
+				21BBFCAF289C06E300B32A39 /* M2MPostEditorUser */,
+				21BBFCCE289C06E300B32A39 /* MockModels.swift */,
+				21BBFCA6289C06E300B32A39 /* NonModel */,
+				21BBFCFB289C06E300B32A39 /* OGCScenarioBMGroupPost.swift */,
+				21BBFCAE289C06E300B32A39 /* OGCScenarioBMGroupPost+Schema.swift */,
+				21BBFC2C289C06E300B32A39 /* OGCScenarioBPost.swift */,
+				21BBFCC1289C06E300B32A39 /* OGCScenarioBPost+Schema.swift */,
+				21BBFCD2289C06E300B32A39 /* Post.swift */,
+				21BBFCC2289C06E300B32A39 /* Post+Schema.swift */,
+				21BBFCD0289C06E300B32A39 /* PostCommentModelRegistration.swift */,
+				21BBFC93289C06E300B32A39 /* PostStatus.swift */,
+				21BBFCBF289C06E300B32A39 /* QPredGen.swift */,
+				21BBFCFA289C06E300B32A39 /* QPredGen+Schema.swift */,
+				21BBFCC4289C06E300B32A39 /* Record.swift */,
+				21BBFC94289C06E300B32A39 /* Record+Schema.swift */,
+				21BBFCC5289C06E300B32A39 /* RecordCover.swift */,
+				21BBFC2E289C06E300B32A39 /* RecordCover+Schema.swift */,
+				21BBFCC6289C06E300B32A39 /* ReservedWords */,
+				21BBFC2F289C06E300B32A39 /* Restaurant */,
+				21BBFC96289C06E300B32A39 /* Scalar */,
+				21BBFCF8289C06E300B32A39 /* ScenarioATest6Post.swift */,
+				21BBFCA5289C06E300B32A39 /* ScenarioATest6Post+Schema.swift */,
+				21BBFCB8289C06E300B32A39 /* schema.graphql */,
+				21BBFCB9289C06E300B32A39 /* TeamProject */,
+				21BBFC38289C06E300B32A39 /* TransformerV2 */,
+				21BBFCCF289C06E300B32A39 /* User.swift */,
+				21BBFC2B289C06E200B32A39 /* User+Schema.swift */,
+				21BBFC95289C06E300B32A39 /* UserFollowers.swift */,
+				21BBFCCD289C06E300B32A39 /* UserFollowers+Schema.swift */,
+				21BBFCF9289C06E300B32A39 /* UserFollowing.swift */,
+				21BBFD21289C06E300B32A39 /* UserFollowing+Schema.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		21BBFC26289C060600B32A39 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFE17289C076E00B32A39 /* TestExtensions.swift */,
+				21BBFE15289C075000B32A39 /* TestCommonConstants.swift */,
+				21BBFE13289C073100B32A39 /* HubListenerTestUtilities.swift */,
+				21BBFC27289C062000B32A39 /* TestConfigHelper.swift */,
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
+		21BBFC29289C06E200B32A39 /* Deprecated */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFC2A289C06E200B32A39 /* DeprecatedTodo.swift */,
+			);
+			path = Deprecated;
+			sourceTree = "<group>";
+		};
+		21BBFC2F289C06E300B32A39 /* Restaurant */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFC30289C06E300B32A39 /* schema.graphql */,
+				21BBFC31289C06E300B32A39 /* Dish.swift */,
+				21BBFC32289C06E300B32A39 /* MenuType.swift */,
+				21BBFC33289C06E300B32A39 /* Menu+Schema.swift */,
+				21BBFC34289C06E300B32A39 /* Restaurant+Schema.swift */,
+				21BBFC35289C06E300B32A39 /* Menu.swift */,
+				21BBFC36289C06E300B32A39 /* Dish+Schema.swift */,
+				21BBFC37289C06E300B32A39 /* Restaurant.swift */,
+			);
+			path = Restaurant;
+			sourceTree = "<group>";
+		};
+		21BBFC38289C06E300B32A39 /* TransformerV2 */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFC39289C06E300B32A39 /* CustomerMultipleSecondaryIndexV2+Schema.swift */,
+				21BBFC3A289C06E300B32A39 /* 3V2 */,
+				21BBFC3F289C06E300B32A39 /* 4bV2 */,
+				21BBFC44289C06E300B32A39 /* 7V2 */,
+				21BBFC4B289C06E300B32A39 /* TodoCustomTimestampV2+Schema.swift */,
+				21BBFC4C289C06E300B32A39 /* schema.graphql */,
+				21BBFC4D289C06E300B32A39 /* 4aV2 */,
+				21BBFC52289C06E300B32A39 /* 4V2 */,
+				21BBFC57289C06E300B32A39 /* CustomerSecondaryIndexV2.swift */,
+				21BBFC58289C06E300B32A39 /* OptionalAssociations */,
+				21BBFC63289C06E300B32A39 /* 1V2 */,
+				21BBFC68289C06E300B32A39 /* TodoWithDefaultValueV2.swift */,
+				21BBFC69289C06E300B32A39 /* Priority.swift */,
+				21BBFC6A289C06E300B32A39 /* 5V2 */,
+				21BBFC71289C06E300B32A39 /* CustomerWithMultipleFieldsinPK.swift */,
+				21BBFC72289C06E300B32A39 /* CustomerSecondaryIndexV2+Schema.swift */,
+				21BBFC73289C06E300B32A39 /* 3aV2 */,
+				21BBFC78289C06E300B32A39 /* TodoCustomTimestampV2.swift */,
+				21BBFC79289C06E300B32A39 /* CustomerMultipleSecondaryIndexV2.swift */,
+				21BBFC7A289C06E300B32A39 /* SchemaDrift */,
+				21BBFC7E289C06E300B32A39 /* 8V2 */,
+				21BBFC85289C06E300B32A39 /* CustomerWithMultipleFieldsinPK+Schema.swift */,
+				21BBFC86289C06E300B32A39 /* 2V2 */,
+				21BBFC8B289C06E300B32A39 /* 6V2 */,
+				21BBFC92289C06E300B32A39 /* TodoWithDefaultValueV2+Schema.swift */,
+			);
+			path = TransformerV2;
+			sourceTree = "<group>";
+		};
+		21BBFC3A289C06E300B32A39 /* 3V2 */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFC3B289C06E300B32A39 /* Comment3V2.swift */,
+				21BBFC3C289C06E300B32A39 /* Post3V2+Schema.swift */,
+				21BBFC3D289C06E300B32A39 /* Post3V2.swift */,
+				21BBFC3E289C06E300B32A39 /* Comment3V2+Schema.swift */,
+			);
+			path = 3V2;
+			sourceTree = "<group>";
+		};
+		21BBFC3F289C06E300B32A39 /* 4bV2 */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFC40289C06E300B32A39 /* Project4bV2+Schema.swift */,
+				21BBFC41289C06E300B32A39 /* Team4bV2+Schema.swift */,
+				21BBFC42289C06E300B32A39 /* Project4bV2.swift */,
+				21BBFC43289C06E300B32A39 /* Team4bV2.swift */,
+			);
+			path = 4bV2;
+			sourceTree = "<group>";
+		};
+		21BBFC44289C06E300B32A39 /* 7V2 */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFC45289C06E300B32A39 /* Post7V2.swift */,
+				21BBFC46289C06E300B32A39 /* Post7V2+Schema.swift */,
+				21BBFC47289C06E300B32A39 /* Blog7V2+Schema.swift */,
+				21BBFC48289C06E300B32A39 /* Blog7V2.swift */,
+				21BBFC49289C06E300B32A39 /* Comment7V2+Schema.swift */,
+				21BBFC4A289C06E300B32A39 /* Comment7V2.swift */,
+			);
+			path = 7V2;
+			sourceTree = "<group>";
+		};
+		21BBFC4D289C06E300B32A39 /* 4aV2 */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFC4E289C06E300B32A39 /* Team4aV2+Schema.swift */,
+				21BBFC4F289C06E300B32A39 /* Project4aV2+Schema.swift */,
+				21BBFC50289C06E300B32A39 /* Project4aV2.swift */,
+				21BBFC51289C06E300B32A39 /* Team4aV2.swift */,
+			);
+			path = 4aV2;
+			sourceTree = "<group>";
+		};
+		21BBFC52289C06E300B32A39 /* 4V2 */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFC53289C06E300B32A39 /* Post4V2.swift */,
+				21BBFC54289C06E300B32A39 /* Post4V2+Schema.swift */,
+				21BBFC55289C06E300B32A39 /* Comment4V2.swift */,
+				21BBFC56289C06E300B32A39 /* Comment4V2+Schema.swift */,
+			);
+			path = 4V2;
+			sourceTree = "<group>";
+		};
+		21BBFC58289C06E300B32A39 /* OptionalAssociations */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFC59289C06E300B32A39 /* MyNestedModel8+Schema.swift */,
+				21BBFC5A289C06E300B32A39 /* Blog8+Schema.swift */,
+				21BBFC5B289C06E300B32A39 /* Comment8+Schema.swift */,
+				21BBFC5C289C06E300B32A39 /* Post8+Schema.swift */,
+				21BBFC5D289C06E300B32A39 /* Comment8.swift */,
+				21BBFC5E289C06E300B32A39 /* MyCustomModel8.swift */,
+				21BBFC5F289C06E300B32A39 /* MyNestedModel8.swift */,
+				21BBFC60289C06E300B32A39 /* MyCustomModel8+Schema.swift */,
+				21BBFC61289C06E300B32A39 /* Blog8.swift */,
+				21BBFC62289C06E300B32A39 /* Post8.swift */,
+			);
+			path = OptionalAssociations;
+			sourceTree = "<group>";
+		};
+		21BBFC63289C06E300B32A39 /* 1V2 */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFC64289C06E300B32A39 /* Project1V2.swift */,
+				21BBFC65289C06E300B32A39 /* Team1V2+Schema.swift */,
+				21BBFC66289C06E300B32A39 /* Project1V2+Schema.swift */,
+				21BBFC67289C06E300B32A39 /* Team1V2.swift */,
+			);
+			path = 1V2;
+			sourceTree = "<group>";
+		};
+		21BBFC6A289C06E300B32A39 /* 5V2 */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFC6B289C06E300B32A39 /* Post5V2+Schema.swift */,
+				21BBFC6C289C06E300B32A39 /* Post5V2.swift */,
+				21BBFC6D289C06E300B32A39 /* User5V2+Schema.swift */,
+				21BBFC6E289C06E300B32A39 /* PostEditor5V2.swift */,
+				21BBFC6F289C06E300B32A39 /* User5V2.swift */,
+				21BBFC70289C06E300B32A39 /* PostEditor5V2+Schema.swift */,
+			);
+			path = 5V2;
+			sourceTree = "<group>";
+		};
+		21BBFC73289C06E300B32A39 /* 3aV2 */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFC74289C06E300B32A39 /* Post3aV2.swift */,
+				21BBFC75289C06E300B32A39 /* Comment3aV2.swift */,
+				21BBFC76289C06E300B32A39 /* Post3aV2+Schema.swift */,
+				21BBFC77289C06E300B32A39 /* Comment3aV2+Schema.swift */,
+			);
+			path = 3aV2;
+			sourceTree = "<group>";
+		};
+		21BBFC7A289C06E300B32A39 /* SchemaDrift */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFC7B289C06E300B32A39 /* SchemaDrift.swift */,
+				21BBFC7C289C06E300B32A39 /* EnumDrift.swift */,
+				21BBFC7D289C06E300B32A39 /* SchemaDrift+Schema.swift */,
+			);
+			path = SchemaDrift;
+			sourceTree = "<group>";
+		};
+		21BBFC7E289C06E300B32A39 /* 8V2 */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFC7F289C06E300B32A39 /* Meeting8V2+Schema.swift */,
+				21BBFC80289C06E300B32A39 /* Attendee8V2.swift */,
+				21BBFC81289C06E300B32A39 /* Registration8V2+Schema.swift */,
+				21BBFC82289C06E300B32A39 /* Meeting8V2.swift */,
+				21BBFC83289C06E300B32A39 /* Registration8V2.swift */,
+				21BBFC84289C06E300B32A39 /* Attendee8V2+Schema.swift */,
+			);
+			path = 8V2;
+			sourceTree = "<group>";
+		};
+		21BBFC86289C06E300B32A39 /* 2V2 */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFC87289C06E300B32A39 /* Project2V2+Schema.swift */,
+				21BBFC88289C06E300B32A39 /* Team2V2.swift */,
+				21BBFC89289C06E300B32A39 /* Project2V2.swift */,
+				21BBFC8A289C06E300B32A39 /* Team2V2+Schema.swift */,
+			);
+			path = 2V2;
+			sourceTree = "<group>";
+		};
+		21BBFC8B289C06E300B32A39 /* 6V2 */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFC8C289C06E300B32A39 /* Post6V2+Schema.swift */,
+				21BBFC8D289C06E300B32A39 /* Post6V2.swift */,
+				21BBFC8E289C06E300B32A39 /* Comment6V2+Schema.swift */,
+				21BBFC8F289C06E300B32A39 /* Blog6V2.swift */,
+				21BBFC90289C06E300B32A39 /* Blog6V2+Schema.swift */,
+				21BBFC91289C06E300B32A39 /* Comment6V2.swift */,
+			);
+			path = 6V2;
+			sourceTree = "<group>";
+		};
+		21BBFC96289C06E300B32A39 /* Scalar */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFC97289C06E300B32A39 /* ListStringContainer.swift */,
+				21BBFC98289C06E300B32A39 /* ListStringContainer+Schema.swift */,
+				21BBFC99289C06E300B32A39 /* EnumTestModel.swift */,
+				21BBFC9A289C06E300B32A39 /* Scalar+Equatable.swift */,
+				21BBFC9B289C06E300B32A39 /* Nested.swift */,
+				21BBFC9C289C06E300B32A39 /* ScalarContainer.swift */,
+				21BBFC9D289C06E300B32A39 /* EnumTestModel+Schema.swift */,
+				21BBFC9E289C06E300B32A39 /* Nested+Schema.swift */,
+				21BBFC9F289C06E300B32A39 /* TestEnum.swift */,
+				21BBFCA0289C06E300B32A39 /* ScalarContainer+Schema.swift */,
+				21BBFCA1289C06E300B32A39 /* NestedTypeTestModel+Schema.swift */,
+				21BBFCA2289C06E300B32A39 /* NestedTypeTestModel.swift */,
+				21BBFCA3289C06E300B32A39 /* ListIntContainer+Schema.swift */,
+				21BBFCA4289C06E300B32A39 /* ListIntContainer.swift */,
+			);
+			path = Scalar;
+			sourceTree = "<group>";
+		};
+		21BBFCA6289C06E300B32A39 /* NonModel */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFCA7289C06E300B32A39 /* DynamicEmbedded.swift */,
+				21BBFCA8289C06E300B32A39 /* DynamicModel.swift */,
+				21BBFCA9289C06E300B32A39 /* Section.swift */,
+				21BBFCAA289C06E300B32A39 /* Category.swift */,
+				21BBFCAB289C06E300B32A39 /* Todo.swift */,
+				21BBFCAC289C06E300B32A39 /* Todo+Schema.swift */,
+				21BBFCAD289C06E300B32A39 /* Color.swift */,
+			);
+			path = NonModel;
+			sourceTree = "<group>";
+		};
+		21BBFCAF289C06E300B32A39 /* M2MPostEditorUser */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFCB0289C06E300B32A39 /* M2MPost.swift */,
+				21BBFCB1289C06E300B32A39 /* schema.graphql */,
+				21BBFCB2289C06E300B32A39 /* M2MPostEditor+Schema.swift */,
+				21BBFCB3289C06E300B32A39 /* M2MUser.swift */,
+				21BBFCB4289C06E300B32A39 /* M2MUser+Schema.swift */,
+				21BBFCB5289C06E300B32A39 /* M2MPost+Schema.swift */,
+				21BBFCB6289C06E300B32A39 /* M2MPostEditor.swift */,
+			);
+			path = M2MPostEditorUser;
+			sourceTree = "<group>";
+		};
+		21BBFCB9289C06E300B32A39 /* TeamProject */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFCBA289C06E300B32A39 /* Project+Schema.swift */,
+				21BBFCBB289C06E300B32A39 /* schema.graphql */,
+				21BBFCBC289C06E300B32A39 /* Team.swift */,
+				21BBFCBD289C06E300B32A39 /* Project.swift */,
+				21BBFCBE289C06E300B32A39 /* Team+Schema.swift */,
+			);
+			path = TeamProject;
+			sourceTree = "<group>";
+		};
+		21BBFCC6289C06E300B32A39 /* ReservedWords */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFCC7289C06E300B32A39 /* Row+Schema.swift */,
+				21BBFCC8289C06E300B32A39 /* Group.swift */,
+				21BBFCC9289C06E300B32A39 /* Group+Schema.swift */,
+				21BBFCCA289C06E300B32A39 /* Transaction.swift */,
+				21BBFCCB289C06E300B32A39 /* Row.swift */,
+				21BBFCCC289C06E300B32A39 /* Transaction+Schema.swift */,
+			);
+			path = ReservedWords;
+			sourceTree = "<group>";
+		};
+		21BBFCD3289C06E300B32A39 /* Collection */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFCD4289C06E300B32A39 /* 6 */,
+				21BBFCDB289C06E300B32A39 /* 1 */,
+				21BBFCE0289C06E300B32A39 /* connection-schema.graphql */,
+				21BBFCE1289C06E300B32A39 /* 4 */,
+				21BBFCE6289C06E300B32A39 /* 3 */,
+				21BBFCEB289C06E300B32A39 /* 2 */,
+				21BBFCF0289C06E300B32A39 /* 5 */,
+			);
+			path = Collection;
+			sourceTree = "<group>";
+		};
+		21BBFCD4289C06E300B32A39 /* 6 */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFCD5289C06E300B32A39 /* Blog6.swift */,
+				21BBFCD6289C06E300B32A39 /* Post6.swift */,
+				21BBFCD7289C06E300B32A39 /* Comment6.swift */,
+				21BBFCD8289C06E300B32A39 /* Post6+Schema.swift */,
+				21BBFCD9289C06E300B32A39 /* Comment6+Schema.swift */,
+				21BBFCDA289C06E300B32A39 /* Blog6+Schema.swift */,
+			);
+			path = 6;
+			sourceTree = "<group>";
+		};
+		21BBFCDB289C06E300B32A39 /* 1 */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFCDC289C06E300B32A39 /* Team1+Schema.swift */,
+				21BBFCDD289C06E300B32A39 /* Project1.swift */,
+				21BBFCDE289C06E300B32A39 /* Project1+Schema.swift */,
+				21BBFCDF289C06E300B32A39 /* Team1.swift */,
+			);
+			path = 1;
+			sourceTree = "<group>";
+		};
+		21BBFCE1289C06E300B32A39 /* 4 */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFCE2289C06E300B32A39 /* Post4.swift */,
+				21BBFCE3289C06E300B32A39 /* Post4+Schema.swift */,
+				21BBFCE4289C06E300B32A39 /* Comment4+Schema.swift */,
+				21BBFCE5289C06E300B32A39 /* Comment4.swift */,
+			);
+			path = 4;
+			sourceTree = "<group>";
+		};
+		21BBFCE6289C06E300B32A39 /* 3 */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFCE7289C06E300B32A39 /* Post3.swift */,
+				21BBFCE8289C06E300B32A39 /* Post3+Schema.swift */,
+				21BBFCE9289C06E300B32A39 /* Comment3+Schema.swift */,
+				21BBFCEA289C06E300B32A39 /* Comment3.swift */,
+			);
+			path = 3;
+			sourceTree = "<group>";
+		};
+		21BBFCEB289C06E300B32A39 /* 2 */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFCEC289C06E300B32A39 /* Project2+Schema.swift */,
+				21BBFCED289C06E300B32A39 /* Team2.swift */,
+				21BBFCEE289C06E300B32A39 /* Project2.swift */,
+				21BBFCEF289C06E300B32A39 /* Team2+Schema.swift */,
+			);
+			path = 2;
+			sourceTree = "<group>";
+		};
+		21BBFCF0289C06E300B32A39 /* 5 */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFCF1289C06E300B32A39 /* PostEditor5.swift */,
+				21BBFCF2289C06E300B32A39 /* User5.swift */,
+				21BBFCF3289C06E300B32A39 /* PostEditor5+Schema.swift */,
+				21BBFCF4289C06E300B32A39 /* User5+Schema.swift */,
+				21BBFCF5289C06E300B32A39 /* Post5+Schema.swift */,
+				21BBFCF6289C06E300B32A39 /* Post5.swift */,
+			);
+			path = 5;
+			sourceTree = "<group>";
+		};
+		21BBFCFC289C06E300B32A39 /* CustomPrimaryKey */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFCFD289C06E300B32A39 /* PostTagsWithCompositeKey.swift */,
+				21BBFCFE289C06E300B32A39 /* CommentWithCompositeKey.swift */,
+				21BBFCFF289C06E300B32A39 /* primarykey_schema.graphql */,
+				21BBFD00289C06E300B32A39 /* ModelCompositeIntPk.swift */,
+				21BBFD01289C06E300B32A39 /* PostWithCompositeKeyAndIndex.swift */,
+				21BBFD02289C06E300B32A39 /* ModelImplicitDefaultPk+Schema.swift */,
+				21BBFD03289C06E300B32A39 /* CommentWithCompositeKeyAndIndex+Schema.swift */,
+				21BBFD04289C06E300B32A39 /* PostWithCompositeKey+Schema.swift */,
+				21BBFD05289C06E300B32A39 /* ModelExplicitCustomPk.swift */,
+				21BBFD06289C06E300B32A39 /* PostWithTagsCompositeKey+Schema.swift */,
+				21BBFD07289C06E300B32A39 /* ModelExplicitDefaultPk+Schema.swift */,
+				21BBFD08289C06E300B32A39 /* TagWithCompositeKey.swift */,
+				21BBFD09289C06E300B32A39 /* ModelExplicitCustomPk+Schema.swift */,
+				21BBFD0A289C06E300B32A39 /* PostWithTagsCompositeKey.swift */,
+				21BBFD0B289C06E300B32A39 /* CommentWithCompositeKeyUnidirectional.swift */,
+				21BBFD0C289C06E300B32A39 /* ModelCustomPKDefined.swift */,
+				21BBFD0D289C06E300B32A39 /* PostWithCompositeKeyUnidirectional.swift */,
+				21BBFD0E289C06E300B32A39 /* CommentWithCompositeKeyAndIndex.swift */,
+				21BBFD0F289C06E300B32A39 /* ModelCompositePkWithAssociation.swift */,
+				21BBFD10289C06E300B32A39 /* ModelCompositePk.swift */,
+				21BBFD11289C06E300B32A39 /* CommentWithCompositeKey+Schema.swift */,
+				21BBFD12289C06E300B32A39 /* ModelCompositeIntPk+Schema.swift */,
+				21BBFD13289C06E300B32A39 /* ModelCompositePkWithAssociation+Schema.swift */,
+				21BBFD14289C06E300B32A39 /* ModelCompositePk+Schema.swift */,
+				21BBFD15289C06E300B32A39 /* PostWithCompositeKeyUnidirectional+Schema.swift */,
+				21BBFD16289C06E300B32A39 /* ModelCustomPkDefined+Schema.swift */,
+				21BBFD17289C06E300B32A39 /* CommentWithCompositeKeyUnidirectional+Schema.swift */,
+				21BBFD18289C06E300B32A39 /* PostWithCompositeKeyAndIndex+Schema.swift */,
+				21BBFD19289C06E300B32A39 /* ModelImplicitDefaultPk.swift */,
+				21BBFD1A289C06E300B32A39 /* TagWithCompositeKey+Schema.swift */,
+				21BBFD1B289C06E300B32A39 /* ModelCompositePkBelongsTo.swift */,
+				21BBFD1C289C06E300B32A39 /* ModelCompositePkBelongsTo+Schema.swift */,
+				21BBFD1D289C06E300B32A39 /* ModelExplicitDefaultPk.swift */,
+				21BBFD1E289C06E300B32A39 /* PostTagsWithCompositeKey+Schema.swift */,
+				21BBFD1F289C06E300B32A39 /* PostWithCompositeKey.swift */,
+			);
+			path = CustomPrimaryKey;
+			sourceTree = "<group>";
+		};
+		21BBFD22289C06E400B32A39 /* Associations */ = {
+			isa = PBXGroup;
+			children = (
+				21BBFD23289C06E400B32A39 /* Book+Schema.swift */,
+				21BBFD24289C06E400B32A39 /* BookAuthor.swift */,
+				21BBFD25289C06E400B32A39 /* Author.swift */,
+				21BBFD26289C06E400B32A39 /* UserProfile.swift */,
+				21BBFD27289C06E400B32A39 /* UserProfile+Schema.swift */,
+				21BBFD28289C06E400B32A39 /* Book.swift */,
+				21BBFD29289C06E400B32A39 /* BookAuthor+Schema.swift */,
+				21BBFD2A289C06E400B32A39 /* UserAccount+Schema.swift */,
+				21BBFD2B289C06E400B32A39 /* UserAccount.swift */,
+				21BBFD2C289C06E400B32A39 /* Author+Schema.swift */,
+			);
+			path = Associations;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -820,6 +1772,7 @@
 				21182128289BFB4B001B5945 /* Sources */,
 				21182129289BFB4B001B5945 /* Frameworks */,
 				2118212A289BFB4B001B5945 /* Resources */,
+				21BBFE19289C078500B32A39 /* Copy Configuration Files */,
 			);
 			buildRules = (
 			);
@@ -998,6 +1951,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				21BBFD32289C06E400B32A39 /* schema.graphql in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1032,6 +1986,27 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		21BBFE19289C078500B32A39 /* Copy Configuration Files */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration Files";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		21182128289BFB4B001B5945 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -1046,32 +2021,259 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				21BBFDB4289C06E400B32A39 /* Record.swift in Sources */,
+				21BBFDDB289C06E400B32A39 /* PostEditor5+Schema.swift in Sources */,
+				21BBFD89289C06E400B32A39 /* UserFollowers.swift in Sources */,
+				21BBFDE4289C06E400B32A39 /* PostTagsWithCompositeKey.swift in Sources */,
+				21BBFD4C289C06E400B32A39 /* Project4aV2+Schema.swift in Sources */,
 				21BBFC07289C036600B32A39 /* HubEventsIntegrationTestBase.swift in Sources */,
+				21BBFDF8289C06E400B32A39 /* CommentWithCompositeKey+Schema.swift in Sources */,
+				21BBFD72289C06E400B32A39 /* SchemaDrift.swift in Sources */,
+				21BBFD9A289C06E400B32A39 /* DynamicModel.swift in Sources */,
+				21BBFD43289C06E400B32A39 /* Post7V2.swift in Sources */,
 				21BBFB53289BFFC200B32A39 /* SubscriptionEndToEndTests.swift in Sources */,
+				21BBFD3A289C06E400B32A39 /* CustomerMultipleSecondaryIndexV2+Schema.swift in Sources */,
+				21BBFD77289C06E400B32A39 /* Registration8V2+Schema.swift in Sources */,
+				21BBFDC0289C06E400B32A39 /* Comment+Schema.swift in Sources */,
+				21BBFE0D289C06E400B32A39 /* UserProfile+Schema.swift in Sources */,
+				21BBFD38289C06E400B32A39 /* Dish+Schema.swift in Sources */,
+				21BBFD8F289C06E400B32A39 /* ScalarContainer.swift in Sources */,
+				21BBFDCE289C06E400B32A39 /* Post4+Schema.swift in Sources */,
+				21BBFD6E289C06E400B32A39 /* Post3aV2+Schema.swift in Sources */,
+				21BBFD70289C06E400B32A39 /* TodoCustomTimestampV2.swift in Sources */,
+				21BBFDD0289C06E400B32A39 /* Comment4.swift in Sources */,
+				21BBFD8C289C06E400B32A39 /* EnumTestModel.swift in Sources */,
+				21BBFE07289C06E400B32A39 /* Comment.swift in Sources */,
+				21BBFDF6289C06E400B32A39 /* ModelCompositePkWithAssociation.swift in Sources */,
+				21BBFDE0289C06E400B32A39 /* ScenarioATest6Post.swift in Sources */,
+				21BBFDD6289C06E400B32A39 /* Team2.swift in Sources */,
+				21BBFD82289C06E400B32A39 /* Comment6V2+Schema.swift in Sources */,
+				21BBFD2D289C06E400B32A39 /* DeprecatedTodo.swift in Sources */,
+				21BBFE04289C06E400B32A39 /* ModelExplicitDefaultPk.swift in Sources */,
+				21BBFD5E289C06E400B32A39 /* Project1V2.swift in Sources */,
+				21BBFD81289C06E400B32A39 /* Post6V2.swift in Sources */,
+				21BBFE0B289C06E400B32A39 /* Author.swift in Sources */,
+				21BBFE0F289C06E400B32A39 /* BookAuthor+Schema.swift in Sources */,
+				21BBFDD3289C06E400B32A39 /* Comment3+Schema.swift in Sources */,
+				21BBFDCB289C06E400B32A39 /* Team1.swift in Sources */,
+				21BBFE10289C06E400B32A39 /* UserAccount+Schema.swift in Sources */,
+				21BBFDB2289C06E400B32A39 /* Post+Schema.swift in Sources */,
+				21BBFDBE289C06E400B32A39 /* User.swift in Sources */,
+				21BBFDF1289C06E400B32A39 /* PostWithTagsCompositeKey.swift in Sources */,
+				21BBFDE8289C06E400B32A39 /* PostWithCompositeKeyAndIndex.swift in Sources */,
+				21BBFDFE289C06E400B32A39 /* CommentWithCompositeKeyUnidirectional+Schema.swift in Sources */,
+				21BBFD55289C06E400B32A39 /* Blog8+Schema.swift in Sources */,
+				21BBFDE3289C06E400B32A39 /* OGCScenarioBMGroupPost.swift in Sources */,
+				21BBFD47289C06E400B32A39 /* Comment7V2+Schema.swift in Sources */,
+				21BBFD97289C06E400B32A39 /* ListIntContainer.swift in Sources */,
+				21BBFDE9289C06E400B32A39 /* ModelImplicitDefaultPk+Schema.swift in Sources */,
+				21BBFD35289C06E400B32A39 /* Menu+Schema.swift in Sources */,
+				21BBFD46289C06E400B32A39 /* Blog7V2.swift in Sources */,
+				21BBFDFB289C06E400B32A39 /* ModelCompositePk+Schema.swift in Sources */,
+				21BBFD7F289C06E400B32A39 /* Team2V2+Schema.swift in Sources */,
+				21BBFDE5289C06E400B32A39 /* CommentWithCompositeKey.swift in Sources */,
+				21BBFD4D289C06E400B32A39 /* Project4aV2.swift in Sources */,
+				21BBFD2E289C06E400B32A39 /* User+Schema.swift in Sources */,
+				21BBFD95289C06E400B32A39 /* NestedTypeTestModel.swift in Sources */,
 				21BBFC0E289C038500B32A39 /* DataStoreConnectionScenario5Tests.swift in Sources */,
 				21BBFC09289C036A00B32A39 /* DataStoreHubEvent.swift in Sources */,
+				21BBFD9C289C06E400B32A39 /* Category.swift in Sources */,
+				21BBFD62289C06E400B32A39 /* TodoWithDefaultValueV2.swift in Sources */,
+				21BBFD8E289C06E400B32A39 /* Nested.swift in Sources */,
+				21BBFDE2289C06E400B32A39 /* QPredGen+Schema.swift in Sources */,
+				21BBFDC2289C06E400B32A39 /* Blog6.swift in Sources */,
+				21BBFD4E289C06E400B32A39 /* Team4aV2.swift in Sources */,
+				21BBFDD8289C06E400B32A39 /* Team2+Schema.swift in Sources */,
+				21BBFDA3289C06E400B32A39 /* M2MPostEditor+Schema.swift in Sources */,
+				21BBFDCD289C06E400B32A39 /* Post4.swift in Sources */,
+				21BBFE18289C076E00B32A39 /* TestExtensions.swift in Sources */,
+				21BBFD40289C06E400B32A39 /* Team4bV2+Schema.swift in Sources */,
+				21BBFDCF289C06E400B32A39 /* Comment4+Schema.swift in Sources */,
+				21BBFD6C289C06E400B32A39 /* Post3aV2.swift in Sources */,
+				21BBFD36289C06E400B32A39 /* Restaurant+Schema.swift in Sources */,
+				21BBFE01289C06E400B32A39 /* TagWithCompositeKey+Schema.swift in Sources */,
 				21BBFC0F289C038700B32A39 /* DataStoreConnectionScenario2Tests.swift in Sources */,
+				21BBFD7C289C06E400B32A39 /* Project2V2+Schema.swift in Sources */,
 				21BBFB4B289BFFA000B32A39 /* DataStoreConfigurationTests.swift in Sources */,
+				21BBFDB7289C06E400B32A39 /* Group.swift in Sources */,
+				21BBFD6B289C06E400B32A39 /* CustomerSecondaryIndexV2+Schema.swift in Sources */,
+				21BBFD3E289C06E400B32A39 /* Comment3V2+Schema.swift in Sources */,
+				21BBFD71289C06E400B32A39 /* CustomerMultipleSecondaryIndexV2.swift in Sources */,
+				21BBFD42289C06E400B32A39 /* Team4bV2.swift in Sources */,
+				21BBFDA8289C06E400B32A39 /* Article.swift in Sources */,
+				21BBFD3B289C06E400B32A39 /* Comment3V2.swift in Sources */,
+				21BBFDF7289C06E400B32A39 /* ModelCompositePk.swift in Sources */,
+				21BBFE09289C06E400B32A39 /* Book+Schema.swift in Sources */,
+				21BBFD2F289C06E400B32A39 /* OGCScenarioBPost.swift in Sources */,
+				21BBFD99289C06E400B32A39 /* DynamicEmbedded.swift in Sources */,
+				21BBFDA7289C06E400B32A39 /* M2MPostEditor.swift in Sources */,
+				21BBFDC5289C06E400B32A39 /* Post6+Schema.swift in Sources */,
 				21BBFC12289C039500B32A39 /* DataStoreConnectionScenario6Tests.swift in Sources */,
+				21BBFDDC289C06E400B32A39 /* User5+Schema.swift in Sources */,
+				21BBFDC7289C06E400B32A39 /* Blog6+Schema.swift in Sources */,
+				21BBFD34289C06E400B32A39 /* MenuType.swift in Sources */,
 				21BBFC0B289C037000B32A39 /* TestModelV2Registration.swift in Sources */,
+				21BBFD7A289C06E400B32A39 /* Attendee8V2+Schema.swift in Sources */,
+				21BBFD8B289C06E400B32A39 /* ListStringContainer+Schema.swift in Sources */,
+				21BBFD94289C06E400B32A39 /* NestedTypeTestModel+Schema.swift in Sources */,
+				21BBFD92289C06E400B32A39 /* TestEnum.swift in Sources */,
+				21BBFD78289C06E400B32A39 /* Meeting8V2.swift in Sources */,
+				21BBFDF0289C06E400B32A39 /* ModelExplicitCustomPk+Schema.swift in Sources */,
+				21BBFD79289C06E400B32A39 /* Registration8V2.swift in Sources */,
 				21BBFB4C289BFFA300B32A39 /* DataStoreConsecutiveUpdatesTests.swift in Sources */,
+				21BBFD64289C06E400B32A39 /* Post5V2+Schema.swift in Sources */,
+				21BBFD5B289C06E400B32A39 /* MyCustomModel8+Schema.swift in Sources */,
 				21BBFB51289BFFB800B32A39 /* DataStoreObserveQueryTests.swift in Sources */,
+				21BBFDB0289C06E400B32A39 /* AmplifyModels.swift in Sources */,
+				21BBFDBB289C06E400B32A39 /* Transaction+Schema.swift in Sources */,
+				21BBFD31289C06E400B32A39 /* RecordCover+Schema.swift in Sources */,
+				21BBFDAD289C06E400B32A39 /* Project.swift in Sources */,
+				21BBFDDD289C06E400B32A39 /* Post5+Schema.swift in Sources */,
 				21BBFB50289BFFB600B32A39 /* DataStoreLocalStoreTests.swift in Sources */,
+				21BBFDB9289C06E400B32A39 /* Transaction.swift in Sources */,
+				21BBFD88289C06E400B32A39 /* Record+Schema.swift in Sources */,
 				21BBFB52289BFFBB00B32A39 /* DataStoreScalarTests.swift in Sources */,
+				21BBFC28289C062000B32A39 /* TestConfigHelper.swift in Sources */,
+				21BBFE03289C06E400B32A39 /* ModelCompositePkBelongsTo+Schema.swift in Sources */,
+				21BBFD3D289C06E400B32A39 /* Post3V2.swift in Sources */,
+				21BBFDE1289C06E400B32A39 /* UserFollowing.swift in Sources */,
 				21BBFC08289C036800B32A39 /* SyncEngineIntegrationV2TestBase.swift in Sources */,
+				21BBFD59289C06E400B32A39 /* MyCustomModel8.swift in Sources */,
+				21BBFD3C289C06E400B32A39 /* Post3V2+Schema.swift in Sources */,
+				21BBFDC3289C06E400B32A39 /* Post6.swift in Sources */,
+				21BBFD41289C06E400B32A39 /* Project4bV2.swift in Sources */,
 				21BBFC03289C035D00B32A39 /* TestModelRegistration.swift in Sources */,
+				21BBFDF5289C06E400B32A39 /* CommentWithCompositeKeyAndIndex.swift in Sources */,
+				21BBFDD4289C06E400B32A39 /* Comment3.swift in Sources */,
+				21BBFDB3289C06E400B32A39 /* CustomerOrder.swift in Sources */,
+				21BBFDA1289C06E400B32A39 /* M2MPost.swift in Sources */,
+				21BBFD87289C06E400B32A39 /* PostStatus.swift in Sources */,
 				21BBFB4F289BFFB400B32A39 /* DataStoreHubEventsTests.swift in Sources */,
+				21BBFD83289C06E400B32A39 /* Blog6V2.swift in Sources */,
+				21BBFDD2289C06E400B32A39 /* Post3+Schema.swift in Sources */,
+				21BBFD68289C06E400B32A39 /* User5V2.swift in Sources */,
+				21BBFD63289C06E400B32A39 /* Priority.swift in Sources */,
+				21BBFDFD289C06E400B32A39 /* ModelCustomPkDefined+Schema.swift in Sources */,
+				21BBFD90289C06E400B32A39 /* EnumTestModel+Schema.swift in Sources */,
+				21BBFD56289C06E400B32A39 /* Comment8+Schema.swift in Sources */,
 				21BBFB4A289BFF9400B32A39 /* AWSDataStorePluginConfigurationTests.swift in Sources */,
+				21BBFD3F289C06E400B32A39 /* Project4bV2+Schema.swift in Sources */,
+				21BBFD49289C06E400B32A39 /* TodoCustomTimestampV2+Schema.swift in Sources */,
+				21BBFDF3289C06E400B32A39 /* ModelCustomPKDefined.swift in Sources */,
+				21BBFD73289C06E400B32A39 /* EnumDrift.swift in Sources */,
 				21BBFC04289C035F00B32A39 /* SyncEngineIntegrationTestBase.swift in Sources */,
+				21BBFD91289C06E400B32A39 /* Nested+Schema.swift in Sources */,
+				21BBFDAF289C06E400B32A39 /* QPredGen.swift in Sources */,
+				21BBFDC6289C06E400B32A39 /* Comment6+Schema.swift in Sources */,
+				21BBFDB8289C06E400B32A39 /* Group+Schema.swift in Sources */,
+				21BBFDEE289C06E400B32A39 /* ModelExplicitDefaultPk+Schema.swift in Sources */,
+				21BBFD39289C06E400B32A39 /* Restaurant.swift in Sources */,
+				21BBFDD7289C06E400B32A39 /* Project2.swift in Sources */,
 				21BBFC06289C036300B32A39 /* DataStoreInternal.swift in Sources */,
+				21BBFDDA289C06E400B32A39 /* User5.swift in Sources */,
+				21BBFDFF289C06E400B32A39 /* PostWithCompositeKeyAndIndex+Schema.swift in Sources */,
+				21BBFD44289C06E400B32A39 /* Post7V2+Schema.swift in Sources */,
+				21BBFE05289C06E400B32A39 /* PostTagsWithCompositeKey+Schema.swift in Sources */,
+				21BBFE11289C06E400B32A39 /* UserAccount.swift in Sources */,
+				21BBFD9B289C06E400B32A39 /* Section.swift in Sources */,
+				21BBFD5A289C06E400B32A39 /* MyNestedModel8.swift in Sources */,
+				21BBFD7D289C06E400B32A39 /* Team2V2.swift in Sources */,
+				21BBFE06289C06E400B32A39 /* PostWithCompositeKey.swift in Sources */,
 				21BBFC11289C038B00B32A39 /* DataStoreConnectionScenario1Tests.swift in Sources */,
+				21BBFDAE289C06E400B32A39 /* Team+Schema.swift in Sources */,
+				21BBFDBD289C06E400B32A39 /* MockModels.swift in Sources */,
+				21BBFD98289C06E400B32A39 /* ScenarioATest6Post+Schema.swift in Sources */,
+				21BBFD9D289C06E400B32A39 /* Todo.swift in Sources */,
+				21BBFDF9289C06E400B32A39 /* ModelCompositeIntPk+Schema.swift in Sources */,
+				21BBFD37289C06E400B32A39 /* Menu.swift in Sources */,
+				21BBFD9F289C06E400B32A39 /* Color.swift in Sources */,
+				21BBFDBA289C06E400B32A39 /* Row.swift in Sources */,
+				21BBFD33289C06E400B32A39 /* Dish.swift in Sources */,
+				21BBFD65289C06E400B32A39 /* Post5V2.swift in Sources */,
+				21BBFDCA289C06E400B32A39 /* Project1+Schema.swift in Sources */,
+				21BBFDF2289C06E400B32A39 /* CommentWithCompositeKeyUnidirectional.swift in Sources */,
+				21BBFDD9289C06E400B32A39 /* PostEditor5.swift in Sources */,
+				21BBFD6D289C06E400B32A39 /* Comment3aV2.swift in Sources */,
+				21BBFD54289C06E400B32A39 /* MyNestedModel8+Schema.swift in Sources */,
+				21BBFD6A289C06E400B32A39 /* CustomerWithMultipleFieldsinPK.swift in Sources */,
 				21BBFC0A289C036C00B32A39 /* LocalStoreIntegrationTestBase.swift in Sources */,
+				21BBFD6F289C06E400B32A39 /* Comment3aV2+Schema.swift in Sources */,
+				21BBFD84289C06E400B32A39 /* Blog6V2+Schema.swift in Sources */,
+				21BBFD50289C06E400B32A39 /* Post4V2+Schema.swift in Sources */,
+				21BBFDC9289C06E400B32A39 /* Project1.swift in Sources */,
+				21BBFE12289C06E400B32A39 /* Author+Schema.swift in Sources */,
+				21BBFE0E289C06E400B32A39 /* Book.swift in Sources */,
+				21BBFD58289C06E400B32A39 /* Comment8.swift in Sources */,
+				21BBFD85289C06E400B32A39 /* Comment6V2.swift in Sources */,
 				21BBFC10289C038900B32A39 /* DataStoreConnectionScenario4Tests.swift in Sources */,
+				21BBFD5D289C06E400B32A39 /* Post8.swift in Sources */,
+				21BBFD67289C06E400B32A39 /* PostEditor5V2.swift in Sources */,
+				21BBFD53289C06E400B32A39 /* CustomerSecondaryIndexV2.swift in Sources */,
+				21BBFDD5289C06E400B32A39 /* Project2+Schema.swift in Sources */,
+				21BBFD9E289C06E400B32A39 /* Todo+Schema.swift in Sources */,
+				21BBFE14289C073100B32A39 /* HubListenerTestUtilities.swift in Sources */,
+				21BBFD45289C06E400B32A39 /* Blog7V2+Schema.swift in Sources */,
+				21BBFD7E289C06E400B32A39 /* Project2V2.swift in Sources */,
+				21BBFDED289C06E400B32A39 /* PostWithTagsCompositeKey+Schema.swift in Sources */,
+				21BBFD60289C06E400B32A39 /* Project1V2+Schema.swift in Sources */,
+				21BBFE16289C075000B32A39 /* TestCommonConstants.swift in Sources */,
+				21BBFD96289C06E400B32A39 /* ListIntContainer+Schema.swift in Sources */,
+				21BBFDB1289C06E400B32A39 /* OGCScenarioBPost+Schema.swift in Sources */,
+				21BBFDFC289C06E400B32A39 /* PostWithCompositeKeyUnidirectional+Schema.swift in Sources */,
+				21BBFD4B289C06E400B32A39 /* Team4aV2+Schema.swift in Sources */,
+				21BBFDEB289C06E400B32A39 /* PostWithCompositeKey+Schema.swift in Sources */,
+				21BBFDD1289C06E400B32A39 /* Post3.swift in Sources */,
 				21BBFB4E289BFFB100B32A39 /* DataStoreEndToEndTests.swift in Sources */,
+				21BBFD51289C06E400B32A39 /* Comment4V2.swift in Sources */,
+				21BBFD8A289C06E400B32A39 /* ListStringContainer.swift in Sources */,
+				21BBFE0A289C06E400B32A39 /* BookAuthor.swift in Sources */,
+				21BBFDC4289C06E400B32A39 /* Comment6.swift in Sources */,
+				21BBFD66289C06E400B32A39 /* User5V2+Schema.swift in Sources */,
+				21BBFD61289C06E400B32A39 /* Team1V2.swift in Sources */,
+				21BBFD93289C06E400B32A39 /* ScalarContainer+Schema.swift in Sources */,
+				21BBFDFA289C06E400B32A39 /* ModelCompositePkWithAssociation+Schema.swift in Sources */,
+				21BBFDA5289C06E400B32A39 /* M2MUser+Schema.swift in Sources */,
+				21BBFDE7289C06E400B32A39 /* ModelCompositeIntPk.swift in Sources */,
+				21BBFDB5289C06E400B32A39 /* RecordCover.swift in Sources */,
+				21BBFD80289C06E400B32A39 /* Post6V2+Schema.swift in Sources */,
+				21BBFD57289C06E400B32A39 /* Post8+Schema.swift in Sources */,
 				21BBFC05289C036100B32A39 /* DataStoreTestBase.swift in Sources */,
+				21BBFD30289C06E400B32A39 /* Article+Schema.swift in Sources */,
+				21BBFD76289C06E400B32A39 /* Attendee8V2.swift in Sources */,
+				21BBFD52289C06E400B32A39 /* Comment4V2+Schema.swift in Sources */,
+				21BBFDAA289C06E400B32A39 /* Project+Schema.swift in Sources */,
+				21BBFD7B289C06E400B32A39 /* CustomerWithMultipleFieldsinPK+Schema.swift in Sources */,
+				21BBFDA0289C06E400B32A39 /* OGCScenarioBMGroupPost+Schema.swift in Sources */,
+				21BBFDA4289C06E400B32A39 /* M2MUser.swift in Sources */,
+				21BBFDC8289C06E400B32A39 /* Team1+Schema.swift in Sources */,
+				21BBFD8D289C06E400B32A39 /* Scalar+Equatable.swift in Sources */,
+				21BBFDBC289C06E400B32A39 /* UserFollowers+Schema.swift in Sources */,
 				21BBFC13289C039800B32A39 /* DataStoreConnectionScenario3Tests.swift in Sources */,
+				21BBFDDF289C06E400B32A39 /* CustomerOrder+Schema.swift in Sources */,
+				21BBFDAC289C06E400B32A39 /* Team.swift in Sources */,
+				21BBFD69289C06E400B32A39 /* PostEditor5V2+Schema.swift in Sources */,
 				21BBFB4D289BFFAF00B32A39 /* DataStoreCustomPrimaryKeyTests.swift in Sources */,
+				21BBFD75289C06E400B32A39 /* Meeting8V2+Schema.swift in Sources */,
+				21BBFD86289C06E400B32A39 /* TodoWithDefaultValueV2+Schema.swift in Sources */,
+				21BBFDA6289C06E400B32A39 /* M2MPost+Schema.swift in Sources */,
+				21BBFE02289C06E400B32A39 /* ModelCompositePkBelongsTo.swift in Sources */,
+				21BBFD5C289C06E400B32A39 /* Blog8.swift in Sources */,
+				21BBFE0C289C06E400B32A39 /* UserProfile.swift in Sources */,
+				21BBFE08289C06E400B32A39 /* UserFollowing+Schema.swift in Sources */,
+				21BBFDBF289C06E400B32A39 /* PostCommentModelRegistration.swift in Sources */,
+				21BBFE00289C06E400B32A39 /* ModelImplicitDefaultPk.swift in Sources */,
 				21BBFC0D289C037400B32A39 /* SyncMetadataTests.swift in Sources */,
+				21BBFDEC289C06E400B32A39 /* ModelExplicitCustomPk.swift in Sources */,
+				21BBFD74289C06E400B32A39 /* SchemaDrift+Schema.swift in Sources */,
+				21BBFD4F289C06E400B32A39 /* Post4V2.swift in Sources */,
+				21BBFDEF289C06E400B32A39 /* TagWithCompositeKey.swift in Sources */,
+				21BBFD48289C06E400B32A39 /* Comment7V2.swift in Sources */,
+				21BBFDEA289C06E400B32A39 /* CommentWithCompositeKeyAndIndex+Schema.swift in Sources */,
+				21BBFDC1289C06E400B32A39 /* Post.swift in Sources */,
+				21BBFD5F289C06E400B32A39 /* Team1V2+Schema.swift in Sources */,
+				21BBFDDE289C06E400B32A39 /* Post5.swift in Sources */,
+				21BBFDB6289C06E400B32A39 /* Row+Schema.swift in Sources */,
+				21BBFDF4289C06E400B32A39 /* PostWithCompositeKeyUnidirectional.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,7 +10,6 @@ import XCTest
 import SQLite
 
 @testable import Amplify
-@testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
 class SyncMetadataTests: SyncEngineIntegrationTestBase {
