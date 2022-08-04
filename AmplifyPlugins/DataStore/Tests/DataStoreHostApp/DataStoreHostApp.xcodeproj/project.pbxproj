@@ -1772,7 +1772,6 @@
 				21182128289BFB4B001B5945 /* Sources */,
 				21182129289BFB4B001B5945 /* Frameworks */,
 				2118212A289BFB4B001B5945 /* Resources */,
-				21BBFE19289C078500B32A39 /* Copy Configuration Files */,
 			);
 			buildRules = (
 			);
@@ -1796,6 +1795,7 @@
 				21BBFB3D289BFF6A00B32A39 /* Sources */,
 				21BBFB3E289BFF6A00B32A39 /* Frameworks */,
 				21BBFB3F289BFF6A00B32A39 /* Resources */,
+				21BBFE1A289C088E00B32A39 /* Copy Configuration Files */,
 			);
 			buildRules = (
 			);
@@ -1987,7 +1987,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		21BBFE19289C078500B32A39 /* Copy Configuration Files */ = {
+		21BBFE1A289C088E00B32A39 /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (

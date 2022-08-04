@@ -39,6 +39,16 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
         let version: String = "1"
     }
 
+    func testSetUp() async throws {
+        do {
+            await setUp(withModels: TestModelRegistration())
+            try startAmplifyAndWaitForSync()
+        } catch {
+            print("Error \(error)")
+        }
+        
+    }
+    
     func testSaveTeamAndProjectSyncToCloud() async throws {
         await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()

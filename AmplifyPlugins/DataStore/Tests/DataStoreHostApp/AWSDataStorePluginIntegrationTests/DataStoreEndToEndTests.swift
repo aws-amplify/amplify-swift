@@ -24,6 +24,15 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         let version: String = "1"
     }
 
+    func testSetUp() async throws {
+        do {
+            await setUp(withModels: TestModelRegistration())
+            try startAmplifyAndWaitForSync()
+        } catch {
+            print("Error \(error)")
+        }
+    }
+    
     func testCreate() async throws {
         await setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
