@@ -21,6 +21,8 @@ extension CredentialStoreState {
             additionalMetadataDictionary = [:]
         case .clearingCredentials:
             additionalMetadataDictionary = [:]
+        case .clearedCredential(let dataType):
+            additionalMetadataDictionary = ["StoreDataType": dataType]
         case .storingCredentials:
             additionalMetadataDictionary = [:]
         case .success:
