@@ -115,7 +115,6 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
         }
 
         await waitForExpectations(timeout: 100.0)
-        // wait(for: [eventReceived], timeout: 100.0)
     }
 
 }

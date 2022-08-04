@@ -29,7 +29,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             await setUp(withModels: TestModelRegistration(), logLevel: .verbose)
             try await startAmplifyAndWaitForSync()
         } catch {
-            print("Error \(error)")
+            XCTFail("Error \(error)")
         }
     }
     
@@ -126,10 +126,68 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         updatedPost.content = "UPDATED CONTENT from DataStoreEndToEndTests at \(Date())"
 
         let createReceived = expectation(description: "Create notification received")
-        let updateReceived = expectation(description: "Update notification received")
-        let deleteReceived = expectation(description: "Delete notification received")
+        var hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                guard let mutationEvent = payload.data as? MutationEvent
+                    else {
+                        XCTFail("Can't cast payload as mutation event")
+                        return
+                }
+                // This check is to protect against stray events being processed after the test has completed,
+                // and it shouldn't be construed as a pattern necessary for production applications.
+                guard let post = try? mutationEvent.decodeModel() as? Post, post.id == newPost.id else {
+                    return
+                }
 
-        let hubListener = Amplify.Hub.listen(
+                if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
+                    XCTAssertEqual(post.content, newPost.content)
+                    XCTAssertEqual(mutationEvent.version, 1)
+                    createReceived.fulfill()
+                    return
+                }
+        }
+
+        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+            XCTFail("Listener not registered for hub")
+            return
+        }
+
+        Amplify.DataStore.save(newPost) { _ in }
+        await waitForExpectations(timeout: networkTimeout)
+
+        let updateReceived = expectation(description: "Update notification received")
+        hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                guard let mutationEvent = payload.data as? MutationEvent
+                    else {
+                        XCTFail("Can't cast payload as mutation event")
+                        return
+                }
+                // This check is to protect against stray events being processed after the test has completed,
+                // and it shouldn't be construed as a pattern necessary for production applications.
+                guard let post = try? mutationEvent.decodeModel() as? Post, post.id == newPost.id else {
+                    return
+                }
+
+                if mutationEvent.mutationType == GraphQLMutationType.update.rawValue {
+                    XCTAssertEqual(post.content, updatedPost.content)
+                    XCTAssertEqual(mutationEvent.version, 2)
+                    updateReceived.fulfill()
+                    return
+                }
+        }
+
+        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+            XCTFail("Listener not registered for hub")
+            return
+        }
+        Amplify.DataStore.save(updatedPost) { _ in }
+        await waitForExpectations(timeout: networkTimeout)
+        
+        let deleteReceived = expectation(description: "Delete notification received")
+        hubListener = Amplify.Hub.listen(
             to: .dataStore,
             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
                 guard let mutationEvent = payload.data as? MutationEvent
@@ -144,20 +202,6 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                     return
                 }
 
-                if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                    XCTAssertEqual(post.content, newPost.content)
-                    XCTAssertEqual(mutationEvent.version, 1)
-                    createReceived.fulfill()
-                    return
-                }
-
-                if mutationEvent.mutationType == GraphQLMutationType.update.rawValue {
-                    XCTAssertEqual(post.content, updatedPost.content)
-                    XCTAssertEqual(mutationEvent.version, 2)
-                    updateReceived.fulfill()
-                    return
-                }
-
                 if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
                     XCTAssertEqual(mutationEvent.version, 3)
                     deleteReceived.fulfill()
@@ -169,18 +213,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             XCTFail("Listener not registered for hub")
             return
         }
-
-        Amplify.DataStore.save(newPost) { _ in }
-
-        wait(for: [createReceived], timeout: networkTimeout)
-
-        Amplify.DataStore.save(updatedPost) { _ in }
-
-        wait(for: [updateReceived], timeout: networkTimeout)
-
         Amplify.DataStore.delete(updatedPost) { _ in }
-
-        wait(for: [deleteReceived], timeout: networkTimeout)
+        await waitForExpectations(timeout: networkTimeout)
     }
 
     /// - Given: A post that has been saved
