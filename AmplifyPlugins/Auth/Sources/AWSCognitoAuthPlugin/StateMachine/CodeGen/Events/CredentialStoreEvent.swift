@@ -11,7 +11,7 @@ import AWSPluginsCore
 enum CredentialStoreData: Codable, Equatable {
     case amplifyCredentials(AmplifyCredentials)
     case deviceMetadata(DeviceMetadata, Username)
-    case asfDeviceId(String?, Username)
+    case asfDeviceId(String, Username)
 }
 
 enum CredentialStoreDataType: Codable, Equatable {
