@@ -20,8 +20,7 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
 
     func signIn(username: String,
                 password: String,
-                options: AuthSignInOperation.Request.Options?,
-                listener: AuthSignInOperation.ResultListener?) -> AuthSignInOperation {
+                options: AuthSignInRequest.Options?) async throws -> AuthSignInResult {
         fatalError()
     }
 
@@ -48,8 +47,7 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
 
     public func signIn(username: String? = nil,
                        password: String? = nil,
-                       options: AuthSignInOperation.Request.Options? = nil,
-                       listener: AuthSignInOperation.ResultListener?) -> AuthSignInOperation {
+                       options: AuthSignInRequest.Options? = nil) async throws -> AuthSignInResult {
         fatalError()
     }
 
@@ -80,7 +78,7 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         fatalError()
     }
 
-    public func deleteUser(listener: AuthDeleteUserOperation.ResultListener?) -> AuthDeleteUserOperation {
+    public func deleteUser() async throws {
         fatalError()
     }
 

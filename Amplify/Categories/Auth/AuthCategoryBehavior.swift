@@ -69,11 +69,9 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - password: Password to signIn the user
     ///   - options: Parameters specific to plugin behavior
     ///   - listener: Triggered when the operation completes.
-    @discardableResult
     func signIn(username: String?,
                 password: String?,
-                options: AuthSignInOperation.Request.Options?,
-                listener: AuthSignInOperation.ResultListener?) -> AuthSignInOperation
+                options: AuthSignInRequest.Options?) async throws -> AuthSignInResult
 
 #if canImport(AuthenticationServices)
     /// SignIn using pre configured web UI.
@@ -130,11 +128,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
 
     /// Delete the account of the currently logged-in user.
     ///
-    /// - Parameters:
-    ///   - listener: Triggered when the operation completes.
-    /// - Returns: AuthDeleteUserOperation
-    @discardableResult
-    func deleteUser(listener: AuthDeleteUserOperation.ResultListener?) -> AuthDeleteUserOperation
+    func deleteUser() async throws
 
     /// Fetch the current authentication session.
     ///

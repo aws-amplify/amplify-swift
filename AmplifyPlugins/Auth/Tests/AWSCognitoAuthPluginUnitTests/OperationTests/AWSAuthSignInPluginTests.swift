@@ -26,7 +26,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .done response
     ///
-    func testSuccessfulSignIn() {
+    func testSuccessfulSignIn() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
@@ -51,22 +51,18 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
                                                  metadata: ["somekey": "somevalue"])
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
-
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            print("Sign In Result: \(result)")
+            guard case .done = result.nextStep else {
+                XCTFail("Result should be .done for next step")
+                return
             }
-            switch result {
-            case .success(let signinResult):
-                guard case .done = signinResult.nextStep else {
-                    XCTFail("Result should be .done for next step")
-                    return
-                }
-                XCTAssertTrue(signinResult.isSignedIn, "Signin result should be complete")
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
-            }
+            XCTAssertTrue(result.isSignedIn, "Signin result should be complete")
+            resultExpectation.fulfill()
+        } catch {
+            XCTFail("Received failure with error \(error)")
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -80,7 +76,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .done response
     ///
-    func testSuccessfulSignInWithAuthFlow() {
+    func testSuccessfulSignInWithAuthFlow() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
@@ -108,21 +104,20 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
 
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
+        
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            print("Sign In Result: \(result)")
+            guard case .done = result.nextStep else {
+                XCTFail("Result should be .done for next step")
+                return
             }
-            switch result {
-            case .success(let signinResult):
-                guard case .done = signinResult.nextStep else {
-                    XCTFail("Result should be .done for next step")
-                    return
-                }
-                XCTAssertTrue(signinResult.isSignedIn, "Signin result should be complete")
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
-            }
+            XCTAssertTrue(result.isSignedIn, "Signin result should be complete")
+            resultExpectation.fulfill()
+        } catch {
+            XCTFail("Received failure with error \(error)")
         }
+        
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
@@ -135,27 +130,44 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .validation error
     ///
-    func testSignInWithEmptyUsername() {
+    func testSignInWithEmptyUsername() async {
 
-        self.mockIdentityProvider = MockIdentityProvider()
+        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+            InitiateAuthOutputResponse(
+                authenticationResult: .none,
+                challengeName: .passwordVerifier,
+                challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                session: "someSession")
+        }, mockRespondToAuthChallengeResponse: { _ in
+            RespondToAuthChallengeOutputResponse(
+                authenticationResult: .init(
+                    accessToken: "accessToken",
+                    expiresIn: 300,
+                    idToken: "idToken",
+                    newDeviceMetadata: nil,
+                    refreshToken: "refreshToken",
+                    tokenType: ""),
+                challengeName: .none,
+                challengeParameters: [:],
+                session: "session")
+        })
 
         let options = AuthSignInRequest.Options()
 
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let signinResult):
-                XCTFail("Should not receive a success response \(signinResult)")
-            case .failure(let error):
-                guard case .validation = error else {
-                    XCTFail("Should receive validation error instead got \(error)")
-                    return
-                }
+        
+        do {
+            let result = try await plugin.signIn(username: "", password: "password", options: options)
+            print("Sign In Result: \(result)")
+            XCTFail("Should not receive a success response \(result)")
+        } catch {
+            resultExpectation.fulfill()
+            guard case AuthError.validation = error else {
+                XCTFail("Should receive validation error instead got \(error)")
+                return
             }
         }
+        
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
@@ -168,7 +180,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a valid response
     ///
-    func testSignInWithEmptyPassword() {
+    func testSignInWithEmptyPassword() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
@@ -192,20 +204,18 @@ class AWSAuthSignInPluginTests: BasePluginTest {
 
         let options = AuthSignInRequest.Options()
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
+        
+        do {
+            let result = try await plugin.signIn(username: "username", password: "", options: options)
+            print("Sign In Result: \(result)")
+            guard case .done = result.nextStep else {
+                XCTFail("Result should be .done for next step")
+                return
             }
-            switch result {
-            case .success(let signinResult):
-                guard case .done = signinResult.nextStep else {
-                    XCTFail("Result should be .done for next step")
-                    return
-                }
-                XCTAssertTrue(signinResult.isSignedIn, "Signin result should be complete")
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
-            }
+            XCTAssertTrue(result.isSignedIn, "Signin result should be complete")
+            resultExpectation.fulfill()
+        } catch {
+            XCTFail("Received failure with error \(error)")
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -219,25 +229,23 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .unknown error
     ///
-    func testSignInWithInvalidResult() {
+    func testSignInWithInvalidResult() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse()
         })
         let options = AuthSignInRequest.Options()
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let signinResult):
-                XCTFail("Should not receive a success response \(signinResult)")
-            case .failure(let error):
-                guard case .service = error else {
-                    XCTFail("Should receive unknown error instead got \(error)")
-                    return
-                }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            print("Sign In Result: \(result)")
+            XCTFail("Should not receive a success response \(result)")
+            
+        } catch {
+            resultExpectation.fulfill()
+            guard case AuthError.service = error else {
+                XCTFail("Should receive unknown error instead got \(error)")
+                return
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
@@ -252,7 +260,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .confirmSignInWithSMSMFACode
     ///
-    func testSignInWithNextStepSMS() {
+    func testSignInWithNextStepSMS() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
@@ -270,20 +278,18 @@ class AWSAuthSignInPluginTests: BasePluginTest {
 
         let options = AuthSignInRequest.Options()
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
+        
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            print("Sign In Result: \(result)")
+            guard case .confirmSignInWithSMSMFACode = result.nextStep else {
+                XCTFail("Result should be .confirmSignInWithSMSMFACode for next step")
+                return
             }
-            switch result {
-            case .success(let signinResult):
-                guard case .confirmSignInWithSMSMFACode = signinResult.nextStep else {
-                    XCTFail("Result should be .confirmSignInWithSMSMFACode for next step")
-                    return
-                }
-                XCTAssertFalse(signinResult.isSignedIn, "Signin result should not be complete")
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
-            }
+            XCTAssertFalse(result.isSignedIn, "Signin result should not be complete")
+            resultExpectation.fulfill()
+        } catch {
+            XCTFail("Received failure with error \(error)")
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -297,7 +303,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a the info in next step
     ///
-    func testCustomAuthWithAdditionalInfo() {
+    func testCustomAuthWithAdditionalInfo() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
@@ -318,26 +324,24 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                                                  authFlowType: .customWithSRP)
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            print("Sign In Result: \(result)")
+            guard case .confirmSignInWithCustomChallenge(let additionalInfo) = result.nextStep else {
+                XCTFail("Result should be .confirmSignInWithCustomChallenge for next step")
+                return
             }
-            switch result {
-            case .success(let signinResult):
-                guard case .confirmSignInWithCustomChallenge(let additionalInfo) = signinResult.nextStep else {
-                    XCTFail("Result should be .confirmSignInWithCustomChallenge for next step")
-                    return
-                }
-                guard let addditionalValue = additionalInfo?["paramKey"] else {
-                    XCTFail("Additional info should be passed to the result")
-                    return
-                }
-                XCTAssertEqual(addditionalValue, "value", "Additional info should be same")
-                XCTAssertFalse(signinResult.isSignedIn, "Signin result should not be complete")
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
+            guard let addditionalValue = additionalInfo?["paramKey"] else {
+                XCTFail("Additional info should be passed to the result")
+                return
             }
+            XCTAssertEqual(addditionalValue, "value", "Additional info should be same")
+            XCTAssertFalse(result.isSignedIn, "Signin result should not be complete")
+            resultExpectation.fulfill()
+        } catch {
+            XCTFail("Received failure with error \(error)")
         }
+        
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
@@ -350,7 +354,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a the info in next step
     ///
-    func testSMSMFAWithAdditionalInfo() {
+    func testSMSMFAWithAdditionalInfo() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
@@ -368,25 +372,22 @@ class AWSAuthSignInPluginTests: BasePluginTest {
 
         let options = AuthSignInRequest.Options()
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            print("Sign In Result: \(result)")
+            guard case .confirmSignInWithSMSMFACode(_, let additionalInfo) = result.nextStep else {
+                XCTFail("Result should be .confirmSignInWithSMSMFACode for next step")
+                return
             }
-            switch result {
-            case .success(let signinResult):
-                guard case .confirmSignInWithSMSMFACode(_, let additionalInfo) = signinResult.nextStep else {
-                    XCTFail("Result should be .confirmSignInWithSMSMFACode for next step")
-                    return
-                }
-                guard let addditionalValue = additionalInfo?["paramKey"] else {
-                    XCTFail("Additional info should be passed to the result")
-                    return
-                }
-                XCTAssertEqual(addditionalValue, "value", "Additional info should be same")
-                XCTAssertFalse(signinResult.isSignedIn, "Signin result should not be complete")
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
+            guard let addditionalValue = additionalInfo?["paramKey"] else {
+                XCTFail("Additional info should be passed to the result")
+                return
             }
+            XCTAssertEqual(addditionalValue, "value", "Additional info should be same")
+            XCTAssertFalse(result.isSignedIn, "Signin result should not be complete")
+            resultExpectation.fulfill()
+        } catch {
+            XCTFail("Received failure with error \(error)")
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -400,7 +401,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .confirmSignInWithNewPassword error
     ///
-    func testSignInWithNextStepNewPassword() {
+    func testSignInWithNextStepNewPassword() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
@@ -419,20 +420,17 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         let options = AuthSignInRequest.Options()
 
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            print("Sign In Result: \(result)")
+            guard case .confirmSignInWithNewPassword = result.nextStep else {
+                XCTFail("Result should be .confirmSignInWithNewPassword for next step")
+                return
             }
-            switch result {
-            case .success(let signinResult):
-                guard case .confirmSignInWithNewPassword = signinResult.nextStep else {
-                    XCTFail("Result should be .confirmSignInWithNewPassword for next step")
-                    return
-                }
-                XCTAssertFalse(signinResult.isSignedIn, "Signin result should not be complete")
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
-            }
+            XCTAssertFalse(result.isSignedIn, "Signin result should not be complete")
+            resultExpectation.fulfill()
+        } catch {
+            XCTFail("Received failure with error \(error)")
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -447,7 +445,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a the info in next step
     ///
-    func testNewPasswordWithAdditionalInfo() {
+    func testNewPasswordWithAdditionalInfo() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
@@ -465,25 +463,22 @@ class AWSAuthSignInPluginTests: BasePluginTest {
 
         let options = AuthSignInRequest.Options()
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            print("Sign In Result: \(result)")
+            guard case .confirmSignInWithNewPassword(let additionalInfo) = result.nextStep else {
+                XCTFail("Result should be .confirmSignInWithNewPassword for next step")
+                return
             }
-            switch result {
-            case .success(let signinResult):
-                guard case .confirmSignInWithNewPassword(let additionalInfo) = signinResult.nextStep else {
-                    XCTFail("Result should be .confirmSignInWithNewPassword for next step")
-                    return
-                }
-                guard let addditionalValue = additionalInfo?["paramKey"] else {
-                    XCTFail("Additional info should be passed to the result")
-                    return
-                }
-                XCTAssertEqual(addditionalValue, "value", "Additional info should be same")
-                XCTAssertFalse(signinResult.isSignedIn, "Signin result should not be complete")
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
+            guard let addditionalValue = additionalInfo?["paramKey"] else {
+                XCTFail("Additional info should be passed to the result")
+                return
             }
+            XCTAssertEqual(addditionalValue, "value", "Additional info should be same")
+            XCTAssertFalse(result.isSignedIn, "Signin result should not be complete")
+            resultExpectation.fulfill()
+        } catch {
+            XCTFail("Received failure with error \(error)")
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -497,7 +492,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .confirmSignInWithCustomChallenge
     ///
-    func testSignInWithNextStepCustomChallenge() {
+    func testSignInWithNextStepCustomChallenge() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
@@ -517,20 +512,17 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
 
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            print("Sign In Result: \(result)")
+            guard case .confirmSignInWithCustomChallenge = result.nextStep else {
+                XCTFail("Result should be .confirmSignInWithCustomChallenge for next step")
+                return
             }
-            switch result {
-            case .success(let signinResult):
-                guard case .confirmSignInWithCustomChallenge = signinResult.nextStep else {
-                    XCTFail("Result should be .confirmSignInWithCustomChallenge for next step")
-                    return
-                }
-                XCTAssertFalse(signinResult.isSignedIn, "Signin result should not be complete")
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
-            }
+            XCTAssertFalse(result.isSignedIn, "Signin result should not be complete")
+            resultExpectation.fulfill()
+        } catch {
+            XCTFail("Received failure with error \(error)")
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -544,7 +536,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .unknown error
     ///
-    func testSignInWithNextStepUnknown() {
+    func testSignInWithNextStepUnknown() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
@@ -562,19 +554,15 @@ class AWSAuthSignInPluginTests: BasePluginTest {
 
         let options = AuthSignInRequest.Options()
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let signinResult):
-
-                XCTFail("Should not produce result - \(signinResult)")
-            case .failure(let error):
-                guard case .unknown = error else {
-                    XCTFail("Should produce unknown error")
-                    return
-                }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            print("Sign In Result: \(result)")
+            XCTFail("Should not produce result - \(result)")
+        } catch {
+            resultExpectation.fulfill()
+            guard case AuthError.unknown = error else {
+                XCTFail("Should produce unknown error")
+                return
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
@@ -592,7 +580,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .unknown error
     ///
-    func testSignInWithInternalErrorException() {
+    func testSignInWithInternalErrorException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.internalErrorException(.init())
@@ -600,18 +588,15 @@ class AWSAuthSignInPluginTests: BasePluginTest {
 
         let options = AuthSignInRequest.Options()
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let signinResult):
-                XCTFail("Should not produce result - \(signinResult)")
-            case .failure(let error):
-                guard case .unknown = error else {
-                    XCTFail("Should produce unknown error")
-                    return
-                }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            print("Sign In Result: \(result)")
+            XCTFail("Should not produce result - \(result)")
+        } catch {
+            resultExpectation.fulfill()
+            guard case AuthError.unknown = error else {
+                XCTFail("Should produce unknown error")
+                return
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
@@ -627,26 +612,23 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .lambda error
     ///
-    func testSignInWithInvalidLambdaResponseException() {
+    func testSignInWithInvalidLambdaResponseException() async {
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.invalidLambdaResponseException(.init())
         })
 
         let options = AuthSignInRequest.Options()
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let signinResult):
-                XCTFail("Should not produce result - \(signinResult)")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error,
-                      case .lambda = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should produce lambda error but instead produced \(error)")
-                    return
-                }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            print("Sign In Result: \(result)")
+            XCTFail("Should not produce result - \(result)")
+        } catch {
+            resultExpectation.fulfill()
+            guard case AuthError.service(_, _, let underlyingError) = error,
+                  case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should produce lambda error but instead produced \(error)")
+                return
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
@@ -662,26 +644,23 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .invalidParameter error
     ///
-    func testSignInWithInvalidParameterException() {
+    func testSignInWithInvalidParameterException() async {
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.invalidParameterException(.init())
         })
 
         let options = AuthSignInRequest.Options()
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let signinResult):
-                XCTFail("Should not produce result - \(signinResult)")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error,
-                      case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should produce invalidParameter error but instead produced \(error)")
-                    return
-                }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            print("Sign In Result: \(result)")
+            XCTFail("Should not produce result - \(result)")
+        } catch {
+            resultExpectation.fulfill()
+            guard case AuthError.service(_, _, let underlyingError) = error,
+                  case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should produce invalidParameter error but instead produced \(error)")
+                return
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
@@ -697,25 +676,22 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .configuration error
     ///
-    func testSignInWithInvalidUserPoolConfigurationException() {
+    func testSignInWithInvalidUserPoolConfigurationException() async {
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.invalidUserPoolConfigurationException(.init())
         })
 
         let options = AuthSignInRequest.Options()
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let signinResult):
-                XCTFail("Should not produce result - \(signinResult)")
-            case .failure(let error):
-                guard case .configuration = error else {
-                    XCTFail("Should produce configuration intead produced \(error)")
-                    return
-                }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            print("Sign In Result: \(result)")
+            XCTFail("Should not produce result - \(result)")
+        } catch {
+            resultExpectation.fulfill()
+            guard case AuthError.configuration = error else {
+                XCTFail("Should produce configuration intead produced \(error)")
+                return
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
@@ -731,25 +707,22 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .notAuthorized error
     ///
-    func testSignInWithNotAuthorizedException() {
+    func testSignInWithNotAuthorizedException() async {
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.notAuthorizedException(.init())
         })
 
         let options = AuthSignInRequest.Options()
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let signinResult):
-                XCTFail("Should not produce result - \(signinResult)")
-            case .failure(let error):
-                guard case .notAuthorized = error else {
-                    XCTFail("Should produce notAuthorized error but instead produced \(error)")
-                    return
-                }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            print("Sign In Result: \(result)")
+            XCTFail("Should not produce result - \(result)")
+        } catch {
+            resultExpectation.fulfill()
+            guard case AuthError.notAuthorized = error else {
+                XCTFail("Should produce notAuthorized error but instead produced \(error)")
+                return
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
@@ -765,27 +738,24 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .resetPassword as next step
     ///
-    func testSignInWithPasswordResetRequiredException() {
+    func testSignInWithPasswordResetRequiredException() async {
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.passwordResetRequiredException(.init())
         })
 
         let options = AuthSignInRequest.Options()
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            print("Sign In Result: \(result)")
+            guard case .resetPassword = result.nextStep else {
+                XCTFail("Result should be .resetPassword for next step")
+                return
             }
-            switch result {
-            case .success(let signinResult):
-                guard case .resetPassword = signinResult.nextStep else {
-                    XCTFail("Result should be .resetPassword for next step")
-                    return
-                }
-                XCTAssertFalse(signinResult.isSignedIn, "Signin result should not be complete")
-            case .failure(let error):
-                XCTFail("Should not produce error - \(error)")
-            }
+            XCTAssertFalse(result.isSignedIn, "Signin result should not be complete")
+            resultExpectation.fulfill()
+        } catch {
+            XCTFail("Should not produce error - \(error)")
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -800,26 +770,23 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .resourceNotFound error
     ///
-    func testSignInWithResourceNotFoundException() {
+    func testSignInWithResourceNotFoundException() async {
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.resourceNotFoundException(.init())
         })
 
         let options = AuthSignInRequest.Options()
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let signinResult):
-                XCTFail("Should not produce result - \(signinResult)")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error,
-                      case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should produce resourceNotFound error but instead produced \(error)")
-                    return
-                }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            print("Sign In Result: \(result)")
+            XCTFail("Should not produce result - \(result)")
+        } catch {
+            resultExpectation.fulfill()
+            guard case AuthError.service(_, _, let underlyingError) = error,
+                  case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should produce resourceNotFound error but instead produced \(error)")
+                return
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
@@ -835,26 +802,23 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .requestLimitExceeded error
     ///
-    func testSignInWithTooManyRequestsException() {
+    func testSignInWithTooManyRequestsException() async {
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.tooManyRequestsException(.init())
         })
 
         let options = AuthSignInRequest.Options()
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let signinResult):
-                XCTFail("Should not produce result - \(signinResult)")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error,
-                      case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should produce requestLimitExceeded error but instead produced \(error)")
-                    return
-                }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            print("Sign In Result: \(result)")
+            XCTFail("Should not produce result - \(result)")
+        } catch {
+            resultExpectation.fulfill()
+            guard case AuthError.service(_, _, let underlyingError) = error,
+                  case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should produce requestLimitExceeded error but instead produced \(error)")
+                return
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
@@ -870,26 +834,23 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .lambda error
     ///
-    func testSignInWithUnexpectedLambdaException() {
+    func testSignInWithUnexpectedLambdaException() async {
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.unexpectedLambdaException(.init())
         })
 
         let options = AuthSignInRequest.Options()
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let signinResult):
-                XCTFail("Should not produce result - \(signinResult)")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error,
-                      case .lambda = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should produce lambda error but instead produced \(error)")
-                    return
-                }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            print("Sign In Result: \(result)")
+            XCTFail("Should not produce result - \(result)")
+        } catch {
+            resultExpectation.fulfill()
+            guard case AuthError.service(_, _, let underlyingError) = error,
+                  case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should produce lambda error but instead produced \(error)")
+                return
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
@@ -905,26 +866,23 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .lambda error
     ///
-    func testSignInWithUserLambdaValidationException() {
+    func testSignInWithUserLambdaValidationException() async {
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.userLambdaValidationException(.init())
         })
 
         let options = AuthSignInRequest.Options()
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let signinResult):
-                XCTFail("Should not produce result - \(signinResult)")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error,
-                      case .lambda = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should produce lambda error but instead produced \(error)")
-                    return
-                }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            print("Sign In Result: \(result)")
+            XCTFail("Should not produce result - \(result)")
+        } catch {
+            resultExpectation.fulfill()
+            guard case AuthError.service(_, _, let underlyingError) = error,
+                  case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should produce lambda error but instead produced \(error)")
+                return
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
@@ -940,27 +898,24 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .confirmSignUp as next step
     ///
-    func testSignInWithUserNotConfirmedException() {
+    func testSignInWithUserNotConfirmedException() async {
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.userNotConfirmedException(.init())
         })
 
         let options = AuthSignInRequest.Options()
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            print("Sign In Result: \(result)")
+            guard case .confirmSignUp = result.nextStep else {
+                XCTFail("Result should be .confirmSignUp for next step")
+                return
             }
-            switch result {
-            case .success(let signinResult):
-                guard case .confirmSignUp = signinResult.nextStep else {
-                    XCTFail("Result should be .confirmSignUp for next step")
-                    return
-                }
-                XCTAssertFalse(signinResult.isSignedIn, "Signin result should not be complete")
-            case .failure(let error):
-                XCTFail("Should not produce error - \(error)")
-            }
+            XCTAssertFalse(result.isSignedIn, "Signin result should not be complete")
+            resultExpectation.fulfill()
+        } catch {
+            XCTFail("Should not produce error - \(error)")
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -975,26 +930,23 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .userNotFound error
     ///
-    func testSignInWithUserNotFoundException() {
+    func testSignInWithUserNotFoundException() async {
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.userNotFoundException(.init())
         })
 
         let options = AuthSignInRequest.Options()
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let signinResult):
-                XCTFail("Should not produce result - \(signinResult)")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error,
-                      case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should produce userNotFound error but instead produced \(error)")
-                    return
-                }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            print("Sign In Result: \(result)")
+            XCTFail("Should not produce result - \(result)")
+        } catch {
+            resultExpectation.fulfill()
+            guard case AuthError.service(_, _, let underlyingError) = error,
+                  case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should produce userNotFound error but instead produced \(error)")
+                return
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
@@ -1012,7 +964,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .aliasExists error
     ///
-    func testSignInWithAliasExistsException() {
+    func testSignInWithAliasExistsException() async {
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
                 authenticationResult: .none,
@@ -1025,19 +977,16 @@ class AWSAuthSignInPluginTests: BasePluginTest {
 
         let options = AuthSignInRequest.Options()
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let signinResult):
-                XCTFail("Should not produce result - \(signinResult)")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error,
-                      case .aliasExists = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should produce aliasExists error but instead produced \(error)")
-                    return
-                }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            print("Sign In Result: \(result)")
+            XCTFail("Should not produce result - \(result)")
+        } catch {
+            resultExpectation.fulfill()
+            guard case AuthError.service(_, _, let underlyingError) = error,
+                  case .aliasExists = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should produce aliasExists error but instead produced \(error)")
+                return
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
@@ -1053,7 +1002,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .invalidPassword error
     ///
-    func testSignInWithInvalidPasswordException() {
+    func testSignInWithInvalidPasswordException() async {
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
                 authenticationResult: .none,
@@ -1066,19 +1015,16 @@ class AWSAuthSignInPluginTests: BasePluginTest {
 
         let options = AuthSignInRequest.Options()
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let signinResult):
-                XCTFail("Should not produce result - \(signinResult)")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error,
-                      case .invalidPassword = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should produce invalidPassword error but instead produced \(error)")
-                    return
-                }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            print("Sign In Result: \(result)")
+            XCTFail("Should not produce result - \(result)")
+        } catch {
+            resultExpectation.fulfill()
+            guard case AuthError.service(_, _, let underlyingError) = error,
+                  case .invalidPassword = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should produce invalidPassword error but instead produced \(error)")
+                return
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)

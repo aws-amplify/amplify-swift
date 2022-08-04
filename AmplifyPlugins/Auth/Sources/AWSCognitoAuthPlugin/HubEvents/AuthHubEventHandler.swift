@@ -39,7 +39,7 @@ class AuthHubEventHandler: AuthHubEventBehavior {
             switch payload.eventName {
 
             case HubPayload.EventName.Auth.signInAPI:
-                guard let event = payload.data as? AWSAuthSignInOperation.OperationResult,
+                guard let event = payload.data as? AmplifyAuthTask<AuthSignInResult, AuthError>.AuthTaskResult,
                     case let .success(result) = event else {
                         return
                 }
@@ -70,8 +70,7 @@ class AuthHubEventHandler: AuthHubEventBehavior {
 
              */
             case HubPayload.EventName.Auth.deleteUserAPI:
-                guard let event = payload.data as? AWSAuthDeleteUserOperation.OperationResult,
-                    case .success = event else {
+                guard let event = payload.data as? AmplifyAuthTask<Void, AuthError>.AuthTaskResult, case .success = event else {
                         return
                 }
                 self?.sendUserDeletedEvent()

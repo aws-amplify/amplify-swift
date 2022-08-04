@@ -15,7 +15,7 @@ import AWSCognitoIdentityProvider
 
 class AuthenticationProviderDeleteUserTests: BasePluginTest {
 
-    func testDeleteUserSuccess() {
+    func testDeleteUserSuccess() async {
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
                 try RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
@@ -27,17 +27,12 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             }
         )
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.deleteUser { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-
-            switch result {
-            case .success:
-                print("Delete user success")
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
-            }
+        do {
+            try await plugin.deleteUser()
+            print("Delete user success")
+            resultExpectation.fulfill()
+        } catch {
+            XCTFail("Received failure with error \(error)")
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -54,7 +49,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .unknown error
     ///
-    func testDeleteUserInternalErrorException() {
+    func testDeleteUserInternalErrorException() async {
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
                 try RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
@@ -66,19 +61,15 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             }
         )
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.deleteUser { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-
-            switch result {
-            case .success:
-                XCTFail("Should not get success")
-            case .failure(let error):
-                guard case .unknown = error else {
-                    XCTFail("Should produce unknown error instead of \(error)")
-                    return
-                }
+        do {
+            try await plugin.deleteUser()
+            print("Delete user success")
+            XCTFail("Should not get success")
+        } catch {
+            resultExpectation.fulfill()
+            guard case AuthError.unknown = error else {
+                XCTFail("Should produce unknown error instead of \(error)")
+                return
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
@@ -94,7 +85,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .invalidParameter error
     ///
-    func testDeleteUserWithInvalidParameterException() {
+    func testDeleteUserWithInvalidParameterException() async {
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
                 try RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
@@ -106,20 +97,16 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             }
         )
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.deleteUser { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-
-            switch result {
-            case .success:
-                XCTFail("Should not get success")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error,
-                      case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should produce invalidParameter error instead of \(error)")
-                    return
-                }
+        do {
+            try await plugin.deleteUser()
+            print("Delete user success")
+            XCTFail("Should not get success")
+        } catch {
+            resultExpectation.fulfill()
+            guard case AuthError.service(_, _, let underlyingError) = error,
+                  case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should produce invalidParameter error instead of \(error)")
+                return
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
@@ -135,7 +122,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .notAuthorized error
     ///
-    func testDeleteUserWithNotAuthorizedException() {
+    func testDeleteUserWithNotAuthorizedException() async {
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
                 try RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
@@ -147,18 +134,15 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             }
         )
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.deleteUser { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success:
-                XCTFail("Should not get success")
-            case .failure(let error):
-                guard case .notAuthorized = error else {
-                    XCTFail("Should produce notAuthorized error instead of \(error)")
-                    return
-                }
+        do {
+            try await plugin.deleteUser()
+            print("Delete user success")
+            XCTFail("Should not get success")
+        } catch {
+            resultExpectation.fulfill()
+            guard case AuthError.notAuthorized = error else {
+                XCTFail("Should produce notAuthorized error instead of \(error)")
+                return
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
@@ -174,7 +158,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .passwordResetRequired error
     ///
-    func testDeleteUserWithPasswordResetRequiredException() {
+    func testDeleteUserWithPasswordResetRequiredException() async {
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
                 try RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
@@ -186,20 +170,16 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             }
         )
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.deleteUser { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-
-            switch result {
-            case .success:
-                XCTFail("Should not get success")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error,
-                      case .passwordResetRequired = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should produce unknown error instead of \(error)")
-                    return
-                }
+        do {
+            try await plugin.deleteUser()
+            print("Delete user success")
+            XCTFail("Should not get success")
+        } catch {
+            resultExpectation.fulfill()
+            guard case AuthError.service(_, _, let underlyingError) = error,
+                  case .passwordResetRequired = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should produce unknown error instead of \(error)")
+                return
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
@@ -215,7 +195,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .resourceNotFound error
     ///
-    func testDeleteUserWithResourceNotFoundException() {
+    func testDeleteUserWithResourceNotFoundException() async {
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
                 try RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
@@ -227,20 +207,16 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             }
         )
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.deleteUser { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-
-            switch result {
-            case .success:
-                XCTFail("Should not get success")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error,
-                      case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should produce unknown error instead of \(error)")
-                    return
-                }
+        do {
+            try await plugin.deleteUser()
+            print("Delete user success")
+            XCTFail("Should not get success")
+        } catch {
+            resultExpectation.fulfill()
+            guard case AuthError.service(_, _, let underlyingError) = error,
+                  case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should produce unknown error instead of \(error)")
+                return
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
@@ -256,7 +232,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .requestLimitExceeded error
     ///
-    func testDeleteUserWithTooManyRequestsException() {
+    func testDeleteUserWithTooManyRequestsException() async {
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
                 try RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
@@ -268,20 +244,16 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             }
         )
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.deleteUser { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-
-            switch result {
-            case .success:
-                XCTFail("Should not get success")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error,
-                      case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should produce unknown error instead of \(error)")
-                    return
-                }
+        do {
+            try await plugin.deleteUser()
+            print("Delete user success")
+            XCTFail("Should not get success")
+        } catch {
+            resultExpectation.fulfill()
+            guard case AuthError.service(_, _, let underlyingError) = error,
+                  case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should produce unknown error instead of \(error)")
+                return
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
@@ -297,7 +269,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .userNotConfirmed error
     ///
-    func testDeleteUserWithUserNotConfirmedException() {
+    func testDeleteUserWithUserNotConfirmedException() async {
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
                 try RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
@@ -309,20 +281,16 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             }
         )
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.deleteUser { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-
-            switch result {
-            case .success:
-                XCTFail("Should not get success")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error,
-                      case .userNotConfirmed = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should produce userNotConfirmed error instead of \(error)")
-                    return
-                }
+        do {
+            try await plugin.deleteUser()
+            print("Delete user success")
+            XCTFail("Should not get success")
+        } catch {
+            resultExpectation.fulfill()
+            guard case AuthError.service(_, _, let underlyingError) = error,
+                  case .userNotConfirmed = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should produce userNotConfirmed error instead of \(error)")
+                return
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
@@ -338,7 +306,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .userNotFound error
     ///
-    func testDeleteUserWithUserNotFoundException() {
+    func testDeleteUserWithUserNotFoundException() async {
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
                 try RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
@@ -350,19 +318,16 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             }
         )
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.deleteUser { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success:
-                XCTFail("Should not get success")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error,
-                      case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should produce userNotFound error but instead produced \(error)")
-                    return
-                }
+        do {
+            try await plugin.deleteUser()
+            print("Delete user success")
+            XCTFail("Should not get success")
+        } catch {
+            resultExpectation.fulfill()
+            guard case AuthError.service(_, _, let underlyingError) = error,
+                  case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should produce userNotFound error but instead produced \(error)")
+                return
             }
         }
         wait(for: [resultExpectation], timeout: apiTimeout)

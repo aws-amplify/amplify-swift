@@ -187,8 +187,7 @@ public class AWSAuthConfirmSignInOperation: AmplifyConfirmSignInOperation,
     }
 
     private func dispatch(_ result: AuthSignInResult) {
-        let asyncEvent = AWSAuthSignInOperation.OperationResult.success(result)
-        dispatch(result: asyncEvent)
+        dispatch(result: .success(result))
     }
 
     private func dispatch(_ error: AuthError) {

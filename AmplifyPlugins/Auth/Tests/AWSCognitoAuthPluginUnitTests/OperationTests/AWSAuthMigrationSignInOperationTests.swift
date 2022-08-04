@@ -75,7 +75,7 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
         plugin = nil
     }
 
-    func testSignInOperationSuccess() throws {
+    func testSignInOperationSuccess() async throws {
         let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
@@ -91,26 +91,21 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
 
-        _ = plugin.signIn(username: "username",
-                          password: "password", options:
-                            AuthSignInRequest.Options(pluginOptions: pluginOptions)) { result in
-            switch result {
-            case .success(let signUpResult):
-                print("Sign In Result: \(signUpResult)")
-            case .failure(let error):
-                XCTAssertNil(error, "Error should not be returned")
-            }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
+            print("Sign In Result: \(result)")
+            XCTAssertTrue(result.isSignedIn)
             finalCallBackExpectation.fulfill()
+        } catch {
+            XCTAssertNil(error, "Error should not be returned")
         }
-
-
         wait(for: [initiateAuthExpectation,
                    finalCallBackExpectation],
              timeout: networkTimeout,
              enforceOrder: true)
     }
 
-    func testSignInOperationInternalError() throws {
+    func testSignInOperationInternalError() async throws {
         let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
@@ -123,27 +118,24 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
 
-        _ = plugin.signIn(username: "username",
-                          password: "password", options:
-                            AuthSignInRequest.Options(pluginOptions: pluginOptions)) { result in
-            switch result {
-            case .success:
-                XCTFail("Should not produce a success result")
-            case  .failure(let error):
-                guard case .unknown = error else {
-                    XCTFail("Should produce unknown error")
-                    return
-                }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
+            print("Sign In Result: \(result)")
+            XCTFail("Should not produce a success result")
+        } catch {
+            guard case AuthError.unknown = error else {
+                XCTFail("Should produce unknown error")
+                return
             }
-            finalCallBackExpectation.fulfill()
         }
+        finalCallBackExpectation.fulfill()
         wait(for: [initiateAuthExpectation,
                    finalCallBackExpectation],
              timeout: networkTimeout,
              enforceOrder: true)
     }
 
-    func testSignInOperationInvalidLambda() throws {
+    func testSignInOperationInvalidLambda() async throws {
         let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
@@ -156,31 +148,28 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
 
-        _ = plugin.signIn(username: "username",
-                          password: "password", options:
-                            AuthSignInRequest.Options(pluginOptions: pluginOptions)) { result in
-            switch result {
-            case .success:
-                XCTFail("Should not produce a success result")
-            case  .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be lambda \(error)")
-                    return
-                }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
+            print("Sign In Result: \(result)")
+            XCTFail("Should not produce a success result")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-            finalCallBackExpectation.fulfill()
+            guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be lambda \(error)")
+                return
+            }
         }
+        finalCallBackExpectation.fulfill()
         wait(for: [initiateAuthExpectation,
                    finalCallBackExpectation],
              timeout: networkTimeout,
              enforceOrder: true)
     }
 
-    func testSignInOperationParameterException() throws {
+    func testSignInOperationParameterException() async throws {
         let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
@@ -193,31 +182,28 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
 
-        _ = plugin.signIn(username: "username",
-                          password: "password", options:
-                            AuthSignInRequest.Options(pluginOptions: pluginOptions)) { result in
-            switch result {
-            case .success:
-                XCTFail("Should not produce a success result")
-            case  .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be invalid parameter \(error)")
-                    return
-                }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
+            print("Sign In Result: \(result)")
+            XCTFail("Should not produce a success result")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-            finalCallBackExpectation.fulfill()
+            guard case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be invalid parameter \(error)")
+                return
+            }
         }
+        finalCallBackExpectation.fulfill()
         wait(for: [initiateAuthExpectation,
                    finalCallBackExpectation],
              timeout: networkTimeout,
              enforceOrder: true)
     }
 
-    func testSignInOperationSMSRoleAccessException() throws {
+    func testSignInOperationSMSRoleAccessException() async throws {
         let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
@@ -231,31 +217,28 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
 
-        _ = plugin.signIn(username: "username",
-                          password: "password", options:
-                            AuthSignInRequest.Options(pluginOptions: pluginOptions)) { result in
-            switch result {
-            case .success:
-                XCTFail("Should not produce a success result")
-            case  .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be sms role \(error)")
-                    return
-                }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
+            print("Sign In Result: \(result)")
+            XCTFail("Should not produce a success result")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-            finalCallBackExpectation.fulfill()
+            guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be sms role \(error)")
+                return
+            }
         }
+        finalCallBackExpectation.fulfill()
         wait(for: [initiateAuthExpectation,
                    finalCallBackExpectation],
              timeout: networkTimeout,
              enforceOrder: true)
     }
 
-    func testSignInOperationUserPoolConfiguration() throws {
+    func testSignInOperationUserPoolConfiguration() async throws {
         let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
@@ -269,27 +252,25 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
 
-        _ = plugin.signIn(username: "username",
-                          password: "password", options:
-                            AuthSignInRequest.Options(pluginOptions: pluginOptions)) { result in
-            switch result {
-            case .success:
-                XCTFail("Should not produce a success result")
-            case  .failure(let error):
-                guard case .configuration = error else {
-                    XCTFail("Should produce configuration error instead of \(error)")
-                    return
-                }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
+            print("Sign In Result: \(result)")
+            XCTFail("Should not produce a success result")
+        } catch {
+            guard case AuthError.configuration = error else {
+                XCTFail("Should produce configuration error instead of \(error)")
+                return
             }
-            finalCallBackExpectation.fulfill()
         }
+        finalCallBackExpectation.fulfill()
+        
         wait(for: [initiateAuthExpectation,
                    finalCallBackExpectation],
              timeout: networkTimeout,
              enforceOrder: true)
     }
 
-    func testSignInOperationNotAuthorized() throws {
+    func testSignInOperationNotAuthorized() async throws {
         let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
@@ -303,27 +284,25 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
 
-        _ = plugin.signIn(username: "username",
-                          password: "password", options:
-                            AuthSignInRequest.Options(pluginOptions: pluginOptions)) { result in
-            switch result {
-            case .success:
-                XCTFail("Should not produce a success result")
-            case  .failure(let error):
-                guard case .notAuthorized = error else {
-                    XCTFail("Should produce not authorized error instead of \(error)")
-                    return
-                }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
+            print("Sign In Result: \(result)")
+            XCTFail("Should not produce a success result")
+        } catch {
+            guard case AuthError.notAuthorized = error else {
+                XCTFail("Should produce not authorized error instead of \(error)")
+                return
             }
-            finalCallBackExpectation.fulfill()
         }
+        finalCallBackExpectation.fulfill()
+        
         wait(for: [initiateAuthExpectation,
                    finalCallBackExpectation],
              timeout: networkTimeout,
              enforceOrder: true)
     }
 
-    func testSignInOperatioResetPassword() throws {
+    func testSignInOperatioResetPassword() async throws {
         let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
@@ -336,29 +315,26 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
 
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
-
-        _ = plugin.signIn(username: "username",
-                          password: "password", options:
-                            AuthSignInRequest.Options(pluginOptions: pluginOptions)) { result in
-            switch result {
-            case .success(let result):
-                guard case .resetPassword = result.nextStep else {
-                    XCTFail("Should produce reset password")
-                    return
-                }
-
-            case  .failure(let error):
-                XCTFail("Should not produce a error result: \(error)")
+        
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
+            print("Sign In Result: \(result)")
+            guard case AuthSignInStep.resetPassword(_) = result.nextStep else {
+                XCTFail("Incorrect next sign in step")
+                return
             }
-            finalCallBackExpectation.fulfill()
+        } catch {
+            XCTFail("Should not produce a error result: \(error)")
         }
+        finalCallBackExpectation.fulfill()
+        
         wait(for: [initiateAuthExpectation,
                    finalCallBackExpectation],
              timeout: networkTimeout,
              enforceOrder: true)
     }
 
-    func testSignInOperationResourceNotFound() throws {
+    func testSignInOperationResourceNotFound() async throws {
         let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
@@ -372,31 +348,29 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
 
-        _ = plugin.signIn(username: "username",
-                          password: "password", options:
-                            AuthSignInRequest.Options(pluginOptions: pluginOptions)) { result in
-            switch result {
-            case .success:
-                XCTFail("Should not produce a success result")
-            case  .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should produce resource error instead of \(error)")
-                    return
-                }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
+            print("Sign In Result: \(result)")
+            XCTFail("Should not produce a success result")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-            finalCallBackExpectation.fulfill()
+            guard case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should produce resource error instead of \(error)")
+                return
+            }
         }
+        finalCallBackExpectation.fulfill()
+        
         wait(for: [initiateAuthExpectation,
                    finalCallBackExpectation],
              timeout: networkTimeout,
              enforceOrder: true)
     }
 
-    func testSignInOperationTooManyRequest() throws {
+    func testSignInOperationTooManyRequest() async throws {
         let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
@@ -410,31 +384,29 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
 
-        _ = plugin.signIn(username: "username",
-                          password: "password", options:
-                            AuthSignInRequest.Options(pluginOptions: pluginOptions)) { result in
-            switch result {
-            case .success:
-                XCTFail("Should not produce a success result")
-            case  .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should produce limit exceeded error instead of \(error)")
-                    return
-                }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
+            print("Sign In Result: \(result)")
+            XCTFail("Should not produce a success result")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-            finalCallBackExpectation.fulfill()
+            guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should produce limit exceeded error instead of \(error)")
+                return
+            }
         }
+        finalCallBackExpectation.fulfill()
+        
         wait(for: [initiateAuthExpectation,
                    finalCallBackExpectation],
              timeout: networkTimeout,
              enforceOrder: true)
     }
 
-    func testSignInOperationUnexpectedLambda() throws {
+    func testSignInOperationUnexpectedLambda() async throws {
         let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
@@ -448,31 +420,29 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
 
-        _ = plugin.signIn(username: "username",
-                          password: "password", options:
-                            AuthSignInRequest.Options(pluginOptions: pluginOptions)) { result in
-            switch result {
-            case .success:
-                XCTFail("Should not produce a success result")
-            case  .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should produce lambda error instead of \(error)")
-                    return
-                }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
+            print("Sign In Result: \(result)")
+            XCTFail("Should not produce a success result")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-            finalCallBackExpectation.fulfill()
+            guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should produce lambda error instead of \(error)")
+                return
+            }
         }
+        finalCallBackExpectation.fulfill()
+        
         wait(for: [initiateAuthExpectation,
                    finalCallBackExpectation],
              timeout: networkTimeout,
              enforceOrder: true)
     }
 
-    func testSignInOperationUserLambdaValidation() throws {
+    func testSignInOperationUserLambdaValidation() async throws {
         let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
@@ -486,31 +456,29 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
 
-        _ = plugin.signIn(username: "username",
-                          password: "password", options:
-                            AuthSignInRequest.Options(pluginOptions: pluginOptions)) { result in
-            switch result {
-            case .success:
-                XCTFail("Should not produce a success result")
-            case  .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should produce lambda error instead of \(error)")
-                    return
-                }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
+            print("Sign In Result: \(result)")
+            XCTFail("Should not produce a success result")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-            finalCallBackExpectation.fulfill()
+            guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should produce lambda error instead of \(error)")
+                return
+            }
         }
+        finalCallBackExpectation.fulfill()
+        
         wait(for: [initiateAuthExpectation,
                    finalCallBackExpectation],
              timeout: networkTimeout,
              enforceOrder: true)
     }
 
-    func testSignInOperationUserNotConfirmed() throws {
+    func testSignInOperationUserNotConfirmed() async throws {
         let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
@@ -524,27 +492,24 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
 
-        _ = plugin.signIn(username: "username",
-                          password: "password", options:
-                            AuthSignInRequest.Options(pluginOptions: pluginOptions)) { result in
-            switch result {
-            case .success(let result):
-                guard case .confirmSignUp = result.nextStep else {
-                    XCTFail("Should produce confirm signup as next step")
-                    return
-                }
-            case  .failure(let error):
-                XCTFail("Should not produce an error result - \(error)")
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
+            print("Sign In Result: \(result)")
+            guard case AuthSignInStep.confirmSignUp(_) = result.nextStep else {
+                XCTFail("Incorrect next sign in step")
+                return
             }
-            finalCallBackExpectation.fulfill()
+        } catch {
+            XCTFail("Should not produce a error result: \(error)")
         }
+        finalCallBackExpectation.fulfill()
         wait(for: [initiateAuthExpectation,
                    finalCallBackExpectation],
              timeout: networkTimeout,
              enforceOrder: true)
     }
 
-    func testSignInOperationUserNotFound() throws {
+    func testSignInOperationUserNotFound() async throws {
         let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
@@ -558,24 +523,21 @@ class AWSAuthMigrationSignInOperationTests: XCTestCase {
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
 
-        _ = plugin.signIn(username: "username",
-                          password: "password", options:
-                            AuthSignInRequest.Options(pluginOptions: pluginOptions)) { result in
-            switch result {
-            case .success:
-                XCTFail("Should not produce a success result")
-            case  .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should produce userNotFound error instead of \(error)")
-                    return
-                }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
+            print("Sign In Result: \(result)")
+            XCTFail("Should not produce a success result")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-            finalCallBackExpectation.fulfill()
+            guard case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should produce userNotFound error instead of \(error)")
+                return
+            }
         }
+        finalCallBackExpectation.fulfill()
         wait(for: [initiateAuthExpectation,
                    finalCallBackExpectation],
              timeout: networkTimeout,

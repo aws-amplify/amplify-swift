@@ -25,7 +25,7 @@ class AuthHubEventHandlerTests: XCTestCase {
     /// - Then:
     ///    - I should receive a signedIn hub event
     ///
-    func testSignedInHubEvent() {
+    func testSignedInHubEvent() async {
 
         configurePluginForSignInEvent()
         
@@ -43,10 +43,11 @@ class AuthHubEventHandlerTests: XCTestCase {
             }
         }
         
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            if case .failure(let error) = result {
-                XCTFail("Received failure with error \(error)")
-            }
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            print("Sign In Result: \(result)")
+        } catch {
+            XCTFail("Received failure with error \(error)")
         }
         
         wait(for: [hubEventExpectation], timeout: networkTimeout)
@@ -122,7 +123,7 @@ class AuthHubEventHandlerTests: XCTestCase {
     /// - Then:
     ///    - I should receive a user deleted hub event
     ///
-    func testUserDeletedHubEvent() {
+    func testUserDeletedHubEvent() async {
 
         configurePluginForDeleteUserEvent()
         
@@ -136,12 +137,11 @@ class AuthHubEventHandlerTests: XCTestCase {
             }
         }
         
-        _ = plugin.deleteUser { result in
-            if case .failure(let error) = result {
-                XCTFail("Received failure with error \(error)")
-            }
+        do {
+            try await plugin.deleteUser()
+        } catch {
+            XCTFail("Received failure with error \(error)")
         }
-        
         wait(for: [hubEventExpectation], timeout: networkTimeout)
     }
     

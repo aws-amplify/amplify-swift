@@ -178,19 +178,6 @@ public extension AmplifyOperation
     }
 }
 
-// MARK: - AuthSignInOperation
-
-public extension AmplifyOperation
-    where
-    Request == AuthSignInOperation.Request,
-    Success == AuthSignInOperation.Success,
-    Failure == AuthSignInOperation.Failure {
-    /// Publishes the result of the operation
-    var resultPublisher: AnyPublisher<Success, Failure> {
-        internalResultPublisher
-    }
-}
-
 // MARK: - AuthSignOutOperation
 
 public extension AmplifyOperation
@@ -198,19 +185,6 @@ public extension AmplifyOperation
     Request == AuthSignOutOperation.Request,
     Success == AuthSignOutOperation.Success,
     Failure == AuthSignOutOperation.Failure {
-    /// Publishes the result of the operation
-    var resultPublisher: AnyPublisher<Success, Failure> {
-        internalResultPublisher
-    }
-}
-
-// MARK: - AuthDeleteUserOperation
-
-public extension AmplifyOperation
-    where
-    Request == AuthDeleteUserOperation.Request,
-    Success == AuthDeleteUserOperation.Success,
-    Failure == AuthDeleteUserOperation.Failure {
     /// Publishes the result of the operation
     var resultPublisher: AnyPublisher<Success, Failure> {
         internalResultPublisher

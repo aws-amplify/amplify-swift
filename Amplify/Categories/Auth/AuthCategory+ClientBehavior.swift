@@ -41,15 +41,10 @@ extension AuthCategory: AuthCategoryBehavior {
                                            listener: listener)
     }
 
-    @discardableResult
     public func signIn(username: String? = nil,
                        password: String? = nil,
-                       options: AuthSignInOperation.Request.Options? = nil,
-                       listener: AuthSignInOperation.ResultListener?) -> AuthSignInOperation {
-        return plugin.signIn(username: username,
-                             password: password,
-                             options: options,
-                             listener: listener)
+                       options: AuthSignInRequest.Options? = nil) async throws -> AuthSignInResult {
+        return try await plugin.signIn(username: username, password: password,options: options)
     }
 
 #if canImport(AuthenticationServices)
@@ -92,9 +87,8 @@ extension AuthCategory: AuthCategoryBehavior {
         plugin.signOut(options: options, listener: listener)
     }
 
-    @discardableResult
-    public func deleteUser(listener: AuthDeleteUserOperation.ResultListener?) -> AuthDeleteUserOperation {
-        plugin.deleteUser(listener: listener)
+    public func deleteUser() async throws {
+        try await plugin.deleteUser()
     }
 
     @discardableResult

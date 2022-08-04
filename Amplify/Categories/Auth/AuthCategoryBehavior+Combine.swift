@@ -67,22 +67,6 @@ public extension AuthCategoryBehavior {
         resendSignUpCode(for: username, options: options, listener: nil)
     }
 
-    /// SignIn to the authentication provider
-    ///
-    /// Username and password are optional values, check the plugin documentation to decide on what all values need to
-    /// passed. For example in a passwordless flow you just need to pass the username and the passwordcould be nil.
-    ///
-    /// - Parameters:
-    ///   - username: Username to signIn the user
-    ///   - password: Password to signIn the user
-    ///   - options: Parameters specific to plugin behavior
-    func signIn(
-        username: String? = nil,
-        password: String? = nil,
-        options: AuthSignInOperation.Request.Options? = nil
-    ) -> AuthSignInOperation {
-        signIn(username: username, password: password, options: options, listener: nil)
-    }
 
 #if canImport(AuthenticationServices)
     /// SignIn using pre configured web UI.
@@ -139,14 +123,6 @@ public extension AuthCategoryBehavior {
         options: AuthSignOutOperation.Request.Options? = nil
     ) -> AuthSignOutOperation {
         signOut(options: options, listener: nil)
-    }
-
-    /// Delete the account of the currently logged-in user.
-    ///
-    /// - Returns: AuthDeleteUserOperation
-    @discardableResult
-    func deleteUser() -> AuthDeleteUserOperation {
-        deleteUser(listener: nil)
     }
 
     /// Fetch the current authentication session.

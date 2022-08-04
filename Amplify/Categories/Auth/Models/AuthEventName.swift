@@ -20,4 +20,10 @@ public extension HubPayload.EventName.Auth {
 
     /// eventName emitted when the current session has expired
     static let sessionExpired = "Auth.sessionExpired"
+    
+    /// eventName for HubPayloads emitted by this operation
+    static let deleteUserAPI = "Auth.deleteUserAPI"
+    
+    /// eventName for HubPayloads emitted by this operation
+    static let signInAPI = "Auth.signInAPI"
 }

@@ -69,10 +69,10 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     /// Given: `user1` user uploads some data with protected access level
     /// When: The user retrieves and removes the data
     /// Then: The operations complete successful
-    func testUploadToProtectedAndListThenGetThenRemove() {
+    func testUploadToProtectedAndListThenGetThenRemove() async {
         let key = UUID().uuidString
         let accessLevel: StorageAccessLevel = .protected
-        putThenListThenGetThenRemoveForSingleUser(username: AWSS3StoragePluginTestBase.user1,
+        await putThenListThenGetThenRemoveForSingleUser(username: AWSS3StoragePluginTestBase.user1,
                                                   key: key,
                                                   accessLevel: accessLevel)
     }
@@ -80,10 +80,10 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     /// Given: `user1` user uploads some data with private access level
     /// When: The user retrieves and removes the data
     /// Then: The operations complete successful
-    func testUploadToPrivateAndListThenGetThenRemove() {
+    func testUploadToPrivateAndListThenGetThenRemove() async {
         let key = UUID().uuidString
         let accessLevel: StorageAccessLevel = .private
-        putThenListThenGetThenRemoveForSingleUser(username: AWSS3StoragePluginTestBase.user1,
+        await putThenListThenGetThenRemoveForSingleUser(username: AWSS3StoragePluginTestBase.user1,
                                                   key: key,
                                                   accessLevel: accessLevel)
     }
@@ -91,12 +91,12 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     /// Given: `user1` user uploads some data with public access level
     /// When: `user2` lists, gets, and removes the data for `user1`
     /// Then: The list, get, and remove operations complete successful and data is retrieved then removed.
-    func testUploadToPublicAndListThenGetThenRemoveFromOtherUser() {
+    func testUploadToPublicAndListThenGetThenRemoveFromOtherUser() async {
         let key = UUID().uuidString
         let accessLevel: StorageAccessLevel = .guest
 
         // Sign into user1
-        signIn(username: AWSS3StoragePluginTestBase.user1, password: AWSS3StoragePluginTestBase.password)
+        await signIn(username: AWSS3StoragePluginTestBase.user1, password: AWSS3StoragePluginTestBase.password)
 
         let user1IdentityId = getIdentityId()
 
@@ -105,7 +105,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
         // Sign out of user1 and into user2
         signOut()
-        signIn(username: AWSS3StoragePluginTestBase.user2, password: AWSS3StoragePluginTestBase.password)
+        await signIn(username: AWSS3StoragePluginTestBase.user2, password: AWSS3StoragePluginTestBase.password)
         let user2IdentityId = getIdentityId()
         XCTAssertNotEqual(user1IdentityId, user2IdentityId)
 
@@ -137,18 +137,18 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 getFailedExpectation.fulfill()
             }
         }
-        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// GivenK: `user1` user uploads some data with protected access level
     /// When: `user2` lists, gets, and removes the data for `user1`
     /// Then: The list and get operations complete successful and data is retrieved.
-    func testUploadToProtectedAndListThenGetFromOtherUser() {
+    func testUploadToProtectedAndListThenGetFromOtherUser() async {
         let key = UUID().uuidString
         let accessLevel: StorageAccessLevel = .protected
 
         // Sign into user1
-        signIn(username: AWSS3StoragePluginTestBase.user1, password: AWSS3StoragePluginTestBase.password)
+        await signIn(username: AWSS3StoragePluginTestBase.user1, password: AWSS3StoragePluginTestBase.password)
         let user1IdentityId = getIdentityId()
 
         // Upload
@@ -156,7 +156,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
         // Sign out of user1 and into user2
         signOut()
-        signIn(username: AWSS3StoragePluginTestBase.user2, password: AWSS3StoragePluginTestBase.password)
+        await signIn(username: AWSS3StoragePluginTestBase.user2, password: AWSS3StoragePluginTestBase.password)
         let user2IdentityId = getIdentityId()
         XCTAssertNotEqual(user1IdentityId, user2IdentityId)
 
@@ -173,12 +173,12 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     /// Given: `user1` user uploads some data with private access level
     /// When: `user2` lists and gets the data for `user1`
     /// Then: The list and get operations fail with validation errors
-    func testUploadToPrivateAndFailListThenFailGetFromOtherUser() {
+    func testUploadToPrivateAndFailListThenFailGetFromOtherUser() async {
         let key = UUID().uuidString
         let accessLevel: StorageAccessLevel = .private
 
         // Sign into user1
-        signIn(username: AWSS3StoragePluginTestBase.user1, password: AWSS3StoragePluginTestBase.password)
+        await signIn(username: AWSS3StoragePluginTestBase.user1, password: AWSS3StoragePluginTestBase.password)
         let user1IdentityId = getIdentityId()
 
         // Upload
@@ -186,7 +186,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
         // Sign out of user1 and into user2
         signOut()
-        signIn(username: AWSS3StoragePluginTestBase.user2, password: AWSS3StoragePluginTestBase.password)
+        await signIn(username: AWSS3StoragePluginTestBase.user2, password: AWSS3StoragePluginTestBase.password)
         let user2IdentityId = getIdentityId()
         XCTAssertNotEqual(user1IdentityId, user2IdentityId)
 
@@ -207,7 +207,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 listFailedExpectation.fulfill()
             }
         }
-        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
 
         // get key for user1 as user2 - should fail with validation error
         let getFailedExpectation = expectation(description: "Get Operation should fail")
@@ -225,13 +225,13 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 getFailedExpectation.fulfill()
             }
         }
-        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     // MARK: - Common test functions
 
-    func putThenListThenGetThenRemoveForSingleUser(username: String, key: String, accessLevel: StorageAccessLevel) {
-        signIn(username: username, password: AWSS3StoragePluginTestBase.password)
+    func putThenListThenGetThenRemoveForSingleUser(username: String, key: String, accessLevel: StorageAccessLevel) async {
+        await signIn(username: username, password: AWSS3StoragePluginTestBase.password)
 
         // Upload
         upload(key: key, data: key, accessLevel: accessLevel)
@@ -264,7 +264,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 getFailedExpectation.fulfill()
             }
         }
-        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     // MARK: StoragePlugin Helper functions
@@ -337,15 +337,14 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
     // Auth Helpers
 
-    func signIn(username: String, password: String) {
+    func signIn(username: String, password: String) async {
         let signInInvoked = expectation(description: "sign in completed")
-        _ = Amplify.Auth.signIn(username: username, password: password) { event in
-            switch event {
-            case .success:
-                signInInvoked.fulfill()
-            case .failure(let error):
-                XCTFail("Failed to Sign in user \(error)")
-            }
+        
+        do {
+            _ = try await Amplify.Auth.signIn(username: username, password: password)
+            signInInvoked.fulfill()
+        } catch {
+            XCTFail("Failed to Sign in user \(error)")
         }
         wait(for: [signInInvoked], timeout: TestCommonConstants.networkTimeout)
     }

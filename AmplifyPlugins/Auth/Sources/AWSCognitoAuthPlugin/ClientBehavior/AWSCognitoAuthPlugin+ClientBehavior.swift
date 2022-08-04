@@ -50,18 +50,11 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
 
     public func signIn(username: String?,
                        password: String?,
-                       options: AuthSignInOperation.Request.Options?,
-                       listener: AuthSignInOperation.ResultListener?) -> AuthSignInOperation {
+                       options: AuthSignInRequest.Options?) async throws -> AuthSignInResult {
         let options = options ?? AuthSignInRequest.Options()
-        let request = AuthSignInRequest(username: username,
-                                        password: password,
-                                        options: options)
-        let signInOperation = AWSAuthSignInOperation(
-            request,
-            authStateMachine: authStateMachine,
-            resultListener: listener)
-        queue.addOperation(signInOperation)
-        return signInOperation
+        let request = AuthSignInRequest(username: username, password: password, options: options)
+        let task = AWSAuthSignInTask(request, authStateMachine: authStateMachine)
+        return try await task.execute()
     }
 
 #if canImport(AuthenticationServices)
@@ -169,14 +162,9 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         return confirmResetPasswordOperation
     }
 
-    public func deleteUser(listener: AuthDeleteUserOperation.ResultListener?) -> AuthDeleteUserOperation {
-        let request = AuthDeleteUserRequest()
-        let deleteUserOperation = AWSAuthDeleteUserOperation(
-            request,
-            authStateMachine: authStateMachine,
-            resultListener: listener)
-        queue.addOperation(deleteUserOperation)
-        return deleteUserOperation
+    public func deleteUser() async throws {
+        let task = AWSAuthDeleteUserTask(authStateMachine: self.authStateMachine)
+        try await task.execute()
     }
 
 }
