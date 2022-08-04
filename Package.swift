@@ -304,19 +304,6 @@ let analyticsTargets: [Target] = [
         ],
         path: "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPluginTests",
         exclude: ["Resources/Info.plist"]
-    ),
-    .testTarget(
-        name: "AWSPinpointAnalyticsPluginIntegrationTests",
-        dependencies: [
-            "AWSPinpointAnalyticsPlugin",
-            "AWSCognitoAuthPlugin",
-            "AmplifyTestCommon"
-        ],
-        path: "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPluginIntegrationTests",
-        exclude: [
-            "README.md",
-            "Info.plist"
-        ]
     )
 ]
 
