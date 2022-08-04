@@ -24,7 +24,7 @@ struct ConfigurationHelper {
         }
         
         let endpoint: String? = {
-            if case .string(let endpoint) = config.value(at: "endpoint") {
+            if case .string(let endpoint) = cognitoUserPoolJSON.value(at: "Endpoint") {
                 return endpoint
             }
             return nil
