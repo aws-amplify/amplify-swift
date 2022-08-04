@@ -16,6 +16,7 @@ extension EndpointResolving {
 
 // MARK: Custom Endpoint validation steps.
 extension EndpointResolving.ValidationStep {
+    /// Validate that the input string doesn't contain a scheme.
     static func schemeIsEmpty() -> Self where Input == String, Output == Void {
         .init { endpoint in
             let scheme = URLComponents(string: endpoint)?.scheme
@@ -25,6 +26,7 @@ extension EndpointResolving.ValidationStep {
         }
     }
     
+    /// Validate that the input string forms a valid URL when prepending `https://` as the scheme.
     static func validURL() -> Self where Input == String, Output == (URLComponents, String) {
         .init { endpoint in
             guard
@@ -38,6 +40,7 @@ extension EndpointResolving.ValidationStep {
         }
     }
     
+    /// Validate that the input `URLComponents` don't contain a path.
     static func pathIsEmpty() -> Self where Input == (URLComponents, String), Output == Void {
         .init { (components, endpoint) in
             guard components.path.isEmpty else {
