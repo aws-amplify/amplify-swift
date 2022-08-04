@@ -32,6 +32,8 @@ struct CredentialStoreEvent: StateMachineEvent {
 
         case completedOperation(CredentialStoreData)
 
+        case credentialCleared(CredentialStoreDataType)
+
         case throwError(KeychainStoreError)
 
         case moveToIdleState
@@ -47,6 +49,7 @@ struct CredentialStoreEvent: StateMachineEvent {
         case .migrateLegacyCredentialStore: return  "CredentialStoreEvent.migrateLegacyCredentialStore"
         case .loadCredentialStore: return  "CredentialStoreEvent.loadCredentialStore"
         case .storeCredentials: return  "CredentialStoreEvent.saveCredentials"
+        case .credentialCleared: return  "CredentialStoreEvent.credentialCleared"
         case .clearCredentialStore: return  "CredentialStoreEvent.clearCredentialStore"
         case .completedOperation: return  "CredentialStoreEvent.completedOperation"
         case .throwError: return  "CredentialStoreEvent.throwError"
