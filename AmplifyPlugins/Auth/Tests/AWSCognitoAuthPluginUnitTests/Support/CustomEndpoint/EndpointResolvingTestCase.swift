@@ -1,8 +1,8 @@
 //
-//  EndpointResolvingTestCase.swift
-//  
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
 //
-//  Created by Saultz, Ian on 8/5/22.
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import XCTest
