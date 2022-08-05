@@ -117,7 +117,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         XCTAssertEqual(queriedModel[0].dob, model.dob)
 
         let completed = expectation(description: "operation completed")
-        let identifier = ModelCompositePk.Identifier.identifier(id: modelId, dob: modelDob)
+        let identifier = ModelCompositePk.IdentifierProtocol.identifier(id: modelId, dob: modelDob)
         let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
                                                syncEngine: nil,
                                                modelType: ModelCompositePk.self,
@@ -421,7 +421,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
 
         let completed = expectation(description: "operation completed")
-        let identifier = ModelCompositePk.Identifier.identifier(id: modelId, dob: modelDob)
+        let identifier = ModelCompositePk.IdentifierProtocol.identifier(id: modelId, dob: modelDob)
         let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
                                                syncEngine: syncEngine,
                                                modelType: ModelCompositePk.self,
@@ -721,7 +721,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
 
         let completed = expectation(description: "operation completed")
-        let identifier = PostWithCompositeKey.Identifier.identifier(id: post.id, title: post.title)
+        let identifier = PostWithCompositeKey.IdentifierProtocol.identifier(id: post.id, title: post.title)
         let operation = CascadeDeleteOperation(storageAdapter: storageAdapter,
                                                syncEngine: syncEngine,
                                                modelType: PostWithCompositeKey.self,

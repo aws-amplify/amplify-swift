@@ -28,7 +28,7 @@ public enum ModelIdentifierFormat {
 /// that can be either a single field or a combination of fields
 public protocol ModelIdentifiable {
     associatedtype IdentifierFormat: AnyModelIdentifierFormat
-    associatedtype Identifier: ModelIdentifierProtocol
+    associatedtype IdentifierProtocol: ModelIdentifierProtocol
 }
 
 /// Defines a `ModelIdentifier` requirements.
@@ -51,15 +51,6 @@ public protocol ModelIdentifierProtocol {
     var values: [Persistable] { get }
 
     var predicate: QueryPredicate { get }
-}
-
-extension Model.Identifier: ModelIdentifierProtocol {
-   public var fields: Fields {
-       [(name: ModelIdentifierFormat.Default.name, value: self)]
-   }
-   public var stringValue: String {
-       self
-   }
 }
 
 public extension ModelIdentifierProtocol {

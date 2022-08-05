@@ -609,7 +609,7 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the generated SQL statement is valid
     ///   - check if the variables match the expected values
     func testDeleteStatementFromModelWithCustomPK() {
-        let identifier = ModelExplicitCustomPk.Identifier.identifier(userId: "userId")
+        let identifier = ModelExplicitCustomPk.IdentifierProtocol.identifier(userId: "userId")
         let statement = DeleteStatement(modelSchema: ModelExplicitCustomPk.schema,
                                         withIdentifier: identifier)
 
@@ -631,8 +631,8 @@ class SQLStatementTests: XCTestCase {
     ///   - check if the generated SQL statement is valid
     ///   - check if the variables match the expected values
     func testDeleteStatementFromModelWithCompositePK() {
-        let identifier = ModelCompositePk.Identifier.identifier(id: "id",
-                                                        dob: Temporal.DateTime.now())
+        let identifier = ModelCompositePk.IdentifierProtocol.identifier(id: "id",
+                                                                        dob: Temporal.DateTime.now())
         let statement = DeleteStatement(modelSchema: ModelCompositePk.schema,
                                         withIdentifier: identifier)
 
