@@ -323,14 +323,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                 receiveValue: { [weak self] in self?.onReceive(receiveValue: $0) }
             )
 
-        // TODO: This should be an AsynchronousOperation, not a semaphore-waited block
-        let semaphore = DispatchSemaphore(value: 0)
-
         initialSyncOrchestrator.sync { [weak self] result in
-            defer {
-                semaphore.signal()
-            }
-
             guard let self = self else {
                 return
             }
@@ -349,10 +342,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                 self.remoteSyncTopicPublisher.send(.performedInitialSync)
                 self.stateMachine.notify(action: .performedInitialSync)
             }
+            self.initialSyncOrchestrator = nil
         }
-
-        semaphore.wait()
-        self.initialSyncOrchestrator = nil
     }
 
     private func activateCloudSubscriptions() {
