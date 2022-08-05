@@ -104,7 +104,7 @@ class SyncEngineIntegrationV2TestBase: DataStoreTestBase {
             Amplify.Hub.removeListener(token)
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: token, timeout: 5.0) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: token, timeout: 5.0) else {
             XCTFail("Hub Listener not registered")
             return
         }
