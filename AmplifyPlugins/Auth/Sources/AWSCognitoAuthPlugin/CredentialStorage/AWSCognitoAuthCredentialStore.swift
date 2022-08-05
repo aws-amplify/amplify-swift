@@ -15,6 +15,7 @@ struct AWSCognitoAuthCredentialStore {
     private let service = "com.amplify.credentialStore"
     private let sessionKey = "session"
     private let deviceMetadataKey = "deviceMetadata"
+    private let deviceASFKey = "deviceASF"
     private let authConfigurationKey = "authConfiguration"
 
     // User defaults constants
@@ -98,6 +99,12 @@ struct AWSCognitoAuthCredentialStore {
             return "\(storeKey(for: authConfiguration)).\(username).\(deviceMetadataKey)"
     }
 
+    private func generateASFDeviceKey(
+        for username: String,
+        with configuration: AuthConfiguration) -> String {
+            return "\(storeKey(for: authConfiguration)).\(username).\(deviceASFKey)"
+    }
+
     private func saveAuthConfiguration(authConfig: AuthConfiguration) {
         if let encodedAuthConfigData = try? encode(object: authConfig) {
             try? keychain._set(encodedAuthConfigData, key: authConfigurationKey)
@@ -115,16 +122,13 @@ struct AWSCognitoAuthCredentialStore {
 
 extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
 
-    func saveCredential(_ credential: Codable) throws {
-        guard let amplifyCredentials = credential as? AmplifyCredentials else {
-            throw KeychainStoreError.codingError("Error occurred while saving credentials", nil)
-        }
+    func saveCredential(_ credential: AmplifyCredentials) throws {
         let authCredentialStoreKey = generateSessionKey(for: authConfiguration)
-        let encodedCredentials = try encode(object: amplifyCredentials)
+        let encodedCredentials = try encode(object: credential)
         try keychain._set(encodedCredentials, key: authCredentialStoreKey)
     }
 
-    func retrieveCredential() throws -> Codable {
+    func retrieveCredential() throws -> AmplifyCredentials {
         let authCredentialStoreKey = generateSessionKey(for: authConfiguration)
         let authCredentialData = try keychain._getData(authCredentialStoreKey)
         let awsCredential: AmplifyCredentials = try decode(data: authCredentialData)
@@ -136,16 +140,13 @@ extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
         try keychain._remove(authCredentialStoreKey)
     }
 
-    func saveDevice(_ deviceMetadata: Codable, for username: String) throws {
-        guard let deviceMetadata = deviceMetadata as? DeviceMetadata else {
-            throw KeychainStoreError.codingError("Error occurred while device metadata", nil)
-        }
+    func saveDevice(_ deviceMetadata: DeviceMetadata, for username: String) throws {
         let key = generateDeviceMetadataKey(for: username, with: authConfiguration)
         let encodedMetadata = try encode(object: deviceMetadata)
         try keychain._set(encodedMetadata, key: key)
     }
 
-    func retrieveDevice(for username: String) throws -> Codable {
+    func retrieveDevice(for username: String) throws -> DeviceMetadata {
         let key = generateDeviceMetadataKey(for: username, with: authConfiguration)
         let encodedDeviceMetadata = try keychain._getData(key)
         let deviceMetadata: DeviceMetadata = try decode(data: encodedDeviceMetadata)
@@ -154,6 +155,24 @@ extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
 
     func removeDevice(for username: String) throws {
         let key = generateDeviceMetadataKey(for: username, with: authConfiguration)
+        try keychain._remove(key)
+    }
+
+    func saveASFDevice(_ deviceId: String, for username: String) throws {
+        let key = generateASFDeviceKey(for: username, with: authConfiguration)
+        let encodedMetadata = try encode(object: deviceId)
+        try keychain._set(encodedMetadata, key: key)
+    }
+    
+    func retrieveASFDevice(for username: String) throws -> String {
+        let key = generateASFDeviceKey(for: username, with: authConfiguration)
+        let encodedData = try keychain._getData(key)
+        let asfID: String = try decode(data: encodedData)
+        return asfID
+    }
+
+    func removeASFDevice(for username: String) throws {
+        let key = generateASFDeviceKey(for: username, with: authConfiguration)
         try keychain._remove(key)
     }
 

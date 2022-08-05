@@ -427,6 +427,36 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSDataStoreCategoryPluginIntegrationTests"
+               BuildableName = "AWSDataStoreCategoryPluginIntegrationTests"
+               BlueprintName = "AWSDataStoreCategoryPluginIntegrationTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSPinpointAnalyticsPluginIntegrationTests"
+               BuildableName = "AWSPinpointAnalyticsPluginIntegrationTests"
+               BlueprintName = "AWSPinpointAnalyticsPluginIntegrationTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSS3StoragePluginFunctionalTests"
+               BuildableName = "AWSS3StoragePluginFunctionalTests"
+               BlueprintName = "AWSS3StoragePluginFunctionalTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

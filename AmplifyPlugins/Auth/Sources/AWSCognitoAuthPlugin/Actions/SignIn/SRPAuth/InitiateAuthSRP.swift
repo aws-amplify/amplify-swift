@@ -34,102 +34,68 @@ struct InitiateAuthSRP: Action {
     func execute(withDispatcher dispatcher: EventDispatcher,
                  environment: Environment) {
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        do {
-            let srpEnv = try environment.srpEnvironment()
-            let userPoolEnv = try environment.userPoolEnvironment()
-            let nHexValue = srpEnv.srpConfiguration.nHexValue
-            let gHexValue = srpEnv.srpConfiguration.gHexValue
+        Task {
+            do {
+                let srpEnv = try environment.srpEnvironment()
+                let userPoolEnv = try environment.userPoolEnvironment()
+                let nHexValue = srpEnv.srpConfiguration.nHexValue
+                let gHexValue = srpEnv.srpConfiguration.gHexValue
 
-            let srpClient = try SRPSignInHelper.srpClient(srpEnv)
-            let srpKeyPair = srpClient.generateClientKeyPair()
+                let srpClient = try SRPSignInHelper.srpClient(srpEnv)
+                let srpKeyPair = srpClient.generateClientKeyPair()
 
-            let srpStateData = SRPStateData(
-                username: username,
-                password: password,
-                NHexValue: nHexValue,
-                gHexValue: gHexValue,
-                srpKeyPair: srpKeyPair,
-                deviceMetadata: deviceMetadata,
-                clientTimestamp: Date())
-            let request = request(environment: userPoolEnv,
-                                  publicHexValue: srpKeyPair.publicKeyHexValue)
+                let srpStateData = SRPStateData(
+                    username: username,
+                    password: password,
+                    NHexValue: nHexValue,
+                    gHexValue: gHexValue,
+                    srpKeyPair: srpKeyPair,
+                    deviceMetadata: deviceMetadata,
+                    clientTimestamp: Date())
 
-            try sendRequest(request: request,
-                            environment: userPoolEnv,
-                            srpStateData: srpStateData) { responseEvent in
+                let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
+                    for: username,
+                    environment: environment as! AuthEnvironment)
+                let request = InitiateAuthInput.srpInput(
+                    username: username,
+                    publicSRPAHexValue: srpKeyPair.publicKeyHexValue,
+                    authFlowType: authFlowType,
+                    clientMetadata: clientMetadata,
+                    asfDeviceId: asfDeviceId,
+                    deviceMetadata: deviceMetadata,
+                    environment: userPoolEnv)
+
+                let responseEvent = try await sendRequest(request: request,
+                                                          environment: userPoolEnv,
+                                                          srpStateData: srpStateData)
                 logVerbose("\(#fileID) Sending event \(responseEvent)", environment: srpEnv)
                 dispatcher.send(responseEvent)
 
+            } catch let error as SignInError {
+                logVerbose("\(#fileID) Raised error \(error)", environment: environment)
+                let event = SignInEvent(eventType: .throwAuthError(error))
+                dispatcher.send(event)
+            } catch {
+                logVerbose("\(#fileID) Caught error \(error)", environment: environment)
+                let authError = SignInError.service(error: error)
+                let event = SignInEvent(
+                    eventType: .throwAuthError(authError)
+                )
+                dispatcher.send(event)
             }
-
-        } catch let error as SignInError {
-            logVerbose("\(#fileID) Raised error \(error)", environment: environment)
-            let event = SignInEvent(eventType: .throwAuthError(error))
-            dispatcher.send(event)
-        } catch {
-            logVerbose("\(#fileID) Caught error \(error)", environment: environment)
-            let authError = SignInError.service(error: error)
-            let event = SignInEvent(
-                eventType: .throwAuthError(authError)
-            )
-            dispatcher.send(event)
-        }
-    }
-
-    private func request(environment: UserPoolEnvironment,
-                         publicHexValue: String) -> InitiateAuthInput {
-        let userPoolClientId = environment.userPoolConfiguration.clientId
-        var authParameters = [
-            "USERNAME": username,
-            "SRP_A": publicHexValue
-        ]
-
-        if authFlowType == .customWithSRP {
-            authParameters["CHALLENGE_NAME"] = "SRP_A"
         }
 
-        if let clientSecret = environment.userPoolConfiguration.clientSecret {
-            let clientSecretHash = SRPSignInHelper.clientSecretHash(
-                username: username,
-                userPoolClientId: userPoolClientId,
-                clientSecret: clientSecret
-            )
-            authParameters["SECRET_HASH"] = clientSecretHash
-        }
-
-        if case .metadata(let data) = deviceMetadata {
-            authParameters["DEVICE_KEY"] = data.deviceKey
-        }
-
-        return InitiateAuthInput(
-            analyticsMetadata: nil,
-            authFlow: authFlowType.getClientFlowType(),
-            authParameters: authParameters,
-            clientId: userPoolClientId,
-            clientMetadata: clientMetadata,
-            userContextData: nil)
     }
 
     private func sendRequest(request: InitiateAuthInput,
                              environment: UserPoolEnvironment,
-                             srpStateData: SRPStateData,
-                             callback: @escaping (SignInEvent) -> Void) throws {
+                             srpStateData: SRPStateData) async throws -> SignInEvent {
 
         let cognitoClient = try environment.cognitoUserPoolFactory()
         logVerbose("\(#fileID) Starting execution", environment: environment)
-
-        Task {
-            let event: SignInEvent!
-            do {
-                let response = try await cognitoClient.initiateAuth(input: request)
-                logVerbose("\(#fileID) InitiateAuth response success", environment: environment)
-                event = SignInEvent(eventType: .respondPasswordVerifier(srpStateData, response))
-            } catch {
-                let authError = SignInError.service(error: error)
-                event = SignInEvent(eventType: .throwAuthError(authError))
-            }
-            callback(event)
-        }
+        let response = try await cognitoClient.initiateAuth(input: request)
+        logVerbose("\(#fileID) InitiateAuth response success", environment: environment)
+        return SignInEvent(eventType: .respondPasswordVerifier(srpStateData, response))
     }
 }
 

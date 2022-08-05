@@ -50,13 +50,7 @@ class CredentialStoreOperationClient: CredentialStoreStateBehaviour {
                 
                 switch state {
                 case .success(let credentialStoreData):
-                    
-                    switch credentialStoreData {
-                    case .amplifyCredentials(let credentials):
-                        continuation.resume(returning: .amplifyCredentials(credentials))
-                    case .deviceMetadata(let deviceMetadata, let username):
-                        continuation.resume(returning: .deviceMetadata(deviceMetadata, username))
-                    }
+                    continuation.resume(returning: credentialStoreData)
                 case .error(let error):
                     continuation.resume(throwing: error)
                     

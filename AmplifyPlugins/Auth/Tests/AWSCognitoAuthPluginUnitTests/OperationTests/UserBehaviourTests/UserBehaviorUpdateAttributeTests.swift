@@ -65,7 +65,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
             switch result {
             case .success:
                 resultExpectation.fulfill()
-            case .failure(let error):
+            case .failure:
                 XCTFail("Should not product any error")
             }
         }

@@ -11,11 +11,13 @@ import AWSPluginsCore
 enum CredentialStoreData: Codable, Equatable {
     case amplifyCredentials(AmplifyCredentials)
     case deviceMetadata(DeviceMetadata, Username)
+    case asfDeviceId(String, Username)
 }
 
 enum CredentialStoreDataType: Codable, Equatable {
     case amplifyCredentials
     case deviceMetadata(username: String)
+    case asfDeviceId(username: String)
 }
 
 struct CredentialStoreEvent: StateMachineEvent {

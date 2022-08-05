@@ -36,6 +36,8 @@ struct StoreCredentials: Action {
                 try amplifyCredentialStore.saveCredential(amplifyCredentials)
             case .deviceMetadata(let deviceMetadata, let username):
                 try amplifyCredentialStore.saveDevice(deviceMetadata, for: username)
+            case .asfDeviceId(let deviceId, let username):
+                try amplifyCredentialStore.saveASFDevice(deviceId, for: username)
             }
 
             let event = CredentialStoreEvent(

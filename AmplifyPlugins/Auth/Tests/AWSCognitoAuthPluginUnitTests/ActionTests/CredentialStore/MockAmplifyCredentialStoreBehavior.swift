@@ -32,15 +32,15 @@ class MockAmplifyCredentialStoreBehavior: AmplifyAuthCredentialStoreBehavior {
         self.clearCredentialHandler = clearCredentialHandler
     }
 
-    func saveCredential(_ credential: Codable) throws {
+    func saveCredential(_ credential: AmplifyCredentials) throws {
         try saveCredentialHandler?(credential)
     }
 
-    func retrieveCredential() throws -> Codable {
+    func retrieveCredential() throws -> AmplifyCredentials {
         guard let credentials = try getCredentialHandler?() else {
             throw KeychainStoreError.unknown("", nil)
         }
-        return credentials
+        return credentials as! AmplifyCredentials
     }
 
     func deleteCredential() throws {
@@ -51,15 +51,27 @@ class MockAmplifyCredentialStoreBehavior: AmplifyAuthCredentialStoreBehavior {
         return MockKeychainStoreBehavior(data: "mock")
     }
 
-    func saveDevice(_ deviceMetadata: Codable, for username: String) throws {
+    func saveDevice(_ deviceMetadata: DeviceMetadata, for username: String) throws {
 
     }
 
-    func retrieveDevice(for username: String) throws -> Codable {
+    func retrieveDevice(for username: String) throws -> DeviceMetadata {
         DeviceMetadata.noData
     }
 
     func removeDevice(for username: String) throws {
+
+    }
+
+    func saveASFDevice(_ deviceId: String, for username: String) throws {
+
+    }
+
+    func retrieveASFDevice(for username: String) throws -> String {
+        return ""
+    }
+
+    func removeASFDevice(for username: String) throws {
 
     }
 }

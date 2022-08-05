@@ -30,7 +30,11 @@ struct InitiateCustomAuth: Action {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         do {
             let userPoolEnv = try environment.userPoolEnvironment()
-            let request = request(environment: userPoolEnv)
+            let request = InitiateAuthInput.customAuth(
+                username: username,
+                clientMetadata: clientMetadata,
+                deviceMetadata: deviceMetadata,
+                environment: userPoolEnv)
 
             try sendRequest(request: request,
                             environment: userPoolEnv) { responseEvent in
@@ -51,33 +55,6 @@ struct InitiateCustomAuth: Action {
             )
             dispatcher.send(event)
         }
-    }
-
-    private func request(environment: UserPoolEnvironment) -> InitiateAuthInput {
-        let userPoolClientId = environment.userPoolConfiguration.clientId
-        var authParameters = [
-            "USERNAME": username
-        ]
-
-        if let clientSecret = environment.userPoolConfiguration.clientSecret {
-            let clientSecretHash = SRPSignInHelper.clientSecretHash(
-                username: username,
-                userPoolClientId: userPoolClientId,
-                clientSecret: clientSecret
-            )
-            authParameters["SECRET_HASH"] = clientSecretHash
-        }
-
-        if case .metadata(let data) = deviceMetadata {
-            authParameters["DEVICE_KEY"] = data.deviceKey
-        }
-
-        return InitiateAuthInput(analyticsMetadata: nil,
-                                 authFlow: .customAuth,
-                                 authParameters: authParameters,
-                                 clientId: userPoolClientId,
-                                 clientMetadata: clientMetadata,
-                                 userContextData: nil)
     }
 
     private func sendRequest(request: InitiateAuthInput,

@@ -30,17 +30,20 @@ struct ClearCredentialStore: Action {
 
         do {
 
-            let credentialStoreData: CredentialStoreDataType
+            let dataType: CredentialStoreDataType
             switch dataStoreType {
             case .amplifyCredentials:
                 try amplifyCredentialStore.deleteCredential()
-                credentialStoreData = .amplifyCredentials
+                dataType = .amplifyCredentials
             case .deviceMetadata(let username):
                 try amplifyCredentialStore.removeDevice(for: username)
-                credentialStoreData = .deviceMetadata(username: username)
+                dataType = .deviceMetadata(username: username)
+            case .asfDeviceId(username: let username):
+                try amplifyCredentialStore.removeASFDevice(for: username)
+                dataType = .asfDeviceId(username: username)
             }
 
-            let event = CredentialStoreEvent(eventType: .credentialCleared(credentialStoreData))
+            let event = CredentialStoreEvent(eventType: .credentialCleared(dataType))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
         } catch let error as KeychainStoreError {
