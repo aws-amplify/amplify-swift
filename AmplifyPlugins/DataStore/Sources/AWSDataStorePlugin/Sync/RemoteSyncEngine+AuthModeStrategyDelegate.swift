@@ -33,19 +33,6 @@ extension RemoteSyncEngine: AuthModeStrategyDelegate {
             return false
         }
 
-        // Note: blocking is not recommended
-        let group = DispatchGroup()
-        var isSignedIn = false
-
-        group.enter()
-        auth.getCurrentUser { result in
-            if case .success(let user) = result {
-                isSignedIn = user != nil
-            }
-            group.leave()
-        }
-        group.wait()
-
-        return isSignedIn
+        return await auth.getCurrentUser() != nil
     }
 }
