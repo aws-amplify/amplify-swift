@@ -45,8 +45,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     }
 
     /// Synchronizes startup operations
-    let workQueue = DispatchQueue(label: "com.amazonaws.RemoteSyncEngineOperationQueue",
-                                  target: DispatchQueue.global())
+    let taskQueue = TaskQueue<Void>()
 
     // Assigned at `setUpCloudSubscriptions`
     var reconciliationQueue: IncomingEventReconciliationQueue?
@@ -144,8 +143,8 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                     return
                 }
                 self.log.verbose("New state: \(newState)")
-                self.workQueue.async {
-                    self.respond(to: newState)
+                self.taskQueue.async {
+                    await self.respond(to: newState)
                 }
         }
 
@@ -154,7 +153,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
     // swiftlint:disable cyclomatic_complexity
     /// Listens to incoming state changes and invokes the appropriate asynchronous methods in response.
-    private func respond(to newState: State) {
+    private func respond(to newState: State) async {
         log.verbose("\(#function): \(newState)")
 
         switch newState {
@@ -167,7 +166,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         case .clearingStateOutgoingMutations(let storageAdapter):
             clearStateOutgoingMutations(storageAdapter: storageAdapter)
         case .initializingSubscriptions(let api, let storageAdapter):
-            initializeSubscriptions(api: api, storageAdapter: storageAdapter)
+            await initializeSubscriptions(api: api, storageAdapter: storageAdapter)
         case .performingInitialSync:
             performInitialSync()
         case .activatingCloudSubscriptions:
@@ -274,24 +273,22 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     }
     
     private func initializeSubscriptions(api: APICategoryGraphQLBehavior,
-                                         storageAdapter: StorageEngineAdapter) {
-        Task {
-            log.debug(#function)
-            let syncableModelSchemas = ModelRegistry.modelSchemas.filter { $0.isSyncable }
-            reconciliationQueue = await reconciliationQueueFactory(syncableModelSchemas,
-                                                                   api,
-                                                                   storageAdapter,
-                                                                   dataStoreConfiguration.syncExpressions,
-                                                                   auth,
-                                                                   authModeStrategy,
-                                                                   nil)
-            reconciliationQueueSink = reconciliationQueue?
-                .publisher
-                .sink(
-                    receiveCompletion: { [weak self] in self?.onReceiveCompletion(receiveCompletion: $0) },
-                    receiveValue: { [weak self] in self?.onReceive(receiveValue: $0) }
-                )
-        }
+                                         storageAdapter: StorageEngineAdapter) async {
+        log.debug(#function)
+        let syncableModelSchemas = ModelRegistry.modelSchemas.filter { $0.isSyncable }
+        reconciliationQueue = await reconciliationQueueFactory(syncableModelSchemas,
+                                                               api,
+                                                               storageAdapter,
+                                                               dataStoreConfiguration.syncExpressions,
+                                                               auth,
+                                                               authModeStrategy,
+                                                               nil)
+        reconciliationQueueSink = reconciliationQueue?
+            .publisher
+            .sink(
+                receiveCompletion: { [weak self] in self?.onReceiveCompletion(receiveCompletion: $0) },
+                receiveValue: { [weak self] in self?.onReceive(receiveValue: $0) }
+            )
     }
 
     private func performInitialSync() {
