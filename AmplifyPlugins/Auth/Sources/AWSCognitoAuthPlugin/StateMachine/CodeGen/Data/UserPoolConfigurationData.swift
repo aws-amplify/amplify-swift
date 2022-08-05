@@ -43,7 +43,6 @@ struct UserPoolConfigurationData: Equatable {
     func getIdentityProviderName() -> String {
         return "cognito-idp.\(region).amazonaws.com/\(poolId)"
     }
-
 }
 
 extension UserPoolConfigurationData: Codable { }

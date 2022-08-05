@@ -32,7 +32,8 @@ extension EndpointResolving.ValidationStep {
             guard
                 let components = URLComponents(string: "https://\(endpoint)"),
                 components.url != nil,
-                let host = components.host
+                let host = components.host,
+                !host.isEmpty
             else {
                 throw AuthError.invalidURL(endpoint)
             }

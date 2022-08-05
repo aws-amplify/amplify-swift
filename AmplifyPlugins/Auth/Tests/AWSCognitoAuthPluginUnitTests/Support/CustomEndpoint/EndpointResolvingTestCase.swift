@@ -99,5 +99,30 @@ class EndpointResolvingTestCase: XCTestCase {
                 )
             }
         }
+
+        /// Given: A String representation of a URL.
+        /// When: That String does not satisfy the ValidationStep `.validURL()`
+        /// Then: `EndpointResolving.userPool.run()` should throw an error with expected output.
+        do { // fail validURL()
+            let invalidInput = ""
+            XCTAssertThrowsError(
+                try EndpointResolving.userPool.run(invalidInput),
+                ""
+            ) { error in
+                let e = error as? AuthError
+                XCTAssertEqual(
+                    e?.errorDescription,
+                    "Error configuring AWSCognitoAuthPlugin"
+                )
+                XCTAssertEqual(
+                    e?.recoverySuggestion,
+                    """
+                    Invalid value for `endpoint`: \(invalidInput)
+                    Expected valid url, received: \(invalidInput)
+                    > Replace \(invalidInput) with a valid URL.
+                    """
+                )
+            }
+        }
     }
 }
