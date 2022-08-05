@@ -44,10 +44,10 @@ extension CommentWithCompositeKey {
 
 extension CommentWithCompositeKey: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Custom
-  public typealias Identifier = ModelIdentifier<Self, ModelIdentifierFormat.Custom>
+  public typealias IdentifierProtocol = ModelIdentifier<Self, ModelIdentifierFormat.Custom>
 }
 
-extension CommentWithCompositeKey.Identifier {
+extension CommentWithCompositeKey.IdentifierProtocol {
   public static func identifier(id: String,
       content: String) -> Self {
     .make(fields: [(name: "id", value: id), (name: "content", value: content)])

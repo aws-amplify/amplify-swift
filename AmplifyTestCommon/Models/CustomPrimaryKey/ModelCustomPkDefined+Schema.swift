@@ -45,10 +45,10 @@ extension ModelCustomPkDefined {
 
 extension ModelCustomPkDefined: ModelIdentifiable {
     public typealias IdentifierFormat = ModelIdentifierFormat.Custom
-    public typealias Identifier = ModelIdentifier<Self, ModelIdentifierFormat.Custom>
+    public typealias IdentifierProtocol = ModelIdentifier<Self, ModelIdentifierFormat.Custom>
 }
 
-extension ModelCustomPkDefined.Identifier {
+extension ModelCustomPkDefined.IdentifierProtocol {
     public static func identifier(id: String, dob: Temporal.DateTime) -> Self {
         .make(fields: [(name: "id", value: id), (name: "dob", value: dob)])
     }
