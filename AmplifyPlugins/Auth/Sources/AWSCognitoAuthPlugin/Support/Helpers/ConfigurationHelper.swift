@@ -10,7 +10,7 @@ import Amplify
 
 struct ConfigurationHelper {
 
-    static func parseUserPoolData(_ config: JSONValue) -> UserPoolConfigurationData? {
+    static func parseUserPoolData(_ config: JSONValue) throws -> UserPoolConfigurationData? {
         // TODO: Use JSON serialization here to convert.
         guard let cognitoUserPoolJSON = config.value(at: "CognitoUserPool.Default") else {
             Amplify.Logging.info("Could not find Cognito User Pool configuration")
@@ -22,10 +22,19 @@ struct ConfigurationHelper {
         else {
             return nil
         }
-        
-        let endpoint: String? = {
+
+        // If there's a value for the key `Endpoint` let's validate
+        // that input here. This allows us to validate once instead
+        // of repeatedly whenever `AWSCongnitoAuthPlugin().makeUserPool()`
+        // is called. It also allows us to throw an appropriate error
+        // at configuration time to reduce the "distance" between invalid
+        // input and error handling.
+        let endpoint: UserPoolConfigurationData.CustomEndpoint? = try {
             if case .string(let endpoint) = cognitoUserPoolJSON.value(at: "Endpoint") {
-                return endpoint
+                return try .init(
+                    endpoint: endpoint,
+                    validator: EndpointResolving.userPool.run
+                )
             }
             return nil
         }()
@@ -99,7 +108,7 @@ struct ConfigurationHelper {
     }
 
     static func authConfiguration(_ config: JSONValue) throws -> AuthConfiguration {
-        let userPoolConfig = parseUserPoolData(config)
+        let userPoolConfig = try parseUserPoolData(config)
         let identityPoolConfig = parseIdentityPoolData(config)
 
         if let userPoolConfigNonNil = userPoolConfig, let identityPoolConfigNonNil = identityPoolConfig {

@@ -5,12 +5,14 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import ClientRuntime
+
 struct UserPoolConfigurationData: Equatable {
 
     let poolId: String
     let clientId: String
     let region: String
-    let endpoint: String?
+    let endpoint: CustomEndpoint?
     let clientSecret: String?
     let pinpointAppId: String?
     let hostedUIConfig: HostedUIConfigurationData?
@@ -20,7 +22,7 @@ struct UserPoolConfigurationData: Equatable {
         poolId: String,
         clientId: String,
         region: String,
-        endpoint: String? = nil,
+        endpoint: CustomEndpoint? = nil,
         clientSecret: String? = nil,
         pinpointAppId: String? = nil,
         authFlowType: AuthFlowType = .unknown,
@@ -63,5 +65,22 @@ extension UserPoolConfigurationData: CustomDebugDictionaryConvertible {
 extension UserPoolConfigurationData: CustomDebugStringConvertible {
     var debugDescription: String {
         debugDictionary.debugDescription
+    }
+}
+
+extension UserPoolConfigurationData {
+    struct CustomEndpoint: Equatable, Codable {
+        let validatedHost: String
+
+        var resolver: AWSEndpointResolving {
+            AWSEndpointResolving(Endpoint(host: validatedHost))
+        }
+    }
+}
+
+extension UserPoolConfigurationData.CustomEndpoint {
+    init(endpoint: String, validator: (String) throws -> Endpoint) rethrows {
+        let endpoint = try validator(endpoint)
+        validatedHost = endpoint.host
     }
 }

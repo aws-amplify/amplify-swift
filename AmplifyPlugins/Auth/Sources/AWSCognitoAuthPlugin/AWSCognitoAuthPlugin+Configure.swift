@@ -73,11 +73,9 @@ extension AWSCognitoAuthPlugin {
 
             let configuration: CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration
             if let customEndpoint = userPoolConfig.endpoint {
-                let resolvedEndpoint = try createUserPoolEndpoint(from: customEndpoint)
-                let endpointResolver = AWSEndpointResolving(resolvedEndpoint)
                 configuration = try .init(
                     region: userPoolConfig.region,
-                    endpointResolver: endpointResolver,
+                    endpointResolver: customEndpoint.resolver,
                     frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData()
                 )
             } else {
@@ -212,7 +210,7 @@ extension AWSCognitoAuthPlugin {
     /// `CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration`.
     ///
     ///       if let customEndpoint = userPoolConfig.endpoint {
-    ///         let resolvedEndpoint = try createUserPoolEndpoint(from: customEndpoint)
+    ///         let resolvedEndpoint = try makeUserPoolEndpoint(from: customEndpoint)
     ///         let endpointResolver = AWSEndpointResolving(resolvedEndpoint)
     ///         configuration = try .init(
     ///             region: ...,
@@ -223,7 +221,7 @@ extension AWSCognitoAuthPlugin {
     ///
     /// - Parameter endpoint: The value from the `endpoint` key of the `amplifyconfiguration.json` file
     /// - Returns: A `ClientRuntime.Endpoint` used to instantiate a `EndpointResolving`.
-    private func createUserPoolEndpoint(
+    private func makeUserPoolEndpoint(
         from endpoint: String
     ) throws -> ClientRuntime.Endpoint {
         let endpoint = try EndpointResolving.userPool.run(endpoint)
