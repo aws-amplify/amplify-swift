@@ -24,4 +24,3 @@ extension AWSCognitoUserPoolTokens {
             expiresIn: 121)
     }
 }
-

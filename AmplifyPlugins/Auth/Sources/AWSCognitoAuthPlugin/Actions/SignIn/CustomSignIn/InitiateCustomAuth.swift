@@ -15,10 +15,14 @@ struct InitiateCustomAuth: Action {
 
     let username: String
     let clientMetadata: [String: String]
+    let deviceMetadata: DeviceMetadata
 
-    init(username: String, clientMetadata: [String: String]) {
+    init(username: String,
+         clientMetadata: [String: String],
+         deviceMetadata: DeviceMetadata) {
         self.username = username
         self.clientMetadata = clientMetadata
+        self.deviceMetadata = deviceMetadata
     }
 
     func execute(withDispatcher dispatcher: EventDispatcher,
@@ -26,7 +30,11 @@ struct InitiateCustomAuth: Action {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         do {
             let userPoolEnv = try environment.userPoolEnvironment()
-            let request = request(environment: userPoolEnv)
+            let request = InitiateAuthInput.customAuth(
+                username: username,
+                clientMetadata: clientMetadata,
+                deviceMetadata: deviceMetadata,
+                environment: userPoolEnv)
 
             try sendRequest(request: request,
                             environment: userPoolEnv) { responseEvent in
@@ -49,33 +57,6 @@ struct InitiateCustomAuth: Action {
         }
     }
 
-    private func request(environment: UserPoolEnvironment) -> InitiateAuthInput {
-        let userPoolClientId = environment.userPoolConfiguration.clientId
-        var authParameters = [
-            "USERNAME": username
-        ]
-
-        if let clientSecret = environment.userPoolConfiguration.clientSecret {
-            let clientSecretHash = SRPSignInHelper.clientSecretHash(
-                username: username,
-                userPoolClientId: userPoolClientId,
-                clientSecret: clientSecret
-            )
-            authParameters["SECRET_HASH"] = clientSecretHash
-        }
-
-        if let deviceId = Self.getDeviceId() {
-            authParameters["DEVICE_KEY"] = deviceId
-        }
-
-        return InitiateAuthInput(analyticsMetadata: nil,
-                                 authFlow: .customAuth,
-                                 authParameters: authParameters,
-                                 clientId: userPoolClientId,
-                                 clientMetadata: clientMetadata,
-                                 userContextData: nil)
-    }
-
     private func sendRequest(request: InitiateAuthInput,
                              environment: UserPoolEnvironment,
                              callback: @escaping (StateMachineEvent) -> Void) throws {
@@ -87,7 +68,7 @@ struct InitiateCustomAuth: Action {
             let event: StateMachineEvent!
             do {
                 let response = try await cognitoClient.initiateAuth(input: request)
-                event = UserPoolSignInHelper.parseResponse(response, for: username)
+                event = try UserPoolSignInHelper.parseResponse(response, for: username)
                 logVerbose("\(#fileID) InitiateAuth response success", environment: environment)
             } catch {
                 let authError = SignInError.service(error: error)
@@ -95,11 +76,6 @@ struct InitiateCustomAuth: Action {
             }
             callback(event)
         }
-    }
-
-    // TODO: Implement this
-    private static func getDeviceId() -> String? {
-        return nil
     }
 
 }

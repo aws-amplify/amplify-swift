@@ -14,7 +14,7 @@ import Amplify
 @testable import AWSPluginsTestCommon
 
 class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
-    
+
     override func setUp() {
         super.setUp()
         mockIdentityProvider = MockIdentityProvider(
@@ -23,7 +23,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
             }
         )
     }
-    
+
     /// Test fetchDevices operation can be invoked
     ///
     /// - Given: Given a configured auth plugin
@@ -52,13 +52,13 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
     ///
     func testFetchDevicesRequestWithoutOptions() {
         let operationFinished = expectation(description: "Operation should finish")
-        let operation = plugin.fetchDevices() { _ in
+        let operation = plugin.fetchDevices { _ in
             operationFinished.fulfill()
         }
         XCTAssertNotNil(operation)
         waitForExpectations(timeout: 1)
     }
-    
+
     /// Test a successful fetchDevices call
     ///
     /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response
@@ -71,7 +71,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
 
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
-                ListDevicesOutputResponse(devices: [CognitoIdentityProviderClientTypes.DeviceType(deviceKey:"id")], paginationToken: nil)
+                ListDevicesOutputResponse(devices: [CognitoIdentityProviderClientTypes.DeviceType(deviceKey: "id")], paginationToken: nil)
             }
         )
         let resultExpectation = expectation(description: "Should receive a result")
@@ -126,9 +126,9 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
 
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
-    
+
     // MARK: - Service error for listDevices
-    
+
     /// Test a fetchDevices with `InternalErrorException` from service
     ///
     /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
@@ -140,7 +140,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
     ///    - I should get a .unknown error
     ///
     func testListDevicesWithInternalErrorException() {
-        
+
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
                 throw ListDevicesOutputError.internalErrorException(InternalErrorException(message: "internal error"))
@@ -163,7 +163,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
         }
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
-    
+
     /// Test a fetchDevices call with InvalidParameterException response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -175,7 +175,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
     ///    - I should get a .service error with  .invalidParameter as underlyingError
     ///
     func testListDevicesWithInvalidParameterException() {
-        
+
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
                 throw ListDevicesOutputError.invalidParameterException(InvalidParameterException(message: "invalid parameter"))
@@ -186,7 +186,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
             defer {
                 resultExpectation.fulfill()
             }
-            
+
             switch result {
             case .success:
                 XCTFail("Should return an error if the result from service is invalid")
@@ -199,12 +199,12 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
                     XCTFail("Underlying error should be invalidParameter \(error)")
                     return
                 }
-                
+
             }
         }
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
-    
+
     /// Test a fetchDevices call with InvalidParameterException response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -216,7 +216,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
     ///    - I should get a .configuration error
     ///
     func testListDevicesWithInvalidUserPoolConfigurationException() {
-        
+
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
                 throw ListDevicesOutputError.invalidUserPoolConfigurationException(InvalidUserPoolConfigurationException(message: "invalid user pool configuration"))
@@ -227,7 +227,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
             defer {
                 resultExpectation.fulfill()
             }
-            
+
             switch result {
             case .success:
                 XCTFail("Should return an error if the result from service is invalid")
@@ -240,7 +240,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
         }
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
-    
+
     /// Test a fetchDevices call with NotAuthorizedException response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -252,7 +252,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
     ///    - I should get a .notAuthorized error
     ///
     func testListDevicesWithNotAuthorizedException() {
-        
+
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
                 throw ListDevicesOutputError.notAuthorizedException(NotAuthorizedException(message: "not authorized"))
@@ -263,7 +263,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
             defer {
                 resultExpectation.fulfill()
             }
-            
+
             switch result {
             case .success:
                 XCTFail("Should return an error if the result from service is invalid")
@@ -276,7 +276,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
         }
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
-    
+
     /// Test a fetchDevices call with PasswordResetRequiredException response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -288,7 +288,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
     ///    - I should get a .service error with .passwordResetRequired as underlyingError
     ///
     func testListDevicesWithPasswordResetRequiredException() {
-        
+
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
                 throw ListDevicesOutputError.passwordResetRequiredException(PasswordResetRequiredException(message: "password reset required"))
@@ -299,7 +299,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
             defer {
                 resultExpectation.fulfill()
             }
-            
+
             switch result {
             case .success:
                 XCTFail("Should return an error if the result from service is invalid")
@@ -316,7 +316,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
         }
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
-    
+
     /// Test a fetchDevices call with ResourceNotFound response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -328,7 +328,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
     ///    - I should get a .service error with .resourceNotFound as underlyingError
     ///
     func testListDevicesWithResourceNotFoundException() {
-        
+
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
                 throw ListDevicesOutputError.resourceNotFoundException(ResourceNotFoundException(message: "resource not found"))
@@ -339,7 +339,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
             defer {
                 resultExpectation.fulfill()
             }
-            
+
             switch result {
             case .success:
                 XCTFail("Should return an error if the result from service is invalid")
@@ -352,12 +352,12 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
                     XCTFail("Underlying error should be resourceNotFound \(error)")
                     return
                 }
-                
+
             }
         }
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
-    
+
     /// Test a fetchDevices call with TooManyRequestsException response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -369,7 +369,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
     ///    - I should get a .service error with .requestLimitExceeded as underlyingError
     ///
     func testListDevicesWithTooManyRequestsException() {
-        
+
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
                 throw ListDevicesOutputError.tooManyRequestsException(TooManyRequestsException(message: "too many requests"))
@@ -380,7 +380,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
             defer {
                 resultExpectation.fulfill()
             }
-            
+
             switch result {
             case .success:
                 XCTFail("Should return an error if the result from service is invalid")
@@ -393,12 +393,12 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
                     XCTFail("Underlying error should be requestLimitExceeded \(error)")
                     return
                 }
-                
+
             }
         }
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
-    
+
     /// Test a fetchDevices call with UserNotFound response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -410,7 +410,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
     ///    - I should get a .service error with .userNotConfirmed as underlyingError
     ///
     func testListDevicesWithUserNotConfirmedException() {
-        
+
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
                 throw ListDevicesOutputError.userNotConfirmedException(UserNotConfirmedException(message: "user not confirmed"))
@@ -421,7 +421,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
             defer {
                 resultExpectation.fulfill()
             }
-            
+
             switch result {
             case .success:
                 XCTFail("Should return an error if the result from service is invalid")
@@ -434,12 +434,12 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
                     XCTFail("Underlying error should be userNotFound \(error)")
                     return
                 }
-                
+
             }
         }
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
-    
+
     /// Test a fetchDevices call with UserNotFound response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -451,7 +451,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
     ///    - I should get a .service error with .userNotFound as underlyingError
     ///
     func testListDevicesWithUserNotFoundException() {
-        
+
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
                 throw ListDevicesOutputError.userNotFoundException(UserNotFoundException(message: "user not found"))
@@ -462,7 +462,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
             defer {
                 resultExpectation.fulfill()
             }
-            
+
             switch result {
             case .success:
                 XCTFail("Should return an error if the result from service is invalid")
@@ -475,10 +475,10 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
                     XCTFail("Underlying error should be userNotFound \(error)")
                     return
                 }
-                
+
             }
         }
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
-    
+
 }

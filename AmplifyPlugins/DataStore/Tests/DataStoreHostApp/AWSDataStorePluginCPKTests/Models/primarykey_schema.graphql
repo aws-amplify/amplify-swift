@@ -1,0 +1,74 @@
+# This "input" configures a global authorization rule to enable public access to
+# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
+input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
+
+type ModelImplicitDefaultPk @model {
+    name: String
+}
+
+type ModelExplicitDefaultPk @model {
+  id: ID! @primaryKey
+  name: String
+}
+
+type ModelExplicitCustomPk @model {
+  userId: ID! @primaryKey
+  name: String
+}
+
+type ModelCompositePk @model {
+  id: ID! @primaryKey(sortKeyFields: ["dob"])
+  dob: AWSDateTime!
+  name: String
+}
+
+type ModelCompositeMultiplePk @model {
+  id: ID! @primaryKey(sortKeyFields: ["location", "name"])
+  location: String!
+  name: String!
+  lastName: String
+}
+
+type ModelCompositeIntPk @model {
+  id: ID! @primaryKey(sortKeyFields: ["serial"])
+  serial: Int!
+}
+
+type PostWithCompositeKey @model {
+  id: ID! @primaryKey(sortKeyFields: ["title"])
+  title: String!
+  comments: [CommentWithCompositeKey] @hasMany
+}
+
+type CommentWithCompositeKey @model {
+  id: ID! @primaryKey(sortKeyFields: ["content"])
+  content: String!
+  post: PostWithCompositeKey @belongsTo
+}
+
+type PostWithTagsCompositeKey @model {
+  postId: ID! @primaryKey(sortKeyFields: ["title"])
+  title: String!
+  tags: [TagWithCompositeKey] @manyToMany(relationName: "PostTagsWithCompositeKey")
+}
+
+type TagWithCompositeKey @model {
+  id: ID! @primaryKey(sortKeyFields: ["name"])
+  name: String!
+  posts: [PostWithTagsCompositeKey] @manyToMany(relationName: "PostTagsWithCompositeKey")
+}
+
+
+type PostWithCompositeKeyAndIndex @model {
+  id: ID! @primaryKey(sortKeyFields: ["title"])
+  title: String!
+  comments: [CommentWithCompositeKeyAndIndex] @hasMany
+}
+
+type CommentWithCompositeKeyAndIndex @model {
+  id: ID! @primaryKey(sortKeyFields: ["content"])
+  content: String!
+  postID: ID @index(name: "byPost", sortKeyFields: ["postTitle"])
+  postTitle: String
+  post: PostWithCompositeKeyAndIndex @belongsTo(fields: ["postID", "postTitle"])
+}

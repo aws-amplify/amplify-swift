@@ -6,6 +6,19 @@
 //
 
 import Foundation
+import AWSPluginsCore
+
+enum CredentialStoreData: Codable, Equatable {
+    case amplifyCredentials(AmplifyCredentials)
+    case deviceMetadata(DeviceMetadata, Username)
+    case asfDeviceId(String, Username)
+}
+
+enum CredentialStoreDataType: Codable, Equatable {
+    case amplifyCredentials
+    case deviceMetadata(username: String)
+    case asfDeviceId(username: String)
+}
 
 struct CredentialStoreEvent: StateMachineEvent {
 
@@ -13,15 +26,17 @@ struct CredentialStoreEvent: StateMachineEvent {
 
         case migrateLegacyCredentialStore
 
-        case loadCredentialStore
+        case loadCredentialStore(CredentialStoreDataType)
 
-        case storeCredentials(AmplifyCredentials)
+        case storeCredentials(CredentialStoreData)
 
-        case clearCredentialStore
+        case clearCredentialStore(CredentialStoreDataType)
 
-        case completedOperation(AmplifyCredentials)
+        case completedOperation(CredentialStoreData)
 
-        case throwError(CredentialStoreError)
+        case credentialCleared(CredentialStoreDataType)
+
+        case throwError(KeychainStoreError)
 
         case moveToIdleState
 
@@ -36,6 +51,7 @@ struct CredentialStoreEvent: StateMachineEvent {
         case .migrateLegacyCredentialStore: return  "CredentialStoreEvent.migrateLegacyCredentialStore"
         case .loadCredentialStore: return  "CredentialStoreEvent.loadCredentialStore"
         case .storeCredentials: return  "CredentialStoreEvent.saveCredentials"
+        case .credentialCleared: return  "CredentialStoreEvent.credentialCleared"
         case .clearCredentialStore: return  "CredentialStoreEvent.clearCredentialStore"
         case .completedOperation: return  "CredentialStoreEvent.completedOperation"
         case .throwError: return  "CredentialStoreEvent.throwError"

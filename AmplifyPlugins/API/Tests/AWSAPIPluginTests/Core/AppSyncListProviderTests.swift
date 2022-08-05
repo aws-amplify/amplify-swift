@@ -105,18 +105,22 @@ class AppSyncListProviderTests: XCTestCase {
         XCTAssertEqual(associatedField, "post")
     }
 
-    func testLoadedStateSynchronousLoadSuccess() {
+    func testLoadedStateLoadSuccess() {
         let elements = [Post4(title: "title"), Post4(title: "title")]
         let listProvider = AppSyncListProvider(elements: elements)
-        let results = listProvider.load()
-        guard case .success(let posts) = results else {
-            XCTFail("Should be .success")
-            return
+        let loadCompleted = expectation(description: "Load Completed")
+        listProvider.load { result in
+            guard case .success(let posts) = result else {
+                XCTFail("Should be .success")
+                return
+            }
+            XCTAssertEqual(posts.count, 2)
+            loadCompleted.fulfill()
         }
-        XCTAssertEqual(posts.count, 2)
+        wait(for: [loadCompleted], timeout: 1)
     }
 
-    func testNotLoadedStateSyncrhonousLoadSuccess() {
+    func testNotLoadedStateLoadSuccess() {
         mockAPIPlugin.responders[.queryRequestListener] =
             QueryRequestListenerResponder<JSONValue> { _, listener in
                 let json: JSONValue = [
@@ -143,25 +147,28 @@ class AppSyncListProviderTests: XCTestCase {
             XCTFail("Should not be loaded")
             return
         }
-        let result = provider.load()
-
-        guard case .success = result else {
-            XCTFail("Should have been success")
-            return
+        let loadCompleted = expectation(description: "Load Completed")
+        provider.load { result in
+            guard case .success = result else {
+                XCTFail("Should have been success")
+                return
+            }
+            guard case .loaded(let elements, let nextToken, let filterOptional) = provider.loadedState else {
+                XCTFail("Should be loaded")
+                return
+            }
+            XCTAssertEqual(elements.count, 2)
+            XCTAssertEqual(nextToken, "nextToken")
+            guard let filter = filterOptional,
+                  let postFilter = filter["postID"] as? [String: String],
+                  let postId = postFilter["eq"] else {
+                XCTFail("Could not retrieve filter values")
+                return
+            }
+            XCTAssertEqual(postId, "postId")
+            loadCompleted.fulfill()
         }
-        guard case .loaded(let elements, let nextToken, let filterOptional) = provider.loadedState else {
-            XCTFail("Should be loaded")
-            return
-        }
-        XCTAssertEqual(elements.count, 2)
-        XCTAssertEqual(nextToken, "nextToken")
-        guard let filter = filterOptional,
-              let postFilter = filter["postID"] as? [String: String],
-              let postId = postFilter["eq"] else {
-            XCTFail("Could not retrieve filter values")
-            return
-        }
-        XCTAssertEqual(postId, "postId")
+        wait(for: [loadCompleted], timeout: 1)
     }
 
     func testNotLoadedStateSynchronousLoadFailure() {
@@ -179,41 +186,25 @@ class AppSyncListProviderTests: XCTestCase {
             XCTFail("Should not be loaded")
             return
         }
-        let result = provider.load()
-        switch result {
-        case .success:
-            XCTFail("Should have failed")
-        case .failure(let coreError):
-            guard case .listOperation(_, _, let underlyingError) = coreError,
-                  (underlyingError as? APIError) != nil else {
-                XCTFail("Unexpected error \(coreError)")
-                return
-            }
-        }
-        guard case .notLoaded = provider.loadedState else {
-            XCTFail("Should not be loaded")
-            return
-        }
-    }
-
-    func testLoadedStateLoadWithCompletionSuccess() {
-        let elements = [Post4(title: "title"), Post4(title: "title")]
-        let provider = AppSyncListProvider(elements: elements)
-        guard case .loaded = provider.loadedState else {
-            XCTFail("Should be loaded")
-            return
-        }
-        let loadComplete = expectation(description: "Load completed")
+        let loadCompleted = expectation(description: "Load Completed")
         provider.load { result in
             switch result {
-            case .success(let results):
-                XCTAssertEqual(results.count, 2)
-                loadComplete.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
+            case .success:
+                XCTFail("Should have failed")
+            case .failure(let coreError):
+                guard case .listOperation(_, _, let underlyingError) = coreError,
+                      (underlyingError as? APIError) != nil else {
+                    XCTFail("Unexpected error \(coreError)")
+                    return
+                }
             }
+            guard case .notLoaded = provider.loadedState else {
+                XCTFail("Should not be loaded")
+                return
+            }
+            loadCompleted.fulfill()
         }
-        wait(for: [loadComplete], timeout: 1)
+        wait(for: [loadCompleted], timeout: 1)
     }
 
     func testNotLoadedStateLoadWithCompletionSuccess() {

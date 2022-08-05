@@ -43,7 +43,7 @@ struct HostedUIRequestHelper {
             .init(name: "state", value: state),
             .init(name: "redirect_uri", value: signInURI),
             .init(name: "scope", value: normalizedScope),
-            .init(name: "code_challenge", value: codeChallenge),
+            .init(name: "code_challenge", value: codeChallenge)
         ]
 
         if let idpIdentifier = options.providerInfo.idpIdentifier {
@@ -71,7 +71,7 @@ struct HostedUIRequestHelper {
         components.host = configuration.oauth.domain
         components.queryItems = [
             .init(name: "client_id", value: configuration.clientId),
-            .init(name: "logout_uri", value: signOutURI),
+            .init(name: "logout_uri", value: signOutURI)
         ]
 
         guard let logoutURL = components.url else {

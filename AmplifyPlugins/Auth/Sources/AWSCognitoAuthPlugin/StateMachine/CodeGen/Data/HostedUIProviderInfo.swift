@@ -40,7 +40,6 @@ extension HostedUIProviderInfo: Codable {
     }
 }
 
-
 extension AuthProvider: Equatable {
     public static func == (lhs: AuthProvider, rhs: AuthProvider) -> Bool {
         switch (lhs, rhs) {

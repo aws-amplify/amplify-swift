@@ -27,7 +27,7 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
         userDefaults.removeObject(forKey: EndpointClient.Constants.metricsKey)
         keychain.resetCounters()
         do {
-            try keychain.removeAll()
+            try keychain._removeAll()
         } catch {
             XCTFail("Failed to setup AWSPinpointAnalyticsKeyValueStoreTests")
         }
@@ -37,8 +37,8 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
         let deviceToken = "000102030405060708090a0b0c0d0e0f"
         let deviceTokenData = deviceToken.data(using: .utf8)
         userDefaults.setValue(deviceTokenData, forKey: EndpointClient.Constants.deviceTokenKey)
-
-        var currentKeychainDeviceToken = try? self.keychain.getData(EndpointClient.Constants.deviceTokenKey)
+        
+        var currentKeychainDeviceToken = try? self.keychain._getData(EndpointClient.Constants.deviceTokenKey)
         XCTAssertNil(currentKeychainDeviceToken)
         XCTAssertNotNil(userDefaults.data(forKey: EndpointClient.Constants.deviceTokenKey))
 
@@ -51,9 +51,9 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
                                         currentDevice: device,
                                         userDefaults: userDefaults,
                                         keychain: keychain)
-
-        currentKeychainDeviceToken = try? self.keychain.getData(EndpointClient.Constants.deviceTokenKey)
-        XCTAssertNil(userDefaults.data(forKey: EndpointClient.Constants.deviceTokenKey))
+        
+        currentKeychainDeviceToken = try? self.keychain._getData(EndpointClient.Constants.deviceTokenKey)
+        XCTAssertNil(userDefaults.data(forKey:EndpointClient.Constants.deviceTokenKey))
         XCTAssertNotNil(currentKeychainDeviceToken)
     }
 
@@ -61,8 +61,8 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
         let profile = PinpointEndpointProfile(applicationId: "appId", endpointId: "endpointId")
         let profileData = try? archiver.encode(profile)
         userDefaults.setValue(profileData, forKey: EndpointClient.Constants.endpointProfileKey)
-
-        var currentKeychainProfile = try? self.keychain.getData(EndpointClient.Constants.endpointProfileKey)
+        
+        var currentKeychainProfile = try? self.keychain._getData(EndpointClient.Constants.endpointProfileKey)
         XCTAssertNil(currentKeychainProfile)
         XCTAssertNotNil(userDefaults.data(forKey: EndpointClient.Constants.endpointProfileKey))
 
@@ -75,17 +75,17 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
                                         currentDevice: device,
                                         userDefaults: userDefaults,
                                         keychain: keychain)
-
-        currentKeychainProfile = try? self.keychain.getData(EndpointClient.Constants.endpointProfileKey)
-        XCTAssertNil(userDefaults.data(forKey: EndpointClient.Constants.endpointProfileKey))
+        
+        currentKeychainProfile = try? self.keychain._getData(EndpointClient.Constants.endpointProfileKey)
+        XCTAssertNil(userDefaults.data(forKey:EndpointClient.Constants.endpointProfileKey))
         XCTAssertNotNil(currentKeychainProfile)
     }
 
     func testAttributesMigrateFromUserDefaultsToKeychain() {
         let attributes: [String: [String]] = ["Attributes1": ["Value1"]]
         userDefaults.setValue(attributes, forKey: EndpointClient.Constants.attributesKey)
-
-        var currentAttributes = try? self.keychain.getData(EndpointClient.Constants.attributesKey)
+        
+        var currentAttributes = try? self.keychain._getData(EndpointClient.Constants.attributesKey)
         XCTAssertNil(currentAttributes)
         XCTAssertNotNil(userDefaults.object(forKey: EndpointClient.Constants.attributesKey))
 
@@ -98,17 +98,17 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
                                         currentDevice: device,
                                         userDefaults: userDefaults,
                                         keychain: keychain)
-
-        currentAttributes = try? self.keychain.getData(EndpointClient.Constants.attributesKey)
-        XCTAssertNil(userDefaults.object(forKey: EndpointClient.Constants.attributesKey))
+        
+        currentAttributes = try? self.keychain._getData(EndpointClient.Constants.attributesKey)
+        XCTAssertNil(userDefaults.object(forKey:EndpointClient.Constants.attributesKey))
         XCTAssertNotNil(currentAttributes)
     }
 
     func testMetricsMigrateFromUserDefaultsToKeychain() {
         let metrics = ["Attributes1": 123]
         userDefaults.setValue(metrics, forKey: EndpointClient.Constants.metricsKey)
-
-        var currentMetrics = try? self.keychain.getData(EndpointClient.Constants.metricsKey)
+        
+        var currentMetrics = try? self.keychain._getData(EndpointClient.Constants.metricsKey)
         XCTAssertNil(currentMetrics)
         XCTAssertNotNil(userDefaults.object(forKey: EndpointClient.Constants.metricsKey))
 
@@ -121,9 +121,9 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
                                         currentDevice: device,
                                         userDefaults: userDefaults,
                                         keychain: keychain)
-
-        currentMetrics = try? self.keychain.getData(EndpointClient.Constants.metricsKey)
-        XCTAssertNil(userDefaults.object(forKey: EndpointClient.Constants.metricsKey))
+        
+        currentMetrics = try? self.keychain._getData(EndpointClient.Constants.metricsKey)
+        XCTAssertNil(userDefaults.object(forKey:EndpointClient.Constants.metricsKey))
         XCTAssertNotNil(currentMetrics)
     }
 }

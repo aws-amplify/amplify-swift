@@ -23,7 +23,7 @@ class DeviceBehaviorForgetDeviceTests: AWSAuthDeviceBehaviorTests {
             }
         )
     }
-    
+
     /// Test forgetDevice operation can be invoked
     ///
     /// - Given: Given a configured auth plugin
@@ -50,7 +50,7 @@ class DeviceBehaviorForgetDeviceTests: AWSAuthDeviceBehaviorTests {
         let operation = plugin.forgetDevice()
         XCTAssertNotNil(operation)
     }
-    
+
     /// Test a successful forgetDevice call
     ///
     /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response

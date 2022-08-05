@@ -83,4 +83,28 @@ public struct SRPClientState {
         return S
     }
 
+    public static func calculateDevicePasswordVerifier(
+        deviceGroupKey: String,
+        deviceKey: String,
+        password: String,
+        commonState: SRPCommonState) -> (salt: BigInt, passwordVerifier: BigInt) {
+
+            // Salt (16 random bytes)
+            let salt = generateRandomUnsigned(of: 16)
+
+            // FULL_PASSWORD = SHA256_HASH(DeviceGroupKey + username + ":" + RANDOM_PASSWORD)
+            let fullPassword = [UInt8]("\(deviceGroupKey)\(deviceKey):\(password)".utf8)
+            let fullPasswordHash = SHA256.hash(data: fullPassword)
+            let hashedSaltAndFullPassword = SHA256.hash(
+                data: AmplifyBigIntHelper.getSignedData(num: salt) + fullPasswordHash)
+
+            // X = Salt + FULL_PASSWORD
+            let x = BigInt(unsignedData: [UInt8](hashedSaltAndFullPassword))
+
+            // PasswordVerifier = g(salt + FULL_PASSWORD) (mod N)
+            let passwordVerifier = commonState.generator.pow(x, modulus: commonState.prime)
+
+            return (salt, passwordVerifier)
+        }
+
 }

@@ -11,13 +11,13 @@ import ClientRuntime
 import AWSCognitoIdentityProvider
 
 public class AWSAuthRememberDeviceOperation: AmplifyOperation<AuthRememberDeviceRequest, Void, AuthError>, AuthRememberDeviceOperation {
-    
+
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
-    
+
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
-    
+
     init(_ request: AuthRememberDeviceRequest,
          authStateMachine: AuthStateMachine,
          userPoolFactory: @escaping CognitoUserPoolFactory,
@@ -30,13 +30,13 @@ public class AWSAuthRememberDeviceOperation: AmplifyOperation<AuthRememberDevice
                    request: request,
                    resultListener: resultListener)
     }
-    
+
     override public func main() {
         if isCancelled {
             finish()
             return
         }
-        
+
         fetchAuthSessionHelper.fetch(authStateMachine) { [weak self] result in
             switch result {
             case .success(let session):
@@ -44,7 +44,7 @@ public class AWSAuthRememberDeviceOperation: AmplifyOperation<AuthRememberDevice
                     self?.dispatch(AuthError.unknown("Unable to fetch auth session", nil))
                     return
                 }
-                
+
                 do {
                     let tokens = try cognitoTokenProvider.getCognitoTokens().get()
                     Task.init { [weak self] in
@@ -60,22 +60,22 @@ public class AWSAuthRememberDeviceOperation: AmplifyOperation<AuthRememberDevice
             }
         }
     }
-    
+
     func rememberDevice(with accessToken: String) async {
         do {
             let userPoolService = try userPoolFactory()
-            
+
             // TODO: Pass in device key when implemented
             let input = UpdateDeviceStatusInput(accessToken: accessToken,
                                                 deviceKey: nil,
                                                 deviceRememberedStatus: .remembered)
             _ = try await userPoolService.updateDeviceStatus(input: input)
-            
+
             if self.isCancelled {
                 finish()
                 return
             }
-            
+
             self.dispatch()
         } catch let error as UpdateDeviceStatusOutputError {
             self.dispatch(error.authError)
@@ -88,16 +88,15 @@ public class AWSAuthRememberDeviceOperation: AmplifyOperation<AuthRememberDevice
             self.dispatch(error)
         }
     }
-    
-    
+
     private func dispatch() {
         let result = OperationResult.success(())
         dispatch(result: result)
     }
-    
+
     private func dispatch(_ error: AuthError) {
         let result = OperationResult.failure(error)
         dispatch(result: result)
     }
-    
+
 }

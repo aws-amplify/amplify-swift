@@ -13,6 +13,11 @@ import XCTest
 
 // swiftlint:disable type_name
 class QueryPredicateEvaluateGeneratedIntDoubleTests: XCTestCase {
+
+    override func setUp() {
+        ModelRegistry.register(modelType: QPredGen.self)
+    }
+
     func testbetweenInt1betweenDouble3_1with0() throws {
         let predicate = QPredGen.keys.myInt.between(start: 1, end: 3.1)
         var instance = QPredGen(name: "test")

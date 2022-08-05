@@ -72,11 +72,11 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         wait(for: [identifyUserEvent], timeout: TestCommonConstants.networkTimeout)
 
         //TODO: Fix the test below
-        //        // Remove userId from the current endpoint
-        //        let targetingClient = escapeHatch().targetingClient
-        //        let currentProfile = targetingClient.currentEndpointProfile()
-        //        currentProfile.user?.userId = ""
-        //        targetingClient.update(currentProfile)
+        // Remove userId from the current endpoint
+        // let targetingClient = escapeHatch().targetingClient
+        // let currentProfile = targetingClient.currentEndpointProfile()
+        // currentProfile.user?.userId = ""
+        // targetingClient.update(currentProfile)
     }
 
     //TODO: Fix the test below

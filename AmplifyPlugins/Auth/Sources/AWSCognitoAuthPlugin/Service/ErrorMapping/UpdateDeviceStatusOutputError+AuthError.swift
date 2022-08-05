@@ -10,7 +10,7 @@ import AWSCognitoIdentityProvider
 import Amplify
 
 extension UpdateDeviceStatusOutputError: AuthErrorConvertible {
-    
+
     var authError: AuthError {
         switch self {
         case .internalErrorException(let exception):

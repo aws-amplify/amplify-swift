@@ -12,6 +12,7 @@ struct SignedInData {
     let userName: String
     let signedInDate: Date
     let signInMethod: SignInMethod
+    let deviceMetadata: DeviceMetadata
     let cognitoUserPoolTokens: AWSCognitoUserPoolTokens
 
     init(
@@ -19,12 +20,14 @@ struct SignedInData {
         userName: String,
         signedInDate: Date,
         signInMethod: SignInMethod,
+        deviceMetadata: DeviceMetadata = .noData,
         cognitoUserPoolTokens: AWSCognitoUserPoolTokens
     ) {
         self.userId = userId
         self.userName = userName
         self.signedInDate = signedInDate
         self.signInMethod = signInMethod
+        self.deviceMetadata = deviceMetadata
         self.cognitoUserPoolTokens = cognitoUserPoolTokens
     }
 }
@@ -39,7 +42,8 @@ extension SignedInData: CustomDebugDictionaryConvertible {
             "userId": userId.masked(),
             "userName": userName.masked(),
             "signedInDate": signedInDate,
-            "signInMethod": signInMethod
+            "signInMethod": signInMethod,
+            "deviceMetadata": deviceMetadata
         ]
     }
 }

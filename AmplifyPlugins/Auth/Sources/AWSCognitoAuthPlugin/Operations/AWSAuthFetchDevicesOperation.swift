@@ -11,13 +11,13 @@ import ClientRuntime
 import AWSCognitoIdentityProvider
 
 public class AWSAuthFetchDevicesOperation: AmplifyOperation<AuthFetchDevicesRequest, [AuthDevice], AuthError>, AuthFetchDevicesOperation {
-    
+
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
-    
+
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
-    
+
     init(_ request: AuthFetchDevicesRequest,
          authStateMachine: AuthStateMachine,
          userPoolFactory: @escaping CognitoUserPoolFactory,
@@ -30,13 +30,13 @@ public class AWSAuthFetchDevicesOperation: AmplifyOperation<AuthFetchDevicesRequ
                    request: request,
                    resultListener: resultListener)
     }
-    
+
     override public func main() {
         if isCancelled {
             finish()
             return
         }
-        
+
         fetchAuthSessionHelper.fetch(authStateMachine) { [weak self] result in
             switch result {
             case .success(let session):
@@ -44,7 +44,7 @@ public class AWSAuthFetchDevicesOperation: AmplifyOperation<AuthFetchDevicesRequ
                     self?.dispatch(AuthError.unknown("Unable to fetch auth session", nil))
                     return
                 }
-                
+
                 do {
                     let tokens = try cognitoTokenProvider.getCognitoTokens().get()
                     Task.init { [weak self] in
@@ -60,25 +60,25 @@ public class AWSAuthFetchDevicesOperation: AmplifyOperation<AuthFetchDevicesRequ
             }
         }
     }
-    
+
     func fetchDevices(with accessToken: String) async {
         do {
             let userPoolService = try userPoolFactory()
             let input = ListDevicesInput(accessToken: accessToken)
             let result = try await userPoolService.listDevices(input: input)
-            
+
             if self.isCancelled {
                 finish()
                 return
             }
-            
+
             guard let devices = result.devices else {
                 let authError = AuthError.unknown("Unable to get devices list from response",
                                                   nil)
                 self.dispatch(authError)
                 return
             }
-            
+
             let deviceList = devices.reduce(into: [AuthDevice]()) {
                 $0.append($1.toAWSAuthDevice())
             }
@@ -94,16 +94,15 @@ public class AWSAuthFetchDevicesOperation: AmplifyOperation<AuthFetchDevicesRequ
             self.dispatch(error)
         }
     }
-    
-    
+
     private func dispatch(_ result: [AuthDevice]) {
         let result = OperationResult.success(result)
         dispatch(result: result)
     }
-    
+
     private func dispatch(_ error: AuthError) {
         let result = OperationResult.failure(error)
         dispatch(result: result)
     }
-    
+
 }

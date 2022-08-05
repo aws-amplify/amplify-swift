@@ -6,7 +6,7 @@
 //
 
 import XCTest
-
+import AWSPluginsCore
 @testable import AWSCognitoAuthPlugin
 
 typealias CredentialStoreStateSequence = StateSequence<CredentialStoreState, CredentialStoreEvent>
@@ -25,7 +25,7 @@ extension CredentialStoreStateSequence {
 
 class CredentialStoreStateResolverTests: XCTestCase {
     func testValidCredentialStoreStateSequences() throws {
-        let credentialStoreError = CredentialStoreError.configuration(message: "someError")
+        let credentialStoreError = KeychainStoreError.configuration(message: "someError")
         let testData = AmplifyCredentials.testData
 
         let validSequences: [CredentialStoreStateSequence] = [
@@ -35,67 +35,67 @@ class CredentialStoreStateResolverTests: XCTestCase {
                 expected: .migratingLegacyStore),
             CredentialStoreStateSequence(
                 oldState: .migratingLegacyStore,
-                event: CredentialStoreEvent(eventType: .loadCredentialStore),
+                event: CredentialStoreEvent(eventType: .loadCredentialStore(.amplifyCredentials)),
                 expected: .loadingStoredCredentials),
             CredentialStoreStateSequence(
                 oldState: .loadingStoredCredentials,
-                event: CredentialStoreEvent(eventType: .completedOperation(testData)),
-                expected: .success(testData)),
+                event: CredentialStoreEvent(eventType: .completedOperation(.amplifyCredentials(testData))),
+                expected: .success(.amplifyCredentials(testData))),
             CredentialStoreStateSequence(
                 oldState: .loadingStoredCredentials,
                 event: CredentialStoreEvent(eventType: .throwError(credentialStoreError)),
                 expected: .error(credentialStoreError)),
             CredentialStoreStateSequence(
                 oldState: .clearingCredentials,
-                event: CredentialStoreEvent(eventType: .completedOperation(testData)),
-                expected: .success(testData)),
+                event: CredentialStoreEvent(eventType: .credentialCleared(.amplifyCredentials)),
+                expected: .clearedCredential(.amplifyCredentials)),
             CredentialStoreStateSequence(
                 oldState: .clearingCredentials,
                 event: CredentialStoreEvent(eventType: .throwError(credentialStoreError)),
                 expected: .error(credentialStoreError)),
             CredentialStoreStateSequence(
                 oldState: .storingCredentials,
-                event: CredentialStoreEvent(eventType: .completedOperation(testData)),
-                expected: .success(testData)),
+                event: CredentialStoreEvent(eventType: .completedOperation(.amplifyCredentials(testData))),
+                expected: .success(.amplifyCredentials(testData))),
             CredentialStoreStateSequence(
                 oldState: .storingCredentials,
                 event: CredentialStoreEvent(eventType: .throwError(credentialStoreError)),
                 expected: .error(credentialStoreError)),
             CredentialStoreStateSequence(
-                oldState: .success(testData),
-                event: CredentialStoreEvent(eventType: .loadCredentialStore),
-                expected: .success(testData)),
+                oldState: .success(.amplifyCredentials(testData)),
+                event: CredentialStoreEvent(eventType: .loadCredentialStore(.amplifyCredentials)),
+                expected: .success(.amplifyCredentials(testData))),
             CredentialStoreStateSequence(
-                oldState: .success(testData),
-                event: CredentialStoreEvent(eventType: .storeCredentials(testData)),
-                expected: .success(testData)),
+                oldState: .success(.amplifyCredentials(testData)),
+                event: CredentialStoreEvent(eventType: .storeCredentials(.amplifyCredentials(testData))),
+                expected: .success(.amplifyCredentials(testData))),
             CredentialStoreStateSequence(
-                oldState: .success(testData),
-                event: CredentialStoreEvent(eventType: .clearCredentialStore),
-                expected: .success(testData)),
+                oldState: .success(.amplifyCredentials(testData)),
+                event: CredentialStoreEvent(eventType: .clearCredentialStore(.amplifyCredentials)),
+                expected: .success(.amplifyCredentials(testData))),
             CredentialStoreStateSequence(
                 oldState: .error(credentialStoreError),
-                event: CredentialStoreEvent(eventType: .loadCredentialStore),
+                event: CredentialStoreEvent(eventType: .loadCredentialStore(.amplifyCredentials)),
                 expected: .error(credentialStoreError)),
             CredentialStoreStateSequence(
                 oldState: .error(credentialStoreError),
-                event: CredentialStoreEvent(eventType: .storeCredentials(testData)),
+                event: CredentialStoreEvent(eventType: .storeCredentials(.amplifyCredentials(testData))),
                 expected: .error(credentialStoreError)),
             CredentialStoreStateSequence(
                 oldState: .error(credentialStoreError),
-                event: CredentialStoreEvent(eventType: .clearCredentialStore),
+                event: CredentialStoreEvent(eventType: .clearCredentialStore(.amplifyCredentials)),
                 expected: .error(credentialStoreError)),
             CredentialStoreStateSequence(
                 oldState: .idle,
-                event: CredentialStoreEvent(eventType: .loadCredentialStore),
+                event: CredentialStoreEvent(eventType: .loadCredentialStore(.amplifyCredentials)),
                 expected: .loadingStoredCredentials),
             CredentialStoreStateSequence(
                 oldState: .idle,
-                event: CredentialStoreEvent(eventType: .storeCredentials(testData)),
+                event: CredentialStoreEvent(eventType: .storeCredentials(.amplifyCredentials(testData))),
                 expected: .storingCredentials),
             CredentialStoreStateSequence(
                 oldState: .idle,
-                event: CredentialStoreEvent(eventType: .clearCredentialStore),
+                event: CredentialStoreEvent(eventType: .clearCredentialStore(.amplifyCredentials)),
                 expected: .clearingCredentials)
         ]
 

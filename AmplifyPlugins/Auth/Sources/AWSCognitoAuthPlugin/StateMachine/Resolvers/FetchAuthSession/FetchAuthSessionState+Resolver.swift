@@ -40,7 +40,7 @@ extension FetchAuthSessionState {
                 }
 
             case .fetchingIdentityID(let loginsmapProvider):
-                
+
                 switch eventType {
                 case .fetchedIdentityID(let identityID):
                     let action = FetchAuthAWSCredentials(
@@ -61,7 +61,7 @@ extension FetchAuthSessionState {
                 case .fetchedAWSCredentials(let identityID, let credentials):
                     let action = InformSessionFetched(
                         identityID: identityID,
-                        credetentials: credentials)
+                        credentials: credentials)
                     return .init(newState: .fetched(identityID, credentials), actions: [action])
                 case .throwError(let error):
                     let action = InformSessionError(error: error)

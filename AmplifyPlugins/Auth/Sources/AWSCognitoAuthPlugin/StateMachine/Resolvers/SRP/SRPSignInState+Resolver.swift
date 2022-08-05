@@ -22,11 +22,11 @@ extension SRPSignInState {
             }
 
             if case .throwAuthError(let authError) = srpSignInEvent.eventType {
-                return errorStateWithCancelSignIn(authError)
+                return errorState(authError)
             }
 
             if case .throwPasswordVerifierError(let authError) = srpSignInEvent.eventType {
-                return errorStateWithCancelSignIn(authError)
+                return errorState(authError)
             }
 
             switch oldState {
@@ -45,12 +45,12 @@ extension SRPSignInState {
 
         private func resolveNotStarted(byApplying signInEvent: SignInEvent) -> StateResolution<SRPSignInState> {
             switch signInEvent.eventType {
-            case .initiateSignInWithSRP(let signInEventData):
+            case .initiateSignInWithSRP(let signInEventData, let deviceMetadata):
                 guard let username = signInEventData.username, !username.isEmpty else {
                     let error = SignInError.inputValidation(
                         field: AuthPluginErrorConstants.signInUsernameError.field
                     )
-                    return errorStateWithCancelSignIn(error)
+                    return errorState(error)
                 }
                 let authFlowType: AuthFlowType
                 switch signInEventData.signInMethod {
@@ -60,7 +60,7 @@ extension SRPSignInState {
                     authFlowType = .unknown
                 default:
                     let error = SignInError.configuration(message: "Invalid auth flow type during SRP Sign In")
-                    return errorStateWithCancelSignIn(error)
+                    return errorState(error)
                 }
 
                 // Assuming password could be nil
@@ -69,6 +69,7 @@ extension SRPSignInState {
                     username: username,
                     password: password,
                     authFlowType: authFlowType,
+                    deviceMetadata: deviceMetadata,
                     clientMetadata: signInEventData.clientMetadata)
                 return StateResolution(
                     newState: SRPSignInState.initiatingSRPA(signInEventData),
@@ -113,9 +114,9 @@ extension SRPSignInState {
             }
         }
 
-        private func errorStateWithCancelSignIn(_ error: SignInError)
+        private func errorState(_ error: SignInError)
         -> StateResolution<SRPSignInState> {
-            let action = CancelSignIn()
+            let action = ThrowSignInError(error: error)
             return StateResolution(
                 newState: SRPSignInState.error(error),
                 actions: [action]

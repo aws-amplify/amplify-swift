@@ -11,7 +11,7 @@ let dependencies: [Package.Dependency] = [
     .package(
         name: "AppSyncRealTimeClient",
         url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git",
-        from: "2.0.0"
+        from: "2.1.1"
     ),
     .package(
         name: "AWSSwiftSDK",
@@ -192,7 +192,7 @@ let dataStoreTargets: [Target] = [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
             .product(name: "SQLite", package: "SQLite.swift")],
-        path: "AmplifyPlugins/DataStore/AWSDataStoreCategoryPlugin",
+        path: "AmplifyPlugins/DataStore/Sources/AWSDataStorePlugin",
         exclude: [
             "Info.plist",
             "Sync/MutationSync/OutgoingMutationQueue/SyncMutationToCloudOperation.mmd"
@@ -205,22 +205,8 @@ let dataStoreTargets: [Target] = [
             "AWSDataStorePlugin",
             "AmplifyTestCommon"
         ],
-        path: "AmplifyPlugins/DataStore/AWSDataStoreCategoryPluginTests",
+        path: "AmplifyPlugins/DataStore/Tests/AWSDataStorePluginTests",
         exclude: [
-            "Info.plist"
-        ]
-    ),
-    .testTarget(
-        name: "AWSDataStoreCategoryPluginIntegrationTests",
-        dependencies: [
-            "AWSDataStorePlugin",
-            "AWSAPIPlugin",
-            "AmplifyTestCommon"
-        ],
-        path: "AmplifyPlugins/DataStore/AWSDataStoreCategoryPluginIntegrationTests",
-        exclude: [
-            "TransformerV2/README.md",
-            "README.md",
             "Info.plist"
         ]
     )
@@ -249,21 +235,6 @@ let storageTargets: [Target] = [
         path: "AmplifyPlugins/Storage/AWSS3StoragePluginTests",
         exclude: [
             "Resources/Info.plist"
-        ]
-    ),
-    .testTarget(
-        name: "AWSS3StoragePluginFunctionalTests",
-        dependencies: [
-            "AWSS3StoragePlugin",
-            "AWSAPIPlugin",
-            "AmplifyTestCommon",
-            "AWSPluginsTestCommon",
-            "AWSCognitoAuthPlugin"
-        ],
-        path: "AmplifyPlugins/Storage/AWSS3StoragePluginFunctionalTests",
-        exclude: [
-            "README.md",
-            "Info.plist"
         ]
     )
 ]
@@ -318,19 +289,6 @@ let analyticsTargets: [Target] = [
         ],
         path: "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPluginTests",
         exclude: ["Resources/Info.plist"]
-    ),
-    .testTarget(
-        name: "AWSPinpointAnalyticsPluginIntegrationTests",
-        dependencies: [
-            "AWSPinpointAnalyticsPlugin",
-            "AWSCognitoAuthPlugin",
-            "AmplifyTestCommon"
-        ],
-        path: "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPluginIntegrationTests",
-        exclude: [
-            "README.md",
-            "Info.plist"
-        ]
     )
 ]
 

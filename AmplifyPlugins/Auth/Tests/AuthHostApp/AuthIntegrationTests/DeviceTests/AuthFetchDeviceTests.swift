@@ -10,9 +10,9 @@ import XCTest
 import AWSCognitoAuthPlugin
 
 class AuthFetchDeviceTests: AWSAuthBaseTest {
-    
+
     var unsubscribeToken: UnsubscribeToken!
-    
+
     override func setUp() {
         super.setUp()
         initializeAmplify()
@@ -35,13 +35,13 @@ class AuthFetchDeviceTests: AWSAuthBaseTest {
     ///    - I should get a successful result with empty devices list
     ///
     func testSuccessfulFetchDevices() {
-        
+
         // register a user and signin
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
         let signInExpectation = expectation(description: "SignIn event should be fired")
-        
+
         unsubscribeToken = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {
             case HubPayload.EventName.Auth.signedIn:
@@ -60,14 +60,14 @@ class AuthFetchDeviceTests: AWSAuthBaseTest {
                 }
             }
         wait(for: [signInExpectation], timeout: networkTimeout)
-        
+
         // fetch devices
         let fetchDevicesExpectation = expectation(description: "Received result from fetchDevices")
         _ = Amplify.Auth.fetchDevices { result in
             switch result {
             case .success(let devices):
                 XCTAssertNotNil(devices)
-                XCTAssertEqual(devices.count, 0)
+                XCTAssertEqual(devices.count, 1)
                 fetchDevicesExpectation.fulfill()
             case .failure(let error):
                 XCTFail("error fetching devices \(error)")
@@ -75,8 +75,7 @@ class AuthFetchDeviceTests: AWSAuthBaseTest {
         }
         wait(for: [fetchDevicesExpectation], timeout: networkTimeout)
     }
-    
-    
+
     /// Calling cancel in fetch devices operation should cancel
     ///
     /// - Given: A valid username

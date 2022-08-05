@@ -48,7 +48,6 @@ class AuthorizationStateResolverTests: XCTestCase {
     }
 
     func testInvalidAuthorizationStateSequences() throws {
-        let sessionData = AWSAuthCognitoSession.testData
         let authorizationError = AuthorizationError.configuration(message: "someError")
         let invalidSequences: [AuthorizationStateSequence] = [
 

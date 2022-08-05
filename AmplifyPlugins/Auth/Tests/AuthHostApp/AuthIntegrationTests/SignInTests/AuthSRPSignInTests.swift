@@ -358,7 +358,6 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
 
         wait(for: [operationExpectation], timeout: networkTimeout)
 
-
         let confirmOperationExpectation = expectation(description: "Confirm new password should succeed")
 
         Amplify.Auth.confirmSignIn(

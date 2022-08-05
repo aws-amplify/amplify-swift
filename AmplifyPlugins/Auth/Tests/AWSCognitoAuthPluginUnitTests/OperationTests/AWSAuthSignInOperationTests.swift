@@ -25,12 +25,6 @@ class AWSAuthSignInOperationTests: XCTestCase {
         queue?.maxConcurrentOperationCount = 1
     }
 
-    override func tearDown() async throws {
-        try await super.tearDown()
-        await Amplify.reset()
-        sleep(2)
-    }
-
     func testSRPSignInOperationSuccess() throws {
         let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
@@ -45,10 +39,11 @@ class AWSAuthSignInOperationTests: XCTestCase {
 
         let respondToChallenge: MockIdentityProvider.MockRespondToAuthChallengeResponse = { _ in
             respondToChallengeExpectation.fulfill()
-            return .init(authenticationResult: .init(accessToken: "accesToken",
-                                                     expiresIn: 2,
-                                                     idToken: "idToken",
-                                                     refreshToken: "refreshToken"))
+            return .init(authenticationResult: .init(
+                accessToken: Defaults.validAccessToken,
+                expiresIn: 2,
+                idToken: "idToken",
+                refreshToken: "refreshToken"))
         }
 
         let getId: MockIdentity.MockGetIdResponse = { _ in
@@ -77,19 +72,6 @@ class AWSAuthSignInOperationTests: XCTestCase {
                 mockInitiateAuthResponse: initiateAuth,
                 mockRespondToAuthChallengeResponse: respondToChallenge
             )})
-        _ = statemachine.listen {
-            print($0)
-            switch $0 {
-            case .configured(_, let authorizationState):
-
-                if case .waitingToStore(let credentials) = authorizationState {
-                    let authEvent = AuthEvent.init(
-                        eventType: .receivedCachedCredentials(credentials))
-                    statemachine.send(authEvent)
-                }
-            default: break
-            }
-        } onSubscribe: {}
 
         let operation = AWSAuthSignInOperation(
             request,

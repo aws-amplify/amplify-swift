@@ -82,33 +82,15 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
 
     // MARK: APIs
 
-    public func load() -> Result<[Element], CoreError> {
+    public func getState() -> ModelListProviderState<Element> {
         switch loadedState {
+        case .notLoaded:
+            return .notLoaded
         case .loaded(let elements, _, _):
-            return .success(elements)
-        case .notLoaded(let associatedId, let associatedField):
-            let semaphore = DispatchSemaphore(value: 0)
-            var loadResult: Result<[Element], CoreError> = .failure(
-                .listOperation("API query failed to complete.",
-                               AmplifyErrorMessages.reportBugToAWS(),
-                               nil))
-            load(associatedId: associatedId, associatedField: associatedField) { result in
-                defer {
-                    semaphore.signal()
-                }
-                switch result {
-                case .success(let elements):
-                    loadResult = .success(elements)
-                case .failure(let error):
-                    Amplify.API.log.error(error: error)
-                    loadResult = .failure(error)
-                }
-            }
-            semaphore.wait()
-            return loadResult
+            return .loaded(elements)
         }
     }
-
+    
     public func load(completion: @escaping (Result<[Element], CoreError>) -> Void) {
         switch loadedState {
         case .loaded(let elements, _, _):
@@ -206,7 +188,14 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
             case .success(let graphQLResponse):
                 switch graphQLResponse {
                 case .success(let nextPageList):
-                    completion(.success(nextPageList))
+                    nextPageList.fetch { fetchResult in
+                        switch fetchResult {
+                        case .success:
+                            completion(.success(nextPageList))
+                        case .failure(let error):
+                            completion(.failure(error))
+                        }
+                    }
                 case .failure(let graphQLError):
                     Amplify.API.log.error(error: graphQLError)
                     completion(.failure(.listOperation("""

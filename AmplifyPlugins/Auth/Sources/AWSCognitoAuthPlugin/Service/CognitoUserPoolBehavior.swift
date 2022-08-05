@@ -63,13 +63,18 @@ protocol CognitoUserPoolBehavior {
     /// Confirm Reset password
     /// Throws ConfirmForgotPasswordOutputError
     func confirmForgotPassword(input: ConfirmForgotPasswordInput) async throws -> ConfirmForgotPasswordOutputResponse
-    
+
     /// Lists the devices
     func listDevices(input: ListDevicesInput) async throws -> ListDevicesOutputResponse
-    
+
     /// Updates the device status
     func updateDeviceStatus(input: UpdateDeviceStatusInput) async throws -> UpdateDeviceStatusOutputResponse
-    
+
     /// Forgets the specified device.
     func forgetDevice(input: ForgetDeviceInput) async throws -> ForgetDeviceOutputResponse
+
+    /// Confirms tracking of the device. This API call is the call that begins device tracking.
+    /// Throws ConfirmDeviceOutputError
+    func confirmDevice(input: ConfirmDeviceInput) async throws -> ConfirmDeviceOutputResponse
+
 }

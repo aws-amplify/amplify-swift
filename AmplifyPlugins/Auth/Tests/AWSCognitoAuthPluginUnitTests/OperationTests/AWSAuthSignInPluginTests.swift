@@ -37,7 +37,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutputResponse(
                 authenticationResult: .init(
-                    accessToken: "accessToken",
+                    accessToken: Defaults.validAccessToken,
                     expiresIn: 300,
                     idToken: "idToken",
                     newDeviceMetadata: nil,
@@ -91,7 +91,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutputResponse(
                 authenticationResult: .init(
-                    accessToken: "accessToken",
+                    accessToken: Defaults.validAccessToken,
                     expiresIn: 300,
                     idToken: "idToken",
                     newDeviceMetadata: nil,
@@ -179,7 +179,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutputResponse(
                 authenticationResult: .init(
-                    accessToken: "accessToken",
+                    accessToken: Defaults.validAccessToken,
                     expiresIn: 300,
                     idToken: "idToken",
                     newDeviceMetadata: nil,
@@ -436,7 +436,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
-
 
     /// Test a signIn with additional info in next step
     ///

@@ -16,7 +16,7 @@ class ShowHostedUISignOut: NSObject, Action {
     let signOutEvent: SignOutEventData
     let signInData: SignedInData
 
-    var sessionAdapter: HostedUISessionBehavior? = nil
+    var sessionAdapter: HostedUISessionBehavior?
 
     init(signOutEvent: SignOutEventData, signInData: SignedInData) {
         self.signInData = signInData

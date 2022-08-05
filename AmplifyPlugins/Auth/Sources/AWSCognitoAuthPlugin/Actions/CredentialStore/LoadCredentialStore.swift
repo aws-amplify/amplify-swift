@@ -6,10 +6,13 @@
 //
 
 import Foundation
+import AWSPluginsCore
 
 struct LoadCredentialStore: Action {
 
     let identifier = "LoadCredentialStore"
+
+    let credentialStoreType: CredentialStoreDataType
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
@@ -17,7 +20,7 @@ struct LoadCredentialStore: Action {
 
         guard let credentialEnvironment = environment as? CredentialEnvironment else {
             let event = CredentialStoreEvent(
-                eventType: .throwError(CredentialStoreError.configuration(
+                eventType: .throwError(KeychainStoreError.configuration(
                     message: AuthPluginErrorConstants.configurationError)))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
@@ -28,18 +31,31 @@ struct LoadCredentialStore: Action {
         let amplifyCredentialStore = credentialStoreEnvironment.amplifyCredentialStoreFactory()
 
         do {
-            let storedCredentials = try amplifyCredentialStore.retrieveCredential()
-            let event = CredentialStoreEvent(eventType: .completedOperation(storedCredentials as! AmplifyCredentials))
+            let credentialStoreData: CredentialStoreData
+            switch credentialStoreType {
+            case .amplifyCredentials:
+                let storedCredentials = try amplifyCredentialStore.retrieveCredential()
+                credentialStoreData = .amplifyCredentials(storedCredentials)
+            case .deviceMetadata(let username):
+                let deviceMetadata = try amplifyCredentialStore.retrieveDevice(for: username)
+                credentialStoreData = .deviceMetadata(deviceMetadata, username)
+            case .asfDeviceId(let username):
+                let deviceId = try amplifyCredentialStore.retrieveASFDevice(for: username)
+                credentialStoreData = .asfDeviceId(deviceId, username)
+            }
+
+            let event = CredentialStoreEvent(
+                eventType: .completedOperation(credentialStoreData))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
-        } catch let error as CredentialStoreError {
+        } catch let error as KeychainStoreError {
             let event = CredentialStoreEvent(eventType: .throwError(error))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
         } catch {
             let event = CredentialStoreEvent(
                 eventType: .throwError(
-                    CredentialStoreError.unknown("An unknown error occurred", error)
+                    KeychainStoreError.unknown("An unknown error occurred", error)
                 )
             )
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)

@@ -8,7 +8,7 @@
 import Foundation
 
 protocol HostedUIEnvironment: Environment {
-    
+
     typealias HostedUISessionFactory = () -> HostedUISessionBehavior
 
     typealias URLSessionFactory = () -> URLSession

@@ -11,7 +11,7 @@ import AWSCognitoIdentityProvider
 import AWSPluginsCore
 
 extension CognitoIdentityProviderClientTypes.DeviceType {
-    
+
     func toAWSAuthDevice() -> AuthDevice {
         let id = deviceKey ?? ""
         let name = ""
@@ -29,7 +29,7 @@ extension CognitoIdentityProviderClientTypes.DeviceType {
                                    createdDate: deviceCreateDate,
                                    lastAuthenticatedDate: deviceLastAuthenticatedDate,
                                    lastModifiedDate: deviceLastModifiedDate)
-        
+
         return device
     }
 }

@@ -27,9 +27,11 @@ extension CredentialStoreState {
                 return resolveNotConfigured(byApplying: credentialStoreEvent)
             case .migratingLegacyStore:
                 return resolveMigratingLegacyStore(oldState: oldState, byApplying: credentialStoreEvent)
-            case .loadingStoredCredentials, .storingCredentials, .clearingCredentials:
+            case .loadingStoredCredentials, .storingCredentials:
                 return resolveOperationCompletion(oldState: oldState, byApplying: credentialStoreEvent)
-            case .success, .error:
+            case .clearingCredentials:
+                return resolveClearingCredentials(oldState: oldState, byApplying: credentialStoreEvent)
+            case .success, .error, .clearedCredential:
                 return resolveSuccessAndErrorState(oldState: oldState, byApplying: credentialStoreEvent)
             case .idle:
                 return resolveIdleState(oldState: oldState, byApplying: credentialStoreEvent)
@@ -59,8 +61,8 @@ extension CredentialStoreState {
         ) -> StateResolution<StateType> {
 
             switch credentialStoreEvent.eventType {
-            case .loadCredentialStore:
-                let action = LoadCredentialStore()
+            case .loadCredentialStore(let type):
+                let action = LoadCredentialStore(credentialStoreType: type)
                 let resolution = StateResolution(
                     newState: CredentialStoreState.loadingStoredCredentials,
                     actions: [action]
@@ -97,6 +99,30 @@ extension CredentialStoreState {
             }
         }
 
+        private func resolveClearingCredentials(
+            oldState: StateType,
+            byApplying credentialStoreEvent: CredentialStoreEvent
+        ) -> StateResolution<StateType> {
+            switch credentialStoreEvent.eventType {
+            case .credentialCleared(let dataType):
+                let action = IdleCredentialStore()
+                let resolution = StateResolution(
+                    newState: CredentialStoreState.clearedCredential(dataType),
+                    actions: [action]
+                )
+                return resolution
+            case .throwError(let error):
+                let action = IdleCredentialStore()
+                let resolution = StateResolution(
+                    newState: CredentialStoreState.error(error),
+                    actions: [action]
+                )
+                return resolution
+            default:
+                return .from(oldState)
+            }
+        }
+
         private func resolveSuccessAndErrorState(
             oldState: StateType,
             byApplying credentialStoreEvent: CredentialStoreEvent
@@ -114,8 +140,8 @@ extension CredentialStoreState {
             byApplying credentialStoreEvent: CredentialStoreEvent
         ) -> StateResolution<StateType> {
             switch credentialStoreEvent.eventType {
-            case .loadCredentialStore:
-                let action = LoadCredentialStore()
+            case .loadCredentialStore(let type):
+                let action = LoadCredentialStore(credentialStoreType: type)
                 let resolution = StateResolution(
                     newState: CredentialStoreState.loadingStoredCredentials,
                     actions: [action]
@@ -128,8 +154,8 @@ extension CredentialStoreState {
                     actions: [action]
                 )
                 return resolution
-            case .clearCredentialStore:
-                let action = ClearCredentialStore()
+            case .clearCredentialStore(let type):
+                let action = ClearCredentialStore(dataStoreType: type)
                 let resolution = StateResolution(
                     newState: CredentialStoreState.clearingCredentials,
                     actions: [action]

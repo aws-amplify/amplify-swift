@@ -13,20 +13,20 @@ import AppSyncRealTimeClient
 
 class AuthenticationTokenAuthInterceptorTests: XCTestCase {
 
-    func testAuthenticationTokenInterceptor() throws {
+    func testAuthenticationTokenInterceptor() async throws {
         let url = URL(string: "http://awssubscriptionurl.ca")!
         let request = AppSyncConnectionRequest(url: url)
         let interceptor = AuthenticationTokenAuthInterceptor(authTokenProvider: TestAuthTokenProvider())
-        let interceptedRequest = interceptor.interceptConnection(request, for: url)
+        let interceptedRequest = await interceptor.interceptConnection(request, for: url)
 
         XCTAssertNotNil(interceptedRequest.url.query)
     }
 
-    func testDoesNotAddAuthHeaderIfTokenProviderReturnsError() throws {
+    func testDoesNotAddAuthHeaderIfTokenProviderReturnsError() async throws {
         let url = URL(string: "http://awssubscriptionurl.ca")!
         let request = AppSyncConnectionRequest(url: url)
         let interceptor = AuthenticationTokenAuthInterceptor(authTokenProvider: TestFailingAuthTokenProvider())
-        let interceptedRequest = interceptor.interceptConnection(request, for: url)
+        let interceptedRequest = await interceptor.interceptConnection(request, for: url)
 
         XCTAssertNil(interceptedRequest.url.query)
     }
@@ -36,23 +36,16 @@ class AuthenticationTokenAuthInterceptorTests: XCTestCase {
 private class TestAuthTokenProvider: AmplifyAuthTokenProvider {
     let authToken = "token"
     
-    func getLatestAuthToken() -> Result<AuthToken, Error> {
-        .success(authToken)
-    }
-    
     func getUserPoolAccessToken() async throws -> String {
         authToken
     }
 }
 
 private class TestFailingAuthTokenProvider: AmplifyAuthTokenProvider {
+    
     let authToken = "token"
-    func getLatestAuthToken() -> Result<AuthToken, Error> {
-        let error = APIError.networkError("Token error")
-        return .failure(error)
-    }
     
     func getUserPoolAccessToken() async throws -> String {
-        authToken
+        throw "Token error"
     }
 }
