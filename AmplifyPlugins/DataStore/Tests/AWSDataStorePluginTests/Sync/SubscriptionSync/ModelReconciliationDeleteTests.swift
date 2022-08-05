@@ -76,7 +76,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
 
         // Because we expect this event to be dropped, there won't be a Hub notification or callback to listen to, so
         // we have to brute-force this wait
-        Thread.sleep(forTimeInterval: 1.0)
+        try await Task.sleep(seconds: 1.0)
 
         let finalLocalMetadata = try storageAdapter.queryMutationSyncMetadata(for: model.id,
                                                                                  modelName: MockSynced.modelName)
