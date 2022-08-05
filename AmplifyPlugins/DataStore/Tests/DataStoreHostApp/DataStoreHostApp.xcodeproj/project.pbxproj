@@ -177,7 +177,6 @@
 		21BBFC09289C036A00B32A39 /* DataStoreHubEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9EE289BFE3400B32A39 /* DataStoreHubEvent.swift */; };
 		21BBFC0A289C036C00B32A39 /* LocalStoreIntegrationTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9EF289BFE3400B32A39 /* LocalStoreIntegrationTestBase.swift */; };
 		21BBFC0B289C037000B32A39 /* TestModelV2Registration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F0289BFE3400B32A39 /* TestModelV2Registration.swift */; };
-		21BBFC0D289C037400B32A39 /* SyncMetadataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA0F289BFE3400B32A39 /* SyncMetadataTests.swift */; };
 		21BBFC0E289C038500B32A39 /* DataStoreConnectionScenario5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F4289BFE3400B32A39 /* DataStoreConnectionScenario5Tests.swift */; };
 		21BBFC0F289C038700B32A39 /* DataStoreConnectionScenario2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F5289BFE3400B32A39 /* DataStoreConnectionScenario2Tests.swift */; };
 		21BBFC10289C038900B32A39 /* DataStoreConnectionScenario4Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F6289BFE3400B32A39 /* DataStoreConnectionScenario4Tests.swift */; };
@@ -514,7 +513,6 @@
 		21BBFA0C289BFE3400B32A39 /* SubscriptionEndToEndTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptionEndToEndTests.swift; sourceTree = "<group>"; };
 		21BBFA0D289BFE3400B32A39 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		21BBFA0E289BFE3400B32A39 /* DataStoreScalarTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreScalarTests.swift; sourceTree = "<group>"; };
-		21BBFA0F289BFE3400B32A39 /* SyncMetadataTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncMetadataTests.swift; sourceTree = "<group>"; };
 		21BBFA10289BFE3400B32A39 /* DataStoreEndToEndTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreEndToEndTests.swift; sourceTree = "<group>"; };
 		21BBFA12289BFE3400B32A39 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		21BBFA13289BFE3400B32A39 /* AWSDataStorePrimaryKeyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSDataStorePrimaryKeyTests.swift; sourceTree = "<group>"; };
@@ -1256,7 +1254,6 @@
 				21BBFC26289C060600B32A39 /* Base */,
 				21BBFC25289C054900B32A39 /* Models */,
 				21BBF9E7289BFE3400B32A39 /* TestSupport */,
-				21BBFA0F289BFE3400B32A39 /* SyncMetadataTests.swift */,
 				21BBFA0D289BFE3400B32A39 /* README.md */,
 				21BBFA0C289BFE3400B32A39 /* SubscriptionEndToEndTests.swift */,
 				21BBFA0E289BFE3400B32A39 /* DataStoreScalarTests.swift */,
@@ -2229,7 +2226,6 @@
 				21BBFE0C289C06E400B32A39 /* UserProfile.swift in Sources */,
 				21BBFE08289C06E400B32A39 /* UserFollowing+Schema.swift in Sources */,
 				21BBFDBF289C06E400B32A39 /* PostCommentModelRegistration.swift in Sources */,
-				21BBFC0D289C037400B32A39 /* SyncMetadataTests.swift in Sources */,
 				21BBFD74289C06E400B32A39 /* SchemaDrift+Schema.swift in Sources */,
 				21BBFD4F289C06E400B32A39 /* Post4V2.swift in Sources */,
 				21BBFD48289C06E400B32A39 /* Comment7V2.swift in Sources */,

@@ -38,16 +38,6 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
 
         let version: String = "1"
     }
-
-    func testSetUp() async throws {
-        do {
-            await setUp(withModels: TestModelRegistration())
-            try await startAmplifyAndWaitForSync()
-        } catch {
-            print("Error \(error)")
-        }
-        
-    }
     
     func testSaveTeamAndProjectSyncToCloud() async throws {
         await setUp(withModels: TestModelRegistration())
@@ -117,12 +107,48 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
     }
 
     func testUpdateProjectWithAnotherTeam() async throws {
-        await setUp(withModels: TestModelRegistration())
+        await setUp(withModels: TestModelRegistration(), logLevel: .verbose)
         try await startAmplifyAndWaitForSync()
         let team = Team1(name: "name1")
         let anotherTeam = Team1(name: "name1")
         var project = Project1(team: team)
         let expectedUpdatedProject = Project1(id: project.id, name: project.name, team: anotherTeam)
+
+        let saveTeamCompleted = expectation(description: "save team completed")
+        Amplify.DataStore.save(team) { result in
+            switch result {
+            case .success:
+                saveTeamCompleted.fulfill()
+            case .failure(let error):
+                XCTFail("failed \(error)")
+            }
+        }
+        await waitForExpectations(timeout: networkTimeout)
+        
+        let saveAnotherTeamCompleted = expectation(description: "save team completed")
+        
+        Amplify.DataStore.save(anotherTeam) { result in
+            switch result {
+            case .success:
+                saveAnotherTeamCompleted.fulfill()
+            case .failure(let error):
+                XCTFail("failed \(error)")
+            }
+        }
+        await waitForExpectations(timeout: networkTimeout)
+
+        let saveProjectCompleted = expectation(description: "save project completed")
+        Amplify.DataStore.save(project) { result in
+            switch result {
+            case .success:
+                saveProjectCompleted.fulfill()
+            case .failure(let error):
+                XCTFail("failed \(error)")
+            }
+        }
+        await waitForExpectations(timeout: networkTimeout)
+
+        let updateProjectCompleted = expectation(description: "update project completed")
         let syncUpdatedProjectReceived = expectation(description: "received updated project from sync path")
         let hubListener = Amplify.Hub.listen(to: .dataStore,
                                              eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
@@ -140,40 +166,6 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
             XCTFail("Listener not registered for hub")
             return
         }
-
-        let saveTeamCompleted = expectation(description: "save team completed")
-        Amplify.DataStore.save(team) { result in
-            switch result {
-            case .success:
-                saveTeamCompleted.fulfill()
-            case .failure(let error):
-                XCTFail("failed \(error)")
-            }
-        }
-        wait(for: [saveTeamCompleted], timeout: networkTimeout)
-        let saveAnotherTeamCompleted = expectation(description: "save team completed")
-        Amplify.DataStore.save(anotherTeam) { result in
-            switch result {
-            case .success:
-                saveAnotherTeamCompleted.fulfill()
-            case .failure(let error):
-                XCTFail("failed \(error)")
-            }
-        }
-        wait(for: [saveAnotherTeamCompleted], timeout: networkTimeout)
-
-        let saveProjectCompleted = expectation(description: "save project completed")
-        Amplify.DataStore.save(project) { result in
-            switch result {
-            case .success:
-                saveProjectCompleted.fulfill()
-            case .failure(let error):
-                XCTFail("failed \(error)")
-            }
-        }
-        wait(for: [saveProjectCompleted], timeout: networkTimeout)
-
-        let updateProjectCompleted = expectation(description: "save project completed")
         project.team = anotherTeam
         Amplify.DataStore.save(project) { result in
             switch result {
@@ -183,8 +175,8 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
                 XCTFail("failed \(error)")
             }
         }
-        wait(for: [updateProjectCompleted], timeout: networkTimeout)
-
+        await waitForExpectations(timeout: networkTimeout)
+        
         let queriedProjectCompleted = expectation(description: "query project completed")
         Amplify.DataStore.query(Project1.self, byId: project.id) { result in
             switch result {
@@ -200,7 +192,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
                 XCTFail("failed \(error)")
             }
         }
-        wait(for: [queriedProjectCompleted, syncUpdatedProjectReceived], timeout: networkTimeout)
+        await waitForExpectations(timeout: networkTimeout)
     }
 
     func testDeleteAndGetProjectReturnsNilWithSync() async throws {
