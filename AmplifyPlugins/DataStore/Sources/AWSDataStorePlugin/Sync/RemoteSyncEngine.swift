@@ -323,14 +323,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                 receiveValue: { [weak self] in self?.onReceive(receiveValue: $0) }
             )
 
-        // TODO: This should be an AsynchronousOperation, not a semaphore-waited block
-        let semaphore = DispatchSemaphore(value: 0)
-
         initialSyncOrchestrator.sync { [weak self] result in
-            defer {
-                semaphore.signal()
-            }
-
             guard let self = self else {
                 return
             }
@@ -350,13 +343,11 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                 self.stateMachine.notify(action: .performedInitialSync)
             }
         }
-
-        semaphore.wait()
-        self.initialSyncOrchestrator = nil
     }
 
     private func activateCloudSubscriptions() {
         log.debug(#function)
+        self.initialSyncOrchestrator = nil
         guard let reconciliationQueue = reconciliationQueue else {
             let error = DataStoreError.internalOperation("reconciliationQueue is unexpectedly `nil`", "", nil)
             stateMachine.notify(action: .errored(error))
