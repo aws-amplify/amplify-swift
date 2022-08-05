@@ -20,7 +20,7 @@ struct UserPoolConfigurationData: Equatable {
         poolId: String,
         clientId: String,
         region: String,
-        endpoint: String?,
+        endpoint: String? = nil,
         clientSecret: String? = nil,
         pinpointAppId: String? = nil,
         authFlowType: AuthFlowType = .unknown,

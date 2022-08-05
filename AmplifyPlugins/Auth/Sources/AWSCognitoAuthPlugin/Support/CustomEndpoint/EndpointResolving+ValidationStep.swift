@@ -74,7 +74,7 @@ extension AuthError {
             AWSCognitoAuthPlugin only supports the https scheme.
             > Remove the scheme in your `endpoint` value.
             e.g.
-            "endpoint": "\(URL(string: endpoint)?.host ?? "foo.com")"
+            "endpoint": \(URL(string: endpoint)?.host ?? "example.com")
             """
         )
     }
