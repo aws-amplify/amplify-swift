@@ -342,12 +342,12 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                 self.remoteSyncTopicPublisher.send(.performedInitialSync)
                 self.stateMachine.notify(action: .performedInitialSync)
             }
+            self.initialSyncOrchestrator = nil
         }
     }
 
     private func activateCloudSubscriptions() {
         log.debug(#function)
-        self.initialSyncOrchestrator = nil
         guard let reconciliationQueue = reconciliationQueue else {
             let error = DataStoreError.internalOperation("reconciliationQueue is unexpectedly `nil`", "", nil)
             stateMachine.notify(action: .errored(error))
