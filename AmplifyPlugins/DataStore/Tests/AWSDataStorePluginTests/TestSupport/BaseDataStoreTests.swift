@@ -82,7 +82,7 @@ class BaseDataStoreTests: XCTestCase {
     // MARK: - Utilities
 
     func populateData<M: Model>(_ models: [M]) {
-        let semaphore = DispatchSemaphore(value: 0)
+        let saveComplete = expectation(description: "save completed")
 
         func save(model: M, index: Int) {
             storageAdapter.save(model) {
@@ -92,21 +92,20 @@ class BaseDataStoreTests: XCTestCase {
                     if nextIndex < models.endIndex {
                         save(model: models[nextIndex], index: nextIndex)
                     } else {
-                        semaphore.signal()
+                        saveComplete.fulfill()
                     }
                 case .failure(let error):
                     XCTFail(error.errorDescription)
-                    semaphore.signal()
+                    saveComplete.fulfill()
                 }
             }
         }
 
         if let model = models.first {
             save(model: model, index: 0)
-            semaphore.wait()
+            wait(for: [saveComplete], timeout: 1.0)
         } else {
-            semaphore.signal()
+            saveComplete.fulfill()
         }
-
     }
 }
