@@ -126,20 +126,21 @@ class AWSDataStorePluginTests: XCTestCase {
                 }
             } receiveValue: { _ in }
 
-            let semaphore = DispatchSemaphore(value: 0)
+            let startCompleted = expectation(description: "start completed")
             plugin.start(completion: {_ in
                 XCTAssertNotNil(plugin.storageEngine)
                 XCTAssertNotNil(plugin.dataStorePublisher)
-                semaphore.signal()
+                startCompleted.fulfill()
             })
-            semaphore.wait()
+            wait(for: [startCompleted], timeout: 1.0)
 
+            let stopCompleted = expectation(description: "stop completed")
             plugin.stop(completion: { _ in
                 XCTAssertNil(plugin.storageEngine)
                 XCTAssertNotNil(plugin.dataStorePublisher)
-                semaphore.signal()
+                stopCompleted.fulfill()
             })
-            semaphore.wait()
+            wait(for: [stopCompleted], timeout: 1.0)
 
             storageEngine.responders[.startSync] = StartSyncResponder { _ in
                 count = self.expect(startExpectationOnSecondStart, count, 3)
@@ -195,20 +196,22 @@ class AWSDataStorePluginTests: XCTestCase {
                 }
             } receiveValue: { _ in }
 
-            let semaphore = DispatchSemaphore(value: 0)
+            let startCompleted = expectation(description: "start completed")
             plugin.start(completion: {_ in
                 XCTAssertNotNil(plugin.storageEngine)
                 XCTAssertNotNil(plugin.dataStorePublisher)
-                semaphore.signal()
+                startCompleted.fulfill()
             })
-            semaphore.wait()
+            wait(for: [startCompleted], timeout: 1.0)
 
+            let clearCompleted = expectation(description: "clear completed")
             plugin.clear(completion: { _ in
                 XCTAssertNil(plugin.storageEngine)
                 XCTAssertNotNil(plugin.dataStorePublisher)
-                semaphore.signal()
+                clearCompleted.fulfill()
             })
-            semaphore.wait()
+            wait(for: [clearCompleted], timeout: 1.0)
+
             storageEngine.responders[.startSync] = StartSyncResponder {_ in
                 count = self.expect(startExpectationOnSecondStart, count, 3)
             }
@@ -265,20 +268,21 @@ class AWSDataStorePluginTests: XCTestCase {
                 }
             } receiveValue: { _ in }
 
-            let semaphore = DispatchSemaphore(value: 0)
+            let queryCompleted = expectation(description: "query completed")
             plugin.query(ExampleWithEveryType.self, completion: {_ in
                 XCTAssertNotNil(plugin.storageEngine)
                 XCTAssertNotNil(plugin.dataStorePublisher)
-                semaphore.signal()
+                queryCompleted.fulfill()
             })
-            semaphore.wait()
+            wait(for: [queryCompleted], timeout: 1.0)
 
+            let clearCompleted = expectation(description: "clear completed")
             plugin.clear(completion: { _ in
                 XCTAssertNil(plugin.storageEngine)
                 XCTAssertNotNil(plugin.dataStorePublisher)
-                semaphore.signal()
+                clearCompleted.fulfill()
             })
-            semaphore.wait()
+            wait(for: [clearCompleted], timeout: 1.0)
             storageEngine.responders[.query] = QueryResponder<ExampleWithEveryType> {_ in
                 count = self.expect(startExpectationOnQuery, count, 3)
                 return .success([])
@@ -356,20 +360,21 @@ class AWSDataStorePluginTests: XCTestCase {
                 publisherReceivedValue.fulfill()
             }
 
-            let semaphore = DispatchSemaphore(value: 0)
+            let startCompleted = expectation(description: "start completed")
             plugin.start(completion: {_ in
                 XCTAssertNotNil(plugin.storageEngine)
                 XCTAssertNotNil(plugin.dataStorePublisher)
-                semaphore.signal()
+                startCompleted.fulfill()
             })
-            semaphore.wait()
-
+            wait(for: [startCompleted], timeout: 1.0)
+            
+            let clearCompleted = expectation(description: "clear completed")
             plugin.clear(completion: { _ in
                 XCTAssertNil(plugin.storageEngine)
                 XCTAssertNotNil(plugin.dataStorePublisher)
-                semaphore.signal()
+                clearCompleted.fulfill()
             })
-            semaphore.wait()
+            wait(for: [clearCompleted], timeout: 1.0)
 
             let mockModel = MockSynced(id: "12345")
             try plugin.dataStorePublisher?.send(input: MutationEvent(model: mockModel,
@@ -435,20 +440,21 @@ class AWSDataStorePluginTests: XCTestCase {
                 publisherReceivedValue.fulfill()
             }
 
-            let semaphore = DispatchSemaphore(value: 0)
+            let startCompleted = expectation(description: "start completed")
             plugin.start(completion: {_ in
                 XCTAssertNotNil(plugin.storageEngine)
                 XCTAssertNotNil(plugin.dataStorePublisher)
-                semaphore.signal()
+                startCompleted.fulfill()
             })
-            semaphore.wait()
-
+            wait(for: [startCompleted], timeout: 1.0)
+            
+            let stopCompleted = expectation(description: "stop completed")
             plugin.stop(completion: { _ in
                 XCTAssertNil(plugin.storageEngine)
                 XCTAssertNotNil(plugin.dataStorePublisher)
-                semaphore.signal()
+                stopCompleted.fulfill()
             })
-            semaphore.wait()
+            wait(for: [stopCompleted], timeout: 1.0)
 
             let mockModel = MockSynced(id: "12345")
             try plugin.dataStorePublisher?.send(input: MutationEvent(model: mockModel,
@@ -508,13 +514,13 @@ class AWSDataStorePluginTests: XCTestCase {
                                         validAPIPluginKey: "MockAPICategoryPlugin",
                                         validAuthPluginKey: "MockAuthCategoryPlugin")
 
-        let semaphore = DispatchSemaphore(value: 0)
+        let startCompleted = expectation(description: "start completed")
         plugin.start(completion: {_ in
             XCTAssertNotNil(plugin.storageEngine)
             XCTAssertNotNil(plugin.dataStorePublisher)
-            semaphore.signal()
+            startCompleted.fulfill()
         })
-        semaphore.wait()
+        wait(for: [startCompleted], timeout: 1.0)
 
         storageEngine.mockPublisher.send(completion: .finished)
 
@@ -538,13 +544,13 @@ class AWSDataStorePluginTests: XCTestCase {
                                         validAPIPluginKey: "MockAPICategoryPlugin",
                                         validAuthPluginKey: "MockAuthCategoryPlugin")
 
-        let semaphore = DispatchSemaphore(value: 0)
+        let startCompleted = expectation(description: "start completed")
         plugin.start(completion: {_ in
             XCTAssertNotNil(plugin.storageEngine)
             XCTAssertNotNil(plugin.dataStorePublisher)
-            semaphore.signal()
+            startCompleted.fulfill()
         })
-        semaphore.wait()
+        wait(for: [startCompleted], timeout: 1.0)
 
         storageEngine.mockPublisher.send(completion: .failure(.internalOperation("", "", nil)))
 

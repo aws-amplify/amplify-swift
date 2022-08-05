@@ -70,13 +70,13 @@ class OutgoingMutationQueueMockStateTest: XCTestCase {
     }
 
     func testRequestingEvent_subscriptionSetup() throws {
-        let semaphore = DispatchSemaphore(value: 0)
+        let receivedSubscription = expectation(description: "state machine received receivedSubscription")
         stateMachine.pushExpectActionCriteria { action in
             XCTAssertEqual(action, OutgoingMutationQueue.Action.receivedSubscription)
-            semaphore.signal()
+            receivedSubscription.fulfill()
         }
         stateMachine.state = .starting(apiBehavior, publisher, reconciliationQueue)
-        semaphore.wait()
+        wait(for: [receivedSubscription], timeout: 1.0)
 
         let json = "{\"id\":\"1234\",\"title\":\"t\",\"content\":\"c\",\"createdAt\":\"2020-09-03T22:55:13.424Z\"}"
         let futureResult = MutationEvent(modelId: "1",
