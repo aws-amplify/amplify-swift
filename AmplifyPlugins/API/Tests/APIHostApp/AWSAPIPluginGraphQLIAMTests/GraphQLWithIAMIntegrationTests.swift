@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import AWSPluginsCore
 import AWSAPIPlugin
 import AWSCognitoAuthPlugin
 
@@ -23,7 +22,7 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
 
     override func setUp() {
         do {
-
+            Amplify.Logging.logLevel = .verbose
             try Amplify.add(plugin: AWSAPIPlugin())
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
@@ -33,10 +32,9 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
         } catch {
             XCTFail("Error during setup: \(error)")
         }
-        // TODO: uncomment this once signIn works
-//        if isSignedIn() {
-//            signOut()
-//        }
+        if isSignedIn() {
+            signOut()
+        }
     }
 
     override func tearDown() async throws {

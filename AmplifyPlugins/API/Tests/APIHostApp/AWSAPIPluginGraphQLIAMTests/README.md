@@ -4,7 +4,7 @@ The following steps demonstrate how to set up an GraphQL endpoint with AppSync. 
 
 ### Set-up
 
-Latest tested with amplify CLI version 8.0.1 `amplify -v`
+Latest tested with amplify CLI version 9.1.0 `amplify -v`
 
 1. `amplify init`
 
@@ -14,9 +14,16 @@ Latest tested with amplify CLI version 8.0.1 `amplify -v`
 ? Please select from one of the below mentioned services: `GraphQL`
 ? Provide API name: graphqlmodelapitests
 ? Choose the default authorization type for the API `IAM`
-? Do you want to configure advanced settings for the GraphQL API `No, I am done.`
-? Do you have an annotated GraphQL schema? `No`
+? Configure additional auth types? (y/N) 'N'
+? Here is the GraphQL API that we will create. Select
+ a setting to edit or continue 
+  Name: apigraphqliamdev 
+  Authorization modes: IAM (default) 
+  Conflict detection (required for DataStore): Disabl
+ed 
+❯ 'Continue'
 ? Choose a schema template: `Single object with fields (e.g., “Todo” with ID, name, description)`
+✔ Do you want to edit the schema now? (Y/n) · Y
 ```
 Edit the schema to
 ```
@@ -29,6 +36,7 @@ type Todo @model @auth(rules: [
 }
 
 ```
+tip: remove `input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!` in the schema
 
 3. `amplify add auth`
 ```perl
@@ -104,14 +112,23 @@ Continue in the terminal;
 Successfully added resource amplifyintegtest locally
 ```
 
-4. If you are using the latest CLI, update cli.json to include `"useExperimentalPipelinedTransformer": false` to ensure that it will use the v1 transformer and then `amplify push`
+4. If you are using the latest CLI, update cli.json to include `"useExperimentalPipelinedTransformer": false` and `"transformerversion": 1`to ensure that it will use the v1 transformer and then `amplify push`
+
+```perl
+? Do you want to generate code for your newly created GraphQL API (Y/n) `n`
+```
 
 5. Copy `amplifyconfiguration.json` over as `GraphQLWithIAMIntegrationTests-amplifyconfiguration.json` to `~/.aws-amplify/amplify-ios/testconfiguration/`
+
+```
+cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/GraphQLWithIAMIntegrationTests-amplifyconfiguration.json
+
+```
 
 6. `amplify console auth` and choose `Identity Pool`. Click on **Edit Identity pool** and make note of IAM Role that is assigned for the Authenticated role.
 
 7. Navigate to [AWS IAM Console](https://console.aws.amazon.com/iam/home) and select Roles, find the role attached to the Identity Pool's Authenticated role.
 
-8. Click on Attach Policies, choose **AWSAppSyncInvokeFullAccess**, and attach the policy. This will allow users that are signed into the app to have access to invoke AppSync APIs.
+8. Click on Add Permissions and choose Attach Policies. Now search for **AWSAppSyncInvokeFullAccess** policy, and attach the policy. This will allow users that are signed into the app to have access to invoke AppSync APIs.
 
 You can now run the tests!
