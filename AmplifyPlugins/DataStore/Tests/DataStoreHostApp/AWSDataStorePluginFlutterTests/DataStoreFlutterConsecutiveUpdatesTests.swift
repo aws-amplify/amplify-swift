@@ -179,7 +179,6 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
         plugin.save(newPost.model, modelSchema: Post.schema) { result in
             switch result {
             case .success:
-                sleep(3)
                 plugin.delete(newPost.model, modelSchema: Post.schema, where: Post.keys.id.eq(newPost.idString())) { result in
                     switch result {
                     case .success:
@@ -310,7 +309,6 @@ class DataStoreFlutterConsecutiveUpdatesTests: SyncEngineFlutterIntegrationTestB
         let updateAndImmediatelyDelete =
             expectation(description: "Post is updated and deleted immediately")
         plugin.save(updatedPost.model, modelSchema: Post.schema) { result in
-            sleep(2)
             switch result {
             case .success:
                 plugin.delete(updatedPost.model, modelSchema: Post.schema) { result in
