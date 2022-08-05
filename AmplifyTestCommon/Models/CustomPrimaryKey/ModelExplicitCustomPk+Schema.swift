@@ -41,10 +41,10 @@ extension ModelExplicitCustomPk {
 
 extension ModelExplicitCustomPk: ModelIdentifiable {
     public typealias IdentifierFormat = ModelIdentifierFormat.Custom
-    public typealias Identifier = ModelIdentifier<Self, ModelIdentifierFormat.Custom>
+    public typealias IdentifierProtocol = ModelIdentifier<Self, ModelIdentifierFormat.Custom>
 }
 
-extension ModelExplicitCustomPk.Identifier {
+extension ModelExplicitCustomPk.IdentifierProtocol {
     public static func identifier(userId: String) -> Self {
         .make(fields: [(name: "userId", value: userId)])
     }

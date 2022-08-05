@@ -45,5 +45,5 @@ extension PostTagsWithCompositeKey {
 
 extension PostTagsWithCompositeKey: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
-  public typealias Identifier = DefaultModelIdentifier<Self>
+  public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
 }
