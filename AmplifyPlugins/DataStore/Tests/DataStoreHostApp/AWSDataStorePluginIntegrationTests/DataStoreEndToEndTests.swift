@@ -148,7 +148,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 }
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
         }
@@ -179,7 +179,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 }
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
         }
@@ -209,7 +209,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 }
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
         }
@@ -270,7 +270,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 }
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
         }
@@ -343,7 +343,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             }
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
         }
@@ -398,7 +398,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             }
         }
         wait(for: [stopStartSuccess], timeout: networkTimeout)
-        try validateSavePost()
+        try await validateSavePost()
 
     }
 
@@ -457,7 +457,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             }
         }
         wait(for: [clearStartSuccess], timeout: networkTimeout)
-        try validateSavePost()
+        try await validateSavePost()
     }
 
     /// Perform concurrent saves and observe the data successfuly synced from cloud. Then delete the items afterwards
@@ -544,7 +544,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 
     // MARK: - Helpers
 
-    func validateSavePost() throws {
+    func validateSavePost() async throws {
         let date = Temporal.DateTime.now()
         let newPost = Post(
             title: "This is a new post I created",
@@ -574,7 +574,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 }
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
         }

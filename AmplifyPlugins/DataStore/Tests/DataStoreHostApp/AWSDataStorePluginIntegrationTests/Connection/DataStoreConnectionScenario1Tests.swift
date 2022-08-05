@@ -61,7 +61,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
                 syncProjectReceived.fulfill()
             }
         }
-        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
         }
@@ -162,7 +162,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
                 syncUpdatedProjectReceived.fulfill()
             }
         }
-        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
         }
@@ -233,7 +233,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
             }
 
         }
-        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
         }
