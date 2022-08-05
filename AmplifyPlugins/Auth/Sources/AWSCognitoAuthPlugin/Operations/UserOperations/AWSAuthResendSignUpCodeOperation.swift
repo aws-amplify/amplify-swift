@@ -10,17 +10,19 @@ import AWSPluginsCore
 import ClientRuntime
 import AWSCognitoIdentityProvider
 
-public class AWSAuthResendSignUpCodeOperation: AmplifyOperation< AuthResendSignUpCodeRequest, AuthCodeDeliveryDetails, AuthError>, AuthResendSignUpCodeOperation {
+public class AWSAuthResendSignUpCodeOperation: AmplifyOperation<
+AuthResendSignUpCodeRequest,
+AuthCodeDeliveryDetails,
+AuthError>, AuthResendSignUpCodeOperation {
 
-    typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
-    private let userPoolFactory: CognitoUserPoolFactory
+    private let environment: AuthEnvironment
     private var authConfiguration: AuthConfiguration
 
     init(_ request: AuthResendSignUpCodeRequest,
-         userPoolFactory: @escaping CognitoUserPoolFactory,
+         environment: AuthEnvironment,
          authConfiguration: AuthConfiguration,
          resultListener: ResultListener?) {
-        self.userPoolFactory = userPoolFactory
+        self.environment = environment
         self.authConfiguration = authConfiguration
         super.init(categoryType: .auth,
                    eventName: HubPayload.EventName.Auth.resendSignUpCodeAPI,
@@ -41,13 +43,14 @@ public class AWSAuthResendSignUpCodeOperation: AmplifyOperation< AuthResendSignU
         }
 
         Task.init { [weak self] in
-            await self?.resendSignUpCode()
+            await self?.resendSignUpCode(authEnvironment: environment)
         }
     }
 
-    func resendSignUpCode() async {
+    func resendSignUpCode(authEnvironment: AuthEnvironment) async {
         do {
-            let userPoolService = try userPoolFactory()
+            let userPoolEnvironment = try environment.userPoolEnvironment()
+            let userPoolService = try userPoolEnvironment.cognitoUserPoolFactory()
             let clientMetaData = (request.options.pluginOptions
                                   as? AWSResendSignUpCodeOptions)?.metadata ?? [:]
 
@@ -58,13 +61,26 @@ public class AWSAuthResendSignUpCodeOperation: AmplifyOperation< AuthResendSignU
             case .userPoolsAndIdentityPools(let data, _):
                 userPoolConfigurationData = data
             case .identityPools:
-                let error = AuthError.configuration("UserPool configuration is missing", AuthPluginErrorConstants.configurationError)
+                let error = AuthError.configuration("UserPool configuration is missing",
+                                                    AuthPluginErrorConstants.configurationError)
                 throw error
             }
 
-            let input = ResendConfirmationCodeInput(clientId: userPoolConfigurationData.clientId,
-                                                    clientMetadata: clientMetaData,
-                                                    username: request.username)
+            let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
+                for: request.username,
+                credentialStoreClient: authEnvironment.credentialStoreClientFactory())
+            let encodedData = CognitoUserPoolASF.encodedContext(
+                username: request.username,
+                asfDeviceId: asfDeviceId,
+                asfClient: authEnvironment.cognitoUserPoolASFFactory(),
+                userPoolConfiguration: userPoolConfigurationData)
+            let userContextData = CognitoIdentityProviderClientTypes.UserContextDataType(
+                encodedData: encodedData)
+            let input = ResendConfirmationCodeInput(
+                clientId: userPoolConfigurationData.clientId,
+                clientMetadata: clientMetaData,
+                userContextData: userContextData,
+                username: request.username)
 
             let result = try await userPoolService.resendConfirmationCode(input: input)
 
