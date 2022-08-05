@@ -25,9 +25,6 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
 
     override func setUp() async throws {
         try await super.setUp()
-
-        // Allows any previously-running API calls to finish up before unconfiguring the category
-        sleep(2)
         await Amplify.reset()
         Amplify.Logging.logLevel = .warn
 

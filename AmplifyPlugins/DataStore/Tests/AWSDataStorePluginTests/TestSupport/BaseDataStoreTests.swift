@@ -25,7 +25,6 @@ class BaseDataStoreTests: XCTestCase {
 
     override func setUp() async throws {
         try await super.setUp()
-        sleep(2)
         await Amplify.reset()
         Amplify.Logging.logLevel = .warn
 
