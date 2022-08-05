@@ -84,12 +84,14 @@
 		21698CC72889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CC22889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift */; };
 		21698CC92889D75F004BD994 /* SocialNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CC42889D75F004BD994 /* SocialNote.swift */; };
 		21698CCB2889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CC62889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift */; };
-		21B6A183289B03C70046723B /* GraphQLWithIAMIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BAF28899B61004BD994 /* GraphQLWithIAMIntegrationTests.swift */; };
-		21B6A184289B03C70046723B /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BB228899B61004BD994 /* Todo.swift */; };
 		21E73E6F28898D7900D7DB7E /* APIHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E73E6E28898D7900D7DB7E /* APIHostAppApp.swift */; };
 		21E73E7128898D7900D7DB7E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E73E7028898D7900D7DB7E /* ContentView.swift */; };
 		21E73E7328898D7A00D7DB7E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21E73E7228898D7A00D7DB7E /* Assets.xcassets */; };
 		21E73E7628898D7A00D7DB7E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21E73E7528898D7A00D7DB7E /* Preview Assets.xcassets */; };
+		39E0F146289DD60200939D9F /* GraphQLWithIAMIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BAF28899B61004BD994 /* GraphQLWithIAMIntegrationTests.swift */; };
+		39E0F147289DD60C00939D9F /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BB228899B61004BD994 /* Todo.swift */; };
+		39E0F14B289DD84E00939D9F /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E0F14A289DD84E00939D9F /* TestConfigHelper.swift */; };
+		39E0F14D289DD93300939D9F /* AuthSignInHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E0F14C289DD93300939D9F /* AuthSignInHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -114,7 +116,7 @@
 			remoteGlobalIDString = 21E73E6A28898D7800D7DB7E;
 			remoteInfo = APIHostApp;
 		};
-		21B6A17D289B02AA0046723B /* PBXContainerItemProxy */ = {
+		39E0F141289DD57D00939D9F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 21E73E6328898D7800D7DB7E /* Project object */;
 			proxyType = 1;
@@ -223,13 +225,15 @@
 		21698CC42889D75F004BD994 /* SocialNote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocialNote.swift; sourceTree = "<group>"; };
 		21698CC52889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Support.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GraphQLAuthDirectiveIntegrationTests+Support.swift"; sourceTree = "<group>"; };
 		21698CC62889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLAuthDirectiveIntegrationTests.swift; sourceTree = "<group>"; };
-		21B6A179289B02AA0046723B /* AWSAPIPluginGraphQLIAMTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginGraphQLIAMTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		21D335B7289867FC00657B12 /* amplify-ios-staging */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios-staging"; path = ../../../..; sourceTree = "<group>"; };
 		21E73E6B28898D7900D7DB7E /* APIHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = APIHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		21E73E6E28898D7900D7DB7E /* APIHostAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIHostAppApp.swift; sourceTree = "<group>"; };
 		21E73E7028898D7900D7DB7E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		21E73E7228898D7A00D7DB7E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		21E73E7528898D7A00D7DB7E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		39E0F13D289DD57D00939D9F /* AWSAPIPluginGraphQLIAMTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginGraphQLIAMTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		39E0F14A289DD84E00939D9F /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
+		39E0F14C289DD93300939D9F /* AuthSignInHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignInHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -254,13 +258,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		21B6A176289B02AA0046723B /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		21E73E6828898D7800D7DB7E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -269,6 +266,13 @@
 				21698BF02889A163004BD994 /* AWSCognitoAuthPlugin in Frameworks */,
 				21698CC02889D5A9004BD994 /* CwlPreconditionTesting in Frameworks */,
 				21698BDB28899ED5004BD994 /* Amplify in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		39E0F13A289DD57D00939D9F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -453,16 +457,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		21B6A17A289B02AA0046723B /* AWSAPIPluginGraphQLIAMTests */ = {
-			isa = PBXGroup;
-			children = (
-				21698BAF28899B61004BD994 /* GraphQLWithIAMIntegrationTests.swift */,
-				21698BB028899B61004BD994 /* README.md */,
-				21698BB228899B61004BD994 /* Todo.swift */,
-			);
-			path = AWSAPIPluginGraphQLIAMTests;
-			sourceTree = "<group>";
-		};
 		21D335B6289867FC00657B12 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
@@ -479,7 +473,7 @@
 				21698A7C28899805004BD994 /* AWSAPIPluginFunctionalTests */,
 				21698A9628899818004BD994 /* AWSAPIPluginIntegrationTests */,
 				21698A892889980F004BD994 /* AWSAPIPluginGraphQLAPIKeyIntegrationTests */,
-				21B6A17A289B02AA0046723B /* AWSAPIPluginGraphQLIAMTests */,
+				39E0F13E289DD57D00939D9F /* AWSAPIPluginGraphQLIAMTests */,
 				21E73E6C28898D7900D7DB7E /* Products */,
 				21698BD728899EBB004BD994 /* Frameworks */,
 			);
@@ -492,7 +486,7 @@
 				21698A7B28899804004BD994 /* AWSAPIPluginFunctionalTests.xctest */,
 				21698A882889980F004BD994 /* AWSAPIPluginGraphQLAPIKeyIntegrationTests.xctest */,
 				21698A9528899818004BD994 /* AWSAPIPluginIntegrationTests.xctest */,
-				21B6A179289B02AA0046723B /* AWSAPIPluginGraphQLIAMTests.xctest */,
+				39E0F13D289DD57D00939D9F /* AWSAPIPluginGraphQLIAMTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -516,6 +510,26 @@
 				21E73E7528898D7A00D7DB7E /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		39E0F13E289DD57D00939D9F /* AWSAPIPluginGraphQLIAMTests */ = {
+			isa = PBXGroup;
+			children = (
+				39E0F149289DD7E000939D9F /* Base */,
+				21698BB028899B61004BD994 /* README.md */,
+				21698BB228899B61004BD994 /* Todo.swift */,
+				21698BAF28899B61004BD994 /* GraphQLWithIAMIntegrationTests.swift */,
+			);
+			path = AWSAPIPluginGraphQLIAMTests;
+			sourceTree = "<group>";
+		};
+		39E0F149289DD7E000939D9F /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				39E0F14A289DD84E00939D9F /* TestConfigHelper.swift */,
+				39E0F14C289DD93300939D9F /* AuthSignInHelper.swift */,
+			);
+			path = Base;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -576,25 +590,6 @@
 			productReference = 21698A9528899818004BD994 /* AWSAPIPluginIntegrationTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		21B6A178289B02AA0046723B /* AWSAPIPluginGraphQLIAMTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 21B6A181289B02AA0046723B /* Build configuration list for PBXNativeTarget "AWSAPIPluginGraphQLIAMTests" */;
-			buildPhases = (
-				21B6A175289B02AA0046723B /* Sources */,
-				21B6A176289B02AA0046723B /* Frameworks */,
-				21B6A177289B02AA0046723B /* Resources */,
-				21B6A182289B02EC0046723B /* Copy Configuration folder */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				21B6A17E289B02AA0046723B /* PBXTargetDependency */,
-			);
-			name = AWSAPIPluginGraphQLIAMTests;
-			productName = AWSAPIPluginGraphQLIAMTests;
-			productReference = 21B6A179289B02AA0046723B /* AWSAPIPluginGraphQLIAMTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		21E73E6A28898D7800D7DB7E /* APIHostApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 21E73E7928898D7A00D7DB7E /* Build configuration list for PBXNativeTarget "APIHostApp" */;
@@ -619,6 +614,25 @@
 			productReference = 21E73E6B28898D7900D7DB7E /* APIHostApp.app */;
 			productType = "com.apple.product-type.application";
 		};
+		39E0F13C289DD57D00939D9F /* AWSAPIPluginGraphQLIAMTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 39E0F143289DD57D00939D9F /* Build configuration list for PBXNativeTarget "AWSAPIPluginGraphQLIAMTests" */;
+			buildPhases = (
+				39E0F139289DD57D00939D9F /* Sources */,
+				39E0F13A289DD57D00939D9F /* Frameworks */,
+				39E0F13B289DD57D00939D9F /* Resources */,
+				39E0F148289DD78400939D9F /* Copy Configuration Files */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				39E0F142289DD57D00939D9F /* PBXTargetDependency */,
+			);
+			name = AWSAPIPluginGraphQLIAMTests;
+			productName = AWSAPIPluginGraphQLIAMTest;
+			productReference = 39E0F13D289DD57D00939D9F /* AWSAPIPluginGraphQLIAMTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -626,7 +640,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1400;
+				LastSwiftUpdateCheck = 1340;
 				LastUpgradeCheck = 1340;
 				TargetAttributes = {
 					21698A7A28899804004BD994 = {
@@ -644,12 +658,12 @@
 						LastSwiftMigration = 1340;
 						TestTargetID = 21E73E6A28898D7800D7DB7E;
 					};
-					21B6A178289B02AA0046723B = {
-						CreatedOnToolsVersion = 14.0;
-						TestTargetID = 21E73E6A28898D7800D7DB7E;
-					};
 					21E73E6A28898D7800D7DB7E = {
 						CreatedOnToolsVersion = 13.4.1;
+					};
+					39E0F13C289DD57D00939D9F = {
+						CreatedOnToolsVersion = 13.4.1;
+						TestTargetID = 21E73E6A28898D7800D7DB7E;
 					};
 				};
 			};
@@ -673,7 +687,7 @@
 				21698A7A28899804004BD994 /* AWSAPIPluginFunctionalTests */,
 				21698A872889980F004BD994 /* AWSAPIPluginGraphQLAPIKeyIntegrationTests */,
 				21698A9428899818004BD994 /* AWSAPIPluginIntegrationTests */,
-				21B6A178289B02AA0046723B /* AWSAPIPluginGraphQLIAMTests */,
+				39E0F13C289DD57D00939D9F /* AWSAPIPluginGraphQLIAMTests */,
 			);
 		};
 /* End PBXProject section */
@@ -700,19 +714,19 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		21B6A177289B02AA0046723B /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		21E73E6928898D7800D7DB7E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				21E73E7628898D7A00D7DB7E /* Preview Assets.xcassets in Resources */,
 				21E73E7328898D7A00D7DB7E /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		39E0F13B289DD57D00939D9F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -737,7 +751,7 @@
 			shellPath = /bin/sh;
 			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
 		};
-		21B6A182289B02EC0046723B /* Copy Configuration folder */ = {
+		39E0F148289DD78400939D9F /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -746,7 +760,7 @@
 			);
 			inputPaths = (
 			);
-			name = "Copy Configuration folder";
+			name = "Copy Configuration Files";
 			outputFileListPaths = (
 			);
 			outputPaths = (
@@ -850,15 +864,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		21B6A175289B02AA0046723B /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				21B6A183289B03C70046723B /* GraphQLWithIAMIntegrationTests.swift in Sources */,
-				21B6A184289B03C70046723B /* Todo.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		21E73E6728898D7800D7DB7E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -867,6 +872,17 @@
 				21698C082889B173004BD994 /* TestExtensions.swift in Sources */,
 				21698C092889B173004BD994 /* TestCommonConstants.swift in Sources */,
 				21E73E6F28898D7900D7DB7E /* APIHostAppApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		39E0F139289DD57D00939D9F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				39E0F14B289DD84E00939D9F /* TestConfigHelper.swift in Sources */,
+				39E0F146289DD60200939D9F /* GraphQLWithIAMIntegrationTests.swift in Sources */,
+				39E0F147289DD60C00939D9F /* Todo.swift in Sources */,
+				39E0F14D289DD93300939D9F /* AuthSignInHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -888,10 +904,10 @@
 			target = 21E73E6A28898D7800D7DB7E /* APIHostApp */;
 			targetProxy = 21698A9928899818004BD994 /* PBXContainerItemProxy */;
 		};
-		21B6A17E289B02AA0046723B /* PBXTargetDependency */ = {
+		39E0F142289DD57D00939D9F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 21E73E6A28898D7800D7DB7E /* APIHostApp */;
-			targetProxy = 21B6A17D289B02AA0046723B /* PBXContainerItemProxy */;
+			targetProxy = 39E0F141289DD57D00939D9F /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1037,44 +1053,6 @@
 			};
 			name = Release;
 		};
-		21B6A17F289B02AA0046723B /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.api.AWSAPIPluginGraphQLIAMTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/APIHostApp";
-			};
-			name = Debug;
-		};
-		21B6A180289B02AA0046723B /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.api.AWSAPIPluginGraphQLIAMTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/APIHostApp";
-			};
-			name = Release;
-		};
 		21E73E7728898D7A00D7DB7E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1194,9 +1172,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"APIHostApp/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -1209,8 +1189,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.api.APIHostApp;
+				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.APIHostApp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1222,9 +1203,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"APIHostApp/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -1237,11 +1220,46 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.api.APIHostApp;
+				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.APIHostApp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		39E0F144289DD57D00939D9F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.AWSAPIPluginGraphQLIAMTest";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
+			};
+			name = Debug;
+		};
+		39E0F145289DD57D00939D9F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.AWSAPIPluginGraphQLIAMTest";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Release;
 		};
@@ -1275,15 +1293,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		21B6A181289B02AA0046723B /* Build configuration list for PBXNativeTarget "AWSAPIPluginGraphQLIAMTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				21B6A17F289B02AA0046723B /* Debug */,
-				21B6A180289B02AA0046723B /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		21E73E6628898D7800D7DB7E /* Build configuration list for PBXProject "APIHostApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1298,6 +1307,15 @@
 			buildConfigurations = (
 				21E73E7A28898D7A00D7DB7E /* Debug */,
 				21E73E7B28898D7A00D7DB7E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		39E0F143289DD57D00939D9F /* Build configuration list for PBXNativeTarget "AWSAPIPluginGraphQLIAMTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				39E0F144289DD57D00939D9F /* Debug */,
+				39E0F145289DD57D00939D9F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
