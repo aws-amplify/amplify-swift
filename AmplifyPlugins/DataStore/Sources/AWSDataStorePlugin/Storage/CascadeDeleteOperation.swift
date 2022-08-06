@@ -72,80 +72,80 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
     }
 
     override public func main() {
-        let transactionResult = queryAndDeleteTransaction()
-        syncIfNeededAndFinish(transactionResult)
+        do {
+            try storageAdapter.transaction {
+                Task {
+                    let transactionResult = await queryAndDeleteTransaction()
+                    syncIfNeededAndFinish(transactionResult)
+                }
+            }
+        } catch {
+            syncIfNeededAndFinish(.failure(causedBy: error))
+        }
     }
 
     struct QueryAndDeleteResult<M: Model> {
         let deletedModels: [M]
         let associatedModels: [(ModelName, Model)]
     }
-
-    func queryAndDeleteTransaction() -> DataStoreResult<QueryAndDeleteResult<M>> {
+    
+    func queryAndDeleteTransaction() async -> DataStoreResult<QueryAndDeleteResult<M>> {
         var queriedResult: DataStoreResult<[M]>?
         var deletedResult: DataStoreResult<[M]>?
         var associatedModels: [(ModelName, Model)] = []
-
-        let queryCompletionBlock: DataStoreCallback<[M]> = { queryResult in
-            queriedResult = queryResult
-            guard case .success(let queriedModels) = queryResult else {
-                return
+        
+        queriedResult = await storageAdapter.query(modelType,
+                             modelSchema: modelSchema,
+                             predicate: deleteInput.predicate,
+                             sort: nil,
+                             paginationInput: nil)
+        
+        guard case .success(let queriedModels) = queriedResult else {
+            return collapseResults(queryResult: queriedResult,
+                                   deleteResult: deletedResult,
+                                   associatedModels: associatedModels)
+        }
+        
+        guard !queriedModels.isEmpty else {
+            guard case .withIdentifierAndCondition(let identifier, _) = self.deleteInput else {
+                // Query did not return any results, treat this as a successful no-op delete.
+                deletedResult = .success([M]())
+                return collapseResults(queryResult: queriedResult,
+                                       deleteResult: deletedResult,
+                                       associatedModels: associatedModels)
             }
-
-            guard !queriedModels.isEmpty else {
-                guard case .withIdentifierAndCondition(let identifier, _) = self.deleteInput else {
-                    // Query did not return any results, treat this as a successful no-op delete.
+            
+            // Query using the computed predicate did not return any results, check if model actually exists.
+            do {
+                if try self.storageAdapter.exists(self.modelSchema, withIdentifier: identifier, predicate: nil) {
+                    queriedResult = .failure(
+                        DataStoreError.invalidCondition(
+                            "Delete failed due to condition did not match existing model instance.",
+                            "Subsequent deletes will continue to fail until the model instance is updated."))
+                } else {
                     deletedResult = .success([M]())
-                    return
                 }
-
-                // Query using the computed predicate did not return any results, check if model actually exists.
-                do {
-                    if try self.storageAdapter.exists(self.modelSchema, withIdentifier: identifier, predicate: nil) {
-                        queriedResult = .failure(
-                            DataStoreError.invalidCondition(
-                                "Delete failed due to condition did not match existing model instance.",
-                                "Subsequent deletes will continue to fail until the model instance is updated."))
-                    } else {
-                        deletedResult = .success([M]())
-                    }
-                } catch {
-                    queriedResult = .failure(DataStoreError.invalidOperation(causedBy: error))
-                }
-
-                return
+            } catch {
+                queriedResult = .failure(DataStoreError.invalidOperation(causedBy: error))
             }
-
-            let modelIds = queriedModels.map { $0.identifier(schema: self.modelSchema).stringValue }
-            associatedModels = self.recurseQueryAssociatedModels(modelSchema: self.modelSchema, ids: modelIds)
-            let deleteCompletionWrapper: DataStoreCallback<[M]> = { deleteResult in
-                deletedResult = deleteResult
-            }
-            self.storageAdapter.delete(self.modelType,
-                                       modelSchema: self.modelSchema,
-                                       filter: self.deleteInput.predicate,
-                                       completion: deleteCompletionWrapper)
+            
+            return collapseResults(queryResult: queriedResult,
+                                   deleteResult: deletedResult,
+                                   associatedModels: associatedModels)
         }
-
-        do {
-            try storageAdapter.transaction {
-                storageAdapter.query(modelType,
-                                     modelSchema: modelSchema,
-                                     predicate: deleteInput.predicate,
-                                     sort: nil,
-                                     paginationInput: nil,
-                                     completion: queryCompletionBlock)
-            }
-        } catch {
-            return .failure(causedBy: error)
-        }
-
+        
+        let modelIds = queriedModels.map { $0.identifier(schema: self.modelSchema).stringValue }
+        associatedModels = await self.recurseQueryAssociatedModels(modelSchema: self.modelSchema, ids: modelIds)
+        deletedResult = await self.storageAdapter.delete(self.modelType,
+                                                   modelSchema: self.modelSchema,
+                                                   filter: self.deleteInput.predicate)
+        
         return collapseResults(queryResult: queriedResult,
                                deleteResult: deletedResult,
                                associatedModels: associatedModels)
     }
-
-    func recurseQueryAssociatedModels(modelSchema: ModelSchema, ids: [String]) -> [(ModelName, Model)] {
+    
+    func recurseQueryAssociatedModels(modelSchema: ModelSchema, ids: [String]) async -> [(ModelName, Model)] {
         var associatedModels: [(ModelName, Model)] = []
         for (_, modelField) in modelSchema.fields {
             guard modelField.hasAssociation,
@@ -161,20 +161,20 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                 return []
             }
 
-            let queriedModels = queryAssociatedModels(associatedModelSchema: modelSchema,
-                                                      associatedField: associatedField,
-                                                      ids: ids)
+            let queriedModels = await queryAssociatedModels(associatedModelSchema: modelSchema,
+                                                            associatedField: associatedField,
+                                                            ids: ids)
             let associatedModelIds = queriedModels.map { $0.1.identifier(schema: modelSchema).stringValue }
             associatedModels.append(contentsOf: queriedModels)
-            associatedModels.append(contentsOf: recurseQueryAssociatedModels(modelSchema: associatedModelSchema,
-                                                                            ids: associatedModelIds))
+            associatedModels.append(contentsOf: await recurseQueryAssociatedModels(modelSchema: associatedModelSchema,
+                                                                                   ids: associatedModelIds))
         }
         return associatedModels
     }
 
     func queryAssociatedModels(associatedModelSchema modelSchema: ModelSchema,
                                associatedField: ModelField,
-                               ids: [String]) -> [(ModelName, Model)] {
+                               ids: [String]) async -> [(ModelName, Model)] {
         var queriedModels: [(ModelName, Model)] = []
         let chunkedArrays = ids.chunked(into: SQLiteStorageEngineAdapter.maxNumberOfPredicates)
         for chunkedArray in chunkedArrays {
@@ -185,21 +185,15 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
             }
             let groupedQueryPredicates = QueryPredicateGroup(type: .or, predicates: queryPredicates)
 
-            let sempahore = DispatchSemaphore(value: 0)
-            storageAdapter.query(modelSchema: modelSchema, predicate: groupedQueryPredicates) { result in
-                defer {
-                    sempahore.signal()
-                }
-                switch result {
-                case .success(let models):
-                    queriedModels.append(contentsOf: models.map { model in
-                        (modelSchema.name, model)
-                    })
-                case .failure(let error):
-                    log.error("Failed to query \(modelSchema) on mutation event generation: \(error)")
-                }
+            let result = await storageAdapter.query(modelSchema: modelSchema, predicate: groupedQueryPredicates)
+            switch result {
+            case .success(let models):
+                queriedModels.append(contentsOf: models.map { model in
+                    (modelSchema.name, model)
+                })
+            case .failure(let error):
+                log.error("Failed to query \(modelSchema) on mutation event generation: \(error)")
             }
-            sempahore.wait()
         }
         return queriedModels
     }

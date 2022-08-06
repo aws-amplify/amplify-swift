@@ -213,6 +213,21 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     func delete<M: Model>(_ modelType: M.Type,
                           modelSchema: ModelSchema,
+                          filter: QueryPredicate) async -> DataStoreResult<[M]> {
+        guard let connection = connection else {
+            return .failure(DataStoreError.nilSQLiteConnection())
+        }
+        do {
+            let statement = DeleteStatement(modelSchema: modelSchema, predicate: filter)
+            _ = try connection.prepare(statement.stringValue).run(statement.variables)
+            return .success([])
+        } catch {
+            return .failure(causedBy: error)
+        }
+    }
+    
+    func delete<M: Model>(_ modelType: M.Type,
+                          modelSchema: ModelSchema,
                           withId id: Model.Identifier,
                           condition: QueryPredicate? = nil,
                           completion: (DataStoreResult<M?>) -> Void) {
@@ -315,6 +330,29 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             completion(.success(result))
         } catch {
             completion(.failure(causedBy: error))
+        }
+    }
+    
+    func query<M: Model>(_ modelType: M.Type,
+                         modelSchema: ModelSchema,
+                         predicate: QueryPredicate? = nil,
+                         sort: [QuerySortDescriptor]? = nil,
+                         paginationInput: QueryPaginationInput? = nil) async -> DataStoreResult<[M]> {
+        guard let connection = connection else {
+            return .failure(DataStoreError.nilSQLiteConnection())
+        }
+        do {
+            let statement = SelectStatement(from: modelSchema,
+                                            predicate: predicate,
+                                            sort: sort,
+                                            paginationInput: paginationInput)
+            let rows = try connection.prepare(statement.stringValue).run(statement.variables)
+            let result: [M] = try rows.convert(to: modelType,
+                                               withSchema: modelSchema,
+                                               using: statement)
+            return .success(result)
+        } catch {
+            return .failure(causedBy: error)
         }
     }
 

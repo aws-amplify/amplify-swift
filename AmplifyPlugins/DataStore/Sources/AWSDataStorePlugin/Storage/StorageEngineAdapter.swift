@@ -36,6 +36,9 @@ protocol StorageEngineAdapter: AnyObject, ModelStorageBehavior, ModelStorageErro
     func query(modelSchema: ModelSchema,
                predicate: QueryPredicate?,
                completion: DataStoreCallback<[Model]>)
+    
+    func query(modelSchema: ModelSchema,
+               predicate: QueryPredicate?) async -> DataStoreResult<[Model]>
 
     // MARK: - Synchronous APIs
 

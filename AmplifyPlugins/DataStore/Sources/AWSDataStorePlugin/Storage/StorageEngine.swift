@@ -264,6 +264,21 @@ final class StorageEngine: StorageEngineBehavior {
                                                             filter: filter) { completion($0) }
         operationQueue.addOperation(cascadeDeleteOperation)
     }
+    
+    func delete<M: Model>(_ modelType: M.Type,
+                          modelSchema: ModelSchema,
+                          filter: QueryPredicate) async -> DataStoreResult<[M]>{
+        await withCheckedContinuation { continuation in
+            let cascadeDeleteOperation = CascadeDeleteOperation(storageAdapter: storageAdapter,
+                                                                syncEngine: syncEngine,
+                                                                modelType: modelType,
+                                                                modelSchema: modelSchema,
+                                                                filter: filter) { result in
+                continuation.resume(returning: result)
+            }
+            operationQueue.addOperation(cascadeDeleteOperation)
+        }
+    }
 
     func query<M: Model>(_ modelType: M.Type,
                          modelSchema: ModelSchema,
@@ -277,6 +292,18 @@ final class StorageEngine: StorageEngineBehavior {
                                     sort: sort,
                                     paginationInput: paginationInput,
                                     completion: completion)
+    }
+    
+    func query<M: Model>(_ modelType: M.Type,
+                         modelSchema: ModelSchema,
+                         predicate: QueryPredicate?,
+                         sort: [QuerySortDescriptor]?,
+                         paginationInput: QueryPaginationInput?) async -> DataStoreResult<[M]> {
+        await storageAdapter.query(modelType,
+                                    modelSchema: modelSchema,
+                                    predicate: predicate,
+                                    sort: sort,
+                                    paginationInput: paginationInput)
     }
 
     func query<M: Model>(_ modelType: M.Type,

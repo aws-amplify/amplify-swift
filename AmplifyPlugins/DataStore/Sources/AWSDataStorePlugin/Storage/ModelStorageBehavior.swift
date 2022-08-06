@@ -38,6 +38,10 @@ protocol ModelStorageBehavior {
                           modelSchema: ModelSchema,
                           filter: QueryPredicate,
                           completion: @escaping DataStoreCallback<[M]>)
+    
+    func delete<M: Model>(_ modelType: M.Type,
+                          modelSchema: ModelSchema,
+                          filter: QueryPredicate) async -> DataStoreResult<[M]>
 
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate?,
@@ -51,6 +55,12 @@ protocol ModelStorageBehavior {
                          sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
                          completion: DataStoreCallback<[M]>)
+    
+    func query<M: Model>(_ modelType: M.Type,
+                         modelSchema: ModelSchema,
+                         predicate: QueryPredicate?,
+                         sort: [QuerySortDescriptor]?,
+                         paginationInput: QueryPaginationInput?) async -> DataStoreResult<[M]>
 
 }
 

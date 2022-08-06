@@ -581,7 +581,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
 
     // MARK: - Internal testing
 
-    func testSingle() {
+    func testSingle() async {
         let restaurant = Restaurant(restaurantName: "restaurant1")
         guard case .success = saveModelSynchronous(model: restaurant) else {
             XCTFail("Failed to save")
@@ -594,7 +594,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
                                                modelSchema: Restaurant.schema,
                                                withIdentifier: identifier) { _ in }
 
-        let result = operation.queryAndDeleteTransaction()
+        let result = await operation.queryAndDeleteTransaction()
         switch result {
         case .success(let queryAndDeleteResult):
             XCTAssertEqual(queryAndDeleteResult.deletedModels.count, 1)
@@ -632,7 +632,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         wait(for: [receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
     }
 
-    func testDeleteWithAssociatedModels() {
+    func testDeleteWithAssociatedModels() async {
         let restaurant = Restaurant(restaurantName: "restaurant1")
         let lunchStandardMenu = Menu(name: "Standard", menuType: .lunch, restaurant: restaurant)
         let oysters = Dish(dishName: "Fried oysters", menu: lunchStandardMenu)
@@ -658,7 +658,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
 
-        let result = operation.queryAndDeleteTransaction()
+        let result = await operation.queryAndDeleteTransaction()
         switch result {
         case .success(let queryAndDeleteResult):
             XCTAssertEqual(queryAndDeleteResult.deletedModels.count, 1)
@@ -708,7 +708,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         XCTAssertEqual(submittedEvents[2].modelName, Restaurant.modelName)
     }
 
-    func testDeleteWithAssociatedModelsAndCompositePK() {
+    func testDeleteWithAssociatedModelsAndCompositePK() async {
         let post = PostWithCompositeKey(id: "post-id", title: "title")
         let comment = CommentWithCompositeKey(id: "comment-id", content: "comment-content", post: post)
 
@@ -735,7 +735,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
 
-        let result = operation.queryAndDeleteTransaction()
+        let result = await operation.queryAndDeleteTransaction()
         switch result {
         case .success(let queryAndDeleteResult):
             XCTAssertEqual(queryAndDeleteResult.deletedModels.count, 1)
@@ -782,7 +782,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         XCTAssertEqual(submittedEvents[1].modelName, PostWithCompositeKey.modelName)
     }
 
-    func testDeleteWithAssociatedModels_SingleFailure() {
+    func testDeleteWithAssociatedModels_SingleFailure() async {
         let restaurant = Restaurant(restaurantName: "restaurant1")
         let lunchStandardMenu = Menu(name: "Standard", menuType: .lunch, restaurant: restaurant)
         let oysters = Dish(dishName: "Fried oysters", menu: lunchStandardMenu)
@@ -808,7 +808,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
 
-        let result = operation.queryAndDeleteTransaction()
+        let result = await operation.queryAndDeleteTransaction()
         switch result {
         case .success(let queryAndDeleteResult):
             XCTAssertEqual(queryAndDeleteResult.deletedModels.count, 1)
