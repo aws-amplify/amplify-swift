@@ -160,9 +160,6 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     func queryPendingMutations(forModelIds modelIds: [Model.Identifier]) -> Future<[MutationEvent], DataStoreError> {
         Future<[MutationEvent], DataStoreError> { promise in
             var result: Result<[MutationEvent], DataStoreError> = .failure(Self.unfulfilledDataStoreError())
-//            defer {
-//                promise(result)
-//            }
             guard !self.isCancelled else {
                 self.log.info("\(#function) - cancelled, aborting")
                 result = .success([])

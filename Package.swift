@@ -2,7 +2,7 @@
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 import PackageDescription
 
-let platforms: [SupportedPlatform] = [.iOS(.v13), .macOS(.v10_15)]
+let platforms: [SupportedPlatform] = [.iOS(.v13)]
 let dependencies: [Package.Dependency] = [
     .package(
         url: "https://github.com/stephencelis/SQLite.swift.git",
