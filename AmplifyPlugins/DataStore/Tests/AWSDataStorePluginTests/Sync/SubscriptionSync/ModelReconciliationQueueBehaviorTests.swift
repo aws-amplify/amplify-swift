@@ -120,12 +120,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
 
         queue.start()
 
-        wait(for: [event1Saved,
-                   event2Saved,
-                   event3Saved], timeout: 5.0, enforceOrder: true)
-        wait(for: [eventsSentViaPublisher1,
-            eventsSentViaPublisher2,
-            eventsSentViaPublisher3], timeout: 2.0)
+        await waitForExpectations(timeout: 5.0)
     }
 
     /// - Given: An AWSModelReconciliationQueue that has been buffering events with a selective sync configuration
@@ -194,10 +189,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
 
         queue.start()
 
-        wait(for: [event1Saved,
-                   event3Saved], timeout: 5.0, enforceOrder: true)
-        wait(for: [eventsSentViaPublisher1,
-                   eventsSentViaPublisher3], timeout: 2.0)
+        await waitForExpectations(timeout: 5.0)
     }
 
     /// - Given: An AWSModelReconciliationQueue that has been buffering events
@@ -398,10 +390,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         let mutationSync = MutationSync(model: model, syncMetadata: syncMetadata)
         subscriptionEventsSubject.send(.mutationEvent(mutationSync))
 
-        wait(for: [event1ShouldNotBeProcessed,
-                   event2ShouldNotBeProcessed,
-                   event3ShouldBeProcessed,
-                   eventsSentViaPublisher3], timeout: 1.0)
+        await waitForExpectations(timeout: 1.0)
     }
 
 }

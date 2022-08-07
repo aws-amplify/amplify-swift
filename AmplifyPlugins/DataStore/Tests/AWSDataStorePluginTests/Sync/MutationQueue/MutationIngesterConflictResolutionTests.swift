@@ -53,7 +53,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             saveResultReceived.fulfill()
         }
 
-        wait(for: [saveResultReceived], timeout: 1.0)
+        await waitForExpectations(timeout: 1)
 
         let mutationEventVerified = expectation(description: "Verified mutation event")
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
@@ -69,7 +69,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
                                 mutationEventVerified.fulfill()
         }
 
-        wait(for: [mutationEventVerified], timeout: 1.0)
+        await waitForExpectations(timeout: 1)
     }
 
     /// - Given: An existing MutationEvent of type .create
@@ -105,7 +105,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             saveResultReceived.fulfill()
         }
 
-        wait(for: [saveResultReceived], timeout: 1.0)
+        await waitForExpectations(timeout: 1.0)
 
         let mutationEventVerified = expectation(description: "Verified mutation event")
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
@@ -160,7 +160,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             deleteResultReceived.fulfill()
         }
 
-        wait(for: [deleteResultReceived], timeout: 1.0)
+        await waitForExpectations(timeout: 1.0)
 
         let mutationEventVerified = expectation(description: "Verified mutation event")
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
@@ -175,7 +175,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
                                 mutationEventVerified.fulfill()
         }
 
-        wait(for: [mutationEventVerified], timeout: 1.0)
+        await waitForExpectations(timeout: 1.0)
     }
 
     // MARK: - Existing == .update
@@ -210,7 +210,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             saveResultReceived.fulfill()
         }
 
-        wait(for: [saveResultReceived], timeout: 1.0)
+        await waitForExpectations(timeout: 1.0)
 
         let mutationEventVerified = expectation(description: "Verified mutation event")
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
@@ -264,7 +264,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             saveResultReceived.fulfill()
         }
 
-        wait(for: [saveResultReceived], timeout: 1.0)
+        await waitForExpectations(timeout: 1.0)
 
         let mutationEventVerified = expectation(description: "Verified mutation event")
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
@@ -319,7 +319,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             saveResultReceived.fulfill()
         }
 
-        wait(for: [saveResultReceived], timeout: 1.0)
+        await waitForExpectations(timeout: 1.0)
 
         let mutationEventVerified = expectation(description: "Verified mutation event")
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
@@ -373,7 +373,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             saveResultReceived.fulfill()
         }
 
-        wait(for: [saveResultReceived], timeout: 1.0)
+        await waitForExpectations(timeout: 1.0)
 
         let mutationEventVerified = expectation(description: "Verified mutation event")
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
@@ -429,7 +429,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             saveResultReceived.fulfill()
         }
 
-        wait(for: [saveResultReceived], timeout: 1.0)
+        await waitForExpectations(timeout: 1.0)
 
         let mutationEventVerified = expectation(description: "Verified mutation event")
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
@@ -482,7 +482,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             saveResultReceived.fulfill()
         }
 
-        wait(for: [saveResultReceived], timeout: 1.0)
+        await waitForExpectations(timeout: 1.0)
 
         let mutationEventVerified = expectation(description: "Verified mutation event")
         storageAdapter.query(MutationEvent.self, predicate: nil) { result in
@@ -533,7 +533,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             saveResultReceived.fulfill()
         }
 
-        wait(for: [saveResultReceived], timeout: 1.0)
+        await waitForExpectations(timeout: 1.0)
 
         let mutationEventVerified = expectation(description: "Verified mutation event")
         storageAdapter.query(MutationEvent.self, predicate: nil) { result in
@@ -585,7 +585,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             saveResultReceived.fulfill()
         }
 
-        wait(for: [saveResultReceived], timeout: 1.0)
+        await waitForExpectations(timeout: 1.0)
 
         let mutationEventVerified = expectation(description: "Verified mutation event")
         storageAdapter.query(MutationEvent.self, predicate: nil) { result in
@@ -638,7 +638,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             saveResultReceived.fulfill()
         }
 
-        wait(for: [saveResultReceived], timeout: 1.0)
+        await waitForExpectations(timeout: 1.0)
 
         let mutationEventVerified = expectation(description: "Verified mutation event")
         storageAdapter.query(MutationEvent.self, predicate: nil) { result in
@@ -653,7 +653,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             mutationEventVerified.fulfill()
         }
 
-        wait(for: [mutationEventVerified], timeout: 1.0)
+        await waitForExpectations(timeout: 1.0)
     }
 
     /// - Given: A mutation queue with an in-process .create event
@@ -690,7 +690,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             saveResultReceived.fulfill()
         }
 
-        wait(for: [saveResultReceived], timeout: 1.0)
+        await waitForExpectations(timeout: 1.0)
 
         let mutationEventVerified = expectation(description: "Verified mutation event")
         storageAdapter.query(MutationEvent.self, predicate: nil) { result in
@@ -708,7 +708,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             mutationEventVerified.fulfill()
         }
 
-        wait(for: [mutationEventVerified], timeout: 1.0)
+        await waitForExpectations(timeout: 1.0)
     }
 
     /// - Given: A mutation queue with an in-process .create event
@@ -743,7 +743,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             deleteResultReceived.fulfill()
         }
 
-        wait(for: [deleteResultReceived], timeout: 1.0)
+        await waitForExpectations(timeout: 1.0)
 
         let mutationEventVerified = expectation(description: "Verified mutation event")
         storageAdapter.query(MutationEvent.self, predicate: nil) { result in
@@ -758,7 +758,7 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             mutationEventVerified.fulfill()
         }
 
-        wait(for: [mutationEventVerified], timeout: 1.0)
+        await waitForExpectations(timeout: 1.0)
     }
 
 }
