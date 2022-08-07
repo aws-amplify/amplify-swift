@@ -172,14 +172,16 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
     }
 
     override public func cancel() {
-        if let itemsChangedSink = itemsChangedSink {
-            itemsChangedSink.cancel()
+        serialQueue.sync {
+            if let itemsChangedSink = itemsChangedSink {
+                itemsChangedSink.cancel()
+            }
+            
+            if let batchItemsChangedSink = batchItemsChangedSink {
+                batchItemsChangedSink.cancel()
+            }
+            passthroughPublisher.send(completion: .finished)
         }
-
-        if let batchItemsChangedSink = batchItemsChangedSink {
-            batchItemsChangedSink.cancel()
-        }
-        passthroughPublisher.send(completion: .finished)
         super.cancel()
         finish()
     }
@@ -265,20 +267,23 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
     /// This check is defered until `onItemChangedAfterSync` where the predicate is then used, and `currentItems` is
     /// accessed under the serial queue.
     func subscribeToItemChanges() {
-        batchItemsChangedSink = dataStorePublisher.publisher
-            .filter { _ in !self.dispatchedModelSyncedEvent.get() }
-            .filter(filterByModelName(mutationEvent:))
-            .filter(filterByPredicateMatch(mutationEvent:))
-            .collect(.byTimeOrCount(serialQueue, itemsChangedPeriodicPublishTimeInSeconds, itemsChangedMaxSize))
-            .sink(receiveCompletion: onReceiveCompletion(completed:),
-                  receiveValue: onItemsChangeDuringSync(mutationEvents:))
-
-        itemsChangedSink = dataStorePublisher.publisher
-            .filter { _ in self.dispatchedModelSyncedEvent.get() }
-            .filter(filterByModelName(mutationEvent:))
-            .receive(on: serialQueue)
-            .sink(receiveCompletion: onReceiveCompletion(completed:),
-                  receiveValue: onItemChangeAfterSync(mutationEvent:))
+        serialQueue.async { [weak self] in
+            guard let self = self else { return }
+            self.batchItemsChangedSink = self.dataStorePublisher.publisher
+                .filter { _ in !self.dispatchedModelSyncedEvent.get() }
+                .filter(self.filterByModelName(mutationEvent:))
+                .filter(self.filterByPredicateMatch(mutationEvent:))
+                .collect(.byTimeOrCount(self.serialQueue, self.itemsChangedPeriodicPublishTimeInSeconds, self.itemsChangedMaxSize))
+                .sink(receiveCompletion: self.onReceiveCompletion(completed:),
+                      receiveValue: self.onItemsChangeDuringSync(mutationEvents:))
+            
+            self.itemsChangedSink = self.dataStorePublisher.publisher
+                .filter { _ in self.dispatchedModelSyncedEvent.get() }
+                .filter(self.filterByModelName(mutationEvent:))
+                .receive(on: self.serialQueue)
+                .sink(receiveCompletion: self.onReceiveCompletion(completed:),
+                      receiveValue: self.onItemChangeAfterSync(mutationEvent:))
+        }
     }
 
     func filterByModelName(mutationEvent: MutationEvent) -> Bool {
@@ -404,17 +409,20 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
     }
 
     private func onReceiveCompletion(completed: Subscribers.Completion<DataStoreError>) {
-        if isCancelled || isFinished {
-            finish()
-            return
+        serialQueue.async { [weak self] in
+            guard let self = self else { return }
+            if self.isCancelled || self.isFinished {
+                self.finish()
+                return
+            }
+            switch completed {
+            case .finished:
+                self.passthroughPublisher.send(completion: .finished)
+            case .failure(let error):
+                self.passthroughPublisher.send(completion: .failure(error))
+            }
+            self.finish()
         }
-        switch completed {
-        case .finished:
-            passthroughPublisher.send(completion: .finished)
-        case .failure(let error):
-            passthroughPublisher.send(completion: .failure(error))
-        }
-        finish()
     }
 }
 
