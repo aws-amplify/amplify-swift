@@ -12,14 +12,23 @@ protocol ModelStorageBehavior {
 
     func applyModelMigrations(modelSchemas: [ModelSchema]) throws
 
+    @available(*, deprecated, message: "Use async version")
     func save<M: Model>(_ model: M,
                         modelSchema: ModelSchema,
                         condition: QueryPredicate?,
                         completion: @escaping DataStoreCallback<M>)
+    
+    func save<M: Model>(_ model: M,
+                        modelSchema: ModelSchema,
+                        condition: QueryPredicate?) async -> DataStoreResult<M>
 
+    @available(*, deprecated, message: "Use async version")
     func save<M: Model>(_ model: M,
                         condition: QueryPredicate?,
                         completion: @escaping DataStoreCallback<M>)
+    
+    func save<M: Model>(_ model: M,
+                        condition: QueryPredicate?) async -> DataStoreResult<M>
 
     @available(*, deprecated, message: "Use delete(:modelSchema:withIdentifier:predicate:completion")
     func delete<M: Model>(_ modelType: M.Type,
@@ -43,11 +52,17 @@ protocol ModelStorageBehavior {
                           modelSchema: ModelSchema,
                           filter: QueryPredicate) async -> DataStoreResult<[M]>
 
+    @available(*, deprecated, message: "Use async version")
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate?,
                          sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
                          completion: DataStoreCallback<[M]>)
+    
+    func query<M: Model>(_ modelType: M.Type,
+                         predicate: QueryPredicate?,
+                         sort: [QuerySortDescriptor]?,
+                         paginationInput: QueryPaginationInput?) async -> DataStoreResult<[M]>
 
     func query<M: Model>(_ modelType: M.Type,
                          modelSchema: ModelSchema,

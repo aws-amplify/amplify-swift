@@ -37,35 +37,30 @@ extension MutationEvent {
     // the response version is a newer one
     static func reconcilePendingMutationEventsVersion(sent mutationEvent: MutationEvent,
                                                       received mutationSync: MutationSync<AnyModel>,
-                                                      storageAdapter: StorageEngineAdapter,
-                                                      completion: @escaping DataStoreCallback<Void>) {
-        MutationEvent.pendingMutationEvents(
-            for: mutationEvent.modelId,
-            storageAdapter: storageAdapter) { queryResult in
-            switch queryResult {
+                                                      storageAdapter: StorageEngineAdapter) async -> DataStoreResult<Void> {
+        let queryResult = await MutationEvent.pendingMutationEvents(for: mutationEvent.modelId,
+                                                                    storageAdapter: storageAdapter)
+        
+        switch queryResult {
+        case .failure(let dataStoreError):
+            return .failure(dataStoreError)
+        case .success(let localMutationEvents):
+            guard let existingEvent = localMutationEvents.first else {
+                return .success(())
+            }
+            
+            guard let reconciledEvent = reconcile(pendingMutationEvent: existingEvent,
+                                                  with: mutationEvent,
+                                                  responseMutationSync: mutationSync) else {
+                return .success(())
+            }
+            
+            let saveResult = await storageAdapter.save(reconciledEvent, condition: nil)
+            switch saveResult {
             case .failure(let dataStoreError):
-                completion(.failure(dataStoreError))
-            case .success(let localMutationEvents):
-                guard let existingEvent = localMutationEvents.first else {
-                    completion(.success(()))
-                    return
-                }
-
-                guard let reconciledEvent = reconcile(pendingMutationEvent: existingEvent,
-                                                      with: mutationEvent,
-                                                      responseMutationSync: mutationSync) else {
-                    completion(.success(()))
-                    return
-                }
-
-                storageAdapter.save(reconciledEvent, condition: nil) { result in
-                    switch result {
-                    case .failure(let dataStoreError):
-                        completion(.failure(dataStoreError))
-                    case .success:
-                        completion(.success(()))
-                    }
-                }
+                return .failure(dataStoreError)
+            case .success:
+                return .success(())
             }
         }
     }

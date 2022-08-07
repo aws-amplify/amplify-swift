@@ -167,6 +167,7 @@ final class StorageEngine: StorageEngineBehavior {
         try storageAdapter.applyModelMigrations(modelSchemas: modelSchemas)
     }
 
+    @available(*, deprecated, message: "Use async version")
     public func save<M: Model>(_ model: M,
                                modelSchema: ModelSchema,
                                condition: QueryPredicate? = nil,
@@ -220,9 +221,59 @@ final class StorageEngine: StorageEngineBehavior {
                             condition: condition,
                             completion: wrappedCompletion)
     }
+    
+    public func save<M: Model>(_ model: M,
+                               modelSchema: ModelSchema,
+                               condition: QueryPredicate? = nil) async -> DataStoreResult<M> {
 
+        // TODO: Refactor this into a proper request/result where the result includes metadata like the derived
+        // mutation type
+        let modelExists: Bool
+        do {
+            modelExists = try storageAdapter.exists(modelSchema,
+                                                    withIdentifier: model.identifier(schema: modelSchema),
+                                                    predicate: nil)
+        } catch {
+            let dataStoreError = DataStoreError.invalidOperation(causedBy: error)
+            return .failure(dataStoreError)
+        }
+
+        let mutationType = modelExists ? MutationEvent.MutationType.update : .create
+
+        // If it is `create`, and there is a condition, and that condition is not `.all`, fail the request
+        if mutationType == .create, let condition = condition, !condition.isAll {
+            let dataStoreError = DataStoreError.invalidCondition(
+                "Cannot apply a condition on model which does not exist.",
+                "Save the model instance without a condition first.")
+            return .failure(causedBy: dataStoreError)
+        }
+
+        let result = await storageAdapter.save(model,
+                                               modelSchema: modelSchema,
+                                               condition: condition)
+        guard modelSchema.isSyncable, let syncEngine = self.syncEngine else {
+            return result
+        }
+
+        guard case .success(let savedModel) = result else {
+            return result
+        }
+
+        self.log.verbose("\(#function) syncing mutation for \(savedModel)")
+        return await self.syncMutation(of: savedModel,
+                          modelSchema: modelSchema,
+                          mutationType: mutationType,
+                          predicate: condition,
+                          syncEngine: syncEngine)
+    }
+
+    @available(*, deprecated, message: "Use async version")
     func save<M: Model>(_ model: M, condition: QueryPredicate? = nil, completion: @escaping DataStoreCallback<M>) {
         save(model, modelSchema: model.schema, condition: condition, completion: completion)
+    }
+    
+    func save<M: Model>(_ model: M, condition: QueryPredicate?) async -> DataStoreResult<M> {
+        await save(model, modelSchema: model.schema, condition: condition)
     }
 
     @available(*, deprecated, message: "Use delete(:modelSchema:withIdentifier:predicate:completion")
@@ -306,6 +357,7 @@ final class StorageEngine: StorageEngineBehavior {
                                     paginationInput: paginationInput)
     }
 
+    @available(*, deprecated, message: "Use async version")
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate? = nil,
                          sort: [QuerySortDescriptor]? = nil,
@@ -317,6 +369,17 @@ final class StorageEngine: StorageEngineBehavior {
               sort: sort,
               paginationInput: paginationInput,
               completion: completion)
+    }
+    
+    func query<M: Model>(_ modelType: M.Type,
+                         predicate: QueryPredicate? = nil,
+                         sort: [QuerySortDescriptor]? = nil,
+                         paginationInput: QueryPaginationInput? = nil) async -> DataStoreResult<[M]> {
+        await query(modelType,
+                    modelSchema: modelType.schema,
+                    predicate: predicate,
+                    sort: sort,
+                    paginationInput: paginationInput)
     }
 
     func clear(completion: @escaping DataStoreCallback<Void>) {
@@ -339,7 +402,7 @@ final class StorageEngine: StorageEngineBehavior {
         }
     }
 
-    @available(iOS 13.0, *)
+    @available(*, deprecated, message: "Use async version")
     private func syncMutation<M: Model>(of savedModel: M,
                                         modelSchema: ModelSchema,
                                         mutationType: MutationEvent.MutationType,
@@ -379,7 +442,42 @@ final class StorageEngine: StorageEngineBehavior {
                            syncEngine: syncEngine,
                            completion: mutationEventCallback)
     }
+    
+    private func syncMutation<M: Model>(of savedModel: M,
+                                        modelSchema: ModelSchema,
+                                        mutationType: MutationEvent.MutationType,
+                                        predicate: QueryPredicate? = nil,
+                                        syncEngine: RemoteSyncEngineBehavior) async -> DataStoreResult<M> {
+        let mutationEvent: MutationEvent
+        do {
+            var graphQLFilterJSON: String?
+            if let predicate = predicate {
+                graphQLFilterJSON = try GraphQLFilterConverter.toJSON(predicate,
+                                                                      modelSchema: modelSchema)
+            }
 
+            mutationEvent = try MutationEvent(model: savedModel,
+                                              modelSchema: modelSchema,
+                                              mutationType: mutationType,
+                                              graphQLFilterJSON: graphQLFilterJSON)
+
+        } catch {
+            let dataStoreError = DataStoreError(error: error)
+            return .failure(dataStoreError)
+        }
+
+        let result = await submitToSyncEngine(mutationEvent: mutationEvent,
+                                              syncEngine: syncEngine)
+        switch result {
+        case .failure(let dataStoreError):
+            return .failure(dataStoreError)
+        case .success(let mutationEvent):
+            self.log.verbose("\(#function) successfully submitted to sync engine \(mutationEvent)")
+            return .success(savedModel)
+        }
+    }
+
+    @available(*, deprecated, message: "Use async version")
     private func submitToSyncEngine(mutationEvent: MutationEvent,
                                     syncEngine: RemoteSyncEngineBehavior,
                                     completion: @escaping DataStoreCallback<MutationEvent>) {
@@ -396,11 +494,36 @@ final class StorageEngine: StorageEngineBehavior {
                     }
                     mutationQueueSink?.cancel()
                     mutationQueueSink = nil
-
+                    
                 }, receiveValue: { mutationEvent in
                     self.log.verbose("\(#function) saved mutation event: \(mutationEvent)")
                     completion(.success(mutationEvent))
                 })
+    }
+    
+    private func submitToSyncEngine(mutationEvent: MutationEvent,
+                                    syncEngine: RemoteSyncEngineBehavior) async -> DataStoreResult<MutationEvent> {
+        await withCheckedContinuation { continuation in
+            var mutationQueueSink: AnyCancellable?
+            mutationQueueSink = syncEngine
+                .submit(mutationEvent)
+                .sink(
+                    receiveCompletion: { futureCompletion in
+                        switch futureCompletion {
+                        case .failure(let error):
+                            continuation.resume(returning: .failure(causedBy: error))
+                        case .finished:
+                            self.log.verbose("\(#function) Received successful completion")
+                        }
+                        mutationQueueSink?.cancel()
+                        mutationQueueSink = nil
+
+                    }, receiveValue: { mutationEvent in
+                        self.log.verbose("\(#function) saved mutation event: \(mutationEvent)")
+                        
+                        continuation.resume(returning: .success(mutationEvent))
+                    })
+        }
     }
 
 }

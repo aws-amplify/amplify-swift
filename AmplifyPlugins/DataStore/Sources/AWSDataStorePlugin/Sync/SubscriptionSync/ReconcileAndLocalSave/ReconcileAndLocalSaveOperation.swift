@@ -158,37 +158,29 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     }
 
     func queryPendingMutations(forModelIds modelIds: [Model.Identifier]) -> Future<[MutationEvent], DataStoreError> {
-        Future<[MutationEvent], DataStoreError> { promise in
-            var result: Result<[MutationEvent], DataStoreError> = .failure(Self.unfulfilledDataStoreError())
-            defer {
-                promise(result)
-            }
+        Future<[MutationEvent], DataStoreError> {
             guard !self.isCancelled else {
                 self.log.info("\(#function) - cancelled, aborting")
-                result = .success([])
-                return
+                return []
             }
             guard let storageAdapter = self.storageAdapter else {
                 let error = DataStoreError.nilStorageAdapter()
                 self.notifyDropped(count: modelIds.count, error: error)
-                result = .failure(error)
-                return
+                throw error
             }
 
             guard !modelIds.isEmpty else {
-                result = .success([])
-                return
+                return []
             }
 
-            MutationEvent.pendingMutationEvents(for: modelIds,
-                                                storageAdapter: storageAdapter) { queryResult in
-                switch queryResult {
-                case .failure(let dataStoreError):
-                    self.notifyDropped(count: modelIds.count, error: dataStoreError)
-                    result = .failure(dataStoreError)
-                case .success(let mutationEvents):
-                    result = .success(mutationEvents)
-                }
+            let queryResult = await MutationEvent.pendingMutationEvents(for: modelIds,
+                                                                        storageAdapter: storageAdapter)
+            switch queryResult {
+            case .failure(let dataStoreError):
+                self.notifyDropped(count: modelIds.count, error: dataStoreError)
+                throw dataStoreError
+            case .success(let mutationEvents):
+                return mutationEvents
             }
         }
     }

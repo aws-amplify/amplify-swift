@@ -15,7 +15,7 @@ protocol StorageEngineAdapter: AnyObject, ModelStorageBehavior, ModelStorageErro
 
     // MARK: - Async APIs
     func save(untypedModel: Model, completion: @escaping DataStoreCallback<Model>)
-
+    
     func delete<M: Model>(_ modelType: M.Type,
                           modelSchema: ModelSchema,
                           withId id: Model.Identifier,
@@ -33,6 +33,7 @@ protocol StorageEngineAdapter: AnyObject, ModelStorageBehavior, ModelStorageErro
                           filter: QueryPredicate,
                           completion: @escaping DataStoreCallback<[M]>)
 
+    @available(*, deprecated, message: "Use async version")
     func query(modelSchema: ModelSchema,
                predicate: QueryPredicate?,
                completion: DataStoreCallback<[Model]>)

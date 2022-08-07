@@ -206,9 +206,15 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                 api: api,
                 authModeStrategy: authModeStrategy
             ) { [weak self] result in
-                self?.log.verbose(
+                guard let self = self else {
+                    return
+                }
+                self.log.verbose(
                     "[SyncMutationToCloudOperation] mutationEvent finished: \(mutationEvent.id); result: \(result)")
-                self?.processSyncMutationToCloudResult(result, mutationEvent: mutationEvent, api: api)
+                Task {
+                    await self.processSyncMutationToCloudResult(result, mutationEvent: mutationEvent, api: api)
+                }
+                
             }
 
             dispatchOutboxMutationEnqueuedEvent(mutationEvent: mutationEvent)
@@ -220,10 +226,10 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
     private func processSyncMutationToCloudResult(_ result: GraphQLOperation<MutationSync<AnyModel>>.OperationResult,
                                                   mutationEvent: MutationEvent,
-                                                  api: APICategoryGraphQLBehavior) {
+                                                  api: APICategoryGraphQLBehavior) async {
         if case let .success(graphQLResponse) = result {
             if case let .success(graphQLResult) = graphQLResponse {
-                processSuccessEvent(mutationEvent,
+                await processSuccessEvent(mutationEvent,
                                     mutationSync: graphQLResult)
             } else if case let .failure(graphQLResponseError) = graphQLResponse {
                 processMutationErrorFromCloud(mutationEvent: mutationEvent,
@@ -242,7 +248,7 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
     /// Process the successful response from API by updating the mutation events in
     /// mutation event table having `nil` version
     private func processSuccessEvent(_ mutationEvent: MutationEvent,
-                                     mutationSync: MutationSync<AnyModel>?) {
+                                     mutationSync: MutationSync<AnyModel>?) async {
         if let mutationSync = mutationSync {
             guard let reconciliationQueue = reconciliationQueue else {
                 let dataStoreError = DataStoreError.configuration(
@@ -256,12 +262,10 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
                 return
             }
             reconciliationQueue.offer([mutationSync], modelName: mutationEvent.modelName)
-            MutationEvent.reconcilePendingMutationEventsVersion(
-                sent: mutationEvent,
-                received: mutationSync,
-                storageAdapter: storageAdapter) { _ in
-                self.completeProcessingEvent(mutationEvent, mutationSync: mutationSync)
-            }
+            _ = await MutationEvent.reconcilePendingMutationEventsVersion(sent: mutationEvent,
+                                                                                   received: mutationSync,
+                                                                                   storageAdapter: storageAdapter)
+            self.completeProcessingEvent(mutationEvent, mutationSync: mutationSync)
         } else {
             completeProcessingEvent(mutationEvent)
         }

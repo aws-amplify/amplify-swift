@@ -16,23 +16,22 @@ import XCTest
 
 class MutationEventQueryTests: BaseDataStoreTests {
 
-    func testQueryPendingMutation_EmptyResult() {
+    func testQueryPendingMutation_EmptyResult() async {
         let querySuccess = expectation(description: "query mutation events success")
         let modelIds = [UUID().uuidString, UUID().uuidString]
 
-        MutationEvent.pendingMutationEvents(for: modelIds, storageAdapter: storageAdapter) { result in
-            switch result {
-            case .success(let mutationEvents):
-                XCTAssertTrue(mutationEvents.isEmpty)
-                querySuccess.fulfill()
-            case .failure(let error): XCTFail("\(error)")
-            }
+        let result = await MutationEvent.pendingMutationEvents(for: modelIds, storageAdapter: storageAdapter)
+        switch result {
+        case .success(let mutationEvents):
+            XCTAssertTrue(mutationEvents.isEmpty)
+            querySuccess.fulfill()
+        case .failure(let error): XCTFail("\(error)")
         }
-
+    
         wait(for: [querySuccess], timeout: 1)
     }
 
-    func testQueryPendingMutationEvent() {
+    func testQueryPendingMutationEvent() async {
         let mutationEvent = MutationEvent(id: UUID().uuidString,
                                           modelId: UUID().uuidString,
                                           modelName: Post.modelName,
@@ -41,26 +40,26 @@ class MutationEventQueryTests: BaseDataStoreTests {
 
         let querySuccess = expectation(description: "query for pending mutation events")
 
-        storageAdapter.save(mutationEvent) { result in
+        let saveResult = await storageAdapter.save(mutationEvent)
+        switch saveResult {
+        case .success:
+            let result = await MutationEvent.pendingMutationEvents(for: mutationEvent.modelId,
+                                                                   storageAdapter: self.storageAdapter)
             switch result {
-            case .success:
-                MutationEvent.pendingMutationEvents(for: mutationEvent.modelId,
-                                                    storageAdapter: self.storageAdapter) { result in
-                    switch result {
-                    case .success(let mutationEvents):
-                        XCTAssertEqual(mutationEvents.count, 1)
-                        XCTAssertEqual(mutationEvents.first?.id, mutationEvent.id)
-                        querySuccess.fulfill()
-                    case .failure(let error): XCTFail("\(error)")
-                    }
-                }
+            case .success(let mutationEvents):
+                XCTAssertEqual(mutationEvents.count, 1)
+                XCTAssertEqual(mutationEvents.first?.id, mutationEvent.id)
+                querySuccess.fulfill()
             case .failure(let error): XCTFail("\(error)")
             }
+            
+        case .failure(let error): XCTFail("\(error)")
         }
+        
         wait(for: [querySuccess], timeout: 1)
     }
 
-    func testQueryPendingMutationEventsForModelIds() {
+    func testQueryPendingMutationEventsForModelIds() async {
         let mutationEvent1 = MutationEvent(id: UUID().uuidString,
                                            modelId: UUID().uuidString,
                                            modelName: Post.modelName,
@@ -96,14 +95,13 @@ class MutationEventQueryTests: BaseDataStoreTests {
         var modelIds = [mutationEvent1.modelId]
         modelIds.append(contentsOf: (1 ... 999).map { _ in UUID().uuidString })
         modelIds.append(mutationEvent2.modelId)
-        MutationEvent.pendingMutationEvents(for: modelIds,
-                                            storageAdapter: storageAdapter) { result in
-            switch result {
-            case .success(let mutationEvents):
-                XCTAssertEqual(mutationEvents.count, 2)
-                querySuccess.fulfill()
-            case .failure(let error): XCTFail("\(error)")
-            }
+        let result = await MutationEvent.pendingMutationEvents(for: modelIds,
+                                                               storageAdapter: storageAdapter)
+        switch result {
+        case .success(let mutationEvents):
+            XCTAssertEqual(mutationEvents.count, 2)
+            querySuccess.fulfill()
+        case .failure(let error): XCTFail("\(error)")
         }
 
         wait(for: [querySuccess], timeout: 1)

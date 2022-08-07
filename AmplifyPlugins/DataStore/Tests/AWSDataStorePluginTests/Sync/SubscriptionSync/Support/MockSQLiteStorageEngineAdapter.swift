@@ -138,11 +138,20 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         return resultForQuery ?? .failure(DataStoreError.invalidOperation(causedBy: nil))
     }
     
+    @available(*, deprecated, message: "Use async version")
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate?,
                          paginationInput: QueryPaginationInput?,
                          completion: DataStoreCallback<[M]>) {
         XCTFail("Not expected to execute")
+    }
+    
+    func query<M: Model>(_ modelType: M.Type,
+                         predicate: QueryPredicate?,
+                         sort: [QuerySortDescriptor]?,
+                         paginationInput: QueryPaginationInput?) async -> DataStoreResult<[M]> {
+        XCTFail("Not expected to execute")
+        return .success([])
     }
 
     func query<M: Model>(_ modelType: M.Type,
@@ -177,7 +186,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         XCTFail("Not expected to execute")
         return true
     }
-
+    
     func save(untypedModel: Model, completion: @escaping DataStoreCallback<Model>) {
         if let responder = responders[.saveUntypedModel] as? SaveUntypedModelResponder {
             responder.callback((untypedModel, completion))
@@ -187,6 +196,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         completion(resultForSave!)
     }
 
+    @available(*, deprecated, message: "Use async version")
     func save<M: Model>(_ model: M,
                         condition: QueryPredicate?,
                         completion: @escaping DataStoreCallback<M>) {
@@ -199,7 +209,14 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
             ? completion(.failure(DataStoreError.invalidModelName("forceError")))
             : completion(.success(model))
     }
+    
+    func save<M: Model>(_ model: M, condition: QueryPredicate?) async -> DataStoreResult<M> {
+        return shouldReturnErrorOnSaveMetadata
+            ? .failure(DataStoreError.invalidModelName("forceError"))
+            : .success(model)
+    }
 
+    @available(*, deprecated, message: "Use async version")
     func save<M: Model>(_ model: M,
                         modelSchema: ModelSchema,
                         condition where: QueryPredicate?,
@@ -212,6 +229,14 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         return shouldReturnErrorOnSaveMetadata
             ? completion(.failure(DataStoreError.invalidModelName("forceError")))
             : completion(.success(model))
+    }
+    
+    func save<M: Model>(_ model: M,
+                        modelSchema: ModelSchema,
+                        condition: QueryPredicate?) async -> DataStoreResult<M> {
+        return shouldReturnErrorOnSaveMetadata
+            ? .failure(DataStoreError.invalidModelName("forceError"))
+            : .success(model)
     }
 
     func queryMutationSync(forAnyModel anyModel: AnyModel) throws -> MutationSync<AnyModel>? {
@@ -345,17 +370,31 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
     func applyModelMigrations(modelSchemas: [ModelSchema]) throws {
     }
 
+    @available(*, deprecated, message: "Use async version")
     func save<M: Model>(_ model: M, condition: QueryPredicate?, completion: @escaping DataStoreCallback<M>) {
         XCTFail("Not expected to execute")
     }
+    
+    func save<M: Model>(_ model: M, condition: QueryPredicate?) async -> DataStoreResult<M> {
+        XCTFail("Not expected to execute")
+        return .success(model)
+    }
 
+    @available(*, deprecated, message: "Use async version")
     func save<M: Model>(_ model: M,
                         modelSchema: ModelSchema,
                         condition where: QueryPredicate?,
                         completion: @escaping DataStoreCallback<M>) {
         XCTFail("Not expected to execute")
     }
-
+    
+    func save<M: Model>(_ model: M,
+                        modelSchema: ModelSchema,
+                        condition: QueryPredicate?) async -> DataStoreResult<M> {
+        XCTFail("Not expected to execute")
+        return .success(model)
+    }
+    
     func delete<M: Model>(_ modelType: M.Type,
                           modelSchema: ModelSchema,
                           withId id: Model.Identifier,
@@ -386,7 +425,7 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
         completion(.success(nil))
     }
     
-    
+    @available(*, deprecated, message: "Use async version")
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate?,
                          sort: [QuerySortDescriptor]?,
@@ -397,6 +436,18 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
             completion(result)
         } else {
             completion(.success([]))
+        }
+    }
+    
+    func query<M: Model>(_ modelType: M.Type,
+                         predicate: QueryPredicate?,
+                         sort: [QuerySortDescriptor]?,
+                         paginationInput: QueryPaginationInput?) async -> DataStoreResult<[M]> {
+        if let responder = responders[.query] as? QueryResponder<M> {
+            let result = responder.callback(())
+            return result
+        } else {
+            return .success([])
         }
     }
 

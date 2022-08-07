@@ -126,10 +126,16 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     // MARK: - Save
+    @available(*, deprecated, message: "Use async version")
     func save<M: Model>(_ model: M, condition: QueryPredicate? = nil, completion: @escaping DataStoreCallback<M>) {
          save(model, modelSchema: model.schema, condition: condition, completion: completion)
      }
+    
+    func save<M: Model>(_ model: M, condition: QueryPredicate? = nil) async -> DataStoreResult<M> {
+        await save(model, modelSchema: model.schema, condition: condition)
+    }
 
+    @available(*, deprecated, message: "Use async version")
     func save<M: Model>(_ model: M, modelSchema: ModelSchema, condition: QueryPredicate? = nil, completion: DataStoreCallback<M>) {
         guard let connection = connection else {
             completion(.failure(DataStoreError.nilSQLiteConnection()))
@@ -190,6 +196,67 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             }
         } catch {
             completion(.failure(causedBy: error))
+        }
+    }
+    
+    func save<M: Model>(_ model: M, modelSchema: ModelSchema, condition: QueryPredicate? = nil) async -> DataStoreResult<M> {
+        guard let connection = connection else {
+            return .failure(DataStoreError.nilSQLiteConnection())
+        }
+        do {
+            let modelType = type(of: model)
+            let modelIdentifier = model.identifier(schema: modelSchema)
+            let modelExists = try exists(modelSchema, withIdentifier: modelIdentifier)
+
+            if !modelExists {
+                if let condition = condition, !condition.isAll {
+                    let dataStoreError = DataStoreError.invalidCondition(
+                        "Cannot apply a condition on model which does not exist.",
+                        "Save the model instance without a condition first.")
+                    return .failure(causedBy: dataStoreError)
+                }
+
+                let statement = InsertStatement(model: model, modelSchema: modelSchema)
+                _ = try connection.prepare(statement.stringValue).run(statement.variables)
+            }
+
+            if modelExists {
+                if let condition = condition, !condition.isAll {
+                    let modelExistsWithCondition = try exists(modelSchema,
+                                                              withIdentifier: modelIdentifier,
+                                                              predicate: condition)
+                    if !modelExistsWithCondition {
+                        let dataStoreError = DataStoreError.invalidCondition(
+                        "Save failed due to condition did not match existing model instance.",
+                        "The save will continue to fail until the model instance is updated.")
+                        return .failure(causedBy: dataStoreError)
+                    }
+                }
+
+                let statement = UpdateStatement(model: model,
+                                                modelSchema: modelSchema,
+                                                condition: condition)
+                _ = try connection.prepare(statement.stringValue).run(statement.variables)
+            }
+
+            // load the recent saved instance and pass it back to the callback
+            let result = await query(modelType,
+                                     modelSchema: modelSchema,
+                                     predicate: model.identifier(schema: modelSchema).predicate)
+            switch result {
+            case .success(let result):
+                if let saved = result.first {
+                    return .success(saved)
+                } else {
+                    return .failure(.nonUniqueResult(model: modelType.modelName,
+                                                     count: result.count))
+                }
+            case .failure(let error):
+                return .failure(error)
+            }
+            
+        } catch {
+            return .failure(causedBy: error)
         }
     }
 
@@ -295,6 +362,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
     }
 
     // MARK: - query
+    @available(*, deprecated, message: "Use async version")
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate? = nil,
                          sort: [QuerySortDescriptor]? = nil,
@@ -306,6 +374,17 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
               sort: sort,
               paginationInput: paginationInput,
               completion: completion)
+    }
+    
+    func query<M: Model>(_ modelType: M.Type,
+                         predicate: QueryPredicate? = nil,
+                         sort: [QuerySortDescriptor]? = nil,
+                         paginationInput: QueryPaginationInput? = nil) async -> DataStoreResult<[M]> {
+        await query(modelType,
+                    modelSchema: modelType.schema,
+                    predicate: predicate,
+                    sort: sort,
+                    paginationInput: paginationInput)
     }
 
     func query<M: Model>(_ modelType: M.Type,
