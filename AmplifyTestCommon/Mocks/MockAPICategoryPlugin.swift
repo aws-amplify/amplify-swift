@@ -296,7 +296,7 @@ class MockAPIAuthProviderFactory: APIAuthProviderFactory {
 class MockOIDCAuthProvider: AmplifyOIDCAuthProvider {
     var result: Result<AuthToken, Error>?
     
-    func getUserPoolAccessToken() async throws -> String {
+    func getLatestAuthToken() async throws -> String {
         if case let .success(token) = result {
             return token
         } else {
@@ -308,7 +308,7 @@ class MockOIDCAuthProvider: AmplifyOIDCAuthProvider {
 class MockFunctionAuthProvider: AmplifyFunctionAuthProvider {
     var result: Result<AuthToken, Error>?
     
-    func getUserPoolAccessToken() async throws -> String {
+    func getLatestAuthToken() async throws -> String {
         if case let .success(token) = result {
             return token
         } else {
