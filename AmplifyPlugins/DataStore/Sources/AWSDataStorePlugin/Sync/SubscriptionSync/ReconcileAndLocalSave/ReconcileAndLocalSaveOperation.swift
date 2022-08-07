@@ -160,23 +160,23 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     func queryPendingMutations(forModelIds modelIds: [Model.Identifier]) -> Future<[MutationEvent], DataStoreError> {
         Future<[MutationEvent], DataStoreError> { promise in
             var result: Result<[MutationEvent], DataStoreError> = .failure(Self.unfulfilledDataStoreError())
-            defer {
-                promise(result)
-            }
             guard !self.isCancelled else {
                 self.log.info("\(#function) - cancelled, aborting")
                 result = .success([])
+                promise(result)
                 return
             }
             guard let storageAdapter = self.storageAdapter else {
                 let error = DataStoreError.nilStorageAdapter()
                 self.notifyDropped(count: modelIds.count, error: error)
                 result = .failure(error)
+                promise(result)
                 return
             }
 
             guard !modelIds.isEmpty else {
                 result = .success([])
+                promise(result)
                 return
             }
 
@@ -189,6 +189,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                 case .success(let mutationEvents):
                     result = .success(mutationEvents)
                 }
+                promise(result)
             }
         }
     }
