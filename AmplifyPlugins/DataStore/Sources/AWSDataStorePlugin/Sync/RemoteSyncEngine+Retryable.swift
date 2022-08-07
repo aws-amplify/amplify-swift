@@ -51,7 +51,7 @@ extension RemoteSyncEngine {
             advice: advice,
             networkReachabilityPublisher: networkReachabilityPublisher
         ) {
-            self.workQueue.async {
+            self.taskQueue.async {
                 self.mutationRetryNotifier = nil
                 self.stateMachine.notify(action: .scheduledRestartTriggered)
             }
