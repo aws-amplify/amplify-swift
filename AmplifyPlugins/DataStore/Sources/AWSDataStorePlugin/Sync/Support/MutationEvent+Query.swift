@@ -11,50 +11,45 @@ import Dispatch
 extension MutationEvent {
     static func pendingMutationEvents(for modelId: Model.Identifier,
                                       storageAdapter: StorageEngineAdapter,
-                                      completion: DataStoreCallback<[MutationEvent]>) {
-
+                                      completion: @escaping DataStoreCallback<[MutationEvent]>) {
+        
         pendingMutationEvents(for: [modelId], storageAdapter: storageAdapter, completion: completion)
     }
-
+    
     static func pendingMutationEvents(for modelIds: [Model.Identifier],
                                       storageAdapter: StorageEngineAdapter,
-                                      completion: DataStoreCallback<[MutationEvent]>) {
-        let fields = MutationEvent.keys
-        let predicate = (fields.inProcess == false || fields.inProcess == nil)
-        var queriedMutationEvents: [MutationEvent] = []
-        var queryError: DataStoreError?
-        let chunkedArrays = modelIds.chunked(into: SQLiteStorageEngineAdapter.maxNumberOfPredicates)
-        for chunkedArray in chunkedArrays {
-            var queryPredicates: [QueryPredicateOperation] = []
-            for id in chunkedArray {
-                queryPredicates.append(QueryPredicateOperation(field: fields.modelId.stringValue,
-                                                               operator: .equals(id)))
-            }
-            let groupedQueryPredicates =  QueryPredicateGroup(type: .or, predicates: queryPredicates)
-            let final = QueryPredicateGroup(type: .and, predicates: [groupedQueryPredicates, predicate])
-            let sort = QuerySortDescriptor(fieldName: fields.createdAt.stringValue, order: .ascending)
-            let sempahore = DispatchSemaphore(value: 0)
-            storageAdapter.query(MutationEvent.self,
-                                 predicate: final,
-                                 sort: [sort],
-                                 paginationInput: nil) { result in
-                defer {
-                    sempahore.signal()
+                                      completion: @escaping DataStoreCallback<[MutationEvent]>) {
+        Task {
+            let fields = MutationEvent.keys
+            let predicate = (fields.inProcess == false || fields.inProcess == nil)
+            let chunkedArrays = modelIds.chunked(into: SQLiteStorageEngineAdapter.maxNumberOfPredicates)
+            var queriedMutationEvents: [MutationEvent] = []
+            for chunkedArray in chunkedArrays {
+                var queryPredicates: [QueryPredicateOperation] = []
+                for id in chunkedArray {
+                    queryPredicates.append(QueryPredicateOperation(field: fields.modelId.stringValue,
+                                                                   operator: .equals(id)))
                 }
-
-                switch result {
-                case .success(let mutationEvents):
+                let groupedQueryPredicates =  QueryPredicateGroup(type: .or, predicates: queryPredicates)
+                let final = QueryPredicateGroup(type: .and, predicates: [groupedQueryPredicates, predicate])
+                let sort = QuerySortDescriptor(fieldName: fields.createdAt.stringValue, order: .ascending)
+                
+                do {
+                    let mutationEvents = try await withCheckedThrowingContinuation { continuation in
+                        storageAdapter.query(MutationEvent.self,
+                                             predicate: final,
+                                             sort: [sort],
+                                             paginationInput: nil) { result in
+                            continuation.resume(with: result)
+                        }
+                    }
+                    
                     queriedMutationEvents.append(contentsOf: mutationEvents)
-                case .failure(let error):
-                    queryError = error
+                } catch {
+                    completion(.failure(causedBy: error))
                     return
                 }
             }
-            sempahore.wait()
-        }
-        if let queryError = queryError {
-            completion(.failure(queryError))
-        } else {
             completion(.success(queriedMutationEvents))
         }
     }

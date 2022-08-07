@@ -50,14 +50,15 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
 
         MutationEvent.pendingMutationEvents(
             for: mutationEvent.modelId,
-            storageAdapter: storageAdapter) { result in
+            storageAdapter: storageAdapter) { [weak self] result in
+                guard let self = self else { return }
                 switch result {
                 case .failure(let dataStoreError):
                     completionPromise(.failure(dataStoreError))
                 case .success(let localMutationEvents):
-                    let mutationDisposition = disposition(for: mutationEvent,
+                    let mutationDisposition = self.disposition(for: mutationEvent,
                                                           given: localMutationEvents)
-                    resolve(candidate: mutationEvent,
+                    self.resolve(candidate: mutationEvent,
                             localEvents: localMutationEvents,
                             per: mutationDisposition,
                             storageAdapter: storageAdapter,

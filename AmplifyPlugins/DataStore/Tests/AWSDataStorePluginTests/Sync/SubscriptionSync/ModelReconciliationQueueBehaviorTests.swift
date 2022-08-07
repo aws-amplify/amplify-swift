@@ -289,10 +289,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
 
         queue.start()
 
-        wait(for: [allEventsProcessed,
-                   eventsSentViaPublisher1,
-                   eventsSentViaPublisher2,
-                   eventsSentViaPublisher3], timeout: 5.0)
+        await waitForExpectations(timeout: 5.0)
     }
 
     /// - Given: A started AWSModelReconciliationQueue with no pending events
@@ -359,10 +356,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
 
         queue.start()
 
-        wait(for: [event1ShouldBeProcessed,
-                   event2ShouldBeProcessed,
-                   eventsSentViaPublisher1,
-                   eventsSentViaPublisher2], timeout: 1.0)
+        await waitForExpectations(timeout: 1.0)
 
         let event1ShouldNotBeProcessed = expectation(description: "Event 1 should not be processed")
         event1ShouldNotBeProcessed.isInverted = true
