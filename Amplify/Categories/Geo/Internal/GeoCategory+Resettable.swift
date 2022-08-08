@@ -18,8 +18,8 @@ extension GeoCategory: Resettable {
                     self?.log.verbose("Resetting \(String(describing: self?.categoryType)) plugin: finished")
                 }
             }
+            await taskGroup.waitForAll()
         }
-
         isConfigured = false
     }
 }
