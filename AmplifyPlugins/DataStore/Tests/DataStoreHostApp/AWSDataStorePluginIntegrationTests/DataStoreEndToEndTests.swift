@@ -225,7 +225,6 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     func testCreateThenMutateWithCondition() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-
         let post = Post.keys
         let date = Temporal.DateTime.now()
         let title = "This is a new post I created"
@@ -233,14 +232,11 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             title: title,
             content: "Original content from DataStoreEndToEndTests at \(date)",
             createdAt: date)
-
         var updatedPost = newPost
             updatedPost.content = "UPDATED CONTENT from DataStoreEndToEndTests at \(Date())"
 
         let createReceived = expectation(description: "Create notification received")
-        let updateReceived = expectation(description: "Update notification received")
-
-        let hubListener = Amplify.Hub.listen(
+        var hubListener = Amplify.Hub.listen(
             to: .dataStore,
             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
                 guard let mutationEvent = payload.data as? MutationEvent
@@ -261,6 +257,29 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                     createReceived.fulfill()
                     return
                 }
+        }
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+            XCTFail("Listener not registered for hub")
+            return
+        }
+        Amplify.DataStore.save(newPost) { _ in }
+        await waitForExpectations(timeout: networkTimeout)
+        
+        let updateReceived = expectation(description: "Update notification received")
+        hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                guard let mutationEvent = payload.data as? MutationEvent
+                    else {
+                        XCTFail("Can't cast payload as mutation event")
+                        return
+                }
+
+                // This check is to protect against stray events being processed after the test has completed,
+                // and it shouldn't be construed as a pattern necessary for production applications.
+                guard let post = try? mutationEvent.decodeModel() as? Post, post.id == newPost.id else {
+                    return
+                }
 
                 if mutationEvent.mutationType == GraphQLMutationType.update.rawValue {
                     XCTAssertEqual(post.content, updatedPost.content)
@@ -269,19 +288,12 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                     return
                 }
         }
-
         guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
         }
-
-        Amplify.DataStore.save(newPost) { _ in }
-
-        wait(for: [createReceived], timeout: networkTimeout)
-
         Amplify.DataStore.save(updatedPost, where: post.title == title) { _ in }
-
-        wait(for: [updateReceived], timeout: networkTimeout)
+        await waitForExpectations(timeout: networkTimeout)
     }
 
     /// - Given: A post that has been saved
@@ -307,17 +319,13 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         updatedPost.content = "UPDATED CONTENT from DataStoreEndToEndTests at \(Date())"
 
         let createReceived = expectation(description: "Create notification received")
-        let updateLocalSuccess = expectation(description: "Update local successful")
-        let conditionalReceived = expectation(description: "Conditional save failed received")
-
         let syncReceivedFilter = HubFilters.forEventName(HubPayload.EventName.DataStore.syncReceived)
         let conditionalSaveFailedFilter = HubFilters.forEventName(HubPayload.EventName.DataStore.conditionalSaveFailed)
         let filters = HubFilters.any(filters: syncReceivedFilter, conditionalSaveFailedFilter)
-        let hubListener = Amplify.Hub.listen(to: .dataStore, isIncluded: filters) { payload in
-            guard let mutationEvent = payload.data as? MutationEvent
-                else {
-                    XCTFail("Can't cast payload as mutation event")
-                    return
+        var hubListener = Amplify.Hub.listen(to: .dataStore, isIncluded: filters) { payload in
+            guard let mutationEvent = payload.data as? MutationEvent else {
+                XCTFail("Can't cast payload as mutation event")
+                return
             }
 
             // This check is to protect against stray events being processed after the test has completed,
@@ -333,13 +341,6 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                     createReceived.fulfill()
                     return
                 }
-            } else if payload.eventName == HubPayload.EventName.DataStore.conditionalSaveFailed {
-                if mutationEvent.mutationType == GraphQLMutationType.update.rawValue {
-                    XCTAssertEqual(post.title, updatedPost.title)
-                    XCTAssertEqual(mutationEvent.version, 1)
-                    conditionalReceived.fulfill()
-                    return
-                }
             }
         }
 
@@ -349,9 +350,9 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         }
 
         Amplify.DataStore.save(newPost) { _ in }
-
-        wait(for: [createReceived], timeout: networkTimeout)
-
+        await waitForExpectations(timeout: networkTimeout)
+        
+        let updateLocalSuccess = expectation(description: "Update local successful")
         storageAdapter.save(updatedPost) { result in
             switch result {
             case .success(let post):
@@ -361,12 +362,38 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 XCTFail("Failed to save post directly to local store \(error)")
             }
         }
+        await waitForExpectations(timeout: networkTimeout)
 
-        wait(for: [updateLocalSuccess], timeout: networkTimeout)
+        let conditionalReceived = expectation(description: "Conditional save failed received")
+        hubListener = Amplify.Hub.listen(to: .dataStore, isIncluded: filters) { payload in
+            guard let mutationEvent = payload.data as? MutationEvent else {
+                XCTFail("Can't cast payload as mutation event")
+                return
+            }
 
+            // This check is to protect against stray events being processed after the test has completed,
+            // and it shouldn't be construed as a pattern necessary for production applications.
+            guard let post = try? mutationEvent.decodeModel() as? Post, post.id == newPost.id else {
+                return
+            }
+
+            if payload.eventName == HubPayload.EventName.DataStore.conditionalSaveFailed {
+                if mutationEvent.mutationType == GraphQLMutationType.update.rawValue {
+                    XCTAssertEqual(post.title, updatedPost.title)
+                    XCTAssertEqual(mutationEvent.version, 1)
+                    conditionalReceived.fulfill()
+                    return
+                }
+            }
+        }
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+            XCTFail("Listener not registered for hub")
+            return
+        }
+        
         Amplify.DataStore.save(updatedPost, where: post.content == updatedPost.content) { _ in }
 
-        wait(for: [conditionalReceived], timeout: networkTimeout)
+        await waitForExpectations(timeout: networkTimeout)
     }
 
     /// Ensure DataStore.stop followed by DataStore.start is successful
@@ -397,7 +424,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 XCTFail("\(error)")
             }
         }
-        wait(for: [stopStartSuccess], timeout: networkTimeout)
+        await waitForExpectations(timeout: networkTimeout)
         try await validateSavePost()
 
     }
@@ -424,7 +451,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         let queryCompleted = expectation(description: "queryCompleted")
         Amplify.DataStore.query(Post.self, byId: "123") { _ in queryCompleted.fulfill() }
 
-        wait(for: [dataStoreStarted, queryCompleted], timeout: networkTimeout)
+        await waitForExpectations(timeout: networkTimeout)
         sink.cancel()
     }
 
@@ -456,7 +483,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 XCTFail("\(error)")
             }
         }
-        wait(for: [clearStartSuccess], timeout: networkTimeout)
+        await waitForExpectations(timeout: networkTimeout)
         try await validateSavePost()
     }
 
@@ -487,16 +514,9 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         postsSyncedToCloud.expectedFulfillmentCount = count
         var postsSyncedToCloudCount = 0
 
-        let postsDeletedLocally = expectation(description: "All posts deleted locally")
-        postsDeletedLocally.expectedFulfillmentCount = count
-
-        let postsDeletedFromCloud = expectation(description: "All posts deleted and synced to cloud")
-        postsDeletedFromCloud.expectedFulfillmentCount = count
-        var postsDeletedFromCloudCount = 0
-
         log.debug("Created posts: [\(posts.map { $0.identifier })]")
 
-        let sink = Amplify.DataStore.publisher(for: Post.self).sink { completed in
+        var sink = Amplify.DataStore.publisher(for: Post.self).sink { completed in
             switch completed {
             case .finished:
                 break
@@ -513,7 +533,37 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 postsSyncedToCloudCount += 1
                 self.log.debug("Post saved and synced from cloud \(mutationEvent.modelId) \(postsSyncedToCloudCount)")
                 postsSyncedToCloud.fulfill()
-            } else if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue,
+            }
+        }
+
+        let capturedPosts = posts
+
+        DispatchQueue.concurrentPerform(iterations: count) { index in
+            _ = Amplify.DataStore.save(capturedPosts[index])
+        }
+
+        await waitForExpectations(timeout: 100)
+
+        let postsDeletedLocally = expectation(description: "All posts deleted locally")
+        postsDeletedLocally.expectedFulfillmentCount = count
+
+        let postsDeletedFromCloud = expectation(description: "All posts deleted and synced to cloud")
+        postsDeletedFromCloud.expectedFulfillmentCount = count
+        var postsDeletedFromCloudCount = 0
+        
+        sink = Amplify.DataStore.publisher(for: Post.self).sink { completed in
+            switch completed {
+            case .finished:
+                break
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        } receiveValue: { mutationEvent in
+            guard posts.contains(where: { $0.id == mutationEvent.modelId }) else {
+                return
+            }
+
+            if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue,
                       mutationEvent.version == 1 {
                 self.log.debug(
                     "Post deleted locally \(mutationEvent.modelId)")
@@ -526,19 +576,10 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 postsDeletedFromCloud.fulfill()
             }
         }
-
-        let capturedPosts = posts
-
-        DispatchQueue.concurrentPerform(iterations: count) { index in
-            _ = Amplify.DataStore.save(capturedPosts[index])
-        }
-
-        wait(for: [postsSyncedToCloud], timeout: 100)
-
         DispatchQueue.concurrentPerform(iterations: count) { index in
             _ = Amplify.DataStore.delete(capturedPosts[index])
         }
-        wait(for: [postsDeletedLocally, postsDeletedFromCloud], timeout: 100)
+        await waitForExpectations(timeout: 100)
         sink.cancel()
     }
 
@@ -580,7 +621,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         }
 
         Amplify.DataStore.save(newPost) { _ in }
-        wait(for: [createReceived], timeout: networkTimeout)
+        
+        await waitForExpectations(timeout: networkTimeout)
     }
 }
 
