@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension AmplifyAPICategory: APICategoryAuthProviderFactoryBehavior {
+extension APICategory: APICategoryAuthProviderFactoryBehavior {
 
     /// Retrieve the plugin's auth provider factory
     ///

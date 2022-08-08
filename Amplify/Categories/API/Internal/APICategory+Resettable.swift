@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension AmplifyAPICategory: Resettable {
+extension APICategory: Resettable {
 
     public func reset() async {
         await withTaskGroup(of: Void.self) { taskGroup in

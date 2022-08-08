@@ -64,7 +64,7 @@ extension Amplify {
             case .analytics:
                 Analytics = AnalyticsCategory()
             case .api:
-                API = AmplifyAPICategory()
+                API = APICategory()
             case .auth:
                 Auth = AuthCategory()
             case .dataStore:

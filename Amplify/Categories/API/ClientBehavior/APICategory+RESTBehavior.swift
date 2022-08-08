@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension AmplifyAPICategory: APICategoryRESTBehavior {
+extension APICategory: APICategoryRESTBehavior {
     @discardableResult
     public func get(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
         plugin.get(request: request, listener: listener)

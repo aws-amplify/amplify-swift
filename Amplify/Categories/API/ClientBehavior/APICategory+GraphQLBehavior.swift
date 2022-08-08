@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension AmplifyAPICategory: APICategoryGraphQLBehavior {
+extension APICategory: APICategoryGraphQLBehavior {
 
     // MARK: - Request-based GraphQL operations
 

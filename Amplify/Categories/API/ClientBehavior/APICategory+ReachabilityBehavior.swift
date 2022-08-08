@@ -9,7 +9,7 @@
 import Foundation
 import Combine
 
-extension AmplifyAPICategory: APICategoryReachabilityBehavior {
+extension APICategory: APICategoryReachabilityBehavior {
 
     /// Default implementation of `reachabilityPublisher` to delegate to plugin's method
     public func reachabilityPublisher(for apiName: String?) throws -> AnyPublisher<ReachabilityUpdate, Never>? {

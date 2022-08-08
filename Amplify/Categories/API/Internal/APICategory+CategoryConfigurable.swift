@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-extension AmplifyAPICategory: CategoryConfigurable {
+extension APICategory: CategoryConfigurable {
 
     func configure(using configuration: CategoryConfiguration?) throws {
         guard !isConfigured else {
