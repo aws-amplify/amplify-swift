@@ -68,6 +68,8 @@ final public class AWSAPIPlugin: NSObject, APICategoryPlugin, AWSAPIAuthInformat
 extension URLSessionFactory {
     static func makeDefault() -> URLSessionFactory {
         let configuration = URLSessionConfiguration.default
+        configuration.tlsMinimumSupportedProtocolVersion = .TLSv12
+        configuration.tlsMaximumSupportedProtocolVersion = .TLSv13
         let factory = URLSessionFactory(configuration: configuration, delegateQueue: nil)
         return factory
     }
