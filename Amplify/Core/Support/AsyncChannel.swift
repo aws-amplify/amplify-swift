@@ -66,10 +66,10 @@ public actor AsyncChannel<Element: Sendable>: AsyncSequence {
 
     private func processNext() {
         if canTerminate {
-            let contination = continuations.removeFirst()
+            let continuation = continuations.removeFirst()
             assert(continuations.isEmpty)
             assert(elements.isEmpty)
-            contination.resume(returning: nil)
+            continuation.resume(returning: nil)
             return
         }
 
@@ -80,9 +80,9 @@ public actor AsyncChannel<Element: Sendable>: AsyncSequence {
         assert(!continuations.isEmpty)
         assert(!elements.isEmpty)
 
-        let contination = continuations.removeFirst()
+        let continuation = continuations.removeFirst()
         let element = elements.removeFirst()
 
-        contination.resume(returning: element)
+        continuation.resume(returning: element)
     }
 }
