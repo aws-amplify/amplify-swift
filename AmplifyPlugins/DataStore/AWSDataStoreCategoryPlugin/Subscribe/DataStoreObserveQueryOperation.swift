@@ -131,6 +131,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
     var currentItems: SortedList<M>
     var batchItemsChangedSink: AnyCancellable?
     var itemsChangedSink: AnyCancellable?
+    var readyEventSink: AnyCancellable?
 
     /// Internal publisher for `ObserveQueryPublisher` to pass events back to subscribers
     let passthroughPublisher: PassthroughSubject<DataStoreQuerySnapshot<M>, DataStoreError>
@@ -182,6 +183,11 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
         if let batchItemsChangedSink = batchItemsChangedSink {
             batchItemsChangedSink.cancel()
         }
+
+        if let readyEventSink = readyEventSink {
+            readyEventSink.cancel()
+        }
+        
         passthroughPublisher.send(completion: .finished)
         super.cancel()
         finish()
@@ -223,6 +229,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
             }
             self.log.verbose("Start ObserveQuery")
             self.subscribeToItemChanges()
+            self.subscribeToReadyEvent()
             self.initialQuery()
         }
     }
@@ -282,6 +289,14 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
             .receive(on: serialQueue)
             .sink(receiveCompletion: onReceiveCompletion(completed:),
                   receiveValue: onItemChangeAfterSync(mutationEvent:))
+    }
+
+    func subscribeToReadyEvent() {
+        readyEventSink = Amplify.Hub.publisher(for: .dataStore).sink { event in
+            if event.eventName == HubPayload.EventName.DataStore.ready {
+                self.sendSnapshot()
+            }
+        }
     }
 
     func filterByModelName(mutationEvent: MutationEvent) -> Bool {
