@@ -775,7 +775,7 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         }
 
         operation.syncIfNeededAndFinish(result)
-        await waitForExpectations(timeout: 10)
+        await waitForExpectations(timeout: 1)
         XCTAssertEqual(submittedEvents.count, 2)
         // The delete mutations should be synced in reverse order (children to parent)
         XCTAssertEqual(submittedEvents[0].modelName, CommentWithCompositeKey.modelName)
