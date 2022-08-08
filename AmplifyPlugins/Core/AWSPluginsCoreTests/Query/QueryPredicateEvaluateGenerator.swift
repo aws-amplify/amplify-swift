@@ -26,10 +26,10 @@ let dateNowPlus4day = dateNow.addingTimeInterval(60 * 60 * 4 * 24)
 // This code was originally created as a standalone iphone app, but was moved into
 // this unit test class so that it could be run by other developers
 
-//swiftlint:disable type_body_length
-//swiftlint:disable file_length
-//swiftlint:disable line_length
-//swiftlint:disable function_parameter_count
+// swiftlint:disable type_body_length
+// swiftlint:disable file_length
+// swiftlint:disable line_length
+// swiftlint:disable function_parameter_count
 class QueryPredicateGenerator: XCTestCase {
     func testBoolBool() throws {
         generate("Bool,Bool")

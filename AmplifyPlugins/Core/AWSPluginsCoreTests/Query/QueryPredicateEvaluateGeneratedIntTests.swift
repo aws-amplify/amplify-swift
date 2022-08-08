@@ -10,10 +10,14 @@ import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
-//swiftlint:disable type_body_length
-//swiftlint:disable file_length
-//swiftlint:disable type_name
+// swiftlint:disable type_body_length
+// swiftlint:disable file_length
+// swiftlint:disable type_name
 class QueryPredicateEvaluateGeneratedIntBetweenTests: XCTestCase {
+    override func setUp() {
+        ModelRegistry.register(modelType: QPredGen.self)
+    }
+
     func testInt1notEqualInt1() throws {
         let predicate = QPredGen.keys.myInt.ne(1)
         var instance = QPredGen(name: "test")

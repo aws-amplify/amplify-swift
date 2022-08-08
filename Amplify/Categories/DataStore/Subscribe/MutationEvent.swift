@@ -8,8 +8,11 @@
 import Foundation
 
 public struct MutationEvent: Model {
-    public let id: Identifier
-    public let modelId: Identifier
+    public typealias EventIdentifier = String
+    public typealias ModelId = String
+
+    public let id: EventIdentifier
+    public let modelId: ModelId
     public var modelName: String
     public var json: String
     public var mutationType: String
@@ -18,8 +21,8 @@ public struct MutationEvent: Model {
     public var inProcess: Bool
     public var graphQLFilterJSON: String?
 
-    public init(id: Identifier = UUID().uuidString,
-                modelId: String,
+    public init(id: EventIdentifier = UUID().uuidString,
+                modelId: ModelId,
                 modelName: String,
                 json: String,
                 mutationType: MutationType,
@@ -44,7 +47,7 @@ public struct MutationEvent: Model {
                           version: Int? = nil,
                           graphQLFilterJSON: String? = nil) throws {
         let json = try model.toJSON()
-        self.init(modelId: model.id,
+        self.init(modelId: model.identifier(schema: modelSchema).stringValue,
                   modelName: modelSchema.name,
                   json: json,
                   mutationType: mutationType,

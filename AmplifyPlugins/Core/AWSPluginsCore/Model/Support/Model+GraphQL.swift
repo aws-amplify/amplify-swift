@@ -13,42 +13,47 @@ typealias GraphQLInput = [String: Any?]
 /// Extension that adds GraphQL specific utilities to concret types of `Model`.
 extension Model {
 
-    /// Get the `Model` values as a `Dictionary` of `String` to `Any?` that can be
-    /// used as the `input` of GraphQL related operations.
+    /// Returns an array of model fields sorted by predefined rules (see ModelSchema+sortedFields)
+    /// and filtered according the following criteria:
+    /// - fields are not read-only
+    /// - fields exist on the model
+    private func fieldsForMutation(_ modelSchema: ModelSchema) -> [(ModelField, Any?)] {
+        modelSchema.sortedFields.compactMap { field in
+            guard !field.isReadOnly,
+                  let fieldValue = getFieldValue(for: field.name,
+                                                 modelSchema: modelSchema) else {
+                return nil
+            }
+            return (field, fieldValue)
+        }
+    }
+
+    /// Returns the input used for mutations
+    /// - Parameter modelSchema: model's schema
+    /// - Returns: A key-value map of the GraphQL mutation input
     func graphQLInputForMutation(_ modelSchema: ModelSchema) -> GraphQLInput {
         var input: GraphQLInput = [:]
-        modelSchema.fields.forEach {
-            let modelField = $0.value
 
-            // When the field is read-only don't add it to the GraphQL input object
-            if modelField.isReadOnly {
-                return
-            }
+        // filter existing non-readonly fields
+        let fields = fieldsForMutation(modelSchema)
 
-            // TODO how to handle associations of type "many" (i.e. cascade save)?
-            // This is not supported right now and might be added as a future feature
-            if case .collection = modelField.type {
-                return
-            }
+        for (modelField, modelFieldValue) in fields {
+            let name = modelField.name
 
-            let name = modelField.graphQLName
-            let fieldValueOptional = getFieldValue(for: modelField.name, modelSchema: modelSchema)
-
-            // Since the returned value is Any?? we need to do the following:
-            // - `guard` to make sure the field name exists on the model
-            // - `guard` to ensure the returned value isn't nil
-            guard let fieldValue = fieldValueOptional else {
+            guard let value = modelFieldValue else {
+                // don't invalidate fields of type .model
+                // as we'll take care of this later on (see line 61)
+                if case .model = modelField.type {
+                    continue
+                }
                 input.updateValue(nil, forKey: name)
-                return
-            }
-
-            // swiftlint:disable:next syntactic_sugar
-            guard case .some(Optional<Any>.some(let value)) = fieldValue else {
-                input.updateValue(nil, forKey: name)
-                return
+                continue
             }
 
             switch modelField.type {
+            case .collection:
+                // we don't currently support this use case
+                continue
             case .date, .dateTime, .time:
                 if let date = value as? TemporalSpec {
                     input[name] = date.iso8601String
@@ -57,9 +62,14 @@ extension Model {
                 }
             case .enum:
                 input[name] = (value as? EnumPersistable)?.rawValue
-            case .model:
-                let fieldName = getFieldNameForAssociatedModels(modelField: modelField)
-                input[fieldName] = getModelId(from: value, modelSchema: modelSchema)
+            case .model(let associateModelName):
+                // get the associated model target names and their values
+                let associatedModelIds = associatedModelIdentifierFields(fromModelValue: value,
+                                                                         field: modelField,
+                                                                         associatedModelName: associateModelName)
+                for (fieldName, fieldValue) in associatedModelIds {
+                    input[fieldName] = fieldValue
+                }
             case .embedded, .embeddedCollection:
                 if let encodable = value as? Encodable {
                     let jsonEncoder = JSONEncoder(dateEncodingStrategy: ModelDateFormatting.encodingStrategy)
@@ -70,61 +80,24 @@ extension Model {
                         preconditionFailure("Could not turn into json object from \(value)")
                     }
                 }
-            case .string:
-                // The input may contain the same keys from `.model` case when the `getFieldNameForAssociatedModels`
-                // returns the same value as the `modelField.name`. If this is the case, let the `.model` case take
-                // precedent over the explicit string field on the Model by ignoring the value that is about to be added
-                if !input.keys.contains(name) {
-                    input[name] = value
-                }
-            default:
+            case .string, .int, .double, .timestamp, .bool:
                 input[name] = value
             }
         }
-
-        return fixHasOneAssociationsWithExplicitFieldOnModel(input, modelSchema: modelSchema)
-    }
-
-    /// This is to account for Models with an explicit field on the Model along with an object representing the hasOne
-    /// association to another model. See https://github.com/aws-amplify/amplify-ios/issues/920 for more details.
-    /// When the associated object is `nil`, remove the key from the GraphQL input to prevent runtime failures.
-    /// When the associated object is found, take this value over the explicit field's value by replacing the correct
-    /// entry for the field name of the associated model.
-    private func fixHasOneAssociationsWithExplicitFieldOnModel(_ input: GraphQLInput,
-                                                               modelSchema: ModelSchema) -> GraphQLInput {
-        var input = input
-        modelSchema.fields.forEach {
-            let modelField = $0.value
-            if case .model = modelField.type,
-               case .hasOne = modelField.association,
-               input.keys.contains(modelField.name) {
-
-                let modelIdOrNilOptional = input[modelField.name]
-                // swiftlint:disable:next syntactic_sugar
-                guard case .some(Optional<Any>.some(let modelIdOrNil)) = modelIdOrNilOptional else {
-                    input.removeValue(forKey: modelField.name)
-                    return
-                }
-                if let modelIdValue = modelIdOrNil as? String {
-                    let fieldName = getFieldNameForAssociatedModels(modelField: modelField)
-                    input[fieldName] = modelIdValue
-                }
-            }
-        }
-
         return input
     }
 
     /// Retrieve the custom primary key's value used for the GraphQL input.
     /// Only a subset of data types are applicable as custom indexes such as
     /// `date`, `dateTime`, `time`, `enum`, `string`, `double`, and `int`.
-    func graphQLInputForPrimaryKey(modelFieldName: ModelFieldName) -> String? {
+    func graphQLInputForPrimaryKey(modelFieldName: ModelFieldName,
+                                   modelSchema: ModelSchema) -> String? {
 
-        guard let modelField = schema.field(withName: modelFieldName) else {
+        guard let modelField = modelSchema.field(withName: modelFieldName) else {
             return nil
         }
 
-        let fieldValueOptional = getFieldValue(for: modelField.name, modelSchema: schema)
+        let fieldValueOptional = getFieldValue(for: modelField.name, modelSchema: modelSchema)
 
         guard let fieldValue = fieldValueOptional else {
             return nil
@@ -153,15 +126,75 @@ extension Model {
         }
     }
 
-    private func getModelId(from value: Any, modelSchema: ModelSchema) -> String? {
-        if let modelValue = value as? Model {
-            return modelValue.id
-        } else if let value = value as? [String: JSONValue],
-                  case .string(let primaryKeyValue) = value[modelSchema.primaryKey.name] {
-            return primaryKeyValue
+    /// Given a model value, its schema and a model field with associations returns
+    /// an array of key-value pairs of the associated model identifiers and their values.
+    /// - Parameters:
+    ///   - value: model value
+    ///   - field: model field
+    ///   - modelSchema: model schema
+    /// - Returns: an array of key-value pairs where `key` is the field name
+    ///            and `value` its value in the associated model
+    private func associatedModelIdentifierFields(fromModelValue value: Any,
+                                                 field: ModelField,
+                                                 associatedModelName: String) -> [(String, Persistable)] {
+        guard let associateModelSchema = ModelRegistry.modelSchema(from: associatedModelName) else {
+            preconditionFailure("Associated model \(associatedModelName) not found.")
         }
 
-        return nil
+        let fieldNames = getFieldNameForAssociatedModels(modelField: field)
+        let values = getModelIdentifierValues(from: value, modelSchema: associateModelSchema)
+
+        // if the field is required, the associated field keys and values should match
+        if fieldNames.count != values.count, field.isRequired {
+            preconditionFailure(
+                """
+                Associated model target names and values for field \(field.name) of model \(modelName) mismatch.
+                There is a possibility that is an issue with the generated models.
+                """
+            )
+        }
+
+        return Array(zip(fieldNames, values))
+    }
+
+    /// Given a model and its schema, returns the values of its identifier (primary key).
+    /// The return value is an array as models can have a composite identifier.
+    /// - Parameters:
+    ///   - value: model value
+    ///   - modelSchema: model's schema
+    /// - Returns: array of values of its primary key
+    private func getModelIdentifierValues(from value: Any, modelSchema: ModelSchema) -> [Persistable] {
+        if let modelValue = value as? Model {
+            return modelValue.identifier(schema: modelSchema).values
+        } else if let optionalModel = value as? Model?,
+                  let modelValue = optionalModel {
+            return modelValue.identifier(schema: modelSchema).values
+        } else if let value = value as? [String: JSONValue] {
+            var primaryKeyValues = [Persistable]()
+            for field in modelSchema.primaryKey.fields {
+                if case .string(let primaryKeyValue) = value[field.name] {
+                    primaryKeyValues.append(primaryKeyValue)
+                }
+            }
+            return primaryKeyValues
+        }
+        return []
+    }
+
+    /// Retrieves the GraphQL field name that associates the current model with the target model.
+    /// By default, this is the current model + the associated Model + "Id", For example "comment" + "Post" + "Id"
+    /// This information is also stored in the schema as `targetName` which is codegenerated to be the same as the
+    /// default or an explicit field specified by the developer.
+    private func getFieldNameForAssociatedModels(modelField: ModelField) -> [String] {
+        let defaultFieldName = modelName.camelCased() + modelField.name.pascalCased() + "Id"
+        if case let .belongsTo(_, targetNames) = modelField.association, !targetNames.isEmpty {
+            return targetNames
+        } else if case let .hasOne(_, targetNames) = modelField.association,
+                  !targetNames.isEmpty {
+            return targetNames
+        }
+
+        return [defaultFieldName]
     }
 
     private func getFieldValue(for modelFieldName: String, modelSchema: ModelSchema) -> Any?? {
@@ -171,20 +204,4 @@ extension Model {
             return self[modelFieldName] ?? nil
         }
     }
-
-    /// Retrieves the GraphQL field name that associates the current model with the target model.
-    /// By default, this is the current model + the associated Model + "Id", For example "comment" + "Post" + "Id"
-    /// This information is also stored in the schema as `targetName` which is codegenerated to be the same as the
-    /// default or an explicit field specified by the developer.
-    private func getFieldNameForAssociatedModels(modelField: ModelField) -> String {
-        let defaultFieldName = modelName.camelCased() + modelField.name.pascalCased() + "Id"
-        if case let .belongsTo(_, targetName) = modelField.association {
-            return targetName ?? defaultFieldName
-        } else if case let .hasOne(_, targetName) = modelField.association {
-            return targetName ?? defaultFieldName
-        }
-
-        return defaultFieldName
-    }
-
 }

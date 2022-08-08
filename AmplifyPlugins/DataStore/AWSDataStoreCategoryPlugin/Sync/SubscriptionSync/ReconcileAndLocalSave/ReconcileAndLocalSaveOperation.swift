@@ -123,7 +123,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
             return
         }
 
-        let remoteModelIds = remoteModels.map { $0.model.id }
+        let remoteModelIds = remoteModels.map { $0.model.identifier }
 
         do {
             try storageAdapter.transaction {
@@ -231,7 +231,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
             do {
                 let localMetadatas = try storageAdapter.queryMutationSyncMetadata(
-                    for: remoteModels.map { $0.model.id },
+                    for: remoteModels.map { $0.model.identifier },
                        modelName: self.modelSchema.name)
                 result = .success((remoteModels, localMetadatas))
             } catch {
@@ -348,7 +348,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
             storageAdapter.delete(untypedModelType: modelType,
                                   modelSchema: self.modelSchema,
-                                  withId: remoteModel.model.id,
+                                  withId: remoteModel.model.identifier,
                                   condition: nil) { response in
                 switch response {
                 case .failure(let dataStoreError):
@@ -433,7 +433,8 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
             log.error("Could not notify mutation event")
             return
         }
-        let mutationEvent = MutationEvent(modelId: savedModel.model.instance.id,
+        let modelIdentifier = savedModel.model.instance.identifier(schema: modelSchema).stringValue
+        let mutationEvent = MutationEvent(modelId: modelIdentifier,
                                           modelName: modelSchema.name,
                                           json: json,
                                           mutationType: mutationType,

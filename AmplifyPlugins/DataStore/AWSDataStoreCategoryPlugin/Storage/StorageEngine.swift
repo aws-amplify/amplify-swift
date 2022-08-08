@@ -20,7 +20,6 @@ typealias StorageEngineBehaviorFactory =
 
 // swiftlint:disable type_body_length
 final class StorageEngine: StorageEngineBehavior {
-
     // TODO: Make this private once we get a mutation flow that passes the type of mutation as needed
     let storageAdapter: StorageEngineAdapter
     var syncEngine: RemoteSyncEngineBehavior?
@@ -189,7 +188,9 @@ final class StorageEngine: StorageEngineBehavior {
         // mutation type
         let modelExists: Bool
         do {
-            modelExists = try storageAdapter.exists(modelSchema, withId: model.id, predicate: nil)
+            modelExists = try storageAdapter.exists(modelSchema,
+                                                    withIdentifier: model.identifier(schema: modelSchema),
+                                                    predicate: nil)
         } catch {
             let dataStoreError = DataStoreError.invalidOperation(causedBy: error)
             completion(.failure(dataStoreError))
@@ -240,6 +241,7 @@ final class StorageEngine: StorageEngineBehavior {
         save(model, modelSchema: model.schema, condition: condition, completion: completion)
     }
 
+    @available(*, deprecated, message: "Use delete(:modelSchema:withIdentifier:predicate:completion")
     func delete<M: Model>(_ modelType: M.Type,
                           modelSchema: ModelSchema,
                           withId id: Model.Identifier,
@@ -248,9 +250,23 @@ final class StorageEngine: StorageEngineBehavior {
         let cascadeDeleteOperation = CascadeDeleteOperation(storageAdapter: storageAdapter,
                                                             syncEngine: syncEngine,
                                                             modelType: modelType, modelSchema: modelSchema,
-                                                            withId: id,
+                                                            withIdentifier: DefaultModelIdentifier<M>.makeDefault(id: id),
                                                             condition: condition) { completion($0) }
         operationQueue.addOperation(cascadeDeleteOperation)
+    }
+
+    func delete<M: Model>(_ modelType: M.Type,
+                          modelSchema: ModelSchema,
+                          withIdentifier identifier: ModelIdentifierProtocol,
+                          condition: QueryPredicate?,
+                          completion: @escaping DataStoreCallback<M?>) {
+        let cascadeDeleteOperation = CascadeDeleteOperation(storageAdapter: storageAdapter,
+                                                            syncEngine: syncEngine,
+                                                            modelType: modelType, modelSchema: modelSchema,
+                                                            withIdentifier: identifier,
+                                                            condition: condition) { completion($0) }
+        operationQueue.addOperation(cascadeDeleteOperation)
+
     }
 
     func delete<M: Model>(_ modelType: M.Type,

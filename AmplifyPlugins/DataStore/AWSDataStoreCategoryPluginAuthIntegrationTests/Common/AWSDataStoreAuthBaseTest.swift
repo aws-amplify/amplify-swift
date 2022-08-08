@@ -373,7 +373,7 @@ extension AWSDataStoreAuthBaseTest {
             .filter { $0.eventName == HubPayload.EventName.DataStore.syncReceived }
             .sink { payload in
                 guard let mutationEvent = payload.data as? MutationEvent,
-                      mutationEvent.modelId == model.id else {
+                      mutationEvent.modelId == model.identifier else {
                     return
                 }
 
@@ -401,7 +401,7 @@ extension AWSDataStoreAuthBaseTest {
 
         wait(for: [expectations.mutationSave, expectations.mutationSaveProcessed], timeout: 60)
 
-        Amplify.DataStore.delete(M.self, withId: model.id).sink {
+        Amplify.DataStore.delete(M.self, withId: model.identifier).sink {
             if case let .failure(error) = $0 {
                 onFailure(error)
             }

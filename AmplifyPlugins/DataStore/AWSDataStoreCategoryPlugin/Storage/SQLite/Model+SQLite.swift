@@ -8,6 +8,7 @@
 import Amplify
 import Foundation
 import SQLite
+import AWSPluginsCore
 
 /// Extended types that conform to `Persistable` in order to provide conversion to SQLite's `Binding`
 /// types. This is necessary so `Model` properties' map values to a SQLite compatible types.
@@ -68,7 +69,9 @@ extension Model {
             // - `guard` to ensure the returned value isn't nil
             // - Attempt to cast to Persistable to ensure the model value isn't incorrectly assigned to a type we
             //   can't handle
-            if let jsonModel = self as? JSONValueHolder {
+            if field.name == ModelIdentifierFormat.Custom.sqlColumnName {
+                existingFieldOptionalValue = self.identifier(schema: modelSchema).stringValue
+            } else if let jsonModel = self as? JSONValueHolder {
                 existingFieldOptionalValue = jsonModel.jsonValue(for: field.name, modelSchema: modelSchema)
             } else {
                 existingFieldOptionalValue = self[field.name]
@@ -84,31 +87,29 @@ extension Model {
 
             // At this point, we have a value: Any. However, remember that Any could itself be an optional, so we're
             // not quite done yet.
-            // swiftlint:disable syntactic_sugar
             let value: Any
+            // swiftlint:disable syntactic_sugar
             if case Optional<Any>.some(let unwrappedValue) = anyValue {
                 value = unwrappedValue
             } else {
                 return nil
             }
-            // swiftlint:enable syntactic_sugar
 
             // Now `value` is still an Any, but we've assured ourselves that it's not an Optional, which means we can
             // safely attempt a cast to Persistable below.
 
             // if value is an associated model, get its id
             if field.isForeignKey,
-               case let .model(modelName) = field.type,
-               let modelSchema = ModelRegistry.modelSchema(from: modelName) {
+               case let .model(associatedModelName) = field.type,
+               let associatedModelSchema = ModelRegistry.modelSchema(from: associatedModelName) {
 
                 // Check if it is a Model or json object.
-                if let value = value as? Model {
-                    let associatedModel: Model.Type = type(of: value)
-                    return value[associatedModel.schema.primaryKey.name] as? String
+                if let associatedModelValue = value as? Model {
+                    return associatedModelValue.identifier
 
-                } else if let value = value as? [String: JSONValue],
-                   case .string(let primaryKeyValue) = value[modelSchema.primaryKey.name] {
-                    return primaryKeyValue
+                } else if let associatedModelJSON = value as? [String: JSONValue] {
+                    return associatedPrimaryKeyValue(fromJSON: associatedModelJSON,
+                                                     associatedModelSchema: associatedModelSchema)
                 }
             }
 
@@ -127,6 +128,30 @@ extension Model {
         }
 
         return values
+    }
+
+
+    /// Given a serialized JSON model, returns the serialized value of its primary key.
+    /// The returned value is either the value of the field or the serialization of multiple values in case of a composite PK.
+    /// - Parameters:
+    ///   - associatedModelJSON: model as JSON value
+    ///   - associatedModelSchema: model's schema
+    /// - Returns: serialized value of the primary key
+    private func associatedPrimaryKeyValue(fromJSON associatedModelJSON: [String: JSONValue],
+                                           associatedModelSchema: ModelSchema) -> String {
+        let associatedModelPKFields: ModelIdentifierProtocol.Fields
+
+        // get the associated model primary key fields
+        associatedModelPKFields = associatedModelSchema.primaryKey.fields.compactMap {
+            if case .string(let value) = associatedModelJSON[$0.name] {
+                return (name: $0.name, value: value)
+            }
+            return nil
+        }
+        // Since Flutter models internally use a general serialized model structure with but
+        // different model schemas, we always use an identifier with a ModelIdentifierFormat.Custom format
+        return ModelIdentifier<AnyModel, ModelIdentifierFormat.Custom>
+            .make(fields: associatedModelPKFields).stringValue
     }
 
 }
@@ -187,4 +212,9 @@ extension Array where Element == ModelSchema {
             modelSchema.hasAssociations
         }
     }
+}
+
+extension ModelIdentifierFormat.Custom {
+    /// Name for composite identifier (multiple fields)
+    public static let sqlColumnName = "@@primaryKey"
 }

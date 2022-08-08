@@ -16,9 +16,19 @@ public protocol DataStoreBaseBehavior {
                         where condition: QueryPredicate?,
                         completion: @escaping DataStoreCallback<M>)
 
+    @available(*, deprecated, message: "Use query(:byIdentifier:completion)")
     func query<M: Model>(_ modelType: M.Type,
                          byId id: String,
                          completion: DataStoreCallback<M?>)
+
+    func query<M: Model>(_ modelType: M.Type,
+                         byIdentifier id: String,
+                         completion: DataStoreCallback<M?>) where M: ModelIdentifiable,
+                                                                  M.IdentifierFormat == ModelIdentifierFormat.Default
+
+    func query<M: Model>(_ modelType: M.Type,
+                         byIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
+                         completion: DataStoreCallback<M?>) where M: ModelIdentifiable
 
     func query<M: Model>(_ modelType: M.Type,
                          where predicate: QueryPredicate?,
@@ -30,14 +40,26 @@ public protocol DataStoreBaseBehavior {
                           where predicate: QueryPredicate?,
                           completion: @escaping DataStoreCallback<Void>)
 
+    @available(*, deprecated, message: "Use delete(:withIdentifier:where:completion)")
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: String,
                           where predicate: QueryPredicate?,
                           completion: @escaping DataStoreCallback<Void>)
 
     func delete<M: Model>(_ modelType: M.Type,
-                          where predicate: QueryPredicate,
-                          completion: @escaping DataStoreCallback<Void>)
+                          withIdentifier id: String,
+                          where predicate: QueryPredicate?,
+                          completion: @escaping DataStoreCallback<Void>) where M: ModelIdentifiable,
+                                                                               M.IdentifierFormat == ModelIdentifierFormat.Default
+
+    func delete<M: Model>(_ modelType: M.Type,
+                          withIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
+                          where predicate: QueryPredicate?,
+                          completion: @escaping DataStoreCallback<Void>) where M: ModelIdentifiable
+
+    func delete<M: Model>(_ modelType: M.Type,
+                           where predicate: QueryPredicate,
+                           completion: @escaping DataStoreCallback<Void>)
 
     /**
      Synchronization starts automatically whenever you run any DataStore operation (query(), save(), delete())
