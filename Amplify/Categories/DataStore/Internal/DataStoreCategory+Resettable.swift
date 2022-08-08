@@ -18,8 +18,8 @@ extension DataStoreCategory: Resettable {
                     self?.log.verbose("Resetting \(String(describing: self?.categoryType)) plugin: finished")
                 }
             }
+            await taskGroup.waitForAll()
         }
-
         log.verbose("Resetting ModelRegistry and ModelListDecoderRegistry")
         ModelRegistry.reset()
         ModelListDecoderRegistry.reset()
