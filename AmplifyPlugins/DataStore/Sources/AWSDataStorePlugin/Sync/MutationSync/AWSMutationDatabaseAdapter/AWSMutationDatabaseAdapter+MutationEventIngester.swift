@@ -153,7 +153,6 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
                                         continuation.resume(with: result)
                                     }
                                 }
-                                
                             }
                         }
                         try await group.waitForAll()
