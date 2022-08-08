@@ -143,17 +143,25 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
         case .dropCandidateWithError(let dataStoreError):
             completionPromise(.failure(dataStoreError))
         case .dropCandidateAndDeleteLocal:
-            // TODO: Handle errors from delete, and convert to async
-            let group = DispatchGroup()
-            localEvents.forEach {
-                group.enter()
-                storageAdapter.delete(MutationEvent.self,
-                                      modelSchema: MutationEvent.schema,
-                                      withId: $0.id,
-                                      condition: nil) { _ in group.leave() }
+            Task {
+                do {
+                    try await withThrowingTaskGroup(of: Void.self) { group in
+                        for localEvent in localEvents {
+                            group.addTask {
+                                try await withCheckedThrowingContinuation { continuation in
+                                    storageAdapter.delete(untypedModelType: MutationEvent.self, modelSchema: MutationEvent.schema, withId: localEvent.id, condition: nil) { result in
+                                        continuation.resume(with: result)
+                                    }
+                                }
+                            }
+                        }
+                        try await group.waitForAll()
+                    }
+                    completionPromise(.success(candidate))
+                } catch {
+                    completionPromise(.failure(causedBy: error))
+                }
             }
-            group.wait()
-            completionPromise(.success(candidate))
         case .saveCandidate:
             save(mutationEvent: candidate,
                  storageAdapter: storageAdapter,
