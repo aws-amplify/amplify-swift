@@ -13,7 +13,7 @@ class InitializeFetchAuthSessionTests: XCTestCase {
 
     func testInitializeUserPoolTokens() {
         let expectation = expectation(description: "initializeUserPool")
-        let action = InitializeFetchAuthSessionWithUserPool(tokens: .testData)
+        let action = InitializeFetchAuthSessionWithUserPool(signedInData: .testData)
 
         let environment = Defaults.makeDefaultAuthEnvironment()
 

@@ -20,7 +20,7 @@ enum AuthorizationState: State {
     case fetchingUnAuthSession(FetchAuthSessionState)
 
     case fetchingAuthSessionWithUserPool(FetchAuthSessionState,
-                                         AWSCognitoUserPoolTokens)
+                                         SignedInData)
 
     case refreshingSession(existingCredentials: AmplifyCredentials, RefreshSessionState)
 

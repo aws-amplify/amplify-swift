@@ -18,7 +18,7 @@ class RefreshUserPoolTokensTests: XCTestCase {
 
         let expectation = expectation(description: "noUserPoolEnvironment")
 
-        let action = RefreshUserPoolTokens(existingTokens: .testData)
+        let action = RefreshUserPoolTokens(existingSignedIndata: .testData)
 
         action.execute(withDispatcher: MockDispatcher { event in
 
@@ -53,7 +53,7 @@ class RefreshUserPoolTokensTests: XCTestCase {
             cognitoUserPoolFactory: identityProviderFactory,
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF)
 
-        let action = RefreshUserPoolTokens(existingTokens: .testData)
+        let action = RefreshUserPoolTokens(existingSignedIndata: .testData)
 
         action.execute(withDispatcher: MockDispatcher { event in
 
@@ -92,7 +92,7 @@ class RefreshUserPoolTokensTests: XCTestCase {
             cognitoUserPoolFactory: identityProviderFactory,
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF)
 
-        let action = RefreshUserPoolTokens(existingTokens: .testData)
+        let action = RefreshUserPoolTokens(existingSignedIndata: .testData)
 
         action.execute(withDispatcher: MockDispatcher { event in
 
@@ -125,7 +125,7 @@ class RefreshUserPoolTokensTests: XCTestCase {
             cognitoUserPoolFactory: identityProviderFactory,
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF)
 
-        let action = RefreshUserPoolTokens(existingTokens: .testData)
+        let action = RefreshUserPoolTokens(existingSignedIndata: .testData)
 
         action.execute(withDispatcher: MockDispatcher { event in
 

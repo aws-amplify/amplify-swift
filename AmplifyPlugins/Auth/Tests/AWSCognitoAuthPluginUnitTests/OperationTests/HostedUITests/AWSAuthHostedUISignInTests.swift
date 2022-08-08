@@ -17,9 +17,9 @@ class AWSAuthHostedUISignInTests: XCTestCase {
     var plugin: AWSCognitoAuthPlugin?
     let networkTimeout = TimeInterval(5)
     var mockHostedUIResult: Result<[URLQueryItem], HostedUIError>!
-    var mockTokenResult = ["id_token": AWSCognitoUserPoolTokens.mockData.idToken,
-                           "access_token": AWSCognitoUserPoolTokens.mockData.accessToken,
-                           "refresh_token": AWSCognitoUserPoolTokens.mockData.refreshToken,
+    var mockTokenResult = ["id_token": AWSCognitoUserPoolTokens.testData.idToken,
+                           "access_token": AWSCognitoUserPoolTokens.testData.accessToken,
+                           "refresh_token": AWSCognitoUserPoolTokens.testData.refreshToken,
                            "expires_in": 10] as [String: Any]
     var mockState = "someState"
     var mockProof = "someProof"
@@ -205,7 +205,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             .init(name: "code", value: mockProof)
         ])
         mockTokenResult = [
-            "refresh_token": AWSCognitoUserPoolTokens.mockData.refreshToken,
+            "refresh_token": AWSCognitoUserPoolTokens.testData.refreshToken,
             "expires_in": 10] as [String: Any]
         mockJson = try! JSONSerialization.data(withJSONObject: mockTokenResult)
         MockURLProtocol.requestHandler = { _ in

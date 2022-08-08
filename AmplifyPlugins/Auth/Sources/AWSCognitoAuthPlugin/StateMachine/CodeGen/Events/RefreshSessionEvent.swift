@@ -12,15 +12,15 @@ struct RefreshSessionEvent: StateMachineEvent {
 
         case refreshUnAuthAWSCredentials(IdentityID)
 
-        case refreshAWSCredentialsWithUserPool(IdentityID, AWSCognitoUserPoolTokens, LoginsMapProvider)
+        case refreshAWSCredentialsWithUserPool(IdentityID, SignedInData, LoginsMapProvider)
 
-        case refreshCognitoUserPool(AWSCognitoUserPoolTokens)
+        case refreshCognitoUserPool(SignedInData)
 
-        case refreshCognitoUserPoolWithIdentityId(AWSCognitoUserPoolTokens, IdentityID)
+        case refreshCognitoUserPoolWithIdentityId(SignedInData, IdentityID)
 
-        case refreshedCognitoUserPool(AWSCognitoUserPoolTokens)
+        case refreshedCognitoUserPool(SignedInData)
 
-        case refreshIdentityInfo(AWSCognitoUserPoolTokens, LoginsMapProvider)
+        case refreshIdentityInfo(SignedInData, LoginsMapProvider)
 
         case refreshed(AmplifyCredentials)
 

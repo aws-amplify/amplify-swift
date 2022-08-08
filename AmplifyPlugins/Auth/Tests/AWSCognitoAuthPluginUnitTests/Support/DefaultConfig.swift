@@ -190,15 +190,11 @@ enum Defaults {
                                 initialState: initialState)
     }
 
-    static func makeAuthState(userId: String,
-                              userName: String,
+    static func makeAuthState(tokens: AWSCognitoUserPoolTokens,
                               signedInDate: Date = Date(),
                               signInMethod: SignInMethod = .unknown) -> AuthState {
-        let tokens = makeCognitoUserPoolTokens()
 
-        let signedInData = SignedInData(userId: userId,
-                                        userName: userName,
-                                        signedInDate: signedInDate,
+        let signedInData = SignedInData(signedInDate: signedInDate,
                                         signInMethod: signInMethod,
                                         cognitoUserPoolTokens: tokens)
 

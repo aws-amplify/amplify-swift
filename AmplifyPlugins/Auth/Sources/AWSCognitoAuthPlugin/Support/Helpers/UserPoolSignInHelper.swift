@@ -21,9 +21,9 @@ struct UserPoolSignInHelper {
                   case .error(let signInError) = srpState {
             return validateError(signInError: signInError)
         } else if case .signingInViaMigrateAuth(let migratedAuthState, _) = signInState,
-                   case .error(let signInError) = migratedAuthState {
-             return validateError(signInError: signInError)
-         } else if case .signingInWithCustom(let customAuthState, _) = signInState,
+                  case .error(let signInError) = migratedAuthState {
+            return validateError(signInError: signInError)
+        } else if case .signingInWithCustom(let customAuthState, _) = signInState,
                   case .error(let signInError) = customAuthState {
             return validateError(signInError: signInError)
         } else if case .resolvingChallenge(let challengeState, let challengeType) = signInState,
@@ -92,10 +92,7 @@ struct UserPoolSignInHelper {
                                                               accessToken: accessToken,
                                                               refreshToken: refreshToken,
                                                               expiresIn: authenticationResult.expiresIn)
-                let user = try TokenParserHelper.getAuthUser(accessToken: accessToken)
                 let signedInData = SignedInData(
-                    userId: user.userId,
-                    userName: user.username,
                     signedInDate: Date(),
                     // TODO: remove hardcoded sign in method
                     signInMethod: .apiBased(.userSRP),

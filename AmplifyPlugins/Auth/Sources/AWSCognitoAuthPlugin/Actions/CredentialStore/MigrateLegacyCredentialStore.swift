@@ -73,14 +73,22 @@ struct MigrateLegacyCredentialStore: Action {
             } else if let identityId = identityId,
                let awsCredentials = awsCredentials,
                let userPoolTokens = userPoolTokens {
+                let signedInData = SignedInData(
+                    signedInDate: Date.distantPast,
+                    signInMethod: .apiBased(.userSRP),
+                    cognitoUserPoolTokens: userPoolTokens)
                 let credentials = AmplifyCredentials.userPoolAndIdentityPool(
-                    tokens: userPoolTokens,
+                    signedInData: signedInData,
                     identityID: identityId,
                     credentials: awsCredentials)
                 try amplifyCredentialStore.saveCredential(credentials)
 
             } else if let userPoolTokens = userPoolTokens {
-                let credentials = AmplifyCredentials.userPoolOnly(tokens: userPoolTokens)
+                let signedInData = SignedInData(
+                    signedInDate: Date.distantPast,
+                    signInMethod: .apiBased(.userSRP),
+                    cognitoUserPoolTokens: userPoolTokens)
+                let credentials = AmplifyCredentials.userPoolOnly(signedInData: signedInData)
                 try amplifyCredentialStore.saveCredential(credentials)
             }
 

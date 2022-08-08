@@ -24,7 +24,8 @@ class AuthCategoryUserBehaviorTests: XCTestCase {
     func testGetCurrentUserWhileSignedIn() async throws {
         let userId = "xyz987"
         let userName = "abc123"
-        let authState = Defaults.makeAuthState(userId: userId, userName: userName)
+        let tokens = AWSCognitoUserPoolTokens.testData(username: userName, sub: userId)
+        let authState = Defaults.makeAuthState(tokens: tokens)
         let plugin = try createPlugin(authState: authState)
 
         let user = await plugin.getCurrentUser()

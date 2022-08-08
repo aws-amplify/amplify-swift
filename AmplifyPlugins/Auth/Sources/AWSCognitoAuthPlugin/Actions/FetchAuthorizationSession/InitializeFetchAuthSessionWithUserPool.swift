@@ -12,10 +12,10 @@ struct InitializeFetchAuthSessionWithUserPool: Action {
 
     let identifier = "InitializeFetchAuthSessionWithUserPool"
 
-    let tokens: AWSCognitoUserPoolTokens
+    let signedInData: SignedInData
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
-
+        let tokens = signedInData.cognitoUserPoolTokens
         logVerbose("\(#fileID) Starting execution", environment: environment)
         let configuration = (environment as? AuthEnvironment)?.configuration
 

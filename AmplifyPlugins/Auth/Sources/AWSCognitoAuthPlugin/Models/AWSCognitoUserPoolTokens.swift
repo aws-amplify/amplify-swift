@@ -43,3 +43,20 @@ public struct AWSCognitoUserPoolTokens: AuthCognitoTokens {
 extension AWSCognitoUserPoolTokens: Equatable { }
 
 extension AWSCognitoUserPoolTokens: Codable { }
+
+extension AWSCognitoUserPoolTokens: CustomDebugDictionaryConvertible {
+    var debugDictionary: [String: Any] {
+        [
+            "idToken": idToken.masked(interiorCount: 5),
+            "accessToken": accessToken.masked(interiorCount: 5),
+            "refreshToken": refreshToken.masked(interiorCount: 5),
+            "expiry": expiration
+        ]
+    }
+}
+
+extension AWSCognitoUserPoolTokens: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        debugDictionary.debugDescription
+    }
+}

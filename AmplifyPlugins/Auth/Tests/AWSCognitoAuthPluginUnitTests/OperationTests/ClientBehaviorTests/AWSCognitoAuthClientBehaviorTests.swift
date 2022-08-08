@@ -20,8 +20,7 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
     var initialState: AuthState {
         AuthState.configured(
             AuthenticationState.signedIn(
-                SignedInData(userId: "test",
-                             userName: "test",
+                SignedInData(
                              signedInDate: Date(),
                              signInMethod: .apiBased(.userSRP),
                              cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData)),

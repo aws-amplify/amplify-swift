@@ -72,24 +72,6 @@ extension SignOutEventData {
     static let testData = SignOutEventData(globalSignOut: true)
 }
 
-extension AWSCognitoUserPoolTokens {
-    static let testData = AWSCognitoUserPoolTokens(
-        idToken: "XX", accessToken: "XX", refreshToken: "XX", expiresIn: 300)
-
-    static let expiredTestData = AWSCognitoUserPoolTokens(
-        idToken: "XX", accessToken: "XX", refreshToken: "XX", expiresIn: -10000)
-}
-
-extension SignedInData {
-    static let testData = SignedInData(
-        userId: "testUserid",
-        userName: "testUserName",
-        signedInDate: Date(timeIntervalSince1970: 0),
-        signInMethod: .apiBased(.userSRP),
-        cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData
-    )
-}
-
 extension SignedOutData {
     static let testData = SignedOutData(
         lastKnownUserName: "testUserName"

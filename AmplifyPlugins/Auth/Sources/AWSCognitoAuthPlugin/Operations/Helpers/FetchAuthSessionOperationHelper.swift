@@ -37,8 +37,8 @@ class FetchAuthSessionOperationHelper {
 
                 switch credentials {
 
-                case .userPoolOnly(tokens: let tokens):
-                    if tokens.doesExpire(in: Self.expiryBufferInSeconds) {
+                case .userPoolOnly(signedInData: let data):
+                    if data.cognitoUserPoolTokens.doesExpire(in: Self.expiryBufferInSeconds) {
                         let event = AuthorizationEvent(eventType: .refreshSession)
                         authStateMachine.send(event)
                         self.listenForSession(authStateMachine: authStateMachine, completion: completion)
@@ -55,10 +55,10 @@ class FetchAuthSessionOperationHelper {
                         completion(.success(credentials.cognitoSession))
                     }
 
-                case .userPoolAndIdentityPool(tokens: let tokens,
+                case .userPoolAndIdentityPool(signedInData: let data,
                                               identityID: _,
                                               credentials: let awsCredentials):
-                    if  tokens.doesExpire(in: Self.expiryBufferInSeconds) ||
+                    if  data.cognitoUserPoolTokens.doesExpire(in: Self.expiryBufferInSeconds) ||
                             awsCredentials.doesExpire(in: Self.expiryBufferInSeconds) {
                         let event = AuthorizationEvent(eventType: .refreshSession)
                         authStateMachine.send(event)

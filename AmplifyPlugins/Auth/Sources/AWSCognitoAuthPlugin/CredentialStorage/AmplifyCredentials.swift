@@ -11,7 +11,7 @@ import Amplify
 /// Internal representation of Credentials Auth category maintain.
 enum AmplifyCredentials {
 
-    case userPoolOnly(tokens: AWSCognitoUserPoolTokens)
+    case userPoolOnly(signedInData: SignedInData)
 
     case identityPoolOnly(identityID: String,
                           credentials: AuthAWSCognitoCredentials)
@@ -20,7 +20,7 @@ enum AmplifyCredentials {
                                     identityID: String,
                                     credentials: AuthAWSCognitoCredentials)
 
-    case userPoolAndIdentityPool(tokens: AWSCognitoUserPoolTokens,
+    case userPoolAndIdentityPool(signedInData: SignedInData,
                                  identityID: String,
                                  credentials: AuthAWSCognitoCredentials)
 
@@ -101,7 +101,8 @@ extension AmplifyCredentials {
     }
 
     enum UserPool: String, CodingKey {
-        case tokens
+        case signedInData
+
     }
 }
 
@@ -112,10 +113,11 @@ extension AmplifyCredentials: Codable {
         let identityPoolInfo = try? values.nestedContainer(keyedBy: IdentityPool.self, forKey: .identityPool)
 
         if let userPoolInfo = userPoolInfo, let identityPoolInfo = identityPoolInfo {
-            let tokens = try userPoolInfo.decode(AWSCognitoUserPoolTokens.self, forKey: .tokens)
+            let signedInData = try userPoolInfo.decode(SignedInData.self, forKey: .signedInData)
+
             let identityID = try  identityPoolInfo.decode(String.self, forKey: .identityId)
             let credentials = try  identityPoolInfo.decode(AuthAWSCognitoCredentials.self, forKey: .awsCredentials)
-            self = .userPoolAndIdentityPool(tokens: tokens, identityID: identityID, credentials: credentials)
+            self = .userPoolAndIdentityPool(signedInData: signedInData, identityID: identityID, credentials: credentials)
             return
         }
 
@@ -127,8 +129,8 @@ extension AmplifyCredentials: Codable {
         }
 
         if let userPoolInfo = userPoolInfo {
-            let tokens = try userPoolInfo.decode(AWSCognitoUserPoolTokens.self, forKey: .tokens)
-            self = .userPoolOnly(tokens: tokens)
+            let signedInData = try userPoolInfo.decode(SignedInData.self, forKey: .signedInData)
+            self = .userPoolOnly(signedInData: signedInData)
             return
         }
         // TODO: Add when implemented for `identityPoolWithFederation`
@@ -138,9 +140,9 @@ extension AmplifyCredentials: Codable {
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         switch self {
-        case .userPoolOnly(let tokens):
+        case .userPoolOnly(let signedInData):
             var userPool = container.nestedContainer(keyedBy: UserPool.self, forKey: .userPool)
-            try userPool.encode(tokens, forKey: .tokens)
+            try userPool.encode(signedInData, forKey: .signedInData)
         case .identityPoolOnly(let identityID, let credentials):
             var identityPool = container.nestedContainer(keyedBy: IdentityPool.self, forKey: .identityPool)
             try identityPool.encode(identityID, forKey: .identityId)
@@ -150,9 +152,9 @@ extension AmplifyCredentials: Codable {
             // TODO: Add when implemented
             fatalError("Not implemented")
 
-        case .userPoolAndIdentityPool(let tokens, let identityID, let credentials):
+        case .userPoolAndIdentityPool(let signedInData, let identityID, let credentials):
             var userPool = container.nestedContainer(keyedBy: UserPool.self, forKey: .userPool)
-            try userPool.encode(tokens, forKey: .tokens)
+            try userPool.encode(signedInData, forKey: .signedInData)
 
             var identityPool = container.nestedContainer(keyedBy: IdentityPool.self, forKey: .identityPool)
             try identityPool.encode(identityID, forKey: .identityId)

@@ -15,10 +15,11 @@ struct RefreshUserPoolTokens: Action {
 
     let identifier = "RefreshUserPoolTokens"
 
-    let existingTokens: AWSCognitoUserPoolTokens
+    let existingSignedIndata: SignedInData
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
+        let existingTokens = existingSignedIndata.cognitoUserPoolTokens
         logVerbose("\(#fileID) Starting execution", environment: environment)
         guard let environment = environment as? UserPoolEnvironment else {
             let event = RefreshSessionEvent.init(eventType: .throwError(.noUserPool))
@@ -69,15 +70,19 @@ struct RefreshUserPoolTokens: Action {
                     refreshToken: existingTokens.refreshToken,
                     expiresIn: authenticationResult.expiresIn
                 )
+                let signedInData = SignedInData(
+                    signedInDate: existingSignedIndata.signedInDate,
+                    signInMethod: existingSignedIndata.signInMethod,
+                    cognitoUserPoolTokens: userPoolTokens)
                 let event: RefreshSessionEvent
 
                 if ((environment as? AuthEnvironment)?.identityPoolConfigData) != nil {
                     let provider = CognitoUserPoolLoginsMap(idToken: idToken,
                                                             region: config.region,
                                                             poolId: config.poolId)
-                    event = .init(eventType: .refreshIdentityInfo(userPoolTokens, provider))
+                    event = .init(eventType: .refreshIdentityInfo(signedInData, provider))
                 } else {
-                    event = .init(eventType: .refreshedCognitoUserPool(userPoolTokens))
+                    event = .init(eventType: .refreshedCognitoUserPool(signedInData))
                 }
                 logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
                 dispatcher.send(event)
@@ -99,7 +104,7 @@ extension RefreshUserPoolTokens: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "identifier": identifier,
-            "existingCredentials": existingTokens
+            "existingSignedInData": existingSignedIndata
         ]
     }
 }
