@@ -164,7 +164,8 @@ actor EndpointClient: EndpointClientBehaviour {
             deviceToken = tokenData.asHexString()
         }
 
-        let areNotificationsEnabled = await AWSPinpointAnalyticsNotifications.areNotificationsEnabled
+        // TODO: Revisit when Campaing Notifications are implemented
+        let areNotificationsEnabled = false
         let isUsingPinpointForNotifications = areNotificationsEnabled && deviceToken.isNotEmpty
         let isOptOut = configuration.isOptOut || !isUsingPinpointForNotifications
 
