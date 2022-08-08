@@ -21,10 +21,14 @@ class SignUpInputTests: XCTestCase {
                                                               clientId: "123456",
                                                               region: "",
                                                               clientSecret: clientSecret)
+        let environment = BasicUserPoolEnvironment(
+            userPoolConfiguration: userPoolConfiguration,
+            cognitoUserPoolFactory: Defaults.makeDefaultUserPool,
+            cognitoUserPoolASFFactory: Defaults.makeDefaultASF)
         let input = SignUpInput(username: username,
                                 password: password,
                                 attributes: [:],
-                                userPoolConfiguration: userPoolConfiguration)
+                                environment: environment)
 
         XCTAssertNotNil(input.secretHash)
     }
@@ -32,20 +36,25 @@ class SignUpInputTests: XCTestCase {
     func testSignUpInputWithoutClientSecret() throws {
         let username = "jeff"
         let password = "a2z"
+
         let userPoolConfiguration = UserPoolConfigurationData(poolId: "",
                                                               clientId: "123456",
                                                               region: "",
                                                               clientSecret: nil)
+        let environment = BasicUserPoolEnvironment(
+            userPoolConfiguration: userPoolConfiguration,
+            cognitoUserPoolFactory: Defaults.makeDefaultUserPool,
+            cognitoUserPoolASFFactory: Defaults.makeDefaultASF)
         let input = SignUpInput(username: username,
                                 password: password,
                                 attributes: [:],
-                                userPoolConfiguration: userPoolConfiguration)
+                                environment: environment)
 
         XCTAssertNil(input.secretHash)
     }
 
     func testSignUpInputValidationData() throws {
-        #if canImport(UIKit)
+#if canImport(UIKit)
         let username = "jeff"
         let password = "a2z"
         let clientSecret = UUID().uuidString
@@ -53,10 +62,15 @@ class SignUpInputTests: XCTestCase {
                                                               clientId: "123456",
                                                               region: "",
                                                               clientSecret: clientSecret)
+        let environment = BasicUserPoolEnvironment(
+            userPoolConfiguration: userPoolConfiguration,
+            cognitoUserPoolFactory: Defaults.makeDefaultUserPool,
+            cognitoUserPoolASFFactory: Defaults.makeDefaultASF)
         let input = SignUpInput(username: username,
                                 password: password,
                                 attributes: [:],
-                                userPoolConfiguration: userPoolConfiguration)
+                                environment: environment)
+
         XCTAssertNotNil(input.validationData)
         XCTAssertGreaterThan(input.validationData?.count ?? 0, 0)
         if let validationData = input.validationData {
@@ -65,9 +79,9 @@ class SignUpInputTests: XCTestCase {
             assertHasAttributeType(name: "cognito:deviceName", validationData: validationData)
             assertHasAttributeType(name: "cognito:model", validationData: validationData)
         }
-        #else
+#else
         XCTSkip("Skipping test when not iOS")
-        #endif
+#endif
     }
 
     func assertHasAttributeType(name: String,

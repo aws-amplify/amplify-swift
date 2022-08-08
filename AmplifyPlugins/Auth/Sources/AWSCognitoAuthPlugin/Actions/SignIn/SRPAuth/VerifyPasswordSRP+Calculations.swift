@@ -26,7 +26,7 @@ extension VerifyPasswordSRP {
 
         do {
             let strippedPoolId =  strippedPoolId(poolId)
-            let dateStr = generateDateString(date: stateData.clientTimestamp)
+            let dateStr = stateData.clientTimestamp.utcString
             let clientClass = type(of: srpClient)
             let u = try clientClass.calculateUHexValue(
                 clientPublicKeyHexValue: stateData.srpKeyPair.publicKeyHexValue,
@@ -98,14 +98,5 @@ extension VerifyPasswordSRP {
         hmac.update(data: serviceSecretBlock)
         hmac.update(data: srpTimeStamp.data(using: .utf8)!)
         return Data(hmac.finalize())
-    }
-
-    func generateDateString(date: Date) -> String {
-        let timezone = TimeZone(abbreviation: "UTC")
-        let dateFormatter = DateFormatter()
-        dateFormatter.timeZone = timezone
-        dateFormatter.dateFormat = "EEE MMM d HH:mm:ss 'UTC' yyyy"
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        return dateFormatter.string(from: date)
     }
 }

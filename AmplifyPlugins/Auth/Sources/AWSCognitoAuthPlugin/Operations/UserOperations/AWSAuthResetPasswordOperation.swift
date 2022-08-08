@@ -10,17 +10,19 @@ import AWSPluginsCore
 import ClientRuntime
 import AWSCognitoIdentityProvider
 
-public class AWSAuthResetPasswordOperation: AmplifyOperation< AuthResetPasswordRequest, AuthResetPasswordResult, AuthError>, AuthResetPasswordOperation {
+public class AWSAuthResetPasswordOperation: AmplifyOperation<
+AuthResetPasswordRequest,
+AuthResetPasswordResult,
+AuthError>, AuthResetPasswordOperation {
 
-    typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
-    private let userPoolFactory: CognitoUserPoolFactory
+    private let environment: AuthEnvironment
     private var authConfiguration: AuthConfiguration
 
     init(_ request: AuthResetPasswordRequest,
-         userPoolFactory: @escaping CognitoUserPoolFactory,
+         environment: AuthEnvironment,
          authConfiguration: AuthConfiguration,
          resultListener: ResultListener?) {
-        self.userPoolFactory = userPoolFactory
+        self.environment = environment
         self.authConfiguration = authConfiguration
         super.init(categoryType: .auth,
                    eventName: HubPayload.EventName.Auth.resetPasswordAPI,
@@ -39,15 +41,15 @@ public class AWSAuthResetPasswordOperation: AmplifyOperation< AuthResetPasswordR
             finish()
             return
         }
-
         Task.init { [weak self] in
-            await self?.resetPassword()
+            await self?.resetPassword(authEnvironment: environment)
         }
     }
 
-    func resetPassword() async {
+    func resetPassword(authEnvironment: AuthEnvironment) async {
         do {
-            let userPoolService = try userPoolFactory()
+            let userPoolEnvironment = try environment.userPoolEnvironment()
+            let userPoolService = try userPoolEnvironment.cognitoUserPoolFactory()
             let clientMetaData = (request.options.pluginOptions
                                   as? AWSResendSignUpCodeOptions)?.metadata ?? [:]
 
@@ -61,10 +63,21 @@ public class AWSAuthResetPasswordOperation: AmplifyOperation< AuthResetPasswordR
                 let error = AuthError.configuration("UserPool configuration is missing", AuthPluginErrorConstants.configurationError)
                 throw error
             }
-
-            let input = ForgotPasswordInput(clientId: userPoolConfigurationData.clientId,
-                                                    clientMetadata: clientMetaData,
-                                                    username: request.username)
+            let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
+                for: request.username,
+                credentialStoreClient: authEnvironment.credentialStoreClientFactory())
+            let encodedData = CognitoUserPoolASF.encodedContext(
+                username: request.username,
+                asfDeviceId: asfDeviceId,
+                asfClient: authEnvironment.cognitoUserPoolASFFactory(),
+                userPoolConfiguration: userPoolConfigurationData)
+            let userContextData = CognitoIdentityProviderClientTypes.UserContextDataType(
+                encodedData: encodedData)
+            let input = ForgotPasswordInput(
+                clientId: userPoolConfigurationData.clientId,
+                clientMetadata: clientMetaData,
+                userContextData: userContextData,
+                username: request.username)
 
             let result = try await userPoolService.forgotPassword(input: input)
 

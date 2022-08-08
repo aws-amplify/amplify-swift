@@ -30,12 +30,14 @@ extension InitiateAuthInput {
                           authFlowType: authFlowType.getClientFlowType(),
                           authParameters: authParameters,
                           clientMetadata: clientMetadata,
+                          asfDeviceId: asfDeviceId,
                           deviceMetadata: deviceMetadata,
                           environment: environment)
     }
 
     static func customAuth(username: String,
                            clientMetadata: [String: String],
+                           asfDeviceId: String,
                            deviceMetadata: DeviceMetadata,
                            environment: UserPoolEnvironment) -> InitiateAuthInput {
         let authParameters = [
@@ -46,6 +48,7 @@ extension InitiateAuthInput {
                           authFlowType: .customAuth,
                           authParameters: authParameters,
                           clientMetadata: clientMetadata,
+                          asfDeviceId: asfDeviceId,
                           deviceMetadata: deviceMetadata,
                           environment: environment)
     }
@@ -53,6 +56,7 @@ extension InitiateAuthInput {
     static func migrateAuth(username: String,
                             password: String,
                             clientMetadata: [String: String],
+                            asfDeviceId: String,
                             environment: UserPoolEnvironment) -> InitiateAuthInput {
         let authParameters = [
             "USERNAME": username,
@@ -63,6 +67,7 @@ extension InitiateAuthInput {
                           authFlowType: .customAuth,
                           authParameters: authParameters,
                           clientMetadata: clientMetadata,
+                          asfDeviceId: asfDeviceId,
                           deviceMetadata: .noData,
                           environment: environment)
     }
@@ -93,26 +98,13 @@ extension InitiateAuthInput {
         }
 
         var userContextData: CognitoIdentityProviderClientTypes.UserContextDataType? = nil
-        if let asfDeviceId = asfDeviceId {
-            let asfClient = environment.cognitoUserPoolASFFactory()
-            var deviceInfo: ASFDeviceBehavior
-            var appInfo: ASFAppInfoBehavior
-#if os(iOS)
-            deviceInfo = ASFUIDeviceInfo(id: asfDeviceId)
-            appInfo = ASFAppInfo()
-
-#else
-            // TODO: Add for other platforms
-#endif
-            do {
-                let context = try asfClient.userContextData(for: username,
-                                                            deviceInfo: deviceInfo,
-                                                            appInfo: appInfo,
-                                                            configuration: configuration)
-                userContextData = .init(encodedData: context)
-            } catch {
-                // Ignore the error and add nil as context data
-            }
+        if let asfDeviceId = asfDeviceId,
+           let encodedData = CognitoUserPoolASF.encodedContext(
+            username: username,
+            asfDeviceId: asfDeviceId,
+            asfClient: environment.cognitoUserPoolASFFactory(),
+            userPoolConfiguration: environment.userPoolConfiguration) {
+            userContextData = .init(encodedData: encodedData)
         }
 
         return InitiateAuthInput(
@@ -123,5 +115,4 @@ extension InitiateAuthInput {
             clientMetadata: clientMetadata,
             userContextData: userContextData)
     }
-
 }

@@ -36,6 +36,7 @@ struct InitiateAuthSRP: Action {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         Task {
             do {
+                let authEnv = try environment.authEnvironment()
                 let srpEnv = try environment.srpEnvironment()
                 let userPoolEnv = try environment.userPoolEnvironment()
                 let nHexValue = srpEnv.srpConfiguration.nHexValue
@@ -55,7 +56,8 @@ struct InitiateAuthSRP: Action {
 
                 let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                     for: username,
-                    environment: environment as! AuthEnvironment)
+                    credentialStoreClient: authEnv.credentialStoreClientFactory())
+
                 let request = InitiateAuthInput.srpInput(
                     username: username,
                     publicSRPAHexValue: srpKeyPair.publicKeyHexValue,

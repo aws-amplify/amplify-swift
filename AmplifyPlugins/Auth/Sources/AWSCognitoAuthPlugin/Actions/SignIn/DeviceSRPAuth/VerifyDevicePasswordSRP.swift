@@ -52,8 +52,9 @@ struct VerifyDevicePasswordSRP: Action {
                 serverPublicBHexString: serverPublicB,
                 srpClient: srpClient)
 
-            let request = request(
+            let request = RespondToAuthChallengeInput.devicePasswordVerifier(
                 username: username,
+                stateData: stateData,
                 session: authResponse.session,
                 secretBlock: secretBlockString,
                 signature: signature,
@@ -81,42 +82,6 @@ struct VerifyDevicePasswordSRP: Action {
             )
             dispatcher.send(event)
         }
-    }
-
-    private func request(username: String,
-                         session: String?,
-                         secretBlock: String,
-                         signature: String,
-                         environment: UserPoolEnvironment)
-    -> RespondToAuthChallengeInput {
-        let dateStr = generateDateString(date: stateData.clientTimestamp)
-        let userPoolClientId = environment.userPoolConfiguration.clientId
-        var challengeResponses = ["USERNAME": username]
-        if let clientSecret = environment.userPoolConfiguration.clientSecret {
-
-            let clientSecretHash = SRPSignInHelper.clientSecretHash(
-                username: username,
-                userPoolClientId: userPoolClientId,
-                clientSecret: clientSecret
-            )
-            challengeResponses["SECRET_HASH"] = clientSecretHash
-        }
-
-        if case .metadata(let data) = stateData.deviceMetadata {
-            challengeResponses["DEVICE_KEY"] = data.deviceKey
-        }
-
-        challengeResponses["TIMESTAMP"] = dateStr
-        challengeResponses["PASSWORD_CLAIM_SECRET_BLOCK"] = secretBlock
-        challengeResponses["PASSWORD_CLAIM_SIGNATURE"] = signature
-        return RespondToAuthChallengeInput(
-            analyticsMetadata: nil,
-            challengeName: .devicePasswordVerifier,
-            challengeResponses: challengeResponses,
-            clientId: userPoolClientId,
-            clientMetadata: nil,
-            session: session,
-            userContextData: nil)
     }
 }
 

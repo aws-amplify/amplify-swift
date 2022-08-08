@@ -38,8 +38,12 @@ struct InitiateAuthDeviceSRP: Action {
                 deviceMetadata: deviceMetadata,
                 clientTimestamp: Date())
 
-            let request = request(environment: userPoolEnv,
-                                  publicHexValue: srpKeyPair.publicKeyHexValue)
+            let request = RespondToAuthChallengeInput.deviceSRP(
+                username: username,
+                environment: userPoolEnv,
+                deviceMetadata: deviceMetadata,
+                session: authResponse.session,
+                publicHexValue: srpKeyPair.publicKeyHexValue)
 
             let client = try userPoolEnv.cognitoUserPoolFactory()
 
@@ -68,37 +72,6 @@ struct InitiateAuthDeviceSRP: Action {
             )
             dispatcher.send(event)
         }
-    }
-
-    private func request(environment: UserPoolEnvironment,
-                         publicHexValue: String) -> RespondToAuthChallengeInput {
-        let userPoolClientId = environment.userPoolConfiguration.clientId
-        var challengeParameters = [
-            "USERNAME": username,
-            "SRP_A": publicHexValue
-        ]
-
-        if let clientSecret = environment.userPoolConfiguration.clientSecret {
-            let clientSecretHash = SRPSignInHelper.clientSecretHash(
-                username: username,
-                userPoolClientId: userPoolClientId,
-                clientSecret: clientSecret
-            )
-            challengeParameters["SECRET_HASH"] = clientSecretHash
-        }
-
-        if case .metadata(let data) = deviceMetadata {
-            challengeParameters["DEVICE_KEY"] = data.deviceKey
-        }
-
-        return RespondToAuthChallengeInput(
-            analyticsMetadata: nil,
-            challengeName: .deviceSrpAuth,
-            challengeResponses: challengeParameters,
-            clientId: userPoolClientId,
-            clientMetadata: nil,
-            session: authResponse.session,
-            userContextData: nil)
     }
 
     func parseResponse(

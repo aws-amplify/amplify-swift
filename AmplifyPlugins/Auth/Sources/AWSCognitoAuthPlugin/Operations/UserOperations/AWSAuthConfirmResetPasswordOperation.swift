@@ -10,17 +10,19 @@ import AWSPluginsCore
 import ClientRuntime
 import AWSCognitoIdentityProvider
 
-public class AWSAuthConfirmResetPasswordOperation: AmplifyOperation< AuthConfirmResetPasswordRequest, Void, AuthError>, AuthConfirmResetPasswordOperation {
+public class AWSAuthConfirmResetPasswordOperation: AmplifyOperation<
+AuthConfirmResetPasswordRequest,
+Void,
+AuthError>, AuthConfirmResetPasswordOperation {
 
-    typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
-    private let userPoolFactory: CognitoUserPoolFactory
+    private let environment: AuthEnvironment
     private var authConfiguration: AuthConfiguration
 
     init(_ request: AuthConfirmResetPasswordRequest,
-         userPoolFactory: @escaping CognitoUserPoolFactory,
+         environment: AuthEnvironment,
          authConfiguration: AuthConfiguration,
          resultListener: ResultListener?) {
-        self.userPoolFactory = userPoolFactory
+        self.environment = environment
         self.authConfiguration = authConfiguration
         super.init(categoryType: .auth,
                    eventName: HubPayload.EventName.Auth.confirmResetPasswordAPI,
@@ -41,13 +43,13 @@ public class AWSAuthConfirmResetPasswordOperation: AmplifyOperation< AuthConfirm
         }
 
         Task.init { [weak self] in
-            await self?.confirmResetPassword()
+            await self?.confirmResetPassword(authEnvironment: environment)
         }
     }
 
-    func confirmResetPassword() async {
+    func confirmResetPassword(authEnvironment: AuthEnvironment) async {
         do {
-            let userPoolService = try userPoolFactory()
+            let userPoolService = try authEnvironment.cognitoUserPoolFactory()
             let clientMetaData = (request.options.pluginOptions
                                   as? AWSResendSignUpCodeOptions)?.metadata ?? [:]
 
@@ -62,10 +64,21 @@ public class AWSAuthConfirmResetPasswordOperation: AmplifyOperation< AuthConfirm
                 throw error
             }
 
+            let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
+                for: request.username,
+                credentialStoreClient: authEnvironment.credentialStoreClientFactory())
+            let encodedData = CognitoUserPoolASF.encodedContext(
+                username: request.username,
+                asfDeviceId: asfDeviceId,
+                asfClient: authEnvironment.cognitoUserPoolASFFactory(),
+                userPoolConfiguration: userPoolConfigurationData)
+            let userContextData = CognitoIdentityProviderClientTypes.UserContextDataType(
+                encodedData: encodedData)
+
             let input = ConfirmForgotPasswordInput(clientId: userPoolConfigurationData.clientId,
                                                    clientMetadata: clientMetaData,
                                                    confirmationCode: request.confirmationCode,
-                                                   password: request.newPassword,
+                                                   password: request.newPassword, userContextData: userContextData,
                                                    username: request.username)
 
             _ = try await userPoolService.confirmForgotPassword(input: input)

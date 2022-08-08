@@ -51,7 +51,7 @@ struct InitiateSignUp: Action {
         let input = SignUpInput(username: signUpEventData.username,
                                 password: signUpEventData.password,
                                 attributes: signUpEventData.attributes,
-                                userPoolConfiguration: environment.userPoolConfiguration)
+                                environment: environment)
         logVerbose("\(#fileID) Starting signup", environment: environment)
 
         Task {
@@ -68,82 +68,6 @@ struct InitiateSignUp: Action {
             }
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             dispatcher.send(event)
-        }
-    }
-}
-
-#if canImport(UIKit)
-import UIKit
-#endif
-
-extension SignUpInput {
-    typealias CognitoAttributeType = CognitoIdentityProviderClientTypes.AttributeType
-    init(username: String,
-         password: String,
-         attributes: [String: String],
-         userPoolConfiguration: UserPoolConfigurationData) {
-        let secretHash = Self.calculateSecretHash(username: username, userPoolConfiguration: userPoolConfiguration)
-        let validationData = Self.getValidationData()
-        let convertedAttributes = Self.convertAttributes(attributes)
-        self.init(clientId: userPoolConfiguration.clientId,
-                  password: password,
-                  secretHash: secretHash,
-                  userAttributes: convertedAttributes,
-                  username: username,
-                  validationData: validationData)
-    }
-
-    private static func calculateSecretHash(username: String, userPoolConfiguration: UserPoolConfigurationData) -> String? {
-        guard let clientSecret = userPoolConfiguration.clientSecret,
-              !clientSecret.isEmpty,
-              let clientSecretData = clientSecret.data(using: .utf8)
-        else {
-            return nil
-        }
-
-        guard let data = (username + userPoolConfiguration.clientId).data(using: .utf8) else {
-            return nil
-        }
-
-        let clientSecretByteArray = [UInt8](clientSecretData)
-        let key = SymmetricKey(data: clientSecretByteArray)
-
-        let mac = HMAC<SHA256>.authenticationCode(for: data, using: key)
-        let macBase64 = Data(mac).base64EncodedString()
-        return macBase64
-    }
-
-    private static func getValidationData() -> [CognitoIdentityProviderClientTypes.AttributeType]? {
-        cognitoValidationData
-    }
-
-    private static var cognitoValidationData: [CognitoIdentityProviderClientTypes.AttributeType]? {
-        #if canImport(UIKit)
-        let device = UIDevice.current
-        let bundle = Bundle.main
-        let bundleVersion = bundle.object(forInfoDictionaryKey: String(kCFBundleVersionKey)) as? String
-        let bundleShortVersion = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-
-        return [
-            .init(name: "cognito:iOSVersion", value: device.systemVersion),
-            .init(name: "cognito:systemName", value: device.systemName),
-            .init(name: "cognito:deviceName", value: device.name),
-            .init(name: "cognito:model", value: device.model),
-            .init(name: "cognito:idForVendor", value: device.identifierForVendor?.uuidString ?? ""),
-            .init(name: "cognito:bundleId", value: bundle.bundleIdentifier),
-            .init(name: "cognito:bundleVersion", value: bundleVersion ?? ""),
-            .init(name: "cognito:bundleShortV", value: bundleShortVersion ?? "")
-        ]
-        #else
-        return nil
-        #endif
-    }
-
-    private static func convertAttributes(_ attributes: [String: String]) -> [CognitoIdentityProviderClientTypes.AttributeType] {
-
-     return attributes.reduce(into: [CognitoIdentityProviderClientTypes.AttributeType]()) {
-            $0.append(CognitoIdentityProviderClientTypes.AttributeType(name: $1.key,
-                                                                       value: $1.value))
         }
     }
 }
