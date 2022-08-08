@@ -38,6 +38,21 @@ class StorageEngineTestsBase: XCTestCase {
         }
         return saveResult
     }
+    
+    func saveModelSynchronous<M: Model>(model: M) async -> DataStoreResult<M> {
+        let saveFinished = expectation(description: "Save finished")
+        var result: DataStoreResult<M>?
+
+        storageEngine.save(model) { sResult in
+            result = sResult
+            saveFinished.fulfill()
+        }
+        await waitForExpectations(timeout: defaultTimeout)
+        guard let saveResult = result else {
+            return .failure(causedBy: "Save operation timed out")
+        }
+        return saveResult
+    }
 
     func querySingleModelSynchronous<M: Model>(modelType: M.Type, predicate: QueryPredicate) -> DataStoreResult<M> {
         let result = queryModelSynchronous(modelType: modelType, predicate: predicate)
@@ -66,6 +81,22 @@ class StorageEngineTestsBase: XCTestCase {
         }
 
         wait(for: [queryFinished], timeout: defaultTimeout)
+        guard let queryResult = result else {
+            return .failure(causedBy: "Query operation timed out")
+        }
+        return queryResult
+    }
+    
+    func queryModelSynchronous<M: Model>(modelType: M.Type, predicate: QueryPredicate) async -> DataStoreResult<[M]> {
+        let queryFinished = expectation(description: "Query Finished")
+        var result: DataStoreResult<[M]>?
+
+        storageEngine.query(modelType, predicate: predicate) { qResult in
+            result = qResult
+            queryFinished.fulfill()
+        }
+
+        await waitForExpectations(timeout: defaultTimeout)
         guard let queryResult = result else {
             return .failure(causedBy: "Query operation timed out")
         }
