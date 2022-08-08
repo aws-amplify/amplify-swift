@@ -46,7 +46,7 @@ class DataStoreConfigurationTests: XCTestCase {
             }
         })
 
-        wait(for: [saveSuccess], timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
 
         await Amplify.reset()
 
@@ -77,8 +77,7 @@ class DataStoreConfigurationTests: XCTestCase {
                 XCTFail("Failed to query post, error: \(error)")
             }
         }
-
-        wait(for: [querySuccess], timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     func testConfigureWithDifferentSchemaClearsDatabase() async throws {
@@ -104,8 +103,7 @@ class DataStoreConfigurationTests: XCTestCase {
                 XCTFail("Error saving post \(error)")
             }
         })
-
-        wait(for: [saveSuccess], timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
 
         await Amplify.reset()
 
@@ -131,6 +129,6 @@ class DataStoreConfigurationTests: XCTestCase {
             }
         }
 
-        wait(for: [querySuccess], timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 }
