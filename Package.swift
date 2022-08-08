@@ -61,7 +61,8 @@ let amplifyTargets: [Target] = [
             "Models/TeamProject/schema.graphql",
             "Models/M2MPostEditorUser/schema.graphql",
             "Models/Collection/connection-schema.graphql",
-            "Models/TransformerV2/schema.graphql"
+            "Models/TransformerV2/schema.graphql",
+            "Models/CustomPrimaryKey/primarykey_schema.graphql"
         ]
     ),
     .testTarget(
