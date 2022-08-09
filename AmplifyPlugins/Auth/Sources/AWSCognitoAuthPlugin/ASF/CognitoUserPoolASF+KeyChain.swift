@@ -25,7 +25,7 @@ extension CognitoUserPoolASF {
                 return deviceId
             }
             let uuid = UUID().uuidString
-            try await credentialStoreClient.storeData(data: .asfDeviceId(uuid, username))
+            try? await credentialStoreClient.storeData(data: .asfDeviceId(uuid, username))
             return uuid
         }
 
