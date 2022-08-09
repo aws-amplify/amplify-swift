@@ -404,7 +404,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
         passthroughPublisher.send(currentSnapshot)
         if log.logLevel >= .debug {
             let time = stopwatch.stop()
-            log.debug("Time to generate snapshot: \(time) seconds")
+            log.debug("Time to generate snapshot: \(time) seconds. isSynced: \(dispatchedModelSyncedEvent.get()), count: \(currentSnapshot.items.count)")
         }
     }
 

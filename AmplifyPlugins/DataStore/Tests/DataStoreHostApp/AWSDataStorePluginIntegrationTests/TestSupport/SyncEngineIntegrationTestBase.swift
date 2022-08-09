@@ -59,6 +59,19 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
         }
         wait(for: [stopped], timeout: 2)
     }
+    
+    func stopDataStore() async {
+        let stopped = expectation(description: "DataStore stopped")
+        Amplify.DataStore.stop { result in
+            switch result {
+            case .success:
+                stopped.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        await waitForExpectations(timeout: 2)
+    }
 
     func clearDataStore() {
         let cleared = expectation(description: "DataStore cleared")
@@ -71,6 +84,19 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
             }
         }
         wait(for: [cleared], timeout: 2)
+    }
+    
+    func clearDataStore() async {
+        let cleared = expectation(description: "DataStore cleared")
+        Amplify.DataStore.clear { result in
+            switch result {
+            case .success:
+                cleared.fulfill()
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        await waitForExpectations(timeout: 2)
     }
 
     func startAmplify() throws {
