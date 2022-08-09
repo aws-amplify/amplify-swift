@@ -7,23 +7,23 @@
 
 import Foundation
 
-public actor AsyncThrowingChannel<Element: Sendable, Failure: Error>: AsyncSequence {
-    public struct Iterator: AsyncIteratorProtocol, Sendable {
+actor AsyncThrowingChannel<Element: Sendable, Failure: Error>: AsyncSequence {
+    struct Iterator: AsyncIteratorProtocol, Sendable {
         private let channel: AsyncThrowingChannel<Element, Failure>
 
-        public init(_ channel: AsyncThrowingChannel<Element, Failure>) {
+        init(_ channel: AsyncThrowingChannel<Element, Failure>) {
             self.channel = channel
         }
 
-        public mutating func next() async throws -> Element? {
+        mutating func next() async throws -> Element? {
             try await channel.next()
         }
     }
 
-    public enum InternalFailure: Error {
+    enum InternalFailure: Error {
         case cannotSendAfterTerminated
     }
-    public typealias ChannelContinuation = CheckedContinuation<Element?, Error>
+    typealias ChannelContinuation = CheckedContinuation<Element?, Error>
 
     private var continuations: [ChannelContinuation] = []
     private var elements: [Element] = []
@@ -42,21 +42,21 @@ public actor AsyncThrowingChannel<Element: Sendable, Failure: Error>: AsyncSeque
         terminated && elements.isEmpty && !continuations.isEmpty
     }
 
-    public init() {
+    init() {
     }
 
-    public nonisolated func makeAsyncIterator() -> Iterator {
+    nonisolated func makeAsyncIterator() -> Iterator {
         Iterator(self)
     }
 
-    public func next() async throws -> Element? {
+    func next() async throws -> Element? {
         try await withCheckedThrowingContinuation { (continuation: ChannelContinuation) in
             continuations.append(continuation)
             processNext()
         }
     }
 
-    public func send(_ element: Element) throws {
+    func send(_ element: Element) throws {
         guard !terminated else {
             throw InternalFailure.cannotSendAfterTerminated
         }
@@ -65,12 +65,12 @@ public actor AsyncThrowingChannel<Element: Sendable, Failure: Error>: AsyncSeque
     }
 
 
-    public func fail(_ error: Error) where Failure == Error {
+    func fail(_ error: Error) where Failure == Error {
         self.error = error
         processNext()
     }
 
-    public func finish() {
+    func finish() {
         terminated = true
         processNext()
     }

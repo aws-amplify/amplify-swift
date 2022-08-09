@@ -7,23 +7,23 @@
 
 import Foundation
 
-public actor AsyncChannel<Element: Sendable>: AsyncSequence {
-    public struct Iterator: AsyncIteratorProtocol, Sendable {
+actor AsyncChannel<Element: Sendable>: AsyncSequence {
+    struct Iterator: AsyncIteratorProtocol, Sendable {
         private let channel: AsyncChannel<Element>
 
-        public init(_ channel: AsyncChannel<Element>) {
+        init(_ channel: AsyncChannel<Element>) {
             self.channel = channel
         }
 
-        public mutating func next() async -> Element? {
+        mutating func next() async -> Element? {
             await channel.next()
         }
     }
 
-    public enum InternalFailure: Error {
+    enum InternalFailure: Error {
         case cannotSendAfterTerminated
     }
-    public typealias ChannelContinuation = CheckedContinuation<Element?, Never>
+    typealias ChannelContinuation = CheckedContinuation<Element?, Never>
 
     private var continuations: [ChannelContinuation] = []
     private var elements: [Element] = []
@@ -37,21 +37,21 @@ public actor AsyncChannel<Element: Sendable>: AsyncSequence {
         terminated && elements.isEmpty && !continuations.isEmpty
     }
 
-    public init() {
+    init() {
     }
 
-    public nonisolated func makeAsyncIterator() -> Iterator {
+    nonisolated func makeAsyncIterator() -> Iterator {
         Iterator(self)
     }
 
-    public func next() async -> Element? {
+    func next() async -> Element? {
         await withCheckedContinuation { (continuation: ChannelContinuation) in
             continuations.append(continuation)
             processNext()
         }
     }
 
-    public func send(_ element: Element) throws {
+    func send(_ element: Element) throws {
         guard !terminated else {
             throw InternalFailure.cannotSendAfterTerminated
         }
@@ -59,7 +59,7 @@ public actor AsyncChannel<Element: Sendable>: AsyncSequence {
         processNext()
     }
 
-    public func finish() {
+    func finish() {
         terminated = true
         processNext()
     }
