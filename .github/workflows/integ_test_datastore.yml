@@ -1,7 +1,7 @@
 name: DataStore Integration Tests
 on:
   push:
-    branches: [dev-preview-ds]
+    branches: [dev-preview]
 
 permissions:
     id-token: write
@@ -53,7 +53,6 @@ jobs:
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
-          workspace: DataStoreHostApp.xcodeproj
           scheme: AWSDataStorePluginIntegrationTests
 
  

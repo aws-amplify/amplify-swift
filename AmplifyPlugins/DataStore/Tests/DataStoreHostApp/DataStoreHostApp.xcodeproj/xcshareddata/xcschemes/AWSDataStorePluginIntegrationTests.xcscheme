@@ -69,9 +69,6 @@
                   Identifier = "DataStoreLocalStoreTests">
                </Test>
                <Test
-                  Identifier = "DataStoreObserveQueryTests">
-               </Test>
-               <Test
                   Identifier = "DataStoreScalarTests">
                </Test>
                <Test
@@ -113,6 +110,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "21BBFB40289BFF6A00B32A39"
+            BuildableName = "AWSDataStorePluginIntegrationTests.xctest"
+            BlueprintName = "AWSDataStorePluginIntegrationTests"
+            ReferencedContainer = "container:DataStoreHostApp.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
