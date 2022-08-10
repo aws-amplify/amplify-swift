@@ -215,7 +215,7 @@ extension KeychainStore {
         static let AttributeAccessible = String(kSecAttrAccessible)
         
         /** Attribute Accessible Constants */
-        static let AttributeAccessibleAfterFirstUnlock = String(kSecAttrAccessibleAfterFirstUnlock)
+        static let AttributeAccessibleAfterFirstUnlockThisDeviceOnly = String(kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly)
 
         /** Search Constants */
         static let MatchLimit = String(kSecMatchLimit)
