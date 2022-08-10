@@ -56,6 +56,7 @@ jobs:
             scheme: AWSAPIPluginFunctionalTests
             
   api-graphql-iam-test:
+    if: ${{ false }}
     continue-on-error: true
     needs: prepare-for-test
     runs-on: macos-latest
