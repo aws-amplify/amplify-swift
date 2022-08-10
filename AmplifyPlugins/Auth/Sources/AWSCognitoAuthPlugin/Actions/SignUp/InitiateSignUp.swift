@@ -24,7 +24,8 @@ struct InitiateSignUp: Action {
         environment: Environment
     ) {
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        guard let environment = environment as? UserPoolEnvironment else {
+        guard let authEnvironment = environment as? AuthEnvironment,
+              let environment = environment as? UserPoolEnvironment else {
             let message = AuthPluginErrorConstants.configurationError
             let authError = AuthenticationError.configuration(message: message)
             let event = SignUpEvent(
@@ -48,15 +49,21 @@ struct InitiateSignUp: Action {
             return
         }
 
-        let input = SignUpInput(username: signUpEventData.username,
-                                password: signUpEventData.password,
-                                attributes: signUpEventData.attributes,
-                                environment: environment)
+
         logVerbose("\(#fileID) Starting signup", environment: environment)
 
         Task {
             let event: SignUpEvent
             do {
+                let asfDeviceId = try? await CognitoUserPoolASF.asfDeviceID(
+                    for: signUpEventData.username,
+                    credentialStoreClient: authEnvironment.credentialStoreClientFactory())
+
+                let input = SignUpInput(username: signUpEventData.username,
+                                        password: signUpEventData.password,
+                                        attributes: signUpEventData.attributes,
+                                        asfDeviceId: asfDeviceId,
+                                        environment: environment)
                 let response = try await client.signUp(input: input)
                 logVerbose("\(#fileID) SignUp received", environment: environment)
                 event = SignUpEvent(eventType: .initiateSignUpSuccess(

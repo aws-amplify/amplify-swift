@@ -33,40 +33,51 @@ struct InitializeHostedUISignIn: Action {
         Should not happen, initialize hostedUISignIn should always start with presentationanchor
         """)
         }
+        Task {
+            let username = "unknown"
+            let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
+                for: username,
+                credentialStoreClient: environment.credentialStoreClientFactory())
+            let encodedData = CognitoUserPoolASF.encodedContext(
+                username: username,
+                asfDeviceId: asfDeviceId,
+                asfClient: environment.cognitoUserPoolASFFactory(),
+                userPoolConfiguration: environment.userPoolConfiguration)
+            let hostedUIConfig = hostedUIEnvironment.configuration
+            let randomGenerator = hostedUIEnvironment.randomStringFactory()
+            let state = randomGenerator.generateUUID()
+            guard let proofKey = randomGenerator.generateRandom(byteSize: 32) else {
+                let event = HostedUIEvent(eventType: .throwError(.hostedUI(.proofCalculation)))
+                logVerbose("\(#fileID) Sending event \(event)", environment: environment)
+                dispatcher.send(event)
+                return
+            }
 
-        let hostedUIConfig = hostedUIEnvironment.configuration
-        let randomGenerator = hostedUIEnvironment.randomStringFactory()
-        let state = randomGenerator.generateUUID()
-        guard let proofKey = randomGenerator.generateRandom(byteSize: 32) else {
-            let event = HostedUIEvent(eventType: .throwError(.hostedUI(.proofCalculation)))
-            logVerbose("\(#fileID) Sending event \(event)", environment: environment)
-            dispatcher.send(event)
-            return
-        }
-
-        do {
-            let url = try HostedUIRequestHelper.createSignInURL(state: state,
-                                                                proofKey: proofKey,
-                                                                configuration: hostedUIConfig,
-                                                                options: options)
-            let signInData = HostedUISigningInState(signInURL: url,
-                                                    state: state,
-                                                    codeChallenge: proofKey,
-                                                    presentationAnchor: presentationAnchor,
-                                                    options: options)
-            let event = HostedUIEvent(eventType: .showHostedUI(signInData))
-            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-            dispatcher.send(event)
-        } catch let error as HostedUIError {
-            let event = HostedUIEvent(eventType: .throwError(.hostedUI(error)))
-            logVerbose("\(#fileID) Sending event \(event)", environment: environment)
-            dispatcher.send(event)
-            return
-        } catch {
-            let event = HostedUIEvent(eventType: .throwError(.hostedUI(.signInURI)))
-            logVerbose("\(#fileID) Sending event \(event)", environment: environment)
-            dispatcher.send(event)
-            return
+            do {
+                let url = try HostedUIRequestHelper.createSignInURL(state: state,
+                                                                    proofKey: proofKey,
+                                                                    userContextData: encodedData,
+                                                                    configuration: hostedUIConfig,
+                                                                    options: options)
+                let signInData = HostedUISigningInState(signInURL: url,
+                                                        state: state,
+                                                        codeChallenge: proofKey,
+                                                        presentationAnchor: presentationAnchor,
+                                                        options: options)
+                let event = HostedUIEvent(eventType: .showHostedUI(signInData))
+                logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+                dispatcher.send(event)
+            } catch let error as HostedUIError {
+                let event = HostedUIEvent(eventType: .throwError(.hostedUI(error)))
+                logVerbose("\(#fileID) Sending event \(event)", environment: environment)
+                dispatcher.send(event)
+                return
+            } catch {
+                let event = HostedUIEvent(eventType: .throwError(.hostedUI(.signInURI)))
+                logVerbose("\(#fileID) Sending event \(event)", environment: environment)
+                dispatcher.send(event)
+                return
+            }
         }
     }
 }

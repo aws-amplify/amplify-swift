@@ -12,6 +12,7 @@ struct HostedUIRequestHelper {
 
     static func createSignInURL(state: String,
                                 proofKey: String,
+                                userContextData: String?,
                                 configuration: HostedUIConfigurationData,
                                 options: HostedUIOptions) throws -> URL {
 
@@ -25,8 +26,6 @@ struct HostedUIRequestHelper {
             .scopes
             .sorted()
             .joined(separator: " ")
-
-        // TODO: Add ASF
 
         let signInURI = configuration.oauth
             .signInRedirectURI
@@ -46,6 +45,10 @@ struct HostedUIRequestHelper {
             .init(name: "code_challenge", value: codeChallenge)
         ]
 
+        if let userContextData = userContextData {
+            components.queryItems?.append(
+                .init(name: "userContextData", value: userContextData))
+        }
         if let idpIdentifier = options.providerInfo.idpIdentifier {
             components.queryItems?.append(
                 .init(name: "idp_identifier", value: idpIdentifier))
