@@ -91,7 +91,6 @@
 		39E0F146289DD60200939D9F /* GraphQLWithIAMIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BAF28899B61004BD994 /* GraphQLWithIAMIntegrationTests.swift */; };
 		39E0F147289DD60C00939D9F /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BB228899B61004BD994 /* Todo.swift */; };
 		39E0F14B289DD84E00939D9F /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E0F14A289DD84E00939D9F /* TestConfigHelper.swift */; };
-		39E0F14D289DD93300939D9F /* AuthSignInHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E0F14C289DD93300939D9F /* AuthSignInHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -233,7 +232,6 @@
 		21E73E7528898D7A00D7DB7E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		39E0F13D289DD57D00939D9F /* AWSAPIPluginGraphQLIAMTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginGraphQLIAMTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		39E0F14A289DD84E00939D9F /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
-		39E0F14C289DD93300939D9F /* AuthSignInHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignInHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -527,7 +525,6 @@
 			isa = PBXGroup;
 			children = (
 				39E0F14A289DD84E00939D9F /* TestConfigHelper.swift */,
-				39E0F14C289DD93300939D9F /* AuthSignInHelper.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -882,7 +879,6 @@
 				39E0F14B289DD84E00939D9F /* TestConfigHelper.swift in Sources */,
 				39E0F146289DD60200939D9F /* GraphQLWithIAMIntegrationTests.swift in Sources */,
 				39E0F147289DD60C00939D9F /* Todo.swift in Sources */,
-				39E0F14D289DD93300939D9F /* AuthSignInHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

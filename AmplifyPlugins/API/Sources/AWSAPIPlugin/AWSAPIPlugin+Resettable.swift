@@ -7,7 +7,7 @@
 
 import Amplify
 import Foundation
-import AwsCommonRuntimeKit
+// import AwsCommonRuntimeKit
 
 extension AWSAPIPlugin: Resettable {
 
@@ -28,7 +28,7 @@ extension AWSAPIPlugin: Resettable {
 
         subscriptionConnectionFactory = nil
 
-        AwsCommonRuntimeKit.cleanUp()
+        // AwsCommonRuntimeKit.cleanUp()        
     }
 
 }
