@@ -6,7 +6,7 @@
 //
 
 import XCTest
-
+import Amplify
 @testable import AWSCognitoAuthPlugin
 
 class MigrateLegacyCredentialStoreTests: XCTestCase {
@@ -63,8 +63,10 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
             amplifyCredentialStoreFactory: amplifyCredentialStoreFactory,
             legacyKeychainStoreFactory: legacyKeychainStoreFactory)
 
-        let environment = CredentialEnvironment(authConfiguration: authConfig,
-                                                credentialStoreEnvironment: credentialStoreEnv)
+        let environment = CredentialEnvironment(
+            authConfiguration: authConfig,
+            credentialStoreEnvironment: credentialStoreEnv,
+            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest"))
 
         let action = MigrateLegacyCredentialStore()
         action.execute(withDispatcher: MockDispatcher { _ in }, environment: environment)
@@ -104,8 +106,10 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
             amplifyCredentialStoreFactory: amplifyCredentialStoreFactory,
             legacyKeychainStoreFactory: legacyKeychainStoreFactory)
 
-        let environment = CredentialEnvironment(authConfiguration: authConfig,
-                                                credentialStoreEnvironment: credentialStoreEnv)
+        let environment = CredentialEnvironment(
+            authConfiguration: authConfig,
+            credentialStoreEnvironment: credentialStoreEnv,
+            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest"))
 
         let action = MigrateLegacyCredentialStore()
         action.execute(withDispatcher: MockDispatcher { _ in }, environment: environment)

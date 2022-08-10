@@ -10,7 +10,7 @@ import Amplify
 
 typealias CredentialStoreClientFactory = () -> CredentialStoreStateBehaviour
 
-struct AuthEnvironment: Environment {
+struct AuthEnvironment: Environment, LoggerProvider {
     let configuration: AuthConfiguration
     let userPoolConfigData: UserPoolConfigurationData?
     let identityPoolConfigData: IdentityPoolConfigurationData?
@@ -42,4 +42,9 @@ extension AuthEnvironment: AuthenticationEnvironment {
         }
         return authNEnv.srpSignInEnvironment
     }
+}
+
+protocol LoggerProvider {
+
+    var logger: Logger { get }
 }
