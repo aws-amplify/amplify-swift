@@ -82,7 +82,7 @@ public class AWSAuthService: AWSAuthServiceBehavior {
     }
     
     /// Retrieves the Cognito token from the AuthCognitoTokensProvider
-    public func getUserPoolAccessToken() async throws -> String {
+    public func getLatestAuthToken() async throws -> String {
         try await withCheckedThrowingContinuation { continuation in
             Amplify.Auth.fetchAuthSession { [weak self] event in
                 switch event {

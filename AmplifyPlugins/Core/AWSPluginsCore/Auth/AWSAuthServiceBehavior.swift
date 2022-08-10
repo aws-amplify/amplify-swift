@@ -20,5 +20,5 @@ public protocol AWSAuthServiceBehavior: AnyObject {
     func getIdentityID(completion: @escaping (Result<String, AuthError>) -> Void)
     
     /// Retrieves the token from the Auth token provider
-    func getUserPoolAccessToken() async throws -> String
+    func getLatestAuthToken() async throws -> String
 }

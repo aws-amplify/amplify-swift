@@ -9,7 +9,7 @@ import Foundation
 import Amplify
 
 public protocol AuthTokenProvider {
-    func getUserPoolAccessToken() async throws -> String
+    func getLatestAuthToken() async throws -> String
 }
 
 public struct BasicUserPoolTokenProvider: AuthTokenProvider {
@@ -20,7 +20,7 @@ public struct BasicUserPoolTokenProvider: AuthTokenProvider {
         self.authService = authService
     }
     
-    public func getUserPoolAccessToken() async throws -> String {
-        try await authService.getUserPoolAccessToken()
+    public func getLatestAuthToken() async throws -> String {
+        try await authService.getLatestAuthToken()
     }
 }

@@ -27,7 +27,7 @@ open class APIAuthProviderFactory {
 public protocol AmplifyAuthTokenProvider {
     typealias AuthToken = String
 
-    func getUserPoolAccessToken() async throws -> String
+    func getLatestAuthToken() async throws -> String
 }
 
 /// Amplify OIDC Auth Provider

@@ -44,7 +44,7 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
         completion(.success(identityId ?? "IdentityId"))
     }
     
-    public func getUserPoolAccessToken() async throws -> String {
+    public func getLatestAuthToken() async throws -> String {
         ""
     }
 

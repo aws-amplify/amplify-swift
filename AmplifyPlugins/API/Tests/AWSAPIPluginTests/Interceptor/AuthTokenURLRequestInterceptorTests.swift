@@ -34,7 +34,7 @@ extension AuthTokenURLRequestInterceptorTests {
     class MockTokenProvider: AuthTokenProvider {
         let authorizationToken = "authorizationToken"
         
-        func getUserPoolAccessToken() async throws -> String {
+        func getLatestAuthToken() async throws -> String {
             authorizationToken
         }
     }

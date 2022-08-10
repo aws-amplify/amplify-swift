@@ -17,7 +17,7 @@ class AuthTokenProviderWrapper: AuthTokenProvider {
         self.wrappedAuthTokenProvider = tokenAuthProvider
     }
     
-    func getUserPoolAccessToken() async throws -> String {
-        try await wrappedAuthTokenProvider.getUserPoolAccessToken()
+    func getLatestAuthToken() async throws -> String {
+        try await wrappedAuthTokenProvider.getLatestAuthToken()
     }
 }

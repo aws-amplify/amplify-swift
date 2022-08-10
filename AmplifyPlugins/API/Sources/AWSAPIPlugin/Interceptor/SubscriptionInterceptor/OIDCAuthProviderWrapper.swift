@@ -18,6 +18,6 @@ class OIDCAuthProviderWrapper: OIDCAuthProviderAsync {
     }
 
     func getLatestAuthToken() async throws -> String {
-        try await authTokenProvider.getUserPoolAccessToken()
+        try await authTokenProvider.getLatestAuthToken()
     }
 }

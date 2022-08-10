@@ -36,7 +36,7 @@ class AuthenticationTokenAuthInterceptorTests: XCTestCase {
 private class TestAuthTokenProvider: AmplifyAuthTokenProvider {
     let authToken = "token"
     
-    func getUserPoolAccessToken() async throws -> String {
+    func getLatestAuthToken() async throws -> String {
         authToken
     }
 }
@@ -45,7 +45,7 @@ private class TestFailingAuthTokenProvider: AmplifyAuthTokenProvider {
     
     let authToken = "token"
     
-    func getUserPoolAccessToken() async throws -> String {
+    func getLatestAuthToken() async throws -> String {
         throw "Token error"
     }
 }

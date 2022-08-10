@@ -36,7 +36,7 @@ struct AuthTokenURLRequestInterceptor: URLRequestInterceptor {
         
         let token: String
         do {
-            token = try await authTokenProvider.getUserPoolAccessToken()
+            token = try await authTokenProvider.getLatestAuthToken()
         } catch {
             throw APIError.operationError("Failed to retrieve authorization token.", "", error)
         }

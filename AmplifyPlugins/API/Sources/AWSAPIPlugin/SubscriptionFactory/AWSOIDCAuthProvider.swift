@@ -18,6 +18,6 @@ class AWSOIDCAuthProvider: OIDCAuthProviderAsync {
     }
 
     func getLatestAuthToken() async throws -> String {
-        try await authService.getUserPoolAccessToken()
+        try await authService.getLatestAuthToken()
     }
 }
