@@ -1,7 +1,7 @@
 name: DataStore Integration Tests
 on:
   push:
-    branches: [dev-preview-ds]
+    branches: [dev-preview]
 
 permissions:
     id-token: write
