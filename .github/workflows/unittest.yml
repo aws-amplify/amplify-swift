@@ -21,6 +21,7 @@ jobs:
       - name: Run unit test
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
+          project_path: .
           scheme: AWSPinpointAnalyticsPlugin
 
   amplify-unit-test:
@@ -31,6 +32,7 @@ jobs:
       - name: Run unit test
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
+          project_path: .
           scheme: Amplify
 
   api-unit-test:
@@ -41,6 +43,7 @@ jobs:
       - name: Run unit test
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
+          project_path: .
           scheme: AWSAPIPlugin  
 
   auth-unit-test:
@@ -51,6 +54,7 @@ jobs:
       - name: Run unit test
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
+          project_path: .
           scheme: AWSCognitoAuthPlugin
 
   datastore-unit-test:
@@ -61,6 +65,7 @@ jobs:
       - name: Run unit test
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
+          project_path: .
           scheme: AWSDataStorePlugin
   
   storage-unit-test:
@@ -71,5 +76,6 @@ jobs:
       - name: Run unit test
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
+          project_path: .
           scheme: AWSS3StoragePlugin  
     

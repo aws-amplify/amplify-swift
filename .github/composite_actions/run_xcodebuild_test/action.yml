@@ -21,6 +21,6 @@ runs:
         SCHEME: ${{ inputs.scheme }}
         PROJECT_PATH: ${{ inputs.project_path }}
       run: |
-        [  -z "$PROJECT_PATH" ] && cd $PROJECT_PATH
+        cd $PROJECT_PATH
         xcodebuild test -scheme $SCHEME -sdk iphonesimulator -destination '${{ inputs.destination }}' | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}        
       shell: bash 
