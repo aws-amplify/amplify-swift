@@ -4,7 +4,7 @@ The following steps demonstrate how to set up an GraphQL endpoint with AppSync. 
 
 ### Set-up
 
-Latest tested with amplify CLI version 8.0.1 `amplify -v`
+Latest tested with amplify CLI version 9.1.0 `amplify -v`
 
 * Note that these integration tests are only compatible with the V1 Transformer. * 
 
