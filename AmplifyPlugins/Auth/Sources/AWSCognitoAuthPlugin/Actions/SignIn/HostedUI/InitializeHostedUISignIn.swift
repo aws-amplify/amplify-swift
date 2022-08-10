@@ -10,14 +10,14 @@ import Foundation
 import CryptoKit
 
 struct InitializeHostedUISignIn: Action {
-    
+
     var identifier: String = "InitializeHostedUISignIn"
-    
+
     let options: HostedUIOptions
-    
+
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        
+
         guard let environment = environment as? AuthEnvironment,
               let hostedUIEnvironment = environment.hostedUIEnvironment else {
             let message = AuthPluginErrorConstants.configurationError
@@ -27,7 +27,7 @@ struct InitializeHostedUISignIn: Action {
             dispatcher.send(event)
             return
         }
-        
+
         guard let presentationAnchor = options.presentationAnchor else {
             fatalError("""
         Should not happen, initialize hostedUISignIn should always start with presentationanchor
@@ -41,7 +41,7 @@ struct InitializeHostedUISignIn: Action {
                 dispatcher: dispatcher)
         }
     }
-    
+
     func initializeHostedUI(presentationAnchor: AuthUIPresentationAnchor,
                             environment: AuthEnvironment,
                             hostedUIEnvironment: HostedUIEnvironment,
@@ -56,7 +56,7 @@ struct InitializeHostedUISignIn: Action {
             dispatcher.send(event)
             return
         }
-        
+
         do {
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: username,
@@ -66,7 +66,7 @@ struct InitializeHostedUISignIn: Action {
                 asfDeviceId: asfDeviceId,
                 asfClient: environment.cognitoUserPoolASFFactory(),
                 userPoolConfiguration: environment.userPoolConfiguration)
-            
+
             let url = try HostedUIRequestHelper.createSignInURL(state: state,
                                                                 proofKey: proofKey,
                                                                 userContextData: encodedData,
