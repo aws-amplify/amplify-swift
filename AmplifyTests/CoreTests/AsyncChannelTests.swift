@@ -12,6 +12,14 @@ final class AsyncChannelTests: XCTestCase {
     enum Failure: Error {
         case unluckyNumber
     }
+
+    actor Output<Element> {
+        var elements: [Element] = []
+        func append(_ element: Element) {
+            elements.append(element)
+        }
+    }
+
     let sleepSeconds = 0.1
 
     func testNumberSequence() async throws {
@@ -26,7 +34,7 @@ final class AsyncChannelTests: XCTestCase {
         var output: [Int] = []
 
         print("-- before --")
-        for await element in channel {
+        for try await element in channel {
             print(element)
             output.append(element)
         }
@@ -47,7 +55,7 @@ final class AsyncChannelTests: XCTestCase {
         var output: [String] = []
 
         print("-- before --")
-        for await element in channel {
+        for try await element in channel {
             print(element)
             output.append(element)
         }
@@ -75,7 +83,7 @@ final class AsyncChannelTests: XCTestCase {
         var output: [String] = []
 
         print("-- before --")
-        for await element in channel {
+        for try await element in channel {
             print(element)
             output.append(element)
         }
@@ -179,6 +187,109 @@ final class AsyncChannelTests: XCTestCase {
         XCTAssertEqual(expected, output)
     }
 
+    func testChannelCancelled() async throws {
+        let delay = 1.25
+        let input = [1, 2, 3, 4, 5]
+        let channel = AsyncChannel<Int>()
+        let sendExp = expectation(description: "send")
+        let reduceExp = expectation(description: "reduce")
+
+        let sendTask = Task {
+            print("send - start")
+            var thrown: Error?
+            do {
+                var index = 0
+                while index < input.count {
+                    try await Task.sleep(seconds: delay)
+                    try await channel.send(input[index])
+                    index += 1
+                }
+            } catch {
+                thrown = error
+            }
+            print("send - end")
+
+            XCTAssertNotNil(thrown)
+            XCTAssertTrue(thrown is CancellationError)
+
+            sendExp.fulfill()
+        }
+
+        let reduceTask = Task {
+            print("reduce - start")
+            let result = await channel.reduce(0, +)
+            print(result)
+            print("reduce - end")
+
+            reduceExp.fulfill()
+        }
+
+        Task {
+            try await Task.sleep(seconds: delay * 2)
+            sendTask.cancel()
+        }
+
+        await waitForExpectations(timeout: 5.0)
+
+        XCTAssertFalse(reduceTask.isCancelled)
+    }
+
+    func testThrowingChannelCancelled() async throws {
+        let delay = 1.25
+        let input = [1, 2, 3, 4, 5]
+        let channel = AsyncThrowingChannel<Int, Error>()
+        let sendExp = expectation(description: "send")
+        let reduceExp = expectation(description: "reduce")
+
+        let sendTask = Task {
+            print("send - start")
+            var thrown: Error?
+            do {
+                var index = 0
+                while index < input.count {
+                    try await Task.sleep(seconds: delay)
+                    try await channel.send(input[index])
+                    index += 1
+                }
+            } catch {
+                thrown = error
+            }
+            print("send - end")
+
+            XCTAssertNotNil(thrown)
+            XCTAssertTrue(thrown is CancellationError)
+
+            sendExp.fulfill()
+        }
+
+        let reduceTask = Task {
+            print("reduce - start")
+            var thrown: Error?
+            do {
+                let result = try await channel.reduce(0, +)
+                print(result)
+            } catch {
+                thrown = error
+            }
+
+            print("reduce - end")
+
+            XCTAssertNotNil(thrown)
+            XCTAssertTrue(thrown is CancellationError)
+
+            reduceExp.fulfill()
+        }
+
+        Task {
+            try await Task.sleep(seconds: delay * 2)
+            sendTask.cancel()
+        }
+
+        await waitForExpectations(timeout: 5.0)
+
+        XCTAssertFalse(reduceTask.isCancelled)
+    }
+
     private func send<Element>(elements: [Element], channel: AsyncChannel<Element>, sleepSeconds: Double = 0.1) async throws {
         var index = 0
         while index < elements.count {
@@ -212,4 +323,5 @@ final class AsyncChannelTests: XCTestCase {
         }
         await channel.finish()
     }
+
 }

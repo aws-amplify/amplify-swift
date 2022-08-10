@@ -7,26 +7,27 @@
 
 import Foundation
 
-actor AsyncChannel<Element: Sendable>: AsyncSequence {
-    struct Iterator: AsyncIteratorProtocol, Sendable {
+public actor AsyncChannel<Element: Sendable>: AsyncSequence {
+    public struct Iterator: AsyncIteratorProtocol, Sendable {
         private let channel: AsyncChannel<Element>
 
-        init(_ channel: AsyncChannel<Element>) {
+        public init(_ channel: AsyncChannel<Element>) {
             self.channel = channel
         }
 
-        mutating func next() async -> Element? {
-            await channel.next()
+        public mutating func next() async -> Element? {
+            Task.isCancelled ? nil : await channel.next()
         }
     }
 
-    enum InternalFailure: Error {
+    public enum InternalFailure: Error {
         case cannotSendAfterTerminated
     }
-    typealias ChannelContinuation = CheckedContinuation<Element?, Never>
+    public typealias ChannelContinuation = CheckedContinuation<Element?, Never>
 
     private var continuations: [ChannelContinuation] = []
     private var elements: [Element] = []
+    private var cancelled: Bool = false
     private var terminated: Bool = false
 
     private var hasNext: Bool {
@@ -40,18 +41,26 @@ actor AsyncChannel<Element: Sendable>: AsyncSequence {
     init() {
     }
 
-    nonisolated func makeAsyncIterator() -> Iterator {
+    public nonisolated func makeAsyncIterator() -> Iterator {
         Iterator(self)
     }
 
-    func next() async -> Element? {
-        await withCheckedContinuation { (continuation: ChannelContinuation) in
+    public func next() async -> Element? {
+        if cancelled || terminated {
+            return nil
+        }
+        return await withCheckedContinuation { (continuation: ChannelContinuation) in
             continuations.append(continuation)
             processNext()
         }
     }
 
-    func send(_ element: Element) throws {
+    public func send(_ element: Element) throws {
+        if Task.isCancelled {
+            cancelled = true
+            processNext()
+            throw CancellationError()
+        }
         guard !terminated else {
             throw InternalFailure.cannotSendAfterTerminated
         }
@@ -59,12 +68,19 @@ actor AsyncChannel<Element: Sendable>: AsyncSequence {
         processNext()
     }
 
-    func finish() {
+    public func finish() {
         terminated = true
         processNext()
     }
 
     private func processNext() {
+        if cancelled && !continuations.isEmpty {
+            let continuation = continuations.removeFirst()
+            assert(continuations.isEmpty)
+            continuation.resume(returning: nil)
+            return
+        }
+
         if canTerminate {
             let continuation = continuations.removeFirst()
             assert(continuations.isEmpty)
