@@ -441,6 +441,7 @@
 		21182133289BFB4F001B5945 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		21182136289BFB4F001B5945 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		2118213E289BFB63001B5945 /* amplify-ios-staging */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios-staging"; path = ../../../..; sourceTree = "<group>"; };
+		213DBB6128A4172000B30280 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		21977D76289C162E005B49D6 /* CommentWithCompositeKeyAndIndex+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CommentWithCompositeKeyAndIndex+Schema.swift"; sourceTree = "<group>"; };
 		21977D77289C162E005B49D6 /* PostWithCompositeKeyUnidirectional.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithCompositeKeyUnidirectional.swift; sourceTree = "<group>"; };
 		21977D78289C162E005B49D6 /* TagWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TagWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
@@ -923,6 +924,7 @@
 		2118212E289BFB4B001B5945 /* DataStoreHostApp */ = {
 			isa = PBXGroup;
 			children = (
+				213DBB6128A4172000B30280 /* Info.plist */,
 				2118212F289BFB4B001B5945 /* DataStoreHostAppApp.swift */,
 				21182131289BFB4B001B5945 /* ContentView.swift */,
 				21182133289BFB4F001B5945 /* Assets.xcassets */,
@@ -2608,7 +2610,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"DataStoreHostApp/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_FILE = DataStoreHostApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -2637,7 +2639,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"DataStoreHostApp/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_FILE = DataStoreHostApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
