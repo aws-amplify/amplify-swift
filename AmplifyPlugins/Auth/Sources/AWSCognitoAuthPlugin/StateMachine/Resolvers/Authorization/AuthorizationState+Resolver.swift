@@ -85,7 +85,7 @@ extension AuthorizationState {
             case .signingOut:
                 if let signOutEvent = event.isSignOutEvent,
                     case .signedOutSuccess = signOutEvent {
-                    return .init(newState: .sessionEstablished(.noCredentials))
+                    return .init(newState: .configured)
                 }
                 return .from(oldState)
 
