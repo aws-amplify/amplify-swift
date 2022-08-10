@@ -21,7 +21,13 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
 
     static let defaultAutoFlushEventsInterval = 60
     static let defaultTrackAppSession = true
-    static let defaultAutoSessionTrackingInterval = 5
+    static let defaultAutoSessionTrackingInterval: Int = {
+    #if os(macOS)
+        .max
+    #else
+        5
+    #endif
+    }()
 
     let appId: String
     let region: String

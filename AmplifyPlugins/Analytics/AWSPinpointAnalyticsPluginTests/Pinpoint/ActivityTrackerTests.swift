@@ -5,23 +5,45 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if canImport(UIKit)
-
 @testable import AWSPinpointAnalyticsPlugin
 import XCTest
 
-class UIActivityTrackerTests: XCTestCase {
-    private var tracker: UIActivityTracker!
+class ActivityTrackerTests: XCTestCase {
+    private var tracker: ActivityTracker!
     private var stateMachine: MockStateMachine!
     private var timeout: TimeInterval = 1
+
+    private static let applicationDidMoveToBackgroundNotification: Notification.Name = {
+    #if canImport(UIKit)
+        UIApplication.didEnterBackgroundNotification
+    #else
+        NSApplication.didResignActiveNotification
+    #endif
+    }()
+
+    private static  let applicationWillMoveToForegoundNotification: Notification.Name = {
+    #if canImport(UIKit)
+        UIApplication.willEnterForegroundNotification
+    #else
+        NSApplication.willBecomeActiveNotification
+    #endif
+    }()
+
+    private static  var applicationWillTerminateNotification: Notification.Name = {
+    #if canImport(UIKit)
+        UIApplication.willTerminateNotification
+    #else
+        NSApplication.willTerminateNotification
+    #endif
+    }()
 
     override func setUp() {
         stateMachine = MockStateMachine(initialState: .initializing) { _, _ in
             return .initializing
         }
 
-        tracker = UIActivityTracker(backgroundTrackingTimeout: timeout,
-                                    stateMachine: stateMachine)
+        tracker = ActivityTracker(backgroundTrackingTimeout: timeout,
+                                  stateMachine: stateMachine)
     }
 
     override func tearDown() {
@@ -39,18 +61,18 @@ class UIActivityTrackerTests: XCTestCase {
     }
 
     func testApplicationStateChanged_shouldReportProperEvent() {
-        NotificationCenter.default.post(Notification(name: UIApplication.didEnterBackgroundNotification))
+        NotificationCenter.default.post(Notification(name: Self.applicationDidMoveToBackgroundNotification))
         XCTAssertEqual(stateMachine.processedEvent, .applicationDidMoveToBackground)
 
-        NotificationCenter.default.post(Notification(name: UIApplication.willEnterForegroundNotification))
+        NotificationCenter.default.post(Notification(name: Self.applicationWillMoveToForegoundNotification))
         XCTAssertEqual(stateMachine.processedEvent, .applicationWillMoveToForeground)
 
-        NotificationCenter.default.post(Notification(name: UIApplication.willTerminateNotification))
+        NotificationCenter.default.post(Notification(name: Self.applicationWillTerminateNotification))
         XCTAssertEqual(stateMachine.processedEvent, .applicationWillTerminate)
     }
 
     func testBackgroundTracking_afterTimeout_shouldReportBackgroundTimeout() {
-        NotificationCenter.default.post(Notification(name: UIApplication.didEnterBackgroundNotification))
+        NotificationCenter.default.post(Notification(name: Self.applicationDidMoveToBackgroundNotification))
         XCTAssertEqual(stateMachine.processedEvent, .applicationDidMoveToBackground)
         stateMachine.processExpectation = expectation(description: "Background tracking timeout")
         waitForExpectations(timeout: 1)
@@ -67,5 +89,3 @@ class MockStateMachine: StateMachine<ApplicationState, ActivityEvent> {
         processExpectation?.fulfill()
     }
 }
-
-#endif
