@@ -4,20 +4,22 @@ The following steps demonstrate how to set up an GraphQL endpoint with AppSync. 
 
 ### Set-up
 
-Latest tested with amplify CLI version 8.0.1 `amplify -v`
+Latest tested with amplify CLI version 9.2.1 `amplify -v`
 
 1. `amplify init`
 
 2. `amplify add api`
 
 ```perl
-? Please select from one of the below mentioned services: `GraphQL`
-? Provide API name: graphqlmodelapitests
+? Select from one of the below mentioned services: `GraphQL`
+? Here is the GraphQL API that we will create. Select a setting to edit or continue Authorization modes: API key (default, expiration time: 7 days from now)
 ? Choose the default authorization type for the API `IAM`
-? Do you want to configure advanced settings for the GraphQL API `No, I am done.`
-? Do you have an annotated GraphQL schema? `No`
-? Choose a schema template: `Single object with fields (e.g., “Todo” with ID, name, description)`
+? Configure additional auth types? `No`
+? Here is the GraphQL API that we will create. Select a setting to edit or continue `Continue`
+? Choose a schema template: `Blank Schema`
+✔ Do you want to edit the schema now? (Y/n) · `Y`
 ```
+
 Edit the schema to
 ```
 type Todo @model @auth(rules: [
@@ -29,6 +31,7 @@ type Todo @model @auth(rules: [
 }
 
 ```
+tip: remove `input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!` in the schema
 
 3. `amplify add auth`
 ```perl
@@ -41,23 +44,21 @@ Do you want to use the default authentication and security configuration?
  Please enter a name for your identity pool. 
     <amplifyintegtestCIDP>
  Allow unauthenticated logins? (Provides scoped down permissions that you can control via AWS IAM) 
-    Yes
+    No
  Do you want to enable 3rd party authentication providers in your identity pool? 
     No
  Please provide a name for your user pool: 
     <amplifyintegCUP>
-
  How do you want users to be able to sign in? 
     Username
  Do you want to add User Pool Groups? 
     No
  Do you want to add an admin queries API? 
-    Yes
+    No
 ? Do you want to restrict access to the admin queries API to a specific Group 
     No
  Multifactor authentication (MFA) user login options: 
     OFF
- 
  Email based user registration/forgot password: 
     Enabled (Requires per-user email entry at registration)
  Please specify an email verification subject: 
@@ -66,9 +67,8 @@ Do you want to use the default authentication and security configuration?
     Your verification code is {####}
  Do you want to override the default password policy for this User Pool? 
     No
- 
  What attributes are required for signing up? 
-   (Press Space to deselect Email, if selected, then press Enter with none selected)
+    None
  Specify the app's refresh token expiration period (in days): 
     30
  Do you want to specify the user attributes this app can read and write? 
@@ -104,14 +104,17 @@ Continue in the terminal;
 Successfully added resource amplifyintegtest locally
 ```
 
-4. If you are using the latest CLI, update cli.json to include `"useExperimentalPipelinedTransformer": false` to ensure that it will use the v1 transformer and then `amplify push`
+4. `amplify push`
+
+```perl
+? Do you want to generate code for your newly created GraphQL API (Y/n) `n`
+```
 
 5. Copy `amplifyconfiguration.json` over as `GraphQLWithIAMIntegrationTests-amplifyconfiguration.json` to `~/.aws-amplify/amplify-ios/testconfiguration/`
 
-6. `amplify console auth` and choose `Identity Pool`. Click on **Edit Identity pool** and make note of IAM Role that is assigned for the Authenticated role.
+```
+cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/GraphQLWithIAMIntegrationTests-amplifyconfiguration.json
 
-7. Navigate to [AWS IAM Console](https://console.aws.amazon.com/iam/home) and select Roles, find the role attached to the Identity Pool's Authenticated role.
-
-8. Click on Attach Policies, choose **AWSAppSyncInvokeFullAccess**, and attach the policy. This will allow users that are signed into the app to have access to invoke AppSync APIs.
+```
 
 You can now run the tests!
