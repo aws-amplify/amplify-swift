@@ -319,7 +319,6 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
         _ = Amplify.Auth.signOut { event in
             switch event {
             case .success:
-                print("lawmicha - sign out success")
                 signOutCompleted.fulfill()
             case .failure(let error):
                 print("Could not sign out user \(error)")
