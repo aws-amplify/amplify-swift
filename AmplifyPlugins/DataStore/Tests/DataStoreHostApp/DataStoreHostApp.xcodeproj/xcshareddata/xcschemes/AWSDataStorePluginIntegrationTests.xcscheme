@@ -37,6 +37,59 @@
                BlueprintName = "AWSDataStorePluginIntegrationTests"
                ReferencedContainer = "container:DataStoreHostApp.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "DataStoreConnectionScenario1Tests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreConnectionScenario2Tests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreConnectionScenario3Tests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreConnectionScenario4Tests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreConnectionScenario5Tests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreConnectionScenario6Tests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreConsecutiveUpdatesTests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreCustomPrimaryKeyTests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreHubEventTests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreLocalStoreTests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreScalarTests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreTestBase">
+               </Test>
+               <Test
+                  Identifier = "HubEventsIntegrationTestBase">
+               </Test>
+               <Test
+                  Identifier = "LocalStoreIntegrationTestBase">
+               </Test>
+               <Test
+                  Identifier = "SubscriptionEndToEndTests">
+               </Test>
+               <Test
+                  Identifier = "SyncEngineIntegrationTestBase">
+               </Test>
+               <Test
+                  Identifier = "SyncEngineIntegrationV2TestBase">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>
@@ -57,6 +110,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "21BBFB40289BFF6A00B32A39"
+            BuildableName = "AWSDataStorePluginIntegrationTests.xctest"
+            BlueprintName = "AWSDataStorePluginIntegrationTests"
+            ReferencedContainer = "container:DataStoreHostApp.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
