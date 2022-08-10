@@ -55,7 +55,7 @@ struct InitiateSignUp: Action {
         Task {
             let event: SignUpEvent
             do {
-                let asfDeviceId = try? await CognitoUserPoolASF.asfDeviceID(
+                let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                     for: signUpEventData.username,
                     credentialStoreClient: authEnvironment.credentialStoreClientFactory())
 
