@@ -199,7 +199,7 @@ extension AWSCognitoAuthPlugin {
             credentialStoreEnvironment: BasicCredentialStoreEnvironment(
                 amplifyCredentialStoreFactory: makeCredentialStore,
                 legacyKeychainStoreFactory: makeLegacyKeychainStore(service:)
-            )
+            ), logger: log
         )
     }
 

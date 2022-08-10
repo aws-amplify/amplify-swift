@@ -122,7 +122,8 @@ enum Defaults {
             credentialStoreEnvironment: BasicCredentialStoreEnvironment(
                 amplifyCredentialStoreFactory: amplifyStoreFactory,
                 legacyKeychainStoreFactory: legacyStoreFactory
-            )
+            ),
+            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
         )
     }
 

@@ -27,18 +27,21 @@ class CredentialStoreOperationClient: CredentialStoreStateBehaviour {
     }
     
     func fetchData(type: CredentialStoreDataType) async throws -> CredentialStoreData {
+        await waitForValidState()
         let credentialStoreEvent = CredentialStoreEvent(
             eventType: .loadCredentialStore(type))
         return try await sendEventAndListenToStateChanges(event: credentialStoreEvent)
     }
     
     func storeData(data: CredentialStoreData) async throws {
+        await waitForValidState()
         let credentialStoreEvent = CredentialStoreEvent(
             eventType: .storeCredentials(data))
         _ = try await sendEventAndListenToStateChanges(event: credentialStoreEvent)
     }
     
     func deleteData(type: CredentialStoreDataType) async throws {
+        await waitForValidState()
         let credentialStoreEvent = CredentialStoreEvent(
             eventType: .clearCredentialStore(type))
         _ = try await sendDeleteEventAndListenToStateChanges(event: credentialStoreEvent)
@@ -47,7 +50,7 @@ class CredentialStoreOperationClient: CredentialStoreStateBehaviour {
     func sendEventAndListenToStateChanges(event: CredentialStoreEvent) async throws -> CredentialStoreData {
         let credentials: CredentialStoreData = try await withCheckedThrowingContinuation({ continuation in
             self.credentialStoreStateListenerToken = credentialStoreStateMachine.listen { state in
-                
+
                 switch state {
                 case .success(let credentialStoreData):
                     continuation.resume(returning: credentialStoreData)
@@ -83,4 +86,19 @@ class CredentialStoreOperationClient: CredentialStoreStateBehaviour {
         })
         credentialStoreStateMachine.cancel(listenerToken: self.credentialStoreStateListenerToken)
     }
+
+    func waitForValidState() async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            self.credentialStoreStateListenerToken = credentialStoreStateMachine.listen { state in
+                switch state {
+                case .idle, .notConfigured:
+                    continuation.resume()
+
+                default: break
+                }
+            } onSubscribe: { }
+        }
+        credentialStoreStateMachine.cancel(listenerToken: self.credentialStoreStateListenerToken)
+    }
+    
 }
