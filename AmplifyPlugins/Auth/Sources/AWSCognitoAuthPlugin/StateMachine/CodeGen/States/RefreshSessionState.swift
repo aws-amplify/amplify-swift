@@ -13,13 +13,13 @@ enum RefreshSessionState: State {
 
     case refreshingUnAuthAWSCredentials(IdentityID)
 
-    case refreshingUserPoolToken(AWSCognitoUserPoolTokens)
+    case refreshingUserPoolToken(SignedInData)
 
-    case refreshingUserPoolTokenWithIdentity(AWSCognitoUserPoolTokens, IdentityID)
+    case refreshingUserPoolTokenWithIdentity(SignedInData, IdentityID)
 
-    case refreshingAWSCredentialsWithUserPoolTokens(AWSCognitoUserPoolTokens, IdentityID)
+    case refreshingAWSCredentialsWithUserPoolTokens(SignedInData, IdentityID)
 
-    case fetchingAuthSessionWithUserPool(FetchAuthSessionState, AWSCognitoUserPoolTokens)
+    case fetchingAuthSessionWithUserPool(FetchAuthSessionState, SignedInData)
 
     case refreshed(AmplifyCredentials)
 

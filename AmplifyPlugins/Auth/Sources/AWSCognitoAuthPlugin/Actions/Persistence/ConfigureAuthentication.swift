@@ -20,21 +20,8 @@ struct ConfigureAuthentication: Action {
         logVerbose("\(#fileID) Start execution", environment: environment)
         let authenticationEvent: AuthenticationEvent
         switch storedCredentials {
-        case .userPoolOnly(let tokens), .userPoolAndIdentityPool(let tokens, _, _):
-            do {
-                let authUser = try TokenParserHelper.getAuthUser(accessToken: tokens.accessToken)
-                let signedInData = SignedInData(
-                    userId: authUser.userId,
-                    userName: authUser.username,
-                    signedInDate: Date(),
-                    signInMethod: .apiBased(.userSRP),
-                    cognitoUserPoolTokens: tokens)
-                authenticationEvent = AuthenticationEvent(eventType: .initializedSignedIn(signedInData))
-            } catch {
-                authenticationEvent = AuthenticationEvent(
-                    eventType: .error(AuthenticationError.service(
-                        message: "Token parsing error: \(error)")))
-            }
+        case .userPoolOnly(let signedInData), .userPoolAndIdentityPool(let signedInData, _, _):
+            authenticationEvent = AuthenticationEvent(eventType: .initializedSignedIn(signedInData))
         default:
             let signedOutData = SignedOutData(lastKnownUserName: nil)
             authenticationEvent = AuthenticationEvent(eventType: .initializedSignedOut(signedOutData))

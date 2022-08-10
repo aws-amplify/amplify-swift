@@ -283,9 +283,7 @@ class AuthHubEventHandlerTests: XCTestCase {
     private func configurePluginForDeleteUserEvent() {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(
-                SignedInData(userId: "test",
-                             userName: "test",
-                             signedInDate: Date(),
+                SignedInData(signedInDate: Date(),
                              signInMethod: .apiBased(.userSRP),
                              cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData)),
             AuthorizationState.sessionEstablished(AmplifyCredentials.testData))
@@ -307,9 +305,7 @@ class AuthHubEventHandlerTests: XCTestCase {
     private func configurePluginForSignOutEvent() {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(
-                SignedInData(userId: "test",
-                             userName: "test",
-                             signedInDate: Date(),
+                SignedInData(signedInDate: Date(),
                              signInMethod: .apiBased(.userSRP),
                              cognitoUserPoolTokens: AWSCognitoUserPoolTokens.testData)),
             AuthorizationState.sessionEstablished(AmplifyCredentials.testData))
@@ -350,9 +346,9 @@ class AuthHubEventHandlerTests: XCTestCase {
     private func configurePlugin(initialState: AuthState, userPoolFactory: CognitoUserPoolBehavior) {
         plugin = AWSCognitoAuthPlugin()
 
-        let mockTokenResult = ["id_token": AWSCognitoUserPoolTokens.mockData.idToken,
-                               "access_token": AWSCognitoUserPoolTokens.mockData.accessToken,
-                               "refresh_token": AWSCognitoUserPoolTokens.mockData.refreshToken,
+        let mockTokenResult = ["id_token": AWSCognitoUserPoolTokens.testData.idToken,
+                               "access_token": AWSCognitoUserPoolTokens.testData.accessToken,
+                               "refresh_token": AWSCognitoUserPoolTokens.testData.refreshToken,
                                "expires_in": 10] as [String: Any]
         let mockJson = try! JSONSerialization.data(withJSONObject: mockTokenResult)
         let mockState = "someState"

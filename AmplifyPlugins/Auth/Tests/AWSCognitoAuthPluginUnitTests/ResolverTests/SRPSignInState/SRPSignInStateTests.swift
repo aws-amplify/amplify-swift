@@ -20,11 +20,13 @@ class SRPSignInStateTests: XCTestCase {
     }
 
     func testSignedIn() {
-        let expected = SRPSignInState.signedIn(SignedInData.testData)
+        let testData = SignedInData.testData
+        let event = SignInEvent.finalizeSRPSignInEvent(signedInData: testData)
+        let expected = SRPSignInState.signedIn(testData)
         XCTAssertEqual(
             resolver.resolve(
                 oldState: oldState,
-                byApplying: SignInEvent.finalizeSRPSignInEvent
+                byApplying: event
             ).newState,
             expected
         )

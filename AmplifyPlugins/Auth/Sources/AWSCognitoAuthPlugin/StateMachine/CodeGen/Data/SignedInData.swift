@@ -15,16 +15,14 @@ struct SignedInData {
     let deviceMetadata: DeviceMetadata
     let cognitoUserPoolTokens: AWSCognitoUserPoolTokens
 
-    init(
-        userId: String,
-        userName: String,
-        signedInDate: Date,
-        signInMethod: SignInMethod,
-        deviceMetadata: DeviceMetadata = .noData,
-        cognitoUserPoolTokens: AWSCognitoUserPoolTokens
+    init(signedInDate: Date,
+         signInMethod: SignInMethod,
+         deviceMetadata: DeviceMetadata = .noData,
+         cognitoUserPoolTokens: AWSCognitoUserPoolTokens
     ) {
-        self.userId = userId
-        self.userName = userName
+        let user = try? TokenParserHelper.getAuthUser(accessToken: cognitoUserPoolTokens.accessToken)
+        self.userId = user?.userId ?? "unknown"
+        self.userName = user?.username ?? "unknown"
         self.signedInDate = signedInDate
         self.signInMethod = signInMethod
         self.deviceMetadata = deviceMetadata
@@ -43,7 +41,8 @@ extension SignedInData: CustomDebugDictionaryConvertible {
             "userName": userName.masked(),
             "signedInDate": signedInDate,
             "signInMethod": signInMethod,
-            "deviceMetadata": deviceMetadata
+            "deviceMetadata": deviceMetadata,
+            "tokens": cognitoUserPoolTokens
         ]
     }
 }

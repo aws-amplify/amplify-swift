@@ -98,7 +98,7 @@ extension SignInEvent {
     static let allStates: [SignInEvent] = [
         initiateSRPEvent,
         respondPasswordVerifierEvent,
-        finalizeSRPSignInEvent,
+        finalizeSRPSignInEvent(signedInData: .testData),
         cancelSRPSignInEvent,
         authErrorEvent,
         passwordVerifierErrorEvent
@@ -114,10 +114,12 @@ extension SignInEvent {
         eventType: .respondPasswordVerifier(.testData, InitiateAuthOutputResponse.testData)
     )
 
-    static let finalizeSRPSignInEvent = SignInEvent(
-        id: "finalizeSRPSignInEvent",
-        eventType: .finalizeSignIn(.testData)
-    )
+    static func finalizeSRPSignInEvent(signedInData: SignedInData) -> SignInEvent {
+        return SignInEvent(
+            id: "finalizeSRPSignInEvent",
+            eventType: .finalizeSignIn(signedInData)
+        )
+    }
 
     static let cancelSRPSignInEvent = SignInEvent(
         id: "cancelSRPSignInEvent",

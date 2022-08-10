@@ -23,8 +23,8 @@ struct InitializeRefreshSession: Action {
         let event: RefreshSessionEvent
 
         switch existingCredentials {
-        case .userPoolOnly(let tokens):
-            event = .init(eventType: .refreshCognitoUserPool(tokens))
+        case .userPoolOnly(signedInData: let signedInData):
+            event = .init(eventType: .refreshCognitoUserPool(signedInData))
 
         case .identityPoolOnly(let identityID, _):
             event = .init(eventType: .refreshUnAuthAWSCredentials(identityID))
@@ -32,22 +32,23 @@ struct InitializeRefreshSession: Action {
         case .identityPoolWithFederation:
             fatalError("Federation not implemented")
 
-        case .userPoolAndIdentityPool(let tokens, let identityID, _):
+        case .userPoolAndIdentityPool(let signedInData, let identityID, _):
             guard let config = (environment as? AuthEnvironment)?.userPoolConfigData else {
                 event = .init(eventType: .throwError(.noUserPool))
                 logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
                 dispatcher.send(event)
                 return
             }
+            let tokens = signedInData.cognitoUserPoolTokens
             let provider = CognitoUserPoolLoginsMap(idToken: tokens.idToken,
                                                     region: config.region,
                                                     poolId: config.poolId)
             if isForceRefresh ||
                 tokens.doesExpire(in: FetchAuthSessionOperationHelper.expiryBufferInSeconds) {
-                event = .init(eventType: .refreshCognitoUserPoolWithIdentityId(tokens, identityID))
+                event = .init(eventType: .refreshCognitoUserPoolWithIdentityId(signedInData, identityID))
             } else {
                 event = .init(eventType: .refreshAWSCredentialsWithUserPool(identityID,
-                                                                            tokens,
+                                                                            signedInData,
                                                                             provider))
             }
         case .noCredentials:

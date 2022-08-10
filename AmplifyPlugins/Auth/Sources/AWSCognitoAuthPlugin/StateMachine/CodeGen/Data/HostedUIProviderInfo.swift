@@ -28,8 +28,10 @@ extension HostedUIProviderInfo: Codable {
 
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        idpIdentifier = try values.decode(String.self, forKey: .idpIdentifier)
-        federationProviderName = try values.decode(String.self, forKey: .federationProviderName)
+        idpIdentifier = try values.decodeIfPresent(String.self, forKey: .idpIdentifier)
+        federationProviderName = try values.decodeIfPresent(
+            String.self,
+            forKey: .federationProviderName)
         authProvider = nil
     }
 

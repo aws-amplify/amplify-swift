@@ -85,10 +85,7 @@ struct FetchHostedUISignInToken: Action {
                     accessToken: accessToken,
                     refreshToken: refreshToken,
                     expiresIn: expiresIn)
-                let user = try TokenParserHelper.getAuthUser(accessToken: accessToken)
                 let signedInData = SignedInData(
-                    userId: user.userId,
-                    userName: user.username,
                     signedInDate: Date(),
                     signInMethod: .hostedUI(result.options),
                     cognitoUserPoolTokens: userPoolTokens)

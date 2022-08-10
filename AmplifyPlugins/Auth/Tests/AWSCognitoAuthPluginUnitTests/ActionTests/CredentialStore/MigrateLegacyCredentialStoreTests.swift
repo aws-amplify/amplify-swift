@@ -31,12 +31,13 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
             saveCredentialHandler: { codableCredentials in
                 guard let credentials = codableCredentials as? AmplifyCredentials,
                       case .userPoolAndIdentityPool(
-                        tokens: let tokens,
+                        signedInData: let signedInData,
                         identityID: let identityID,
                         credentials: let awsCredentials) = credentials else {
                     XCTFail("The credentials saved should be of type AmplifyCredentials")
                     return
                 }
+                let tokens = signedInData.cognitoUserPoolTokens
                 // Validate the data returned is correct and matches the mocked data.
                 XCTAssertEqual(identityID, mockedData)
                 XCTAssertEqual(tokens.refreshToken, mockedData)
