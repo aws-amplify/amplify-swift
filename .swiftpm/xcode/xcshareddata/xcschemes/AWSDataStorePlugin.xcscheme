@@ -41,6 +41,9 @@
                <Test
                   Identifier = "MutationEventExtensionsTest">
                </Test>
+               <Test
+                  Identifier = "OutgoingMutationQueueNetworkTests/testLastMutationSentWhenNoNetwork()">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>
