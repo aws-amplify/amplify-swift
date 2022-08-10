@@ -33,7 +33,20 @@ struct InitializeHostedUISignIn: Action {
         Should not happen, initialize hostedUISignIn should always start with presentationanchor
         """)
         }
+        Task {
+            await initializeHostedUI(
+                presentationAnchor: presentationAnchor,
+                environment: environment,
+                hostedUIEnvironment: hostedUIEnvironment,
+                dispatcher: dispatcher)
+        }
+    }
 
+    func initializeHostedUI(presentationAnchor: AuthUIPresentationAnchor,
+                            environment: AuthEnvironment,
+                            hostedUIEnvironment: HostedUIEnvironment,
+                            dispatcher: EventDispatcher) async {
+        let username = "unknown"
         let hostedUIConfig = hostedUIEnvironment.configuration
         let randomGenerator = hostedUIEnvironment.randomStringFactory()
         let state = randomGenerator.generateUUID()
@@ -45,8 +58,18 @@ struct InitializeHostedUISignIn: Action {
         }
 
         do {
+            let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
+                for: username,
+                credentialStoreClient: environment.credentialStoreClientFactory())
+            let encodedData = CognitoUserPoolASF.encodedContext(
+                username: username,
+                asfDeviceId: asfDeviceId,
+                asfClient: environment.cognitoUserPoolASFFactory(),
+                userPoolConfiguration: environment.userPoolConfiguration)
+
             let url = try HostedUIRequestHelper.createSignInURL(state: state,
                                                                 proofKey: proofKey,
+                                                                userContextData: encodedData,
                                                                 configuration: hostedUIConfig,
                                                                 options: options)
             let signInData = HostedUISigningInState(signInURL: url,
