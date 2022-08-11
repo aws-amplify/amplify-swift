@@ -176,15 +176,20 @@ class SyncEngineTestBase: XCTestCase {
     /// Starts amplify by invoking `Amplify.configure(amplifyConfig)`
     func startAmplify() throws {
         try Amplify.configure(amplifyConfig)
-        Amplify.DataStore.start(completion: {_ in})
+        Task {
+            try await Amplify.DataStore.start()
+        }
+        // Amplify.DataStore.start(completion: {_ in})
     }
     
+    /// Starts amplify by invoking `Amplify.configure(amplifyConfig)`, and waits to receive a `syncStarted` Hub message
+    /// before returning.
     private func startAmplifyAndWaitForSync(completion: @escaping (Swift.Result<Void, Error>)->Void) {
         token = Amplify.Hub.listen(to: .dataStore) { [weak self] payload in
             if payload.eventName == "DataStore.syncStarted" {
                 if let token = self?.token {
-                Amplify.Hub.removeListener(token)
-                completion(.success(()))
+                    Amplify.Hub.removeListener(token)
+                    completion(.success(()))
                 }
             }
         }
@@ -201,7 +206,7 @@ class SyncEngineTestBase: XCTestCase {
             completion(.failure(error))
         }
     }
-    
+
     /// Starts amplify by invoking `Amplify.configure(amplifyConfig)`, and waits to receive a `syncStarted` Hub message
     /// before returning.
     func startAmplifyAndWaitForSync() async throws {
@@ -212,7 +217,6 @@ class SyncEngineTestBase: XCTestCase {
         }
     }
     
-
     // MARK: - Data methods
 
     /// Saves a mutation event directly to StorageAdapter. Used for pre-populating database before tests

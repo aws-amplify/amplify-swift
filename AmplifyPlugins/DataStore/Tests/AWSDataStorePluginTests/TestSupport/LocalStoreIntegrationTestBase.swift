@@ -12,6 +12,10 @@ import XCTest
 
 class LocalStoreIntegrationTestBase: XCTestCase {
 
+    override func setUp() async throws {
+        await Amplify.reset()
+    }
+    
     func setUp(withModels models: AmplifyModelRegistration) {
 
         continueAfterFailure = false

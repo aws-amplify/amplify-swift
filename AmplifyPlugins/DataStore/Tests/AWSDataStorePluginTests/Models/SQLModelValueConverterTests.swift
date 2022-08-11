@@ -77,40 +77,28 @@ class SQLModelValueConverterTests: BaseDataStoreTests {
     /// - Then:
     ///   - the returning object must contain exatly the same values as the saved object,
     ///   including correct enums and non-model types
-    func testInsertAndSelectExampleWithEveryType() {
+    func testInsertAndSelectExampleWithEveryType() async throws {
         let example = exampleModel
 
         // save it
-        Amplify.DataStore.save(exampleModel) { saveResult in
-            switch saveResult {
-            case .success:
-                Amplify.DataStore.query(ExampleWithEveryType.self, byId: example.id) {
-                    switch $0 {
-                    case .success(let result):
-                        // then check if the queried version has the correct values
-                        guard let savedExample = result else {
-                            XCTFail("ExampleWithEveryType with id \(example.id) not found")
-                            return
-                        }
-                        XCTAssertEqual(savedExample.arrayOfStringsField, example.arrayOfStringsField)
-                        XCTAssertEqual(savedExample.boolField, example.boolField)
-                        XCTAssertEqual(savedExample.dateField.iso8601String, example.dateField.iso8601String)
-                        XCTAssertEqual(savedExample.doubleField, example.doubleField)
-                        XCTAssertEqual(savedExample.enumField, example.enumField)
-                        XCTAssertEqual(savedExample.id, example.id)
-                        XCTAssertEqual(savedExample.intField, example.intField)
-                        XCTAssertEqual(savedExample.stringField, example.stringField)
-                        // non-model fields
-                        XCTAssertEqual(savedExample.nonModelField.someEnum, example.nonModelField.someEnum)
-                        XCTAssertEqual(savedExample.nonModelField.someString, example.nonModelField.someString)
-                    case .failure(let error):
-                        XCTFail(error.errorDescription)
-                    }
-                }
-            case .failure(let error):
-                XCTFail(error.errorDescription)
-            }
+        _ = try await Amplify.DataStore.save(exampleModel)
+        let result = try await Amplify.DataStore.query(ExampleWithEveryType.self, byId: example.id)
+        // then check if the queried version has the correct values
+        guard let savedExample = result else {
+            XCTFail("ExampleWithEveryType with id \(example.id) not found")
+            return
         }
+        XCTAssertEqual(savedExample.arrayOfStringsField, example.arrayOfStringsField)
+        XCTAssertEqual(savedExample.boolField, example.boolField)
+        XCTAssertEqual(savedExample.dateField.iso8601String, example.dateField.iso8601String)
+        XCTAssertEqual(savedExample.doubleField, example.doubleField)
+        XCTAssertEqual(savedExample.enumField, example.enumField)
+        XCTAssertEqual(savedExample.id, example.id)
+        XCTAssertEqual(savedExample.intField, example.intField)
+        XCTAssertEqual(savedExample.stringField, example.stringField)
+        // non-model fields
+        XCTAssertEqual(savedExample.nonModelField.someEnum, example.nonModelField.someEnum)
+        XCTAssertEqual(savedExample.nonModelField.someString, example.nonModelField.someString)
     }
 
     /// - Given: a `CommentWithCompositeKey` model as JSONValue

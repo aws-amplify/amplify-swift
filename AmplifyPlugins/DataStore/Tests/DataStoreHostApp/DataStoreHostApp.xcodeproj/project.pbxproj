@@ -56,7 +56,6 @@
 		21BBFB4D289BFFAF00B32A39 /* DataStoreCustomPrimaryKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9E6289BFE3400B32A39 /* DataStoreCustomPrimaryKeyTests.swift */; };
 		21BBFB4E289BFFB100B32A39 /* DataStoreEndToEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA10289BFE3400B32A39 /* DataStoreEndToEndTests.swift */; };
 		21BBFB4F289BFFB400B32A39 /* DataStoreHubEventsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9FA289BFE3400B32A39 /* DataStoreHubEventsTests.swift */; };
-		21BBFB50289BFFB600B32A39 /* DataStoreLocalStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9FB289BFE3400B32A39 /* DataStoreLocalStoreTests.swift */; };
 		21BBFB51289BFFB800B32A39 /* DataStoreObserveQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA15289BFE3400B32A39 /* DataStoreObserveQueryTests.swift */; };
 		21BBFB52289BFFBB00B32A39 /* DataStoreScalarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA0E289BFE3400B32A39 /* DataStoreScalarTests.swift */; };
 		21BBFB53289BFFC200B32A39 /* SubscriptionEndToEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA0C289BFE3400B32A39 /* SubscriptionEndToEndTests.swift */; };
@@ -176,7 +175,6 @@
 		21BBFC07289C036600B32A39 /* HubEventsIntegrationTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9EC289BFE3400B32A39 /* HubEventsIntegrationTestBase.swift */; };
 		21BBFC08289C036800B32A39 /* SyncEngineIntegrationV2TestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9ED289BFE3400B32A39 /* SyncEngineIntegrationV2TestBase.swift */; };
 		21BBFC09289C036A00B32A39 /* DataStoreHubEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9EE289BFE3400B32A39 /* DataStoreHubEvent.swift */; };
-		21BBFC0A289C036C00B32A39 /* LocalStoreIntegrationTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9EF289BFE3400B32A39 /* LocalStoreIntegrationTestBase.swift */; };
 		21BBFC0B289C037000B32A39 /* TestModelV2Registration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F0289BFE3400B32A39 /* TestModelV2Registration.swift */; };
 		21BBFC0E289C038500B32A39 /* DataStoreConnectionScenario5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F4289BFE3400B32A39 /* DataStoreConnectionScenario5Tests.swift */; };
 		21BBFC0F289C038700B32A39 /* DataStoreConnectionScenario2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F5289BFE3400B32A39 /* DataStoreConnectionScenario2Tests.swift */; };
@@ -486,7 +484,6 @@
 		21BBF9EC289BFE3400B32A39 /* HubEventsIntegrationTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HubEventsIntegrationTestBase.swift; sourceTree = "<group>"; };
 		21BBF9ED289BFE3400B32A39 /* SyncEngineIntegrationV2TestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncEngineIntegrationV2TestBase.swift; sourceTree = "<group>"; };
 		21BBF9EE289BFE3400B32A39 /* DataStoreHubEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreHubEvent.swift; sourceTree = "<group>"; };
-		21BBF9EF289BFE3400B32A39 /* LocalStoreIntegrationTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalStoreIntegrationTestBase.swift; sourceTree = "<group>"; };
 		21BBF9F0289BFE3400B32A39 /* TestModelV2Registration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestModelV2Registration.swift; sourceTree = "<group>"; };
 		21BBF9F1289BFE3400B32A39 /* DataStoreConfigurationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreConfigurationTests.swift; sourceTree = "<group>"; };
 		21BBF9F2289BFE3400B32A39 /* AWSDataStorePluginConfigurationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSDataStorePluginConfigurationTests.swift; sourceTree = "<group>"; };
@@ -497,7 +494,6 @@
 		21BBF9F8289BFE3400B32A39 /* DataStoreConnectionScenario6Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario6Tests.swift; sourceTree = "<group>"; };
 		21BBF9F9289BFE3400B32A39 /* DataStoreConnectionScenario3Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario3Tests.swift; sourceTree = "<group>"; };
 		21BBF9FA289BFE3400B32A39 /* DataStoreHubEventsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreHubEventsTests.swift; sourceTree = "<group>"; };
-		21BBF9FB289BFE3400B32A39 /* DataStoreLocalStoreTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreLocalStoreTests.swift; sourceTree = "<group>"; };
 		21BBF9FD289BFE3400B32A39 /* DataStoreSchemaDriftTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreSchemaDriftTests.swift; sourceTree = "<group>"; };
 		21BBF9FE289BFE3400B32A39 /* DataStoreConnectionScenario8V2Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionScenario8V2Tests.swift; sourceTree = "<group>"; };
 		21BBF9FF289BFE3400B32A39 /* DataStoreModelWithSecondaryIndexTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreModelWithSecondaryIndexTests.swift; sourceTree = "<group>"; };
@@ -1016,7 +1012,6 @@
 				21BBF9EC289BFE3400B32A39 /* HubEventsIntegrationTestBase.swift */,
 				21BBF9ED289BFE3400B32A39 /* SyncEngineIntegrationV2TestBase.swift */,
 				21BBF9EE289BFE3400B32A39 /* DataStoreHubEvent.swift */,
-				21BBF9EF289BFE3400B32A39 /* LocalStoreIntegrationTestBase.swift */,
 				21BBF9F0289BFE3400B32A39 /* TestModelV2Registration.swift */,
 			);
 			path = TestSupport;
@@ -1270,7 +1265,6 @@
 				21BBFA0C289BFE3400B32A39 /* SubscriptionEndToEndTests.swift */,
 				21BBFA0E289BFE3400B32A39 /* DataStoreScalarTests.swift */,
 				21BBFA15289BFE3400B32A39 /* DataStoreObserveQueryTests.swift */,
-				21BBF9FB289BFE3400B32A39 /* DataStoreLocalStoreTests.swift */,
 				21BBF9FA289BFE3400B32A39 /* DataStoreHubEventsTests.swift */,
 				21BBFA10289BFE3400B32A39 /* DataStoreEndToEndTests.swift */,
 				21BBF9E6289BFE3400B32A39 /* DataStoreCustomPrimaryKeyTests.swift */,
@@ -2142,7 +2136,6 @@
 				21BBFD31289C06E400B32A39 /* RecordCover+Schema.swift in Sources */,
 				21BBFDAD289C06E400B32A39 /* Project.swift in Sources */,
 				21BBFDDD289C06E400B32A39 /* Post5+Schema.swift in Sources */,
-				21BBFB50289BFFB600B32A39 /* DataStoreLocalStoreTests.swift in Sources */,
 				21BBFDB9289C06E400B32A39 /* Transaction.swift in Sources */,
 				21BBFD88289C06E400B32A39 /* Record+Schema.swift in Sources */,
 				21BBFB52289BFFBB00B32A39 /* DataStoreScalarTests.swift in Sources */,
@@ -2199,7 +2192,6 @@
 				21BBFD6D289C06E400B32A39 /* Comment3aV2.swift in Sources */,
 				21BBFD54289C06E400B32A39 /* MyNestedModel8+Schema.swift in Sources */,
 				21BBFD6A289C06E400B32A39 /* CustomerWithMultipleFieldsinPK.swift in Sources */,
-				21BBFC0A289C036C00B32A39 /* LocalStoreIntegrationTestBase.swift in Sources */,
 				21BBFD6F289C06E400B32A39 /* Comment3aV2+Schema.swift in Sources */,
 				21BBFD84289C06E400B32A39 /* Blog6V2+Schema.swift in Sources */,
 				21BBFD50289C06E400B32A39 /* Post4V2+Schema.swift in Sources */,

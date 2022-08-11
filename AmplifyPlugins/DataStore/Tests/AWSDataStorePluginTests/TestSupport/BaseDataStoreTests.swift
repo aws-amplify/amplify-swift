@@ -71,7 +71,7 @@ class BaseDataStoreTests: XCTestCase {
             try Amplify.add(plugin: dataStorePlugin)
             try Amplify.configure(amplifyConfig)
             XCTAssertEqual(dataStorePlugin.dispatchedModelSyncedEvents.count, ModelRegistry.modelSchemas.count)
-            Amplify.DataStore.start(completion: {_ in})
+            try await Amplify.DataStore.start()
         } catch {
             XCTFail(String(describing: error))
             return

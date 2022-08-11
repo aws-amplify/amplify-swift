@@ -36,10 +36,9 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
     ///    - modelSynced received, payload should be:
     ///      {modelName: "Some Model name", isFullSync: true/false, isDeltaSync: false/true, createCount: #, updateCount: #, deleteCount: #}
     ///    - syncQueriesReady received, payload should be nil
-    func testDataStoreConfiguredDispatchesHubEvents() throws {
-
+    func testDataStoreConfiguredDispatchesHubEvents() async throws {
+        Amplify.Logging.logLevel = .verbose
         let networkStatusReceived = expectation(description: "networkStatus received")
-        networkStatusReceived.expectedFulfillmentCount = 2
         var networkStatusActive = false
         let subscriptionsEstablishedReceived = expectation(description: "subscriptionsEstablished received")
         let syncQueriesStartedReceived = expectation(description: "syncQueriesStarted received")
@@ -51,11 +50,10 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
                     XCTFail("Failed to cast payload data as NetworkStatusEvent")
                     return
                 }
-                XCTAssertEqual(networkStatusEvent.active, networkStatusActive)
-                if !networkStatusActive {
-                    networkStatusActive = true
+                networkStatusActive = networkStatusEvent.active
+                if networkStatusActive {
+                    networkStatusReceived.fulfill()
                 }
-                networkStatusReceived.fulfill()
             }
 
             if payload.eventName == HubPayload.EventName.DataStore.subscriptionsEstablished {
@@ -82,9 +80,9 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
             }
         }
 
-        startAmplify(withModels: TestModelRegistration())
+        await startAmplify(withModels: TestModelRegistration())
 
-        waitForExpectations(timeout: networkTimeout)
+        await waitForExpectations(timeout: networkTimeout)
         hubListener.cancel()
     }
 
@@ -98,7 +96,7 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
     ///      {modelName: "Post", element: {id: #, content: "some content"}}
     ///    - outboxMutationProcessed received, payload should be:
     ///      {modelName: "Post", element: {model: {id: #, content: "some content"}, version: 1, deleted: false, lastChangedAt: "some time"}}
-    func testOutboxMutationEvents() throws {
+    func testOutboxMutationEvents() async throws {
 
         let post = Post(title: "title", content: "content", createdAt: .now())
 
@@ -133,14 +131,14 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
             }
         }
 
-        startAmplify(withModels: TestModelRegistration())
-        Amplify.DataStore.save(post) { _ in }
+        await startAmplify(withModels: TestModelRegistration())
+        _ = try await Amplify.DataStore.save(post)
 
-        waitForExpectations(timeout: networkTimeout)
+        await waitForExpectations(timeout: networkTimeout)
         hubListener.cancel()
     }
 
-    func testModelSyncedAndSyncQueriesReady() throws {
+    func testModelSyncedAndSyncQueriesReady() async throws {
         let modelSyncedReceived = expectation(description: "outboxMutationEnqueued received")
         modelSyncedReceived.assertForOverFulfill = false
         let syncQueriesReadyReceived = expectation(description: "outboxMutationProcessed received")
@@ -179,9 +177,9 @@ class DataStoreHubEventTests: HubEventsIntegrationTestBase {
             }
         }
 
-        startAmplify(withModels: TestModelRegistration())
+        await startAmplify(withModels: TestModelRegistration())
 
-        waitForExpectations(timeout: networkTimeout)
+        await waitForExpectations(timeout: networkTimeout)
         hubListener.cancel()
     }
 }

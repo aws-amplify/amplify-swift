@@ -10,7 +10,7 @@ import XCTest
 import Amplify
 
 class DataStoreTestBase: XCTestCase {
-    func saveModel<M: Model>(_ model: M) -> DataStoreResult<M> {
+    func saveModel<M: Model>(_ model: M) async -> DataStoreResult<M> {
         let saveFinished = expectation(description: "Save finished")
         var result: DataStoreResult<M>?
 
@@ -18,14 +18,14 @@ class DataStoreTestBase: XCTestCase {
             result = sResult
             saveFinished.fulfill()
         }
-        wait(for: [saveFinished], timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
         guard let saveResult = result else {
             return .failure(causedBy: "Save operation timed out")
         }
         return saveResult
     }
 
-    func queryModel<M: Model>(_ modelType: M.Type, byId id: String) -> DataStoreResult<M?> {
+    func queryModel<M: Model>(_ modelType: M.Type, byId id: String) async -> DataStoreResult<M?> {
         let queryFinished = expectation(description: "Query Finished")
         var result: DataStoreResult<M?>?
 
@@ -34,14 +34,14 @@ class DataStoreTestBase: XCTestCase {
             queryFinished.fulfill()
         }
 
-        wait(for: [queryFinished], timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
         guard let queryResult = result else {
             return .failure(causedBy: "Query operation timed out")
         }
         return queryResult
     }
 
-    func deleteModel<M: Model>(_ model: M) -> DataStoreResult<Void> {
+    func deleteModel<M: Model>(_ model: M) async -> DataStoreResult<Void> {
         let deleteFinished = expectation(description: "Delete Finished")
         var result: DataStoreResult<Void>?
 
@@ -51,7 +51,7 @@ class DataStoreTestBase: XCTestCase {
                                     deleteFinished.fulfill()
                                  })
 
-        wait(for: [deleteFinished], timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
         guard let deleteResult = result else {
             return .failure(causedBy: "Delete operation timed out")
         }

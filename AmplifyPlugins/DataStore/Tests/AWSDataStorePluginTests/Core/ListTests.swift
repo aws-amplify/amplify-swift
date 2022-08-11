@@ -19,7 +19,7 @@ class ListTests: BaseDataStoreTests {
     ///   - the `post.comments` is accessed asynchronously with a callback
     /// - Then:
     ///   - the list should be correctly loaded and populated
-    func testAsynchronousLazyLoadWithCallback() {
+    func testAsynchronousLazyLoadWithCallback() async {
         let expect = expectation(description: "a lazy list should return the correct results")
 
         let postId = preparePostDataForTest()
@@ -44,22 +44,20 @@ class ListTests: BaseDataStoreTests {
                 }
             }
         }
-
-        Amplify.DataStore.query(Post.self, byId: postId) {
-            switch $0 {
-            case .success(let result):
-                if let post = result, let comments = post.comments {
-                    checkComments(comments)
-                } else {
-                    XCTFail("Failed to query recently saved post by id")
-                }
-            case .failure(let error):
-                XCTFail(error.errorDescription)
-                expect.fulfill()
+        
+        do {
+            let result = try await Amplify.DataStore.query(Post.self, byId: postId)
+            if let post = result, let comments = post.comments {
+                checkComments(comments)
+            } else {
+                XCTFail("Failed to query recently saved post by id")
             }
+        } catch {
+            XCTFail("\(error)")
+            expect.fulfill()
         }
-
-        wait(for: [expect], timeout: 1)
+    
+        await waitForExpectations(timeout: 1)
     }
 
     // MARK: - Helpers

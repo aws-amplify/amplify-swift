@@ -18,15 +18,12 @@ class DataStoreConfigurationTests: XCTestCase {
         await Amplify.reset()
     }
 
-    override func tearDown() {
-        Amplify.DataStore.clear(completion: { _ in })
+    override func tearDown() async throws {
+        try await Amplify.DataStore.clear()
     }
 
     func testConfigureWithSameSchemaDoesNotDeleteDatabase() async throws {
-
         let previousVersion = "previousVersion"
-        let saveSuccess = expectation(description: "Save was successful")
-
         do {
             let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels(version: previousVersion))
             try Amplify.add(plugin: dataStorePlugin)
@@ -37,20 +34,9 @@ class DataStoreConfigurationTests: XCTestCase {
 
         let post = Post(title: "title", content: "content", createdAt: .now())
 
-        Amplify.DataStore.save(post, completion: { result in
-            switch result {
-            case .success:
-                saveSuccess.fulfill()
-            case .failure(let error):
-                XCTFail("Error saving post \(error)")
-            }
-        })
-
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        _ = try await Amplify.DataStore.save(post)
 
         await Amplify.reset()
-
-        let querySuccess = expectation(description: "query was successful")
 
         do {
             let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels(version: previousVersion))
@@ -62,28 +48,18 @@ class DataStoreConfigurationTests: XCTestCase {
 
         // Query for the previously saved post. Data should be retrieved successfully which indicates that
         // the database file was not deleted after re-configuring Amplify when using the same model registry version
-        Amplify.DataStore.query(Post.self, byId: post.id) { result in
-            switch result {
-            case .success(let postResult):
-                guard let queriedPost = postResult else {
-                    XCTFail("could not retrieve post across Amplify re-configure")
-                    return
-                }
-                XCTAssertEqual(queriedPost.title, "title")
-                XCTAssertEqual(queriedPost.content, "content")
-                XCTAssertEqual(queriedPost.createdAt, post.createdAt)
-                querySuccess.fulfill()
-            case .failure(let error):
-                XCTFail("Failed to query post, error: \(error)")
-            }
+        let postResult = try await Amplify.DataStore.query(Post.self, byId: post.id)
+        guard let queriedPost = postResult else {
+            XCTFail("could not retrieve post across Amplify re-configure")
+            return
         }
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        XCTAssertEqual(queriedPost.title, "title")
+        XCTAssertEqual(queriedPost.content, "content")
+        XCTAssertEqual(queriedPost.createdAt, post.createdAt)
     }
 
     func testConfigureWithDifferentSchemaClearsDatabase() async throws {
-
         let prevoisVersion = "previousVersion"
-        let saveSuccess = expectation(description: "Save was successful")
 
         do {
             let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels(version: prevoisVersion))
@@ -94,20 +70,9 @@ class DataStoreConfigurationTests: XCTestCase {
         }
 
         let post = Post(title: "title", content: "content", createdAt: .now())
-
-        Amplify.DataStore.save(post, completion: { result in
-            switch result {
-            case .success:
-                saveSuccess.fulfill()
-            case .failure(let error):
-                XCTFail("Error saving post \(error)")
-            }
-        })
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        _ = try await Amplify.DataStore.save(post)
 
         await Amplify.reset()
-
-        let querySuccess = expectation(description: "query was successful")
 
         do {
             let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels(version: "1234"))
@@ -119,16 +84,7 @@ class DataStoreConfigurationTests: XCTestCase {
 
         // Query for the previously saved post. Data should not be retrieved successfully which indicates that
         // the database file was deleted after re-configuring Amplify when using a different model registry version
-        Amplify.DataStore.query(Post.self) { result in
-            switch result {
-            case .success(let postResult):
-                XCTAssertTrue(postResult.isEmpty)
-                querySuccess.fulfill()
-            case .failure(let error):
-                XCTFail(error.errorDescription)
-            }
-        }
-
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        let postResult = try await Amplify.DataStore.query(Post.self)
+        XCTAssertTrue(postResult.isEmpty)
     }
 }

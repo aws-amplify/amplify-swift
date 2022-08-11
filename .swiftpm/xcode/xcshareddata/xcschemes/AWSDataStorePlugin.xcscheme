@@ -39,9 +39,6 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "MutationEventExtensionsTest">
-               </Test>
-               <Test
                   Identifier = "OutgoingMutationQueueNetworkTests/testLastMutationSentWhenNoNetwork()">
                </Test>
             </SkippedTests>
