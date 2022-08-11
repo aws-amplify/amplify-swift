@@ -38,18 +38,14 @@ class HubEventsIntegrationTestBase: XCTestCase {
         continueAfterFailure = false
     }
 
-    func startAmplify(withModels models: AmplifyModelRegistration) {
+    func startAmplify(withModels models: AmplifyModelRegistration) async {
         do {
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfigurationFile)
 
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models))
             try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: models))
             try Amplify.configure(amplifyConfig)
-            Amplify.DataStore.start { result in
-                if case .failure(let error) = result {
-                    XCTFail("\(error)")
-                }
-            }
+            try await Amplify.DataStore.start()
         } catch {
             XCTFail(String(describing: error))
             return
