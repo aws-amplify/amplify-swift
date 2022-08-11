@@ -210,7 +210,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
                                                            authType: authType)
         } else if modelSchema.hasAuthenticationRules,
             let oidcAuthProvider = hasOIDCAuthProviderAvailable(api: api),
-            let tokenString = try? await oidcAuthProvider.getUserPoolAccessToken(),
+            let tokenString = try? await oidcAuthProvider.getLatestAuthToken(),
             case .success(let claims) = awsAuthService.getTokenClaims(tokenString: tokenString) {
             request = GraphQLRequest<Payload>.subscription(to: modelSchema,
                                                            subscriptionType: subscriptionType,

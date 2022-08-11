@@ -17,10 +17,10 @@ extension RemoteSyncEngine: AuthModeStrategyDelegate {
            let oidcAuthProvider = authProviderFactory.apiAuthProviderFactory().oidcAuthProvider() {
             
             // if OIDC is used as authentication provider
-            // use `getUserPoolAccessToken`
+            // use `getLatestAuthToken`
             var isLoggedInWithOIDC = false
             do {
-                _ = try await oidcAuthProvider.getUserPoolAccessToken()
+                _ = try await oidcAuthProvider.getLatestAuthToken()
                 isLoggedInWithOIDC = true
             } catch {
                 isLoggedInWithOIDC = false
