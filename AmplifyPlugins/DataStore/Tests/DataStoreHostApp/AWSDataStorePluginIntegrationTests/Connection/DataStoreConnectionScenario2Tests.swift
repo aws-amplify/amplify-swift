@@ -9,6 +9,7 @@ import XCTest
 
 @testable import Amplify
 @testable import AWSDataStorePlugin
+@testable import DataStoreHostApp
 
 /*
  A one-to-one connection where a project has one team,

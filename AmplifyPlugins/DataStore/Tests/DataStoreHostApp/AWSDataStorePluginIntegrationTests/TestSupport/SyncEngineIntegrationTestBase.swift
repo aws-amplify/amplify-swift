@@ -10,6 +10,7 @@ import AWSAPIPlugin
 
 @testable import Amplify
 @testable import AWSDataStorePlugin
+@testable import DataStoreHostApp
 
 class SyncEngineIntegrationTestBase: DataStoreTestBase {
 

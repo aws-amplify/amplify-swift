@@ -44,3 +44,7 @@ struct HubListenerTestUtilities {
     }
 
 }
+
+/// Enable tests to `throw` string literals
+extension String: Error { }
+

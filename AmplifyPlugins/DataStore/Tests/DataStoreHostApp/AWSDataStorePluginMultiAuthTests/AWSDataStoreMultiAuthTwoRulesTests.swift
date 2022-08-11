@@ -8,9 +8,9 @@
 import Foundation
 import Combine
 import XCTest
+import AWSAPIPlugin
 
 @testable import Amplify
-@testable import AmplifyTestCommon
 
 // swiftlint:disable file_length
 class AWSDataStoreMultiAuthTwoRulesTests: AWSDataStoreAuthBaseTest {
@@ -595,6 +595,9 @@ class TestAuthProviderFactory: APIAuthProviderFactory {
     class TestOIDCAuthProvider: AmplifyOIDCAuthProvider {
         func getLatestAuthToken() -> Result<AuthToken, Error> {
             .failure(DataStoreError.unknown("Not implemented", "Expected, we're testing unauthorized users."))
+        }
+        func getUserPoolAccessToken() async throws -> String {
+            throw DataStoreError.unknown("Not implemented", "Expected, we're testing unauthorized users.")
         }
     }
 

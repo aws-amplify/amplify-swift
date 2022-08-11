@@ -8,6 +8,7 @@
 import XCTest
 @testable import Amplify
 @testable import AWSDataStorePlugin
+@testable import DataStoreHostApp
 import AWSAPIPlugin
 
 class SyncEngineIntegrationV2TestBase: DataStoreTestBase {

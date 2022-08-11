@@ -8,6 +8,8 @@
 import Foundation
 @testable import Amplify
 
+extension String: Error { }
+
 class TestConfigHelper {
 
     static func retrieveAmplifyConfiguration(forResource: String) throws -> AmplifyConfiguration {
