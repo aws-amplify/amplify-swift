@@ -355,9 +355,6 @@
                <Test
                   Identifier = "MutationEventExtensionsTest">
                </Test>
-               <Test
-                  Identifier = "OutgoingMutationQueueNetworkTests">
-               </Test>
             </SkippedTests>
          </TestableReference>
          <TestableReference
