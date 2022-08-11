@@ -6,9 +6,8 @@
 //
 
 import XCTest
-
+import AWSPluginsCore
 @testable import Amplify
-@testable import AmplifyTestCommon
 
 class AWSDataStoreCategoryPluginAuthOwnerIntegrationTests: AWSDataStoreAuthBaseTest {
 

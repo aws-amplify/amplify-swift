@@ -7,8 +7,9 @@
 
 import XCTest
 import AWSDataStorePlugin
+import DataStoreHostApp
 @testable import Amplify
-@testable import AmplifyTestCommon
+@testable import DataStoreHostApp
 
 class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
     let syncReceived = HubPayload.EventName.DataStore.syncReceived
@@ -24,7 +25,7 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
     ///    - User remains signed out, then user can successfully retrieve the saved todo, with empty owner field
     ///    - User signs in, retrieves tods, sync engine is started and reconciles local store with the ownerId
     ///    - The todo now it contains the ownerId
-    func testUnauthenticatedSavesToLocalStoreIsReconciledWithCloudStoreAfterAuthentication() throws {
+    func testUnauthenticatedSavesToLocalStoreIsReconciledWithCloudStoreAfterAuthentication() async throws {
         setup(withModels: ModelsRegistration(), testType: .defaultAuthCognito)
         let savedLocalTodo = TodoExplicitOwnerField(content: "owner saved model")
         saveModel(savedLocalTodo)
@@ -51,7 +52,7 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
                 syncReceivedInvoked.fulfill()
             }
         }
-        guard try HubListenerTestUtilities.waitForListener(with: syncReceivedListener, timeout: 5.0) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: syncReceivedListener, timeout: 5.0) else {
             XCTFail("syncReceivedListener registered for hub")
             return
         }
@@ -69,7 +70,7 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
             return
         }
 
-        guard let user = Amplify.Auth.getCurrentUser() else {
+        guard let user = await Amplify.Auth.getCurrentUser() else {
             XCTFail("Couldn't get current user signed in user")
             return
         }

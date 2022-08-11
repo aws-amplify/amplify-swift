@@ -8,8 +8,7 @@
 import XCTest
 import AWSPluginsCore
 import Amplify
-
-@testable import AmplifyTestCommon
+import DataStoreHostApp
 
 extension AWSDataStoreCategoryPluginAuthIntegrationTests {
     func saveModel<T: Model>(_ model: T) {

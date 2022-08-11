@@ -10,7 +10,6 @@ import Combine
 import XCTest
 
 @testable import Amplify
-@testable import AmplifyTestCommon
 
 class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
 

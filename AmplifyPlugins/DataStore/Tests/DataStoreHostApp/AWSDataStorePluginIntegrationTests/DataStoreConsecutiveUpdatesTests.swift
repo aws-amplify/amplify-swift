@@ -11,6 +11,7 @@ import AWSPluginsCore
 
 @testable import Amplify
 @testable import AWSDataStorePlugin
+@testable import DataStoreHostApp
 
 // swiftlint:disable cyclomatic_complexity
 // swiftlint:disable type_body_length

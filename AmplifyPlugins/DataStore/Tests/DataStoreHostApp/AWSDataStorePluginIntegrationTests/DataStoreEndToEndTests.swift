@@ -12,6 +12,7 @@ import Combine
 
 @testable import Amplify
 @testable import AWSDataStorePlugin
+@testable import DataStoreHostApp
 
 class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 
@@ -48,6 +49,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         let outboxIsNotEmptyReceived = expectation(description: "received outboxStatusReceived(false)")
         outboxIsNotEmptyReceived.assertForOverFulfill = false
         let outboxIsEmptyReceived = expectation(description: "received outboxStatusReceived(true)")
+        outboxIsEmptyReceived.assertForOverFulfill = false
         let outboxMutationProcessed = expectation(description: "received outboxMutationProcessed")
         outboxMutationProcessed.assertForOverFulfill = false
         let syncReceived = expectation(description: "SyncReceived(MutationEvent(version: 1))")

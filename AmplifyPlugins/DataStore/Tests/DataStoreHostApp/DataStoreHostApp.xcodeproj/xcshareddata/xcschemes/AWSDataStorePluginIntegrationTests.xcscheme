@@ -69,6 +69,9 @@
                   Identifier = "DataStoreConsecutiveUpdatesTests">
                </Test>
                <Test
+                  Identifier = "DataStoreHubEventTests">
+               </Test>
+               <Test
                   Identifier = "DataStoreLocalStoreTests">
                </Test>
                <Test
