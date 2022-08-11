@@ -2,25 +2,35 @@
 # all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
 input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
 
+# iOS.1. A model with implicit default PK (`id`)
+
 type ModelImplicitDefaultPk @model {
     name: String
 }
+
+# iOS.2. A model with explicit use of the default PK (`id`)
 
 type ModelExplicitDefaultPk @model {
   id: ID! @primaryKey
   name: String
 }
 
+# iOS.3. A Model with explicit PK (`userId`)
+
 type ModelExplicitCustomPk @model {
   userId: ID! @primaryKey
   name: String
 }
+
+# iOS.4. A Model with a composite PK (`id` and `dob`)
 
 type ModelCompositePk @model {
   id: ID! @primaryKey(sortKeyFields: ["dob"])
   dob: AWSDateTime!
   name: String
 }
+
+# iOS.5. A Model with a composite PK (`id`, `location`, `name`)
 
 type ModelCompositeMultiplePk @model {
   id: ID! @primaryKey(sortKeyFields: ["location", "name"])
@@ -29,10 +39,15 @@ type ModelCompositeMultiplePk @model {
   lastName: String
 }
 
+# iOS.6. A Model with an Int for a composite PK (`serial` of type Int)
+
 type ModelCompositeIntPk @model {
   id: ID! @primaryKey(sortKeyFields: ["serial"])
   serial: Int!
 }
+
+# iOS.7. A Has-Many/Belongs-To relationship, each with a composite key
+# Post with `id` and `title`, Comment with `id` and `content`
 
 type PostWithCompositeKey @model {
   id: ID! @primaryKey(sortKeyFields: ["title"])
@@ -46,6 +61,9 @@ type CommentWithCompositeKey @model {
   post: PostWithCompositeKey @belongsTo
 }
 
+# iOS.8. A Many-To-Many relationship, each with a composite key
+# Post with `id` and `title`, Tag with `id` and `name`
+
 type PostWithTagsCompositeKey @model {
   postId: ID! @primaryKey(sortKeyFields: ["title"])
   title: String!
@@ -58,6 +76,8 @@ type TagWithCompositeKey @model {
   posts: [PostWithTagsCompositeKey] @manyToMany(relationName: "PostTagsWithCompositeKey")
 }
 
+# iOS.9. A Has-Many/Belongs-To relationship, with index
+# Post with `id` and `title`, Comment with `id`, `content`, and index on `postID` and `postTitle`
 
 type PostWithCompositeKeyAndIndex @model {
   id: ID! @primaryKey(sortKeyFields: ["title"])
@@ -72,3 +92,135 @@ type CommentWithCompositeKeyAndIndex @model {
   postTitle: String
   post: PostWithCompositeKeyAndIndex @belongsTo(fields: ["postID", "postTitle"])
 }
+
+# CLI.1. Implicit Bi-directional Has One
+
+#type Project1 @model {
+#  projectId: ID! @primaryKey(sortKeyFields:["name"])
+#  name: String!
+#  team: Team1 @hasOne
+#}
+#type Team1 @model {
+#  teamId: ID! @primaryKey(sortKeyFields:["name"])
+#  name: String!
+#  project: Project1 @belongsTo
+#}
+
+# CLI.2. Implicit Uni-directional Has One
+
+type Project2 @model {
+  projectId: ID! @primaryKey(sortKeyFields:["name"])
+  name: String!
+  team: Team2 @hasOne
+}
+type Team2 @model {
+  teamId: ID! @primaryKey(sortKeyFields:["name"])
+  name: String!
+}
+
+# CLI.3. Implicit Bi-directional Has Many
+
+#type Post3 @model {
+#  postId: ID! @primaryKey(sortKeyFields:["title"])
+#  title: String!
+#  comments: [Comment3] @hasMany
+#}
+#type Comment3 @model {
+#  commentId: ID! @primaryKey(sortKeyFields:["content"])
+#  content: String!
+#  post: Post3 @belongsTo
+#}
+
+# CLI.4. Implicit Uni-directional Has Many
+
+type Post4 @model {
+  postId: ID! @primaryKey(sortKeyFields:["title"])
+  title: String!
+  comments: [Comment4] @hasMany
+}
+type Comment4 @model {
+  commentId: ID! @primaryKey(sortKeyFields:["content"])
+  content: String!
+}
+
+# CLI.5. Explicit Bi-directional Has One
+
+#type Project5 @model {
+#  projectId: ID! @primaryKey(sortKeyFields:["name"])
+#  name: String!
+#  team: Team5 @hasOne(fields:["teamId", "teamName"])
+#  teamId: ID # customized foreign key for child primary key
+#  teamName: String # customized foreign key for child sort key
+#}
+#type Team5 @model {
+#  teamId: ID! @primaryKey(sortKeyFields:["name"])
+#  name: String!
+#  project: Project5 @belongsTo(fields:["projectId", "projectName"])
+#  projectId: ID # customized foreign key for parent primary key
+#  projectName: String # customized foreign key for parent sort key
+#}
+
+# CLI.6. Explicit Uni-directional Has One
+
+type Project6 @model {
+  projectId: ID! @primaryKey(sortKeyFields:["name"])
+  name: String!
+  team: Team6 @hasOne(fields:["teamId", "teamName"])
+  teamId: ID # customized foreign key for child primary key
+  teamName: String # customized foreign key for child sort key
+}
+type Team6 @model {
+  teamId: ID! @primaryKey(sortKeyFields:["name"])
+  name: String!
+}
+
+# CLI.7. Explicit Bi-directional Has Many
+
+type Post7 @model {
+  postId: ID! @primaryKey(sortKeyFields:["title"])
+  title: String!
+  comments: [Comment7] @hasMany(indexName:"byPost", fields:["postId", "title"])
+}
+type Comment7 @model {
+  commentId: ID! @primaryKey(sortKeyFields:["content"])
+  content: String!
+  post: Post7 @belongsTo(fields:["postId", "postTitle"])
+  postId: ID @index(name: "byPost", sortKeyFields:["postTitle"]) # customized foreign key for parent primary key
+  postTitle: String # customized foreign key for parent sort key
+}
+
+# CLI.8. Explicit Uni-directional Has Many
+
+type Post8 @model {
+  postId: ID! @primaryKey(sortKeyFields:["title"])
+  title: String!
+  comments: [Comment8] @hasMany(indexName:"byPost", fields:["postId", "title"])
+}
+type Comment8 @model {
+  commentId: ID! @primaryKey(sortKeyFields:["content"])
+  content: String!
+  postId: ID @index(name: "byPost", sortKeyFields:["postTitle"]) # customized foreign key for parent primary key
+  postTitle: String # customized foreign key for parent sort key
+}
+
+# CLI.9. Many To Many
+
+#type Post9 @model {
+#    customPostId: ID! @primaryKey(sortKeyFields: ["title"])
+#    title: String!
+#    content: String
+#    tags: [Tag9] @manyToMany(relationName: "PostTags")
+#}
+#type Tag9 @model {
+#    customTagId: ID! @primaryKey(sortKeyFields: ["label"])
+#    label: String!
+#    posts: [Post9] @manyToMany(relationName: "PostTags")
+#}
+
+# CLI.10. Todo
+
+#type Book @model {
+#  isbn: ID! @primaryKey(sortKeyFields: ["title"])
+#  title: String!
+#  description: String
+#}

@@ -2,30 +2,35 @@
 import Amplify
 import Foundation
 
-public struct PostWithCompositeKeyAndIndex: Model {
+public struct ModelCompositeMultiplePk: Model {
   public let id: String
-  public let title: String
-  public var comments: List<CommentWithCompositeKeyAndIndex>?
+  public let location: String
+  public let name: String
+  public var lastName: String?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   
   public init(id: String = UUID().uuidString,
-      title: String,
-      comments: List<CommentWithCompositeKeyAndIndex>? = []) {
+      location: String,
+      name: String,
+      lastName: String? = nil) {
     self.init(id: id,
-      title: title,
-      comments: comments,
+      location: location,
+      name: name,
+      lastName: lastName,
       createdAt: nil,
       updatedAt: nil)
   }
   internal init(id: String = UUID().uuidString,
-      title: String,
-      comments: List<CommentWithCompositeKeyAndIndex>? = [],
+      location: String,
+      name: String,
+      lastName: String? = nil,
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil) {
       self.id = id
-      self.title = title
-      self.comments = comments
+      self.location = location
+      self.name = name
+      self.lastName = lastName
       self.createdAt = createdAt
       self.updatedAt = updatedAt
   }

@@ -2,25 +2,25 @@
 import Amplify
 import Foundation
 
-public struct ModelCompositeIntPk: Model {
-  public let id: String
-  public let serial: Int
+public struct Team2: Model {
+  public let teamId: String
+  public let name: String
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   
-  public init(id: String = UUID().uuidString,
-      serial: Int) {
-    self.init(id: id,
-      serial: serial,
+  public init(teamId: String,
+      name: String) {
+    self.init(teamId: teamId,
+      name: name,
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
-      serial: Int,
+  internal init(teamId: String,
+      name: String,
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil) {
-      self.id = id
-      self.serial = serial
+      self.teamId = teamId
+      self.name = name
       self.createdAt = createdAt
       self.updatedAt = updatedAt
   }

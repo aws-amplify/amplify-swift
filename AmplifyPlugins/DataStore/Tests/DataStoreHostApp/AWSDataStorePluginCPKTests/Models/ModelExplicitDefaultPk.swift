@@ -1,10 +1,3 @@
-//
-// Copyright Amazon.com Inc. or its affiliates.
-// All Rights Reserved.
-//
-// SPDX-License-Identifier: Apache-2.0
-//
-
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -14,7 +7,7 @@ public struct ModelExplicitDefaultPk: Model {
   public var name: String?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
-
+  
   public init(id: String = UUID().uuidString,
       name: String? = nil) {
     self.init(id: id,
