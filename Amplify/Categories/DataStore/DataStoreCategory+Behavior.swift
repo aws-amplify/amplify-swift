@@ -13,8 +13,8 @@ extension DataStoreCategory: DataStoreBaseBehavior {
     }
 
     public func save<M: Model>(_ model: M,
-                               where condition: QueryPredicate? = nil) async -> DataStoreResult<M> {
-        await plugin.save(model, where: condition)
+                               where condition: QueryPredicate? = nil) async throws -> M {
+        try await plugin.save(model, where: condition)
     }
     
     public func query<M: Model>(_ modelType: M.Type,
@@ -24,8 +24,8 @@ extension DataStoreCategory: DataStoreBaseBehavior {
     }
 
     public func query<M: Model>(_ modelType: M.Type,
-                                byId id: String) async -> DataStoreResult<M?> {
-        await plugin.query(modelType, byId: id)
+                                byId id: String) async throws -> M? {
+        try await plugin.query(modelType, byId: id)
     }
     
     public func query<M: Model>(_ modelType: M.Type,
@@ -36,9 +36,9 @@ extension DataStoreCategory: DataStoreBaseBehavior {
     }
     
     public func query<M: Model>(_ modelType: M.Type,
-                                byIdentifier id: String)
-        async -> DataStoreResult<M?> where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default {
-            await plugin.query(modelType, byIdentifier: id)
+                                byIdentifier id: String) async throws -> M?
+        where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default {
+            try await plugin.query(modelType, byIdentifier: id)
     }
 
     public func query<M: Model>(_ modelType: M.Type,
@@ -49,8 +49,8 @@ extension DataStoreCategory: DataStoreBaseBehavior {
     
     public func query<M: Model>(_ modelType: M.Type,
                                 byIdentifier identifier: ModelIdentifier<M, M.IdentifierFormat>)
-        async -> DataStoreResult<M?> where M: ModelIdentifiable {
-            await plugin.query(modelType, byIdentifier: identifier)
+        async throws -> M? where M: ModelIdentifiable {
+            try await plugin.query(modelType, byIdentifier: identifier)
     }
 
     public func query<M: Model>(_ modelType: M.Type,
@@ -64,8 +64,8 @@ extension DataStoreCategory: DataStoreBaseBehavior {
     public func query<M: Model>(_ modelType: M.Type,
                                 where predicate: QueryPredicate? = nil,
                                 sort sortInput: QuerySortInput? = nil,
-                                paginate paginationInput: QueryPaginationInput? = nil) async -> DataStoreResult<[M]> {
-        await plugin.query(modelType, where: predicate, sort: sortInput, paginate: paginationInput)
+                                paginate paginationInput: QueryPaginationInput? = nil) async throws -> [M] {
+        try await plugin.query(modelType, where: predicate, sort: sortInput, paginate: paginationInput)
     }
 
     public func delete<M: Model>(_ model: M,
@@ -75,10 +75,9 @@ extension DataStoreCategory: DataStoreBaseBehavior {
     }
     
     public func delete<M: Model>(_ model: M,
-                                 where predicate: QueryPredicate? = nil) async -> DataStoreResult<Void> {
-        await plugin.delete(model, where: predicate)
+                                 where predicate: QueryPredicate? = nil) async throws {
+        try await plugin.delete(model, where: predicate)
     }
-
 
     public func delete<M: Model>(_ modelType: M.Type,
                                  withId id: String,
@@ -89,10 +88,9 @@ extension DataStoreCategory: DataStoreBaseBehavior {
     
     public func delete<M: Model>(_ modelType: M.Type,
                                  withId id: String,
-                                 where predicate: QueryPredicate? = nil) async -> DataStoreResult<Void> {
-        await plugin.delete(modelType, withId: id, where: predicate)
+                                 where predicate: QueryPredicate? = nil) async throws {
+        try await plugin.delete(modelType, withId: id, where: predicate)
     }
-
 
     public func delete<M: Model>(_ modelType: M.Type,
                                  withIdentifier id: String,
@@ -105,9 +103,9 @@ extension DataStoreCategory: DataStoreBaseBehavior {
     
     public func delete<M: Model>(_ modelType: M.Type,
                                  withIdentifier id: String,
-                                 where predicate: QueryPredicate? = nil)
-        async -> DataStoreResult<Void> where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default {
-            await plugin.delete(modelType, withIdentifier: id, where: predicate)
+                                 where predicate: QueryPredicate? = nil) async throws
+        where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default {
+            try await plugin.delete(modelType, withIdentifier: id, where: predicate)
     }
 
     public func delete<M: Model>(_ modelType: M.Type,
@@ -119,9 +117,8 @@ extension DataStoreCategory: DataStoreBaseBehavior {
     
     public func delete<M: Model>(_ modelType: M.Type,
                                  withIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
-                                 where predicate: QueryPredicate? = nil)
-        async -> DataStoreResult<Void> where M: ModelIdentifiable {
-            await plugin.delete(modelType, withIdentifier: id, where: predicate)
+                                 where predicate: QueryPredicate? = nil) async throws where M: ModelIdentifiable {
+        try await plugin.delete(modelType, withIdentifier: id, where: predicate)
     }
 
     public func delete<M: Model>(_ modelType: M.Type,
@@ -131,32 +128,31 @@ extension DataStoreCategory: DataStoreBaseBehavior {
     }
     
     public func delete<M: Model>(_ modelType: M.Type,
-                                 where predicate: QueryPredicate) async -> DataStoreResult<Void> {
-        await plugin.delete(modelType, where: predicate)
+                                 where predicate: QueryPredicate) async throws {
+        try await plugin.delete(modelType, where: predicate)
     }
-
 
     public func start(completion: @escaping DataStoreCallback<Void>) {
         plugin.start(completion: completion)
     }
     
-    public func start() async -> DataStoreResult<Void> {
-        await plugin.start()
+    public func start() async throws {
+        try await plugin.start()
     }
 
     public func stop(completion: @escaping DataStoreCallback<Void>) {
         plugin.stop(completion: completion)
     }
     
-    public func stop() async -> DataStoreResult<Void> {
-        await plugin.stop()
+    public func stop() async throws {
+        try await plugin.stop()
     }
 
     public func clear(completion: @escaping DataStoreCallback<Void>) {
         plugin.clear(completion: completion)
     }
     
-    public func clear() async -> DataStoreResult<Void> {
-        await plugin.clear()
+    public func clear() async throws {
+        try await plugin.clear()
     }
 }

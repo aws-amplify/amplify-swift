@@ -16,29 +16,29 @@ public protocol DataStoreBaseBehavior {
                         where condition: QueryPredicate?,
                         completion: @escaping DataStoreCallback<M>)
     func save<M: Model>(_ model: M,
-                        where condition: QueryPredicate?) async -> DataStoreResult<M>
+                        where condition: QueryPredicate?) async throws -> M
 
-    @available(*, deprecated, message: "Use query(:byIdentifier:completion)")
+    @available(*, deprecated, renamed: "query(byIdentifier:completion:)")
     func query<M: Model>(_ modelType: M.Type,
                          byId id: String,
                          completion: DataStoreCallback<M?>)
-    @available(*, deprecated, message: "Use query(:byIdentifier)")
+    @available(*, deprecated, renamed: "query(byIdentifier:)")
     func query<M: Model>(_ modelType: M.Type,
-                         byId id: String) async -> DataStoreResult<M?>
+                         byId id: String) async throws -> M?
 
     func query<M: Model>(_ modelType: M.Type,
                          byIdentifier id: String,
                          completion: DataStoreCallback<M?>) where M: ModelIdentifiable,
                                                                   M.IdentifierFormat == ModelIdentifierFormat.Default
     func query<M: Model>(_ modelType: M.Type,
-                         byIdentifier id: String) async -> DataStoreResult<M?>
+                         byIdentifier id: String) async throws -> M?
         where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default
 
     func query<M: Model>(_ modelType: M.Type,
                          byIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
                          completion: DataStoreCallback<M?>) where M: ModelIdentifiable
     func query<M: Model>(_ modelType: M.Type,
-                         byIdentifier id: ModelIdentifier<M, M.IdentifierFormat>) async -> DataStoreResult<M?>
+                         byIdentifier id: ModelIdentifier<M, M.IdentifierFormat>) async throws -> M?
         where M: ModelIdentifiable
 
     func query<M: Model>(_ modelType: M.Type,
@@ -49,23 +49,23 @@ public protocol DataStoreBaseBehavior {
     func query<M: Model>(_ modelType: M.Type,
                          where predicate: QueryPredicate?,
                          sort sortInput: QuerySortInput?,
-                         paginate paginationInput: QueryPaginationInput?) async -> DataStoreResult<[M]>
+                         paginate paginationInput: QueryPaginationInput?) async throws -> [M]
 
     func delete<M: Model>(_ model: M,
                           where predicate: QueryPredicate?,
                           completion: @escaping DataStoreCallback<Void>)
     func delete<M: Model>(_ model: M,
-                          where predicate: QueryPredicate?) async -> DataStoreResult<Void>
+                          where predicate: QueryPredicate?) async throws
 
-    @available(*, deprecated, message: "Use delete(:withIdentifier:where:completion)")
+    @available(*, deprecated, renamed: "delete(withIdentifier:where:completion:)")
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: String,
                           where predicate: QueryPredicate?,
                           completion: @escaping DataStoreCallback<Void>)
-    @available(*, deprecated, message: "Use delete(:withIdentifier:where)")
+    @available(*, deprecated, renamed: "delete(withIdentifier:where:)")
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: String,
-                          where predicate: QueryPredicate?) async -> DataStoreResult<Void>
+                          where predicate: QueryPredicate?) async throws
 
     func delete<M: Model>(_ modelType: M.Type,
                           withIdentifier id: String,
@@ -74,8 +74,8 @@ public protocol DataStoreBaseBehavior {
                                                                                M.IdentifierFormat == ModelIdentifierFormat.Default
     func delete<M: Model>(_ modelType: M.Type,
                           withIdentifier id: String,
-                          where predicate: QueryPredicate?) async -> DataStoreResult<Void> where M: ModelIdentifiable,
-                                                                                                 M.IdentifierFormat == ModelIdentifierFormat.Default
+                          where predicate: QueryPredicate?) async throws where M: ModelIdentifiable,
+                                                                               M.IdentifierFormat == ModelIdentifierFormat.Default
 
     func delete<M: Model>(_ modelType: M.Type,
                           withIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
@@ -83,13 +83,13 @@ public protocol DataStoreBaseBehavior {
                           completion: @escaping DataStoreCallback<Void>) where M: ModelIdentifiable
     func delete<M: Model>(_ modelType: M.Type,
                           withIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
-                          where predicate: QueryPredicate?) async -> DataStoreResult<Void> where M: ModelIdentifiable
+                          where predicate: QueryPredicate?) async throws where M: ModelIdentifiable
 
     func delete<M: Model>(_ modelType: M.Type,
                            where predicate: QueryPredicate,
                            completion: @escaping DataStoreCallback<Void>)
     func delete<M: Model>(_ modelType: M.Type,
-                           where predicate: QueryPredicate) async -> DataStoreResult<Void>
+                           where predicate: QueryPredicate) async throws
 
     /**
      Synchronization starts automatically whenever you run any DataStore operation (query(), save(), delete())
@@ -98,7 +98,7 @@ public protocol DataStoreBaseBehavior {
      - parameter completion: callback to be invoked on success or failure
      */
     func start(completion: @escaping DataStoreCallback<Void>)
-    func start() async -> DataStoreResult<Void>
+    func start() async throws
 
     /**
      To stop the DataStore sync process, you can use DataStore.stop(). This ensures the real time subscription
@@ -109,7 +109,7 @@ public protocol DataStoreBaseBehavior {
      - parameter completion: callback to be invoked on success or failure
      */
     func stop(completion: @escaping DataStoreCallback<Void>)
-    func stop() async -> DataStoreResult<Void>
+    func stop() async throws
 
     /**
      To clear local data from DataStore, use the clear method.
@@ -117,7 +117,7 @@ public protocol DataStoreBaseBehavior {
      - parameter completion: callback to be invoked on success or failure
      */
     func clear(completion: @escaping DataStoreCallback<Void>)
-    func clear() async -> DataStoreResult<Void>
+    func clear() async throws
 }
 
 public protocol DataStoreSubscribeBehavior {

@@ -38,9 +38,9 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     }
     
     func save<M: Model>(_ model: M,
-                        where condition: QueryPredicate? = nil) async -> DataStoreResult<M> {
+                        where condition: QueryPredicate? = nil) async throws -> M {
         notify("save")
-        return .success(model)
+        return model
     }
 
     func query<M: Model>(_ modelType: M.Type,
@@ -56,9 +56,9 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     }
     
     func query<M: Model>(_ modelType: M.Type,
-                         byId id: String) async -> DataStoreResult<M?> {
+                         byId id: String) async throws -> M? {
         notify("queryById")
-        return .success(nil)
+        return nil
     }
 
     func query<M: Model>(_ modelType: M.Type,
@@ -75,10 +75,10 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     }
     
     func query<M: Model>(_ modelType: M.Type,
-                         byIdentifier id: String) async -> DataStoreResult<M?> where M: ModelIdentifiable,
+                         byIdentifier id: String) async throws -> M? where M: ModelIdentifiable,
         M.IdentifierFormat == ModelIdentifierFormat.Default {
             notify("queryByIdentifier")
-            return .success(nil)
+            return nil
     }
 
     func query<M: Model>(_ modelType: M.Type,
@@ -101,9 +101,9 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     func query<M: Model>(_ modelType: M.Type,
                          where predicate: QueryPredicate?,
                          sort sortInput: QuerySortInput?,
-                         paginate paginationInput: QueryPaginationInput?) async -> DataStoreResult<[M]> {
+                         paginate paginationInput: QueryPaginationInput?) async throws -> [M] {
         notify("queryByPredicate")
-        return .success([])
+        return []
     }
 
     func query<M>(_ modelType: M.Type,
@@ -119,10 +119,10 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     }
     
     func query<M>(_ modelType: M.Type,
-                  byIdentifier id: ModelIdentifier<M, M.IdentifierFormat>) async -> DataStoreResult<M?>
+                  byIdentifier id: ModelIdentifier<M, M.IdentifierFormat>) async throws -> M?
         where M: Model, M: ModelIdentifiable {
             notify("queryWithIdentifier")
-            return .success(nil)
+            return nil
     }
 
     func delete<M: Model>(_ modelType: M.Type,
@@ -140,9 +140,8 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     
     func delete<M: Model>(_ modelType: M.Type,
                           withId id: String,
-                          where predicate: QueryPredicate? = nil) async -> DataStoreResult<Void> {
+                          where predicate: QueryPredicate? = nil) async throws {
         notify("deleteById")
-        return .success(())
     }
 
     func delete<M: Model>(_ modelType: M.Type,
@@ -161,10 +160,9 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
     func delete<M: Model>(_ modelType: M.Type,
                           withIdentifier id: String,
-                          where predicate: QueryPredicate? = nil) async -> DataStoreResult<Void>
+                          where predicate: QueryPredicate? = nil) async throws
         where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default {
             notify("deleteByIdentifier")
-            return .success(())
     }
     
     func delete<M>(_ modelType: M.Type,
@@ -182,10 +180,8 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
 
     func delete<M>(_ modelType: M.Type,
                    withIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
-                   where predicate: QueryPredicate?) async -> DataStoreResult<Void>
-        where M: Model, M: ModelIdentifiable {
-            notify("deleteByIdentifier")
-            return .success(())
+                   where predicate: QueryPredicate?) async throws where M: Model, M: ModelIdentifiable {
+        notify("deleteByIdentifier")
     }
     
     func delete<M: Model>(_ modelType: M.Type,
@@ -201,9 +197,8 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     }
     
     func delete<M: Model>(_ modelType: M.Type,
-                           where predicate: QueryPredicate) async -> DataStoreResult<Void> {
+                           where predicate: QueryPredicate) async throws {
         notify("deleteModelTypeByPredicate")
-        return .success(())
     }
 
     func delete<M: Model>(_ model: M,
@@ -220,9 +215,8 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     }
     
     func delete<M: Model>(_ model: M,
-                          where predicate: QueryPredicate? = nil) async -> DataStoreResult<Void> {
+                          where predicate: QueryPredicate? = nil) async throws {
         notify("deleteByPredicate")
-        return .success(())
     }
 
     func clear(completion: @escaping DataStoreCallback<Void>) {
@@ -235,9 +229,8 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         }
     }
     
-    func clear() async -> DataStoreResult<Void> {
+    func clear() async throws {
         notify("clear")
-        return .success(())
     }
 
     func start(completion: @escaping DataStoreCallback<Void>) {
@@ -250,9 +243,8 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         }
     }
     
-    func start() async -> DataStoreResult<Void> {
+    func start() async throws {
         notify("start")
-        return .success(())
     }
 
     func stop(completion: @escaping DataStoreCallback<Void>) {
@@ -265,9 +257,8 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         }
     }
 
-    func stop() async -> DataStoreResult<Void> {
+    func stop() async throws {
         notify("stop")
-        return .success(())
     }
     
     func publisher<M: Model>(for modelType: M.Type)
