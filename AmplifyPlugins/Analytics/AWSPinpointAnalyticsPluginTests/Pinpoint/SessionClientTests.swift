@@ -156,8 +156,8 @@ class SessionClientTests: XCTestCase {
     func testStartPinpointSession_shouldRecordStartEvent() async {
         await resetCounters()
 
-        client.startPinpointSession()
         await analyticsClient.setRecordExpectation(expectation(description: "Start event for new session"))
+        client.startPinpointSession()
         await waitForExpectations(timeout: 1)
         let updateEndpointProfileCount = await endpointClient.updateEndpointProfileCount
         XCTAssertEqual(updateEndpointProfileCount, 1)
@@ -176,10 +176,9 @@ class SessionClientTests: XCTestCase {
         storeSession()
         createNewSessionClient()
         await resetCounters()
-
-        client.startPinpointSession()
         await analyticsClient.setRecordExpectation(expectation(description: "Stop event for current session and Start event for a new one"),
                                                    count: 2)
+        client.startPinpointSession()
         await waitForExpectations(timeout: 1)
         let createCount = await analyticsClient.createEventCount
         XCTAssertEqual(createCount, 2)
@@ -191,6 +190,7 @@ class SessionClientTests: XCTestCase {
         XCTAssertEqual(events.last?.eventType, SessionClient.Constants.Events.start)
     }
 
+#if !os(macOS)
     func testApplicationMovedToBackground_notStale_shouldSaveSession_andRecordPauseEvent() async {
         client.startPinpointSession()
         await analyticsClient.setRecordExpectation(expectation(description: "Start event for new session"))
@@ -312,7 +312,7 @@ class SessionClientTests: XCTestCase {
         XCTAssertEqual(events.first?.eventType, SessionClient.Constants.Events.stop)
         XCTAssertEqual(events.last?.eventType, SessionClient.Constants.Events.start)
     }
-
+#endif
     func testApplicationTerminated_shouldRecordStopEvent() async {
         client.startPinpointSession()
         await analyticsClient.setRecordExpectation(expectation(description: "Start event for new session"))

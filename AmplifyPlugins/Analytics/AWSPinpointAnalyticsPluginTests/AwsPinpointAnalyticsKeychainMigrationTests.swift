@@ -16,7 +16,7 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
     private let archiver = AmplifyArchiver()
     private let userDefaults = UserDefaults.standard
     private let pinpointClient = MockPinpointClient()
-    private let device = MockDevice()
+    private let endpointInformation = MockEndpointInformation()
     private let currentApplicationId = "applicationId"
     private let currentEndpointId = "endpointId"
 
@@ -48,7 +48,7 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
                                                              isOptOut: false),
                                         pinpointClient: pinpointClient,
                                         archiver: archiver,
-                                        currentDevice: device,
+                                        endpointInformation: endpointInformation,
                                         userDefaults: userDefaults,
                                         keychain: keychain)
         
@@ -72,7 +72,7 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
                                                              isOptOut: false),
                                         pinpointClient: pinpointClient,
                                         archiver: archiver,
-                                        currentDevice: device,
+                                        endpointInformation: endpointInformation,
                                         userDefaults: userDefaults,
                                         keychain: keychain)
         
@@ -95,7 +95,7 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
                                                              isOptOut: false),
                                         pinpointClient: pinpointClient,
                                         archiver: archiver,
-                                        currentDevice: device,
+                                        endpointInformation: endpointInformation,
                                         userDefaults: userDefaults,
                                         keychain: keychain)
         
@@ -118,7 +118,7 @@ class AWSPinpointAnalyticsKeyValueStoreTests: XCTestCase {
                                                              isOptOut: false),
                                         pinpointClient: pinpointClient,
                                         archiver: archiver,
-                                        currentDevice: device,
+                                        endpointInformation: endpointInformation,
                                         userDefaults: userDefaults,
                                         keychain: keychain)
         

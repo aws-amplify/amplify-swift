@@ -14,7 +14,7 @@ class EndpointClientTests: XCTestCase {
     private var archiver: MockArchiver!
     private var userDefaults: MockUserDefaults!
     private var pinpointClient: MockPinpointClient!
-    private var device: MockDevice!
+    private var endpointInformation: MockEndpointInformation!
     private var currentApplicationId = "applicationId"
     private var currentEndpointId = "endpointId"
     private var keychain: MockKeychainStore!
@@ -22,7 +22,7 @@ class EndpointClientTests: XCTestCase {
         archiver = MockArchiver()
         userDefaults = MockUserDefaults()
         pinpointClient = MockPinpointClient()
-        device = MockDevice()
+        endpointInformation = MockEndpointInformation()
         keychain = MockKeychainStore()
         endpointClient = EndpointClient(configuration: .init(appId: currentApplicationId,
                                                              uniqueDeviceId: currentEndpointId,
@@ -30,7 +30,7 @@ class EndpointClientTests: XCTestCase {
                                                              isOptOut: false),
                                         pinpointClient: pinpointClient,
                                         archiver: archiver,
-                                        currentDevice: device,
+                                        endpointInformation: endpointInformation,
                                         userDefaults: userDefaults,
                                         keychain: keychain)
     }
@@ -39,7 +39,7 @@ class EndpointClientTests: XCTestCase {
         archiver = nil
         userDefaults = nil
         pinpointClient = nil
-        device = nil
+        endpointInformation = nil
         endpointClient = nil
         keychain = nil
     }
@@ -77,10 +77,10 @@ class EndpointClientTests: XCTestCase {
         XCTAssertEqual(endpointProfile.deviceToken, newToken?.asHexString())
         XCTAssertNotEqual(endpointProfile.effectiveDate, oldEffectiveDate)
         XCTAssertNotEqual(endpointProfile.demographic, oldDemographic)
-        XCTAssertEqual(endpointProfile.demographic.appVersion, device.appVersion)
+        XCTAssertEqual(endpointProfile.demographic.appVersion, endpointInformation.appVersion)
         XCTAssertEqual(endpointProfile.demographic.make, "apple")
-        XCTAssertEqual(endpointProfile.demographic.platform, device.platform.name)
-        XCTAssertEqual(endpointProfile.demographic.platformVersion, device.platform.version)
+        XCTAssertEqual(endpointProfile.demographic.platform, endpointInformation.platform.name)
+        XCTAssertEqual(endpointProfile.demographic.platformVersion, endpointInformation.platform.version)
     }
 
     func testCurrentEndpointProfile_withInvalidStoredProfile_shouldRemoveStored_andReturnNew() async {
@@ -112,10 +112,10 @@ class EndpointClientTests: XCTestCase {
         XCTAssertEqual(endpointProfile.deviceToken, newToken?.asHexString())
         XCTAssertNotEqual(endpointProfile.effectiveDate, oldEffectiveDate)
         XCTAssertNotEqual(endpointProfile.demographic, oldDemographic)
-        XCTAssertEqual(endpointProfile.demographic.appVersion, device.appVersion)
+        XCTAssertEqual(endpointProfile.demographic.appVersion, endpointInformation.appVersion)
         XCTAssertEqual(endpointProfile.demographic.make, "apple")
-        XCTAssertEqual(endpointProfile.demographic.platform, device.platform.name)
-        XCTAssertEqual(endpointProfile.demographic.platformVersion, device.platform.version)
+        XCTAssertEqual(endpointProfile.demographic.platform, endpointInformation.platform.name)
+        XCTAssertEqual(endpointProfile.demographic.platformVersion, endpointInformation.platform.version)
     }
 
     func testCurrentEndpointProfile_shouldUpdateAttributesAndMetrics() async {
@@ -172,7 +172,7 @@ class EndpointClientTests: XCTestCase {
     func testConvertToPublicEndpoint_shouldReturnPublicEndpoint() async {
         let endpointProfile = await endpointClient.currentEndpointProfile()
         let publicEndpoint = endpointClient.convertToPublicEndpoint(endpointProfile)
-        let mockModel = MockDevice()
+        let mockModel = MockEndpointInformation()
         XCTAssertNotNil(publicEndpoint)
         XCTAssertNil(publicEndpoint.address)
         XCTAssertEqual(publicEndpoint.attributes?.count, 0)
@@ -187,8 +187,8 @@ class EndpointClientTests: XCTestCase {
     }
 }
 
-class MockDevice: Device {
+class MockEndpointInformation: EndpointInformation {
     var model: String = "mockModel"
-    var appVersion: String? = "mockAppVersion"
+    var appVersion: String = "mockAppVersion"
     var platform: Platform = (name: "mockPlatformName", version: "mockPlatformVersion")
 }
