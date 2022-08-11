@@ -44,10 +44,12 @@ extension AuthCategory: AuthCategoryBehavior {
     @discardableResult
     public func signIn(username: String? = nil,
                        password: String? = nil,
+                       migrationEnabled: Bool = false,
                        options: AuthSignInOperation.Request.Options? = nil,
                        listener: AuthSignInOperation.ResultListener?) -> AuthSignInOperation {
         return plugin.signIn(username: username,
                              password: password,
+                             migrationEnabled:migrationEnabled,
                              options: options,
                              listener: listener)
     }

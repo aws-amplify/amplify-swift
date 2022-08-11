@@ -30,5 +30,7 @@ public enum AuthFlowType {
 
     case custom
 
+    case userPassword
+
     case unknown
 }

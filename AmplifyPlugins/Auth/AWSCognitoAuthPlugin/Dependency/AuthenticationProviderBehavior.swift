@@ -20,6 +20,7 @@ protocol AuthenticationProviderBehavior {
                           completionHandler: @escaping (Result<AuthCodeDeliveryDetails, AuthError>) -> Void)
 
     func signIn(request: AuthSignInRequest,
+                migrationEnabled: Bool,
                 completionHandler: @escaping (Result<AuthSignInResult, AuthError>) -> Void)
 
     func signInWithWebUI(request: AuthWebUISignInRequest,

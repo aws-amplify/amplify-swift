@@ -35,6 +35,7 @@ protocol AWSMobileClientBehavior {
 
     func signIn(username: String,
                 password: String,
+                migrationEnabled:Bool,
                 validationData: [String: String]?,
                 clientMetaData: [String: String],
                 completionHandler: @escaping ((SignInResult?, Error?) -> Void))

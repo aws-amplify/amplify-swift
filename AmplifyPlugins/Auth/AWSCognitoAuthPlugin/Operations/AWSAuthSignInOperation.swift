@@ -16,14 +16,17 @@ public class AWSAuthSignInOperation: AmplifyOperation<
 
     let authenticationProvider: AuthenticationProviderBehavior
     let configuration: JSONValue
-
+    let migrationEnabled: Bool
+    
     init(_ request: AuthSignInRequest,
          configuration: JSONValue,
          authenticationProvider: AuthenticationProviderBehavior,
+         migrationEnabled:Bool,
          resultListener: ResultListener?) {
 
         self.authenticationProvider = authenticationProvider
         self.configuration = configuration
+        self.migrationEnabled = migrationEnabled
         super.init(categoryType: .auth,
                    eventName: HubPayload.EventName.Auth.signInAPI,
                    request: request,
@@ -60,7 +63,7 @@ public class AWSAuthSignInOperation: AmplifyOperation<
         let signInrequest = AuthSignInRequest(username: request.username,
                                               password: request.password,
                                               options: .init(pluginOptions: options))
-        authenticationProvider.signIn(request: signInrequest) {[weak self]  result in
+        authenticationProvider.signIn(request: signInrequest, migrationEnabled: migrationEnabled) {[weak self]  result in
             guard let self = self else { return }
 
             defer {
@@ -110,6 +113,7 @@ public class AWSAuthSignInOperation: AmplifyOperation<
         switch authTypeString {
         case "CUSTOM_AUTH": return .custom
         case "USER_SRP_AUTH": return .userSRP
+        case "USER_PASSWORD_AUTH": return .userPassword
         default:
             return nil
         }

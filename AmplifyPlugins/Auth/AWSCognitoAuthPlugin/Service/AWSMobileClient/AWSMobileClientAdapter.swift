@@ -75,11 +75,13 @@ class AWSMobileClientAdapter: AWSMobileClientBehavior {
 
     func signIn(username: String,
                 password: String,
+                migrationEnabled: Bool,
                 validationData: [String: String]? = nil,
                 clientMetaData: [String: String] = [:],
                 completionHandler: @escaping ((SignInResult?, Error?) -> Void)) {
         awsMobileClient.signIn(username: username,
                                password: password,
+                               migrationEnabled: migrationEnabled,
                                validationData: validationData,
                                clientMetaData: clientMetaData,
                                completionHandler: completionHandler)

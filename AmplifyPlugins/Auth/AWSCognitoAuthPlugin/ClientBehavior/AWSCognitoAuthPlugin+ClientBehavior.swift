@@ -52,6 +52,7 @@ extension AWSCognitoAuthPlugin {
 
     public func signIn(username: String?,
                        password: String?,
+                       migrationEnabled: Bool,
                        options: AuthSignInOperation.Request.Options?,
                        listener: AuthSignInOperation.ResultListener?) -> AuthSignInOperation {
         let options = options ?? AuthSignInRequest.Options()
@@ -61,6 +62,7 @@ extension AWSCognitoAuthPlugin {
         let signInOperation = AWSAuthSignInOperation(request,
                                                      configuration: configuration,
                                                      authenticationProvider: authenticationProvider,
+                                                     migrationEnabled: migrationEnabled,
                                                      resultListener: listener)
         queue.addOperation(signInOperation)
         return signInOperation

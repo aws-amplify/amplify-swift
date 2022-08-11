@@ -70,6 +70,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     @discardableResult
     func signIn(username: String?,
                 password: String?,
+                migrationEnabled: Bool,
                 options: AuthSignInOperation.Request.Options?,
                 listener: AuthSignInOperation.ResultListener?) -> AuthSignInOperation
 

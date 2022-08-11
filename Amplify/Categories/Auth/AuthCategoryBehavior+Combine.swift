@@ -77,9 +77,10 @@ public extension AuthCategoryBehavior {
     func signIn(
         username: String? = nil,
         password: String? = nil,
+        migrationEnabled: Bool = false,
         options: AuthSignInOperation.Request.Options? = nil
     ) -> AuthSignInOperation {
-        signIn(username: username, password: password, options: options, listener: nil)
+        signIn(username: username, password: password, migrationEnabled: migrationEnabled, options: options, listener: nil)
     }
 
     /// SignIn using pre configured web UI.

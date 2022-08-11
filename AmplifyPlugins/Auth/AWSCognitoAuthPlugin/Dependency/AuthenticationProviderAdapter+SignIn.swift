@@ -19,6 +19,7 @@ extension AuthenticationProviderAdapter {
     static let cognitoClientKey = "CognitoUserPoolKey"
 
     func signIn(request: AuthSignInRequest,
+                migrationEnabled:Bool,
                 completionHandler: @escaping SigInResultCompletion) {
 
         // AuthSignInRequest.validate method should have already validated the username and the below line
@@ -38,6 +39,7 @@ extension AuthenticationProviderAdapter {
 
         awsMobileClient.signIn(username: username,
                                password: password,
+                               migrationEnabled: migrationEnabled,
                                validationData: nil,
                                clientMetaData: clientMetaData) { [weak self] result, error in
             guard let self = self else { return }
