@@ -23,27 +23,9 @@ class AWSDataStorePrimaryKeyBaseTest: XCTestCase {
     }
 
     override func tearDown() async throws {
-        clearDataStore()
+        try await Amplify.DataStore.clear()
         requests = []
         await Amplify.reset()
-    }
-
-    // MARK: - Test Helpers
-    func makeExpectations() -> TestExpectations {
-        TestExpectations(
-            subscriptionsEstablished: expectation(description: "Subscriptions established"),
-            modelsSynced: expectation(description: "Models synced"),
-
-            query: expectation(description: "Query success"),
-
-            mutationSave: expectation(description: "Mutation save success"),
-            mutationSaveProcessed: expectation(description: "Mutation save processed"),
-
-            mutationDelete: expectation(description: "Mutation delete success"),
-            mutationDeleteProcessed: expectation(description: "Mutation delete processed"),
-
-            ready: expectation(description: "Ready")
-        )
     }
 
     /// Setup DataStore with given models
@@ -75,17 +57,6 @@ class AWSDataStorePrimaryKeyBaseTest: XCTestCase {
             XCTFail("Error during setup: \(error)")
         }
     }
-
-    func clearDataStore() {
-        let semaphore = DispatchSemaphore(value: 0)
-        Amplify.DataStore.clear {
-            if case let .failure(error) = $0 {
-                XCTFail("DataStore clear failed \(error)")
-            }
-            semaphore.signal()
-        }
-        semaphore.wait()
-    }
 }
 
 // MARK: - DataStore behavior assert helpers
@@ -95,20 +66,9 @@ extension AWSDataStorePrimaryKeyBaseTest {
     ///   - modelType: model type
     ///   - expectation: success XCTestExpectation
     ///   - onFailure: on failure callback
-    func assertQuerySuccess<M: Model>(modelType: M.Type,
-                                      _ expectations: TestExpectations,
-                                      onFailure: @escaping (_ error: DataStoreError) -> Void) {
-        Amplify.DataStore.query(modelType).sink {
-            if case let .failure(error) = $0 {
-                onFailure(error)
-            }
-        }
-        receiveValue: { models in
-            XCTAssertNotNil(models)
-            expectations.query.fulfill()
-        }.store(in: &requests)
-        wait(for: [expectations.query],
-             timeout: 60)
+    func assertQuerySuccess<M: Model>(modelType: M.Type) async throws {
+        let models = try await Amplify.DataStore.query(modelType)
+        XCTAssertNotNil(models)
     }
 
     /// Asserts that query with given `Model` succeeds
@@ -117,26 +77,18 @@ extension AWSDataStorePrimaryKeyBaseTest {
     ///   - expectation: success XCTestExpectation
     ///   - onFailure: on failure callback
     func assertModelDeleted<M: Model & ModelIdentifiable>(modelType: M.Type,
-                                                          identifier: ModelIdentifier<M, M.IdentifierFormat>,
-                                                          onFailure: @escaping (_ error: DataStoreError) -> Void) {
-        let expectation = expectation(description: "Model deleted")
-        Amplify.DataStore.query(modelType, byIdentifier: identifier).sink {
-            if case let .failure(error) = $0 {
-                onFailure(error)
-            }
-        }
-        receiveValue: { model in
-            XCTAssertNil(model)
-            expectation.fulfill()
-        }.store(in: &requests)
-        wait(for: [expectation],
-             timeout: 60)
+                                                          identifier: ModelIdentifier<M, M.IdentifierFormat>) async throws {
+        let model = try await Amplify.DataStore.query(modelType, byIdentifier: identifier)
+        XCTAssertNil(model)
     }
 
     /// Asserts that DataStore is in a ready state and subscriptions are established
     /// - Parameter events: DataStore Hub events
-    func assertDataStoreReady(_ expectations: TestExpectations,
-                              expectedModelSynced: Int = 1) {
+    func assertDataStoreReady(expectedModelSynced: Int = 1) async throws {
+        let ready = expectation(description: "Ready")
+        let subscriptionsEstablished = expectation(description: "Subscriptions established")
+        let modelsSynced = expectation(description: "Models synced")
+        
         var modelSyncedCount = 0
         let dataStoreEvents = HubPayload.EventName.DataStore.self
         Amplify
@@ -145,30 +97,26 @@ extension AWSDataStorePrimaryKeyBaseTest {
             .sink { event in
                 // subscription fulfilled
                 if event.eventName == dataStoreEvents.subscriptionsEstablished {
-                    expectations.subscriptionsEstablished.fulfill()
+                    subscriptionsEstablished.fulfill()
                 }
 
                 // modelsSynced fulfilled
                 if event.eventName == dataStoreEvents.modelSynced {
                     modelSyncedCount += 1
                     if modelSyncedCount == expectedModelSynced {
-                        expectations.modelsSynced.fulfill()
+                        modelsSynced.fulfill()
                     }
                 }
 
                 if event.eventName == dataStoreEvents.ready {
-                    expectations.ready.fulfill()
+                    ready.fulfill()
                 }
             }
             .store(in: &requests)
 
-        Amplify.DataStore.start { _ in }
+        try await Amplify.DataStore.start()
 
-        wait(for: [expectations.subscriptionsEstablished,
-                   expectations.modelsSynced,
-                   expectations.ready],
-             timeout: 60)
-
+        await waitForExpectations(timeout: 60)
     }
 
     /// Assert that a save and a delete mutation complete successfully.
@@ -176,9 +124,9 @@ extension AWSDataStorePrimaryKeyBaseTest {
     ///   - model: model instance saved and then deleted
     ///   - expectations: test expectations
     ///   - onFailure: failure callback
-    func assertMutations<M: Model & ModelIdentifiable>(model: M,
-                                                       _ expectations: TestExpectations,
-                                                       onFailure: @escaping (_ error: DataStoreError) -> Void) {
+    func assertMutations<M: Model & ModelIdentifiable>(model: M) async throws {
+        
+        let mutationSaveProcessed = expectation(description: "mutation save processed")
         Amplify
             .Hub
             .publisher(for: .dataStore)
@@ -190,40 +138,36 @@ extension AWSDataStorePrimaryKeyBaseTest {
                 }
 
                 if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                    expectations.mutationSaveProcessed.fulfill()
-                    return
-                }
-
-                if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
-                    expectations.mutationDeleteProcessed.fulfill()
+                    mutationSaveProcessed.fulfill()
                     return
                 }
             }
             .store(in: &requests)
 
-        Amplify.DataStore.save(model).sink {
-            if case let .failure(error) = $0 {
-                onFailure(error)
+        let savedModels = try await Amplify.DataStore.save(model)
+        XCTAssertNotNil(savedModels)
+        await waitForExpectations(timeout: 60)
+        
+        let mutationDeleteProcessed = expectation(description: "mutation delete processed")
+        Amplify
+            .Hub
+            .publisher(for: .dataStore)
+            .filter { $0.eventName == HubPayload.EventName.DataStore.syncReceived }
+            .sink { payload in
+                guard let mutationEvent = payload.data as? MutationEvent,
+                      mutationEvent.modelId == model.identifier else {
+                    return
+                }
+
+                if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
+                    mutationDeleteProcessed.fulfill()
+                    return
+                }
             }
-        }
-        receiveValue: { posts in
-            XCTAssertNotNil(posts)
-            expectations.mutationSave.fulfill()
-        }.store(in: &requests)
-
-        wait(for: [expectations.mutationSave, expectations.mutationSaveProcessed], timeout: 60)
-
-        Amplify.DataStore.delete(model).sink {
-            if case let .failure(error) = $0 {
-                onFailure(error)
-            }
-        }
-        receiveValue: { posts in
-            XCTAssertNotNil(posts)
-            expectations.mutationDelete.fulfill()
-        }.store(in: &requests)
-
-        wait(for: [expectations.mutationDelete, expectations.mutationDeleteProcessed], timeout: 60)
+            .store(in: &requests)
+        
+        try await Amplify.DataStore.delete(model)
+        await waitForExpectations(timeout: 60)
     }
 
     /// Assert that a save and a delete mutation complete successfully.
@@ -233,12 +177,10 @@ extension AWSDataStorePrimaryKeyBaseTest {
     ///   - onFailure: failure callback
     func assertMutationsParentChild<P: Model & ModelIdentifiable,
                                     C: Model & ModelIdentifiable>(parent: P,
-                                                                  child: C,
-                                                                  _ expectations: TestExpectations,
-                                                                  onFailure: @escaping (_ error: DataStoreError) -> Void) {
-        expectations.mutationSave.expectedFulfillmentCount = 2
-        expectations.mutationSaveProcessed.expectedFulfillmentCount = 2
-
+                                                                  child: C) async throws {
+        let mutationSaveProcessed = expectation(description: "mutation saved processed")
+        mutationSaveProcessed.expectedFulfillmentCount = 2
+        
         Amplify
             .Hub
             .publisher(for: .dataStore)
@@ -250,74 +192,40 @@ extension AWSDataStorePrimaryKeyBaseTest {
                 }
 
                 if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                    expectations.mutationSaveProcessed.fulfill()
-                    return
-                }
-
-                if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
-                    expectations.mutationDeleteProcessed.fulfill()
+                    mutationSaveProcessed.fulfill()
                     return
                 }
             }
             .store(in: &requests)
 
         // save parent first
-        Amplify.DataStore.save(parent).sink {
-            if case let .failure(error) = $0 {
-                onFailure(error)
-            }
-        }
-        receiveValue: { posts in
-            XCTAssertNotNil(posts)
-            expectations.mutationSave.fulfill()
-        }.store(in: &requests)
-
+        _ = try await Amplify.DataStore.save(parent)
+        
         // save child
-        Amplify.DataStore.save(child).sink {
-            if case let .failure(error) = $0 {
-                onFailure(error)
+        _ = try await Amplify.DataStore.save(child)
+
+        await waitForExpectations(timeout: 60)
+        
+        let mutationDeleteProcessed = expectation(description: "mutation delete processed")
+        Amplify
+            .Hub
+            .publisher(for: .dataStore)
+            .filter { $0.eventName == HubPayload.EventName.DataStore.syncReceived }
+            .sink { payload in
+                guard let mutationEvent = payload.data as? MutationEvent,
+                      mutationEvent.modelId == parent.identifier || mutationEvent.modelId == child.identifier else {
+                    return
+                }
+
+                if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
+                    mutationDeleteProcessed.fulfill()
+                    return
+                }
             }
-        }
-        receiveValue: { posts in
-            XCTAssertNotNil(posts)
-            expectations.mutationSave.fulfill()
-        }.store(in: &requests)
-
-        wait(for: [expectations.mutationSave, expectations.mutationSaveProcessed], timeout: 60)
-
+            .store(in: &requests)
+        
         // delete parent
-        Amplify.DataStore.delete(parent).sink {
-            if case let .failure(error) = $0 {
-                onFailure(error)
-            }
-        }
-        receiveValue: { posts in
-            XCTAssertNotNil(posts)
-            expectations.mutationDelete.fulfill()
-        }.store(in: &requests)
-
-        wait(for: [expectations.mutationDelete, expectations.mutationDeleteProcessed], timeout: 60)
-    }
-}
-
-// MARK: - Expectations
-extension AWSDataStorePrimaryKeyBaseTest {
-    struct TestExpectations {
-        var subscriptionsEstablished: XCTestExpectation
-        var modelsSynced: XCTestExpectation
-        var query: XCTestExpectation
-        var mutationSave: XCTestExpectation
-        var mutationSaveProcessed: XCTestExpectation
-        var mutationDelete: XCTestExpectation
-        var mutationDeleteProcessed: XCTestExpectation
-        var ready: XCTestExpectation
-        var expectations: [XCTestExpectation] {
-            return [subscriptionsEstablished,
-                    modelsSynced,
-                    query,
-                    mutationSave,
-                    mutationSaveProcessed
-            ]
-        }
+        try await Amplify.DataStore.delete(parent)
+        await waitForExpectations(timeout: 60)
     }
 }
