@@ -18,6 +18,8 @@ import AppKit
 #endif
 
 public struct DeviceInfo {
+    public init() {}
+
     public var name: String {
     #if canImport(WatchKit)
         WKInterfaceDevice.current().name
@@ -46,11 +48,11 @@ public struct DeviceInfo {
     #if canImport(WatchKit)
         WKInterfaceDevice.current().model
     #elseif canImport(UIKit)
-        return UIDevice.current.model
+        UIDevice.current.model
     #elseif canImport(IOKit)
-        return value(forKey: "model") ?? "Mac"
+        value(forKey: "model") ?? "Mac"
     #else
-        return "Mac"
+        "Mac"
     #endif
     }
 
