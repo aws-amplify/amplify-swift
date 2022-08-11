@@ -18,7 +18,7 @@ import AppKit
 #endif
 
 public struct DeviceInfo {
-    var name: String {
+    public var name: String {
     #if canImport(WatchKit)
         WKInterfaceDevice.current().name
     #elseif canImport(UIKit)
@@ -28,11 +28,11 @@ public struct DeviceInfo {
     #endif
     }
 
-    var hostName: String {
+    public var hostName: String {
         ProcessInfo.processInfo.hostName
     }
 
-    var architecture: String {
+    public var architecture: String {
     #if arch(x86_64)
         "x86_64"
     #elseif arch(arm64)
@@ -42,7 +42,7 @@ public struct DeviceInfo {
     #endif
     }
 
-    var model: String {
+    public var model: String {
     #if canImport(WatchKit)
         WKInterfaceDevice.current().model
     #elseif canImport(UIKit)
@@ -54,7 +54,7 @@ public struct DeviceInfo {
     #endif
     }
 
-    var operatingSystem: (name: String, version: String) {
+    public var operatingSystem: (name: String, version: String) {
     #if canImport(WatchKit)
         let device = WKInterfaceDevice.current()
         return (name: device.systemName, version: device.systemVersion)
@@ -67,7 +67,7 @@ public struct DeviceInfo {
     #endif
     }
 
-    var identifierForVendor: UUID? {
+    public var identifierForVendor: UUID? {
     #if canImport(WatchKit)
         WKInterfaceDevice.current().identifierForVendor
     #elseif canImport(UIKit)
@@ -77,7 +77,7 @@ public struct DeviceInfo {
     #endif
     }
 
-    var screenBounds: CGRect {
+    public var screenBounds: CGRect {
     #if canImport(WatchKit)
         .zero
     #elseif canImport(UIKit)
