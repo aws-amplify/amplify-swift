@@ -19,7 +19,7 @@ struct PluginInfoHelper {
             }
         )
 
-        if let apiCategoryPlugin = Amplify.API as? AmplifyAPICategory {
+        if let apiCategoryPlugin = Amplify.API as? APICategory {
             pluginList.append(contentsOf: apiCategoryPlugin.plugins.map {
                     makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
                 }

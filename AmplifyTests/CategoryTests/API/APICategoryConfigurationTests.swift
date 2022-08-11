@@ -266,8 +266,8 @@ class APICategoryConfigurationTests: XCTestCase {
     }
 
     func testIsConfiguredIsFalseBeforeConfig() {
-        guard let category = Amplify.API as? AmplifyAPICategory else {
-            XCTFail("Could not cast Amplify.API as AmplifyAPICategory")
+        guard let category = Amplify.API as? APICategory else {
+            XCTFail("Could not cast Amplify.API as APICategory")
             return
         }
         XCTAssertFalse(category.isConfigured)
@@ -283,8 +283,8 @@ class APICategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(api: categoryConfig)
         try Amplify.configure(amplifyConfig)
 
-        guard let category = Amplify.API as? AmplifyAPICategory else {
-            XCTFail("Could not cast Amplify.API as AmplifyAPICategory")
+        guard let category = Amplify.API as? APICategory else {
+            XCTFail("Could not cast Amplify.API as APICategory")
             return
         }
 
@@ -303,8 +303,8 @@ class APICategoryConfigurationTests: XCTestCase {
 
         await Amplify.reset()
 
-        guard let category = Amplify.API as? AmplifyAPICategory else {
-            XCTFail("Could not cast Amplify.API as AmplifyAPICategory")
+        guard let category = Amplify.API as? APICategory else {
+            XCTFail("Could not cast Amplify.API as APICategory")
             return
         }
 
