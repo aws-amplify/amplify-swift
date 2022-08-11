@@ -72,7 +72,7 @@ class AuthenticationTokenAuthInterceptor: AuthInterceptorAsync {
     }
 
     private func getAuthToken() async -> AmplifyAuthTokenProvider.AuthToken? {
-        try? await authTokenProvider.getUserPoolAccessToken()
+        try? await authTokenProvider.getLatestAuthToken()
     }
 }
 
