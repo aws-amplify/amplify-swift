@@ -1,10 +1,3 @@
-//
-// Copyright Amazon.com Inc. or its affiliates.
-// All Rights Reserved.
-//
-// SPDX-License-Identifier: Apache-2.0
-//
-
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -15,7 +8,7 @@ public struct TagWithCompositeKey: Model {
   public var posts: List<PostTagsWithCompositeKey>?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
-
+  
   public init(id: String = UUID().uuidString,
       name: String,
       posts: List<PostTagsWithCompositeKey>? = []) {

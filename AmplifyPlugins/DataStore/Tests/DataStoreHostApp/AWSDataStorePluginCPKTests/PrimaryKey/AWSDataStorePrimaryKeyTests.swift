@@ -11,137 +11,59 @@ import Amplify
 
 class AWSDataStorePrimaryKeyIntegrationTests: AWSDataStorePrimaryKeyBaseTest {
 
-    func testModelWithImplicitDefaultPrimaryKey() {
+    func testModelWithImplicitDefaultPrimaryKey() async throws {
         setup(withModels: DefaultImplicitPKModels())
-
-        let expectations = makeExpectations()
-
-        assertDataStoreReady(expectations)
-
-        // Query
-        assertQuerySuccess(modelType: ModelImplicitDefaultPk.self,
-                           expectations) { error in
-            XCTFail("Error query \(error)")
-        }
-
+        try await assertDataStoreReady()
+        try await assertQuerySuccess(modelType: ModelImplicitDefaultPk.self)
         let model = ModelImplicitDefaultPk(name: "model-name")
-
-        // Mutations
-        assertMutations(model: model, expectations) { error in
-            XCTFail("Error mutation \(error)")
-        }
+        try await assertMutations(model: model)
     }
 
-    func testModelWithExplicitDefaultPrimaryKey() {
+    func testModelWithExplicitDefaultPrimaryKey() async throws {
         setup(withModels: DefaultExplicitPKModels())
-
-        let expectations = makeExpectations()
-
-        assertDataStoreReady(expectations)
-
-        // Query
-        assertQuerySuccess(modelType: ModelExplicitDefaultPk.self,
-                           expectations) { error in
-            XCTFail("Error query \(error)")
-        }
-
+        try await assertDataStoreReady()
+        try await assertQuerySuccess(modelType: ModelExplicitDefaultPk.self)
         let model = ModelExplicitDefaultPk(name: "model-name")
-
-        // Mutations
-        assertMutations(model: model, expectations) { error in
-            XCTFail("Error mutation \(error)")
-        }
+        try await assertMutations(model: model)
     }
 
-    func testModelWithCustomPrimaryKey() {
+    func testModelWithCustomPrimaryKey() async throws {
         setup(withModels: CustomExplicitPKModels())
-
-        let expectations = makeExpectations()
-
-        assertDataStoreReady(expectations)
-
-        // Query
-        assertQuerySuccess(modelType: ModelExplicitCustomPk.self,
-                           expectations) { error in
-            XCTFail("Error query \(error)")
-        }
-
+        try await assertDataStoreReady()
+        try await assertQuerySuccess(modelType: ModelExplicitCustomPk.self)
         let model = ModelExplicitCustomPk(userId: UUID().uuidString, name: "name")
-
-        // Mutations
-        assertMutations(model: model, expectations) { error in
-            XCTFail("Error mutation \(error)")
-        }
+        try await assertMutations(model: model)
     }
 
-    func testModelWithCompositePrimaryKey() {
+    func testModelWithCompositePrimaryKey() async throws {
         setup(withModels: CompositePKModels())
-
-        let expectations = makeExpectations()
-
-        assertDataStoreReady(expectations)
-
-        // Query
-        assertQuerySuccess(modelType: ModelCompositePk.self,
-                           expectations) { error in
-            XCTFail("Error query \(error)")
-        }
-
+        try await assertDataStoreReady()
+        try await assertQuerySuccess(modelType: ModelCompositePk.self)
         let model = ModelCompositePk(dob: Temporal.DateTime.now(), name: "name")
-
-        // Mutations
-        assertMutations(model: model, expectations) { error in
-            XCTFail("Error mutation \(error)")
-        }
+        try await assertMutations(model: model)
     }
 
-    func testModelWithCompositePrimaryKeyWithIntValue() {
+    func testModelWithCompositePrimaryKeyWithIntValue() async throws {
         setup(withModels: CompositePKModelsWithInt())
-
-        let expectations = makeExpectations()
-
-        assertDataStoreReady(expectations)
-
-        // Query
-        assertQuerySuccess(modelType: ModelCompositeIntPk.self,
-                           expectations) { error in
-            XCTFail("Error query \(error)")
-        }
-
+        try await assertDataStoreReady()
+        try await assertQuerySuccess(modelType: ModelCompositeIntPk.self)
         let model = ModelCompositeIntPk(id: UUID().uuidString, serial: 1)
-
-        // Mutations
-        assertMutations(model: model, expectations) { error in
-            XCTFail("Error mutation \(error)")
-        }
+        try await assertMutations(model: model)
     }
 
-    func testModelWithCompositePrimaryKeyAndAssociations() {
+    func testModelWithCompositePrimaryKeyAndAssociations() async throws {
         setup(withModels: CompositeKeyWithAssociations())
-
-        let expectations = makeExpectations()
-
-        assertDataStoreReady(expectations)
-
-        // Query
-        assertQuerySuccess(modelType: PostWithCompositeKey.self,
-                           expectations) { error in
-            XCTFail("Error query \(error)")
-        }
-
+        try await assertDataStoreReady()
+        try await assertQuerySuccess(modelType: PostWithCompositeKey.self)
         let parent = PostWithCompositeKey(title: "Post22")
         let child = CommentWithCompositeKey(content: "Comment", post: parent)
-
+        
         // Mutations
-        assertMutationsParentChild(parent: parent, child: child, expectations) { error in
-            XCTFail("Error mutation \(error)")
-        }
+        try await assertMutationsParentChild(parent: parent, child: child)
 
         // Child should not exists as we've deleted the parent
-        assertModelDeleted(modelType: CommentWithCompositeKey.self,
-                           identifier: .identifier(id: child.id, content: child.content)) { error in
-            XCTFail("Error deleting child \(error)")
-        }
+        try await assertModelDeleted(modelType: CommentWithCompositeKey.self,
+                                     identifier: .identifier(id: child.id, content: child.content))
     }
 
     /// - Given: a set models with a belongs-to association and composite primary keys
@@ -151,56 +73,22 @@ class AWSDataStorePrimaryKeyIntegrationTests: AWSDataStorePrimaryKeyBaseTest {
     ///     - query the children by the parent identifier
     /// - Then:
     ///     - query returns the saved child model
-    func testModelWithCompositePrimaryKeyAndQueryPredicate() {
+    func testModelWithCompositePrimaryKeyAndQueryPredicate() async throws {
         setup(withModels: CompositeKeyWithAssociations())
 
-        let expectations = makeExpectations()
-
-        // use the same expectation for both post and comments
-        expectations.mutationSave.expectedFulfillmentCount = 2
-        expectations.mutationSaveProcessed.fulfill()
-
-        // we're not testing deletes
-        expectations.mutationDelete.fulfill()
-        expectations.mutationDeleteProcessed.fulfill()
-
-        assertDataStoreReady(expectations)
+        try await assertDataStoreReady()
+        
         let post = PostWithCompositeKey(title: "title")
         let comment = CommentWithCompositeKey(content: "content", post: post)
-
-        Amplify.DataStore.save(post) {
-            if case let .failure(error) = $0 {
-                XCTFail("Failed saving post with error \(error.errorDescription)")
-            }
-            expectations.mutationSave.fulfill()
-        }
-
-        Amplify.DataStore.save(comment) {
-            if case let .failure(error) = $0 {
-                XCTFail("Failed saving post with error \(error.errorDescription)")
-            }
-            expectations.mutationSave.fulfill()
-        }
+        _ = try await Amplify.DataStore.save(post)
+        _ = try await Amplify.DataStore.save(comment)
 
         let predicate = CommentWithCompositeKey.keys.post == post.identifier
-        Amplify.DataStore.query(CommentWithCompositeKey.self, where: predicate) {
-            switch $0 {
-            case .failure(let error):
-                XCTFail("Failed query comments with error \(error.errorDescription)")
-            case .success(let savedComments):
-                XCTAssertNotNil(savedComments)
-                XCTAssertEqual(savedComments.count, 1)
-                XCTAssertEqual(savedComments[0].id, comment.id)
-                XCTAssertEqual(savedComments[0].content, comment.content)
-                expectations.query.fulfill()
-            }
-        }
-
-        wait(for: [expectations.query,
-                   expectations.mutationSave,
-                   expectations.mutationSaveProcessed,
-                   expectations.mutationDelete,
-                   expectations.mutationDeleteProcessed], timeout: 60)
+        let savedComments = try await Amplify.DataStore.query(CommentWithCompositeKey.self, where: predicate)
+        XCTAssertNotNil(savedComments)
+        XCTAssertEqual(savedComments.count, 1)
+        XCTAssertEqual(savedComments[0].id, comment.id)
+        XCTAssertEqual(savedComments[0].content, comment.content)
     }
 }
 

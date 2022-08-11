@@ -15,40 +15,63 @@
 		21182143289BFBC4001B5945 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 21182142289BFBC4001B5945 /* AWSAPIPlugin */; };
 		21182145289BFBC4001B5945 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 21182144289BFBC4001B5945 /* AWSCognitoAuthPlugin */; };
 		21182147289BFBC4001B5945 /* AWSDataStorePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 21182146289BFBC4001B5945 /* AWSDataStorePlugin */; };
-		21977D99289C1634005B49D6 /* CommentWithCompositeKeyAndIndex+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D76289C162E005B49D6 /* CommentWithCompositeKeyAndIndex+Schema.swift */; };
-		21977D9A289C1634005B49D6 /* PostWithCompositeKeyUnidirectional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D77289C162E005B49D6 /* PostWithCompositeKeyUnidirectional.swift */; };
-		21977D9B289C1634005B49D6 /* TagWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D78289C162E005B49D6 /* TagWithCompositeKey+Schema.swift */; };
-		21977D9C289C1634005B49D6 /* ModelCompositePkBelongsTo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D79289C162E005B49D6 /* ModelCompositePkBelongsTo.swift */; };
-		21977D9D289C1634005B49D6 /* ModelCustomPKDefined.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D7A289C162E005B49D6 /* ModelCustomPKDefined.swift */; };
-		21977D9E289C1634005B49D6 /* ModelExplicitCustomPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D7B289C162F005B49D6 /* ModelExplicitCustomPk+Schema.swift */; };
-		21977D9F289C1634005B49D6 /* ModelExplicitDefaultPk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D7C289C162F005B49D6 /* ModelExplicitDefaultPk.swift */; };
-		21977DA0289C1634005B49D6 /* CommentWithCompositeKeyAndIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D7D289C1632005B49D6 /* CommentWithCompositeKeyAndIndex.swift */; };
-		21977DA1289C1634005B49D6 /* PostWithCompositeKeyAndIndex+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D7E289C1632005B49D6 /* PostWithCompositeKeyAndIndex+Schema.swift */; };
-		21977DA2289C1634005B49D6 /* PostWithCompositeKeyAndIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D7F289C1632005B49D6 /* PostWithCompositeKeyAndIndex.swift */; };
-		21977DA3289C1634005B49D6 /* PostWithCompositeKeyUnidirectional+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D80289C1633005B49D6 /* PostWithCompositeKeyUnidirectional+Schema.swift */; };
-		21977DA4289C1634005B49D6 /* ModelCompositeIntPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D81289C1633005B49D6 /* ModelCompositeIntPk+Schema.swift */; };
-		21977DA5289C1634005B49D6 /* PostTagsWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D82289C1633005B49D6 /* PostTagsWithCompositeKey+Schema.swift */; };
-		21977DA6289C1634005B49D6 /* ModelCompositePk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D83289C1633005B49D6 /* ModelCompositePk.swift */; };
-		21977DA8289C1634005B49D6 /* ModelExplicitDefaultPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D85289C1633005B49D6 /* ModelExplicitDefaultPk+Schema.swift */; };
-		21977DA9289C1634005B49D6 /* PostWithTagsCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D86289C1633005B49D6 /* PostWithTagsCompositeKey+Schema.swift */; };
-		21977DAA289C1634005B49D6 /* CommentWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D87289C1633005B49D6 /* CommentWithCompositeKey+Schema.swift */; };
-		21977DAB289C1634005B49D6 /* ModelImplicitDefaultPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D88289C1633005B49D6 /* ModelImplicitDefaultPk+Schema.swift */; };
-		21977DAC289C1634005B49D6 /* ModelImplicitDefaultPk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D89289C1633005B49D6 /* ModelImplicitDefaultPk.swift */; };
-		21977DAD289C1634005B49D6 /* ModelCompositePkWithAssociation+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D8A289C1633005B49D6 /* ModelCompositePkWithAssociation+Schema.swift */; };
-		21977DAE289C1634005B49D6 /* PostWithTagsCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D8B289C1633005B49D6 /* PostWithTagsCompositeKey.swift */; };
-		21977DAF289C1634005B49D6 /* ModelCompositePkBelongsTo+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D8C289C1633005B49D6 /* ModelCompositePkBelongsTo+Schema.swift */; };
-		21977DB0289C1634005B49D6 /* CommentWithCompositeKeyUnidirectional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D8D289C1633005B49D6 /* CommentWithCompositeKeyUnidirectional.swift */; };
-		21977DB1289C1634005B49D6 /* ModelCompositeIntPk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D8E289C1633005B49D6 /* ModelCompositeIntPk.swift */; };
-		21977DB2289C1634005B49D6 /* PostWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D8F289C1633005B49D6 /* PostWithCompositeKey.swift */; };
-		21977DB3289C1634005B49D6 /* ModelExplicitCustomPk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D90289C1633005B49D6 /* ModelExplicitCustomPk.swift */; };
-		21977DB4289C1634005B49D6 /* ModelCompositePkWithAssociation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D91289C1633005B49D6 /* ModelCompositePkWithAssociation.swift */; };
-		21977DB5289C1634005B49D6 /* CommentWithCompositeKeyUnidirectional+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D92289C1633005B49D6 /* CommentWithCompositeKeyUnidirectional+Schema.swift */; };
-		21977DB6289C1634005B49D6 /* ModelCompositePk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D93289C1633005B49D6 /* ModelCompositePk+Schema.swift */; };
-		21977DB7289C1634005B49D6 /* PostTagsWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D94289C1633005B49D6 /* PostTagsWithCompositeKey.swift */; };
-		21977DB8289C1634005B49D6 /* PostWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D95289C1633005B49D6 /* PostWithCompositeKey+Schema.swift */; };
-		21977DB9289C1634005B49D6 /* ModelCustomPkDefined+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D96289C1634005B49D6 /* ModelCustomPkDefined+Schema.swift */; };
-		21977DBA289C1634005B49D6 /* CommentWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D97289C1634005B49D6 /* CommentWithCompositeKey.swift */; };
-		21977DBB289C1634005B49D6 /* TagWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977D98289C1634005B49D6 /* TagWithCompositeKey.swift */; };
+		213DBB9C28A5743600B30280 /* ModelImplicitDefaultPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB6228A5743200B30280 /* ModelImplicitDefaultPk+Schema.swift */; };
+		213DBB9D28A5743600B30280 /* ModelImplicitDefaultPk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB6328A5743200B30280 /* ModelImplicitDefaultPk.swift */; };
+		213DBB9E28A5743600B30280 /* ModelExplicitDefaultPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB6428A5743200B30280 /* ModelExplicitDefaultPk+Schema.swift */; };
+		213DBB9F28A5743600B30280 /* CommentWithCompositeKeyAndIndex+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB6528A5743200B30280 /* CommentWithCompositeKeyAndIndex+Schema.swift */; };
+		213DBBA028A5743600B30280 /* PostWithCompositeKeyAndIndex+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB6628A5743300B30280 /* PostWithCompositeKeyAndIndex+Schema.swift */; };
+		213DBBA128A5743600B30280 /* Project2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB6728A5743300B30280 /* Project2+Schema.swift */; };
+		213DBBA228A5743600B30280 /* Post4+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB6828A5743300B30280 /* Post4+Schema.swift */; };
+		213DBBA328A5743600B30280 /* PostWithCompositeKeyUnidirectional+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB6928A5743300B30280 /* PostWithCompositeKeyUnidirectional+Schema.swift */; };
+		213DBBA428A5743600B30280 /* primarykey_schema.graphql in Resources */ = {isa = PBXBuildFile; fileRef = 213DBB6A28A5743300B30280 /* primarykey_schema.graphql */; };
+		213DBBA528A5743600B30280 /* PostWithCompositeKeyUnidirectional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB6B28A5743300B30280 /* PostWithCompositeKeyUnidirectional.swift */; };
+		213DBBA628A5743600B30280 /* Project6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB6C28A5743300B30280 /* Project6.swift */; };
+		213DBBA728A5743600B30280 /* Team6+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB6D28A5743300B30280 /* Team6+Schema.swift */; };
+		213DBBA828A5743600B30280 /* Post8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB6E28A5743300B30280 /* Post8.swift */; };
+		213DBBA928A5743600B30280 /* PostWithCompositeKeyAndIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB6F28A5743300B30280 /* PostWithCompositeKeyAndIndex.swift */; };
+		213DBBAA28A5743600B30280 /* ModelCompositePk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB7028A5743300B30280 /* ModelCompositePk+Schema.swift */; };
+		213DBBAB28A5743600B30280 /* CommentWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB7128A5743300B30280 /* CommentWithCompositeKey.swift */; };
+		213DBBAC28A5743600B30280 /* ModelCustomPkDefined+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB7228A5743300B30280 /* ModelCustomPkDefined+Schema.swift */; };
+		213DBBAD28A5743600B30280 /* ModelCompositeMultiplePk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB7328A5743300B30280 /* ModelCompositeMultiplePk+Schema.swift */; };
+		213DBBAE28A5743600B30280 /* PostWithTagsCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB7428A5743300B30280 /* PostWithTagsCompositeKey+Schema.swift */; };
+		213DBBAF28A5743600B30280 /* PostWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB7528A5743300B30280 /* PostWithCompositeKey+Schema.swift */; };
+		213DBBB028A5743600B30280 /* ModelExplicitDefaultPk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB7628A5743300B30280 /* ModelExplicitDefaultPk.swift */; };
+		213DBBB128A5743600B30280 /* Project6+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB7728A5743300B30280 /* Project6+Schema.swift */; };
+		213DBBB228A5743600B30280 /* ModelCompositePkBelongsTo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB7828A5743300B30280 /* ModelCompositePkBelongsTo.swift */; };
+		213DBBB328A5743600B30280 /* PostTagsWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB7928A5743300B30280 /* PostTagsWithCompositeKey.swift */; };
+		213DBBB428A5743600B30280 /* ModelCompositeIntPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB7A28A5743300B30280 /* ModelCompositeIntPk+Schema.swift */; };
+		213DBBB528A5743600B30280 /* Comment4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB7B28A5743300B30280 /* Comment4.swift */; };
+		213DBBB628A5743600B30280 /* CommentWithCompositeKeyUnidirectional+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB7C28A5743300B30280 /* CommentWithCompositeKeyUnidirectional+Schema.swift */; };
+		213DBBB728A5743600B30280 /* Post7+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB7D28A5743300B30280 /* Post7+Schema.swift */; };
+		213DBBB828A5743600B30280 /* TagWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB7E28A5743300B30280 /* TagWithCompositeKey+Schema.swift */; };
+		213DBBB928A5743600B30280 /* ModelCompositeMultiplePk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB7F28A5743300B30280 /* ModelCompositeMultiplePk.swift */; };
+		213DBBBA28A5743600B30280 /* Comment8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB8028A5743300B30280 /* Comment8+Schema.swift */; };
+		213DBBBB28A5743600B30280 /* Comment7.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB8128A5743400B30280 /* Comment7.swift */; };
+		213DBBBC28A5743600B30280 /* ModelCustomPKDefined.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB8228A5743400B30280 /* ModelCustomPKDefined.swift */; };
+		213DBBBD28A5743600B30280 /* ModelCompositePkWithAssociation+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB8328A5743400B30280 /* ModelCompositePkWithAssociation+Schema.swift */; };
+		213DBBBE28A5743600B30280 /* ModelExplicitCustomPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB8428A5743400B30280 /* ModelExplicitCustomPk+Schema.swift */; };
+		213DBBBF28A5743600B30280 /* Post4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB8528A5743400B30280 /* Post4.swift */; };
+		213DBBC028A5743600B30280 /* Comment7+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB8628A5743400B30280 /* Comment7+Schema.swift */; };
+		213DBBC128A5743600B30280 /* ModelCompositePkWithAssociation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB8728A5743400B30280 /* ModelCompositePkWithAssociation.swift */; };
+		213DBBC328A5743600B30280 /* PostWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB8928A5743400B30280 /* PostWithCompositeKey.swift */; };
+		213DBBC428A5743600B30280 /* Comment8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB8A28A5743400B30280 /* Comment8.swift */; };
+		213DBBC528A5743600B30280 /* TagWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB8B28A5743400B30280 /* TagWithCompositeKey.swift */; };
+		213DBBC628A5743600B30280 /* ModelCompositeIntPk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB8C28A5743400B30280 /* ModelCompositeIntPk.swift */; };
+		213DBBC728A5743600B30280 /* Post8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB8D28A5743400B30280 /* Post8+Schema.swift */; };
+		213DBBC828A5743600B30280 /* Project2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB8E28A5743400B30280 /* Project2.swift */; };
+		213DBBC928A5743600B30280 /* Comment4+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB8F28A5743400B30280 /* Comment4+Schema.swift */; };
+		213DBBCA28A5743600B30280 /* ModelCompositePk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB9028A5743400B30280 /* ModelCompositePk.swift */; };
+		213DBBCB28A5743600B30280 /* Post7.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB9128A5743400B30280 /* Post7.swift */; };
+		213DBBCC28A5743600B30280 /* PostWithTagsCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB9228A5743400B30280 /* PostWithTagsCompositeKey.swift */; };
+		213DBBCD28A5743600B30280 /* CommentWithCompositeKeyUnidirectional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB9328A5743400B30280 /* CommentWithCompositeKeyUnidirectional.swift */; };
+		213DBBCE28A5743600B30280 /* ModelExplicitCustomPk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB9428A5743400B30280 /* ModelExplicitCustomPk.swift */; };
+		213DBBCF28A5743600B30280 /* Team2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB9528A5743400B30280 /* Team2+Schema.swift */; };
+		213DBBD028A5743600B30280 /* PostTagsWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB9628A5743400B30280 /* PostTagsWithCompositeKey+Schema.swift */; };
+		213DBBD128A5743600B30280 /* CommentWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB9728A5743400B30280 /* CommentWithCompositeKey+Schema.swift */; };
+		213DBBD228A5743600B30280 /* ModelCompositePkBelongsTo+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB9828A5743400B30280 /* ModelCompositePkBelongsTo+Schema.swift */; };
+		213DBBD328A5743600B30280 /* Team2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB9928A5743400B30280 /* Team2.swift */; };
+		213DBBD428A5743600B30280 /* Team6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB9A28A5743400B30280 /* Team6.swift */; };
+		213DBBD528A5743600B30280 /* CommentWithCompositeKeyAndIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB9B28A5743400B30280 /* CommentWithCompositeKeyAndIndex.swift */; };
 		21977DBF289C171A005B49D6 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977DBE289C1719005B49D6 /* TestConfigHelper.swift */; };
 		21BBFB4A289BFF9400B32A39 /* AWSDataStorePluginConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F2289BFE3400B32A39 /* AWSDataStorePluginConfigurationTests.swift */; };
 		21BBFB4B289BFFA000B32A39 /* DataStoreConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F1289BFE3400B32A39 /* DataStoreConfigurationTests.swift */; };
@@ -440,41 +463,64 @@
 		21182136289BFB4F001B5945 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		2118213E289BFB63001B5945 /* amplify-ios-staging */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios-staging"; path = ../../../..; sourceTree = "<group>"; };
 		213DBB6128A4172000B30280 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		21977D76289C162E005B49D6 /* CommentWithCompositeKeyAndIndex+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CommentWithCompositeKeyAndIndex+Schema.swift"; sourceTree = "<group>"; };
-		21977D77289C162E005B49D6 /* PostWithCompositeKeyUnidirectional.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithCompositeKeyUnidirectional.swift; sourceTree = "<group>"; };
-		21977D78289C162E005B49D6 /* TagWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TagWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
-		21977D79289C162E005B49D6 /* ModelCompositePkBelongsTo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCompositePkBelongsTo.swift; sourceTree = "<group>"; };
-		21977D7A289C162E005B49D6 /* ModelCustomPKDefined.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCustomPKDefined.swift; sourceTree = "<group>"; };
-		21977D7B289C162F005B49D6 /* ModelExplicitCustomPk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelExplicitCustomPk+Schema.swift"; sourceTree = "<group>"; };
-		21977D7C289C162F005B49D6 /* ModelExplicitDefaultPk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelExplicitDefaultPk.swift; sourceTree = "<group>"; };
-		21977D7D289C1632005B49D6 /* CommentWithCompositeKeyAndIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentWithCompositeKeyAndIndex.swift; sourceTree = "<group>"; };
-		21977D7E289C1632005B49D6 /* PostWithCompositeKeyAndIndex+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithCompositeKeyAndIndex+Schema.swift"; sourceTree = "<group>"; };
-		21977D7F289C1632005B49D6 /* PostWithCompositeKeyAndIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithCompositeKeyAndIndex.swift; sourceTree = "<group>"; };
-		21977D80289C1633005B49D6 /* PostWithCompositeKeyUnidirectional+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithCompositeKeyUnidirectional+Schema.swift"; sourceTree = "<group>"; };
-		21977D81289C1633005B49D6 /* ModelCompositeIntPk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCompositeIntPk+Schema.swift"; sourceTree = "<group>"; };
-		21977D82289C1633005B49D6 /* PostTagsWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostTagsWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
-		21977D83289C1633005B49D6 /* ModelCompositePk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCompositePk.swift; sourceTree = "<group>"; };
+		213DBB6228A5743200B30280 /* ModelImplicitDefaultPk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelImplicitDefaultPk+Schema.swift"; sourceTree = "<group>"; };
+		213DBB6328A5743200B30280 /* ModelImplicitDefaultPk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelImplicitDefaultPk.swift; sourceTree = "<group>"; };
+		213DBB6428A5743200B30280 /* ModelExplicitDefaultPk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelExplicitDefaultPk+Schema.swift"; sourceTree = "<group>"; };
+		213DBB6528A5743200B30280 /* CommentWithCompositeKeyAndIndex+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CommentWithCompositeKeyAndIndex+Schema.swift"; sourceTree = "<group>"; };
+		213DBB6628A5743300B30280 /* PostWithCompositeKeyAndIndex+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithCompositeKeyAndIndex+Schema.swift"; sourceTree = "<group>"; };
+		213DBB6728A5743300B30280 /* Project2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project2+Schema.swift"; sourceTree = "<group>"; };
+		213DBB6828A5743300B30280 /* Post4+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post4+Schema.swift"; sourceTree = "<group>"; };
+		213DBB6928A5743300B30280 /* PostWithCompositeKeyUnidirectional+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithCompositeKeyUnidirectional+Schema.swift"; sourceTree = "<group>"; };
+		213DBB6A28A5743300B30280 /* primarykey_schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = primarykey_schema.graphql; sourceTree = "<group>"; };
+		213DBB6B28A5743300B30280 /* PostWithCompositeKeyUnidirectional.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithCompositeKeyUnidirectional.swift; sourceTree = "<group>"; };
+		213DBB6C28A5743300B30280 /* Project6.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project6.swift; sourceTree = "<group>"; };
+		213DBB6D28A5743300B30280 /* Team6+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Team6+Schema.swift"; sourceTree = "<group>"; };
+		213DBB6E28A5743300B30280 /* Post8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post8.swift; sourceTree = "<group>"; };
+		213DBB6F28A5743300B30280 /* PostWithCompositeKeyAndIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithCompositeKeyAndIndex.swift; sourceTree = "<group>"; };
+		213DBB7028A5743300B30280 /* ModelCompositePk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCompositePk+Schema.swift"; sourceTree = "<group>"; };
+		213DBB7128A5743300B30280 /* CommentWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentWithCompositeKey.swift; sourceTree = "<group>"; };
+		213DBB7228A5743300B30280 /* ModelCustomPkDefined+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCustomPkDefined+Schema.swift"; sourceTree = "<group>"; };
+		213DBB7328A5743300B30280 /* ModelCompositeMultiplePk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCompositeMultiplePk+Schema.swift"; sourceTree = "<group>"; };
+		213DBB7428A5743300B30280 /* PostWithTagsCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithTagsCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		213DBB7528A5743300B30280 /* PostWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		213DBB7628A5743300B30280 /* ModelExplicitDefaultPk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelExplicitDefaultPk.swift; sourceTree = "<group>"; };
+		213DBB7728A5743300B30280 /* Project6+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project6+Schema.swift"; sourceTree = "<group>"; };
+		213DBB7828A5743300B30280 /* ModelCompositePkBelongsTo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCompositePkBelongsTo.swift; sourceTree = "<group>"; };
+		213DBB7928A5743300B30280 /* PostTagsWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostTagsWithCompositeKey.swift; sourceTree = "<group>"; };
+		213DBB7A28A5743300B30280 /* ModelCompositeIntPk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCompositeIntPk+Schema.swift"; sourceTree = "<group>"; };
+		213DBB7B28A5743300B30280 /* Comment4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment4.swift; sourceTree = "<group>"; };
+		213DBB7C28A5743300B30280 /* CommentWithCompositeKeyUnidirectional+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CommentWithCompositeKeyUnidirectional+Schema.swift"; sourceTree = "<group>"; };
+		213DBB7D28A5743300B30280 /* Post7+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post7+Schema.swift"; sourceTree = "<group>"; };
+		213DBB7E28A5743300B30280 /* TagWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TagWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		213DBB7F28A5743300B30280 /* ModelCompositeMultiplePk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCompositeMultiplePk.swift; sourceTree = "<group>"; };
+		213DBB8028A5743300B30280 /* Comment8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment8+Schema.swift"; sourceTree = "<group>"; };
+		213DBB8128A5743400B30280 /* Comment7.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment7.swift; sourceTree = "<group>"; };
+		213DBB8228A5743400B30280 /* ModelCustomPKDefined.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCustomPKDefined.swift; sourceTree = "<group>"; };
+		213DBB8328A5743400B30280 /* ModelCompositePkWithAssociation+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCompositePkWithAssociation+Schema.swift"; sourceTree = "<group>"; };
+		213DBB8428A5743400B30280 /* ModelExplicitCustomPk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelExplicitCustomPk+Schema.swift"; sourceTree = "<group>"; };
+		213DBB8528A5743400B30280 /* Post4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post4.swift; sourceTree = "<group>"; };
+		213DBB8628A5743400B30280 /* Comment7+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment7+Schema.swift"; sourceTree = "<group>"; };
+		213DBB8728A5743400B30280 /* ModelCompositePkWithAssociation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCompositePkWithAssociation.swift; sourceTree = "<group>"; };
+		213DBB8928A5743400B30280 /* PostWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithCompositeKey.swift; sourceTree = "<group>"; };
+		213DBB8A28A5743400B30280 /* Comment8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment8.swift; sourceTree = "<group>"; };
+		213DBB8B28A5743400B30280 /* TagWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagWithCompositeKey.swift; sourceTree = "<group>"; };
+		213DBB8C28A5743400B30280 /* ModelCompositeIntPk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCompositeIntPk.swift; sourceTree = "<group>"; };
+		213DBB8D28A5743400B30280 /* Post8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post8+Schema.swift"; sourceTree = "<group>"; };
+		213DBB8E28A5743400B30280 /* Project2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project2.swift; sourceTree = "<group>"; };
+		213DBB8F28A5743400B30280 /* Comment4+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment4+Schema.swift"; sourceTree = "<group>"; };
+		213DBB9028A5743400B30280 /* ModelCompositePk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCompositePk.swift; sourceTree = "<group>"; };
+		213DBB9128A5743400B30280 /* Post7.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post7.swift; sourceTree = "<group>"; };
+		213DBB9228A5743400B30280 /* PostWithTagsCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithTagsCompositeKey.swift; sourceTree = "<group>"; };
+		213DBB9328A5743400B30280 /* CommentWithCompositeKeyUnidirectional.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentWithCompositeKeyUnidirectional.swift; sourceTree = "<group>"; };
+		213DBB9428A5743400B30280 /* ModelExplicitCustomPk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelExplicitCustomPk.swift; sourceTree = "<group>"; };
+		213DBB9528A5743400B30280 /* Team2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Team2+Schema.swift"; sourceTree = "<group>"; };
+		213DBB9628A5743400B30280 /* PostTagsWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostTagsWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		213DBB9728A5743400B30280 /* CommentWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CommentWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		213DBB9828A5743400B30280 /* ModelCompositePkBelongsTo+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCompositePkBelongsTo+Schema.swift"; sourceTree = "<group>"; };
+		213DBB9928A5743400B30280 /* Team2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team2.swift; sourceTree = "<group>"; };
+		213DBB9A28A5743400B30280 /* Team6.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team6.swift; sourceTree = "<group>"; };
+		213DBB9B28A5743400B30280 /* CommentWithCompositeKeyAndIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentWithCompositeKeyAndIndex.swift; sourceTree = "<group>"; };
 		21977D84289C1633005B49D6 /* primarykey_schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = primarykey_schema.graphql; sourceTree = "<group>"; };
-		21977D85289C1633005B49D6 /* ModelExplicitDefaultPk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelExplicitDefaultPk+Schema.swift"; sourceTree = "<group>"; };
-		21977D86289C1633005B49D6 /* PostWithTagsCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithTagsCompositeKey+Schema.swift"; sourceTree = "<group>"; };
-		21977D87289C1633005B49D6 /* CommentWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CommentWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
-		21977D88289C1633005B49D6 /* ModelImplicitDefaultPk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelImplicitDefaultPk+Schema.swift"; sourceTree = "<group>"; };
-		21977D89289C1633005B49D6 /* ModelImplicitDefaultPk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelImplicitDefaultPk.swift; sourceTree = "<group>"; };
-		21977D8A289C1633005B49D6 /* ModelCompositePkWithAssociation+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCompositePkWithAssociation+Schema.swift"; sourceTree = "<group>"; };
-		21977D8B289C1633005B49D6 /* PostWithTagsCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithTagsCompositeKey.swift; sourceTree = "<group>"; };
-		21977D8C289C1633005B49D6 /* ModelCompositePkBelongsTo+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCompositePkBelongsTo+Schema.swift"; sourceTree = "<group>"; };
-		21977D8D289C1633005B49D6 /* CommentWithCompositeKeyUnidirectional.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentWithCompositeKeyUnidirectional.swift; sourceTree = "<group>"; };
-		21977D8E289C1633005B49D6 /* ModelCompositeIntPk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCompositeIntPk.swift; sourceTree = "<group>"; };
-		21977D8F289C1633005B49D6 /* PostWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithCompositeKey.swift; sourceTree = "<group>"; };
-		21977D90289C1633005B49D6 /* ModelExplicitCustomPk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelExplicitCustomPk.swift; sourceTree = "<group>"; };
-		21977D91289C1633005B49D6 /* ModelCompositePkWithAssociation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelCompositePkWithAssociation.swift; sourceTree = "<group>"; };
-		21977D92289C1633005B49D6 /* CommentWithCompositeKeyUnidirectional+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CommentWithCompositeKeyUnidirectional+Schema.swift"; sourceTree = "<group>"; };
-		21977D93289C1633005B49D6 /* ModelCompositePk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCompositePk+Schema.swift"; sourceTree = "<group>"; };
-		21977D94289C1633005B49D6 /* PostTagsWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostTagsWithCompositeKey.swift; sourceTree = "<group>"; };
-		21977D95289C1633005B49D6 /* PostWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
-		21977D96289C1634005B49D6 /* ModelCustomPkDefined+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelCustomPkDefined+Schema.swift"; sourceTree = "<group>"; };
-		21977D97289C1634005B49D6 /* CommentWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentWithCompositeKey.swift; sourceTree = "<group>"; };
-		21977D98289C1634005B49D6 /* TagWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagWithCompositeKey.swift; sourceTree = "<group>"; };
 		21977DBE289C1719005B49D6 /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
 		21BBF9E6289BFE3400B32A39 /* DataStoreCustomPrimaryKeyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreCustomPrimaryKeyTests.swift; sourceTree = "<group>"; };
 		21BBF9E8289BFE3400B32A39 /* TestModelRegistration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestModelRegistration.swift; sourceTree = "<group>"; };
@@ -955,41 +1001,64 @@
 		21977D75289C161D005B49D6 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				21977D97289C1634005B49D6 /* CommentWithCompositeKey.swift */,
-				21977D87289C1633005B49D6 /* CommentWithCompositeKey+Schema.swift */,
-				21977D7D289C1632005B49D6 /* CommentWithCompositeKeyAndIndex.swift */,
-				21977D76289C162E005B49D6 /* CommentWithCompositeKeyAndIndex+Schema.swift */,
-				21977D8D289C1633005B49D6 /* CommentWithCompositeKeyUnidirectional.swift */,
-				21977D92289C1633005B49D6 /* CommentWithCompositeKeyUnidirectional+Schema.swift */,
-				21977D8E289C1633005B49D6 /* ModelCompositeIntPk.swift */,
-				21977D81289C1633005B49D6 /* ModelCompositeIntPk+Schema.swift */,
-				21977D83289C1633005B49D6 /* ModelCompositePk.swift */,
-				21977D93289C1633005B49D6 /* ModelCompositePk+Schema.swift */,
-				21977D79289C162E005B49D6 /* ModelCompositePkBelongsTo.swift */,
-				21977D8C289C1633005B49D6 /* ModelCompositePkBelongsTo+Schema.swift */,
-				21977D91289C1633005B49D6 /* ModelCompositePkWithAssociation.swift */,
-				21977D8A289C1633005B49D6 /* ModelCompositePkWithAssociation+Schema.swift */,
-				21977D7A289C162E005B49D6 /* ModelCustomPKDefined.swift */,
-				21977D96289C1634005B49D6 /* ModelCustomPkDefined+Schema.swift */,
-				21977D90289C1633005B49D6 /* ModelExplicitCustomPk.swift */,
-				21977D7B289C162F005B49D6 /* ModelExplicitCustomPk+Schema.swift */,
-				21977D7C289C162F005B49D6 /* ModelExplicitDefaultPk.swift */,
-				21977D85289C1633005B49D6 /* ModelExplicitDefaultPk+Schema.swift */,
-				21977D89289C1633005B49D6 /* ModelImplicitDefaultPk.swift */,
-				21977D88289C1633005B49D6 /* ModelImplicitDefaultPk+Schema.swift */,
-				21977D94289C1633005B49D6 /* PostTagsWithCompositeKey.swift */,
-				21977D82289C1633005B49D6 /* PostTagsWithCompositeKey+Schema.swift */,
-				21977D8F289C1633005B49D6 /* PostWithCompositeKey.swift */,
-				21977D95289C1633005B49D6 /* PostWithCompositeKey+Schema.swift */,
-				21977D7F289C1632005B49D6 /* PostWithCompositeKeyAndIndex.swift */,
-				21977D7E289C1632005B49D6 /* PostWithCompositeKeyAndIndex+Schema.swift */,
-				21977D77289C162E005B49D6 /* PostWithCompositeKeyUnidirectional.swift */,
-				21977D80289C1633005B49D6 /* PostWithCompositeKeyUnidirectional+Schema.swift */,
-				21977D8B289C1633005B49D6 /* PostWithTagsCompositeKey.swift */,
-				21977D86289C1633005B49D6 /* PostWithTagsCompositeKey+Schema.swift */,
+				213DBB7B28A5743300B30280 /* Comment4.swift */,
+				213DBB8F28A5743400B30280 /* Comment4+Schema.swift */,
+				213DBB8128A5743400B30280 /* Comment7.swift */,
+				213DBB8628A5743400B30280 /* Comment7+Schema.swift */,
+				213DBB8A28A5743400B30280 /* Comment8.swift */,
+				213DBB8028A5743300B30280 /* Comment8+Schema.swift */,
+				213DBB7128A5743300B30280 /* CommentWithCompositeKey.swift */,
+				213DBB9728A5743400B30280 /* CommentWithCompositeKey+Schema.swift */,
+				213DBB9B28A5743400B30280 /* CommentWithCompositeKeyAndIndex.swift */,
+				213DBB6528A5743200B30280 /* CommentWithCompositeKeyAndIndex+Schema.swift */,
+				213DBB9328A5743400B30280 /* CommentWithCompositeKeyUnidirectional.swift */,
+				213DBB7C28A5743300B30280 /* CommentWithCompositeKeyUnidirectional+Schema.swift */,
+				213DBB8C28A5743400B30280 /* ModelCompositeIntPk.swift */,
+				213DBB7A28A5743300B30280 /* ModelCompositeIntPk+Schema.swift */,
+				213DBB7F28A5743300B30280 /* ModelCompositeMultiplePk.swift */,
+				213DBB7328A5743300B30280 /* ModelCompositeMultiplePk+Schema.swift */,
+				213DBB9028A5743400B30280 /* ModelCompositePk.swift */,
+				213DBB7028A5743300B30280 /* ModelCompositePk+Schema.swift */,
+				213DBB7828A5743300B30280 /* ModelCompositePkBelongsTo.swift */,
+				213DBB9828A5743400B30280 /* ModelCompositePkBelongsTo+Schema.swift */,
+				213DBB8728A5743400B30280 /* ModelCompositePkWithAssociation.swift */,
+				213DBB8328A5743400B30280 /* ModelCompositePkWithAssociation+Schema.swift */,
+				213DBB8228A5743400B30280 /* ModelCustomPKDefined.swift */,
+				213DBB7228A5743300B30280 /* ModelCustomPkDefined+Schema.swift */,
+				213DBB9428A5743400B30280 /* ModelExplicitCustomPk.swift */,
+				213DBB8428A5743400B30280 /* ModelExplicitCustomPk+Schema.swift */,
+				213DBB7628A5743300B30280 /* ModelExplicitDefaultPk.swift */,
+				213DBB6428A5743200B30280 /* ModelExplicitDefaultPk+Schema.swift */,
+				213DBB6328A5743200B30280 /* ModelImplicitDefaultPk.swift */,
+				213DBB6228A5743200B30280 /* ModelImplicitDefaultPk+Schema.swift */,
+				213DBB8528A5743400B30280 /* Post4.swift */,
+				213DBB6828A5743300B30280 /* Post4+Schema.swift */,
+				213DBB9128A5743400B30280 /* Post7.swift */,
+				213DBB7D28A5743300B30280 /* Post7+Schema.swift */,
+				213DBB6E28A5743300B30280 /* Post8.swift */,
+				213DBB8D28A5743400B30280 /* Post8+Schema.swift */,
+				213DBB7928A5743300B30280 /* PostTagsWithCompositeKey.swift */,
+				213DBB9628A5743400B30280 /* PostTagsWithCompositeKey+Schema.swift */,
+				213DBB8928A5743400B30280 /* PostWithCompositeKey.swift */,
+				213DBB7528A5743300B30280 /* PostWithCompositeKey+Schema.swift */,
+				213DBB6F28A5743300B30280 /* PostWithCompositeKeyAndIndex.swift */,
+				213DBB6628A5743300B30280 /* PostWithCompositeKeyAndIndex+Schema.swift */,
+				213DBB6B28A5743300B30280 /* PostWithCompositeKeyUnidirectional.swift */,
+				213DBB6928A5743300B30280 /* PostWithCompositeKeyUnidirectional+Schema.swift */,
+				213DBB9228A5743400B30280 /* PostWithTagsCompositeKey.swift */,
+				213DBB7428A5743300B30280 /* PostWithTagsCompositeKey+Schema.swift */,
+				213DBB6A28A5743300B30280 /* primarykey_schema.graphql */,
+				213DBB8E28A5743400B30280 /* Project2.swift */,
+				213DBB6728A5743300B30280 /* Project2+Schema.swift */,
+				213DBB6C28A5743300B30280 /* Project6.swift */,
+				213DBB7728A5743300B30280 /* Project6+Schema.swift */,
+				213DBB8B28A5743400B30280 /* TagWithCompositeKey.swift */,
+				213DBB7E28A5743300B30280 /* TagWithCompositeKey+Schema.swift */,
+				213DBB9928A5743400B30280 /* Team2.swift */,
+				213DBB9528A5743400B30280 /* Team2+Schema.swift */,
+				213DBB9A28A5743400B30280 /* Team6.swift */,
+				213DBB6D28A5743300B30280 /* Team6+Schema.swift */,
 				21977D84289C1633005B49D6 /* primarykey_schema.graphql */,
-				21977D98289C1634005B49D6 /* TagWithCompositeKey.swift */,
-				21977D78289C162E005B49D6 /* TagWithCompositeKey+Schema.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1968,6 +2037,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				213DBBA428A5743600B30280 /* primarykey_schema.graphql in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2285,43 +2355,65 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				21977DA6289C1634005B49D6 /* ModelCompositePk.swift in Sources */,
-				21977DA9289C1634005B49D6 /* PostWithTagsCompositeKey+Schema.swift in Sources */,
-				21977DB9289C1634005B49D6 /* ModelCustomPkDefined+Schema.swift in Sources */,
-				21977DAC289C1634005B49D6 /* ModelImplicitDefaultPk.swift in Sources */,
-				21977DA8289C1634005B49D6 /* ModelExplicitDefaultPk+Schema.swift in Sources */,
-				21977DB5289C1634005B49D6 /* CommentWithCompositeKeyUnidirectional+Schema.swift in Sources */,
-				21977DB8289C1634005B49D6 /* PostWithCompositeKey+Schema.swift in Sources */,
-				21977D9B289C1634005B49D6 /* TagWithCompositeKey+Schema.swift in Sources */,
-				21977DB7289C1634005B49D6 /* PostTagsWithCompositeKey.swift in Sources */,
-				21977DB2289C1634005B49D6 /* PostWithCompositeKey.swift in Sources */,
+				213DBBA828A5743600B30280 /* Post8.swift in Sources */,
+				213DBBB128A5743600B30280 /* Project6+Schema.swift in Sources */,
+				213DBBAE28A5743600B30280 /* PostWithTagsCompositeKey+Schema.swift in Sources */,
+				213DBBC928A5743600B30280 /* Comment4+Schema.swift in Sources */,
 				21BBFC24289C03EB00B32A39 /* AWSDataStorePrimaryKeyBaseTest.swift in Sources */,
-				21977DA0289C1634005B49D6 /* CommentWithCompositeKeyAndIndex.swift in Sources */,
-				21977DBA289C1634005B49D6 /* CommentWithCompositeKey.swift in Sources */,
-				21977D9E289C1634005B49D6 /* ModelExplicitCustomPk+Schema.swift in Sources */,
-				21977D9D289C1634005B49D6 /* ModelCustomPKDefined.swift in Sources */,
-				21977DB0289C1634005B49D6 /* CommentWithCompositeKeyUnidirectional.swift in Sources */,
-				21977DAF289C1634005B49D6 /* ModelCompositePkBelongsTo+Schema.swift in Sources */,
-				21977DAE289C1634005B49D6 /* PostWithTagsCompositeKey.swift in Sources */,
-				21977DB4289C1634005B49D6 /* ModelCompositePkWithAssociation.swift in Sources */,
-				21977D9C289C1634005B49D6 /* ModelCompositePkBelongsTo.swift in Sources */,
-				21977DA2289C1634005B49D6 /* PostWithCompositeKeyAndIndex.swift in Sources */,
-				21977DB6289C1634005B49D6 /* ModelCompositePk+Schema.swift in Sources */,
-				21977DA5289C1634005B49D6 /* PostTagsWithCompositeKey+Schema.swift in Sources */,
-				21977D9F289C1634005B49D6 /* ModelExplicitDefaultPk.swift in Sources */,
-				21977DAA289C1634005B49D6 /* CommentWithCompositeKey+Schema.swift in Sources */,
+				213DBBD328A5743600B30280 /* Team2.swift in Sources */,
+				213DBBB928A5743600B30280 /* ModelCompositeMultiplePk.swift in Sources */,
+				213DBBD128A5743600B30280 /* CommentWithCompositeKey+Schema.swift in Sources */,
+				213DBBAA28A5743600B30280 /* ModelCompositePk+Schema.swift in Sources */,
+				213DBBA128A5743600B30280 /* Project2+Schema.swift in Sources */,
+				213DBBAC28A5743600B30280 /* ModelCustomPkDefined+Schema.swift in Sources */,
+				213DBBD428A5743600B30280 /* Team6.swift in Sources */,
+				213DBBA728A5743600B30280 /* Team6+Schema.swift in Sources */,
+				213DBBCF28A5743600B30280 /* Team2+Schema.swift in Sources */,
+				213DBBBE28A5743600B30280 /* ModelExplicitCustomPk+Schema.swift in Sources */,
+				213DBBCC28A5743600B30280 /* PostWithTagsCompositeKey.swift in Sources */,
+				213DBBA328A5743600B30280 /* PostWithCompositeKeyUnidirectional+Schema.swift in Sources */,
+				213DBBA528A5743600B30280 /* PostWithCompositeKeyUnidirectional.swift in Sources */,
+				213DBBB328A5743600B30280 /* PostTagsWithCompositeKey.swift in Sources */,
+				213DBBCD28A5743600B30280 /* CommentWithCompositeKeyUnidirectional.swift in Sources */,
+				213DBBD028A5743600B30280 /* PostTagsWithCompositeKey+Schema.swift in Sources */,
+				213DBBB828A5743600B30280 /* TagWithCompositeKey+Schema.swift in Sources */,
+				213DBBBB28A5743600B30280 /* Comment7.swift in Sources */,
+				213DBBB228A5743600B30280 /* ModelCompositePkBelongsTo.swift in Sources */,
+				213DBBA028A5743600B30280 /* PostWithCompositeKeyAndIndex+Schema.swift in Sources */,
+				213DBB9E28A5743600B30280 /* ModelExplicitDefaultPk+Schema.swift in Sources */,
+				213DBBD228A5743600B30280 /* ModelCompositePkBelongsTo+Schema.swift in Sources */,
+				213DBBAB28A5743600B30280 /* CommentWithCompositeKey.swift in Sources */,
+				213DBB9F28A5743600B30280 /* CommentWithCompositeKeyAndIndex+Schema.swift in Sources */,
 				21977DBF289C171A005B49D6 /* TestConfigHelper.swift in Sources */,
-				21977DA4289C1634005B49D6 /* ModelCompositeIntPk+Schema.swift in Sources */,
-				21977D99289C1634005B49D6 /* CommentWithCompositeKeyAndIndex+Schema.swift in Sources */,
-				21977DA1289C1634005B49D6 /* PostWithCompositeKeyAndIndex+Schema.swift in Sources */,
-				21977DBB289C1634005B49D6 /* TagWithCompositeKey.swift in Sources */,
-				21977DAD289C1634005B49D6 /* ModelCompositePkWithAssociation+Schema.swift in Sources */,
+				213DBB9C28A5743600B30280 /* ModelImplicitDefaultPk+Schema.swift in Sources */,
+				213DBBC428A5743600B30280 /* Comment8.swift in Sources */,
+				213DBBA628A5743600B30280 /* Project6.swift in Sources */,
+				213DBBC328A5743600B30280 /* PostWithCompositeKey.swift in Sources */,
+				213DBBAF28A5743600B30280 /* PostWithCompositeKey+Schema.swift in Sources */,
+				213DBBC128A5743600B30280 /* ModelCompositePkWithAssociation.swift in Sources */,
+				213DBBC728A5743600B30280 /* Post8+Schema.swift in Sources */,
+				213DBBCB28A5743600B30280 /* Post7.swift in Sources */,
+				213DBBBD28A5743600B30280 /* ModelCompositePkWithAssociation+Schema.swift in Sources */,
+				213DBBBC28A5743600B30280 /* ModelCustomPKDefined.swift in Sources */,
+				213DBBB428A5743600B30280 /* ModelCompositeIntPk+Schema.swift in Sources */,
+				213DBBC628A5743600B30280 /* ModelCompositeIntPk.swift in Sources */,
+				213DBBD528A5743600B30280 /* CommentWithCompositeKeyAndIndex.swift in Sources */,
+				213DBBB028A5743600B30280 /* ModelExplicitDefaultPk.swift in Sources */,
+				213DBBAD28A5743600B30280 /* ModelCompositeMultiplePk+Schema.swift in Sources */,
+				213DBBCA28A5743600B30280 /* ModelCompositePk.swift in Sources */,
+				213DBBB628A5743600B30280 /* CommentWithCompositeKeyUnidirectional+Schema.swift in Sources */,
+				213DBBA228A5743600B30280 /* Post4+Schema.swift in Sources */,
+				213DBBC028A5743600B30280 /* Comment7+Schema.swift in Sources */,
+				213DBBB528A5743600B30280 /* Comment4.swift in Sources */,
+				213DBBCE28A5743600B30280 /* ModelExplicitCustomPk.swift in Sources */,
+				213DBBB728A5743600B30280 /* Post7+Schema.swift in Sources */,
+				213DBBC828A5743600B30280 /* Project2.swift in Sources */,
+				213DBB9D28A5743600B30280 /* ModelImplicitDefaultPk.swift in Sources */,
+				213DBBBA28A5743600B30280 /* Comment8+Schema.swift in Sources */,
+				213DBBC528A5743600B30280 /* TagWithCompositeKey.swift in Sources */,
+				213DBBA928A5743600B30280 /* PostWithCompositeKeyAndIndex.swift in Sources */,
+				213DBBBF28A5743600B30280 /* Post4.swift in Sources */,
 				21BBFC23289C03E900B32A39 /* AWSDataStorePrimaryKeyTests.swift in Sources */,
-				21977DB3289C1634005B49D6 /* ModelExplicitCustomPk.swift in Sources */,
-				21977DB1289C1634005B49D6 /* ModelCompositeIntPk.swift in Sources */,
-				21977DA3289C1634005B49D6 /* PostWithCompositeKeyUnidirectional+Schema.swift in Sources */,
-				21977DAB289C1634005B49D6 /* ModelImplicitDefaultPk+Schema.swift in Sources */,
-				21977D9A289C1634005B49D6 /* PostWithCompositeKeyUnidirectional.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
