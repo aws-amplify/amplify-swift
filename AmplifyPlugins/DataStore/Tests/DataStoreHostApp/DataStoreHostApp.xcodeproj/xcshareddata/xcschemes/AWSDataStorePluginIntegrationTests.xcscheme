@@ -60,16 +60,10 @@
                   Identifier = "DataStoreConsecutiveUpdatesTests">
                </Test>
                <Test
-                  Identifier = "DataStoreCustomPrimaryKeyTests">
-               </Test>
-               <Test
                   Identifier = "DataStoreHubEventTests">
                </Test>
                <Test
                   Identifier = "DataStoreLocalStoreTests">
-               </Test>
-               <Test
-                  Identifier = "DataStoreScalarTests">
                </Test>
                <Test
                   Identifier = "DataStoreTestBase">
@@ -79,9 +73,6 @@
                </Test>
                <Test
                   Identifier = "LocalStoreIntegrationTestBase">
-               </Test>
-               <Test
-                  Identifier = "SubscriptionEndToEndTests">
                </Test>
                <Test
                   Identifier = "SyncEngineIntegrationTestBase">

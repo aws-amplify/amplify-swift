@@ -35,13 +35,9 @@ class DataStoreCustomPrimaryKeyTests: SyncEngineIntegrationTestBase {
         let customerOrder = CustomerOrder(orderId: UUID().uuidString, email: "test@abc.com")
 
         let createReceived = expectation(description: "Create notification received")
-        let deleteReceived = expectation(description: "Delete notification received")
-        let updateReceived = expectation(description: "Update notification received")
-
         var updatedCustomerOrder = customerOrder
         updatedCustomerOrder.email = "testnew@abc.com"
-
-        let hubListener = Amplify.Hub.listen(
+        var hubListener = Amplify.Hub.listen(
             to: .dataStore,
             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
                 guard let mutationEvent = payload.data as? MutationEvent
@@ -62,12 +58,72 @@ class DataStoreCustomPrimaryKeyTests: SyncEngineIntegrationTestBase {
                     createReceived.fulfill()
                     return
                 }
+        }
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+            XCTFail("Listener not registered for hub")
+            return
+        }
 
+        // create customer order
+        _ = try await Amplify.DataStore.save(customerOrder)
+        await waitForExpectations(timeout: networkTimeout)
+
+        // update customer order
+        let updateReceived = expectation(description: "Update notification received")
+        hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                guard let mutationEvent = payload.data as? MutationEvent
+                    else {
+                        XCTFail("Can't cast payload as mutation event")
+                        return
+                }
+
+                guard let order = try? mutationEvent.decodeModel() as? CustomerOrder,
+                      order.id == customerOrder.id else {
+                    return
+                }
+
+            
                 if mutationEvent.mutationType == GraphQLMutationType.update.rawValue {
                     XCTAssertEqual(order.email, updatedCustomerOrder.email)
                     XCTAssertEqual(order.orderId, updatedCustomerOrder.orderId)
                     XCTAssertEqual(mutationEvent.version, 2)
                     updateReceived.fulfill()
+                    return
+                }
+
+        }
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+            XCTFail("Listener not registered for hub")
+            return
+        }
+        _ = try await Amplify.DataStore.save(updatedCustomerOrder)
+        await waitForExpectations(timeout: networkTimeout)
+        
+        // query the updated order
+        let queriedOrder = try await Amplify.DataStore.query(CustomerOrder.self, byId: updatedCustomerOrder.id)
+        guard let order = queriedOrder else {
+            XCTFail("Queried model is nil")
+            return
+        }
+        XCTAssertEqual(order.id, updatedCustomerOrder.id)
+        XCTAssertEqual(order.orderId, updatedCustomerOrder.orderId)
+        XCTAssertEqual(order.email, updatedCustomerOrder.email)
+        
+        // delete the customer order
+        let deleteReceived = expectation(description: "Delete notification received")
+        hubListener = Amplify.Hub.listen(
+            to: .dataStore,
+            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
+                guard let mutationEvent = payload.data as? MutationEvent
+                    else {
+                        XCTFail("Can't cast payload as mutation event")
+                        return
+                }
+
+                guard let order = try? mutationEvent.decodeModel() as? CustomerOrder,
+                      order.id == customerOrder.id else {
                     return
                 }
 
@@ -79,55 +135,16 @@ class DataStoreCustomPrimaryKeyTests: SyncEngineIntegrationTestBase {
                     return
                 }
         }
-
         guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
         }
-
-        // create customer order
-        Amplify.DataStore.save(customerOrder) { _ in }
-        wait(for: [createReceived], timeout: networkTimeout)
-
-        // update customer order
-        Amplify.DataStore.save(updatedCustomerOrder) { _ in }
-        wait(for: [updateReceived], timeout: networkTimeout)
-
-        // query the updated order
-        let queryBeforeDeleteExpectation = expectation(description: "Queried model should be same as created one")
-        Amplify.DataStore.query(CustomerOrder.self, byId: updatedCustomerOrder.id) { result in
-            switch result {
-            case .success(let value):
-                guard let order = value else {
-                    XCTFail("Queried model is nil")
-                    return
-                }
-                XCTAssertEqual(order.id, updatedCustomerOrder.id)
-                XCTAssertEqual(order.orderId, updatedCustomerOrder.orderId)
-                XCTAssertEqual(order.email, updatedCustomerOrder.email)
-                queryBeforeDeleteExpectation.fulfill()
-            case .failure(let error):
-                print("Error : \(error)")
-            }
-        }
-        wait(for: [queryBeforeDeleteExpectation], timeout: networkTimeout)
-
-        // delete the customer order
-        Amplify.DataStore.delete(CustomerOrder.self, withId: updatedCustomerOrder.id) { _ in }
-        wait(for: [deleteReceived], timeout: networkTimeout)
-
+        _ = try await Amplify.DataStore.delete(CustomerOrder.self, withId: updatedCustomerOrder.id)
+        await waitForExpectations(timeout: networkTimeout)
+        
         // query the customer order after deletion
-        let queryAfterDeleteExpectation = expectation(description: "Deleted model not found upon querying")
-        Amplify.DataStore.query(CustomerOrder.self, byId: updatedCustomerOrder.id) { result in
-            switch result {
-            case .success(let value):
-                XCTAssertNil(value)
-                queryAfterDeleteExpectation.fulfill()
-            case .failure(let error):
-                print("Error : \(error)")
-            }
-        }
-        wait(for: [queryAfterDeleteExpectation], timeout: networkTimeout)
+        let queriedOrder2 = try await Amplify.DataStore.query(CustomerOrder.self, byId: updatedCustomerOrder.id)
+        XCTAssertNil(queriedOrder2)
     }
 
 }

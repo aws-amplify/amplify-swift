@@ -58,7 +58,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
             }
         }.store(in: &cancellables)
         let receivedPost = expectation(description: "received Post")
-        await savePostAndWaitForSync(Post(title: "title", content: "content", createdAt: .now()),
+        try await savePostAndWaitForSync(Post(title: "title", content: "content", createdAt: .now()),
                                      postSyncedExpctation: receivedPost)
         await waitForExpectations(timeout: 100)
 
@@ -77,9 +77,9 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     func testInitialSyncWithPredicate() async throws {
         await setUp(withModels: TestModelRegistration(), logLevel: .info)
         try startAmplify()
-        await savePostAndWaitForSync(Post(title: "xyz 1", content: "content", createdAt: .now()))
-        await savePostAndWaitForSync(Post(title: "xyz 2", content: "content", createdAt: .now()))
-        await savePostAndWaitForSync(Post(title: "xyz 3", content: "content", createdAt: .now()))
+        try await savePostAndWaitForSync(Post(title: "xyz 1", content: "content", createdAt: .now()))
+        try await savePostAndWaitForSync(Post(title: "xyz 2", content: "content", createdAt: .now()))
+        try await savePostAndWaitForSync(Post(title: "xyz 3", content: "content", createdAt: .now()))
         await clearDataStore()
         var snapshots = [DataStoreQuerySnapshot<Post>]()
         let snapshotWithIsSynced = expectation(description: "query snapshot with isSynced true")
@@ -105,7 +105,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         }.store(in: &cancellables)
 
         let receivedPost = expectation(description: "received Post")
-        await savePostAndWaitForSync(Post(title: "xyz", content: "content", createdAt: .now()),
+        try await savePostAndWaitForSync(Post(title: "xyz", content: "content", createdAt: .now()),
                                      postSyncedExpctation: receivedPost)
         await waitForExpectations(timeout: 100)
         XCTAssertTrue(snapshots.count >= 2)
@@ -153,9 +153,9 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         }.store(in: &cancellables)
 
         let receivedPost1 = expectation(description: "received Post")
-        await savePostAndWaitForSync(post1, postSyncedExpctation: receivedPost1)
+        try await savePostAndWaitForSync(post1, postSyncedExpctation: receivedPost1)
         let receivedPost2 = expectation(description: "received Post")
-        await savePostAndWaitForSync(post2, postSyncedExpctation: receivedPost2)
+        try await savePostAndWaitForSync(post2, postSyncedExpctation: receivedPost2)
         await waitForExpectations(timeout: 100)
     }
 
@@ -172,7 +172,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     func testObserveQueryWithDataStoreDeltaSync() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForReady()
-        await savePostAndWaitForSync(Post(title: "title", content: "content", createdAt: .now()))
+        try await savePostAndWaitForSync(Post(title: "title", content: "content", createdAt: .now()))
         let numberOfPosts = await queryNumberOfPosts()
         XCTAssertTrue(numberOfPosts > 0)
         await stopDataStore()
@@ -193,7 +193,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
             }
         }.store(in: &cancellables)
         let receivedPost = expectation(description: "received Post")
-        await savePostAndWaitForSync(Post(title: "title", content: "content", createdAt: .now()),
+        try await savePostAndWaitForSync(Post(title: "title", content: "content", createdAt: .now()),
                                      postSyncedExpctation: receivedPost)
         await waitForExpectations(timeout: 100)
         XCTAssertTrue(snapshots.count >= 2)
@@ -256,7 +256,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                 snapshotExpectation23.fulfill()
             }
         }
-        await savePostAndWaitForSync(postMatchPredicate)
+        try await savePostAndWaitForSync(postMatchPredicate)
 
         // (2) Add model that does not match predicate - should not be received on the snapshot
         // (3) Update model that used to match the predicate to no longer match - should be removed from snapshot
@@ -274,10 +274,10 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
             }
         }
         let postDoesNotMatchExpectation = expectation(description: "received postDoesNotMatchExpectation")
-        await savePostAndWaitForSync(postDoesNotMatch, postSyncedExpctation: postDoesNotMatchExpectation)
+        try await savePostAndWaitForSync(postDoesNotMatch, postSyncedExpctation: postDoesNotMatchExpectation)
         var postMatchPredicateNoLongerMatches = postMatchPredicate
         postMatchPredicateNoLongerMatches.title = "doesNotMatch"
-        await savePostAndWaitForSync(postMatchPredicateNoLongerMatches)
+        try await savePostAndWaitForSync(postMatchPredicateNoLongerMatches)
 
 
         // (4) Update model that does not match predicate to match - should be added to snapshot
@@ -296,7 +296,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                 snapshotExpectation56.fulfill()
             }
         }
-        await savePostAndWaitForSync(postDoesNotMatchNowMatches)
+        try await savePostAndWaitForSync(postDoesNotMatchNowMatches)
 
         // (5) Delete the model that matches the predicate - should be removed
         let snapshotExpectation7 = expectation(description: "received snapshot 7")
@@ -310,7 +310,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                 snapshotExpectation7.fulfill()
             }
         }
-        await deletePostAndWaitForSync(postDoesNotMatchNowMatches)
+        try await deletePostAndWaitForSync(postDoesNotMatchNowMatches)
 
         // (6) Delete the model that does not match predicate - should have no snapshot emitted
         let snapshotExpectation8 = expectation(description: "received snapshot 8")
@@ -326,10 +326,10 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
             }
         }
         let postMatchPredicateNoLongerMatchesExpectation = expectation(description: " received")
-        await deletePostAndWaitForSync(postMatchPredicateNoLongerMatches,
+        try await deletePostAndWaitForSync(postMatchPredicateNoLongerMatches,
                                        postSyncedExpctation: postMatchPredicateNoLongerMatchesExpectation)
         // Save "xyz 3" to force a snapshot to be emitted
-        await savePostAndWaitForSync(Post(title: "xyz 3", content: testId, createdAt: .now()))
+        try await savePostAndWaitForSync(Post(title: "xyz 3", content: testId, createdAt: .now()))
     }
 
     /// ObserveQuery is set up with a sort order.
@@ -384,7 +384,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
             }
         }
         let postA = Post(title: "a", content: testId, createdAt: .now())
-        await savePostAndWaitForSync(postA)
+        try await savePostAndWaitForSync(postA)
 
         let snapshotExpectation45 = expectation(description: "received snapshot 4 / 5")
         snapshotExpectation45.expectedFulfillmentCount = 2
@@ -399,7 +399,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
             }
         }
         let postM = Post(title: "m", content: testId, createdAt: .now())
-        await savePostAndWaitForSync(postM)
+        try await savePostAndWaitForSync(postM)
 
         let snapshotExpectation67 = expectation(description: "received snapshot 6 / 7")
         snapshotExpectation67.expectedFulfillmentCount = 2
@@ -415,7 +415,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
             }
         }
         let postZ = Post(title: "z", content: testId, createdAt: .now())
-        await savePostAndWaitForSync(postZ)
+        try await savePostAndWaitForSync(postZ)
 
         // (2) Update models to move them into different orders
         let snapshotExpectation89 = expectation(description: "received snapshot 8 / 9")
@@ -433,7 +433,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         }
         var postNFromA = postA
         postNFromA.title = "n"
-        await savePostAndWaitForSync(postNFromA)
+        try await savePostAndWaitForSync(postNFromA)
         
         let snapshotExpectation1011 = expectation(description: "received snapshot 10 / 11")
         snapshotExpectation1011.expectedFulfillmentCount = 2
@@ -450,7 +450,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         }
         var postBFromZ = postZ
         postBFromZ.title = "b"
-        await savePostAndWaitForSync(postBFromZ)
+        try await savePostAndWaitForSync(postBFromZ)
 
         // (3) Delete models
         let snapshotExpectation12 = expectation(description: "received snapshot 12")
@@ -464,7 +464,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                 snapshotExpectation12.fulfill()
             }
         }
-        await deletePostAndWaitForSync(postM)
+        try await deletePostAndWaitForSync(postM)
         
         let snapshotExpectation13 = expectation(description: "received snapshot 13")
         onSnapshot = { querySnapshot in
@@ -476,7 +476,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                 snapshotExpectation13.fulfill()
             }
         }
-        await deletePostAndWaitForSync(postNFromA)
+        try await deletePostAndWaitForSync(postNFromA)
         
         let snapshotExpectation14 = expectation(description: "received snapshot 13")
         onSnapshot = { querySnapshot in
@@ -487,7 +487,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                 snapshotExpectation14.fulfill()
             }
         }
-        await deletePostAndWaitForSync(postBFromZ)
+        try await deletePostAndWaitForSync(postBFromZ)
     }
 
     /// Ensure stopping datastore will not complete the observeQuery subscribers.
@@ -642,7 +642,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
 
     // MARK: - Helpers
 
-    func savePostAndWaitForSync(_ post: Post, postSyncedExpctation: XCTestExpectation? = nil) async {
+    func savePostAndWaitForSync(_ post: Post, postSyncedExpctation: XCTestExpectation? = nil) async throws {
         // Wait for a fulfillment count of 2 (first event due to the locally source mutation saved to the local store
         // and the second event due to the subscription event received from the remote store)
         let receivedPost = postSyncedExpctation ?? expectation(description: "received Post")
@@ -661,13 +661,13 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
             }
         }.store(in: &cancellables)
         
-        _ = Amplify.DataStore.save(post)
+        _ = try await Amplify.DataStore.save(post)
         if postSyncedExpctation == nil {
             await waitForExpectations(timeout: 100)
         }
     }
 
-    func deletePostAndWaitForSync(_ post: Post, postSyncedExpctation: XCTestExpectation? = nil) async {
+    func deletePostAndWaitForSync(_ post: Post, postSyncedExpctation: XCTestExpectation? = nil) async throws {
         let deletedPost = postSyncedExpctation ?? expectation(description: "deleted Post")
         // Wait for a fulfillment count of 2 (first event due to the locally source mutation deleted from the local
         // store and the second event due to the subscription event received from the remote store)
@@ -686,7 +686,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
             }
         }.store(in: &cancellables)
         
-        _ = Amplify.DataStore.delete(post)
+        _ = try await Amplify.DataStore.delete(post)
         if postSyncedExpctation == nil {
             await waitForExpectations(timeout: 100)
         }

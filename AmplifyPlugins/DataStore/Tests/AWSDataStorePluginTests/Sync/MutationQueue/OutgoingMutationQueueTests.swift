@@ -49,6 +49,7 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
                 }
 
                 if outboxStatusReceivedCurrentCount.get() == 1 {
+                    print("lawmicha - outboxStatusEvent.isEmpty: \(outboxStatusEvent.isEmpty)")
                     XCTAssertTrue(outboxStatusEvent.isEmpty)
                     outboxStatusOnStart.fulfill()
                 } else {
@@ -82,6 +83,7 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
         try await startAmplifyAndWaitForSync()
 
         Amplify.DataStore.save(post) { _ in }
+        // _ = try await Amplify.DataStore.save(post)
         await waitForExpectations(timeout: 5.0, handler: nil)
         Amplify.Hub.removeListener(hubListener)
     }
@@ -178,7 +180,7 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
             try setUpDataStore(mutationQueue: OutgoingMutationQueue(storageAdapter: storageAdapter,
                                                                     dataStoreConfiguration: .default,
                                                                     authModeStrategy: AWSDefaultAuthModeStrategy()))
-            try startAmplify()
+            try await startAmplify()
         }
 
         await waitForExpectations(timeout: 5.0, handler: nil)

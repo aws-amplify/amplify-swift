@@ -62,10 +62,9 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(dataStore: dataStoreConfig)
 
         do {
-
             try Amplify.add(plugin: dataStorePlugin)
             try Amplify.configure(amplifyConfig)
-            Amplify.DataStore.start(completion: {_ in})
+            try await Amplify.DataStore.start()
         } catch {
             XCTFail(String(describing: error))
             return

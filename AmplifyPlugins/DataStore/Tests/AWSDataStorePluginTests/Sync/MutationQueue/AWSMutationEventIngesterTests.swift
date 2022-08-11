@@ -70,23 +70,12 @@ class AWSMutationEventIngesterTests: XCTestCase {
     ///    - I invoke DataStore.save()
     /// - Then:
     ///    - The mutation queue writes events
-    func testMutationQueueWritesSaveEvents() {
+    func testMutationQueueWritesSaveEvents() async throws {
         let post = Post(title: "Post title",
                         content: "Post content",
                         createdAt: .now())
 
-        let saveCompleted = expectation(description: "Local save completed")
-        Amplify.DataStore.save(post) { result in
-            defer {
-                saveCompleted.fulfill()
-            }
-            if case .failure(let dataStoreError) = result {
-                XCTFail(String(describing: dataStoreError))
-                return
-            }
-        }
-
-        wait(for: [saveCompleted], timeout: 1.0)
+        _ = try await Amplify.DataStore.save(post)
 
         let mutationEventQueryCompleted = expectation(description: "Mutation event query completed")
         storageAdapter.query(MutationEvent.self) { result in

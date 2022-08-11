@@ -98,7 +98,7 @@ class LocalSubscriptionTests: XCTestCase {
     ///    - I get a publisher observing a model
     /// - Then:
     ///    - I receive notifications for updates to that model
-    func testPublisher() {
+    func testPublisher() async throws {
         let receivedMutationEvent = expectation(description: "Received mutation event")
 
         let subscription = Amplify.DataStore.publisher(for: Post.self).sink(
@@ -122,7 +122,7 @@ class LocalSubscriptionTests: XCTestCase {
                          rating: nil,
                          comments: [])
 
-        Amplify.DataStore.save(model) { _ in }
+        _ = try await Amplify.DataStore.save(model)
         wait(for: [receivedMutationEvent], timeout: 1.0)
         subscription.cancel()
     }
@@ -132,7 +132,7 @@ class LocalSubscriptionTests: XCTestCase {
     ///    - I subscribe to model events
     /// - Then:
     ///    - I am notified of `create` mutations
-    func testCreate() {
+    func testCreate() async throws {
         let receivedMutationEvent = expectation(description: "Received mutation event")
 
         let subscription = Amplify.DataStore.publisher(for: Post.self).sink(
@@ -158,7 +158,7 @@ class LocalSubscriptionTests: XCTestCase {
                          rating: nil,
                          comments: [])
 
-        Amplify.DataStore.save(model) { _ in }
+        _ = try await Amplify.DataStore.save(model)
         wait(for: [receivedMutationEvent], timeout: 1.0)
 
         subscription.cancel()
@@ -169,7 +169,7 @@ class LocalSubscriptionTests: XCTestCase {
     ///    - I subscribe to model events
     /// - Then:
     ///    - I am notified of `update` mutations
-    func testUpdate() {
+    func testUpdate() async throws {
         let originalContent = "Content as of \(Date())"
         let model = Post(id: UUID().uuidString,
                          title: "Test Post",
@@ -180,12 +180,7 @@ class LocalSubscriptionTests: XCTestCase {
                          rating: nil,
                          comments: [])
 
-        let saveCompleted = expectation(description: "Save complete")
-        Amplify.DataStore.save(model) { _ in
-            saveCompleted.fulfill()
-        }
-
-        wait(for: [saveCompleted], timeout: 5.0)
+        _ = try await Amplify.DataStore.save(model)
 
         let newContent = "Updated content as of \(Date())"
         var newModel = model
@@ -207,8 +202,8 @@ class LocalSubscriptionTests: XCTestCase {
                 receivedMutationEvent.fulfill()
             }
         })
-
-        Amplify.DataStore.save(newModel) { _ in }
+        
+        _ = try await Amplify.DataStore.save(newModel)
 
         wait(for: [receivedMutationEvent], timeout: 1.0)
 
@@ -220,7 +215,7 @@ class LocalSubscriptionTests: XCTestCase {
     ///    - I subscribe to model events
     /// - Then:
     ///    - I am notified of `delete` mutations
-    func testDelete() {
+    func testDelete() async throws {
         let receivedMutationEvent = expectation(description: "Received mutation event")
 
         let subscription = Amplify.DataStore.publisher(for: Post.self).sink(
@@ -241,8 +236,8 @@ class LocalSubscriptionTests: XCTestCase {
                          content: "Test Post Content",
                          createdAt: .now())
 
-        Amplify.DataStore.save(model) { _ in }
-        Amplify.DataStore.delete(model) { _ in }
+        _ = try await Amplify.DataStore.save(model)
+        _ = try await Amplify.DataStore.delete(model)
         wait(for: [receivedMutationEvent], timeout: 1.0)
 
         subscription.cancel()

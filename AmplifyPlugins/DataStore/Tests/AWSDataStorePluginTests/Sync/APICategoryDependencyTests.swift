@@ -25,12 +25,8 @@ class APICategoryDependencyTests: XCTestCase {
     ///    - The operation succeeds
     func testNonSyncableWithoutAPICategorySucceeds() async throws {
         try await setUpWithAPI()
-
         let model = MockUnsynced()
-
-        let modelSaved = expectation(description: "Model saved")
-        Amplify.DataStore.save(model) { _ in modelSaved.fulfill() }
-        wait(for: [modelSaved], timeout: 1.0)
+        _ = try await Amplify.DataStore.save(model)
     }
 
     /// **NOTE:** We can't put in a meaningful test for this condition because the first call to the unconfigured API

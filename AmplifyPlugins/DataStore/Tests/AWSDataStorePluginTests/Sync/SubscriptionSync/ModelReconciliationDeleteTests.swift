@@ -26,7 +26,6 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
     /// - Then:
     ///    - The update is not applied
     func testUpdateAfterDelete() async throws {
-        let expectationListener = expectation(description: "listener")
         await tryOrFail {
             try setUpStorageAdapter(preCreating: [MockSynced.self])
         }
@@ -39,10 +38,10 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
                                                      version: 2)
         let localMetadataSaved = expectation(description: "Local metadata saved")
         storageAdapter.save(localSyncMetadata) { _ in localMetadataSaved.fulfill() }
-        wait(for: [localMetadataSaved], timeout: 1.0)
+        await waitForExpectations(timeout: 1.0)
 
         var valueListenerFromRequest: MutationSyncInProcessListener?
-
+        let expectationListener = expectation(description: "listener")
         let responder = SubscribeRequestListenerResponder<MutationSync<AnyModel>> { request, valueListener, _ in
             if request.document.contains("onUpdateMockSynced") {
                 valueListenerFromRequest = valueListener
@@ -58,7 +57,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
             mockRemoteSyncEngineFor_testUpdateAfterDelete()
             try await startAmplifyAndWaitForSync()
         }
-        wait(for: [expectationListener], timeout: 2.0)
+        await waitForExpectations(timeout: 2.0)
 
         guard let valueListener = valueListenerFromRequest else {
                 XCTFail("Incoming responder didn't set up listener")
@@ -150,7 +149,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
             mockRemoteSyncEngineFor_testDeleteWithNoLocalModel()
             try await startAmplifyAndWaitForSync()
         }
-        wait(for: [expectationListener], timeout: 1.0)
+        await waitForExpectations(timeout: 1)
 
         guard let valueListener = valueListenerFromRequest else {
             XCTFail("Incoming responder didn't set up listener")
