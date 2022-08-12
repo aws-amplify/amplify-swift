@@ -9,10 +9,10 @@ import XCTest
 @testable import Amplify
 
 final class AsyncChannelTests: XCTestCase {
-#if swift(>=5.7)
-    let isSwiftCompatible = true
+#if os(macOS)
+    let isMacOS = true
 #else
-    let isSwiftCompatible = false
+    let isMacOS = false
 #endif
 
     enum Failure: Error {
@@ -138,7 +138,7 @@ final class AsyncChannelTests: XCTestCase {
     }
 
     func testChannelCancelled() async throws {
-        try XCTSkipIf(!isSwiftCompatible)
+        try XCTSkipIf(!isMacOS)
         let channel = AsyncChannel<String>()
         let ready = expectation(description: "ready")
         let task: Task<String?, Never> = Task {
@@ -153,7 +153,7 @@ final class AsyncChannelTests: XCTestCase {
     }
 
     func testThrowingChannelCancelled() async throws {
-        try XCTSkipIf(!isSwiftCompatible)
+        try XCTSkipIf(!isMacOS)
         let channel = AsyncThrowingChannel<String, Error>()
         let ready = expectation(description: "ready")
         let task: Task<String?, Error> = Task {
@@ -168,7 +168,7 @@ final class AsyncChannelTests: XCTestCase {
     }
 
     func testChannelCancelledOnSend() async throws {
-        try XCTSkipIf(!isSwiftCompatible)
+        try XCTSkipIf(!isMacOS)
         let channel = AsyncChannel<Int>()
         let notYetDone = expectation(description: "not yet done")
         notYetDone.isInverted = true
@@ -184,7 +184,7 @@ final class AsyncChannelTests: XCTestCase {
     }
 
     func testThrowingChannelCancelledOnSend() async throws {
-        try XCTSkipIf(!isSwiftCompatible)
+        try XCTSkipIf(!isMacOS)
         let channel = AsyncThrowingChannel<Int, Error>()
         let notYetDone = expectation(description: "not yet done")
         notYetDone.isInverted = true
