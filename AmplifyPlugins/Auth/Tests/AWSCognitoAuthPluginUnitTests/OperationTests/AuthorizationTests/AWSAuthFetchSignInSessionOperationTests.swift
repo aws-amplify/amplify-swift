@@ -106,53 +106,144 @@ class AWSAuthFetchSignInSessionOperationTests: XCTestCase {
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
-    //    /// Test signedIn session with a user signed In to  identityPool
-    //    ///
-    //    /// - Given: Given an auth plugin with signedIn state
-    //    /// - When:
-    //    ///    - I invoke fetchAuthSession and mock notSignedIn for getTokens
-    //    /// - Then:
-    //    ///    - I should get an a valid session with the following details:
-    //    ///         - isSignedIn = true
-    //    ///         - aws credentails = valid values
-    //    ///         - identity id = valid values
-    //    ///         - cognito tokens = service error with invalidAccountTypeException error
-    //    ///
-    //    func testSignInToIdentityPoolSession() {
-    //        mockAWSCredentials()
-    //        mockIdentityId()
-    //        mockAWSMobileClient.tokensMockResult = .failure(AWSMobileClientError.notSignedIn(message: "Error"))
-    //        let resultExpectation = expectation(description: "Should receive a result")
-    //        _ = plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options()) { result in
-    //            defer {
-    //                resultExpectation.fulfill()
-    //            }
-    //            switch result {
-    //            case .success(let session):
-    //
-    //                XCTAssertTrue(session.isSignedIn)
-    //
-    //                let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
-    //                XCTAssertNotNil(creds?.accessKey)
-    //                XCTAssertNotNil(creds?.secretKey)
-    //
-    //                let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
-    //                XCTAssertNotNil(identityId)
-    //
-    //                let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
-    //                guard case .failure(let error) = tokensResult,
-    //                      case .service(_, _, let underlyingError) = error,
-    //                      case .invalidAccountTypeException = (underlyingError as? AWSCognitoAuthError) else {
-    //                    XCTFail("Should return invalidAccountTypeException error")
-    //                    return
-    //                }
-    //            case .failure(let error):
-    //                XCTFail("Received failure with error \(error)")
-    //            }
-    //        }
-    //        wait(for: [resultExpectation], timeout: apiTimeout)
-    //    }
-    //
+    /// Test force refresh signedIn session with a user signed In to userPool and identityPool enabled
+    ///
+    /// - Given: Given an auth plugin with signedIn state and identityPool enabled
+    /// - When:
+    ///    - I invoke fetchAuthSession with force refresh
+    /// - Then:
+    ///    - I should get an a valid session with the following details:
+    ///         - isSignedIn = true
+    ///         - aws credentails = valid values
+    ///         - identity id = valid values
+    ///         - cognito tokens = valid values
+    ///
+    func testForceRefreshSignInSessionWithIdentityPoolEnabled() {
+        let resultExpectation = expectation(description: "Should receive a result")
+        resultExpectation.expectedFulfillmentCount = 2
+
+        let initialState = AuthState.configured(
+            AuthenticationState.signedIn(.testData),
+            AuthorizationState.sessionEstablished(
+                AmplifyCredentials.testData))
+        let initAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
+            resultExpectation.fulfill()
+            return InitiateAuthOutputResponse(authenticationResult: .init(
+                accessToken: "accessToken",
+                expiresIn: 1000,
+                idToken: "idToken",
+                refreshToken: "refreshToke"))
+        }
+
+        let awsCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
+            resultExpectation.fulfill()
+            let credentials = CognitoIdentityClientTypes.Credentials(
+                accessKeyId: "accessKey",
+                expiration: Date(),
+                secretKey: "secret",
+                sessionToken: "session")
+            return .init(credentials: credentials, identityId: "responseIdentityID")
+        }
+
+        let plugin = configurePluginWith(
+            userPool: { MockIdentityProvider(mockInitiateAuthResponse: initAuth) },
+            identityPool: { MockIdentity(mockGetCredentialsResponse: awsCredentials) },
+            initialState: initialState)
+
+        _ = plugin.fetchAuthSession(options: .forceRefresh()) { result in
+            defer {
+                resultExpectation.fulfill()
+            }
+            switch result {
+            case .success(let session):
+
+                XCTAssertTrue(session.isSignedIn)
+
+                let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
+                XCTAssertNotNil(creds?.accessKey)
+                XCTAssertNotNil(creds?.secretKey)
+
+                let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
+                XCTAssertNotNil(identityId)
+
+                let tokens = try? (session as? AuthCognitoTokensProvider)?.getCognitoTokens().get()
+                XCTAssertNotNil(tokens?.accessToken)
+                XCTAssertNotNil(tokens?.idToken)
+                XCTAssertNotNil(tokens?.refreshToken)
+            case .failure(let error):
+                XCTFail("Received failure with error \(error)")
+            }
+        }
+        wait(for: [resultExpectation], timeout: apiTimeout)
+    }
+
+    /// Test signedIn session with a user signed In to  identityPool
+    ///
+    /// - Given: Given an auth plugin with signedOut state
+    /// - When:
+    ///    - I invoke fetchAuthSession and mock notSignedIn for getTokens
+    /// - Then:
+    ///    - I should get an a valid session with the following details:
+    ///         - isSignedIn = false
+    ///         - aws credentails = valid values
+    ///         - identity id = valid values
+    ///         - cognito tokens = signedOut
+    ///
+    func testSignInToIdentityPoolSession() {
+
+        let initialState = AuthState.configured(
+            AuthenticationState.signedOut(.testData),
+            AuthorizationState.sessionEstablished(
+                AmplifyCredentials.testDataIdentityPoolWithExpiredTokens))
+
+        let getId: MockIdentity.MockGetIdResponse = { _ in
+            return .init(identityId: "mockIdentityId")
+        }
+
+        let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
+            let credentials = CognitoIdentityClientTypes.Credentials(accessKeyId: "accessKey",
+                                                                     expiration: Date(),
+                                                                     secretKey: "secret",
+                                                                     sessionToken: "session")
+            return .init(credentials: credentials, identityId: "responseIdentityID")
+        }
+
+        let plugin = configurePluginWith(identityPool: {
+            MockIdentity(mockGetIdResponse: getId,
+                         mockGetCredentialsResponse: getCredentials) },
+                                         initialState: initialState)
+
+
+        let resultExpectation = expectation(description: "Should receive a result")
+        _ = plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options()) { result in
+            defer {
+                resultExpectation.fulfill()
+            }
+            switch result {
+            case .success(let session):
+
+                XCTAssertFalse(session.isSignedIn)
+
+                let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
+                XCTAssertNotNil(creds?.accessKey)
+                XCTAssertNotNil(creds?.secretKey)
+
+                let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
+                XCTAssertNotNil(identityId)
+
+                let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
+                guard case .failure(let error) = tokensResult,
+                      case .signedOut = error else {
+                    XCTFail("Should return signed out error")
+                    return
+                }
+            case .failure(let error):
+                XCTFail("Received failure with error \(error)")
+            }
+        }
+        wait(for: [resultExpectation], timeout: apiTimeout)
+    }
+
     /// Test signedIn session with session expired
     ///
     /// - Given: Given an auth plugin with signedIn state
