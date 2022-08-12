@@ -23,6 +23,9 @@ public extension AuthFetchSessionRequest {
 
     struct Options {
 
+        /// forceRefresh flag when true will ignore the cached UserPoolToken and TemporaryAWSCredentials.
+        /// This will force the plugin to connect with server to get refreshed access token and id token with a new pair of
+        /// temporary AWS Credentials.
         public let forceRefresh: Bool
 
         /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
