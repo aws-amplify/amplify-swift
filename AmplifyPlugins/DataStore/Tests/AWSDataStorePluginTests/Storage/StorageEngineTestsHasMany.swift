@@ -230,18 +230,14 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
 
         syncEngine.setCallbackOnSubmit{ submittedMutationEvent, completion in
             receivedMutationEvent.fulfill()
-            completion(.success(submittedMutationEvent))
-        }
-
-        syncEngine.setCallbackOnSubmit{ submittedMutationEvent, completion in
-            receivedMutationEvent.fulfill()
             if submittedMutationEvent.modelId == lunchStandardMenu.id ||
                 submittedMutationEvent.modelId == oysters.id {
                 expectedFailures.fulfill()
                 completion(.failure(.internalOperation("mockError", "", nil)))
+            } else {
+                expectedSuccess.fulfill()
+                completion(.success(submittedMutationEvent))
             }
-            expectedSuccess.fulfill()
-            completion(.success(submittedMutationEvent))
         }
 
         guard case .failure(let error) = deleteModelSynchronousOrFailOtherwise(modelType: Restaurant.self,
@@ -252,5 +248,4 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
         wait(for: [receivedMutationEvent, expectedFailures, expectedSuccess], timeout: defaultTimeout)
         XCTAssertEqual(error.errorDescription, "mockError")
     }
-
 }
