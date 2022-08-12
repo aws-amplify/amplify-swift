@@ -13,21 +13,20 @@ import Combine
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
-typealias OnSubmitCallBack = (MutationEvent) -> Void
+typealias OnSubmitCallBack = (MutationEvent, @escaping (Result<MutationEvent, DataStoreError>) -> Void) -> Void
+
 class MockRemoteSyncEngine: RemoteSyncEngineBehavior {
     func submit(_ mutationEvent: MutationEvent, completion: @escaping (Result<MutationEvent, DataStoreError>) -> Void) {
         if let callback = callbackOnSubmit {
-            callback(mutationEvent)
+            callback(mutationEvent, completion)
+        } else {
+            completion(.success(mutationEvent))
         }
-//        if let returnOnSubmit = self.returnOnSubmit {
-//            return returnOnSubmit(mutationEvent)
-//        }
-        completion(.success(mutationEvent))
     }
 
     let remoteSyncTopicPublisher: PassthroughSubject<RemoteSyncEngineEvent, DataStoreError>
     var callbackOnSubmit: OnSubmitCallBack?
-    var returnOnSubmit: ((MutationEvent) -> Future<MutationEvent, DataStoreError>)?
+    var success = true
 
     var publisher: AnyPublisher<RemoteSyncEngineEvent, DataStoreError> {
         return remoteSyncTopicPublisher.eraseToAnyPublisher()
@@ -44,22 +43,7 @@ class MockRemoteSyncEngine: RemoteSyncEngineBehavior {
 
     }
 
-    func submit(_ mutationEvent: MutationEvent) -> Future<MutationEvent, DataStoreError> {
-        if let callback = callbackOnSubmit {
-            callback(mutationEvent)
-        }
-        if let returnOnSubmit = self.returnOnSubmit {
-            return returnOnSubmit(mutationEvent)
-        }
-        return Future<MutationEvent, DataStoreError> { promise in
-            promise(.success(mutationEvent))
-        }
-    }
-
-    func setCallbackOnSubmit(callback: @escaping OnSubmitCallBack) {
-        callbackOnSubmit = callback
-    }
-    func setReturnOnSubmit(_ returnOnSubmit: @escaping (MutationEvent) -> Future<MutationEvent, DataStoreError>) {
-        self.returnOnSubmit = returnOnSubmit
+    func setCallbackOnSubmit(callbackOnSubmit: @escaping OnSubmitCallBack) {
+        self.callbackOnSubmit = callbackOnSubmit
     }
 }

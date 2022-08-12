@@ -313,14 +313,14 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
 
     // MARK: - Query and delete (With Sync)
 
-    func testWithId_WithSync() {
+    func testWithId_WithSync() async {
         let restaurant = Restaurant(restaurantName: "restaurant1")
-        guard case .success = saveModelSynchronous(model: restaurant) else {
+        guard case .success = await saveModelSynchronous(model: restaurant) else {
             XCTFail("Failed to save")
             return
         }
         let predicate: QueryPredicate = Restaurant.keys.id == restaurant.id
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
+        guard case .success(let queriedRestaurants) = await queryModelSynchronous(modelType: Restaurant.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
             return
@@ -334,21 +334,14 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         let expectedSuccess = expectation(description: "Simulated success on mutation event submitted to sync engine")
         expectedSuccess.expectedFulfillmentCount = 1
 
-        syncEngine.setCallbackOnSubmit(callback: { _ in
+        syncEngine.setCallbackOnSubmit { submittedMutationEvent, completion in
             receivedMutationEvent.fulfill()
-        })
-
-        syncEngine.setReturnOnSubmit { submittedMutationEvent in
             if submittedMutationEvent.modelId == restaurant.id {
                 expectedSuccess.fulfill()
-                return Future<MutationEvent, DataStoreError> { promise in
-                    promise(.success(submittedMutationEvent))
-                }
-            }
-
-            expectedFailures.fulfill()
-            return Future<MutationEvent, DataStoreError> { promise in
-                promise(.failure(.internalOperation("mockError", "", nil)))
+                completion(.success(submittedMutationEvent))
+            } else {
+                expectedFailures.fulfill()
+                completion(.failure(.internalOperation("mockError", "", nil)))
             }
         }
 
@@ -368,8 +361,8 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        wait(for: [completed, receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
-        guard case .success(let queriedRestaurants) = queryModelSynchronous(modelType: Restaurant.self,
+        await waitForExpectations(timeout: 1)
+        guard case .success(let queriedRestaurants) = await queryModelSynchronous(modelType: Restaurant.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
             return
@@ -377,18 +370,18 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         XCTAssertEqual(queriedRestaurants.count, 0)
     }
 
-    func testWithIdentifier_WithSync() {
+    func testWithIdentifier_WithSync() async {
         let modelId = "model-id"
         let modelDob = Temporal.DateTime.now()
         let model = ModelCompositePk(id: modelId, dob: modelDob, name: "name")
 
-        guard case .success = saveModelSynchronous(model: model) else {
+        guard case .success = await saveModelSynchronous(model: model) else {
             XCTFail("Failed to save")
             return
         }
         let predicate: QueryPredicate = ModelCompositePk.keys.id == modelId
             && ModelCompositePk.keys.dob == modelDob
-        guard case .success(let queriedModels) = queryModelSynchronous(modelType: ModelCompositePk.self,
+        guard case .success(let queriedModels) = await queryModelSynchronous(modelType: ModelCompositePk.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
             return
@@ -402,21 +395,14 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         let expectedSuccess = expectation(description: "Simulated success on mutation event submitted to sync engine")
         expectedSuccess.expectedFulfillmentCount = 1
 
-        syncEngine.setCallbackOnSubmit(callback: { _ in
+        syncEngine.setCallbackOnSubmit { submittedMutationEvent, completion in
             receivedMutationEvent.fulfill()
-        })
-
-        syncEngine.setReturnOnSubmit { submittedMutationEvent in
             if submittedMutationEvent.modelId == model.identifier {
                 expectedSuccess.fulfill()
-                return Future<MutationEvent, DataStoreError> { promise in
-                    promise(.success(submittedMutationEvent))
-                }
-            }
-
-            expectedFailures.fulfill()
-            return Future<MutationEvent, DataStoreError> { promise in
-                promise(.failure(.internalOperation("mockError", "", nil)))
+                completion(.success(submittedMutationEvent))
+            } else {
+                expectedFailures.fulfill()
+                completion(.failure(.internalOperation("mockError", "", nil)))
             }
         }
 
@@ -436,8 +422,8 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
             }
         }
         operation.start()
-        wait(for: [completed, receivedMutationEvent, expectedFailures, expectedSuccess], timeout: 1)
-        guard case .success(let queriedModels) = queryModelSynchronous(modelType: ModelCompositePk.self,
+        await waitForExpectations(timeout: 1)
+        guard case .success(let queriedModels) = await queryModelSynchronous(modelType: ModelCompositePk.self,
                                                                             predicate: predicate) else {
             XCTFail("Failed to query")
             return
@@ -469,21 +455,14 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         let expectedSuccess = expectation(description: "Simulated success on mutation event submitted to sync engine")
         expectedSuccess.expectedFulfillmentCount = 1
 
-        syncEngine.setCallbackOnSubmit(callback: { _ in
+        syncEngine.setCallbackOnSubmit { submittedMutationEvent, completion in
             receivedMutationEvent.fulfill()
-        })
-
-        syncEngine.setReturnOnSubmit { submittedMutationEvent in
             if submittedMutationEvent.modelId == restaurant.id {
                 expectedSuccess.fulfill()
-                return Future<MutationEvent, DataStoreError> { promise in
-                    promise(.success(submittedMutationEvent))
-                }
-            }
-
-            expectedFailures.fulfill()
-            return Future<MutationEvent, DataStoreError> { promise in
-                promise(.failure(.internalOperation("mockError", "", nil)))
+                completion(.success(submittedMutationEvent))
+            } else {
+                expectedFailures.fulfill()
+                completion(.failure(.internalOperation("mockError", "", nil)))
             }
         }
 
@@ -536,21 +515,15 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         let expectedSuccess = expectation(description: "Simulated success on mutation event submitted to sync engine")
         expectedSuccess.expectedFulfillmentCount = 1
 
-        syncEngine.setCallbackOnSubmit(callback: { _ in
+        
+        syncEngine.setCallbackOnSubmit { submittedMutationEvent, completion in
             receivedMutationEvent.fulfill()
-        })
-
-        syncEngine.setReturnOnSubmit { submittedMutationEvent in
             if submittedMutationEvent.modelId == restaurant.id {
                 expectedSuccess.fulfill()
-                return Future<MutationEvent, DataStoreError> { promise in
-                    promise(.success(submittedMutationEvent))
-                }
-            }
-
-            expectedFailures.fulfill()
-            return Future<MutationEvent, DataStoreError> { promise in
-                promise(.failure(.internalOperation("mockError", "", nil)))
+                completion(.success(submittedMutationEvent))
+            } else {
+                expectedFailures.fulfill()
+                completion(.failure(.internalOperation("mockError", "", nil)))
             }
         }
 
@@ -610,21 +583,14 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         let expectedSuccess = expectation(description: "Simulated success on mutation event submitted to sync engine")
         expectedSuccess.expectedFulfillmentCount = 1
 
-        syncEngine.setCallbackOnSubmit(callback: { _ in
+        syncEngine.setCallbackOnSubmit { submittedMutationEvent, completion in
             receivedMutationEvent.fulfill()
-        })
-
-        syncEngine.setReturnOnSubmit { submittedMutationEvent in
             if submittedMutationEvent.modelId == restaurant.id {
                 expectedSuccess.fulfill()
-                return Future<MutationEvent, DataStoreError> { promise in
-                    promise(.success(submittedMutationEvent))
-                }
-            }
-
-            expectedFailures.fulfill()
-            return Future<MutationEvent, DataStoreError> { promise in
-                promise(.failure(.internalOperation("mockError", "", nil)))
+                completion(.success(submittedMutationEvent))
+            } else {
+                expectedFailures.fulfill()
+                completion(.failure(.internalOperation("mockError", "", nil)))
             }
         }
 
@@ -678,24 +644,18 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         expectedSuccess.expectedFulfillmentCount = 3
 
         var submittedEvents = [MutationEvent]()
-        syncEngine.setCallbackOnSubmit(callback: { mutationEvent in
-            submittedEvents.append(mutationEvent)
+        
+        syncEngine.setCallbackOnSubmit { submittedMutationEvent, completion in
+            submittedEvents.append(submittedMutationEvent)
             receivedMutationEvent.fulfill()
-        })
-
-        syncEngine.setReturnOnSubmit { submittedMutationEvent in
             if submittedMutationEvent.modelId == restaurant.id ||
                 submittedMutationEvent.modelId == lunchStandardMenu.id ||
                 submittedMutationEvent.modelId == oysters.id {
                 expectedSuccess.fulfill()
-                return Future<MutationEvent, DataStoreError> { promise in
-                    promise(.success(submittedMutationEvent))
-                }
-            }
-
-            expectedFailures.fulfill()
-            return Future<MutationEvent, DataStoreError> { promise in
-                promise(.failure(.internalOperation("mockError", "", nil)))
+                completion(.success(submittedMutationEvent))
+            } else {
+                expectedFailures.fulfill()
+                completion(.failure(.internalOperation("mockError", "", nil)))
             }
         }
 
@@ -754,23 +714,17 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         expectedSuccess.expectedFulfillmentCount = 2
 
         var submittedEvents = [MutationEvent]()
-        syncEngine.setCallbackOnSubmit(callback: { mutationEvent in
-            submittedEvents.append(mutationEvent)
+        
+        syncEngine.setCallbackOnSubmit { submittedMutationEvent, completion in
+            submittedEvents.append(submittedMutationEvent)
             receivedMutationEvent.fulfill()
-        })
-
-        syncEngine.setReturnOnSubmit { submittedMutationEvent in
             if submittedMutationEvent.modelId == post.identifier ||
                 submittedMutationEvent.modelId == comment.identifier {
                 expectedSuccess.fulfill()
-                return Future<MutationEvent, DataStoreError> { promise in
-                    promise(.success(submittedMutationEvent))
-                }
-            }
-
-            expectedFailures.fulfill()
-            return Future<MutationEvent, DataStoreError> { promise in
-                promise(.failure(.internalOperation("mockError", "", nil)))
+                completion(.success(submittedMutationEvent))
+            } else {
+                expectedFailures.fulfill()
+                completion(.failure(.internalOperation("mockError", "", nil)))
             }
         }
 
@@ -828,23 +782,17 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         expectedSuccess.expectedFulfillmentCount = 2
 
         var submittedEvents = [MutationEvent]()
-        syncEngine.setCallbackOnSubmit(callback: { mutationEvent in
-            submittedEvents.append(mutationEvent)
+        
+        syncEngine.setCallbackOnSubmit { submittedMutationEvent, completion in
+            submittedEvents.append(submittedMutationEvent)
             receivedMutationEvent.fulfill()
-        })
-
-        syncEngine.setReturnOnSubmit { submittedMutationEvent in
             if submittedMutationEvent.modelId == restaurant.id ||
                 submittedMutationEvent.modelId == oysters.id {
                 expectedSuccess.fulfill()
-                return Future<MutationEvent, DataStoreError> { promise in
-                    promise(.success(submittedMutationEvent))
-                }
-            }
-            // fail on `submittedMutationEvent.modelId == lunchStandardMenu.id`
-            expectedFailures.fulfill()
-            return Future<MutationEvent, DataStoreError> { promise in
-                promise(.failure(.internalOperation("mockError", "", nil)))
+                completion(.success(submittedMutationEvent))
+            } else {
+                expectedFailures.fulfill()
+                completion(.failure(.internalOperation("mockError", "", nil)))
             }
         }
 
