@@ -15,6 +15,15 @@ import Combine
 
 typealias OnSubmitCallBack = (MutationEvent) -> Void
 class MockRemoteSyncEngine: RemoteSyncEngineBehavior {
+    func submit(_ mutationEvent: MutationEvent, completion: @escaping (Result<MutationEvent, DataStoreError>) -> Void) {
+        if let callback = callbackOnSubmit {
+            callback(mutationEvent)
+        }
+//        if let returnOnSubmit = self.returnOnSubmit {
+//            return returnOnSubmit(mutationEvent)
+//        }
+        completion(.success(mutationEvent))
+    }
 
     let remoteSyncTopicPublisher: PassthroughSubject<RemoteSyncEngineEvent, DataStoreError>
     var callbackOnSubmit: OnSubmitCallBack?

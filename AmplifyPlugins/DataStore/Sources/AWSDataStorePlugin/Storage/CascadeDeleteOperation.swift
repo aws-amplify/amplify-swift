@@ -462,23 +462,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
     private func submitToSyncEngine(mutationEvent: MutationEvent,
                                     syncEngine: RemoteSyncEngineBehavior,
                                     completion: @escaping DataStoreCallback<MutationEvent>) {
-        let mutationQueueSink = AtomicValue<AnyCancellable?>(initialValue: nil)
-        mutationQueueSink.set(syncEngine
-            .submit(mutationEvent)
-            .sink(
-                receiveCompletion: { futureCompletion in
-                    switch futureCompletion {
-                    case .failure(let error):
-                        completion(.failure(causedBy: error))
-                    case .finished:
-                        self.log.verbose("\(#function) Received successful completion")
-                    }
-                    mutationQueueSink.get()?.cancel()
-                    mutationQueueSink.set(nil)
-                }, receiveValue: { mutationEvent in
-                    self.log.verbose("\(#function) saved mutation event: \(mutationEvent)")
-                    completion(.success(mutationEvent))
-                }))
+        syncEngine.submit(mutationEvent, completion: completion)
     }
 }
 

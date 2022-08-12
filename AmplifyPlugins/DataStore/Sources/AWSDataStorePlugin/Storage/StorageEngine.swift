@@ -356,24 +356,9 @@ final class StorageEngine: StorageEngineBehavior {
     private func submitToSyncEngine(mutationEvent: MutationEvent,
                                     syncEngine: RemoteSyncEngineBehavior,
                                     completion: @escaping DataStoreCallback<MutationEvent>) {
-        var mutationQueueSink: AnyCancellable?
-        mutationQueueSink = syncEngine
-            .submit(mutationEvent)
-            .sink(
-                receiveCompletion: { futureCompletion in
-                    switch futureCompletion {
-                    case .failure(let error):
-                        completion(.failure(causedBy: error))
-                    case .finished:
-                        self.log.verbose("\(#function) Received successful completion")
-                    }
-                    mutationQueueSink?.cancel()
-                    mutationQueueSink = nil
-
-                }, receiveValue: { mutationEvent in
-                    self.log.verbose("\(#function) saved mutation event: \(mutationEvent)")
-                    completion(.success(mutationEvent))
-                })
+        Task {
+            syncEngine.submit(mutationEvent, completion: completion)
+        }
     }
 
 }

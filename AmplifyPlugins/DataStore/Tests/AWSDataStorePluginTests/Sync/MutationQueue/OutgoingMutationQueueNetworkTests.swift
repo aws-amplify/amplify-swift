@@ -126,7 +126,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
             }
         }
 
-        await waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.2)
 
         // Set the responder to reject the mutation. Make sure to push a retry advice before sending
         // a new mutation.
@@ -155,7 +155,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
                 savedUpdate1.fulfill()
             }
         }
-        await waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.2)
 
         // At this point, the MutationEvent table (the backing store for the outgoing mutation
         // queue) has only a record for the interim update. It is marked as `inProcess: true`,
@@ -181,7 +181,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
 
         // Assert that DataStore has pushed the no-network event. This isn't strictly necessary for
         // correct operation of the queue.
-        await waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.2)
 
         // At this point, the MutationEvent table has only a record for update1. It is marked as
         // `inProcess: false`, because the mutation queue has been fully cancelled by the cleanup
@@ -204,7 +204,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
                 savedUpdate2.fulfill()
             }
         }
-        await waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.2)
 
         // At this point, the MutationEvent table has only a record for update2. It is marked as
         // `inProcess: false`, because the mutation queue has been fully cancelled.
@@ -223,7 +223,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
                 savedFinalUpdate.fulfill()
             }
         }
-        await waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.2)
 
         let syncStarted = expectation(description: "syncStarted")
         setUpSyncStartedListener(
