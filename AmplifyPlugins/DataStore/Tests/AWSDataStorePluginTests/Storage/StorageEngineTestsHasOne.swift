@@ -101,9 +101,10 @@ class StorageEngineTestsHasOne: StorageEngineTestsBase {
         }
 
         let mutationEventOnProject = expectation(description: "Mutation Events submitted to sync engine")
-        syncEngine.setCallbackOnSubmit(callback: { _ in
+        syncEngine.setCallbackOnSubmit{ submittedMutationEvent, completion in
             mutationEventOnProject.fulfill()
-        })
+            completion(.success(submittedMutationEvent))
+        }
         guard case .success = deleteModelSynchronousOrFailOtherwise(modelType: Project.self,
                                                                     withId: projectA.id) else {
             XCTFail("Failed to delete projectA")

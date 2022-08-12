@@ -102,9 +102,10 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
 
         let receivedMutationEvent = expectation(description: "Mutation Events submitted to sync engine")
         receivedMutationEvent.expectedFulfillmentCount = 6
-        syncEngine.setCallbackOnSubmit(callback: { _ in
+        syncEngine.setCallbackOnSubmit{ submittedMutationEvent, completion in
             receivedMutationEvent.fulfill()
-        })
+            completion(.success(submittedMutationEvent))
+        }
         guard case .success = deleteModelSynchronousOrFailOtherwise(modelType: Restaurant.self,
                                                                     withId: dreamRestaurant.id) else {
             XCTFail("Failed to delete restaurant")
@@ -193,9 +194,10 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
         // Delete Top level of restaurant
         let receivedMutationEvent = expectation(description: "Mutation Events submitted to sync engine")
         receivedMutationEvent.expectedFulfillmentCount = numberOfMenus + numberOfDishes + 1
-        syncEngine.setCallbackOnSubmit(callback: { _ in
+        syncEngine.setCallbackOnSubmit{ submittedMutationEvent, completion in
             receivedMutationEvent.fulfill()
-        })
+            completion(.success(submittedMutationEvent))
+        }
         guard case .success = deleteModelSynchronousOrFailOtherwise(modelType: Restaurant.self,
                                                                     withId: restaurant1.id,
                                                                     timeout: 100) else {
@@ -226,22 +228,20 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
         let expectedSuccess = expectation(description: "Simulated success on mutation event submitted to sync engine")
         expectedSuccess.expectedFulfillmentCount = 1
 
-        syncEngine.setCallbackOnSubmit(callback: { _ in
+        syncEngine.setCallbackOnSubmit{ submittedMutationEvent, completion in
             receivedMutationEvent.fulfill()
-        })
+            completion(.success(submittedMutationEvent))
+        }
 
-        syncEngine.setReturnOnSubmit { submittedMutationEvent in
+        syncEngine.setCallbackOnSubmit{ submittedMutationEvent, completion in
+            receivedMutationEvent.fulfill()
             if submittedMutationEvent.modelId == lunchStandardMenu.id ||
                 submittedMutationEvent.modelId == oysters.id {
                 expectedFailures.fulfill()
-                return Future<MutationEvent, DataStoreError> { promise in
-                    promise(.failure(.internalOperation("mockError", "", nil)))
-                }
+                completion(.failure(.internalOperation("mockError", "", nil)))
             }
             expectedSuccess.fulfill()
-            return Future<MutationEvent, DataStoreError> { promise in
-                promise(.success(submittedMutationEvent))
-            }
+            completion(.success(submittedMutationEvent))
         }
 
         guard case .failure(let error) = deleteModelSynchronousOrFailOtherwise(modelType: Restaurant.self,

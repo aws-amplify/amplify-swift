@@ -94,9 +94,10 @@ class StorageEngineTestsManyToMany: StorageEngineTestsBase {
         let mutationEvents = expectation(description: "Mutation Events submitted to sync engine")
         mutationEvents.expectedFulfillmentCount = 2
 
-        syncEngine.setCallbackOnSubmit(callback: { _ in
+        syncEngine.setCallbackOnSubmit{ submittedMutationEvent, completion in
             mutationEvents.fulfill()
-        })
+            completion(.success(submittedMutationEvent))
+        }
         guard case .success = deleteModelSynchronousOrFailOtherwise(modelType: M2MPost.self,
                                                                     withId: post1.id) else {
             XCTFail("Failed to delete post1")
@@ -150,9 +151,10 @@ class StorageEngineTestsManyToMany: StorageEngineTestsBase {
         let mutationEvents = expectation(description: "Mutation Events submitted to sync engine")
         mutationEvents.expectedFulfillmentCount = 2
 
-        syncEngine.setCallbackOnSubmit(callback: { _ in
+        syncEngine.setCallbackOnSubmit{ submittedMutationEvent, completion in
             mutationEvents.fulfill()
-        })
+            completion(.success(submittedMutationEvent))
+        }
         guard case .success = deleteModelSynchronousOrFailOtherwise(modelType: M2MUser.self,
                                                                     withId: user1.id) else {
             XCTFail("Failed to delete post1")
