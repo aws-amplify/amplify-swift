@@ -20,20 +20,6 @@
                ReferencedContainer = "container:APIHostApp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "21E73E6A28898D7800D7DB7E"
-               BuildableName = "APIHostApp.app"
-               BlueprintName = "APIHostApp"
-               ReferencedContainer = "container:APIHostApp.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -71,6 +57,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "39E0F2A028A43FB100939D9F"
+            BuildableName = "AWSAPIPluginGraphQLUserPoolTests.xctest"
+            BlueprintName = "AWSAPIPluginGraphQLUserPoolTests"
+            ReferencedContainer = "container:APIHostApp.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
