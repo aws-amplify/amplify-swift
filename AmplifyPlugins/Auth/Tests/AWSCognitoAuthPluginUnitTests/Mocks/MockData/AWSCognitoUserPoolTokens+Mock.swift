@@ -15,13 +15,13 @@ extension AWSCognitoUserPoolTokens {
             "sub": "1234567890",
             "username": "John Doe",
             "iat": "1516239022",
-            "exp": String(Date(timeIntervalSinceNow: 10000).timeIntervalSince1970)
+            "exp": String(Date(timeIntervalSinceNow: 121).timeIntervalSince1970)
         ]
         return AWSCognitoUserPoolTokens(
             idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
             accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
             refreshToken: "refreshToken",
-            expiresIn: 10000)
+            expiresIn: 121)
     }
 
     static let expiredTestData = AWSCognitoUserPoolTokens(
@@ -32,12 +32,12 @@ extension AWSCognitoUserPoolTokens {
             "sub": sub,
             "username": username,
             "iat": "1516239022",
-            "exp": String(Date(timeIntervalSinceNow: 10000).timeIntervalSince1970)
+            "exp": String(Date(timeIntervalSinceNow: 121).timeIntervalSince1970)
         ]
         return AWSCognitoUserPoolTokens(
             idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
             accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
             refreshToken: "refreshToken",
-            expiresIn: 10000)
+            expiresIn: 121)
     }
 }
