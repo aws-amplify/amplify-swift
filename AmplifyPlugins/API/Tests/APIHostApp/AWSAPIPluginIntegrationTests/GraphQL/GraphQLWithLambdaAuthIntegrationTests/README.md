@@ -4,7 +4,7 @@ The following steps demonstrate how to set up an GraphQL endpoint with AppSync. 
 
 ### Set-up
 
-Latest tested with amplify CLI version 8.0.1 `amplify -v`
+Latest tested with amplify CLI version 9.1.0 `amplify -v`
 
 1. `amplify init`
 
@@ -19,9 +19,14 @@ Latest tested with amplify CLI version 8.0.1 `amplify -v`
 ? Choose a schema template: `Single object with fields (e.g., “Todo” with ID, name, description)`
 ```
 
-3. If you are using the latest CLI, update cli.json to include `"useExperimentalPipelinedTransformer": false` to ensure that it will use the v1 transformer and then `amplify push`
+3. If you are using the latest CLI, update cli.json to include `"useExperimentalPipelinedTransformer": false` and `"transformerversion": 1` to ensure that it will use the v1 transformer and then `amplify push`
+? Do you want to generate code for your newly created
+ GraphQL API (Y/n) `n`
 
 4. Copy `amplifyconfiguration.json` over as `GraphQLWithLambdaAuthIntegrationTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/` 
+```
+cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/GraphQLWithLambdaAuthIntegrationTests-amplifyconfiguration.json
+```
 5. Replace the authorization type `API_KEY` with  `AWS_LAMBDA` in `GraphQLWithLambdaAuthIntegrationTests-amplifyconfiguration.json` 
 
 6. Run `amplify console` to open the AWS Console

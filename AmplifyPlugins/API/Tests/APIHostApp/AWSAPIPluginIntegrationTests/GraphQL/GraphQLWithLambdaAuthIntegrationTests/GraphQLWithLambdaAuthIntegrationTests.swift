@@ -14,7 +14,7 @@ import AWSAPIPlugin
 
 class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
     let amplifyConfigurationFile = "testconfiguration/GraphQLWithLambdaAuthIntegrationTests-amplifyconfiguration"
-    override func setUp() {
+    override func setUp() async throws{
         do {
             try Amplify.add(plugin: AWSAPIPlugin(apiAuthProviderFactory: TestAPIAuthProviderFactory()))
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
@@ -38,7 +38,7 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
     /// - Then:
     ///    - The operation completes successfully with no errors and todo in response
     ///
-    func testCreateTodoMutation() {
+    func testCreateTodoMutation() async {
         let completeInvoked = expectation(description: "request completed")
 
         let expectedId = UUID().uuidString
@@ -72,7 +72,7 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
             }
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Test paginated query
@@ -83,7 +83,7 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
     /// - Then:
     ///    - The operation completes successfully with no errors and a list of todos in response
     ///
-    func testQueryTodos() {
+    func testQueryTodos() async {
         let completeInvoked = expectation(description: "request completed")
         let request = GraphQLRequest<Todo>.list(Todo.self)
         let sink = Amplify.API.query(request: request)
@@ -103,7 +103,7 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
                 }
             }
         XCTAssertNotNil(sink)
-        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// A subscription to onCreate todo should receive an event for each create Todo mutation API called
@@ -114,7 +114,7 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
     /// - Then:
     ///    - The subscription should receive mutation events corresponding to the API calls performed.
     ///
-    func testOnCreateTodoSubscription() {
+    func testOnCreateTodoSubscription() async {
         let connectedInvoked = expectation(description: "Connection established")
         let disconnectedInvoked = expectation(description: "Connection disconnected")
         let completedInvoked = expectation(description: "Completed invoked")
@@ -238,7 +238,7 @@ class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {
 
 // MARK: - API Auth provider
 private class CustomTokenProvider: AmplifyFunctionAuthProvider {
-    func getUserPoolAccessToken() async throws -> String {
+    func getLatestAuthToken() async throws -> String {
         return "custom-lambda-token"
     }
     
