@@ -20,7 +20,7 @@ struct AuthorizationEvent: StateMachineEvent {
 
         case refreshed(AmplifyCredentials)
 
-        case refreshSession
+        case refreshSession(ForceRefresh)
 
         case sessionEstablished(AmplifyCredentials)
 

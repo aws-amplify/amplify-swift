@@ -41,7 +41,7 @@ class FetchAuthSessionOperationHelper {
                 case .userPoolOnly(signedInData: let data):
                     if data.cognitoUserPoolTokens.doesExpire(in: Self.expiryBufferInSeconds) ||
                         forceRefresh {
-                        let event = AuthorizationEvent(eventType: .refreshSession)
+                        let event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
                         authStateMachine.send(event)
                         self.listenForSession(authStateMachine: authStateMachine, completion: completion)
                     } else {
@@ -51,7 +51,7 @@ class FetchAuthSessionOperationHelper {
                 case .identityPoolOnly(identityID: _, credentials: let awsCredentials):
                     if awsCredentials.doesExpire(in: Self.expiryBufferInSeconds) ||
                         forceRefresh {
-                        let event = AuthorizationEvent(eventType: .refreshSession)
+                        let event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
                         authStateMachine.send(event)
                         self.listenForSession(authStateMachine: authStateMachine, completion: completion)
                     } else {
@@ -64,14 +64,14 @@ class FetchAuthSessionOperationHelper {
                     if  data.cognitoUserPoolTokens.doesExpire(in: Self.expiryBufferInSeconds) ||
                             awsCredentials.doesExpire(in: Self.expiryBufferInSeconds) ||
                             forceRefresh {
-                        let event = AuthorizationEvent(eventType: .refreshSession)
+                        let event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
                         authStateMachine.send(event)
                         self.listenForSession(authStateMachine: authStateMachine, completion: completion)
                     } else {
                         completion(.success(credentials.cognitoSession))
                     }
                 default:
-                    let event = AuthorizationEvent(eventType: .refreshSession)
+                    let event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
                     authStateMachine.send(event)
                     self.listenForSession(authStateMachine: authStateMachine, completion: completion)
                 }
@@ -84,7 +84,7 @@ class FetchAuthSessionOperationHelper {
                     let session = AuthCognitoSignedInSessionHelper.makeExpiredSignedInSession()
                     completion(.success(session))
                 } else if case .sessionError = error {
-                    let event = AuthorizationEvent(eventType: .refreshSession)
+                    let event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
                     authStateMachine.send(event)
                     self.listenForSession(authStateMachine: authStateMachine, completion: completion)
                 } else {

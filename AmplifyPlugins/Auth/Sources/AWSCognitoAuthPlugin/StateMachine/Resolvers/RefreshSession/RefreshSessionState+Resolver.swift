@@ -40,6 +40,18 @@ extension RefreshSessionState {
                                  actions: [action])
                 }
 
+                if case .refreshAWSCredentialsWithUserPool(
+                    let identityID,
+                    let signedInData,
+                    let provider) = event.isRefreshSessionEvent {
+                    let action = FetchAuthAWSCredentials(loginsMap: provider.loginsMap,
+                                                         identityID: identityID)
+                    return .init(newState: .refreshingAWSCredentialsWithUserPoolTokens(
+                        signedInData,
+                        identityID
+                    ), actions: [action])
+                }
+
                 if case .throwError(let error) = event.isRefreshSessionEvent {
                     let action = InformSessionError(error: error)
                     return .init(newState: .error(error), actions: [action])
