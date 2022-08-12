@@ -119,6 +119,7 @@ class ActivityTracker: ActivityTrackerBehaviour {
                                                       name: notification,
                                                       object: nil)
         }
+        stateMachineSubscriberToken = nil
     }
 
     func beginActivityTracking(_ listener: @escaping (ApplicationState) -> Void) {
