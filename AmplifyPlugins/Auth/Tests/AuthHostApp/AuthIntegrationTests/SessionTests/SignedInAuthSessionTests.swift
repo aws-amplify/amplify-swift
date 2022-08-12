@@ -24,6 +24,52 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
         await Amplify.reset()
     }
 
+    /// Test if force refresh session ignores the cached
+    ///
+    /// - Given: A signedout Amplify Auth Category
+    /// - When:
+    ///    - I sign in to the Auth Category and do a force refresh
+    /// - Then:
+    ///    - I should receive a valid session in signed in state, which is not the same as before
+    ///
+    func testSuccessfulForceSessionFetch() {
+        let username = "integTest\(UUID().uuidString)"
+        let password = "P123@\(UUID().uuidString)"
+        let signInExpectation = expectation(description: "SignIn operation should complete")
+        AuthSignInHelper.registerAndSignInUser(username: username, password: password,
+                                               email: defaultTestEmail) { didSucceed, error in
+            signInExpectation.fulfill()
+            XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
+        }
+        wait(for: [signInExpectation], timeout: networkTimeout)
+
+        let firstCognitoSession = AuthSessionHelper.getCurrentAmplifySession(
+            for: self,
+            with: networkTimeout)
+
+        let secondCognitoSession = AuthSessionHelper.getCurrentAmplifySession(
+            for: self,
+            with: networkTimeout)
+
+        let thirdCognitoSession = AuthSessionHelper.getCurrentAmplifySession(
+            shouldForceRefresh: true,
+            for: self,
+            with: networkTimeout)
+
+        let fourthCognitoSession = AuthSessionHelper.getCurrentAmplifySession(
+            for: self,
+            with: networkTimeout)
+
+        // First 2 sessions should match
+        XCTAssertEqual(firstCognitoSession, secondCognitoSession)
+
+        // Sessions after force refresh should not match
+        XCTAssertNotEqual(secondCognitoSession, thirdCognitoSession)
+
+        // Third and fourth session should match as it is retrieved from cache
+        XCTAssertEqual(thirdCognitoSession, fourthCognitoSession)
+    }
+
     /// Test if successful session is retreived after a user signin
     ///
     /// - Given: A signedout Amplify Auth Category

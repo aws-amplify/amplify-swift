@@ -51,8 +51,8 @@ extension AuthorizationState {
                 }
 
                 if case .refreshSession = event.isAuthorizationEvent {
-                    let action = InitializeRefreshSession(existingCredentials: credentials,
-                                                          isForceRefresh: false)
+                    let action = InitializeRefreshSession(
+                        existingCredentials: credentials)
                     let subState = RefreshSessionState.notStarted
                     return .init(newState: .refreshingSession(
                         existingCredentials: credentials,
@@ -187,8 +187,8 @@ extension AuthorizationState {
                 // it can recover from the error.
                 if case .refreshSession = event.isAuthorizationEvent,
                    case .sessionError(_, let credentials) = error {
-                    let action = InitializeRefreshSession(existingCredentials: credentials,
-                                                          isForceRefresh: false)
+                    let action = InitializeRefreshSession(
+                        existingCredentials: credentials)
                     let subState = RefreshSessionState.notStarted
                     return .init(newState: .refreshingSession(
                         existingCredentials: credentials,

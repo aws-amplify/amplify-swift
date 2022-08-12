@@ -12,8 +12,6 @@ struct RefreshSessionEvent: StateMachineEvent {
 
         case refreshUnAuthAWSCredentials(IdentityID)
 
-        case refreshAWSCredentialsWithUserPool(IdentityID, SignedInData, LoginsMapProvider)
-
         case refreshCognitoUserPool(SignedInData)
 
         case refreshCognitoUserPoolWithIdentityId(SignedInData, IdentityID)
@@ -36,8 +34,6 @@ struct RefreshSessionEvent: StateMachineEvent {
 
         case .refreshUnAuthAWSCredentials:
             return "RefreshSessionEvent.refreshUnAuthAWSCredentials"
-        case .refreshAWSCredentialsWithUserPool:
-            return "RefreshSessionEvent.refreshAWSCredentialsWithUserPool"
         case .refreshCognitoUserPool:
             return "RefreshSessionEvent.refreshCognitoUserPool"
         case .refreshCognitoUserPoolWithIdentityId:
@@ -68,7 +64,6 @@ extension RefreshSessionEvent.EventType: Equatable {
     static func == (lhs: RefreshSessionEvent.EventType, rhs: RefreshSessionEvent.EventType) -> Bool {
         switch (lhs, rhs) {
         case (.refreshUnAuthAWSCredentials, .refreshUnAuthAWSCredentials),
-            (.refreshAWSCredentialsWithUserPool, .refreshAWSCredentialsWithUserPool),
             (.refreshCognitoUserPool, .refreshCognitoUserPool),
             (.refreshCognitoUserPoolWithIdentityId, .refreshCognitoUserPoolWithIdentityId),
             (.refreshedCognitoUserPool, .refreshedCognitoUserPool),

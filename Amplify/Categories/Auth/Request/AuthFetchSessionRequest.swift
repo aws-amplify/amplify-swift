@@ -23,13 +23,25 @@ public extension AuthFetchSessionRequest {
 
     struct Options {
 
+        public let forceRefresh: Bool
+
         /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
         /// a way to utilize the underlying auth plugin functionality. See plugin documentation for expected
         /// key/values
         public let pluginOptions: Any?
 
-        public init(pluginOptions: Any? = nil) {
+        public init(
+            forceRefresh: Bool = false,
+            pluginOptions: Any? = nil) {
+            self.forceRefresh = forceRefresh
             self.pluginOptions = pluginOptions
         }
     }
 }
+
+extension AuthFetchSessionRequest.Options {
+    public static func forceRefresh() -> AuthFetchSessionRequest.Options {
+        return AuthFetchSessionRequest.Options(forceRefresh: true)
+    }
+}
+

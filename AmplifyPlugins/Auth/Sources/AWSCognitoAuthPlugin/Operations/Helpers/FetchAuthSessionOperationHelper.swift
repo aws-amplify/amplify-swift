@@ -17,6 +17,7 @@ class FetchAuthSessionOperationHelper {
     var authStateMachineToken: AuthStateMachine.StateChangeListenerToken?
 
     func fetch(_ authStateMachine: AuthStateMachine,
+               forceRefresh: Bool = false,
                completion: @escaping FetchAuthSessionCompletion) {
         authStateMachine.getCurrentState { state in
             guard case .configured(_, let authorizationState) = state  else {
@@ -38,7 +39,8 @@ class FetchAuthSessionOperationHelper {
                 switch credentials {
 
                 case .userPoolOnly(signedInData: let data):
-                    if data.cognitoUserPoolTokens.doesExpire(in: Self.expiryBufferInSeconds) {
+                    if data.cognitoUserPoolTokens.doesExpire(in: Self.expiryBufferInSeconds) ||
+                        forceRefresh {
                         let event = AuthorizationEvent(eventType: .refreshSession)
                         authStateMachine.send(event)
                         self.listenForSession(authStateMachine: authStateMachine, completion: completion)
@@ -47,7 +49,8 @@ class FetchAuthSessionOperationHelper {
                     }
 
                 case .identityPoolOnly(identityID: _, credentials: let awsCredentials):
-                    if awsCredentials.doesExpire(in: Self.expiryBufferInSeconds) {
+                    if awsCredentials.doesExpire(in: Self.expiryBufferInSeconds) ||
+                        forceRefresh {
                         let event = AuthorizationEvent(eventType: .refreshSession)
                         authStateMachine.send(event)
                         self.listenForSession(authStateMachine: authStateMachine, completion: completion)
@@ -59,7 +62,8 @@ class FetchAuthSessionOperationHelper {
                                               identityID: _,
                                               credentials: let awsCredentials):
                     if  data.cognitoUserPoolTokens.doesExpire(in: Self.expiryBufferInSeconds) ||
-                            awsCredentials.doesExpire(in: Self.expiryBufferInSeconds) {
+                            awsCredentials.doesExpire(in: Self.expiryBufferInSeconds) ||
+                            forceRefresh {
                         let event = AuthorizationEvent(eventType: .refreshSession)
                         authStateMachine.send(event)
                         self.listenForSession(authStateMachine: authStateMachine, completion: completion)

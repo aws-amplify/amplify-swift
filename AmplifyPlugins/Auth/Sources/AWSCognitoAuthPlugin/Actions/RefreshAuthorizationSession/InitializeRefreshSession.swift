@@ -14,8 +14,6 @@ struct InitializeRefreshSession: Action {
 
     let existingCredentials: AmplifyCredentials
 
-    let isForceRefresh: Bool
-
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
@@ -33,24 +31,8 @@ struct InitializeRefreshSession: Action {
             fatalError("Federation not implemented")
 
         case .userPoolAndIdentityPool(let signedInData, let identityID, _):
-            guard let config = (environment as? AuthEnvironment)?.userPoolConfigData else {
-                event = .init(eventType: .throwError(.noUserPool))
-                logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-                dispatcher.send(event)
-                return
-            }
-            let tokens = signedInData.cognitoUserPoolTokens
-            let provider = CognitoUserPoolLoginsMap(idToken: tokens.idToken,
-                                                    region: config.region,
-                                                    poolId: config.poolId)
-            if isForceRefresh ||
-                tokens.doesExpire(in: FetchAuthSessionOperationHelper.expiryBufferInSeconds) {
-                event = .init(eventType: .refreshCognitoUserPoolWithIdentityId(signedInData, identityID))
-            } else {
-                event = .init(eventType: .refreshAWSCredentialsWithUserPool(identityID,
-                                                                            signedInData,
-                                                                            provider))
-            }
+            event = .init(eventType: .refreshCognitoUserPoolWithIdentityId(signedInData, identityID))
+
         case .noCredentials:
             event = .init(eventType: .throwError(.noCredentialsToRefresh))
         }
@@ -66,7 +48,6 @@ extension InitializeRefreshSession: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "identifier": identifier,
-            "isForceRefresh": isForceRefresh ? "true": "false",
             "existingCredentials": existingCredentials.debugDescription
         ]
     }

@@ -96,3 +96,20 @@ extension AuthError: AmplifyError {
     }
 
 }
+
+extension AuthError: Equatable {
+    public static func == (lhs: AuthError, rhs: AuthError) -> Bool {
+        switch (lhs, rhs) {
+        case (.configuration, .configuration),
+            (.service, .service),
+            (.validation, .validation),
+            (.notAuthorized, .notAuthorized),
+            (.signedOut, .signedOut),
+            (.sessionExpired, .sessionExpired),
+            (.invalidState, .invalidState):
+            return true
+        default:
+            return false
+        }
+    }
+}
