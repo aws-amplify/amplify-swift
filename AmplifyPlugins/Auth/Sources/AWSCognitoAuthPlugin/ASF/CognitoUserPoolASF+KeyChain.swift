@@ -33,8 +33,8 @@ extension CognitoUserPoolASF {
                                asfDeviceId: String,
                                asfClient: AdvancedSecurityBehavior,
                                userPoolConfiguration: UserPoolConfigurationData) -> String? {
-        var deviceInfo: ASFDeviceBehavior
-        var appInfo: ASFAppInfoBehavior
+        var deviceInfo: ASFDeviceBehavior?
+        var appInfo: ASFAppInfoBehavior?
 #if os(iOS)
         deviceInfo = ASFUIDeviceInfo(id: asfDeviceId)
         appInfo = ASFAppInfo()
@@ -42,11 +42,17 @@ extension CognitoUserPoolASF {
 #else
         // TODO: Add for other platforms
 #endif
+        
+        guard let deviceInfoUnwrapped = deviceInfo,
+              let appInfoUnwrapped = appInfo else {
+            return nil
+        }
+
         do {
             return try asfClient.userContextData(
                 for: username,
-                deviceInfo: deviceInfo,
-                appInfo: appInfo,
+                deviceInfo: deviceInfoUnwrapped,
+                appInfo: appInfoUnwrapped,
                 configuration: userPoolConfiguration)
         } catch {
             // Ignore the error and add nil as context data

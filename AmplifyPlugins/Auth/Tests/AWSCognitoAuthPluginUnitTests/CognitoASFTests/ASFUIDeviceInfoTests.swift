@@ -11,8 +11,10 @@ import XCTest
 class ASFUIDeviceInfoTests: XCTestCase {
 
     func testdeviceInfo() {
+#if os(iOS)
         let asf = ASFUIDeviceInfo(id: "mockID")
         let deviceFingerPrint = asf.deviceInfo()
         XCTAssertNotNil(deviceFingerPrint)
+#endif
     }
 }
