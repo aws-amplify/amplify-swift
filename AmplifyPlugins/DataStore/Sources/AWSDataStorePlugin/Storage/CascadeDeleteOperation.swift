@@ -458,7 +458,6 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         }
     }
 
-    @available(iOS 13.0, *)
     private func submitToSyncEngine(mutationEvent: MutationEvent,
                                     syncEngine: RemoteSyncEngineBehavior,
                                     completion: @escaping DataStoreCallback<MutationEvent>) {
