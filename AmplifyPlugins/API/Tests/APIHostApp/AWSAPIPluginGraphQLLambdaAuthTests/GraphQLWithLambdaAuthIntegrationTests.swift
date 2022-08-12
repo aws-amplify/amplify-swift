@@ -7,9 +7,8 @@
 
 import XCTest
 import AWSAPIPlugin
-import AWSPluginsCore
 @testable import Amplify
-//@testable import APIHostApp
+@testable import APIHostApp
 // @testable import AWSAPICategoryPluginTestCommon
 
 class GraphQLWithLambdaAuthIntegrationTests: XCTestCase {

@@ -56,7 +56,8 @@
 		2126275E289ABFEB003788E3 /* NestedTypeTestModel+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126272F289ABFEB003788E3 /* NestedTypeTestModel+Schema.swift */; };
 		2126275F289ABFEB003788E3 /* Post3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262730289ABFEB003788E3 /* Post3.swift */; };
 		213DBC8128A6C4FB00B30280 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBC8028A6C4FB00B30280 /* TestConfigHelper.swift */; };
-		213DBC8428A6C8F900B30280 /* GraphQLWithLambdaAuthIntegration2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBC8328A6C8F900B30280 /* GraphQLWithLambdaAuthIntegration2Tests.swift */; };
+		213DBC8528A6CE9800B30280 /* GraphQLWithLambdaAuthIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BA328899B3F004BD994 /* GraphQLWithLambdaAuthIntegrationTests.swift */; };
+		213DBC8728A6CEDD00B30280 /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBC8628A6CEDD00B30280 /* Todo.swift */; };
 		21698AA328899921004BD994 /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698A9F28899921004BD994 /* Todo.swift */; };
 		21698AB72889996A004BD994 /* GraphQLConnectionScenario1Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AA82889996A004BD994 /* GraphQLConnectionScenario1Tests.swift */; };
 		21698AB92889996A004BD994 /* GraphQLConnectionScenario3Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AAA2889996A004BD994 /* GraphQLConnectionScenario3Tests.swift */; };
@@ -198,7 +199,7 @@
 		213DBB6028A40DAE00B30280 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		213DBC7528A6C47000B30280 /* AWSAPIPluginGraphQLLambdaAuthTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginGraphQLLambdaAuthTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		213DBC8028A6C4FB00B30280 /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
-		213DBC8328A6C8F900B30280 /* GraphQLWithLambdaAuthIntegration2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLWithLambdaAuthIntegration2Tests.swift; sourceTree = "<group>"; };
+		213DBC8628A6CEDD00B30280 /* Todo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Todo.swift; sourceTree = "<group>"; };
 		21698A7B28899804004BD994 /* AWSAPIPluginFunctionalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginFunctionalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		21698A9528899818004BD994 /* AWSAPIPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		21698A9F28899921004BD994 /* Todo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Todo.swift; sourceTree = "<group>"; };
@@ -363,9 +364,10 @@
 		213DBC7628A6C47000B30280 /* AWSAPIPluginGraphQLLambdaAuthTests */ = {
 			isa = PBXGroup;
 			children = (
+				21698BA328899B3F004BD994 /* GraphQLWithLambdaAuthIntegrationTests.swift */,
 				213DBC7F28A6C4EF00B30280 /* Base */,
 				21698BA228899B3F004BD994 /* README.md */,
-				213DBC8328A6C8F900B30280 /* GraphQLWithLambdaAuthIntegration2Tests.swift */,
+				213DBC8628A6CEDD00B30280 /* Todo.swift */,
 			);
 			path = AWSAPIPluginGraphQLLambdaAuthTests;
 			sourceTree = "<group>";
@@ -406,7 +408,6 @@
 		21698A9628899818004BD994 /* AWSAPIPluginIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
-				21698BA328899B3F004BD994 /* GraphQLWithLambdaAuthIntegrationTests.swift */,
 				21698BC428899B99004BD994 /* REST */,
 				21698B9528899AE3004BD994 /* GraphQL */,
 			);
@@ -882,8 +883,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				213DBC8428A6C8F900B30280 /* GraphQLWithLambdaAuthIntegration2Tests.swift in Sources */,
 				213DBC8128A6C4FB00B30280 /* TestConfigHelper.swift in Sources */,
+				213DBC8728A6CEDD00B30280 /* Todo.swift in Sources */,
+				213DBC8528A6CE9800B30280 /* GraphQLWithLambdaAuthIntegrationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1046,7 +1048,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/APIHostApp";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Debug;
 		};
@@ -1065,7 +1067,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/APIHostApp";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
 			};
 			name = Release;
 		};
