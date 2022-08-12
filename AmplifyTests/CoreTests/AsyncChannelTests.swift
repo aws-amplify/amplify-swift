@@ -9,6 +9,12 @@ import XCTest
 @testable import Amplify
 
 final class AsyncChannelTests: XCTestCase {
+#if swift(>=5.7)
+    let isSwiftCompatible = true
+#else
+    let isSwiftCompatible = false
+#endif
+
     enum Failure: Error {
         case unluckyNumber
     }
@@ -20,7 +26,7 @@ final class AsyncChannelTests: XCTestCase {
         }
     }
 
-    let sleepSeconds = 0.1
+    let delay = 0.1
 
     func testNumberSequence() async throws {
         let input = [1, 2, 3, 4, 5]
@@ -28,7 +34,7 @@ final class AsyncChannelTests: XCTestCase {
 
         // load all numbers into the channel with delays
         Task {
-            try await send(elements: input, channel: channel, sleepSeconds: sleepSeconds)
+            try await send(elements: input, channel: channel, delay: delay)
         }
 
         var output: [Int] = []
@@ -49,63 +55,7 @@ final class AsyncChannelTests: XCTestCase {
 
         // load all strings into the channel with delays
         Task {
-            try await send(elements: input, channel: channel, sleepSeconds: sleepSeconds)
-        }
-
-        var output: [String] = []
-
-        print("-- before --")
-        for try await element in channel {
-            print(element)
-            output.append(element)
-        }
-        print("-- after --")
-
-        XCTAssertEqual(input, output)
-    }
-
-    func testSendAfterFinishing() async throws {
-        let input = ["a", "b", "c"]
-        let channel = AsyncChannel<String>()
-
-        // load all strings into the channel with delays
-        Task {
-            try await send(elements: input, channel: channel, sleepSeconds: sleepSeconds)
-            var thrown: Error? = nil
-            do {
-                try await channel.send("z")
-            } catch {
-                thrown = error
-            }
-            XCTAssertNotNil(thrown)
-        }
-
-        var output: [String] = []
-
-        print("-- before --")
-        for try await element in channel {
-            print(element)
-            output.append(element)
-        }
-        print("-- after --")
-
-        XCTAssertEqual(input, output)
-    }
-
-    func testSendAfterFinishingThrowing() async throws {
-        let input = ["x", "y", "z"]
-        let channel = AsyncThrowingChannel<String, Error>()
-
-        // load all strings into the channel with delays
-        Task {
-            try await send(elements: input, channel: channel, sleepSeconds: sleepSeconds)
-            var thrown: Error? = nil
-            do {
-                try await channel.send("a")
-            } catch {
-                thrown = error
-            }
-            XCTAssertNotNil(thrown)
+            try await send(elements: input, channel: channel, delay: delay)
         }
 
         var output: [String] = []
@@ -126,7 +76,7 @@ final class AsyncChannelTests: XCTestCase {
 
         // load all numbers into the channel with delays
         Task {
-            try await send(elements: input, channel: channel, sleepSeconds: sleepSeconds) { element in
+            try await send(elements: input, channel: channel, delay: delay) { element in
                 if element == 13 {
                     throw Failure.unluckyNumber
                 } else {
@@ -159,7 +109,7 @@ final class AsyncChannelTests: XCTestCase {
 
         // load all numbers into the channel with delays
         Task {
-            try await send(elements: input, channel: channel, sleepSeconds: sleepSeconds) { element in
+            try await send(elements: input, channel: channel, delay: delay) { element in
                 if element == 13 {
                     throw Failure.unluckyNumber
                 } else {
@@ -188,135 +138,94 @@ final class AsyncChannelTests: XCTestCase {
     }
 
     func testChannelCancelled() async throws {
-        let delay = 1.25
-        let input = [1, 2, 3, 4, 5]
-        let channel = AsyncChannel<Int>()
-        let sendExp = expectation(description: "send")
-        let reduceExp = expectation(description: "reduce")
-
-        let sendTask = Task {
-            print("send - start")
-            var thrown: Error?
-            do {
-                var index = 0
-                while index < input.count {
-                    try await Task.sleep(seconds: delay)
-                    try await channel.send(input[index])
-                    index += 1
-                }
-            } catch {
-                thrown = error
-            }
-            print("send - end")
-
-            XCTAssertNotNil(thrown)
-            XCTAssertTrue(thrown is CancellationError)
-
-            sendExp.fulfill()
+        try XCTSkipIf(!isSwiftCompatible)
+        let channel = AsyncChannel<String>()
+        let ready = expectation(description: "ready")
+        let task: Task<String?, Never> = Task {
+            var iterator = channel.makeAsyncIterator()
+            ready.fulfill()
+            return await iterator.next()
         }
-
-        let reduceTask = Task {
-            print("reduce - start")
-            let result = await channel.reduce(0, +)
-            print(result)
-            print("reduce - end")
-
-            reduceExp.fulfill()
-        }
-
-        Task {
-            try await Task.sleep(seconds: delay * 2)
-            sendTask.cancel()
-        }
-
-        await waitForExpectations(timeout: 5.0)
-
-        XCTAssertFalse(reduceTask.isCancelled)
+        wait(for: [ready], timeout: 1.0)
+        task.cancel()
+        let value = await task.value
+        XCTAssertNil(value)
     }
 
     func testThrowingChannelCancelled() async throws {
-        let delay = 1.25
-        let input = [1, 2, 3, 4, 5]
-        let channel = AsyncThrowingChannel<Int, Error>()
-        let sendExp = expectation(description: "send")
-        let reduceExp = expectation(description: "reduce")
-
-        let sendTask = Task {
-            print("send - start")
-            var thrown: Error?
-            do {
-                var index = 0
-                while index < input.count {
-                    try await Task.sleep(seconds: delay)
-                    try await channel.send(input[index])
-                    index += 1
-                }
-            } catch {
-                thrown = error
-            }
-            print("send - end")
-
-            XCTAssertNotNil(thrown)
-            XCTAssertTrue(thrown is CancellationError)
-
-            sendExp.fulfill()
+        try XCTSkipIf(!isSwiftCompatible)
+        let channel = AsyncThrowingChannel<String, Error>()
+        let ready = expectation(description: "ready")
+        let task: Task<String?, Error> = Task {
+            var iterator = channel.makeAsyncIterator()
+            ready.fulfill()
+            return try await iterator.next()
         }
-
-        let reduceTask = Task {
-            print("reduce - start")
-            var thrown: Error?
-            do {
-                let result = try await channel.reduce(0, +)
-                print(result)
-            } catch {
-                thrown = error
-            }
-
-            print("reduce - end")
-
-            XCTAssertNotNil(thrown)
-            XCTAssertTrue(thrown is CancellationError)
-
-            reduceExp.fulfill()
-        }
-
-        Task {
-            try await Task.sleep(seconds: delay * 2)
-            sendTask.cancel()
-        }
-
-        await waitForExpectations(timeout: 5.0)
-
-        XCTAssertFalse(reduceTask.isCancelled)
+        wait(for: [ready], timeout: 1.0)
+        task.cancel()
+        let value = try await task.value
+        XCTAssertNil(value)
     }
 
-    private func send<Element>(elements: [Element], channel: AsyncChannel<Element>, sleepSeconds: Double = 0.1) async throws {
+    func testChannelCancelledOnSend() async throws {
+        try XCTSkipIf(!isSwiftCompatible)
+        let channel = AsyncChannel<Int>()
+        let notYetDone = expectation(description: "not yet done")
+        notYetDone.isInverted = true
+        let done = expectation(description: "done")
+        let task = Task {
+            await channel.send(1)
+            notYetDone.fulfill()
+            done.fulfill()
+        }
+        wait(for: [notYetDone], timeout: 0.1)
+        task.cancel()
+        wait(for: [done], timeout: 1.0)
+    }
+
+    func testThrowingChannelCancelledOnSend() async throws {
+        try XCTSkipIf(!isSwiftCompatible)
+        let channel = AsyncThrowingChannel<Int, Error>()
+        let notYetDone = expectation(description: "not yet done")
+        notYetDone.isInverted = true
+        let done = expectation(description: "done")
+        let task = Task {
+            await channel.send(1)
+            notYetDone.fulfill()
+            done.fulfill()
+        }
+        wait(for: [notYetDone], timeout: 0.1)
+        task.cancel()
+        wait(for: [done], timeout: 1.0)
+    }
+
+    private func send<Element>(elements: [Element], channel: AsyncChannel<Element>, delay: Double = 0.1) async throws {
         var index = 0
         while index < elements.count {
-            try await Task.sleep(seconds: sleepSeconds)
+            try await Task.sleep(seconds: delay)
             let element = elements[index]
-            try await channel.send(element)
+            await channel.send(element)
 
             index += 1
         }
         await channel.finish()
     }
 
-    private func send<Element>(elements: [Element], channel: AsyncThrowingChannel<Element, Error>, sleepSeconds: Double = 0.1, processor: ((Element) throws -> Element)? = nil) async throws {
+    private func send<Element>(elements: [Element], channel: AsyncThrowingChannel<Element, Error>, delay: Double = 0.1, processor: ((Element) throws -> Element)? = nil) async throws {
         var index = 0
         while index < elements.count {
-            try await Task.sleep(seconds: sleepSeconds)
+            try await Task.sleep(seconds: delay)
             let element = elements[index]
             if let processor = processor {
                 do {
                     let processed = try processor(element)
-                    try await channel.send(processed)
+                    await channel.send(processed)
                 } catch {
                     print("throwing \(error)")
                     await channel.fail(error)
                 }
             } else {
-                try await channel.send(element)
+                await channel.send(element)
             }
 
             index += 1
