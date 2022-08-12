@@ -120,7 +120,8 @@ class AWSAuthFetchSignInSessionOperationTests: XCTestCase {
     ///
     func testForceRefreshSignInSessionWithIdentityPoolEnabled() {
         let resultExpectation = expectation(description: "Should receive a result")
-        resultExpectation.expectedFulfillmentCount = 2
+        resultExpectation.assertForOverFulfill = true
+        resultExpectation.expectedFulfillmentCount = 3
 
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
