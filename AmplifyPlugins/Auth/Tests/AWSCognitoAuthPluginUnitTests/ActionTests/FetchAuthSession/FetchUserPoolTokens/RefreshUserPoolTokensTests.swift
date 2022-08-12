@@ -59,10 +59,8 @@ class RefreshUserPoolTokensTests: XCTestCase {
                 XCTAssertEqual(error, .invalidTokens)
                 expectation.fulfill()
             }
-        },
-                       environment: Defaults.makeDefaultAuthEnvironment(
-                        userPoolFactory: identityProviderFactory
-                       )
+        }, environment: Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
         )
 
         waitForExpectations(timeout: 1)
@@ -127,9 +125,8 @@ class RefreshUserPoolTokensTests: XCTestCase {
                 XCTAssertEqual(error, .service(testError))
                 expectation.fulfill()
             }
-        },
-                       environment: environment
-        )
+        }, environment: environment)
+        
         waitForExpectations(timeout: 0.1)
     }
 
