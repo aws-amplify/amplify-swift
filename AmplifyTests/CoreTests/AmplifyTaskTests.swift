@@ -10,18 +10,6 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 
-extension Sequence where Element: SignedInteger {
-    @inlinable func sum() -> Element {
-        reduce(0, +)
-    }
-}
-
-extension Sequence where Element: UnsignedInteger {
-    @inlinable func sum() -> Element {
-        reduce(0, +)
-    }
-}
-
 class AmplifyTaskTests: XCTestCase {
     let queue = OperationQueue()
 
@@ -54,8 +42,7 @@ class AmplifyTaskTests: XCTestCase {
             var progressCount = 0
             var lastProgress: Double = 0
 
-            let sequence = await longTask.progress
-            for await progress in sequence {
+            await longTask.progress.forEach { progress in
                 lastProgress = progress.fractionCompleted
                 progressCount += 1
             }

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-@testable import Amplify
+import Amplify
 
 public class FastOperationRequest: AmplifyOperationRequest {
     public let options: [AnyHashable : Any]

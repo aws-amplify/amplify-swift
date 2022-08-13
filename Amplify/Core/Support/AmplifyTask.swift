@@ -22,7 +22,15 @@ public protocol AmplifyTask {
 public protocol AmplifyInProcessReportingTask {
     associatedtype InProcess
 
-    var progress: AsyncChannel<InProcess> { get async }
+    var inProcess: AsyncChannel<InProcess> { get async }
 }
 
 public typealias AmplifyProgressTask = AmplifyTask & AmplifyInProcessReportingTask
+
+public extension AmplifyInProcessReportingTask where InProcess == Progress {
+    var progress : AsyncChannel<InProcess> {
+        get async {
+            await inProcess
+        }
+    }
+}
