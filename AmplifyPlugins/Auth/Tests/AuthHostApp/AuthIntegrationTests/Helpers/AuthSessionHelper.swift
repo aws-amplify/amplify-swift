@@ -11,8 +11,32 @@ import AWSPluginsCore
 @_spi(KeychainStore) import AWSPluginsCore
 import CryptoKit
 import Foundation
+import XCTest
 
 struct AuthSessionHelper {
+
+    static func getCurrentAmplifySession(
+        shouldForceRefresh: Bool = false,
+        for testCase: XCTestCase,
+        with timeout: TimeInterval) -> AWSAuthCognitoSession? {
+            var cognitoSession: AWSAuthCognitoSession?
+            let authSessionExpectation = testCase.expectation(description: "Received event result from fetchAuth")
+            _ = Amplify.Auth.fetchAuthSession(
+                options: .init(forceRefresh: shouldForceRefresh)) { result in
+                    defer {
+                        authSessionExpectation.fulfill()
+                    }
+                    switch result {
+                    case .success(let session):
+                        cognitoSession = (session as? AWSAuthCognitoSession)
+                        XCTAssertTrue(session.isSignedIn, "Session state should be signed In")
+                    case .failure(let error):
+                        XCTFail("Should not receive error \(error)")
+                    }
+                }
+            testCase.wait(for: [authSessionExpectation], timeout: timeout)
+            return cognitoSession
+        }
 
     static func clearSession() {
         let store = KeychainStore(service: "com.amplify.credentialStore")
@@ -22,19 +46,30 @@ struct AuthSessionHelper {
     static func invalidateSession(with amplifyConfiguration: AmplifyConfiguration) {
         let configuration = getAuthConfiguration(configuration: amplifyConfiguration)
         let credentialStore = AWSCognitoAuthCredentialStore(authConfiguration: configuration, accessGroup: nil)
-        guard let credentials = try? credentialStore.retrieveCredential() as? AmplifyCredentials else {
+        guard let credentials = try? credentialStore.retrieveCredential() else {
             return
         }
         switch credentials {
-        case .userPoolAndIdentityPool(tokens: let tokens, identityID: let identityID, credentials: let awsCredentials):
-            let updatedToken = updateTokenWithPastExpiry(tokens)
-            let updatedCredentials = AmplifyCredentials.userPoolAndIdentityPool(tokens: updatedToken,
-                                                                                identityID: identityID,
-                                                                                credentials: awsCredentials)
+        case .userPoolAndIdentityPool(signedInData: let signedInData,
+                                      identityID: let identityID,
+                                      credentials: let awsCredentials):
+            let updatedToken = updateTokenWithPastExpiry(signedInData.cognitoUserPoolTokens)
+            let signedInData = SignedInData(
+                signedInDate: signedInData.signedInDate,
+                signInMethod: signedInData.signInMethod,
+                cognitoUserPoolTokens: updatedToken)
+            let updatedCredentials = AmplifyCredentials.userPoolAndIdentityPool(
+                signedInData: signedInData,
+                identityID: identityID,
+                credentials: awsCredentials)
             try! credentialStore.saveCredential(updatedCredentials)
-        case  .userPoolOnly(tokens: let tokens):
-            let updatedToken = updateTokenWithPastExpiry(tokens)
-            let updatedCredentials = AmplifyCredentials.userPoolOnly(tokens: updatedToken)
+        case  .userPoolOnly(signedInData: let signedInData):
+            let updatedToken = updateTokenWithPastExpiry(signedInData.cognitoUserPoolTokens)
+            let signedInData = SignedInData(
+                signedInDate: signedInData.signedInDate,
+                signInMethod: signedInData.signInMethod,
+                cognitoUserPoolTokens: updatedToken)
+            let updatedCredentials = AmplifyCredentials.userPoolOnly(signedInData: signedInData)
             try! credentialStore.saveCredential(updatedCredentials)
         default: break
         }
@@ -105,7 +140,7 @@ struct AuthSessionHelper {
     }
 
     static private func authConfiguration(userPoolConfig: UserPoolConfigurationData?,
-                           identityPoolConfig: IdentityPoolConfigurationData?) throws -> AuthConfiguration {
+                                          identityPoolConfig: IdentityPoolConfigurationData?) throws -> AuthConfiguration {
 
         if let userPoolConfigNonNil = userPoolConfig, let identityPoolConfigNonNil = identityPoolConfig {
             return .userPoolsAndIdentityPools(userPoolConfigNonNil, identityPoolConfigNonNil)

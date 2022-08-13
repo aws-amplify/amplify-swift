@@ -93,3 +93,53 @@ internal extension AWSAuthCognitoSession {
                 Date(timeIntervalSince1970: accessTokenExpiration).compare(Date(timeIntervalSinceNow: seconds ?? 0)) == .orderedDescending)
     }
 }
+
+extension AWSAuthCognitoSession: Equatable {
+    public static func == (lhs: AWSAuthCognitoSession, rhs: AWSAuthCognitoSession) -> Bool {
+        switch (lhs.getCognitoTokens(), rhs.getCognitoTokens()) {
+        case (.success(let lhsTokens), .success(let rhsTokens)):
+            if (lhsTokens as? AWSCognitoUserPoolTokens) != (rhsTokens as? AWSCognitoUserPoolTokens) {
+                return false
+            }
+        case (.failure(let lhsError), .failure(let rhsError)):
+            if lhsError != rhsError {
+                return false
+            }
+        default:
+            return false
+        }
+
+        switch (lhs.getAWSCredentials(), rhs.getAWSCredentials()) {
+        case (.success(let lhsCredentials), .success(let rhsCredentials)):
+            if (lhsCredentials as? AuthAWSCognitoCredentials) != (rhsCredentials as? AuthAWSCognitoCredentials) {
+                return false
+            }
+        case (.failure(let lhsError), .failure(let rhsError)):
+            if lhsError != rhsError {
+                return false
+            }
+        default:
+            return false
+        }
+
+        switch (lhs.getIdentityId(), rhs.getIdentityId()) {
+        case (.success(let lhsIdentityId), .success(let rhsIdentityId)):
+            if lhsIdentityId != rhsIdentityId {
+                return false
+            }
+        case (.failure(let lhsError), .failure(let rhsError)):
+            if lhsError != rhsError {
+                return false
+            }
+        default:
+            return false
+        }
+
+        if lhs.isSignedIn != rhs.isSignedIn {
+            return false
+        }
+
+
+        return true
+    }
+}

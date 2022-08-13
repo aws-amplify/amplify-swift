@@ -44,3 +44,14 @@ extension AWSCognitoUserPoolTokens {
         return AWSCognitoUserPoolTokens(idToken: "xx", accessToken: "xx", refreshToken: "xx", expiresIn: 300)
     }
 }
+
+extension SignedInData {
+
+    static var testData: SignedInData {
+        let tokens = AWSCognitoUserPoolTokens.testData
+        return SignedInData(signedInDate: Date(),
+                            signInMethod: .apiBased(.userSRP),
+                            cognitoUserPoolTokens: tokens)
+    }
+
+}

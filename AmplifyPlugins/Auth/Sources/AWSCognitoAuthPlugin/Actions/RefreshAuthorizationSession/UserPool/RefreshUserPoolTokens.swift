@@ -19,83 +19,115 @@ struct RefreshUserPoolTokens: Action {
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
 
-        let existingTokens = existingSignedIndata.cognitoUserPoolTokens
-        logVerbose("\(#fileID) Starting execution", environment: environment)
-        guard let environment = environment as? UserPoolEnvironment else {
-            let event = RefreshSessionEvent.init(eventType: .throwError(.noUserPool))
-            dispatcher.send(event)
-            return
-        }
-
-        let config = environment.userPoolConfiguration
-        let userPoolClientId = config.clientId
-        let client = try? environment.cognitoUserPoolFactory()
-
-        var authParameters: [String: String] = [
-            "REFRESH_TOKEN": existingTokens.refreshToken
-        ]
-        if let clientSecret = config.clientSecret {
-            authParameters["SECRET_HASH"] = clientSecret
-        }
-
-        let input = InitiateAuthInput(analyticsMetadata: nil,
-                                      authFlow: .refreshTokenAuth,
-                                      authParameters: authParameters,
-                                      clientId: userPoolClientId,
-                                      clientMetadata: nil,
-                                      userContextData: nil)
-
-        logVerbose("\(#fileID) Starting initiate auth refresh token", environment: environment)
-
         Task {
-            do {
-                let response = try await client?.initiateAuth(input: input)
-
-                logVerbose("\(#fileID) Initiate auth response received", environment: environment)
-
-                guard let authenticationResult = response?.authenticationResult,
-                      let idToken = authenticationResult.idToken,
-                      let accessToken = authenticationResult.accessToken
-                else {
-
-                    let event = RefreshSessionEvent(eventType: .throwError(.invalidTokens))
-                    dispatcher.send(event)
-                    logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-                    return
-                }
-
-                let userPoolTokens = AWSCognitoUserPoolTokens(
-                    idToken: idToken,
-                    accessToken: accessToken,
-                    refreshToken: existingTokens.refreshToken,
-                    expiresIn: authenticationResult.expiresIn
-                )
-                let signedInData = SignedInData(
-                    signedInDate: existingSignedIndata.signedInDate,
-                    signInMethod: existingSignedIndata.signInMethod,
-                    cognitoUserPoolTokens: userPoolTokens)
-                let event: RefreshSessionEvent
-
-                if ((environment as? AuthEnvironment)?.identityPoolConfigData) != nil {
-                    let provider = CognitoUserPoolLoginsMap(idToken: idToken,
-                                                            region: config.region,
-                                                            poolId: config.poolId)
-                    event = .init(eventType: .refreshIdentityInfo(signedInData, provider))
-                } else {
-                    event = .init(eventType: .refreshedCognitoUserPool(signedInData))
-                }
-                logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-                dispatcher.send(event)
-
-            } catch {
-                let event = RefreshSessionEvent(eventType: .throwError(.service(error)))
-                logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-                dispatcher.send(event)
-            }
-
-            logVerbose("\(#fileID) Initiate auth complete", environment: environment)
+            await refresh(
+                withDispatcher: dispatcher,
+                environment: environment
+            )
         }
     }
+
+    func refresh(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
+
+        do {
+
+            logVerbose("\(#fileID) Starting execution", environment: environment)
+            guard let environment = environment as? UserPoolEnvironment else {
+                let event = RefreshSessionEvent.init(eventType: .throwError(.noUserPool))
+                dispatcher.send(event)
+                return
+            }
+            
+            let authEnv = try environment.authEnvironment()
+            let config = environment.userPoolConfiguration
+            let client = try? environment.cognitoUserPoolFactory()
+            let existingTokens = existingSignedIndata.cognitoUserPoolTokens
+
+            let deviceMetadata = await getDeviceMetadata(
+                for: environment,
+                with: existingSignedIndata.userName)
+
+            let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
+                for: existingSignedIndata.userName,
+                credentialStoreClient: authEnv.credentialStoreClientFactory())
+
+            let input = InitiateAuthInput.refreshAuthInput(
+                username: existingSignedIndata.userName,
+                refreshToken: existingTokens.refreshToken,
+                clientMetadata: [:],
+                asfDeviceId: asfDeviceId,
+                deviceMetadata: deviceMetadata,
+                environment: environment)
+
+            logVerbose("\(#fileID) Starting initiate auth refresh token", environment: environment)
+
+            let response = try await client?.initiateAuth(input: input)
+
+            logVerbose("\(#fileID) Initiate auth response received", environment: environment)
+
+            guard let authenticationResult = response?.authenticationResult,
+                  let idToken = authenticationResult.idToken,
+                  let accessToken = authenticationResult.accessToken
+            else {
+
+                let event = RefreshSessionEvent(eventType: .throwError(.invalidTokens))
+                dispatcher.send(event)
+                logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+                return
+            }
+
+            let userPoolTokens = AWSCognitoUserPoolTokens(
+                idToken: idToken,
+                accessToken: accessToken,
+                refreshToken: existingTokens.refreshToken,
+                expiresIn: authenticationResult.expiresIn
+            )
+            let signedInData = SignedInData(
+                signedInDate: existingSignedIndata.signedInDate,
+                signInMethod: existingSignedIndata.signInMethod,
+                cognitoUserPoolTokens: userPoolTokens)
+            let event: RefreshSessionEvent
+
+            if ((environment as? AuthEnvironment)?.identityPoolConfigData) != nil {
+                let provider = CognitoUserPoolLoginsMap(
+                    idToken: idToken,
+                    region: config.region,
+                    poolId: config.poolId)
+                event = .init(eventType: .refreshIdentityInfo(signedInData, provider))
+            } else {
+                event = .init(eventType: .refreshedCognitoUserPool(signedInData))
+            }
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+            dispatcher.send(event)
+
+        } catch {
+            let event = RefreshSessionEvent(eventType: .throwError(.service(error)))
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+            dispatcher.send(event)
+        }
+
+        logVerbose("\(#fileID) Initiate auth complete", environment: environment)
+
+    }
+
+    func getDeviceMetadata(
+        for environment: Environment,
+        with username: String) async -> DeviceMetadata {
+            let credentialStoreClient = (environment as? AuthEnvironment)?.credentialStoreClientFactory()
+            do {
+                let data = try await credentialStoreClient?.fetchData(type: .deviceMetadata(username: username))
+
+                if case .deviceMetadata(let fetchedMetadata, _) = data {
+                    return fetchedMetadata
+                } else {
+                    return .noData
+                }
+            } catch {
+                logError("Unable to fetch device metadata with error: \(error)",
+                         environment: environment)
+                return .noData
+            }
+        }
 }
 
 extension RefreshUserPoolTokens: DefaultLogger { }

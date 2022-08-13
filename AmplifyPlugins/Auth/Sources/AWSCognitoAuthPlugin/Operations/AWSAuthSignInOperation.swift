@@ -21,7 +21,7 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
 
     let authStateMachine: AuthStateMachine
 
-    var statemachineToken: AuthStateMachineToken?
+    var stateMachineToken: AuthStateMachineToken?
 
     init(_ request: AuthSignInRequest,
          authStateMachine: AuthStateMachine,
@@ -53,15 +53,17 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
     }
 
     func didConfigure(completion: @escaping () -> Void) {
-        statemachineToken = authStateMachine.listen({ state in
+        stateMachineToken = authStateMachine.listen({ state in
             guard case .configured = state else { return }
-            self.authStateMachine.cancel(listenerToken: self.statemachineToken!)
+            if let statemachineToken = self.stateMachineToken {
+                self.authStateMachine.cancel(listenerToken: statemachineToken)
+            }
             completion()
         }, onSubscribe: {})
     }
 
     func isCurrentStateValid(completion: @escaping ((Result<Void, AuthError>) -> Void)) {
-        statemachineToken = authStateMachine.listen({ state in
+        stateMachineToken = authStateMachine.listen({ state in
             guard case .configured(let authenticationState, _) = state else {
                 return
             }
@@ -71,11 +73,15 @@ public class AWSAuthSignInOperation: AmplifySignInOperation,
                 let error = AuthError.invalidState(
                     "There is already a user in signedIn state. SignOut the user first before calling signIn",
                     AuthPluginErrorConstants.invalidStateError, nil)
-                self.authStateMachine.cancel(listenerToken: self.statemachineToken!)
+                if let statemachineToken = self.stateMachineToken {
+                    self.authStateMachine.cancel(listenerToken: statemachineToken)
+                }
                 completion(.failure(error))
 
             case .signedOut:
-                self.authStateMachine.cancel(listenerToken: self.statemachineToken!)
+                if let statemachineToken = self.stateMachineToken {
+                    self.authStateMachine.cancel(listenerToken: statemachineToken)
+                }
                 completion(.success(Void()))
 
             case .signingUp:

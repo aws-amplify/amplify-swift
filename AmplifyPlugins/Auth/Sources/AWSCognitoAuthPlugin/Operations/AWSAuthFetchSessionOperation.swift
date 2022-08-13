@@ -36,8 +36,10 @@ public class AWSAuthFetchSessionOperation: AmplifyFetchSessionOperation,
             finish()
             return
         }
-
-        fetchSessionHelper.fetch(authStateMachine) { [weak self] result in
+        let doesNeedForceRefresh = request.options.forceRefresh
+        fetchSessionHelper.fetch(
+            authStateMachine,
+            forceRefresh: doesNeedForceRefresh) { [weak self] result in
             self?.dispatch(result: result)
             self?.finish()
         }

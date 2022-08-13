@@ -8,6 +8,7 @@
 import Foundation
 
 typealias IdentityID = String
+typealias ForceRefresh = Bool
 
 struct FetchAuthSessionEvent: StateMachineEvent {
     enum EventType {

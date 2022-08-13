@@ -72,6 +72,27 @@ extension InitiateAuthInput {
                           environment: environment)
     }
 
+    static func refreshAuthInput(username: String,
+                                 refreshToken: String,
+                                 clientMetadata: [String: String],
+                                 asfDeviceId: String,
+                                 deviceMetadata: DeviceMetadata,
+                                 environment: UserPoolEnvironment) -> InitiateAuthInput {
+        
+        let authParameters = [
+            "REFRESH_TOKEN": refreshToken
+        ]
+        
+        return buildInput(username: username,
+                          authFlowType: .refreshTokenAuth,
+                          authParameters: authParameters,
+                          clientMetadata: clientMetadata,
+                          asfDeviceId: asfDeviceId,
+                          deviceMetadata: deviceMetadata,
+                          environment: environment)
+        
+    }
+
     static func buildInput(username: String,
                            authFlowType: CognitoIdentityProviderClientTypes.AuthFlowType,
                            authParameters: [String: String],
