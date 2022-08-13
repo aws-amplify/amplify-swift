@@ -11,6 +11,12 @@ import XCTest
 
 // These tests must be run with ThreadSanitizer enabled
 class ChildTaskTests: XCTestCase {
+    class Worker: Cancellable {
+        var cancelCount = 0
+        func cancel() {
+            cancelCount += 1
+        }
+    }
 
     func testFastOperationWithMultipleAwaits() async throws {
         let input = [1, 2, 3]
@@ -48,6 +54,52 @@ class ChildTaskTests: XCTestCase {
         XCTAssertEqual(output1, expectedOutput)
         XCTAssertEqual(output2, expectedOutput)
         XCTAssertEqual(output3, expectedOutput)
+    }
+
+    func testChildTaskResultCancelled() async throws {
+        let worker = Worker()
+        let childTask: ChildTask<Void, String, Never> = ChildTask(parent: worker)
+        let cancelExp = expectation(description: "cancel")
+        cancelExp.isInverted = true
+
+        let task = Task {
+            var thrown: Error? = nil
+            do {
+                _ = try await childTask.result
+                cancelExp.fulfill()
+            } catch {
+                thrown = error
+            }
+
+            XCTAssertNotNil(thrown)
+            XCTAssertTrue(thrown is CancellationError)
+        }
+
+        await waitForExpectations(timeout: 0.1)
+        task.cancel()
+    }
+
+    func testChildTaskResultAlreadyCancelled() async throws {
+        let worker = Worker()
+        let childTask: ChildTask<Void, String, Never> = ChildTask(parent: worker)
+        let cancelExp = expectation(description: "cancel")
+        cancelExp.isInverted = true
+
+        await childTask.cancel()
+        Task {
+            var thrown: Error? = nil
+            do {
+                _ = try await childTask.result
+                cancelExp.fulfill()
+            } catch {
+                thrown = error
+            }
+
+            XCTAssertNotNil(thrown)
+            XCTAssertTrue(thrown is CancellationError)
+        }
+
+        await waitForExpectations(timeout: 0.1)
     }
 
 }

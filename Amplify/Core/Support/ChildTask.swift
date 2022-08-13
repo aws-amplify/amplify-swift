@@ -35,19 +35,25 @@ actor ChildTask<InProcess, Success, Failure: Error> {
 
     var result: Success {
         get async throws {
-            try await withCheckedThrowingContinuation { continuation in
-                if isCancelled {
-                    // immediately cancel is already cancelled
-                    continuation.resume(throwing: CancellationError())
-                } else if let result = storedResult {
-                    // immediately send result if it is available
-                    valueContinuations.append(continuation)
-                    send(result: result)
-                } else {
-                    // capture contination to use later
-                    valueContinuations.append(continuation)
+            try await withTaskCancellationHandler(handler: {
+                Task {
+                    await cancel()
                 }
-            }
+            }, operation: {
+                try await withCheckedThrowingContinuation { continuation in
+                    if isCancelled {
+                        // immediately cancel is already cancelled
+                        continuation.resume(throwing: CancellationError())
+                    } else if let result = storedResult {
+                        // immediately send result if it is available
+                        valueContinuations.append(continuation)
+                        send(result)
+                    } else {
+                        // capture contination to use later
+                        valueContinuations.append(continuation)
+                    }
+                }
+            })
         }
     }
 
@@ -68,7 +74,7 @@ actor ChildTask<InProcess, Success, Failure: Error> {
 
     func finish(_ result: Result<Success, Failure>) {
         if !valueContinuations.isEmpty {
-            send(result: result)
+            send(result)
         } else {
             // store result for when the value property is used
             self.storedResult = result
@@ -76,37 +82,21 @@ actor ChildTask<InProcess, Success, Failure: Error> {
     }
 
     func cancel() async {
-        guard !isCancelled else { return }
         isCancelled = true
         if let channel = inProcessChannel {
             await channel.finish()
         }
-        for continuation in valueContinuations {
+        while !valueContinuations.isEmpty {
+            let continuation = valueContinuations.removeFirst()
             continuation.resume(throwing: CancellationError())
         }
-        valueContinuations.removeAll()
         parent.cancel()
     }
 
-    private func send(result: Result<Success, Failure>) {
-        switch result {
-        case .success(let success):
-            send(success: success)
-        case .failure(let failure):
-            send(failure: failure)
-        }
-        valueContinuations.removeAll()
-    }
-
-    private func send(success: Success) {
-        for continuation in valueContinuations {
-            continuation.resume(returning: success)
-        }
-    }
-
-    private func send(failure: Failure) {
-        for continuation in valueContinuations {
-            continuation.resume(throwing: failure)
+    private func send(_ result: Result<Success, Failure>) {
+        while !valueContinuations.isEmpty {
+            let continuation = valueContinuations.removeFirst()
+            continuation.resume(with: result)
         }
     }
 
