@@ -18,7 +18,9 @@ import AppKit
 #endif
 
 public struct DeviceInfo {
-    public init() {}
+    private init() {}
+
+    public static var current: DeviceInfo = DeviceInfo()
 
     public var name: String {
     #if canImport(WatchKit)

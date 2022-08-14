@@ -9,10 +9,6 @@ import Amplify
 import AWSCognitoIdentityProvider
 import Foundation
 
-#if canImport(UIKit)
-import UIKit
-#endif
-
 struct ConfirmDevice: Action {
 
     var identifier: String = "ConfirmDevice"
@@ -41,6 +37,8 @@ struct ConfirmDevice: Action {
                     deviceKey: deviceMetadata.deviceKey,
                     password: deviceMetadata.deviceSecret)
 
+                let deviceName = DeviceInfo.current.name
+
                 let base64EncodedVerifier = passwordVerifier.passwordVerifier.base64EncodedString()
                 let base64EncodedSalt = passwordVerifier.salt.base64EncodedString()
                 let verifier = CognitoIdentityProviderClientTypes.DeviceSecretVerifierConfigType(
@@ -49,7 +47,7 @@ struct ConfirmDevice: Action {
                 let input = ConfirmDeviceInput(
                     accessToken: signedInData.cognitoUserPoolTokens.accessToken,
                     deviceKey: deviceMetadata.deviceKey,
-                    deviceName: getCurrentDeviceName(),
+                    deviceName: deviceName,
                     deviceSecretVerifierConfig: verifier)
 
                 let response = try await client.confirmDevice(input: input)
@@ -72,15 +70,6 @@ struct ConfirmDevice: Action {
             dispatcher.send(event)
         }
 
-    }
-
-    func getCurrentDeviceName() -> String {
-#if canImport(UIKit)
-        return UIDevice.current.name
-#else
-        // TODO: Get a device name implementation for all apple platforms
-        fatalError("Need to create an implementation for get device names for all platform devices.")
-#endif
     }
 }
 
