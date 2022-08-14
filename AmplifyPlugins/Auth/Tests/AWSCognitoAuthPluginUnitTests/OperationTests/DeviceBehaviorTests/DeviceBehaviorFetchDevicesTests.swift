@@ -13,7 +13,7 @@ import Amplify
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
 
-class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
+class DeviceBehaviorFetchDevicesTests: BasePluginTest {
 
     override func setUp() {
         super.setUp()
@@ -39,7 +39,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
             operationFinished.fulfill()
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 1)
+        waitForExpectations(timeout: apiTimeout)
     }
 
     /// Test fetchDevices operation can be invoked without options
@@ -56,7 +56,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
             operationFinished.fulfill()
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 1)
+        waitForExpectations(timeout: apiTimeout)
     }
 
     /// Test a successful fetchDevices call
@@ -90,7 +90,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
             }
         }
 
-        wait(for: [resultExpectation], timeout: networkTimeout)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a fetchDevices call with invalid response from service
@@ -124,7 +124,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
             }
         }
 
-        wait(for: [resultExpectation], timeout: networkTimeout)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     // MARK: - Service error for listDevices
@@ -161,7 +161,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
                 }
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a fetchDevices call with InvalidParameterException response from service
@@ -202,7 +202,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
 
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a fetchDevices call with InvalidParameterException response from service
@@ -238,7 +238,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
                 }
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a fetchDevices call with NotAuthorizedException response from service
@@ -274,7 +274,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
                 }
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a fetchDevices call with PasswordResetRequiredException response from service
@@ -314,7 +314,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
                 }
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a fetchDevices call with ResourceNotFound response from service
@@ -355,7 +355,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
 
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a fetchDevices call with TooManyRequestsException response from service
@@ -396,7 +396,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
 
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a fetchDevices call with UserNotFound response from service
@@ -437,7 +437,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
 
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a fetchDevices call with UserNotFound response from service
@@ -478,7 +478,7 @@ class DeviceBehaviorFetchDevicesTests: AWSAuthDeviceBehaviorTests {
 
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
 }
