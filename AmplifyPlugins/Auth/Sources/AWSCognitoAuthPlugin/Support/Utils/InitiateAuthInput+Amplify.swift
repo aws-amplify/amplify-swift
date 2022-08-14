@@ -57,6 +57,7 @@ extension InitiateAuthInput {
                             password: String,
                             clientMetadata: [String: String],
                             asfDeviceId: String,
+                            deviceMetadata: DeviceMetadata,
                             environment: UserPoolEnvironment) -> InitiateAuthInput {
         let authParameters = [
             "USERNAME": username,
@@ -68,7 +69,7 @@ extension InitiateAuthInput {
                           authParameters: authParameters,
                           clientMetadata: clientMetadata,
                           asfDeviceId: asfDeviceId,
-                          deviceMetadata: .noData,
+                          deviceMetadata: deviceMetadata,
                           environment: environment)
     }
 

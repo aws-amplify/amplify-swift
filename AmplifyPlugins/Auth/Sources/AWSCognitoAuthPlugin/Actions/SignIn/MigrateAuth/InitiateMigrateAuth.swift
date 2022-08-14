@@ -15,11 +15,16 @@ struct InitiateMigrateAuth: Action {
     let username: String
     let password: String
     let clientMetadata: [String: String]
+    let deviceMetadata: DeviceMetadata
 
-    init(username: String, password: String, clientMetadata: [String: String]) {
+    init(username: String,
+         password: String,
+         clientMetadata: [String: String],
+         deviceMetadata: DeviceMetadata) {
         self.username = username
         self.password = password
         self.clientMetadata = clientMetadata
+        self.deviceMetadata = deviceMetadata
     }
 
     func execute(withDispatcher dispatcher: EventDispatcher,
@@ -37,6 +42,7 @@ struct InitiateMigrateAuth: Action {
                     password: password,
                     clientMetadata: clientMetadata,
                     asfDeviceId: asfDeviceId,
+                    deviceMetadata: deviceMetadata,
                     environment: userPoolEnv)
 
                 let responseEvent = try await sendRequest(request: request,
@@ -68,11 +74,6 @@ struct InitiateMigrateAuth: Action {
 
         let response = try await cognitoClient.initiateAuth(input: request)
         return try UserPoolSignInHelper.parseResponse(response, for: username)
-    }
-
-    // TODO: Implement this
-    private static func getDeviceId() -> String? {
-        return nil
     }
 
 }
