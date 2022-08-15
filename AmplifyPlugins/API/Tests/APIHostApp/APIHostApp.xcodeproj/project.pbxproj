@@ -84,6 +84,7 @@
 		21698CC72889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CC22889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift */; };
 		21698CC92889D75F004BD994 /* SocialNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CC42889D75F004BD994 /* SocialNote.swift */; };
 		21698CCB2889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CC62889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift */; };
+		21A114E428A9CE7400F90AC0 /* AWSS3StoragePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 21A114E328A9CE7400F90AC0 /* AWSS3StoragePlugin */; };
 		21E73E6F28898D7900D7DB7E /* APIHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E73E6E28898D7900D7DB7E /* APIHostAppApp.swift */; };
 		21E73E7128898D7900D7DB7E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E73E7028898D7900D7DB7E /* ContentView.swift */; };
 		21E73E7328898D7A00D7DB7E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21E73E7228898D7A00D7DB7E /* Assets.xcassets */; };
@@ -275,6 +276,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				21A114E428A9CE7400F90AC0 /* AWSS3StoragePlugin in Frameworks */,
 				21698BDD28899ED5004BD994 /* AWSAPIPlugin in Frameworks */,
 				21698BF02889A163004BD994 /* AWSCognitoAuthPlugin in Frameworks */,
 				21698CC02889D5A9004BD994 /* CwlPreconditionTesting in Frameworks */,
@@ -650,6 +652,7 @@
 				21698BDC28899ED5004BD994 /* AWSAPIPlugin */,
 				21698BEF2889A163004BD994 /* AWSCognitoAuthPlugin */,
 				21698CBF2889D5A9004BD994 /* CwlPreconditionTesting */,
+				21A114E328A9CE7400F90AC0 /* AWSS3StoragePlugin */,
 			);
 			productName = APIHostApp;
 			productReference = 21E73E6B28898D7900D7DB7E /* APIHostApp.app */;
@@ -1513,6 +1516,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 21698CBE2889D5A9004BD994 /* XCRemoteSwiftPackageReference "CwlPreconditionTesting" */;
 			productName = CwlPreconditionTesting;
+		};
+		21A114E328A9CE7400F90AC0 /* AWSS3StoragePlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSS3StoragePlugin;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
