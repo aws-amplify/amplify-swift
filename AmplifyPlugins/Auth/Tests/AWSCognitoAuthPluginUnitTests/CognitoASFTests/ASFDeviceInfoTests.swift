@@ -8,10 +8,10 @@
 import XCTest
 @testable import AWSCognitoAuthPlugin
 
-class ASFUIDeviceInfoTests: XCTestCase {
+class ASFDeviceInfoTests: XCTestCase {
 
     func testdeviceInfo() {
-        let asf = ASFUIDeviceInfo(id: "mockID")
+        let asf = ASFDeviceInfo(id: "mockID")
         let deviceFingerPrint = asf.deviceInfo()
         XCTAssertNotNil(deviceFingerPrint)
     }

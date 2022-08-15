@@ -73,7 +73,7 @@ struct InitializeSignInFlow: Action {
         case .customWithSRP:
             return .init(eventType: .initiateCustomSignInWithSRP(signInEventData, deviceMetadata))
         case .userPassword:
-            return .init(eventType: .initiateMigrateAuth(signInEventData))
+            return .init(eventType: .initiateMigrateAuth(signInEventData, deviceMetadata))
         case .unknown:
             // Default to SRP signIn if we could not figure out the authflow type
             return .init(eventType: .initiateSignInWithSRP(signInEventData, deviceMetadata))

@@ -13,7 +13,7 @@ import Amplify
 @testable import AWSCognitoAuthPlugin
 @testable import AWSPluginsTestCommon
 
-class DeviceBehaviorRememberDeviceTests: AWSAuthDeviceBehaviorTests {
+class DeviceBehaviorRememberDeviceTests: BasePluginTest {
 
     override func setUp() {
         super.setUp()
@@ -39,7 +39,7 @@ class DeviceBehaviorRememberDeviceTests: AWSAuthDeviceBehaviorTests {
             operationFinished.fulfill()
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 1)
+        waitForExpectations(timeout: apiTimeout)
     }
 
     /// Test rememberDevice operation can be invoked without options
@@ -56,7 +56,7 @@ class DeviceBehaviorRememberDeviceTests: AWSAuthDeviceBehaviorTests {
             operationFinished.fulfill()
         }
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 1)
+        waitForExpectations(timeout: apiTimeout)
     }
 
     /// Test a successful rememberDevice call
@@ -78,7 +78,7 @@ class DeviceBehaviorRememberDeviceTests: AWSAuthDeviceBehaviorTests {
             }
         }
 
-        wait(for: [resultExpectation], timeout: networkTimeout)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     // MARK: - Service error for UpdateDeviceStatus
@@ -115,7 +115,7 @@ class DeviceBehaviorRememberDeviceTests: AWSAuthDeviceBehaviorTests {
                 }
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a rememberDevice call with InvalidParameterException response from service
@@ -156,7 +156,7 @@ class DeviceBehaviorRememberDeviceTests: AWSAuthDeviceBehaviorTests {
 
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a rememberDevice call with InvalidParameterException response from service
@@ -192,7 +192,7 @@ class DeviceBehaviorRememberDeviceTests: AWSAuthDeviceBehaviorTests {
                 }
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a rememberDevice call with NotAuthorizedException response from service
@@ -228,7 +228,7 @@ class DeviceBehaviorRememberDeviceTests: AWSAuthDeviceBehaviorTests {
                 }
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a rememberDevice call with PasswordResetRequiredException response from service
@@ -268,7 +268,7 @@ class DeviceBehaviorRememberDeviceTests: AWSAuthDeviceBehaviorTests {
                 }
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a rememberDevice call with ResourceNotFound response from service
@@ -309,7 +309,7 @@ class DeviceBehaviorRememberDeviceTests: AWSAuthDeviceBehaviorTests {
 
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a rememberDevice call with TooManyRequestsException response from service
@@ -350,7 +350,7 @@ class DeviceBehaviorRememberDeviceTests: AWSAuthDeviceBehaviorTests {
 
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a rememberDevice call with UserNotFound response from service
@@ -391,7 +391,7 @@ class DeviceBehaviorRememberDeviceTests: AWSAuthDeviceBehaviorTests {
 
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a rememberDevice call with UserNotFound response from service
@@ -432,7 +432,7 @@ class DeviceBehaviorRememberDeviceTests: AWSAuthDeviceBehaviorTests {
 
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
+        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
 }

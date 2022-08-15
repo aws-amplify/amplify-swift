@@ -46,8 +46,10 @@ extension SignInState {
                     let action = InitializeHostedUISignIn(options: options)
                     return .init(newState: .signingInWithHostedUI(.notStarted), actions: [action])
                 }
-                if case .initiateMigrateAuth(let signInEventData) = event.isSignInEvent {
-                    let action = StartMigrateAuthFlow(signInEventData: signInEventData)
+                if case .initiateMigrateAuth(let signInEventData, let deviceMetadata) = event.isSignInEvent {
+                    let action = StartMigrateAuthFlow(
+                        signInEventData: signInEventData,
+                        deviceMetadata: deviceMetadata)
                     return .init(newState: .signingInViaMigrateAuth(.notStarted, signInEventData),
                                  actions: [action])
                 }
@@ -125,6 +127,13 @@ extension SignInState {
                     let action = InitializeResolveChallenge(challenge: challenge)
                     let subState = SignInChallengeState.notStarted
                     return .init(newState: .resolvingChallenge(subState, challenge.challenge.authChallengeType), actions: [action])
+                }
+
+                if let signInEvent = event as? SignInEvent,
+                   case .confirmDevice(let signedInData) = signInEvent.eventType {
+                    let action = ConfirmDevice(signedInData: signedInData)
+                    return .init(newState: .confirmingDevice,
+                                 actions: [action])
                 }
 
                 let resolution = MigrateSignInState.Resolver().resolve(

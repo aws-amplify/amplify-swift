@@ -15,10 +15,11 @@ extension AWSCognitoAuthPlugin: AuthCategoryDeviceBehavior {
         listener: AuthFetchDevicesOperation.ResultListener?) -> AuthFetchDevicesOperation {
             let options = options ?? AuthFetchDevicesRequest.Options()
             let request = AuthFetchDevicesRequest(options: options)
-            let fetchDeviceOperation = AWSAuthFetchDevicesOperation(request,
-                                                                    authStateMachine: authStateMachine,
-                                                                    userPoolFactory: authEnvironment.cognitoUserPoolFactory,
-                                                                    resultListener: listener)
+            let fetchDeviceOperation = AWSAuthFetchDevicesOperation(
+                request,
+                authStateMachine: authStateMachine,
+                userPoolFactory: authEnvironment.cognitoUserPoolFactory,
+                resultListener: listener)
             queue.addOperation(fetchDeviceOperation)
             return fetchDeviceOperation
         }
@@ -30,10 +31,11 @@ extension AWSCognitoAuthPlugin: AuthCategoryDeviceBehavior {
 
             let options = options ?? AuthForgetDeviceRequest.Options()
             let request = AuthForgetDeviceRequest(device: device, options: options)
-            let forgetDeviceOperation = AWSAuthForgetDeviceOperation(request,
-                                                                     authStateMachine: authStateMachine,
-                                                                     userPoolFactory: authEnvironment.cognitoUserPoolFactory,
-                                                                     resultListener: listener)
+            let forgetDeviceOperation = AWSAuthForgetDeviceOperation(
+                request,
+                authStateMachine: authStateMachine,
+                userPoolFactory: authEnvironment.cognitoUserPoolFactory,
+                resultListener: listener)
             queue.addOperation(forgetDeviceOperation)
             return forgetDeviceOperation
         }
@@ -43,10 +45,11 @@ extension AWSCognitoAuthPlugin: AuthCategoryDeviceBehavior {
         listener: AuthRememberDeviceOperation.ResultListener?) -> AuthRememberDeviceOperation {
             let options = options ?? AuthRememberDeviceRequest.Options()
             let request = AuthRememberDeviceRequest(options: options)
-            let rememberDeviceOperation = AWSAuthRememberDeviceOperation(request,
-                                                                         authStateMachine: authStateMachine,
-                                                                         userPoolFactory: authEnvironment.cognitoUserPoolFactory,
-                                                                         resultListener: listener)
+            let rememberDeviceOperation = AWSAuthRememberDeviceOperation(
+                request,
+                authStateMachine: authStateMachine,
+                userPoolFactory: authEnvironment.cognitoUserPoolFactory,
+                resultListener: listener)
             queue.addOperation(rememberDeviceOperation)
             return rememberDeviceOperation
         }

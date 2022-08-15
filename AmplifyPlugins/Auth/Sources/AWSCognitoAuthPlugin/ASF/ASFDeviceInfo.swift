@@ -5,11 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-#if canImport(UIKit)
 import Foundation
-import UIKit
+import Amplify
 
-struct ASFUIDeviceInfo: ASFDeviceBehavior {
+struct ASFDeviceInfo: ASFDeviceBehavior {
 
     let id: String
 
@@ -18,12 +17,11 @@ struct ASFUIDeviceInfo: ASFDeviceBehavior {
     }
 
     var model: String {
-        UIDevice.current.model
+        DeviceInfo.current.model
     }
 
     var name: String {
-        return UIDevice.current.name
-
+        DeviceInfo.current.name
     }
 
     var type: String {
@@ -31,27 +29,27 @@ struct ASFUIDeviceInfo: ASFDeviceBehavior {
         uname(&systemInfo)
         return String(bytes: Data(bytes: &systemInfo.machine,
                                   count: Int(_SYS_NAMELEN)),
-                      encoding: .utf8) ?? ProcessInfo.processInfo.hostName
+                      encoding: .utf8) ?? DeviceInfo.current.hostName
     }
 
     var platform: String {
-        return UIDevice.current.systemName
+        DeviceInfo.current.operatingSystem.name
     }
 
     var version: String {
-        UIDevice.current.systemVersion
+        DeviceInfo.current.operatingSystem.version
     }
 
     var thirdPartyId: String? {
-        UIDevice.current.identifierForVendor?.uuidString
+        DeviceInfo.current.identifierForVendor?.uuidString
     }
 
     var height: String {
-        String(format: "%.0f", UIScreen.main.nativeBounds.size.height)
+        String(format: "%.0f", DeviceInfo.current.screenBounds.height)
     }
 
     var width: String {
-        String(format: "%.0f", UIScreen.main.nativeBounds.size.width)
+        String(format: "%.0f", DeviceInfo.current.screenBounds.width)
     }
 
     var locale: String {
@@ -66,4 +64,3 @@ struct ASFUIDeviceInfo: ASFDeviceBehavior {
         return "Apple/\(model)/\(type)/-:\(version)/-/-:-/\(build)"
     }
 }
-#endif

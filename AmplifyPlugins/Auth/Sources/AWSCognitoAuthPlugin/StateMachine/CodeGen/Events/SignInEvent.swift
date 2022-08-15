@@ -25,7 +25,7 @@ struct SignInEvent: StateMachineEvent {
 
         case initiateHostedUISignIn(HostedUIOptions)
 
-        case initiateMigrateAuth(SignInEventData)
+        case initiateMigrateAuth(SignInEventData, DeviceMetadata)
 
         case respondPasswordVerifier(SRPStateData, InitiateAuthOutputResponse)
 
