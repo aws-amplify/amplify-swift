@@ -7,12 +7,6 @@
 
 import Foundation
 
-// Base, system-wide dispatch queue to act as a target queue for individual StateMachines
-private let baseQueue = DispatchQueue(
-    label: "com.amazonaws.statemachine.Base",
-    attributes: [.concurrent]
-)
-
 /// Captures a weak reference to the value
 class WeakWrapper<T>: Hashable where T: AnyObject, T: Hashable {
     private(set) weak var value: T?
@@ -62,7 +56,7 @@ extension Box where BoxedValue == UUID {
 /// - StateChangedListeners, which are notified whenever the state changes
 /// - EffectExecutor, which resolves and executes Effects returned from event
 /// processing
-class StateMachine<
+actor StateMachine<
     StateType,
     EnvironmentType: Environment
 > where StateType: State {
@@ -76,12 +70,6 @@ class StateMachine<
     private let executor: EffectExecutor
     private let resolver: AnyResolver<StateType>
 
-    /// Backing queue for both consistencyQueue and notificationQueue
-    private let concurrentQueue: DispatchQueue
-
-    /// Manages consistency of internal state machine state
-    let operationQueue: OperationQueue
-
     private var currentState: StateType
 
     private var subscribers: [WeakWrapper<StateChangeListenerToken>: StateChangedListener]
@@ -91,25 +79,13 @@ class StateMachine<
         resolver: ResolverType,
         environment: EnvironmentType,
         initialState: StateType? = nil,
-        concurrentQueue: DispatchQueue? = nil,
         executor: EffectExecutor? = nil
     ) where ResolverType: StateMachineResolver, ResolverType.StateType == StateType {
         self.resolver = resolver.eraseToAnyResolver()
         self.environment = environment
         self.currentState = initialState ?? resolver.defaultState
 
-        let resolvedConcurrentQueue = concurrentQueue ?? baseQueue
-        self.concurrentQueue = resolvedConcurrentQueue
-
-        self.executor = executor
-            ?? ConcurrentEffectExecutor(concurrentQueue: resolvedConcurrentQueue)
-
-        let operationQueue = OperationQueue()
-        operationQueue.maxConcurrentOperationCount = 1
-        operationQueue.underlyingQueue = resolvedConcurrentQueue
-        operationQueue.name = "\(resolvedConcurrentQueue.label).\(StateType.self).operation"
-        operationQueue.isSuspended = false
-        self.operationQueue = operationQueue
+        self.executor = executor ?? ConcurrentEffectExecutor()
 
         self.subscribers = [:]
         self.pendingCancellations = AtomicValue<Set<StateChangeListenerToken>>(initialValue: [])
@@ -130,13 +106,11 @@ class StateMachine<
         onSubscribe: OnSubscribedCallback?
     ) -> StateChangeListenerToken {
         let token = StateChangeListenerToken(UUID())
-        operationQueue.addOperation {
-            self.addSubscription(
-                token: token,
-                listener: listener,
-                onSubscribe: onSubscribe
-            )
-        }
+        self.addSubscription(
+            token: token,
+            listener: listener,
+            onSubscribe: onSubscribe
+        )
         return token
     }
 
@@ -148,28 +122,11 @@ class StateMachine<
     /// - Parameter listenerToken: Identifies the listener to be removed
     func cancel(listenerToken: StateChangeListenerToken) {
         pendingCancellations.with { $0.insert(listenerToken) }
-        operationQueue.addOperation {
-            self.removeSubscription(listenerToken: listenerToken)
-        }
+        self.removeSubscription(listenerToken: listenerToken)
     }
 
-    /// Invokes `completion` with the current state
-    ///
-    /// - Parameter completion: a callback to invoke with the current state
-    func getCurrentState(_ completion: @escaping (StateType) -> Void) {
-        operationQueue.addOperation {
-            completion(self.currentState)
-        }
-    }
-
-    var currentMachineState: StateType {
-        get async {
-            await withCheckedContinuation { continuation in
-                self.operationQueue.addOperation {
-                    continuation.resume(returning: self.currentState)
-                }
-            }
-        }
+    var getCurrentState: StateType {
+        return self.currentState
     }
 
     // MARK: - Isolated methods
@@ -195,7 +152,7 @@ class StateMachine<
 
         onSubscribe?()
 
-        concurrentQueue.async {
+        Task {
             listener(currentState)
         }
     }
@@ -220,13 +177,11 @@ extension StateMachine: EventDispatcher {
     /// machine's state and invokes listeners with the new state. Regardless of whether
     /// the state is new or not, the state machine will execute any effects from the
     /// event resolution process.
-    func send(_ event: StateMachineEvent) {
-        operationQueue.addOperation {
-            self.process(event: event)
-        }
+    func send(_ event: StateMachineEvent) async {
+        process(event: event)
     }
 
-    /// Must be invoked on operationQueue
+
     private func process(event: StateMachineEvent) {
         let resolution = resolver.resolve(
             oldState: currentState,

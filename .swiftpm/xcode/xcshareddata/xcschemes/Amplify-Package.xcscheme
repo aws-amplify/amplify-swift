@@ -314,6 +314,20 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "HSM"
+               BuildableName = "HSM"
+               BlueprintName = "HSM"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -424,6 +438,16 @@
                BlueprintIdentifier = "AWSPinpointAnalyticsPluginUnitTests"
                BuildableName = "AWSPinpointAnalyticsPluginUnitTests"
                BlueprintName = "AWSPinpointAnalyticsPluginUnitTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "HSMUniTests"
+               BuildableName = "HSMUniTests"
+               BlueprintName = "HSMUniTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>

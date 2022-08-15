@@ -6,32 +6,22 @@
 //
 
 import XCTest
-@testable import AWSCognitoAuthPlugin
+@testable import HSM
 
 class StateMachineTests: XCTestCase {
 
-    func testDefaultState() {
+    func testDefaultState() async {
         let testMachine = CounterStateMachine.logging()
-        let notified = expectation(description: "notified")
-        testMachine.getCurrentState {
-            XCTAssertEqual($0.value, 0)
-            notified.fulfill()
-        }
-
-        waitForExpectations(timeout: 0.1)
+        let state = await testMachine.getCurrentState
+        XCTAssertEqual(state.value, 0)
     }
 
-    func testBasicReceive() {
+    func testBasicReceive() async  {
         let testMachine = CounterStateMachine.logging()
         let increment = Counter.Event(id: "1", eventType: .increment)
-        testMachine.send(increment)
-        let notified = expectation(description: "notified")
-        testMachine.getCurrentState {
-            XCTAssertEqual($0.value, 1)
-            notified.fulfill()
-        }
-
-        waitForExpectations(timeout: 0.1)
+        await testMachine.send(increment)
+        let state = await testMachine.getCurrentState
+        XCTAssertEqual(state.value, 1)
     }
 
     /// Given:
@@ -40,28 +30,24 @@ class StateMachineTests: XCTestCase {
     /// - The StateMachine receives multiple events concurrently
     /// Then:
     /// - It applies the events in order of receipt
-    func testConcurrentReceive() {
+    func testConcurrentReceive() async  {
         // Logging will significantly impact performance on these tight loops, so adjust expectation
         // timeout accordingly if you need to log
         let testMachine = CounterStateMachine.default()
         let increment = Counter.Event(id: "increment", eventType: .increment)
         let decrement = Counter.Event(id: "decrement", eventType: .decrement)
 
-        DispatchQueue.concurrentPerform(iterations: 1_000) {
-            if $0.isMultiple(of: 2) {
-                testMachine.send(increment)
-            } else {
-                testMachine.send(decrement)
+        Task {
+            for i in 1...1_000 {
+                if i.isMultiple(of: 2) {
+                    await testMachine.send(increment)
+                } else {
+                    await testMachine.send(decrement)
+                }
             }
         }
-
-        let notified = expectation(description: "notified")
-        testMachine.getCurrentState {
-            XCTAssertEqual($0.value, 0)
-            notified.fulfill()
-        }
-
-        waitForExpectations(timeout: 0.1)
+        let state = await testMachine.getCurrentState
+        XCTAssertEqual(state.value, 0)
     }
 
     /// Given:
@@ -76,23 +62,18 @@ class StateMachineTests: XCTestCase {
     /// receiving an event. `receive` is asynchronous, so we'd expect some of
     /// the current values to be out of sync if the state machine didn't
     /// properly serialize access.
-    func testConcurrentReceiveAndRead() {
+    func testConcurrentReceiveAndRead() async  {
         // Logging will significantly impact performance on these tight loops, so adjust expectation
         // timeout accordingly if you need to log
         let testMachine = CounterStateMachine.default()
         let increment = Counter.Event(id: "1", eventType: .increment)
-        var allExpectations = [XCTestExpectation]()
         for iteration in 1 ... 10 {
-            testMachine.send(increment)
-            let notified = expectation(description: "notified")
-            allExpectations.append(notified)
-            testMachine.getCurrentState {
-                XCTAssertEqual($0.value, iteration)
-                notified.fulfill()
-            }
+            await testMachine.send(increment)
+
+            let state = await testMachine.getCurrentState
+            XCTAssertEqual(state.value, iteration)
         }
 
-        waitForExpectations(timeout: 0.1)
     }
 
     /// Given:
@@ -101,7 +82,7 @@ class StateMachineTests: XCTestCase {
     /// - The state machine receives a resolution that includes actions
     /// Then:
     /// - It executes the action
-    func testExecutesEffects() {
+    func testExecutesEffects() async  {
         let action1WasExecuted = expectation(description: "action1WasExecuted")
         let action2WasExecuted = expectation(description: "action2WasExecuted")
 
@@ -120,8 +101,8 @@ class StateMachineTests: XCTestCase {
             eventType: .incrementAndDoActions([action1, action2])
         )
 
-        testMachine.send(event)
-        waitForExpectations(timeout: 0.1)
+        await testMachine.send(event)
+        await waitForExpectations(timeout: 0.1)
     }
 
     /// Given:
@@ -131,11 +112,12 @@ class StateMachineTests: XCTestCase {
     /// - The effect `dispatches` a new event
     /// Then:
     /// - The StateMachine processes the new event
-    func testDispatchesFromAction() {
+    func testDispatchesFromAction() async  {
         let action1WasExecuted = expectation(description: "action1WasExecuted")
         let action2WasExecuted = expectation(description: "action2WasExecuted")
 
         let action1 = BasicAction(identifier: "basic") { dispatcher, _ in
+
             action1WasExecuted.fulfill()
 
             let action2 = BasicAction(identifier: "basic") { _, _ in
@@ -146,7 +128,9 @@ class StateMachineTests: XCTestCase {
                 id: "2",
                 eventType: .incrementAndDoActions([action2])
             )
-            dispatcher.send(event)
+            Task {
+                await dispatcher.send(event)
+            }
         }
 
         let testMachine = CounterStateMachine.logging()
@@ -156,8 +140,9 @@ class StateMachineTests: XCTestCase {
             eventType: .incrementAndDoActions([action1])
         )
 
-        testMachine.send(event)
-        wait(for: [action1WasExecuted, action2WasExecuted], timeout: 0.1, enforceOrder: true)
+        await testMachine.send(event)
+        await waitForExpectations(timeout: 0.1)
+
     }
 
 }

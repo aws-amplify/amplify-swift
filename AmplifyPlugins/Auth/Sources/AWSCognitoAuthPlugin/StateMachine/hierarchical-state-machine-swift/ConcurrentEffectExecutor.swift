@@ -8,22 +8,16 @@
 import Foundation
 
 class ConcurrentEffectExecutor: EffectExecutor {
-    private let concurrentQueue: DispatchQueue
-
-    init(concurrentQueue: DispatchQueue) {
-        self.concurrentQueue = concurrentQueue
-    }
 
     func execute(
         _ actions: [Action],
         dispatchingTo eventDispatcher: EventDispatcher,
-        environment: Environment
-    ) {
-        actions.forEach { action in
-            self.concurrentQueue.async {
-                action.execute(withDispatcher: eventDispatcher, environment: environment)
+        environment: Environment) {
+            actions.forEach { action in
+                Task {
+                    await action.execute(withDispatcher: eventDispatcher, environment: environment)
+                }
             }
         }
-    }
 
 }

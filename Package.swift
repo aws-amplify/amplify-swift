@@ -131,6 +131,12 @@ let authTargets: [Target] = [
         path: "AmplifyPlugins/Auth/Sources/AmplifySRP"
     ),
     .target(
+        name: "HSM",
+        dependencies: [
+        ],
+        path: "AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin/StateMachine/hierarchical-state-machine-swift"
+    ),
+    .target(
         name: "AWSCognitoAuthPlugin",
         dependencies: [
             .target(name: "Amplify"),
@@ -141,6 +147,7 @@ let authTargets: [Target] = [
             .product(name: "AWSCognitoIdentity", package: "aws-sdk-swift")
         ],
         path: "AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin",
+        exclude: ["StateMachine/hierarchical-state-machine-swift"],
         swiftSettings: swiftSettings
     ),
     .target(
@@ -160,7 +167,15 @@ let authTargets: [Target] = [
             "AWSCognitoAuthPlugin",
             "AWSPluginsTestCommon"
         ],
-        path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests"
+        path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests",
+        exclude: ["hierarchical-state-machine-swiftTests"]
+    ),
+    .testTarget(
+        name: "HSMUniTests",
+        dependencies: [
+            "HSM"
+        ],
+        path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests/hierarchical-state-machine-swiftTests"
     ),
     .testTarget(
         name: "AmplifyBigIntegerTests",
@@ -306,6 +321,10 @@ let package = Package(
         .library(
             name: "AWSPinpointAnalyticsPlugin",
             targets: ["AWSPinpointAnalyticsPlugin"]
+        ),
+        .library(
+            name: "HSM",
+            targets: ["HSM"]
         )
     ],
     dependencies: dependencies,

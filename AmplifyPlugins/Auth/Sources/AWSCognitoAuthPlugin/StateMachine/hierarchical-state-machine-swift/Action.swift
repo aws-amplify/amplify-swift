@@ -5,13 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-typealias ActionClosure = (EventDispatcher, Environment) -> Void
+typealias ActionClosure = (EventDispatcher, Environment) async -> Void
 
 protocol Action {
     /// Used for deduping and cancelling actions
     var identifier: String { get }
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment)
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async
 }
 
 extension Action {
@@ -23,11 +23,11 @@ extension Action {
 struct BasicAction: Action {
     let identifier: String
 
-    let closure: (EventDispatcher, Environment) -> Void
+    let closure: ActionClosure
 
     init(
         identifier: String,
-        closure: @escaping ((EventDispatcher, Environment) -> Void)
+        closure: @escaping ActionClosure
     ) {
         self.identifier = identifier
         self.closure = closure
@@ -36,7 +36,7 @@ struct BasicAction: Action {
     func execute(
         withDispatcher dispatcher: EventDispatcher,
         environment: Environment
-    ) {
-        closure(dispatcher, environment)
+    ) async {
+        await closure(dispatcher, environment)
     }
 }
