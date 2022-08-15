@@ -13,18 +13,18 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
 
     /// Accepts a mutation event without a version, applies the latest version from the MutationSyncMetadata table,
     /// writes the updated mutation event to the local database, then submits it to `mutationEventSubject`
-    func submit(mutationEvent: MutationEvent) -> Future<MutationEvent, DataStoreError> {
-        log.verbose("\(#function): \(mutationEvent)")
-
-        return Future<MutationEvent, DataStoreError> { promise in
+    func submit(mutationEvent: MutationEvent, completion: @escaping (Result<MutationEvent, DataStoreError>)->Void) {
+        Task {
+            log.verbose("\(#function): \(mutationEvent)")
+            
             guard let storageAdapter = self.storageAdapter else {
-                promise(.failure(DataStoreError.nilStorageAdapter()))
+                completion(.failure(DataStoreError.nilStorageAdapter()))
                 return
             }
-
+            
             self.resolveConflictsThenSave(mutationEvent: mutationEvent,
                                           storageAdapter: storageAdapter,
-                                          completionPromise: promise)
+                                          completion: completion)
         }
     }
 
@@ -32,7 +32,7 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
     /// rejects the event with an error
     func resolveConflictsThenSave(mutationEvent: MutationEvent,
                                   storageAdapter: StorageEngineAdapter,
-                                  completionPromise: @escaping Future<MutationEvent, DataStoreError>.Promise) {
+                                  completion: @escaping (Result<MutationEvent, DataStoreError>)->Void) {
 
         // We don't want to query MutationSync<AnyModel> because a) we already have the model, and b) delete mutations
         // are submitted *after* the delete has already been applied to the local data store, meaning there is no model
@@ -45,16 +45,15 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
                                                                                modelName: mutationEvent.modelName)
             mutationEvent.version = syncMetadata?.version
         } catch {
-            completionPromise(.failure(DataStoreError(error: error)))
+            completion(.failure(DataStoreError(error: error)))
         }
 
         MutationEvent.pendingMutationEvents(
             for: mutationEvent.modelId,
-            storageAdapter: storageAdapter) { [weak self] result in
-                guard let self = self else { return }
+            storageAdapter: storageAdapter) { result in
                 switch result {
                 case .failure(let dataStoreError):
-                    completionPromise(.failure(dataStoreError))
+                    completion(.failure(dataStoreError))
                 case .success(let localMutationEvents):
                     let mutationDisposition = self.disposition(for: mutationEvent,
                                                           given: localMutationEvents)
@@ -62,7 +61,7 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
                             localEvents: localMutationEvents,
                             per: mutationDisposition,
                             storageAdapter: storageAdapter,
-                            completionPromise: completionPromise)
+                            completionPromise: completion)
                 }
         }
     }
