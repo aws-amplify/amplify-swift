@@ -39,18 +39,6 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "DataStoreConnectionScenario1Tests/testDeleteAndGetProjectReturnsNilWithSync()">
-               </Test>
-               <Test
-                  Identifier = "DataStoreConnectionScenario1Tests/testDeleteWithInvalidCondition()">
-               </Test>
-               <Test
-                  Identifier = "DataStoreConnectionScenario1Tests/testDeleteWithValidCondition()">
-               </Test>
-               <Test
-                  Identifier = "DataStoreConnectionScenario1Tests/testListProjectsByTeamID()">
-               </Test>
-               <Test
                   Identifier = "DataStoreConnectionScenario2Tests">
                </Test>
                <Test
