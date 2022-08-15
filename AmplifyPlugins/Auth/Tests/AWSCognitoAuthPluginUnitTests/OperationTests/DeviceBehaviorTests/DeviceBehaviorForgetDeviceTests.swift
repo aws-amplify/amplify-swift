@@ -24,36 +24,9 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
         )
     }
 
-    /// Test forgetDevice operation can be invoked
-    ///
-    /// - Given: Given a configured auth plugin
-    /// - When:
-    ///    - I call forgetDevice operation
-    /// - Then:
-    ///    - I should get a valid operation object
-    ///
-    func testForgetDeviceRequest() {
-        let options = AuthForgetDeviceRequest.Options()
-        let operation = plugin.forgetDevice(options: options)
-        XCTAssertNotNil(operation)
-    }
-
-    /// Test forgetDevice operation can be invoked without options
-    ///
-    /// - Given: Given a configured auth plugin
-    /// - When:
-    ///    - I call forgetDevice operation
-    /// - Then:
-    ///    - I should get a valid operation object
-    ///
-    func testForgetDeviceRequestWithoutOptions() {
-        let operation = plugin.forgetDevice()
-        XCTAssertNotNil(operation)
-    }
-
     /// Test a successful forgetDevice call
     ///
-    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successul response
+    /// - Given: an auth plugin with mocked service. Mocked service calls should mock a successull response
     /// - When:
     ///    - I invoke forgetDevice
     /// - Then:
