@@ -84,8 +84,7 @@ struct PinpointContextConfiguration {
 
     /// Indicates whether to track application sessions. Defaults to `true`
     let shouldTrackAppSessions: Bool
-    /// The amount of time to wait before ending a session after going to the background. Only valid when `shouldTrackAppSessions` is `true`.
-    /// Defaults to 5 seconds.
+    /// The amount of time to wait before ending a session after going to the background. Only valid when `shouldTrackAppSessions` is `true` and only for devices not running macOS.
     let sessionBackgroundTimeout: TimeInterval
 
     init(appId: String,
@@ -95,7 +94,7 @@ struct PinpointContextConfiguration {
          isDebug: Bool = false,
          isApplicationLevelOptOut: Bool = false,
          shouldTrackAppSessions: Bool = true,
-         sessionBackgroundTimeout: TimeInterval = 5) {
+         sessionBackgroundTimeout: TimeInterval) {
         self.appId = appId
         self.region = region
         self.credentialsProvider = credentialsProvider
@@ -125,7 +124,7 @@ class PinpointContext {
     private let storage: PinpointContextStorage
 
     init(with configuration: PinpointContextConfiguration,
-         currentDevice: Device = DeviceProvider.current,
+         endpointInformation: EndpointInformation = .current,
          userDefaults: UserDefaultsBehaviour = UserDefaults.standard,
          keychainStore: KeychainStoreBehavior = KeychainStore(service: PinpointContext.Constants.Keychain.service),
          fileManager: FileManagerBehaviour = FileManager.default,
@@ -144,7 +143,7 @@ class PinpointContext {
                                                              isDebug: configuration.isDebug,
                                                              isOptOut: configuration.isApplicationLevelOptOut),
                                         pinpointClient: pinpointClient,
-                                        currentDevice: currentDevice,
+                                        endpointInformation: endpointInformation,
                                         userDefaults: userDefaults,
                                         keychain: keychainStore)
 

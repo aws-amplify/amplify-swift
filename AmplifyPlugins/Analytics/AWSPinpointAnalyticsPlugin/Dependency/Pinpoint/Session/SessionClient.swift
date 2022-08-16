@@ -41,7 +41,8 @@ class SessionClient: SessionClientBehaviour {
          configuration: SessionClientConfiguration,
          endpointClient: EndpointClientBehaviour,
          userDefaults: UserDefaultsBehaviour) {
-        self.activityTracker = activityTracker ?? ActivityTracker.create(timeout: configuration.sessionBackgroundTimeout)
+        self.activityTracker = activityTracker ??
+            ActivityTracker(backgroundTrackingTimeout: configuration.sessionBackgroundTimeout)
         self.analyticsClient = analyticsClient
         self.archiver = archiver
         self.configuration = configuration
@@ -190,6 +191,9 @@ class SessionClient: SessionClientBehaviour {
 
     private func respond(to newState: ApplicationState) {
         switch newState {
+        case .terminated:
+            endSession()
+    #if !os(macOS)
         case .runningInBackground(let isStale):
             if isStale {
                 endSession()
@@ -201,9 +205,8 @@ class SessionClient: SessionClientBehaviour {
             }
         case .runningInForeground:
             resumeSession()
-        case .terminated:
-            endSession()
-        case .initializing:
+    #endif
+        default:
             break
         }
     }

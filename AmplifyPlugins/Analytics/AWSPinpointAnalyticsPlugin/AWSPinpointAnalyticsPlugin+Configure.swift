@@ -45,12 +45,18 @@ extension AWSPinpointAnalyticsPlugin {
             log.warn("Different regions between Analytics and Targeting is not supported. The Analytics region will be used.")
         }
 
+        let sessionBackgroundTimeout: TimeInterval
+        if configuration.autoSessionTrackingInterval == .max {
+            sessionBackgroundTimeout = .infinity
+        } else {
+            sessionBackgroundTimeout = TimeInterval(configuration.autoSessionTrackingInterval)
+        }
         let contextConfiguration = PinpointContextConfiguration(appId: configuration.appId,
                                                                 region: configuration.region,
                                                                 credentialsProvider: credentialsProvider,
                                                                 isDebug: isDebug,
                                                                 shouldTrackAppSessions: configuration.trackAppSessions,
-                                                                sessionBackgroundTimeout: TimeInterval(configuration.autoSessionTrackingInterval))
+                                                                sessionBackgroundTimeout: sessionBackgroundTimeout)
         let pinpoint = try PinpointContext(with: contextConfiguration)
 
         var autoFlushEventsTimer: DispatchSourceTimer?

@@ -36,7 +36,7 @@ actor EndpointClient: EndpointClientBehaviour {
 
     private let configuration: EndpointClient.Configuration
     private let archiver: AmplifyArchiverBehaviour
-    private let currentDevice: Device
+    private let endpointInformation: EndpointInformation
     private let userDefaults: UserDefaultsBehaviour
     private let keychain: KeychainStoreBehavior
 
@@ -52,14 +52,14 @@ actor EndpointClient: EndpointClientBehaviour {
     init(configuration: EndpointClient.Configuration,
          pinpointClient: PinpointClientProtocol,
          archiver: AmplifyArchiverBehaviour = AmplifyArchiver(),
-         currentDevice: Device = DeviceProvider.current,
+         endpointInformation: EndpointInformation = .current,
          userDefaults: UserDefaultsBehaviour = UserDefaults.standard,
          keychain: KeychainStoreBehavior = KeychainStore(service: PinpointContext.Constants.Keychain.service)
     ) {
         self.configuration = configuration
         self.pinpointClient = pinpointClient
         self.archiver = archiver
-        self.currentDevice = currentDevice
+        self.endpointInformation = endpointInformation
         self.userDefaults = userDefaults
         self.keychain = keychain
 
@@ -173,7 +173,7 @@ actor EndpointClient: EndpointClientBehaviour {
         endpointProfile.endpointId = configuration.uniqueDeviceId
         endpointProfile.deviceToken = deviceToken
         endpointProfile.location = .init()
-        endpointProfile.demographic = .init(device: currentDevice)
+        endpointProfile.demographic = .init(device: endpointInformation)
         endpointProfile.effectiveDate = Date()
         endpointProfile.isOptOut = isOptOut
         endpointProfile.isDebug = configuration.isDebug
@@ -335,7 +335,7 @@ extension PinpointClientTypes.EndpointDemographic {
         static let unknown = "Unknown"
     }
 
-    init(device: Device,
+    init(device: EndpointInformation,
          locale: String = Locale.autoupdatingCurrent.identifier,
          timezone: String = TimeZone.current.identifier) {
         self.init(appVersion: device.appVersion ?? Constants.unknown,
