@@ -73,7 +73,6 @@
 		21698AC32889996A004BD994 /* GraphQLModelBasedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AB42889996A004BD994 /* GraphQLModelBasedTests.swift */; };
 		21698AC42889996A004BD994 /* GraphQLConnectionScenario5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AB52889996A004BD994 /* GraphQLConnectionScenario5Tests.swift */; };
 		21698AC52889996A004BD994 /* GraphQLConnectionScenario2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698AB62889996A004BD994 /* GraphQLConnectionScenario2Tests.swift */; };
-		21698BCA28899BC8004BD994 /* RESTWithIAMIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BC728899BC8004BD994 /* RESTWithIAMIntegrationTests.swift */; };
 		21698BD128899BCF004BD994 /* RESTWithUserPoolIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BCE28899BCF004BD994 /* RESTWithUserPoolIntegrationTests.swift */; };
 		21698BDB28899ED5004BD994 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 21698BDA28899ED5004BD994 /* Amplify */; };
 		21698BDD28899ED5004BD994 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 21698BDC28899ED5004BD994 /* AWSAPIPlugin */; };
@@ -88,6 +87,8 @@
 		21E73E7128898D7900D7DB7E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E73E7028898D7900D7DB7E /* ContentView.swift */; };
 		21E73E7328898D7A00D7DB7E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21E73E7228898D7A00D7DB7E /* Assets.xcassets */; };
 		21E73E7628898D7A00D7DB7E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21E73E7528898D7A00D7DB7E /* Preview Assets.xcassets */; };
+		395906B628AC4AC8004B96B1 /* RESTWithIAMIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BC728899BC8004BD994 /* RESTWithIAMIntegrationTests.swift */; };
+		395906B928AC4C3A004B96B1 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395906B828AC4C3A004B96B1 /* TestConfigHelper.swift */; };
 		39E0F146289DD60200939D9F /* GraphQLWithIAMIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BAF28899B61004BD994 /* GraphQLWithIAMIntegrationTests.swift */; };
 		39E0F147289DD60C00939D9F /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BB228899B61004BD994 /* Todo.swift */; };
 		39E0F14B289DD84E00939D9F /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E0F14A289DD84E00939D9F /* TestConfigHelper.swift */; };
@@ -112,6 +113,13 @@
 			remoteInfo = APIHostApp;
 		};
 		21698A9928899818004BD994 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 21E73E6328898D7800D7DB7E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 21E73E6A28898D7800D7DB7E;
+			remoteInfo = APIHostApp;
+		};
+		395906B028AC4A16004B96B1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 21E73E6328898D7800D7DB7E /* Project object */;
 			proxyType = 1;
@@ -242,6 +250,8 @@
 		21E73E7028898D7900D7DB7E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		21E73E7228898D7A00D7DB7E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		21E73E7528898D7A00D7DB7E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		395906AC28AC4A16004B96B1 /* AWSAPIPluginRESTIAMTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginRESTIAMTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		395906B828AC4C3A004B96B1 /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
 		39E0F13D289DD57D00939D9F /* AWSAPIPluginGraphQLIAMTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginGraphQLIAMTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		39E0F14A289DD84E00939D9F /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
 		39E0F2A128A43FB100939D9F /* AWSAPIPluginGraphQLUserPoolTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginGraphQLUserPoolTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -279,6 +289,13 @@
 				21698BF02889A163004BD994 /* AWSCognitoAuthPlugin in Frameworks */,
 				21698CC02889D5A9004BD994 /* CwlPreconditionTesting in Frameworks */,
 				21698BDB28899ED5004BD994 /* Amplify in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		395906A928AC4A16004B96B1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -446,18 +463,8 @@
 			isa = PBXGroup;
 			children = (
 				21698BC628899BAB004BD994 /* RESTWithUserPoolIntegrationTests */,
-				21698BC528899BA2004BD994 /* RESTWithIAMIntegrationTests */,
 			);
 			path = REST;
-			sourceTree = "<group>";
-		};
-		21698BC528899BA2004BD994 /* RESTWithIAMIntegrationTests */ = {
-			isa = PBXGroup;
-			children = (
-				21698BC928899BC8004BD994 /* README.md */,
-				21698BC728899BC8004BD994 /* RESTWithIAMIntegrationTests.swift */,
-			);
-			path = RESTWithIAMIntegrationTests;
 			sourceTree = "<group>";
 		};
 		21698BC628899BAB004BD994 /* RESTWithUserPoolIntegrationTests */ = {
@@ -494,6 +501,7 @@
 				39E0F13E289DD57D00939D9F /* AWSAPIPluginGraphQLIAMTests */,
 				39E0F2A228A43FB100939D9F /* AWSAPIPluginGraphQLUserPoolTests */,
 				213DBC7628A6C47000B30280 /* AWSAPIPluginGraphQLLambdaAuthTests */,
+				395906AD28AC4A16004B96B1 /* AWSAPIPluginRESTIAMTests */,
 				21E73E6C28898D7900D7DB7E /* Products */,
 				21698BD728899EBB004BD994 /* Frameworks */,
 			);
@@ -508,6 +516,7 @@
 				39E0F13D289DD57D00939D9F /* AWSAPIPluginGraphQLIAMTests.xctest */,
 				39E0F2A128A43FB100939D9F /* AWSAPIPluginGraphQLUserPoolTests.xctest */,
 				213DBC7528A6C47000B30280 /* AWSAPIPluginGraphQLLambdaAuthTests.xctest */,
+				395906AC28AC4A16004B96B1 /* AWSAPIPluginRESTIAMTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -532,6 +541,24 @@
 				21E73E7528898D7A00D7DB7E /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		395906AD28AC4A16004B96B1 /* AWSAPIPluginRESTIAMTests */ = {
+			isa = PBXGroup;
+			children = (
+				395906B728AC4C25004B96B1 /* Base */,
+				21698BC928899BC8004BD994 /* README.md */,
+				21698BC728899BC8004BD994 /* RESTWithIAMIntegrationTests.swift */,
+			);
+			path = AWSAPIPluginRESTIAMTests;
+			sourceTree = "<group>";
+		};
+		395906B728AC4C25004B96B1 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				395906B828AC4C3A004B96B1 /* TestConfigHelper.swift */,
+			);
+			path = Base;
 			sourceTree = "<group>";
 		};
 		39E0F13E289DD57D00939D9F /* AWSAPIPluginGraphQLIAMTests */ = {
@@ -655,6 +682,25 @@
 			productReference = 21E73E6B28898D7900D7DB7E /* APIHostApp.app */;
 			productType = "com.apple.product-type.application";
 		};
+		395906AB28AC4A16004B96B1 /* AWSAPIPluginRESTIAMTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 395906B428AC4A16004B96B1 /* Build configuration list for PBXNativeTarget "AWSAPIPluginRESTIAMTests" */;
+			buildPhases = (
+				395906A828AC4A16004B96B1 /* Sources */,
+				395906A928AC4A16004B96B1 /* Frameworks */,
+				395906AA28AC4A16004B96B1 /* Resources */,
+				395906B528AC4A22004B96B1 /* Copy Configuration Files */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				395906B128AC4A16004B96B1 /* PBXTargetDependency */,
+			);
+			name = AWSAPIPluginRESTIAMTests;
+			productName = AWSAPIPluginRESTIAMTests;
+			productReference = 395906AC28AC4A16004B96B1 /* AWSAPIPluginRESTIAMTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		39E0F13C289DD57D00939D9F /* AWSAPIPluginGraphQLIAMTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 39E0F143289DD57D00939D9F /* Build configuration list for PBXNativeTarget "AWSAPIPluginGraphQLIAMTests" */;
@@ -700,7 +746,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1400;
+				LastSwiftUpdateCheck = 1340;
 				LastUpgradeCheck = 1340;
 				TargetAttributes = {
 					213DBC7428A6C47000B30280 = {
@@ -719,6 +765,10 @@
 					};
 					21E73E6A28898D7800D7DB7E = {
 						CreatedOnToolsVersion = 13.4.1;
+					};
+					395906AB28AC4A16004B96B1 = {
+						CreatedOnToolsVersion = 13.4.1;
+						TestTargetID = 21E73E6A28898D7800D7DB7E;
 					};
 					39E0F13C289DD57D00939D9F = {
 						CreatedOnToolsVersion = 13.4.1;
@@ -752,6 +802,7 @@
 				39E0F13C289DD57D00939D9F /* AWSAPIPluginGraphQLIAMTests */,
 				39E0F2A028A43FB100939D9F /* AWSAPIPluginGraphQLUserPoolTests */,
 				213DBC7428A6C47000B30280 /* AWSAPIPluginGraphQLLambdaAuthTests */,
+				395906AB28AC4A16004B96B1 /* AWSAPIPluginRESTIAMTests */,
 			);
 		};
 /* End PBXProject section */
@@ -784,6 +835,13 @@
 			files = (
 				21E73E7628898D7A00D7DB7E /* Preview Assets.xcassets in Resources */,
 				21E73E7328898D7A00D7DB7E /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		395906AA28AC4A16004B96B1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -832,6 +890,24 @@
 			inputPaths = (
 			);
 			name = "Copy Configuration folder";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
+		395906B528AC4A22004B96B1 /* Copy Configuration Files */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration Files";
 			outputFileListPaths = (
 			);
 			outputPaths = (
@@ -966,7 +1042,6 @@
 				21698CCB2889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift in Sources */,
 				21698CC72889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift in Sources */,
 				21698CC92889D75F004BD994 /* SocialNote.swift in Sources */,
-				21698BCA28899BC8004BD994 /* RESTWithIAMIntegrationTests.swift in Sources */,
 				21698BD128899BCF004BD994 /* RESTWithUserPoolIntegrationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -979,6 +1054,15 @@
 				21698C082889B173004BD994 /* TestExtensions.swift in Sources */,
 				21698C092889B173004BD994 /* TestCommonConstants.swift in Sources */,
 				21E73E6F28898D7900D7DB7E /* APIHostAppApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		395906A828AC4A16004B96B1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				395906B628AC4AC8004B96B1 /* RESTWithIAMIntegrationTests.swift in Sources */,
+				395906B928AC4C3A004B96B1 /* TestConfigHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1019,6 +1103,11 @@
 			isa = PBXTargetDependency;
 			target = 21E73E6A28898D7800D7DB7E /* APIHostApp */;
 			targetProxy = 21698A9928899818004BD994 /* PBXContainerItemProxy */;
+		};
+		395906B128AC4A16004B96B1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 21E73E6A28898D7800D7DB7E /* APIHostApp */;
+			targetProxy = 395906B028AC4A16004B96B1 /* PBXContainerItemProxy */;
 		};
 		39E0F142289DD57D00939D9F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1347,6 +1436,42 @@
 			};
 			name = Release;
 		};
+		395906B228AC4A16004B96B1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.AWSAPIPluginRESTIAMTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
+			};
+			name = Debug;
+		};
+		395906B328AC4A16004B96B1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Amazon-Web-Services.AWSAPIPluginRESTIAMTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
+			};
+			name = Release;
+		};
 		39E0F144289DD57D00939D9F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1461,6 +1586,15 @@
 			buildConfigurations = (
 				21E73E7A28898D7A00D7DB7E /* Debug */,
 				21E73E7B28898D7A00D7DB7E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		395906B428AC4A16004B96B1 /* Build configuration list for PBXNativeTarget "AWSAPIPluginRESTIAMTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				395906B228AC4A16004B96B1 /* Debug */,
+				395906B328AC4A16004B96B1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

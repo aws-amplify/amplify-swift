@@ -14,11 +14,12 @@ import AWSCognitoAuthPlugin
 
 class RESTWithIAMIntegrationTests: XCTestCase {
 
-    static let amplifyConfiguration = "RESTWithIAMIntegrationTests-amplifyconfiguration"
-
-    override func setUp() {
+    static let amplifyConfiguration = "testconfiguration/RESTWithIAMIntegrationTests-amplifyconfiguration"
+    
+    override func setUp() async throws {
 
         do {
+            Amplify.Logging.logLevel = .verbose
             try Amplify.add(plugin: AWSAPIPlugin())
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
@@ -37,7 +38,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
         XCTAssertTrue(true)
     }
 
-    func testGetAPISuccess() {
+    func testGetAPISuccess() async {
         let completeInvoked = expectation(description: "request completed")
         let request = RESTRequest(path: "/items")
         _ = Amplify.API.get(request: request) { event in
@@ -57,11 +58,10 @@ class RESTWithIAMIntegrationTests: XCTestCase {
                 XCTFail("Unexpected .failed event: \(error)")
             }
         }
-
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testGetAPIFailedAccessDenied() {
+    func testGetAPIFailedAccessDenied() async {
         let failedInvoked = expectation(description: "request failed")
         let request = RESTRequest(path: "/invalidPath")
         _ = Amplify.API.get(request: request) { event in
@@ -89,10 +89,10 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             }
         }
 
-        wait(for: [failedInvoked], timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testGetAPIWithQueryParamsSuccess() {
+    func testGetAPIWithQueryParamsSuccess() async {
         let completeInvoked = expectation(description: "request completed")
         let request = RESTRequest(path: "/items",
                                   queryParameters: [
@@ -110,10 +110,10 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             }
         }
 
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testGetAPIWithEncodedQueryParamsSuccess() {
+    func testGetAPIWithEncodedQueryParamsSuccess() async {
         let completeInvoked = expectation(description: "request completed")
         let request = RESTRequest(path: "/items",
                                   queryParameters: [
@@ -131,10 +131,10 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             }
         }
 
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testPutAPISuccess() {
+    func testPutAPISuccess() async {
         let completeInvoked = expectation(description: "request completed")
         let request = RESTRequest(path: "/items")
         _ = Amplify.API.put(request: request) { event in
@@ -148,10 +148,10 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             }
         }
 
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+    await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testPostAPISuccess() {
+    func testPostAPISuccess() async {
         let completeInvoked = expectation(description: "request completed")
         let request = RESTRequest(path: "/items")
         _ = Amplify.API.post(request: request) { event in
@@ -165,10 +165,10 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             }
         }
 
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testDeleteAPISuccess() {
+    func testDeleteAPISuccess() async {
         let completeInvoked = expectation(description: "request completed")
         let request = RESTRequest(path: "/items")
         _ = Amplify.API.delete(request: request) { event in
@@ -185,7 +185,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testHeadAPIAccessDenied() {
+    func testHeadAPIAccessDenied() async {
         let failedInvoked = expectation(description: "request completed")
         let request = RESTRequest(path: "/items")
         _ = Amplify.API.head(request: request) { event in
@@ -203,10 +203,10 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             }
         }
 
-        wait(for: [failedInvoked], timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testPatchAPINotFound() {
+    func testPatchAPINotFound() async {
         let failedInvoked = expectation(description: "request completed")
         let request = RESTRequest(path: "/items")
         _ = Amplify.API.patch(request: request) { event in
@@ -224,7 +224,7 @@ class RESTWithIAMIntegrationTests: XCTestCase {
             }
         }
 
-        wait(for: [failedInvoked], timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
 }
