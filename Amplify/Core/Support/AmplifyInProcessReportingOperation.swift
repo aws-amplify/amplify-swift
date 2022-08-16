@@ -27,19 +27,18 @@ open class AmplifyInProcessReportingOperation<
 
     var inProcessListenerUnsubscribeToken: UnsubscribeToken?
 
-    /// Local storage for the result publisher associated with this operation. In iOS
-    /// 13 and higher, this is initialized to be a `PassthroughSubject<InProcess,
-    /// Never>`. In versions of iOS prior to 13, this is initialized to `false`. We
-    /// derive the `inProcessPublisher` computed property from this value.
-    var inProcessSubject: Any
+    /// Local storage for the result publisher associated with this operation.
+    /// We derive the `inProcessPublisher` computed property from this value.
+    /// Amplify V2 can expect Combine to be available.
+#if canImport(Combine)
+    var inProcessSubject: PassthroughSubject<InProcess, Never>!
+#endif
 
     public init(categoryType: CategoryType,
                 eventName: HubPayloadEventName,
                 request: Request,
                 inProcessListener: InProcessListener? = nil,
                 resultListener: ResultListener? = nil) {
-
-        self.inProcessSubject = false
 
         super.init(categoryType: categoryType, eventName: eventName, request: request, resultListener: resultListener)
 

@@ -48,16 +48,19 @@ open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: 
 
     private var resultListenerUnsubscribeToken: UnsubscribeToken?
 
-    /// Local storage for the result publisher associated with this operation. In iOS
-    /// 13 and higher, this is initialized to be a `Future<Success, Failure>`. We use a
+    /// Local storage for the result publisher associated with this operation. We use a
     /// Future here to ensure that a subscriber will always receive a value, even if
     /// the operation has already completed execution by the time the subscriber is
     /// attached. We derive the `resultPublisher` computed property from this value.
-    var resultFuture: Any
+    /// Amplify V2 can expect Combine to be available.
+#if canImport(Combine)
+    var resultFuture: Future<Success, Failure>!
 
     /// Local storage for the result promise associated with this operation. We use
     /// this promise handle to resolve the operation in the `dispatch` method
-    var resultPromise: Any
+    var resultPromise: Future<Success, Failure>.Promise!
+#endif
+
 
     /// Creates an AmplifyOperation for the specified reequest.
     ///
@@ -104,9 +107,6 @@ open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: 
         self.request = request
         self.id = UUID()
 
-        self.resultFuture = false
-        self.resultPromise = false
-
         super.init()
 
 #if canImport(Combine)
@@ -143,6 +143,12 @@ open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: 
         return token!
     }
 
+    func unsubscribe(token: UnsubscribeToken) {
+        guard let token = resultListenerUnsubscribeToken else { return }
+        Amplify.Hub.removeListener(token)
+        resultListenerUnsubscribeToken = nil
+    }
+
     /// Classes that override this method must emit a completion to the `resultPublisher` upon cancellation
     open override func cancel() {
         super.cancel()
@@ -154,6 +160,10 @@ open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: 
         )
         publish(result: .failure(cancellationError))
 #endif
+        if let token = resultListenerUnsubscribeToken {
+            unsubscribe(token: token)
+            resultListenerUnsubscribeToken = nil
+        }
     }
 
     /// Dispatches an event to the hub. Internally, creates an

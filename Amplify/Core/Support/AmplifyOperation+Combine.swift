@@ -34,11 +34,7 @@ extension AmplifyOperation {
     /// Cancelled operations will emit a completion without a value as long as the
     /// cancellation was processed before the operation was resolved.
     var internalResultPublisher: AnyPublisher<Success, Failure> {
-        // We set this value in the initializer, so it's safe to force-unwrap and
-        // force-cast here
-        // swiftlint:disable:next force_cast
-        let future = resultFuture as! Future<Success, Failure>
-        return future
+        resultFuture
             .catch(interceptCancellation)
             .eraseToAnyPublisher()
     }
@@ -47,10 +43,7 @@ extension AmplifyOperation {
     ///
     /// - Parameter result: the result of the operation
     func publish(result: OperationResult) {
-        // We assign this in init, so we know it's safe to force-unwrap here
-        // swiftlint:disable:next force_cast
-        let promise = resultPromise as! Future<Success, Failure>.Promise
-        promise(result)
+        resultPromise(result)
     }
 
     /// Utility method to help Swift type-cast the handling logic for cancellation
@@ -60,11 +53,9 @@ extension AmplifyOperation {
     /// - Returns: A publisher that either completes successfully (if the underlying
     ///   error of `error` is a cancellation) or re-emits the existing error
     private func interceptCancellation(error: Failure) -> AnyPublisher<Success, Failure> {
-        if error.isOperationCancelledError {
-            return Empty<Success, Failure>(completeImmediately: true).eraseToAnyPublisher()
-        } else {
-            return Fail<Success, Failure>(error: error).eraseToAnyPublisher()
-        }
+        error.isOperationCancelledError ?
+                    Empty<Success, Failure>(completeImmediately: true).eraseToAnyPublisher() :
+                    Fail<Success, Failure>(error: error).eraseToAnyPublisher()
     }
 
 }
