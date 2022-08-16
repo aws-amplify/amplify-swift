@@ -36,13 +36,13 @@ class ChildTaskTests: XCTestCase {
         let expectedOutput = input.sum()
 
         let task1 = Task {
-            try await childTask.result.value
+            try await childTask.value.value
         }
         let task2 = Task {
-            try await childTask.result.value
+            try await childTask.value.value
         }
         let task3 = Task {
-            try await childTask.result.value
+            try await childTask.value.value
         }
 
         queue.addOperation(operation)
@@ -65,7 +65,7 @@ class ChildTaskTests: XCTestCase {
         let task = Task {
             var thrown: Error? = nil
             do {
-                _ = try await childTask.result
+                _ = try await childTask.value
                 cancelExp.fulfill()
             } catch {
                 thrown = error
@@ -89,7 +89,7 @@ class ChildTaskTests: XCTestCase {
         Task {
             var thrown: Error? = nil
             do {
-                _ = try await childTask.result
+                _ = try await childTask.value
                 cancelExp.fulfill()
             } catch {
                 thrown = error

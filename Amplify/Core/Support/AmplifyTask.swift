@@ -15,7 +15,7 @@ public protocol AmplifyTask {
     associatedtype Success
     associatedtype Failure: AmplifyError
 
-    var result: Success { get async throws }
+    var value: Success { get async throws }
 
     func pause() async
     func resume() async

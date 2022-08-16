@@ -27,9 +27,9 @@ public class AmplifyOperationTaskAdapter<Request: AmplifyOperationRequest, Succe
         }
     }
 
-    public var result: Success {
+    public var value: Success {
         get async throws {
-            try await childTask.result
+            try await childTask.value
         }
     }
 
@@ -80,9 +80,9 @@ public class AmplifyInProcessReportingOperationTaskAdapter<Request: AmplifyOpera
         }
     }
 
-    public var result: Success {
+    public var value: Success {
         get async throws {
-            try await childTask.result
+            try await childTask.value
         }
     }
 

@@ -7,6 +7,8 @@
 
 import Foundation
 
+/// Takes a Parent Operation which conforms to Cancellable so that if the
+/// Child Task is cancelled it will also cancel the parent.
 actor ChildTask<InProcess, Success, Failure: Error>: BufferingSequence {
     typealias Element = InProcess
     let parent: Cancellable
@@ -31,7 +33,7 @@ actor ChildTask<InProcess, Success, Failure: Error>: BufferingSequence {
         return channel
     }
 
-    var result: Success {
+    var value: Success {
         get async throws {
             try await withTaskCancellationHandler(handler: {
                 Task {

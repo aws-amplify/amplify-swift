@@ -88,8 +88,8 @@ class AmplifyTaskTests: XCTestCase {
         }
 
         do {
-            let result = try await longTask.result
-            output = result.id
+            let value = try await longTask.value
+            output = value.id
             success = true
         } catch {
             thrown = error
@@ -168,7 +168,7 @@ class AmplifyTaskTests: XCTestCase {
         let operation = FastOperation(request: request)
         let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
         queue.addOperation(operation)
-        return try await taskAdapter.result
+        return try await taskAdapter.value
     }
 
     private func runLongOperation(request: LongOperationRequest) async -> LongTask {
