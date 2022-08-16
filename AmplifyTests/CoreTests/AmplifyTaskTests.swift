@@ -114,7 +114,7 @@ class AmplifyTaskTests: XCTestCase {
         var output: String? = nil
         var thrown: Error? = nil
 
-        let request = LongOperationRequest(steps: 10, delay: 0.1)
+        let request = LongOperationRequest(steps: 10, delay: 0.01)
         let longTask = await runLongOperation(request: request)
 
         Task {
@@ -156,7 +156,7 @@ class AmplifyTaskTests: XCTestCase {
         var progressCount = 0
         var lastProgress: Double = 0
 
-        let request = LongOperationRequest(steps: 10, delay: 0.1)
+        let request = LongOperationRequest(steps: 10, delay: 0.01)
         let longTask = await runLongOperation(request: request)
 
         let progressPublisher = longTask.inProcessPublisher
