@@ -25,7 +25,7 @@ public protocol AmplifyInProcessReportingTask {
     var inProcess: AsyncChannel<InProcess> { get async }
 }
 
-public typealias AmplifyProgressTask = AmplifyTask & AmplifyInProcessReportingTask
+public typealias AmplifyInProcessTask = AmplifyTask & AmplifyInProcessReportingTask
 
 public extension AmplifyInProcessReportingTask where InProcess == Progress {
     var progress : AsyncChannel<InProcess> {

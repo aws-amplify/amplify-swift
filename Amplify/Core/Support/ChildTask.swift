@@ -7,8 +7,9 @@
 
 import Foundation
 
-actor ChildTask<InProcess, Success, Failure: Error> {
-    var parent: Cancellable
+actor ChildTask<InProcess, Success, Failure: Error>: BufferingSequence {
+    typealias Element = InProcess
+    let parent: Cancellable
     var inProcessChannel: AsyncChannel<InProcess>? = nil
     var valueContinuations: [CheckedContinuation<Success, Error>] = []
     var storedResult: Result<Success, Failure>? = nil
@@ -19,16 +20,13 @@ actor ChildTask<InProcess, Success, Failure: Error> {
         if let inProcessChannel = inProcessChannel {
             channel = inProcessChannel
         } else {
-            channel = AsyncChannel<InProcess>()
+            channel = AsyncChannel<InProcess>(bufferingPolicy: bufferingPolicy)
             inProcessChannel = channel
         }
 
         // finish channel if there is already a result
         if storedResult != nil || isCancelled {
-            Task {
-                // finish will cause the call to next() to end the sequence
-                await channel.finish()
-            }
+            channel.finish()
         }
         return channel
     }
@@ -64,10 +62,10 @@ actor ChildTask<InProcess, Success, Failure: Error> {
     func report(_ inProcess: InProcess?) async throws {
         if let channel = inProcessChannel {
             if let inProcess = inProcess {
-                try await channel.send(inProcess)
+                channel.send(inProcess)
             } else {
                 // nil indicates the sequence is done
-                await channel.finish()
+                channel.finish()
             }
         }
     }
@@ -84,7 +82,7 @@ actor ChildTask<InProcess, Success, Failure: Error> {
     func cancel() async {
         isCancelled = true
         if let channel = inProcessChannel {
-            await channel.finish()
+            channel.finish()
         }
         while !valueContinuations.isEmpty {
             let continuation = valueContinuations.removeFirst()
