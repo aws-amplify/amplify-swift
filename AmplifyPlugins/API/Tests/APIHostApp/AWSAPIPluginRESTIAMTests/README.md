@@ -2,6 +2,8 @@
 
 The following steps show how to set up an API endpoint with APIGateway and Lambda source. The auth configured will be IAM. This set up is used to run the tests in `RESTWithIAMIntegrationTests.swift`.
 
+Currently there is an issue with running `amplify push` on the resources created below: https://github.com/aws-amplify/amplify-category-api/issues/736
+
 ### Set-up
 
 1. `amplify init`
