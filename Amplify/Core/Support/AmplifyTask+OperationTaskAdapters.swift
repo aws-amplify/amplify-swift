@@ -110,7 +110,7 @@ public class AmplifyInProcessReportingOperationTaskAdapter<Request: AmplifyOpera
     }
 
     public var inProcessPublisher: AnyPublisher<InProcess, Never> {
-        operation.progressPublisher
+        operation.inProcessPublisher
     }
 #endif
 

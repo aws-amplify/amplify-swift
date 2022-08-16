@@ -17,8 +17,8 @@ public extension AmplifyOperation {
 }
 
 public extension AmplifyInProcessReportingOperation {
-    /// Publishes progress updates
-    var progressPublisher: AnyPublisher<InProcess, Never> {
+    /// Publishes in-process updates
+    var inProcessPublisher: AnyPublisher<InProcess, Never> {
         internalInProcessPublisher
     }
 }
