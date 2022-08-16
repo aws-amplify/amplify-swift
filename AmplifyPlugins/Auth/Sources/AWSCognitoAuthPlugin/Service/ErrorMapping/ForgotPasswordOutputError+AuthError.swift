@@ -73,10 +73,6 @@ extension ForgotPasswordOutputError: AuthErrorConvertible {
                 AuthPluginErrorConstants.lambdaError,
                 AWSCognitoAuthError.lambda
             )
-        case .userNotConfirmedException(let userNotConfirmedException):
-            return .service(userNotConfirmedException.message ?? "User not confirmed error",
-                            AuthPluginErrorConstants.userNotConfirmedError,
-                            AWSCognitoAuthError.userNotConfirmed)
         case .userNotFoundException(let exception):
             return AuthError.service(exception.message ?? "User not found error",
                                      AuthPluginErrorConstants.userNotFoundError,
