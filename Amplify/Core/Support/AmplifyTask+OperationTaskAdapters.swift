@@ -15,7 +15,7 @@ public class AmplifyOperationTaskAdapter<Request: AmplifyOperationRequest, Succe
     let childTask: ChildTask<Void, Success, Failure>
     var resultToken: UnsubscribeToken? = nil
 
-    init(operation: AmplifyOperation<Request, Success, Failure>) {
+    public init(operation: AmplifyOperation<Request, Success, Failure>) {
         self.operation = operation
         self.childTask = ChildTask(parent: operation)
         resultToken = operation.subscribe(resultListener: resultListener)
@@ -64,7 +64,7 @@ public class AmplifyInProcessReportingOperationTaskAdapter<Request: AmplifyOpera
     var resultToken: UnsubscribeToken? = nil
     var inProcessToken: UnsubscribeToken? = nil
 
-    init(operation: AmplifyInProcessReportingOperation<Request, InProcess, Success, Failure>) {
+    public init(operation: AmplifyInProcessReportingOperation<Request, InProcess, Success, Failure>) {
         self.operation = operation
         self.childTask = ChildTask(parent: operation)
         resultToken = operation.subscribe(resultListener: resultListener)
