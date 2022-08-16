@@ -28,6 +28,6 @@ extension DeviceInfo: EndpointInformation {
 
 extension EndpointInformation where Self == DeviceInfo {
     static var current: EndpointInformation {
-        DeviceInfo()
+        DeviceInfo.current
     }
 }
