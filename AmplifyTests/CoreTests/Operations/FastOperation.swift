@@ -70,7 +70,7 @@ public typealias FastOperationResult = Result<FastOperationSuccess, FastOperatio
 public typealias FastOperationResultListener = (FastOperationResult) -> Void
 
 public class FastOperation: AmplifyOperation<FastOperationRequest, FastOperationSuccess, FastOperationError> {
-    public typealias TaskAdapter = AmplifyOperation<Request, Success, Failure>
+    public typealias TaskAdapter = AmplifyOperationTaskAdapter<Request, Success, Failure>
 #if canImport(Combine)
     public typealias ResultPublisher = AnyPublisher<Success, Failure>
 #endif
