@@ -21,30 +21,21 @@ extension AmplifyInProcessReportingOperation {
     /// `StorageUploadFileOperation` uses the `inProcessOperation` to report the
     /// `Progress` of the file's upload.
     var internalInProcessPublisher: AnyPublisher<InProcess, Never> {
-        // We set this value in the initializer, so it's safe to force-unwrap and force-cast here
-        // swiftlint:disable:next force_cast
-        let subject = inProcessSubject as! PassthroughSubject<InProcess, Never>
-        return subject.eraseToAnyPublisher()
+        inProcessSubject.eraseToAnyPublisher()
     }
 
     /// Publish an in-process value for the operation
     ///
     /// - Parameter result: the result of the operation
     func publish(inProcessValue: InProcess) {
-        // We assign this in init, so we know it's safe to force-unwrap here
-        // swiftlint:disable:next force_cast
-        let subject = inProcessSubject as! PassthroughSubject<InProcess, Never>
-        subject.send(inProcessValue)
+        inProcessSubject.send(inProcessValue)
     }
 
     /// Publish a completion to the in-process publisher
     ///
     /// - Parameter result: the result of the operation
     func publish(completion: Subscribers.Completion<Never>) {
-        // We assign this in init, so we know it's safe to force-unwrap here
-        // swiftlint:disable:next force_cast
-        let subject = inProcessSubject as! PassthroughSubject<InProcess, Never>
-        subject.send(completion: completion)
+        inProcessSubject.send(completion: completion)
     }
 
 }

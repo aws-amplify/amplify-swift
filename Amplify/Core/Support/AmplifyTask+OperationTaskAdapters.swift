@@ -6,6 +6,9 @@
 //
 
 import Foundation
+#if canImport(Combine)
+import Combine
+#endif
 
 public class AmplifyOperationTaskAdapter<Request: AmplifyOperationRequest, Success, Failure: AmplifyError>: AmplifyTask {
     let operation: AmplifyOperation<Request, Success, Failure>
@@ -41,6 +44,12 @@ public class AmplifyOperationTaskAdapter<Request: AmplifyOperationRequest, Succe
     public func cancel() async {
         await childTask.cancel()
     }
+
+#if canImport(Combine)
+    public var resultPublisher: AnyPublisher<Success, Failure> {
+        operation.resultPublisher
+    }
+#endif
 
     private func resultListener(_ result: Result<Success, Failure>) {
         Task {
@@ -95,6 +104,16 @@ public class AmplifyInProcessReportingOperationTaskAdapter<Request: AmplifyOpera
         await childTask.cancel()
     }
 
+#if canImport(Combine)
+    public var resultPublisher: AnyPublisher<Success, Failure> {
+        operation.resultPublisher
+    }
+
+    public var inProcessPublisher: AnyPublisher<InProcess, Never> {
+        operation.progressPublisher
+    }
+#endif
+
     private func resultListener(_ result: Result<Success, Failure>) {
         Task {
             await childTask.finish(result)
@@ -105,5 +124,17 @@ public class AmplifyInProcessReportingOperationTaskAdapter<Request: AmplifyOpera
         Task {
             try await childTask.report(inProcess)
         }
+    }
+}
+
+public extension AmplifyOperationTaskAdapter where Request: RequestIdentifier {
+    var requestID: String {
+        operation.request.requestID
+    }
+}
+
+public extension AmplifyInProcessReportingOperationTaskAdapter where Request: RequestIdentifier {
+    var requestID: String {
+        operation.request.requestID
     }
 }

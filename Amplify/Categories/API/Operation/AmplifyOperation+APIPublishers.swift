@@ -9,15 +9,6 @@
 import Foundation
 import Combine
 
-// MARK: - GraphQLOperation
-
-public extension GraphQLOperation {
-    /// Publishes the final result of the operation
-    var resultPublisher: AnyPublisher<Success, Failure> {
-        internalResultPublisher
-    }
-}
-
 // MARK: - GraphQLSubscriptionOperation
 
 public extension GraphQLSubscriptionOperation {
@@ -88,19 +79,6 @@ public extension GraphQLSubscriptionOperation {
             .eraseToAnyPublisher()
     }
 
-}
-
-// MARK: - RESTOperation
-
-public extension AmplifyOperation
-    where
-    Request == RESTOperation.Request,
-    Success == RESTOperation.Success,
-    Failure == RESTOperation.Failure {
-    /// Publishes the final result of the operation
-    var resultPublisher: AnyPublisher<Success, Failure> {
-        internalResultPublisher
-    }
 }
 
 #endif

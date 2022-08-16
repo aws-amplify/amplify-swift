@@ -6,6 +6,9 @@
 //
 
 import Foundation
+#if canImport(Combine)
+import Combine
+#endif
 import Amplify
 
 public class FastOperationRequest: AmplifyOperationRequest {
@@ -68,6 +71,10 @@ public typealias FastOperationResultListener = (FastOperationResult) -> Void
 
 public class FastOperation: AmplifyOperation<FastOperationRequest, FastOperationSuccess, FastOperationError> {
     public typealias TaskAdapter = AmplifyOperation<Request, Success, Failure>
+#if canImport(Combine)
+    public typealias ResultPublisher = AnyPublisher<Success, Failure>
+#endif
+
     public init(request: FastOperationRequest, resultListener: FastOperationResultListener? = nil) {
         super.init(categoryType: .storage,
                    eventName: "FastOperation",
@@ -93,3 +100,6 @@ public class FastOperation: AmplifyOperation<FastOperationRequest, FastOperation
 }
 
 public typealias FastTask = FastOperation.TaskAdapter
+#if canImport(Combine)
+public typealias FastResultPublisher = FastOperation.ResultPublisher
+#endif

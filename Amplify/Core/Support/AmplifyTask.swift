@@ -6,6 +6,9 @@
 //
 
 import Foundation
+#if canImport(Combine)
+import Combine
+#endif
 
 public protocol AmplifyTask {
     associatedtype Request
@@ -17,12 +20,20 @@ public protocol AmplifyTask {
     func pause() async
     func resume() async
     func cancel() async
+
+#if canImport(Combine)
+    var resultPublisher: AnyPublisher<Success, Failure> { get }
+#endif
 }
 
 public protocol AmplifyInProcessReportingTask {
     associatedtype InProcess
 
     var inProcess: AsyncChannel<InProcess> { get async }
+
+#if canImport(Combine)
+    var inProcessPublisher: AnyPublisher<InProcess, Never> { get }
+#endif
 }
 
 public typealias AmplifyInProcessTask = AmplifyTask & AmplifyInProcessReportingTask

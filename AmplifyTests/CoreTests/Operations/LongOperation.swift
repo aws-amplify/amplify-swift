@@ -6,17 +6,22 @@
 //
 
 import Foundation
+#if canImport(Combine)
+import Combine
+#endif
 import Amplify
 
-public class LongOperationRequest: AmplifyOperationRequest {
+public class LongOperationRequest: AmplifyOperationRequest, RequestIdentifier {
     public let options: [AnyHashable : Any]
     public let steps: Int
     public let delay: Double
+    public let requestID: String
 
     public init(options: [AnyHashable : Any] = [:], steps: Int, delay: Double) {
         self.options = options
         self.steps = steps
         self.delay = delay
+        self.requestID = UUID().uuidString
     }
 }
 
@@ -67,6 +72,11 @@ public typealias LongOperationResultListener = (LongOperationResult) -> Void
 
 public class LongOperation: AmplifyInProcessReportingOperation<LongOperationRequest, Progress, LongOperationSuccess, LongOperationError> {
     public typealias TaskAdapter = AmplifyInProcessReportingOperationTaskAdapter<Request, InProcess, Success, Failure>
+#if canImport(Combine)
+    public typealias ResultPublisher = AnyPublisher<Success, Failure>
+    public typealias ProgressPublisher = AnyPublisher<InProcess, Failure>
+#endif
+
     var count = 0
     var currentProgress: Progress!
 
@@ -118,3 +128,7 @@ public class LongOperation: AmplifyInProcessReportingOperation<LongOperationRequ
 }
 
 public typealias LongTask = LongOperation.TaskAdapter
+#if canImport(Combine)
+public typealias LongResultPublisher = LongOperation.ResultPublisher
+public typealias LongProgressPublisher = LongOperation.ProgressPublisher
+#endif
