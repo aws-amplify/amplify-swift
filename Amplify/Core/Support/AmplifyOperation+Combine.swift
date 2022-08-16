@@ -44,7 +44,6 @@ extension AmplifyOperation {
     /// - Parameter result: the result of the operation
     func publish(result: OperationResult) {
         resultPromise(result)
-
     }
 
     /// Utility method to help Swift type-cast the handling logic for cancellation

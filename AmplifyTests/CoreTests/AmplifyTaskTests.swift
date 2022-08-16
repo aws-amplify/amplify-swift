@@ -66,6 +66,49 @@ class AmplifyTaskTests: XCTestCase {
     }
 #endif
 
+#if canImport(Combine)
+    func testAsyncPassthroughSubject() async throws {
+        let notDone = AsyncExpectation.expectation(description: "notDone", isInverted: true)
+        let done = AsyncExpectation.expectation(description: "done")
+        let input = [1, 2, 3]
+        var output: Int = 0
+        var success = false
+        var thrown: Error? = nil
+
+        let request = FastOperationRequest(numbers: input)
+
+        let subject = AsyncPassthroughSubject {
+            try await self.runFastOperation(request: request)
+        }
+        let publisher = subject.eraseToAnyPublisher()
+        let sink = publisher.sink { completion in
+            switch completion {
+            case .finished:
+                success = true
+            case .failure(let error):
+                Task {
+                    await notDone.fulfill()
+                }
+                thrown = error
+            }
+            Task {
+                await done.fulfill()
+            }
+        } receiveValue: { value in
+            output = value.value
+        }
+
+        try await AsyncExpectation.waitForExpectations([notDone], timeout: 0.01)
+        try await AsyncExpectation.waitForExpectations([done])
+
+        XCTAssertEqual(input.sum(), output)
+        XCTAssertTrue(success)
+        XCTAssertNil(thrown)
+
+        sink.cancel()
+    }
+#endif
+
     func testLongOperation() async throws {
         var success = false
         var output: String? = nil
@@ -152,7 +195,7 @@ class AmplifyTaskTests: XCTestCase {
 
         wait(for: [exp1, exp2], timeout: 10.0)
 
-        XCTAssertEqual(progressCount, 10)
+        XCTAssertGreaterThanOrEqual(progressCount, 10)
         XCTAssertEqual(lastProgress, 1)
 
         XCTAssertTrue(success)
