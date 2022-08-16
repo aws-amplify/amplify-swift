@@ -6,10 +6,52 @@
 //
 
 import Foundation
+import Amplify
 import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 
 public extension AWSCognitoAuthPlugin {
+
+    func federateToIdentityPool(
+        withProviderToken: String,
+        for provider: AuthProvider,
+        options: AuthFederateToIdentityPoolRequest.Options? = nil,
+        listener: AWSAuthFederateToIdentityPoolOperation.ResultListener?
+    ) -> AWSAuthFederateToIdentityPoolOperation {
+
+        let options = options ?? AuthFederateToIdentityPoolRequest.Options()
+        let request = AuthFederateToIdentityPoolRequest(
+            token: withProviderToken,
+            provider: provider,
+            options: options)
+        let operation = AWSAuthFederateToIdentityPoolOperation(
+            request,
+            authConfiguration: authConfiguration,
+            authStateMachine: authStateMachine,
+            resultListener: listener)
+
+        queue.addOperation(operation)
+        return operation
+    }
+
+    func clearFederationToIdentityPool(
+        options: AuthClearFederationToIdentityPoolRequest.Options? = nil,
+        listener: AWSAuthClearFederationToIdentityPoolOperation.ResultListener?
+    ) -> AWSAuthClearFederationToIdentityPoolOperation {
+
+        let options = options ?? AuthClearFederationToIdentityPoolRequest.Options()
+        let request = AuthClearFederationToIdentityPoolRequest(
+            options: options)
+        let operation = AWSAuthClearFederationToIdentityPoolOperation(
+            request,
+            authConfiguration: authConfiguration,
+            authStateMachine: authStateMachine,
+            resultListener: listener)
+
+        queue.addOperation(operation)
+        return operation
+
+    }
 
     func getEscapeHatch() -> AWSCognitoAuthService {
         var service: AWSCognitoAuthService?
