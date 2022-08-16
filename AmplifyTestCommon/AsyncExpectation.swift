@@ -74,7 +74,7 @@ public actor AsyncExpectation {
             return
         }
 
-        let timeout = Task {
+        let timeoutTask = Task {
             try await Task.sleep(seconds: timeout)
             for exp in expectations {
                 await exp.timeOut(file: file, line: line)
@@ -89,7 +89,7 @@ public actor AsyncExpectation {
             }
         }
 
-        timeout.cancel()
+        timeoutTask.cancel()
     }
 
     private func wait() async throws {
