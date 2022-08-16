@@ -75,7 +75,7 @@ class ChildTaskTests: XCTestCase {
             XCTAssertTrue(thrown is CancellationError)
         }
 
-        await waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.01)
         task.cancel()
     }
 
@@ -99,7 +99,7 @@ class ChildTaskTests: XCTestCase {
             XCTAssertTrue(thrown is CancellationError)
         }
 
-        await waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.01)
     }
 
 }
