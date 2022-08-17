@@ -67,10 +67,10 @@ public enum LongOperationError: AmplifyError {
 }
 
 public typealias LongOperationResult = Result<LongOperationSuccess, LongOperationError>
-public typealias LongOperationProgressListener = (Progress) -> Void
+public typealias LongOperationProgressListener = (AmplifyProgress) -> Void
 public typealias LongOperationResultListener = (LongOperationResult) -> Void
 
-public class LongOperation: AmplifyInProcessReportingOperation<LongOperationRequest, Progress, LongOperationSuccess, LongOperationError> {
+public class LongOperation: AmplifyInProcessReportingOperation<LongOperationRequest, AmplifyProgress, LongOperationSuccess, LongOperationError> {
     public typealias TaskAdapter = AmplifyInProcessReportingOperationTaskAdapter<Request, InProcess, Success, Failure>
 #if canImport(Combine)
     public typealias ResultPublisher = AnyPublisher<Success, Failure>
@@ -123,7 +123,7 @@ public class LongOperation: AmplifyInProcessReportingOperation<LongOperationRequ
 
     private func reportProgress() {
         currentProgress.completedUnitCount = Int64(count)
-        dispatchInProcess(data: currentProgress)
+        dispatchInProcess(data: AmplifyProgress(progress: currentProgress))
     }
 }
 

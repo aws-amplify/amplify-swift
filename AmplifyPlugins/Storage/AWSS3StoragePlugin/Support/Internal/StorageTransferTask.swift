@@ -139,7 +139,7 @@ class StorageTransferTask {
         status == .error
     }
 
-    func notify(progress: Progress) {
+    func notify(progress: AmplifyProgress) {
         transferType.notify(progress: progress)
         status = .inProgress
     }

@@ -19,7 +19,7 @@ import AWSPluginsCore
 /// [Operations]: https://github.com/aws-amplify/amplify-ios/blob/main/OPERATIONS.md
 public class AWSS3StorageDownloadFileOperation: AmplifyInProcessReportingOperation<
     StorageDownloadFileRequest,
-    Progress,
+    AmplifyProgress,
     Void,
     StorageError
 >, StorageDownloadFileOperation {
@@ -104,7 +104,7 @@ public class AWSS3StorageDownloadFileOperation: AmplifyInProcessReportingOperati
         }
     }
 
-    private func onServiceEvent(event: StorageEvent<StorageTaskReference, Progress, Data?, StorageError>) {
+    private func onServiceEvent(event: StorageEvent<StorageTaskReference, AmplifyProgress, Data?, StorageError>) {
         switch event {
         case .initiated(let reference):
             storageTaskActionQueue.async {
@@ -125,7 +125,7 @@ public class AWSS3StorageDownloadFileOperation: AmplifyInProcessReportingOperati
         }
     }
 
-    private func dispatch(_ progress: Progress) {
+    private func dispatch(_ progress: AmplifyProgress) {
         dispatchInProcess(data: progress)
     }
 

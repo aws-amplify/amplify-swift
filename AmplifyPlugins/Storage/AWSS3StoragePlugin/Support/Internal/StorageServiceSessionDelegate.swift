@@ -150,7 +150,7 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
         case .upload(let onEvent):
             let progress = Progress(totalUnitCount: totalBytesExpectedToSend)
             progress.completedUnitCount = totalBytesSent
-            onEvent(.inProcess(progress))
+            onEvent(.inProcess(AmplifyProgress(progress: progress)))
         default:
             logger.debug("Transfer Type not supported by \(#function): [\(transferTask.transferType.name)]")
         }
@@ -170,7 +170,7 @@ extension StorageServiceSessionDelegate: URLSessionDownloadDelegate {
 
         let progress = Progress(totalUnitCount: totalBytesExpectedToWrite)
         progress.completedUnitCount = totalBytesWritten
-        transferTask.transferType.notify(progress: progress)
+        transferTask.transferType.notify(progress: AmplifyProgress(progress: progress))
     }
 
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {

@@ -10,5 +10,4 @@ import Foundation
 #if swift(<5.6)
 extension AsyncStream: @unchecked Sendable where Element: Sendable { }
 extension AsyncThrowingStream: @unchecked Sendable where Element: Sendable { }
-extension Progress: @unchecked Sendable {}
 #endif

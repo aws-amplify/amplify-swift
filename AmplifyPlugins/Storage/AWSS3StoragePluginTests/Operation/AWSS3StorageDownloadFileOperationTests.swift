@@ -76,7 +76,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         let task = StorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceDownloadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
-            StorageEvent.inProcess(Progress()),
+            StorageEvent.inProcess(AmplifyProgress(progress: Progress())),
             StorageEvent.completed(nil)]
         let url = URL(fileURLWithPath: "path")
         let request = StorageDownloadFileRequest(key: testKey,
@@ -112,7 +112,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         let task = StorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceDownloadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
-            StorageEvent.inProcess(Progress()),
+            StorageEvent.inProcess(AmplifyProgress(progress: Progress())),
             StorageEvent.failed(StorageError.service("", ""))]
         let url = URL(fileURLWithPath: "path")
         let request = StorageDownloadFileRequest(key: testKey,
@@ -148,7 +148,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         let task = StorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceDownloadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
-            StorageEvent.inProcess(Progress()),
+            StorageEvent.inProcess(AmplifyProgress(progress: Progress())),
             StorageEvent.completed(nil)]
         let url = URL(fileURLWithPath: "path")
         let options = StorageDownloadFileRequest.Options(accessLevel: .protected,

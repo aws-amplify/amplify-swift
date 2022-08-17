@@ -236,7 +236,7 @@ class StorageMultipartUploadSession {
                 if case .parts(_, _, _, let parts) = multipartUpload {
                     let progress = Progress.discreteProgress(totalUnitCount: Int64(parts.totalBytes))
                     progress.completedUnitCount = Int64(parts.bytesTransferred)
-                    onEvent(.inProcess(progress))
+                    onEvent(.inProcess(AmplifyProgress(progress: progress)))
                 }
             }
 

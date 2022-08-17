@@ -38,7 +38,7 @@ public protocol AmplifyInProcessReportingTask {
 
 public typealias AmplifyInProcessTask = AmplifyTask & AmplifyInProcessReportingTask
 
-public extension AmplifyInProcessReportingTask where InProcess == Progress {
+public extension AmplifyInProcessReportingTask where InProcess == AmplifyProgress {
     var progress : AsyncChannel<InProcess> {
         get async {
             await inProcess

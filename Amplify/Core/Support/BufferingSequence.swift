@@ -18,7 +18,7 @@ public extension BufferingSequence {
     }
 }
 
-public extension BufferingSequence where Element == Progress {
+public extension BufferingSequence where Element == AmplifyProgress {
     var bufferingPolicy: AsyncStream<Element>.Continuation.BufferingPolicy {
         .bufferingNewest(5)
     }

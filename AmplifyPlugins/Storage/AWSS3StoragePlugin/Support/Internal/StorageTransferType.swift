@@ -106,7 +106,7 @@ enum StorageTransferType {
         }
     }
 
-    func notify(progress: Progress) {
+    func notify(progress: AmplifyProgress) {
         switch self {
         case .download(let onEvent):
             onEvent(.inProcess(progress))

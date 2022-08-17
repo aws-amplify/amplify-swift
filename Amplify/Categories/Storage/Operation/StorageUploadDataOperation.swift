@@ -9,7 +9,7 @@ import Foundation
 
 public protocol StorageUploadDataOperation: AmplifyInProcessReportingOperation<
     StorageUploadDataRequest,
-    Progress,
+    AmplifyProgress,
     String,
     StorageError
 > {}

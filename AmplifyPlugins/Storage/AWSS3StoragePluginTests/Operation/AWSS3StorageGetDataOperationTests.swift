@@ -72,7 +72,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         let task = StorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceDownloadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
-            StorageEvent.inProcess(Progress()),
+            StorageEvent.inProcess(AmplifyProgress(progress: Progress())),
             StorageEvent.completed(Data())]
         let request = StorageDownloadDataRequest(key: testKey, options: StorageDownloadDataRequest.Options())
         let expectedServiceKey = StorageAccessLevel.guest.serviceAccessPrefix + "/" + testKey
@@ -105,7 +105,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         let task = StorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceDownloadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
-            StorageEvent.inProcess(Progress()),
+            StorageEvent.inProcess(AmplifyProgress(progress: Progress())),
             StorageEvent.failed(StorageError.service("", ""))]
         let request = StorageDownloadDataRequest(key: testKey, options: StorageDownloadDataRequest.Options())
         let expectedServiceKey = StorageAccessLevel.guest.serviceAccessPrefix + "/" + testKey
@@ -138,7 +138,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         let task = StorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceDownloadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
-            StorageEvent.inProcess(Progress()),
+            StorageEvent.inProcess(AmplifyProgress(progress: Progress())),
             StorageEvent.completed(Data())]
         let options = StorageDownloadDataRequest.Options(accessLevel: .protected,
                                                          targetIdentityId: testTargetIdentityId)

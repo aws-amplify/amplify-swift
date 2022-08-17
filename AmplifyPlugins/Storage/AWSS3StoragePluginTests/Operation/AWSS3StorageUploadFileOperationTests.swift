@@ -110,7 +110,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         let task = StorageTransferTask(transferType: .upload(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceUploadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
-            StorageEvent.inProcess(Progress()),
+            StorageEvent.inProcess(AmplifyProgress(progress: Progress())),
             StorageEvent.completedVoid]
 
         let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
@@ -161,7 +161,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         let task = StorageTransferTask(transferType: .upload(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceUploadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
-            StorageEvent.inProcess(Progress()),
+            StorageEvent.inProcess(AmplifyProgress(progress: Progress())),
             StorageEvent.failed(StorageError.service("", ""))]
 
         let filePath = NSTemporaryDirectory() + UUID().uuidString + ".tmp"
@@ -208,7 +208,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         let task = StorageTransferTask(transferType: .multiPartUpload(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceMultiPartUploadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
-            StorageEvent.inProcess(Progress()),
+            StorageEvent.inProcess(AmplifyProgress(progress: Progress())),
             StorageEvent.completedVoid]
 
         let largeDataObject = Data(repeating: 0xff, count: 1_024 * 1_024 * 6) // 6MB

@@ -12,7 +12,7 @@ import AWSS3
 protocol AWSS3StorageServiceBehaviour {
     typealias StorageServiceDownloadEventHandler = (StorageServiceDownloadEvent) -> Void
     typealias StorageServiceDownloadEvent =
-        StorageEvent<StorageTaskReference, Progress, Data?, StorageError>
+        StorageEvent<StorageTaskReference, AmplifyProgress, Data?, StorageError>
 
     // swiftlint:disable:next type_name
     typealias StorageServiceGetPreSignedURLEventHandler = (StorageServiceGetPreSignedURLEvent) -> Void
@@ -26,12 +26,12 @@ protocol AWSS3StorageServiceBehaviour {
 
     typealias StorageServiceUploadEventHandler = (StorageServiceUploadEvent) -> Void
     typealias StorageServiceUploadEvent =
-        StorageEvent<StorageTaskReference, Progress, Void, StorageError>
+        StorageEvent<StorageTaskReference, AmplifyProgress, Void, StorageError>
 
     // swiftlint:disable:next type_name
     typealias StorageServiceMultiPartUploadEventHandler = (StorageServiceMultiPartUploadEvent) -> Void
     typealias StorageServiceMultiPartUploadEvent =
-        StorageEvent<StorageTaskReference, Progress, Void, StorageError>
+        StorageEvent<StorageTaskReference, AmplifyProgress, Void, StorageError>
 
     func reset()
 

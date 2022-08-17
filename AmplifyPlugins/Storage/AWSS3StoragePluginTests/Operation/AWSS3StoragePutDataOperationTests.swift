@@ -79,7 +79,7 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
         let task = StorageTransferTask(transferType: .upload(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceUploadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
-            StorageEvent.inProcess(Progress()),
+            StorageEvent.inProcess(AmplifyProgress(progress: Progress())),
             StorageEvent.completedVoid]
 
         let expectedUploadSource = UploadSource.data(testData)
@@ -127,7 +127,7 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
         let task = StorageTransferTask(transferType: .upload(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceUploadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
-            StorageEvent.inProcess(Progress()),
+            StorageEvent.inProcess(AmplifyProgress(progress: Progress())),
             StorageEvent.failed(StorageError.service("", ""))]
 
         let expectedUploadSource = UploadSource.data(testData)
@@ -171,7 +171,7 @@ class AWSS3StorageUploadDataOperationTests: AWSS3StorageOperationTestBase {
         let task = StorageTransferTask(transferType: .multiPartUpload(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceMultiPartUploadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
-            StorageEvent.inProcess(Progress()),
+            StorageEvent.inProcess(AmplifyProgress(progress: Progress())),
             StorageEvent.completedVoid]
 
         var testLargeDataString = "testLargeDataString"
