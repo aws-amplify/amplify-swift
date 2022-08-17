@@ -27,7 +27,7 @@ public protocol AmplifyTask {
 }
 
 public protocol AmplifyInProcessReportingTask {
-    associatedtype InProcess
+    associatedtype InProcess: Sendable
 
     var inProcess: AsyncChannel<InProcess> { get async }
 
