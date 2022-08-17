@@ -19,34 +19,23 @@ class StateMachineListenerTests: XCTestCase {
 
     func testNotifiesOnListen() async {
         await stateMachine.send(Counter.Event(id: "test", eventType: .increment))
-        let subscribed = expectation(description: "subscribed")
         let notified = expectation(description: "notified")
         await stateMachine.listen { state in
             notified.fulfill()
             XCTAssertEqual(state.value, 1)
         }
-        onSubscribe: {
-            subscribed.fulfill()
-        }
         .store(in: &tokens)
-
         await waitForExpectations(timeout: 0.1)
     }
 
     func testNotifiesOnStateChange() async {
         await stateMachine.send(Counter.Event(id: "test", eventType: .increment))
-        let subscribed = expectation(description: "subscribed")
         let notified = expectation(description: "notified")
         notified.expectedFulfillmentCount = 2
         await stateMachine.listen { _ in
             notified.fulfill()
         }
-        onSubscribe: {
-            subscribed.fulfill()
-        }
         .store(in: &tokens)
-
-        wait(for: [subscribed], timeout: 0.1)
 
         let event = Counter.Event(id: "test", eventType: .increment)
         await stateMachine.send(event)
@@ -55,18 +44,13 @@ class StateMachineListenerTests: XCTestCase {
 
     func testDoesNotNotifyOnNoStateChange() async {
         await stateMachine.send(Counter.Event(id: "test", eventType: .increment))
-        let subscribed = expectation(description: "subscribed")
+
         let notified = expectation(description: "notified")
         notified.expectedFulfillmentCount = 1
         await stateMachine.listen { _ in
             notified.fulfill()
         }
-        onSubscribe: {
-            subscribed.fulfill()
-        }
         .store(in: &tokens)
-
-        wait(for: [subscribed], timeout: 0.1)
 
         let event = Counter.Event(id: "test", eventType: .adjustBy(0))
         await stateMachine.send(event)
@@ -75,17 +59,12 @@ class StateMachineListenerTests: XCTestCase {
 
     func testDoesNotNotifyAfterUnsubscribe() async {
         await stateMachine.send(Counter.Event(id: "test", eventType: .increment))
-        let subscribed = expectation(description: "subscribed")
+
         let notified = expectation(description: "notified")
         notified.expectedFulfillmentCount = 1
         let token = await stateMachine.listen { _ in
             notified.fulfill()
         }
-        onSubscribe: {
-            subscribed.fulfill()
-        }
-
-        wait(for: [subscribed], timeout: 0.1)
 
         await stateMachine.cancel(listenerToken: token)
         let event = Counter.Event(id: "test", eventType: .increment)
@@ -100,8 +79,7 @@ class StateMachineListenerTests: XCTestCase {
         notified.expectedFulfillmentCount = 1
         let token = await stateMachine.listen({ state in
                 notified.fulfill()
-            },
-            onSubscribe: nil
+            }
         )
 
         await stateMachine.cancel(listenerToken: token)

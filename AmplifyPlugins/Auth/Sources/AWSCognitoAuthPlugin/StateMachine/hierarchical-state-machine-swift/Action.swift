@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-typealias ActionClosure = (EventDispatcher, Environment) async -> Void
+typealias BasicActionClosure = (EventDispatcher, Environment) async -> Void
 
 protocol Action {
     /// Used for deduping and cancelling actions
@@ -15,7 +15,7 @@ protocol Action {
 }
 
 extension Action {
-    static func basic(identifier: String, closure: @escaping ActionClosure) -> Action {
+    static func basic(identifier: String, closure: @escaping BasicActionClosure) -> Action {
         BasicAction(identifier: identifier, closure: closure)
     }
 }
@@ -23,11 +23,11 @@ extension Action {
 struct BasicAction: Action {
     let identifier: String
 
-    let closure: ActionClosure
+    let closure: BasicActionClosure
 
     init(
         identifier: String,
-        closure: @escaping ActionClosure
+        closure: @escaping BasicActionClosure
     ) {
         self.identifier = identifier
         self.closure = closure

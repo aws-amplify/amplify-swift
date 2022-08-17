@@ -67,49 +67,40 @@ actor StateMachine<
     typealias OnSubscribedCallback = () -> Void
 
     private let environment: EnvironmentType
-    private let executor: EffectExecutor
     private let resolver: AnyResolver<StateType>
 
-    private var currentState: StateType
+    var currentState: StateType
 
     private var subscribers: [WeakWrapper<StateChangeListenerToken>: StateChangedListener]
-    private var pendingCancellations: AtomicValue<Set<StateChangeListenerToken>>
+    private let pendingCancellations: AtomicValue<Set<StateChangeListenerToken>>
 
     init<ResolverType>(
         resolver: ResolverType,
         environment: EnvironmentType,
-        initialState: StateType? = nil,
-        executor: EffectExecutor? = nil
+        initialState: StateType? = nil
     ) where ResolverType: StateMachineResolver, ResolverType.StateType == StateType {
         self.resolver = resolver.eraseToAnyResolver()
         self.environment = environment
         self.currentState = initialState ?? resolver.defaultState
 
-        self.executor = executor ?? ConcurrentEffectExecutor()
-
         self.subscribers = [:]
         self.pendingCancellations = AtomicValue<Set<StateChangeListenerToken>>(initialValue: [])
     }
 
-    /// Start listening to state changes updates. Asynchronously invokes listener on a background
-    /// queue with the current state.
+    /// Start listening to state changes updates. Asynchronously invokes listener on a background with the current state
     ///
-    /// Both `listener` and `onSubscribe` will be invoked on a background queue. If the work performed
-    /// must be performed on a specific queue, the caller must dispatch appropriately.
+    /// `listener` with be invoked in a separate unstructured `Task`
     ///
     /// - Parameters:
     ///   - listener: Listener to be invoked on state changes
-    ///   - onSubscribe: callback to invoke when subscription is complete.
     /// - Returns: A token that can be used to unsubscribe the listener
     func listen(
-        _ listener: @escaping StateChangedListener,
-        onSubscribe: OnSubscribedCallback?
+        _ listener: @escaping StateChangedListener
     ) -> StateChangeListenerToken {
         let token = StateChangeListenerToken(UUID())
         self.addSubscription(
             token: token,
-            listener: listener,
-            onSubscribe: onSubscribe
+            listener: listener
         )
         return token
     }
@@ -120,26 +111,23 @@ actor StateMachine<
     /// and the time the pending cancellation is processed, the event will not be dispatched to the listener.
     ///
     /// - Parameter listenerToken: Identifies the listener to be removed
-    func cancel(listenerToken: StateChangeListenerToken) {
+    nonisolated func cancel(listenerToken: StateChangeListenerToken) {
         pendingCancellations.with { $0.insert(listenerToken) }
-        self.removeSubscription(listenerToken: listenerToken)
-    }
+        Task {
+           await self.removeSubscription(listenerToken: listenerToken)
+        }
 
-    var getCurrentState: StateType {
-        return self.currentState
     }
 
     // MARK: - Isolated methods
 
-    /// Must be invoked on operationQueue
+    ///  Add the token in a weakly retained map
     /// - Parameters:
     ///   - token: the token, which will be retained weakly in the subscribers map
     ///   - listener: the listener to invoke when the state has changed
-    ///   - onSubscribe: the callback to invoke when subscription is complete
     private func addSubscription(
         token: Box<UUID>,
-        listener: @escaping StateChangedListener,
-        onSubscribe: OnSubscribedCallback?
+        listener: @escaping StateChangedListener
     ) {
         guard !pendingCancellations.get().contains(token) else {
             return
@@ -150,14 +138,12 @@ actor StateMachine<
 
         subscribers[wrappedToken] = listener
 
-        onSubscribe?()
-
         Task {
             listener(currentState)
         }
     }
 
-    /// Must be invoked on operationQueue
+    /// Removes the listener token
     ///
     /// - Parameter listenerToken: the token of the listener to remove
     private func removeSubscription(listenerToken: StateChangeListenerToken) {
@@ -230,6 +216,6 @@ extension StateMachine: EventDispatcher {
         guard !actions.isEmpty else {
             return
         }
-        executor.execute(actions, dispatchingTo: self, environment: environment)
+        ConcurrentEffectExecutor.execute(actions, dispatchingTo: self, environment: environment)
     }
 }

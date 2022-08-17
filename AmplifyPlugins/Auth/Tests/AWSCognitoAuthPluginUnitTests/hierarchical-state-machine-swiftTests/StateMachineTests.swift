@@ -12,7 +12,7 @@ class StateMachineTests: XCTestCase {
 
     func testDefaultState() async {
         let testMachine = CounterStateMachine.logging()
-        let state = await testMachine.getCurrentState
+        let state = await testMachine.currentState
         XCTAssertEqual(state.value, 0)
     }
 
@@ -20,7 +20,7 @@ class StateMachineTests: XCTestCase {
         let testMachine = CounterStateMachine.logging()
         let increment = Counter.Event(id: "1", eventType: .increment)
         await testMachine.send(increment)
-        let state = await testMachine.getCurrentState
+        let state = await testMachine.currentState
         XCTAssertEqual(state.value, 1)
     }
 
@@ -46,7 +46,7 @@ class StateMachineTests: XCTestCase {
                 }
             }
         }
-        let state = await testMachine.getCurrentState
+        let state = await testMachine.currentState
         XCTAssertEqual(state.value, 0)
     }
 
@@ -70,7 +70,7 @@ class StateMachineTests: XCTestCase {
         for iteration in 1 ... 10 {
             await testMachine.send(increment)
 
-            let state = await testMachine.getCurrentState
+            let state = await testMachine.currentState
             XCTAssertEqual(state.value, iteration)
         }
 
@@ -116,11 +116,14 @@ class StateMachineTests: XCTestCase {
         let action1WasExecuted = expectation(description: "action1WasExecuted")
         let action2WasExecuted = expectation(description: "action2WasExecuted")
 
+        let executionCount = AtomicValue(initialValue: 0)
         let action1 = BasicAction(identifier: "basic") { dispatcher, _ in
 
             action1WasExecuted.fulfill()
+            XCTAssertEqual(executionCount.getAndSet(1), 0)
 
             let action2 = BasicAction(identifier: "basic") { _, _ in
+                XCTAssertEqual(executionCount.getAndSet(2), 1)
                 action2WasExecuted.fulfill()
             }
 
@@ -142,7 +145,7 @@ class StateMachineTests: XCTestCase {
 
         await testMachine.send(event)
         await waitForExpectations(timeout: 0.1)
-
+        XCTAssertEqual(executionCount.get(), 2)
     }
 
 }

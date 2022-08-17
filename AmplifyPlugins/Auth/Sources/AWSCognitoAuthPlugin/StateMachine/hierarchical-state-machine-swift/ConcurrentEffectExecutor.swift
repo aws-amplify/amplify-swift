@@ -7,9 +7,9 @@
 
 import Foundation
 
-class ConcurrentEffectExecutor: EffectExecutor {
+enum ConcurrentEffectExecutor: EffectExecutor {
 
-    func execute(
+    static func execute(
         _ actions: [Action],
         dispatchingTo eventDispatcher: EventDispatcher,
         environment: Environment) {
