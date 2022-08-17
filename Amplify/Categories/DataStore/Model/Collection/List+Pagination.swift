@@ -38,4 +38,17 @@ extension List {
             completion(.failure(error))
         }
     }
+    
+    public func getNextPage() async throws -> List<Element> {
+        switch loadedState {
+        case .loaded:
+            return try await listProvider.getNextPage()
+        case .notLoaded:
+            let message = "Call `fetch` to lazy load the list before using this method."
+            let error: CoreError = .listOperation(message, "", nil)
+            Amplify.log.error(error: error)
+            assertionFailure(message)
+            throw error
+        }
+    }
 }

@@ -16,7 +16,7 @@ class ListTests: XCTestCase {
         ModelListDecoderRegistry.registerDecoder(AppSyncListDecoder.self)
     }
 
-    func testDecodeToResponseTypeList() throws {
+    func testDecodeToResponseTypeList() async throws {
         let request = GraphQLRequest<List<Comment4>>(document: "",
                                                      responseType: List<Comment4>.self,
                                                      decodePath: "listComments")
@@ -37,11 +37,7 @@ class ListTests: XCTestCase {
         ]
 
         let result = try decoder.decodeToResponseType(graphQLData)
-        let fetchCompleted = expectation(description: "Fetch completed")
-        result.fetch { _ in
-            XCTAssertEqual(result.count, 2)
-            fetchCompleted.fulfill()
-        }
-        wait(for: [fetchCompleted], timeout: 1)
+        try await result.fetch()
+        XCTAssertEqual(result.count, 2)
     }
 }

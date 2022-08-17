@@ -306,7 +306,7 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
             }
         }
         _ = try await setUpLocalStore(numberOfPosts: 15)
-        wait(for: [allSnapshotsReceived], timeout: 100)
+        await waitForExpectations(timeout: 100)
         XCTAssertTrue(snapshotCount >= 2)
         sink.cancel()
     }

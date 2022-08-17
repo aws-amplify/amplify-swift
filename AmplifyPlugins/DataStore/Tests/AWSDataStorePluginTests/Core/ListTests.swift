@@ -19,42 +19,34 @@ class ListTests: BaseDataStoreTests {
     ///   - the `post.comments` is accessed asynchronously with a callback
     /// - Then:
     ///   - the list should be correctly loaded and populated
-    func testAsynchronousLazyLoadWithCallback() async {
+    func testAsynchronousLazyLoadWithCallback() async throws {
         let expect = expectation(description: "a lazy list should return the correct results")
 
         let postId = preparePostDataForTest()
 
-        func checkComments(_ comments: List<Comment>) {
+        func checkComments(_ comments: List<Comment>) async throws {
             guard case .notLoaded = comments.loadedState else {
                 XCTFail("Should not be loaded")
                 return
             }
-            comments.fetch {
-                switch $0 {
-                case .success:
-                    guard case .loaded = comments.loadedState else {
-                        XCTFail("Should be loaded")
-                        return
-                    }
-                    XCTAssertEqual(comments.count, 2)
-                    expect.fulfill()
-                case .failure(let error):
-                    XCTFail(error.errorDescription)
-                    expect.fulfill()
-                }
+            try await comments.fetch()
+            guard case .loaded = comments.loadedState else {
+                XCTFail("Should be loaded")
+                return
             }
+            XCTAssertEqual(comments.count, 2)
+            expect.fulfill()
         }
         
         do {
             let result = try await Amplify.DataStore.query(Post.self, byId: postId)
             if let post = result, let comments = post.comments {
-                checkComments(comments)
+                try await checkComments(comments)
             } else {
                 XCTFail("Failed to query recently saved post by id")
             }
         } catch {
             XCTFail("\(error)")
-            expect.fulfill()
         }
     
         await waitForExpectations(timeout: 1)
@@ -62,7 +54,7 @@ class ListTests: BaseDataStoreTests {
 
     // MARK: - Helpers
 
-    func preparePostDataForTest() -> Model.Identifier {
+    func preparePostDataForTest() -> String {
         let post = Post(title: "title", content: "content", createdAt: .now())
         populateData([post])
         populateData([

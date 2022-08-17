@@ -89,11 +89,11 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         notify("queryByPredicate")
 
         if let responder = responders[.queryModelsListener] as? QueryModelsResponder<M> {
-            if let callback = responder.callback((modelType: modelType,
+            if let result = responder.callback((modelType: modelType,
                                                   where: predicate,
                                                   sort: sortInput,
                                                   paginate: paginationInput)) {
-                completion(callback)
+                completion(result)
             }
         }
     }
@@ -103,6 +103,21 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
                          sort sortInput: QuerySortInput?,
                          paginate paginationInput: QueryPaginationInput?) async throws -> [M] {
         notify("queryByPredicate")
+        
+        if let responder = responders[.queryModelsListener] as? QueryModelsResponder<M> {
+            if let result = responder.callback((modelType: modelType,
+                                                  where: predicate,
+                                                  sort: sortInput,
+                                                  paginate: paginationInput)) {
+                switch result {
+                case .success(let models):
+                    return models
+                case .failure(let error):
+                    throw error
+                }
+            }
+        }
+        
         return []
     }
 

@@ -45,15 +45,15 @@ extension AppSyncListProviderTests {
         XCTAssertFalse(provider.hasNextPage())
     }
 
-    func testLoadedStateGetNextPageSuccess() {
-        mockAPIPlugin.responders[.queryRequestListener] =
-            QueryRequestListenerResponder<List<Comment4>> { _, listener in
+    func testLoadedStateGetNextPageSuccess() async throws {
+        Amplify.Logging.logLevel = .verbose
+        mockAPIPlugin.responders[.queryRequestResponse] =
+            QueryRequestResponder<List<Comment4>> { _ in
                 let nextPage = List(elements: [Comment4(content: "content"),
                                                Comment4(content: "content"),
                                                Comment4(content: "content")])
                 let event: GraphQLOperation<List<Comment4>>.OperationResult = .success(.success(nextPage))
-                listener?(event)
-                return nil
+                return event
         }
         let elements = [Comment4(content: "content")]
         let provider = AppSyncListProvider(elements: elements, nextToken: "nextToken")
@@ -62,48 +62,32 @@ extension AppSyncListProviderTests {
             XCTFail("Should be loaded")
             return
         }
-        let getNextPageComplete = expectation(description: "get next page completed")
-        provider.getNextPage { result in
-            switch result {
-            case .success(let list):
-                XCTAssertEqual(list.count, 3)
-                getNextPageComplete.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
-        wait(for: [getNextPageComplete], timeout: 1)
+        let list = try await provider.getNextPage()
+        XCTAssertEqual(list.count, 3)
     }
 
-    func testLoadedStateGetNextPageFailure_MissingNextToken() {
+    func testLoadedStateGetNextPageFailure_MissingNextToken() async {
         let elements = [Comment4(content: "content")]
         let provider = AppSyncListProvider(elements: elements, nextToken: nil)
         guard case .loaded = provider.loadedState else {
             XCTFail("Should be loaded")
             return
         }
-        let getNextPageComplete = expectation(description: "get next page completed")
-        provider.getNextPage { result in
-            switch result {
-            case .success:
-                XCTFail("Should have failed")
-            case .failure(let error):
-                guard case .clientValidation = error else {
-                    XCTFail("Unexpected error type \(error)")
-                    return
-                }
-                getNextPageComplete.fulfill()
-            }
+        do {
+            _ = try await provider.getNextPage()
+            XCTFail("Should have failed")
+        } catch CoreError.clientValidation {
+            print("(Expected) error is CoreError.clientValidation")
+        } catch {
+            XCTFail("Unexpected error type \(error)")
         }
-        wait(for: [getNextPageComplete], timeout: 1)
     }
 
-    func testLoadedStateGetNextPageFailure_APIError() {
-        mockAPIPlugin.responders[.queryRequestListener] =
-            QueryRequestListenerResponder<List<Comment4>> { _, listener in
+    func testLoadedStateGetNextPageFailure_APIError() async {
+        mockAPIPlugin.responders[.queryRequestResponse] =
+            QueryRequestResponder<List<Comment4>> { _ in
                 let event: GraphQLOperation<List<Comment4>>.OperationResult = .failure(APIError.unknown("", "", nil))
-                listener?(event)
-                return nil
+                return event
         }
         let elements = [Comment4(content: "content")]
         let provider = AppSyncListProvider(elements: elements, nextToken: "nextToken")
@@ -112,29 +96,23 @@ extension AppSyncListProviderTests {
             XCTFail("Should be loaded")
             return
         }
-        let getNextPageComplete = expectation(description: "get next page completed")
-        provider.getNextPage { result in
-            switch result {
-            case .success:
-                XCTFail("Should have failed")
-            case .failure(let error):
-                guard case .listOperation = error else {
-                    XCTFail("Unexpected error type \(error)")
-                    return
-                }
-                getNextPageComplete.fulfill()
-            }
+        
+        do {
+            _ = try await provider.getNextPage()
+            XCTFail("Should have failed")
+        } catch CoreError.listOperation {
+            print("(Expected) error is CoreError.listOperation")
+        } catch {
+            XCTFail("Unexpected error type \(error)")
         }
-        wait(for: [getNextPageComplete], timeout: 1)
     }
 
-    func testLoadedStateGetNextPageFailure_GraphQLErrorResponse() {
-        mockAPIPlugin.responders[.queryRequestListener] =
-            QueryRequestListenerResponder<List<Comment4>> { _, listener in
+    func testLoadedStateGetNextPageFailure_GraphQLErrorResponse() async {
+        mockAPIPlugin.responders[.queryRequestResponse] =
+            QueryRequestResponder<List<Comment4>> { _ in
                 let event: GraphQLOperation<List<Comment4>>.OperationResult = .success(
                     .failure(GraphQLResponseError.error([GraphQLError]())))
-                listener?(event)
-                return nil
+                return event
         }
         let elements = [Comment4(content: "content")]
         let provider = AppSyncListProvider(elements: elements, nextToken: "nextToken")
@@ -142,24 +120,22 @@ extension AppSyncListProviderTests {
             XCTFail("Should be loaded")
             return
         }
-        let getNextPageComplete = expectation(description: "get next page completed")
-        provider.getNextPage { result in
-            switch result {
-            case .success:
-                XCTFail("Should have failed")
-            case .failure(let error):
-                guard case .listOperation(_, _, let underlyingError) = error,
-                      (underlyingError as? GraphQLResponseError<List<Comment4>>) != nil else {
-                    XCTFail("Unexpected error \(error)")
-                    return
-                }
-                getNextPageComplete.fulfill()
+        
+        do {
+            _ = try await provider.getNextPage()
+            XCTFail("Should have failed")
+        } catch CoreError.listOperation(_, _, let underlyingError) {
+            print("(Expected) error is CoreError.listOperation")
+            guard (underlyingError as? GraphQLResponseError<List<Comment4>>) != nil else {
+                XCTFail("Unexpected error \(String(describing: underlyingError))")
+                return
             }
+        } catch {
+            XCTFail("Unexpected error type \(error)")
         }
-        wait(for: [getNextPageComplete], timeout: 1)
     }
 
-    func testNotLoadedStateGetNextPageFailure() {
+    func testNotLoadedStateGetNextPageFailure() async {
         let modelMetadata = AppSyncModelMetadata(appSyncAssociatedId: "postId",
                                                  appSyncAssociatedField: "post",
                                                  apiName: "apiName")
@@ -168,19 +144,13 @@ extension AppSyncListProviderTests {
             XCTFail("Should not be loaded")
             return
         }
-        let getNextPageComplete = expectation(description: "get next page completed")
-        provider.getNextPage { result in
-            switch result {
-            case .success:
-                XCTFail("Should have failed")
-            case .failure(let error):
-                guard case .clientValidation = error else {
-                    XCTFail("Unexpected error \(error)")
-                    return
-                }
-                getNextPageComplete.fulfill()
-            }
+        do {
+            _ = try await provider.getNextPage()
+            XCTFail("Should have failed")
+        } catch CoreError.clientValidation {
+            print("(Expected) error is CoreError.clientValidation")
+        } catch {
+            XCTFail("Unexpected error type \(error)")
         }
-        wait(for: [getNextPageComplete], timeout: 1)
     }
 }
