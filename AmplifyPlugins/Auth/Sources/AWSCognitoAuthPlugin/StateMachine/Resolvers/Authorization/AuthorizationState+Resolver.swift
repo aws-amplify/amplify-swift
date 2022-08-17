@@ -47,6 +47,8 @@ extension AuthorizationState {
                         return .from(.signingIn)
                     } else if case .signOutRequested = authNEvent {
                         return .from(.signingOut)
+                    } else if case .clearFederationToIdentityPool = authNEvent {
+                        return .from(.clearingFederation)
                     }
                 }
 
@@ -87,6 +89,16 @@ extension AuthorizationState {
                 if let signOutEvent = event.isSignOutEvent,
                     case .signedOutSuccess = signOutEvent {
                     return .init(newState: .configured)
+                }
+                return .from(oldState)
+
+            case .clearingFederation:
+                if let authenticationEvent = event.isAuthenticationEvent,
+                   case .clearedFederationToIdentityPool = authenticationEvent {
+                    return .init(newState: .configured)
+                } else if let authenticationEvent = event.isAuthenticationEvent,
+                          case .error(let authenticationError) = authenticationEvent {
+                    return .init(newState: .error(AuthorizationError.service(error: authenticationError)))
                 }
                 return .from(oldState)
 

@@ -37,3 +37,7 @@ public enum AuthProvider {
     /// the plugin service.
     case custom(String)
 }
+
+extension AuthProvider: Codable { }
+
+extension AuthProvider: Equatable { }

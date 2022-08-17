@@ -16,6 +16,7 @@ extension AuthorizationState: CustomDebugDictionaryConvertible {
                 .configured,
                 .signingIn,
                 .signingOut,
+                .clearingFederation,
                 .deletingUser:
             additionalMetadataDictionary = [:]
         case .refreshingSession(existingCredentials: let credentials, let state):

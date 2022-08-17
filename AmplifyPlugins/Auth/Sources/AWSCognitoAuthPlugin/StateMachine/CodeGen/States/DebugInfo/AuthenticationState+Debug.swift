@@ -31,6 +31,9 @@ extension AuthenticationState: CustomDebugDictionaryConvertible {
         case .signedIn(let signedInData):
             additionalMetadataDictionary = signedInData.debugDictionary
 
+        case .federated, .clearingFederation:
+            additionalMetadataDictionary = [:]
+
         case .deletingUser(_, let deleteUserState):
             additionalMetadataDictionary = deleteUserState.debugDictionary
 

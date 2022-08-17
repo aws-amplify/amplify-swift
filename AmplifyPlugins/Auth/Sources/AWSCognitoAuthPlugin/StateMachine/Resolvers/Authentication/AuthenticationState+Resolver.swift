@@ -58,6 +58,29 @@ extension AuthenticationState {
                     return .from(oldState)
                 }
 
+            case .federated:
+                if let authEvent = event as? AuthenticationEvent,
+                   case .clearFederationToIdentityPool = authEvent.eventType {
+                    return .init(
+                        newState: .clearingFederation,
+                        actions: [
+                            ClearFederationToIdentityPool()
+                        ])
+                } else {
+                    return .from(oldState)
+                }
+
+            case .clearingFederation:
+                if let authEvent = event as? AuthenticationEvent,
+                   case .clearedFederationToIdentityPool = authEvent.eventType {
+                    return .init(newState: .signedOut(SignedOutData(lastKnownUserName: nil)))
+                } else if let authEvent = event as? AuthenticationEvent,
+                    case .error(let authenticationError) = authEvent.eventType {
+                    return .init(newState: .error(authenticationError))
+                } else {
+                    return .from(oldState)
+                }
+
             case .deletingUser(let signedInData, let deleteUserState):
                 if case let .userSignedOutAndDeleted(signedOutData) = event.isDeleteUserEvent {
                     return .init(newState: AuthenticationState.signedOut(signedOutData))
@@ -102,6 +125,8 @@ extension AuthenticationState {
                 return .from(.signedIn(signedInData))
             case .initializedSignedOut(let signedOutData):
                 return .from(.signedOut(signedOutData))
+            case .initializedFederated:
+                return .from(.federated)
             default:
                 return .from(.configured)
             }

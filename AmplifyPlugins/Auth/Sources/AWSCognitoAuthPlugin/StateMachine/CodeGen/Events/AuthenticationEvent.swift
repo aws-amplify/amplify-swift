@@ -24,6 +24,10 @@ struct AuthenticationEvent: StateMachineEvent {
         /// resolves the initial state
         case initializedSignedIn(SignedInData)
 
+        /// Emitted after configuration, when the system restores persisted state and
+        /// resolves the initial state
+        case initializedFederated
+
         /// Emitted when a user sign in flow completed successfully
         case signInCompleted(SignedInData)
 
@@ -35,6 +39,12 @@ struct AuthenticationEvent: StateMachineEvent {
 
         /// Emitted when we should cancel the signIn
         case cancelSignUp
+
+        /// Emitted when we should clear the federation to identity pool
+        case clearFederationToIdentityPool
+
+        /// Emitted when  federation to identity pool is complete
+        case clearedFederationToIdentityPool
 
         /// Emitted when a user sign out is requested
         case signOutRequested(SignOutEventData)
@@ -57,6 +67,8 @@ struct AuthenticationEvent: StateMachineEvent {
             return "AuthenticationEvent.initializedSignedIn"
         case .initializedSignedOut:
             return "AuthenticationEvent.initializedSignedOut"
+        case .initializedFederated:
+            return "AuthenticationEvent.initializedFederated"
         case .signInRequested:
             return "AuthenticationEvent.signInRequested"
         case .signInCompleted:
@@ -67,6 +79,10 @@ struct AuthenticationEvent: StateMachineEvent {
             return "AuthenticationEvent.cancelSignIn"
         case .cancelSignUp:
             return "AuthenticationEvent.cancelSignUp"
+        case .clearFederationToIdentityPool:
+            return "AuthenticationEvent.clearFederationToIdentityPool"
+        case .clearedFederationToIdentityPool:
+            return "AuthenticationEvent.clearedFederationToIdentityPool"
         case .error:
             return "AuthenticationEvent.error"
         }

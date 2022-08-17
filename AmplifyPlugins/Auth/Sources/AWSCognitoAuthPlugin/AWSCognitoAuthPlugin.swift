@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-public final class AWSCognitoAuthPlugin: AuthCategoryPlugin {
+public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
 
     var authEnvironment: AuthEnvironment!
 
