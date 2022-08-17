@@ -22,6 +22,8 @@ struct ConfigureAuthentication: Action {
         switch storedCredentials {
         case .userPoolOnly(let signedInData), .userPoolAndIdentityPool(let signedInData, _, _):
             authenticationEvent = AuthenticationEvent(eventType: .initializedSignedIn(signedInData))
+        case .identityPoolWithFederation:
+            authenticationEvent = AuthenticationEvent(eventType: .initializedFederated)
         default:
             let signedOutData = SignedOutData(lastKnownUserName: nil)
             authenticationEvent = AuthenticationEvent(eventType: .initializedSignedOut(signedOutData))

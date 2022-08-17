@@ -13,7 +13,7 @@ enum SignInMethod {
 
     case hostedUI(HostedUIOptions)
 
-    case federated
+    case federated(FederatedToken)
 
     case unknown
 }

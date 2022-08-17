@@ -58,35 +58,6 @@ extension AmplifyCredentials: Equatable {
     }
 }
 
-struct FederatedToken {
-
-    let token: String
-
-    let provider: AuthProvider
-
-}
-
-extension FederatedToken: Equatable {
-    static func == (lhs: FederatedToken, rhs: FederatedToken) -> Bool {
-        guard lhs.token == rhs.token else {
-            return false
-        }
-        switch (lhs.provider, rhs.provider) {
-
-        case (.amazon, .amazon),
-            (.apple, .apple),
-            (.facebook, .facebook),
-            (.google, .google),
-            (.oidc, .oidc),
-            (.saml, .saml):
-            return true
-        case (.custom(let lhsCustom), .custom(let rhsCustom)):
-            return lhsCustom == rhsCustom
-        default: return false
-        }
-    }
-}
-
 extension AmplifyCredentials {
 
     enum CodingKeys: String, CodingKey {
