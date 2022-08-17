@@ -669,6 +669,7 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
+    /* DISABLED, because userNotConfirmedException was removed from the SDK
     /// Test a resetPassword call with UserNotFound response from service
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a
@@ -709,6 +710,7 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
         }
         wait(for: [resultExpectation], timeout: networkTimeout)
     }
+    */
 
     /// Test a resetPassword call with UserNotFoundException response from service
     ///

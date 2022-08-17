@@ -91,6 +91,11 @@ extension VerifyUserAttributeOutputError: AuthErrorConvertible {
                 AuthPluginErrorConstants.userNotConfirmedError,
                 AWSCognitoAuthError.userNotConfirmed
             )
+        case .aliasExistsException(let exception):
+            return AuthError.service(
+                exception.message ?? "An account with this email or phone already exists.",
+                AuthPluginErrorConstants.aliasExistsError,
+                AWSCognitoAuthError.aliasExists)
         }
     }
 }
