@@ -86,7 +86,7 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
 
         let receivedValueConnecting = expectation(description: "Received value for connecting")
 
-        var valueListener: GraphQLSubscriptionOperation<JSONValue>.InProcessListener = { value in
+        let valueListener: GraphQLSubscriptionOperation<JSONValue>.InProcessListener = { value in
             switch value {
             case .connection(let state):
                 switch state {
@@ -103,7 +103,7 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
             }
         }
 
-        var completionListener: GraphQLSubscriptionOperation<JSONValue>.ResultListener = { _ in }
+        let completionListener: GraphQLSubscriptionOperation<JSONValue>.ResultListener = { _ in }
 
         let operation = apiPlugin.subscribe(
             request: request,
@@ -117,7 +117,7 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
         receivedFailure.isInverted = true
         let receivedValueDisconnected = expectation(description: "Received value for disconnected")
         
-        _ = operation.subscribe { value in
+        _ = operation.subscribe(inProcessListener: { value in
             switch value {
             case .connection(let state):
                 switch state {
@@ -132,8 +132,8 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
             default:
                 XCTFail("Unexpected value on on value listener: \(value)")
             }
-        }
-        _ = operation.subscribe { result in
+        })
+        _ = operation.subscribe(resultListener: { result in
             switch result {
             case .failure:
                 receivedFailure.fulfill()
@@ -141,7 +141,7 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
                 print("3/3 Subscription is completed successfully")
                 receivedCompletion.fulfill()
             }
-        }
+        })
         
         operation.cancel()
         XCTAssert(operation.isCancelled)
@@ -227,14 +227,14 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
         receivedFailure.isInverted = true
         let receivedCompletion = expectation(description: "Received completion")
         
-        _ = operation.subscribe { result in
+        _ = operation.subscribe(resultListener: { result in
             switch result {
             case .failure:
                 receivedFailure.fulfill()
             case .success:
                 receivedCompletion.fulfill()
             }
-        }
+        })
         
         operation.cancel()
         XCTAssert(operation.isCancelled)
