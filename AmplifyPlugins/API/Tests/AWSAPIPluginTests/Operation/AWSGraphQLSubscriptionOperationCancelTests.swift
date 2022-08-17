@@ -83,19 +83,44 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
                                      document: testDocument,
                                      variables: nil,
                                      responseType: JSONValue.self)
-
-        let receivedCompletion = expectation(description: "Received completion")
-        let receivedFailure = expectation(description: "Received failure")
-        receivedFailure.isInverted = true
         let receivedValueConnecting = expectation(description: "Received value for connecting")
-        let receivedValueDisconnected = expectation(description: "Received value for disconnected")
 
-        let valueListener: GraphQLSubscriptionOperation<JSONValue>.InProcessListener = { value in
+        var valueListener: GraphQLSubscriptionOperation<JSONValue>.InProcessListener = { value in
             switch value {
             case .connection(let state):
                 switch state {
                 case .connecting:
                     receivedValueConnecting.fulfill()
+                case .disconnected:
+                    XCTFail("Unexpected value on value listener: \(state)")
+                default:
+                    XCTFail("Unexpected value on value listener: \(state)")
+                }
+            default:
+                XCTFail("Unexpected value on on value listener: \(value)")
+            }
+        }
+
+        var completionListener: GraphQLSubscriptionOperation<JSONValue>.ResultListener = { _ in }
+
+        let operation = apiPlugin.subscribe(
+            request: request,
+            valueListener: valueListener,
+            completionListener: completionListener
+        )
+        await waitForExpectations(timeout: 1)
+
+        let receivedCompletion = expectation(description: "Received completion")
+        let receivedFailure = expectation(description: "Received failure")
+        receivedFailure.isInverted = true
+        let receivedValueDisconnected = expectation(description: "Received value for disconnected")
+        
+        valueListener = { value in
+            switch value {
+            case .connection(let state):
+                switch state {
+                case .connecting:
+                    XCTFail("Unexpected value on value listener: \(state)")
                 case .disconnected:
                     receivedValueDisconnected.fulfill()
                 default:
@@ -106,7 +131,7 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
             }
         }
 
-        let completionListener: GraphQLSubscriptionOperation<JSONValue>.ResultListener = { result in
+        completionListener = { result in
             switch result {
             case .failure:
                 receivedFailure.fulfill()
@@ -114,16 +139,9 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
                 receivedCompletion.fulfill()
             }
         }
-
-        let operation = apiPlugin.subscribe(
-            request: request,
-            valueListener: valueListener,
-            completionListener: completionListener
-        )
-        wait(for: [receivedValueConnecting], timeout: 0.3)
         operation.cancel()
         XCTAssert(operation.isCancelled)
-        await waitForExpectations(timeout: 0.3)
+        await waitForExpectations(timeout: 1)
     }
 
     func testFailureOnConnection() async {

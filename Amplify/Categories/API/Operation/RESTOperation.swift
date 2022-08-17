@@ -31,3 +31,9 @@ public extension HubPayload.EventName.API {
     /// eventName for HubPayloads emitted by this operation
     static let head = "API.head"
 }
+
+public extension RESTOperation {
+    typealias TaskAdapter = AmplifyOperationTaskAdapter<Request, Success, Failure>
+}
+
+public typealias RESTTask = RESTOperation.TaskAdapter
