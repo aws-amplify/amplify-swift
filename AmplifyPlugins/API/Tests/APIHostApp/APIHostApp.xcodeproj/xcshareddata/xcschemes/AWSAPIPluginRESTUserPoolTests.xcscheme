@@ -14,9 +14,9 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "395906AB28AC4A16004B96B1"
-               BuildableName = "AWSAPIPluginRESTIAMTests.xctest"
-               BlueprintName = "AWSAPIPluginRESTIAMTests"
+               BlueprintIdentifier = "395906BF28AC63A9004B96B1"
+               BuildableName = "AWSAPIPluginRESTUserPoolTests.xctest"
+               BlueprintName = "AWSAPIPluginRESTUserPoolTests"
                ReferencedContainer = "container:APIHostApp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -28,27 +28,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "395906AB28AC4A16004B96B1"
-               BuildableName = "AWSAPIPluginRESTIAMTests.xctest"
-               BlueprintName = "AWSAPIPluginRESTIAMTests"
-               ReferencedContainer = "container:APIHostApp.xcodeproj">
-            </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "RESTWithIAMIntegrationTests/testGetAPIWithEncodedQueryParamsSuccess()">
-               </Test>
-               <Test
-                  Identifier = "RESTWithIAMIntegrationTests/testGetAPIWithQueryParamsSuccess()">
-               </Test>
-               <Test
-                  Identifier = "RESTWithIAMIntegrationTests/testHeadAPIAccessDenied()">
-               </Test>
-            </SkippedTests>
-         </TestableReference>
          <TestableReference
             skipped = "NO">
             <BuildableReference
