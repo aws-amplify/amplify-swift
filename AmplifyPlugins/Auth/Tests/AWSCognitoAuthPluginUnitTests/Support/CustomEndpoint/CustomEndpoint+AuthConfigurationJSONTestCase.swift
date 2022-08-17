@@ -125,25 +125,19 @@ class CustomEndpoint_AuthConfigurationJSONTestCase: XCTestCase {
             """.utf8
         )
         let config = try JSONDecoder().decode(JSONValue.self, from: invalidCustomEndpointData)
+
         XCTAssertThrowsError(
             try ConfigurationHelper.authConfiguration(config),
-            ""
-        ) { error in
-                let e = error as? AuthError
-                XCTAssertEqual(
-                    e?.errorDescription,
-                    "Error configuring AWSCognitoAuthPlugin"
-                )
-                XCTAssertEqual(
-                    e?.recoverySuggestion,
-                    """
-                    Invalid scheme for value `endpoint`: \(invalidEndpoint).
-                    AWSCognitoAuthPlugin only supports the https scheme.
-                    > Remove the scheme in your `endpoint` value.
-                    e.g.
-                    "endpoint": \(URL(string: invalidEndpoint)?.host ?? "example.com")
-                    """
-                )
-            }
+            "",
+            AuthError.validateConfigurationError
+        )
+    }
+}
+
+extension AuthError {
+    static func validateConfigurationError(_ error: Error) {
+        guard case .configuration = (error as? AuthError) else {
+            return XCTFail("Expected error AuthError.configuration")
+        }
     }
 }

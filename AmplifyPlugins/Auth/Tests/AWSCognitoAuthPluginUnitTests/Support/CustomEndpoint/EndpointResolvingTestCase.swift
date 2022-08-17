@@ -29,24 +29,9 @@ class EndpointResolvingTestCase: XCTestCase {
             let invalidInput = "https://foo.com"
             XCTAssertThrowsError(
                 try EndpointResolving.userPool.run(invalidInput),
-                ""
-            ) { error in
-                let e = error as? AuthError
-                XCTAssertEqual(
-                    e?.errorDescription,
-                    "Error configuring AWSCognitoAuthPlugin"
-                )
-                XCTAssertEqual(
-                    e?.recoverySuggestion,
-                    """
-                    Invalid scheme for value `endpoint`: \(invalidInput).
-                    AWSCognitoAuthPlugin only supports the https scheme.
-                    > Remove the scheme in your `endpoint` value.
-                    e.g.
-                    "endpoint": \(URL(string: invalidInput)?.host ?? "example.com")
-                    """
-                )
-            }
+                "",
+                AuthError.validateConfigurationError
+            )
         }
 
         /// Given: A String representation of a URL.
@@ -56,22 +41,9 @@ class EndpointResolvingTestCase: XCTestCase {
             let invalidInput = "\\"
             XCTAssertThrowsError(
                 try EndpointResolving.userPool.run(invalidInput),
-                ""
-            ) { error in
-                let e = error as? AuthError
-                XCTAssertEqual(
-                    e?.errorDescription,
-                    "Error configuring AWSCognitoAuthPlugin"
-                )
-                XCTAssertEqual(
-                    e?.recoverySuggestion,
-                    """
-                    Invalid value for `endpoint`: \(invalidInput)
-                    Expected valid url, received: \(invalidInput)
-                    > Replace \(invalidInput) with a valid URL.
-                    """
-                )
-            }
+                "",
+                AuthError.validateConfigurationError
+            )
         }
 
         /// Given: A String representation of a URL.
@@ -82,22 +54,9 @@ class EndpointResolvingTestCase: XCTestCase {
             let invalidInput = "foo.com" + path
             XCTAssertThrowsError(
                 try EndpointResolving.userPool.run(invalidInput),
-                ""
-            ) { error in
-                let e = error as? AuthError
-                XCTAssertEqual(
-                    e?.errorDescription,
-                    "Error configuring AWSCognitoAuthPlugin"
-                )
-                XCTAssertEqual(
-                    e?.recoverySuggestion,
-                    """
-                    Invalid value for `endpoint`: \(invalidInput).
-                    Expected empty path, received path value: \(path) for endpoint: \(invalidInput).
-                    > Remove the path value from your endpoint.
-                    """
-                )
-            }
+                "",
+                AuthError.validateConfigurationError
+            )
         }
 
         /// Given: A String representation of a URL.
@@ -107,22 +66,9 @@ class EndpointResolvingTestCase: XCTestCase {
             let invalidInput = ""
             XCTAssertThrowsError(
                 try EndpointResolving.userPool.run(invalidInput),
-                ""
-            ) { error in
-                let e = error as? AuthError
-                XCTAssertEqual(
-                    e?.errorDescription,
-                    "Error configuring AWSCognitoAuthPlugin"
-                )
-                XCTAssertEqual(
-                    e?.recoverySuggestion,
-                    """
-                    Invalid value for `endpoint`: \(invalidInput)
-                    Expected valid url, received: \(invalidInput)
-                    > Replace \(invalidInput) with a valid URL.
-                    """
-                )
-            }
+                "",
+                AuthError.validateConfigurationError
+            )
         }
     }
 }

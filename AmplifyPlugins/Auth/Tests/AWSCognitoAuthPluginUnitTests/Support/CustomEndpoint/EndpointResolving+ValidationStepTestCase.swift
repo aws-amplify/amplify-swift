@@ -42,24 +42,9 @@ class EndpointResolving_ValidationStepTestCase: XCTestCase {
             XCTAssertThrowsError(
                 try EndpointResolving.ValidationStep.schemeIsEmpty()
                     .validate(invalidInput),
-                ""
-            ) { error in
-                let e = error as? AuthError
-                XCTAssertEqual(
-                    e?.errorDescription,
-                    "Error configuring AWSCognitoAuthPlugin"
-                )
-                XCTAssertEqual(
-                    e?.recoverySuggestion,
-                    """
-                    Invalid scheme for value `endpoint`: \(invalidInput).
-                    AWSCognitoAuthPlugin only supports the https scheme.
-                    > Remove the scheme in your `endpoint` value.
-                    e.g.
-                    "endpoint": \(URL(string: invalidInput)?.host ?? "example.com")
-                    """
-                )
-            }
+                "",
+                AuthError.validateConfigurationError
+            )
         }
     }
 
@@ -83,22 +68,9 @@ class EndpointResolving_ValidationStepTestCase: XCTestCase {
         XCTAssertThrowsError(
             try EndpointResolving.ValidationStep.validURL()
                 .validate(invalidInput),
-            ""
-        ) { error in
-            let e = error as? AuthError
-            XCTAssertEqual(
-                e?.errorDescription,
-                "Error configuring AWSCognitoAuthPlugin"
-            )
-            XCTAssertEqual(
-                e?.recoverySuggestion,
-                """
-                Invalid value for `endpoint`: \(invalidInput)
-                Expected valid url, received: \(invalidInput)
-                > Replace \(invalidInput) with a valid URL.
-                """
-            )
-        }
+            "",
+            AuthError.validateConfigurationError
+        )
     }
 
     // MARK: EndpointResolving.ValidationStep.pathIsEmpty()
@@ -125,21 +97,8 @@ class EndpointResolving_ValidationStepTestCase: XCTestCase {
         XCTAssertThrowsError(
             try EndpointResolving.ValidationStep.pathIsEmpty()
                 .validate((components, invalidInput)),
-            ""
-        ) { error in
-            let e = error as? AuthError
-            XCTAssertEqual(
-                e?.errorDescription,
-                "Error configuring AWSCognitoAuthPlugin"
-            )
-            XCTAssertEqual(
-                e?.recoverySuggestion,
-                """
-                Invalid value for `endpoint`: \(invalidInput).
-                Expected empty path, received path value: \(components.path) for endpoint: \(invalidInput).
-                > Remove the path value from your endpoint.
-                """
-            )
-        }
+            "",
+            AuthError.validateConfigurationError
+        )
     }
 }
