@@ -51,8 +51,8 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             }
         }
 
-        super.cancel()
         dispatch(result: .successfulVoid)
+        super.cancel()
         finish()
     }
 

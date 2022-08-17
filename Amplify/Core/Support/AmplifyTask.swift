@@ -45,3 +45,4 @@ public extension AmplifyInProcessReportingTask where InProcess == Progress {
         }
     }
 }
+
