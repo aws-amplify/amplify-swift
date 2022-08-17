@@ -53,9 +53,6 @@ struct InitializeSignInFlow: Action {
             }
         case .hostedUI(let hostedUIOptions):
             event = .init(eventType: .initiateHostedUISignIn(hostedUIOptions))
-        case .federated:
-            // TODO: Implementation pending
-            fatalError("Not implemented")
         case .unknown:
             event = signInEvent(for: authFlowFromConfig, with: deviceMetadata)
         }

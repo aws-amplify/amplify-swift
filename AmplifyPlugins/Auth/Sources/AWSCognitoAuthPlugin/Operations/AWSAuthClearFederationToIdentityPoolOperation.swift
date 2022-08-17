@@ -71,7 +71,7 @@ public class AWSAuthClearFederationToIdentityPoolOperation: AmplifyOperation<
                 if let token = token {
                     self?.authStateMachine.cancel(listenerToken: token)
                 }
-                finish()
+                self?.finish()
             case .error(let error):
                 self?.dispatch(AuthError.service(
                     "Error clearing federation",
@@ -80,7 +80,7 @@ public class AWSAuthClearFederationToIdentityPoolOperation: AmplifyOperation<
                 if let token = token {
                     self?.authStateMachine.cancel(listenerToken: token)
                 }
-                finish()
+                self?.finish()
             default:
                 break
             }
