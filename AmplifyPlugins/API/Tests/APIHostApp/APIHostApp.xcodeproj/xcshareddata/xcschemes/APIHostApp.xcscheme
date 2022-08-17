@@ -28,16 +28,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "395906BF28AC63A9004B96B1"
-               BuildableName = "AWSAPIPluginRESTUserPoolTests.xctest"
-               BlueprintName = "AWSAPIPluginRESTUserPoolTests"
-               ReferencedContainer = "container:APIHostApp.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

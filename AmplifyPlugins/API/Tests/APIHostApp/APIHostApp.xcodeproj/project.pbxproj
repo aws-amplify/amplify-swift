@@ -90,7 +90,6 @@
 		395906B928AC4C3A004B96B1 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395906B828AC4C3A004B96B1 /* TestConfigHelper.swift */; };
 		395906CA28AC6468004B96B1 /* RESTWithUserPoolIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BCE28899BCF004BD994 /* RESTWithUserPoolIntegrationTests.swift */; };
 		395906CD28AC65AA004B96B1 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395906CC28AC65AA004B96B1 /* TestConfigHelper.swift */; };
-		395906CF28AC6688004B96B1 /* AuthSignInHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395906CE28AC6688004B96B1 /* AuthSignInHelper.swift */; };
 		39E0F146289DD60200939D9F /* GraphQLWithIAMIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BAF28899B61004BD994 /* GraphQLWithIAMIntegrationTests.swift */; };
 		39E0F147289DD60C00939D9F /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BB228899B61004BD994 /* Todo.swift */; };
 		39E0F14B289DD84E00939D9F /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E0F14A289DD84E00939D9F /* TestConfigHelper.swift */; };
@@ -263,7 +262,6 @@
 		395906B828AC4C3A004B96B1 /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
 		395906C028AC63A9004B96B1 /* AWSAPIPluginRESTUserPoolTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginRESTUserPoolTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		395906CC28AC65AA004B96B1 /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
-		395906CE28AC6688004B96B1 /* AuthSignInHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignInHelper.swift; sourceTree = "<group>"; };
 		39E0F13D289DD57D00939D9F /* AWSAPIPluginGraphQLIAMTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginGraphQLIAMTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		39E0F14A289DD84E00939D9F /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
 		39E0F2A128A43FB100939D9F /* AWSAPIPluginGraphQLUserPoolTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginGraphQLUserPoolTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -585,7 +583,6 @@
 		395906CB28AC6593004B96B1 /* Base */ = {
 			isa = PBXGroup;
 			children = (
-				395906CE28AC6688004B96B1 /* AuthSignInHelper.swift */,
 				395906CC28AC65AA004B96B1 /* TestConfigHelper.swift */,
 			);
 			path = Base;
@@ -1150,7 +1147,6 @@
 			files = (
 				395906CA28AC6468004B96B1 /* RESTWithUserPoolIntegrationTests.swift in Sources */,
 				395906CD28AC65AA004B96B1 /* TestConfigHelper.swift in Sources */,
-				395906CF28AC6688004B96B1 /* AuthSignInHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
