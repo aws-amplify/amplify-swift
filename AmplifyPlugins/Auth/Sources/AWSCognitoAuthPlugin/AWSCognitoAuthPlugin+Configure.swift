@@ -12,6 +12,8 @@ import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
 
+import ClientRuntime
+
 extension AWSCognitoAuthPlugin {
 
     /// Configures AWSCognitoAuthPlugin with the specified configuration.
@@ -66,12 +68,22 @@ extension AWSCognitoAuthPlugin {
     }
 
     // MARK: - Configure Helpers
-
     private func makeUserPool() throws -> CognitoUserPoolBehavior {
         switch authConfiguration {
         case .userPools(let userPoolConfig), .userPoolsAndIdentityPools(let userPoolConfig, _):
-            let configuration = try CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration(
-                region: userPoolConfig.region, frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData())
+
+            let configuration: CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration
+            if let customEndpoint = userPoolConfig.endpoint {
+                configuration = try .init(
+                    region: userPoolConfig.region,
+                    endpointResolver: customEndpoint.resolver,
+                    frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData()
+                )
+            } else {
+                configuration = try CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration(
+                    region: userPoolConfig.region, frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData())
+            }
+
             return CognitoIdentityProviderClient(config: configuration)
 
         default:
@@ -211,9 +223,10 @@ extension AWSCognitoAuthPlugin {
             credentialStoreStateMachine: credentialStoreStateMachine)
         self.queue.addOperation(operation)
     }
-
 }
 
 extension CognitoIdentityProviderClient: CognitoUserPoolBehavior {}
 
 extension CognitoIdentityClient: CognitoIdentityBehavior {}
+
+
