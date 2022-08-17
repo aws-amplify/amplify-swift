@@ -50,76 +50,48 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
         await Amplify.reset()
     }
 
-    func testCreateAndGetProject() throws {
-        guard let team = createTeam(name: "name") else {
-            XCTFail("Could not create team")
-            return
-        }
-        let createProjectSuccessful = expectation(description: "create project2")
+    func testCreateAndGetProject() async throws {
+        let team = Team1(name: "name")
+        _ = try await Amplify.API.mutate(request: .create(team))
         let project = Project1(team: team)
-        Amplify.API.mutate(request: .create(project)) { result in
-            switch result {
-            case .success:
-                createProjectSuccessful.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
+        _ = try await Amplify.API.mutate(request: .create(project))
+
+        let result = try await Amplify.API.query(request: .get(Project1.self, byId: project.id))
+        switch result {
+        case .success(let queriedProjectOptional):
+            guard let queriedProject = queriedProjectOptional else {
+                XCTFail("Failed")
+                return
             }
+            XCTAssertEqual(queriedProject.id, project.id)
+            XCTAssertEqual(queriedProject.team, team)
+        case .failure(let response):
+            XCTFail("Failed with: \(response)")
         }
-        wait(for: [createProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
-        let getProjectCompleted = expectation(description: "get project complete")
-        Amplify.API.query(request: .get(Project1.self, byId: project.id)) { result in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .success(let queriedProjectOptional):
-                    guard let queriedProject = queriedProjectOptional else {
-                        XCTFail("Failed")
-                        return
-                    }
-                    XCTAssertEqual(queriedProject.id, project.id)
-                    XCTAssertEqual(queriedProject.team, team)
-                    getProjectCompleted.fulfill()
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
-        wait(for: [getProjectCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testUpdateProjectWithAnotherTeam() {
-        guard let team = createTeam(name: "name") else {
-            XCTFail("Could not create team")
-            return
-        }
-        guard var project = createProject(team: team) else {
-            XCTFail("Could not create project")
-            return
-        }
-        guard let anotherTeam = createTeam(name: "name") else {
-            XCTFail("Could not create team")
-            return
-        }
-
-        let updateProjectSuccessful = expectation(description: "update project")
-        project.team = anotherTeam
-        Amplify.API.mutate(request: .update(project)) { result in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .success(let updatedProject):
-                    XCTAssertEqual(updatedProject.team, anotherTeam)
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-                updateProjectSuccessful.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
+    func testUpdateProjectWithAnotherTeam() async throws {
+        let team = Team1(name: "name")
+        _ = try await Amplify.API.mutate(request: .create(team))
+        let project = Project1(team: team)
+        var createdProjectResult = try await Amplify.API.mutate(request: .create(project))
+        switch createdProjectResult {
+        case .success(var createdProject):
+            let anotherTeam = Team1(name: "name")
+            guard case .success(let createdAnotherTeam) = try await Amplify.API.mutate(request: .create(anotherTeam)) else {
+                XCTFail("Failed to create another team")
+                return
             }
+            createdProject.team = createdAnotherTeam
+    
+            guard case .success(let updatedProject) = try await Amplify.API.mutate(request: .update(createdProject)) else {
+                XCTFail("Failed to update project to another team")
+                return
+            }
+            XCTAssertEqual(updatedProject.team, anotherTeam)
+        case .failure(let response):
+            XCTFail("Failed with: \(response)")
         }
-        wait(for: [updateProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testDeleteAndGetProject() {
