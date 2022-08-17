@@ -48,7 +48,7 @@ public class AWSAuthClearFederationToIdentityPoolOperation: AmplifyOperation<
 
         authStateMachine.getCurrentState { [weak self] currentState in
             if case .configured(let authNState, _) = currentState,
-               case .federated = authNState {
+               case .federatedToIdentityPool = authNState {
                 self?.startClearingFederation()
             } else {
                 self?.sendInvalidStateError()

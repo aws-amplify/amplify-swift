@@ -58,7 +58,7 @@ extension AuthenticationState {
                     return .from(oldState)
                 }
 
-            case .federated:
+            case .federatedToIdentityPool:
                 if let authEvent = event as? AuthenticationEvent,
                    case .clearFederationToIdentityPool = authEvent.eventType {
                     return .init(
@@ -126,7 +126,7 @@ extension AuthenticationState {
             case .initializedSignedOut(let signedOutData):
                 return .from(.signedOut(signedOutData))
             case .initializedFederated:
-                return .from(.federated)
+                return .from(.federatedToIdentityPool)
             default:
                 return .from(.configured)
             }
