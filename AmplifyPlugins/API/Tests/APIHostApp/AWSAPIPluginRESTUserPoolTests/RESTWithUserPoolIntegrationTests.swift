@@ -14,17 +14,19 @@ import AWSCognitoAuthPlugin
 
 class RESTWithUserPoolIntegrationTests: XCTestCase {
 
-    let amplifyConfigurationFile = "testconfiguration/RESTWithUserPoolIntegrationTests-amplifyconfiguration"
+    static let amplifyConfigurationFile = "testconfiguration/RESTWithUserPoolIntegrationTests-amplifyconfiguration"
 
     let username = "integTest\(UUID().uuidString)"
     let password = "P123@\(UUID().uuidString)"
     let email = UUID().uuidString + "@" + UUID().uuidString + ".com"
 
-    override func setUp() {
+    override func setUp() async throws {
         do {
+            Amplify.Logging.logLevel = .verbose
             try Amplify.add(plugin: AWSAPIPlugin())
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
-            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: amplifyConfigurationFile)
+            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
+                forResource:RESTWithUserPoolIntegrationTests.amplifyConfigurationFile)
             try Amplify.configure(amplifyConfig)
         } catch {
             XCTFail("Error during setup: \(error)")
@@ -32,12 +34,17 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
         signOut()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         signOut()
         await Amplify.reset()
     }
+    
+    func testSetUp() {
+        XCTAssertTrue(true)
+    }
 
-    func testGetAPISuccess() {
+
+    func testGetAPISuccess() async {
         registerAndSignIn()
         let completeInvoked = expectation(description: "request completed")
         let request = RESTRequest(path: "/items")
@@ -52,7 +59,7 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
             }
         }
 
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     func testGetAPIWithQueryParamsSuccess() {
@@ -100,6 +107,7 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
     }
 
     func testGetAPIFailedWithSignedOutError() {
+        signOut()
         let failedInvoked = expectation(description: "request failed")
         let request = RESTRequest(path: "/items")
         _ = Amplify.API.get(request: request) { event in

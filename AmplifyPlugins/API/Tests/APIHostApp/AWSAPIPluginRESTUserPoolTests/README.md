@@ -4,7 +4,7 @@ The following steps show how to set up an API endpoint with APIGateway and Lambd
 
 ### Set-up
 
-Latest tested with amplify CLI version 8.0.1 `amplify -v`
+Latest tested with amplify CLI version 9.1.0 `amplify -v`
 
 1. Initialize an amplify project. `amplify init`
 
@@ -19,9 +19,13 @@ Latest tested with amplify CLI version 8.0.1 `amplify -v`
 ? Provide the AWS Lambda function name: `restwithuserpoolinte22de6072`
 ? Choose the runtime that you want to use: `NodeJS`
 ? Choose the function template that you want to use: `Serverless express function (Integration with Amazon API Gateway)`
-? Do you want to access other resources created in this project from your Lambda function? `No`
+? Do you want to configure advanced settings? (y/N) 'Yes'
+? Do you want to access other resources in this project from your La
+mbda function? `No`
 ? Do you want to invoke this function on a recurring schedule? `No`
-? Do you want to configure Lambda layers for this function? `No`
+? Do you want to enable Lambda layers for this function? `No`
+? Do you want to configure environment variables for this function? `No`
+? Do you want to configure secret values this function can access? `No`
 ? Do you want to edit the local lambda function now? `No`
 Succesfully added the Lambda function locally
 ? Restrict API access `No`
@@ -92,8 +96,9 @@ Please edit the file in your editor:
 For Pre Sign-up lambda
 
 ```
-exports.handler = (event) => {
+exports.handler = async (event, context) => {
     event.response.autoConfirmUser = true;
+    return event
 };
 ```
 
