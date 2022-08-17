@@ -22,24 +22,6 @@ public extension DataStoreBaseBehavior {
         }.eraseToAnyPublisher()
     }
 
-    /// Deletes the model with the specified ID from the DataStore. If sync is enabled, this will delete the
-    /// model from the remote store as well.
-    ///
-    /// - Parameters:
-    ///   - modelType: The type of the model to delete
-    ///   - id: The ID of the model to delete
-    /// - Returns: A DataStorePublisher with the results of the operation
-    @available(*, deprecated, message: "Use delete(:withIdentifier:where:)")
-    func delete<M: Model>(
-        _ modelType: M.Type,
-        withId id: String,
-        where predicate: QueryPredicate? = nil
-    ) -> DataStorePublisher<Void> {
-        Future { promise in
-            self.delete(modelType, withId: id, where: predicate) { promise($0) }
-        }.eraseToAnyPublisher()
-    }
-
     /// Deletes the model with the specified identifier from the DataStore. If sync is enabled, this will delete the
     /// model from the remote store as well.
     ///

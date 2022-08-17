@@ -247,11 +247,15 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
                     "createdAt": .string(createdAt)] as [String: JSONValue]
         let model = DynamicModel(values: post)
         let schema = ModelRegistry.modelSchema(from: "Post")!
+ 
         storageAdapter.save(model, modelSchema: schema) { insertResult in
             switch insertResult {
             case .success:
                 saveExpectation.fulfill()
-                self.storageAdapter.delete(DynamicModel.self, modelSchema: schema, withId: model.id) {
+                self.storageAdapter.delete(DynamicModel.self,
+                                           modelSchema: schema,
+                                           withIdentifier: model.identifier(schema: schema),
+                                           condition: nil) {
                     switch $0 {
                     case .success:
                         deleteExpectation.fulfill()
