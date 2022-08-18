@@ -108,7 +108,7 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
     }
     
     private func cancelToken() {
-        if let token = self.stateListenerToken {
+        if let token = stateListenerToken {
             authStateMachine.cancel(listenerToken: token)
         }
     }

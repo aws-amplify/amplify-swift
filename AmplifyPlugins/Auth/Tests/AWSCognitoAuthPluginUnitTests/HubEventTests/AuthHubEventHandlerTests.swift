@@ -184,6 +184,7 @@ class AuthHubEventHandlerTests: XCTestCase {
     /// - Then:
     ///    - I should receive a signedIn hub event
     ///
+    @MainActor
     func testWebUISignedInHubEvent() async {
         let mockIdentityProvider = MockIdentityProvider()
 

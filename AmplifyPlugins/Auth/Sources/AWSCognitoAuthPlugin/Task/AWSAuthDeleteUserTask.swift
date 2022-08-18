@@ -8,9 +8,6 @@
 import Foundation
 import Amplify
 import AWSPluginsCore
-#if canImport(Combine)
-import Combine
-#endif
 
 class AWSAuthDeleteUserTask: AuthDeleteUserTask {
     private let authStateMachine: AuthStateMachine
