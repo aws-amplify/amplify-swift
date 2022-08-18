@@ -15,7 +15,7 @@ struct InitiateSignOut: Action {
     let signedInData: SignedInData
     let signOutEventData: SignOutEventData
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         let event: SignOutEvent
@@ -29,7 +29,7 @@ struct InitiateSignOut: Action {
             event = SignOutEvent(eventType: .revokeToken(signedInData))
         }
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-        dispatcher.send(event)
+        await dispatcher.send(event)
     }
 
 }

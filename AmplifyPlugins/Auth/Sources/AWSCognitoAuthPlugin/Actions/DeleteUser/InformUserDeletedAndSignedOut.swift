@@ -15,7 +15,7 @@ struct InformUserDeletedAndSignedOut: Action {
 
     let result: Result<SignedOutData, AuthError>
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
@@ -28,7 +28,7 @@ struct InformUserDeletedAndSignedOut: Action {
         }
 
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-        dispatcher.send(event)
+        await dispatcher.send(event)
     }
 }
 

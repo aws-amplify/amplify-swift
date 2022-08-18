@@ -20,7 +20,7 @@ struct FetchAuthIdentityId: Action {
     }
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) {
+                 environment: Environment) async {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
@@ -31,7 +31,7 @@ struct FetchAuthIdentityId: Action {
             let authZError = AuthorizationError.configuration(
                 message: AuthPluginErrorConstants.signedInIdentityIdWithNoCIDPError.errorDescription)
             let event = AuthorizationEvent(eventType: .throwError(authZError))
-            dispatcher.send(event)
+            await dispatcher.send(event)
             return
         }
 
@@ -39,30 +39,28 @@ struct FetchAuthIdentityId: Action {
             identityPoolId: authZEnvironment.identityPoolConfiguration.poolId,
             logins: loginsMap)
 
-        Task {
-            do {
-                let response = try await client.getId(input: getIdInput)
+        do {
+            let response = try await client.getId(input: getIdInput)
 
-                guard let identityId = response.identityId else {
-                    let event = FetchAuthSessionEvent(eventType: .throwError(.invalidIdentityID))
-                    dispatcher.send(event)
-                    return
-                }
-                let event = FetchAuthSessionEvent(eventType: .fetchedIdentityID(identityId))
-                logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-                dispatcher.send(event)
-            } catch {
-
-                let event: FetchAuthSessionEvent
-                if isNotAuthorizedError(error) {
-                    event = FetchAuthSessionEvent(eventType: .throwError(.notAuthorized))
-                } else {
-                    event = FetchAuthSessionEvent(eventType: .throwError(.service(error)))
-                }
-                logVerbose("\(#fileID) Sending event \(event.type)",
-                           environment: environment)
-                dispatcher.send(event)
+            guard let identityId = response.identityId else {
+                let event = FetchAuthSessionEvent(eventType: .throwError(.invalidIdentityID))
+                await dispatcher.send(event)
+                return
             }
+            let event = FetchAuthSessionEvent(eventType: .fetchedIdentityID(identityId))
+            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+            await dispatcher.send(event)
+        } catch {
+
+            let event: FetchAuthSessionEvent
+            if isNotAuthorizedError(error) {
+                event = FetchAuthSessionEvent(eventType: .throwError(.notAuthorized))
+            } else {
+                event = FetchAuthSessionEvent(eventType: .throwError(.service(error)))
+            }
+            logVerbose("\(#fileID) Sending event \(event.type)",
+                       environment: environment)
+            await dispatcher.send(event)
         }
     }
 

@@ -138,8 +138,6 @@ extension AWSAuthCognitoSession: Equatable {
         if lhs.isSignedIn != rhs.isSignedIn {
             return false
         }
-
-
         return true
     }
 }

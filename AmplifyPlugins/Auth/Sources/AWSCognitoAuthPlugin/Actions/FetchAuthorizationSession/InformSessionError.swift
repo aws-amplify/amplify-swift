@@ -16,7 +16,7 @@ struct InformSessionError: Action {
 
     let error: FetchSessionError
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
         var event: AuthorizationEvent
@@ -33,7 +33,7 @@ struct InformSessionError: Action {
         }
 
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-        dispatcher.send(event)
+        await dispatcher.send(event)
     }
 
     func isNotAuthorizedError(_ error: Error) -> Bool {

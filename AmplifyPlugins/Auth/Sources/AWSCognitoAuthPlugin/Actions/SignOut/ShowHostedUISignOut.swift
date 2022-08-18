@@ -23,7 +23,7 @@ class ShowHostedUISignOut: NSObject, Action {
         self.signOutEvent = signOutEvent
     }
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         guard let environment = environment as? AuthEnvironment,
@@ -32,7 +32,7 @@ class ShowHostedUISignOut: NSObject, Action {
             let error = AuthenticationError.configuration(message: message)
             let event = SignOutEvent(eventType: .signedOutFailure(error))
             logVerbose("\(#fileID) Sending event \(event)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
             return
         }
         let hostedUIConfig = hostedUIEnvironment.configuration
@@ -42,7 +42,7 @@ class ShowHostedUISignOut: NSObject, Action {
             let error = AuthenticationError.configuration(message: "Callback URL could not be retrieved")
             let event = SignOutEvent(eventType: .signedOutFailure(error))
             logVerbose("\(#fileID) Sending event \(event)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
             return
         }
 
@@ -67,13 +67,13 @@ class ShowHostedUISignOut: NSObject, Action {
                     event = SignOutEvent(eventType: .revokeToken(self.signInData))
                 }
                 self.logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-                dispatcher.send(event)
+                await dispatcher.send(event)
             })
         } catch {
             let error = AuthenticationError.configuration(message: "Could not create logout URL")
             let event = SignOutEvent(eventType: .signedOutFailure(error))
             logVerbose("\(#fileID) Sending event \(event)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
             return
         }
     }

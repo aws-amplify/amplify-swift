@@ -15,12 +15,12 @@ struct InformSessionRefreshed: Action {
 
     let credentials: AmplifyCredentials
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
         let event = AuthorizationEvent(eventType: .refreshed(credentials))
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-        dispatcher.send(event)
+        await dispatcher.send(event)
     }
 }
 

@@ -17,7 +17,7 @@ struct VerifySignInChallenge: Action {
 
     let confirmSignEventData: ConfirmSignInEventData
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         do {
@@ -36,25 +36,24 @@ struct VerifySignInChallenge: Action {
                 attributes: confirmSignEventData.attributes,
                 environment: userpoolEnv)
 
-            try UserPoolSignInHelper.sendRespondToAuth(
+            let responseEvent = try await UserPoolSignInHelper.sendRespondToAuth(
                 request: input,
                 for: username,
-                environment: userpoolEnv) { responseEvent in
-                    logVerbose("\(#fileID) Sending event \(responseEvent)",
-                               environment: environment)
-                    dispatcher.send(responseEvent)
-                }
+                environment: userpoolEnv)
+            logVerbose("\(#fileID) Sending event \(responseEvent)",
+                       environment: environment)
+            await dispatcher.send(responseEvent)
         } catch let error as SignInError {
             let errorEvent = SignInEvent(eventType: .throwAuthError(error))
             logVerbose("\(#fileID) Sending event \(errorEvent)",
                        environment: environment)
-            dispatcher.send(errorEvent)
+            await dispatcher.send(errorEvent)
         } catch {
             let error = SignInError.invalidServiceResponse(message: error.localizedDescription)
             let errorEvent = SignInEvent(eventType: .throwAuthError(error))
             logVerbose("\(#fileID) Sending event \(errorEvent)",
                        environment: environment)
-            dispatcher.send(errorEvent)
+            await dispatcher.send(errorEvent)
         }
     }
 

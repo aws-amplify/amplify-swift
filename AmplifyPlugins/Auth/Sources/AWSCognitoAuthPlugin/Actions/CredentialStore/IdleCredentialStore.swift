@@ -11,12 +11,12 @@ struct IdleCredentialStore: Action {
 
     let identifier = "IdleCredentialStore"
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
         let event = CredentialStoreEvent(eventType: .moveToIdleState)
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-        dispatcher.send(event)
+        await dispatcher.send(event)
     }
 }
 

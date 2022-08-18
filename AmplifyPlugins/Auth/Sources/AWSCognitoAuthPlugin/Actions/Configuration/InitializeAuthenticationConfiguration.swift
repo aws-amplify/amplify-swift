@@ -15,11 +15,11 @@ struct InitializeAuthenticationConfiguration: Action {
     let storedCredentials: AmplifyCredentials
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                        environment: Environment) {
+                        environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         let event = AuthenticationEvent(eventType: .configure(configuration, storedCredentials))
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-        dispatcher.send(event)
+        await dispatcher.send(event)
     }
 }
 
