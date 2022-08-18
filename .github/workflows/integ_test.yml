@@ -1,9 +1,7 @@
 name: Integration Tests
 on:
   push:
-    branches: 
-      - main
-      - dev-preview
+    branches: [dev-preview]
 
 permissions:
     id-token: write
