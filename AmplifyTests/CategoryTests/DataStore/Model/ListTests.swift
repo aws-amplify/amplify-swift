@@ -17,7 +17,7 @@ class ListTests: XCTestCase {
     }
 
     struct BasicModel: Model {
-        var id: Identifier
+        var id: String
     }
 
     class MockListDecoder: ModelListDecoder {

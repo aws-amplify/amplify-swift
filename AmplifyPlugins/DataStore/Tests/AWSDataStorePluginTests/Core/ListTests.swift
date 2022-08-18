@@ -62,7 +62,7 @@ class ListTests: BaseDataStoreTests {
 
     // MARK: - Helpers
 
-    func preparePostDataForTest() -> Model.Identifier {
+    func preparePostDataForTest() -> String {
         let post = Post(title: "title", content: "content", createdAt: .now())
         populateData([post])
         populateData([
