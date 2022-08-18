@@ -20,6 +20,8 @@ extension AuthProvider {
             return "Facebook"
         case .google:
             return "Google"
+        case .twitter:
+            return "Twitter"
         case .oidc:
             return "OIDC"
         case .saml:

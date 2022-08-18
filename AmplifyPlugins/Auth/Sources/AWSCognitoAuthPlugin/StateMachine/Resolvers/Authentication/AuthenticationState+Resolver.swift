@@ -19,15 +19,23 @@ extension AuthenticationState {
         ) -> StateResolution<StateType> {
             switch oldState {
             case .notConfigured:
-                guard let authEvent = event as? AuthenticationEvent else {
+                if let authEvent = event as? AuthenticationEvent {
+                    return resolveNotConfigured(byApplying: authEvent)
+                } else if let authZEvent = event.isAuthorizationEvent,
+                        case .startFederationToIdentityPool = authZEvent {
+                    return .init(newState: .federatingToIdentityPool)
+                } else {
                     return .from(oldState)
                 }
-                return resolveNotConfigured(byApplying: authEvent)
             case .configured:
-                guard let authEvent = event as? AuthenticationEvent else {
+                if let authEvent = event as? AuthenticationEvent {
+                    return resolveConfigured(byApplying: authEvent)
+                } else if let authZEvent = event.isAuthorizationEvent,
+                          case .startFederationToIdentityPool = authZEvent {
+                    return .init(newState: .federatingToIdentityPool)
+                } else {
                     return .from(oldState)
                 }
-                return resolveConfigured(byApplying: authEvent)
             case .signingOut(let signOutState):
                 return resolveSigningOutState(byApplying: event,
                                               to: signOutState)
@@ -39,6 +47,9 @@ extension AuthenticationState {
                     let resolution = resolver.resolve(oldState: .notStarted, byApplying: signUpEvent)
                     let newState = AuthenticationState.signingUp(resolution.newState)
                     return .init(newState: newState, actions: resolution.actions)
+                } else if let authZEvent = event.isAuthorizationEvent,
+                          case .startFederationToIdentityPool = authZEvent {
+                    return .init(newState: .federatingToIdentityPool)
                 } else {
                     return .from(oldState)
                 }
@@ -67,6 +78,26 @@ extension AuthenticationState {
                             ClearFederationToIdentityPool()
                         ])
                 } else {
+                    return .from(oldState)
+                }
+
+            case .federatingToIdentityPool:
+                guard let authZEvent = event.isAuthorizationEvent else {
+                    return .from(oldState)
+                }
+
+                switch authZEvent {
+                case .sessionEstablished:
+                    return .init(newState: .federatedToIdentityPool)
+                case .throwError(let authZError):
+                    let authNError = AuthenticationError.service(
+                        message: "Authorization error: \(authZError)")
+                    return .init(newState: .error(authNError))
+                case .receivedSessionError(let sessionError):
+                    let authNError = AuthenticationError.service(
+                        message: "Session error: \(sessionError)")
+                    return .init(newState: .error(authNError))
+                default:
                     return .from(oldState)
                 }
 

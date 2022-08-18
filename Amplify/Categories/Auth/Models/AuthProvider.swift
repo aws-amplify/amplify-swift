@@ -15,6 +15,8 @@ import Foundation
 /// in the `for:` parameter which will directly show a authentication view for the passed in auth provider.
 public enum AuthProvider {
 
+    public typealias ProviderName = String
+
     /// Auth provider that uses Login with Amazon
     case amazon
 
@@ -27,15 +29,18 @@ public enum AuthProvider {
     /// Auth provider that uses Google Sign-In
     case google
 
+    /// Auth provider that uses Twitter Sign-In
+    case twitter
+
     /// Auth provider that uses OpenID Connect Protocol
-    case oidc
+    case oidc(ProviderName)
 
     /// Auth provider that uses Security Assertion Markup Language standard
-    case saml
+    case saml(ProviderName)
 
     /// Custom auth provider that is not in this list, the associated string value will be the identifier used by
     /// the plugin service.
-    case custom(String)
+    case custom(ProviderName)
 }
 
 extension AuthProvider: Codable { }

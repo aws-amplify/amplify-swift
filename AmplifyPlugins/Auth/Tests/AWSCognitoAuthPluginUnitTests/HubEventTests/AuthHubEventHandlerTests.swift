@@ -14,7 +14,7 @@ import AWSCognitoIdentityProvider
 
 class AuthHubEventHandlerTests: XCTestCase {
 
-    let networkTimeout = TimeInterval(10)
+    let networkTimeout = TimeInterval(2)
     var plugin: AWSCognitoAuthPlugin!
 
     /// Test whether HubEvent emits a signedIn event for mocked signIn operation
@@ -241,6 +241,70 @@ class AuthHubEventHandlerTests: XCTestCase {
         wait(for: [hubEventExpectation], timeout: 10)
     }
 
+    /// Test whether HubEvent emits a federatedToIdentityPool event for mocked federated operation
+    ///
+    /// - Given: A listener to hub events
+    /// - When:
+    ///    - I mock a succesfull federateToIdentityPool operation event
+    /// - Then:
+    ///    - I should receive a federatedToIdentityPool hub event
+    ///
+    func testFederatedToIdentityPoolHubEvent() {
+
+        configurePluginForFederationEvent()
+
+        let hubEventExpectation = expectation(description: "Should receive the hub event")
+        _ = Amplify.Hub.listen(to: .auth) { payload in
+            switch payload.eventName {
+            case HubPayload.EventName.Auth.federateToIdentityPoolAPI:
+                hubEventExpectation.fulfill()
+            default:
+                break
+            }
+        }
+
+        _ = plugin.federateToIdentityPool(
+            withProviderToken: "someToken",
+            for: .facebook) { result in
+                if case .failure(let error) = result {
+                    XCTFail("Received failure with error \(error)")
+                }
+            }
+
+        wait(for: [hubEventExpectation], timeout: networkTimeout)
+    }
+
+    /// Test whether HubEvent emits a federatedToIdentityPoolCleared event for mocked federated operation
+    ///
+    /// - Given: A listener to hub events
+    /// - When:
+    ///    - I mock a succesfull clearFederationToIdentityPool operation event
+    /// - Then:
+    ///    - I should receive a federatedToIdentityPoolCleared hub event
+    ///
+    func testClearedFederationHubEvent() {
+
+        configurePluginForClearedFederationEvent()
+
+        let hubEventExpectation = expectation(description: "Should receive the hub event")
+        _ = Amplify.Hub.listen(to: .auth) { payload in
+            switch payload.eventName {
+            case HubPayload.EventName.Auth.clearedFederationToIdentityPoolAPI:
+                hubEventExpectation.fulfill()
+            default:
+                break
+            }
+        }
+
+        _ = plugin.clearFederationToIdentityPool() { result in
+            if case .failure(let error) = result {
+                XCTFail("Received failure with error \(error)")
+            }
+        }
+
+        wait(for: [hubEventExpectation], timeout: networkTimeout)
+    }
+
     private func configurePluginForSignInEvent() {
         let mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             InitiateAuthOutputResponse(
@@ -318,6 +382,26 @@ class AuthHubEventHandlerTests: XCTestCase {
                 try GlobalSignOutOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
             }
         )
+
+        configurePlugin(initialState: initialState, userPoolFactory: mockIdentityProvider)
+    }
+
+    private func configurePluginForFederationEvent() {
+        let initialState = AuthState.configured(
+            AuthenticationState.signedOut(.testData),
+            AuthorizationState.configured)
+
+        let mockIdentityProvider = MockIdentityProvider()
+
+        configurePlugin(initialState: initialState, userPoolFactory: mockIdentityProvider)
+    }
+
+    private func configurePluginForClearedFederationEvent() {
+        let initialState = AuthState.configured(
+            AuthenticationState.federatedToIdentityPool,
+            AuthorizationState.sessionEstablished(AmplifyCredentials.testData))
+
+        let mockIdentityProvider = MockIdentityProvider()
 
         configurePlugin(initialState: initialState, userPoolFactory: mockIdentityProvider)
     }

@@ -17,7 +17,7 @@ public protocol AuthClearFederationToIdentityPoolOperation: AmplifyOperation<
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let clearFederationToIdentityPoolAPI = "Auth.federatedToIdentityPoolCleared"
+    static let clearedFederationToIdentityPoolAPI = "Auth.federatedToIdentityPoolCleared"
 }
 
 public class AWSAuthClearFederationToIdentityPoolOperation: AmplifyOperation<
@@ -29,13 +29,12 @@ public class AWSAuthClearFederationToIdentityPoolOperation: AmplifyOperation<
     let authStateMachine: AuthStateMachine
 
     init(_ request: AuthClearFederationToIdentityPoolRequest,
-         authConfiguration: AuthConfiguration,
          authStateMachine: AuthStateMachine,
          resultListener: ResultListener?) {
 
         self.authStateMachine = authStateMachine
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.clearFederationToIdentityPoolAPI,
+                   eventName: HubPayload.EventName.Auth.clearedFederationToIdentityPoolAPI,
                    request: request,
                    resultListener: resultListener)
     }
@@ -47,8 +46,9 @@ public class AWSAuthClearFederationToIdentityPoolOperation: AmplifyOperation<
         }
 
         authStateMachine.getCurrentState { [weak self] currentState in
-            if case .configured(let authNState, _) = currentState,
-               case .federatedToIdentityPool = authNState {
+            if case .configured(let authNState, let authZState) = currentState,
+               case .federatedToIdentityPool = authNState,
+               case .sessionEstablished = authZState {
                 self?.startClearingFederation()
             } else {
                 self?.sendInvalidStateError()

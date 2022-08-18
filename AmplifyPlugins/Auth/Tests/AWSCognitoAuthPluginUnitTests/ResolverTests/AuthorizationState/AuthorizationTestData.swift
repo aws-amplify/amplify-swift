@@ -35,6 +35,12 @@ extension AuthAWSCognitoCredentials {
     }
 }
 
+extension FederatedToken {
+    static var testData: FederatedToken {
+        return  .init(token: "token", provider: .facebook)
+    }
+}
+
 extension AmplifyCredentials {
     static var testData: AmplifyCredentials {
         AmplifyCredentials.userPoolAndIdentityPool(signedInData: .testData,

@@ -26,7 +26,6 @@ public extension AWSCognitoAuthPlugin {
             options: options)
         let operation = AWSAuthFederateToIdentityPoolOperation(
             request,
-            authConfiguration: authConfiguration,
             authStateMachine: authStateMachine,
             resultListener: listener)
 
@@ -44,7 +43,6 @@ public extension AWSCognitoAuthPlugin {
             options: options)
         let operation = AWSAuthClearFederationToIdentityPoolOperation(
             request,
-            authConfiguration: authConfiguration,
             authStateMachine: authStateMachine,
             resultListener: listener)
 

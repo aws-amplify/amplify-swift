@@ -29,3 +29,12 @@ struct CognitoUserPoolLoginsMap: LoginsMapProvider {
         "cognito-idp.\(region).amazonaws.com/\(poolId)"
     }
 }
+
+struct AuthProviderLoginsMap: LoginsMapProvider {
+
+    let federatedToken: FederatedToken
+
+    var loginsMap: [String : String] {
+        [federatedToken.provider.providerName: federatedToken.token]
+    }
+}

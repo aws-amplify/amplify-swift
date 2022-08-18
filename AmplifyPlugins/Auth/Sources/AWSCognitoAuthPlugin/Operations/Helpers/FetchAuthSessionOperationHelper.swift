@@ -70,7 +70,18 @@ class FetchAuthSessionOperationHelper {
                     } else {
                         completion(.success(credentials.cognitoSession))
                     }
-                default:
+
+                case .identityPoolWithFederation(let federatedToken, _, let awsCredentials):
+                    if awsCredentials.doesExpire() || forceRefresh {
+                        let event = AuthorizationEvent.init(
+                            eventType: .startFederationToIdentityPool(federatedToken))
+                        authStateMachine.send(event)
+                        self.listenForSession(authStateMachine: authStateMachine, completion: completion)
+                    } else {
+                        completion(.success(credentials.cognitoSession))
+                    }
+
+                case .noCredentials:
                     let event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
                     authStateMachine.send(event)
                     self.listenForSession(authStateMachine: authStateMachine, completion: completion)
