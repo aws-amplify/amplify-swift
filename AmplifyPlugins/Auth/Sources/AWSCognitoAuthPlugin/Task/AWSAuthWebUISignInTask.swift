@@ -42,7 +42,6 @@ class AWSAuthWebUISignInTask: AuthWebUISignInTask {
                     self?.dispatch(result: result)
                     continuation.resume(throwing: error)
                 }
-                    
             }
         }
     }
