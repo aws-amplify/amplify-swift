@@ -30,4 +30,23 @@ extension GraphQLRequest {
                                             responseType: responseType.self,
                                             decodePath: document.name)
     }
+    
+    static func getQuery<ResponseType: Decodable>(responseType: ResponseType.Type,
+                                                  modelSchema: ModelSchema,
+                                                  identifier: String,
+                                                  apiName: String? = nil) -> GraphQLRequest<ResponseType> {
+        
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema,
+                                                               operationType: .query)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
+        documentBuilder.add(decorator: ModelIdDecorator(id: identifier))
+        
+        let document = documentBuilder.build()
+        return GraphQLRequest<ResponseType>(apiName: apiName,
+                                            document: document.stringValue,
+                                            variables: document.variables,
+                                            responseType: responseType.self,
+                                            decodePath: document.name)
+    }
+        
 }

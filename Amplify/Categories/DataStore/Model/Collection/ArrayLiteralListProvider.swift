@@ -46,3 +46,22 @@ public struct ArrayLiteralListProvider<Element: Model>: ModelListProvider {
                                                        nil)
     }
 }
+
+// MARK: - SingleModelProvider
+
+public struct DefaultModelProvider<Element: Model>: ModelProvider {
+   
+    let element: Element?
+    public init(element: Element? = nil) {
+        self.element = element
+    }
+    
+    public func load() async throws -> Element? {
+        return element
+    }
+    
+    public func getState() -> ModelProviderState<Element> {
+        return .loaded(element)
+    }
+    
+}

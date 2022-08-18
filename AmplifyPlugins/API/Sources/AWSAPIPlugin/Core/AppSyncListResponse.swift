@@ -48,3 +48,36 @@ extension AppSyncListResponse {
     }
 
 }
+
+// MARK: - AppSyncModelResponse
+//
+//struct AppSyncModelResponse<Element: Model>: Codable {
+//
+//    public let item: Element?
+//    
+//    init(item: Element?) {
+//        self.item = item
+//    }
+//}
+//
+//extension AppSyncModelResponse {
+//    static func initWithMetadata(type: Element.Type,
+//                                 graphQLData: JSONValue,
+//                                 apiName: String?) throws -> AppSyncModelResponse<Element> {
+//        
+//        var element: Element? = nil
+//        if case let .object = graphQLData {
+//            let jsonObjectWithMetadata = AppSyncModelMetadataUtils.addMetadata(toModel: graphQLData, apiName: apiName)
+//            
+//            let encoder = JSONEncoder()
+//            encoder.dateEncodingStrategy = ModelDateFormatting.encodingStrategy
+//            let decoder = JSONDecoder()
+//            decoder.dateDecodingStrategy = ModelDateFormatting.decodingStrategy
+//            let serializedJSON = try encoder.encode(jsonObjectWithMetadata)
+//            element = try decoder.decode(type, from: serializedJSON)
+//        }
+//        
+//        return AppSyncModelResponse(item: element)
+//    }
+//    
+//}
