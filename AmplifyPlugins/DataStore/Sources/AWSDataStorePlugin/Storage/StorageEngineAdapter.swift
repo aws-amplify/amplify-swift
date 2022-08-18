@@ -41,9 +41,9 @@ protocol StorageEngineAdapter: AnyObject, ModelStorageBehavior, ModelStorageErro
 
     func queryMutationSync(forAnyModel anyModel: AnyModel) throws -> MutationSync<AnyModel>?
 
-    func queryMutationSyncMetadata(for modelId: Model.Identifier, modelName: String) throws -> MutationSyncMetadata?
+    func queryMutationSyncMetadata(for modelId: String, modelName: String) throws -> MutationSyncMetadata?
 
-    func queryMutationSyncMetadata(for modelIds: [Model.Identifier], modelName: String) throws -> [MutationSyncMetadata]
+    func queryMutationSyncMetadata(for modelIds: [String], modelName: String) throws -> [MutationSyncMetadata]
 
     func queryModelSyncMetadata(for modelSchema: ModelSchema) throws -> ModelSyncMetadata?
 

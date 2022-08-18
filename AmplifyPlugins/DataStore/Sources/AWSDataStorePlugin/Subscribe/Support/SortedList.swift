@@ -9,7 +9,7 @@ import Amplify
 
 class SortedList<ModelType: Model> {
     private(set) var sortedModels: [ModelType]
-    private(set) var modelIds: Set<Model.Identifier>
+    private(set) var modelIds: Set<String>
     private let sortInput: [QuerySortDescriptor]?
     private let modelSchema: ModelSchema
 

@@ -25,7 +25,7 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
         /// The associatedField represents the field to which the owner of the `List` is linked to.
         /// For example, if `Post.comments` is associated with `Comment.post` the `List<Comment>`
         /// of `Post` will have a reference to the `post` field in `Comment`.
-        case notLoaded(associatedId: Model.Identifier,
+        case notLoaded(associatedId: String,
                        associatedField: String)
 
         /// If the list is retrieved directly, this state holds the underlying data, nextToken used to create
