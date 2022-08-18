@@ -427,6 +427,16 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSPinpointAnalyticsPluginUnitTests"
+               BuildableName = "AWSPinpointAnalyticsPluginUnitTests"
+               BlueprintName = "AWSPinpointAnalyticsPluginUnitTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
