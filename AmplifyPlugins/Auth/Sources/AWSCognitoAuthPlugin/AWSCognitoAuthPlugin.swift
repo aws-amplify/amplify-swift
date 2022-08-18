@@ -16,11 +16,7 @@ public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
 
     var credentialStoreStateMachine: CredentialStoreStateMachine!
 
-    var authStateListenerToken: AuthStateMachine.StateChangeListenerToken!
-
-    var credentialStoreStateListenerToken: CredentialStoreStateMachine.StateChangeListenerToken!
-
-    /// A queue that regulates the execution of operations.
+     /// A queue that regulates the execution of operations.
     var queue: OperationQueue!
 
     /// Configuration for the auth plugin

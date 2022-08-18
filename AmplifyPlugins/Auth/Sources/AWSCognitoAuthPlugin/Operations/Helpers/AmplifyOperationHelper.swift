@@ -13,6 +13,3 @@ typealias AuthStateMachine = StateMachine<
 typealias CredentialStoreStateMachine = StateMachine<
     CredentialStoreState,
     CredentialEnvironment>
-
-typealias AuthStateMachineToken = AuthStateMachine.StateChangeListenerToken
-typealias CredentialStoreStateMachineToken = CredentialStoreStateMachine.StateChangeListenerToken

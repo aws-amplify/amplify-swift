@@ -8,9 +8,10 @@
 import Foundation
 import Amplify
 
-public protocol AuthClearFederationToIdentityPoolTask: AmplifyAuthTask where Request == AuthClearFederationToIdentityPoolRequest,
-                                                                                Success == Void,
-                                                                                Failure == AuthError {}
+public protocol AuthClearFederationToIdentityPoolTask: AmplifyAuthTask
+where Request == AuthClearFederationToIdentityPoolRequest,
+      Success == Void,
+      Failure == AuthError {}
 
 public extension HubPayload.EventName.Auth {
 
@@ -21,7 +22,6 @@ public extension HubPayload.EventName.Auth {
 public class AWSAuthClearFederationToIdentityPoolTask: AuthClearFederationToIdentityPoolTask {
     private let authStateMachine: AuthStateMachine
     private let clearFederationHelper: ClearFederationOperationHelper
-    private var stateMachineToken: AuthStateMachineToken?
     private let taskHelper: AWSAuthTaskHelper
     
     public var eventName: HubPayloadEventName {
@@ -31,7 +31,7 @@ public class AWSAuthClearFederationToIdentityPoolTask: AuthClearFederationToIden
     init(_ request: AuthClearFederationToIdentityPoolRequest, authStateMachine: AuthStateMachine) {
         self.authStateMachine = authStateMachine
         self.clearFederationHelper = ClearFederationOperationHelper()
-        self.taskHelper = AWSAuthTaskHelper(stateMachineToken: self.stateMachineToken, authStateMachine: authStateMachine)
+        self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
     }
 
     public func execute() async throws {

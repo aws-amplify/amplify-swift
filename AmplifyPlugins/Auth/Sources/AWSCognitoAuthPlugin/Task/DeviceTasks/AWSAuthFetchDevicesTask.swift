@@ -17,7 +17,6 @@ class AWSAuthFetchDevicesTask: AuthFetchDevicesTask {
     private let request: AuthFetchDevicesRequest
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
-    private var stateMachineToken: AuthStateMachineToken?
     private let taskHelper: AWSAuthTaskHelper
     
     var eventName: HubPayloadEventName {
@@ -28,7 +27,7 @@ class AWSAuthFetchDevicesTask: AuthFetchDevicesTask {
         self.request = request
         self.authStateMachine = authStateMachine
         self.userPoolFactory = userPoolFactory
-        self.taskHelper = AWSAuthTaskHelper(stateMachineToken: self.stateMachineToken, authStateMachine: authStateMachine)
+        self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
     }
 
     func execute() async throws -> [AuthDevice] {

@@ -31,7 +31,7 @@ public class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask {
     init(_ request: AuthFederateToIdentityPoolRequest, authStateMachine: AuthStateMachine) {
         self.request = request
         self.authStateMachine = authStateMachine
-        self.taskHelper = AWSAuthTaskHelper(stateMachineToken: self.stateMachineToken, authStateMachine: authStateMachine)
+        self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
     }
 
     public func execute() async throws -> FederateToIdentityPoolResult {
