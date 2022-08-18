@@ -94,7 +94,50 @@ class AsyncPassthroughSubjectTests: XCTestCase {
         sink.cancel()
     }
 
-    func getOutput(input: Int) async throws -> Int {
+    func testAsyncPassthroughSubjectCancellation() async throws {
+        let noCompletion = AsyncExpectation.expectation(description: "noCompletion", isInverted: true)
+        let noValueReceived = AsyncExpectation.expectation(description: "noValueReceived", isInverted: true)
+        let input = 7
+        var output: Int = 0
+        var success = false
+        var thrown: Error? = nil
+
+        let subject = AsyncPassthroughSubject {
+            try await self.getOutput(input: input, seconds: 0.25)
+        }
+        let publisher = subject.eraseToAnyPublisher()
+        let sink = publisher.sink { completion in
+            switch completion {
+            case .finished:
+                success = true
+            case .failure(let error):
+                thrown = error
+            }
+            Task {
+                await noCompletion.fulfill()
+            }
+        } receiveValue: { value in
+            output = value
+            Task {
+                await noValueReceived.fulfill()
+            }
+        }
+
+        // cancel immediately
+        sink.cancel()
+
+        try await AsyncExpectation.waitForExpectations([noCompletion, noValueReceived], timeout: 0.01)
+
+        // completion and value are not expected when sink is cancelled
+        XCTAssertNotEqual(input, output)
+        XCTAssertFalse(success)
+        XCTAssertNil(thrown)
+        XCTAssertTrue(subject.isCancelled)
+    }
+
+    func getOutput(input: Int, seconds: Double = 0.0) async throws -> Int {
+        try await Task.sleep(seconds: seconds)
+        try Task.checkCancellation()
         guard input != 13 else { throw Failure.unluckyNumber }
         return input
     }

@@ -11,6 +11,10 @@ import Combine
 public struct AsyncPassthroughSubject<Success> {
     let task: Task<Success, Error>
 
+    public var isCancelled: Bool {
+        task.isCancelled
+    }
+
     public init(operation: @escaping @Sendable () async throws -> Success) {
         task = Task(operation: operation)
     }
@@ -28,7 +32,11 @@ public struct AsyncPassthroughSubject<Success> {
             }
         }
 
-        return subject.eraseToAnyPublisher()
+        return subject
+            .handleEvents(receiveCancel: {
+                task.cancel()
+            })
+            .eraseToAnyPublisher()
     }
 }
 #endif
