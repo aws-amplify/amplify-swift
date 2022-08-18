@@ -68,7 +68,6 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - username: Username to signIn the user
     ///   - password: Password to signIn the user
     ///   - options: Parameters specific to plugin behavior
-    @discardableResult
     func signIn(username: String?,
                 password: String?,
                 options: AuthSignInRequest.Options?) async throws -> AuthSignInResult
