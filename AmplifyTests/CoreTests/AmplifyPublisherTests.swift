@@ -12,7 +12,7 @@ import Combine
 @testable import Amplify
 @testable import AmplifyTestCommon
 
-class AsyncPassthroughSubjectTests: XCTestCase {
+class AmplifyPublisherTests: XCTestCase {
     enum Failure: Error {
         case unluckyNumber
     }
@@ -23,38 +23,37 @@ class AsyncPassthroughSubjectTests: XCTestCase {
         var output: Int = 0
         var success = false
         var thrown: Error? = nil
-
-        let subject = AsyncPassthroughSubject {
+        
+        let sink = Amplify.Publisher.create {
             try await self.getOutput(input: input)
         }
-        let publisher = subject.eraseToAnyPublisher()
-        let sink = publisher.sink { completion in
-            switch completion {
-            case .finished:
-                success = true
-            case .failure(let error):
-                thrown = error
-                Task {
-                    await notDone.fulfill()
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    success = true
+                case .failure(let error):
+                    thrown = error
+                    Task {
+                        await notDone.fulfill()
+                    }
                 }
+                Task {
+                    await done.fulfill()
+                }
+            } receiveValue: { value in
+                output = value
             }
-            Task {
-                await done.fulfill()
-            }
-        } receiveValue: { value in
-            output = value
-        }
-
+        
         try await AsyncExpectation.waitForExpectations([notDone], timeout: 0.01)
         try await AsyncExpectation.waitForExpectations([done])
-
+        
         XCTAssertEqual(input, output)
         XCTAssertTrue(success)
         XCTAssertNil(thrown)
-
+        
         sink.cancel()
     }
-
+    
     func testAsyncPassthroughSubjectFail() async throws {
         let failed = AsyncExpectation.expectation(description: "failed")
         let done = AsyncExpectation.expectation(description: "done")
@@ -62,28 +61,27 @@ class AsyncPassthroughSubjectTests: XCTestCase {
         var output: Int = 0
         var success = false
         var thrown: Error? = nil
-
-        let subject = AsyncPassthroughSubject {
+        
+        let sink = Amplify.Publisher.create {
             try await self.getOutput(input: input)
         }
-        let publisher = subject.eraseToAnyPublisher()
-        let sink = publisher.sink { completion in
-            switch completion {
-            case .finished:
-                success = true
-            case .failure(let error):
-                thrown = error
-                Task {
-                    await failed.fulfill()
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    success = true
+                case .failure(let error):
+                    thrown = error
+                    Task {
+                        await failed.fulfill()
+                    }
                 }
+                Task {
+                    await done.fulfill()
+                }
+            } receiveValue: { value in
+                output = value
             }
-            Task {
-                await done.fulfill()
-            }
-        } receiveValue: { value in
-            output = value
-        }
-
+        
         try await AsyncExpectation.waitForExpectations([failed])
         try await AsyncExpectation.waitForExpectations([done])
 
@@ -101,26 +99,25 @@ class AsyncPassthroughSubjectTests: XCTestCase {
         var output: Int = 0
         var success = false
         var thrown: Error? = nil
-
-        let subject = AsyncPassthroughSubject {
+        
+        let sink = Amplify.Publisher.create {
             try await self.getOutput(input: input, seconds: 0.25)
         }
-        let publisher = subject.eraseToAnyPublisher()
-        let sink = publisher.sink { completion in
-            switch completion {
-            case .finished:
-                success = true
-            case .failure(let error):
-                thrown = error
-            }
-            Task {
-                await noCompletion.fulfill()
-            }
-        } receiveValue: { value in
-            output = value
-            Task {
-                await noValueReceived.fulfill()
-            }
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    success = true
+                case .failure(let error):
+                    thrown = error
+                }
+                Task {
+                    await noCompletion.fulfill()
+                }
+            } receiveValue: { value in
+                output = value
+                Task {
+                    await noValueReceived.fulfill()
+                }
         }
 
         // cancel immediately
@@ -132,7 +129,6 @@ class AsyncPassthroughSubjectTests: XCTestCase {
         XCTAssertNotEqual(input, output)
         XCTAssertFalse(success)
         XCTAssertNil(thrown)
-        XCTAssertTrue(subject.isCancelled)
     }
 
     func getOutput(input: Int, seconds: Double = 0.0) async throws -> Int {
