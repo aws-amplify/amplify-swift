@@ -20,8 +20,7 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
 
     func signIn(username: String,
                 password: String,
-                options: AuthSignInOperation.Request.Options?,
-                listener: AuthSignInOperation.ResultListener?) -> AuthSignInOperation {
+                options: AuthSignInRequest.Options?) async throws -> AuthSignInResult {
         fatalError()
     }
 
@@ -48,30 +47,25 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
 
     public func signIn(username: String? = nil,
                        password: String? = nil,
-                       options: AuthSignInOperation.Request.Options? = nil,
-                       listener: AuthSignInOperation.ResultListener?) -> AuthSignInOperation {
+                       options: AuthSignInRequest.Options? = nil) async throws -> AuthSignInResult {
         fatalError()
     }
 
 #if canImport(AuthenticationServices)
     public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor,
-                                options: AuthWebUISignInOperation.Request.Options? = nil,
-                                listener: AuthWebUISignInOperation.ResultListener?) -> AuthWebUISignInOperation {
+                                options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
         fatalError()
     }
 
     public func signInWithWebUI(for authProvider: AuthProvider,
                                 presentationAnchor: AuthUIPresentationAnchor,
-                                options: AuthSocialWebUISignInOperation.Request.Options? = nil,
-                                listener: AuthSocialWebUISignInOperation.ResultListener?)
-        -> AuthSocialWebUISignInOperation {
+                                options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
             fatalError()
     }
 #endif
 
     public func confirmSignIn(challengeResponse: String,
-                              options: AuthConfirmSignInOperation.Request.Options? = nil,
-                              listener: AuthConfirmSignInOperation.ResultListener?) -> AuthConfirmSignInOperation {
+                              options: AuthConfirmSignInRequest.Options? = nil) async throws -> AuthSignInResult {
         fatalError()
     }
 
@@ -80,7 +74,7 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         fatalError()
     }
 
-    public func deleteUser(listener: AuthDeleteUserOperation.ResultListener?) -> AuthDeleteUserOperation {
+    public func deleteUser() async throws {
         fatalError()
     }
 

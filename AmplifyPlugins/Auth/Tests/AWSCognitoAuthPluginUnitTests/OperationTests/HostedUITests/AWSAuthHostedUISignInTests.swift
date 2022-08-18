@@ -69,137 +69,112 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             hubEventHandler: MockAuthHubEventBehavior())
     }
 
-    func testSuccessfulSignIn() {
+    @MainActor
+    func testSuccessfulSignIn() async {
         mockHostedUIResult = .success([
             .init(name: "state", value: mockState),
             .init(name: "code", value: mockProof)
         ])
         let expectation  = expectation(description: "SignIn operation should complete")
-        _ = plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(),
-                                    options: nil) { result in
-            defer {
-                expectation.fulfill()
-            }
-            switch result {
-            case .success(let result):
-                XCTAssertTrue(result.isSignedIn)
-            case .failure(let error):
-                XCTFail("Should not fail with error = \(error)")
-            }
-
+        do {
+            let result = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
+            XCTAssertTrue(result!.isSignedIn)
+            expectation.fulfill()
+        } catch {
+            XCTFail("Should not fail with error = \(error)")
         }
         wait(for: [expectation], timeout: networkTimeout)
     }
 
-    func testUserCancelSignIn() {
+    @MainActor
+    func testUserCancelSignIn() async {
         mockHostedUIResult = .failure(.cancelled)
         let expectation  = expectation(description: "SignIn operation should complete")
-        _ = plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(),
-                                    options: nil) { result in
-            defer {
-                expectation.fulfill()
+        do {
+            _ = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
+            XCTFail("Should not succeed")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error,
+                  case .userCancelled = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should not fail with error = \(error)")
+                return
             }
-            switch result {
-            case .success:
-                XCTFail("Should not succeed")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error,
-                      case .userCancelled = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should not fail with error = \(error)")
-                    return
-                }
-            }
+            expectation.fulfill()
         }
         wait(for: [expectation], timeout: networkTimeout)
     }
 
-    func testRestartAfterError() {
+    @MainActor
+    func testRestartAfterError() async {
         mockHostedUIResult = .failure(.cancelled)
         let errorExpectation  = expectation(description: "SignIn operation should complete")
-        _ = plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(),
-                                    options: nil) { result in
-            defer {
-                errorExpectation.fulfill()
+        do {
+            let result = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
+            XCTFail("Should not succeed")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error,
+                  case .userCancelled = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should not fail with error = \(error)")
+                return
             }
-            switch result {
-            case .success:
-                XCTFail("Should not succeed")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error,
-                      case .userCancelled = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Should not fail with error = \(error)")
-                    return
-                }
-            }
-
+            errorExpectation.fulfill()
         }
+
         wait(for: [errorExpectation], timeout: networkTimeout)
         mockHostedUIResult = .success([
             .init(name: "state", value: mockState),
             .init(name: "code", value: mockProof)
         ])
         let signInExpectation = expectation(description: "SignIn operation should complete")
-        _ = plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(),
-                                    options: nil) { result in
-            defer {
-                signInExpectation.fulfill()
-            }
-            switch result {
-            case .success(let result):
-                XCTAssertTrue(result.isSignedIn)
-            case .failure(let error):
-                XCTFail("Should not fail with error = \(error)")
-            }
+        do {
+            let result = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
+            XCTAssertTrue(result!.isSignedIn)
+            signInExpectation.fulfill()
+        } catch {
+            XCTFail("Should not fail with error = \(error)")
         }
         wait(for: [signInExpectation], timeout: networkTimeout)
     }
 
-    func testInvalidCodeSignIn() {
+    @MainActor
+    func testInvalidCodeSignIn() async {
         mockHostedUIResult = .success([
             .init(name: "state", value: "differentState"),
             .init(name: "code", value: mockProof)
         ])
         let expectation  = expectation(description: "SignIn operation should complete")
-        _ = plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(),
-                                    options: nil) { result in
-            defer {
-                expectation.fulfill()
+        do {
+            _ = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
+            XCTFail("Should not succeed")
+        } catch {
+            guard case AuthError.service = error else {
+                XCTFail("Should not fail with error = \(error)")
+                return
             }
-            switch result {
-            case .success:
-                XCTFail("Should not succeed")
-            case .failure(let error):
-                guard case .service = error else {
-                    XCTFail("Should not fail with error = \(error)")
-                    return
-                }
-            }
+            expectation.fulfill()
         }
         wait(for: [expectation], timeout: networkTimeout)
     }
 
-    func testInvalidPresentationContextError() {
+    @MainActor
+    func testInvalidPresentationContextError() async {
         mockHostedUIResult = .failure(.invalidContext)
         let expectation  = expectation(description: "SignIn operation should complete")
-        _ = plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(),
-                                    options: nil) { result in
-            defer {
-                expectation.fulfill()
+        do {
+            _ = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
+            XCTFail("Should not succeed")
+        } catch {
+            guard case AuthError.invalidState = error else {
+                XCTFail("Should not fail with error = \(error)")
+                return
             }
-            switch result {
-            case .success:
-                XCTFail("Should not succeed")
-            case .failure(let error):
-                guard case .invalidState = error else {
-                    XCTFail("Should not fail with error = \(error)")
-                    return
-                }
-            }
+            expectation.fulfill()
         }
         wait(for: [expectation], timeout: networkTimeout)
     }
 
-    func testTokenParsingFailure() {
+    @MainActor
+    func testTokenParsingFailure() async {
         mockHostedUIResult = .success([
             .init(name: "state", value: mockState),
             .init(name: "code", value: mockProof)
@@ -213,26 +188,21 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         }
 
         let expectation  = expectation(description: "SignIn operation should complete")
-        _ = plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(),
-                                    options: nil) { result in
-            defer {
-                expectation.fulfill()
+        do {
+            _ = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
+            XCTFail("Should not succeed")
+        } catch {
+            guard case AuthError.service = error else {
+                XCTFail("Should not fail with error = \(error)")
+                return
             }
-            switch result {
-            case .success:
-                XCTFail("Should not successeed")
-            case .failure(let error):
-                guard case .service = error else {
-                    XCTFail("Should not fail with error = \(error)")
-                    return
-                }
-            }
-
+            expectation.fulfill()
         }
         wait(for: [expectation], timeout: networkTimeout)
     }
 
-    func testTokenErrorResponse() {
+    @MainActor
+    func testTokenErrorResponse() async {
         mockHostedUIResult = .success([
             .init(name: "state", value: mockState),
             .init(name: "code", value: mockProof)
@@ -246,21 +216,15 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         }
 
         let expectation  = expectation(description: "SignIn operation should complete")
-        _ = plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(),
-                                    options: nil) { result in
-            defer {
-                expectation.fulfill()
+        do {
+            _ = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
+            XCTFail("Should not succeed")
+        } catch {
+            guard case AuthError.service = error else {
+                XCTFail("Should not fail with error = \(error)")
+                return
             }
-            switch result {
-            case .success:
-                XCTFail("Should not successeed")
-            case .failure(let error):
-                guard case .service = error else {
-                    XCTFail("Should not fail with error = \(error)")
-                    return
-                }
-            }
-
+            expectation.fulfill()
         }
         wait(for: [expectation], timeout: networkTimeout)
     }

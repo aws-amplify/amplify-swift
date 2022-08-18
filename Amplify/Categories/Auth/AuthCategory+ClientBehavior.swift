@@ -41,49 +41,32 @@ extension AuthCategory: AuthCategoryBehavior {
                                            listener: listener)
     }
 
-    @discardableResult
     public func signIn(username: String? = nil,
                        password: String? = nil,
-                       options: AuthSignInOperation.Request.Options? = nil,
-                       listener: AuthSignInOperation.ResultListener?) -> AuthSignInOperation {
-        return plugin.signIn(username: username,
-                             password: password,
-                             options: options,
-                             listener: listener)
+                       options: AuthSignInRequest.Options? = nil) async throws -> AuthSignInResult {
+        return try await plugin.signIn(username: username, password: password, options: options)
     }
 
 #if canImport(AuthenticationServices)
-    @discardableResult
     public func signInWithWebUI(
         presentationAnchor: AuthUIPresentationAnchor = AuthUIPresentationAnchor(),
-        options: AuthWebUISignInOperation.Request.Options? = nil,
-        listener: AuthWebUISignInOperation.ResultListener?) -> AuthWebUISignInOperation {
-            return plugin.signInWithWebUI(presentationAnchor: presentationAnchor,
-                                          options: options,
-                                          listener: listener)
+        options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
+            return try await plugin.signInWithWebUI(presentationAnchor: presentationAnchor, options: options)
         }
 
-    @discardableResult
     public func signInWithWebUI(
         for authProvider: AuthProvider,
         presentationAnchor: AuthUIPresentationAnchor = AuthUIPresentationAnchor(),
-        options: AuthSocialWebUISignInOperation.Request.Options? = nil,
-        listener: AuthSocialWebUISignInOperation.ResultListener?)
-    -> AuthSocialWebUISignInOperation {
-        return plugin.signInWithWebUI(for: authProvider,
+        options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
+        return try await plugin.signInWithWebUI(for: authProvider,
                                       presentationAnchor: presentationAnchor,
-                                      options: options,
-                                      listener: listener)
+                                      options: options)
     }
 #endif
 
-    @discardableResult
     public func confirmSignIn(challengeResponse: String,
-                              options: AuthConfirmSignInOperation.Request.Options? = nil,
-                              listener: AuthConfirmSignInOperation.ResultListener?) -> AuthConfirmSignInOperation {
-        return plugin.confirmSignIn(challengeResponse: challengeResponse,
-                                    options: options,
-                                    listener: listener)
+                              options: AuthConfirmSignInRequest.Options? = nil) async throws -> AuthSignInResult {
+        return try await plugin.confirmSignIn(challengeResponse: challengeResponse, options: options)
     }
 
     @discardableResult
@@ -91,10 +74,9 @@ extension AuthCategory: AuthCategoryBehavior {
                         listener: AuthSignOutOperation.ResultListener?) -> AuthSignOutOperation {
         plugin.signOut(options: options, listener: listener)
     }
-
-    @discardableResult
-    public func deleteUser(listener: AuthDeleteUserOperation.ResultListener?) -> AuthDeleteUserOperation {
-        plugin.deleteUser(listener: listener)
+    
+    public func deleteUser() async throws {
+        try await plugin.deleteUser()
     }
 
     @discardableResult

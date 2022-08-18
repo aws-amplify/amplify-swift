@@ -4,19 +4,12 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-
-#if canImport(AuthenticationServices)
 import Foundation
 
-public protocol AuthSocialWebUISignInOperation: AmplifyOperation<
-    AuthWebUISignInRequest,
-    AuthSignInResult,
-    AuthError
-> {}
+open class AuthConfirmSignInTask: AmplifyAuthTask<AuthConfirmSignInRequest, AuthSignInResult, AuthError> {}
 
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let socialWebUISignInAPI = "Auth.socialWebUISignInAPI"
+    static let confirmSignInAPI = "Auth.confirmSignInAPI"
 }
-#endif

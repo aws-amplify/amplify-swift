@@ -28,17 +28,8 @@ public struct AuthSignInHelper {
 
     }
 
-    public static func signInUser(username: String, password: String, completionHandler: @escaping CompletionType) {
-        _ = Amplify.Auth.signIn(username: username,
-                                password: password) { result in
-            switch result {
-            case .success(let signInResult):
-                completionHandler(signInResult.isSignedIn, nil)
-            case .failure(let error):
-                completionHandler(false, error)
-            }
-
-        }
+    public static func signInUser(username: String, password: String) async throws -> AuthSignInResult  {
+        return try await Amplify.Auth.signIn(username: username, password: password, options: nil)
     }
 
     public static func registerAndSignInUser(
@@ -52,7 +43,16 @@ public struct AuthSignInHelper {
                     completionHandler(signUpSuccess, error)
                     return
                 }
-                AuthSignInHelper.signInUser(username: username, password: password, completionHandler: completionHandler)
+                
+                //Temporary code until signup operation is also migrated to async/await
+                Task {
+                    do {
+                        let result = try await AuthSignInHelper.signInUser(username: username, password: password)
+                        completionHandler(result.isSignedIn, nil)
+                    } catch {
+                        completionHandler(false, error as? AuthError)
+                    }
+                }
             }
         }
 }

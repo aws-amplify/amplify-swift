@@ -68,12 +68,10 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - username: Username to signIn the user
     ///   - password: Password to signIn the user
     ///   - options: Parameters specific to plugin behavior
-    ///   - listener: Triggered when the operation completes.
     @discardableResult
     func signIn(username: String?,
                 password: String?,
-                options: AuthSignInOperation.Request.Options?,
-                listener: AuthSignInOperation.ResultListener?) -> AuthSignInOperation
+                options: AuthSignInRequest.Options?) async throws -> AuthSignInResult
 
 #if canImport(AuthenticationServices)
     /// SignIn using pre configured web UI.
@@ -83,11 +81,8 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     /// - Parameters:
     ///   - presentationAnchor: Anchor on which the UI is presented.
     ///   - options: Parameters specific to plugin behavior.
-    ///   - listener: Triggered when the operation completes.
-    @discardableResult
     func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor,
-                         options: AuthWebUISignInOperation.Request.Options?,
-                         listener: AuthWebUISignInOperation.ResultListener?) -> AuthWebUISignInOperation
+                         options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult
 
     /// SignIn using an auth provider on a web UI
     ///
@@ -99,12 +94,9 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - authProvider: Auth provider used to signIn.
     ///   - presentationAnchor: Anchor on which the UI is presented.
     ///   - options: Parameters specific to plugin behavior.
-    ///   - listener: Triggered when the operation completes.
-    @discardableResult
     func signInWithWebUI(for authProvider: AuthProvider,
                          presentationAnchor: AuthUIPresentationAnchor,
-                         options: AuthSocialWebUISignInOperation.Request.Options?,
-                         listener: AuthSocialWebUISignInOperation.ResultListener?) -> AuthSocialWebUISignInOperation
+                         options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult
 #endif
 
     /// Confirms a next step in signIn flow.
@@ -112,11 +104,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     /// - Parameters:
     ///   - challengeResponse: Challenge response required to confirm the next step in signIn flow
     ///   - options: Parameters specific to plugin behavior.
-    ///   - listener: Triggered when the operation completes.
-    @discardableResult
-    func confirmSignIn(challengeResponse: String,
-                       options: AuthConfirmSignInOperation.Request.Options?,
-                       listener: AuthConfirmSignInOperation.ResultListener?) -> AuthConfirmSignInOperation
+    func confirmSignIn(challengeResponse: String, options: AuthConfirmSignInRequest.Options?) async throws -> AuthSignInResult
 
     /// Sign out the currently logged-in user.
     ///
@@ -129,12 +117,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
                  listener: AuthSignOutOperation.ResultListener?) -> AuthSignOutOperation
 
     /// Delete the account of the currently logged-in user.
-    ///
-    /// - Parameters:
-    ///   - listener: Triggered when the operation completes.
-    /// - Returns: AuthDeleteUserOperation
-    @discardableResult
-    func deleteUser(listener: AuthDeleteUserOperation.ResultListener?) -> AuthDeleteUserOperation
+    func deleteUser() async throws
 
     /// Fetch the current authentication session.
     ///

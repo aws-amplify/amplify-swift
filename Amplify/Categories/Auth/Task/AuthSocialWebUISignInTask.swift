@@ -5,16 +5,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if canImport(AuthenticationServices)
 import Foundation
 
-public protocol AuthDeleteUserOperation: AmplifyOperation<
-    AuthDeleteUserRequest,
-    Void,
-    AuthError
-> {}
+open class AuthSocialWebUISignInTask: AmplifyAuthTask<AuthWebUISignInRequest, AuthSignInResult, AuthError> { }
 
 public extension HubPayload.EventName.Auth {
-
     /// eventName for HubPayloads emitted by this operation
-    static let deleteUserAPI = "Auth.deleteUserAPI"
+    static let socialWebUISignInAPI = "Auth.socialWebUISignInAPI"
 }
+#endif

@@ -8,11 +8,7 @@
 #if canImport(AuthenticationServices)
 import Foundation
 
-public protocol AuthWebUISignInOperation: AmplifyOperation<
-    AuthWebUISignInRequest,
-    AuthSignInResult,
-    AuthError
-> {}
+open class AuthWebUISignInTask: AmplifyAuthTask<AuthWebUISignInRequest, AuthSignInResult, AuthError> { }
 
 public extension HubPayload.EventName.Auth {
 

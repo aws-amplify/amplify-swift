@@ -30,27 +30,23 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - Then:
     ///    - I should get a successful result with .done as the next step
     ///
-    func testSuccessfulConfirmSignIn() {
+    func testSuccessfulConfirmSignIn() async {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
             return .testData()
         })
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmSignIn(challengeResponse: "code") { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            let confirmSignInResult = try await plugin.confirmSignIn(challengeResponse: "code")
+            guard case .done = confirmSignInResult.nextStep else {
+                XCTFail("Result should be .done for next step")
+                return
             }
-            switch result {
-            case .success(let confirmSignInResult):
-                guard case .done = confirmSignInResult.nextStep else {
-                    XCTFail("Result should be .done for next step")
-                    return
-                }
-                XCTAssertTrue(confirmSignInResult.isSignedIn, "Signin result should be complete")
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
-            }
+            XCTAssertTrue(confirmSignInResult.isSignedIn, "Signin result should be complete")
+            resultExpectation.fulfill()
+        } catch {
+            XCTFail("Received failure with error \(error)")
         }
         wait(for: [resultExpectation], timeout: 2)
     }
@@ -63,26 +59,22 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - Then:
     ///    - I should get an .validation error
     ///
-    func testSuccessfullyConfirmSignIn() {
+    func testSuccessfullyConfirmSignIn() async {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
             return .testData()
         })
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmSignIn(challengeResponse: "") { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.confirmSignIn(challengeResponse: "")
+            XCTFail("Should not succeed")
+        } catch {
+            guard case AuthError.validation = error else {
+                XCTFail("Should produce validation error instead of \(error)")
+                return
             }
-            switch result {
-            case .success:
-                XCTFail("Should not succeed")
-            case .failure(let error):
-                guard case .validation = error else {
-                    XCTFail("Should produce validation error instead of \(error)")
-                    return
-                }
-            }
+            resultExpectation.fulfill()
         }
         wait(for: [resultExpectation], timeout: 2)
     }
@@ -98,7 +90,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .aliasExists as underlyingError
     ///
-    func testConfirmSignInWithAliasExistsException() {
+    func testConfirmSignInWithAliasExistsException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
@@ -106,24 +98,19 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                     .init(message: "Exception"))
         })
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmSignIn(challengeResponse: "code") { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.confirmSignIn(challengeResponse: "code")
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .aliasExists = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be aliasExists \(error)")
-                    return
-                }
+            guard case .aliasExists = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be aliasExists \(error)")
+                return
             }
+            resultExpectation.fulfill()
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -137,32 +124,26 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .codeMismatch as underlyingError
     ///
-    func testConfirmSignInWithCodeMismatchException() {
+    func testConfirmSignInWithCodeMismatchException() async {
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw RespondToAuthChallengeOutputError.codeMismatchException(
                     .init(message: "Exception"))
         })
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmSignIn(challengeResponse: "code") { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.confirmSignIn(challengeResponse: "code")
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .codeMismatch = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be codeMismatch \(error)")
-                    return
-                }
-
+            guard case .codeMismatch = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be codeMismatch \(error)")
+                return
             }
+            resultExpectation.fulfill()
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -176,7 +157,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .codeExpired as underlyingError
     ///
-    func testConfirmSignInWithExpiredCodeException() {
+    func testConfirmSignInWithExpiredCodeException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
@@ -184,25 +165,19 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                     .init(message: "Exception"))
         })
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmSignIn(challengeResponse: "code") { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.confirmSignIn(challengeResponse: "code")
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .codeExpired = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be codeExpired \(error)")
-                    return
-                }
-
+            guard case .codeExpired = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be codeExpired \(error)")
+                return
             }
+            resultExpectation.fulfill()
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -215,7 +190,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - Then:
     ///    - I should get an .unknown error
     ///
-    func testConfirmSignInWithInternalErrorException() {
+    func testConfirmSignInWithInternalErrorException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
@@ -223,21 +198,15 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                     .init(message: "Exception"))
         })
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmSignIn(challengeResponse: "code") { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.confirmSignIn(challengeResponse: "code")
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.unknown = error else {
+                XCTFail("Should produce an unknown error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .unknown = error else {
-                    XCTFail("Should produce an unknown error instead of \(error)")
-                    return
-                }
-
-            }
+            resultExpectation.fulfill()
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -251,32 +220,26 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .lambda as underlyingError
     ///
-    func testConfirmSignInWithInvalidLambdaResponseException() {
+    func testConfirmSignInWithInvalidLambdaResponseException() async {
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw RespondToAuthChallengeOutputError.invalidLambdaResponseException(
                     .init(message: "Exception"))
         })
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmSignIn(challengeResponse: "code") { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.confirmSignIn(challengeResponse: "code")
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be lambda \(error)")
-                    return
-                }
-
+            guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be lambda \(error)")
+                return
             }
+            resultExpectation.fulfill()
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -291,7 +254,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with  .invalidParameter as underlyingError
     ///
-    func testConfirmSignInWithInvalidParameterException() {
+    func testConfirmSignInWithInvalidParameterException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
@@ -299,25 +262,19 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                     .init(message: "Exception"))
         })
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmSignIn(challengeResponse: "code") { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.confirmSignIn(challengeResponse: "code")
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be invalidParameter \(error)")
-                    return
-                }
-
+            guard case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be invalidParameter \(error)")
+                return
             }
+            resultExpectation.fulfill()
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -332,7 +289,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with  .invalidPassword as underlyingError
     ///
-    func testConfirmSignInWithInvalidPasswordException() {
+    func testConfirmSignInWithInvalidPasswordException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
@@ -340,25 +297,19 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                     .init(message: "Exception"))
         })
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmSignIn(challengeResponse: "code") { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.confirmSignIn(challengeResponse: "code")
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .invalidPassword = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be invalidPassword \(error)")
-                    return
-                }
-
+            guard case .invalidPassword = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be invalidPassword \(error)")
+                return
             }
+            resultExpectation.fulfill()
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -372,32 +323,26 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - Then:
     ///    - I should get a --
     ///
-    func testConfirmSignInWithinvalidSmsRoleAccessPolicyException() {
+    func testConfirmSignInWithinvalidSmsRoleAccessPolicyException() async {
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw RespondToAuthChallengeOutputError.invalidSmsRoleAccessPolicyException(
                     .init(message: "Exception"))
         })
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmSignIn(challengeResponse: "code") { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.confirmSignIn(challengeResponse: "code")
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be invalidPassword \(error)")
-                    return
-                }
-
+            guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be invalidPassword \(error)")
+                return
             }
+            resultExpectation.fulfill()
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -411,32 +356,26 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - Then:
     ///    - I should get a --
     ///
-    func testConfirmSignInWithInvalidSmsRoleTrustRelationshipException() {
+    func testConfirmSignInWithInvalidSmsRoleTrustRelationshipException() async {
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
                 throw RespondToAuthChallengeOutputError.invalidSmsRoleTrustRelationshipException(
                     .init(message: "Exception"))
         })
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmSignIn(challengeResponse: "code") { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.confirmSignIn(challengeResponse: "code")
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be invalidPassword \(error)")
-                    return
-                }
-
+            guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be invalidPassword \(error)")
+                return
             }
+            resultExpectation.fulfill()
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -502,7 +441,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with  .mfaMethodNotFound as underlyingError
     ///
-    func testCofirmSignInWithMFAMethodNotFoundException() {
+    func testCofirmSignInWithMFAMethodNotFoundException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
@@ -510,23 +449,19 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                     .init(message: "Exception"))
         })
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmSignIn(challengeResponse: "code") { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.confirmSignIn(challengeResponse: "code")
+            XCTFail("Should not succeed")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-            switch result {
-            case .success:
-                XCTFail("Should not succeed")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .mfaMethodNotFound = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be mfaMethodNotFound \(error)")
-                    return
-                }
+            guard case .mfaMethodNotFound = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be mfaMethodNotFound \(error)")
+                return
             }
+            resultExpectation.fulfill()
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -541,7 +476,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .notAuthorized error
     ///
-    func testConfirmSignInWithNotAuthorizedException() {
+    func testConfirmSignInWithNotAuthorizedException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
@@ -549,20 +484,15 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                     .init(message: "Exception"))
         })
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmSignIn(challengeResponse: "code") { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.confirmSignIn(challengeResponse: "code")
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.notAuthorized = error else {
+                XCTFail("Should produce notAuthorized error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .notAuthorized = error else {
-                    XCTFail("Should produce notAuthorized error instead of \(error)")
-                    return
-                }
-            }
+            resultExpectation.fulfill()
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -577,7 +507,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .resetPassword as next step
     ///
-    func testConfirmSignInWithPasswordResetRequiredException() {
+    func testConfirmSignInWithPasswordResetRequiredException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
@@ -586,19 +516,15 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
         })
 
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmSignIn(challengeResponse: "code") { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            let confirmSignInResult = try await plugin.confirmSignIn(challengeResponse: "code")
+            guard case .resetPassword = confirmSignInResult.nextStep else {
+                XCTFail("Result should be .resetPassword for next step")
+                return
             }
-            switch result {
-            case .success(let confirmSignInResult):
-                guard case .resetPassword = confirmSignInResult.nextStep else {
-                    XCTFail("Result should be .resetPassword for next step")
-                    return
-                }
-            case .failure(let error):
-                XCTFail("Should not return error \(error)")
-            }
+            resultExpectation.fulfill()
+        } catch {
+            XCTFail("Should not return error \(error)")
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -613,7 +539,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .resourceNotFound as underlyingError
     ///
-    func testConfirmSignInWithResourceNotFoundException() {
+    func testConfirmSignInWithResourceNotFoundException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
@@ -621,24 +547,19 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                     .init(message: "Exception"))
         })
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmSignIn(challengeResponse: "code") { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.confirmSignIn(challengeResponse: "code")
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be resourceNotFound \(error)")
-                    return
-                }
+            guard case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be resourceNotFound \(error)")
+                return
             }
+            resultExpectation.fulfill()
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -653,7 +574,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .softwareTokenMFANotEnabled as underlyingError
     ///
-    func testConfirmSignInWithSoftwareTokenMFANotFoundException() {
+    func testConfirmSignInWithSoftwareTokenMFANotFoundException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
@@ -661,25 +582,19 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                     .init(message: "Exception"))
         })
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmSignIn(challengeResponse: "code") { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.confirmSignIn(challengeResponse: "code")
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .softwareTokenMFANotEnabled = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be softwareTokenMFANotEnabled \(error)")
-                    return
-                }
-
+            guard case .softwareTokenMFANotEnabled = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be softwareTokenMFANotEnabled \(error)")
+                return
             }
+            resultExpectation.fulfill()
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -694,7 +609,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .requestLimitExceeded as underlyingError
     ///
-    func testConfirmSignInWithTooManyRequestsException() {
+    func testConfirmSignInWithTooManyRequestsException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
@@ -702,25 +617,19 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                     .init(message: "Exception"))
         })
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmSignIn(challengeResponse: "code") { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.confirmSignIn(challengeResponse: "code")
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be requestLimitExceeded \(error)")
-                    return
-                }
-
+            guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be requestLimitExceeded \(error)")
+                return
             }
+            resultExpectation.fulfill()
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -735,7 +644,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .lambda as underlyingError
     ///
-    func testConfirmSignInWithUnexpectedLambdaException() {
+    func testConfirmSignInWithUnexpectedLambdaException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
@@ -743,25 +652,19 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                     .init(message: "Exception"))
         })
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmSignIn(challengeResponse: "code") { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.confirmSignIn(challengeResponse: "code")
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be lambda \(error)")
-                    return
-                }
-
+            guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be lambda \(error)")
+                return
             }
+            resultExpectation.fulfill()
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -776,7 +679,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .lambda as underlyingError
     ///
-    func testConfirmSignInWithUserLambdaValidationException() {
+    func testConfirmSignInWithUserLambdaValidationException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
@@ -784,25 +687,19 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                     .init(message: "Exception"))
         })
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmSignIn(challengeResponse: "code") { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.confirmSignIn(challengeResponse: "code")
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be lambda \(error)")
-                    return
-                }
-
+            guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be lambda \(error)")
+                return
             }
+            resultExpectation.fulfill()
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -817,7 +714,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - Then:
     ///    - I should get .confirmSignUp as next step
     ///
-    func testConfirmSignInWithUserNotConfirmedException() {
+    func testConfirmSignInWithUserNotConfirmedException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
@@ -825,19 +722,16 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                     .init(message: "Exception"))
         })
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmSignIn(challengeResponse: "code") { result in
-            defer {
-                resultExpectation.fulfill()
+        
+        do {
+            let confirmSignInResult = try await plugin.confirmSignIn(challengeResponse: "code")
+            guard case .confirmSignUp = confirmSignInResult.nextStep else {
+                XCTFail("Result should be .confirmSignUp for next step")
+                return
             }
-            switch result {
-            case .success(let confirmSignInResult):
-                guard case .confirmSignUp = confirmSignInResult.nextStep else {
-                    XCTFail("Result should be .confirmSignUp for next step")
-                    return
-                }
-            case .failure(let error):
-                XCTFail("Should not return error \(error)")
-            }
+            resultExpectation.fulfill()
+        } catch {
+            XCTFail("Should not return error \(error)")
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
@@ -852,7 +746,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .userNotFound error
     ///
-    func testConfirmSignInWithUserNotFoundException() {
+    func testConfirmSignInWithUserNotFoundException() async {
 
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
@@ -860,25 +754,19 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                     .init(message: "Exception"))
         })
         let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmSignIn(challengeResponse: "code") { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.confirmSignIn(challengeResponse: "code")
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be userNotFound \(error)")
-                    return
-                }
-
+            guard case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be userNotFound \(error)")
+                return
             }
+            resultExpectation.fulfill()
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }

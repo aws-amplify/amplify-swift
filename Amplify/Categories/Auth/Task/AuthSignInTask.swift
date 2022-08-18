@@ -4,10 +4,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-
 import Foundation
 
-public protocol AuthSignInOperation: AmplifyOperation<AuthSignInRequest, AuthSignInResult, AuthError> {}
+open class AuthSignInTask: AmplifyAuthTask<AuthSignInRequest, AuthSignInResult, AuthError> { }
 
 public extension HubPayload.EventName.Auth {
 

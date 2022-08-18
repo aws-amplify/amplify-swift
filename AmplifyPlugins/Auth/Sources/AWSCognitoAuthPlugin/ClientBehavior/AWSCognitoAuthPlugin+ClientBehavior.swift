@@ -7,6 +7,9 @@
 
 import Foundation
 import Amplify
+#if canImport(Combine)
+import Combine
+#endif
 
 extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     
@@ -57,73 +60,48 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         queue.addOperation(resendSignUpCodeOperation)
         return resendSignUpCodeOperation
     }
-    
-    public func signIn(username: String?,
-                       password: String?,
-                       options: AuthSignInOperation.Request.Options?,
-                       listener: AuthSignInOperation.ResultListener?) -> AuthSignInOperation {
-        let options = options ?? AuthSignInRequest.Options()
-        let request = AuthSignInRequest(username: username,
-                                        password: password,
-                                        options: options)
-        let signInOperation = AWSAuthSignInOperation(
-            request,
-            authStateMachine: authStateMachine,
-            resultListener: listener)
-        queue.addOperation(signInOperation)
-        return signInOperation
-    }
-    
+
 #if canImport(AuthenticationServices)
     public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor,
-                                options: AuthWebUISignInOperation.Request.Options?,
-                                listener: AuthWebUISignInOperation.ResultListener?)
-    -> AuthWebUISignInOperation {
+                                options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult {
         let options = options ?? AuthWebUISignInRequest.Options()
         let request = AuthWebUISignInRequest(presentationAnchor: presentationAnchor,
                                              options: options)
-        let signInWithWebUIOperation = AWSAuthWebUISignInOperation(
+        let task = AWSAuthWebUISignInTask(
             request,
             authConfiguration: authConfiguration,
             authStateMachine: authStateMachine,
-            resultListener: listener)
-        queue.addOperation(signInWithWebUIOperation)
-        return signInWithWebUIOperation
+            eventName: HubPayload.EventName.Auth.webUISignInAPI
+        )
+        return try await task.value
     }
     
     public func signInWithWebUI(for authProvider: AuthProvider,
                                 presentationAnchor: AuthUIPresentationAnchor,
-                                options: AuthSocialWebUISignInOperation.Request.Options?,
-                                listener: AuthSocialWebUISignInOperation.ResultListener?)
-    -> AuthSocialWebUISignInOperation {
+                                options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult
+    {
         let options = options ?? AuthWebUISignInRequest.Options()
         let request = AuthWebUISignInRequest(presentationAnchor: presentationAnchor,
                                              authProvider: authProvider,
                                              options: options)
-        let signInWithWebUIOperation = AWSAuthSocialWebUISignInOperation(
+        let task = AWSAuthWebUISignInTask(
             request,
             authConfiguration: authConfiguration,
             authStateMachine: authStateMachine,
-            resultListener: listener)
-        queue.addOperation(signInWithWebUIOperation)
-        return signInWithWebUIOperation
+            eventName: HubPayload.EventName.Auth.socialWebUISignInAPI
+        )
+        return try await task.value
     }
 #endif
     
     public func confirmSignIn(challengeResponse: String,
-                              options: AuthConfirmSignInOperation.Request.Options? = nil,
-                              listener: AuthConfirmSignInOperation.ResultListener?)
-    -> AuthConfirmSignInOperation {
+                              options: AuthConfirmSignInRequest.Options? = nil) async throws -> AuthSignInResult {
         
         let options = options ?? AuthConfirmSignInRequest.Options()
         let request = AuthConfirmSignInRequest(challengeResponse: challengeResponse,
                                                options: options)
-        let operation = AWSAuthConfirmSignInOperation(
-            request,
-            stateMachine: authStateMachine,
-            resultListener: listener)
-        queue.addOperation(operation)
-        return operation
+        let task = AWSAuthConfirmSignInTask(request, stateMachine: authStateMachine)
+        return try await task.value
     }
     
     public func signOut(options: AuthSignOutOperation.Request.Options?,
@@ -186,15 +164,19 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         return confirmResetPasswordOperation
     }
     
-    public func deleteUser(listener: AuthDeleteUserOperation.ResultListener?)
-    -> AuthDeleteUserOperation {
-        let request = AuthDeleteUserRequest()
-        let deleteUserOperation = AWSAuthDeleteUserOperation(
-            request,
-            authStateMachine: authStateMachine,
-            resultListener: listener)
-        queue.addOperation(deleteUserOperation)
-        return deleteUserOperation
+    public func signIn(username: String?,
+                       password: String?,
+                       options: AuthSignInRequest.Options?) async throws -> AuthSignInResult {
+        let options = options ?? AuthSignInRequest.Options()
+        let request = AuthSignInRequest(username: username,
+                                        password: password,
+                                        options: options)
+        let task = AWSAuthSignInTask(request, authStateMachine: self.authStateMachine)
+        return try await task.value
     }
-    
+
+    public func deleteUser() async throws {
+        let task = AWSAuthDeleteUserTask(authStateMachine: self.authStateMachine)
+        return try await task.value
+    }
 }
