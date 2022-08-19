@@ -220,7 +220,7 @@ let storageTargets: [Target] = [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
             .product(name: "AWSS3", package: "AWSSwiftSDK")],
-        path: "AmplifyPlugins/Storage/AWSS3StoragePlugin",
+        path: "AmplifyPlugins/Storage/Sources/AWSS3StoragePlugin",
         exclude: [
             "Resources/Info.plist"
         ],
@@ -233,7 +233,7 @@ let storageTargets: [Target] = [
             "AmplifyTestCommon",
             "AWSPluginsTestCommon"
         ],
-        path: "AmplifyPlugins/Storage/AWSS3StoragePluginTests",
+        path: "AmplifyPlugins/Storage/Tests/AWSS3StoragePluginTests",
         exclude: [
             "Resources/Info.plist"
         ]
