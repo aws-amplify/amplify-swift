@@ -16,7 +16,7 @@ let dependencies: [Package.Dependency] = [
     .package(
         name: "AWSSwiftSDK",
         url: "https://github.com/awslabs/aws-sdk-swift.git",
-        .upToNextMinor(from: "0.2.6")
+        .upToNextMinor(from: "0.2.5")
     ),
     .package(
         name: "CwlPreconditionTesting",
