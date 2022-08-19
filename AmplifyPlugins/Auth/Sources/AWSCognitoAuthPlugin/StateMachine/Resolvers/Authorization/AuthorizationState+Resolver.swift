@@ -39,10 +39,12 @@ extension AuthorizationState {
                     return .init(newState: .fetchingUnAuthSession(.notStarted), actions: [action])
                 }
 
-                if case .startFederationToIdentityPool(let federatedToken) = event.isAuthorizationEvent {
+                if case .startFederationToIdentityPool(
+                    let federatedToken, let identityId) = event.isAuthorizationEvent {
 
                     let action = InitializeFederationToIdentityPool(
-                        federatedToken: federatedToken)
+                        federatedToken: federatedToken,
+                        developerProvidedIdentityId: identityId)
                     return .init(
                         newState: .federatingToIdentityPool(.notStarted, federatedToken),
                         actions: [action])
@@ -61,10 +63,11 @@ extension AuthorizationState {
                     }
                 }
 
-                if case .startFederationToIdentityPool(let federatedToken) = event.isAuthorizationEvent {
+                if case .startFederationToIdentityPool(let federatedToken, let identityId) = event.isAuthorizationEvent {
 
                     let action = InitializeFederationToIdentityPool(
-                        federatedToken: federatedToken)
+                        federatedToken: federatedToken,
+                        developerProvidedIdentityId: identityId)
                     return .init(
                         newState: .federatingToIdentityPool(.notStarted, federatedToken),
                         actions: [action])

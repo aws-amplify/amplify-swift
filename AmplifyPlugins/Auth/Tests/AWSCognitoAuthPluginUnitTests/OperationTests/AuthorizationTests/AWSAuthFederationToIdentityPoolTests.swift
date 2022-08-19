@@ -418,20 +418,11 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             sessionToken: "sessionKey")
 
         let cognitoAPIExpectation = expectation(description: "Cognito API gets called")
-        cognitoAPIExpectation.expectedFulfillmentCount = 2
+        cognitoAPIExpectation.expectedFulfillmentCount = 1
 
         let getId: MockIdentity.MockGetIdResponse = { input in
-
-            let logins = input.logins
-
-            XCTAssertNotNil(input.logins)
-            XCTAssert(logins?.count == 1)
-            XCTAssertEqual(logins?.keys.first, provider.identityPoolProviderName)
-            XCTAssertEqual(logins?.values.first, federatedToken.token)
-
-            cognitoAPIExpectation.fulfill()
-
-            return .init(identityId: mockIdentityId)
+            XCTFail("Get ID should not get called")
+            return .init(identityId: "mockIdentityId")
         }
 
         let getCredentials: MockIdentity.MockGetCredentialsResponse = { input in
@@ -595,20 +586,11 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             sessionToken: "sessionKey")
 
         let cognitoAPIExpectation = expectation(description: "Cognito API gets called")
-        cognitoAPIExpectation.expectedFulfillmentCount = 2
+        cognitoAPIExpectation.expectedFulfillmentCount = 1
 
         let getId: MockIdentity.MockGetIdResponse = { input in
-
-            let logins = input.logins
-
-            XCTAssertNotNil(input.logins)
-            XCTAssert(logins?.count == 1)
-            XCTAssertEqual(logins?.keys.first, provider.identityPoolProviderName)
-            XCTAssertEqual(logins?.values.first, federatedToken.token)
-
-            cognitoAPIExpectation.fulfill()
-
-            return .init(identityId: mockIdentityId)
+            XCTFail("Get ID should not get called")
+            return .init(identityId: "mockIdentityId")
         }
 
         let getCredentials: MockIdentity.MockGetCredentialsResponse = { input in
@@ -668,6 +650,97 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             }
         }
         wait(for: [resultExpectation, cognitoAPIExpectation], timeout: apiTimeout)
+    }
+
+    /// Test federated to identity pool with developer provided identity Id
+    ///
+    /// - Given: Given an auth plugin with different valid states
+    /// - When:
+    ///    - I invoke federateToIdentityPool with developer provided identity Id
+    /// - Then:
+    ///    - I should get a valid FederatedToken result with the following details:
+    ///         - valid aws credentials
+    ///         - valid identity id
+    ///
+    func testFederateToIdentityPoolWithDeveloperProvidedIdentity() {
+
+        let provider = AuthProvider.facebook
+        let authenticationToken = "authenticationToken"
+        let mockIdentityId = "identityId"
+
+        let credentials = CognitoIdentityClientTypes.Credentials(
+            accessKeyId: "accessKey",
+            expiration: Date(),
+            secretKey: "secretKey",
+            sessionToken: "sessionKey")
+
+        let getId: MockIdentity.MockGetIdResponse = { input in
+            XCTFail("Get ID should not get called")
+            return .init(identityId: mockIdentityId)
+        }
+
+        let getCredentials: MockIdentity.MockGetCredentialsResponse = { input in
+
+            let logins = input.logins
+
+            XCTAssertNotNil(input.logins)
+            XCTAssert(logins?.count == 1)
+            XCTAssertEqual(logins?.keys.first, provider.identityPoolProviderName)
+            XCTAssertEqual(logins?.values.first, authenticationToken)
+            XCTAssertEqual(input.identityId, mockIdentityId)
+
+            return .init(credentials: credentials, identityId: mockIdentityId)
+        }
+
+        let statesToTest = [
+            AuthState.configured(
+                AuthenticationState.signedOut(.testData),
+                AuthorizationState.sessionEstablished(
+                    AmplifyCredentials.testDataIdentityPoolWithExpiredTokens)),
+            AuthState.configured(
+                AuthenticationState.notConfigured,
+                AuthorizationState.sessionEstablished(
+                    AmplifyCredentials.testDataIdentityPoolWithExpiredTokens)),
+            AuthState.configured(
+                AuthenticationState.federatedToIdentityPool,
+                AuthorizationState.sessionEstablished(
+                    AmplifyCredentials.testDataWithExpiredAWSCredentials)),
+            AuthState.configured(
+                AuthenticationState.notConfigured,
+                AuthorizationState.configured)
+        ]
+
+
+        for initialState in statesToTest {
+            let plugin = configurePluginWith(
+                identityPool: {
+                    MockIdentity(
+                        mockGetIdResponse: getId,
+                        mockGetCredentialsResponse: getCredentials)
+                },
+                initialState: initialState)
+            let resultExpectation = expectation(description: "Should receive a result")
+            _ = plugin.federateToIdentityPool(
+                withProviderToken: authenticationToken,
+                for: provider,
+                options: .init(developerProvidedIdentityID: mockIdentityId)) { result in
+                    defer {
+                        resultExpectation.fulfill()
+                    }
+                    switch result {
+                    case .success(let federatedResult):
+                        XCTAssertNotNil(federatedResult)
+                        XCTAssertEqual(federatedResult.credentials.sessionKey, credentials.sessionToken)
+                        XCTAssertEqual(federatedResult.credentials.accessKey, credentials.accessKeyId)
+                        XCTAssertEqual(federatedResult.credentials.secretKey, credentials.secretKey)
+                        XCTAssertEqual(federatedResult.identityId, mockIdentityId)
+
+                    case .failure(let error):
+                        XCTFail("Received failure with error \(error)")
+                    }
+                }
+            wait(for: [resultExpectation], timeout: apiTimeout)
+        }
     }
 
 }

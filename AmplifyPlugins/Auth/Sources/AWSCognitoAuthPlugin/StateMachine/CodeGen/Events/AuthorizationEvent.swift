@@ -12,7 +12,7 @@ struct AuthorizationEvent: StateMachineEvent {
 
         case configure
 
-        case startFederationToIdentityPool(FederatedToken)
+        case startFederationToIdentityPool(FederatedToken, IdentityID?)
 
         case fetchUnAuthSession
 

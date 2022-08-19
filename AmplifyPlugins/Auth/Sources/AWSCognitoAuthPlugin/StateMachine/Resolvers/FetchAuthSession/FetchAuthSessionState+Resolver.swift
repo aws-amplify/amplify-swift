@@ -35,18 +35,24 @@ extension FetchAuthSessionState {
                     return .init(newState: .fetchingIdentityID(provider),
                                  actions: [FetchAuthIdentityId(loginsMap: provider.loginsMap)])
 
+                case .fetchAWSCredentials(let identityId, let loginsMapProvider):
+                    let action = FetchAuthAWSCredentials(
+                        loginsMap: loginsMapProvider.loginsMap,
+                        identityID: identityId)
+                    return .init(newState: .fetchingAWSCredentials(identityId, loginsMapProvider),
+                                 actions: [action])
                 default:
                     return .from(oldState)
                 }
 
-            case .fetchingIdentityID(let loginsmapProvider):
+            case .fetchingIdentityID(let loginsMapProvider):
 
                 switch eventType {
                 case .fetchedIdentityID(let identityID):
                     let action = FetchAuthAWSCredentials(
-                        loginsMap: loginsmapProvider.loginsMap,
+                        loginsMap: loginsMapProvider.loginsMap,
                         identityID: identityID)
-                    return .init(newState: .fetchingAWSCredentials(identityID, loginsmapProvider),
+                    return .init(newState: .fetchingAWSCredentials(identityID, loginsMapProvider),
                                  actions: [action])
                 case .throwError(let error):
                     let action = InformSessionError(error: error)

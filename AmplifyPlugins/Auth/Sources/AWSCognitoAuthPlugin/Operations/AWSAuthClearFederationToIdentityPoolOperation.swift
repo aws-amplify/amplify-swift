@@ -9,9 +9,9 @@ import Foundation
 import Amplify
 
 public protocol AuthClearFederationToIdentityPoolOperation: AmplifyOperation<
-AuthClearFederationToIdentityPoolRequest,
-Void,
-AuthError
+    AuthClearFederationToIdentityPoolRequest,
+    Void,
+    AuthError
 > {}
 
 public extension HubPayload.EventName.Auth {
@@ -21,9 +21,9 @@ public extension HubPayload.EventName.Auth {
 }
 
 public class AWSAuthClearFederationToIdentityPoolOperation: AmplifyOperation<
-AuthClearFederationToIdentityPoolRequest,
-Void,
-AuthError
+    AuthClearFederationToIdentityPoolRequest,
+    Void,
+    AuthError
 >, AuthClearFederationToIdentityPoolOperation {
 
     let authStateMachine: AuthStateMachine

@@ -115,8 +115,9 @@ public class AWSAuthFederateToIdentityPoolOperation: AmplifyOperation<
         let federatedToken = FederatedToken(
             token: request.token,
             provider: request.provider)
+        let identityId = request.options.developerProvidedIdentityID
         let event = AuthorizationEvent.init(
-            eventType: .startFederationToIdentityPool(federatedToken))
+            eventType: .startFederationToIdentityPool(federatedToken, identityId))
         authStateMachine.send(event)
     }
 

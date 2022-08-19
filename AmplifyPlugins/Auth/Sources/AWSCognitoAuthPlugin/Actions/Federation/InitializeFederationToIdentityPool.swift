@@ -12,12 +12,23 @@ struct InitializeFederationToIdentityPool: Action {
     var identifier: String = "InitializeFederationToIdentityPool"
 
     let federatedToken: FederatedToken
+    let developerProvidedIdentityId: IdentityID?
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         let authProviderLoginsMap = AuthProviderLoginsMap(federatedToken: federatedToken)
-        let event = FetchAuthSessionEvent.init(
-            eventType: .fetchAuthenticatedIdentityID(authProviderLoginsMap))
+        let event: FetchAuthSessionEvent
+
+        if let developerProvidedIdentityId = developerProvidedIdentityId {
+            event = FetchAuthSessionEvent.init(
+                eventType: .fetchAWSCredentials(
+                    developerProvidedIdentityId,
+                    authProviderLoginsMap))
+        } else {
+            event = FetchAuthSessionEvent.init(
+                eventType: .fetchAuthenticatedIdentityID(authProviderLoginsMap))
+        }
+
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         dispatcher.send(event)
     }
