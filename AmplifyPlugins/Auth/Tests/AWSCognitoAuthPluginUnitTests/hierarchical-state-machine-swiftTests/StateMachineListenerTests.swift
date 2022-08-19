@@ -66,7 +66,7 @@ class StateMachineListenerTests: XCTestCase {
             notified.fulfill()
         }
 
-        await stateMachine.cancel(listenerToken: token)
+        stateMachine.cancel(listenerToken: token)
         let event = Counter.Event(id: "test", eventType: .increment)
         await stateMachine.send(event)
         await waitForExpectations(timeout: 0.1)
@@ -78,14 +78,48 @@ class StateMachineListenerTests: XCTestCase {
         let notified = expectation(description: "notified")
         notified.expectedFulfillmentCount = 1
         let token = await stateMachine.listen({ state in
-                notified.fulfill()
-            }
+            notified.fulfill()
+        }
         )
 
-        await stateMachine.cancel(listenerToken: token)
+        stateMachine.cancel(listenerToken: token)
         let event = Counter.Event(id: "test", eventType: .increment)
         await stateMachine.send(event)
         await waitForExpectations(timeout: 0.1)
+    }
+
+    func testOrderOfSubsription() async {
+        let loop = 1_000
+        for _ in 1...loop {
+            let notified = expectation(description: "notified")
+            notified.expectedFulfillmentCount = 3
+            await stateMachine.send(Counter.Event(id: "set1", eventType: .set(10)))
+
+            Task.detached {
+                // Send a new event with a delay so that the send happens after subscription is set.
+                try await Task.sleep(nanoseconds: 1_000)
+                await self.stateMachine.send(Counter.Event(id: "set2", eventType: .set(11)))
+            }
+            var count = 0
+            let token = await self.stateMachine.listen { state in
+                if count == 0 {
+                    count += 1
+                    XCTAssertEqual(state.value, 10)
+                } else if count == 1 {
+                    count += 1
+                    XCTAssertEqual(state.value, 11)
+                } else {
+                    XCTAssertEqual(state.value, 12)
+                }
+                notified.fulfill()
+            }
+            Task.detached {
+                try await Task.sleep(nanoseconds: 1_000_000)
+                await self.stateMachine.send(Counter.Event(id: "set2", eventType: .set(12)))
+            }
+            await waitForExpectations(timeout: 2)
+            stateMachine.cancel(listenerToken: token)
+        }
     }
 
 }

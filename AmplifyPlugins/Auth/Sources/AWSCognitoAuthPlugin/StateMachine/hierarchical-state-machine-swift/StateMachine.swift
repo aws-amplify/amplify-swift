@@ -69,7 +69,7 @@ actor StateMachine<
     private let environment: EnvironmentType
     private let resolver: AnyResolver<StateType>
 
-    var currentState: StateType
+    private(set) var currentState: StateType
 
     private var subscribers: [WeakWrapper<StateChangeListenerToken>: StateChangedListener]
     private let pendingCancellations: AtomicValue<Set<StateChangeListenerToken>>
@@ -138,9 +138,7 @@ actor StateMachine<
 
         subscribers[wrappedToken] = listener
 
-        Task {
-            listener(currentState)
-        }
+        listener(currentState)
     }
 
     /// Removes the listener token

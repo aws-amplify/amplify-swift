@@ -14,7 +14,7 @@ enum ConcurrentEffectExecutor: EffectExecutor {
         dispatchingTo eventDispatcher: EventDispatcher,
         environment: Environment) {
             actions.forEach { action in
-                Task {
+                Task.detached {
                     await action.execute(withDispatcher: eventDispatcher, environment: environment)
                 }
             }
