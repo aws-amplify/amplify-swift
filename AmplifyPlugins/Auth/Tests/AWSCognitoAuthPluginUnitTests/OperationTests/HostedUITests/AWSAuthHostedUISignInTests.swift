@@ -70,20 +70,13 @@ class AWSAuthHostedUISignInTests: XCTestCase {
     }
 
     @MainActor
-    func testSuccessfulSignIn() async {
+    func testSuccessfulSignIn() async throws {
         mockHostedUIResult = .success([
             .init(name: "state", value: mockState),
             .init(name: "code", value: mockProof)
         ])
-        let expectation  = expectation(description: "SignIn operation should complete")
-        do {
-            let result = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
-            XCTAssertTrue(result!.isSignedIn)
-            expectation.fulfill()
-        } catch {
-            XCTFail("Should not fail with error = \(error)")
-        }
-        wait(for: [expectation], timeout: networkTimeout)
+        let result = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
+        XCTAssertTrue(result!.isSignedIn)
     }
 
     @MainActor

@@ -78,6 +78,41 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
         }
         wait(for: [resultExpectation], timeout: 2)
     }
+    
+    /// Test a confirmSignIn call with an empty confirmation code followed by a second valaid confirmSignIn call
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a successul response
+    /// - When:
+    ///    - I invoke second confirmSignIn after confirmSignIn with an empty confirmation code
+    /// - Then:
+    ///    - I should get a successful result with .done as the next step
+    ///
+    func testSuccessfullyConfirmSignInAfterAFailedConfirmSignIn() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { _ in
+            return .testData()
+        })
+        let resultExpectation = expectation(description: "Should receive a result")
+        do {
+            _ = try await plugin.confirmSignIn(challengeResponse: "")
+            XCTFail("Should not succeed")
+        } catch {
+            guard case AuthError.validation = error else {
+                XCTFail("Should produce validation error instead of \(error)")
+                return
+            }
+            
+            do {
+                let confirmSignInResult = try await plugin.confirmSignIn(challengeResponse: "code")
+                XCTAssertTrue(confirmSignInResult.isSignedIn, "Signin result should be complete")
+                resultExpectation.fulfill()
+            } catch {
+                XCTFail("Received failure with error \(error)")
+            }
+        }
+        wait(for: [resultExpectation], timeout: 2)
+    }
 
     // MARK: Service error handling test
 

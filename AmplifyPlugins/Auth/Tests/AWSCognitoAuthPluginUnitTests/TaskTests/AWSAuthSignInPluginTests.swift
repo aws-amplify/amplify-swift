@@ -222,6 +222,57 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         }
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
+    
+    /// Test a signIn with nil as reponse from service followed by a second signIn with a valid response
+    ///
+    /// - Given: Given an auth plugin with mocked service. Mock nil response from service followed by a valid response
+    ///
+    /// - When:
+    ///    - I invoke signIn a second time
+    /// - Then:
+    ///    - I should get signed in
+    ///
+    func testSecondSignInAfterSignInWithInvalidResult() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+            InitiateAuthOutputResponse()
+        })
+        let options = AuthSignInRequest.Options()
+        let resultExpectation = expectation(description: "Should receive a result")
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            XCTFail("Should not receive a success response \(result)")
+        } catch {
+            self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+                InitiateAuthOutputResponse(
+                    authenticationResult: .none,
+                    challengeName: .passwordVerifier,
+                    challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                    session: "someSession")
+            }, mockRespondToAuthChallengeResponse: { _ in
+                RespondToAuthChallengeOutputResponse(
+                    authenticationResult: .init(
+                        accessToken: Defaults.validAccessToken,
+                        expiresIn: 300,
+                        idToken: "idToken",
+                        newDeviceMetadata: nil,
+                        refreshToken: "refreshToken",
+                        tokenType: ""),
+                    challengeName: .none,
+                    challengeParameters: [:],
+                    session: "session")
+            })
+            
+            do {
+                let result = try await plugin.signIn(username: "username", password: "password", options: options)
+                XCTAssertTrue(result.isSignedIn, "Signin result should be complete")
+                resultExpectation.fulfill()
+            } catch {
+                XCTFail("Received failure with error \(error)")
+            }
+        }
+        wait(for: [resultExpectation], timeout: apiTimeout)
+    }
 
     /// Test a signIn with smsMFA as signIn result response
     ///
