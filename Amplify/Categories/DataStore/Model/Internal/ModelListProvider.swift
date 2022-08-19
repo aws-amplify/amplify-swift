@@ -38,6 +38,8 @@ public protocol ModelListProvider {
     
     ///  Retrieve the array of `Element` from the data source asychronously.
     func load(completion: @escaping (Result<[Element], CoreError>) -> Void)
+    
+    func load() async throws -> [Element]
 
     /// Check if there is subsequent data to retrieve. This method always returns false if the underlying provider is
     /// not loaded. Make sure the underlying data is loaded by calling `load(completion)` before calling this method.
@@ -47,6 +49,8 @@ public protocol ModelListProvider {
     /// Asynchronously retrieve the next page as a new in-memory List object. Returns a failure if there
     /// is no next page of results. You can validate whether the list has another page with `hasNextPage()`.
     func getNextPage(completion: @escaping (Result<List<Element>, CoreError>) -> Void)
+ 
+    func getNextPage() async throws -> List<Element>
 }
 
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
@@ -56,16 +60,20 @@ public protocol ModelListProvider {
 public struct AnyModelListProvider<Element: Model>: ModelListProvider {
     private let getStateClosure: () -> ModelListProviderState<Element>
     private let loadWithCompletionClosure: (@escaping (Result<[Element], CoreError>) -> Void) -> Void
+    private let loadAsync: () async throws -> [Element]
     private let hasNextPageClosure: () -> Bool
     private let getNextPageClosure: (@escaping (Result<List<Element>, CoreError>) -> Void) -> Void
+    private let getNextPageAsync: () async throws -> List<Element>
 
     public init<Provider: ModelListProvider>(
         provider: Provider
     ) where Provider.Element == Self.Element {
         self.getStateClosure = provider.getState
         self.loadWithCompletionClosure = provider.load(completion:)
+        self.loadAsync = provider.load
         self.hasNextPageClosure = provider.hasNextPage
         self.getNextPageClosure = provider.getNextPage(completion:)
+        self.getNextPageAsync = provider.getNextPage
     }
 
     public func getState() -> ModelListProviderState<Element> {
@@ -75,6 +83,10 @@ public struct AnyModelListProvider<Element: Model>: ModelListProvider {
     public func load(completion: @escaping (Result<[Element], CoreError>) -> Void) {
         loadWithCompletionClosure(completion)
     }
+    
+    public func load() async throws -> [Element] {
+        try await loadAsync()
+    }
 
     public func hasNextPage() -> Bool {
         hasNextPageClosure()
@@ -82,6 +94,10 @@ public struct AnyModelListProvider<Element: Model>: ModelListProvider {
 
     public func getNextPage(completion: @escaping (Result<List<Element>, CoreError>) -> Void) {
         getNextPageClosure(completion)
+    }
+    
+    public func getNextPage() async throws -> List<Element> {
+        try await getNextPageAsync()
     }
 }
 

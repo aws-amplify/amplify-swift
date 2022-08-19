@@ -42,4 +42,15 @@ extension List {
             }
         }
     }
+    
+    public func fetch() async throws {
+        guard case .notLoaded = loadedState else {
+            return
+        }
+        do {
+            self.elements = try await listProvider.load()
+        } catch {
+            throw error
+        }
+    }
 }

@@ -55,7 +55,7 @@ class DataStoreListProviderTests: XCTestCase {
         }
     }
 
-    func testNotLoadedStateLoadSuccess() {
+    func testNotLoadedStateLoadSuccess() async throws {
         mockDataStorePlugin.responders[.queryModelsListener] =
             QueryModelsResponder<Comment4> { _, _, _, _ in
                 return .success([Comment4(content: "content"),
@@ -68,44 +68,27 @@ class DataStoreListProviderTests: XCTestCase {
             return
         }
 
-        let loadCompleted = expectation(description: "Load Completed")
-        provider.load { results in
-            guard case .success(let comments) = results else {
-                XCTFail("Should be .success")
-                return
-            }
-            XCTAssertEqual(comments.count, 2)
-            guard case .loaded = provider.loadedState else {
-                XCTFail("Should be loaded")
-                return
-            }
-            loadCompleted.fulfill()
+        let comments = try await provider.load()
+        XCTAssertEqual(comments.count, 2)
+        guard case .loaded = provider.loadedState else {
+            XCTFail("Should be loaded")
+            return
         }
-        wait(for: [loadCompleted], timeout: 1)
     }
 
-
-    func testLoadedStateLoadSuccess() {
+    func testLoadedStateLoadSuccess() async throws {
         let elements = [Post4(title: "title"), Post4(title: "title")]
         let listProvider = DataStoreListProvider<Post4>(elements)
-        let loadComplete = expectation(description: "Load completed")
         guard case .loaded = listProvider.loadedState else {
             XCTFail("Should be loaded")
             return
         }
-        listProvider.load { result in
-            switch result {
-            case .success(let results):
-                XCTAssertEqual(results.count, 2)
-                loadComplete.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
-        wait(for: [loadComplete], timeout: 1)
+        
+        let results = try await listProvider.load()
+        XCTAssertEqual(results.count, 2)
     }
 
-    func testNotLoadedStateLoadFailure() {
+    func testNotLoadedStateLoadFailure() async throws {
         mockDataStorePlugin.responders[.queryModelsListener] =
             QueryModelsResponder<Comment4> { _, _, _, _ in
                 return .failure(DataStoreError.internalOperation("", "", nil))
@@ -116,20 +99,14 @@ class DataStoreListProviderTests: XCTestCase {
             XCTFail("Should not be loaded")
             return
         }
-        let loadComplete = expectation(description: "Load completed")
-        provider.load { result in
-            switch result {
-            case .success:
-                XCTFail("Should have failed")
-            case .failure(let error):
-                guard case .listOperation = error else {
-                    XCTFail("Expected list operation error")
-                    return
-                }
-                loadComplete.fulfill()
-            }
+        do {
+            _ = try await provider.load()
+            XCTFail("Should have failed with error")
+        } catch CoreError.listOperation {
+            print("(Expected) error is CoreError.listOperation")
+        } catch {
+            throw error
         }
-        wait(for: [loadComplete], timeout: 1)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
             return
@@ -142,22 +119,16 @@ class DataStoreListProviderTests: XCTestCase {
         XCTAssertFalse(provider.hasNextPage())
     }
 
-    func testGetNextPageAlwaysReturnsFailure() {
+    func testGetNextPageAlwaysReturnsFailure() async throws {
         let elements = [Post4(title: "title"), Post4(title: "title")]
         let provider = DataStoreListProvider<Post4>(elements)
-        let getNextPageComplete = expectation(description: "getNextPage completed")
-        provider.getNextPage { result in
-            switch result {
-            case .success:
-                XCTFail("Should have failed")
-            case .failure(let coreError):
-                guard case .clientValidation = coreError else {
-                    XCTFail("Should be clientValidation error")
-                    return
-                }
-                getNextPageComplete.fulfill()
-            }
+        do {
+            _ = try await provider.getNextPage()
+            XCTFail("Should have failed with error")
+        } catch CoreError.clientValidation {
+            print("(Expected) error is CoreError.clientValidation")
+        } catch {
+            throw error
         }
-        wait(for: [getNextPageComplete], timeout: 1)
     }
 }

@@ -10,6 +10,7 @@ import Amplify
 extension MockAPICategoryPlugin {
     enum ResponderKeys {
         case queryRequestListener
+        case queryRequestResponse
         case subscribeRequestListener
         case mutateRequestListener
     }
@@ -18,6 +19,11 @@ extension MockAPICategoryPlugin {
 typealias QueryRequestListenerResponder<R: Decodable> = MockResponder<
     (GraphQLRequest<R>, GraphQLOperation<R>.ResultListener?),
     GraphQLOperation<R>?
+>
+
+typealias QueryRequestResponder<R: Decodable> = MockResponder<
+    GraphQLRequest<R>,
+    GraphQLOperation<R>.OperationResult
 >
 
 typealias MutateRequestListenerResponder<R: Decodable> = MockResponder<

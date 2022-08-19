@@ -42,6 +42,13 @@ class ArrayLiteralListProviderTests: XCTestCase {
 
         wait(for: [loadComplete], timeout: 1)
     }
+    
+    func testLoadAsync() async throws {
+        let provider = ArrayLiteralListProvider(elements: [BasicModel(id: "id")])
+        let elements = try await provider.load()
+        XCTAssertEqual(elements.count, 1)
+        XCTAssertEqual(elements[0].id, "id")
+    }
 
     func testHasNextPageFalse() {
         let provider = ArrayLiteralListProvider(elements: [BasicModel(id: "id")])
@@ -65,5 +72,17 @@ class ArrayLiteralListProviderTests: XCTestCase {
         }
 
         wait(for: [getNextPageComplete], timeout: 1)
+    }
+    
+    func testGetNextPageAsync() async {
+        let provider = ArrayLiteralListProvider(elements: [BasicModel(id: "id")])
+        do {
+            _ = try await provider.getNextPage()
+            XCTFail("Should have failed")
+        } catch CoreError.clientValidation {
+            print("(Expected) Error is CoreError.clientValidation")
+        } catch {
+            XCTFail("Should have been core error")
+        }
     }
 }
