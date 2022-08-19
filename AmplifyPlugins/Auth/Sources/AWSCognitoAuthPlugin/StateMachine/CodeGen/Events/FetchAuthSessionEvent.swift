@@ -19,7 +19,7 @@ struct FetchAuthSessionEvent: StateMachineEvent {
 
         case fetchedIdentityID(IdentityID)
 
-        case fetchAWSCredentials(IdentityID)
+        case fetchAWSCredentials(IdentityID, LoginsMapProvider)
 
         case fetchedAWSCredentials(IdentityID, AuthAWSCognitoCredentials)
 

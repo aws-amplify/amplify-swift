@@ -12,6 +12,8 @@ struct AuthorizationEvent: StateMachineEvent {
 
         case configure
 
+        case startFederationToIdentityPool(FederatedToken, IdentityID?)
+
         case fetchUnAuthSession
 
         case cachedCredentialsAvailable(AmplifyCredentials)
@@ -37,6 +39,7 @@ struct AuthorizationEvent: StateMachineEvent {
     var type: String {
         switch eventType {
         case .configure: return "AuthorizationEvent.configure"
+        case .startFederationToIdentityPool: return "AuthorizationEvent.startFederationToIdentityPool"
         case .refreshed: return "AuthorizationEvent.refreshed"
         case .throwError: return "AuthorizationEvent.throwError"
         case .cachedCredentialsAvailable: return "AuthorizationEvent.cachedCredentialsAvailable"

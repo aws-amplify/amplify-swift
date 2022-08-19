@@ -25,9 +25,14 @@ extension AmplifyCredentials {
             return AuthCognitoSignedOutSessionHelper.makeSignedOutSession(
                 identityId: identityID,
                 awsCredentials: credentials)
-        case .identityPoolWithFederation:
-            // TODO: Not implemented
-            fatalError("Add when implemented")
+        case .identityPoolWithFederation(_, let identityId, let awsCredentials):
+            return AWSAuthCognitoSession(
+                isSignedIn: true,
+                identityIdResult: .success(identityId),
+                awsCredentialsResult: .success(awsCredentials),
+                cognitoTokensResult: .failure(
+                    .signedOut("Cognito tokens unavailable when federated to identity pool",
+                               "Clear federation and sign to get user pool tokens.", nil)))
         case .userPoolAndIdentityPool(let signedInData, let identityID, let credentials):
             return AWSAuthCognitoSession(
                 isSignedIn: true,

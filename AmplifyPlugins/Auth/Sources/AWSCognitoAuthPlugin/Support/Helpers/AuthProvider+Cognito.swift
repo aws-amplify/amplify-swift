@@ -10,7 +10,7 @@ import Amplify
 
 extension AuthProvider {
 
-    var cognitoString: String {
+    var userPoolProviderName: String {
         switch self {
         case .amazon:
             return "LoginWithAmazon"
@@ -20,12 +20,31 @@ extension AuthProvider {
             return "Facebook"
         case .google:
             return "Google"
-        case .oidc:
-            return "OIDC"
-        case .saml:
-            return "SAML"
-        case .custom(let provider):
-            return provider
+        case .twitter:
+            return "Twitter"
+        case .oidc(let providerName),
+             .saml(let providerName),
+             .custom(let providerName):
+            return providerName
+        }
+    }
+
+    var identityPoolProviderName: String {
+        switch self {
+        case .amazon:
+            return "www.amazon.com"
+        case .apple:
+            return "appleid.apple.com"
+        case .facebook:
+            return "graph.facebook.com"
+        case .google:
+            return "accounts.google.com"
+        case .twitter:
+            return "api.twitter.com"
+        case .oidc(let providerName),
+             .saml(let providerName),
+             .custom(let providerName):
+            return providerName
         }
     }
 }

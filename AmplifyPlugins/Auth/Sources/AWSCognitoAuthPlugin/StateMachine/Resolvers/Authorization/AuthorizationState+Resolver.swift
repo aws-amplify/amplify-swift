@@ -39,6 +39,17 @@ extension AuthorizationState {
                     return .init(newState: .fetchingUnAuthSession(.notStarted), actions: [action])
                 }
 
+                if case .startFederationToIdentityPool(
+                    let federatedToken, let identityId) = event.isAuthorizationEvent {
+
+                    let action = InitializeFederationToIdentityPool(
+                        federatedToken: federatedToken,
+                        developerProvidedIdentityId: identityId)
+                    return .init(
+                        newState: .federatingToIdentityPool(.notStarted, federatedToken),
+                        actions: [action])
+                }
+
                 return .from(oldState)
 
             case .sessionEstablished(let credentials):
@@ -50,6 +61,16 @@ extension AuthorizationState {
                     } else if case .clearFederationToIdentityPool = authNEvent {
                         return .from(.clearingFederation)
                     }
+                }
+
+                if case .startFederationToIdentityPool(let federatedToken, let identityId) = event.isAuthorizationEvent {
+
+                    let action = InitializeFederationToIdentityPool(
+                        federatedToken: federatedToken,
+                        developerProvidedIdentityId: identityId)
+                    return .init(
+                        newState: .federatingToIdentityPool(.notStarted, federatedToken),
+                        actions: [action])
                 }
 
                 if case .refreshSession(let forceRefresh) = event.isAuthorizationEvent {
@@ -67,6 +88,32 @@ extension AuthorizationState {
                 }
 
                 return .from(oldState)
+
+            case .federatingToIdentityPool(let fetchSessionState, let federatedToken):
+
+                if case .fetched(let identityID,
+                                 let credentials) = event.isAuthorizationEvent {
+                    let amplifyCredentials = AmplifyCredentials.identityPoolWithFederation(
+                        federatedToken: federatedToken,
+                        identityID: identityID,
+                        credentials: credentials)
+                    let action = PersistCredentials(credentials: amplifyCredentials)
+                    return .init(newState: .storingCredentials(amplifyCredentials),
+                                 actions: [action])
+                }
+
+                if case .receivedSessionError(let error) = event.isAuthorizationEvent {
+                    return .init(newState: .error(.sessionError(error, .noCredentials)))
+                }
+
+                if case .throwError(let error) = event.isAuthorizationEvent {
+                    return .init(newState: .error(error))
+                }
+
+                let resolver = FetchAuthSessionState.Resolver()
+                let resolution = resolver.resolve(oldState: fetchSessionState, byApplying: event)
+                return .init(newState: .federatingToIdentityPool(resolution.newState, federatedToken),
+                             actions: resolution.actions)
 
             case .signingIn:
                 if let authEvent = event.isAuthenticationEvent {
