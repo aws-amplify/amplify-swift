@@ -54,7 +54,7 @@ struct HostedUIRequestHelper {
                 .init(name: "idp_identifier", value: idpIdentifier))
         } else if let authProvider = options.providerInfo.authProvider {
             components.queryItems?.append(
-                .init(name: "identity_provider", value: authProvider.cognitoString))
+                .init(name: "identity_provider", value: authProvider.userPoolProviderName))
         }
 
         guard let url = components.url else {

@@ -274,13 +274,13 @@ class AuthHubEventHandlerTests: XCTestCase {
         wait(for: [hubEventExpectation], timeout: networkTimeout)
     }
 
-    /// Test whether HubEvent emits a federatedToIdentityPoolCleared event for mocked federated operation
+    /// Test whether HubEvent emits a federationToIdentityPoolCleared event for mocked federated operation
     ///
     /// - Given: A listener to hub events
     /// - When:
     ///    - I mock a succesfull clearFederationToIdentityPool operation event
     /// - Then:
-    ///    - I should receive a federatedToIdentityPoolCleared hub event
+    ///    - I should receive a federationToIdentityPoolCleared hub event
     ///
     func testClearedFederationHubEvent() {
 

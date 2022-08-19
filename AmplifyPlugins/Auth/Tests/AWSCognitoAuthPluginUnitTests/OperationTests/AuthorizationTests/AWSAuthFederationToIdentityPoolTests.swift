@@ -31,13 +31,13 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
 
         let provider = AuthProvider.facebook
         let authenticationToken = "authenticationToken"
-        let mockIdentityId = "mockIdentityId"
+        let mockIdentityId = "identityId"
 
         let credentials = CognitoIdentityClientTypes.Credentials(
             accessKeyId: "accessKey",
             expiration: Date(),
-            secretKey: "secret",
-            sessionToken: "session")
+            secretKey: "secretKey",
+            sessionToken: "sessionKey")
 
         let getId: MockIdentity.MockGetIdResponse = { input in
 
@@ -45,7 +45,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
 
             XCTAssertNotNil(input.logins)
             XCTAssert(logins?.count == 1)
-            XCTAssertEqual(logins?.keys.first, provider.providerName)
+            XCTAssertEqual(logins?.keys.first, provider.identityPoolProviderName)
             XCTAssertEqual(logins?.values.first, authenticationToken)
 
             return .init(identityId: mockIdentityId)
@@ -57,7 +57,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
 
             XCTAssertNotNil(input.logins)
             XCTAssert(logins?.count == 1)
-            XCTAssertEqual(logins?.keys.first, provider.providerName)
+            XCTAssertEqual(logins?.keys.first, provider.identityPoolProviderName)
             XCTAssertEqual(logins?.values.first, authenticationToken)
             XCTAssertEqual(input.identityId, mockIdentityId)
 
@@ -70,15 +70,15 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                 AuthorizationState.sessionEstablished(
                     AmplifyCredentials.testDataIdentityPoolWithExpiredTokens)),
             AuthState.configured(
-                AuthenticationState.configured,
-                AuthorizationState.sessionEstablished(
-                    AmplifyCredentials.testDataIdentityPoolWithExpiredTokens)),
-            AuthState.configured(
                 AuthenticationState.notConfigured,
                 AuthorizationState.sessionEstablished(
                     AmplifyCredentials.testDataIdentityPoolWithExpiredTokens)),
             AuthState.configured(
-                AuthenticationState.configured,
+                AuthenticationState.federatedToIdentityPool,
+                AuthorizationState.sessionEstablished(
+                    AmplifyCredentials.testDataWithExpiredAWSCredentials)),
+            AuthState.configured(
+                AuthenticationState.notConfigured,
                 AuthorizationState.configured)
         ]
 
@@ -104,7 +104,6 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                         XCTAssertEqual(federatedResult.credentials.sessionKey, credentials.sessionToken)
                         XCTAssertEqual(federatedResult.credentials.accessKey, credentials.accessKeyId)
                         XCTAssertEqual(federatedResult.credentials.secretKey, credentials.secretKey)
-                        XCTAssertEqual(federatedResult.credentials.expiration, credentials.expiration)
                         XCTAssertEqual(federatedResult.identityId, mockIdentityId)
 
                     case .failure(let error):
@@ -113,6 +112,110 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                 }
             wait(for: [resultExpectation], timeout: apiTimeout)
         }
+    }
+
+    /// Test multiple calls for federation to identity pool
+    ///
+    /// - Given: Given an auth plugin with different valid states
+    /// - When:
+    ///    - I invoke federateToIdentityPool multiple times
+    /// - Then:
+    ///    - I should get a valid FederatedToken result with the following details:
+    ///         - valid aws credentials
+    ///         - valid identity id
+    ///
+    func testMultipleFederationToIdentityPool() {
+
+        let provider = AuthProvider.facebook
+        let authenticationToken = "authenticationToken"
+        let mockIdentityId = "mockIdentityId"
+
+        let credentials = CognitoIdentityClientTypes.Credentials(
+            accessKeyId: "accessKey",
+            expiration: Date(),
+            secretKey: "secret",
+            sessionToken: "session")
+
+        let getId: MockIdentity.MockGetIdResponse = { input in
+
+            let logins = input.logins
+
+            XCTAssertNotNil(input.logins)
+            XCTAssert(logins?.count == 1)
+            XCTAssertEqual(logins?.keys.first, provider.identityPoolProviderName)
+            XCTAssertEqual(logins?.values.first, authenticationToken)
+
+            return .init(identityId: mockIdentityId)
+        }
+
+        let getCredentials: MockIdentity.MockGetCredentialsResponse = { input in
+
+            let logins = input.logins
+
+            XCTAssertNotNil(input.logins)
+            XCTAssert(logins?.count == 1)
+            XCTAssertEqual(logins?.keys.first, provider.identityPoolProviderName)
+            XCTAssertEqual(logins?.values.first, authenticationToken)
+            XCTAssertEqual(input.identityId, mockIdentityId)
+
+            return .init(credentials: credentials, identityId: mockIdentityId)
+        }
+
+        let initialState = AuthState.configured(
+            AuthenticationState.signedOut(.testData),
+            AuthorizationState.sessionEstablished(
+                AmplifyCredentials.testDataIdentityPoolWithExpiredTokens))
+        let plugin = configurePluginWith(
+            identityPool: {
+                MockIdentity(
+                    mockGetIdResponse: getId,
+                    mockGetCredentialsResponse: getCredentials)
+            },
+            initialState: initialState)
+
+        let firstResultExpectation = expectation(description: "Should receive a result")
+        _ = plugin.federateToIdentityPool(
+            withProviderToken: authenticationToken,
+            for: provider) { result in
+                defer {
+                    firstResultExpectation.fulfill()
+                }
+                switch result {
+                case .success(let federatedResult):
+                    XCTAssertNotNil(federatedResult)
+                    XCTAssertEqual(federatedResult.credentials.sessionKey, credentials.sessionToken)
+                    XCTAssertEqual(federatedResult.credentials.accessKey, credentials.accessKeyId)
+                    XCTAssertEqual(federatedResult.credentials.secretKey, credentials.secretKey)
+                    XCTAssertEqual(federatedResult.credentials.expiration, credentials.expiration)
+                    XCTAssertEqual(federatedResult.identityId, mockIdentityId)
+
+                case .failure(let error):
+                    XCTFail("Received failure with error \(error)")
+                }
+            }
+        wait(for: [firstResultExpectation], timeout: apiTimeout)
+
+        let secondResultExpectation = expectation(description: "Should receive a result")
+        _ = plugin.federateToIdentityPool(
+            withProviderToken: authenticationToken,
+            for: provider) { result in
+                defer {
+                    secondResultExpectation.fulfill()
+                }
+                switch result {
+                case .success(let federatedResult):
+                    XCTAssertNotNil(federatedResult)
+                    XCTAssertEqual(federatedResult.credentials.sessionKey, credentials.sessionToken)
+                    XCTAssertEqual(federatedResult.credentials.accessKey, credentials.accessKeyId)
+                    XCTAssertEqual(federatedResult.credentials.secretKey, credentials.secretKey)
+                    XCTAssertEqual(federatedResult.credentials.expiration, credentials.expiration)
+                    XCTAssertEqual(federatedResult.identityId, mockIdentityId)
+
+                case .failure(let error):
+                    XCTFail("Received failure with error \(error)")
+                }
+            }
+        wait(for: [secondResultExpectation], timeout: apiTimeout)
     }
 
     /// Test federated to identity pool with invalid initial states
@@ -323,7 +426,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
 
             XCTAssertNotNil(input.logins)
             XCTAssert(logins?.count == 1)
-            XCTAssertEqual(logins?.keys.first, provider.providerName)
+            XCTAssertEqual(logins?.keys.first, provider.identityPoolProviderName)
             XCTAssertEqual(logins?.values.first, federatedToken.token)
 
             cognitoAPIExpectation.fulfill()
@@ -337,7 +440,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
 
             XCTAssertNotNil(input.logins)
             XCTAssert(logins?.count == 1)
-            XCTAssertEqual(logins?.keys.first, provider.providerName)
+            XCTAssertEqual(logins?.keys.first, provider.identityPoolProviderName)
             XCTAssertEqual(logins?.values.first, federatedToken.token)
             XCTAssertEqual(input.identityId, mockIdentityId)
 
@@ -500,7 +603,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
 
             XCTAssertNotNil(input.logins)
             XCTAssert(logins?.count == 1)
-            XCTAssertEqual(logins?.keys.first, provider.providerName)
+            XCTAssertEqual(logins?.keys.first, provider.identityPoolProviderName)
             XCTAssertEqual(logins?.values.first, federatedToken.token)
 
             cognitoAPIExpectation.fulfill()
@@ -514,7 +617,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
 
             XCTAssertNotNil(input.logins)
             XCTAssert(logins?.count == 1)
-            XCTAssertEqual(logins?.keys.first, provider.providerName)
+            XCTAssertEqual(logins?.keys.first, provider.identityPoolProviderName)
             XCTAssertEqual(logins?.values.first, federatedToken.token)
             XCTAssertEqual(input.identityId, mockIdentityId)
 

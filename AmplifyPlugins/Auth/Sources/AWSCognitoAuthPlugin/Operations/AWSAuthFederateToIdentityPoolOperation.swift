@@ -54,12 +54,29 @@ public class AWSAuthFederateToIdentityPoolOperation: AmplifyOperation<
 
             if self?.isValidAuthNStateToStart(authNState) == true &&
                self?.isValidAuthZStateToStart(authZState) == true {
-                self?.startFederatingToIdentityPool()
+                // Clear previous federation before beginning a new one
+                if case .federatedToIdentityPool = authNState {
+                    self?.clearPreviousFederation()
+                } else {
+                    self?.startFederatingToIdentityPool()
+                }
             } else {
                 self?.sendInvalidStateError()
             }
         }
+    }
 
+    func clearPreviousFederation() {
+        let clearFederationHelper = ClearFederationOperationHelper()
+        clearFederationHelper.clearFederation(
+            authStateMachine) { [weak self] result in
+                switch result {
+                case .success:
+                    self?.startFederatingToIdentityPool()
+                case .failure(let error):
+                    self?.dispatch(error)
+                }
+            }
     }
 
     func startFederatingToIdentityPool() {
@@ -72,12 +89,10 @@ public class AWSAuthFederateToIdentityPoolOperation: AmplifyOperation<
 
             switch (authNState, authZState) {
             case (.federatedToIdentityPool, .sessionEstablished(let credentials)):
-
                 self?.dispatch(credentials)
                 if let token = token {
                     self?.authStateMachine.cancel(listenerToken: token)
                 }
-                self?.finish()
             case (.error(_), .error(let authZError)):
                 self?.dispatch(AuthError.service(
                     "Error federating to identity pool",
@@ -86,7 +101,6 @@ public class AWSAuthFederateToIdentityPoolOperation: AmplifyOperation<
                 if let token = token {
                     self?.authStateMachine.cancel(listenerToken: token)
                 }
-                self?.finish()
             default:
                 break
             }
@@ -108,7 +122,7 @@ public class AWSAuthFederateToIdentityPoolOperation: AmplifyOperation<
 
     func isValidAuthNStateToStart(_ authNState: AuthenticationState) -> Bool {
         switch authNState {
-        case .configured, .notConfigured, .signedOut:
+        case .notConfigured, .signedOut, .federatedToIdentityPool:
             return true
         default:
             return false
@@ -126,28 +140,28 @@ public class AWSAuthFederateToIdentityPoolOperation: AmplifyOperation<
 
     func sendInvalidStateError() {
         dispatch(AuthError.invalidState(
-            "No federation found.",
+            "Federation could not be completed.",
             AuthPluginErrorConstants.invalidStateError, nil))
         finish()
     }
 
     private func dispatch(_ result: AmplifyCredentials) {
-
-        if case let .identityPoolWithFederation(
-            _, identityId, awsCredentials) = result {
-
+        switch result {
+        case .identityPoolWithFederation(_, let identityId, let awsCredentials):
             let federatedResult = FederateToIdentityPoolResult(
                 credentials: awsCredentials,
                 identityId: identityId)
 
             let result = Self.OperationResult.success(federatedResult)
             dispatch(result: result)
-        } else {
+        default:
             dispatch(AuthError.unknown("Unable to parse credentials to expected output", nil))
         }
+        finish()
     }
 
     private func dispatch(_ error: AuthError) {
         dispatch(result: .failure(error))
+        finish()
     }
 }

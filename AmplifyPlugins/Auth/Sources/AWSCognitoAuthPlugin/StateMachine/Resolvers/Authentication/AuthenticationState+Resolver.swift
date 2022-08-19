@@ -30,9 +30,6 @@ extension AuthenticationState {
             case .configured:
                 if let authEvent = event as? AuthenticationEvent {
                     return resolveConfigured(byApplying: authEvent)
-                } else if let authZEvent = event.isAuthorizationEvent,
-                          case .startFederationToIdentityPool = authZEvent {
-                    return .init(newState: .federatingToIdentityPool)
                 } else {
                     return .from(oldState)
                 }
@@ -77,6 +74,9 @@ extension AuthenticationState {
                         actions: [
                             ClearFederationToIdentityPool()
                         ])
+                } else if let authZEvent = event.isAuthorizationEvent,
+                          case .startFederationToIdentityPool = authZEvent {
+                    return .init(newState: .federatingToIdentityPool)
                 } else {
                     return .from(oldState)
                 }
