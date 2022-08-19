@@ -58,8 +58,7 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
         let team2 = Team2(name: "name")
         _ = try await Amplify.API.mutate(request: .create(team2))
         let project2a = Project2(teamID: team2.id, team: team2)
-        _ = try await Amplify.API.mutate(request:
-            .create(project2a))
+        _ = try await Amplify.API.mutate(request: .create(project2a))
        
         let result = try await Amplify.API.query(request: .get(Project2.self, byId: project2a.id))
         switch result {
@@ -80,7 +79,7 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
         switch result2 {
         case .success(let queriedProjectOptional):
             guard let queriedProject = queriedProjectOptional else {
-                XCTFail("Failed")
+                XCTFail("querying for the project should not return nil")
                 return
             }
             XCTAssertEqual(queriedProject.id, project2b.id)
@@ -109,7 +108,8 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
                 return
             }
             XCTAssertEqual(updatedProject.teamID, anotherTeam.id)
-//          XCTAssertEqual(updatedProject.team, anotherTeam)
+            // The team object does not get retrieved from the service and is `nil`, but should be eager loaded to contain the `team`
+            //  XCTAssertEqual(updatedProject.team, anotherTeam)
         case .failure(let response):
             XCTFail("Failed with: \(response)")
         }
