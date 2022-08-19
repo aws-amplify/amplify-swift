@@ -1,6 +1,6 @@
 import Foundation
 
-public struct AsyncChannel<Element: Sendable>: AsyncSequence {
+public struct AmplifySequence<Element: Sendable>: AsyncSequence {
     public typealias Iterator = AsyncStream<Element>.Iterator
     private var asyncStream: AsyncStream<Element>! = nil
     private var continuation: AsyncStream<Element>.Continuation! = nil

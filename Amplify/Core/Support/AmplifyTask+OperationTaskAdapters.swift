@@ -86,7 +86,7 @@ public class AmplifyInProcessReportingOperationTaskAdapter<Request: AmplifyOpera
         }
     }
 
-    public var inProcess: AsyncChannel<InProcess> {
+    public var inProcess: AmplifySequence<InProcess> {
         get async {
             await childTask.inProcess
         }

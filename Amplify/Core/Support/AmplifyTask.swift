@@ -29,7 +29,7 @@ public protocol AmplifyTask {
 public protocol AmplifyInProcessReportingTask {
     associatedtype InProcess
 
-    var inProcess: AsyncChannel<InProcess> { get async }
+    var inProcess: AmplifySequence<InProcess> { get async }
 
 #if canImport(Combine)
     var inProcessPublisher: AnyPublisher<InProcess, Never> { get }
@@ -39,7 +39,7 @@ public protocol AmplifyInProcessReportingTask {
 public typealias AmplifyInProcessTask = AmplifyTask & AmplifyInProcessReportingTask
 
 public extension AmplifyInProcessReportingTask where InProcess == Progress {
-    var progress : AsyncChannel<InProcess> {
+    var progress : AmplifySequence<InProcess> {
         get async {
             await inProcess
         }
