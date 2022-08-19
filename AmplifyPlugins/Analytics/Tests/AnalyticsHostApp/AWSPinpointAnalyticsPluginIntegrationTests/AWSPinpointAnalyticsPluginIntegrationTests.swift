@@ -10,7 +10,6 @@ import AWSPinpoint
 
 @testable import Amplify
 @testable import AWSPinpointAnalyticsPlugin
-@testable import AmplifyTestCommon
 import AWSCognitoAuthPlugin
 
 // swiftlint:disable:next type_name
@@ -21,8 +20,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
 
     override func setUp() {
         do {
-            let config = try TestConfigHelper.retrieveAmplifyConfiguration(
-                forResource: AWSPinpointAnalyticsPluginIntergrationTests.amplifyConfiguration)
+            let config = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfiguration)
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSPinpointAnalyticsPlugin())
             try Amplify.configure(config)
@@ -35,7 +33,7 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         await Amplify.reset()
     }
 
-    func testIdentifyUser() {
+    func testIdentifyUser() async throws {
         let userId = "userId"
         let identifyUserEvent = expectation(description: "Identify User event was received on the hub plugin")
         _ = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
@@ -69,51 +67,36 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
                                                properties: properties)
         Amplify.Analytics.identifyUser(userId, withProfile: userProfile)
 
-        wait(for: [identifyUserEvent], timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
 
-        //TODO: Fix the test below
         // Remove userId from the current endpoint
-        // let targetingClient = escapeHatch().targetingClient
-        // let currentProfile = targetingClient.currentEndpointProfile()
-        // currentProfile.user?.userId = ""
-        // targetingClient.update(currentProfile)
+        let endpointClient = endpointClient()
+        let currentProfile = await endpointClient.currentEndpointProfile()
+        currentProfile.addIdentityId("")
+        try await endpointClient.updateEndpointProfile(with: currentProfile)
     }
 
-    //TODO: Fix the test below
-    //    /// Run this test when the number of endpoints for the userId exceeds the limit.
-    //    /// The profile should have permissions to run the "mobiletargeting:DeleteUserEndpoints" action.
-    //    func skip_testDeleteEndpointsForUser() throws {
-    //        let userId = "userId"
-    //        let escapeHatch = escapeHatch()
-    //        let applicationId = escapeHatch.configuration.appId
-    //        guard let targetingConfiguration = escapeHatch.configuration.targetingServiceConfiguration else {
-    //            XCTFail("Targeting configuration is not defined.")
-    //            return
-    //        }
-    //
-    //        let deleteEndpointsRequest = AWSPinpointTargetingDeleteUserEndpointsRequest()!
-    //        deleteEndpointsRequest.userId = userId
-    //        deleteEndpointsRequest.applicationId = applicationId
-    //
-    //        let deleteExpectation = expectation(description: "Delete endpoints")
-    //        let lowLevelClient = lowLevelClient(from: targetingConfiguration)
-    //        lowLevelClient.deleteUserEndpoints(deleteEndpointsRequest) { response, error in
-    //            guard error == nil else {
-    //                XCTFail("Unexpected error when attempting to delete endpoints")
-    //                deleteExpectation.fulfill()
-    //                return
-    //            }
-    //            deleteExpectation.fulfill()
-    //        }
-    //        wait(for: [deleteExpectation], timeout: 1)
-    //    }
+    /// Run this test when the number of endpoints for the userId exceeds the limit.
+    /// The profile should have permissions to run the "mobiletargeting:DeleteUserEndpoints" action.
+    func skip_testDeleteEndpointsForUser() async throws {
+        let userId = "userId"
+        let applicationId = await endpointClient().currentEndpointProfile().applicationId
+        let deleteEndpointsRequest = DeleteUserEndpointsInput(applicationId: applicationId,
+                                                              userId: userId)
+        do {
+            let response = try await pinpointClient().deleteUserEndpoints(input: deleteEndpointsRequest)
+            XCTAssertNotNil(response.endpointsResponse)
+        } catch {
+            XCTFail("Unexpected error when attempting to delete endpoints")
+        }
+    }
 
     func testRecordEventsAreFlushed() {
         let flushEventsInvoked = expectation(description: "Flush events invoked")
         _ = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
             if payload.eventName == HubPayload.EventName.Analytics.flushEvents {
                 // TODO: Remove exposing AWSPinpointEvent
-                guard let pinpointEvents = payload.data as? [PinpointEvent] else {
+                guard let pinpointEvents = payload.data as? [AnalyticsEvent] else {
                     XCTFail("Missing data")
                     flushEventsInvoked.fulfill()
                     return
@@ -148,5 +131,25 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         }
         let awsPinpoint = pinpointAnalyticsPlugin.getEscapeHatch()
         XCTAssertNotNil(awsPinpoint)
+    }
+
+    private func plugin() -> AWSPinpointAnalyticsPlugin {
+        guard let plugin = try? Amplify.Analytics.getPlugin(for: "awsPinpointAnalyticsPlugin"),
+              let analyticsPlugin = plugin as? AWSPinpointAnalyticsPlugin else {
+            fatalError("Unable to retrieve configuration")
+        }
+
+        return analyticsPlugin
+    }
+
+    private func pinpointClient() -> PinpointClientProtocol {
+        return plugin().getEscapeHatch()
+    }
+
+    private func endpointClient() -> EndpointClientBehaviour {
+        guard let context = plugin().pinpoint as? PinpointContext else {
+            fatalError("Unable to retrieve Pinpoint Context")
+        }
+        return context.endpointClient
     }
 }

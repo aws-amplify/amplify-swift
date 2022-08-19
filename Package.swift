@@ -276,20 +276,15 @@ let analyticsTargets: [Target] = [
             .target(name: "AWSPluginsCore"),
             .product(name: "SQLite", package: "SQLite.swift"),
             .product(name: "AWSPinpoint", package: "AWSSwiftSDK")],
-        path: "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPlugin",
-        exclude: [
-            "Resources/Info.plist"
-        ]
+        path: "AmplifyPlugins/Analytics/Sources/AWSPinpointAnalyticsPlugin"
     ),
     .testTarget(
-        name: "AWSPinpointAnalyticsPluginTests",
+        name: "AWSPinpointAnalyticsPluginUnitTests",
         dependencies: [
             "AWSPinpointAnalyticsPlugin",
             "AmplifyTestCommon"
-            // "AWSPluginsTestCommon"
         ],
-        path: "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPluginTests",
-        exclude: ["Resources/Info.plist"]
+        path: "AmplifyPlugins/Analytics/Tests/AWSPinpointAnalyticsPluginUnitTests"
     )
 ]
 
