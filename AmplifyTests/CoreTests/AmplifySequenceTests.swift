@@ -9,7 +9,7 @@ import XCTest
 @testable import Amplify
 @testable import AmplifyTestCommon
 
-final class AsyncChannelTests: XCTestCase {
+final class AmplifySequenceTests: XCTestCase {
     enum Failure: Error {
         case unluckyNumber
     }
@@ -25,7 +25,7 @@ final class AsyncChannelTests: XCTestCase {
 
     func testNumberSequence() async throws {
         let input = [1, 2, 3, 4, 5]
-        let channel = AsyncChannel<Int>()
+        let channel = AmplifySequence<Int>()
 
         // load all numbers into the channel with delays
         Task {
@@ -41,7 +41,7 @@ final class AsyncChannelTests: XCTestCase {
 
     func testStringSequence() async throws {
         let input = ["one", "two", "three", "four", "five"]
-        let channel = AsyncChannel<String>()
+        let channel = AmplifySequence<String>()
 
         // load all strings into the channel with delays
         Task {
@@ -125,7 +125,7 @@ final class AsyncChannelTests: XCTestCase {
         let input = 2006
         let reduced = AsyncExpectation.expectation(description: "reduced")
         let done = AsyncExpectation.expectation(description: "done")
-        let channel = AsyncChannel<Int>()
+        let channel = AmplifySequence<Int>()
 
         let task = Task<Int, Never> {
             let sum = await channel.reduce(0, +)
@@ -178,7 +178,7 @@ final class AsyncChannelTests: XCTestCase {
         try await AsyncExpectation.waitForExpectations([done])
     }
 
-    private func send<Element>(elements: [Element], channel: AsyncChannel<Element>, sleepSeconds: Double = 0.1) async throws {
+    private func send<Element>(elements: [Element], channel: AmplifySequence<Element>, sleepSeconds: Double = 0.1) async throws {
         var index = 0
         while index < elements.count {
             try await Task.sleep(seconds: sleepSeconds)
