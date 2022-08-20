@@ -138,7 +138,7 @@ class AmplifyPublisherTests: XCTestCase {
         var output = [Int]()
         let finished = expectation(description: "completion finished")
         
-        let sink = Amplify.Publisher.create(sequence: sequence)
+        let sink = Amplify.Publisher.create(sequence)
             .sink { completion in
                 switch completion {
                 case .finished:
@@ -161,7 +161,7 @@ class AmplifyPublisherTests: XCTestCase {
         var output = [Int]()
         let finished = expectation(description: "completion finished")
         
-        let sink = Amplify.Publisher.create(sequence: sequence)
+        let sink = Amplify.Publisher.create(sequence)
             .sink { completion in
                 switch completion {
                 case .finished:
@@ -184,7 +184,7 @@ class AmplifyPublisherTests: XCTestCase {
         var output = [Int]()
         let failed = expectation(description: "completion failed")
         
-        let sink = Amplify.Publisher.create(sequence: sequence)
+        let sink = Amplify.Publisher.create(sequence)
             .sink { completion in
                 switch completion {
                 case .finished:
@@ -210,7 +210,7 @@ class AmplifyPublisherTests: XCTestCase {
         let completed = expectation(description: "should not have completed")
         completed.isInverted = true
         
-        let sink = Amplify.Publisher.create(sequence: sequence)
+        let sink = Amplify.Publisher.create(sequence)
             .sink { completion in
                 completed.fulfill()
             } receiveValue: { value in
@@ -230,7 +230,7 @@ class AmplifyPublisherTests: XCTestCase {
         var output = [Int]()
         let finished = expectation(description: "completion finished")
 
-        let sink = Amplify.Publisher.create(sequence: sequence)
+        let sink = Amplify.Publisher.create(sequence)
             .sink { completion in
                 switch completion {
                 case .finished:

@@ -21,7 +21,7 @@ public extension Amplify {
         /// - Parameter operation: The Task for which to create the Publisher.
         /// - Returns: The Publisher for the given Task.
         public static func create<Success>(
-            operation: @escaping @Sendable () async throws -> Success
+            _ operation: @escaping @Sendable () async throws -> Success
         ) -> AnyPublisher<Success, Error> {
             let task = Task(operation: operation)
             return Future() { promise in
@@ -42,7 +42,7 @@ public extension Amplify {
         /// - Parameter sequence: The AsyncSequence for which to create the Publisher.
         /// - Returns: The Publisher for the given AsyncSequence.
         public static func create<Sequence: AsyncSequence>(
-            sequence: Sequence
+            _ sequence: Sequence
         ) -> AnyPublisher<Sequence.Element, Error> {
             let subject = PassthroughSubject<Sequence.Element, Error>()
             let task = Task {
