@@ -15,15 +15,15 @@ public class AWSAuthFetchDevicesOperation: AmplifyOperation<AuthFetchDevicesRequ
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
 
     private let authStateMachine: AuthStateMachine
-    private let userPoolFactory: CognitoUserPoolFactory
+    private let authEnvironment: AuthEnvironment
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
 
     init(_ request: AuthFetchDevicesRequest,
          authStateMachine: AuthStateMachine,
-         userPoolFactory: @escaping CognitoUserPoolFactory,
+         authEnvironment: AuthEnvironment,
          resultListener: ResultListener?) {
         self.authStateMachine = authStateMachine
-        self.userPoolFactory = userPoolFactory
+        self.authEnvironment = authEnvironment
         self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()
         super.init(categoryType: .auth,
                    eventName: HubPayload.EventName.Auth.fetchDevicesAPI,
@@ -63,7 +63,7 @@ public class AWSAuthFetchDevicesOperation: AmplifyOperation<AuthFetchDevicesRequ
 
     func fetchDevices(with accessToken: String) async {
         do {
-            let userPoolService = try userPoolFactory()
+            let userPoolService = try authEnvironment.cognitoUserPoolFactory()
             let input = ListDevicesInput(accessToken: accessToken)
             let result = try await userPoolService.listDevices(input: input)
 

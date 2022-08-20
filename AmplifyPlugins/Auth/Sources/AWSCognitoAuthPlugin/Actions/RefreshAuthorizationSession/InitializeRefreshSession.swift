@@ -30,7 +30,7 @@ struct InitializeRefreshSession: Action {
             event = .init(eventType: .refreshUnAuthAWSCredentials(identityID))
 
         case .identityPoolWithFederation:
-            fatalError("Federation not implemented")
+            event = .init(eventType: .throwError(.federationNotSupportedDuringRefresh))
 
         case .userPoolAndIdentityPool(let signedInData, let identityID, _):
             guard let config = (environment as? AuthEnvironment)?.userPoolConfigData else {

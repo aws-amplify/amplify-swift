@@ -15,15 +15,15 @@ public class AWSAuthRememberDeviceOperation: AmplifyOperation<AuthRememberDevice
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
 
     private let authStateMachine: AuthStateMachine
-    private let userPoolFactory: CognitoUserPoolFactory
+    private let authEnvironment: AuthEnvironment
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
 
     init(_ request: AuthRememberDeviceRequest,
          authStateMachine: AuthStateMachine,
-         userPoolFactory: @escaping CognitoUserPoolFactory,
+         authEnvironment: AuthEnvironment,
          resultListener: ResultListener?) {
         self.authStateMachine = authStateMachine
-        self.userPoolFactory = userPoolFactory
+        self.authEnvironment = authEnvironment
         self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()
         super.init(categoryType: .auth,
                    eventName: HubPayload.EventName.Auth.rememberDeviceAPI,
@@ -63,11 +63,16 @@ public class AWSAuthRememberDeviceOperation: AmplifyOperation<AuthRememberDevice
 
     func rememberDevice(with accessToken: String) async {
         do {
-            let userPoolService = try userPoolFactory()
-
-            // TODO: Pass in device key when implemented
+            let userPoolService = try authEnvironment.cognitoUserPoolFactory()
+            let username = try TokenParserHelper.getAuthUser(accessToken: accessToken).username
+            guard case let .metadata(deviceMetadata) = await DeviceMetadataHelper.getDeviceMetadata(
+                for: authEnvironment, with: username) else {
+                throw AuthError.configuration(
+                    "Unable get a device key",
+                    "Please validate if the plugin is setup to remember devices")
+            }
             let input = UpdateDeviceStatusInput(accessToken: accessToken,
-                                                deviceKey: nil,
+                                                deviceKey: deviceMetadata.deviceKey,
                                                 deviceRememberedStatus: .remembered)
             _ = try await userPoolService.updateDeviceStatus(input: input)
 

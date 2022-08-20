@@ -48,14 +48,10 @@ struct ClearFederationOperationHelper {
                     }
                     completion(.success(()))
                 case .error(let error):
-                    let authError = AuthError.service(
-                        "Error clearing federation",
-                        AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
-                        error)
                     if let token = token {
                         authStateMachine.cancel(listenerToken: token)
                     }
-                    completion(.failure(authError))
+                    completion(.failure(error.authError))
                 default:
                     break
                 }

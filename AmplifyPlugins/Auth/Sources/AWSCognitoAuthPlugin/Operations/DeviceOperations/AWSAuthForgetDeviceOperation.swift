@@ -15,15 +15,15 @@ public class AWSAuthForgetDeviceOperation: AmplifyOperation<AuthForgetDeviceRequ
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
 
     private let authStateMachine: AuthStateMachine
-    private let userPoolFactory: CognitoUserPoolFactory
+    private let authEnvironment: AuthEnvironment
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
 
     init(_ request: AuthForgetDeviceRequest,
          authStateMachine: AuthStateMachine,
-         userPoolFactory: @escaping CognitoUserPoolFactory,
+         authEnvironment: AuthEnvironment,
          resultListener: ResultListener?) {
         self.authStateMachine = authStateMachine
-        self.userPoolFactory = userPoolFactory
+        self.authEnvironment = authEnvironment
         self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()
         super.init(categoryType: .auth,
                    eventName: HubPayload.EventName.Auth.forgetDeviceAPI,
@@ -63,13 +63,20 @@ public class AWSAuthForgetDeviceOperation: AmplifyOperation<AuthForgetDeviceRequ
 
     func forgetDevice(with accessToken: String) async {
         do {
-            let userPoolService = try userPoolFactory()
+            let userPoolService = try authEnvironment.cognitoUserPoolFactory()
             let input: ForgetDeviceInput
             if let device = request.device {
                 input = ForgetDeviceInput(accessToken: accessToken, deviceKey: device.id)
             } else {
-                // TODO: pass in current device ID
-                input = ForgetDeviceInput(accessToken: accessToken, deviceKey: nil)
+                let username = try TokenParserHelper.getAuthUser(accessToken: accessToken).username
+                guard case let .metadata(deviceMetadata) = await DeviceMetadataHelper.getDeviceMetadata(
+                    for: authEnvironment, with: username) else {
+                    throw AuthError.configuration(
+                        "Unable get a device key",
+                        "Please validate if the plugin is setup to remember devices or pass in a valid device.id")
+                }
+                input = ForgetDeviceInput(accessToken: accessToken,
+                                          deviceKey: deviceMetadata.deviceKey)
             }
 
             _ = try await userPoolService.forgetDevice(input: input)
