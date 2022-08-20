@@ -8,9 +8,9 @@
 #if canImport(Combine)
 import Combine
 
-extension Amplify {
+public extension Amplify {
     enum Publisher {
-        static func create<Success>(
+        public static func create<Success>(
             operation: @escaping @Sendable () async throws -> Success
         ) -> AnyPublisher<Success, Error> {
             let task = Task(operation: operation)
@@ -28,7 +28,7 @@ extension Amplify {
             .eraseToAnyPublisher()
         }
         
-        static func create<Sequence: AsyncSequence>(
+        public static func create<Sequence: AsyncSequence>(
             sequence: Sequence
         ) -> AnyPublisher<Sequence.Element, Error> {
             let subject = PassthroughSubject<Sequence.Element, Error>()
