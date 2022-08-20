@@ -18,6 +18,19 @@ public extension Amplify {
     /// These can be used to get Combine Publishers for any Amplify API.
     enum Publisher {
         /// Create a Combine Publisher for a given Task.
+        ///
+        /// Example Usage
+        /// ```
+        /// let sink = Amplify.Publisher.create {
+        ///     try await Amplify.Geo.search(for "coffee")
+        /// }
+        ///     .sink { completion in
+        ///         // handle completion
+        ///     } receiveValue: { value in
+        ///         // handle value
+        ///     }
+        /// ```
+        ///
         /// - Parameter operation: The Task for which to create the Publisher.
         /// - Returns: The Publisher for the given Task.
         public static func create<Success>(
@@ -39,6 +52,21 @@ public extension Amplify {
         }
         
         /// Create a Combine Publisher for a given AsyncSequence.
+        ///
+        /// Example Usage
+        /// ```
+        /// let subscription = try await Amplify.API.subscribe(
+        ///     request: .subscription(of: Todo.self, type: .onCreate)
+        /// )
+        ///
+        /// let sink = Amplify.Publisher.create(subscription)
+        ///     .sink { completion in
+        ///         // handle completion
+        ///     } receiveValue: { value in
+        ///         // handle value
+        ///     }
+        /// ```
+        ///
         /// - Parameter sequence: The AsyncSequence for which to create the Publisher.
         /// - Returns: The Publisher for the given AsyncSequence.
         public static func create<Sequence: AsyncSequence>(
