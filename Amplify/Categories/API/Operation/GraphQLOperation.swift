@@ -44,7 +44,7 @@ public extension GraphQLSubscriptionOperation {
 public typealias GraphQLSubscriptionTask<R: Decodable> = GraphQLSubscriptionOperation<R>.TaskAdapter
 
 public extension GraphQLSubscriptionTask {
-    var subscription : AmplifySequence<InProcess> {
+    var subscription : AmplifyAsyncSequence<InProcess> {
         get async {
             await inProcess
         }
