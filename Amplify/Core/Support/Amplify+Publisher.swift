@@ -9,7 +9,17 @@
 import Combine
 
 public extension Amplify {
+    
+    /// Get Combine Publishers for Amplify APIs.
+    ///
+    /// Provides static methods to create Combine Publishers from Tasks and
+    /// AsyncSequences.
+    ///
+    /// These can be used to get Combine Publishers for any Amplify API.
     enum Publisher {
+        /// Create a Combine Publisher for a given Task.
+        /// - Parameter operation: The Task for which to create the Publisher.
+        /// - Returns: The Publisher for the given Task.
         public static func create<Success>(
             operation: @escaping @Sendable () async throws -> Success
         ) -> AnyPublisher<Success, Error> {
@@ -28,6 +38,9 @@ public extension Amplify {
             .eraseToAnyPublisher()
         }
         
+        /// Create a Combine Publisher for a given AsyncSequence.
+        /// - Parameter sequence: The AsyncSequence for which to create the Publisher.
+        /// - Returns: The Publisher for the given AsyncSequence.
         public static func create<Sequence: AsyncSequence>(
             sequence: Sequence
         ) -> AnyPublisher<Sequence.Element, Error> {
@@ -41,6 +54,8 @@ public extension Amplify {
                             if let cancellable = sequence as? Cancellable {
                                 cancellable.cancel()
                             }
+                            // This will end the loop and send a CancellationError to the publisher
+                            throw CancellationError()
                         }
                         subject.send(value)
                     }
@@ -49,7 +64,6 @@ public extension Amplify {
                     subject.send(completion: .failure(error))
                 }
             }
-            
             return subject
                 .handleEvents(receiveCancel: { task.cancel() })
                 .eraseToAnyPublisher()
