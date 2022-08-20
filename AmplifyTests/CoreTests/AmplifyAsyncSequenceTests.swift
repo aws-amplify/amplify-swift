@@ -59,7 +59,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
 
     func testSucceedingSequence() async throws {
         let input = [3, 7, 14, 21]
-        let channel = AsyncThrowingChannel<Int>()
+        let channel = AmplifyAsyncThrowingSequence<Int>()
 
         // load all numbers into the channel with delays
         Task {
@@ -89,7 +89,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
 
     func testFailingSequence() async throws {
         let input = [3, 7, 13, 21]
-        let channel = AsyncThrowingChannel<Int>()
+        let channel = AmplifyAsyncThrowingSequence<Int>()
 
         // load all numbers into the channel with delays
         Task {
@@ -154,7 +154,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
         let input = 2006
         let reduced = AsyncExpectation.expectation(description: "reduced")
         let done = AsyncExpectation.expectation(description: "done")
-        let channel = AsyncThrowingChannel<Int>()
+        let channel = AmplifyAsyncThrowingSequence<Int>()
 
         let task = Task<Int, Error> {
             let sum = try await channel.reduce(0, +)
@@ -253,6 +253,82 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
         operation.unsubscribe(token: token)
     }
 
+    func testThrowingValueProducingParentOperation() async throws {
+        let sent = AsyncExpectation.expectation(description: "sent")
+        let received = AsyncExpectation.expectation(description: "received")
+        let steps = 10
+        let delay = 0.01
+        let request = LongOperationRequest(steps: steps, delay: delay)
+        var count = 0
+        let operation = LongOperation(request: request)
+        let channel = AmplifyAsyncThrowingSequence<LongOperation.InProcess>(parent: operation)
+        let token = operation.subscribe { (value: LongOperation.InProcess) in
+            count += 1
+            channel.send(value)
+            if value.totalUnitCount == value.completedUnitCount {
+                channel.finish()
+                Task {
+                    await sent.fulfill()
+                }
+            }
+        }
+        queue.addOperation(operation)
+        Task {
+            let values = Output<LongOperation.InProcess>()
+            for try await value in channel {
+                await values.append(value)
+            }
+            let count = await values.elements.count
+            XCTAssertGreaterThanOrEqual(count, steps)
+            await received.fulfill()
+        }
+
+        try await AsyncExpectation.waitForExpectations([sent, received])
+
+        XCTAssertFalse(operation.isCancelled)
+        XCTAssertGreaterThanOrEqual(count, steps)
+
+        operation.unsubscribe(token: token)
+    }
+
+    func testThrowingCancellingWithParentOperation() async throws {
+        let sent = AsyncExpectation.expectation(description: "sent")
+        let received = AsyncExpectation.expectation(description: "received")
+        let steps = 10
+        let delay = 0.01
+        let request = LongOperationRequest(steps: steps, delay: delay)
+        var count = 0
+        let operation = LongOperation(request: request)
+        let channel = AmplifyAsyncThrowingSequence<LongOperation.InProcess>(parent: operation)
+        let token = operation.subscribe { (value: LongOperation.InProcess) in
+            count += 1
+            channel.send(value)
+            if value.completedUnitCount >= steps/2 {
+                channel.cancel()
+                Task {
+                    await sent.fulfill()
+                }
+            }
+        }
+        queue.addOperation(operation)
+        Task {
+            let values = Output<LongOperation.InProcess>()
+            for try await value in channel {
+                await values.append(value)
+            }
+            let count = await values.elements.count
+            XCTAssertLessThan(count, steps)
+            await received.fulfill()
+        }
+
+        try await AsyncExpectation.waitForExpectations([sent, received])
+
+        XCTAssertTrue(operation.isCancelled)
+        XCTAssertLessThan(count, steps)
+
+        operation.unsubscribe(token: token)
+    }
+
     private func send<Element>(elements: [Element], channel: AmplifyAsyncSequence<Element>, sleepSeconds: Double = 0.1) async throws {
         var index = 0
         while index < elements.count {
@@ -265,7 +341,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
         channel.finish()
     }
 
-    private func send<Element>(elements: [Element], channel: AsyncThrowingChannel<Element>, sleepSeconds: Double = 0.1, processor: ((Element) throws -> Element)? = nil) async throws {
+    private func send<Element>(elements: [Element], channel: AmplifyAsyncThrowingSequence<Element>, sleepSeconds: Double = 0.1, processor: ((Element) throws -> Element)? = nil) async throws {
         var index = 0
         while index < elements.count {
             try await Task.sleep(seconds: sleepSeconds)
