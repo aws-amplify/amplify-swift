@@ -36,7 +36,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             mockRespondToAuthChallengeResponse: { _ in
             return .testData()
         })
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             let confirmSignInResult = try await plugin.confirmSignIn(challengeResponse: "code")
             guard case .done = confirmSignInResult.nextStep else {
@@ -44,11 +44,9 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 return
             }
             XCTAssertTrue(confirmSignInResult.isSignedIn, "Signin result should be complete")
-            resultExpectation.fulfill()
         } catch {
             XCTFail("Received failure with error \(error)")
         }
-        wait(for: [resultExpectation], timeout: 2)
     }
 
     /// Test a confirmSignIn call with an empty confirmation code
@@ -65,7 +63,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             mockRespondToAuthChallengeResponse: { _ in
             return .testData()
         })
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "")
             XCTFail("Should not succeed")
@@ -74,9 +72,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 XCTFail("Should produce validation error instead of \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: 2)
     }
     
     /// Test a confirmSignIn call with an empty confirmation code followed by a second valaid confirmSignIn call
@@ -93,7 +89,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             mockRespondToAuthChallengeResponse: { _ in
             return .testData()
         })
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "")
             XCTFail("Should not succeed")
@@ -106,12 +102,10 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             do {
                 let confirmSignInResult = try await plugin.confirmSignIn(challengeResponse: "code")
                 XCTAssertTrue(confirmSignInResult.isSignedIn, "Signin result should be complete")
-                resultExpectation.fulfill()
             } catch {
                 XCTFail("Received failure with error \(error)")
             }
         }
-        wait(for: [resultExpectation], timeout: 2)
     }
 
     // MARK: Service error handling test
@@ -132,7 +126,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.aliasExistsException(
                     .init(message: "Exception"))
         })
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -145,9 +139,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 XCTFail("Underlying error should be aliasExists \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignIn call with CodeMismatchException response from service
@@ -165,7 +157,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.codeMismatchException(
                     .init(message: "Exception"))
         })
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -178,9 +170,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 XCTFail("Underlying error should be codeMismatch \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignIn call with CodeExpiredException response from service
@@ -199,7 +189,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.expiredCodeException(
                     .init(message: "Exception"))
         })
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -212,9 +202,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 XCTFail("Underlying error should be codeExpired \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignIn call with InternalErrorException response from service
@@ -232,7 +220,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.internalErrorException(
                     .init(message: "Exception"))
         })
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -241,9 +229,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 XCTFail("Should produce an unknown error instead of \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignIn call with InvalidLambdaResponseException response from service
@@ -261,7 +247,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.invalidLambdaResponseException(
                     .init(message: "Exception"))
         })
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -274,9 +260,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 XCTFail("Underlying error should be lambda \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignIn call with InvalidParameterException response from service
@@ -296,7 +280,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.invalidParameterException(
                     .init(message: "Exception"))
         })
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -309,9 +293,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 XCTFail("Underlying error should be invalidParameter \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignIn call with InvalidPasswordException response from service
@@ -331,7 +313,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.invalidPasswordException(
                     .init(message: "Exception"))
         })
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -344,9 +326,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 XCTFail("Underlying error should be invalidPassword \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignIn call with InvalidSmsRoleAccessPolicy response from service
@@ -364,7 +344,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.invalidSmsRoleAccessPolicyException(
                     .init(message: "Exception"))
         })
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -377,9 +357,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 XCTFail("Underlying error should be invalidPassword \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignIn call with InvalidSmsRoleTrustRelationship response from service
@@ -397,7 +375,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.invalidSmsRoleTrustRelationshipException(
                     .init(message: "Exception"))
         })
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -410,9 +388,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 XCTFail("Underlying error should be invalidPassword \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     // TODO: Fix the test below
@@ -483,7 +459,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.mFAMethodNotFoundException(
                     .init(message: "Exception"))
         })
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should not succeed")
@@ -496,9 +472,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 XCTFail("Underlying error should be mfaMethodNotFound \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignIn call with NotAuthorizedException response from service
@@ -518,7 +492,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.notAuthorizedException(
                     .init(message: "Exception"))
         })
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -527,9 +501,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 XCTFail("Should produce notAuthorized error instead of \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignIn with PasswordResetRequiredException from service
@@ -550,18 +522,15 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                     .init(message: "Exception"))
         })
 
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let confirmSignInResult = try await plugin.confirmSignIn(challengeResponse: "code")
             guard case .resetPassword = confirmSignInResult.nextStep else {
                 XCTFail("Result should be .resetPassword for next step")
                 return
             }
-            resultExpectation.fulfill()
         } catch {
             XCTFail("Should not return error \(error)")
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignIn call with ResourceNotFoundException response from service
@@ -581,7 +550,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.resourceNotFoundException(
                     .init(message: "Exception"))
         })
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -594,9 +563,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 XCTFail("Underlying error should be resourceNotFound \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignIn call with SoftwareTokenMFANotFoundException response from service
@@ -616,7 +583,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.softwareTokenMFANotFoundException(
                     .init(message: "Exception"))
         })
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -629,9 +596,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 XCTFail("Underlying error should be softwareTokenMFANotEnabled \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignIn call with TooManyRequestsException response from service
@@ -651,7 +616,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.tooManyRequestsException(
                     .init(message: "Exception"))
         })
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -664,9 +629,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 XCTFail("Underlying error should be requestLimitExceeded \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignIn call with UnexpectedLambdaException response from service
@@ -686,7 +649,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.unexpectedLambdaException(
                     .init(message: "Exception"))
         })
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -699,9 +662,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 XCTFail("Underlying error should be lambda \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignIn call with UserLambdaValidationException response from service
@@ -721,7 +682,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.userLambdaValidationException(
                     .init(message: "Exception"))
         })
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -734,9 +695,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 XCTFail("Underlying error should be lambda \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignIn call with UserNotConfirmedException response from service
@@ -756,7 +715,6 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.userNotConfirmedException(
                     .init(message: "Exception"))
         })
-        let resultExpectation = expectation(description: "Should receive a result")
         
         do {
             let confirmSignInResult = try await plugin.confirmSignIn(challengeResponse: "code")
@@ -764,11 +722,9 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 XCTFail("Result should be .confirmSignUp for next step")
                 return
             }
-            resultExpectation.fulfill()
         } catch {
             XCTFail("Should not return error \(error)")
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a confirmSignIn call with UserNotFound response from service
@@ -788,7 +744,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.userNotFoundException(
                     .init(message: "Exception"))
         })
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -801,8 +757,6 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 XCTFail("Underlying error should be userNotFound \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 }

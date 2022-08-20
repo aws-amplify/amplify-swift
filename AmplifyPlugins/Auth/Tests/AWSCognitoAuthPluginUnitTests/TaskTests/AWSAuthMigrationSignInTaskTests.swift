@@ -63,7 +63,6 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
     }
 
     func testSignInOperationSuccess() async throws {
-        let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
@@ -80,19 +79,14 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
             print("Sign In Result: \(result)")
-            finalCallBackExpectation.fulfill()
         } catch {
             XCTFail("Error should not be returned \(error)")
         }
 
-        wait(for: [initiateAuthExpectation,
-                   finalCallBackExpectation],
-             timeout: networkTimeout,
-             enforceOrder: true)
+        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationInternalError() async throws {
-        let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
@@ -111,16 +105,11 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 XCTFail("Should produce unknown error")
                 return
             }
-            finalCallBackExpectation.fulfill()
         }
-        wait(for: [initiateAuthExpectation,
-                   finalCallBackExpectation],
-             timeout: networkTimeout,
-             enforceOrder: true)
+        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationInvalidLambda() async throws {
-        let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
@@ -143,16 +132,11 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 XCTFail("Underlying error should be lambda \(error)")
                 return
             }
-            finalCallBackExpectation.fulfill()
         }
-        wait(for: [initiateAuthExpectation,
-                   finalCallBackExpectation],
-             timeout: networkTimeout,
-             enforceOrder: true)
+        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationParameterException() async throws {
-        let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
@@ -175,16 +159,11 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 XCTFail("Underlying error should be invalid parameter \(error)")
                 return
             }
-            finalCallBackExpectation.fulfill()
         }
-        wait(for: [initiateAuthExpectation,
-                   finalCallBackExpectation],
-             timeout: networkTimeout,
-             enforceOrder: true)
+        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationSMSRoleAccessException() async throws {
-        let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
@@ -208,16 +187,11 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 XCTFail("Underlying error should be sms role \(error)")
                 return
             }
-            finalCallBackExpectation.fulfill()
         }
-        wait(for: [initiateAuthExpectation,
-                   finalCallBackExpectation],
-             timeout: networkTimeout,
-             enforceOrder: true)
+        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationUserPoolConfiguration() async throws {
-        let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
@@ -237,16 +211,11 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 XCTFail("Should produce configuration error instead of \(error)")
                 return
             }
-            finalCallBackExpectation.fulfill()
         }
-        wait(for: [initiateAuthExpectation,
-                   finalCallBackExpectation],
-             timeout: networkTimeout,
-             enforceOrder: true)
+        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationNotAuthorized() async throws {
-        let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
@@ -266,16 +235,11 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 XCTFail("Should produce not authorized error instead of \(error)")
                 return
             }
-            finalCallBackExpectation.fulfill()
         }
-        wait(for: [initiateAuthExpectation,
-                   finalCallBackExpectation],
-             timeout: networkTimeout,
-             enforceOrder: true)
+        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperatioResetPassword() async throws {
-        let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
@@ -292,18 +256,13 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 XCTFail("Should produce reset password")
                 return
             }
-            finalCallBackExpectation.fulfill()
         } catch {
             XCTFail("Should not produce a error result: \(error)")
         }
-        wait(for: [initiateAuthExpectation,
-                   finalCallBackExpectation],
-             timeout: networkTimeout,
-             enforceOrder: true)
+        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationResourceNotFound() async throws {
-        let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
@@ -326,16 +285,11 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 XCTFail("Should produce resource error instead of \(error)")
                 return
             }
-            finalCallBackExpectation.fulfill()
         }
-        wait(for: [initiateAuthExpectation,
-                   finalCallBackExpectation],
-             timeout: networkTimeout,
-             enforceOrder: true)
+        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationTooManyRequest() async throws {
-        let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
@@ -358,16 +312,11 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 XCTFail("Should produce limit exceeded error instead of \(error)")
                 return
             }
-            finalCallBackExpectation.fulfill()
         }
-        wait(for: [initiateAuthExpectation,
-                   finalCallBackExpectation],
-             timeout: networkTimeout,
-             enforceOrder: true)
+        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationUnexpectedLambda() async throws {
-        let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
@@ -390,16 +339,11 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 XCTFail("Should produce lambda error instead of \(error)")
                 return
             }
-            finalCallBackExpectation.fulfill()
         }
-        wait(for: [initiateAuthExpectation,
-                   finalCallBackExpectation],
-             timeout: networkTimeout,
-             enforceOrder: true)
+        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationUserLambdaValidation() async throws {
-        let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
@@ -422,16 +366,11 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 XCTFail("Should produce lambda error instead of \(error)")
                 return
             }
-            finalCallBackExpectation.fulfill()
         }
-        wait(for: [initiateAuthExpectation,
-                   finalCallBackExpectation],
-             timeout: networkTimeout,
-             enforceOrder: true)
+        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationUserNotConfirmed() async throws {
-        let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
@@ -448,18 +387,13 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 XCTFail("Should produce confirm signup as next step")
                 return
             }
-            finalCallBackExpectation.fulfill()
         } catch {
             XCTFail("Should not produce an error result - \(error)")
         }
-        wait(for: [initiateAuthExpectation,
-                   finalCallBackExpectation],
-             timeout: networkTimeout,
-             enforceOrder: true)
+        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
     }
 
     func testSignInOperationUserNotFound() async throws {
-        let finalCallBackExpectation = expectation(description: #function)
         let initiateAuthExpectation = expectation(description: "API call should be invoked")
 
         let initiateAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
@@ -482,11 +416,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
                 XCTFail("Should produce userNotFound error instead of \(error)")
                 return
             }
-            finalCallBackExpectation.fulfill()
         }
-        wait(for: [initiateAuthExpectation,
-                   finalCallBackExpectation],
-             timeout: networkTimeout,
-             enforceOrder: true)
+        wait(for: [initiateAuthExpectation], timeout: networkTimeout)
     }
 }

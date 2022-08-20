@@ -52,7 +52,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                                                  metadata: ["somekey": "somevalue"])
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
 
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             guard case .done = result.nextStep else {
@@ -60,11 +59,9 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 return
             }
             XCTAssertTrue(result.isSignedIn, "Signin result should be complete")
-            resultExpectation.fulfill()
         } catch {
             XCTFail("Received failure with error \(error)")
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a signIn with valid inputs and authflow type
@@ -103,7 +100,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                                                  authFlowType: .userSRP)
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
 
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             guard case .done = result.nextStep else {
@@ -111,11 +107,9 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 return
             }
             XCTAssertTrue(result.isSignedIn, "Signin result should be complete")
-            resultExpectation.fulfill()
         } catch {
             XCTFail("Received failure with error \(error)")
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a signIn with empty username
@@ -133,7 +127,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
 
         let options = AuthSignInRequest.Options()
 
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "", password: "password", options: options)
             XCTFail("Should not receive a success response \(result)")
@@ -142,9 +135,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 XCTFail("Should receive validation error instead got \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a signIn with empty password
@@ -179,7 +170,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         })
 
         let options = AuthSignInRequest.Options()
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "", options: options)
             guard case .done = result.nextStep else {
@@ -187,11 +177,9 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 return
             }
             XCTAssertTrue(result.isSignedIn, "Signin result should be complete")
-            resultExpectation.fulfill()
         } catch {
             XCTFail("Received failure with error \(error)")
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a signIn with nil as reponse from service
@@ -209,7 +197,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             InitiateAuthOutputResponse()
         })
         let options = AuthSignInRequest.Options()
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not receive a success response \(result)")
@@ -218,9 +205,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 XCTFail("Should receive unknown error instead got \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
     
     /// Test a signIn with nil as reponse from service followed by a second signIn with a valid response
@@ -238,7 +223,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             InitiateAuthOutputResponse()
         })
         let options = AuthSignInRequest.Options()
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not receive a success response \(result)")
@@ -266,12 +250,10 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             do {
                 let result = try await plugin.signIn(username: "username", password: "password", options: options)
                 XCTAssertTrue(result.isSignedIn, "Signin result should be complete")
-                resultExpectation.fulfill()
             } catch {
                 XCTFail("Received failure with error \(error)")
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a signIn with smsMFA as signIn result response
@@ -300,7 +282,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         })
 
         let options = AuthSignInRequest.Options()
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             guard case .confirmSignInWithSMSMFACode = result.nextStep else {
@@ -308,11 +289,9 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 return
             }
             XCTAssertFalse(result.isSignedIn, "Signin result should not be complete")
-            resultExpectation.fulfill()
         } catch {
             XCTFail("Received failure with error \(error)")
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a signIn with additional info in next step
@@ -344,7 +323,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                                                  metadata: ["somekey": "somevalue"],
                                                  authFlowType: .customWithSRP)
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             guard case .confirmSignInWithCustomChallenge(let additionalInfo) = result.nextStep else {
@@ -357,11 +335,9 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             }
             XCTAssertEqual(addditionalValue, "value", "Additional info should be same")
             XCTAssertFalse(result.isSignedIn, "Signin result should not be complete")
-            resultExpectation.fulfill()
         } catch {
             XCTFail("Received failure with error \(error)")
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a signIn with additional info in next step
@@ -390,7 +366,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         })
 
         let options = AuthSignInRequest.Options()
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             guard case .confirmSignInWithSMSMFACode(_, let additionalInfo) = result.nextStep else {
@@ -403,11 +378,9 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             }
             XCTAssertEqual(addditionalValue, "value", "Additional info should be same")
             XCTAssertFalse(result.isSignedIn, "Signin result should not be complete")
-            resultExpectation.fulfill()
         } catch {
             XCTFail("Received failure with error \(error)")
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a signIn with newPassword as signIn result response
@@ -437,7 +410,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
 
         let options = AuthSignInRequest.Options()
 
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             guard case .confirmSignInWithNewPassword = result.nextStep else {
@@ -445,11 +417,9 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 return
             }
             XCTAssertFalse(result.isSignedIn, "Signin result should not be complete")
-            resultExpectation.fulfill()
         } catch {
             XCTFail("Received failure with error \(error)")
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a signIn with additional info in next step
@@ -478,7 +448,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         })
 
         let options = AuthSignInRequest.Options()
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             guard case .confirmSignInWithNewPassword(let additionalInfo) = result.nextStep else {
@@ -491,11 +460,9 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             }
             XCTAssertEqual(addditionalValue, "value", "Additional info should be same")
             XCTAssertFalse(result.isSignedIn, "Signin result should not be complete")
-            resultExpectation.fulfill()
         } catch {
             XCTFail("Received failure with error \(error)")
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a signIn with customChallenge as signIn result response
@@ -525,8 +492,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
 
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .customWithSRP)
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
-
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             guard case .confirmSignInWithCustomChallenge = result.nextStep else {
@@ -534,11 +499,9 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 return
             }
             XCTAssertFalse(result.isSignedIn, "Signin result should not be complete")
-            resultExpectation.fulfill()
         } catch {
             XCTFail("Received failure with error \(error)")
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a signIn with invalid response
@@ -567,7 +530,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         })
 
         let options = AuthSignInRequest.Options()
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
@@ -576,9 +538,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 XCTFail("Should produce unknown error")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     // MARK: - Service error for initiateAuth
@@ -600,7 +560,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         })
 
         let options = AuthSignInRequest.Options()
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
@@ -609,9 +568,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 XCTFail("Should produce unknown error")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a signIn with `InvalidLambdaResponseException` from service
@@ -630,7 +587,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         })
 
         let options = AuthSignInRequest.Options()
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
@@ -640,9 +596,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 XCTFail("Should produce lambda error but instead produced \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a signIn with `InvalidParameterException` from service
@@ -661,7 +615,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         })
 
         let options = AuthSignInRequest.Options()
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
@@ -671,9 +624,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 XCTFail("Should produce invalidParameter error but instead produced \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a signIn with `InvalidUserPoolConfigurationException` from service
@@ -692,7 +643,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         })
 
         let options = AuthSignInRequest.Options()
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
@@ -701,9 +651,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 XCTFail("Should produce configuration intead produced \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a signIn with `NotAuthorizedException` from service
@@ -722,7 +670,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         })
 
         let options = AuthSignInRequest.Options()
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
@@ -731,9 +678,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 XCTFail("Should produce notAuthorized error but instead produced \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a signIn with `PasswordResetRequiredException` from service
@@ -752,7 +697,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         })
 
         let options = AuthSignInRequest.Options()
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             guard case .resetPassword = result.nextStep else {
@@ -760,11 +704,9 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 return
             }
             XCTAssertFalse(result.isSignedIn, "Signin result should not be complete")
-            resultExpectation.fulfill()
         } catch {
             XCTFail("Should not produce error - \(error)")
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a signIn with `ResourceNotFoundException` from service
@@ -783,7 +725,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         })
 
         let options = AuthSignInRequest.Options()
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
@@ -793,9 +734,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 XCTFail("Should produce resourceNotFound error but instead produced \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a signIn with `TooManyRequestsException` from service
@@ -814,7 +753,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         })
 
         let options = AuthSignInRequest.Options()
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
@@ -824,9 +762,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 XCTFail("Should produce requestLimitExceeded error but instead produced \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a signIn with `UnexpectedLambdaException` from service
@@ -845,7 +781,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         })
 
         let options = AuthSignInRequest.Options()
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
@@ -855,9 +790,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 XCTFail("Should produce lambda error but instead produced \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a signIn with `UserLambdaValidationException` from service
@@ -876,7 +809,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         })
 
         let options = AuthSignInRequest.Options()
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
@@ -886,9 +818,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 XCTFail("Should produce lambda error but instead produced \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a signIn with `UserNotConfirmedException` from service
@@ -907,7 +837,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         })
 
         let options = AuthSignInRequest.Options()
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             guard case .confirmSignUp = result.nextStep else {
@@ -915,11 +844,9 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 return
             }
             XCTAssertFalse(result.isSignedIn, "Signin result should not be complete")
-            resultExpectation.fulfill()
         } catch {
             XCTFail("Should not produce error - \(error)")
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a signIn with `UserNotFoundException` from service
@@ -938,7 +865,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         })
 
         let options = AuthSignInRequest.Options()
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
@@ -948,9 +874,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 XCTFail("Should produce userNotFound error but instead produced \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     // MARK: - Service error for RespondToAuthChallenge
@@ -977,7 +901,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         })
 
         let options = AuthSignInRequest.Options()
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
@@ -987,9 +910,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 XCTFail("Should produce aliasExists error but instead produced \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a signIn with `InvalidPasswordException` from service
@@ -1014,7 +935,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         })
 
         let options = AuthSignInRequest.Options()
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
@@ -1024,8 +944,6 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 XCTFail("Should produce invalidPassword error but instead produced \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 }

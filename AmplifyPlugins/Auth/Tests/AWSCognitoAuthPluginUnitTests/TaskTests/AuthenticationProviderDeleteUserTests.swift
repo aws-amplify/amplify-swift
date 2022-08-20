@@ -26,15 +26,12 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 try DeleteUserOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
         do {
             try await plugin.deleteUser()
             print("Delete user success")
-            resultExpectation.fulfill()
         } catch {
             XCTFail("Received failure with error \(error)")
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     // MARK: - Service Exceptions
@@ -60,7 +57,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 throw DeleteUserOutputError.unknown(.init(httpResponse: .init(body: .empty, statusCode: .badRequest)))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             try await plugin.deleteUser()
             XCTFail("Should not get success")
@@ -69,9 +66,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 XCTFail("Should produce unknown error instead of \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a deleteUser with `InvalidParameterException` from service
@@ -95,7 +90,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 throw DeleteUserOutputError.invalidParameterException(.init())
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
+
         do {
             try await plugin.deleteUser()
             XCTFail("Should not get success")
@@ -105,9 +100,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 XCTFail("Should produce invalidParameter error instead of \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a deleteUser with `NotAuthorizedException` from service
@@ -131,7 +124,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 throw DeleteUserOutputError.notAuthorizedException(.init())
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
+
         do {
             try await plugin.deleteUser()
             XCTFail("Should not get success")
@@ -140,9 +133,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 XCTFail("Should produce notAuthorized error instead of \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a deleteUser with `PasswordResetRequiredException` from service
@@ -166,7 +157,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 throw DeleteUserOutputError.passwordResetRequiredException(.init())
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             try await plugin.deleteUser()
             XCTFail("Should not get success")
@@ -176,9 +167,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 XCTFail("Should produce unknown error instead of \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a deleteUser with `ResourceNotFoundException` from service
@@ -202,7 +191,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 throw DeleteUserOutputError.resourceNotFoundException(.init())
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             try await plugin.deleteUser()
             XCTFail("Should not get success")
@@ -212,9 +201,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 XCTFail("Should produce unknown error instead of \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a deleteUser with `TooManyRequestsException` from service
@@ -238,7 +225,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 throw DeleteUserOutputError.tooManyRequestsException(.init())
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             try await plugin.deleteUser()
             XCTFail("Should not get success")
@@ -248,9 +235,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 XCTFail("Should produce unknown error instead of \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a deleteUser with `UserNotConfirmedException` from service
@@ -274,7 +259,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 throw DeleteUserOutputError.userNotConfirmedException(.init())
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             try await plugin.deleteUser()
             XCTFail("Should not get success")
@@ -284,9 +269,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 XCTFail("Should produce userNotConfirmed error instead of \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a deleteUser with `UserNotFoundException` from service
@@ -310,7 +293,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 throw DeleteUserOutputError.userNotFoundException(.init())
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
+        
         do {
             try await plugin.deleteUser()
             XCTFail("Should not get success")
@@ -320,9 +303,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 XCTFail("Should produce userNotFound error but instead produced \(error)")
                 return
             }
-            resultExpectation.fulfill()
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
 // TODO: ENABLE TESTS after adding hosted UI feature
