@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct AmplifyAsyncThrowingSequence<Element: Sendable>: AsyncSequence {
+public struct AmplifyAsyncThrowingSequence<Element: Sendable>: AsyncSequence, Cancellable {
     public typealias Iterator = AsyncThrowingStream<Element, Error>.Iterator
     private var asyncStream: AsyncThrowingStream<Element, Error>! = nil
     private var continuation: AsyncThrowingStream<Element, Error>.Continuation! = nil
