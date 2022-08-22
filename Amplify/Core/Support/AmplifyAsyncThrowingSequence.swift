@@ -7,12 +7,15 @@
 
 import Foundation
 
-public struct AsyncThrowingChannel<Element: Sendable>: AsyncSequence {
+public struct AmplifyAsyncThrowingSequence<Element: Sendable>: AsyncSequence, Cancellable {
     public typealias Iterator = AsyncThrowingStream<Element, Error>.Iterator
     private var asyncStream: AsyncThrowingStream<Element, Error>! = nil
     private var continuation: AsyncThrowingStream<Element, Error>.Continuation! = nil
+    private var parent: Cancellable? = nil
 
-    public init(bufferingPolicy: AsyncThrowingStream<Element, Error>.Continuation.BufferingPolicy = .unbounded) {
+    public init(parent: Cancellable? = nil,
+                bufferingPolicy: AsyncThrowingStream<Element, Error>.Continuation.BufferingPolicy = .unbounded) {
+        self.parent = parent
         asyncStream = AsyncThrowingStream(Element.self, bufferingPolicy: bufferingPolicy, { continuation in
             self.continuation = continuation
         })
@@ -33,5 +36,10 @@ public struct AsyncThrowingChannel<Element: Sendable>: AsyncSequence {
 
     public func finish() {
         continuation.finish()
+    }
+
+    public func cancel() {
+        finish()
+        parent?.cancel()
     }
 }
