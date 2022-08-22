@@ -394,7 +394,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     public func stop(completion: @escaping DataStoreCallback<Void>) {
         storageEngineInitQueue.sync {
             operationQueue.operations.forEach { operation in
-                if let operation = operation as? DataStoreObserveQueryOperation {
+                if let operation = operation as? DataStoreObserveQueryOperationResettable {
                     operation.resetState()
                 }
             }
@@ -430,7 +430,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
         storageEngineInitQueue.sync {
             operationQueue.operations.forEach { operation in
-                if let operation = operation as? DataStoreObserveQueryOperation {
+                if let operation = operation as? DataStoreObserveQueryOperationResettable {
                     operation.resetState()
                 }
             }
@@ -490,7 +490,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                                       modelSchema: modelSchema,
                                                       mutationType: mutationType,
                                                       version: syncMetadata?.version)
-                self.dataStorePublisher?.send(input: mutationEvent)
+                self.dataStorePublisher.send(input: mutationEvent)
             } catch {
                 self.log.error(error: error)
             }

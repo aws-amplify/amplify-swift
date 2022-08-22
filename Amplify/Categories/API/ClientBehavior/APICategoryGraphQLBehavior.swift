@@ -49,6 +49,5 @@ public protocol APICategoryGraphQLBehavior: AnyObject {
                                  completionListener: GraphQLSubscriptionOperation<R>.ResultListener?)
         -> GraphQLSubscriptionOperation<R>
     
-    func subscribe<R: Decodable>(request: GraphQLRequest<R>) async throws ->
-        GraphQLSubscriptionTask<R>
+    func subscribe<R: Decodable>(request: GraphQLRequest<R>) async -> AmplifyAsyncThrowingSequence<GraphQLResponse<R>>
 }

@@ -70,7 +70,7 @@ public extension AWSAPIPlugin {
             return operation
     }
     
-    func subscribe<R>(request: GraphQLRequest<R>) async throws -> GraphQLSubscriptionTask<R> {
+    func subscribe<R>(request: GraphQLRequest<R>) async -> AmplifyAsyncThrowingSequence<GraphQLResponse<R>> {
         let operation = AWSGraphQLSubscriptionOperation(
             request: request.toOperationRequest(operationType: .subscription),
             pluginConfig: pluginConfig,
@@ -81,6 +81,7 @@ public extension AWSAPIPlugin {
             resultListener: nil)
         let task = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
         queue.addOperation(operation)
-        return task
+        return Fatal.preconditionFailure("Need to return AmplifyAsyncThrowingSequence")
+        // return task
     }
 }

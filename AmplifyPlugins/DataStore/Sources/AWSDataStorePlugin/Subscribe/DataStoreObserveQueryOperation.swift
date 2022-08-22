@@ -10,7 +10,36 @@ import AWSPluginsCore
 import Combine
 import Foundation
 
-protocol DataStoreObserveQueryOperation {
+public struct DataStoreObserveQueryRequest<M: Model>: AmplifyOperationRequest {
+
+    public let modelType: M.Type
+    public let predicate: QueryPredicate?
+    public let sortInput: [QuerySortDescriptor]?
+    public let options: Options
+
+    public init(modelType: M.Type,
+                predicate: QueryPredicate? = nil,
+                sortInput: [QuerySortDescriptor]? = nil,
+                options: Options) {
+        self.modelType = modelType
+        self.predicate = predicate
+        self.sortInput = sortInput
+        self.options = options
+    }
+}
+public extension DataStoreObserveQueryRequest {
+    struct Options {
+        public let pluginOptions: Any?
+
+        public init(pluginOptions: Any?) {
+            self.pluginOptions = pluginOptions
+        }
+    }
+}
+
+open class DataStoreObserveQueryOperation<M: Model>: AmplifyInProcessReportingOperation<DataStoreObserveQueryRequest<M>, DataStoreQuerySnapshot<M>, Void, DataStoreError> { }
+
+protocol DataStoreObserveQueryOperationResettable {
     func resetState()
     func startObserveQuery(with storageEngine: StorageEngineBehavior)
 }
@@ -108,7 +137,7 @@ extension ObserveQuerySubscription: DefaultLogger { }
 /// This operation should perform its methods under the serial DispatchQueue `serialQueue` to ensure all its properties
 /// remain thread-safe.
 
-public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation, DataStoreObserveQueryOperation {
+public class AWSDataStoreObserveQueryOperation<M: Model>: DataStoreObserveQueryOperation<M>, DataStoreObserveQueryOperationResettable {
 
     private let serialQueue = DispatchQueue(label: "com.amazonaws.AWSDataStoreObseverQueryOperation.serialQueue",
                                             target: DispatchQueue.global())
@@ -163,7 +192,13 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
         self.currentItems = SortedList(sortInput: sortInput, modelSchema: modelSchema)
         self.passthroughPublisher = PassthroughSubject<DataStoreQuerySnapshot<M>, DataStoreError>()
         self.observeQueryPublisher = ObserveQueryPublisher()
-        super.init()
+        let request = DataStoreObserveQueryRequest(modelType: modelType,
+                                                   predicate: predicate,
+                                                   sortInput: sortInput,
+                                                   options: .init(pluginOptions: nil))
+        super.init(categoryType: .dataStore,
+                   eventName: "DataStore.ObserveQuery",
+                   request: request)
         observeQueryPublisher.configure(operation: self)
     }
 

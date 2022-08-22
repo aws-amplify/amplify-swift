@@ -21,7 +21,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     var hubListener: UnsubscribeToken?
 
     /// The Publisher that sends mutation events to subscribers
-    var dataStorePublisher: ModelSubcriptionBehavior?
+    var dataStorePublisher: ModelSubcriptionBehavior
 
     var dispatchedModelSyncedEvents: [ModelName: AtomicValue<Bool>]
 
@@ -141,7 +141,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             storageEngine.startSync { result in
 
                 self.operationQueue.operations.forEach { operation in
-                    if let operation = operation as? DataStoreObserveQueryOperation {
+                    if let operation = operation as? DataStoreObserveQueryOperationResettable {
                         operation.startObserveQuery(with: self.storageEngine)
                     }
                 }
@@ -201,10 +201,6 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     }
 
     func onReceiveValue(receiveValue: StorageEngineEvent) {
-        guard let dataStorePublisher = self.dataStorePublisher else {
-            log.error("Data store publisher not initalized")
-            return
-        }
 
         switch receiveValue {
         case .started:
