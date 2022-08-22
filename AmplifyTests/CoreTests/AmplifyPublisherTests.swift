@@ -18,8 +18,8 @@ class AmplifyPublisherTests: XCTestCase {
     }
 
     func testCreateFromTaskSuccess() async throws {
-        let notDone = AsyncExpectation.expectation(description: "notDone", isInverted: true)
-        let done = AsyncExpectation.expectation(description: "done")
+        let notDone = asyncExpectation(description: "notDone", isInverted: true)
+        let done = asyncExpectation(description: "done")
         let input = 7
         var output: Int = 0
         var success = false
@@ -45,8 +45,8 @@ class AmplifyPublisherTests: XCTestCase {
                 output = value
             }
         
-        try await AsyncExpectation.waitForExpectations([notDone], timeout: 0.01)
-        try await AsyncExpectation.waitForExpectations([done])
+        await waitForExpectations([notDone], timeout: 0.01)
+        await waitForExpectations([done])
         
         XCTAssertEqual(input, output)
         XCTAssertTrue(success)
@@ -56,8 +56,8 @@ class AmplifyPublisherTests: XCTestCase {
     }
 
     func testCreateFromTaskFail() async throws {
-        let failed = AsyncExpectation.expectation(description: "failed")
-        let done = AsyncExpectation.expectation(description: "done")
+        let failed = asyncExpectation(description: "failed")
+        let done = asyncExpectation(description: "done")
         let input = 13
         var output: Int = 0
         var success = false
@@ -83,8 +83,8 @@ class AmplifyPublisherTests: XCTestCase {
                 output = value
             }
         
-        try await AsyncExpectation.waitForExpectations([failed])
-        try await AsyncExpectation.waitForExpectations([done])
+        await waitForExpectations([failed])
+        await waitForExpectations([done])
 
         XCTAssertNotEqual(input, output)
         XCTAssertFalse(success)
@@ -94,8 +94,8 @@ class AmplifyPublisherTests: XCTestCase {
     }
 
     func testCreateFromTaskCancellation() async throws {
-        let noCompletion = AsyncExpectation.expectation(description: "noCompletion", isInverted: true)
-        let noValueReceived = AsyncExpectation.expectation(description: "noValueReceived", isInverted: true)
+        let noCompletion = asyncExpectation(description: "noCompletion", isInverted: true)
+        let noValueReceived = asyncExpectation(description: "noValueReceived", isInverted: true)
         let input = 7
         var output: Int = 0
         var success = false
@@ -124,7 +124,7 @@ class AmplifyPublisherTests: XCTestCase {
         // cancel immediately
         sink.cancel()
 
-        try await AsyncExpectation.waitForExpectations([noCompletion, noValueReceived], timeout: 0.01)
+        await waitForExpectations([noCompletion, noValueReceived], timeout: 0.01)
 
         // completion and value are not expected when sink is cancelled
         XCTAssertNotEqual(input, output)
