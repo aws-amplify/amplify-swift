@@ -28,6 +28,57 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "21BBFB64289C007700B32A39"
+               BuildableName = "AWSDataStorePluginV2Tests.xctest"
+               BlueprintName = "AWSDataStorePluginV2Tests"
+               ReferencedContainer = "container:DataStoreHostApp.xcodeproj">
+            </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "DataStoreConnectionOptionalAssociations">
+               </Test>
+               <Test
+                  Identifier = "DataStoreConnectionScenario2V2Tests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreConnectionScenario3V2Tests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreConnectionScenario3aV2Tests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreConnectionScenario4V2Tests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreConnectionScenario5V2Tests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreConnectionScenario6V2Tests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreConnectionScenario7V2Tests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreConnectionScenario8V2Tests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreModelWithCustomTimestampTests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreModelWithDefaultValueTests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreModelWithSecondaryIndexTests">
+               </Test>
+               <Test
+                  Identifier = "DataStoreSchemaDriftTests">
+               </Test>
+            </SkippedTests>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -47,15 +98,6 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "21BBFB64289C007700B32A39"
-            BuildableName = "AWSDataStorePluginV2Tests.xctest"
-            BlueprintName = "AWSDataStorePluginV2Tests"
-            ReferencedContainer = "container:DataStoreHostApp.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

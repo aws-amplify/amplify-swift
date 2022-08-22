@@ -208,20 +208,7 @@
 		21BBFC11289C038B00B32A39 /* DataStoreConnectionScenario1Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F7289BFE3400B32A39 /* DataStoreConnectionScenario1Tests.swift */; };
 		21BBFC12289C039500B32A39 /* DataStoreConnectionScenario6Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F8289BFE3400B32A39 /* DataStoreConnectionScenario6Tests.swift */; };
 		21BBFC13289C039800B32A39 /* DataStoreConnectionScenario3Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F9289BFE3400B32A39 /* DataStoreConnectionScenario3Tests.swift */; };
-		21BBFC14289C03AF00B32A39 /* DataStoreSchemaDriftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9FD289BFE3400B32A39 /* DataStoreSchemaDriftTests.swift */; };
-		21BBFC15289C03B700B32A39 /* DataStoreConnectionOptionalAssociations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA00289BFE3400B32A39 /* DataStoreConnectionOptionalAssociations.swift */; };
 		21BBFC16289C03B900B32A39 /* DataStoreConnectionScenario1V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA06289BFE3400B32A39 /* DataStoreConnectionScenario1V2Tests.swift */; };
-		21BBFC17289C03BD00B32A39 /* DataStoreConnectionScenario2V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA02289BFE3400B32A39 /* DataStoreConnectionScenario2V2Tests.swift */; };
-		21BBFC18289C03BF00B32A39 /* DataStoreConnectionScenario3aV2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA0B289BFE3400B32A39 /* DataStoreConnectionScenario3aV2Tests.swift */; };
-		21BBFC19289C03C300B32A39 /* DataStoreConnectionScenario3V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA03289BFE3400B32A39 /* DataStoreConnectionScenario3V2Tests.swift */; };
-		21BBFC1A289C03C500B32A39 /* DataStoreConnectionScenario4V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA04289BFE3400B32A39 /* DataStoreConnectionScenario4V2Tests.swift */; };
-		21BBFC1B289C03C800B32A39 /* DataStoreConnectionScenario5V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA01289BFE3400B32A39 /* DataStoreConnectionScenario5V2Tests.swift */; };
-		21BBFC1C289C03CA00B32A39 /* DataStoreConnectionScenario6V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA05289BFE3400B32A39 /* DataStoreConnectionScenario6V2Tests.swift */; };
-		21BBFC1D289C03CD00B32A39 /* DataStoreConnectionScenario7V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA09289BFE3400B32A39 /* DataStoreConnectionScenario7V2Tests.swift */; };
-		21BBFC1E289C03D000B32A39 /* DataStoreConnectionScenario8V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9FE289BFE3400B32A39 /* DataStoreConnectionScenario8V2Tests.swift */; };
-		21BBFC1F289C03D300B32A39 /* DataStoreModelWithCustomTimestampTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA08289BFE3400B32A39 /* DataStoreModelWithCustomTimestampTests.swift */; };
-		21BBFC20289C03D500B32A39 /* DataStoreModelWithDefaultValueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA0A289BFE3400B32A39 /* DataStoreModelWithDefaultValueTests.swift */; };
-		21BBFC21289C03D800B32A39 /* DataStoreModelWithSecondaryIndexTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9FF289BFE3400B32A39 /* DataStoreModelWithSecondaryIndexTests.swift */; };
 		21BBFC23289C03E900B32A39 /* AWSDataStorePrimaryKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA13289BFE3400B32A39 /* AWSDataStorePrimaryKeyTests.swift */; };
 		21BBFC24289C03EB00B32A39 /* AWSDataStorePrimaryKeyBaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA14289BFE3400B32A39 /* AWSDataStorePrimaryKeyBaseTest.swift */; };
 		21BBFC28289C062000B32A39 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC27289C062000B32A39 /* TestConfigHelper.swift */; };
@@ -415,6 +402,87 @@
 		21BBFE10289C06E400B32A39 /* UserAccount+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD2A289C06E400B32A39 /* UserAccount+Schema.swift */; };
 		21BBFE11289C06E400B32A39 /* UserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD2B289C06E400B32A39 /* UserAccount.swift */; };
 		21BBFE12289C06E400B32A39 /* Author+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD2C289C06E400B32A39 /* Author+Schema.swift */; };
+		97731D4B28B3BD19006F180B /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731D4A28B3BD19006F180B /* TestConfigHelper.swift */; };
+		97731D5728B3BD25006F180B /* DataStoreTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731D4F28B3BD25006F180B /* DataStoreTestBase.swift */; };
+		97731D5828B3BD25006F180B /* DataStoreInternal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731D5028B3BD25006F180B /* DataStoreInternal.swift */; };
+		97731D5A28B3BD25006F180B /* SyncEngineIntegrationV2TestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731D5228B3BD25006F180B /* SyncEngineIntegrationV2TestBase.swift */; };
+		97731D5C28B3BD25006F180B /* TestModelV2Registration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731D5428B3BD25006F180B /* TestModelV2Registration.swift */; };
+		97731E8428B3BD39006F180B /* CustomerMultipleSecondaryIndexV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DB028B3BD39006F180B /* CustomerMultipleSecondaryIndexV2+Schema.swift */; };
+		97731E8528B3BD39006F180B /* Comment3V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DB228B3BD39006F180B /* Comment3V2.swift */; };
+		97731E8628B3BD39006F180B /* Post3V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DB328B3BD39006F180B /* Post3V2+Schema.swift */; };
+		97731E8728B3BD39006F180B /* Post3V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DB428B3BD39006F180B /* Post3V2.swift */; };
+		97731E8828B3BD39006F180B /* Comment3V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DB528B3BD39006F180B /* Comment3V2+Schema.swift */; };
+		97731E8928B3BD39006F180B /* Project4bV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DB728B3BD39006F180B /* Project4bV2+Schema.swift */; };
+		97731E8A28B3BD39006F180B /* Team4bV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DB828B3BD39006F180B /* Team4bV2+Schema.swift */; };
+		97731E8B28B3BD39006F180B /* Project4bV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DB928B3BD39006F180B /* Project4bV2.swift */; };
+		97731E8C28B3BD39006F180B /* Team4bV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DBA28B3BD39006F180B /* Team4bV2.swift */; };
+		97731E8D28B3BD39006F180B /* Post7V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DBC28B3BD39006F180B /* Post7V2.swift */; };
+		97731E8E28B3BD39006F180B /* Post7V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DBD28B3BD39006F180B /* Post7V2+Schema.swift */; };
+		97731E8F28B3BD39006F180B /* Blog7V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DBE28B3BD39006F180B /* Blog7V2+Schema.swift */; };
+		97731E9028B3BD39006F180B /* Blog7V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DBF28B3BD39006F180B /* Blog7V2.swift */; };
+		97731E9128B3BD39006F180B /* Comment7V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DC028B3BD39006F180B /* Comment7V2+Schema.swift */; };
+		97731E9228B3BD39006F180B /* Comment7V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DC128B3BD39006F180B /* Comment7V2.swift */; };
+		97731E9328B3BD39006F180B /* TodoCustomTimestampV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DC228B3BD39006F180B /* TodoCustomTimestampV2+Schema.swift */; };
+		97731E9528B3BD39006F180B /* Team4aV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DC528B3BD39006F180B /* Team4aV2+Schema.swift */; };
+		97731E9628B3BD39006F180B /* Project4aV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DC628B3BD39006F180B /* Project4aV2+Schema.swift */; };
+		97731E9728B3BD39006F180B /* Project4aV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DC728B3BD39006F180B /* Project4aV2.swift */; };
+		97731E9828B3BD39006F180B /* Team4aV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DC828B3BD39006F180B /* Team4aV2.swift */; };
+		97731E9928B3BD39006F180B /* Post4V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DCA28B3BD39006F180B /* Post4V2.swift */; };
+		97731E9A28B3BD39006F180B /* Post4V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DCB28B3BD39006F180B /* Post4V2+Schema.swift */; };
+		97731E9B28B3BD39006F180B /* Comment4V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DCC28B3BD39006F180B /* Comment4V2.swift */; };
+		97731E9C28B3BD39006F180B /* Comment4V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DCD28B3BD39006F180B /* Comment4V2+Schema.swift */; };
+		97731E9D28B3BD39006F180B /* CustomerSecondaryIndexV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DCE28B3BD39006F180B /* CustomerSecondaryIndexV2.swift */; };
+		97731E9E28B3BD39006F180B /* MyNestedModel8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DD028B3BD39006F180B /* MyNestedModel8+Schema.swift */; };
+		97731E9F28B3BD39006F180B /* Blog8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DD128B3BD39006F180B /* Blog8+Schema.swift */; };
+		97731EA028B3BD39006F180B /* Comment8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DD228B3BD39006F180B /* Comment8+Schema.swift */; };
+		97731EA128B3BD39006F180B /* Post8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DD328B3BD39006F180B /* Post8+Schema.swift */; };
+		97731EA228B3BD39006F180B /* Comment8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DD428B3BD39006F180B /* Comment8.swift */; };
+		97731EA328B3BD39006F180B /* MyCustomModel8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DD528B3BD39006F180B /* MyCustomModel8.swift */; };
+		97731EA428B3BD39006F180B /* MyNestedModel8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DD628B3BD39006F180B /* MyNestedModel8.swift */; };
+		97731EA528B3BD39006F180B /* MyCustomModel8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DD728B3BD39006F180B /* MyCustomModel8+Schema.swift */; };
+		97731EA628B3BD39006F180B /* Blog8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DD828B3BD39006F180B /* Blog8.swift */; };
+		97731EA728B3BD39006F180B /* Post8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DD928B3BD39006F180B /* Post8.swift */; };
+		97731EA828B3BD39006F180B /* Project1V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DDB28B3BD39006F180B /* Project1V2.swift */; };
+		97731EA928B3BD39006F180B /* Team1V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DDC28B3BD39006F180B /* Team1V2+Schema.swift */; };
+		97731EAA28B3BD39006F180B /* Project1V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DDD28B3BD39006F180B /* Project1V2+Schema.swift */; };
+		97731EAB28B3BD39006F180B /* Team1V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DDE28B3BD39006F180B /* Team1V2.swift */; };
+		97731EAC28B3BD39006F180B /* TodoWithDefaultValueV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DDF28B3BD39006F180B /* TodoWithDefaultValueV2.swift */; };
+		97731EAD28B3BD39006F180B /* Priority.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DE028B3BD39006F180B /* Priority.swift */; };
+		97731EAE28B3BD39006F180B /* Post5V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DE228B3BD39006F180B /* Post5V2+Schema.swift */; };
+		97731EAF28B3BD39006F180B /* Post5V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DE328B3BD39006F180B /* Post5V2.swift */; };
+		97731EB028B3BD39006F180B /* User5V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DE428B3BD39006F180B /* User5V2+Schema.swift */; };
+		97731EB128B3BD39006F180B /* PostEditor5V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DE528B3BD39006F180B /* PostEditor5V2.swift */; };
+		97731EB228B3BD39006F180B /* User5V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DE628B3BD39006F180B /* User5V2.swift */; };
+		97731EB328B3BD39006F180B /* PostEditor5V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DE728B3BD39006F180B /* PostEditor5V2+Schema.swift */; };
+		97731EB428B3BD39006F180B /* CustomerWithMultipleFieldsinPK.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DE828B3BD39006F180B /* CustomerWithMultipleFieldsinPK.swift */; };
+		97731EB528B3BD39006F180B /* CustomerSecondaryIndexV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DE928B3BD39006F180B /* CustomerSecondaryIndexV2+Schema.swift */; };
+		97731EB628B3BD39006F180B /* Post3aV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DEB28B3BD39006F180B /* Post3aV2.swift */; };
+		97731EB728B3BD39006F180B /* Comment3aV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DEC28B3BD39006F180B /* Comment3aV2.swift */; };
+		97731EB828B3BD39006F180B /* Post3aV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DED28B3BD39006F180B /* Post3aV2+Schema.swift */; };
+		97731EB928B3BD39006F180B /* Comment3aV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DEE28B3BD39006F180B /* Comment3aV2+Schema.swift */; };
+		97731EBA28B3BD39006F180B /* TodoCustomTimestampV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DEF28B3BD39006F180B /* TodoCustomTimestampV2.swift */; };
+		97731EBB28B3BD39006F180B /* CustomerMultipleSecondaryIndexV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DF028B3BD39006F180B /* CustomerMultipleSecondaryIndexV2.swift */; };
+		97731EBC28B3BD39006F180B /* SchemaDrift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DF228B3BD39006F180B /* SchemaDrift.swift */; };
+		97731EBD28B3BD39006F180B /* EnumDrift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DF328B3BD39006F180B /* EnumDrift.swift */; };
+		97731EBE28B3BD39006F180B /* SchemaDrift+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DF428B3BD39006F180B /* SchemaDrift+Schema.swift */; };
+		97731EBF28B3BD39006F180B /* Meeting8V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DF628B3BD39006F180B /* Meeting8V2+Schema.swift */; };
+		97731EC028B3BD39006F180B /* Attendee8V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DF728B3BD39006F180B /* Attendee8V2.swift */; };
+		97731EC128B3BD39006F180B /* Registration8V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DF828B3BD39006F180B /* Registration8V2+Schema.swift */; };
+		97731EC228B3BD39006F180B /* Meeting8V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DF928B3BD39006F180B /* Meeting8V2.swift */; };
+		97731EC328B3BD39006F180B /* Registration8V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DFA28B3BD39006F180B /* Registration8V2.swift */; };
+		97731EC428B3BD39006F180B /* Attendee8V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DFB28B3BD39006F180B /* Attendee8V2+Schema.swift */; };
+		97731EC528B3BD39006F180B /* CustomerWithMultipleFieldsinPK+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DFC28B3BD39006F180B /* CustomerWithMultipleFieldsinPK+Schema.swift */; };
+		97731EC628B3BD39006F180B /* Project2V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DFE28B3BD39006F180B /* Project2V2+Schema.swift */; };
+		97731EC728B3BD39006F180B /* Team2V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731DFF28B3BD39006F180B /* Team2V2.swift */; };
+		97731EC828B3BD39006F180B /* Project2V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731E0028B3BD39006F180B /* Project2V2.swift */; };
+		97731EC928B3BD39006F180B /* Team2V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731E0128B3BD39006F180B /* Team2V2+Schema.swift */; };
+		97731ECA28B3BD39006F180B /* Post6V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731E0328B3BD39006F180B /* Post6V2+Schema.swift */; };
+		97731ECB28B3BD39006F180B /* Post6V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731E0428B3BD39006F180B /* Post6V2.swift */; };
+		97731ECC28B3BD39006F180B /* Comment6V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731E0528B3BD39006F180B /* Comment6V2+Schema.swift */; };
+		97731ECD28B3BD39006F180B /* Blog6V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731E0628B3BD39006F180B /* Blog6V2.swift */; };
+		97731ECE28B3BD39006F180B /* Blog6V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731E0728B3BD39006F180B /* Blog6V2+Schema.swift */; };
+		97731ECF28B3BD39006F180B /* Comment6V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731E0828B3BD39006F180B /* Comment6V2.swift */; };
+		97731ED028B3BD39006F180B /* TodoWithDefaultValueV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731E0928B3BD39006F180B /* TodoWithDefaultValueV2+Schema.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -900,6 +968,88 @@
 		21BBFD2B289C06E400B32A39 /* UserAccount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserAccount.swift; sourceTree = "<group>"; };
 		21BBFD2C289C06E400B32A39 /* Author+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Author+Schema.swift"; sourceTree = "<group>"; };
 		21BBFE13289C073100B32A39 /* HubListenerTestUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HubListenerTestUtilities.swift; sourceTree = "<group>"; };
+		97731D4A28B3BD19006F180B /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
+		97731D4F28B3BD25006F180B /* DataStoreTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreTestBase.swift; sourceTree = "<group>"; };
+		97731D5028B3BD25006F180B /* DataStoreInternal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreInternal.swift; sourceTree = "<group>"; };
+		97731D5228B3BD25006F180B /* SyncEngineIntegrationV2TestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncEngineIntegrationV2TestBase.swift; sourceTree = "<group>"; };
+		97731D5428B3BD25006F180B /* TestModelV2Registration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestModelV2Registration.swift; sourceTree = "<group>"; };
+		97731DB028B3BD39006F180B /* CustomerMultipleSecondaryIndexV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CustomerMultipleSecondaryIndexV2+Schema.swift"; sourceTree = "<group>"; };
+		97731DB228B3BD39006F180B /* Comment3V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment3V2.swift; sourceTree = "<group>"; };
+		97731DB328B3BD39006F180B /* Post3V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post3V2+Schema.swift"; sourceTree = "<group>"; };
+		97731DB428B3BD39006F180B /* Post3V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post3V2.swift; sourceTree = "<group>"; };
+		97731DB528B3BD39006F180B /* Comment3V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment3V2+Schema.swift"; sourceTree = "<group>"; };
+		97731DB728B3BD39006F180B /* Project4bV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project4bV2+Schema.swift"; sourceTree = "<group>"; };
+		97731DB828B3BD39006F180B /* Team4bV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Team4bV2+Schema.swift"; sourceTree = "<group>"; };
+		97731DB928B3BD39006F180B /* Project4bV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project4bV2.swift; sourceTree = "<group>"; };
+		97731DBA28B3BD39006F180B /* Team4bV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team4bV2.swift; sourceTree = "<group>"; };
+		97731DBC28B3BD39006F180B /* Post7V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post7V2.swift; sourceTree = "<group>"; };
+		97731DBD28B3BD39006F180B /* Post7V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post7V2+Schema.swift"; sourceTree = "<group>"; };
+		97731DBE28B3BD39006F180B /* Blog7V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Blog7V2+Schema.swift"; sourceTree = "<group>"; };
+		97731DBF28B3BD39006F180B /* Blog7V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blog7V2.swift; sourceTree = "<group>"; };
+		97731DC028B3BD39006F180B /* Comment7V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment7V2+Schema.swift"; sourceTree = "<group>"; };
+		97731DC128B3BD39006F180B /* Comment7V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment7V2.swift; sourceTree = "<group>"; };
+		97731DC228B3BD39006F180B /* TodoCustomTimestampV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TodoCustomTimestampV2+Schema.swift"; sourceTree = "<group>"; };
+		97731DC328B3BD39006F180B /* schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = schema.graphql; sourceTree = "<group>"; };
+		97731DC528B3BD39006F180B /* Team4aV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Team4aV2+Schema.swift"; sourceTree = "<group>"; };
+		97731DC628B3BD39006F180B /* Project4aV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project4aV2+Schema.swift"; sourceTree = "<group>"; };
+		97731DC728B3BD39006F180B /* Project4aV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project4aV2.swift; sourceTree = "<group>"; };
+		97731DC828B3BD39006F180B /* Team4aV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team4aV2.swift; sourceTree = "<group>"; };
+		97731DCA28B3BD39006F180B /* Post4V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post4V2.swift; sourceTree = "<group>"; };
+		97731DCB28B3BD39006F180B /* Post4V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post4V2+Schema.swift"; sourceTree = "<group>"; };
+		97731DCC28B3BD39006F180B /* Comment4V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment4V2.swift; sourceTree = "<group>"; };
+		97731DCD28B3BD39006F180B /* Comment4V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment4V2+Schema.swift"; sourceTree = "<group>"; };
+		97731DCE28B3BD39006F180B /* CustomerSecondaryIndexV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerSecondaryIndexV2.swift; sourceTree = "<group>"; };
+		97731DD028B3BD39006F180B /* MyNestedModel8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MyNestedModel8+Schema.swift"; sourceTree = "<group>"; };
+		97731DD128B3BD39006F180B /* Blog8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Blog8+Schema.swift"; sourceTree = "<group>"; };
+		97731DD228B3BD39006F180B /* Comment8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment8+Schema.swift"; sourceTree = "<group>"; };
+		97731DD328B3BD39006F180B /* Post8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post8+Schema.swift"; sourceTree = "<group>"; };
+		97731DD428B3BD39006F180B /* Comment8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment8.swift; sourceTree = "<group>"; };
+		97731DD528B3BD39006F180B /* MyCustomModel8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyCustomModel8.swift; sourceTree = "<group>"; };
+		97731DD628B3BD39006F180B /* MyNestedModel8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyNestedModel8.swift; sourceTree = "<group>"; };
+		97731DD728B3BD39006F180B /* MyCustomModel8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MyCustomModel8+Schema.swift"; sourceTree = "<group>"; };
+		97731DD828B3BD39006F180B /* Blog8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blog8.swift; sourceTree = "<group>"; };
+		97731DD928B3BD39006F180B /* Post8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post8.swift; sourceTree = "<group>"; };
+		97731DDB28B3BD39006F180B /* Project1V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project1V2.swift; sourceTree = "<group>"; };
+		97731DDC28B3BD39006F180B /* Team1V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Team1V2+Schema.swift"; sourceTree = "<group>"; };
+		97731DDD28B3BD39006F180B /* Project1V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project1V2+Schema.swift"; sourceTree = "<group>"; };
+		97731DDE28B3BD39006F180B /* Team1V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team1V2.swift; sourceTree = "<group>"; };
+		97731DDF28B3BD39006F180B /* TodoWithDefaultValueV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoWithDefaultValueV2.swift; sourceTree = "<group>"; };
+		97731DE028B3BD39006F180B /* Priority.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Priority.swift; sourceTree = "<group>"; };
+		97731DE228B3BD39006F180B /* Post5V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post5V2+Schema.swift"; sourceTree = "<group>"; };
+		97731DE328B3BD39006F180B /* Post5V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post5V2.swift; sourceTree = "<group>"; };
+		97731DE428B3BD39006F180B /* User5V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "User5V2+Schema.swift"; sourceTree = "<group>"; };
+		97731DE528B3BD39006F180B /* PostEditor5V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostEditor5V2.swift; sourceTree = "<group>"; };
+		97731DE628B3BD39006F180B /* User5V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User5V2.swift; sourceTree = "<group>"; };
+		97731DE728B3BD39006F180B /* PostEditor5V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostEditor5V2+Schema.swift"; sourceTree = "<group>"; };
+		97731DE828B3BD39006F180B /* CustomerWithMultipleFieldsinPK.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerWithMultipleFieldsinPK.swift; sourceTree = "<group>"; };
+		97731DE928B3BD39006F180B /* CustomerSecondaryIndexV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CustomerSecondaryIndexV2+Schema.swift"; sourceTree = "<group>"; };
+		97731DEB28B3BD39006F180B /* Post3aV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post3aV2.swift; sourceTree = "<group>"; };
+		97731DEC28B3BD39006F180B /* Comment3aV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment3aV2.swift; sourceTree = "<group>"; };
+		97731DED28B3BD39006F180B /* Post3aV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post3aV2+Schema.swift"; sourceTree = "<group>"; };
+		97731DEE28B3BD39006F180B /* Comment3aV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment3aV2+Schema.swift"; sourceTree = "<group>"; };
+		97731DEF28B3BD39006F180B /* TodoCustomTimestampV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoCustomTimestampV2.swift; sourceTree = "<group>"; };
+		97731DF028B3BD39006F180B /* CustomerMultipleSecondaryIndexV2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerMultipleSecondaryIndexV2.swift; sourceTree = "<group>"; };
+		97731DF228B3BD39006F180B /* SchemaDrift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaDrift.swift; sourceTree = "<group>"; };
+		97731DF328B3BD39006F180B /* EnumDrift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnumDrift.swift; sourceTree = "<group>"; };
+		97731DF428B3BD39006F180B /* SchemaDrift+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SchemaDrift+Schema.swift"; sourceTree = "<group>"; };
+		97731DF628B3BD39006F180B /* Meeting8V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Meeting8V2+Schema.swift"; sourceTree = "<group>"; };
+		97731DF728B3BD39006F180B /* Attendee8V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Attendee8V2.swift; sourceTree = "<group>"; };
+		97731DF828B3BD39006F180B /* Registration8V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Registration8V2+Schema.swift"; sourceTree = "<group>"; };
+		97731DF928B3BD39006F180B /* Meeting8V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Meeting8V2.swift; sourceTree = "<group>"; };
+		97731DFA28B3BD39006F180B /* Registration8V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Registration8V2.swift; sourceTree = "<group>"; };
+		97731DFB28B3BD39006F180B /* Attendee8V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Attendee8V2+Schema.swift"; sourceTree = "<group>"; };
+		97731DFC28B3BD39006F180B /* CustomerWithMultipleFieldsinPK+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CustomerWithMultipleFieldsinPK+Schema.swift"; sourceTree = "<group>"; };
+		97731DFE28B3BD39006F180B /* Project2V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project2V2+Schema.swift"; sourceTree = "<group>"; };
+		97731DFF28B3BD39006F180B /* Team2V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team2V2.swift; sourceTree = "<group>"; };
+		97731E0028B3BD39006F180B /* Project2V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project2V2.swift; sourceTree = "<group>"; };
+		97731E0128B3BD39006F180B /* Team2V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Team2V2+Schema.swift"; sourceTree = "<group>"; };
+		97731E0328B3BD39006F180B /* Post6V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post6V2+Schema.swift"; sourceTree = "<group>"; };
+		97731E0428B3BD39006F180B /* Post6V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post6V2.swift; sourceTree = "<group>"; };
+		97731E0528B3BD39006F180B /* Comment6V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment6V2+Schema.swift"; sourceTree = "<group>"; };
+		97731E0628B3BD39006F180B /* Blog6V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blog6V2.swift; sourceTree = "<group>"; };
+		97731E0728B3BD39006F180B /* Blog6V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Blog6V2+Schema.swift"; sourceTree = "<group>"; };
+		97731E0828B3BD39006F180B /* Comment6V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment6V2.swift; sourceTree = "<group>"; };
+		97731E0928B3BD39006F180B /* TodoWithDefaultValueV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TodoWithDefaultValueV2+Schema.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1380,6 +1530,9 @@
 		21BBFB66289C007700B32A39 /* AWSDataStorePluginV2Tests */ = {
 			isa = PBXGroup;
 			children = (
+				97731D5D28B3BD39006F180B /* Models */,
+				97731D4C28B3BD25006F180B /* TestSupport */,
+				97731D4928B3BD19006F180B /* Base */,
 				21BBF9FC289BFE3400B32A39 /* TransformerV2 */,
 			);
 			path = AWSDataStorePluginV2Tests;
@@ -1850,6 +2003,221 @@
 			path = Associations;
 			sourceTree = "<group>";
 		};
+		97731D4928B3BD19006F180B /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				97731D4A28B3BD19006F180B /* TestConfigHelper.swift */,
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
+		97731D4C28B3BD25006F180B /* TestSupport */ = {
+			isa = PBXGroup;
+			children = (
+				97731D4F28B3BD25006F180B /* DataStoreTestBase.swift */,
+				97731D5028B3BD25006F180B /* DataStoreInternal.swift */,
+				97731D5228B3BD25006F180B /* SyncEngineIntegrationV2TestBase.swift */,
+				97731D5428B3BD25006F180B /* TestModelV2Registration.swift */,
+			);
+			path = TestSupport;
+			sourceTree = "<group>";
+		};
+		97731D5D28B3BD39006F180B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				97731DAF28B3BD39006F180B /* TransformerV2 */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		97731DAF28B3BD39006F180B /* TransformerV2 */ = {
+			isa = PBXGroup;
+			children = (
+				97731DDA28B3BD39006F180B /* 1V2 */,
+				97731DFD28B3BD39006F180B /* 2V2 */,
+				97731DEA28B3BD39006F180B /* 3aV2 */,
+				97731DB128B3BD39006F180B /* 3V2 */,
+				97731DC428B3BD39006F180B /* 4aV2 */,
+				97731DB628B3BD39006F180B /* 4bV2 */,
+				97731DC928B3BD39006F180B /* 4V2 */,
+				97731DE128B3BD39006F180B /* 5V2 */,
+				97731E0228B3BD39006F180B /* 6V2 */,
+				97731DBB28B3BD39006F180B /* 7V2 */,
+				97731DF528B3BD39006F180B /* 8V2 */,
+				97731DF028B3BD39006F180B /* CustomerMultipleSecondaryIndexV2.swift */,
+				97731DB028B3BD39006F180B /* CustomerMultipleSecondaryIndexV2+Schema.swift */,
+				97731DCE28B3BD39006F180B /* CustomerSecondaryIndexV2.swift */,
+				97731DE928B3BD39006F180B /* CustomerSecondaryIndexV2+Schema.swift */,
+				97731DE828B3BD39006F180B /* CustomerWithMultipleFieldsinPK.swift */,
+				97731DFC28B3BD39006F180B /* CustomerWithMultipleFieldsinPK+Schema.swift */,
+				97731DCF28B3BD39006F180B /* OptionalAssociations */,
+				97731DE028B3BD39006F180B /* Priority.swift */,
+				97731DC328B3BD39006F180B /* schema.graphql */,
+				97731DF128B3BD39006F180B /* SchemaDrift */,
+				97731DEF28B3BD39006F180B /* TodoCustomTimestampV2.swift */,
+				97731DC228B3BD39006F180B /* TodoCustomTimestampV2+Schema.swift */,
+				97731DDF28B3BD39006F180B /* TodoWithDefaultValueV2.swift */,
+				97731E0928B3BD39006F180B /* TodoWithDefaultValueV2+Schema.swift */,
+			);
+			path = TransformerV2;
+			sourceTree = "<group>";
+		};
+		97731DB128B3BD39006F180B /* 3V2 */ = {
+			isa = PBXGroup;
+			children = (
+				97731DB228B3BD39006F180B /* Comment3V2.swift */,
+				97731DB328B3BD39006F180B /* Post3V2+Schema.swift */,
+				97731DB428B3BD39006F180B /* Post3V2.swift */,
+				97731DB528B3BD39006F180B /* Comment3V2+Schema.swift */,
+			);
+			path = 3V2;
+			sourceTree = "<group>";
+		};
+		97731DB628B3BD39006F180B /* 4bV2 */ = {
+			isa = PBXGroup;
+			children = (
+				97731DB728B3BD39006F180B /* Project4bV2+Schema.swift */,
+				97731DB828B3BD39006F180B /* Team4bV2+Schema.swift */,
+				97731DB928B3BD39006F180B /* Project4bV2.swift */,
+				97731DBA28B3BD39006F180B /* Team4bV2.swift */,
+			);
+			path = 4bV2;
+			sourceTree = "<group>";
+		};
+		97731DBB28B3BD39006F180B /* 7V2 */ = {
+			isa = PBXGroup;
+			children = (
+				97731DBC28B3BD39006F180B /* Post7V2.swift */,
+				97731DBD28B3BD39006F180B /* Post7V2+Schema.swift */,
+				97731DBE28B3BD39006F180B /* Blog7V2+Schema.swift */,
+				97731DBF28B3BD39006F180B /* Blog7V2.swift */,
+				97731DC028B3BD39006F180B /* Comment7V2+Schema.swift */,
+				97731DC128B3BD39006F180B /* Comment7V2.swift */,
+			);
+			path = 7V2;
+			sourceTree = "<group>";
+		};
+		97731DC428B3BD39006F180B /* 4aV2 */ = {
+			isa = PBXGroup;
+			children = (
+				97731DC528B3BD39006F180B /* Team4aV2+Schema.swift */,
+				97731DC628B3BD39006F180B /* Project4aV2+Schema.swift */,
+				97731DC728B3BD39006F180B /* Project4aV2.swift */,
+				97731DC828B3BD39006F180B /* Team4aV2.swift */,
+			);
+			path = 4aV2;
+			sourceTree = "<group>";
+		};
+		97731DC928B3BD39006F180B /* 4V2 */ = {
+			isa = PBXGroup;
+			children = (
+				97731DCA28B3BD39006F180B /* Post4V2.swift */,
+				97731DCB28B3BD39006F180B /* Post4V2+Schema.swift */,
+				97731DCC28B3BD39006F180B /* Comment4V2.swift */,
+				97731DCD28B3BD39006F180B /* Comment4V2+Schema.swift */,
+			);
+			path = 4V2;
+			sourceTree = "<group>";
+		};
+		97731DCF28B3BD39006F180B /* OptionalAssociations */ = {
+			isa = PBXGroup;
+			children = (
+				97731DD028B3BD39006F180B /* MyNestedModel8+Schema.swift */,
+				97731DD128B3BD39006F180B /* Blog8+Schema.swift */,
+				97731DD228B3BD39006F180B /* Comment8+Schema.swift */,
+				97731DD328B3BD39006F180B /* Post8+Schema.swift */,
+				97731DD428B3BD39006F180B /* Comment8.swift */,
+				97731DD528B3BD39006F180B /* MyCustomModel8.swift */,
+				97731DD628B3BD39006F180B /* MyNestedModel8.swift */,
+				97731DD728B3BD39006F180B /* MyCustomModel8+Schema.swift */,
+				97731DD828B3BD39006F180B /* Blog8.swift */,
+				97731DD928B3BD39006F180B /* Post8.swift */,
+			);
+			path = OptionalAssociations;
+			sourceTree = "<group>";
+		};
+		97731DDA28B3BD39006F180B /* 1V2 */ = {
+			isa = PBXGroup;
+			children = (
+				97731DDB28B3BD39006F180B /* Project1V2.swift */,
+				97731DDC28B3BD39006F180B /* Team1V2+Schema.swift */,
+				97731DDD28B3BD39006F180B /* Project1V2+Schema.swift */,
+				97731DDE28B3BD39006F180B /* Team1V2.swift */,
+			);
+			path = 1V2;
+			sourceTree = "<group>";
+		};
+		97731DE128B3BD39006F180B /* 5V2 */ = {
+			isa = PBXGroup;
+			children = (
+				97731DE228B3BD39006F180B /* Post5V2+Schema.swift */,
+				97731DE328B3BD39006F180B /* Post5V2.swift */,
+				97731DE428B3BD39006F180B /* User5V2+Schema.swift */,
+				97731DE528B3BD39006F180B /* PostEditor5V2.swift */,
+				97731DE628B3BD39006F180B /* User5V2.swift */,
+				97731DE728B3BD39006F180B /* PostEditor5V2+Schema.swift */,
+			);
+			path = 5V2;
+			sourceTree = "<group>";
+		};
+		97731DEA28B3BD39006F180B /* 3aV2 */ = {
+			isa = PBXGroup;
+			children = (
+				97731DEB28B3BD39006F180B /* Post3aV2.swift */,
+				97731DEC28B3BD39006F180B /* Comment3aV2.swift */,
+				97731DED28B3BD39006F180B /* Post3aV2+Schema.swift */,
+				97731DEE28B3BD39006F180B /* Comment3aV2+Schema.swift */,
+			);
+			path = 3aV2;
+			sourceTree = "<group>";
+		};
+		97731DF128B3BD39006F180B /* SchemaDrift */ = {
+			isa = PBXGroup;
+			children = (
+				97731DF228B3BD39006F180B /* SchemaDrift.swift */,
+				97731DF328B3BD39006F180B /* EnumDrift.swift */,
+				97731DF428B3BD39006F180B /* SchemaDrift+Schema.swift */,
+			);
+			path = SchemaDrift;
+			sourceTree = "<group>";
+		};
+		97731DF528B3BD39006F180B /* 8V2 */ = {
+			isa = PBXGroup;
+			children = (
+				97731DF628B3BD39006F180B /* Meeting8V2+Schema.swift */,
+				97731DF728B3BD39006F180B /* Attendee8V2.swift */,
+				97731DF828B3BD39006F180B /* Registration8V2+Schema.swift */,
+				97731DF928B3BD39006F180B /* Meeting8V2.swift */,
+				97731DFA28B3BD39006F180B /* Registration8V2.swift */,
+				97731DFB28B3BD39006F180B /* Attendee8V2+Schema.swift */,
+			);
+			path = 8V2;
+			sourceTree = "<group>";
+		};
+		97731DFD28B3BD39006F180B /* 2V2 */ = {
+			isa = PBXGroup;
+			children = (
+				97731DFE28B3BD39006F180B /* Project2V2+Schema.swift */,
+				97731DFF28B3BD39006F180B /* Team2V2.swift */,
+				97731E0028B3BD39006F180B /* Project2V2.swift */,
+				97731E0128B3BD39006F180B /* Team2V2+Schema.swift */,
+			);
+			path = 2V2;
+			sourceTree = "<group>";
+		};
+		97731E0228B3BD39006F180B /* 6V2 */ = {
+			isa = PBXGroup;
+			children = (
+				97731E0328B3BD39006F180B /* Post6V2+Schema.swift */,
+				97731E0428B3BD39006F180B /* Post6V2.swift */,
+				97731E0528B3BD39006F180B /* Comment6V2+Schema.swift */,
+				97731E0628B3BD39006F180B /* Blog6V2.swift */,
+				97731E0728B3BD39006F180B /* Blog6V2+Schema.swift */,
+				97731E0828B3BD39006F180B /* Comment6V2.swift */,
+			);
+			path = 6V2;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1959,6 +2327,7 @@
 				21BBFB61289C007700B32A39 /* Sources */,
 				21BBFB62289C007700B32A39 /* Frameworks */,
 				21BBFB63289C007700B32A39 /* Resources */,
+				97731F0128B3D5B5006F180B /* Copy Configuration Files */,
 			);
 			buildRules = (
 			);
@@ -2212,6 +2581,24 @@
 			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
 		};
 		21BBFE1A289C088E00B32A39 /* Copy Configuration Files */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration Files";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
+		97731F0128B3D5B5006F180B /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2570,20 +2957,88 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				21BBFC17289C03BD00B32A39 /* DataStoreConnectionScenario2V2Tests.swift in Sources */,
-				21BBFC21289C03D800B32A39 /* DataStoreModelWithSecondaryIndexTests.swift in Sources */,
-				21BBFC19289C03C300B32A39 /* DataStoreConnectionScenario3V2Tests.swift in Sources */,
-				21BBFC18289C03BF00B32A39 /* DataStoreConnectionScenario3aV2Tests.swift in Sources */,
-				21BBFC20289C03D500B32A39 /* DataStoreModelWithDefaultValueTests.swift in Sources */,
-				21BBFC1C289C03CA00B32A39 /* DataStoreConnectionScenario6V2Tests.swift in Sources */,
-				21BBFC14289C03AF00B32A39 /* DataStoreSchemaDriftTests.swift in Sources */,
+				97731EB528B3BD39006F180B /* CustomerSecondaryIndexV2+Schema.swift in Sources */,
+				97731ECA28B3BD39006F180B /* Post6V2+Schema.swift in Sources */,
+				97731E8D28B3BD39006F180B /* Post7V2.swift in Sources */,
+				97731E8F28B3BD39006F180B /* Blog7V2+Schema.swift in Sources */,
+				97731E9A28B3BD39006F180B /* Post4V2+Schema.swift in Sources */,
+				97731EC628B3BD39006F180B /* Project2V2+Schema.swift in Sources */,
+				97731EBC28B3BD39006F180B /* SchemaDrift.swift in Sources */,
+				97731EA428B3BD39006F180B /* MyNestedModel8.swift in Sources */,
+				97731EAB28B3BD39006F180B /* Team1V2.swift in Sources */,
+				97731EA728B3BD39006F180B /* Post8.swift in Sources */,
+				97731EAE28B3BD39006F180B /* Post5V2+Schema.swift in Sources */,
+				97731D5C28B3BD25006F180B /* TestModelV2Registration.swift in Sources */,
+				97731E8E28B3BD39006F180B /* Post7V2+Schema.swift in Sources */,
+				97731E8728B3BD39006F180B /* Post3V2.swift in Sources */,
+				97731ED028B3BD39006F180B /* TodoWithDefaultValueV2+Schema.swift in Sources */,
+				97731E8928B3BD39006F180B /* Project4bV2+Schema.swift in Sources */,
+				97731E8528B3BD39006F180B /* Comment3V2.swift in Sources */,
+				97731ECC28B3BD39006F180B /* Comment6V2+Schema.swift in Sources */,
+				97731EA828B3BD39006F180B /* Project1V2.swift in Sources */,
+				97731EA228B3BD39006F180B /* Comment8.swift in Sources */,
+				97731EB828B3BD39006F180B /* Post3aV2+Schema.swift in Sources */,
+				97731E9528B3BD39006F180B /* Team4aV2+Schema.swift in Sources */,
+				97731E9C28B3BD39006F180B /* Comment4V2+Schema.swift in Sources */,
+				97731EBB28B3BD39006F180B /* CustomerMultipleSecondaryIndexV2.swift in Sources */,
+				97731EC128B3BD39006F180B /* Registration8V2+Schema.swift in Sources */,
+				97731EC328B3BD39006F180B /* Registration8V2.swift in Sources */,
+				97731EC528B3BD39006F180B /* CustomerWithMultipleFieldsinPK+Schema.swift in Sources */,
+				97731EBE28B3BD39006F180B /* SchemaDrift+Schema.swift in Sources */,
+				97731E9D28B3BD39006F180B /* CustomerSecondaryIndexV2.swift in Sources */,
+				97731D4B28B3BD19006F180B /* TestConfigHelper.swift in Sources */,
+				97731EC028B3BD39006F180B /* Attendee8V2.swift in Sources */,
+				97731EA028B3BD39006F180B /* Comment8+Schema.swift in Sources */,
+				97731EB328B3BD39006F180B /* PostEditor5V2+Schema.swift in Sources */,
+				97731E8B28B3BD39006F180B /* Project4bV2.swift in Sources */,
+				97731E9E28B3BD39006F180B /* MyNestedModel8+Schema.swift in Sources */,
+				97731EB128B3BD39006F180B /* PostEditor5V2.swift in Sources */,
+				97731E9328B3BD39006F180B /* TodoCustomTimestampV2+Schema.swift in Sources */,
+				97731ECD28B3BD39006F180B /* Blog6V2.swift in Sources */,
+				97731E9828B3BD39006F180B /* Team4aV2.swift in Sources */,
+				97731EA928B3BD39006F180B /* Team1V2+Schema.swift in Sources */,
+				97731E9728B3BD39006F180B /* Project4aV2.swift in Sources */,
+				97731E9128B3BD39006F180B /* Comment7V2+Schema.swift in Sources */,
+				97731EA628B3BD39006F180B /* Blog8.swift in Sources */,
+				97731EB228B3BD39006F180B /* User5V2.swift in Sources */,
+				97731D5828B3BD25006F180B /* DataStoreInternal.swift in Sources */,
+				97731E9B28B3BD39006F180B /* Comment4V2.swift in Sources */,
+				97731EB628B3BD39006F180B /* Post3aV2.swift in Sources */,
+				97731E8828B3BD39006F180B /* Comment3V2+Schema.swift in Sources */,
+				97731ECE28B3BD39006F180B /* Blog6V2+Schema.swift in Sources */,
+				97731ECF28B3BD39006F180B /* Comment6V2.swift in Sources */,
+				97731EA528B3BD39006F180B /* MyCustomModel8+Schema.swift in Sources */,
+				97731EA128B3BD39006F180B /* Post8+Schema.swift in Sources */,
+				97731E8A28B3BD39006F180B /* Team4bV2+Schema.swift in Sources */,
+				97731EC228B3BD39006F180B /* Meeting8V2.swift in Sources */,
+				97731E9028B3BD39006F180B /* Blog7V2.swift in Sources */,
+				97731EBF28B3BD39006F180B /* Meeting8V2+Schema.swift in Sources */,
+				97731EB028B3BD39006F180B /* User5V2+Schema.swift in Sources */,
+				97731E9F28B3BD39006F180B /* Blog8+Schema.swift in Sources */,
+				97731EA328B3BD39006F180B /* MyCustomModel8.swift in Sources */,
+				97731EC428B3BD39006F180B /* Attendee8V2+Schema.swift in Sources */,
+				97731E8628B3BD39006F180B /* Post3V2+Schema.swift in Sources */,
+				97731EAA28B3BD39006F180B /* Project1V2+Schema.swift in Sources */,
+				97731D5A28B3BD25006F180B /* SyncEngineIntegrationV2TestBase.swift in Sources */,
+				97731EC828B3BD39006F180B /* Project2V2.swift in Sources */,
+				97731EAF28B3BD39006F180B /* Post5V2.swift in Sources */,
 				21BBFC16289C03B900B32A39 /* DataStoreConnectionScenario1V2Tests.swift in Sources */,
-				21BBFC1A289C03C500B32A39 /* DataStoreConnectionScenario4V2Tests.swift in Sources */,
-				21BBFC1D289C03CD00B32A39 /* DataStoreConnectionScenario7V2Tests.swift in Sources */,
-				21BBFC15289C03B700B32A39 /* DataStoreConnectionOptionalAssociations.swift in Sources */,
-				21BBFC1F289C03D300B32A39 /* DataStoreModelWithCustomTimestampTests.swift in Sources */,
-				21BBFC1E289C03D000B32A39 /* DataStoreConnectionScenario8V2Tests.swift in Sources */,
-				21BBFC1B289C03C800B32A39 /* DataStoreConnectionScenario5V2Tests.swift in Sources */,
+				97731EB428B3BD39006F180B /* CustomerWithMultipleFieldsinPK.swift in Sources */,
+				97731EBD28B3BD39006F180B /* EnumDrift.swift in Sources */,
+				97731E9628B3BD39006F180B /* Project4aV2+Schema.swift in Sources */,
+				97731E9228B3BD39006F180B /* Comment7V2.swift in Sources */,
+				97731E9928B3BD39006F180B /* Post4V2.swift in Sources */,
+				97731EAD28B3BD39006F180B /* Priority.swift in Sources */,
+				97731E8C28B3BD39006F180B /* Team4bV2.swift in Sources */,
+				97731EAC28B3BD39006F180B /* TodoWithDefaultValueV2.swift in Sources */,
+				97731EC928B3BD39006F180B /* Team2V2+Schema.swift in Sources */,
+				97731EBA28B3BD39006F180B /* TodoCustomTimestampV2.swift in Sources */,
+				97731E8428B3BD39006F180B /* CustomerMultipleSecondaryIndexV2+Schema.swift in Sources */,
+				97731EB928B3BD39006F180B /* Comment3aV2+Schema.swift in Sources */,
+				97731EB728B3BD39006F180B /* Comment3aV2.swift in Sources */,
+				97731EC728B3BD39006F180B /* Team2V2.swift in Sources */,
+				97731D5728B3BD25006F180B /* DataStoreTestBase.swift in Sources */,
+				97731ECB28B3BD39006F180B /* Post6V2.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
