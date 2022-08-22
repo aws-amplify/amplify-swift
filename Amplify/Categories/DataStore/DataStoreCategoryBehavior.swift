@@ -57,16 +57,6 @@ public protocol DataStoreBaseBehavior {
     func delete<M: Model>(_ model: M,
                           where predicate: QueryPredicate?) async throws
 
-    @available(*, deprecated, renamed: "delete(withIdentifier:where:completion:)")
-    func delete<M: Model>(_ modelType: M.Type,
-                          withId id: String,
-                          where predicate: QueryPredicate?,
-                          completion: @escaping DataStoreCallback<Void>)
-    @available(*, deprecated, renamed: "delete(withIdentifier:where:)")
-    func delete<M: Model>(_ modelType: M.Type,
-                          withId id: String,
-                          where predicate: QueryPredicate?) async throws
-
     func delete<M: Model>(_ modelType: M.Type,
                           withIdentifier id: String,
                           where predicate: QueryPredicate?,

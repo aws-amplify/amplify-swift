@@ -31,7 +31,7 @@ class DataStoreListProviderFunctionalTests: BaseDataStoreTests {
 
     // MARK: - Helpers
 
-    func preparePost4DataForTest() -> Model.Identifier {
+    func preparePost4DataForTest() -> String {
         let post = Post4(title: "title")
         populateData([post])
         populateData([

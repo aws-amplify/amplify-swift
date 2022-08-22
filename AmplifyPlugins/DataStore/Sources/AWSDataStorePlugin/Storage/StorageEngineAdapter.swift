@@ -16,15 +16,9 @@ protocol StorageEngineAdapter: AnyObject, ModelStorageBehavior, ModelStorageErro
     // MARK: - Async APIs
     func save(untypedModel: Model, completion: @escaping DataStoreCallback<Model>)
 
-    func delete<M: Model>(_ modelType: M.Type,
-                          modelSchema: ModelSchema,
-                          withId id: Model.Identifier,
-                          condition: QueryPredicate?,
-                          completion: @escaping DataStoreCallback<M?>)
-
     func delete(untypedModelType modelType: Model.Type,
                 modelSchema: ModelSchema,
-                withId id: Model.Identifier,
+                withIdentifier identifier: ModelIdentifierProtocol,
                 condition: QueryPredicate?,
                 completion: DataStoreCallback<Void>)
 
@@ -39,11 +33,6 @@ protocol StorageEngineAdapter: AnyObject, ModelStorageBehavior, ModelStorageErro
 
     // MARK: - Synchronous APIs
 
-    @available(*, deprecated, message: "Use exists(_:withIdentifier:predicate)")
-    func exists(_ modelSchema: ModelSchema,
-                withId id: Model.Identifier,
-                predicate: QueryPredicate?) throws -> Bool
-
     func exists(_ modelSchema: ModelSchema,
                 withIdentifier id: ModelIdentifierProtocol,
                 predicate: QueryPredicate?) throws -> Bool
@@ -52,9 +41,9 @@ protocol StorageEngineAdapter: AnyObject, ModelStorageBehavior, ModelStorageErro
 
     func queryMutationSync(forAnyModel anyModel: AnyModel) throws -> MutationSync<AnyModel>?
 
-    func queryMutationSyncMetadata(for modelId: Model.Identifier, modelName: String) throws -> MutationSyncMetadata?
+    func queryMutationSyncMetadata(for modelId: String, modelName: String) throws -> MutationSyncMetadata?
 
-    func queryMutationSyncMetadata(for modelIds: [Model.Identifier], modelName: String) throws -> [MutationSyncMetadata]
+    func queryMutationSyncMetadata(for modelIds: [String], modelName: String) throws -> [MutationSyncMetadata]
 
     func queryModelSyncMetadata(for modelSchema: ModelSchema) throws -> ModelSyncMetadata?
 
@@ -82,20 +71,14 @@ extension StorageEngineAdapter {
         delete(modelType, modelSchema: modelType.schema, filter: predicate, completion: completion)
     }
 
-    func delete<M: Model>(_ modelType: M.Type,
-                          withId id: Model.Identifier,
-                          condition: QueryPredicate? = nil,
-                          completion: @escaping DataStoreCallback<M?>) {
-        delete(modelType, modelSchema: modelType.schema, withId: id, condition: condition, completion: completion)
-    }
 
     func delete(untypedModelType modelType: Model.Type,
-                withId id: Model.Identifier,
+                withIdentifier identifier: ModelIdentifierProtocol,
                 condition: QueryPredicate? = nil,
                 completion: DataStoreCallback<Void>) {
         delete(untypedModelType: modelType,
                modelSchema: modelType.schema,
-               withId: id,
+               withIdentifier: identifier,
                condition: condition,
                completion: completion)
     }

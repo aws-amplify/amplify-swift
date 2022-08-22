@@ -26,14 +26,14 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
         /// The associatedField represents the field to which the owner of the `List` is linked to.
         /// For example, if `Post.comments` is associated with `Comment.post` the `List<Comment>`
         /// of `Post` will have a reference to the `post` field in `Comment`.
-        case notLoaded(associatedId: Model.Identifier, associatedField: String)
+        case notLoaded(associatedId: String, associatedField: String)
 
         case loaded([Element])
     }
 
     var loadedState: LoadedState
 
-    init(associatedId: Model.Identifier,
+    init(associatedId: String,
          associatedField: String) {
         self.loadedState = .notLoaded(associatedId: associatedId,
                                       associatedField: associatedField)

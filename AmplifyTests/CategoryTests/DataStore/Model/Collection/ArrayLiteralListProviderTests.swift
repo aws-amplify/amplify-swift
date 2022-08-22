@@ -10,7 +10,7 @@ import Amplify
 
 class ArrayLiteralListProviderTests: XCTestCase {
     struct BasicModel: Model {
-        var id: Identifier
+        var id: String
     }
 
     func testLoadSuccess() throws {

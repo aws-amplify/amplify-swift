@@ -80,19 +80,6 @@ extension DataStoreCategory: DataStoreBaseBehavior {
     }
 
     public func delete<M: Model>(_ modelType: M.Type,
-                                 withId id: String,
-                                 where predicate: QueryPredicate? = nil,
-                                 completion: @escaping DataStoreCallback<Void>) {
-        plugin.delete(modelType, withId: id, where: predicate, completion: completion)
-    }
-    
-    public func delete<M: Model>(_ modelType: M.Type,
-                                 withId id: String,
-                                 where predicate: QueryPredicate? = nil) async throws {
-        try await plugin.delete(modelType, withId: id, where: predicate)
-    }
-
-    public func delete<M: Model>(_ modelType: M.Type,
                                  withIdentifier id: String,
                                  where predicate: QueryPredicate? = nil,
                                  completion: @escaping DataStoreCallback<Void>) where M: ModelIdentifiable,

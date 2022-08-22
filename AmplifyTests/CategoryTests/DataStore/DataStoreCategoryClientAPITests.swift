@@ -48,8 +48,8 @@ class TestModel: Model {
         return TestModel(id: UUID().uuidString)
     }
 
-    let id: Identifier
-    init(id: Identifier) {
+    let id: String
+    init(id: String) {
         self.id = id
     }
 }

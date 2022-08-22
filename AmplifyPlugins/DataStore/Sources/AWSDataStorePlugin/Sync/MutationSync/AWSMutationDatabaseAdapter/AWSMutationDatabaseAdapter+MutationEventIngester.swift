@@ -148,7 +148,10 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
                         for localEvent in localEvents {
                             group.addTask {
                                 try await withCheckedThrowingContinuation { continuation in
-                                    storageAdapter.delete(untypedModelType: MutationEvent.self, modelSchema: MutationEvent.schema, withId: localEvent.id, condition: nil) { result in
+                                    storageAdapter.delete(untypedModelType: MutationEvent.self,
+                                                          modelSchema: MutationEvent.schema,
+                                                          withIdentifier: localEvent.identifier(schema: MutationEvent.schema),
+                                                          condition: nil) { result in
                                         continuation.resume(with: result)
                                     }
                                 }
@@ -180,7 +183,7 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
                     .suffix(from: 1)
                     .forEach { storageAdapter.delete(MutationEvent.self,
                                                      modelSchema: MutationEvent.schema,
-                                                     withId: $0.id,
+                                                     withIdentifier: $0.identifier(schema: MutationEvent.schema),
                                                      condition: nil) { _ in } }
             }
 
