@@ -132,3 +132,7 @@ public typealias LongTask = LongOperation.TaskAdapter
 public typealias LongResultPublisher = LongOperation.ResultPublisher
 public typealias LongProgressPublisher = LongOperation.ProgressPublisher
 #endif
+
+public extension HubPayload.EventName.Testing {
+    static let longCompositeTask = "Testing.longCompositeTask"
+}
