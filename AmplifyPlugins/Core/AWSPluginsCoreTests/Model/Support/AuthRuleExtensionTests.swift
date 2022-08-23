@@ -20,7 +20,7 @@ class AuthRuleExtensionTests: XCTestCase {
         ]
 
         for (index, provider) in authRuleProviders.enumerated() {
-            XCTAssertEqual(try provider.toAWSAuthorizationType(), expectedAuthTypes[index])
+            XCTAssertEqual(provider.toAWSAuthorizationType(), expectedAuthTypes[index])
         }
     }
 }
