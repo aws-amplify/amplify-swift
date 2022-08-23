@@ -27,7 +27,7 @@ extension FetchAuthSessionStateSequence {
 class FetchAuthSessionStateResolverTests: XCTestCase {
 
     func testValidFetchAuthSessionStateSequences() throws {
-        let cognitoSession = AWSAuthCognitoSession.testData
+//        let cognitoSession = AWSAuthCognitoSession.testData
 
         let validSequences: [FetchAuthSessionStateSequence] = [
 //            StateSequence(oldState: .initializingFetchAuthSession,

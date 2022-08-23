@@ -144,9 +144,9 @@ class SyncEventEmitterTests: XCTestCase {
             XCTFail("Should not have completed: \(completion)")
         }, receiveValue: { event in
             switch event {
-            case .mutationEventApplied(let mutationEvent):
+            case .mutationEventApplied:
                 break
-            case .mutationEventDropped(let modelName):
+            case .mutationEventDropped:
                 break
             case .modelSyncedEvent(let modelSyncedEvent):
                 modelSyncedEventPayloads.append(modelSyncedEvent)
@@ -242,9 +242,9 @@ class SyncEventEmitterTests: XCTestCase {
             XCTFail("Should not have completed: \(completion)")
         }, receiveValue: { event in
             switch event {
-            case .mutationEventApplied(let mutationEvent):
+            case .mutationEventApplied:
                 break
-            case .mutationEventDropped(let modelName):
+            case .mutationEventDropped:
                 break
             case .modelSyncedEvent(let modelSyncedEvent):
                 modelSyncedEventPayloads.append(modelSyncedEvent)

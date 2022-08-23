@@ -384,7 +384,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     }
     
     public func start() async throws {
-        try await withCheckedThrowingContinuation { continuation in
+        _ = try await withCheckedThrowingContinuation { continuation in
             start { result in
                 continuation.resume(returning: result)
             }

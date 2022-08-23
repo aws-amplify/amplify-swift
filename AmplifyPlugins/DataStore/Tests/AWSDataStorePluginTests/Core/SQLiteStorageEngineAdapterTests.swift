@@ -566,7 +566,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         }
 
         do {
-            try SQLiteStorageEngineAdapter.clearIfNewVersion(version: newVersion,
+            _ = try SQLiteStorageEngineAdapter.clearIfNewVersion(version: newVersion,
                                                              dbFilePath: URL(string: "dbFilePath")!,
                                                              userDefaults: userDefaults,
                                                              fileManager: mockFileManager)
@@ -593,7 +593,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         }
 
         do {
-            try SQLiteStorageEngineAdapter.clearIfNewVersion(version: newVersion,
+            _ = try SQLiteStorageEngineAdapter.clearIfNewVersion(version: newVersion,
                                                              dbFilePath: URL(string: "dbFilePath")!,
                                                              userDefaults: userDefaults,
                                                              fileManager: mockFileManager)
@@ -620,7 +620,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         }
 
         do {
-            try SQLiteStorageEngineAdapter.clearIfNewVersion(version: newVersion,
+            _ = try SQLiteStorageEngineAdapter.clearIfNewVersion(version: newVersion,
                                                              dbFilePath: URL(string: "dbFilePath")!,
                                                              userDefaults: userDefaults,
                                                              fileManager: mockFileManager)
@@ -645,7 +645,7 @@ class SQLiteStorageEngineAdapterTests: BaseDataStoreTests {
         mockFileManager.fileExists = true
 
         do {
-            try SQLiteStorageEngineAdapter.clearIfNewVersion(version: newVersion,
+            _ = try SQLiteStorageEngineAdapter.clearIfNewVersion(version: newVersion,
                                                              dbFilePath: URL(string: "dbFilePath")!,
                                                              userDefaults: userDefaults,
                                                              fileManager: mockFileManager)
