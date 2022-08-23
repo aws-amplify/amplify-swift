@@ -121,6 +121,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         queue.start()
 
         await waitForExpectations(timeout: 5.0)
+        queueSink.cancel()
     }
 
     /// - Given: An AWSModelReconciliationQueue that has been buffering events with a selective sync configuration
@@ -190,6 +191,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         queue.start()
 
         await waitForExpectations(timeout: 5.0)
+        queueSink.cancel()
     }
 
     /// - Given: An AWSModelReconciliationQueue that has been buffering events
@@ -282,6 +284,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         queue.start()
 
         await waitForExpectations(timeout: 5.0)
+        queueSink.cancel()
     }
 
     /// - Given: A started AWSModelReconciliationQueue with no pending events
@@ -391,6 +394,7 @@ class ModelReconciliationQueueBehaviorTests: ReconciliationQueueTestBase {
         subscriptionEventsSubject.send(.mutationEvent(mutationSync))
 
         await waitForExpectations(timeout: 1.0)
+        queueSink.cancel()
     }
 
 }
@@ -429,6 +433,7 @@ extension ModelReconciliationQueueBehaviorTests {
 
         subscriptionEventsSubject.send(completion: completion)
         wait(for: [eventSentViaPublisher], timeout: 1.0)
+        queueSink.cancel()
     }
 
     func testProcessingOperationDisabledError() async {
@@ -451,6 +456,7 @@ extension ModelReconciliationQueueBehaviorTests {
 
         subscriptionEventsSubject.send(completion: completion)
         wait(for: [eventSentViaPublisher], timeout: 1.0)
+        queueSink.cancel()
     }
 
     func testProcessingUnhandledErrors() async {
@@ -473,6 +479,7 @@ extension ModelReconciliationQueueBehaviorTests {
 
         subscriptionEventsSubject.send(completion: completion)
         wait(for: [eventSentViaPublisher], timeout: 1.0)
+        queueSink.cancel()
     }
 }
 

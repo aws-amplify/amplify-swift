@@ -299,6 +299,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
         wait(for: [completedEvent], timeout: 1)
         XCTAssertTrue(operation.isCancelled)
         XCTAssertTrue(operation.isFinished)
+        sink.cancel()
     }
 
     ///  ObserveQuery's state should be able to be reset and initial query able to be started again.
@@ -316,7 +317,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
             dataStoreConfiguration: .default,
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false))
 
-        var sink = operation.publisher.sink { completed in
+        let sink = operation.publisher.sink { completed in
             switch completed {
             case .finished:
                 break
@@ -338,6 +339,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
         operation.resetState()
         operation.startObserveQuery(with: storageEngine)
         wait(for: [secondSnapshot], timeout: 1)
+        sink.cancel()
     }
 
     /// Multiple calls to start the observeQuery should not start again
@@ -363,7 +365,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
             dataStoreConfiguration: .default,
             dispatchedModelSyncedEvent: AtomicValue(initialValue: false))
 
-        var sink = operation.publisher.sink { completed in
+        let sink = operation.publisher.sink { completed in
             switch completed {
             case .finished:
                 break
@@ -391,6 +393,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
         wait(for: [secondSnapshot], timeout: 1)
         wait(for: [thirdSnapshot], timeout: 1)
         XCTAssertTrue(operation.observeQueryStarted)
+        sink.cancel()
     }
 
     func testObserveQueryOperationIsRemovedWhenPreviousSubscriptionIsRemoved() {

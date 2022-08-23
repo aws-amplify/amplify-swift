@@ -59,6 +59,7 @@ class ReconcileAndSaveQueueTests: XCTestCase {
         wait(for: [operationAdded], timeout: 1)
         stateMachine.state = .finished
         wait(for: [operationRemoved], timeout: 1)
+        sink.cancel()
     }
 
     func testCancelOperationsForModelName() {
@@ -88,6 +89,7 @@ class ReconcileAndSaveQueueTests: XCTestCase {
 
         queue.cancelOperations(modelName: Post.modelName)
         wait(for: [cancelledOperations], timeout: 1)
+        sink.cancel()
     }
 
     func testCancelAllOperations() {
@@ -117,5 +119,6 @@ class ReconcileAndSaveQueueTests: XCTestCase {
 
         queue.cancelAllOperations()
         wait(for: [cancelledOperations], timeout: 1)
+        sink.cancel()
     }
 }
