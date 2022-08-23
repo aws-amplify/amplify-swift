@@ -103,3 +103,11 @@ public typealias FastTask = FastOperation.TaskAdapter
 #if canImport(Combine)
 public typealias FastResultPublisher = FastOperation.ResultPublisher
 #endif
+
+public extension HubPayload.EventName {
+    struct Testing { }
+}
+
+public extension HubPayload.EventName.Testing {
+    static let fastCompositeTask = "Testing.fastCompositeTask"
+}
