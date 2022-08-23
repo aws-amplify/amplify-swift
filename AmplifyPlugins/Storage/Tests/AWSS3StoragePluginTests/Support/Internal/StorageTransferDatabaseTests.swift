@@ -218,7 +218,7 @@ class StorageTransferDatabaseTests: XCTestCase {
         XCTAssertEqual(database.tasksCount, 3)
         XCTAssertNotNil(originalTask.multipartUpload)
 
-        let exp = AsyncExpectation.expectation(description: #function)
+        let exp = asyncExpectation(description: #function)
 
         var transferTaskPairs: StorageTransferTaskPairs?
         let urlSession = MockStorageURLSession(sessionTasks: sessionTasks)
@@ -239,7 +239,7 @@ class StorageTransferDatabaseTests: XCTestCase {
             }
         }
 
-        try await AsyncExpectation.waitForExpectations([exp], timeout: 10.0)
+        await waitForExpectations([exp], timeout: 10.0)
 
         XCTAssertNotNil(transferTaskPairs)
         XCTAssertEqual(transferTaskPairs?.count, 3)
