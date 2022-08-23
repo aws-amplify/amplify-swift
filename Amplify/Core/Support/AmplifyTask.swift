@@ -36,8 +36,6 @@ public protocol AmplifyInProcessReportingTask {
 #endif
 }
 
-public typealias AmplifyInProcessTask = AmplifyTask & AmplifyInProcessReportingTask
-
 public extension AmplifyInProcessReportingTask where InProcess == Progress {
     var progress : AmplifyAsyncSequence<InProcess> {
         get async {

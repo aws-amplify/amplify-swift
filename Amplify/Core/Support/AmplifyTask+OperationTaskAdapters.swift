@@ -58,7 +58,7 @@ public class AmplifyOperationTaskAdapter<Request: AmplifyOperationRequest, Succe
     }
 }
 
-public class AmplifyInProcessReportingOperationTaskAdapter<Request: AmplifyOperationRequest, InProcess, Success, Failure: AmplifyError>: AmplifyInProcessTask {
+public class AmplifyInProcessReportingOperationTaskAdapter<Request: AmplifyOperationRequest, InProcess, Success, Failure: AmplifyError>: AmplifyTask, AmplifyInProcessReportingTask {
     let operation: AmplifyInProcessReportingOperation<Request, InProcess, Success, Failure>
     let childTask: ChildTask<InProcess, Success, Failure>
     var resultToken: UnsubscribeToken? = nil
