@@ -7,7 +7,9 @@
 
 import Foundation
 
-public struct AmplifyAsyncThrowingSequence<Element: Sendable>: AsyncSequence, Cancellable {
+public typealias WeakAmplifyAsyncThrowingSequenceRef<Element> = WeakRef<AmplifyAsyncThrowingSequence<Element>>
+
+public class AmplifyAsyncThrowingSequence<Element: Sendable>: AsyncSequence, Cancellable {
     public typealias Iterator = AsyncThrowingStream<Element, Error>.Iterator
     private var asyncStream: AsyncThrowingStream<Element, Error>! = nil
     private var continuation: AsyncThrowingStream<Element, Error>.Continuation! = nil
@@ -36,10 +38,11 @@ public struct AmplifyAsyncThrowingSequence<Element: Sendable>: AsyncSequence, Ca
 
     public func finish() {
         continuation.finish()
+        parent = nil
     }
 
     public func cancel() {
-        finish()
         parent?.cancel()
+        finish()
     }
 }
