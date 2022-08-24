@@ -7,7 +7,6 @@
 
 import XCTest
 @testable import Amplify
-@testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
 /* Has One (Explicit Field)

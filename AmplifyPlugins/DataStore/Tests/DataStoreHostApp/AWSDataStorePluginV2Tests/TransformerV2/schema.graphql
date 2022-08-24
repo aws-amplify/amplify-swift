@@ -1,0 +1,282 @@
+input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
+
+# Has One (Implicit Field)
+
+type Project1V2 @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  team: Team1V2 @hasOne
+}
+
+type Team1V2 @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+}
+
+# Has One (Explicit Field)
+
+type Project2V2 @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  teamID: ID!
+  team: Team2V2 @hasOne(fields: ["teamID"])
+}
+
+type Team2V2 @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+}
+
+# 6 Implicit Has Many Relationship
+
+type Post3aV2 @model {
+  id: ID!
+  title: String!
+  comments: [Comment3aV2] @hasMany
+}
+
+type Comment3aV2 @model {
+  id: ID!
+  content: String!
+}
+
+# 7 Explicit Has Many Relationship
+
+type Post3V2 @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String!
+  comments: [Comment3V2] @hasMany(indexName: "byPost3", fields: ["id"])
+}
+
+type Comment3V2 @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  postID: ID! @index(name: "byPost3", sortKeyFields: ["content"])
+  content: String!
+}
+
+# Belongs to (Implicit, Explicit, bi-directional)
+
+# 9 Implicit Belongs to Relationship
+
+type Project4aV2 @model {
+  id: ID!
+  name: String
+  team: Team4aV2 @hasOne
+}
+
+type Team4aV2 @model {
+  id: ID!
+  name: String!
+  project: Project4aV2 @belongsTo
+}
+
+# 10 Explicit Belongs to Relationship
+
+type Project4bV2 @model {
+  id: ID!
+  name: String
+  team: Team4bV2 @hasOne
+}
+
+type Team4bV2 @model {
+  id: ID!
+  name: String!
+  projectID: ID
+  project: Project4bV2 @belongsTo(fields: ["projectID"])
+}
+
+# 11 Explicit Bi-Directional Belongs to Relationship
+
+type Post4V2 @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String!
+  comments: [Comment4V2] @hasMany(indexName: "byPost4", fields: ["id"])
+}
+
+type Comment4V2 @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  postID: ID! @index(name: "byPost4", sortKeyFields: ["content"])
+  content: String!
+  post: Post4V2 @belongsTo(fields: ["postID"])
+}
+
+# 8 Many to Many relationship
+
+type Post5V2 @model {
+  id: ID!
+  title: String!
+  editors: [User5V2] @manyToMany(relationName: "PostEditor5V2")
+}
+
+type User5V2 @model {
+  id: ID!
+  username: String!
+  posts: [Post5V2] @manyToMany(relationName: "PostEditor5V2")
+}
+
+#
+
+type Blog6V2 @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  posts: [Post6V2] @hasMany(indexName: "byBlog", fields: ["id"])
+}
+
+type Post6V2 @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String!
+  blogID: ID! @index(name: "byBlog")
+  blog: Blog6V2 @belongsTo(fields: ["blogID"])
+  comments: [Comment6V2] @hasMany(indexName: "byPost", fields: ["id"])
+}
+
+type Comment6V2 @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  postID: ID! @index(name: "byPost", sortKeyFields: ["content"])
+  post: Post6V2 @belongsTo(fields: ["postID"])
+  content: String!
+}
+
+# 12 Belongs to Relationship field and type names don’t align
+
+type Blog7V2 @model {
+  id: ID!
+  name: String!
+  posts: [Post7V2] @hasMany
+}
+type Post7V2 @model {
+  id: ID!
+  title: String!
+  blog: Blog7V2 @belongsTo
+  comments: [Comment7V2] @hasMany
+}
+type Comment7V2 @model {
+  id: ID!
+  content: String
+  post: Post7V2 @belongsTo
+}
+
+# Secondary index
+
+type CustomerSecondaryIndexV2 @model {
+  id: ID!
+  name: String!
+  phoneNumber: String
+  accountRepresentativeID: ID! @index(name: "byRepresentative", queryField: "customerByRepresentative")
+}
+
+type CustomerMultipleSecondaryIndexV2 @model {
+  id: ID!
+  name: String! @index(name: "byNameAndPhoneNumber", sortKeyFields: ["phoneNumber"], queryField: "customerByNameAndPhone")
+  phoneNumber: String
+  age: Int! @index(name: "byAgeAndPhoneNumber", sortKeyFields: ["phoneNumber"], queryField: "customerByAgeAndPhone")
+  accountRepresentativeID: ID! @index(name: "byRepresentative", queryField: "customerByRepresentative2")
+}
+
+# Assign Default Values for fields
+
+type TodoWithDefaultValueV2 @model {
+  content: String @default(value: "My new Todo")
+}
+
+# Customize creation and update timestamp
+
+type TodoCustomTimestampV2 @model(timestamps: { createdAt: "createdOn", updatedAt: "updatedOn" }) {
+  content: String
+}
+
+# 13 Multiple hasOne-hasMany relationships on same type
+
+type Meeting8V2 @model {
+  id: ID!
+  title: String!
+  attendees: [Registration8V2] @hasMany(indexName: "byMeeting", fields: ["id"])
+}
+
+type Attendee8V2 @model {
+  id: ID!
+  meetings: [Registration8V2] @hasMany(indexName: "byAttendee", fields: ["id"])
+}
+
+type Registration8V2 @model {
+  id: ID!
+  meetingId: ID @index(name: "byMeeting", sortKeyFields: ["attendeeId"])
+  meeting: Meeting8V2! @belongsTo(fields: ["meetingId"])
+  attendeeId: ID @index(name: "byAttendee", sortKeyFields: ["meetingId"])
+  attendee: Attendee8V2! @belongsTo(fields: ["attendeeId"])
+}
+
+#14 Custom Primary Key with sortKeyFields
+
+type CustomerWithMultipleFieldsinPK
+@model {
+  id: ID! @primaryKey(sortKeyFields: ["dob","date","time","phoneNumber","priority","height"])
+  dob: AWSDateTime!
+  date: AWSDate!
+  time: AWSTime!
+  phoneNumber: Int!
+  priority: Priority!
+  height: Float!
+  firstName: String
+  lastName: String
+}
+
+enum Priority {
+  LOW
+  NORMAL
+  HIGH
+}
+
+# 15
+# This is to address optional associations use case (Post can exist without a Blog)
+# See issue https://github.com/aws-amplify/amplify-ios/issues/1792 for more details
+
+type Blog8 @model {
+  id: ID!
+  name: String!
+  customs: [MyCustomModel8]
+  notes: [String]
+  posts: [Post8] @hasMany(indexName: "postByBlog", fields: ["id"])
+}
+
+type Post8 @model {
+  id: ID!
+  name: String!
+  blogId: ID @index(name: "postByBlog")
+  randomId: String @index(name: "byRandom")
+  blog: Blog8 @belongsTo(fields: ["blogId"])
+  comments: [Comment8] @hasMany(indexName: "commentByPost", fields: ["id"])
+}
+
+type Comment8 @model {
+  id: ID!
+  content: String
+  postId: ID @index(name: "commentByPost")
+  post: Post8 @belongsTo(fields: ["postId"])
+}
+
+type MyCustomModel8 {
+  id: ID!
+  name: String!
+  desc: String
+  children: [MyNestedModel8]
+}
+
+type MyNestedModel8 {
+  id: ID!
+  nestedName: String!
+  notes: [String]
+}
+
+# 16 Schema drift scenario
+
+type SchemaDrift @model {
+  id: ID!
+  enumValue: EnumDrift
+}
+
+enum EnumDrift {
+   ONE
+   TWO
+   THREE
+}

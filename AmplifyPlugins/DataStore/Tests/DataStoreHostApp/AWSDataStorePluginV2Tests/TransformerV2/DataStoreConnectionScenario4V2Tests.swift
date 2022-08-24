@@ -7,7 +7,6 @@
 
 import XCTest
 @testable import Amplify
-@testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
 
 /* 11 Explicit Bi-Directional Belongs to Relationship

@@ -247,7 +247,7 @@ class DataStoreConnectionScenario1Tests: SyncEngineIntegrationTestBase {
         }
 
         let queriedProject = try await Amplify.DataStore.query(Project1.self, byId: project.id)
-            XCTAssertNotNil(project)
+        XCTAssertNotNil(queriedProject)
     }
 
     func testListProjectsByTeamID() async throws {
