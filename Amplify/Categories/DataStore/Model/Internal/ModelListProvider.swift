@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Combine
 
 /// Empty protocol used as a marker to detect when the type is a `List`
 ///

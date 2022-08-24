@@ -18,7 +18,6 @@ public struct AppSyncModelMetadata: Codable {
 /// Metadata that contains partial information of a model
 public struct AppSyncPartialModelMetadata: Codable {
     let identifier: String
-    let field: String
     let apiName: String?
 }
 
@@ -130,17 +129,14 @@ public struct AppSyncModelMetadataUtils {
         guard case .object(let modelObject) = modelJSON else {
             return nil
         }
-
-        guard case .string(let modelName) = modelObject["__typename"] else {
-            return nil
-        }
         
+        // TODO: This should be based on the number of fields that make up the identifier + __typename
         guard modelObject.count == 2 else {
             return nil
         }
         
         if case .string(let id) = modelObject["id"] {
-            return AppSyncPartialModelMetadata(identifier: id, field: modelName, apiName: apiName)
+            return AppSyncPartialModelMetadata(identifier: id, apiName: apiName)
         }
         
         return nil

@@ -285,12 +285,14 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                          predicate: QueryPredicate? = nil,
                          sort: [QuerySortDescriptor]? = nil,
                          paginationInput: QueryPaginationInput? = nil,
+                         eagerLoad: Bool = true,
                          completion: DataStoreCallback<[M]>) {
         query(modelType,
               modelSchema: modelType.schema,
               predicate: predicate,
               sort: sort,
               paginationInput: paginationInput,
+              eagerLoad: eagerLoad,
               completion: completion)
     }
 
@@ -299,6 +301,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                          predicate: QueryPredicate? = nil,
                          sort: [QuerySortDescriptor]? = nil,
                          paginationInput: QueryPaginationInput? = nil,
+                         eagerLoad: Bool = true,
                          completion: DataStoreCallback<[M]>) {
         guard let connection = connection else {
             completion(.failure(DataStoreError.nilSQLiteConnection()))
@@ -308,11 +311,13 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             let statement = SelectStatement(from: modelSchema,
                                             predicate: predicate,
                                             sort: sort,
-                                            paginationInput: paginationInput)
+                                            paginationInput: paginationInput,
+                                            eagerLoad: eagerLoad)
             let rows = try connection.prepare(statement.stringValue).run(statement.variables)
             let result: [M] = try rows.convert(to: modelType,
                                                withSchema: modelSchema,
-                                               using: statement)
+                                               using: statement,
+                                               eagerLoad: eagerLoad)
             completion(.success(result))
         } catch {
             completion(.failure(causedBy: error))

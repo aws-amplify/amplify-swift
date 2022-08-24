@@ -44,7 +44,7 @@ class GraphQLResponseDecoderPostComment4V2Tests: XCTestCase {
         XCTAssertEqual(result, "{\"id\":\"id\"}")
     }
     
-    func testGetChildModel() throws {
+    func testQueryComment() throws {
         let request = GraphQLRequest<ChildComment4V2>(document: "",
                                                       responseType: ChildComment4V2.self,
                                                       decodePath: "getChildComment4V2")
@@ -62,7 +62,7 @@ class GraphQLResponseDecoderPostComment4V2Tests: XCTestCase {
         XCTAssertEqual(result.content, "content")
     }
     
-    func testGetParentModel() throws {
+    func testQueryPost() throws {
         let request = GraphQLRequest<ParentPost4V2>(document: "",
                                                       responseType: ParentPost4V2.self,
                                                       decodePath: "getParentPost4V2")
@@ -80,7 +80,7 @@ class GraphQLResponseDecoderPostComment4V2Tests: XCTestCase {
         XCTAssertEqual(result.title, "title")
     }
      
-    func testListChildModel() throws {
+    func testQueryListComments() throws {
         let request = GraphQLRequest<List<ChildComment4V2>>(document: "",
                                                             responseType: List<ChildComment4V2>.self,
                                                             decodePath: "listChildComment4V2")
@@ -109,7 +109,7 @@ class GraphQLResponseDecoderPostComment4V2Tests: XCTestCase {
         XCTAssertNotNil(comment2)
     }
     
-    func testListParentModel() throws {
+    func testQueryListPosts() throws {
         let request = GraphQLRequest<List<ParentPost4V2>>(document: "",
                                                           responseType: List<ParentPost4V2>.self,
                                                           decodePath: "listParentPost4V2")
@@ -138,7 +138,7 @@ class GraphQLResponseDecoderPostComment4V2Tests: XCTestCase {
         XCTAssertNotNil(post2)
     }
         
-    func testPostHasLazyLoadComments() throws {
+    func testPostHasLazyLoadedComments() throws {
         let request = GraphQLRequest<ParentPost4V2>.get(ParentPost4V2.self, byId: "id")
         let documentStringValue = """
         query GetParentPost4V2($id: ID!) {

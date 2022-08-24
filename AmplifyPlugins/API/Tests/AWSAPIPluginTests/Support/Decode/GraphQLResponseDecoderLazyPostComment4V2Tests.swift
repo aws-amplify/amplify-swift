@@ -47,7 +47,7 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase {
        (\"post\").", underlyingError: nil))"
      ```
      */
-    func testGetChildModel() throws {
+    func testQueryComment() throws {
         let request = GraphQLRequest<LazyChildComment4V2>(document: "",
                                                           responseType: LazyChildComment4V2.self,
                                                           decodePath: "getLazyChildComment4V2")
@@ -65,7 +65,7 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase {
         XCTAssertEqual(result.content, "content")
     }
     
-    func testGetParentModel() throws {
+    func testQueryPost() throws {
         let request = GraphQLRequest<LazyParentPost4V2>(document: "",
                                                       responseType: LazyParentPost4V2.self,
                                                       decodePath: "getLazyParentPost4V2")
@@ -83,7 +83,7 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase {
         XCTAssertEqual(result.title, "title")
     }
      
-    func testListChildModel() throws {
+    func testQueryListComments() throws {
         let request = GraphQLRequest<List<LazyChildComment4V2>>(document: "",
                                                             responseType: List<LazyChildComment4V2>.self,
                                                             decodePath: "listLazyChildComment4V2")
@@ -112,7 +112,7 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase {
         XCTAssertNotNil(comment2)
     }
     
-    func testListParentModel() throws {
+    func testQueryListPosts() throws {
         let request = GraphQLRequest<List<LazyParentPost4V2>>(document: "",
                                                               responseType: List<LazyParentPost4V2>.self,
                                                               decodePath: "listLazyParentPost4V2")
@@ -141,7 +141,7 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase {
         XCTAssertNotNil(post2)
     }
         
-    func testPostHasLazyLoadComments() throws {
+    func testPostHasLazyLoadedComments() throws {
         let request = GraphQLRequest<LazyParentPost4V2>.get(LazyParentPost4V2.self, byId: "id")
         let documentStringValue = """
         query GetLazyParentPost4V2($id: ID!) {
@@ -334,9 +334,8 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase {
             return
         }
         switch post.modelProvider.getState() {
-        case .notLoaded(let id, let field):
+        case .notLoaded(let id):
             XCTAssertEqual(id, "postId")
-            XCTAssertEqual(field, "LazyParentPost4V2")
         case .loaded:
             XCTFail("Should be not loaded")
         }
@@ -487,7 +486,6 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase {
         case .loaded(let post):
             XCTAssertEqual(post!.id, "postId2")
             XCTAssertEqual(post!.title, "title2")
-            print("\(post!.comments?.listProvider)")
         }
     }
     
@@ -544,13 +542,13 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase {
         }
         
         switch post1.modelProvider.getState() {
-        case .notLoaded(let identifier, _):
+        case .notLoaded(let identifier):
             XCTAssertEqual(identifier, "postId1")
         case .loaded:
             XCTFail("Should be not loaded")
         }
         switch post2.modelProvider.getState() {
-        case .notLoaded(let identifier, _):
+        case .notLoaded(let identifier):
             XCTAssertEqual(identifier, "postId2")
         case .loaded:
             XCTFail("Should be not loaded")

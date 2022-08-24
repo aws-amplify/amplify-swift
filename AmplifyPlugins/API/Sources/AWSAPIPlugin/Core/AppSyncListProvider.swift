@@ -9,52 +9,44 @@ import Foundation
 import Amplify
 import AWSPluginsCore
 
-public class AppSyncModelProvider<Element: Model>: ModelProvider {
+public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
    
     let apiName: String?
     
     enum LoadedState {
-        case notLoaded(identifier: String,
-                       field: String)
-        case loaded(element: Element?)
+        case notLoaded(identifier: String)
+        case loaded(model: ModelType?)
     }
     
     var loadedState: LoadedState
     
-    
-    // init(AppSyncModelPayload) creates a loaded provider
-    convenience init(model: Element?) throws {
-        self.init(element: model)
-    }
-    
     // init(AppSyncModelMetadata) creates a notLoaded provider
     convenience init(metadata: AppSyncPartialModelMetadata) {
         self.init(identifier: metadata.identifier,
-                  field: metadata.field,
                   apiName: metadata.apiName)
     }
     
-    // Internal initializer for a loaded state
-    init(element: Element?) {
-        self.loadedState = .loaded(element: element)
+    // Initializer for a loaded state
+    init(model: ModelType?) {
+        self.loadedState = .loaded(model: model)
         self.apiName = nil
     }
     
-    // Internal initializer for not loaded state
-    init(identifier: String, field: String, apiName: String? = nil) {
-        self.loadedState = .notLoaded(identifier: identifier, field: field)
+    // Initializer for not loaded state
+    init(identifier: String, apiName: String? = nil) {
+        self.loadedState = .notLoaded(identifier: identifier)
         self.apiName = apiName
     }
     
     
     // MARK: - APIs
     
-    public func load() async throws -> Element? {
+    public func load() async throws -> ModelType? {
         
         switch loadedState {
-        case .notLoaded(let identifier, _):
-            let request = GraphQLRequest<Element?>.getQuery(responseType: Element.self,
-                                                            modelSchema: Element.schema,
+        case .notLoaded(let identifier):
+            let request = GraphQLRequest<ModelType?>.getQuery(responseType: ModelType.self,
+                                                            modelSchema: ModelType.schema,
                                                             identifier: identifier,
                                                             apiName: apiName)
             do {
@@ -82,12 +74,12 @@ public class AppSyncModelProvider<Element: Model>: ModelProvider {
         }
     }
     
-    public func getState() -> ModelProviderState<Element> {
+    public func getState() -> ModelProviderState<ModelType> {
         switch loadedState {
-        case .notLoaded(let id, let field):
-            return .notLoaded(id: id, field: field)
-        case .loaded(let element):
-            return .loaded(element)
+        case .notLoaded(let identifier):
+            return .notLoaded(identifier: identifier)
+        case .loaded(let model):
+            return .loaded(model)
         }
     }
 }

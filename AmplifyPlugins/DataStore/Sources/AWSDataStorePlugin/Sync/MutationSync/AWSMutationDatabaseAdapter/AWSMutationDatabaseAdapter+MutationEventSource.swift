@@ -23,7 +23,8 @@ extension AWSMutationDatabaseAdapter: MutationEventSource {
         storageAdapter.query(MutationEvent.self,
                              predicate: predicate,
                              sort: [sort],
-                             paginationInput: nil) { result in
+                             paginationInput: nil,
+                             eagerLoad: true) { result in
                                 switch result {
                                 case .failure(let dataStoreError):
                                     completion(.failure(dataStoreError))

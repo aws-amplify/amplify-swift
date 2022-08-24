@@ -106,7 +106,9 @@ extension Model {
                 // Check if it is a Model or json object.
                 if let associatedModelValue = value as? Model {
                     return associatedModelValue.identifier
-
+                } else if let associatedLazyModel = value as? (any LazyModelMarker) {
+                    print("FOUND A LAZY MODEL \(associatedLazyModel) id: \(associatedLazyModel.element?.identifier)")
+                    return associatedLazyModel.element?.identifier
                 } else if let associatedModelJSON = value as? [String: JSONValue] {
                     return associatedPrimaryKeyValue(fromJSON: associatedModelJSON,
                                                      associatedModelSchema: associatedModelSchema)

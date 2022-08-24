@@ -45,8 +45,8 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
     
     public func getState() -> ModelListProviderState<Element> {
         switch loadedState {
-        case .notLoaded:
-            return .notLoaded
+        case .notLoaded(let associatedId, let associatedField):
+            return .notLoaded(associatedId: associatedId, associatedField: associatedField)
         case .loaded(let elements):
             return .loaded(elements)
         }

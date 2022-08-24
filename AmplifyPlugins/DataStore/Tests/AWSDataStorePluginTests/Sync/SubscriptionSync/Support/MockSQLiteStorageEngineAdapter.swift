@@ -128,6 +128,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     func query<M: Model>(_ modelType: M.Type,
                          predicate: QueryPredicate?,
                          paginationInput: QueryPaginationInput?,
+                         eagerLoad: Bool,
                          completion: DataStoreCallback<[M]>) {
         XCTFail("Not expected to execute")
     }
@@ -137,6 +138,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
                          predicate: QueryPredicate?,
                          sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
+                         eagerLoad: Bool,
                          completion: (DataStoreResult<[M]>) -> Void) {
         XCTFail("Not expected to execute")
     }
@@ -196,6 +198,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
                          predicate: QueryPredicate?,
                          sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
+                         eagerLoad: Bool,
                          completion: DataStoreCallback<[M]>) {
         if let responder = responders[.queryModelTypePredicate]
             as? QueryModelTypePredicateResponder<M> {
@@ -356,6 +359,7 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
                          predicate: QueryPredicate?,
                          sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
+                         eagerLoad: Bool,
                          completion: DataStoreCallback<[M]>) {
         if let responder = responders[.query] as? QueryResponder<M> {
             let result = responder.callback(())
@@ -370,6 +374,7 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
                          predicate: QueryPredicate?,
                          sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
+                         eagerLoad: Bool,
                          completion: (DataStoreResult<[M]>) -> Void) {
 
         if let responder = responders[.query] as? QueryResponder<M> {

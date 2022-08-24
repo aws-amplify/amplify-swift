@@ -43,6 +43,7 @@ protocol ModelStorageBehavior {
                          predicate: QueryPredicate?,
                          sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
+                         eagerLoad: Bool,
                          completion: DataStoreCallback<[M]>)
 
     func query<M: Model>(_ modelType: M.Type,
@@ -50,6 +51,7 @@ protocol ModelStorageBehavior {
                          predicate: QueryPredicate?,
                          sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
+                         eagerLoad: Bool,
                          completion: DataStoreCallback<[M]>)
 
 }

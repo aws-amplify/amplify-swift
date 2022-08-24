@@ -185,6 +185,9 @@ extension Model {
         } else if let optionalModel = value as? Model?,
                   let modelValue = optionalModel {
             return modelValue.identifier(schema: modelSchema).values
+        } else if let lazyModelValue = value as? (any LazyModelMarker) {
+            print("FOUND A LAZY MODEL \(lazyModelValue)")
+            //return lazyModelValue.element?.identifier
         } else if let value = value as? [String: JSONValue] {
             var primaryKeyValues = [Persistable]()
             for field in modelSchema.primaryKey.fields {

@@ -41,7 +41,8 @@ protocol StatementModelConvertible {
     /// - Returns: an array of `Model` of the specified type
     func convert<M: Model>(to modelType: M.Type,
                            withSchema modelSchema: ModelSchema,
-                           using statement: SelectStatement) throws -> [M]
+                           using statement: SelectStatement,
+                           eagerLoad: Bool) throws -> [M]
 
 }
 
@@ -52,29 +53,44 @@ extension Statement: StatementModelConvertible {
         Amplify.Logging.logger(forCategory: .dataStore)
     }
 
+    
     func convert<M: Model>(to modelType: M.Type,
                            withSchema modelSchema: ModelSchema,
-                           using statement: SelectStatement) throws -> [M] {
+                           using statement: SelectStatement,
+                           eagerLoad: Bool = true) throws -> [M] {
+        let elements: [ModelValues] = try self.convertToModelValues(to: modelType,
+                                                                    withSchema: modelSchema,
+                                                                    using: statement,
+                                                                    eagerLoad: eagerLoad)
+        let values: ModelValues = ["elements": elements]
+        let result: StatementResult<M> = try StatementResult.from(dictionary: values)
+        return result.elements
+    }
+    
+    func convertToModelValues<M: Model>(to modelType: M.Type,
+                                        withSchema modelSchema: ModelSchema,
+                                        using statement: SelectStatement,
+                                        eagerLoad: Bool = true) throws -> [ModelValues] {
         var elements: [ModelValues] = []
 
         // parse each row of the result
         let iter = makeIterator()
         while let row = try iter.failableNext() {
-            let modelDictionary = try convert(row: row, withSchema: modelSchema, using: statement)
+            let modelDictionary = try convert(row: row, withSchema: modelSchema, using: statement, eagerLoad: eagerLoad)
             elements.append(modelDictionary)
         }
-
-        let values: ModelValues = ["elements": elements]
-        let result: StatementResult<M> = try StatementResult.from(dictionary: values)
-        return result.elements
+        return elements
     }
-
+    
     func convert(row: Element,
                  withSchema modelSchema: ModelSchema,
-                 using statement: SelectStatement) throws -> ModelValues {
+                 using statement: SelectStatement,
+                 eagerLoad: Bool = true) throws -> ModelValues {
         let columnMapping = statement.metadata.columnMapping
         let modelDictionary = ([:] as ModelValues).mutableCopy()
         var skipColumns = Set<String>()
+        var lazyLoadColumnValues = [(String, Binding?)]()
+        print(row)
         for (index, value) in row.enumerated() {
             let column = columnNames[index]
             guard let (schema, field) = columnMapping[column] else {
@@ -82,9 +98,10 @@ extension Statement: StatementModelConvertible {
                 A column named \(column) was found in the result set but no field on
                 \(modelSchema.name) could be found with that name and it will be ignored.
                 """)
+                lazyLoadColumnValues.append((column, value))
                 continue
             }
-
+            
             let modelValue = try SQLiteModelValueConverter.convertToSource(
                 from: value,
                 fieldType: field.type
@@ -155,10 +172,25 @@ extension Statement: StatementModelConvertible {
         // modelDictionary["post"]["blog"] = nil
         let sortedColumns = skipColumns.sorted(by: { $0.count > $1.count })
         for skipColumn in sortedColumns {
+            print("Skipping column: \(skipColumn)")
             modelDictionary.updateValue(nil, forKeyPath: skipColumn)
         }
         modelDictionary["__typename"] = modelSchema.name
 
+        // `lazyloadColumnValues` are all foreign keys that can be added to the object for lazy loading
+        // Once lazy loading is enabled, this `lazyloadColumnValues` will be populated.
+        if !eagerLoad {
+            for lazyLoadColumnValue in lazyLoadColumnValues {
+                let foreignColumnName = lazyLoadColumnValue.0
+                if let foreignModel = modelSchema.foreignKeys.first(where: { modelField in
+                    modelField.sqlName == foreignColumnName
+                }) {
+                    modelDictionary[foreignModel.name] = lazyLoadColumnValue.1
+                }
+            }
+        }
+        
+        
         // swiftlint:disable:next force_cast
         return modelDictionary as! ModelValues
     }

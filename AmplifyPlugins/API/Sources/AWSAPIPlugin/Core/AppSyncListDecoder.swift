@@ -79,7 +79,7 @@ public struct AppSyncModelDecoder: ModelProviderDecoder {
     static func makeAppSyncModelProvider<ModelType: Model>(modelType: ModelType.Type,
                                                            decoder: Decoder) throws -> AppSyncModelProvider<ModelType>? {
         if let model = try? ModelType.init(from: decoder) {
-            return try AppSyncModelProvider(model: model)
+            return AppSyncModelProvider(model: model)
         } else if let metadata = try? AppSyncPartialModelMetadata.init(from: decoder) {
             return AppSyncModelProvider<ModelType>(metadata: metadata)
         }

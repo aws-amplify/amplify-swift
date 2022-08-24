@@ -214,6 +214,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                             predicate: predicate,
                             sort: sortInput,
                             paginationInput: paginationInput,
+                            eagerLoad: true,
                             completion: completion)
     }
     
@@ -495,7 +496,8 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         storageEngine.query(MutationSyncMetadata.self,
                             predicate: metadata.id == metadataId,
                             sort: nil,
-                            paginationInput: .firstResult) {
+                            paginationInput: .firstResult,
+                            eagerLoad: true) {
             do {
                 let result = try $0.get()
                 let syncMetadata = try result.unique()

@@ -270,12 +270,14 @@ final class StorageEngine: StorageEngineBehavior {
                          predicate: QueryPredicate?,
                          sort: [QuerySortDescriptor]?,
                          paginationInput: QueryPaginationInput?,
+                         eagerLoad: Bool = true,
                          completion: (DataStoreResult<[M]>) -> Void) {
         return storageAdapter.query(modelType,
                                     modelSchema: modelSchema,
                                     predicate: predicate,
                                     sort: sort,
                                     paginationInput: paginationInput,
+                                    eagerLoad: eagerLoad,
                                     completion: completion)
     }
 
@@ -283,12 +285,14 @@ final class StorageEngine: StorageEngineBehavior {
                          predicate: QueryPredicate? = nil,
                          sort: [QuerySortDescriptor]? = nil,
                          paginationInput: QueryPaginationInput? = nil,
+                         eagerLoad: Bool = true,
                          completion: DataStoreCallback<[M]>) {
         query(modelType,
               modelSchema: modelType.schema,
               predicate: predicate,
               sort: sort,
               paginationInput: paginationInput,
+              eagerLoad: eagerLoad,
               completion: completion)
     }
 

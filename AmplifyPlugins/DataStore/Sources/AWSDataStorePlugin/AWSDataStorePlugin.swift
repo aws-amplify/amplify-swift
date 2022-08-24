@@ -114,6 +114,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         }
         resolveSyncEnabled()
         ModelListDecoderRegistry.registerDecoder(DataStoreListDecoder.self)
+        ModelProviderRegistry.registerDecoder(DataStoreModelDecoder.self)
     }
     
     /// Initializes the underlying storage engine
