@@ -348,6 +348,7 @@ class GraphQLModelBasedTests: XCTestCase {
         
         await task.cancel()
     }
+    
     func testOnDeletePostSubscriptionWithModel() async throws {
         let connectingInvoked = AsyncExpectation(description: "Connection connecting")
         let connectedInvoked = AsyncExpectation(description: "Connection established")
