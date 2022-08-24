@@ -17,7 +17,7 @@ class RepeatingTimerTests: XCTestCase {
             timerFired.fulfill()
         }
         timer.activate()
-        await waitForExpectations(timeout: 5)
+        await waitForExpectations(timeout: 10)
 
         timer.setEventHandler {}
         timer.cancel()
