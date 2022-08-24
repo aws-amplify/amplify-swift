@@ -126,8 +126,12 @@ extension AuthenticationState {
                 if let authEvent = event as? AuthenticationEvent,
                    case .cancelSignIn = authEvent.eventType {
                     return .init(newState: .signedOut(SignedOutData()))
+                } else if let authZEvent = event.isAuthorizationEvent,
+                         case .startFederationToIdentityPool = authZEvent {
+                    return .init(newState: .federatingToIdentityPool)
+                } else {
+                    return .from(oldState)
                 }
-                return .from(oldState)
             }
         }
 

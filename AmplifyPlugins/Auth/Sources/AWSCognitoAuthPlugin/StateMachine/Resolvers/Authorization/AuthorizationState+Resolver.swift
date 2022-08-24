@@ -245,6 +245,18 @@ extension AuthorizationState {
 
                 // If authorization is under session error, we try to refresh it again to see if
                 // it can recover from the error.
+                if case .startFederationToIdentityPool(let federatedToken, let identityId) = event.isAuthorizationEvent {
+
+                    let action = InitializeFederationToIdentityPool(
+                        federatedToken: federatedToken,
+                        developerProvidedIdentityId: identityId)
+                    return .init(
+                        newState: .federatingToIdentityPool(.notStarted, federatedToken),
+                        actions: [action])
+                }
+
+                // If authorization is under session error, we try to refresh it again to see if
+                // it can recover from the error.
                 if case .refreshSession(let forceRefresh) = event.isAuthorizationEvent,
                    case .sessionError(_, let credentials) = error {
                     let action = InitializeRefreshSession(

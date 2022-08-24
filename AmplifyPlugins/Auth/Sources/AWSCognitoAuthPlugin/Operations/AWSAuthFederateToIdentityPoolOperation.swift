@@ -94,10 +94,7 @@ public class AWSAuthFederateToIdentityPoolOperation: AmplifyOperation<
                     self?.authStateMachine.cancel(listenerToken: token)
                 }
             case (.error(_), .error(let authZError)):
-                self?.dispatch(AuthError.service(
-                    "Error federating to identity pool",
-                    AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
-                    authZError))
+                self?.dispatch(authZError.authError)
                 if let token = token {
                     self?.authStateMachine.cancel(listenerToken: token)
                 }
@@ -123,7 +120,7 @@ public class AWSAuthFederateToIdentityPoolOperation: AmplifyOperation<
 
     func isValidAuthNStateToStart(_ authNState: AuthenticationState) -> Bool {
         switch authNState {
-        case .notConfigured, .signedOut, .federatedToIdentityPool:
+        case .notConfigured, .signedOut, .federatedToIdentityPool, .error:
             return true
         default:
             return false
@@ -132,7 +129,7 @@ public class AWSAuthFederateToIdentityPoolOperation: AmplifyOperation<
 
     func isValidAuthZStateToStart(_ authZState: AuthorizationState) -> Bool {
         switch authZState {
-        case .configured, .sessionEstablished:
+        case .configured, .sessionEstablished, .error:
             return true
         default:
             return false

@@ -79,7 +79,13 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                     AmplifyCredentials.testDataWithExpiredAWSCredentials)),
             AuthState.configured(
                 AuthenticationState.notConfigured,
-                AuthorizationState.configured)
+                AuthorizationState.configured),
+            AuthState.configured(
+                AuthenticationState.error(.testData),
+                AuthorizationState.configured),
+            AuthState.configured(
+                AuthenticationState.signedOut(.testData),
+                AuthorizationState.error(.sessionExpired)),
         ]
 
 

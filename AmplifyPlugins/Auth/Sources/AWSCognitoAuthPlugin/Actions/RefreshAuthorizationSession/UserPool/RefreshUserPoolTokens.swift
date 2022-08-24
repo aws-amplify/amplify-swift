@@ -43,7 +43,7 @@ struct RefreshUserPoolTokens: Action {
             let client = try? environment.cognitoUserPoolFactory()
             let existingTokens = existingSignedIndata.cognitoUserPoolTokens
 
-            let deviceMetadata = await getDeviceMetadata(
+            let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
                 for: environment,
                 with: existingSignedIndata.userName)
 
@@ -109,25 +109,6 @@ struct RefreshUserPoolTokens: Action {
         logVerbose("\(#fileID) Initiate auth complete", environment: environment)
 
     }
-
-    func getDeviceMetadata(
-        for environment: Environment,
-        with username: String) async -> DeviceMetadata {
-            let credentialStoreClient = (environment as? AuthEnvironment)?.credentialStoreClientFactory()
-            do {
-                let data = try await credentialStoreClient?.fetchData(type: .deviceMetadata(username: username))
-
-                if case .deviceMetadata(let fetchedMetadata, _) = data {
-                    return fetchedMetadata
-                } else {
-                    return .noData
-                }
-            } catch {
-                logError("Unable to fetch device metadata with error: \(error)",
-                         environment: environment)
-                return .noData
-            }
-        }
 }
 
 extension RefreshUserPoolTokens: DefaultLogger { }
