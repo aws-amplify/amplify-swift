@@ -11,9 +11,9 @@ import XCTest
 class RepeatingTimerTests: XCTestCase {
     func testRepeatingTimer() async {
         let timerFired = expectation(description: "timer fired")
-        timerFired.expectedFulfillmentCount = 4
+        timerFired.expectedFulfillmentCount = 2
         timerFired.assertForOverFulfill = true
-        let timer = RepeatingTimer.createRepeatingTimer(timeInterval: TimeInterval(0.25)) {
+        let timer = RepeatingTimer.createRepeatingTimer(timeInterval: TimeInterval(0.2)) {
             timerFired.fulfill()
         }
         timer.activate()
