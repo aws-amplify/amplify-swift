@@ -120,8 +120,7 @@ type Post5 @model {
 }
 
 # Create a join model
-type PostEditor5 @model
-  @key(name: "byPost5", fields: ["postID", "editorID"])
+type PostEditor5 @model @key(name: "byPost5", fields: ["postID", "editorID"])
   @key(name: "byEditor5", fields: ["editorID", "postID"]) {
   id: ID!
   postID: ID!
@@ -147,8 +146,7 @@ type Blog6 @model {
   posts: [Post6] @connection(keyName: "byBlog", fields: ["id"])
 }
 
-type Post6 @model
-@key(name: "byBlog", fields: ["blogID"]) {
+type Post6 @model @key(name: "byBlog", fields: ["blogID"]) {
   id: ID!
   title: String!
   blogID: ID!
@@ -156,8 +154,7 @@ type Post6 @model
   comments: [Comment6] @connection(keyName: "byPost", fields: ["id"])
 }
 
-type Comment6 @model
-@key(name: "byPost", fields: ["postID", "content"]) {
+type Comment6 @model @key(name: "byPost", fields: ["postID", "content"]) {
   id: ID!
   postID: ID!
   post: Post6 @connection(fields: ["postID"])
