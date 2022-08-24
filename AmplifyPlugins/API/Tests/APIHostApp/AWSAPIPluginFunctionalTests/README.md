@@ -34,7 +34,7 @@ enum PostStatus {
     PUBLISHED
 }
 
-type Post @model {
+type Post @model @auth(rules: [{ allow: public }]) {
     id: ID!
     title: String!
     content: String!
@@ -46,7 +46,7 @@ type Post @model {
     comments: [Comment] @connection(name: "PostComment")
 }
 
-type Comment @model {
+type Comment @model @auth(rules: [{ allow: public }]) {
     id: ID!
     content: String!
     createdAt: AWSDateTime!
@@ -56,39 +56,39 @@ type Comment @model {
 ## These are examples from https://docs.amplify.aws/cli/graphql-transformer/connection
 
 # 1 - Project has a single optional Team
-type Project1 @model {
+type Project1 @model @auth(rules: [{ allow: public }]) {
   id: ID!
   name: String
   team: Team1 @connection
 }
 
-type Team1 @model {
+type Team1 @model @auth(rules: [{ allow: public }]) {
   id: ID!
   name: String!
 }
 
-# 2 - Project with explicit field for team’s id
-type Project2 @model {
+# 2 - Project with explicit field for team's id
+type Project2 @model @auth(rules: [{ allow: public }]) {
   id: ID!
   name: String
   teamID: ID!
   team: Team2 @connection(fields: ["teamID"])
 }
 
-type Team2 @model {
+type Team2 @model @auth(rules: [{ allow: public }]) {
   id: ID!
   name: String!
 }
 
 # 3 - Post Comment - keyName reference key directive
 
-type Post3 @model {
+type Post3 @model @auth(rules: [{ allow: public }]) {
   id: ID!
   title: String!
   comments: [Comment3] @connection(keyName: "byPost3", fields: ["id"])
 }
 
-type Comment3 @model
+type Comment3 @model @auth(rules: [{ allow: public }])
   @key(name: "byPost3", fields: ["postID", "content"]) {
   id: ID!
   postID: ID!
@@ -97,13 +97,13 @@ type Comment3 @model
 
 # 4 - Post Comment bi-directional belongs to
 
-type Post4 @model {
+type Post4 @model @auth(rules: [{ allow: public }]) {
   id: ID!
   title: String!
   comments: [Comment4] @connection(keyName: "byPost4", fields: ["id"])
 }
 
-type Comment4 @model
+type Comment4 @model @auth(rules: [{ allow: public }])
   @key(name: "byPost4", fields: ["postID", "content"]) {
   id: ID!
   postID: ID!
@@ -113,15 +113,14 @@ type Comment4 @model
 
 # 5 Many to Many
 
-type Post5 @model {
+type Post5 @model @auth(rules: [{ allow: public }]) {
   id: ID!
   title: String!
   editors: [PostEditor5] @connection(keyName: "byPost5", fields: ["id"])
 }
 
 # Create a join model
-type PostEditor5
-  @model
+type PostEditor5 @model @auth(rules: [{ allow: public }])
   @key(name: "byPost5", fields: ["postID", "editorID"])
   @key(name: "byEditor5", fields: ["editorID", "postID"]) {
   id: ID!
@@ -131,7 +130,7 @@ type PostEditor5
   editor: User5! @connection(fields: ["editorID"])
 }
 
-type User5 @model {
+type User5 @model @auth(rules: [{ allow: public }]) {
   id: ID!
   username: String!
   posts: [PostEditor5] @connection(keyName: "byEditor5", fields: ["id"])
@@ -142,13 +141,14 @@ type User5 @model {
 # > Choose a schema template: `One-to-many relationship (e.g., “Blogs” with “Posts” and “Comments”)`
 
 # 6 - Blog Post Comment
-type Blog6 @model {
+type Blog6 @model @auth(rules: [{ allow: public }]) {
   id: ID!
   name: String!
   posts: [Post6] @connection(keyName: "byBlog", fields: ["id"])
 }
 
-type Post6 @model @key(name: "byBlog", fields: ["blogID"]) {
+type Post6 @model @auth(rules: [{ allow: public }])
+@key(name: "byBlog", fields: ["blogID"]) {
   id: ID!
   title: String!
   blogID: ID!
@@ -156,7 +156,8 @@ type Post6 @model @key(name: "byBlog", fields: ["blogID"]) {
   comments: [Comment6] @connection(keyName: "byPost", fields: ["id"])
 }
 
-type Comment6 @model @key(name: "byPost", fields: ["postID", "content"]) {
+type Comment6 @model @auth(rules: [{ allow: public }])
+@key(name: "byPost", fields: ["postID", "content"]) {
   id: ID!
   postID: ID!
   post: Post6 @connection(fields: ["postID"])
@@ -165,7 +166,7 @@ type Comment6 @model @key(name: "byPost", fields: ["postID", "content"]) {
 
 # Scalars, Lists, Enums
 
-type ScalarContainer @model {
+type ScalarContainer @model @auth(rules: [{ allow: public }]) {
    id: ID!
    myString: String
    myInt: Int
@@ -182,7 +183,7 @@ type ScalarContainer @model {
    myIPAddress: AWSIPAddress
 }
 
-type ListIntContainer @model {
+type ListIntContainer @model @auth(rules: [{ allow: public }]) {
   id: ID!
   test: Int!
   nullableInt: Int
@@ -192,7 +193,7 @@ type ListIntContainer @model {
   nullableIntNullableList: [Int]
 }
 
-type ListStringContainer @model {
+type ListStringContainer @model @auth(rules: [{ allow: public }]) {
   id: ID!
   test: String!
   nullableString: String
@@ -202,7 +203,7 @@ type ListStringContainer @model {
   nullableStringNullableList: [String]
 }
 
-type EnumTestModel @model {
+type EnumTestModel @model @auth(rules: [{ allow: public }]) {
   id: ID!
   enumVal: TestEnum!
   nullableEnumVal: TestEnum
@@ -217,7 +218,7 @@ enum TestEnum {
   VALUE_TWO
 }
 
-type NestedTypeTestModel @model {
+type NestedTypeTestModel @model @auth(rules: [{ allow: public }]){
   id: ID!
   nestedVal: Nested!
   nullableNestedVal: Nested
@@ -235,5 +236,11 @@ type Nested {
 ```
 
 3.  `amplify push`
+? Do you want to generate code for your newly created GraphQL API (Y/n) `N`
 
 4. Copy `amplifyconfiguration.json` over as `GraphQLModelBasedTests-amplifyconfiguration.json` to `~/.aws-amplify/amplify-ios/testconfiguration/`
+
+```
+cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/GraphQLModelBasedTests-amplifyconfiguration.json
+```
+You can now run the tests!
