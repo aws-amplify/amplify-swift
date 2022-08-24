@@ -16,7 +16,7 @@ class RepeatingTimerTests: XCTestCase {
         let timer = RepeatingTimer.createRepeatingTimer(timeInterval: TimeInterval(0.25)) {
             timerFired.fulfill()
         }
-        timer.resume()
+        timer.activate()
         await waitForExpectations(timeout: 5)
 
         timer.setEventHandler {}
