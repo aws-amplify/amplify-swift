@@ -483,6 +483,8 @@
 		97731ECE28B3BD39006F180B /* Blog6V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731E0728B3BD39006F180B /* Blog6V2+Schema.swift */; };
 		97731ECF28B3BD39006F180B /* Comment6V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731E0828B3BD39006F180B /* Comment6V2.swift */; };
 		97731ED028B3BD39006F180B /* TodoWithDefaultValueV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731E0928B3BD39006F180B /* TodoWithDefaultValueV2+Schema.swift */; };
+		97731F0528B68DAC006F180B /* schema.graphql in Resources */ = {isa = PBXBuildFile; fileRef = 97731F0428B68DAC006F180B /* schema.graphql */; };
+		97731F0628B68DDF006F180B /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 21BBFA07289BFE3400B32A39 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1050,6 +1052,7 @@
 		97731E0728B3BD39006F180B /* Blog6V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Blog6V2+Schema.swift"; sourceTree = "<group>"; };
 		97731E0828B3BD39006F180B /* Comment6V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment6V2.swift; sourceTree = "<group>"; };
 		97731E0928B3BD39006F180B /* TodoWithDefaultValueV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TodoWithDefaultValueV2+Schema.swift"; sourceTree = "<group>"; };
+		97731F0428B68DAC006F180B /* schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = schema.graphql; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1350,6 +1353,7 @@
 				21BBF9FF289BFE3400B32A39 /* DataStoreModelWithSecondaryIndexTests.swift */,
 				21BBF9FD289BFE3400B32A39 /* DataStoreSchemaDriftTests.swift */,
 				21BBFA07289BFE3400B32A39 /* README.md */,
+				97731F0428B68DAC006F180B /* schema.graphql */,
 			);
 			path = TransformerV2;
 			sourceTree = "<group>";
@@ -2487,6 +2491,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				97731F0628B68DDF006F180B /* README.md in Resources */,
+				97731F0528B68DAC006F180B /* schema.graphql in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
