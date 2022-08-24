@@ -34,7 +34,7 @@ enum PostStatus {
     PUBLISHED
 }
 
-type Post @model @auth(rules: [{ allow: public }]) {
+type Post @model {
     id: ID!
     title: String!
     content: String!
@@ -46,7 +46,7 @@ type Post @model @auth(rules: [{ allow: public }]) {
     comments: [Comment] @connection(name: "PostComment")
 }
 
-type Comment @model @auth(rules: [{ allow: public }]) {
+type Comment @model {
     id: ID!
     content: String!
     createdAt: AWSDateTime!
@@ -56,39 +56,39 @@ type Comment @model @auth(rules: [{ allow: public }]) {
 ## These are examples from https://docs.amplify.aws/cli/graphql-transformer/connection
 
 # 1 - Project has a single optional Team
-type Project1 @model @auth(rules: [{ allow: public }]) {
+type Project1 @model {
   id: ID!
   name: String
   team: Team1 @connection
 }
 
-type Team1 @model @auth(rules: [{ allow: public }]) {
+type Team1 @model {
   id: ID!
   name: String!
 }
 
 # 2 - Project with explicit field for team's id
-type Project2 @model @auth(rules: [{ allow: public }]) {
+type Project2 @model {
   id: ID!
   name: String
   teamID: ID!
   team: Team2 @connection(fields: ["teamID"])
 }
 
-type Team2 @model @auth(rules: [{ allow: public }]) {
+type Team2 @model {
   id: ID!
   name: String!
 }
 
 # 3 - Post Comment - keyName reference key directive
 
-type Post3 @model @auth(rules: [{ allow: public }]) {
+type Post3 @model {
   id: ID!
   title: String!
   comments: [Comment3] @connection(keyName: "byPost3", fields: ["id"])
 }
 
-type Comment3 @model @auth(rules: [{ allow: public }])
+type Comment3 @model
   @key(name: "byPost3", fields: ["postID", "content"]) {
   id: ID!
   postID: ID!
@@ -97,13 +97,13 @@ type Comment3 @model @auth(rules: [{ allow: public }])
 
 # 4 - Post Comment bi-directional belongs to
 
-type Post4 @model @auth(rules: [{ allow: public }]) {
+type Post4 @model {
   id: ID!
   title: String!
   comments: [Comment4] @connection(keyName: "byPost4", fields: ["id"])
 }
 
-type Comment4 @model @auth(rules: [{ allow: public }])
+type Comment4 @model
   @key(name: "byPost4", fields: ["postID", "content"]) {
   id: ID!
   postID: ID!
@@ -113,14 +113,14 @@ type Comment4 @model @auth(rules: [{ allow: public }])
 
 # 5 Many to Many
 
-type Post5 @model @auth(rules: [{ allow: public }]) {
+type Post5 @model {
   id: ID!
   title: String!
   editors: [PostEditor5] @connection(keyName: "byPost5", fields: ["id"])
 }
 
 # Create a join model
-type PostEditor5 @model @auth(rules: [{ allow: public }])
+type PostEditor5 @model
   @key(name: "byPost5", fields: ["postID", "editorID"])
   @key(name: "byEditor5", fields: ["editorID", "postID"]) {
   id: ID!
@@ -130,7 +130,7 @@ type PostEditor5 @model @auth(rules: [{ allow: public }])
   editor: User5! @connection(fields: ["editorID"])
 }
 
-type User5 @model @auth(rules: [{ allow: public }]) {
+type User5 @model {
   id: ID!
   username: String!
   posts: [PostEditor5] @connection(keyName: "byEditor5", fields: ["id"])
@@ -141,13 +141,13 @@ type User5 @model @auth(rules: [{ allow: public }]) {
 # > Choose a schema template: `One-to-many relationship (e.g., “Blogs” with “Posts” and “Comments”)`
 
 # 6 - Blog Post Comment
-type Blog6 @model @auth(rules: [{ allow: public }]) {
+type Blog6 @model {
   id: ID!
   name: String!
   posts: [Post6] @connection(keyName: "byBlog", fields: ["id"])
 }
 
-type Post6 @model @auth(rules: [{ allow: public }])
+type Post6 @model
 @key(name: "byBlog", fields: ["blogID"]) {
   id: ID!
   title: String!
@@ -156,7 +156,7 @@ type Post6 @model @auth(rules: [{ allow: public }])
   comments: [Comment6] @connection(keyName: "byPost", fields: ["id"])
 }
 
-type Comment6 @model @auth(rules: [{ allow: public }])
+type Comment6 @model
 @key(name: "byPost", fields: ["postID", "content"]) {
   id: ID!
   postID: ID!
@@ -166,7 +166,7 @@ type Comment6 @model @auth(rules: [{ allow: public }])
 
 # Scalars, Lists, Enums
 
-type ScalarContainer @model @auth(rules: [{ allow: public }]) {
+type ScalarContainer @model {
    id: ID!
    myString: String
    myInt: Int
@@ -183,7 +183,7 @@ type ScalarContainer @model @auth(rules: [{ allow: public }]) {
    myIPAddress: AWSIPAddress
 }
 
-type ListIntContainer @model @auth(rules: [{ allow: public }]) {
+type ListIntContainer @model {
   id: ID!
   test: Int!
   nullableInt: Int
@@ -193,7 +193,7 @@ type ListIntContainer @model @auth(rules: [{ allow: public }]) {
   nullableIntNullableList: [Int]
 }
 
-type ListStringContainer @model @auth(rules: [{ allow: public }]) {
+type ListStringContainer @model {
   id: ID!
   test: String!
   nullableString: String
@@ -203,7 +203,7 @@ type ListStringContainer @model @auth(rules: [{ allow: public }]) {
   nullableStringNullableList: [String]
 }
 
-type EnumTestModel @model @auth(rules: [{ allow: public }]) {
+type EnumTestModel @model {
   id: ID!
   enumVal: TestEnum!
   nullableEnumVal: TestEnum
@@ -218,7 +218,7 @@ enum TestEnum {
   VALUE_TWO
 }
 
-type NestedTypeTestModel @model @auth(rules: [{ allow: public }]){
+type NestedTypeTestModel @model {
   id: ID!
   nestedVal: Nested!
   nullableNestedVal: Nested
