@@ -9,7 +9,7 @@
 import XCTest
 
 class RepeatingTimerTests: XCTestCase {
-    func testRepeatingTimer() {
+    func testRepeatingTimer() async {
         let timerFired = expectation(description: "timer fired")
         timerFired.expectedFulfillmentCount = 4
         timerFired.assertForOverFulfill = true
@@ -17,7 +17,7 @@ class RepeatingTimerTests: XCTestCase {
             timerFired.fulfill()
         }
         timer.resume()
-        wait(for: [timerFired], timeout: 2)
+        await waitForExpectations(timeout: 2)
 
         timer.setEventHandler {}
         timer.cancel()
