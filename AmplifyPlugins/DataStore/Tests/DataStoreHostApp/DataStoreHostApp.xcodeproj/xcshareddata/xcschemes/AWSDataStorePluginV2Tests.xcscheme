@@ -42,9 +42,6 @@
                   Identifier = "DataStoreConnectionOptionalAssociations">
                </Test>
                <Test
-                  Identifier = "DataStoreConnectionScenario6V2Tests">
-               </Test>
-               <Test
                   Identifier = "DataStoreConnectionScenario7V2Tests">
                </Test>
                <Test
