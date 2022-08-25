@@ -491,6 +491,7 @@
 		979722F828B7D25100679E3C /* DataStoreConnectionScenario4V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA04289BFE3400B32A39 /* DataStoreConnectionScenario4V2Tests.swift */; };
 		979722F928B7DC9D00679E3C /* DataStoreConnectionScenario5V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA01289BFE3400B32A39 /* DataStoreConnectionScenario5V2Tests.swift */; };
 		979722FA28B7E98A00679E3C /* DataStoreConnectionScenario6V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA05289BFE3400B32A39 /* DataStoreConnectionScenario6V2Tests.swift */; };
+		979722FB28B7FD3D00679E3C /* DataStoreConnectionScenario7V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA09289BFE3400B32A39 /* DataStoreConnectionScenario7V2Tests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2969,6 +2970,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				979722FB28B7FD3D00679E3C /* DataStoreConnectionScenario7V2Tests.swift in Sources */,
 				979722FA28B7E98A00679E3C /* DataStoreConnectionScenario6V2Tests.swift in Sources */,
 				979722F928B7DC9D00679E3C /* DataStoreConnectionScenario5V2Tests.swift in Sources */,
 				979722F828B7D25100679E3C /* DataStoreConnectionScenario4V2Tests.swift in Sources */,
