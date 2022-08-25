@@ -152,7 +152,6 @@ class GraphQLModelBasedTests: XCTestCase {
         _ = try await Amplify.API.mutate(request: .create(post))
         
         let graphQLResponse = try await Amplify.API.query(request: .list(Post.self))
-        //            case .success(let graphQLResponse):
         guard case .success(let posts) = graphQLResponse else {
             XCTFail("Missing successful response")
             return
