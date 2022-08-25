@@ -483,8 +483,11 @@
 		97731ECE28B3BD39006F180B /* Blog6V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731E0728B3BD39006F180B /* Blog6V2+Schema.swift */; };
 		97731ECF28B3BD39006F180B /* Comment6V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731E0828B3BD39006F180B /* Comment6V2.swift */; };
 		97731ED028B3BD39006F180B /* TodoWithDefaultValueV2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731E0928B3BD39006F180B /* TodoWithDefaultValueV2+Schema.swift */; };
+		97731F0228B662EF006F180B /* DataStoreConnectionScenario2V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA02289BFE3400B32A39 /* DataStoreConnectionScenario2V2Tests.swift */; };
+		97731F0328B68452006F180B /* DataStoreConnectionScenario3aV2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA0B289BFE3400B32A39 /* DataStoreConnectionScenario3aV2Tests.swift */; };
 		97731F0528B68DAC006F180B /* schema.graphql in Resources */ = {isa = PBXBuildFile; fileRef = 97731F0428B68DAC006F180B /* schema.graphql */; };
 		97731F0628B68DDF006F180B /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 21BBFA07289BFE3400B32A39 /* README.md */; };
+		979722F728B6AE0B00679E3C /* DataStoreConnectionScenario3V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA03289BFE3400B32A39 /* DataStoreConnectionScenario3V2Tests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2963,6 +2966,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				979722F728B6AE0B00679E3C /* DataStoreConnectionScenario3V2Tests.swift in Sources */,
+				97731F0328B68452006F180B /* DataStoreConnectionScenario3aV2Tests.swift in Sources */,
+				97731F0228B662EF006F180B /* DataStoreConnectionScenario2V2Tests.swift in Sources */,
 				97731EB528B3BD39006F180B /* CustomerSecondaryIndexV2+Schema.swift in Sources */,
 				97731ECA28B3BD39006F180B /* Post6V2+Schema.swift in Sources */,
 				97731E8D28B3BD39006F180B /* Post7V2.swift in Sources */,
