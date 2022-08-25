@@ -288,17 +288,14 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
                                                               nextToken: nextToken,
                                                               apiName: apiName)
         do {
-            let graphQLResponse = try await Amplify.API.query(request: request)
-            switch graphQLResponse {
-            case .success(let nextPageList):
-                _ = try await nextPageList.fetch()
-                return nextPageList
-            case .failure(let graphQLError):
-                Amplify.API.log.error(error: graphQLError)
-                throw CoreError.listOperation("""
-                    The AppSync request was processed by the service, but the response contained GraphQL errors.
-                    """, "Check the underlying error for the failed GraphQL response.", graphQLError)
-            }
+            let nextPageList = try await Amplify.API.query(request: request)
+            _ = try await nextPageList.fetch()
+            return nextPageList
+        } catch let apiGraphQLError as APIGraphQLError<List<Element>> {
+            Amplify.API.log.error(error: apiGraphQLError)
+            throw CoreError.listOperation("""
+                The AppSync request was processed by the service, but the response contained GraphQL errors.
+                """, "Check the underlying error for the failed GraphQL response.", apiGraphQLError)
         } catch let apiError as APIError {
             Amplify.API.log.error(error: apiError)
             throw CoreError.listOperation("The AppSync request failed",
@@ -307,5 +304,31 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
         } catch {
             throw error
         }
+        
+        // example 1 - not feasible right now
+//        do {
+//
+//        } catch let apiGraphQLError as APIGraphQLError<List<Element>> {
+//
+//        } catch let apiError as APIError {
+//
+//        }
+//
+//        // example 2 -
+//        do {
+//
+//        } catch let apiGraphQLError as APIGraphQLError<List<Element>> {
+//            switch apiGraphQLError {
+//            case .apiError(let apiError):
+//                break
+////                switch apiError {
+////                case .invalidURL:
+////
+////                }
+//            case .error:
+//            case .partial:
+//            case .unknown:
+//            }
+//        }
     }
 }

@@ -45,11 +45,11 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         do {
             try request.validate()
         } catch let error as APIError {
-            dispatch(result: .failure(error))
+            dispatch(result: .failure(.apiError(error)))
             finish()
             return
         } catch {
-            dispatch(result: .failure(APIError.unknown("Could not validate request", "", nil)))
+            dispatch(result: .failure(APIGraphQLError.unknown("Could not validate request", "", nil)))
             finish()
             return
         }
@@ -69,11 +69,11 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
                 requestInterceptors = try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig)
             }
         } catch let error as APIError {
-            dispatch(result: .failure(error))
+            dispatch(result: .failure(.apiError(error)))
             finish()
             return
         } catch {
-            dispatch(result: .failure(APIError.unknown("Could not get endpoint configuration", "", nil)))
+            dispatch(result: .failure(APIGraphQLError.unknown("Could not get endpoint configuration", "", nil)))
             finish()
             return
         }
@@ -91,9 +91,10 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
         do {
             requestPayload = try JSONSerialization.data(withJSONObject: queryDocument)
         } catch {
-            dispatch(result: .failure(APIError.operationError("Failed to serialize query document",
-                                                              "fix the document or variables",
-                                                              error)))
+            let apiError = APIError.operationError("Failed to serialize query document",
+                                                   "fix the document or variables",
+                                                   error)
+            dispatch(result: .failure(.apiError(apiError)))
             finish()
             return
         }
@@ -109,12 +110,13 @@ final public class AWSGraphQLOperation<R: Decodable>: GraphQLOperation<R> {
                 do {
                     finalRequest = try await interceptor.intercept(finalRequest)
                 } catch let error as APIError {
-                    dispatch(result: .failure(error))
+                    dispatch(result: .failure(.apiError(error)))
                     cancel()
                 } catch {
-                    dispatch(result: .failure(APIError.operationError("Failed to intercept request fully.",
-                                                                      "Something wrong with the interceptor",
-                                                                      error)))
+                    let apiError = APIError.operationError("Failed to intercept request fully.",
+                                                        "Something wrong with the interceptor",
+                                                        error)
+                    dispatch(result: .failure(.apiError(apiError)))
                     cancel()
                 }
             }

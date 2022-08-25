@@ -15,6 +15,7 @@ extension APICategory: APICategoryGraphQLBehavior {
         plugin.query(request: request, listener: listener)
     }
 
+    @discardableResult
     public func query<R: Decodable>(request: GraphQLRequest<R>) async throws -> GraphQLTask<R>.Success {
         try await plugin.query(request: request)
     }
@@ -25,6 +26,7 @@ extension APICategory: APICategoryGraphQLBehavior {
         plugin.mutate(request: request, listener: listener)
     }
     
+    @discardableResult
     public func mutate<R: Decodable>(request: GraphQLRequest<R>) async throws -> GraphQLTask<R>.Success {
         try await plugin.mutate(request: request)
     }
@@ -36,6 +38,7 @@ extension APICategory: APICategoryGraphQLBehavior {
             plugin.subscribe(request: request, valueListener: valueListener, completionListener: completionListener)
     }
     
+    @discardableResult
     public func subscribe<R>(request: GraphQLRequest<R>) async throws -> GraphQLSubscriptionTask<R> {
         try await plugin.subscribe(request: request)
     }

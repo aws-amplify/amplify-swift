@@ -8,8 +8,8 @@
 /// GraphQL Operation
 open class GraphQLOperation<R: Decodable>: AmplifyOperation<
     GraphQLOperationRequest<R>,
-    GraphQLResponse<R>,
-    APIError
+    R,
+    APIGraphQLError<R>
 > { }
 
 /// GraphQL Subscription Operation

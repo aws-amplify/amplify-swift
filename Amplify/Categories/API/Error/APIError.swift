@@ -7,6 +7,59 @@
 
 import Foundation
 
+public enum APIGraphQLError<ResponseType: Decodable> {
+
+    // Maybe name this something else
+    case apiError(APIError)
+    
+    //
+    case error([GraphQLError])
+
+    /// A partially-successful response. The `ResponseType` associated value will contain as much of the payload as the
+    /// service was able to fulfill, and the errors will be an array of GraphQLError that contain service-specific error
+    /// messages.
+    case partial(ResponseType, [GraphQLError])
+
+    /// A successful, or partially-successful response from the server that could not be transformed into the specified
+    /// response type. The RawGraphQLResponse contains the entire response from the service, including data and errors.
+    case transformationError(RawGraphQLResponse, APIError)
+
+    /// An unknown error occurred
+    case unknown(ErrorDescription, RecoverySuggestion, Error?)
+}
+
+extension APIGraphQLError: AmplifyError {
+    public var errorDescription: ErrorDescription {
+        ""
+    }
+    
+    public var recoverySuggestion: RecoverySuggestion {
+        ""
+    }
+    
+    public var underlyingError: Error? {
+        return nil
+    }
+    
+    public init(
+        errorDescription: ErrorDescription = "An unknown error occurred",
+        recoverySuggestion: RecoverySuggestion = "See `underlyingError` for more details",
+        error: Error
+    ) {
+        if let error = error as? Self {
+            self = error
+        } else if error.isOperationCancelledError {
+            self = .unknown("Operation cancelled", "", error)
+        } else {
+            self = .unknown(errorDescription, recoverySuggestion, error)
+        }
+    }
+}
+
+public enum APIRestError {
+    
+}
+
 /// Errors specific to the API Category
 public enum APIError {
 
@@ -36,7 +89,6 @@ public enum APIError {
 
     /// An error to encapsulate an error received by a dependent plugin
     case pluginError(AmplifyError)
-
 }
 
 extension APIError: AmplifyError {

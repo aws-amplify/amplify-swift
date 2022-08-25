@@ -27,11 +27,11 @@ extension AWSGraphQLOperation: APIOperation {
         do {
             try apiOperationResponse.validate()
         } catch let error as APIError {
-            dispatch(result: .failure(error))
+            dispatch(result: .failure(.apiError(error)))
             finish()
             return
         } catch {
-            dispatch(result: .failure(APIError.unknown("", "", error)))
+            dispatch(result: .failure(APIGraphQLError<R>.unknown("", "", error)))
             finish()
             return
         }
@@ -51,25 +51,44 @@ extension AWSGraphQLOperation: APIOperation {
         do {
             try apiOperationResponse.validate()
         } catch let error as APIError {
-            dispatch(result: .failure(error))
+            dispatch(result: .failure(.apiError(error)))
             finish()
             return
         } catch {
-            dispatch(result: .failure(APIError.unknown("", "", error)))
+            dispatch(result: .failure(APIGraphQLError.unknown("", "", error)))
             finish()
             return
         }
 
         do {
             let graphQLResponse = try graphQLResponseDecoder.decodeToGraphQLResponse()
-            dispatch(result: .success(graphQLResponse))
+            switch graphQLResponse {
+            case .success(let responseType):
+                dispatch(result: .success(responseType))
+            case .failure(let error):
+                switch error {
+                case .error(let errors):
+                    let apiGraphQLError = APIGraphQLError<R>.error(errors)
+                    dispatch(result: .failure(apiGraphQLError))
+                case .partial(let responseType, let errors):
+                    let apiGraphQLError = APIGraphQLError<R>.partial(responseType, errors)
+                    dispatch(result: .failure(apiGraphQLError))
+                case .transformationError(let response, let apiError):
+                    let apiGraphQLError = APIGraphQLError<R>.transformationError(response, apiError)
+                    dispatch(result: .failure(apiGraphQLError))
+                case .unknown(let error, let recovery, let underlyingError):
+                    let apiGraphQLError = APIGraphQLError<R>.unknown(error, recovery, underlyingError)
+                    dispatch(result: .failure(apiGraphQLError))
+                }
+            }
+             
             finish()
         } catch let error as APIError {
-            dispatch(result: .failure(error))
+            dispatch(result: .failure(.apiError(error)))
             finish()
         } catch {
             let apiError = APIError.operationError("failed to process graphqlResponseData", "", error)
-            dispatch(result: .failure(apiError))
+            dispatch(result: .failure(.apiError(apiError)))
             finish()
         }
     }
