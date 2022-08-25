@@ -230,14 +230,9 @@ class APICategoryConfigurationTests: XCTestCase {
             plugins: ["MockAPICategoryPlugin": true]
         )
 
-        guard let api = Amplify.API as? CategoryConfigurable else {
-            XCTFail("API is not CategoryConfigurable")
-            return
-        }
+        try Amplify.API.configure(using: categoryConfig)
 
-        try api.configure(using: categoryConfig)
-
-        XCTAssertThrowsError(try api.configure(using: categoryConfig),
+        XCTAssertThrowsError(try Amplify.API.configure(using: categoryConfig),
                              "configure() an already configured plugin should throw") { error in
                                 guard case ConfigurationError.amplifyAlreadyConfigured = error else {
                                     XCTFail("Expected ConfigurationError.amplifyAlreadyConfigured")
@@ -253,24 +248,15 @@ class APICategoryConfigurationTests: XCTestCase {
             plugins: ["MockAPICategoryPlugin": true]
         )
 
-        guard let api = Amplify.API as? CategoryConfigurable & Resettable else {
-            XCTFail("API is not CategoryConfigurable and Resettable")
-            return
-        }
+        try Amplify.API.configure(using: categoryConfig)
 
-        try api.configure(using: categoryConfig)
+        await Amplify.API.reset()
 
-        await api.reset()
-
-        XCTAssertNoThrow(try api.configure(using: categoryConfig))
+        XCTAssertNoThrow(try Amplify.API.configure(using: categoryConfig))
     }
 
     func testIsConfiguredIsFalseBeforeConfig() {
-        guard let category = Amplify.API as? APICategory else {
-            XCTFail("Could not cast Amplify.API as APICategory")
-            return
-        }
-        XCTAssertFalse(category.isConfigured)
+        XCTAssertFalse(Amplify.API.isConfigured)
     }
 
     func testIsConfiguredIsTrueAfterConfig() throws {
@@ -283,12 +269,7 @@ class APICategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(api: categoryConfig)
         try Amplify.configure(amplifyConfig)
 
-        guard let category = Amplify.API as? APICategory else {
-            XCTFail("Could not cast Amplify.API as APICategory")
-            return
-        }
-
-        XCTAssertTrue(category.isConfigured)
+        XCTAssertTrue(Amplify.API.isConfigured)
     }
 
     func testIsConfiguredIsFalseAfterReset() async throws {
@@ -303,12 +284,7 @@ class APICategoryConfigurationTests: XCTestCase {
 
         await Amplify.reset()
 
-        guard let category = Amplify.API as? APICategory else {
-            XCTFail("Could not cast Amplify.API as APICategory")
-            return
-        }
-
-        XCTAssertFalse(category.isConfigured)
+        XCTAssertFalse(Amplify.API.isConfigured)
     }
 
     /// Test that Amplify logs a warning if it encounters a plugin configuration key without a corresponding plugin
