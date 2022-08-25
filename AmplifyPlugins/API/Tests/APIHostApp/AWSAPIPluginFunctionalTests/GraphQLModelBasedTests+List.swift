@@ -21,38 +21,27 @@ extension GraphQLModelBasedTests {
     ///    - subsequent queries exhaust the results from the API to retrieve the remaining results
     /// - Then:
     ///    - the in-memory Array is a populated with all expected items.
-    func testPaginatedListFetch() throws {
+    func testPaginatedListFetch() async throws {
         var resultsArray: [Post] = []
         let uuid1 = UUID().uuidString
         let uuid2 = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
-        guard createPost(id: uuid1, title: title) != nil,
-              createPost(id: uuid2, title: title) != nil else {
-            XCTFail("Failed to ensure at least two Posts to be retrieved on the listQuery")
-            return
-        }
+        let post1 = Post(id: uuid1, title: title, content: "content", createdAt: .now())
+        _ = try await Amplify.API.mutate(request: .create(post1))
+        let post2 = Post(id: uuid2, title: title, content: "content", createdAt: .now())
+        _ = try await Amplify.API.mutate(request: .create(post2))
 
-        let firstQueryCompleted = expectation(description: "first query completed")
         let post = Post.keys
         let predicate = post.id == uuid1 || post.id == uuid2
         var results: List<Post>?
-        _ = Amplify.API.query(request: .list(Post.self, where: predicate, limit: 1)) { event in
-            switch event {
-            case .success(let response):
-                guard case let .success(graphQLResponse) = response else {
-                    XCTFail("Missing successful response")
-                    return
-                }
-
-                results = graphQLResponse
-                firstQueryCompleted.fulfill()
-            case .failure(let error):
-                XCTFail("Unexpected .failure event: \(error)")
-            }
+        let response = try await Amplify.API.query(request: .list(Post.self, where: predicate, limit: 1))
+        
+        guard case .success(let graphQLresponse) = response else {
+            XCTFail("Missing successful response")
+            return
         }
-
-        wait(for: [firstQueryCompleted], timeout: TestCommonConstants.networkTimeout)
+        results = graphQLresponse
         guard var subsequentResults = results else {
             XCTFail("Could not get first results")
             return
@@ -87,36 +76,25 @@ extension GraphQLModelBasedTests {
     ///    - A `getNextPage` is made when `hasNextPage` returns false.
     /// - Then:
     ///    - A validation error is returned
-    func testPaginatedListFetchValidationError() throws {
+    func testPaginatedListFetchValidationError() async throws{
         let uuid1 = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
-        guard createPost(id: uuid1, title: title) != nil else {
-            XCTFail("Failed to create post")
-            return
-        }
+        let createdPost = Post(id: uuid1, title: title, content: "content", createdAt: .now())
+        _ = try await Amplify.API.mutate(request: .create(createdPost))
 
-        let firstQueryCompleted = expectation(description: "first query completed")
         let post = Post.keys
         let predicate = post.id == uuid1
         var results: List<Post>?
         let request: GraphQLRequest<List<Post>> = GraphQLRequest<Post>.list(Post.self, where: predicate)
-        _ = Amplify.API.query(request: request) { event in
-            switch event {
-            case .success(let response):
-                guard case let .success(graphQLResponse) = response else {
-                    XCTFail("Missing successful response")
-                    return
-                }
+        let response = try await Amplify.API.query(request: request)
 
-                results = graphQLResponse
-                firstQueryCompleted.fulfill()
-            case .failure(let error):
-                XCTFail("Unexpected .failure event: \(error)")
-            }
+        guard case .success(let graphQLResponse) = response else {
+            XCTFail("Missing successful response")
+            return
         }
 
-        wait(for: [firstQueryCompleted], timeout: TestCommonConstants.networkTimeout)
+        results = graphQLResponse
         guard var subsequentResults = results else {
             XCTFail("Could not get first results")
             return
@@ -137,7 +115,7 @@ extension GraphQLModelBasedTests {
             semaphore.wait()
         }
         XCTAssertFalse(subsequentResults.hasNextPage())
-        let invalidFetchCompleted = expectation(description: "fetch completed with validation error")
+        
         subsequentResults.getNextPage { result in
 
             switch result {
@@ -148,11 +126,8 @@ extension GraphQLModelBasedTests {
                     XCTFail("Unexpected CoreError \(coreError)")
                     return
                 }
-                invalidFetchCompleted.fulfill()
             }
         }
-
-        wait(for: [invalidFetchCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
     /// This test shows the issue with retrieving comments by postId. The schema used to create `Post.swift` and
@@ -163,51 +138,35 @@ extension GraphQLModelBasedTests {
     ///    - `comments.fetch` is called
     /// - Then:
     ///    - `CoreError` is returned
-    func testFetchListOfCommentsFromPostFails() {
+    func testFetchListOfCommentsFromPostFails() async throws {
         let uuid1 = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
-        guard let createdPost = createPost(id: uuid1, title: title) else {
-            XCTFail("Failed to create post")
-            return
-        }
-        guard let createdComment = createComment(content: title, post: createdPost) else {
-            XCTFail("Failed to create comment")
-            return
-        }
-
-        let firstQueryCompleted = expectation(description: "first query completed")
+        let post = Post(id: uuid1, title: title, content: "content", createdAt: .now())
+        _ = try await Amplify.API.mutate(request: .create(post))
+        let comment = Comment(id: uuid1, content: "content", createdAt: .now(), post: post)
+        _ = try await Amplify.API.mutate(request: .create(comment))
         var results: Post?
-        _ = Amplify.API.query(request: .get(Post.self, byId: createdPost.id)) { event in
-            switch event {
-            case .success(let response):
-                guard case let .success(graphQLResponse) = response else {
-                    XCTFail("Missing successful response")
-                    return
-                }
-
-                results = graphQLResponse
-                firstQueryCompleted.fulfill()
-            case .failure(let error):
-                XCTFail("Unexpected .failure event: \(error)")
-            }
+        let response = try await Amplify.API.query(request: .get(Post.self, byId: post.id))
+        
+        guard case .success(let graphQLResponse) = response else {
+            XCTFail("Missing successful response")
+            return
         }
+        results = graphQLResponse
 
-        wait(for: [firstQueryCompleted], timeout: TestCommonConstants.networkTimeout)
         guard let retrievedPost = results else {
             XCTFail("Could not get post")
             return
         }
-        let fetchCommentsFailed = expectation(description: "Fetch comments failed")
+        
         retrievedPost.comments?.fetch { result in
             switch result {
             case .success(let comments):
                 XCTFail("Should have failed to fetch comments \(comments)")
             case .failure(let coreError):
                 XCTAssertNotNil(coreError)
-                fetchCommentsFailed.fulfill()
             }
         }
-        wait(for: [fetchCommentsFailed], timeout: TestCommonConstants.networkTimeout)
     }
 }

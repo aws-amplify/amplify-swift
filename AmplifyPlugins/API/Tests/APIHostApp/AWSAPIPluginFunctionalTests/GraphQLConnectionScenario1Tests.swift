@@ -118,35 +118,23 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
             XCTFail("Failed with: \(response)")
         }
     }
-
-    func testListProjectsByTeamID() {
-        guard let team = createTeam(name: "name") else {
-            XCTFail("Could not create team")
-            return
-        }
-        guard let project = createProject(team: team) else {
-            XCTFail("Could not create project")
-            return
-        }
-        let listProjectByTeamIDCompleted = expectation(description: "list projects completed")
+    
+    // The filter we are passing into is the ProjectTeamID, but the API doesn't have the field ProjectTeamID
+    //    so we are disabling it
+    func testListProjectsByTeamID() async throws {
+        let team = Team1(name: "name")
+        _ = try await Amplify.API.mutate(request: .create(team))
+        let project = Project1(team: team)
+        _ = try await Amplify.API.mutate(request: .create(project))
         let predicate = Project1.keys.team.eq(team.id)
-        Amplify.API.query(request: .list(Project1.self, where: predicate)) { result in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .success(let projects):
-                    XCTAssertEqual(projects.count, 1)
-                    XCTAssertEqual(projects[0].id, project.id)
-                    XCTAssertEqual(projects[0].team, team)
-                    listProjectByTeamIDCompleted.fulfill()
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+        let event = try await Amplify.API.query(request: .list(Project1.self, where: predicate))
+        switch event {
+        case .success(let projects):
+            XCTAssertEqual(projects.count, 1)
+            XCTAssertEqual(projects[0].id, project.id)
+        case .failure(let response):
+            XCTFail("Failed with: \(response)")
         }
-        wait(for: [listProjectByTeamIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testPaginatedListProjects() {
