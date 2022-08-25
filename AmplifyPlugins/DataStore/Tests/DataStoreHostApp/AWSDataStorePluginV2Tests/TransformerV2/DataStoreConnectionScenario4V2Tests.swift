@@ -340,40 +340,6 @@ class DataStoreConnectionScenario4V2Tests: SyncEngineIntegrationV2TestBase {
         _ = try await Amplify.DataStore.delete(post)
         await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
-
-    func savePost(id: String = UUID().uuidString, title: String) -> Post4V2? {
-        let post = Post4V2(id: id, title: title)
-        var result: Post4V2?
-        let completeInvoked = expectation(description: "request completed")
-        Amplify.DataStore.save(post) { event in
-            switch event {
-            case .success(let project):
-                result = project
-                completeInvoked.fulfill()
-            case .failure(let error):
-                XCTFail("failed \(error)")
-            }
-        }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
-        return result
-    }
-
-    func saveComment(id: String = UUID().uuidString, content: String, post: Post4V2) -> Comment4V2? {
-        let comment = Comment4V2(id: id, content: content, post: post)
-        var result: Comment4V2?
-        let completeInvoked = expectation(description: "request completed")
-        Amplify.DataStore.save(comment) { event in
-            switch event {
-            case .success(let project):
-                result = project
-                completeInvoked.fulfill()
-            case .failure(let error):
-                XCTFail("failed \(error)")
-            }
-        }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
-        return result
-    }
 }
 
 extension Post4V2: Equatable {
