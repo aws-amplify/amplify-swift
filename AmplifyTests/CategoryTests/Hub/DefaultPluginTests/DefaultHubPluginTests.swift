@@ -24,7 +24,7 @@ class DefaultHubPluginTests: XCTestCase {
         await Amplify.reset()
         // This test suite will have a lot of in-flight messages at the time of the `reset`. Give them time to finis
         // being delivered before moving to the next step.
-        Thread.sleep(forTimeInterval: 1.0)
+        try? await Task.sleep(seconds: 1.0)
         let config = AmplifyConfiguration()
         do {
             try Amplify.configure(config)

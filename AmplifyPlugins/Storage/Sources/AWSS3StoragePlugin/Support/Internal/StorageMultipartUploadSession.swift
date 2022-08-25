@@ -293,7 +293,7 @@ class StorageMultipartUploadSession {
             if maxPartsCount > 0 {
                 let end = min(maxPartsCount, pendingPartNumbers.count)
                 let numbers = pendingPartNumbers[0..<end]
-                var lastNumber: Int? = 0
+//                var lastNumber: Int? = 0
                 // queue upload part first
                 numbers.forEach { partNumber in
                     handle(uploadPartEvent: .queued(partNumber: partNumber))
@@ -305,7 +305,7 @@ class StorageMultipartUploadSession {
                     let subTask = createSubTask(partNumber: partNumber)
                     try client.uploadPart(partNumber: partNumber, multipartUpload: multipartUpload, subTask: subTask)
 
-                    lastNumber = partNumber
+//                    lastNumber = partNumber
                 }
             }
         } catch {

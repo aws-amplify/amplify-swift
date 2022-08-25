@@ -56,7 +56,7 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
         self.sessionProvider = sessionProvider
     }
 
-    convenience init(applicationId: String,
+    init(applicationId: String,
                      pinpointClient: PinpointClientProtocol,
                      endpointClient: EndpointClientBehaviour,
                      sessionProvider: @escaping SessionProvider) throws {
