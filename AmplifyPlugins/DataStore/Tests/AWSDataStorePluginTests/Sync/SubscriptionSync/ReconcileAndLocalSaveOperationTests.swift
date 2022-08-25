@@ -25,6 +25,9 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
     var operation: ReconcileAndLocalSaveOperation!
     var stateMachine: MockStateMachine<ReconcileAndLocalSaveOperation.State, ReconcileAndLocalSaveOperation.Action>!
     var cancellables: Set<AnyCancellable>!
+
+    let skipBrokenTests = true
+
     override func setUp() async throws {
         await tryOrFail {
             try await setUpWithAPI()
@@ -830,7 +833,10 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
     }
 
     func testApplyRemoteModels_saveFail() throws {
-        throw XCTSkip("TODO: fix this test")
+        if skipBrokenTests {
+            throw XCTSkip("TODO: fix this test")
+        }
+        
         let dispositions: [RemoteSyncReconciler.Disposition] = [.create(anyPostMutationSync),
                                                                 .create(anyPostMutationSync),
                                                                 .update(anyPostMutationSync),
@@ -943,7 +949,10 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
     }
 
     func testApplyRemoteModels_deleteFail() throws {
-        throw XCTSkip("TODO: fix this test")
+        if skipBrokenTests {
+            throw XCTSkip("TODO: fix this test")
+        }
+        
         let dispositions: [RemoteSyncReconciler.Disposition] = [.create(anyPostMutationSync),
                                                                 .create(anyPostMutationSync),
                                                                 .update(anyPostMutationSync),
@@ -999,7 +1008,10 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
     }
 
     func testApplyRemoteModels_saveMetadataFail() throws {
-        throw XCTSkip("TODO: fix this test")
+        if skipBrokenTests {
+            throw XCTSkip("TODO: fix this test")
+        }
+        
         let dispositions: [RemoteSyncReconciler.Disposition] = [.create(anyPostMutationSync),
                                                                 .create(anyPostMutationSync),
                                                                 .update(anyPostMutationSync),
