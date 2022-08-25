@@ -11,7 +11,7 @@ import XCTest
 @testable import APIHostApp
 
 extension GraphQLModelBasedTests {
-    //disabled as the test keeps failing
+    // TODO: Migrate this test to new async APIs
     func testConcurrentSubscriptions() throws {
         let count = 50
         let connectedInvoked = expectation(description: "Connection established")
