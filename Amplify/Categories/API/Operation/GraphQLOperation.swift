@@ -9,7 +9,7 @@
 open class GraphQLOperation<R: Decodable>: AmplifyOperation<
     GraphQLOperationRequest<R>,
     R,
-    APIGraphQLError<R>
+    APIGraphQLError
 > { }
 
 /// GraphQL Subscription Operation

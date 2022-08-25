@@ -31,7 +31,7 @@ extension AWSGraphQLOperation: APIOperation {
             finish()
             return
         } catch {
-            dispatch(result: .failure(APIGraphQLError<R>.unknown("", "", error)))
+            dispatch(result: .failure(APIGraphQLError.unknown("", "", error)))
             finish()
             return
         }
@@ -68,16 +68,16 @@ extension AWSGraphQLOperation: APIOperation {
             case .failure(let error):
                 switch error {
                 case .error(let errors):
-                    let apiGraphQLError = APIGraphQLError<R>.error(errors)
+                    let apiGraphQLError = APIGraphQLError.error(errors)
                     dispatch(result: .failure(apiGraphQLError))
                 case .partial(let responseType, let errors):
-                    let apiGraphQLError = APIGraphQLError<R>.partial(responseType, errors)
+                    let apiGraphQLError = APIGraphQLError.partial(data: responseType, errors: errors)
                     dispatch(result: .failure(apiGraphQLError))
                 case .transformationError(let response, let apiError):
-                    let apiGraphQLError = APIGraphQLError<R>.transformationError(response, apiError)
+                    let apiGraphQLError = APIGraphQLError.transformationError(response, apiError)
                     dispatch(result: .failure(apiGraphQLError))
                 case .unknown(let error, let recovery, let underlyingError):
-                    let apiGraphQLError = APIGraphQLError<R>.unknown(error, recovery, underlyingError)
+                    let apiGraphQLError = APIGraphQLError.unknown(error, recovery, underlyingError)
                     dispatch(result: .failure(apiGraphQLError))
                 }
             }

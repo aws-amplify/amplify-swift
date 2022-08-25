@@ -7,7 +7,10 @@
 
 import Foundation
 
-public enum APIGraphQLError<ResponseType: Decodable> {
+public enum APIGraphQLError2 {
+    case partial(GraphQLData: Decodable, [GraphQLError])
+}
+public enum APIGraphQLError {
 
     // Maybe name this something else
     case apiError(APIError)
@@ -18,8 +21,8 @@ public enum APIGraphQLError<ResponseType: Decodable> {
     /// A partially-successful response. The `ResponseType` associated value will contain as much of the payload as the
     /// service was able to fulfill, and the errors will be an array of GraphQLError that contain service-specific error
     /// messages.
-    case partial(ResponseType, [GraphQLError])
-
+    case partial(data: Decodable, errors: [GraphQLError])
+    
     /// A successful, or partially-successful response from the server that could not be transformed into the specified
     /// response type. The RawGraphQLResponse contains the entire response from the service, including data and errors.
     case transformationError(RawGraphQLResponse, APIError)
