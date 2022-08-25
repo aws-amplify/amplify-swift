@@ -44,5 +44,3 @@ public enum AuthProvider {
 }
 
 extension AuthProvider: Codable { }
-
-extension AuthProvider: Equatable { }
