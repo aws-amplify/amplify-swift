@@ -58,7 +58,7 @@ class StorageEngineTestsHasOne: StorageEngineTestsBase {
         }
         wait(for: [saveFinished], timeout: defaultTimeout)
 
-        guard let saveResult = result else {
+        guard result != nil else {
             XCTFail("Save operation timed out")
             return
         }

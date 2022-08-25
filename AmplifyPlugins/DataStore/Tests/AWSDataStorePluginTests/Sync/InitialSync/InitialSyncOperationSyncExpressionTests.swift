@@ -105,7 +105,7 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
                     XCTAssertEqual(modelName, "MockSynced")
                     XCTAssertEqual(syncType, .fullSync)
                     syncStartedReceived.fulfill()
-                case .finished(modelName: let modelName, error: let error):
+                case .finished(modelName: let modelName, _):
                     XCTAssertEqual(modelName, "MockSynced")
                     finishedReceived.fulfill()
                 default:
@@ -177,7 +177,7 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
                     XCTAssertEqual(modelName, "MockSynced")
                     XCTAssertEqual(syncType, .fullSync)
                     syncStartedReceived.fulfill()
-                case .finished(modelName: let modelName, error: let error):
+                case .finished(modelName: let modelName, _):
                     XCTAssertEqual(modelName, "MockSynced")
                     finishedReceived.fulfill()
                 default:
@@ -232,7 +232,7 @@ class InitialSyncOperationSyncExpressionTests: XCTestCase {
                     XCTAssertEqual(modelName, "MockSynced")
                     XCTAssertEqual(syncType, .fullSync)
                     syncStartedReceived.fulfill()
-                case .finished(modelName: let modelName, error: let error):
+                case .finished(modelName: let modelName, _):
                     XCTAssertEqual(modelName, "MockSynced")
                     finishedReceived.fulfill()
                 default:
