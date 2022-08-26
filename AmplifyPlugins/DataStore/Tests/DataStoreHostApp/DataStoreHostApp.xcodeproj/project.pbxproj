@@ -488,6 +488,11 @@
 		97731F0528B68DAC006F180B /* schema.graphql in Resources */ = {isa = PBXBuildFile; fileRef = 97731F0428B68DAC006F180B /* schema.graphql */; };
 		97731F0628B68DDF006F180B /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 21BBFA07289BFE3400B32A39 /* README.md */; };
 		979722F728B6AE0B00679E3C /* DataStoreConnectionScenario3V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA03289BFE3400B32A39 /* DataStoreConnectionScenario3V2Tests.swift */; };
+		979722F828B7D25100679E3C /* DataStoreConnectionScenario4V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA04289BFE3400B32A39 /* DataStoreConnectionScenario4V2Tests.swift */; };
+		979722F928B7DC9D00679E3C /* DataStoreConnectionScenario5V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA01289BFE3400B32A39 /* DataStoreConnectionScenario5V2Tests.swift */; };
+		979722FA28B7E98A00679E3C /* DataStoreConnectionScenario6V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA05289BFE3400B32A39 /* DataStoreConnectionScenario6V2Tests.swift */; };
+		979722FB28B7FD3D00679E3C /* DataStoreConnectionScenario7V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA09289BFE3400B32A39 /* DataStoreConnectionScenario7V2Tests.swift */; };
+		979722FC28B8082900679E3C /* DataStoreConnectionScenario8V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9FE289BFE3400B32A39 /* DataStoreConnectionScenario8V2Tests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2966,6 +2971,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				979722FC28B8082900679E3C /* DataStoreConnectionScenario8V2Tests.swift in Sources */,
+				979722FB28B7FD3D00679E3C /* DataStoreConnectionScenario7V2Tests.swift in Sources */,
+				979722FA28B7E98A00679E3C /* DataStoreConnectionScenario6V2Tests.swift in Sources */,
+				979722F928B7DC9D00679E3C /* DataStoreConnectionScenario5V2Tests.swift in Sources */,
+				979722F828B7D25100679E3C /* DataStoreConnectionScenario4V2Tests.swift in Sources */,
 				979722F728B6AE0B00679E3C /* DataStoreConnectionScenario3V2Tests.swift in Sources */,
 				97731F0328B68452006F180B /* DataStoreConnectionScenario3aV2Tests.swift in Sources */,
 				97731F0228B662EF006F180B /* DataStoreConnectionScenario2V2Tests.swift in Sources */,
