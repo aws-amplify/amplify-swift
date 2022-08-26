@@ -9,7 +9,7 @@ import Foundation
 
 public struct AWSCognitoNetworkPreferences {
     
-    /// The timeout interval to use when waiting for additional data.
+    /// The maximum number of retries for failed requests. The value needs to be between 0 and 10 inclusive. If set to higher than 10, it becomes 10.
     public let maxRetryCount: UInt32
     
     /// The timeout interval to use when waiting for additional data.
