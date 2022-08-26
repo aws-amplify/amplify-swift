@@ -36,7 +36,7 @@ extension APICategory: APICategoryGraphQLBehavior {
             plugin.subscribe(request: request, valueListener: valueListener, completionListener: completionListener)
     }
     
-    public func subscribe<R>(request: GraphQLRequest<R>) async throws -> GraphQLSubscriptionTask<R> {
-        try await plugin.subscribe(request: request)
+    public func subscribe<R>(request: GraphQLRequest<R>) -> AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<R>> {
+        plugin.subscribe(request: request)
     }
 }

@@ -249,7 +249,7 @@ class GraphQLSubscribeCombineTests: OperationTestBase {
             responseType: JSONValue.self
         )
 
-        let operation = apiPlugin.subscribe(request: request)
+        let operation = apiPlugin.subscribe(request: request, valueListener: nil, completionListener: nil)
         connectionStateSink = operation
             .connectionStatePublisher
             .sink(

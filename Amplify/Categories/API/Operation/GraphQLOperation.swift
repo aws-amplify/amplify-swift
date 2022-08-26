@@ -20,6 +20,8 @@ open class GraphQLSubscriptionOperation<R: Decodable>: AmplifyInProcessReporting
     APIError
 > { }
 
+public typealias GraphQLSubscriptionEvent<R: Decodable> = SubscriptionEvent<GraphQLResponse<R>>
+
 public extension HubPayload.EventName.API {
     /// eventName for HubPayloads emitted by this operation
     static let mutate = "API.mutate"
