@@ -61,6 +61,9 @@ final public class AWSCognitoAuthPlugin: AuthCategoryPlugin {
         self.networkPreferences = nil
     }
     
+    /// Instantiates an instance of the AWSCognitoAuthPlugin with custom network preferences
+    /// - Parameters:
+    ///   - networkPreferences: network preferences
     public init(networkPreferences: AWSCognitoNetworkPreferences) {
         self.networkPreferences = networkPreferences
     }
