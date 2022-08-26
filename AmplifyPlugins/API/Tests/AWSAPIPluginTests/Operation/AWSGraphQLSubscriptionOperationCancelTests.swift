@@ -148,6 +148,57 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
         await waitForExpectations(timeout: 5)
     }
     
+    func testCancelSendsCompletionAsync() async {
+        let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _ in
+            return MockSubscriptionConnection(onSubscribe: { (_, _, eventHandler) -> SubscriptionItem in
+                let item = SubscriptionItem(requestString: "", variables: nil, eventHandler: { _, _ in
+                })
+                eventHandler(.connection(.connecting), item)
+                return item
+            }, onUnsubscribe: {_ in
+            })
+        })
+        await setUp(subscriptionConnectionFactory: mockSubscriptionConnectionFactory)
+
+        let request = GraphQLRequest(apiName: apiName,
+                                     document: testDocument,
+                                     variables: nil,
+                                     responseType: JSONValue.self)
+
+        let receivedValueConnecting = AsyncExpectation(description: "Received value for connecting")
+        let receivedValueDisconnected = AsyncExpectation(description: "Received value for disconnected")
+        let receivedCompletion = AsyncExpectation(description: "Received completion")
+        let receivedFailure = AsyncExpectation(description: "Received failure", isInverted: true)
+        let subscriptionEvents = apiPlugin.subscribe(request: request)
+        Task {
+            do {
+                for try await value in subscriptionEvents {
+                    switch value {
+                    case .connection(let state):
+                        switch state {
+                        case .connecting:
+                            await receivedValueConnecting.fulfill()
+                        case .disconnected:
+                            await receivedValueDisconnected.fulfill()
+                        default:
+                            XCTFail("Unexpected value on value listener: \(state)")
+                        }
+                    default:
+                        XCTFail("Unexpected value on on value listener: \(value)")
+                    }
+                }
+                await receivedCompletion.fulfill()
+            } catch {
+                await receivedFailure.fulfill()
+            }
+        }
+        await waitForExpectations([receivedValueConnecting])
+        //task.cancel()
+        subscriptionEvents.cancel()
+        await waitForExpectations([receivedValueDisconnected, receivedCompletion, receivedFailure])
+    }
+    
+    
     func testFailureOnConnection() async {
         let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _ in
             throw APIError.invalidConfiguration("something went wrong", "", nil)

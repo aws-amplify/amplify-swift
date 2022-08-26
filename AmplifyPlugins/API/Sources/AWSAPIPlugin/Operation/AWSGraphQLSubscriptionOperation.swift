@@ -40,6 +40,16 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
         self.apiAuthProviderFactory = apiAuthProviderFactory
     }
     
+    public func cancel() {
+        subscriptionQueue.sync {
+            if let subscriptionItem = subscriptionItem, let subscriptionConnection = subscriptionConnection {
+                subscriptionConnection.unsubscribe(item: subscriptionItem)
+                let subscriptionEvent = SubscriptionEvent<GraphQLResponse<R>>.connection(.disconnected)
+                send(subscriptionEvent)
+            }
+        }
+    }
+    
     public func run() async throws {
         guard !running else { return }
         running = true
