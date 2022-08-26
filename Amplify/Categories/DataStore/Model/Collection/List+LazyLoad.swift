@@ -26,23 +26,6 @@ extension List {
     ///
     /// If you have directly created this list object (for example, by calling `List(elements:)`) then the collection
     /// has already been initialized and calling this method will have no effect.
-    public func fetch(_ completion: @escaping (Result<Void, CoreError>) -> Void) {
-        guard case .notLoaded = loadedState else {
-            completion(.successfulVoid)
-            return
-        }
-
-        listProvider.load { result in
-            switch result {
-            case .success(let elements):
-                self.elements = elements
-                completion(.success(()))
-            case .failure(let coreError):
-                completion(.failure(coreError))
-            }
-        }
-    }
-    
     public func fetch() async throws {
         guard case .notLoaded = loadedState else {
             return
