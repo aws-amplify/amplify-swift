@@ -17,4 +17,12 @@ public struct AWSCognitoNetworkPreferences {
     
     /// The maximum amount of time that a resource request should be allowed to take.
     public let timeoutIntervalForResource: Double
+    
+    public init(maxRetryCount: UInt32,
+                timeoutIntervalForRequest: Double,
+                timeoutIntervalForResource: Double) {
+        self.maxRetryCount = maxRetryCount
+        self.timeoutIntervalForRequest = timeoutIntervalForRequest
+        self.timeoutIntervalForResource = timeoutIntervalForResource
+    }
 }
