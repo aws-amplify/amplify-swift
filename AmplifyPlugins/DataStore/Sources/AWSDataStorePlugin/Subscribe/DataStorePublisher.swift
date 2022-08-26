@@ -39,3 +39,48 @@ protocol ModelSubcriptionBehavior {
 
     func sendFinished()
 }
+
+struct ObserveRequest: AmplifyOperationRequest {
+    typealias Options = [AnyHashable: Any]
+    var options: [AnyHashable : Any]
+    init(options: [AnyHashable: Any] = [:]) {
+        self.options = options
+    }
+}
+
+class ObserveTaskRunner: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel {
+    var request: ObserveRequest
+
+    typealias Request = ObserveRequest
+    typealias InProcess = MutationEvent
+
+    var publisher: AnyPublisher<MutationEvent, DataStoreError>
+    var sink: AnyCancellable?
+    
+    var context = InternalTaskAsyncThrowingSequenceContext<MutationEvent>()
+    private var running = false
+    
+    public init(request: ObserveRequest = .init(), publisher: AnyPublisher<MutationEvent, DataStoreError>) {
+        self.request = request
+        self.publisher = publisher
+    }
+    
+    func run() async throws {
+        guard !running else { return }
+        
+        self.sink = publisher.sink { completion in
+            switch completion {
+            case .finished:
+                self.finish()
+            case .failure(let error):
+                self.fail(error)
+            }
+        } receiveValue: { mutationEvent in
+            
+            self.send(mutationEvent)
+        }
+
+    }
+    
+    
+}

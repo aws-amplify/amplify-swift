@@ -101,17 +101,29 @@ class LocalSubscriptionTests: XCTestCase {
     func testPublisher() async throws {
         let receivedMutationEvent = expectation(description: "Received mutation event")
 
-        let subscription = Amplify.DataStore.publisher(for: Post.self).sink(
-            receiveCompletion: { completion in
-                switch completion {
-                case .failure(let error):
-                    XCTFail("Unexpected error: \(error)")
-                case .finished:
-                    break
+        let subscription = Task {
+            let mutationEvents = Amplify.DataStore.observe(for: Post.self)
+            do {
+                for try await _ in mutationEvents {
+                    receivedMutationEvent.fulfill()
                 }
-        }, receiveValue: { _ in
-            receivedMutationEvent.fulfill()
-        })
+            } catch {
+                XCTFail("Unexpected error: \(error)")
+            }
+        }
+        
+        
+//        let subscription = Amplify.DataStore.publisher(for: Post.self).sink(
+//            receiveCompletion: { completion in
+//                switch completion {
+//                case .failure(let error):
+//                    XCTFail("Unexpected error: \(error)")
+//                case .finished:
+//                    break
+//                }
+//        }, receiveValue: { _ in
+//            receivedMutationEvent.fulfill()
+//        })
 
         let model = Post(id: UUID().uuidString,
                          title: "Test Post",
@@ -135,19 +147,31 @@ class LocalSubscriptionTests: XCTestCase {
     func testCreate() async throws {
         let receivedMutationEvent = expectation(description: "Received mutation event")
 
-        let subscription = Amplify.DataStore.publisher(for: Post.self).sink(
-            receiveCompletion: { completion in
-                switch completion {
-                case .failure(let error):
-                    XCTFail("Unexpected error: \(error)")
-                case .finished:
-                    break
+        let subscription = Task {
+            let mutationEvents = Amplify.DataStore.observe(for: Post.self)
+            do {
+                for try await mutationEvent in mutationEvents {
+                    if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue {
+                        receivedMutationEvent.fulfill()
+                    }
                 }
-        }, receiveValue: { mutationEvent in
-            if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue {
-                receivedMutationEvent.fulfill()
+            } catch {
+                XCTFail("Unexpected error: \(error)")
             }
-        })
+        }
+//        let subscription = Amplify.DataStore.publisher(for: Post.self).sink(
+//            receiveCompletion: { completion in
+//                switch completion {
+//                case .failure(let error):
+//                    XCTFail("Unexpected error: \(error)")
+//                case .finished:
+//                    break
+//                }
+//        }, receiveValue: { mutationEvent in
+//            if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue {
+//                receivedMutationEvent.fulfill()
+//            }
+//        })
 
         let model = Post(id: UUID().uuidString,
                          title: "Test Post",
@@ -189,19 +213,30 @@ class LocalSubscriptionTests: XCTestCase {
 
         let receivedMutationEvent = expectation(description: "Received mutation event")
 
-        let subscription = Amplify.DataStore.publisher(for: Post.self).sink(
-            receiveCompletion: { completion in
-                switch completion {
-                case .failure(let error):
-                    XCTFail("Unexpected error: \(error)")
-                case .finished:
-                    break
+        let subscription = Task {
+            let mutationEvents = Amplify.DataStore.observe(for: Post.self)
+            do {
+                for try await _ in mutationEvents {
+                    receivedMutationEvent.fulfill()
                 }
-        }, receiveValue: { mutationEvent in
-            if mutationEvent.mutationType == MutationEvent.MutationType.update.rawValue {
-                receivedMutationEvent.fulfill()
+            } catch {
+                XCTFail("Unexpected error: \(error)")
             }
-        })
+        }
+        
+//        let subscription = Amplify.DataStore.publisher(for: Post.self).sink(
+//            receiveCompletion: { completion in
+//                switch completion {
+//                case .failure(let error):
+//                    XCTFail("Unexpected error: \(error)")
+//                case .finished:
+//                    break
+//                }
+//        }, receiveValue: { mutationEvent in
+//            if mutationEvent.mutationType == MutationEvent.MutationType.update.rawValue {
+//                receivedMutationEvent.fulfill()
+//            }
+//        })
         
         _ = try await Amplify.DataStore.save(newModel)
 
@@ -218,19 +253,32 @@ class LocalSubscriptionTests: XCTestCase {
     func testDelete() async throws {
         let receivedMutationEvent = expectation(description: "Received mutation event")
 
-        let subscription = Amplify.DataStore.publisher(for: Post.self).sink(
-            receiveCompletion: { completion in
-                switch completion {
-                case .failure(let error):
-                    XCTFail("Unexpected error: \(error)")
-                case .finished:
-                    break
+        let subscription = Task {
+            let mutationEvents = Amplify.DataStore.observe(for: Post.self)
+            do {
+                for try await mutationEvent in mutationEvents {
+                    if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue {
+                        receivedMutationEvent.fulfill()
+                    }
                 }
-        }, receiveValue: { mutationEvent in
-            if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue {
-                receivedMutationEvent.fulfill()
+            } catch {
+                XCTFail("Unexpected error: \(error)")
             }
-        })
+        }
+        
+//        let subscription = Amplify.DataStore.publisher(for: Post.self).sink(
+//            receiveCompletion: { completion in
+//                switch completion {
+//                case .failure(let error):
+//                    XCTFail("Unexpected error: \(error)")
+//                case .finished:
+//                    break
+//                }
+//        }, receiveValue: { mutationEvent in
+//            if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue {
+//                receivedMutationEvent.fulfill()
+//            }
+//        })
 
         let model = Post(title: "Test Post",
                          content: "Test Post Content",

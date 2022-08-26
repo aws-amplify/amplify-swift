@@ -1,3 +1,19 @@
+This is a placeholder for changes that will go into this branch.
+
+- Continually pull in base branch changes from Brennan on `stehlib.task-composition`
+- this PR is to add the AsyncThrowingSequence return type APIs for DataStore.observe / DataStore.observeQuery / API.subscription
+
+API.subscription I think is mostly scoped out and can be done now. 
+
+DataStore.observe is backed by a publisher so when the task runner starts, it will create a AnyCancellable subscriber and task runner will hold onto that, the caller will get the sequence which holds onto the task runner (parent) which holds onto the AnyCancellable subscriber.
+
+DataStore.observeQuery is the complicated right now since the state of the operation gets reset and started. 
+
+Currently DataStore.stop will go to the observeQuery operation queue and for each one, call operation.reset(). When reset is called, it will clear the in-memory "current" snapshot and stop the subscriptions. DataStore.start will call and cause it to start the oberveQuery process again (initial sync, estalbish subscriptions, emit snapshots). 
+
+In the new system, we need to create a publisher on datastore and pass that to the observeQuery task runner, which will sink on the publisher to get updates for "stopped"/"cleared" and "started". It will then react to the updates and reset its state / start observeQuery (again). All existing behavior will have to be verified to make sure it's working as expected.
+
+
 ## Amplify for iOS (Developer Preview)
 <img src="https://s3.amazonaws.com/aws-mobile-hub-images/aws-amplify-logo.png" alt="AWS Amplify" width="550" >
 
