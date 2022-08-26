@@ -22,7 +22,7 @@ class InternalTaskTests: XCTestCase {
         let timeout = Double(total) * 2.0 * delay
         let request = MagicEightBallRequest(total: total, delay: delay)
         let runner = MagicEightBallTaskRunner(request: request)
-        let task = Task {
+        let task = Task<[String], Never> {
             let hubDone = asyncExpectation(description: "hub done")
             var emojis = [String]()
             var hubValues = [String]()
@@ -60,7 +60,7 @@ class InternalTaskTests: XCTestCase {
         let runner = MagicEightBallTaskRunner(request: request)
         // must retain sequence because it is the only strong reference
         let sequence = runner.sequence
-        let task = Task {
+        let task = Task<[String], Never> {
             var emojis = [String]()
             await sequence.forEach { emoji in
                 emojis.append(emoji)
@@ -85,7 +85,7 @@ class InternalTaskTests: XCTestCase {
         let timeout = Double(total) * 2.0 * delay
         let request = MagicEightBallRequest(total: total, delay: delay)
         let runner = MagicEightBallTaskRunner(request: request)
-        let task = Task {
+        let task = Task<[String], Never> {
             var emojis = [String]()
             let sequence = runner.sequence
             sequence.cancel()
@@ -109,7 +109,7 @@ class InternalTaskTests: XCTestCase {
         let delay = 0.01
         let timeout = Double(total) * 2.0 * delay
         let plugin = MagicEightBallPlugin()
-        let task = Task {
+        let task = Task<[String], Never> {
             var answers = [String]()
             await plugin.getAnswers(total: total, delay: delay).forEach { emoji in
                 answers.append(emoji)
@@ -134,7 +134,7 @@ class InternalTaskTests: XCTestCase {
         let timeout = Double(total) * 2.0 * delay
         let request = RandomEmojiRequest(total: total, delay: delay)
         let runner = RandomEmojiTaskRunner(request: request)
-        let task = Task {
+        let task = Task<[String], Never> {
             var emojis = [String]()
             var thrown: Error?
             do {
@@ -165,7 +165,7 @@ class InternalTaskTests: XCTestCase {
         let runner = RandomEmojiTaskRunner(request: request)
         // must retain sequence because it is the only strong reference
         let sequence = runner.sequence
-        let task = Task {
+        let task = Task<[String], Never> {
             var emojis = [String]()
             var thrown: Error?
             do {
@@ -196,7 +196,7 @@ class InternalTaskTests: XCTestCase {
         let timeout = Double(total) * 2.0 * delay
         let request = RandomEmojiRequest(total: total, delay: delay)
         let runner = RandomEmojiTaskRunner(request: request)
-        let task = Task {
+        let task = Task<[String], Never> {
             var emojis = [String]()
             var thrown: Error?
             do {
@@ -226,7 +226,7 @@ class InternalTaskTests: XCTestCase {
         let delay = 0.01
         let timeout = Double(total) * 2.0 * delay
         let plugin = EmojisPlugin()
-        let task = Task {
+        let task = Task<[String], Error> {
             var emojis = [String]()
             try await plugin.getEmojis(total: total, delay: delay).forEach { emoji in
                 emojis.append(emoji)
