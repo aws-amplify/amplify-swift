@@ -39,10 +39,8 @@ class AWSS3StoragePluginAsyncBehaviorTests: AWSS3StoragePluginTests {
             }
             done.fulfill()
         }
-
-        XCTAssertNotNil(operation)
-
         wait(for: [done], timeout: 1.0)
+        _ = operation
     }
 
     func testPluginGetURLAsync() async throws {
@@ -60,4 +58,37 @@ class AWSS3StoragePluginAsyncBehaviorTests: AWSS3StoragePluginTests {
         await waitForExpectations([done], timeout: 3.0)
 
     }
+
+    func testPluginRemoveListener() {
+        let done = expectation(description: "done")
+        storageService.storageServiceDeleteEvents = [.completed(())]
+        let input = testKey
+        let operation = storagePlugin.remove(key: input, options: nil) { result in
+            do {
+                let output = try result.get()
+                XCTAssertEqual(input, output)
+            } catch {
+                XCTFail("Error: \(error)")
+            }
+            done.fulfill()
+        }
+
+        wait(for: [done], timeout: 1.0)
+        _ = operation
+    }
+
+    func testPluginRemoveAsync() async throws {
+        let done = asyncExpectation(description: "done")
+        storageService.storageServiceDeleteEvents = [.completed(())]
+        let input = testKey
+
+        Task {
+            let output = try await storagePlugin.remove(key: input, options: nil)
+            XCTAssertEqual(input, output)
+            await done.fulfill()
+        }
+
+        await waitForExpectations([done])
+    }
+
 }

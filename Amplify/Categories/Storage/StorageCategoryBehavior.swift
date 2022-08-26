@@ -117,4 +117,14 @@ public protocol StorageCategoryBehavior {
     func getURL(key: String,
                 options: StorageGetURLOperation.Request.Options?) async throws -> URL
 
+    /// Delete object from storage
+    ///
+    /// - Parameters:
+    ///   - key: The unique identifier of the object in storage.
+    ///   - options: Parameters to specific plugin behavior
+    /// - Returns: An operation object that provides notifications and actions related to the execution of the work
+    @discardableResult
+    func remove(key: String,
+                options: StorageRemoveOperation.Request.Options?) async throws -> String
+
 }
