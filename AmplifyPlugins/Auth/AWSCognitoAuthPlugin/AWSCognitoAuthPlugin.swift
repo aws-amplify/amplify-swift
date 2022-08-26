@@ -44,6 +44,9 @@ final public class AWSCognitoAuthPlugin: AuthCategoryPlugin {
     public var key: PluginKey {
         return "awsCognitoAuthPlugin"
     }
+    
+    /// The user network preferences for timeout and retry
+    let networkPreferences: AWSCognitoNetworkPreferences?
 
     public func getEscapeHatch() -> AWSCognitoAuthService {
         if let internalAuthorizationProvider = authorizationProvider as? AuthorizationProviderAdapter,
@@ -55,6 +58,11 @@ final public class AWSCognitoAuthPlugin: AuthCategoryPlugin {
 
     /// Instantiates an instance of the AWSCognitoAuthPlugin.
     public init() {
+        self.networkPreferences = nil
+    }
+    
+    public init(networkPreferences: AWSCognitoNetworkPreferences) {
+        self.networkPreferences = networkPreferences
     }
 }
 
