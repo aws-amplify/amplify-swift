@@ -17,9 +17,9 @@ public protocol AmplifyTask {
 
     var value: Success { get async throws }
 
-    func pause() async
-    func resume() async
-    func cancel() async
+    func pause()
+    func resume()
+    func cancel()
 
 #if canImport(Combine)
     var resultPublisher: AnyPublisher<Success, Failure> { get }
