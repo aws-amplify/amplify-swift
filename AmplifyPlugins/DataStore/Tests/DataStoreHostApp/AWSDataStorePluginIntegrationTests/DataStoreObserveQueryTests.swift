@@ -616,18 +616,19 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         let receivedPost = postSyncedExpctation ?? expectation(description: "received Post")
         receivedPost.expectedFulfillmentCount = 2
         receivedPost.assertForOverFulfill = false
-        Amplify.DataStore.publisher(for: Post.self).sink { completion in
-            switch completion {
-            case .finished:
-                break
-            case .failure(let error):
-                XCTFail("\(error)")
+        
+        let task = Task {
+            let mutationEvents = Amplify.DataStore.observe(Post.self)
+            do {
+                for try await mutationEvent in mutationEvents {
+                    if mutationEvent.modelId == post.id {
+                        receivedPost.fulfill()
+                    }
+                }
+            } catch {
+                XCTFail("Failed \(error)")
             }
-        } receiveValue: { mutationEvent in
-            if mutationEvent.modelId == post.id {
-                receivedPost.fulfill()
-            }
-        }.store(in: &cancellables)
+        }
         
         _ = try await Amplify.DataStore.save(post)
         if postSyncedExpctation == nil {
@@ -641,18 +642,18 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         // store and the second event due to the subscription event received from the remote store)
         deletedPost.expectedFulfillmentCount = 2
         deletedPost.assertForOverFulfill = false
-        Amplify.DataStore.publisher(for: Post.self).sink { completion in
-            switch completion {
-            case .finished:
-                break
-            case .failure(let error):
-                XCTFail("\(error)")
+        let task = Task {
+            let mutationEvents = Amplify.DataStore.observe(Post.self)
+            do {
+                for try await mutationEvent in mutationEvents {
+                    if mutationEvent.modelId == post.id {
+                        deletedPost.fulfill()
+                    }
+                }
+            } catch {
+                XCTFail("Failed \(error)")
             }
-        } receiveValue: { mutationEvent in
-            if mutationEvent.modelId == post.id {
-                deletedPost.fulfill()
-            }
-        }.store(in: &cancellables)
+        }
         
         _ = try await Amplify.DataStore.delete(post)
         if postSyncedExpctation == nil {

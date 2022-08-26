@@ -39,3 +39,5 @@ protocol ModelSubcriptionBehavior {
 
     func sendFinished()
 }
+
+

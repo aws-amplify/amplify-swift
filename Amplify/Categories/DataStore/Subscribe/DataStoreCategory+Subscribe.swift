@@ -8,8 +8,8 @@
 import Combine
 
 extension DataStoreCategory: DataStoreSubscribeBehavior {
-    public func publisher<M: Model>(for modelType: M.Type) -> AnyPublisher<MutationEvent, DataStoreError> {
-        return plugin.publisher(for: modelType)
+    public func observe<M: Model>(_ modelType: M.Type) -> AmplifyAsyncThrowingSequence<MutationEvent> {
+        return plugin.observe(modelType)
     }
 
     public func observeQuery<M: Model>(for modelType: M.Type,

@@ -17,14 +17,15 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
         return dataStorePublisher!.publisher
     }
 
-    public func publisher<M: Model>(for modelType: M.Type) -> AnyPublisher<MutationEvent, DataStoreError> {
-        return publisher(for: modelType.modelName)
-    }
-
     public func publisher(for modelName: ModelName) -> AnyPublisher<MutationEvent, DataStoreError> {
         return publisher.filter { $0.modelName == modelName }.eraseToAnyPublisher()
     }
 
+    public func observe<M: Model>(_ modelType: M.Type) -> AmplifyAsyncThrowingSequence<MutationEvent> {
+        let runner = ObserveTaskRunner(publisher: publisher(for: modelType.modelName))
+        return runner.sequence
+    }
+    
     public func observeQuery<M: Model>(for modelType: M.Type,
                                        where predicate: QueryPredicate? = nil,
                                        sort sortInput: QuerySortInput? = nil)
