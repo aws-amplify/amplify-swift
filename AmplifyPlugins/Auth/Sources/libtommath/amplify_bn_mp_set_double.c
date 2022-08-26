@@ -37,12 +37,5 @@ amplify_mp_err amplify_mp_set_double(amplify_mp_int *a, double b)
 
    return AMPLIFY_MP_OKAY;
 }
-#else
-/* pragma message() not supported by several compilers (in mostly older but still used versions) */
-#  ifdef _MSC_VER
-#    pragma message("amplify_mp_set_double implementation is only available on platforms with IEEE754 floating point format")
-#  else
-#    warning "amplify_mp_set_double implementation is only available on platforms with IEEE754 floating point format"
-#  endif
 #endif
 #endif

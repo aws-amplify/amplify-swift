@@ -41,21 +41,3 @@ extension HostedUIProviderInfo: Codable {
         try container.encode(federationProviderName, forKey: .federationProviderName)
     }
 }
-
-extension AuthProvider: Equatable {
-    public static func == (lhs: AuthProvider, rhs: AuthProvider) -> Bool {
-        switch (lhs, rhs) {
-        case (.amazon, .amazon),
-            (.apple, .apple),
-            (.facebook, .facebook),
-            (.google, .google),
-            (.oidc, .oidc),
-            (.saml, .saml):
-            return true
-        case (.custom(let lhsCustom), .custom(let rhsCustom)):
-            return lhsCustom == rhsCustom
-        default:
-            return false
-        }
-    }
-}
