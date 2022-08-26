@@ -80,7 +80,7 @@ class SignUpInputTests: XCTestCase {
             assertHasAttributeType(name: "cognito:model", validationData: validationData)
         }
 #else
-        XCTSkip("Skipping test when not iOS")
+        throw XCTSkip("Skipping test when not iOS")
 #endif
     }
 
