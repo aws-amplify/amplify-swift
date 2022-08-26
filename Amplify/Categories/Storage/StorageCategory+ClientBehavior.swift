@@ -81,4 +81,12 @@ extension StorageCategory: StorageCategoryBehavior {
                      resultListener: StorageListOperation.ResultListener?) -> StorageListOperation {
         return plugin.list(options: options, resultListener: resultListener)
     }
+
+    // MARK: - Async API -
+
+    @discardableResult
+    public func getURL(key: String,
+                options: StorageGetURLOperation.Request.Options?) async throws -> URL {
+        try await plugin.getURL(key: key, options: options)
+    }
 }

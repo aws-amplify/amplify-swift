@@ -215,6 +215,18 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
     func reset() {
         // Do nothing
     }
+
+    // MARK: - Async API -
+
+    @discardableResult
+    func getURL(key: String,
+                options: StorageGetURLOperation.Request.Options?) async throws -> URL {
+        let options = options ?? StorageGetURLRequest.Options()
+        let request = StorageGetURLRequest(key: key, options: options)
+        let operation = MockStorageGetURLOperation(request: request)
+        let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
+        return try await taskAdapter.value
+    }
 }
 
 // swiftlint:disable:next type_name
