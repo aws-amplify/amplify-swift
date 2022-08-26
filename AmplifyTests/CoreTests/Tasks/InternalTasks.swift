@@ -38,7 +38,6 @@ public class RandomEmojiTaskRunner: InternalTaskRunner, InternalTaskAsyncThrowin
         guard !running else { return }
         running = true
         for _ in 0..<request.total {
-            guard !Task.isCancelled else { break }
             try await Task.sleep(seconds: request.delay)
             let emoji = randomEmoji()
             send(emoji)

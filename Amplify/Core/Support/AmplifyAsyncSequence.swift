@@ -14,6 +14,8 @@ public class AmplifyAsyncSequence<Element: Sendable>: AsyncSequence, Cancellable
     private var asyncStream: AsyncStream<Element>! = nil
     private var continuation: AsyncStream<Element>.Continuation! = nil
     private var parent: Cancellable? = nil
+    
+    public private(set) var isCancelled: Bool = false
 
     public init(parent: Cancellable? = nil,
                 bufferingPolicy: AsyncStream<Element>.Continuation.BufferingPolicy = .unbounded) {
@@ -37,6 +39,8 @@ public class AmplifyAsyncSequence<Element: Sendable>: AsyncSequence, Cancellable
     }
 
     public func cancel() {
+        guard !isCancelled else { return }
+        isCancelled = true
         parent?.cancel()
         finish()
     }

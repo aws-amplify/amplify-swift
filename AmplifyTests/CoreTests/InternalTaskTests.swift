@@ -21,17 +21,88 @@ class InternalTaskTests: XCTestCase {
         let request = RandomEmojiRequest(total: total, delay: delay)
         let runner = RandomEmojiTaskRunner(request: request)
         let task = Task {
-            var count = 0
-            try await runner.sequence.forEach { emoji in
-                count += 1
-                print(emoji)
+            var emojis = [String]()
+            var thrown: Error?
+            do {
+                try await runner.sequence.forEach { emoji in
+                    emojis.append(emoji)
+                }
+                await done.fulfill()
+                XCTAssertEqual(total, emojis.count)
+            } catch {
+                thrown = error
             }
-            await done.fulfill()
-            return count
+            XCTAssertNil(thrown)
+            return emojis
         }
 
-        let count = try await task.value
-        XCTAssertEqual(count, request.total)
+        let output = await task.value
+        XCTAssertEqual(request.total, output.count)
+
+        await waitForExpectations([done], timeout: timeout)
+    }
+
+    // needs attention
+    func testRandomEmojiTaskRunnerWithRunnerCancellation() async throws {
+        let done = asyncExpectation(description: "done")
+        let delay = 0.01
+        let total = 10
+        let timeout = Double(total) * 2.0 * delay
+        let request = RandomEmojiRequest(total: total, delay: delay)
+        let runner = RandomEmojiTaskRunner(request: request)
+        // must retain sequence because it is the only strong reference
+        let sequence = runner.sequence
+        let task = Task {
+            var emojis = [String]()
+            var thrown: Error?
+            do {
+                try await sequence.forEach { emoji in
+                    emojis.append(emoji)
+                }
+                await done.fulfill()
+                XCTAssertEqual(0, emojis.count)
+            } catch {
+                thrown = error
+            }
+            XCTAssertNil(thrown)
+            return emojis
+        }
+
+        runner.cancel()
+
+        let output = await task.value
+        XCTAssertEqual(0, output.count)
+
+        await waitForExpectations([done], timeout: timeout)
+    }
+
+    func testRandomEmojiTaskRunnerWithSequenceCancellation() async throws {
+        let done = asyncExpectation(description: "done")
+        let delay = 0.01
+        let total = 10
+        let timeout = Double(total) * 2.0 * delay
+        let request = RandomEmojiRequest(total: total, delay: delay)
+        let runner = RandomEmojiTaskRunner(request: request)
+        let task = Task {
+            var emojis = [String]()
+            var thrown: Error?
+            do {
+                let sequence = runner.sequence
+                sequence.cancel()
+                try await sequence.forEach { emoji in
+                    emojis.append(emoji)
+                }
+                await done.fulfill()
+                XCTAssertEqual(0, emojis.count)
+            } catch {
+                thrown = error
+            }
+            XCTAssertNil(thrown)
+            return emojis
+        }
+
+        let output = await task.value
+        XCTAssertEqual(0, output.count)
 
         await waitForExpectations([done], timeout: timeout)
     }
@@ -41,14 +112,16 @@ class InternalTaskTests: XCTestCase {
         let total = 10
         let delay = 0.01
         let timeout = Double(total) * 2.0 * delay
-        let emojis = EmojisPlugin()
+        let plugin = EmojisPlugin()
         let task = Task {
             var count = 0
-            try await emojis.getEmojis(total: total, delay: delay).forEach { emoji in
+            var emojis = [String]()
+            try await plugin.getEmojis(total: total, delay: delay).forEach { emoji in
                 count += 1
-                print(emoji)
+                emojis.append(emoji)
             }
             await done.fulfill()
+            XCTAssertEqual(total, emojis.count)
             return count
         }
 

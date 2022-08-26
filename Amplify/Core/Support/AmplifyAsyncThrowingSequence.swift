@@ -15,6 +15,8 @@ public class AmplifyAsyncThrowingSequence<Element: Sendable>: AsyncSequence, Can
     private var continuation: AsyncThrowingStream<Element, Error>.Continuation! = nil
     private var parent: Cancellable? = nil
 
+    public private(set) var isCancelled: Bool = false
+
     public init(parent: Cancellable? = nil,
                 bufferingPolicy: AsyncThrowingStream<Element, Error>.Continuation.BufferingPolicy = .unbounded) {
         self.parent = parent
@@ -42,6 +44,8 @@ public class AmplifyAsyncThrowingSequence<Element: Sendable>: AsyncSequence, Can
     }
 
     public func cancel() {
+        guard !isCancelled else { return }
+        isCancelled = true
         parent?.cancel()
         finish()
     }

@@ -26,6 +26,7 @@ public extension InternalTaskAsyncSequence where Self: InternalTaskRunner {
     }
 
     func cancel() {
+        sequence.cancel()
         context.task?.cancel()
         context.task = nil
         context.sequence = nil
@@ -52,6 +53,7 @@ public extension InternalTaskAsyncThrowingSequence where Self: InternalTaskRunne
     }
 
     func cancel() {
+        sequence.cancel()
         context.task?.cancel()
         context.task = nil
         context.sequence = nil
