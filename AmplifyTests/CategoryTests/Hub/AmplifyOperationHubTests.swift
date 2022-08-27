@@ -228,6 +228,15 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
         return try await taskAdapter.value
     }
 
+    @discardableResult
+    public func downloadData(key: String,
+                      options: StorageDownloadDataOperation.Request.Options?) async throws -> StorageDownloadDataTask {
+        let options = options ?? StorageDownloadDataRequest.Options()
+        let request = StorageDownloadDataRequest(key: key, options: options)
+        let operation = MockDispatchingStorageDownloadDataOperation(request: request)
+        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
+        return taskAdapter
+    }
 
     @discardableResult
     public func remove(key: String,

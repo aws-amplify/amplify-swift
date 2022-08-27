@@ -54,8 +54,8 @@ extension AWSS3StoragePlugin {
     public func downloadData(
         key: String,
         options: StorageDownloadDataRequest.Options? = nil,
-        progressListener: StorageDownloadDataOperation.InProcessListener?,
-        resultListener: StorageDownloadDataOperation.ResultListener?
+        progressListener: StorageDownloadDataOperation.InProcessListener? = nil,
+        resultListener: StorageDownloadDataOperation.ResultListener? = nil
     ) -> StorageDownloadDataOperation {
         let options = options ?? StorageDownloadDataRequest.Options()
         let request = StorageDownloadDataRequest(key: key, options: options)
