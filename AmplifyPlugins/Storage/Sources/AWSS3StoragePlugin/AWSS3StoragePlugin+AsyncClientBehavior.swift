@@ -50,6 +50,22 @@ extension AWSS3StoragePlugin {
     }
 
     @discardableResult
+    public func downloadFile(key: String,
+                      local: URL,
+                      options: StorageDownloadFileOperation.Request.Options?) async throws -> StorageDownloadFileTask {
+        let options = options ?? StorageDownloadFileRequest.Options()
+        let request = StorageDownloadFileRequest(key: key, local: local, options: options)
+        let operation = AWSS3StorageDownloadFileOperation(request,
+                                                          storageConfiguration: storageConfiguration,
+                                                          storageService: storageService,
+                                                          authService: authService)
+
+        queue.addOperation(operation)
+        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
+        return taskAdapter
+    }
+
+    @discardableResult
     public func remove(key: String,
                 options: StorageRemoveOperation.Request.Options?) async throws -> String {
         let options = options ?? StorageRemoveRequest.Options()
