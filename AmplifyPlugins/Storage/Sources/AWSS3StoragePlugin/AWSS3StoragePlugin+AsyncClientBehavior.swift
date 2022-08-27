@@ -49,4 +49,16 @@ extension AWSS3StoragePlugin {
         return try await taskAdapter.value
     }
 
+    public func list(options: StorageListRequest.Options? = nil) async throws -> StorageListResult {
+        let options = options ?? StorageListRequest.Options()
+        let request = StorageListRequest(options: options)
+        let operation = AWSS3StorageListOperation(request,
+                                                  storageConfiguration: storageConfiguration,
+                                                  storageService: storageService,
+                                                  authService: authService)
+        queue.addOperation(operation)
+        let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
+        return try await taskAdapter.value
+    }
+
 }

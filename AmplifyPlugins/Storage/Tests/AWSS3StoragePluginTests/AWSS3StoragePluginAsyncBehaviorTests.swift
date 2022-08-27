@@ -40,6 +40,9 @@ class AWSS3StoragePluginAsyncBehaviorTests: AWSS3StoragePluginTests {
             done.fulfill()
         }
         wait(for: [done], timeout: 1.0)
+
+        XCTAssertEqual(1, storageService.getPreSignedURLCalled)
+
         _ = operation
     }
 
@@ -56,7 +59,6 @@ class AWSS3StoragePluginAsyncBehaviorTests: AWSS3StoragePluginTests {
         }
 
         await waitForExpectations([done], timeout: 3.0)
-
     }
 
     func testPluginRemoveListener() {
@@ -74,6 +76,9 @@ class AWSS3StoragePluginAsyncBehaviorTests: AWSS3StoragePluginTests {
         }
 
         wait(for: [done], timeout: 1.0)
+
+        XCTAssertEqual(1, storageService.deleteCalled)
+
         _ = operation
     }
 
@@ -85,10 +90,50 @@ class AWSS3StoragePluginAsyncBehaviorTests: AWSS3StoragePluginTests {
         Task {
             let output = try await storagePlugin.remove(key: input, options: nil)
             XCTAssertEqual(input, output)
+            XCTAssertEqual(1, storageService.deleteCalled)
             await done.fulfill()
         }
 
         await waitForExpectations([done])
+    }
+
+    func testPluginListListener() {
+        let done = expectation(description: "done")
+        let item = StorageListResult.Item(key: testKey)
+        let input = StorageListResult(items: [item])
+
+        storageService.storageServiceListEvents = [.completed(input)]
+        let operation = storagePlugin.list(options: nil) { result in
+            do {
+                let output = try result.get()
+                XCTAssertEqual(input.items.first?.key, output.items.first?.key)
+            } catch {
+                XCTFail("Error: \(error)")
+            }
+            done.fulfill()
+        }
+
+        wait(for: [done], timeout: 1.0)
+
+        XCTAssertEqual(1, storageService.listCalled)
+
+        _ = operation
+    }
+
+    func testPluginListAsync() async throws  {
+        let done = asyncExpectation(description: "done")
+        let item = StorageListResult.Item(key: testKey)
+        let input = StorageListResult(items: [item])
+
+        Task {
+            storageService.storageServiceListEvents = [.completed(input)]
+            let output = try await storagePlugin.list(options: nil)
+            XCTAssertEqual(input.items.first?.key, output.items.first?.key)
+            XCTAssertEqual(1, storageService.listCalled)
+            await done.fulfill()
+        }
+
+        await waitForExpectations([done], timeout: 3.0)
     }
 
 }
