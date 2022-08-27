@@ -119,6 +119,16 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
         return try await taskAdapter.value
     }
 
+    @discardableResult
+    public func list(options: StorageListOperation.Request.Options?) async throws -> StorageListResult {
+        notify("list")
+        let options = options ?? StorageListRequest.Options()
+        let request = StorageListRequest(options: options)
+        let operation = MockStorageListOperation(request: request)
+        let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
+        return try await taskAdapter.value
+    }
+
 }
 
 class MockSecondStorageCategoryPlugin: MockStorageCategoryPlugin {
