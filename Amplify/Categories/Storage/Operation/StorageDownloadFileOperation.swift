@@ -27,3 +27,8 @@ public extension HubPayload.EventName.Storage {
     /// eventName for HubPayloads emitted by this operation
     static let downloadFile = "Storage.downloadFile"
 }
+
+public typealias StorageDownloadFileTask = AmplifyInProcessReportingOperationTaskAdapter<StorageDownloadFileRequest,
+                                                                                         Progress,
+                                                                                         Void,
+                                                                                         StorageError>
