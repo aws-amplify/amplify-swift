@@ -206,24 +206,6 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
             return false
         }
     }
-
-    public func getNextPage(completion: @escaping (Result<List<Element>, CoreError>) -> Void) {
-        guard case .loaded(_, let nextTokenOptional, let filter) = loadedState else {
-            completion(.failure(.clientValidation("""
-                Make sure the underlying data is loaded by calling `load(completion)`, then only call this method when
-                `hasNextPage()` is true
-                """, "", nil)))
-            return
-        }
-        guard let nextToken = nextTokenOptional else {
-            completion(.failure(CoreError.clientValidation("There is no next page.",
-                                                           "Only call `getNextPage()` when `hasNextPage()` is true.",
-                                                           nil)))
-            return
-        }
-
-        getNextPage(nextToken: nextToken, filter: filter, completion: completion)
-    }
     
     public func getNextPage() async throws -> List<Element> {
         guard case .loaded(_, let nextTokenOptional, let filter) = loadedState else {
@@ -242,43 +224,6 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
     }
 
     /// Internal `getNextPage` to retrieve the next page and return it as a new List object
-    func getNextPage(nextToken: String,
-                     filter: [String: Any]?,
-                     completion: @escaping (Result<List<Element>, CoreError>) -> Void) {
-        let request = GraphQLRequest<List<Element>>.listQuery(responseType: List<Element>.self,
-                                                              modelSchema: Element.schema,
-                                                              filter: filter,
-                                                              limit: limit,
-                                                              nextToken: nextToken,
-                                                              apiName: apiName)
-        Amplify.API.query(request: request) { result in
-            switch result {
-            case .success(let graphQLResponse):
-                switch graphQLResponse {
-                case .success(let nextPageList):
-                    nextPageList.fetch { fetchResult in
-                        switch fetchResult {
-                        case .success:
-                            completion(.success(nextPageList))
-                        case .failure(let error):
-                            completion(.failure(error))
-                        }
-                    }
-                case .failure(let graphQLError):
-                    Amplify.API.log.error(error: graphQLError)
-                    completion(.failure(.listOperation("""
-                        The AppSync request was processed by the service, but the response contained GraphQL errors.
-                        """, "Check the underlying error for the failed GraphQL response.", graphQLError)))
-                }
-            case .failure(let apiError):
-                Amplify.API.log.error(error: apiError)
-                completion(.failure(.listOperation("The AppSync request failed",
-                                                   "See underlying `APIError` for more details.",
-                                                   apiError)))
-            }
-        }
-    }
-    
     func getNextPage(nextToken: String,
                      filter: [String: Any]?) async throws -> List<Element> {
         let request = GraphQLRequest<List<Element>>.listQuery(responseType: List<Element>.self,

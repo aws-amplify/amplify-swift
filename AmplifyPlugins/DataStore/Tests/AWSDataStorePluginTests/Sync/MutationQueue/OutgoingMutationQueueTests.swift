@@ -82,7 +82,7 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
 
         try await startAmplifyAndWaitForSync()
 
-        Amplify.DataStore.save(post) { _ in }
+        _ = try await Amplify.DataStore.save(post)
         // _ = try await Amplify.DataStore.save(post)
         await waitForExpectations(timeout: 5.0, handler: nil)
         Amplify.Hub.removeListener(hubListener)

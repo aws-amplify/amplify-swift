@@ -307,14 +307,13 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
 
         // This doesn't belong here--need to add a `delete` API to the MutationEventSource and pass a
         // reference into the mutation queue.
-        Amplify.DataStore.delete(mutationEvent) { result in
-            switch result {
-            case .failure(let dataStoreError):
-                self.log.verbose("mutationEvent failed to delete: error: \(dataStoreError)")
-            case .success:
+        Task {
+            do {
+                _ = try await Amplify.DataStore.delete(mutationEvent)
                 self.log.verbose("mutationEvent deleted successfully")
+            } catch {
+                self.log.verbose("mutationEvent failed to delete: error: \(error)")
             }
-
             if let mutationSync = mutationSync {
                 self.dispatchOutboxMutationProcessedEvent(mutationEvent: mutationEvent,
                                                           mutationSync: mutationSync)

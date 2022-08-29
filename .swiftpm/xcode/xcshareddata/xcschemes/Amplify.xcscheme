@@ -37,6 +37,14 @@
                BlueprintName = "AmplifyTests"
                ReferencedContainer = "container:">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "DataStoreCategoryConfigurationTests/testPreconditionFailureInvokingBeforeConfig()">
+               </Test>
+               <Test
+                  Identifier = "DataStoreCategoryConfigurationTests/testPreconditionFailureInvokingWithMultiplePlugins()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

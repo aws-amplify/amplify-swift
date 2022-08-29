@@ -61,7 +61,7 @@ class AWSDataStorePluginTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
     }
 
-    func testStorageEngineStartsOnQuery() throws {
+    func testStorageEngineStartsOnQuery() async throws {
         let startExpectation = expectation(description: "Start Sync should be called with Query")
         let storageEngine = MockStorageEngineBehavior()
         storageEngine.responders[.startSync] = StartSyncResponder { _ in
@@ -78,11 +78,11 @@ class AWSDataStorePluginTests: XCTestCase {
                                         validAuthPluginKey: "MockAuthCategoryPlugin")
         do {
             try plugin.configure(using: nil)
-            _ = plugin.query(ExampleWithEveryType.self)
+            _ = try await plugin.query(ExampleWithEveryType.self)
         } catch {
             XCTFail("DataStore configuration should not fail with nil configuration. \(error)")
         }
-        waitForExpectations(timeout: 1.0)
+        await waitForExpectations(timeout: 1.0)
     }
 
     func testStorageEngineStartStopStart() throws {

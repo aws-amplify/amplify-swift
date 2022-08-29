@@ -13,30 +13,16 @@ public protocol DataStoreBaseBehavior {
 
     /// Saves the model to storage. If sync is enabled, also initiates a sync of the mutation to the remote API
     func save<M: Model>(_ model: M,
-                        where condition: QueryPredicate?,
-                        completion: @escaping DataStoreCallback<M>)
-    func save<M: Model>(_ model: M,
                         where condition: QueryPredicate?) async throws -> M
 
-    @available(*, deprecated, renamed: "query(byIdentifier:completion:)")
-    func query<M: Model>(_ modelType: M.Type,
-                         byId id: String,
-                         completion: DataStoreCallback<M?>)
     @available(*, deprecated, renamed: "query(byIdentifier:)")
     func query<M: Model>(_ modelType: M.Type,
                          byId id: String) async throws -> M?
 
     func query<M: Model>(_ modelType: M.Type,
-                         byIdentifier id: String,
-                         completion: DataStoreCallback<M?>) where M: ModelIdentifiable,
-                                                                  M.IdentifierFormat == ModelIdentifierFormat.Default
-    func query<M: Model>(_ modelType: M.Type,
                          byIdentifier id: String) async throws -> M?
         where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default
 
-    func query<M: Model>(_ modelType: M.Type,
-                         byIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
-                         completion: DataStoreCallback<M?>) where M: ModelIdentifiable
     func query<M: Model>(_ modelType: M.Type,
                          byIdentifier id: ModelIdentifier<M, M.IdentifierFormat>) async throws -> M?
         where M: ModelIdentifiable
@@ -44,24 +30,11 @@ public protocol DataStoreBaseBehavior {
     func query<M: Model>(_ modelType: M.Type,
                          where predicate: QueryPredicate?,
                          sort sortInput: QuerySortInput?,
-                         paginate paginationInput: QueryPaginationInput?,
-                         completion: DataStoreCallback<[M]>)
-    func query<M: Model>(_ modelType: M.Type,
-                         where predicate: QueryPredicate?,
-                         sort sortInput: QuerySortInput?,
                          paginate paginationInput: QueryPaginationInput?) async throws -> [M]
 
     func delete<M: Model>(_ model: M,
-                          where predicate: QueryPredicate?,
-                          completion: @escaping DataStoreCallback<Void>)
-    func delete<M: Model>(_ model: M,
                           where predicate: QueryPredicate?) async throws
 
-    func delete<M: Model>(_ modelType: M.Type,
-                          withIdentifier id: String,
-                          where predicate: QueryPredicate?,
-                          completion: @escaping DataStoreCallback<Void>) where M: ModelIdentifiable,
-                                                                               M.IdentifierFormat == ModelIdentifierFormat.Default
     func delete<M: Model>(_ modelType: M.Type,
                           withIdentifier id: String,
                           where predicate: QueryPredicate?) async throws where M: ModelIdentifiable,
@@ -69,15 +42,8 @@ public protocol DataStoreBaseBehavior {
 
     func delete<M: Model>(_ modelType: M.Type,
                           withIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
-                          where predicate: QueryPredicate?,
-                          completion: @escaping DataStoreCallback<Void>) where M: ModelIdentifiable
-    func delete<M: Model>(_ modelType: M.Type,
-                          withIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
                           where predicate: QueryPredicate?) async throws where M: ModelIdentifiable
 
-    func delete<M: Model>(_ modelType: M.Type,
-                           where predicate: QueryPredicate,
-                           completion: @escaping DataStoreCallback<Void>)
     func delete<M: Model>(_ modelType: M.Type,
                            where predicate: QueryPredicate) async throws
 
@@ -87,7 +53,6 @@ public protocol DataStoreBaseBehavior {
 
      - parameter completion: callback to be invoked on success or failure
      */
-    func start(completion: @escaping DataStoreCallback<Void>)
     func start() async throws
 
     /**
@@ -98,7 +63,6 @@ public protocol DataStoreBaseBehavior {
 
      - parameter completion: callback to be invoked on success or failure
      */
-    func stop(completion: @escaping DataStoreCallback<Void>)
     func stop() async throws
 
     /**
@@ -106,7 +70,6 @@ public protocol DataStoreBaseBehavior {
 
      - parameter completion: callback to be invoked on success or failure
      */
-    func clear(completion: @escaping DataStoreCallback<Void>)
     func clear() async throws
 }
 

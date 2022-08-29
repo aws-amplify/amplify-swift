@@ -117,15 +117,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         try await startAmplifyAndWaitForSync()
 
         // Save initial model
-        let createdNewItem = expectation(description: "createdNewItem")
-        Amplify.DataStore.save(post) {
-            if case .failure(let error) = $0 {
-                XCTAssertNil(error)
-            } else {
-                createdNewItem.fulfill()
-            }
-        }
-
+        _ = try await Amplify.DataStore.save(post)
         await waitForExpectations(timeout: 1.0)
 
         // Set the responder to reject the mutation. Make sure to push a retry advice before sending
@@ -147,15 +139,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         // will be scheduled and probably in "waiting" mode when we send the network unavailable
         // notification below.
         post.content = "Update 1"
-        let savedUpdate1 = expectation(description: "savedUpdate1")
-        Amplify.DataStore.save(post) {
-            if case .failure(let error) = $0 {
-                XCTAssertNil(error)
-            } else {
-                savedUpdate1.fulfill()
-            }
-        }
-        await waitForExpectations(timeout: 1.0)
+        _ = try await Amplify.DataStore.save(post)
 
         // At this point, the MutationEvent table (the backing store for the outgoing mutation
         // queue) has only a record for the interim update. It is marked as `inProcess: true`,
@@ -196,15 +180,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         // also expect that it will be overwritten by the next mutation, without ever being synced
         // to the service.
         post.content = "Update 2"
-        let savedUpdate2 = expectation(description: "savedUpdate2")
-        Amplify.DataStore.save(post) {
-            if case .failure(let error) = $0 {
-                XCTAssertNil(error)
-            } else {
-                savedUpdate2.fulfill()
-            }
-        }
-        await waitForExpectations(timeout: 1.0)
+        _ = try await Amplify.DataStore.save(post)
 
         // At this point, the MutationEvent table has only a record for update2. It is marked as
         // `inProcess: false`, because the mutation queue has been fully cancelled.
@@ -215,15 +191,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         // even if there were multiple not-in-process mutations, after the reconciliation completes
         // there would only be one record in the MutationEvent table.
         post.content = expectedFinalContent
-        let savedFinalUpdate = expectation(description: "savedFinalUpdate")
-        Amplify.DataStore.save(post) {
-            if case .failure(let error) = $0 {
-                XCTAssertNil(error)
-            } else {
-                savedFinalUpdate.fulfill()
-            }
-        }
-        await waitForExpectations(timeout: 1.0)
+        _ = try await Amplify.DataStore.save(post)
 
         let syncStarted = expectation(description: "syncStarted")
         setUpSyncStartedListener(

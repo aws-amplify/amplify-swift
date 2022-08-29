@@ -81,7 +81,7 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
     ///    - Amplify starts up
     /// - Then:
     ///    - The DataStore category starts subscriptions for each model
-    func testDataStoreSubscribesAtStartup() throws {
+    func testDataStoreSubscribesAtStartup() async throws {
 
         // Expect 3 subscriptions (create, update, delete) for each registered syncable model
         let createSubscriptionStarted = expectation(description: "Create subscription started")
@@ -103,8 +103,8 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
         }
 
         try Amplify.configure(amplifyConfig)
-        Amplify.DataStore.start(completion: {_ in})
-        waitForExpectations(timeout: 1.0)
+        _ = try await Amplify.DataStore.start()
+        await waitForExpectations(timeout: 1.0)
     }
     // TODO: Implement the test below
 
