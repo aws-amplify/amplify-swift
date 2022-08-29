@@ -12,6 +12,10 @@ import XCTest
 @testable import AmplifyTestCommon
 
 class InternalTaskTests: XCTestCase {
+    
+    override func setUp() async throws {
+        await Amplify.reset()
+    }
 
     // MARK: - Magic Eight Ball (Non-Throwing) -
 
