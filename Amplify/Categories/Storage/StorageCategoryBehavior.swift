@@ -104,4 +104,17 @@ public protocol StorageCategoryBehavior {
     @discardableResult
     func list(options: StorageListOperation.Request.Options?,
               resultListener: StorageListOperation.ResultListener?) -> StorageListOperation
+
+    // MARK: - Async API -
+
+    /// Retrieve the remote URL for the object from storage.
+    ///
+    /// - Parameters:
+    ///   - key: The unique identifier for the object in storage.
+    ///   - options: Parameters to specific plugin behavior
+    /// - Returns: requested Get URL
+    @discardableResult
+    func getURL(key: String,
+                options: StorageGetURLOperation.Request.Options?) async throws -> URL
+
 }

@@ -94,6 +94,20 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
     func reset() {
         notify("reset")
     }
+
+    // MARK: - Async API -
+
+    @discardableResult
+    func getURL(key: String,
+                options: StorageGetURLOperation.Request.Options?) async throws -> URL {
+        notify("getURL")
+        let options = options ?? StorageGetURLRequest.Options()
+        let request = StorageGetURLRequest(key: key, options: options)
+        let operation = MockStorageGetURLOperation(request: request)
+        let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
+        return try await taskAdapter.value
+    }
+
 }
 
 class MockSecondStorageCategoryPlugin: MockStorageCategoryPlugin {
