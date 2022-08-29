@@ -47,57 +47,13 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
             return
         }
     }
-
-    func stopDataStore() {
-        let stopped = expectation(description: "DataStore stopped")
-        Amplify.DataStore.stop { result in
-            switch result {
-            case .success:
-                stopped.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
-        wait(for: [stopped], timeout: 2)
+    
+    func stopDataStore() async throws {
+        try await Amplify.DataStore.stop()
     }
     
-    func stopDataStore() async {
-        let stopped = expectation(description: "DataStore stopped")
-        Amplify.DataStore.stop { result in
-            switch result {
-            case .success:
-                stopped.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
-        await waitForExpectations(timeout: 2)
-    }
-
-    func clearDataStore() {
-        let cleared = expectation(description: "DataStore cleared")
-        Amplify.DataStore.clear { result in
-            switch result {
-            case .success:
-                cleared.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
-        wait(for: [cleared], timeout: 2)
-    }
-    
-    func clearDataStore() async {
-        let cleared = expectation(description: "DataStore cleared")
-        Amplify.DataStore.clear { result in
-            switch result {
-            case .success:
-                cleared.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
-        await waitForExpectations(timeout: 2)
+    func clearDataStore() async throws {
+        try await Amplify.DataStore.clear()
     }
 
     func startAmplify() throws {
@@ -134,11 +90,7 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
         }
 
         try startAmplify()
-        Amplify.DataStore.start { result in
-            if case .failure(let error) = result {
-                XCTFail("\(error)")
-            }
-        }
+        try await Amplify.DataStore.start()
 
         await waitForExpectations(timeout: 100.0)
     }
