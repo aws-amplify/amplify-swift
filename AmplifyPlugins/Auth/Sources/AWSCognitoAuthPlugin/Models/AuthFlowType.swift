@@ -14,10 +14,14 @@ public enum AuthFlowType: String {
     case userSRP
 
     /// Authentication flow for custom flow which are backed by lambda triggers
+    @available(*, deprecated, message: "Use of custom is deprecated, use customWithSrp or customWithoutSrp instead")
     case custom
 
     /// Authentication flow which start with SRP and then move to custom auth flow
     case customWithSRP
+
+    /// Authentication flow which starts without SRP and directly moves to custom auth flow
+    case customWithoutSRP
 
     /// Non-SRP authentication flow; user name and password are passed directly.
     /// If a user migration Lambda trigger is set, this flow will invoke the user migration
@@ -33,12 +37,12 @@ extension AuthFlowType {
 
     func getClientFlowType() -> CognitoIdentityProviderClientTypes.AuthFlowType {
         switch self {
-        case .custom, .customWithSRP:
+        case .custom, .customWithSRP, .customWithoutSRP:
             return .customAuth
         case .userSRP, .unknown:
             return .userSrpAuth
-        default:
-            fatalError("Flow Type not supported")
+        case .userPassword:
+            return .userPasswordAuth
         }
     }
 
