@@ -145,6 +145,54 @@ class AWSS3StoragePluginAsyncBehaviorTests: AWSS3StoragePluginTests {
         XCTAssertEqual(1, storageService.downloadCalled)
     }
 
+    func testPluginUploadDataListener() {
+        let done = expectation(description: "done")
+        storageService.storageServiceUploadEvents = [.completedVoid]
+        let input = testKey
+
+        let operation = storagePlugin.uploadData(key: input,
+                                                 data: testData,
+                                                 options: nil,
+                                                 progressListener: nil) { result in
+            do {
+                _ = try result.get()
+            } catch {
+                XCTFail("Error: \(error)")
+            }
+            done.fulfill()
+        }
+
+        wait(for: [done], timeout: 1.0)
+
+        XCTAssertEqual(1, storageService.uploadCalled)
+
+        _ = operation
+    }
+
+    func testPluginUploadDataAsync() async throws {
+        let done = asyncExpectation(description: "done")
+        storageService.storageServiceUploadEvents = [.completedVoid]
+        let input = testKey
+
+        Task {
+            let task = try await storagePlugin.uploadData(key: input,
+                                                          data: testData,
+                                                          options: nil)
+            do {
+                let output = try await task.value
+                XCTAssertEqual(input, output)
+            } catch {
+                XCTFail("Error: \(error)")
+            }
+            await done.fulfill()
+
+        }
+
+        await waitForExpectations([done], timeout: 3.0)
+
+        XCTAssertEqual(1, storageService.uploadCalled)
+    }
+
     func testPluginRemoveListener() {
         let done = expectation(description: "done")
         storageService.storageServiceDeleteEvents = [.completed(())]

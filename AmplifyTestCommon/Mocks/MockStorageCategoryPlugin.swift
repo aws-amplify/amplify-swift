@@ -143,6 +143,18 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
     }
 
     @discardableResult
+    public func uploadData(key: String,
+                           data: Data,
+                           options: StorageUploadDataOperation.Request.Options?) async throws -> StorageUploadDataTask {
+        notify("uploadData")
+        let options = options ?? StorageUploadDataRequest.Options()
+        let request = StorageUploadDataRequest(key: key, data: data, options: options)
+        let operation = MockStorageUploadDataOperation(request: request)
+        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
+        return taskAdapter
+    }
+
+    @discardableResult
     public func list(options: StorageListOperation.Request.Options?) async throws -> StorageListResult {
         notify("list")
         let options = options ?? StorageListRequest.Options()

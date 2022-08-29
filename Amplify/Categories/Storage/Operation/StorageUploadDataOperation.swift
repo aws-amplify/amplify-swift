@@ -18,3 +18,8 @@ public extension HubPayload.EventName.Storage {
     /// eventName for HubPayloads emitted by this operation
     static let uploadData = "Storage.uploadData"
 }
+
+public typealias StorageUploadDataTask = AmplifyInProcessReportingOperationTaskAdapter<StorageUploadDataRequest,
+                                                                                       Progress,
+                                                                                       String,
+                                                                                       StorageError>
