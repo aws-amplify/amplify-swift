@@ -26,7 +26,7 @@ open class AmplifyAuthTask<Request, Success, Failure: AmplifyError> {
     }
 
     open func execute() async throws -> Success {
-        throw AuthError.service("execute() not implemented", "", nil)
+        throw fatalError("Function execute() not implemented")
     }
 
     /// All AmplifyOperations must declare a HubPayloadEventName
