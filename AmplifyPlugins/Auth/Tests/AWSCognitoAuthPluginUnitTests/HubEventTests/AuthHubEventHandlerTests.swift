@@ -137,7 +137,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         }
 
         do {
-            _ = try await plugin.deleteUser()
+            try await plugin.deleteUser()
         } catch {
             XCTFail("Received failure with error \(error)")
         }
