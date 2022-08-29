@@ -237,10 +237,12 @@ extension AWSModelReconciliationQueue: Resettable {
 
         log.verbose("Resetting incomingSubscriptionEventQueue")
         incomingSubscriptionEventQueue.cancelAllOperations()
-        incomingSubscriptionEventQueue.waitUntilAllOperationsAreFinished()
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            incomingSubscriptionEventQueue.waitUntilAllOperationsAreFinished()
+            continuation.resume()
+        }
         log.verbose("Resetting incomingSubscriptionEventQueue: finished")
     }
-
 }
 
 // MARK: Errors handling
