@@ -88,7 +88,7 @@ extension GraphQLResponseDecoderTests {
         XCTAssertNotNil(post.comments)
     }
 
-    func testDecodeToResponseTypeForList() throws {
+    func testDecodeToResponseTypeForList() async throws {
         let request = GraphQLRequest<List<SimpleModel>>(document: "",
                                                         responseType: List<SimpleModel>.self,
                                                         decodePath: "listSimpleModel")
@@ -110,12 +110,8 @@ extension GraphQLResponseDecoderTests {
 
         let result = try decoder.decodeToResponseType(graphQLData)
         XCTAssertNotNil(result)
-        let fetchCompleted = expectation(description: "Fetch completed")
-        result.fetch { _ in
-            XCTAssertEqual(result.count, 2)
-            fetchCompleted.fulfill()
-        }
-        wait(for: [fetchCompleted], timeout: 1)
+        try await result.fetch()
+        XCTAssertEqual(result.count, 2)
         XCTAssertFalse(result.hasNextPage())
     }
 
