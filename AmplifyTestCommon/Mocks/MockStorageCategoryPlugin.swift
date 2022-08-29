@@ -108,6 +108,17 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
         return try await taskAdapter.value
     }
 
+    @discardableResult
+    public func remove(key: String,
+                       options: StorageRemoveRequest.Options? = nil) async throws -> String {
+        notify("remove")
+        let options = options ?? StorageRemoveRequest.Options()
+        let request = StorageRemoveRequest(key: key, options: options)
+        let operation = MockStorageRemoveOperation(request: request)
+        let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
+        return try await taskAdapter.value
+    }
+
 }
 
 class MockSecondStorageCategoryPlugin: MockStorageCategoryPlugin {

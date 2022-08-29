@@ -89,4 +89,10 @@ extension StorageCategory: StorageCategoryBehavior {
                 options: StorageGetURLOperation.Request.Options?) async throws -> URL {
         try await plugin.getURL(key: key, options: options)
     }
+
+    @discardableResult
+    public func remove(key: String,
+                       options: StorageRemoveRequest.Options? = nil) async throws -> String {
+        try await plugin.remove(key: key, options: options)
+    }
 }
