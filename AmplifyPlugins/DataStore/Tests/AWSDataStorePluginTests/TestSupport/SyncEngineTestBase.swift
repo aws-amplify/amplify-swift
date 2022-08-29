@@ -174,12 +174,9 @@ class SyncEngineTestBase: XCTestCase {
     }
 
     /// Starts amplify by invoking `Amplify.configure(amplifyConfig)`
-    func startAmplify() throws {
+    func startAmplify() async throws {
         try Amplify.configure(amplifyConfig)
-        Task {
-            try await Amplify.DataStore.start()
-        }
-        // Amplify.DataStore.start(completion: {_ in})
+        try await Amplify.DataStore.start()
     }
     
     /// Starts amplify by invoking `Amplify.configure(amplifyConfig)`, and waits to receive a `syncStarted` Hub message
@@ -200,7 +197,9 @@ class SyncEngineTestBase: XCTestCase {
                 return
             }
 
-            try startAmplify()
+            Task {
+                try await startAmplify()
+            }
         } catch {
             Amplify.Hub.removeListener(token)
             completion(.failure(error))
