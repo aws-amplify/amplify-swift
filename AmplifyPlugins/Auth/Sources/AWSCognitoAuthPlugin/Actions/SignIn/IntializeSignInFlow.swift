@@ -65,12 +65,16 @@ struct InitializeSignInFlow: Action {
         switch authflow {
         case .userSRP:
             return .init(eventType: .initiateSignInWithSRP(signInEventData, deviceMetadata))
-        case .custom:
+        case .customWithoutSRP:
             return .init(eventType: .initiateCustomSignIn(signInEventData, deviceMetadata))
         case .customWithSRP:
             return .init(eventType: .initiateCustomSignInWithSRP(signInEventData, deviceMetadata))
         case .userPassword:
             return .init(eventType: .initiateMigrateAuth(signInEventData, deviceMetadata))
+        // Using `custom` here to keep the legacy behaviour from V1 intact,
+        // which is custom flow type will start with SRP_A flow.
+        case .custom:
+            return .init(eventType: .initiateCustomSignInWithSRP(signInEventData, deviceMetadata))
         case .unknown:
             // Default to SRP signIn if we could not figure out the authflow type
             return .init(eventType: .initiateSignInWithSRP(signInEventData, deviceMetadata))

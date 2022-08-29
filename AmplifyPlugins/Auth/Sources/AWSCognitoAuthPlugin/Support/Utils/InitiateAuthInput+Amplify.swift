@@ -22,7 +22,9 @@ extension InitiateAuthInput {
             "SRP_A": publicSRPAHexValue
         ]
 
-        if authFlowType == .customWithSRP {
+        // Using `custom` here to keep the legacy behaviour from V1 intact,
+        // which is custom flow type will start with SRP_A flow.
+        if authFlowType == .customWithSRP || authFlowType == .custom {
             authParameters["CHALLENGE_NAME"] = "SRP_A"
         }
 
@@ -65,7 +67,7 @@ extension InitiateAuthInput {
         ]
 
         return buildInput(username: username,
-                          authFlowType: .customAuth,
+                          authFlowType: .userPasswordAuth,
                           authParameters: authParameters,
                           clientMetadata: clientMetadata,
                           asfDeviceId: asfDeviceId,
