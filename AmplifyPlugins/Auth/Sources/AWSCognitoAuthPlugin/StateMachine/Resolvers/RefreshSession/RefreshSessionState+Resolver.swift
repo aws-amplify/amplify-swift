@@ -9,28 +9,46 @@ import Foundation
 import Amplify
 
 extension RefreshSessionState {
-
+    
     struct Resolver: StateMachineResolver {
-
+        
         var defaultState: RefreshSessionState = .notStarted
-
+        
         func resolve(oldState: RefreshSessionState,
                      byApplying event: StateMachineEvent) -> StateResolution<RefreshSessionState> {
-
+            
             switch oldState {
             case .notStarted:
-
+                
                 if case .refreshCognitoUserPool(let signedInData) = event.isRefreshSessionEvent {
-                    let action = RefreshUserPoolTokens(existingSignedIndata: signedInData)
-                    return .init(newState: .refreshingUserPoolToken(signedInData), actions: [action])
+                    if case .hostedUI = signedInData.signInMethod {
+                        let action = RefreshHostedUITokens(existingSignedIndata: signedInData)
+                        return .init(newState: .refreshingUserPoolToken(signedInData),
+                                     actions: [action])
+                    } else {
+                        let action = RefreshUserPoolTokens(existingSignedIndata: signedInData)
+                        return .init(newState: .refreshingUserPoolToken(signedInData),
+                                     actions: [action])
+                    }
                 }
-
+                
                 if case .refreshCognitoUserPoolWithIdentityId(
                     let signedInData,
                     let identityID) = event.isRefreshSessionEvent {
-                    let action = RefreshUserPoolTokens(existingSignedIndata: signedInData)
-                    return .init(newState: .refreshingUserPoolTokenWithIdentity(signedInData, identityID),
-                                 actions: [action])
+                    
+                    if case .hostedUI = signedInData.signInMethod {
+                        let action = RefreshHostedUITokens(existingSignedIndata: signedInData)
+                        return .init(
+                            newState: .refreshingUserPoolTokenWithIdentity(signedInData,
+                                                                           identityID),
+                            actions: [action])
+                    } else {
+                        let action = RefreshUserPoolTokens(existingSignedIndata: signedInData)
+                        return .init(newState:
+                                .refreshingUserPoolTokenWithIdentity(signedInData, identityID),
+                                     actions: [action])
+                    }
+                    
                 }
                 if case .refreshUnAuthAWSCredentials(let identityID) = event.isRefreshSessionEvent {
                     let provider = UnAuthLoginsMapProvider()
@@ -39,7 +57,7 @@ extension RefreshSessionState {
                     return .init(newState: .refreshingUnAuthAWSCredentials(identityID),
                                  actions: [action])
                 }
-
+                
                 if case .refreshAWSCredentialsWithUserPool(
                     let identityID,
                     let signedInData,
@@ -51,15 +69,15 @@ extension RefreshSessionState {
                         identityID
                     ), actions: [action])
                 }
-
+                
                 if case .throwError(let error) = event.isRefreshSessionEvent {
                     let action = InformSessionError(error: error)
                     return .init(newState: .error(error), actions: [action])
                 }
                 return .from(oldState)
-
+                
             case .refreshingUserPoolToken:
-
+                
                 if case .throwError(let error) = event.isRefreshSessionEvent {
                     let action = InformSessionError(error: error)
                     return .init(newState: .error(error), actions: [action])
@@ -69,16 +87,16 @@ extension RefreshSessionState {
                     let action = InformSessionRefreshed(credentials: credentials)
                     return .init(newState: .refreshed(credentials), actions: [action])
                 }
-
+                
                 if case .refreshIdentityInfo(let signedInData, _) = event.isRefreshSessionEvent {
                     let action = InitializeFetchAuthSessionWithUserPool(signedInData: signedInData)
                     return .init(newState: .fetchingAuthSessionWithUserPool(.notStarted, signedInData),
                                  actions: [action])
                 }
                 return .from(oldState)
-
+                
             case .refreshingUserPoolTokenWithIdentity(_, let identityID):
-
+                
                 if case .throwError(let error) = event.isRefreshSessionEvent {
                     let action = InformSessionError(error: error)
                     return .init(newState: .error(error), actions: [action])
@@ -96,9 +114,9 @@ extension RefreshSessionState {
                         identityID), actions: [action])
                 }
                 return .from(oldState)
-
+                
             case .fetchingAuthSessionWithUserPool(let fetchSessionState, let signedInData):
-
+                
                 if case .throwError(let error) = event.isRefreshSessionEvent {
                     let action = InformSessionError(error: error)
                     return .init(newState: .error(error), actions: [action])
@@ -118,9 +136,9 @@ extension RefreshSessionState {
                 return .init(newState: .fetchingAuthSessionWithUserPool(
                     resolution.newState,
                     signedInData), actions: resolution.actions)
-
+                
             case .refreshingUnAuthAWSCredentials:
-
+                
                 if case .throwError(let error) = event.isFetchSessionEvent {
                     let action = InformSessionError(error: error)
                     return .init(newState: .error(error), actions: [action])
@@ -135,9 +153,9 @@ extension RefreshSessionState {
                     return .init(newState: .refreshed(amplifyCredentials), actions: [action])
                 }
                 return .from(oldState)
-
+                
             case .refreshingAWSCredentialsWithUserPoolTokens(let signedInData, _):
-
+                
                 if case .throwError(let error) = event.isFetchSessionEvent {
                     let action = InformSessionError(error: error)
                     return .init(newState: .error(error), actions: [action])
@@ -153,11 +171,11 @@ extension RefreshSessionState {
                     return .init(newState: .refreshed(amplifyCredentials), actions: [action])
                 }
                 return .from(oldState)
-
+                
             case .error, .refreshed:
                 return .from(oldState)
             }
         }
     }
-
+    
 }

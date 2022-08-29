@@ -89,7 +89,7 @@ struct HostedUIRequestHelper {
         guard let signInRedirectURI = configuration.oauth
             .signInRedirectURI
             .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
-            throw HostedUIError.signInURI
+            throw HostedUIError.tokenURI
         }
 
         var components = URLComponents()
@@ -98,7 +98,7 @@ struct HostedUIRequestHelper {
         components.host = configuration.oauth.domain
 
         guard let url = components.url else {
-            throw HostedUIError.signInURI
+            throw HostedUIError.tokenURI
         }
 
         var queryComponents = URLComponents()
@@ -110,7 +110,7 @@ struct HostedUIRequestHelper {
             .init(name: "code_verifier", value: result.codeVerifier)]
 
         guard let body = queryComponents.query else {
-            throw HostedUIError.signInURI
+            throw HostedUIError.tokenURI
         }
 
         var urlRequest = URLRequest(url: url)
@@ -118,6 +118,35 @@ struct HostedUIRequestHelper {
         urlRequest.httpBody = body.data(using: .utf8)
         return urlRequest
     }
+
+    static func createRefreshTokenRequest(
+        refreshToken: String,
+        configuration: HostedUIConfigurationData) throws -> URLRequest {
+
+            var components = URLComponents()
+            components.scheme = "https"
+            components.path = "/oauth2/token"
+            components.host = configuration.oauth.domain
+
+            guard let url = components.url else {
+                throw HostedUIError.tokenURI
+            }
+
+            var queryComponents = URLComponents()
+            queryComponents.queryItems = [
+                .init(name: "grant_type", value: "refresh_token"),
+                .init(name: "refresh_token", value: refreshToken),
+                .init(name: "client_id", value: configuration.clientId)]
+
+            guard let body = queryComponents.query else {
+                throw HostedUIError.tokenURI
+            }
+
+            var urlRequest = URLRequest(url: url)
+            urlRequest.httpMethod = "POST"
+            urlRequest.httpBody = body.data(using: .utf8)
+            return urlRequest
+        }
 
     static func urlSafeBase64(_ content: String) -> String {
         return content.replacingOccurrences(of: "/", with: "_")

@@ -11,6 +11,8 @@ enum HostedUIError: Error {
 
     case signInURI
 
+    case tokenURI
+
     case signOutURI
 
     case proofCalculation
