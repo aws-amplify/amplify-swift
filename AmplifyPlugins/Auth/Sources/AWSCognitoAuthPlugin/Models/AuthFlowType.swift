@@ -13,7 +13,8 @@ public enum AuthFlowType: String {
     /// Authentication flow for the Secure Remote Password (SRP) protocol
     case userSRP
 
-    /// Authentication flow for custom flow which are backed by lambda triggers
+    /// Authentication flow for custom flow which are backed by lambda triggers.
+    /// Note that `custom`will always begin with a SRP flow.
     @available(*, deprecated, message: "Use of custom is deprecated, use customWithSrp or customWithoutSrp instead")
     case custom
 
