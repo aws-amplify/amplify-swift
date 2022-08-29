@@ -24,7 +24,7 @@ class DataStoreCategoryClientAPITests: XCTestCase {
 
     // MARK: - Test passthrough delegations
 
-    func testSave() throws {
+    func testSave() async throws {
         let plugin = MockDataStoreCategoryPlugin()
         try Amplify.add(plugin: plugin)
         try Amplify.configure(mockAmplifyConfig)
@@ -36,9 +36,15 @@ class DataStoreCategoryClientAPITests: XCTestCase {
             }
         }
 
-        Amplify.DataStore.save(TestModel.make()) { _ in }
+        let saveSuccess = asyncExpectation(description: "saved successful")
+        Task {
+            _ = try await Amplify.DataStore.save(TestModel.make())
+            await saveSuccess.fulfill()
+        }
+        await waitForExpectations([saveSuccess], timeout: 0.5)
+        
 
-        waitForExpectations(timeout: 0.5)
+        await waitForExpectations(timeout: 0.5)
     }
 
 }

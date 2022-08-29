@@ -41,32 +41,14 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
                                         myURL: "https://www.amazon.com/dp/B000NZW3KC/",
                                         myIPAddress: "123.12.34.56")
         let updatedContainer = ScalarContainer(id: container.id)
-        guard case .success(let savedModel) = await saveModel(container) else {
-            XCTFail("Failed to save model")
-            return
-        }
+        let savedModel = try await Amplify.DataStore.save(container)
         XCTAssertEqual(savedModel, container)
-
-        guard case .success(let updatedModel) = await saveModel(updatedContainer) else {
-            XCTFail("Failed to update model")
-            return
-        }
+        let updatedModel = try await Amplify.DataStore.save(updatedContainer)
         XCTAssertEqual(updatedModel, updatedContainer)
-
-        guard case .success(let queriedModel) = await queryModel(ScalarContainer.self, byId: container.id) else {
-            XCTFail("Failed to query model")
-            return
-        }
+        let queriedModel = try await Amplify.DataStore.query(ScalarContainer.self, byId: container.id)
         XCTAssertEqual(queriedModel, updatedContainer)
-
-        guard case .success = await deleteModel(updatedContainer) else {
-            XCTFail("Failed to delete model")
-            return
-        }
-        guard case .success(let emptyModel) = await queryModel(ScalarContainer.self, byId: container.id) else {
-            XCTFail("Failed to query deleted model")
-            return
-        }
+        try await Amplify.DataStore.delete(updatedContainer)
+        let emptyModel = try await Amplify.DataStore.query(ScalarContainer.self, byId: container.id)
         XCTAssertNil(emptyModel)
     }
 
@@ -88,32 +70,14 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
                                                 intNullableList: [1, 2, 3],
                                                 nullableIntList: [1, 2, 3],
                                                 nullableIntNullableList: [1, 2, 3])
-        guard case .success(let savedModel) = await saveModel(container) else {
-            XCTFail("Failed to save model")
-            return
-        }
+        let savedModel = try await Amplify.DataStore.save(container)
         XCTAssertEqual(savedModel, container)
-
-        guard case .success(let updatedModel) = await saveModel(updatedContainer) else {
-            XCTFail("Failed to update model")
-            return
-        }
+        let updatedModel = try await Amplify.DataStore.save(updatedContainer)
         XCTAssertEqual(updatedModel, updatedContainer)
-
-        guard case .success(let queriedModel) = await queryModel(ListIntContainer.self, byId: container.id) else {
-            XCTFail("Failed to query model")
-            return
-        }
+        let queriedModel = try await Amplify.DataStore.query(ListIntContainer.self, byId: container.id)
         XCTAssertEqual(queriedModel, updatedContainer)
-
-        guard case .success = await deleteModel(updatedContainer) else {
-            XCTFail("Failed to delete model")
-            return
-        }
-        guard case .success(let emptyModel) = await queryModel(ListIntContainer.self, byId: container.id) else {
-            XCTFail("Failed to query deleted model")
-            return
-        }
+        try await Amplify.DataStore.delete(updatedContainer)
+        let emptyModel = try await Amplify.DataStore.query(ListIntContainer.self, byId: container.id)
         XCTAssertNil(emptyModel)
     }
 
@@ -135,32 +99,15 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
                                                    stringNullableList: ["value1"],
                                                    nullableStringList: ["value1"],
                                                    nullableStringNullableList: ["value1"])
-        guard case .success(let savedModel) = await saveModel(container) else {
-            XCTFail("Failed to save model")
-            return
-        }
+        let savedModel = try await Amplify.DataStore.save(container)
         XCTAssertEqual(savedModel, container)
-
-        guard case .success(let updatedModel) = await saveModel(updatedContainer) else {
-            XCTFail("Failed to update model")
-            return
-        }
+        let updatedModel = try await Amplify.DataStore.save(updatedContainer)
         XCTAssertEqual(updatedModel, updatedContainer)
-
-        guard case .success(let queriedModel) = await queryModel(ListStringContainer.self, byId: container.id) else {
-            XCTFail("Failed to query model")
-            return
-        }
+        let queriedModel = try await Amplify.DataStore.query(ListStringContainer.self, byId: container.id)
         XCTAssertEqual(queriedModel, updatedContainer)
 
-        guard case .success = await deleteModel(updatedContainer) else {
-            XCTFail("Failed to delete model")
-            return
-        }
-        guard case .success(let emptyModel) = await queryModel(ListStringContainer.self, byId: container.id) else {
-            XCTFail("Failed to query deleted model")
-            return
-        }
+        try await Amplify.DataStore.delete(updatedContainer)
+        let emptyModel = try await Amplify.DataStore.query(ListStringContainer.self, byId: container.id)
         XCTAssertNil(emptyModel)
     }
 
@@ -182,32 +129,14 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
                                                    stringNullableList: ["value1"],
                                                    nullableStringList: ["value1"],
                                                    nullableStringNullableList: ["value1"])
-        guard case .success(let savedModel) = await saveModel(container) else {
-            XCTFail("Failed to save model")
-            return
-        }
+        let savedModel = try await Amplify.DataStore.save(container)
         XCTAssertEqual(savedModel, container)
-
-        guard case .success(let updatedModel) = await saveModel(updatedContainer) else {
-            XCTFail("Failed to update model")
-            return
-        }
+        let updatedModel = try await Amplify.DataStore.save(updatedContainer)
         XCTAssertEqual(updatedModel, updatedContainer)
-
-        guard case .success(let queriedModel) = await queryModel(ListStringContainer.self, byId: container.id) else {
-            XCTFail("Failed to query model")
-            return
-        }
+        let queriedModel = try await Amplify.DataStore.query(ListStringContainer.self, byId: container.id)
         XCTAssertEqual(queriedModel, updatedContainer)
-
-        guard case .success = await deleteModel(updatedContainer) else {
-            XCTFail("Failed to delete model")
-            return
-        }
-        guard case .success(let emptyModel) = await queryModel(ListStringContainer.self, byId: container.id) else {
-            XCTFail("Failed to query deleted model")
-            return
-        }
+        try await Amplify.DataStore.delete(updatedContainer)
+        let emptyModel = try await Amplify.DataStore.query(ListStringContainer.self, byId: container.id)
         XCTAssertNil(emptyModel)
     }
 
@@ -227,32 +156,14 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
                                              enumNullableList: [.valueTwo, .valueOne],
                                              nullableEnumList: [.valueTwo, .valueOne],
                                              nullableEnumNullableList: [.valueOne, .valueTwo])
-        guard case .success(let savedModel) = await saveModel(container) else {
-            XCTFail("Failed to save model")
-            return
-        }
+        let savedModel = try await Amplify.DataStore.save(container)
         XCTAssertEqual(savedModel, container)
-
-        guard case .success(let updatedModel) = await saveModel(updatedContainer) else {
-            XCTFail("Failed to update model")
-            return
-        }
+        let updatedModel = try await Amplify.DataStore.save(updatedContainer)
         XCTAssertEqual(updatedModel, updatedContainer)
-
-        guard case .success(let queriedModel) = await queryModel(EnumTestModel.self, byId: container.id) else {
-            XCTFail("Failed to query model")
-            return
-        }
+        let queriedModel = try await Amplify.DataStore.query(EnumTestModel.self, byId: container.id)
         XCTAssertEqual(queriedModel, updatedContainer)
-
-        guard case .success = await deleteModel(updatedContainer) else {
-            XCTFail("Failed to delete model")
-            return
-        }
-        guard case .success(let emptyModel) = await queryModel(EnumTestModel.self, byId: container.id) else {
-            XCTFail("Failed to query deleted model")
-            return
-        }
+        try await Amplify.DataStore.delete(updatedContainer)
+        let emptyModel = try await Amplify.DataStore.query(EnumTestModel.self, byId: container.id)
         XCTAssertNil(emptyModel)
     }
 
@@ -274,33 +185,16 @@ class DataStoreScalarTests: SyncEngineIntegrationTestBase {
                                                    nullableNestedList: [],
                                                    nullableNestedNullableList: nil)
 
-        guard case .success(let savedModel) = await saveModel(container) else {
-            XCTFail("Failed to save model")
-            return
-        }
+        let savedModel = try await Amplify.DataStore.save(container)
         XCTAssertEqual(savedModel, container)
-
-        guard case .success(let updatedModel) = await saveModel(updatedContainer) else {
-            XCTFail("Failed to update model")
-            return
-        }
+        let updatedModel = try await Amplify.DataStore.save(updatedContainer)
         XCTAssertEqual(updatedModel, updatedContainer)
 
-        guard case .success(let queriedModel) = await queryModel(NestedTypeTestModel.self, byId: container.id) else {
-            XCTFail("Failed to query model")
-            return
-        }
+        let queriedModel = try await Amplify.DataStore.query(NestedTypeTestModel.self, byId: container.id)
         XCTAssertEqual(queriedModel, updatedContainer)
 
-        guard case .success = await deleteModel(updatedContainer) else {
-            XCTFail("Failed to delete model")
-            return
-        }
-        guard case .success(let emptyModel) = await queryModel(NestedTypeTestModel.self, byId: container.id) else {
-            XCTFail("Failed to query deleted model")
-            return
-        }
+        try await Amplify.DataStore.delete(updatedContainer)
+        let emptyModel = try await Amplify.DataStore.query(NestedTypeTestModel.self, byId: container.id)
         XCTAssertNil(emptyModel)
     }
-
 }

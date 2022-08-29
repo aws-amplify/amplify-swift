@@ -56,200 +56,79 @@ class DataStoreConnectionScenario5Tests: SyncEngineIntegrationTestBase {
     func testListPostEditorByPost() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        guard let post = savePost(title: "title") else {
-            XCTFail("Could not create post")
-            return
-        }
-        guard let user = saveUser(username: "username") else {
-            XCTFail("Could not create user")
-            return
-        }
-        guard savePostEditor(post: post, editor: user) != nil else {
-            XCTFail("Could not create user")
-            return
-        }
-        let listPostEditorByPostIDCompleted = expectation(description: "list postEditor by postID complete")
+        let post = try await savePost(title: "title")
+        let user = try await saveUser(username: "username")
+        _ = try await savePostEditor(post: post, editor: user)
+
         let predicateByPostId = PostEditor5.keys.post.eq(post.id)
-        Amplify.DataStore.query(PostEditor5.self, where: predicateByPostId) { result in
-            switch result {
-            case .success:
-                listPostEditorByPostIDCompleted.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
-        wait(for: [listPostEditorByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
+        _ = try await Amplify.DataStore.query(PostEditor5.self, where: predicateByPostId)
     }
 
     func testListPostEditorByUser() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        guard let post = savePost(title: "title") else {
-            XCTFail("Could not create post")
-            return
-        }
-        guard let user = saveUser(username: "username") else {
-            XCTFail("Could not create user")
-            return
-        }
-        guard savePostEditor(post: post, editor: user) != nil else {
-            XCTFail("Could not create user")
-            return
-        }
-        let listPostEditorByEditorIdCompleted = expectation(description: "list postEditor by editorID complete")
+        let post = try await savePost(title: "title")
+        let user = try await saveUser(username: "username")
+        try await savePostEditor(post: post, editor: user)
         let predicateByUserId = PostEditor5.keys.editor.eq(user.id)
-        Amplify.DataStore.query(PostEditor5.self, where: predicateByUserId) { result in
-            switch result {
-            case .success(let projects):
-                listPostEditorByEditorIdCompleted.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
-        wait(for: [listPostEditorByEditorIdCompleted], timeout: TestCommonConstants.networkTimeout)
+        _ = try await Amplify.DataStore.query(PostEditor5.self, where: predicateByUserId)
     }
 
     func testGetPostThenLoadPostEditors() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        guard let post = savePost(title: "title") else {
-            XCTFail("Could not create post")
-            return
-        }
-        guard let user = saveUser(username: "username") else {
-            XCTFail("Could not create user")
-            return
-        }
-        guard let postEditor = savePostEditor(post: post, editor: user) else {
-            XCTFail("Could not create user")
-            return
-        }
-        let getPostCompleted = expectation(description: "get post complete")
-        let getPostEditorsCompleted = expectation(description: "get postEditors complete")
-        Amplify.DataStore.query(Post5.self, byId: post.id) { result in
-            switch result {
-            case .success(let queriedPostOptional):
-                guard let queriedPost = queriedPostOptional else {
-                    XCTFail("Missing queried post")
-                    return
-                }
-                XCTAssertEqual(queriedPost.id, post.id)
-                getPostCompleted.fulfill()
-                guard let editors = queriedPost.editors else {
-                    XCTFail("Missing editors")
-                    return
-                }
-                editors.fetch { result in
-                    switch result {
-                    case .success:
-                        XCTAssertEqual(editors.count, 1)
-                        getPostEditorsCompleted.fulfill()
-                    case .failure(let error):
-                        XCTFail("\(error)")
-                    }
-                }
+        let post = try await savePost(title: "title")
+        let user = try await saveUser(username: "username")
+        let postEditor = try await savePostEditor(post: post, editor: user)
 
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+        let queriedPostOptional = try await Amplify.DataStore.query(Post5.self, byId: post.id)
+        guard let queriedPost = queriedPostOptional else {
+            XCTFail("Missing queried post")
+            return
         }
-        wait(for: [getPostCompleted, getPostEditorsCompleted], timeout: TestCommonConstants.networkTimeout)
+        XCTAssertEqual(queriedPost.id, post.id)
+        guard let editors = queriedPost.editors else {
+            XCTFail("Missing editors")
+            return
+        }
+        try await editors.fetch()
+        XCTAssertEqual(editors.count, 1)
     }
 
     func testGetUserThenLoadPostEditors() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        guard let post = savePost(title: "title") else {
-            XCTFail("Could not create post")
+        let post = try await savePost(title: "title")
+        let user = try await saveUser(username: "username")
+        let postEditor = try await savePostEditor(post: post, editor: user)
+        
+        let queriedUserOptional = try await Amplify.DataStore.query(User5.self, byId: user.id)
+        guard let queriedUser = queriedUserOptional else {
+            XCTFail("Missing queried user")
             return
         }
-        guard let user = saveUser(username: "username") else {
-            XCTFail("Could not create user")
+        XCTAssertEqual(queriedUser.id, user.id)
+        guard let posts = queriedUser.posts else {
+            XCTFail("Missing posts")
             return
         }
-        guard let postEditor = savePostEditor(post: post, editor: user) else {
-            XCTFail("Could not create user")
-            return
-        }
-        let getUserCompleted = expectation(description: "get user complete")
-        let getPostsCompleted = expectation(description: "get postEditors complete")
-        Amplify.DataStore.query(User5.self, byId: user.id) { result in
-            switch result {
-            case .success(let queriedUserOptional):
-                guard let queriedUser = queriedUserOptional else {
-                    XCTFail("Missing queried user")
-                    return
-                }
-                XCTAssertEqual(queriedUser.id, user.id)
-                getUserCompleted.fulfill()
-                guard let posts = queriedUser.posts else {
-                    XCTFail("Missing posts")
-                    return
-                }
-                posts.fetch { result in
-                    switch result {
-                    case .success:
-                        XCTAssertEqual(posts.count, 1)
-                        getPostsCompleted.fulfill()
-                    case .failure(let error):
-                        XCTFail("\(error)")
-                    }
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
-        wait(for: [getUserCompleted, getPostsCompleted], timeout: TestCommonConstants.networkTimeout)
+        try await posts.fetch()
+        XCTAssertEqual(posts.count, 1)
     }
 
-    func savePost(id: String = UUID().uuidString, title: String) -> Post5? {
+    func savePost(id: String = UUID().uuidString, title: String) async throws -> Post5 {
         let post = Post5(id: id, title: title)
-        var result: Post5?
-        let completeInvoked = expectation(description: "request completed")
-        Amplify.DataStore.save(post) { event in
-            switch event {
-            case .success(let project):
-                result = project
-                completeInvoked.fulfill()
-            case .failure(let error):
-                XCTFail("failed \(error)")
-            }
-        }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
-        return result
+        return try await Amplify.DataStore.save(post)
     }
 
-    func saveUser(id: String = UUID().uuidString, username: String) -> User5? {
+    func saveUser(id: String = UUID().uuidString, username: String) async throws -> User5 {
         let user = User5(id: id, username: username)
         var result: User5?
-        let completeInvoked = expectation(description: "request completed")
-        Amplify.DataStore.save(user) { event in
-            switch event {
-            case .success(let project):
-                result = project
-                completeInvoked.fulfill()
-            case .failure(let error):
-                XCTFail("failed \(error)")
-            }
-        }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
-        return result
+        return try await Amplify.DataStore.save(user)
     }
 
-    func savePostEditor(id: String = UUID().uuidString, post: Post5, editor: User5) -> PostEditor5? {
+    func savePostEditor(id: String = UUID().uuidString, post: Post5, editor: User5) async throws -> PostEditor5 {
         let postEditor = PostEditor5(id: id, post: post, editor: editor)
-        var result: PostEditor5?
-        let completeInvoked = expectation(description: "request completed")
-        Amplify.DataStore.save(postEditor) { event in
-            switch event {
-            case .success(let project):
-                result = project
-                completeInvoked.fulfill()
-            case .failure(let error):
-                XCTFail("failed \(error)")
-            }
-        }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
-        return result
+        return try await Amplify.DataStore.save(postEditor)
     }
 }

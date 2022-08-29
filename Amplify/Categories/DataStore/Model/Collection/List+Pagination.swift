@@ -26,19 +26,6 @@ extension List {
 
     /// Retrieve the next page as a new in-memory List object. Calling `getNextPage(completion:)` will load the
     /// underlying elements of the receiver from the data source if not yet loaded before
-    public func getNextPage(completion: @escaping (Result<List<Element>, CoreError>) -> Void) {
-        switch loadedState {
-        case .loaded:
-            listProvider.getNextPage(completion: completion)
-        case .notLoaded:
-            let message = "Call `fetch` to lazy load the list before using this method."
-            let error: CoreError = .listOperation(message, "", nil)
-            Amplify.log.error(error: error)
-            assertionFailure(message)
-            completion(.failure(error))
-        }
-    }
-    
     public func getNextPage() async throws -> List<Element> {
         switch loadedState {
         case .loaded:

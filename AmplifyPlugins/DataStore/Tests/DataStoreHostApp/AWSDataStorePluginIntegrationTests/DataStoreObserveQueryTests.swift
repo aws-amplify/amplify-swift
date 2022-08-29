@@ -40,7 +40,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     func testObserveQueryInitialSync() async throws {
         await setUp(withModels: TestModelRegistration())
         try startAmplify()
-        await clearDataStore()
+        try await clearDataStore()
         var snapshots = [DataStoreQuerySnapshot<Post>]()
         let snapshotWithIsSynced = expectation(description: "query snapshot with isSynced true")
         snapshotWithIsSynced.assertForOverFulfill = false
@@ -80,7 +80,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         try await savePostAndWaitForSync(Post(title: "xyz 1", content: "content", createdAt: .now()))
         try await savePostAndWaitForSync(Post(title: "xyz 2", content: "content", createdAt: .now()))
         try await savePostAndWaitForSync(Post(title: "xyz 3", content: "content", createdAt: .now()))
-        await clearDataStore()
+        try await clearDataStore()
         var snapshots = [DataStoreQuerySnapshot<Post>]()
         let snapshotWithIsSynced = expectation(description: "query snapshot with isSynced true")
         snapshotWithIsSynced.assertForOverFulfill = false
@@ -125,7 +125,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     func testObserveQueryWithSort() async throws {
         await setUp(withModels: TestModelRegistration())
         try startAmplify()
-        await clearDataStore()
+        try await clearDataStore()
         let post1 = Post(title: "title", content: "content", createdAt: .now())
         let post2 = Post(title: "title", content: "content", createdAt: .now().add(value: 1, to: .second))
         let snapshotWithSavedPost = expectation(description: "query snapshot with saved post")
@@ -173,9 +173,9 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForReady()
         try await savePostAndWaitForSync(Post(title: "title", content: "content", createdAt: .now()))
-        let numberOfPosts = await queryNumberOfPosts()
+        let numberOfPosts = try await queryNumberOfPosts()
         XCTAssertTrue(numberOfPosts > 0)
-        await stopDataStore()
+        try await stopDataStore()
         let snapshotWithIsSynced = expectation(description: "query snapshot with isSynced true")
         snapshotWithIsSynced.assertForOverFulfill = false
         var snapshots = [DataStoreQuerySnapshot<Post>]()
@@ -520,15 +520,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                 XCTFail("\(error)")
             }
         }
-        let stopCompleted = expectation(description: "DataStore stop completed")
-        Amplify.DataStore.stop { result in
-            switch result {
-            case .success:
-                stopCompleted.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
+        try await Amplify.DataStore.stop()
         await waitForExpectations(timeout: 10)
     }
 
@@ -562,15 +554,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                 XCTFail("\(error)")
             }
         }
-        let clearCompleted = expectation(description: "DataStore clear completed")
-        Amplify.DataStore.clear { result in
-            switch result {
-            case .success:
-                clearCompleted.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
+        try await Amplify.DataStore.clear()
         await waitForExpectations(timeout: 10)
     }
 
@@ -600,15 +584,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                 XCTFail("\(error)")
             }
         }
-        let stopCompleted = expectation(description: "DataStore stop completed")
-        Amplify.DataStore.stop { result in
-            switch result {
-            case .success:
-                stopCompleted.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
+        try await Amplify.DataStore.stop()
         await waitForExpectations(timeout: 10)
         
         let observeQueryReceivedCompleted2 = expectation(description: "observeQuery received completed")
@@ -628,15 +604,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                 secondSnapshot.fulfill()
             }
         }
-        let startCompleted = expectation(description: "DataStore start completed")
-        Amplify.DataStore.start { result in
-            switch result {
-            case .success:
-                startCompleted.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
+        try await Amplify.DataStore.start()
         await waitForExpectations(timeout: 10)
     }
 
@@ -692,20 +660,9 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         }
     }
 
-    func queryNumberOfPosts() async -> Int {
-        let querySuccess = expectation(description: "Query successful")
-        var numberOfPosts = 0
-        Amplify.DataStore.query(Post.self) { result in
-            switch result {
-            case .success(let posts):
-                numberOfPosts = posts.count
-                querySuccess.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
-        await waitForExpectations(timeout: 100)
-        return numberOfPosts
+    func queryNumberOfPosts() async throws -> Int {
+        let posts = try await Amplify.DataStore.query(Post.self)
+        return posts.count
     }
 }
 

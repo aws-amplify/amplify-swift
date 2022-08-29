@@ -52,27 +52,6 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
         }
     }
     
-    public func load(completion: (Result<[Element], CoreError>) -> Void) {
-        switch loadedState {
-        case .loaded(let elements):
-            completion(.success(elements))
-        case .notLoaded(let associatedId, let associatedField):
-            let predicate: QueryPredicate = field(associatedField) == associatedId
-            Amplify.DataStore.query(Element.self, where: predicate) {
-                switch $0 {
-                case .success(let elements):
-                    self.loadedState = .loaded(elements)
-                    completion(.success(elements))
-                case .failure(let error):
-                    Amplify.DataStore.log.error(error: error)
-                    completion(.failure(CoreError.listOperation("Failed to Query DataStore.",
-                                                                "See underlying DataStoreError for more details.",
-                                                                error)))
-                }
-            }
-        }
-    }
-    
     public func load() async throws -> [Element] {
         switch loadedState {
         case .loaded(let elements):
@@ -97,12 +76,6 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
 
     public func hasNextPage() -> Bool {
         false
-    }
-
-    public func getNextPage(completion: (Result<List<Element>, CoreError>) -> Void) {
-        completion(.failure(CoreError.clientValidation("There is no next page.",
-                                                       "Only call `getNextPage()` when `hasNextPage()` is true.",
-                                                       nil)))
     }
     
     public func getNextPage() async throws -> List<Element> {

@@ -44,200 +44,79 @@ class DataStoreConnectionScenario4Tests: SyncEngineIntegrationTestBase {
     func testCreateCommentAndGetCommentWithPost() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        guard let post = savePost(title: "title") else {
-            XCTFail("Could not create post")
+        let post = try await savePost(title: "title")
+        let comment = try await saveComment(content: "content", post: post)
+        let queriedCommentOptional = try await Amplify.DataStore.query(Comment4.self, byId: comment.id)
+        guard let queriedComment = queriedCommentOptional else {
+            XCTFail("Could not get comment")
             return
         }
-        guard let comment = saveComment(content: "content", post: post) else {
-            XCTFail("Could not create comment")
-            return
-        }
-
-        let getCommentCompleted = expectation(description: "get comment complete")
-        Amplify.DataStore.query(Comment4.self, byId: comment.id) { result in
-            switch result {
-            case .success(let queriedCommentOptional):
-                guard let queriedComment = queriedCommentOptional else {
-                    XCTFail("Could not get comment")
-                    return
-                }
-                XCTAssertEqual(queriedComment.id, comment.id)
-                XCTAssertEqual(queriedComment.post, post)
-                getCommentCompleted.fulfill()
-
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
-        wait(for: [getCommentCompleted], timeout: TestCommonConstants.networkTimeout)
+        XCTAssertEqual(queriedComment.id, comment.id)
+        XCTAssertEqual(queriedComment.post, post)
     }
 
     func testCreateCommentAndGetPostWithComments() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        guard let post = savePost(title: "title") else {
-            XCTFail("Could not create post")
+        let post = try await savePost(title: "title")
+        _ = try await saveComment(content: "content", post: post)
+        let queriedPostOptional = try await Amplify.DataStore.query(Post4.self, byId: post.id)
+        guard let queriedPost = queriedPostOptional else {
+            XCTFail("Could not get post")
             return
         }
-        guard saveComment(content: "content", post: post) != nil else {
-            XCTFail("Could not create comment")
+        XCTAssertEqual(queriedPost.id, post.id)
+        guard let queriedComments = queriedPost.comments else {
+            XCTFail("Could not get comments")
             return
         }
-
-        let getPostCompleted = expectation(description: "get post complete")
-        let getCommentsCompleted = expectation(description: "get comments complete")
-        Amplify.DataStore.query(Post4.self, byId: post.id) { result in
-            switch result {
-            case .success(let queriedPostOptional):
-                guard let queriedPost = queriedPostOptional else {
-                    XCTFail("Could not get post")
-                    return
-                }
-                XCTAssertEqual(queriedPost.id, post.id)
-                getPostCompleted.fulfill()
-                guard let queriedComments = queriedPost.comments else {
-                    XCTFail("Could not get comments")
-                    return
-                }
-                queriedComments.fetch { result in
-                    switch result {
-                    case .success:
-                        XCTAssertEqual(queriedComments.count, 1)
-                        getCommentsCompleted.fulfill()
-                    case .failure(let error):
-                        XCTFail("\(error)")
-                    }
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
-        wait(for: [getPostCompleted, getCommentsCompleted], timeout: TestCommonConstants.networkTimeout)
+        try await queriedComments.fetch()
+        XCTAssertEqual(queriedComments.count, 1)
     }
 
     func testUpdateComment() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        guard let post = savePost(title: "title") else {
-            XCTFail("Could not create post")
-            return
-        }
-        guard var comment = saveComment(content: "content", post: post) else {
-            XCTFail("Could not create comment")
-            return
-        }
-        guard let anotherPost = savePost(title: "title") else {
-            XCTFail("Could not create post")
-            return
-        }
-        let updateCommentSuccessful = expectation(description: "update comment")
+        let post = try await savePost(title: "title")
+        var comment = try await saveComment(content: "content", post: post)
+        let anotherPost = try await savePost(title: "title")
         comment.post = anotherPost
-        Amplify.DataStore.save(comment) { result in
-            switch result {
-            case .success(let updatedComment):
-                XCTAssertEqual(updatedComment.post, anotherPost)
-                updateCommentSuccessful.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
-        wait(for: [updateCommentSuccessful], timeout: TestCommonConstants.networkTimeout)
+        let updatedComment = try await Amplify.DataStore.save(comment)
+        XCTAssertEqual(updatedComment.post, anotherPost)
     }
 
     func testDeleteAndGetComment() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        guard let post = savePost(title: "title") else {
-            XCTFail("Could not create post")
+        let post = try await savePost(title: "title")
+        let comment = try await saveComment(content: "content", post: post)
+        try await Amplify.DataStore.delete(comment)
+        let queriedComment = try await Amplify.DataStore.query(Comment4.self, byId: comment.id)
+        guard queriedComment == nil else {
+            XCTFail("Should be nil after deletion")
             return
         }
-        guard let comment = saveComment(content: "content", post: post) else {
-            XCTFail("Could not create comment")
-            return
-        }
-
-        let deleteCommentSuccessful = expectation(description: "delete comment")
-        Amplify.DataStore.delete(comment) { result in
-            switch result {
-            case .success:
-                deleteCommentSuccessful.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
-        wait(for: [deleteCommentSuccessful], timeout: TestCommonConstants.networkTimeout)
-        let getCommentAfterDeleteCompleted = expectation(description: "get comment after deleted complete")
-        Amplify.DataStore.query(Comment4.self, byId: comment.id) { result in
-            switch result {
-            case .success(let comment):
-                guard comment == nil else {
-                    XCTFail("Should be nil after deletion")
-                    return
-                }
-                getCommentAfterDeleteCompleted.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
-        wait(for: [getCommentAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testListCommentsByPostID() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForSync()
-        guard let post = savePost(title: "title") else {
-            XCTFail("Could not create post")
-            return
-        }
-        guard saveComment(content: "content", post: post) != nil else {
-            XCTFail("Could not create comment")
-            return
-        }
+        let post = try await savePost(title: "title")
+        _ = try await saveComment(content: "content", post: post)
         let listCommentByPostIDCompleted = expectation(description: "list projects completed")
         let predicate = Comment4.keys.post.eq(post.id)
-        Amplify.DataStore.query(Comment4.self, where: predicate) { result in
-            switch result {
-            case .success(let comments):
-                XCTAssertEqual(comments.count, 1)
-                listCommentByPostIDCompleted.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
-        wait(for: [listCommentByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
+        let queriedComments = try await Amplify.DataStore.query(Comment4.self, where: predicate)
+        XCTAssertEqual(queriedComments.count, 1)
     }
-    func savePost(id: String = UUID().uuidString, title: String) -> Post4? {
+    
+    func savePost(id: String = UUID().uuidString, title: String) async throws -> Post4 {
         let post = Post4(id: id, title: title)
-        var result: Post4?
-        let completeInvoked = expectation(description: "request completed")
-        Amplify.DataStore.save(post) { event in
-            switch event {
-            case .success(let project):
-                result = project
-                completeInvoked.fulfill()
-            case .failure(let error):
-                XCTFail("failed \(error)")
-            }
-        }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
-        return result
+        return try await Amplify.DataStore.save(post)
     }
 
-    func saveComment(id: String = UUID().uuidString, content: String, post: Post4) -> Comment4? {
+    func saveComment(id: String = UUID().uuidString, content: String, post: Post4) async throws -> Comment4 {
         let comment = Comment4(id: id, content: content, post: post)
-        var result: Comment4?
-        let completeInvoked = expectation(description: "request completed")
-        Amplify.DataStore.save(comment) { event in
-            switch event {
-            case .success(let project):
-                result = project
-                completeInvoked.fulfill()
-            case .failure(let error):
-                XCTFail("failed \(error)")
-            }
-        }
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
-        return result
+        return try await Amplify.DataStore.save(comment)
     }
 }
 
