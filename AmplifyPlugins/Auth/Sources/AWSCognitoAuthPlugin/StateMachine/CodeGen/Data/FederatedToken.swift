@@ -15,6 +15,15 @@ struct FederatedToken {
     
 }
 
+extension FederatedToken: CustomDebugDictionaryConvertible {
+    var debugDictionary: [String: Any] {
+        [
+            "provider": provider,
+            "token": token.masked()
+        ]
+    }
+}
+
 extension FederatedToken: Codable { }
 
 extension FederatedToken: Equatable { }

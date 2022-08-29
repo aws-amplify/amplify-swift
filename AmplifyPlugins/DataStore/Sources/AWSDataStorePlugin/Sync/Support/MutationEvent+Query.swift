@@ -9,14 +9,14 @@ import Amplify
 import Dispatch
 
 extension MutationEvent {
-    static func pendingMutationEvents(for modelId: Model.Identifier,
+    static func pendingMutationEvents(for modelId: String,
                                       storageAdapter: StorageEngineAdapter,
                                       completion: @escaping DataStoreCallback<[MutationEvent]>) {
         
         pendingMutationEvents(for: [modelId], storageAdapter: storageAdapter, completion: completion)
     }
     
-    static func pendingMutationEvents(for modelIds: [Model.Identifier],
+    static func pendingMutationEvents(for modelIds: [String],
                                       storageAdapter: StorageEngineAdapter,
                                       completion: @escaping DataStoreCallback<[MutationEvent]>) {
         Task {

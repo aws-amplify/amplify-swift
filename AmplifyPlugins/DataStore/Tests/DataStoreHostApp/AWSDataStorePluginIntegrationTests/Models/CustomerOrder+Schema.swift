@@ -33,3 +33,8 @@ extension CustomerOrder {
     )
     }
 }
+
+extension CustomerOrder: ModelIdentifiable {
+    public typealias IdentifierFormat = ModelIdentifierFormat.Default
+    public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
+}

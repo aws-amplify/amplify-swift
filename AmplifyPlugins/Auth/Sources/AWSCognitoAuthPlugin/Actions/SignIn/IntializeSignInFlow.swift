@@ -37,7 +37,7 @@ struct InitializeSignInFlow: Action {
 
         var deviceMetadata = DeviceMetadata.noData
         if let username = signInEventData.username {
-            deviceMetadata = await getDeviceMetadata(
+            deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
                 for: environment,
                 with: username)
         }
@@ -76,25 +76,6 @@ struct InitializeSignInFlow: Action {
             return .init(eventType: .initiateSignInWithSRP(signInEventData, deviceMetadata))
         }
     }
-
-    func getDeviceMetadata(
-        for environment: Environment,
-        with username: String) async -> DeviceMetadata {
-            let credentialStoreClient = (environment as? AuthEnvironment)?.credentialStoreClientFactory()
-            do {
-                let data = try await credentialStoreClient?.fetchData(type: .deviceMetadata(username: username))
-
-                if case .deviceMetadata(let fetchedMetadata, _) = data {
-                    return fetchedMetadata
-                } else {
-                    return .noData
-                }
-            } catch {
-                logError("Unable to fetch device metadata with error: \(error)",
-                         environment: environment)
-                return .noData
-            }
-        }
 
 }
 

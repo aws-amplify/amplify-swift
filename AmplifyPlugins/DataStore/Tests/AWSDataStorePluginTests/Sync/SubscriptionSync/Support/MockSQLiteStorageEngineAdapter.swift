@@ -83,14 +83,6 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     func delete<M: Model>(_ modelType: M.Type,
                           modelSchema: ModelSchema,
-                          withId id: Model.Identifier,
-                          condition: QueryPredicate? = nil,
-                          completion: DataStoreCallback<M?>) {
-        XCTFail("Not expected to execute")
-    }
-
-    func delete<M: Model>(_ modelType: M.Type,
-                          modelSchema: ModelSchema,
                           filter: QueryPredicate,
                           completion: @escaping DataStoreCallback<[M]>) {
         XCTFail("Not expected to execute")
@@ -101,21 +93,21 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
                    condition: QueryPredicate?, completion: @escaping DataStoreCallback<M?>) where M: Model {
         XCTFail("Not expected to execute")
     }
-
+    
     func delete(untypedModelType modelType: Model.Type,
                 modelSchema: ModelSchema,
-                withId id: String,
-                condition: QueryPredicate? = nil,
-                completion: (Result<Void, DataStoreError>) -> Void) {
+                withIdentifier identifier: ModelIdentifierProtocol,
+                condition: QueryPredicate?,
+                completion: (DataStoreResult<Void>) -> Void) {
         if let responder = responders[.deleteUntypedModel] as? DeleteUntypedModelCompletionResponder {
-            let result = responder.callback((modelType, id))
+            let result = responder.callback((modelType, identifier.stringValue))
             completion(result)
             return
         }
-
+        
         return shouldReturnErrorOnDeleteMutation
-            ? completion(.failure(causedBy: DataStoreError.invalidModelName("DelMutate")))
-            : completion(.emptyResult)
+        ? completion(.failure(causedBy: DataStoreError.invalidModelName("DelMutate")))
+        : completion(.emptyResult)
     }
 
     func query(modelSchema: ModelSchema,
@@ -144,11 +136,6 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
     func queryMutationSync(for models: [Model], modelName: String) throws -> [MutationSync<AnyModel>] {
         XCTFail("Not expected to execute")
         return []
-    }
-
-    func exists(_ modelSchema: ModelSchema, withId id: Model.Identifier, predicate: QueryPredicate?) throws -> Bool {
-        XCTFail("Not expected to execute")
-        return true
     }
 
     func exists(_ modelSchema: ModelSchema, withIdentifier id: ModelIdentifierProtocol, predicate: QueryPredicate?) throws -> Bool {
@@ -332,14 +319,6 @@ class MockStorageEngineBehavior: StorageEngineBehavior {
                         condition where: QueryPredicate?,
                         completion: @escaping DataStoreCallback<M>) {
         XCTFail("Not expected to execute")
-    }
-
-    func delete<M: Model>(_ modelType: M.Type,
-                          modelSchema: ModelSchema,
-                          withId id: Model.Identifier,
-                          condition: QueryPredicate?,
-                          completion: DataStoreCallback<M?>) {
-        completion(.success(nil))
     }
 
     func delete<M: Model>(_ modelType: M.Type,

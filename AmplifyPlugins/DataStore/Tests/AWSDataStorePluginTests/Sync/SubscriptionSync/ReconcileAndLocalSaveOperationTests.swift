@@ -25,6 +25,9 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
     var operation: ReconcileAndLocalSaveOperation!
     var stateMachine: MockStateMachine<ReconcileAndLocalSaveOperation.State, ReconcileAndLocalSaveOperation.Action>!
     var cancellables: Set<AnyCancellable>!
+
+    let skipBrokenTests = true
+
     override func setUp() async throws {
         await tryOrFail {
             try await setUpWithAPI()
@@ -715,7 +718,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             completion(.success(model))
         }
         storageAdapter.responders[.saveModelCompletion] = saveMetadataResponder
-        let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
+        _ = Amplify.Hub.listen(to: .dataStore) { payload in
             if payload.eventName == "DataStore.syncReceived" {
                 hubExpect.fulfill()
             }
@@ -750,6 +753,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
                 expect.fulfill()
             }).store(in: &cancellables)
         waitForExpectations(timeout: 1)
+        
     }
 
     func testApplyRemoteModels_multipleDispositions() {
@@ -791,7 +795,7 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
             completion(.success(model))
         }
         storageAdapter.responders[.saveModelCompletion] = saveMetadataResponder
-        let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
+        _ = Amplify.Hub.listen(to: .dataStore) { payload in
             if payload.eventName == "DataStore.syncReceived" {
                 hubExpect.fulfill()
             }
@@ -829,7 +833,10 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
     }
 
     func testApplyRemoteModels_saveFail() throws {
-        throw XCTSkip("TODO: fix this test")
+        if skipBrokenTests {
+            throw XCTSkip("TODO: fix this test")
+        }
+        
         let dispositions: [RemoteSyncReconciler.Disposition] = [.create(anyPostMutationSync),
                                                                 .create(anyPostMutationSync),
                                                                 .update(anyPostMutationSync),
@@ -942,7 +949,10 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
     }
 
     func testApplyRemoteModels_deleteFail() throws {
-        throw XCTSkip("TODO: fix this test")
+        if skipBrokenTests {
+            throw XCTSkip("TODO: fix this test")
+        }
+        
         let dispositions: [RemoteSyncReconciler.Disposition] = [.create(anyPostMutationSync),
                                                                 .create(anyPostMutationSync),
                                                                 .update(anyPostMutationSync),
@@ -998,7 +1008,10 @@ class ReconcileAndLocalSaveOperationTests: XCTestCase {
     }
 
     func testApplyRemoteModels_saveMetadataFail() throws {
-        throw XCTSkip("TODO: fix this test")
+        if skipBrokenTests {
+            throw XCTSkip("TODO: fix this test")
+        }
+        
         let dispositions: [RemoteSyncReconciler.Disposition] = [.create(anyPostMutationSync),
                                                                 .create(anyPostMutationSync),
                                                                 .update(anyPostMutationSync),

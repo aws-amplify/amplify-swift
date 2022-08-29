@@ -29,7 +29,7 @@ import XCTest
  */
 class GraphQLConnectionScenario1Tests: XCTestCase {
 
-    override func setUp() {
+    override func setUp() async throws {
         do {
             Amplify.Logging.logLevel = .verbose
             try Amplify.add(plugin: AWSAPIPlugin())
@@ -74,7 +74,7 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
         let team = Team1(name: "name")
         _ = try await Amplify.API.mutate(request: .create(team))
         let project = Project1(team: team)
-        var createdProjectResult = try await Amplify.API.mutate(request: .create(project))
+        let createdProjectResult = try await Amplify.API.mutate(request: .create(project))
         switch createdProjectResult {
         case .success(var createdProject):
             let anotherTeam = Team1(name: "name")
@@ -93,83 +93,48 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
             XCTFail("Failed with: \(response)")
         }
     }
-
-    func testDeleteAndGetProject() {
-        guard let team = createTeam(name: "name") else {
-            XCTFail("Could not create team")
-            return
+    
+    func testDeleteAndGetProject() async throws {
+        let team = Team1(name: "name")
+        _ = try await Amplify.API.mutate(request: .create(team))
+        let project = Project1(team: team)
+        _ = try await Amplify.API.mutate(request: .create(project))
+        let deletedProjectResult = try await Amplify.API.mutate(request: .delete(project))
+        switch deletedProjectResult {
+        case .success(let deletedProject):
+            XCTAssertEqual(deletedProject.team, team)
+            print("successfully deleted the project \(deletedProject)")
+        case .failure(let response):
+            XCTFail("Failed with: \(response)")
         }
-        guard let project = createProject(team: team) else {
-            XCTFail("Could not create project")
-            return
-        }
-
-        let deleteProjectSuccessful = expectation(description: "delete project")
-        Amplify.API.mutate(request: .delete(project)) { result in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .success(let deletedProject):
-                    XCTAssertEqual(deletedProject.team, team)
-                    deleteProjectSuccessful.fulfill()
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-
-            case .failure(let error):
-                XCTFail("\(error)")
+        let getProjectAfterDeleteCompleted = try await Amplify.API.query(request: .get(Project1.self, byId: project.id))
+        switch getProjectAfterDeleteCompleted {
+        case .success(let queriedDeletedProjectOptional):
+            guard queriedDeletedProjectOptional == nil else {
+                XCTFail("Should be nil after deletion")
+                return
             }
+        case .failure(let response):
+            XCTFail("Failed with: \(response)")
         }
-        wait(for: [deleteProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
-        let getProjectAfterDeleteCompleted = expectation(description: "get project after deleted complete")
-        Amplify.API.query(request: .get(Project1.self, byId: project.id)) { result in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .success(let project):
-                    guard project == nil else {
-                        XCTFail("Should be nil after deletion")
-                        return
-                    }
-                    getProjectAfterDeleteCompleted.fulfill()
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
-        wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
     }
-
-    func testListProjectsByTeamID() {
-        guard let team = createTeam(name: "name") else {
-            XCTFail("Could not create team")
-            return
-        }
-        guard let project = createProject(team: team) else {
-            XCTFail("Could not create project")
-            return
-        }
-        let listProjectByTeamIDCompleted = expectation(description: "list projects completed")
+    
+    // The filter we are passing into is the ProjectTeamID, but the API doesn't have the field ProjectTeamID
+    //    so we are disabling it
+    func testListProjectsByTeamID() async throws {
+        let team = Team1(name: "name")
+        _ = try await Amplify.API.mutate(request: .create(team))
+        let project = Project1(team: team)
+        _ = try await Amplify.API.mutate(request: .create(project))
         let predicate = Project1.keys.team.eq(team.id)
-        Amplify.API.query(request: .list(Project1.self, where: predicate)) { result in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .success(let projects):
-                    XCTAssertEqual(projects.count, 1)
-                    XCTAssertEqual(projects[0].id, project.id)
-                    XCTAssertEqual(projects[0].team, team)
-                    listProjectByTeamIDCompleted.fulfill()
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+        let event = try await Amplify.API.query(request: .list(Project1.self, where: predicate))
+        switch event {
+        case .success(let projects):
+            XCTAssertEqual(projects.count, 1)
+            XCTAssertEqual(projects[0].id, project.id)
+        case .failure(let response):
+            XCTFail("Failed with: \(response)")
         }
-        wait(for: [listProjectByTeamIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testPaginatedListProjects() {

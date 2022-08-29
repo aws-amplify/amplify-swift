@@ -12,17 +12,17 @@ import Foundation
 actor ChildTask<InProcess, Success, Failure: Error>: BufferingSequence {
     typealias Element = InProcess
     let parent: Cancellable
-    var inProcessChannel: AsyncChannel<InProcess>? = nil
+    var inProcessChannel: AmplifyAsyncSequence<InProcess>? = nil
     var valueContinuations: [CheckedContinuation<Success, Error>] = []
     var storedResult: Result<Success, Failure>? = nil
     var isCancelled = false
 
-    var inProcess: AsyncChannel<InProcess> {
-        let channel: AsyncChannel<InProcess>
+    var inProcess: AmplifyAsyncSequence<InProcess> {
+        let channel: AmplifyAsyncSequence<InProcess>
         if let inProcessChannel = inProcessChannel {
             channel = inProcessChannel
         } else {
-            channel = AsyncChannel<InProcess>(bufferingPolicy: bufferingPolicy)
+            channel = AmplifyAsyncSequence<InProcess>(bufferingPolicy: bufferingPolicy)
             inProcessChannel = channel
         }
 

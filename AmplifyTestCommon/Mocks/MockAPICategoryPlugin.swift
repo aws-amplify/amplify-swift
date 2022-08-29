@@ -114,6 +114,17 @@ class MockAPICategoryPlugin: MessageReporter,
     func query<R: Decodable>(request: GraphQLRequest<R>) async throws -> GraphQLTask<R>.Success {
         notify("query(request:listener:) request: \(request)")
 
+        if let responder = responders[.queryRequestResponse] as? QueryRequestResponder<R> {
+            
+            let result = responder.callback(request)
+            switch result {
+            case .success(let response):
+                return response
+            case .failure(let error):
+                throw error
+            }
+        }
+        
         let requestOptions = GraphQLOperationRequest<R>.Options(pluginOptions: nil)
         let request = GraphQLOperationRequest<R>(apiName: request.apiName,
                                                  operationType: .query,

@@ -17,9 +17,9 @@ public protocol AmplifyTask {
 
     var value: Success { get async throws }
 
-    func pause() async
-    func resume() async
-    func cancel() async
+    func pause()
+    func resume()
+    func cancel()
 
 #if canImport(Combine)
     var resultPublisher: AnyPublisher<Success, Failure> { get }
@@ -29,7 +29,7 @@ public protocol AmplifyTask {
 public protocol AmplifyInProcessReportingTask {
     associatedtype InProcess
 
-    var inProcess: AsyncChannel<InProcess> { get async }
+    var inProcess: AmplifyAsyncSequence<InProcess> { get async }
 
 #if canImport(Combine)
     var inProcessPublisher: AnyPublisher<InProcess, Never> { get }
@@ -39,10 +39,9 @@ public protocol AmplifyInProcessReportingTask {
 public typealias AmplifyInProcessTask = AmplifyTask & AmplifyInProcessReportingTask
 
 public extension AmplifyInProcessReportingTask where InProcess == Progress {
-    var progress : AsyncChannel<InProcess> {
+    var progress : AmplifyAsyncSequence<InProcess> {
         get async {
             await inProcess
         }
     }
 }
-

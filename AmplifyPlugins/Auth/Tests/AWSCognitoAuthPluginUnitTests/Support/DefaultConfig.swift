@@ -225,7 +225,18 @@ enum Defaults {
 struct MockCredentialStoreOperationClient: CredentialStoreStateBehaviour {
 
     func fetchData(type: CredentialStoreDataType) async throws -> CredentialStoreData {
-        .amplifyCredentials(.testData)
+        switch type {
+        case .amplifyCredentials:
+            return .amplifyCredentials(.testData)
+        case .deviceMetadata(username: let username):
+            return .deviceMetadata(.metadata(.init(
+                deviceKey: "key",
+                deviceGroupKey: "key",
+                deviceSecret: "secret")), username)
+        case .asfDeviceId(username: let username):
+            return .asfDeviceId("id", username)
+        }
+
     }
 
     func storeData(data: CredentialStoreData) async throws {

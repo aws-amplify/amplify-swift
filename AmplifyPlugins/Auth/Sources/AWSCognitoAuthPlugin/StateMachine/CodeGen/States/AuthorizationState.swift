@@ -19,6 +19,9 @@ enum AuthorizationState: State {
 
     case clearingFederation
 
+    case federatingToIdentityPool(FetchAuthSessionState,
+                                  FederatedToken)
+
     case fetchingUnAuthSession(FetchAuthSessionState)
 
     case fetchingAuthSessionWithUserPool(FetchAuthSessionState,
@@ -46,6 +49,8 @@ extension AuthorizationState {
             return "AuthorizationState.signingIn"
         case .signingOut:
             return "AuthorizationState.signingOut"
+        case .federatingToIdentityPool:
+            return "AuthorizationState.federatingToIdentityPool"
         case .clearingFederation:
             return "AuthorizationState.clearingFederation"
         case .fetchingUnAuthSession:

@@ -17,7 +17,7 @@ class ListTests: XCTestCase {
     }
 
     struct BasicModel: Model {
-        var id: Identifier
+        var id: String
     }
 
     class MockListDecoder: ModelListDecoder {
@@ -78,6 +78,16 @@ class ListTests: XCTestCase {
                 completion(.success(elements))
             }
         }
+        
+        public func load() async throws -> [Element] {
+            if let error = error {
+                throw error
+            } else if let error = errorOnLoad {
+                throw error
+            } else {
+                return elements
+            }
+        }
 
         public func hasNextPage() -> Bool {
             return nextPage != nil
@@ -90,6 +100,18 @@ class ListTests: XCTestCase {
                 completion(.failure(error))
             } else if let nextPage = nextPage {
                 completion(.success(nextPage))
+            } else {
+                fatalError("Mock not implemented")
+            }
+        }
+        
+        public func getNextPage() async throws -> List<Element> {
+            if let error = error {
+                throw error
+            } else if let error = errorOnNextPage {
+                throw error
+            } else if let nextPage = nextPage {
+                return nextPage
             } else {
                 fatalError("Mock not implemented")
             }
@@ -199,7 +221,7 @@ class ListTests: XCTestCase {
         wait(for: [fetchCompleted], timeout: 1)
     }
 
-    func testLoadFailure() {
+    func testLoadFailure() async throws {
         let mockListProvider = MockListProvider<BasicModel>(
             errorOnLoad: .listOperation("", "", DataStoreError.internalOperation("", "", nil)))
             .eraseToAnyModelListProvider()
@@ -208,16 +230,12 @@ class ListTests: XCTestCase {
             XCTFail("Should not be loaded")
             return
         }
-        let fetchCompleted = expectation(description: "Fetch completed")
-        list.fetch { result in
-            switch result {
-            case .success:
-                XCTFail("Expected to fail on load")
-            case .failure:
-                fetchCompleted.fulfill()
-            }
+        do {
+            _ = try await list.fetch()
+            XCTFail("Should have caught error")
+        } catch {
+            print("Error \(error)")
         }
-        wait(for: [fetchCompleted], timeout: 1)
     }
 
     // MARK: - Helpers

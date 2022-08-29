@@ -157,7 +157,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         }
     }
 
-    func queryPendingMutations(forModelIds modelIds: [Model.Identifier]) -> Future<[MutationEvent], DataStoreError> {
+    func queryPendingMutations(forModelIds modelIds: [String]) -> Future<[MutationEvent], DataStoreError> {
         Future<[MutationEvent], DataStoreError> { promise in
             var result: Result<[MutationEvent], DataStoreError> = .failure(Self.unfulfilledDataStoreError())
             guard !self.isCancelled else {
@@ -348,7 +348,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
 
             storageAdapter.delete(untypedModelType: modelType,
                                   modelSchema: self.modelSchema,
-                                  withId: remoteModel.model.identifier,
+                                  withIdentifier: remoteModel.model.identifier(schema: self.modelSchema),
                                   condition: nil) { response in
                 switch response {
                 case .failure(let dataStoreError):

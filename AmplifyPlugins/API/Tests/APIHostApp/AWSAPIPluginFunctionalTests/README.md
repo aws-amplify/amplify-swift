@@ -236,4 +236,11 @@ type Nested {
 
 3.  `amplify push`
 
+? Do you want to generate code for your newly created GraphQL API (Y/n) `N`
+
 4. Copy `amplifyconfiguration.json` over as `GraphQLModelBasedTests-amplifyconfiguration.json` to `~/.aws-amplify/amplify-ios/testconfiguration/`
+
+```
+cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/GraphQLModelBasedTests-amplifyconfiguration.json
+```
+You can now run the tests!

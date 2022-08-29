@@ -17,7 +17,7 @@ public protocol AuthClearFederationToIdentityPoolOperation: AmplifyOperation<
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let clearFederationToIdentityPoolAPI = "Auth.federatedToIdentityPoolCleared"
+    static let clearedFederationToIdentityPoolAPI = "Auth.federationToIdentityPoolCleared"
 }
 
 public class AWSAuthClearFederationToIdentityPoolOperation: AmplifyOperation<
@@ -27,15 +27,16 @@ public class AWSAuthClearFederationToIdentityPoolOperation: AmplifyOperation<
 >, AuthClearFederationToIdentityPoolOperation {
 
     let authStateMachine: AuthStateMachine
+    let clearFederationHelper: ClearFederationOperationHelper
 
     init(_ request: AuthClearFederationToIdentityPoolRequest,
-         authConfiguration: AuthConfiguration,
          authStateMachine: AuthStateMachine,
          resultListener: ResultListener?) {
 
         self.authStateMachine = authStateMachine
+        clearFederationHelper = ClearFederationOperationHelper()
         super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.clearFederationToIdentityPoolAPI,
+                   eventName: HubPayload.EventName.Auth.clearedFederationToIdentityPoolAPI,
                    request: request,
                    resultListener: resultListener)
     }
@@ -45,70 +46,11 @@ public class AWSAuthClearFederationToIdentityPoolOperation: AmplifyOperation<
             finish()
             return
         }
-
-        authStateMachine.getCurrentState { [weak self] currentState in
-            if case .configured(let authNState, _) = currentState,
-               case .federated = authNState {
-                self?.startClearingFederation()
-            } else {
-                self?.sendInvalidStateError()
-            }
-        }
-
-    }
-
-    func startClearingFederation() {
-        var token: AuthStateMachine.StateChangeListenerToken?
-        token = authStateMachine.listen { [weak self] state in
-
-            guard  case .configured(let authNState, _) = state else {
-                return
-            }
-
-            switch authNState {
-            case .signedOut(_):
-                self?.dispatchSuccess()
-                if let token = token {
-                    self?.authStateMachine.cancel(listenerToken: token)
-                }
+        clearFederationHelper.clearFederation(
+            authStateMachine) { [weak self] result in
+                self?.dispatch(result: result)
                 self?.finish()
-            case .error(let error):
-                self?.dispatch(AuthError.service(
-                    "Error clearing federation",
-                    AmplifyErrorMessages.shouldNotHappenReportBugToAWS(),
-                    error))
-                if let token = token {
-                    self?.authStateMachine.cancel(listenerToken: token)
-                }
-                self?.finish()
-            default:
-                break
             }
-
-        } onSubscribe: { [weak self] in
-            self?.sendClearFederationEvent()
-        }
-
     }
 
-    func sendClearFederationEvent() {
-        let event = AuthenticationEvent.init(eventType: .clearFederationToIdentityPool)
-        authStateMachine.send(event)
-    }
-
-    func sendInvalidStateError() {
-        dispatch(AuthError.invalidState(
-            "No federation found.",
-            AuthPluginErrorConstants.invalidStateError, nil))
-        finish()
-    }
-
-    private func dispatchSuccess() {
-        let result = AWSAuthClearFederationToIdentityPoolOperation.OperationResult.success(())
-        dispatch(result: result)
-    }
-
-    private func dispatch(_ error: AuthError) {
-        dispatch(result: .failure(error))
-    }
 }

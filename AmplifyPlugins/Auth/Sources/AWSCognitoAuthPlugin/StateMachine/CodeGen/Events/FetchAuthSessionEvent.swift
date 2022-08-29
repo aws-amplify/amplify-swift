@@ -19,7 +19,7 @@ struct FetchAuthSessionEvent: StateMachineEvent {
 
         case fetchedIdentityID(IdentityID)
 
-        case fetchAWSCredentials(IdentityID)
+        case fetchAWSCredentials(IdentityID, LoginsMapProvider)
 
         case fetchedAWSCredentials(IdentityID, AuthAWSCognitoCredentials)
 
@@ -61,41 +61,4 @@ struct FetchAuthSessionEvent: StateMachineEvent {
         self.eventType = eventType
         self.time = time
     }
-}
-
-enum FetchSessionError: Error {
-
-    case noIdentityPool
-
-    case noUserPool
-
-    case invalidTokens
-
-    case notAuthorized
-
-    case invalidIdentityID
-
-    case invalidAWSCredentials
-
-    case noCredentialsToRefresh
-
-    case service(Error)
-}
-
-extension FetchSessionError: Equatable {
-    static func == (lhs: FetchSessionError, rhs: FetchSessionError) -> Bool {
-        switch (lhs, rhs) {
-        case (.noIdentityPool, .noIdentityPool),
-            (.noUserPool, .noUserPool),
-            (.notAuthorized, .notAuthorized),
-            (.invalidTokens, .invalidTokens),
-            (.invalidIdentityID, .invalidIdentityID),
-            (.noCredentialsToRefresh, .noCredentialsToRefresh),
-            (.invalidAWSCredentials, .invalidAWSCredentials),
-            (.service, .service):
-            return true
-        default: return false
-        }
-    }
-
 }

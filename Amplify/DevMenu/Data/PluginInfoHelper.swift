@@ -13,50 +13,41 @@ struct PluginInfoHelper {
 
     static func getPluginInformation() -> [PluginInfoItem] {
         var pluginList = [PluginInfoItem]()
-
+        
         pluginList.append(contentsOf: Amplify.Analytics.plugins.map {
-                makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
-            }
-        )
-
-        if let apiCategoryPlugin = Amplify.API as? APICategory {
-            pluginList.append(contentsOf: apiCategoryPlugin.plugins.map {
-                    makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
-                }
-            )
-        }
-
+            makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
+        })
+        
+        pluginList.append(contentsOf: Amplify.API.plugins.map {
+            makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
+        })
+        
         pluginList.append(contentsOf: Amplify.Auth.plugins.map {
-                makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
-            }
-        )
-
+            makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
+        })
+        
         pluginList.append(contentsOf: Amplify.DataStore.plugins.map {
-                makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
-            }
-        )
-
+            makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
+        })
+        
         pluginList.append(contentsOf: Amplify.Hub.plugins.map {
-                makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
-            }
-        )
-
+            makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
+        })
+        
         pluginList.append(
             makePluginInfoItem(
                 for: Amplify.Logging.plugin.key,
                 versionable: Amplify.Logging.plugin as? AmplifyVersionable
             )
         )
-
+        
         pluginList.append(contentsOf: Amplify.Predictions.plugins.map {
-                makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
-            }
-        )
-
+            makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
+        })
+        
         pluginList.append(contentsOf: Amplify.Storage.plugins.map {
-                makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
-            }
-        )
+            makePluginInfoItem(for: $0.key, versionable: $0.value as? AmplifyVersionable)
+        })
 
         return pluginList
     }

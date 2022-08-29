@@ -1,28 +1,13 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.6
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 import PackageDescription
 
 let platforms: [SupportedPlatform] = [.iOS(.v13)]
 let dependencies: [Package.Dependency] = [
-    .package(
-        url: "https://github.com/stephencelis/SQLite.swift.git",
-        .exact("0.12.2")
-    ),
-    .package(
-        name: "AppSyncRealTimeClient",
-        url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git",
-        from: "2.1.1"
-    ),
-    .package(
-        name: "AWSSwiftSDK",
-        url: "https://github.com/awslabs/aws-sdk-swift.git",
-        .upToNextMinor(from: "0.2.6")
-    ),
-    .package(
-        name: "CwlPreconditionTesting",
-        url: "https://github.com/mattgallagher/CwlPreconditionTesting.git",
-        .upToNextMinor(from: "2.1.0")
-    )
+    .package(url: "https://github.com/awslabs/aws-sdk-swift.git", exact: "0.2.6"),
+    .package(url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git", from: "2.1.1"),
+    .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.12.2"),
+    .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0")
 ]
 let swiftSettings: [SwiftSetting]? = [.define("DEV_PREVIEW_BUILD")]
 
@@ -39,7 +24,7 @@ let amplifyTargets: [Target] = [
         name: "AWSPluginsCore",
         dependencies: [
             "Amplify",
-            .product(name: "AWSClientRuntime", package: "AWSSwiftSDK")
+            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
         ],
         path: "AmplifyPlugins/Core/AWSPluginsCore",
         exclude: [
@@ -82,7 +67,7 @@ let amplifyTargets: [Target] = [
         dependencies: [
             "Amplify",
             "AWSPluginsCore",
-            .product(name: "AWSClientRuntime", package: "AWSSwiftSDK")
+            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
         ],
         path: "AmplifyPlugins/Core/AWSPluginsTestCommon",
         exclude: [
@@ -94,7 +79,7 @@ let amplifyTargets: [Target] = [
         dependencies: [
             "AWSPluginsCore",
             "AmplifyTestCommon",
-            .product(name: "AWSClientRuntime", package: "AWSSwiftSDK")
+            .product(name: "AWSClientRuntime", package: "aws-sdk-swift")
         ],
         path: "AmplifyPlugins/Core/AWSPluginsCoreTests",
         exclude: [
@@ -109,7 +94,7 @@ let apiTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
-            .product(name: "AppSyncRealTimeClient", package: "AppSyncRealTimeClient")],
+            .product(name: "AppSyncRealTimeClient", package: "aws-appsync-realtime-client-ios")],
         path: "AmplifyPlugins/API/Sources/AWSAPIPlugin",
         exclude: [
             "Info.plist",
@@ -151,9 +136,9 @@ let authTargets: [Target] = [
             .target(name: "Amplify"),
             .target(name: "AmplifySRP"),
             .target(name: "AWSPluginsCore"),
-            .product(name: "AWSClientRuntime", package: "AWSSwiftSDK"),
-            .product(name: "AWSCognitoIdentityProvider", package: "AWSSwiftSDK"),
-            .product(name: "AWSCognitoIdentity", package: "AWSSwiftSDK")
+            .product(name: "AWSClientRuntime", package: "aws-sdk-swift"),
+            .product(name: "AWSCognitoIdentityProvider", package: "aws-sdk-swift"),
+            .product(name: "AWSCognitoIdentity", package: "aws-sdk-swift")
         ],
         path: "AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin",
         swiftSettings: swiftSettings
@@ -219,8 +204,8 @@ let storageTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
-            .product(name: "AWSS3", package: "AWSSwiftSDK")],
-        path: "AmplifyPlugins/Storage/AWSS3StoragePlugin",
+            .product(name: "AWSS3", package: "aws-sdk-swift")],
+        path: "AmplifyPlugins/Storage/Sources/AWSS3StoragePlugin",
         exclude: [
             "Resources/Info.plist"
         ],
@@ -233,7 +218,7 @@ let storageTargets: [Target] = [
             "AmplifyTestCommon",
             "AWSPluginsTestCommon"
         ],
-        path: "AmplifyPlugins/Storage/AWSS3StoragePluginTests",
+        path: "AmplifyPlugins/Storage/Tests/AWSS3StoragePluginTests",
         exclude: [
             "Resources/Info.plist"
         ]
@@ -246,7 +231,7 @@ let geoTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
-            .product(name: "AWSLocation", package: "AWSSwiftSDK")],
+            .product(name: "AWSLocation", package: "aws-sdk-swift")],
         path: "AmplifyPlugins/Geo/AWSLocationGeoPlugin",
         exclude: [
             "Resources/Info.plist"
@@ -275,21 +260,16 @@ let analyticsTargets: [Target] = [
             .target(name: "AWSCognitoAuthPlugin"),
             .target(name: "AWSPluginsCore"),
             .product(name: "SQLite", package: "SQLite.swift"),
-            .product(name: "AWSPinpoint", package: "AWSSwiftSDK")],
-        path: "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPlugin",
-        exclude: [
-            "Resources/Info.plist"
-        ]
+            .product(name: "AWSPinpoint", package: "aws-sdk-swift")],
+        path: "AmplifyPlugins/Analytics/Sources/AWSPinpointAnalyticsPlugin"
     ),
     .testTarget(
-        name: "AWSPinpointAnalyticsPluginTests",
+        name: "AWSPinpointAnalyticsPluginUnitTests",
         dependencies: [
             "AWSPinpointAnalyticsPlugin",
             "AmplifyTestCommon"
-            // "AWSPluginsTestCommon"
         ],
-        path: "AmplifyPlugins/Analytics/AWSPinpointAnalyticsPluginTests",
-        exclude: ["Resources/Info.plist"]
+        path: "AmplifyPlugins/Analytics/Tests/AWSPinpointAnalyticsPluginUnitTests"
     )
 ]
 

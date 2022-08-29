@@ -26,14 +26,14 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
         /// The associatedField represents the field to which the owner of the `List` is linked to.
         /// For example, if `Post.comments` is associated with `Comment.post` the `List<Comment>`
         /// of `Post` will have a reference to the `post` field in `Comment`.
-        case notLoaded(associatedId: Model.Identifier, associatedField: String)
+        case notLoaded(associatedId: String, associatedField: String)
 
         case loaded([Element])
     }
 
     var loadedState: LoadedState
 
-    init(associatedId: Model.Identifier,
+    init(associatedId: String,
          associatedField: String) {
         self.loadedState = .notLoaded(associatedId: associatedId,
                                       associatedField: associatedField)
@@ -72,6 +72,28 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
             }
         }
     }
+    
+    public func load() async throws -> [Element] {
+        switch loadedState {
+        case .loaded(let elements):
+            return elements
+        case .notLoaded(let associatedId, let associatedField):
+            let predicate: QueryPredicate = field(associatedField) == associatedId
+            do {
+                let elements = try await Amplify.DataStore.query(Element.self, where: predicate)
+                self.loadedState = .loaded(elements)
+                return elements
+            } catch let error as DataStoreError {
+                Amplify.DataStore.log.error(error: error)
+                throw CoreError.listOperation("Failed to Query DataStore.",
+                                              "See underlying DataStoreError for more details.",
+                                              error)
+            } catch {
+                throw error
+                
+            }
+        }
+    }
 
     public func hasNextPage() -> Bool {
         false
@@ -81,5 +103,11 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
         completion(.failure(CoreError.clientValidation("There is no next page.",
                                                        "Only call `getNextPage()` when `hasNextPage()` is true.",
                                                        nil)))
+    }
+    
+    public func getNextPage() async throws -> List<Element> {
+        throw CoreError.clientValidation("There is no next page.",
+                                         "Only call `getNextPage()` when `hasNextPage()` is true.",
+                                         nil)
     }
 }

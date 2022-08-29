@@ -14,33 +14,24 @@ import XCTest
 
 class DataStoreListProviderFunctionalTests: BaseDataStoreTests {
 
-    func testDataStoreListProviderWithAssociationDataShouldLoadWithCompletion() {
+    func testDataStoreListProviderWithAssociationDataShouldLoad() async throws {
         let postId = preparePost4DataForTest()
         let provider = DataStoreListProvider<Comment4>(associatedId: postId, associatedField: "post")
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
             return
         }
-        let loadComplete = expectation(description: "Load completed")
-        provider.load { result in
-            switch result {
-            case .success(let results):
-                guard case .loaded = provider.loadedState else {
-                    XCTFail("Should be loaded")
-                    return
-                }
-                XCTAssertEqual(results.count, 2)
-                loadComplete.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+        let results = try await provider.load()
+        guard case .loaded = provider.loadedState else {
+            XCTFail("Should be loaded")
+            return
         }
-        wait(for: [loadComplete], timeout: 1)
+        XCTAssertEqual(results.count, 2)
     }
 
     // MARK: - Helpers
 
-    func preparePost4DataForTest() -> Model.Identifier {
+    func preparePost4DataForTest() -> String {
         let post = Post4(title: "title")
         populateData([post])
         populateData([

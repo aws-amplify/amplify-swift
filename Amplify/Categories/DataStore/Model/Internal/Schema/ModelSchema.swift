@@ -169,7 +169,7 @@ public extension ModelSchema {
     /// without a name and at least 1 field
     var primaryKeyIndexFields: [ModelFieldName]? {
         attributes.compactMap {
-            if case let .index(fields, name) = $0, $0.isPrimaryKeyIndex {
+            if case let .index(fields, _) = $0, $0.isPrimaryKeyIndex {
                 return fields
             }
             return nil

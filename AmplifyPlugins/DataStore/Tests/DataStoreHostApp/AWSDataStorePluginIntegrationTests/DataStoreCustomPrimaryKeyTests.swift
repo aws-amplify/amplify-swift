@@ -140,7 +140,8 @@ class DataStoreCustomPrimaryKeyTests: SyncEngineIntegrationTestBase {
             XCTFail("Listener not registered for hub")
             return
         }
-        _ = try await Amplify.DataStore.delete(CustomerOrder.self, withId: updatedCustomerOrder.id)
+
+        _ = try await Amplify.DataStore.delete(CustomerOrder.self, withIdentifier: updatedCustomerOrder.id)
         await waitForExpectations(timeout: networkTimeout)
         
         // query the customer order after deletion

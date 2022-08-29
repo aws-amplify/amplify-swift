@@ -10,11 +10,11 @@ import AWSPluginsCore
 import Foundation
 
 struct AnyModelTester: Model {
-    let id: Identifier
+    let id: String
     let stringProperty: String
     let intProperty: Int
 
-    init(id: Identifier = "test-id", stringProperty: String, intProperty: Int) {
+    init(id: String = "test-id", stringProperty: String, intProperty: Int) {
         self.id = id
         self.stringProperty = stringProperty
         self.intProperty = intProperty

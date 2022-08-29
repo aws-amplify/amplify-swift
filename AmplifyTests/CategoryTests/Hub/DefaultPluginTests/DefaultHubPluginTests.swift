@@ -22,11 +22,11 @@ class DefaultHubPluginTests: XCTestCase {
 
     override func setUp() async throws {
         await Amplify.reset()
-        // This test suite will have a lot of in-flight messages at the time of the `reset`. Give them time to finis
-        // being delivered before moving to the next step.
-        Thread.sleep(forTimeInterval: 1.0)
-        let config = AmplifyConfiguration()
         do {
+            // This test suite will have a lot of in-flight messages at the time of the `reset`.
+            // Give them time to finish being delivered before moving to the next step.
+            try await Task.sleep(seconds: 1.0)
+            let config = AmplifyConfiguration()
             try Amplify.configure(config)
         } catch {
             XCTFail("Error setting up Amplify: \(error)")

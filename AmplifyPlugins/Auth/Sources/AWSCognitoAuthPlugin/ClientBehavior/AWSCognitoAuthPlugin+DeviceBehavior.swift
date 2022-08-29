@@ -18,7 +18,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryDeviceBehavior {
             let fetchDeviceOperation = AWSAuthFetchDevicesOperation(
                 request,
                 authStateMachine: authStateMachine,
-                userPoolFactory: authEnvironment.cognitoUserPoolFactory,
+                authEnvironment: authEnvironment,
                 resultListener: listener)
             queue.addOperation(fetchDeviceOperation)
             return fetchDeviceOperation
@@ -34,7 +34,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryDeviceBehavior {
             let forgetDeviceOperation = AWSAuthForgetDeviceOperation(
                 request,
                 authStateMachine: authStateMachine,
-                userPoolFactory: authEnvironment.cognitoUserPoolFactory,
+                authEnvironment: authEnvironment,
                 resultListener: listener)
             queue.addOperation(forgetDeviceOperation)
             return forgetDeviceOperation
@@ -48,7 +48,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryDeviceBehavior {
             let rememberDeviceOperation = AWSAuthRememberDeviceOperation(
                 request,
                 authStateMachine: authStateMachine,
-                userPoolFactory: authEnvironment.cognitoUserPoolFactory,
+                authEnvironment: authEnvironment,
                 resultListener: listener)
             queue.addOperation(rememberDeviceOperation)
             return rememberDeviceOperation

@@ -33,16 +33,18 @@ public class AmplifyOperationTaskAdapter<Request: AmplifyOperationRequest, Succe
         }
     }
 
-    public func pause() async {
+    public func pause() {
         operation.pause()
     }
 
-    public func resume() async {
+    public func resume() {
         operation.resume()
     }
 
-    public func cancel() async {
-        await childTask.cancel()
+    public func cancel() {
+        Task {
+            await childTask.cancel()
+        }
     }
 
 #if canImport(Combine)
@@ -86,22 +88,24 @@ public class AmplifyInProcessReportingOperationTaskAdapter<Request: AmplifyOpera
         }
     }
 
-    public var inProcess: AsyncChannel<InProcess> {
+    public var inProcess: AmplifyAsyncSequence<InProcess> {
         get async {
             await childTask.inProcess
         }
     }
 
-    public func pause() async {
+    public func pause() {
         operation.pause()
     }
 
-    public func resume() async {
+    public func resume() {
         operation.resume()
     }
 
-    public func cancel() async {
-        await childTask.cancel()
+    public func cancel() {
+        Task {
+            await childTask.cancel()
+        }
     }
 
 #if canImport(Combine)

@@ -78,7 +78,7 @@ class AWSDataStorePluginTests: XCTestCase {
                                         validAuthPluginKey: "MockAuthCategoryPlugin")
         do {
             try plugin.configure(using: nil)
-            plugin.query(ExampleWithEveryType.self)
+            _ = plugin.query(ExampleWithEveryType.self)
         } catch {
             XCTFail("DataStore configuration should not fail with nil configuration. \(error)")
         }
