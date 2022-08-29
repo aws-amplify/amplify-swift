@@ -103,7 +103,13 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
         }
 
         try Amplify.configure(amplifyConfig)
-        _ = try await Amplify.DataStore.start()
+        let startSuccess = AsyncExpectation(description: "start success")
+        Task {
+            _ = try await Amplify.DataStore.start()
+            await startSuccess.fulfill()
+        }
+        await waitForExpectations([startSuccess], timeout: 1.0)
+        
         await waitForExpectations(timeout: 1.0)
     }
     // TODO: Implement the test below

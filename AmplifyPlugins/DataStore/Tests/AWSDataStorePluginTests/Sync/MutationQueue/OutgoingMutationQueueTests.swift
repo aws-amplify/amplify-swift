@@ -82,8 +82,14 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
 
         try await startAmplifyAndWaitForSync()
 
-        _ = try await Amplify.DataStore.save(post)
-        // _ = try await Amplify.DataStore.save(post)
+        let saveSuccess = asyncExpectation(description: "save success")
+        Task {
+            _ = try await Amplify.DataStore.save(post)
+            await saveSuccess.fulfill()
+        }
+        await waitForExpectations([saveSuccess], timeout: 1.0)
+        
+        
         await waitForExpectations(timeout: 5.0, handler: nil)
         Amplify.Hub.removeListener(hubListener)
     }

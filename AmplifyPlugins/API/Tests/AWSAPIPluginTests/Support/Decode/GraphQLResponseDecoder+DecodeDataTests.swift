@@ -110,9 +110,14 @@ extension GraphQLResponseDecoderTests {
 
         let result = try decoder.decodeToResponseType(graphQLData)
         XCTAssertNotNil(result)
-        try await result.fetch()
-        XCTAssertEqual(result.count, 2)
-        XCTAssertFalse(result.hasNextPage())
+        let fetchCompleted = AsyncExpectation(description: "Fetch completed")
+        Task {
+            try await result.fetch()
+            XCTAssertEqual(result.count, 2)
+            XCTAssertFalse(result.hasNextPage())
+            await fetchCompleted.fulfill()
+        }
+        await waitForExpectations([fetchCompleted], timeout: 1.0)
     }
 
     func testDecodeToResponseTypeForCodable() throws {
