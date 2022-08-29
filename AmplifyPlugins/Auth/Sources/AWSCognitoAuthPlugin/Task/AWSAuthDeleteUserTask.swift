@@ -19,25 +19,10 @@ class AWSAuthDeleteUserTask: AuthDeleteUserTask {
         self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()
         super.init(eventName: HubPayload.EventName.Auth.deleteUserAPI)
     }
-    
-    override var value: Void {
-        get async throws {
-            return try await execute()
-        }
-    }
 
-    func execute() async throws {
-        do {
-            let accessToken = try await getAccessToken()
-            try await deleteUser(with: accessToken)
-            self.dispatch(result: .success(Void()))
-        } catch {
-            if let authError = error as? AuthError {
-                self.dispatch(result: .failure(authError))
-            }
-
-            throw error
-        }
+    override func execute() async throws {
+        let accessToken = try await getAccessToken()
+        try await deleteUser(with: accessToken)
     }
 
     private func getAccessToken() async throws -> String {
@@ -47,7 +32,6 @@ class AWSAuthDeleteUserTask: AuthDeleteUserTask {
                 case .success(let session):
                     guard let cognitoTokenProvider = session as? AuthCognitoTokensProvider else {
                         let error = AuthError.unknown("Unable to fetch auth session", nil)
-                        self?.dispatch(result: .failure(error))
                         continuation.resume(throwing: error)
                         return
                     }
@@ -56,15 +40,12 @@ class AWSAuthDeleteUserTask: AuthDeleteUserTask {
                         continuation.resume(returning: tokens.accessToken)
                     }
                     catch let error as AuthError {
-                        self?.dispatch(result: .failure(error))
                         continuation.resume(throwing: error)
                     } catch {
                         let error = AuthError.unknown("Unable to fetch auth session", nil)
-                        self?.dispatch(result: .failure(error))
                         continuation.resume(throwing: error)
                     }
                 case .failure(let error):
-                    self?.dispatch(result: .failure(error))
                     continuation.resume(throwing: error)
                 }
             }

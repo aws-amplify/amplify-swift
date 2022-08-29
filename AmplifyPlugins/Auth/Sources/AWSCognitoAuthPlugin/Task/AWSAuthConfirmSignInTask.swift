@@ -19,16 +19,9 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
         self.authStateMachine = stateMachine
         super.init(eventName: HubPayload.EventName.Auth.confirmSignInAPI)
     }
-    
-    override var value: AuthSignInResult {
-        get async throws {
-            return try await execute()
-        }
-    }
 
-    private func execute() async throws -> AuthSignInResult {
+    override func execute() async throws -> AuthSignInResult {
         if let validationError = request.hasError() {
-            dispatch(result: .failure(validationError))
             throw validationError
         }
         
@@ -38,7 +31,6 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
 
             stateListenerToken = authStateMachine.listen { [weak self] state in
                 guard let self = self, case .configured(let authNState, let authZState) = state else {
-                    self?.dispatch(result: .failure(invalidStateError))
                     self?.cancelToken()
                     continuation.resume(throwing: invalidStateError)
                     return
@@ -47,13 +39,11 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
                 case .signedIn:
                     if case .sessionEstablished = authZState {
                         let result = AuthSignInResult(nextStep: .done)
-                        self.dispatch(result: .success(result))
                         self.cancelToken()
                         continuation.resume(returning: result)
                     }
                 case .error(let error):
                     let authError = AuthError.unknown("Sign in reached an error state", error)
-                    self.dispatch(result: .failure(authError))
                     self.cancelToken()
                     continuation.resume(throwing: authError)
                 case .signingIn(let signInState):
@@ -64,18 +54,15 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
                            let cognitoError = serviceError as? AWSCognitoAuthError,
                            case .passwordResetRequired = cognitoError {
                             let result = AuthSignInResult(nextStep: .resetPassword(nil))
-                            self.dispatch(result: .success(result))
                             self.cancelToken()
                             continuation.resume(returning: result)
                         } else if case .service(_, _, let serviceError) = authError,
                                   let cognitoError = serviceError as? AWSCognitoAuthError,
                                   case .userNotConfirmed = cognitoError {
                             let result = AuthSignInResult(nextStep: .confirmSignUp(nil))
-                            self.dispatch(result: .success(result))
                             self.cancelToken()
                             continuation.resume(returning: result)
                         } else {
-                            self.dispatch(result: .failure(authError))
                             self.cancelToken()
                             continuation.resume(throwing: authError)
                         }
@@ -99,7 +86,6 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
                         }
                     }
                 default:
-                    self.dispatch(result: .failure(invalidStateError))
                     self.cancelToken()
                     continuation.resume(throwing: invalidStateError)
                 }

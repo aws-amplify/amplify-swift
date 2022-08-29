@@ -12,10 +12,21 @@ open class AmplifyAuthTask<Request, Success, Failure: AmplifyError> {
     public typealias Failure = Failure
     public typealias AmplifyAuthTaskResult = Result<Success, Failure>
     
-    open var value: Success {
+    final public var value: Success {
         get async throws {
-            throw AuthError.service("Invalid Auth Task value", "", nil)
+            do {
+                let valueReturned = try await execute()
+                dispatch(result: .success(valueReturned))
+                return valueReturned
+            } catch let error as Failure {
+                dispatch(result: .failure(error))
+                throw error
+            }
         }
+    }
+
+    open func execute() async throws -> Success {
+        throw AuthError.service("execute() not implemented", "", nil)
     }
 
     /// All AmplifyOperations must declare a HubPayloadEventName
@@ -31,7 +42,7 @@ open class AmplifyAuthTask<Request, Success, Failure: AmplifyError> {
     ///
     /// - Parameter result: The AmplifyAuthTaskResult to dispatch to the hub as part of the
     ///   HubPayload
-    public func dispatch(result: AmplifyAuthTaskResult) {
+    private func dispatch(result: AmplifyAuthTaskResult) {
         let channel = HubChannel(from: .auth)
         let payload = HubPayload(eventName: eventName, context: nil, data: result)
         Amplify.Hub.dispatch(to: channel, payload: payload)
