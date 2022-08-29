@@ -151,6 +151,18 @@ public protocol StorageCategoryBehavior {
                     data: Data,
                     options: StorageUploadDataOperation.Request.Options?) async throws -> StorageUploadDataTask
 
+    /// Upload local file to storage
+    ///
+    /// - Parameters:
+    ///   - key: The unique identifier of the object in storage.
+    ///   - local: The path to a local file.
+    ///   - options: Parameters to specific plugin behavior
+    /// - Returns: A task that provides progress updates and the key which was used to upload
+    @discardableResult
+    func uploadFile(key: String,
+                    local: URL,
+                    options: StorageUploadFileOperation.Request.Options?) async throws -> StorageUploadFileTask
+
     /// Delete object from storage
     ///
     /// - Parameters:
