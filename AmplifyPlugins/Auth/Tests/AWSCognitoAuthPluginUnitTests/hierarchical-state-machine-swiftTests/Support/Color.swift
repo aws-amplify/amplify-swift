@@ -6,7 +6,7 @@
 //
 
 import Foundation
-@testable import AWSCognitoAuthPlugin
+@testable import HSM
 
 enum Color: State, CaseIterable {
     case red
