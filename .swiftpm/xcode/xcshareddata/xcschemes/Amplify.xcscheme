@@ -39,6 +39,18 @@
             </BuildableReference>
             <SkippedTests>
                <Test
+                  Identifier = "APICategoryConfigurationTests/testPreconditionFailureInvokingBeforeConfig()">
+               </Test>
+               <Test
+                  Identifier = "APICategoryConfigurationTests/testPreconditionFailureInvokingWithMultiplePlugins()">
+               </Test>
+               <Test
+                  Identifier = "ConfigurationTests/testPreconditionFailureInvokingBeforeConfig()">
+               </Test>
+               <Test
+                  Identifier = "ConfigurationTests/testPreconditionFailureInvokingWithNoPlugin()">
+               </Test>
+               <Test
                   Identifier = "DataStoreCategoryConfigurationTests/testPreconditionFailureInvokingBeforeConfig()">
                </Test>
                <Test

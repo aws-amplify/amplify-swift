@@ -23,20 +23,20 @@ class RESTCombineTests: OperationTestBase {
         let receivedFinish = expectation(description: "Received finished")
         let receivedFailure = expectation(description: "Received failed")
         receivedFailure.isInverted = true
-
-        let sink = apiPlugin.get(request: request)
-            .resultPublisher
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .failure:
-                    receivedFailure.fulfill()
-                case .finished:
-                    receivedFinish.fulfill()
-                }
-            }, receiveValue: { value in
-                XCTAssertEqual(value, sentData)
-                receivedValue.fulfill()
-            })
+        
+        let sink = Amplify.Publisher.create {
+            try await self.apiPlugin.get(request: request)
+        }.sink(receiveCompletion: { completion in
+            switch completion {
+            case .failure:
+                receivedFailure.fulfill()
+            case .finished:
+                receivedFinish.fulfill()
+            }
+        }, receiveValue: { value in
+            XCTAssertEqual(value, sentData)
+            receivedValue.fulfill()
+        })
 
         waitForExpectations(timeout: 0.05)
         sink.cancel()
@@ -54,9 +54,9 @@ class RESTCombineTests: OperationTestBase {
         receivedFinish.isInverted = true
         let receivedFailure = expectation(description: "Received failed")
 
-        let sink = apiPlugin.get(request: request)
-            .resultPublisher
-            .sink(receiveCompletion: { completion in
+        let sink = Amplify.Publisher.create {
+            try await self.apiPlugin.get(request: request)
+        }.sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure:
                     receivedFailure.fulfill()
@@ -71,36 +71,4 @@ class RESTCombineTests: OperationTestBase {
         waitForExpectations(timeout: 0.05)
         sink.cancel()
     }
-
-    func testGetCancels() throws {
-        let sentData = Data([0x00, 0x01, 0x02, 0x03])
-        try setUpPluginForSingleResponse(sending: sentData, for: .graphQL)
-
-        let request = RESTRequest(apiName: "Valid", path: "/path")
-
-        let receivedFinish = expectation(description: "Received finished")
-        let receivedFailure = expectation(description: "Received failed")
-        receivedFailure.isInverted = true
-
-        let operation = apiPlugin.get(request: request)
-
-        let sink = operation
-            .resultPublisher
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .failure:
-                    receivedFailure.fulfill()
-                case .finished:
-                    receivedFinish.fulfill()
-                }
-            }, receiveValue: { _ in })
-
-        DispatchQueue.global().async {
-            operation.cancel()
-        }
-
-        waitForExpectations(timeout: 1.05)
-        sink.cancel()
-    }
-
 }

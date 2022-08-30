@@ -20,7 +20,7 @@ public protocol APICategoryGraphQLBehavior: AnyObject {
     @discardableResult
     func query<R: Decodable>(request: GraphQLRequest<R>,
                              listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R>
-    
+                             
     func query<R: Decodable>(request: GraphQLRequest<R>) async throws -> GraphQLTask<R>.Success
     
     /// Perform a GraphQL mutate operation against a previously configured API. This operation
@@ -33,7 +33,7 @@ public protocol APICategoryGraphQLBehavior: AnyObject {
     @discardableResult
     func mutate<R: Decodable>(request: GraphQLRequest<R>,
                               listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R>
-    
+
     func mutate<R: Decodable>(request: GraphQLRequest<R>) async throws -> GraphQLTask<R>.Success
 
     /// Perform a GraphQL subscribe operation against a previously configured API. This operation
