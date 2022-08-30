@@ -14,13 +14,16 @@ class AWSAuthDeleteUserTask: AuthDeleteUserTask {
     private var stateListenerToken: AuthStateMachineToken?
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
 
+    var eventName: HubPayloadEventName {
+        HubPayload.EventName.Auth.deleteUserAPI
+    }
+
     init(authStateMachine: AuthStateMachine) {
         self.authStateMachine = authStateMachine
         self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()
-        super.init(eventName: HubPayload.EventName.Auth.deleteUserAPI)
     }
 
-    override func execute() async throws {
+    func execute() async throws {
         let accessToken = try await getAccessToken()
         try await deleteUser(with: accessToken)
     }
