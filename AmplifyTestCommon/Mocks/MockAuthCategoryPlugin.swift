@@ -20,67 +20,53 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
 
     func signIn(username: String,
                 password: String,
-                options: AuthSignInOperation.Request.Options?,
-                listener: AuthSignInOperation.ResultListener?) -> AuthSignInOperation {
+                options: AuthSignInRequest.Options?) async throws -> AuthSignInResult {
         fatalError()
     }
 
-    public func signUp(username: String,
-                       password: String? = nil,
-                       options: AuthSignUpOperation.Request.Options? = nil,
-                       listener: AuthSignUpOperation.ResultListener?) -> AuthSignUpOperation {
+    public func signUp(username: String, password: String? = nil, options: AuthSignUpRequest.Options? = nil) async throws -> AuthSignUpResult {
         fatalError()
     }
 
     public func confirmSignUp(for username: String,
                               confirmationCode: String,
-                              options: AuthConfirmSignUpOperation.Request.Options? = nil,
-                              listener: AuthConfirmSignUpOperation.ResultListener?) -> AuthConfirmSignUpOperation {
+                              options: AuthConfirmSignUpRequest.Options? = nil) async throws -> AuthSignUpResult {
         fatalError()
     }
 
-    public func resendSignUpCode(for username: String,
-                                 options: AuthResendSignUpCodeOperation.Request.Options? = nil,
-                                 listener: AuthResendSignUpCodeOperation.ResultListener?)
-        -> AuthResendSignUpCodeOperation {
+    public func resendSignUpCode(for username: String, options: AuthResendSignUpCodeRequest.Options? = nil) async throws -> AuthCodeDeliveryDetails {
             fatalError()
     }
 
     public func signIn(username: String? = nil,
                        password: String? = nil,
-                       options: AuthSignInOperation.Request.Options? = nil,
-                       listener: AuthSignInOperation.ResultListener?) -> AuthSignInOperation {
+                       options: AuthSignInRequest.Options? = nil) async throws -> AuthSignInResult {
         fatalError()
     }
 
 #if canImport(AuthenticationServices)
     public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor,
-                                options: AuthWebUISignInOperation.Request.Options? = nil,
-                                listener: AuthWebUISignInOperation.ResultListener?) -> AuthWebUISignInOperation {
+                                options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
         fatalError()
     }
 
     public func signInWithWebUI(for authProvider: AuthProvider,
                                 presentationAnchor: AuthUIPresentationAnchor,
-                                options: AuthSocialWebUISignInOperation.Request.Options? = nil,
-                                listener: AuthSocialWebUISignInOperation.ResultListener?)
-        -> AuthSocialWebUISignInOperation {
+                                options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
             fatalError()
     }
 #endif
 
     public func confirmSignIn(challengeResponse: String,
-                              options: AuthConfirmSignInOperation.Request.Options? = nil,
-                              listener: AuthConfirmSignInOperation.ResultListener?) -> AuthConfirmSignInOperation {
+                              options: AuthConfirmSignInRequest.Options? = nil) async throws -> AuthSignInResult {
         fatalError()
     }
 
-    public func signOut(options: AuthSignOutOperation.Request.Options? = nil,
-                        listener: AuthSignOutOperation.ResultListener?) -> AuthSignOutOperation {
+    public func signOut(options: AuthSignOutRequest.Options? = nil) async throws {
         fatalError()
     }
 
-    public func deleteUser(listener: AuthDeleteUserOperation.ResultListener?) -> AuthDeleteUserOperation {
+    public func deleteUser() async throws {
         fatalError()
     }
 
@@ -89,18 +75,14 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         fatalError()
     }
 
-    public func resetPassword(for username: String,
-                              options: AuthResetPasswordOperation.Request.Options? = nil,
-                              listener: AuthResetPasswordOperation.ResultListener?) -> AuthResetPasswordOperation {
+    public func resetPassword(for username: String, options: AuthResetPasswordRequest.Options? = nil) async throws -> AuthResetPasswordResult {
         fatalError()
     }
 
     public func confirmResetPassword(for username: String,
                                      with newPassword: String,
                                      confirmationCode: String,
-                                     options: AuthConfirmResetPasswordOperation.Request.Options? = nil,
-                                     listener: AuthConfirmResetPasswordOperation.ResultListener?)
-        -> AuthConfirmResetPasswordOperation {
+                                     options: AuthConfirmResetPasswordRequest.Options? = nil) async throws {
             fatalError()
     }
 
@@ -142,14 +124,9 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
 
     public func update(oldPassword: String,
                        to newPassword: String,
-                       options: AuthChangePasswordOperation.Request.Options? = nil,
-                       listener: AuthChangePasswordOperation.ResultListener?) -> AuthChangePasswordOperation {
+                       options: AuthChangePasswordRequest.Options? = nil) async throws {
         notify("changePassword")
-        let options = options ?? AuthChangePasswordRequest.Options()
-        let request = AuthChangePasswordRequest(oldPassword: oldPassword,
-                                                newPassword: newPassword,
-                                                options: options)
-        return MockAuthChangePasswordOperation(request: request)
+
     }
 
     public func fetchDevices(
@@ -194,15 +171,4 @@ class MockAuthCategoryPluginWithoutKey: MockAuthCategoryPlugin {
     override var key: String {
         return ""
     }
-}
-
-class MockAuthChangePasswordOperation: AmplifyOperation<AuthChangePasswordRequest, Void, AuthError>,
-AuthChangePasswordOperation {
-
-    init(request: Request) {
-        super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.changePasswordAPI,
-                   request: request)
-    }
-
 }

@@ -32,15 +32,10 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a valid operation object
     ///
-    func testResetPasswordRequest() {
-        let operationFinished = expectation(description: "Operation should finish")
+    func testResetPasswordRequest() async throws {
         let pluginOptions = ["key": "value"]
         let options = AuthResetPasswordRequest.Options(pluginOptions: pluginOptions)
-        let operation = plugin.resetPassword(for: "username", options: options) { _ in
-            operationFinished.fulfill()
-        }
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 1)
+        _ = try await plugin.resetPassword(for: "username", options: options)
     }
 
     /// Test resetPassword operation can be invoked without options
@@ -51,13 +46,8 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a valid operation object
     ///
-    func testResetPasswordRequestWithoutOptions() {
-        let operationFinished = expectation(description: "Operation should finish")
-        let operation = plugin.resetPassword(for: "username", options: nil) { _ in
-            operationFinished.fulfill()
-        }
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 1)
+    func testResetPasswordRequestWithoutOptions() async throws {
+        _ = try await plugin.resetPassword(for: "username", options: nil)
     }
 
     /// Test a successful resetPassword call
@@ -68,7 +58,7 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a successful result
     ///
-    func testSuccessfulResetPassword() {
+    func testSuccessfulResetPassword() async throws {
         let codeDeliveryDetails = CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType(attributeName: "attribute",
                                                                                              deliveryMedium: .email,
                                                                                              destination: "Amplify@amazon.com")
@@ -77,17 +67,7 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
                 ForgotPasswordOutputResponse(codeDeliveryDetails: codeDeliveryDetails)
             }
         )
-
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resetPassword(for: "user", options: nil) { result in
-            switch result {
-            case .success:
-                resultExpectation.fulfill()
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
-            }
-        }
-        wait(for: [resultExpectation], timeout: networkTimeout)
+        _ = try await plugin.resetPassword(for: "user", options: nil)
     }
 
     /// Test a resetPassword call with nil UserCodeDeliveryDetails
@@ -98,29 +78,23 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get an .unknown error
     ///
-    func testResetPasswordWithNilCodeDeliveryDetails() {
+    func testResetPasswordWithNilCodeDeliveryDetails() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgotPasswordOutputResponse: { _ in
                 ForgotPasswordOutputResponse(codeDeliveryDetails: nil)
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resetPassword(for: "user", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success:
-                XCTFail("Should not succeed")
-            case .failure(let error):
-                guard case .unknown = error else {
-                    XCTFail("Should produce unknown error instead of \(error)")
-                    return
-                }
+        
+        do {
+            _ = try await plugin.resetPassword(for: "user", options: nil)
+            XCTFail("Should not succeed")
+        } catch {
+            guard case AuthError.unknown = error else {
+                XCTFail("Should produce unknown error instead of \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resetPassword call with empty username
@@ -131,7 +105,7 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get an .validation error
     ///
-    func testResetPasswordWithEmptyUsername() {
+    func testResetPasswordWithEmptyUsername() async throws {
 
         let codeDeliveryDetails = CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType(attributeName: "attribute",
                                                                                              deliveryMedium: .email,
@@ -142,22 +116,15 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
             }
         )
 
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resetPassword(for: "", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success:
-                XCTFail("Should not succeed")
-            case .failure(let error):
-                guard case .validation = error else {
-                    XCTFail("Should produce validation error instead of \(error)")
-                    return
-                }
+        do {
+            _ = try await plugin.resetPassword(for: "", options: nil)
+            XCTFail("Should not succeed")
+        } catch {
+            guard case AuthError.validation = error else {
+                XCTFail("Should produce validation error instead of \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resetPassword call with CodeDeliveryFailureException response from service
@@ -169,35 +136,26 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .service error with .codeDelivery as underlyingError
     ///
-    func testResetPasswordWithCodeDeliveryFailureException() {
+    func testResetPasswordWithCodeDeliveryFailureException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgotPasswordOutputResponse: { _ in
                 throw ForgotPasswordOutputError.codeDeliveryFailureException(CodeDeliveryFailureException(message: "Code delivery failure"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resetPassword(for: "user", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.resetPassword(for: "user", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .codeDelivery = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be codeDelivery \(error)")
-                    return
-                }
-
+            guard case .codeDelivery = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be codeDelivery \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resetPassword call with InternalErrorException response from service
@@ -208,31 +166,22 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get an .unknown error
     ///
-    func testResetPasswordWithInternalErrorException() {
+    func testResetPasswordWithInternalErrorException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgotPasswordOutputResponse: { _ in
                 throw ForgotPasswordOutputError.internalErrorException(InternalErrorException(message: "internal error"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resetPassword(for: "user", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .unknown = error else {
-                    XCTFail("Should produce an unknown error instead of \(error)")
-                    return
-                }
-
+        do {
+            _ = try await plugin.resetPassword(for: "user", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.unknown = error else {
+                XCTFail("Should produce an unknown error instead of \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resetPassword call with InvalidEmailRoleAccessPolicyException response from service
@@ -244,33 +193,25 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .emailRole error
     ///
-    func testResetPasswordWithInvalidEmailRoleAccessPolicyException() {
+    func testResetPasswordWithInvalidEmailRoleAccessPolicyException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockForgotPasswordOutputResponse: { _ in
                 throw ForgotPasswordOutputError.invalidEmailRoleAccessPolicyException(InvalidEmailRoleAccessPolicyException(message: "invalid email role"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resetPassword(for: "user", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.resetPassword(for: "user", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .emailRole = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be limitExceeded \(error)")
-                    return
-                }
+            guard case .emailRole = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be limitExceeded \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resetPassword call with InvalidLambdaResponseException response from service
@@ -282,34 +223,25 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .service error with .lambda as underlyingError
     ///
-    func testResetPasswordWithInvalidLambdaResponseException() {
+    func testResetPasswordWithInvalidLambdaResponseException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockForgotPasswordOutputResponse: { _ in
                 throw ForgotPasswordOutputError.invalidLambdaResponseException(InvalidLambdaResponseException(message: "Invalid lambda response"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resetPassword(for: "user", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.resetPassword(for: "user", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be lambda \(error)")
-                    return
-                }
-
+            guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be lambda \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resetPassword call with InvalidParameterException response from service
@@ -322,35 +254,26 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .service error with  .invalidParameter as underlyingError
     ///
-    func testResetPasswordWithInvalidParameterException() {
+    func testResetPasswordWithInvalidParameterException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgotPasswordOutputResponse: { _ in
                 throw ForgotPasswordOutputError.invalidParameterException(InvalidParameterException(message: "invalid parameter"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resetPassword(for: "user", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.resetPassword(for: "user", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be invalidParameter \(error)")
-                    return
-                }
-
+            guard case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be invalidParameter \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resetPassword call with InvalidSmsRoleAccessPolicy response from service
@@ -362,33 +285,25 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .smsRole error
     ///
-    func testResetPasswordWithInvalidSmsRoleAccessPolicyException() {
+    func testResetPasswordWithInvalidSmsRoleAccessPolicyException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockForgotPasswordOutputResponse: { _ in
                 throw ForgotPasswordOutputError.invalidSmsRoleAccessPolicyException(InvalidSmsRoleAccessPolicyException(message: "invalid sms role"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resetPassword(for: "user", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.resetPassword(for: "user", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be limitExceeded \(error)")
-                    return
-                }
+            guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be limitExceeded \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resetPassword call with InvalidSmsRoleTrustRelationshipException response from service
@@ -400,33 +315,25 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .smsRole error
     ///
-    func testResetPasswordWithInvalidSmsRoleTrustRelationshipException() {
+    func testResetPasswordWithInvalidSmsRoleTrustRelationshipException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockForgotPasswordOutputResponse: { _ in
                 throw ForgotPasswordOutputError.invalidSmsRoleTrustRelationshipException(InvalidSmsRoleTrustRelationshipException(message: "invalid sms role trust relationship"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resetPassword(for: "user", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.resetPassword(for: "user", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be limitExceeded \(error)")
-                    return
-                }
+            guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be limitExceeded \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resetPassword call with LimitExceededException response from service
@@ -439,34 +346,26 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .limitExceeded error
     ///
-    func testResetPasswordWithLimitExceededException() {
+    func testResetPasswordWithLimitExceededException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgotPasswordOutputResponse: { _ in
                 throw ForgotPasswordOutputError.limitExceededException(LimitExceededException(message: "limit exceeded"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resetPassword(for: "user", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.resetPassword(for: "user", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .limitExceeded = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be limitExceeded \(error)")
-                    return
-                }
+            guard case .limitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be limitExceeded \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resetPassword call with NotAuthorizedException response from service
@@ -479,30 +378,22 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .notAuthorized error
     ///
-    func testResetPasswordWithNotAuthorizedException() {
+    func testResetPasswordWithNotAuthorizedException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgotPasswordOutputResponse: { _ in
                 throw ForgotPasswordOutputError.notAuthorizedException(NotAuthorizedException(message: "not authorized"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resetPassword(for: "user", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .notAuthorized = error else {
-                    XCTFail("Should produce notAuthorized error instead of \(error)")
-                    return
-                }
+        do {
+            _ = try await plugin.resetPassword(for: "user", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.notAuthorized = error else {
+                XCTFail("Should produce notAuthorized error instead of \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resetPassword call with ResourceNotFoundException response from service
@@ -515,35 +406,26 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .service error with .resourceNotFound as underlyingError
     ///
-    func testResetPasswordWithResourceNotFoundException() {
+    func testResetPasswordWithResourceNotFoundException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgotPasswordOutputResponse: { _ in
                 throw ForgotPasswordOutputError.resourceNotFoundException(ResourceNotFoundException(message: "resource not found"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resetPassword(for: "user", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.resetPassword(for: "user", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be resourceNotFound \(error)")
-                    return
-                }
-
+            guard case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be resourceNotFound \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resetPassword call with TooManyRequestsException response from service
@@ -556,35 +438,26 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .service error with .requestLimitExceeded as underlyingError
     ///
-    func testResetPasswordWithTooManyRequestsException() {
+    func testResetPasswordWithTooManyRequestsException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgotPasswordOutputResponse: { _ in
                 throw ForgotPasswordOutputError.tooManyRequestsException(TooManyRequestsException(message: "too many requests"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resetPassword(for: "user", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.resetPassword(for: "user", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be requestLimitExceeded \(error)")
-                    return
-                }
-
+            guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be requestLimitExceeded \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resetPassword call with UnexpectedLambdaException response from service
@@ -597,35 +470,26 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .service error with .lambda as underlyingError
     ///
-    func testResetPasswordWithUnexpectedLambdaException() {
+    func testResetPasswordWithUnexpectedLambdaException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgotPasswordOutputResponse: { _ in
                 throw ForgotPasswordOutputError.unexpectedLambdaException(UnexpectedLambdaException(message: "unexpected lambda"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resetPassword(for: "user", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.resetPassword(for: "user", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be lambda \(error)")
-                    return
-                }
-
+            guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be lambda \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resetPassword call with UserLambdaValidationException response from service
@@ -638,35 +502,26 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .service error with .lambda as underlyingError
     ///
-    func testResetPasswordWithUserLambdaValidationException() {
+    func testResetPasswordWithUserLambdaValidationException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgotPasswordOutputResponse: { _ in
                 throw ForgotPasswordOutputError.userLambdaValidationException(UserLambdaValidationException(message: "user lambda validation exception"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resetPassword(for: "user", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.resetPassword(for: "user", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be lambda \(error)")
-                    return
-                }
-
+            guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be lambda \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /* DISABLED, because userNotConfirmedException was removed from the SDK
@@ -722,35 +577,26 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .service error with .userNotFound as underlyingError
     ///
-    func testResetPasswordWithUserNotFoundException() {
+    func testResetPasswordWithUserNotFoundException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockForgotPasswordOutputResponse: { _ in
                 throw ForgotPasswordOutputError.userNotFoundException(UserNotFoundException(message: "user not found"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resetPassword(for: "user", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.resetPassword(for: "user", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be userNotFound \(error)")
-                    return
-                }
-
+            guard case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be userNotFound \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
 }

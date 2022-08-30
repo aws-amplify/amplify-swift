@@ -76,19 +76,4 @@ public extension AuthCategoryUserBehavior {
             listener: nil
         )
     }
-
-    /// Update the current logged in user's password
-    ///
-    /// Check the plugins documentation, you might need to re-authenticate the user after calling this method.
-    /// - Parameters:
-    ///   - oldPassword: Current password of the user
-    ///   - newPassword: New password to be updated
-    ///   - options: Parameters specific to plugin behavior
-    func update(
-        oldPassword: String,
-        to newPassword: String,
-        options: AuthChangePasswordOperation.Request.Options? = nil
-    ) -> AuthChangePasswordOperation {
-        update(oldPassword: oldPassword, to: newPassword, options: options, listener: nil)
-    }
 }

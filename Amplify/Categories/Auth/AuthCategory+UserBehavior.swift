@@ -67,15 +67,8 @@ extension AuthCategory: AuthCategoryUserBehavior {
                                   listener: listener)
     }
 
-    @discardableResult
-    public func update(oldPassword: String,
-                       to newPassword: String,
-                       options: AuthChangePasswordOperation.Request.Options? = nil,
-                       listener: AuthChangePasswordOperation.ResultListener?) -> AuthChangePasswordOperation {
-        return plugin.update(oldPassword: oldPassword,
-                             to: newPassword,
-                             options: options,
-                             listener: listener)
+    public func update(oldPassword: String, to newPassword: String, options: AuthChangePasswordRequest.Options? = nil) async throws {
+        return try await plugin.update(oldPassword: oldPassword, to: newPassword, options: options)
     }
 
 }

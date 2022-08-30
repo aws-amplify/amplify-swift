@@ -25,12 +25,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - username: username to signUp
     ///   - password: password as per the password policy of the provider
     ///   - options: Parameters specific to plugin behavior
-    ///   - listener: Triggered when the operation completes.
-    @discardableResult
-    func signUp(username: String,
-                password: String?,
-                options: AuthSignUpOperation.Request.Options?,
-                listener: AuthSignUpOperation.ResultListener?) -> AuthSignUpOperation
+    func signUp(username: String, password: String?, options: AuthSignUpRequest.Options?) async throws -> AuthSignUpResult
 
     /// Confirms the `signUp` operation.
     ///
@@ -41,23 +36,16 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - username: Username used that was used to signUp.
     ///   - confirmationCode: Confirmation code received to the user.
     ///   - options: Parameters specific to plugin behavior
-    ///   - listener: Triggered when the operation completes.
-    @discardableResult
     func confirmSignUp(for username: String,
                        confirmationCode: String,
-                       options: AuthConfirmSignUpOperation.Request.Options?,
-                       listener: AuthConfirmSignUpOperation.ResultListener?) -> AuthConfirmSignUpOperation
+                       options: AuthConfirmSignUpRequest.Options?) async throws -> AuthSignUpResult
 
     /// Resends the confirmation code to confirm the signUp process
     ///
     /// - Parameters:
     ///   - username: Username of the user to be confirmed.
     ///   - options: Parameters specific to plugin behavior.
-    ///   - listener: Triggered when the operation completes.
-    @discardableResult
-    func resendSignUpCode(for username: String,
-                          options: AuthResendSignUpCodeOperation.Request.Options?,
-                          listener: AuthResendSignUpCodeOperation.ResultListener?) -> AuthResendSignUpCodeOperation
+    func resendSignUpCode(for username: String, options: AuthResendSignUpCodeRequest.Options?) async throws -> AuthCodeDeliveryDetails
 
     /// SignIn to the authentication provider
     ///
@@ -68,12 +56,9 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - username: Username to signIn the user
     ///   - password: Password to signIn the user
     ///   - options: Parameters specific to plugin behavior
-    ///   - listener: Triggered when the operation completes.
-    @discardableResult
     func signIn(username: String?,
                 password: String?,
-                options: AuthSignInOperation.Request.Options?,
-                listener: AuthSignInOperation.ResultListener?) -> AuthSignInOperation
+                options: AuthSignInRequest.Options?) async throws -> AuthSignInResult
 
 #if canImport(AuthenticationServices)
     /// SignIn using pre configured web UI.
@@ -83,11 +68,8 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     /// - Parameters:
     ///   - presentationAnchor: Anchor on which the UI is presented.
     ///   - options: Parameters specific to plugin behavior.
-    ///   - listener: Triggered when the operation completes.
-    @discardableResult
     func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor,
-                         options: AuthWebUISignInOperation.Request.Options?,
-                         listener: AuthWebUISignInOperation.ResultListener?) -> AuthWebUISignInOperation
+                         options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult
 
     /// SignIn using an auth provider on a web UI
     ///
@@ -99,12 +81,9 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - authProvider: Auth provider used to signIn.
     ///   - presentationAnchor: Anchor on which the UI is presented.
     ///   - options: Parameters specific to plugin behavior.
-    ///   - listener: Triggered when the operation completes.
-    @discardableResult
     func signInWithWebUI(for authProvider: AuthProvider,
                          presentationAnchor: AuthUIPresentationAnchor,
-                         options: AuthSocialWebUISignInOperation.Request.Options?,
-                         listener: AuthSocialWebUISignInOperation.ResultListener?) -> AuthSocialWebUISignInOperation
+                         options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult
 #endif
 
     /// Confirms a next step in signIn flow.
@@ -112,29 +91,16 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     /// - Parameters:
     ///   - challengeResponse: Challenge response required to confirm the next step in signIn flow
     ///   - options: Parameters specific to plugin behavior.
-    ///   - listener: Triggered when the operation completes.
-    @discardableResult
-    func confirmSignIn(challengeResponse: String,
-                       options: AuthConfirmSignInOperation.Request.Options?,
-                       listener: AuthConfirmSignInOperation.ResultListener?) -> AuthConfirmSignInOperation
+    func confirmSignIn(challengeResponse: String, options: AuthConfirmSignInRequest.Options?) async throws -> AuthSignInResult
 
     /// Sign out the currently logged-in user.
     ///
     /// - Parameters:
     ///   - options: Parameters specific to plugin behavior.
-    ///   - listener: Triggered when the operation completes.
-    /// - Returns: AuthSignOutOperation
-    @discardableResult
-    func signOut(options: AuthSignOutOperation.Request.Options?,
-                 listener: AuthSignOutOperation.ResultListener?) -> AuthSignOutOperation
+    func signOut(options: AuthSignOutRequest.Options?) async throws 
 
     /// Delete the account of the currently logged-in user.
-    ///
-    /// - Parameters:
-    ///   - listener: Triggered when the operation completes.
-    /// - Returns: AuthDeleteUserOperation
-    @discardableResult
-    func deleteUser(listener: AuthDeleteUserOperation.ResultListener?) -> AuthDeleteUserOperation
+    func deleteUser() async throws
 
     /// Fetch the current authentication session.
     ///
@@ -150,11 +116,8 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     /// - Parameters:
     ///   - username: username whose password need to reset
     ///   - options: Parameters specific to plugin behavior
-    ///   - listener: Triggered when the operation completes
-    @discardableResult
     func resetPassword(for username: String,
-                       options: AuthResetPasswordOperation.Request.Options?,
-                       listener: AuthResetPasswordOperation.ResultListener?) -> AuthResetPasswordOperation
+                       options: AuthResetPasswordRequest.Options?) async throws -> AuthResetPasswordResult
 
     /// Confirms a reset password flow
     ///
@@ -163,13 +126,6 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - newPassword: new password for the user
     ///   - confirmationCode: Received confirmation code
     ///   - options: Parameters specific to plugin behavior
-    ///   - listener: Triggered when the operation completes
-    @discardableResult
-    func confirmResetPassword(for username: String,
-                              with newPassword: String,
-                              confirmationCode: String,
-                              options: AuthConfirmResetPasswordOperation.Request.Options?,
-                              listener: AuthConfirmResetPasswordOperation.ResultListener?)
-    -> AuthConfirmResetPasswordOperation
+    func confirmResetPassword(for username: String, with newPassword: String, confirmationCode: String, options: AuthConfirmResetPasswordRequest.Options?) async throws
 
 }

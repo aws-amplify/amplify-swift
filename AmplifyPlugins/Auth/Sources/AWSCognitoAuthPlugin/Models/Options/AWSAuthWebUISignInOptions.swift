@@ -42,9 +42,9 @@ public struct AWSAuthWebUISignInOptions {
 
 extension AuthWebUISignInRequest.Options {
 
-    public static func preferPrivateSession() -> AuthWebUISignInOperation.Request.Options {
+    public static func preferPrivateSession() -> AuthWebUISignInRequest.Options {
         let pluginOptions = AWSAuthWebUISignInOptions(preferPrivateSession: true)
-        let options = AuthWebUISignInOperation.Request.Options(pluginOptions: pluginOptions)
+        let options = AuthWebUISignInRequest.Options(pluginOptions: pluginOptions)
         return options
     }
 }

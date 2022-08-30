@@ -25,7 +25,7 @@ class AuthHubEventHandlerTests: XCTestCase {
     /// - Then:
     ///    - I should receive a signedIn hub event
     ///
-    func testSignedInHubEvent() {
+    func testSignedInHubEvent() async {
 
         configurePluginForSignInEvent()
 
@@ -43,10 +43,10 @@ class AuthHubEventHandlerTests: XCTestCase {
             }
         }
 
-        _ = plugin.signIn(username: "username", password: "password", options: options) { result in
-            if case .failure(let error) = result {
-                XCTFail("Received failure with error \(error)")
-            }
+        do {
+            _ = try await plugin.signIn(username: "username", password: "password", options: options)
+        } catch {
+            XCTFail("Received failure with error \(error)")
         }
 
         wait(for: [hubEventExpectation], timeout: networkTimeout)
@@ -60,7 +60,7 @@ class AuthHubEventHandlerTests: XCTestCase {
     /// - Then:
     ///    - I should receive a signedOut hub event
     ///
-    func testSignedOutHubEvent() {
+    func testSignedOutHubEvent() async throws {
 
         configurePluginForSignOutEvent()
 
@@ -74,12 +74,7 @@ class AuthHubEventHandlerTests: XCTestCase {
             }
         }
 
-        _ = plugin.signOut(options: nil) { result in
-            if case .failure(let error) = result {
-                XCTFail("Received failure with error \(error)")
-            }
-        }
-
+        try await plugin.signOut(options: nil)
         wait(for: [hubEventExpectation], timeout: networkTimeout)
     }
 
@@ -91,7 +86,7 @@ class AuthHubEventHandlerTests: XCTestCase {
     /// - Then:
     ///    - I should receive a signedIn hub event
     ///
-    func testConfirmSignedInHubEvent() {
+    func testConfirmSignedInHubEvent() async {
 
         configurePluginForConfirmSignInEvent()
 
@@ -105,10 +100,10 @@ class AuthHubEventHandlerTests: XCTestCase {
             }
         }
 
-        _ = plugin.confirmSignIn(challengeResponse: "code") { result in
-            if case .failure(let error) = result {
-                XCTFail("Received failure with error \(error)")
-            }
+        do {
+            _ = try await plugin.confirmSignIn(challengeResponse: "code")
+        } catch {
+            XCTFail("Received failure with error \(error)")
         }
 
         wait(for: [hubEventExpectation], timeout: networkTimeout)
@@ -122,7 +117,7 @@ class AuthHubEventHandlerTests: XCTestCase {
     /// - Then:
     ///    - I should receive a user deleted hub event
     ///
-    func testUserDeletedHubEvent() {
+    func testUserDeletedHubEvent() async {
 
         configurePluginForDeleteUserEvent()
 
@@ -136,12 +131,12 @@ class AuthHubEventHandlerTests: XCTestCase {
             }
         }
 
-        _ = plugin.deleteUser { result in
-            if case .failure(let error) = result {
-                XCTFail("Received failure with error \(error)")
-            }
+        do {
+            try await plugin.deleteUser()
+        } catch {
+            XCTFail("Received failure with error \(error)")
         }
-
+        
         wait(for: [hubEventExpectation], timeout: networkTimeout)
     }
 
@@ -184,7 +179,8 @@ class AuthHubEventHandlerTests: XCTestCase {
     /// - Then:
     ///    - I should receive a signedIn hub event
     ///
-    func testWebUISignedInHubEvent() {
+    @MainActor
+    func testWebUISignedInHubEvent() async {
         let mockIdentityProvider = MockIdentityProvider()
 
         let initialState = AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured)
@@ -199,12 +195,12 @@ class AuthHubEventHandlerTests: XCTestCase {
                 break
             }
         }
-        _ = plugin.signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor(),
-                                   options: nil, listener: { result in
-            if case .failure(let error) = result {
-                XCTFail("Received failure with error \(error)")
-            }
-        })
+        
+        do {
+            _ = try await plugin.signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor(), options: nil)
+        } catch {
+            XCTFail("Received failure with error \(error)")
+        }
         wait(for: [hubEventExpectation], timeout: 10)
     }
 
@@ -216,7 +212,8 @@ class AuthHubEventHandlerTests: XCTestCase {
     /// - Then:
     ///    - I should receive a signedIn hub event
     ///
-    func testSocialWebUISignedInHubEvent() {
+    @MainActor
+    func testSocialWebUISignedInHubEvent() async {
         let mockIdentityProvider = MockIdentityProvider()
 
         let initialState = AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured)
@@ -231,13 +228,11 @@ class AuthHubEventHandlerTests: XCTestCase {
                 break
             }
         }
-        _ = plugin.signInWithWebUI(for: .amazon,
-                                   presentationAnchor: AuthUIPresentationAnchor(),
-                                   options: nil, listener: { result in
-            if case .failure(let error) = result {
-                XCTFail("Received failure with error \(error)")
-            }
-        })
+        do {
+            _ = try await plugin.signInWithWebUI(for: .amazon, presentationAnchor: AuthUIPresentationAnchor(), options: nil)
+        } catch {
+            XCTFail("Received failure with error \(error)")
+        }
         wait(for: [hubEventExpectation], timeout: 10)
     }
 

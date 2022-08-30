@@ -39,42 +39,42 @@ class AuthHubEventHandler: AuthHubEventBehavior {
             switch payload.eventName {
 
             case HubPayload.EventName.Auth.signInAPI:
-                guard let event = payload.data as? AWSAuthSignInOperation.OperationResult,
+                guard let event = payload.data as? AWSAuthSignInTask.AmplifyAuthTaskResult,
                     case let .success(result) = event else {
                         return
                 }
                 self?.handleSignInEvent(result)
 
             case HubPayload.EventName.Auth.confirmSignInAPI:
-                guard let event = payload.data as? AWSAuthConfirmSignInOperation.OperationResult,
+                guard let event = payload.data as? AWSAuthConfirmSignInTask.AmplifyAuthTaskResult,
                     case let .success(result) = event else {
                         return
                 }
                 self?.handleSignInEvent(result)
 
             case HubPayload.EventName.Auth.webUISignInAPI:
-                guard let event = payload.data as? AWSAuthWebUISignInOperation.OperationResult,
+                guard let event = payload.data as? AWSAuthWebUISignInTask.AmplifyAuthTaskResult,
                     case let .success(result) = event else {
                         return
                 }
                 self?.handleSignInEvent(result)
 
             case HubPayload.EventName.Auth.socialWebUISignInAPI:
-                guard let event = payload.data as? AWSAuthSocialWebUISignInOperation.OperationResult,
+                guard let event = payload.data as? AWSAuthWebUISignInTask.AmplifyAuthTaskResult,
                     case let .success(result) = event else {
                         return
                 }
                 self?.handleSignInEvent(result)
 
             case HubPayload.EventName.Auth.deleteUserAPI:
-                guard let event = payload.data as? AWSAuthDeleteUserOperation.OperationResult,
+                guard let event = payload.data as? AWSAuthDeleteUserTask.AmplifyAuthTaskResult,
                     case .success = event else {
                         return
                 }
                 self?.sendUserDeletedEvent()
 
             case HubPayload.EventName.Auth.signOutAPI:
-                guard let event = payload.data as? AWSAuthSignOutOperation.OperationResult,
+                guard let event = payload.data as? AWSAuthSignOutTask.AmplifyAuthTaskResult,
                     case .success = event else {
                         return
                 }

@@ -32,15 +32,10 @@ class ClientBehaviorResendSignUpCodeTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a valid operation object
     ///
-    func testResendSignupCodeRequest() {
-        let operationFinished = expectation(description: "Operation should finish")
+    func testResendSignupCodeRequest() async throws {
         let pluginOptions = ["somekey": "somevalue"]
         let options = AuthResendSignUpCodeRequest.Options(pluginOptions: pluginOptions)
-        let operation = plugin.resendSignUpCode(for: "username", options: options) { _ in
-            operationFinished.fulfill()
-        }
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 1)
+        _ = try await plugin.resendSignUpCode(for: "username", options: options)
     }
 
     /// Test resendSignUpCode operation can be invoked without options
@@ -51,13 +46,8 @@ class ClientBehaviorResendSignUpCodeTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a valid operation object
     ///
-    func testResendSignupCodeRequestWithoutOptions() {
-        let operationFinished = expectation(description: "Operation should finish")
-        let operation = plugin.resendSignUpCode(for: "username", options: nil) { _ in
-            operationFinished.fulfill()
-        }
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 1)
+    func testResendSignupCodeRequestWithoutOptions() async throws {
+        _ = try await plugin.resendSignUpCode(for: "username", options: nil)
     }
 
     /// Test a successful resendSignUpCode call with .email as the destination of AuthCodeDeliveryDetails
@@ -68,7 +58,7 @@ class ClientBehaviorResendSignUpCodeTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a successful result with .email as the destination of AuthCodeDeliveryDetails
     ///
-    func testResendSignupCodeWithSuccess() {
+    func testResendSignupCodeWithSuccess() async throws {
 
         let codeDeliveryDetails = CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType(attributeName: nil,
                                                                                              deliveryMedium: .email,
@@ -79,23 +69,11 @@ class ClientBehaviorResendSignUpCodeTests: AWSCognitoAuthClientBehaviorTests {
             }
         )
 
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-
-            switch result {
-            case .success(let authCodeDeliveryDetails):
-                guard case .email = authCodeDeliveryDetails.destination else {
-                    XCTFail("Result should be .email for the destination of AuthCodeDeliveryDetails")
-                    return
-                }
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
-            }
+        let authCodeDeliveryDetails = try await plugin.resendSignUpCode(for: "username", options: nil)
+        guard case .email = authCodeDeliveryDetails.destination else {
+            XCTFail("Result should be .email for the destination of AuthCodeDeliveryDetails")
+            return
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resendSignUpCode call with empty username
@@ -106,7 +84,7 @@ class ClientBehaviorResendSignUpCodeTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a failure with validation error
     ///
-    func testResendSignupCodeWithEmptyUsername() {
+    func testResendSignupCodeWithEmptyUsername() async throws {
 
         let codeDeliveryDetails = CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType(attributeName: nil,
                                                                                              deliveryMedium: .email,
@@ -117,23 +95,15 @@ class ClientBehaviorResendSignUpCodeTests: AWSCognitoAuthClientBehaviorTests {
             }
         )
 
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-
-            switch result {
-            case .success:
-                XCTFail("Should not succeed")
-            case .failure(let error):
-                guard case .validation = error else {
-                    XCTFail("Should produce validation error instead of \(error)")
-                    return
-                }
+        do {
+            _ = try await plugin.resendSignUpCode(for: "", options: nil)
+            XCTFail("Should not succeed")
+        } catch {
+            guard case AuthError.validation = error else {
+                XCTFail("Should produce validation error instead of \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resendSignUpCode call with invalid response from service
@@ -144,7 +114,7 @@ class ClientBehaviorResendSignUpCodeTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get an .unknown error
     ///
-    func testResendSignupCodeWithInvalidResult() {
+    func testResendSignupCodeWithInvalidResult() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
@@ -152,23 +122,15 @@ class ClientBehaviorResendSignUpCodeTests: AWSCognitoAuthClientBehaviorTests {
             }
         )
 
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-
-            switch result {
-            case .success:
-                XCTFail("Should not succeed")
-            case .failure(let error):
-                guard case .unknown = error else {
-                    XCTFail("Should produce an unknown error")
-                    return
-                }
+        do {
+            _ = try await plugin.resendSignUpCode(for: "username", options: nil)
+            XCTFail("Should not succeed")
+        } catch {
+            guard case AuthError.unknown = error else {
+                XCTFail("Should produce an unknown error")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     // MARK: Service error handling test
@@ -181,35 +143,26 @@ class ClientBehaviorResendSignUpCodeTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .service error with .codeDelivery as underlyingError
     ///
-    func testResendSignupCodeWithCodeDeliveryFailureException() {
+    func testResendSignupCodeWithCodeDeliveryFailureException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
                 throw ResendConfirmationCodeOutputError.codeDeliveryFailureException(CodeDeliveryFailureException(message: "Code delivery failure"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.resendSignUpCode(for: "username", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .codeDelivery = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be codedelivery \(error)")
-                    return
-                }
-
+            guard case .codeDelivery = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be codedelivery \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resendSignUpCode call with InternalErrorException response from service
@@ -220,30 +173,21 @@ class ClientBehaviorResendSignUpCodeTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get an .unknown error
     ///
-    func testResendSignupCodeWithInternalErrorException() {
+    func testResendSignupCodeWithInternalErrorException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
                 throw ResendConfirmationCodeOutputError.internalErrorException(InternalErrorException(message: "internal error"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .unknown = error else {
-                    XCTFail("Should produce an unknown error instead of \(error)")
-                    return
-                }
-
+        do {
+            _ = try await plugin.resendSignUpCode(for: "username", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.unknown = error else {
+                XCTFail("Should produce an unknown error instead of \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resendSignUpCode call with InvalidEmailRoleAccessPolicy response from service
@@ -255,34 +199,25 @@ class ClientBehaviorResendSignUpCodeTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .service error with .emailRole as underlyingError
     ///
-    func testResendSignupCodeWithInvalidEmailRoleAccessPolicyException() {
+    func testResendSignupCodeWithInvalidEmailRoleAccessPolicyException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
                 throw ResendConfirmationCodeOutputError.invalidEmailRoleAccessPolicyException(InvalidEmailRoleAccessPolicyException(message: "Invalid email role access policy"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.resendSignUpCode(for: "username", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .emailRole = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be sms role \(error)")
-                    return
-                }
-
+            guard case .emailRole = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be sms role \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resendSignUpCode call with InvalidSmsRoleAccessPolicy response from service
@@ -294,34 +229,25 @@ class ClientBehaviorResendSignUpCodeTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .service error with .smsRole as underlyingError
     ///
-    func testResendSignupCodeWithinvalidSmsRoleAccessPolicyException() {
+    func testResendSignupCodeWithinvalidSmsRoleAccessPolicyException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
                 throw ResendConfirmationCodeOutputError.invalidSmsRoleAccessPolicyException(InvalidSmsRoleAccessPolicyException(message: "Invalid sms role access policy"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.resendSignUpCode(for: "username", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be sms role \(error)")
-                    return
-                }
-
+            guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be sms role \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resendSignUpCode call with InvalidSmsRoleTrustRelationship response from service
@@ -333,34 +259,25 @@ class ClientBehaviorResendSignUpCodeTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .service error with .smsRole as underlyingError
     ///
-    func testResendSignupCodeWithInvalidSmsRoleTrustRelationshipException() {
+    func testResendSignupCodeWithInvalidSmsRoleTrustRelationshipException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
                 throw ResendConfirmationCodeOutputError.invalidSmsRoleTrustRelationshipException(InvalidSmsRoleTrustRelationshipException(message: "Invalid sms role trust relationship"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.resendSignUpCode(for: "username", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be sms role \(error)")
-                    return
-                }
-
+            guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be sms role \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resendSignUpCode call with InvalidLambdaResponseException response from service
@@ -372,34 +289,25 @@ class ClientBehaviorResendSignUpCodeTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .service error with .lambda as underlyingError
     ///
-    func testResendSignupCodeWithInvalidLambdaResponseException() {
+    func testResendSignupCodeWithInvalidLambdaResponseException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
                 throw ResendConfirmationCodeOutputError.invalidLambdaResponseException(InvalidLambdaResponseException(message: "Invalid lambda response"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.resendSignUpCode(for: "username", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be lambda \(error)")
-                    return
-                }
-
+            guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be lambda \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resendSignUpCode call with InvalidParameterException response from service
@@ -412,34 +320,25 @@ class ClientBehaviorResendSignUpCodeTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .service error with  .invalidParameter as underlyingError
     ///
-    func testResendSignupCodeWithInvalidParameterException() {
+    func testResendSignupCodeWithInvalidParameterException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
                 throw ResendConfirmationCodeOutputError.invalidParameterException(InvalidParameterException(message: "invalid parameter"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.resendSignUpCode(for: "username", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be invalidParameter \(error)")
-                    return
-                }
-
+            guard case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be invalidParameter \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resendSignUpCode call with LimitExceededException response from service
@@ -452,33 +351,25 @@ class ClientBehaviorResendSignUpCodeTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .limitExceeded error
     ///
-    func testResendSignupCodeWithLimitExceededException() {
+    func testResendSignupCodeWithLimitExceededException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
                 throw ResendConfirmationCodeOutputError.limitExceededException(LimitExceededException(message: "limit exceeded"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.resendSignUpCode(for: "username", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .limitExceeded = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be limitExceeded \(error)")
-                    return
-                }
+            guard case .limitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be limitExceeded \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resendSignUpCode call with NotAuthorizedException response from service
@@ -491,29 +382,21 @@ class ClientBehaviorResendSignUpCodeTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .notAuthorized error
     ///
-    func testResendSignupCodeWithNotAuthorizedException() {
+    func testResendSignupCodeWithNotAuthorizedException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
                 throw ResendConfirmationCodeOutputError.notAuthorizedException(NotAuthorizedException(message: "not authorized"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .notAuthorized = error else {
-                    XCTFail("Should produce notAuthorized error instead of \(error)")
-                    return
-                }
+        do {
+            _ = try await plugin.resendSignUpCode(for: "username", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.notAuthorized = error else {
+                XCTFail("Should produce notAuthorized error instead of \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resendSignUpCode call with ResourceNotFoundException response from service
@@ -526,33 +409,25 @@ class ClientBehaviorResendSignUpCodeTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .service error with .resourceNotFound as underlyingError
     ///
-    func testResendSignupCodeWithResourceNotFoundException() {
+    func testResendSignupCodeWithResourceNotFoundException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
                 throw ResendConfirmationCodeOutputError.resourceNotFoundException(ResourceNotFoundException(message: "resource not found"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.resendSignUpCode(for: "username", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be resourceNotFound \(error)")
-                    return
-                }
+            guard case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be resourceNotFound \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resendSignUpCode call with TooManyRequestsException response from service
@@ -565,34 +440,25 @@ class ClientBehaviorResendSignUpCodeTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .service error with .requestLimitExceeded as underlyingError
     ///
-    func testResendSignupCodeWithTooManyRequestsException() {
+    func testResendSignupCodeWithTooManyRequestsException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
                 throw ResendConfirmationCodeOutputError.tooManyRequestsException(TooManyRequestsException(message: "too many requests"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.resendSignUpCode(for: "username", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be requestLimitExceeded \(error)")
-                    return
-                }
-
+            guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be requestLimitExceeded \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resendSignUpCode call with UnexpectedLambdaException response from service
@@ -605,34 +471,25 @@ class ClientBehaviorResendSignUpCodeTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .service error with .lambda as underlyingError
     ///
-    func testResendSignupCodeWithUnexpectedLambdaException() {
+    func testResendSignupCodeWithUnexpectedLambdaException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
                 throw ResendConfirmationCodeOutputError.unexpectedLambdaException(UnexpectedLambdaException(message: "unexpected lambda"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.resendSignUpCode(for: "username", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be lambda \(error)")
-                    return
-                }
-
+            guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be lambda \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resendSignUpCode call with UserLambdaValidationException response from service
@@ -645,34 +502,25 @@ class ClientBehaviorResendSignUpCodeTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .service error with .lambda as underlyingError
     ///
-    func testResendSignupCodeWithUserLambdaValidationException() {
+    func testResendSignupCodeWithUserLambdaValidationException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
                 throw ResendConfirmationCodeOutputError.userLambdaValidationException(UserLambdaValidationException(message: "user lambda validation exception"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.resendSignUpCode(for: "username", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be lambda \(error)")
-                    return
-                }
-
+            guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be lambda \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a resendSignUpCode call with UserNotFound response from service
@@ -685,34 +533,25 @@ class ClientBehaviorResendSignUpCodeTests: AWSCognitoAuthClientBehaviorTests {
     /// - Then:
     ///    - I should get a .userNotFound error
     ///
-    func testResendSignupCodeUpWithUserNotFoundException() {
+    func testResendSignupCodeUpWithUserNotFoundException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockResendConfirmationCodeOutputResponse: { _ in
                 throw ResendConfirmationCodeOutputError.userNotFoundException(UserNotFoundException(message: "user not found"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.resendSignUpCode(for: "username", options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.resendSignUpCode(for: "username", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be userNotFound \(error)")
-                    return
-                }
-
+            guard case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be userNotFound \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
 }

@@ -33,18 +33,10 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     /// - Then:
     ///    - I should get a valid operation object
     ///
-    func testConfirmResetPasswordRequest() {
-        let operationFinished = expectation(description: "Operation should finish")
+    func testConfirmResetPasswordRequest() async throws {
         let pluginOptions = ["key": "value"]
         let options = AuthConfirmResetPasswordRequest.Options(pluginOptions: pluginOptions)
-        let operation = plugin.confirmResetPassword(for: "username",
-                                                    with: "password",
-                                                    confirmationCode: "code",
-                                                    options: options) { _ in
-            operationFinished.fulfill()
-        }
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 1)
+        try await plugin.confirmResetPassword(for: "username", with: "password", confirmationCode: "code", options: options)
     }
 
     /// Test confirmResetPassword operation can be invoked without options
@@ -55,16 +47,8 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     /// - Then:
     ///    - I should get a valid operation object
     ///
-    func testConfirmResetPasswordRequestWithoutOptions() {
-        let operationFinished = expectation(description: "Operation should finish")
-        let operation = plugin.confirmResetPassword(for: "username",
-                                                    with: "password",
-                                                    confirmationCode: "code",
-                                                    options: nil) { _ in
-            operationFinished.fulfill()
-        }
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 1)
+    func testConfirmResetPasswordRequestWithoutOptions() async throws {
+        try await plugin.confirmResetPassword(for: "username", with: "password", confirmationCode: "code", options: nil)
     }
 
     /// Test a successful confirmResetPassword call
@@ -75,25 +59,13 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     /// - Then:
     ///    - I should get a successful result
     ///
-    func testSuccessfulConfirmResetPassword() {
+    func testSuccessfulConfirmResetPassword() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutputResponse: { _ in
                 try ConfirmForgotPasswordOutputResponse(httpResponse: MockHttpResponse.ok)
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmResetPassword(for: "username",
-                                           with: "newpassword",
-                                           confirmationCode: "code",
-                                           options: nil) { result in
-            switch result {
-            case .success:
-                resultExpectation.fulfill()
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
-            }
-        }
-        wait(for: [resultExpectation], timeout: networkTimeout)
+        try await plugin.confirmResetPassword(for: "username",  with: "newpassword", confirmationCode: "code", options: nil)
     }
 
     /// Test a confirmResetPassword call with empty username
@@ -104,32 +76,22 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     /// - Then:
     ///    - I should get an .validation error
     ///
-    func testConfirmResetPasswordWithEmptyUserName() {
+    func testConfirmResetPasswordWithEmptyUserName() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutputResponse: { _ in
                 try ConfirmForgotPasswordOutputResponse(httpResponse: MockHttpResponse.ok)
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmResetPassword(for: "",
-                                           with: "newpassword",
-                                           confirmationCode: "code",
-                                           options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success:
-                XCTFail("Should not succeed")
-            case .failure(let error):
-                guard case .validation = error else {
-                    XCTFail("Should produce validation error instead of \(error)")
-                    return
-                }
+        do {
+            try await plugin.confirmResetPassword(for: "", with: "newpassword", confirmationCode: "code", options: nil)
+            XCTFail("Should not succeed")
+        } catch {
+            guard case AuthError.validation = error else {
+                XCTFail("Should produce validation error instead of \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a confirmResetPassword call with empty new password
@@ -140,32 +102,22 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     /// - Then:
     ///    - I should get an .validation error
     ///
-    func testConfirmResetPasswordWithEmptyNewPassword() {
+    func testConfirmResetPasswordWithEmptyNewPassword() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutputResponse: { _ in
                 try ConfirmForgotPasswordOutputResponse(httpResponse: MockHttpResponse.ok)
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmResetPassword(for: "username",
-                                           with: "",
-                                           confirmationCode: "code",
-                                           options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success:
-                XCTFail("Should not succeed")
-            case .failure(let error):
-                guard case .validation = error else {
-                    XCTFail("Should produce validation error instead of \(error)")
-                    return
-                }
+        do {
+            try await plugin.confirmResetPassword(for: "username", with: "", confirmationCode: "code", options: nil)
+            XCTFail("Should not succeed")
+        } catch {
+            guard case AuthError.validation = error else {
+                XCTFail("Should produce validation error instead of \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a confirmResetPassword call with CodeMismatchException response from service
@@ -177,38 +129,26 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     /// - Then:
     ///    - I should get a .service error with .codeMismatch as underlyingError
     ///
-    func testConfirmResetPasswordWithCodeMismatchException() {
+    func testConfirmResetPasswordWithCodeMismatchException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutputResponse: { _ in
                 throw ConfirmForgotPasswordOutputError.codeMismatchException(CodeMismatchException(message: "code mismatch"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmResetPassword(for: "username",
-                                           with: "newpassword",
-                                           confirmationCode: "code",
-                                           options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            try await plugin.confirmResetPassword(for: "username", with: "newpassword", confirmationCode: "code", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .codeMismatch = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be codeMismatch \(error)")
-                    return
-                }
-
+            guard case .codeMismatch = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be codeMismatch \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a confirmResetPassword call with CodeExpiredException response from service
@@ -220,38 +160,26 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     /// - Then:
     ///    - I should get a .service error with .codeExpired as underlyingError
     ///
-    func testConfirmResetPasswordWithExpiredCodeException() {
+    func testConfirmResetPasswordWithExpiredCodeException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutputResponse: { _ in
                 throw ConfirmForgotPasswordOutputError.expiredCodeException(ExpiredCodeException(message: "code expired"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmResetPassword(for: "username",
-                                           with: "newpassword",
-                                           confirmationCode: "code",
-                                           options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            try await plugin.confirmResetPassword(for: "username", with: "newpassword", confirmationCode: "code", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .codeExpired = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be codeExpired \(error)")
-                    return
-                }
-
+            guard case .codeExpired = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be codeExpired \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a confirmResetPassword call with InternalErrorException response from service
@@ -262,34 +190,22 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     /// - Then:
     ///    - I should get an .unknown error
     ///
-    func testConfirmResetPasswordWithInternalErrorException() {
+    func testConfirmResetPasswordWithInternalErrorException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutputResponse: { _ in
                 throw ConfirmForgotPasswordOutputError.internalErrorException(InternalErrorException(message: "internal error"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmResetPassword(for: "username",
-                                           with: "newpassword",
-                                           confirmationCode: "code",
-                                           options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .unknown = error else {
-                    XCTFail("Should produce an unknown error instead of \(error)")
-                    return
-                }
-
+        do {
+            try await plugin.confirmResetPassword(for: "username", with: "newpassword", confirmationCode: "code", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.unknown = error else {
+                XCTFail("Should produce an unknown error instead of \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a confirmResetPassword call with InvalidLambdaResponseException response from service
@@ -301,37 +217,25 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     /// - Then:
     ///    - I should get a .service error with .lambda as underlyingError
     ///
-    func testConfirmResetPasswordWithInvalidLambdaResponseException() {
+    func testConfirmResetPasswordWithInvalidLambdaResponseException() async throws {
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutputResponse: { _ in
                 throw ConfirmForgotPasswordOutputError.invalidLambdaResponseException(InvalidLambdaResponseException(message: "invalid lambda"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmResetPassword(for: "username",
-                                           with: "newpassword",
-                                           confirmationCode: "code",
-                                           options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            try await plugin.confirmResetPassword(for: "username", with: "newpassword", confirmationCode: "code", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be lambda \(error)")
-                    return
-                }
-
+            guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be lambda \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a confirmResetPassword call with InvalidParameterException response from service
@@ -344,38 +248,26 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     /// - Then:
     ///    - I should get a .service error with  .invalidParameter as underlyingError
     ///
-    func testConfirmResetPasswordWithInvalidParameterException() {
+    func testConfirmResetPasswordWithInvalidParameterException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutputResponse: { _ in
                 throw ConfirmForgotPasswordOutputError.invalidParameterException(InvalidParameterException(message: "invalid parameter"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmResetPassword(for: "username",
-                                           with: "newpassword",
-                                           confirmationCode: "code",
-                                           options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            try await plugin.confirmResetPassword(for: "username", with: "newpassword", confirmationCode: "code", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be invalidParameter \(error)")
-                    return
-                }
-
+            guard case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be invalidParameter \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a confirmResetPassword call with InvalidParameterException response from service
@@ -388,38 +280,26 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     /// - Then:
     ///    - I should get a .service error with .invalidPassword as underlyingError
     ///
-    func testConfirmResetPasswordWithInvalidPasswordException() {
+    func testConfirmResetPasswordWithInvalidPasswordException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutputResponse: { _ in
                 throw ConfirmForgotPasswordOutputError.invalidPasswordException(InvalidPasswordException(message: "invalid password"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmResetPassword(for: "username",
-                                           with: "newpassword",
-                                           confirmationCode: "code",
-                                           options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            try await plugin.confirmResetPassword(for: "username", with: "newpassword", confirmationCode: "code", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .invalidPassword = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be invalidPassword \(error)")
-                    return
-                }
-
+            guard case .invalidPassword = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be invalidPassword \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a confirmResetPassword call with LimitExceededException response from service
@@ -432,37 +312,26 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     /// - Then:
     ///    - I should get a .limitExceeded error
     ///
-    func testConfirmResetPasswordWithLimitExceededException() {
+    func testConfirmResetPasswordWithLimitExceededException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutputResponse: { _ in
                 throw ConfirmForgotPasswordOutputError.limitExceededException(LimitExceededException(message: "limit exceeded"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmResetPassword(for: "username",
-                                           with: "newpassword",
-                                           confirmationCode: "code",
-                                           options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            try await plugin.confirmResetPassword(for: "username", with: "newpassword", confirmationCode: "code", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .limitExceeded = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be limitExceeded \(error)")
-                    return
-                }
+            guard case .limitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be limitExceeded \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a confirmResetPassword call with NotAuthorizedException response from service
@@ -475,33 +344,22 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     /// - Then:
     ///    - I should get a .notAuthorized error
     ///
-    func testConfirmResetPasswordWithNotAuthorizedException() {
+    func testConfirmResetPasswordWithNotAuthorizedException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutputResponse: { _ in
                 throw ConfirmForgotPasswordOutputError.notAuthorizedException(NotAuthorizedException(message: "not authorized"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmResetPassword(for: "username",
-                                           with: "newpassword",
-                                           confirmationCode: "code",
-                                           options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .notAuthorized = error else {
-                    XCTFail("Should produce notAuthorized error instead of \(error)")
-                    return
-                }
+        do {
+            try await plugin.confirmResetPassword(for: "username", with: "newpassword", confirmationCode: "code", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.notAuthorized = error else {
+                XCTFail("Should produce notAuthorized error instead of \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a confirmResetPassword call with ResourceNotFoundException response from service
@@ -514,37 +372,26 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     /// - Then:
     ///    - I should get a .resourceNotFound error
     ///
-    func testConfirmResetPasswordWithResourceNotFoundException() {
+    func testConfirmResetPasswordWithResourceNotFoundException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutputResponse: { _ in
                 throw ConfirmForgotPasswordOutputError.resourceNotFoundException(ResourceNotFoundException(message: "resource not found"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmResetPassword(for: "username",
-                                           with: "newpassword",
-                                           confirmationCode: "code",
-                                           options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            try await plugin.confirmResetPassword(for: "username", with: "newpassword", confirmationCode: "code", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be failedAttemptsLimitExceeded \(error)")
-                    return
-                }
+            guard case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be failedAttemptsLimitExceeded \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a confirmResetPassword call with TooManyFailedAttempts response from service
@@ -557,38 +404,26 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     /// - Then:
     ///    - I should get a .service error with .failedAttemptsLimitExceeded as underlyingError
     ///
-    func testConfirmResetPasswordWithTooManyFailedAttemptsException() {
+    func testConfirmResetPasswordWithTooManyFailedAttemptsException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutputResponse: { _ in
                 throw ConfirmForgotPasswordOutputError.tooManyFailedAttemptsException(TooManyFailedAttemptsException(message: "too many failed attempts"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmResetPassword(for: "username",
-                                           with: "newpassword",
-                                           confirmationCode: "code",
-                                           options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            try await plugin.confirmResetPassword(for: "username", with: "newpassword", confirmationCode: "code", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .failedAttemptsLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be failedAttemptsLimitExceeded \(error)")
-                    return
-                }
-
+            guard case .failedAttemptsLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be failedAttemptsLimitExceeded \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a confirmResetPassword call with TooManyRequestsException response from service
@@ -601,38 +436,26 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     /// - Then:
     ///    - I should get a .service error with .requestLimitExceeded as underlyingError
     ///
-    func testConfirmResetPasswordWithTooManyRequestsException() {
+    func testConfirmResetPasswordWithTooManyRequestsException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutputResponse: { _ in
                 throw ConfirmForgotPasswordOutputError.tooManyRequestsException(TooManyRequestsException(message: "too many requests"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmResetPassword(for: "username",
-                                           with: "newpassword",
-                                           confirmationCode: "code",
-                                           options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            try await plugin.confirmResetPassword(for: "username", with: "newpassword", confirmationCode: "code", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be requestLimitExceeded \(error)")
-                    return
-                }
-
+            guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be requestLimitExceeded \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a confirmResetPassword call with UnexpectedLambdaException response from service
@@ -645,38 +468,26 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     /// - Then:
     ///    - I should get a .service error with .lambda as underlyingError
     ///
-    func testConfirmResetPasswordWithUnexpectedLambdaException() {
+    func testConfirmResetPasswordWithUnexpectedLambdaException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutputResponse: { _ in
                 throw ConfirmForgotPasswordOutputError.unexpectedLambdaException(UnexpectedLambdaException(message: "unexpected lambda"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmResetPassword(for: "username",
-                                           with: "newpassword",
-                                           confirmationCode: "code",
-                                           options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            try await plugin.confirmResetPassword(for: "username", with: "newpassword", confirmationCode: "code", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be lambda \(error)")
-                    return
-                }
-
+            guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be lambda \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a confirmResetPassword call with UserLambdaValidationException response from service
@@ -689,38 +500,26 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     /// - Then:
     ///    - I should get a .service error with .lambda as underlyingError
     ///
-    func testConfirmResetPasswordWithUserLambdaValidationException() {
+    func testConfirmResetPasswordWithUserLambdaValidationException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutputResponse: { _ in
                 throw ConfirmForgotPasswordOutputError.userLambdaValidationException(UserLambdaValidationException(message: "user lambda invalid"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmResetPassword(for: "username",
-                                           with: "newpassword",
-                                           confirmationCode: "code",
-                                           options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            try await plugin.confirmResetPassword(for: "username", with: "newpassword", confirmationCode: "code", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be lambda \(error)")
-                    return
-                }
-
+            guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be lambda \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a confirmResetPassword call with UserNotFound response from service
@@ -733,38 +532,26 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     /// - Then:
     ///    - I should get a .userNotConfirmed error
     ///
-    func testConfirmResetPasswordWithUserNotConfirmedException() {
+    func testConfirmResetPasswordWithUserNotConfirmedException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutputResponse: { _ in
                 throw ConfirmForgotPasswordOutputError.userNotConfirmedException(UserNotConfirmedException(message: "user not confirmed"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmResetPassword(for: "username",
-                                           with: "newpassword",
-                                           confirmationCode: "code",
-                                           options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            try await plugin.confirmResetPassword(for: "username", with: "newpassword", confirmationCode: "code", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .userNotConfirmed = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be userNotFound \(error)")
-                    return
-                }
-
+            guard case .userNotConfirmed = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be userNotFound \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
     /// Test a confirmResetPassword call with UserNotFound response from service
@@ -777,38 +564,26 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
     /// - Then:
     ///    - I should get a .userNotFound error
     ///
-    func testConfirmResetPasswordWithUserNotFoundException() {
+    func testConfirmResetPasswordWithUserNotFoundException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockConfirmForgotPasswordOutputResponse: { _ in
                 throw ConfirmForgotPasswordOutputError.userNotFoundException(UserNotFoundException(message: "user not found"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.confirmResetPassword(for: "username",
-                                           with: "newpassword",
-                                           confirmationCode: "code",
-                                           options: nil) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            try await plugin.confirmResetPassword(for: "username", with: "newpassword", confirmationCode: "code", options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be userNotFound \(error)")
-                    return
-                }
-
+            guard case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be userNotFound \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: networkTimeout)
     }
 
 }
