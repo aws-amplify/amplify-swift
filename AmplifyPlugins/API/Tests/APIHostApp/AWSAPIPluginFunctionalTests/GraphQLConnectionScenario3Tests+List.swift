@@ -31,9 +31,9 @@ import XCTest
 extension GraphQLConnectionScenario3Tests {
 
     func testGetPostThenIterateComments() async throws {
-        guard let post = createPost(title: "title"),
-              createComment(postID: post.id, content: "content") != nil,
-              createComment(postID: post.id, content: "content") != nil else {
+        guard let post = try await createPost(title: "title"),
+             try await createComment(postID: post.id, content: "content") != nil,
+             try await createComment(postID: post.id, content: "content") != nil else {
             XCTFail("Could not create post and two comments")
             return
         }
@@ -84,9 +84,9 @@ extension GraphQLConnectionScenario3Tests {
     }
 
     func testGetPostThenFetchComments() async throws {
-        guard let post = createPost(title: "title"),
-              createComment(postID: post.id, content: "content") != nil,
-              createComment(postID: post.id, content: "content") != nil else {
+        guard let post = try await createPost(title: "title"),
+              try await createComment(postID: post.id, content: "content") != nil,
+              try await createComment(postID: post.id, content: "content") != nil else {
             XCTFail("Could not create post and two comments")
             return
         }
@@ -129,8 +129,8 @@ extension GraphQLConnectionScenario3Tests {
     }
 
     // Create a post and list the posts
-    func testListPost() {
-        guard createPost(title: "title") != nil else {
+    func testListPost() async throws {
+        guard try await createPost(title: "title") != nil else {
             XCTFail("Failed to ensure at least one Post to be retrieved on the listQuery")
             return
         }
@@ -155,11 +155,11 @@ extension GraphQLConnectionScenario3Tests {
         wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testListPostWithPredicate() {
+    func testListPostWithPredicate() async throws {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let uniqueTitle = testMethodName + uuid + "Title"
-        guard let createdPost = createPost(id: uuid, title: uniqueTitle) else {
+        guard let createdPost = try await createPost(id: uuid, title: uniqueTitle) else {
             XCTFail("Failed to ensure at least one Post to be retrieved on the listQuery")
             return
         }
@@ -192,12 +192,12 @@ extension GraphQLConnectionScenario3Tests {
 
     // Create a post and a comment with that post
     // list the comments by postId
-    func testListCommentsByPostID() {
-        guard let post = createPost(title: "title") else {
+    func testListCommentsByPostID() async throws {
+        guard let post = try await createPost(title: "title") else {
             XCTFail("Could not create post")
             return
         }
-        guard createComment(postID: post.id, content: "content") != nil else {
+        guard try await createComment(postID: post.id, content: "content") != nil else {
             XCTFail("Could not create comment")
             return
         }
@@ -230,15 +230,15 @@ extension GraphQLConnectionScenario3Tests {
     /// - Then:
     ///    - the in-memory Array is a populated with exactly two comments.
     func testPaginatedListCommentsByPostID() async throws {
-        guard let post = createPost(title: "title") else {
+        guard let post = try await createPost(title: "title") else {
             XCTFail("Could not create post")
             return
         }
-        guard createComment(postID: post.id, content: "content") != nil else {
+        guard try await createComment(postID: post.id, content: "content") != nil else {
             XCTFail("Could not create comment")
             return
         }
-        guard createComment(postID: post.id, content: "content") != nil else {
+        guard try await createComment(postID: post.id, content: "content") != nil else {
             XCTFail("Could not create comment")
             return
         }
@@ -284,7 +284,7 @@ extension GraphQLConnectionScenario3Tests {
     ///    - A validation error is returned
     func testPaginatedListFetchValidationError() async throws {
         let uuid1 = UUID().uuidString
-        guard createPost(id: uuid1, title: "title") != nil else {
+        guard try await createPost(id: uuid1, title: "title") != nil else {
             XCTFail("Failed to create post")
             return
         }
