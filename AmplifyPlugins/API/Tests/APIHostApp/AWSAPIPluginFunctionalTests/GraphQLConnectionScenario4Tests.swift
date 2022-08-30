@@ -85,7 +85,7 @@ class GraphQLConnectionScenario4Tests: XCTestCase {
         wait(for: [getCommentCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testGetPostThenFetchComments() {
+    func testGetPostThenFetchComments() async throws {
         guard let post = createPost(title: "title") else {
             XCTFail("Could not create post")
             return
@@ -103,37 +103,25 @@ class GraphQLConnectionScenario4Tests: XCTestCase {
         let getPostCompleted = expectation(description: "get post complete")
         let fetchCommentsCompleted = expectation(description: "fetch comments complete")
         var results: List<Comment4>?
-        Amplify.API.query(request: .get(Post4.self, byId: post.id)) { result in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .success(let queriedPostOptional):
-                    guard let queriedPost = queriedPostOptional else {
-                        XCTFail("Could not get post")
-                        return
-                    }
-                    XCTAssertEqual(queriedPost.id, post.id)
-                    getPostCompleted.fulfill()
-                    guard let comments = queriedPost.comments else {
-                        XCTFail("Could not get comments")
-                        return
-                    }
-                    comments.fetch { fetchResults in
-                        switch fetchResults {
-                        case .success:
-                            results = comments
-                            fetchCommentsCompleted.fulfill()
-                        case .failure(let error):
-                            XCTFail("\(error)")
-                        }
-                    }
-
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
+        let response = try await Amplify.API.query(request: .get(Post4.self, byId: post.id))
+        switch response {
+        case .success(let queriedPostOptional):
+            guard let queriedPost = queriedPostOptional else {
+                XCTFail("Could not get post")
+                return
             }
+            XCTAssertEqual(queriedPost.id, post.id)
+            getPostCompleted.fulfill()
+            guard let comments = queriedPost.comments else {
+                XCTFail("Could not get comments")
+                return
+            }
+            try await comments.fetch()
+            results = comments
+            fetchCommentsCompleted.fulfill()
+            
+        case .failure(let response):
+            XCTFail("Failed with: \(response)")
         }
         wait(for: [getPostCompleted, fetchCommentsCompleted], timeout: TestCommonConstants.networkTimeout)
         guard var subsequentResults = results else {
@@ -143,21 +131,9 @@ class GraphQLConnectionScenario4Tests: XCTestCase {
         var resultsArray: [Comment4] = []
         resultsArray.append(contentsOf: subsequentResults)
         while subsequentResults.hasNextPage() {
-            let semaphore = DispatchSemaphore(value: 0)
-            subsequentResults.getNextPage { result in
-                defer {
-                    semaphore.signal()
-                }
-                switch result {
-                case .success(let listResult):
-                    subsequentResults = listResult
-                    resultsArray.append(contentsOf: subsequentResults)
-                case .failure(let coreError):
-                    XCTFail("Unexpected error: \(coreError)")
-                }
-
-            }
-            semaphore.wait()
+            let listResult = try await subsequentResults.getNextPage()
+            subsequentResults = listResult
+            resultsArray.append(contentsOf: subsequentResults)
         }
         XCTAssertEqual(resultsArray.count, 2)
     }
@@ -269,7 +245,7 @@ class GraphQLConnectionScenario4Tests: XCTestCase {
         wait(for: [listCommentByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testPaginatedListCommentsByPostID() {
+    func testPaginatedListCommentsByPostID() async throws {
         guard let post = createPost(title: "title"),
               createComment(content: "content", post: post) != nil,
               createComment(content: "content", post: post) != nil else {
@@ -301,21 +277,9 @@ class GraphQLConnectionScenario4Tests: XCTestCase {
         var resultsArray: [Comment4] = []
         resultsArray.append(contentsOf: subsequentResults)
         while subsequentResults.hasNextPage() {
-            let semaphore = DispatchSemaphore(value: 0)
-            subsequentResults.getNextPage { result in
-                defer {
-                    semaphore.signal()
-                }
-                switch result {
-                case .success(let listResult):
-                    subsequentResults = listResult
-                    resultsArray.append(contentsOf: subsequentResults)
-                case .failure(let coreError):
-                    XCTFail("Unexpected error: \(coreError)")
-                }
-
-            }
-            semaphore.wait()
+            let listResult = try await subsequentResults.getNextPage()
+            subsequentResults = listResult
+            resultsArray.append(contentsOf: subsequentResults)
         }
         XCTAssertEqual(resultsArray.count, 2)
     }

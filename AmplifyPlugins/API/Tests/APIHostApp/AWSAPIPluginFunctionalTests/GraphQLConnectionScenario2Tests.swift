@@ -170,7 +170,7 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
 
     // Create two projects for the same team, then list the projects by teamID, and expect two projects
     // after exhausting the paginated list via `hasNextPage` and `getNextPage`
-    func testPaginatedListProjectsByTeamID() {
+    func testPaginatedListProjectsByTeamID() async throws {
         guard let team = createTeam2(name: "name"),
               createProject2(teamID: team.id, team: team) != nil,
               createProject2(teamID: team.id, team: team) != nil else {
@@ -202,21 +202,9 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
         var resultsArray: [Project2] = []
         resultsArray.append(contentsOf: subsequentResults)
         while subsequentResults.hasNextPage() {
-            let semaphore = DispatchSemaphore(value: 0)
-            subsequentResults.getNextPage { result in
-                defer {
-                    semaphore.signal()
-                }
-                switch result {
-                case .success(let listResult):
-                    subsequentResults = listResult
-                    resultsArray.append(contentsOf: subsequentResults)
-                case .failure(let coreError):
-                    XCTFail("Unexpected error: \(coreError)")
-                }
-
-            }
-            semaphore.wait()
+            let listResult = try await subsequentResults.getNextPage()
+            subsequentResults = listResult
+            resultsArray.append(contentsOf: subsequentResults)
         }
         XCTAssertEqual(resultsArray.count, 2)
     }

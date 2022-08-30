@@ -48,13 +48,13 @@ extension GraphQLConnectionScenario3Tests {
         }
         
         XCTAssertNotNil(task)
-        try await AsyncExpectation.waitForExpectations([connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations([connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         let post = Post3(id: uuid, title: title)
         _ = try await Amplify.API.mutate(request: .create(post))
         let post2 = Post3(id: uuid2, title: title)
         _ = try await Amplify.API.mutate(request: .create(post2))
 
-        try await AsyncExpectation.waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
         await task.cancel()
     }
     
@@ -83,7 +83,7 @@ extension GraphQLConnectionScenario3Tests {
             }
         }
                                  
-        try await AsyncExpectation.waitForExpectations([connectingInvoked, connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations([connectingInvoked, connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
@@ -92,7 +92,7 @@ extension GraphQLConnectionScenario3Tests {
         _ = try await Amplify.API.mutate(request: .create(post))
         _ = try await Amplify.API.mutate(request: .update(post))
 
-        try await AsyncExpectation.waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
 
         await task.cancel()
     }
