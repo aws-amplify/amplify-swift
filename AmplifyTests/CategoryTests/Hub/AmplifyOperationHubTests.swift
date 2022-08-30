@@ -261,6 +261,17 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
     }
 
     @discardableResult
+    public func uploadFile(key: String,
+                           local: URL,
+                           options: StorageUploadFileOperation.Request.Options?) async throws -> StorageUploadFileTask {
+        let options = options ?? StorageUploadFileRequest.Options()
+        let request = StorageUploadFileRequest(key: key, local: local, options: options)
+        let operation = MockDispatchingStorageUploadFileOperation(request: request)
+        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
+        return taskAdapter
+    }
+
+    @discardableResult
     public func remove(key: String,
                        options: StorageRemoveRequest.Options? = nil) async throws -> String {
         let options = options ?? StorageRemoveRequest.Options()

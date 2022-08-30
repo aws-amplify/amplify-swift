@@ -193,6 +193,63 @@ class AWSS3StoragePluginAsyncBehaviorTests: AWSS3StoragePluginTests {
         XCTAssertEqual(1, storageService.uploadCalled)
     }
 
+    func testPluginUploadFileListener() throws {
+        let done = expectation(description: "done")
+        storageService.storageServiceUploadEvents = [.completedVoid]
+        let input = testKey
+        let fileURL = try FileSystem.default.createTemporaryFile(data: "Amplify".data(using: .utf8)!)
+        defer {
+            FileSystem.default.removeFileIfExists(fileURL: fileURL)
+        }
+
+        let operation = storagePlugin.uploadFile(key: input,
+                                                 local: fileURL,
+                                                 options: nil,
+                                                 progressListener: nil) { result in
+            do {
+                let output = try result.get()
+                XCTAssertEqual(input, output)
+            } catch {
+                XCTFail("Error: \(error)")
+            }
+            done.fulfill()
+        }
+
+        wait(for: [done], timeout: 1.0)
+
+        XCTAssertEqual(1, storageService.uploadCalled)
+
+        _ = operation
+    }
+
+    func testPluginUploadFileAsync() async throws {
+        let done = asyncExpectation(description: "done")
+        storageService.storageServiceUploadEvents = [.completedVoid]
+        let input = testKey
+        let fileURL = try FileSystem.default.createTemporaryFile(data: "Amplify".data(using: .utf8)!)
+        defer {
+            FileSystem.default.removeFileIfExists(fileURL: fileURL)
+        }
+
+        Task {
+            let task = try await storagePlugin.uploadFile(key: input,
+                                                          local: fileURL,
+                                                          options: nil)
+            do {
+                let output = try await task.value
+                XCTAssertEqual(input, output)
+            } catch {
+                XCTFail("Error: \(error)")
+            }
+            await done.fulfill()
+
+        }
+
+        await waitForExpectations([done], timeout: 3.0)
+
+        XCTAssertEqual(1, storageService.uploadCalled)
+    }
+
     func testPluginRemoveListener() {
         let done = expectation(description: "done")
         storageService.storageServiceDeleteEvents = [.completed(())]
