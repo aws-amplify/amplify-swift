@@ -53,7 +53,7 @@ actor StateMachine<
         self.subscribers = []
     }
 
-    /// Start listening to state changes updates, the current state and all subsequent state changes will be send to the sequence.
+    /// Start listening to state change updates. The current state and all subsequent state changes will be sent to the sequence.
     ///
     /// - Returns: An async sequence that get states asynchronously
     func listen() -> StateChangeSequence {
