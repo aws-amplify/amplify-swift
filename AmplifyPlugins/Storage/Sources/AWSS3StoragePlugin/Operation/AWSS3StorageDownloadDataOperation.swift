@@ -34,8 +34,8 @@ public class AWSS3StorageDownloadDataOperation: AmplifyInProcessReportingOperati
          storageConfiguration: AWSS3StoragePluginConfiguration,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
-         progressListener: InProcessListener?,
-         resultListener: ResultListener?) {
+         progressListener: InProcessListener? = nil,
+         resultListener: ResultListener? = nil) {
 
         self.storageConfiguration = storageConfiguration
         self.storageService = storageService

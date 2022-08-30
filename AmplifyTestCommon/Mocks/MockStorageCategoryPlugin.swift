@@ -25,9 +25,9 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
                       resultListener: StorageDownloadDataOperation.ResultListener?
     ) -> StorageDownloadDataOperation {
         notify("downloadData")
-            let options = options ?? StorageDownloadDataRequest.Options()
-            let request = StorageDownloadDataRequest(key: key, options: options)
-            return MockStorageDownloadDataOperation(request: request)
+        let options = options ?? StorageDownloadDataRequest.Options()
+        let request = StorageDownloadDataRequest(key: key, options: options)
+        return MockStorageDownloadDataOperation(request: request)
     }
 
     func downloadFile(key: String,
@@ -37,9 +37,9 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
                       resultListener: StorageDownloadFileOperation.ResultListener?
     ) -> StorageDownloadFileOperation {
         notify("downloadFile")
-            let options = options ?? StorageDownloadFileRequest.Options()
-            let request = StorageDownloadFileRequest(key: key, local: local, options: options)
-            return MockStorageDownloadFileOperation(request: request)
+        let options = options ?? StorageDownloadFileRequest.Options()
+        let request = StorageDownloadFileRequest(key: key, local: local, options: options)
+        return MockStorageDownloadFileOperation(request: request)
     }
 
     func uploadData(key: String,
@@ -117,6 +117,17 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
         let operation = MockStorageRemoveOperation(request: request)
         let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
         return try await taskAdapter.value
+    }
+
+    @discardableResult
+    public func downloadData(key: String,
+                             options: StorageDownloadDataOperation.Request.Options?) async throws -> StorageDownloadDataTask {
+        notify("downloadData")
+        let options = options ?? StorageDownloadDataRequest.Options()
+        let request = StorageDownloadDataRequest(key: key, options: options)
+        let operation = MockStorageDownloadDataOperation(request: request)
+        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
+        return taskAdapter
     }
 
     @discardableResult

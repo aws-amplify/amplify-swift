@@ -91,6 +91,12 @@ extension StorageCategory: StorageCategoryBehavior {
     }
 
     @discardableResult
+    public func downloadData(key: String,
+                      options: StorageDownloadDataOperation.Request.Options?) async throws -> StorageDownloadDataTask {
+        try await plugin.downloadData(key: key, options: options)
+    }
+
+    @discardableResult
     public func remove(key: String,
                        options: StorageRemoveRequest.Options? = nil) async throws -> String {
         try await plugin.remove(key: key, options: options)
