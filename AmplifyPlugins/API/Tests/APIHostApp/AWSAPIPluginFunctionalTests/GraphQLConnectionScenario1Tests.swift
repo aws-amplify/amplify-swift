@@ -51,10 +51,11 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
     }
     
     func testCreateAndGetProject() async throws {
-        let team = Team1(name: "name")
-        _ = try await Amplify.API.mutate(request: .create(team))
-        let project = Project1(team: team)
-        _ = try await Amplify.API.mutate(request: .create(project))
+        guard let team = try await createTeam(name: "name"),
+              let project = try await createProject(team: team) else {
+            XCTFail("Could not create team and a project")
+            return
+        }
         
         let result = try await Amplify.API.query(request: .get(Project1.self, byId: project.id))
         switch result {
@@ -71,8 +72,10 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
     }
     
     func testUpdateProjectWithAnotherTeam() async throws {
-        let team = Team1(name: "name")
-        _ = try await Amplify.API.mutate(request: .create(team))
+        guard let team = try await createTeam(name: "name") else {
+            XCTFail("Could not create a Team")
+            return
+        }
         let project = Project1(team: team)
         let createdProjectResult = try await Amplify.API.mutate(request: .create(project))
         switch createdProjectResult {
@@ -95,10 +98,11 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
     }
     
     func testDeleteAndGetProject() async throws {
-        let team = Team1(name: "name")
-        _ = try await Amplify.API.mutate(request: .create(team))
-        let project = Project1(team: team)
-        _ = try await Amplify.API.mutate(request: .create(project))
+        guard let team = try await createTeam(name: "name"),
+              let project = try await createProject(team: team) else {
+            XCTFail("Could not create team and a project")
+            return
+        }
         let deletedProjectResult = try await Amplify.API.mutate(request: .delete(project))
         switch deletedProjectResult {
         case .success(let deletedProject):
@@ -122,10 +126,11 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
     // The filter we are passing into is the ProjectTeamID, but the API doesn't have the field ProjectTeamID
     //    so we are disabling it
     func testListProjectsByTeamID() async throws {
-        let team = Team1(name: "name")
-        _ = try await Amplify.API.mutate(request: .create(team))
-        let project = Project1(team: team)
-        _ = try await Amplify.API.mutate(request: .create(project))
+        guard let team = try await createTeam(name: "name"),
+              let project = try await createProject(team: team) else {
+            XCTFail("Could not create team and a project")
+            return
+        }
         let predicate = Project1.keys.team.eq(team.id)
         let event = try await Amplify.API.query(request: .list(Project1.self, where: predicate))
         switch event {
