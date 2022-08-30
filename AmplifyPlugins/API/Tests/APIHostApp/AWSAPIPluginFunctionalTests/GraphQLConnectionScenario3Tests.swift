@@ -81,27 +81,18 @@ class GraphQLConnectionScenario3Tests: XCTestCase {
             return
         }
 
-        let getCommentCompleted = expectation(description: "get comment complete")
-        Amplify.API.query(request: .get(Comment3.self, byId: comment.id)) { result in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .success(let queriedCommentOptional):
-                    guard let queriedComment = queriedCommentOptional else {
-                        XCTFail("Could not get comment")
-                        return
-                    }
-                    XCTAssertEqual(queriedComment.id, comment.id)
-                    XCTAssertEqual(queriedComment.postID, post.id)
-                    getCommentCompleted.fulfill()
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
+        let result = try await Amplify.API.query(request: .get(Comment3.self, byId: comment.id))
+        switch result {
+        case .success(let queriedCommentOptional):
+            guard let queriedComment = queriedCommentOptional else {
+                XCTFail("Could not get comment")
+                return
             }
+            XCTAssertEqual(queriedComment.id, comment.id)
+            XCTAssertEqual(queriedComment.postID, post.id)
+        case .failure(let response):
+            XCTFail("Failed with: \(response)")
         }
-        wait(for: [getCommentCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
     // Create a post and a comment associated with that post.
@@ -121,23 +112,14 @@ class GraphQLConnectionScenario3Tests: XCTestCase {
             XCTFail("Could not create post")
             return
         }
-        let updateCommentSuccessful = expectation(description: "update comment")
         comment.postID = anotherPost.id
-        Amplify.API.mutate(request: .update(comment)) { result in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .success(let updatedComment):
-                    XCTAssertEqual(updatedComment.postID, anotherPost.id)
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-                updateCommentSuccessful.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+        let result = try await Amplify.API.mutate(request: .update(comment))
+        switch result {
+        case .success(let updatedComment):
+            XCTAssertEqual(updatedComment.postID, anotherPost.id)
+        case .failure(let response):
+            XCTFail("Failed with: \(response)")
         }
-        wait(for: [updateCommentSuccessful], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testUpdateExistingPost() async throws {
@@ -150,22 +132,13 @@ class GraphQLConnectionScenario3Tests: XCTestCase {
         }
         let updatedTitle = title + "Updated"
         post.title = updatedTitle
-        let requestInvokedSuccessfully = expectation(description: "request completed")
-        _ = Amplify.API.mutate(request: .update(post)) { event in
-            switch event {
-            case .success(let data):
-                switch data {
-                case .success(let post):
-                    XCTAssertEqual(post.title, updatedTitle)
-                case .failure(let error):
-                    XCTFail("\(error)")
-                }
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+        let data = try await Amplify.API.mutate(request: .update(post))
+        switch data {
+        case .success(let post):
+            XCTAssertEqual(post.title, updatedTitle)
+        case .failure(let error):
+            XCTFail("\(error)")
         }
-        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testDeleteExistingPost() async throws {
@@ -177,41 +150,19 @@ class GraphQLConnectionScenario3Tests: XCTestCase {
             return
         }
 
-        let requestInvokedSuccessfully = expectation(description: "request completed")
-
-        _ = Amplify.API.mutate(request: .delete(post)) { event in
-            switch event {
-            case .success(let data):
-                switch data {
-                case .success(let post):
-                    XCTAssertEqual(post.title, title)
-                case .failure(let error):
-                    XCTFail("\(error)")
-                }
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+        let data = try await Amplify.API.mutate(request: .delete(post))
+        switch data {
+        case .success(let post):
+            XCTAssertEqual(post.title, title)
+        case .failure(let error):
+            XCTFail("\(error)")
         }
-        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
-
-        let queryComplete = expectation(description: "query complete")
-
-        _ = Amplify.API.query(request: .get(Post3.self, byId: uuid)) { event in
-            switch event {
-            case .success(let graphQLResponse):
-                guard case let .success(post) = graphQLResponse else {
-                    XCTFail("Missing successful response")
-                    return
-                }
-                XCTAssertNil(post)
-                queryComplete.fulfill()
-            case .failure(let error):
-                XCTFail("Unexpected .failed event: \(error)")
-            }
+        let graphQLResponse = try await Amplify.API.query(request: .get(Post3.self, byId: uuid))
+        guard case let .success(post) = graphQLResponse else {
+            XCTFail("Missing successful response")
+            return
         }
-
-        wait(for: [queryComplete], timeout: TestCommonConstants.networkTimeout)
+        XCTAssertNil(post)
     }
 
     // Create a post and then create a comment associated with the post
@@ -227,41 +178,22 @@ class GraphQLConnectionScenario3Tests: XCTestCase {
             return
         }
 
-        let deleteCommentSuccessful = expectation(description: "delete comment")
-        Amplify.API.mutate(request: .delete(comment)) { result in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .success(let deletedComment):
-                    XCTAssertEqual(deletedComment.postID, post.id)
-                    deleteCommentSuccessful.fulfill()
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+        let result = try await Amplify.API.mutate(request: .delete(comment))
+        switch result {
+        case .success(let deletedComment):
+            XCTAssertEqual(deletedComment.postID, post.id)
+        case .failure(let response):
+            XCTFail("Failed with: \(response)")
         }
-        wait(for: [deleteCommentSuccessful], timeout: TestCommonConstants.networkTimeout)
-        let getCommentAfterDeleteCompleted = expectation(description: "get comment after deleted complete")
-        Amplify.API.query(request: .get(Comment3.self, byId: comment.id)) { result in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .success(let comment):
-                    guard comment == nil else {
-                        XCTFail("Should be nil after deletion")
-                        return
-                    }
-                    getCommentAfterDeleteCompleted.fulfill()
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
+        let result2 = try await Amplify.API.query(request: .get(Comment3.self, byId: comment.id))
+        switch result2 {
+        case .success(let comment):
+            guard comment == nil else {
+                XCTFail("Should be nil after deletion")
+                return
             }
+        case .failure(let response):
+            XCTFail("Failed with: \(response)")
         }
-        wait(for: [getCommentAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 }

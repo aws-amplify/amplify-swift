@@ -38,47 +38,32 @@ extension GraphQLConnectionScenario3Tests {
             return
         }
 
-        let getPostCompleted = expectation(description: "get post complete")
         var results: List<Comment3>?
-        Amplify.API.query(request: .get(Post3.self, byId: post.id)) { result in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .success(let queriedPostOptional):
-                    guard let queriedPost = queriedPostOptional else {
-                        XCTFail("Could not get post")
-                        return
-                    }
-                    XCTAssertEqual(queriedPost.id, post.id)
-                    results = queriedPost.comments
-                    getPostCompleted.fulfill()
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
+        let result = try await Amplify.API.query(request: .get(Post3.self, byId: post.id))
+        switch result {
+        case .success(let queriedPostOptional):
+            guard let queriedPost = queriedPostOptional else {
+                XCTFail("Could not get post")
+                return
             }
+            XCTAssertEqual(queriedPost.id, post.id)
+            results = queriedPost.comments
+        case .failure(let response):
+            XCTFail("Failed with: \(response)")
         }
-        wait(for: [getPostCompleted], timeout: TestCommonConstants.networkTimeout)
         guard var comments = results else {
             XCTFail("Could not get comments")
             return
         }
         var resultsArray: [Comment3] = []
-        let fetchSuccess = expectation(description: "Fetch successful")
         try await comments.fetch()
-        fetchSuccess.fulfill()
-        wait(for: [fetchSuccess], timeout: TestCommonConstants.networkTimeout)
         for comment in comments {
             resultsArray.append(comment)
         }
         while comments.hasNextPage() {
-            let getNextPageSuccess = expectation(description: "Get next page successfully")
             let listResult = try await comments.getNextPage()
             comments = listResult
             resultsArray.append(contentsOf: comments)
-            getNextPageSuccess.fulfill()
-            wait(for: [getNextPageSuccess], timeout: TestCommonConstants.networkTimeout)
         }
         XCTAssertEqual(resultsArray.count, 2)
     }
@@ -91,28 +76,19 @@ extension GraphQLConnectionScenario3Tests {
             return
         }
 
-        let getPostCompleted = expectation(description: "get post complete")
         var results: List<Comment3>?
-        Amplify.API.query(request: .get(Post3.self, byId: post.id)) { result in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .success(let queriedPostOptional):
-                    guard let queriedPost = queriedPostOptional else {
-                        XCTFail("Could not get post")
-                        return
-                    }
-                    XCTAssertEqual(queriedPost.id, post.id)
-                    results = queriedPost.comments
-                    getPostCompleted.fulfill()
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
+        let result = try await Amplify.API.query(request: .get(Post3.self, byId: post.id))
+        switch result {
+        case .success(let queriedPostOptional):
+            guard let queriedPost = queriedPostOptional else {
+                XCTFail("Could not get post")
+                return
             }
+            XCTAssertEqual(queriedPost.id, post.id)
+            results = queriedPost.comments
+        case .failure(let response):
+            XCTFail("Failed with: \(response)")
         }
-        wait(for: [getPostCompleted], timeout: TestCommonConstants.networkTimeout)
         guard var comments = results else {
             XCTFail("Could not get comments")
             return
@@ -135,59 +111,37 @@ extension GraphQLConnectionScenario3Tests {
             return
         }
 
-        let requestInvokedSuccessfully = expectation(description: "request completed")
-
-        _ = Amplify.API.query(request: .list(Post3.self)) { event in
-            switch event {
-            case .success(let graphQLResponse):
-                guard case let .success(posts) = graphQLResponse else {
-                    XCTFail("Missing successful response")
-                    return
-                }
-                XCTAssertTrue(!posts.isEmpty)
-                print(posts)
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("Unexpected .failed event: \(error)")
-            }
+        let graphQLResponse = try await Amplify.API.query(request: .list(Post3.self))
+        guard case let .success(posts) = graphQLResponse else {
+            XCTFail("Missing successful response")
+            return
         }
-
-        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
+        XCTAssertTrue(!posts.isEmpty)
     }
 
     func testListPostWithPredicate() async throws {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let uniqueTitle = testMethodName + uuid + "Title"
-        guard let createdPost = try await createPost(id: uuid, title: uniqueTitle) else {
+        guard try await createPost(id: uuid, title: uniqueTitle) != nil else {
             XCTFail("Failed to ensure at least one Post to be retrieved on the listQuery")
             return
         }
 
-        let requestInvokedSuccessfully = expectation(description: "request completed")
         let post = Post3.keys
         let predicate = post.id == uuid && post.title == uniqueTitle
-        _ = Amplify.API.query(request: .list(Post3.self, where: predicate)) { event in
-            switch event {
-            case .success(let graphQLResponse):
-                guard case let .success(posts) = graphQLResponse else {
-                    XCTFail("Missing successful response")
-                    return
-                }
-                XCTAssertEqual(posts.count, 1)
-                guard let singlePost = posts.first else {
-                    XCTFail("Should only have a single post with the unique title")
-                    return
-                }
-                XCTAssertEqual(singlePost.id, uuid)
-                XCTAssertEqual(singlePost.title, uniqueTitle)
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("Unexpected .failed event: \(error)")
-            }
+        let graphQLResponse = try await Amplify.API.query(request: .list(Post3.self, where: predicate))
+        guard case let .success(posts) = graphQLResponse else {
+            XCTFail("Missing successful response")
+            return
         }
-
-        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
+        XCTAssertEqual(posts.count, 1)
+        guard let singlePost = posts.first else {
+            XCTFail("Should only have a single post with the unique title")
+            return
+        }
+        XCTAssertEqual(singlePost.id, uuid)
+        XCTAssertEqual(singlePost.title, uniqueTitle)
     }
 
     // Create a post and a comment with that post
@@ -201,23 +155,14 @@ extension GraphQLConnectionScenario3Tests {
             XCTFail("Could not create comment")
             return
         }
-        let listCommentByPostIDCompleted = expectation(description: "list projects completed")
         let predicate = Comment3.keys.postID.eq(post.id)
-        Amplify.API.query(request: .list(Comment3.self, where: predicate)) { result in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .success(let comments):
-                    print(comments)
-                    listCommentByPostIDCompleted.fulfill()
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+        let result = try await Amplify.API.query(request: .list(Comment3.self, where: predicate))
+        switch result {
+        case .success(let comments):
+            XCTAssertEqual(comments.count, 1)
+        case .failure(let response):
+            XCTFail("Failed with: \(response)")
         }
-        wait(for: [listCommentByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Test paginated list query returns a List containing pagination functionality. This test also aggregates page
@@ -242,24 +187,15 @@ extension GraphQLConnectionScenario3Tests {
             XCTFail("Could not create comment")
             return
         }
-        let listCommentByPostIDCompleted = expectation(description: "list projects completed")
         var results: List<Comment3>?
         let predicate = Comment3.keys.postID.eq(post.id)
-        Amplify.API.query(request: .list(Comment3.self, where: predicate, limit: 1)) { result in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .success(let comments):
-                    results = comments
-                    listCommentByPostIDCompleted.fulfill()
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+        let result = try await Amplify.API.query(request: .list(Comment3.self, where: predicate, limit: 1))
+        switch result {
+        case .success(let comments):
+            results = comments
+        case .failure(let response):
+            XCTFail("Failed with: \(response)")
         }
-        wait(for: [listCommentByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
         guard var subsequentResults = results else {
             XCTFail("Could not get first results")
             return
@@ -288,38 +224,20 @@ extension GraphQLConnectionScenario3Tests {
             XCTFail("Failed to create post")
             return
         }
-
-        let firstQueryCompleted = expectation(description: "first query completed")
         let post = Post3.keys
         let predicate = post.id == uuid1
-        var results: List<Post3>?
         let request: GraphQLRequest<List<Post3>> = GraphQLRequest<Post3>.list(Post3.self, where: predicate)
-        _ = Amplify.API.query(request: request) { event in
-            switch event {
-            case .success(let response):
-                guard case let .success(graphQLResponse) = response else {
-                    XCTFail("Missing successful response")
-                    return
-                }
-
-                results = graphQLResponse
-                firstQueryCompleted.fulfill()
-            case .failure(let error):
-                XCTFail("Unexpected .failure event: \(error)")
-            }
-        }
-
-        wait(for: [firstQueryCompleted], timeout: TestCommonConstants.networkTimeout)
-        guard var subsequentResults = results else {
-            XCTFail("Could not get first results")
+        let response = try await Amplify.API.query(request: request)
+        guard case let .success(graphQLResponse) = response else {
+            XCTFail("Missing successful response")
             return
         }
+        var subsequentResults = graphQLResponse
         while subsequentResults.hasNextPage() {
             let listResult = try await subsequentResults.getNextPage()
             subsequentResults = listResult
         }
         XCTAssertFalse(subsequentResults.hasNextPage())
-        let invalidFetchCompleted = expectation(description: "fetch completed with validation error")
         do {
             let listResult = try await subsequentResults.getNextPage()
             XCTFail("Unexpected \(listResult)")
@@ -328,9 +246,6 @@ extension GraphQLConnectionScenario3Tests {
                 XCTFail("Unexpected CoreError \(coreError)")
                 return
             }
-            invalidFetchCompleted.fulfill()
         }
-        
-        wait(for: [invalidFetchCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 }
