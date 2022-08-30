@@ -6,7 +6,7 @@
 //
 import Foundation
 
-open class AuthDeleteUserTask: AmplifyAuthTask<Void, Void, AuthError> { }
+public protocol AuthDeleteUserTask: AmplifyAuthTask where Request == Void, Success == Void, Failure == AuthError { }
 
 public extension HubPayload.EventName.Auth {
 

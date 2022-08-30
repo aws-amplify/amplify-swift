@@ -93,22 +93,11 @@ public extension AWSCognitoAuthPlugin {
         return operation
     }
 
-    func update(oldPassword: String,
-                to newPassword: String,
-                options: AuthChangePasswordOperation.Request.Options? = nil,
-                listener: AuthChangePasswordOperation.ResultListener?) -> AuthChangePasswordOperation {
-
+    func update(oldPassword: String, to newPassword: String, options: AuthChangePasswordRequest.Options? = nil) async throws {
         let options = options ?? AuthChangePasswordRequest.Options()
-        let request = AuthChangePasswordRequest(oldPassword: oldPassword,
-                                                newPassword: newPassword,
-                                                options: options)
-        let operation = AWSAuthChangePasswordOperation(
-            request,
-            authStateMachine: authStateMachine,
-            userPoolFactory: authEnvironment.cognitoUserPoolFactory,
-            resultListener: listener)
-        queue.addOperation(operation)
-        return operation
+        let request = AuthChangePasswordRequest(oldPassword: oldPassword, newPassword: newPassword, options: options)
+        let task = AWSAuthChangePasswordTask(request, authStateMachine: authStateMachine, userPoolFactory: authEnvironment.cognitoUserPoolFactory)
+        return try await task.value
     }
 
     func getCurrentUser() async -> AuthUser? {

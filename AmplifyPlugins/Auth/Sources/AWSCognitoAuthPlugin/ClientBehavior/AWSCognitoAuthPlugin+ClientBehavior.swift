@@ -7,58 +7,37 @@
 
 import Foundation
 import Amplify
-#if canImport(Combine)
-import Combine
-#endif
 
 extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     
     public func signUp(username: String,
                        password: String?,
-                       options: AuthSignUpOperation.Request.Options?,
-                       listener: AuthSignUpOperation.ResultListener?) -> AuthSignUpOperation {
+                       options: AuthSignUpRequest.Options?) async throws -> AuthSignUpResult {
         let options = options ?? AuthSignUpRequest.Options()
         let request = AuthSignUpRequest(username: username,
                                         password: password,
                                         options: options)
-        let signUpOperation = AWSAuthSignUpOperation(
-            request,
-            stateMachine: authStateMachine,
-            resultListener: listener)
-        queue.addOperation(signUpOperation)
-        return signUpOperation
+        let task = AWSAuthSignUpTask(request, authStateMachine: authStateMachine)
+        return try await task.value
     }
     
     public func confirmSignUp(for username: String,
                               confirmationCode: String,
-                              options: AuthConfirmSignUpOperation.Request.Options?,
-                              listener: AuthConfirmSignUpOperation.ResultListener?)
-    -> AuthConfirmSignUpOperation {
+                              options: AuthConfirmSignUpRequest.Options?)
+    async throws-> AuthSignUpResult {
         let options = options ?? AuthConfirmSignUpRequest.Options()
         let request = AuthConfirmSignUpRequest(username: username,
                                                code: confirmationCode,
                                                options: options)
-        let confirmSignUpOperation = AWSAuthConfirmSignUpOperation(
-            request,
-            stateMachine: authStateMachine, resultListener: listener)
-        queue.addOperation(confirmSignUpOperation)
-        return confirmSignUpOperation
-        
+        let task = AWSAuthConfirmSignUpTask(request, authStateMachine: authStateMachine)
+        return try await task.value
     }
     
-    public func resendSignUpCode(for username: String,
-                                 options: AuthResendSignUpCodeOperation.Request.Options?,
-                                 listener: AuthResendSignUpCodeOperation.ResultListener?)
-    -> AuthResendSignUpCodeOperation {
+    public func resendSignUpCode(for username: String, options: AuthResendSignUpCodeRequest.Options?) async throws -> AuthCodeDeliveryDetails {
         let options = options ?? AuthResendSignUpCodeRequest.Options()
         let request = AuthResendSignUpCodeRequest(username: username, options: options)
-        let resendSignUpCodeOperation = AWSAuthResendSignUpCodeOperation(
-            request,
-            environment: authEnvironment,
-            authConfiguration: authConfiguration,
-            resultListener: listener)
-        queue.addOperation(resendSignUpCodeOperation)
-        return resendSignUpCodeOperation
+        let task = AWSAuthResendSignUpCodeTask(request, environment: authEnvironment, authConfiguration: authConfiguration)
+        return try await task.value
     }
 
 #if canImport(AuthenticationServices)
@@ -104,16 +83,11 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         return try await task.value
     }
     
-    public func signOut(options: AuthSignOutOperation.Request.Options?,
-                        listener: AuthSignOutOperation.ResultListener?) -> AuthSignOutOperation {
+    public func signOut(options: AuthSignOutRequest.Options?) async throws {
         let options = options ?? AuthSignOutRequest.Options()
         let request = AuthSignOutRequest(options: options)
-        let signOutOperation = AWSAuthSignOutOperation(request,
-                                                       authStateMachine: authStateMachine,
-                                                       resultListener: listener)
-        queue.addOperation(signOutOperation)
-        return signOutOperation
-        
+        let task = AWSAuthSignOutTask(request, authStateMachine: authStateMachine)
+        return try await task.value
     }
     
     public func fetchAuthSession(options: AuthFetchSessionOperation.Request.Options?,
@@ -129,39 +103,24 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         return fetchAuthSessionOperation
     }
     
-    public func resetPassword(for username: String,
-                              options: AuthResetPasswordOperation.Request.Options?,
-                              listener: AuthResetPasswordOperation.ResultListener?)
-    -> AuthResetPasswordOperation {
+    public func resetPassword(for username: String, options: AuthResetPasswordRequest.Options?) async throws -> AuthResetPasswordResult {
         let options = options ?? AuthResetPasswordRequest.Options()
         let request = AuthResetPasswordRequest(username: username, options: options)
-        let resetPasswordOperation = AWSAuthResetPasswordOperation(
-            request,
-            environment: authEnvironment,
-            authConfiguration: authConfiguration,
-            resultListener: listener)
-        queue.addOperation(resetPasswordOperation)
-        return resetPasswordOperation
+        let task = AWSAuthResetPasswordTask(request, environment: authEnvironment, authConfiguration: authConfiguration)
+        return try await task.value
     }
     
     public func confirmResetPassword(for username: String,
                                      with newPassword: String,
                                      confirmationCode: String,
-                                     options: AuthConfirmResetPasswordOperation.Request.Options?,
-                                     listener: AuthConfirmResetPasswordOperation.ResultListener?)
-    -> AuthConfirmResetPasswordOperation {
+                                     options: AuthConfirmResetPasswordRequest.Options?) async throws {
         let options = options ?? AuthConfirmResetPasswordRequest.Options()
         let request = AuthConfirmResetPasswordRequest(username: username,
                                                       newPassword: newPassword,
                                                       confirmationCode: confirmationCode,
                                                       options: options)
-        let confirmResetPasswordOperation = AWSAuthConfirmResetPasswordOperation(
-            request,
-            environment: authEnvironment,
-            authConfiguration: authConfiguration,
-            resultListener: listener)
-        queue.addOperation(confirmResetPasswordOperation)
-        return confirmResetPasswordOperation
+        let task = AWSAuthConfirmResetPasswordTask(request, environment: authEnvironment, authConfiguration: authConfiguration)
+        return try await task.value
     }
     
     public func signIn(username: String?,

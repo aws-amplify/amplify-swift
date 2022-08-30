@@ -7,11 +7,7 @@
 
 import Foundation
 
-public protocol AuthChangePasswordOperation: AmplifyOperation<
-    AuthChangePasswordRequest,
-    Void,
-    AuthError
-> {}
+public protocol AuthChangePasswordTask: AmplifyAuthTask where Request == AuthChangePasswordRequest, Success == Void, Failure == AuthError {}
 
 public extension HubPayload.EventName.Auth {
 

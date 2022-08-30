@@ -6,7 +6,7 @@
 //
 import Foundation
 
-open class AuthSignInTask: AmplifyAuthTask<AuthSignInRequest, AuthSignInResult, AuthError> { }
+public protocol AuthSignInTask: AmplifyAuthTask where Request == AuthSignInRequest, Success == AuthSignInResult, Failure == AuthError { }
 
 public extension HubPayload.EventName.Auth {
 

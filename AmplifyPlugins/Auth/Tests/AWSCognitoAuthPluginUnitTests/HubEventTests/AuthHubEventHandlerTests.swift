@@ -60,7 +60,7 @@ class AuthHubEventHandlerTests: XCTestCase {
     /// - Then:
     ///    - I should receive a signedOut hub event
     ///
-    func testSignedOutHubEvent() {
+    func testSignedOutHubEvent() async throws {
 
         configurePluginForSignOutEvent()
 
@@ -74,12 +74,7 @@ class AuthHubEventHandlerTests: XCTestCase {
             }
         }
 
-        _ = plugin.signOut(options: nil) { result in
-            if case .failure(let error) = result {
-                XCTFail("Received failure with error \(error)")
-            }
-        }
-
+        try await plugin.signOut(options: nil)
         wait(for: [hubEventExpectation], timeout: networkTimeout)
     }
 

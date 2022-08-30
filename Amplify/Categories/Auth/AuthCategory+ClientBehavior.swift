@@ -9,36 +9,18 @@ import Foundation
 
 extension AuthCategory: AuthCategoryBehavior {
 
-    @discardableResult
-    public func signUp(username: String,
-                       password: String? = nil,
-                       options: AuthSignUpOperation.Request.Options? = nil,
-                       listener: AuthSignUpOperation.ResultListener?) -> AuthSignUpOperation {
-        return plugin.signUp(username: username,
-                             password: password,
-                             options: options,
-                             listener: listener)
+    public func signUp( username: String, password: String? = nil, options: AuthSignUpRequest.Options? = nil) async throws -> AuthSignUpResult {
+        return try await plugin.signUp(username: username, password: password, options: options)
     }
 
-    @discardableResult
     public func confirmSignUp(for username: String,
                               confirmationCode: String,
-                              options: AuthConfirmSignUpOperation.Request.Options? = nil,
-                              listener: AuthConfirmSignUpOperation.ResultListener?) -> AuthConfirmSignUpOperation {
-        return plugin.confirmSignUp(for: username,
-                                    confirmationCode: confirmationCode,
-                                    options: options,
-                                    listener: listener)
+                              options: AuthConfirmSignUpRequest.Options? = nil) async throws -> AuthSignUpResult {
+        return try await plugin.confirmSignUp(for: username, confirmationCode: confirmationCode, options: options)
     }
 
-    @discardableResult
-    public func resendSignUpCode(for username: String,
-                                 options: AuthResendSignUpCodeOperation.Request.Options? = nil,
-                                 listener: AuthResendSignUpCodeOperation.ResultListener?)
-        -> AuthResendSignUpCodeOperation {
-            return plugin.resendSignUpCode(for: username,
-                                           options: options,
-                                           listener: listener)
+    public func resendSignUpCode(for username: String, options: AuthResendSignUpCodeRequest.Options? = nil) async throws -> AuthCodeDeliveryDetails {
+            return try await plugin.resendSignUpCode(for: username, options: options)
     }
 
     public func signIn(username: String? = nil,
@@ -64,15 +46,12 @@ extension AuthCategory: AuthCategoryBehavior {
     }
 #endif
 
-    public func confirmSignIn(challengeResponse: String,
-                              options: AuthConfirmSignInRequest.Options? = nil) async throws -> AuthSignInResult {
+    public func confirmSignIn(challengeResponse: String, options: AuthConfirmSignInRequest.Options? = nil) async throws -> AuthSignInResult {
         return try await plugin.confirmSignIn(challengeResponse: challengeResponse, options: options)
     }
 
-    @discardableResult
-    public func signOut(options: AuthSignOutOperation.Request.Options? = nil,
-                        listener: AuthSignOutOperation.ResultListener?) -> AuthSignOutOperation {
-        plugin.signOut(options: options, listener: listener)
+    public func signOut(options: AuthSignOutRequest.Options? = nil) async throws {
+        return try await plugin.signOut(options: options)
     }
     
     public func deleteUser() async throws {
@@ -86,26 +65,16 @@ extension AuthCategory: AuthCategoryBehavior {
                                        listener: listener)
     }
 
-    @discardableResult
-    public func resetPassword(for username: String,
-                              options: AuthResetPasswordOperation.Request.Options? = nil,
-                              listener: AuthResetPasswordOperation.ResultListener?) -> AuthResetPasswordOperation {
-        return plugin.resetPassword(for: username,
-                                    options: options,
-                                    listener: listener)
+    public func resetPassword(for username: String, options: AuthResetPasswordRequest.Options? = nil) async throws -> AuthResetPasswordResult {
+        return try await plugin.resetPassword(for: username,options: options)
     }
 
-    @discardableResult
-    public func confirmResetPassword(for username: String,
-                                     with newPassword: String,
-                                     confirmationCode: String,
-                                     options: AuthConfirmResetPasswordOperation.Request.Options? = nil,
-                                     listener: AuthConfirmResetPasswordOperation.ResultListener?)
-    -> AuthConfirmResetPasswordOperation {
-        return plugin.confirmResetPassword(for: username,
-                                           with: newPassword,
-                                           confirmationCode: confirmationCode,
-                                           options: options,
-                                           listener: listener)
+    public func confirmResetPassword(
+        for username: String, with
+        newPassword: String,
+        confirmationCode: String,
+        options: AuthConfirmResetPasswordRequest.Options? = nil
+    ) async throws {
+        return try await plugin.confirmResetPassword(for: username, with: newPassword, confirmationCode: confirmationCode, options: options)
     }
 }

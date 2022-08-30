@@ -13,18 +13,20 @@ class AWSAuthSignInTask: AuthSignInTask {
     private let request: AuthSignInRequest
     private let authStateMachine: AuthStateMachine
     private var stateMachineToken: AuthStateMachineToken?
-
+    
+    var eventName: HubPayloadEventName {
+        HubPayload.EventName.Auth.signInAPI
+    }
+    
     init(_ request: AuthSignInRequest, authStateMachine: AuthStateMachine) {
         self.request = request
         self.authStateMachine = authStateMachine
-        super.init(eventName: HubPayload.EventName.Auth.signInAPI)
     }
 
-    override func execute() async throws -> AuthSignInResult {
+    func execute() async throws -> AuthSignInResult {
         await didConfigure()
         try await validateCurrentState()
-        let result = try await doSignIn()
-        return result
+        return try await doSignIn()
     }
 
     private func didConfigure() async {

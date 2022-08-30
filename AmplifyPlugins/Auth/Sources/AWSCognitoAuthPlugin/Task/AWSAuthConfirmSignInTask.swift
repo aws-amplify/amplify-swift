@@ -14,13 +14,16 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
     private let authStateMachine: AuthStateMachine
     private var stateListenerToken: AuthStateMachineToken?
     
+    var eventName: HubPayloadEventName {
+        HubPayload.EventName.Auth.confirmSignInAPI
+    }
+    
     init(_ request: AuthConfirmSignInRequest, stateMachine: AuthStateMachine) {
         self.request = request
         self.authStateMachine = stateMachine
-        super.init(eventName: HubPayload.EventName.Auth.confirmSignInAPI)
     }
 
-    override func execute() async throws -> AuthSignInResult {
+    func execute() async throws -> AuthSignInResult {
         if let validationError = request.hasError() {
             throw validationError
         }

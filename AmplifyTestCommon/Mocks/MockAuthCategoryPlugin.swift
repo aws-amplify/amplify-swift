@@ -24,24 +24,17 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         fatalError()
     }
 
-    public func signUp(username: String,
-                       password: String? = nil,
-                       options: AuthSignUpOperation.Request.Options? = nil,
-                       listener: AuthSignUpOperation.ResultListener?) -> AuthSignUpOperation {
+    public func signUp(username: String, password: String? = nil, options: AuthSignUpRequest.Options? = nil) async throws -> AuthSignUpResult {
         fatalError()
     }
 
     public func confirmSignUp(for username: String,
                               confirmationCode: String,
-                              options: AuthConfirmSignUpOperation.Request.Options? = nil,
-                              listener: AuthConfirmSignUpOperation.ResultListener?) -> AuthConfirmSignUpOperation {
+                              options: AuthConfirmSignUpRequest.Options? = nil) async throws -> AuthSignUpResult {
         fatalError()
     }
 
-    public func resendSignUpCode(for username: String,
-                                 options: AuthResendSignUpCodeOperation.Request.Options? = nil,
-                                 listener: AuthResendSignUpCodeOperation.ResultListener?)
-        -> AuthResendSignUpCodeOperation {
+    public func resendSignUpCode(for username: String, options: AuthResendSignUpCodeRequest.Options? = nil) async throws -> AuthCodeDeliveryDetails {
             fatalError()
     }
 
@@ -69,8 +62,7 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         fatalError()
     }
 
-    public func signOut(options: AuthSignOutOperation.Request.Options? = nil,
-                        listener: AuthSignOutOperation.ResultListener?) -> AuthSignOutOperation {
+    public func signOut(options: AuthSignOutRequest.Options? = nil) async throws {
         fatalError()
     }
 
@@ -83,18 +75,14 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         fatalError()
     }
 
-    public func resetPassword(for username: String,
-                              options: AuthResetPasswordOperation.Request.Options? = nil,
-                              listener: AuthResetPasswordOperation.ResultListener?) -> AuthResetPasswordOperation {
+    public func resetPassword(for username: String, options: AuthResetPasswordRequest.Options? = nil) async throws -> AuthResetPasswordResult {
         fatalError()
     }
 
     public func confirmResetPassword(for username: String,
                                      with newPassword: String,
                                      confirmationCode: String,
-                                     options: AuthConfirmResetPasswordOperation.Request.Options? = nil,
-                                     listener: AuthConfirmResetPasswordOperation.ResultListener?)
-        -> AuthConfirmResetPasswordOperation {
+                                     options: AuthConfirmResetPasswordRequest.Options? = nil) async throws {
             fatalError()
     }
 
@@ -136,14 +124,9 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
 
     public func update(oldPassword: String,
                        to newPassword: String,
-                       options: AuthChangePasswordOperation.Request.Options? = nil,
-                       listener: AuthChangePasswordOperation.ResultListener?) -> AuthChangePasswordOperation {
+                       options: AuthChangePasswordRequest.Options? = nil) async throws {
         notify("changePassword")
-        let options = options ?? AuthChangePasswordRequest.Options()
-        let request = AuthChangePasswordRequest(oldPassword: oldPassword,
-                                                newPassword: newPassword,
-                                                options: options)
-        return MockAuthChangePasswordOperation(request: request)
+
     }
 
     public func fetchDevices(
@@ -188,15 +171,4 @@ class MockAuthCategoryPluginWithoutKey: MockAuthCategoryPlugin {
     override var key: String {
         return ""
     }
-}
-
-class MockAuthChangePasswordOperation: AmplifyOperation<AuthChangePasswordRequest, Void, AuthError>,
-AuthChangePasswordOperation {
-
-    init(request: Request) {
-        super.init(categoryType: .auth,
-                   eventName: HubPayload.EventName.Auth.changePasswordAPI,
-                   request: request)
-    }
-
 }

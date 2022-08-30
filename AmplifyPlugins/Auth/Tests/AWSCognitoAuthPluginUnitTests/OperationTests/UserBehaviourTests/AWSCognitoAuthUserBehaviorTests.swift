@@ -227,14 +227,9 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
     /// - Then:
     ///    - I should get a valid operation object
     ///
-    func testUpdatePasswordRequest() {
-        let operationFinished = expectation(description: "Operation should finish")
+    func testUpdatePasswordRequest() async throws {
         let options = AuthChangePasswordRequest.Options()
-        let operation = plugin.update(oldPassword: "oldpwd", to: "newpwd", options: options) { _ in
-            operationFinished.fulfill()
-        }
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 1)
+        try await plugin.update(oldPassword: "oldpwd", to: "newpwd", options: options)
     }
 
     /// Test update(oldPassword:to: )  operation can be invoked without options
@@ -245,12 +240,7 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
     /// - Then:
     ///    - I should get a valid operation object
     ///
-    func testUpdatePasswordRequestWithoutOptions() {
-        let operationFinished = expectation(description: "Operation should finish")
-        let operation = plugin.update(oldPassword: "oldpwd", to: "newpwd") { _ in
-            operationFinished.fulfill()
-        }
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 1)
+    func testUpdatePasswordRequestWithoutOptions() async throws {
+        try await plugin.update(oldPassword: "oldpwd", to: "newpwd")
     }
 }

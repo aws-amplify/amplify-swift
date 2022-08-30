@@ -5,16 +5,10 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
-
-public protocol AuthConfirmResetPasswordOperation: AmplifyOperation<
-    AuthConfirmResetPasswordRequest,
-    Void,
-    AuthError
-> {}
+public protocol AuthResendSignUpCodeTask: AmplifyAuthTask where Request == AuthResendSignUpCodeRequest, Success == AuthCodeDeliveryDetails, Failure == AuthError {}
 
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let confirmResetPasswordAPI = "Auth.confirmResetPasswordAPI"
+    static let resendSignUpCodeAPI = "Auth.resendSignUpCodeAPI"
 }

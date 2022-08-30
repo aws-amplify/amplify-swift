@@ -13,7 +13,7 @@ import ClientRuntime
 
 import AWSCognitoIdentityProvider
 
-class AWSAuthSignUpOperationTests: XCTestCase {
+class AWSAuthSignUpTaskTests: XCTestCase {
 
     var queue: OperationQueue?
 
@@ -25,8 +25,7 @@ class AWSAuthSignUpOperationTests: XCTestCase {
         queue?.maxConcurrentOperationCount = 1
     }
 
-    func testSignUpOperationSuccess() throws {
-        let exp = expectation(description: #function)
+    func testSignUpOperationSuccess() async throws {
         let functionExpectation = expectation(description: "API call should be invoked")
 
         let signUp: MockIdentityProvider.MockSignUpResponse = { _ in
@@ -41,26 +40,17 @@ class AWSAuthSignUpOperationTests: XCTestCase {
         let statemachine = Defaults.makeDefaultAuthStateMachine(
             initialState: initialState,
             userPoolFactory: {MockIdentityProvider(mockSignUpResponse: signUp)})
-        let operation = AWSAuthSignUpOperation(request, stateMachine: statemachine) {  result in
-            switch result {
-            case .success(let signUpResult):
-                print("Sign Up Result: \(signUpResult)")
-            case .failure(let error):
-                XCTAssertNil(error, "Error should not be returned")
-            }
-            exp.fulfill()
-        }
-        queue?.addOperation(operation)
-        wait(for: [exp, functionExpectation], timeout: 1)
-
+        let task = AWSAuthSignUpTask(request, authStateMachine: statemachine)
+        let signUpResult = try await task.value
+        print("Sign Up Result: \(signUpResult)")
+        wait(for: [functionExpectation], timeout: 1)
     }
 
     /// Given: Configured AuthState machine
     /// When: A new SignUp operation is added to the queue and mock a service failure
     /// Then: Should complete the signUp flow with an error
     ///
-    func testSignUpOperationFailure() throws {
-        let exp = expectation(description: #function)
+    func testSignUpOperationFailure() async throws {
         let functionExpectation = expectation(description: "API call should be invoked")
         let signUp: MockIdentityProvider.MockSignUpResponse = { _ in
             functionExpectation.fulfill()
@@ -74,26 +64,21 @@ class AWSAuthSignUpOperationTests: XCTestCase {
         let statemachine = Defaults.makeDefaultAuthStateMachine(
             initialState: initialState,
             userPoolFactory: {MockIdentityProvider(mockSignUpResponse: signUp)})
-        let operation = AWSAuthSignUpOperation(request, stateMachine: statemachine) {  result in
-            switch result {
-            case .success:
-                XCTFail("Should not produce success response")
-            case .failure(let error):
-                print(error)
-            }
-            exp.fulfill()
+        do {
+            let task = AWSAuthSignUpTask(request, authStateMachine: statemachine)
+            _ = try await task.value
+            XCTFail("Should not produce success response")
+        } catch {
         }
-        queue?.addOperation(operation)
-        wait(for: [exp, functionExpectation], timeout: 1)
+        wait(for: [functionExpectation], timeout: 1)
     }
 
     /// Given: Configured AuthState machine with existing signUp flow
     /// When: A new SignUp operation is added to the queue
     /// Then: Should cancel the existing signUp flow and start a new flow and complete
     ///
-    func testCancelExistingSignUp() throws {
+    func testCancelExistingSignUp() async throws {
         Amplify.Logging.logLevel = .verbose
-        let exp = expectation(description: #function)
         let functionExpectation = expectation(description: "API call should be invoked")
         let signUp: MockIdentityProvider.MockSignUpResponse = { _ in
             functionExpectation.fulfill()
@@ -108,16 +93,9 @@ class AWSAuthSignUpOperationTests: XCTestCase {
         let statemachine = Defaults.makeDefaultAuthStateMachine(
             initialState: initialState,
             userPoolFactory: {MockIdentityProvider(mockSignUpResponse: signUp)})
-        let operation = AWSAuthSignUpOperation(request, stateMachine: statemachine) {  result in
-            switch result {
-            case .success(let signUpResult):
-                print("Sign Up Result: \(signUpResult)")
-            case .failure(let error):
-                XCTAssertNil(error, "Error should not be returned")
-            }
-            exp.fulfill()
-        }
-        queue?.addOperation(operation)
-        wait(for: [exp, functionExpectation], timeout: 1)
+        let task = AWSAuthSignUpTask(request, authStateMachine: statemachine)
+        let signUpResult = try await task.value
+        print("Sign Up Result: \(signUpResult)")
+        wait(for: [functionExpectation], timeout: 1)
     }
 }

@@ -11,20 +11,10 @@ public typealias CompletionType = (Bool, AuthError?) -> Void
 
 public struct AuthSignInHelper {
 
-    public static func signUpUser(username: String,
-                                  password: String,
-                                  email: String,
-                                  completionHandler: @escaping CompletionType) {
+    public static func signUpUser(username: String, password: String, email: String) async throws -> AuthSignUpResult {
 
         let options = AuthSignUpRequest.Options(userAttributes: [AuthUserAttribute(.email, value: email)])
-        _ = Amplify.Auth.signUp(username: username, password: password, options: options) { result in
-            switch result {
-            case .success(let signUpResult):
-                completionHandler(signUpResult.isSignUpComplete, nil)
-            case .failure(let error):
-                completionHandler(false, error)
-            }
-        }
+        return try await Amplify.Auth.signUp(username: username, password: password, options: options)
 
     }
 
@@ -35,24 +25,9 @@ public struct AuthSignInHelper {
     public static func registerAndSignInUser(
         username: String,
         password: String,
-        email: String,
-        completionHandler: @escaping CompletionType) {
-
-            AuthSignInHelper.signUpUser(username: username, password: password, email: email) { signUpSuccess, error in
-                guard signUpSuccess else {
-                    completionHandler(signUpSuccess, error)
-                    return
-                }
-                
-                //Temporary code until signup operation is also migrated to async/await
-                Task {
-                    do {
-                        let result = try await AuthSignInHelper.signInUser(username: username, password: password)
-                        completionHandler(result.isSignedIn, nil)
-                    } catch {
-                        completionHandler(false, error as? AuthError)
-                    }
-                }
-            }
+        email: String) async throws -> Bool {
+            _ = try await AuthSignInHelper.signUpUser(username: username, password: password, email: email)
+            let result = try await AuthSignInHelper.signInUser(username: username, password: password)
+            return result.isSignedIn
         }
 }

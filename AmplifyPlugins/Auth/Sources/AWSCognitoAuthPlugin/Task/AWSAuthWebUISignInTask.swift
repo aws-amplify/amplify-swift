@@ -13,6 +13,7 @@ class AWSAuthWebUISignInTask: AuthWebUISignInTask {
     private let helper: HostedUISignInHelper
     private let request: AuthWebUISignInRequest
     
+    let eventName: HubPayloadEventName
     init(_ request: AuthWebUISignInRequest,
          authConfiguration: AuthConfiguration,
          authStateMachine: AuthStateMachine,
@@ -22,12 +23,12 @@ class AWSAuthWebUISignInTask: AuthWebUISignInTask {
         self.helper = HostedUISignInHelper(request: request,
                                            authstateMachine: authStateMachine,
                                            configuration: authConfiguration)
-        super.init(eventName: eventName)
+        self.eventName = eventName
     }
 
-    override func execute() async throws -> AuthSignInResult {
+    func execute() async throws -> AuthSignInResult {
         try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<AuthSignInResult, Error>) in
-            self?.helper.initiateSignIn { [weak self] result in
+            self?.helper.initiateSignIn { result in
                 switch result {
                 case .success:
                     continuation.resume(with: result)

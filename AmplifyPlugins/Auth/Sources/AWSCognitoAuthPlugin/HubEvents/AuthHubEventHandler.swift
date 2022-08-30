@@ -74,7 +74,7 @@ class AuthHubEventHandler: AuthHubEventBehavior {
                 self?.sendUserDeletedEvent()
 
             case HubPayload.EventName.Auth.signOutAPI:
-                guard let event = payload.data as? AWSAuthSignOutOperation.OperationResult,
+                guard let event = payload.data as? AWSAuthSignOutTask.AmplifyAuthTaskResult,
                     case .success = event else {
                         return
                 }

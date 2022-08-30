@@ -81,10 +81,5 @@ public protocol AuthCategoryUserBehavior: AnyObject {
     ///   - oldPassword: Current password of the user
     ///   - newPassword: New password to be updated
     ///   - options: Parameters specific to plugin behavior
-    ///   - listener: Triggered when the operation completes.
-    @discardableResult
-    func update(oldPassword: String,
-                to newPassword: String,
-                options: AuthChangePasswordOperation.Request.Options?,
-                listener: AuthChangePasswordOperation.ResultListener?) -> AuthChangePasswordOperation
+    func update(oldPassword: String, to newPassword: String, options: AuthChangePasswordRequest.Options?) async throws
 }

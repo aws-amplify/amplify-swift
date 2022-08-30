@@ -19,7 +19,7 @@ import ClientRuntime
 
 import AWSCognitoIdentityProvider
 
-class AWSAuthConfirmSignUpOperationTests: XCTestCase {
+class AWSAuthConfirmSignUpTaskTests: XCTestCase {
 
     var queue: OperationQueue?
 
@@ -31,10 +31,8 @@ class AWSAuthConfirmSignUpOperationTests: XCTestCase {
         queue?.maxConcurrentOperationCount = 1
     }
 
-    func testConfirmSignUpOperationSuccess() throws {
-        let exp = expectation(description: #function)
+    func testConfirmSignUpOperationSuccess() async throws {
         let functionExpectation = expectation(description: "API call should be invoked")
-
         let confirmSignUp: MockIdentityProvider.MockConfirmSignUpResponse = { _ in
             functionExpectation.fulfill()
             return try .init(httpResponse: MockHttpResponse.ok)
@@ -47,25 +45,14 @@ class AWSAuthConfirmSignUpOperationTests: XCTestCase {
         let request = AuthConfirmSignUpRequest(username: "jeffb",
                                                code: "213",
                                                options: AuthConfirmSignUpRequest.Options())
-        let operation = AWSAuthConfirmSignUpOperation(request,
-                                                      stateMachine: statemachine) {result in
-            switch result {
-            case .success(let confirmSignUpResult):
-                print("Confirm Sign Up Result: \(confirmSignUpResult)")
-            case .failure(let error):
-                XCTAssertNil(error, "Error should not be returned")
-            }
-            exp.fulfill()
-        }
-        queue?.addOperation(operation)
-
-        wait(for: [exp, functionExpectation], timeout: 1)
+        let task = AWSAuthConfirmSignUpTask(request, authStateMachine: statemachine)
+        let confirmSignUpResult = try await task.value
+        print("Confirm Sign Up Result: \(confirmSignUpResult)")
+        wait(for: [functionExpectation], timeout: 1)
     }
 
-    func testConfirmSignUpOperationFailure() throws {
-        let exp = expectation(description: #function)
+    func testConfirmSignUpOperationFailure() async throws {
         let functionExpectation = expectation(description: "API call should be invoked")
-
         let confirmSignUp: MockIdentityProvider.MockConfirmSignUpResponse = { _ in
             functionExpectation.fulfill()
             throw try ConfirmSignUpOutputError(httpResponse: MockHttpResponse.ok)
@@ -79,18 +66,12 @@ class AWSAuthConfirmSignUpOperationTests: XCTestCase {
                                                code: "213",
                                                options: AuthConfirmSignUpRequest.Options())
 
-        let operation = AWSAuthConfirmSignUpOperation(request,
-                                                      stateMachine: statemachine) {result in
-            switch result {
-            case .success:
-                XCTFail("Should not produce success response")
-            case .failure(let error):
-                print(error)
-            }
-            exp.fulfill()
+        do {
+            let task = AWSAuthConfirmSignUpTask(request, authStateMachine: statemachine)
+            _ = try await task.value
+            XCTFail("Should not produce success response")
+        } catch {
         }
-        queue?.addOperation(operation)
-
-        wait(for: [exp, functionExpectation], timeout: 1)
+        wait(for: [functionExpectation], timeout: 1)
     }
 }

@@ -4,14 +4,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-
 import Foundation
 
-public protocol AuthSignOutOperation: AmplifyOperation<
-    AuthSignOutRequest,
-    Void,
-    AuthError
-> {}
+public protocol AuthSignOutTask: AmplifyAuthTask where Request == AuthSignOutRequest, Success == Void, Failure == AuthError { }
 
 public extension HubPayload.EventName.Auth {
 
