@@ -44,6 +44,10 @@ enum AuthPluginErrorConstants {
         "SignIn URI could not be created",
         "Check the configuration to make sure that HostedUI related information are present")
 
+    static let hostedUITokenURI: AuthPluginErrorString = (
+        "Token URI could not be created",
+        "Check the configuration to make sure that HostedUI related information are present")
+
     static let hostedUISignOutURI: AuthPluginErrorString = (
         "SignOut URI could not be created",
         "Check the configuration to make sure that HostedUI related information are present")

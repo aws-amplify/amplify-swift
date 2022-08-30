@@ -21,16 +21,34 @@ extension RefreshSessionState {
             case .notStarted:
 
                 if case .refreshCognitoUserPool(let signedInData) = event.isRefreshSessionEvent {
-                    let action = RefreshUserPoolTokens(existingSignedIndata: signedInData)
-                    return .init(newState: .refreshingUserPoolToken(signedInData), actions: [action])
+                    if case .hostedUI = signedInData.signInMethod {
+                        let action = RefreshHostedUITokens(existingSignedIndata: signedInData)
+                        return .init(newState: .refreshingUserPoolToken(signedInData),
+                                     actions: [action])
+                    } else {
+                        let action = RefreshUserPoolTokens(existingSignedIndata: signedInData)
+                        return .init(newState: .refreshingUserPoolToken(signedInData),
+                                     actions: [action])
+                    }
                 }
 
                 if case .refreshCognitoUserPoolWithIdentityId(
                     let signedInData,
                     let identityID) = event.isRefreshSessionEvent {
-                    let action = RefreshUserPoolTokens(existingSignedIndata: signedInData)
-                    return .init(newState: .refreshingUserPoolTokenWithIdentity(signedInData, identityID),
-                                 actions: [action])
+
+                    if case .hostedUI = signedInData.signInMethod {
+                        let action = RefreshHostedUITokens(existingSignedIndata: signedInData)
+                        return .init(
+                            newState: .refreshingUserPoolTokenWithIdentity(signedInData,
+                                                                           identityID),
+                            actions: [action])
+                    } else {
+                        let action = RefreshUserPoolTokens(existingSignedIndata: signedInData)
+                        return .init(newState:
+                                .refreshingUserPoolTokenWithIdentity(signedInData, identityID),
+                                     actions: [action])
+                    }
+
                 }
                 if case .refreshUnAuthAWSCredentials(let identityID) = event.isRefreshSessionEvent {
                     let provider = UnAuthLoginsMapProvider()
@@ -137,7 +155,7 @@ extension RefreshSessionState {
                 return .from(oldState)
 
             case .refreshingAWSCredentialsWithUserPoolTokens(let signedInData, _):
-
+                
                 if case .throwError(let error) = event.isFetchSessionEvent {
                     let action = InformSessionError(error: error)
                     return .init(newState: .error(error), actions: [action])

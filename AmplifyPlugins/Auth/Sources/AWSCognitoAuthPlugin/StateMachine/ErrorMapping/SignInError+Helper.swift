@@ -98,6 +98,11 @@ extension HostedUIError: AuthErrorConvertible {
                 AuthPluginErrorConstants.hostedUISignInURI.errorDescription,
                 AuthPluginErrorConstants.hostedUISignInURI.recoverySuggestion)
 
+        case .tokenURI:
+            return .configuration(
+                AuthPluginErrorConstants.hostedUITokenURI.errorDescription,
+                AuthPluginErrorConstants.hostedUITokenURI.recoverySuggestion)
+
         case .signOutURI:
             return .service(
                 AuthPluginErrorConstants.hostedUISignOutURI.errorDescription,
