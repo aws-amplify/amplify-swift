@@ -29,15 +29,15 @@ class AWSAuthWebUISignInTask: AuthWebUISignInTask {
     func execute() async throws -> AuthSignInResult {
 
         do {
-                let result = try await helper.initiateSignIn()
-                return result
-            } catch let autherror as AuthErrorConvertible {
-                throw autherror.authError
-            } catch let autherror as AuthError {
-                return autherror
-            } catch let error {
-                let error = AuthError.unknown("Not able to signIn to the webUI", error)
-                return error
-            }
+            let result = try await helper.initiateSignIn()
+            return result
+        } catch let autherror as AuthErrorConvertible {
+            throw autherror.authError
+        } catch let autherror as AuthError {
+            throw autherror
+        } catch let error {
+            let error = AuthError.unknown("Not able to signIn to the webUI", error)
+            throw error
+        }
     }
 }
