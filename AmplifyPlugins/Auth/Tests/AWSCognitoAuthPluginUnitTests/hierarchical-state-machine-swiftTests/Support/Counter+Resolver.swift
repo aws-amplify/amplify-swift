@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import AWSCognitoAuthPlugin
+@testable import HSM
 
 extension Counter {
     struct Resolver: StateMachineResolver {
