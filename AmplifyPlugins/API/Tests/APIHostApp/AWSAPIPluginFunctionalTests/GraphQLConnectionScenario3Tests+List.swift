@@ -30,7 +30,7 @@ import XCTest
  */
 extension GraphQLConnectionScenario3Tests {
 
-    func testGetPostThenIterateComments() {
+    func testGetPostThenIterateComments() async throws {
         guard let post = createPost(title: "title"),
               createComment(postID: post.id, content: "content") != nil,
               createComment(postID: post.id, content: "content") != nil else {
@@ -66,39 +66,24 @@ extension GraphQLConnectionScenario3Tests {
         }
         var resultsArray: [Comment3] = []
         let fetchSuccess = expectation(description: "Fetch successful")
-        comments.fetch { results in
-            switch results {
-            case .success:
-                fetchSuccess.fulfill()
-            case .failure:
-                XCTFail("Failed to lazy load comments")
-            }
-        }
+        try await comments.fetch()
+        fetchSuccess.fulfill()
         wait(for: [fetchSuccess], timeout: TestCommonConstants.networkTimeout)
         for comment in comments {
             resultsArray.append(comment)
         }
         while comments.hasNextPage() {
             let getNextPageSuccess = expectation(description: "Get next page successfully")
-            comments.getNextPage { result in
-                defer {
-                    getNextPageSuccess.fulfill()
-                }
-                switch result {
-                case .success(let listResult):
-                    comments = listResult
-                    resultsArray.append(contentsOf: comments)
-                case .failure(let coreError):
-                    XCTFail("Unexpected error: \(coreError)")
-                }
-
-            }
+            let listResult = try await comments.getNextPage()
+            comments = listResult
+            resultsArray.append(contentsOf: comments)
+            getNextPageSuccess.fulfill()
             wait(for: [getNextPageSuccess], timeout: TestCommonConstants.networkTimeout)
         }
         XCTAssertEqual(resultsArray.count, 2)
     }
 
-    func testGetPostThenFetchComments() {
+    func testGetPostThenFetchComments() async throws {
         guard let post = createPost(title: "title"),
               createComment(postID: post.id, content: "content") != nil,
               createComment(postID: post.id, content: "content") != nil else {
@@ -133,33 +118,12 @@ extension GraphQLConnectionScenario3Tests {
             return
         }
         var resultsArray: [Comment3] = []
-        let fetchSemaphore = DispatchSemaphore(value: 0)
-        comments.fetch { fetchResults in
-            switch fetchResults {
-            case .success:
-                fetchSemaphore.signal()
-            case .failure(let error):
-                XCTFail("Could not fetch comments \(error)")
-            }
-        }
-        fetchSemaphore.wait()
+        try await comments.fetch()
         resultsArray.append(contentsOf: comments)
         while comments.hasNextPage() {
-            let semaphore = DispatchSemaphore(value: 0)
-            comments.getNextPage { result in
-                defer {
-                    semaphore.signal()
-                }
-                switch result {
-                case .success(let listResult):
-                    comments = listResult
-                    resultsArray.append(contentsOf: comments)
-                case .failure(let coreError):
-                    XCTFail("Unexpected error: \(coreError)")
-                }
-
-            }
-            semaphore.wait()
+            let listResult = try await comments.getNextPage()
+            comments = listResult
+            resultsArray.append(contentsOf: comments)
         }
         XCTAssertEqual(resultsArray.count, 2)
     }
@@ -265,7 +229,7 @@ extension GraphQLConnectionScenario3Tests {
     ///    - subsequent queries exhaust the results from the API to retrieve the remaining results
     /// - Then:
     ///    - the in-memory Array is a populated with exactly two comments.
-    func testPaginatedListCommentsByPostID() {
+    func testPaginatedListCommentsByPostID() async throws {
         guard let post = createPost(title: "title") else {
             XCTFail("Could not create post")
             return
@@ -303,21 +267,9 @@ extension GraphQLConnectionScenario3Tests {
         var resultsArray: [Comment3] = []
         resultsArray.append(contentsOf: subsequentResults)
         while subsequentResults.hasNextPage() {
-            let semaphore = DispatchSemaphore(value: 0)
-            subsequentResults.getNextPage { result in
-                defer {
-                    semaphore.signal()
-                }
-                switch result {
-                case .success(let listResult):
-                    subsequentResults = listResult
-                    resultsArray.append(contentsOf: subsequentResults)
-                case .failure(let coreError):
-                    XCTFail("Unexpected error: \(coreError)")
-                }
-
-            }
-            semaphore.wait()
+            let listResult = try await subsequentResults.getNextPage()
+            subsequentResults = listResult
+            resultsArray.append(contentsOf: subsequentResults)
         }
         XCTAssertEqual(resultsArray.count, 2)
     }
@@ -330,7 +282,7 @@ extension GraphQLConnectionScenario3Tests {
     ///    - A `fetch` is made when `hasNextPage` returns false.
     /// - Then:
     ///    - A validation error is returned
-    func testPaginatedListFetchValidationError() throws {
+    func testPaginatedListFetchValidationError() async throws {
         let uuid1 = UUID().uuidString
         guard createPost(id: uuid1, title: "title") != nil else {
             XCTFail("Failed to create post")
@@ -363,37 +315,22 @@ extension GraphQLConnectionScenario3Tests {
             return
         }
         while subsequentResults.hasNextPage() {
-            let semaphore = DispatchSemaphore(value: 0)
-            subsequentResults.getNextPage { result in
-                defer {
-                    semaphore.signal()
-                }
-                switch result {
-                case .success(let listResult):
-                    subsequentResults = listResult
-                case .failure(let coreError):
-                    XCTFail("Unexpected error: \(coreError)")
-                }
-
-            }
-            semaphore.wait()
+            let listResult = try await subsequentResults.getNextPage()
+            subsequentResults = listResult
         }
         XCTAssertFalse(subsequentResults.hasNextPage())
         let invalidFetchCompleted = expectation(description: "fetch completed with validation error")
-        subsequentResults.getNextPage { result in
-
-            switch result {
-            case .success(let listResult):
-                XCTFail("Unexpected .success \(listResult)")
-            case .failure(let coreError):
-                guard case .clientValidation = coreError else {
-                    XCTFail("Unexpected CoreError \(coreError)")
-                    return
-                }
-                invalidFetchCompleted.fulfill()
+        do {
+            let listResult = try await subsequentResults.getNextPage()
+            XCTFail("Unexpected \(listResult)")
+        } catch let coreError as CoreError {
+            guard case .clientValidation = coreError else {
+                XCTFail("Unexpected CoreError \(coreError)")
+                return
             }
+            invalidFetchCompleted.fulfill()
         }
-
+        
         wait(for: [invalidFetchCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 }
