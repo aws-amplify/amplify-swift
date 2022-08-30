@@ -32,7 +32,7 @@ actor StateMachine<
 > where StateType: State {
 
     /// AsyncSequences are invoked a minimum of one time: Each sequence receives the current
-    /// state as soon as it `listen()` was invoked, and will be invoked on each subsequent state change.
+    /// state as soon as `listen()` is invoked, and will receive each subsequent state change.
     typealias StateChangeSequence = StateAsyncSequence<StateType>
 
     private let environment: EnvironmentType
