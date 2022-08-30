@@ -127,4 +127,13 @@ public protocol StorageCategoryBehavior {
     func remove(key: String,
                 options: StorageRemoveOperation.Request.Options?) async throws -> String
 
+    /// List the object identifiers under the heiarchy specified by the path, relative to access level, from storage
+    ///
+    /// - Parameters:
+    ///   - options: Parameters to specific plugin behavior
+    ///   - resultListener: Triggered when the list is complete
+    /// - Returns: An operation object that provides notifications and actions related to the execution of the work
+    @discardableResult
+    func list(options: StorageListOperation.Request.Options?) async throws -> StorageListResult
+
 }

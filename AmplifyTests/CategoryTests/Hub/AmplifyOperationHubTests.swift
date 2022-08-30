@@ -238,6 +238,16 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
         let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
         return try await taskAdapter.value
     }
+
+    @discardableResult
+    func list(options: StorageListOperation.Request.Options?) async throws -> StorageListResult {
+        let options = options ?? StorageListRequest.Options()
+        let request = StorageListRequest(options: options)
+        let operation = MockDispatchingStorageListOperation(request: request)
+        let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
+        return try await taskAdapter.value
+    }
+
 }
 
 // swiftlint:disable:next type_name

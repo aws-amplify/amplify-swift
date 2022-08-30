@@ -28,7 +28,7 @@ public class AWSS3StorageListOperation: AmplifyOperation<
          storageConfiguration: AWSS3StoragePluginConfiguration,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
-         resultListener: ResultListener?) {
+         resultListener: ResultListener? = nil) {
 
         self.storageConfiguration = storageConfiguration
         self.storageService = storageService
