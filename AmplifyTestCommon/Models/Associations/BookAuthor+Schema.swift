@@ -35,4 +35,14 @@ extension BookAuthor {
         )
     }
 
+    public class Path : ModelPath<BookAuthor> {}
+
+    public static var rootPath: PropertyContainerPath? { Path() }
+
+}
+
+extension ModelPath where ModelType == BookAuthor {
+    var id: FieldPath<String> { id() }
+    var book: ModelPath<Book> { Book.Path(name: "book", parent: self) }
+    var author: ModelPath<Author> { Author.Path(name: "author", parent: self) }
 }
