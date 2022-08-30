@@ -22,3 +22,20 @@ public struct AuthAWSCognitoCredentials: AuthAWSTemporaryCredentials {
 extension AuthAWSCognitoCredentials: Codable { }
 
 extension AuthAWSCognitoCredentials: Equatable { }
+
+extension AuthAWSCognitoCredentials: CustomDebugDictionaryConvertible {
+    var debugDictionary: [String: Any] {
+        [
+            "accessKey": accessKey.masked(interiorCount: 5),
+            "secretKey": secretKey.masked(interiorCount: 5),
+            "sessionKey": sessionKey.masked(interiorCount: 5),
+            "expiration": expiration
+        ]
+    }
+}
+
+extension AuthAWSCognitoCredentials: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        debugDictionary.debugDescription
+    }
+}

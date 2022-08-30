@@ -143,3 +143,50 @@ extension AWSAuthCognitoSession: Equatable {
         return true
     }
 }
+
+extension AWSAuthCognitoSession: CustomDebugDictionaryConvertible {
+    var debugDictionary: [String: Any] {
+        var dict = [
+            "isSignedIn": isSignedIn.description
+        ]
+        switch identityIdResult {
+        case .success(let result):
+            dict["identityId"] = result.masked(interiorCount: 5, retainingCount: 5)
+        case .failure(let error):
+            dict["identityIdError"] = error.debugDescription
+        }
+
+        switch userSubResult {
+        case .success(let result):
+            dict["userSub"] = result.masked(interiorCount: 5, retainingCount: 5)
+        case .failure(let error):
+            dict["userSubError"] = error.debugDescription
+        }
+
+        switch cognitoTokensResult {
+        case .success(let result):
+            if let result = result as? AWSCognitoUserPoolTokens {
+                dict["cognitoTokens"] = result.debugDescription
+            }
+
+        case .failure(let error):
+            dict["cognitoTokensError"] = error.debugDescription
+        }
+
+        switch awsCredentialsResult {
+        case .success(let result):
+            if let result = result as? AuthAWSCognitoCredentials {
+                dict["AWS Credentials"] = result.debugDescription
+            }
+        case .failure(let error):
+            dict["awsCredentialsError"] = error.debugDescription
+        }
+        return dict
+    }
+}
+
+extension AWSAuthCognitoSession: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        (debugDictionary as AnyObject).description
+    }
+}
