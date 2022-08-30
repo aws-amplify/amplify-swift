@@ -338,7 +338,7 @@ extension PinpointClientTypes.EndpointDemographic {
     init(device: EndpointInformation,
          locale: String = Locale.autoupdatingCurrent.identifier,
          timezone: String = TimeZone.current.identifier) {
-        self.init(appVersion: device.appVersion ?? Constants.unknown,
+        self.init(appVersion: device.appVersion,
                   locale: locale,
                   make: Constants.appleMake,
                   model: device.model,
