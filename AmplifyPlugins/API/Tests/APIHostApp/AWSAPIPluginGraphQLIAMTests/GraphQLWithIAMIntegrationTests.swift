@@ -187,8 +187,8 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
         }
         let createdTodo1 = expectation(description: "created todo")
         let createdTodo2 = expectation(description: "created todo")
-        await _ = createTodo(id: uuid, name: name, expect: createdTodo1)
-        await _ = createTodo(id: uuid2, name: name, expect: createdTodo2)
+        await _ = try await createTodo(id: uuid, name: name, expect: createdTodo1)
+        await _ = try await createTodo(id: uuid2, name: name, expect: createdTodo2)
         await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
 
         let disconnectedInvoked = expectation(description: "Connection disconnected")
@@ -221,30 +221,19 @@ class GraphQLWithIAMIntegrationTests: XCTestCase {
 
     // MARK: - Helpers
     
-    func createTodo(id: String, name: String, expect: XCTestExpectation? = nil) async -> Todo? {
+    func createTodo(id: String, name: String, expect: XCTestExpectation? = nil) async throws -> Todo? {
         
         let todo = Todo(id: id, name: name)
-        var result: Todo?
-        let requestInvokedSuccessfully = expect ?? expectation(description: "request completed")
-
-        _ = Amplify.API.mutate(request: .create(todo)) { event in
-            switch event {
-            case .success(let data):
-                switch data {
-                case .success(let post):
-                    result = post
-                default:
-                    XCTFail("Create Post was not successful: \(data)")
-                }
-                requestInvokedSuccessfully.fulfill()
+        let graphQLResponse = try await Amplify.API.mutate(request: .create(todo))
+            switch graphQLResponse {
+            case .success(let post):
+                    return post
             case .failure(let error):
-                XCTFail("\(error)")
+                    throw error
             }
-        }
         if expect == nil {
             await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
         }
-        return result
     }
 
     // MARK: - Auth Helpers
