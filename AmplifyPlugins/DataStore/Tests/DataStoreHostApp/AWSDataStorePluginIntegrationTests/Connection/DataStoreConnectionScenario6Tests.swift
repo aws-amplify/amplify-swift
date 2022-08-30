@@ -170,18 +170,20 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
         var cancellables = Set<AnyCancellable>()
         let remoteEventReceived = expectation(description: "received mutation event with version 1")
         let commentId = UUID().uuidString
-        Amplify.DataStore.publisher(for: Comment6.self).sink { completion in
-            switch completion {
-            case .finished:
-                break
-            case .failure(let error):
+        
+        let task = Task {
+            let mutationEvents = Amplify.DataStore.observe(Comment6.self)
+            do {
+                for try await mutationEvent in mutationEvents {
+                    if mutationEvent.modelId == commentId && mutationEvent.version == 1 {
+                        remoteEventReceived.fulfill()
+                    }
+                }
+            } catch {
                 XCTFail("Failed \(error)")
             }
-        } receiveValue: { mutationEvent in
-            if mutationEvent.modelId == commentId && mutationEvent.version == 1 {
-                remoteEventReceived.fulfill()
-            }
-        }.store(in: &cancellables)
+        }
+        
         let blog = try await saveBlog(name: "name")
         let post = try await savePost(title: "title", blog: blog)
         _ = try await saveComment(id: commentId, post: post, content: "content")

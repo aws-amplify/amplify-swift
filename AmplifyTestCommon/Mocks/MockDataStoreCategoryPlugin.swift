@@ -288,6 +288,10 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         return Result.Publisher(mutationEvent).eraseToAnyPublisher()
     }
 
+    func observe<M: Model>(_ modelType: M.Type) -> AmplifyAsyncThrowingSequence<MutationEvent> {
+        return AmplifyAsyncThrowingSequence(parent: nil)
+    }
+    
     public func observeQuery<M: Model>(for modelType: M.Type,
                                        where predicate: QueryPredicate? = nil,
                                        sort sortInput: QuerySortInput? = nil)

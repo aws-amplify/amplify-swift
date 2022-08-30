@@ -74,10 +74,10 @@ public protocol DataStoreBaseBehavior {
 }
 
 public protocol DataStoreSubscribeBehavior {
-    /// Returns a Publisher for model changes (create, updates, delete)
+    /// Returns an AmplifyAsyncThrowingSequence for model changes (create, updates, delete)
     /// - Parameter modelType: The model type to observe
-    func publisher<M: Model>(for modelType: M.Type) -> AnyPublisher<MutationEvent, DataStoreError>
-
+    func observe<M: Model>(_ modelType: M.Type) -> AmplifyAsyncThrowingSequence<MutationEvent>
+    
     /// Returns a Publisher for query snapshots.
     ///
     /// - Parameters:

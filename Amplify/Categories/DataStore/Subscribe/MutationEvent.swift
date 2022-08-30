@@ -95,3 +95,5 @@ public struct MutationEvent: Model {
         return typedModel
     }
 }
+
+extension MutationEvent: Sendable { }

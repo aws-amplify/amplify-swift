@@ -84,20 +84,20 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 }
             }.store(in: &cancellables)
 
-        Amplify.DataStore.publisher(for: Post.self).sink { completion in
-            switch completion {
-            case .finished:
-                break
-            case .failure(let error):
+        let task = Task {
+            let mutationEvents = Amplify.DataStore.observe(Post.self)
+            do {
+                for try await mutationEvent in mutationEvents {
+                    if mutationEvent.version == nil {
+                        localEventReceived.fulfill()
+                    } else if mutationEvent.version == 1 {
+                        remoteEventReceived.fulfill()
+                    }
+                }
+            } catch {
                 XCTFail("Failed \(error)")
             }
-        } receiveValue: { mutationEvent in
-            if mutationEvent.version == nil {
-                localEventReceived.fulfill()
-            } else if mutationEvent.version == 1 {
-                remoteEventReceived.fulfill()
-            }
-        }.store(in: &cancellables)
+        }
 
         let savedPost = try await Amplify.DataStore.save(newPost)
         XCTAssertEqual(savedPost.content, newPost.content)
@@ -478,23 +478,23 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 
         log.debug("Created posts: [\(posts.map { $0.identifier })]")
 
-        var sink = Amplify.DataStore.publisher(for: Post.self).sink { completed in
-            switch completed {
-            case .finished:
-                break
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        } receiveValue: { mutationEvent in
-            guard posts.contains(where: { $0.id == mutationEvent.modelId }) else {
-                return
-            }
+        let task = Task {
+            let mutationEvents = Amplify.DataStore.observe(Post.self)
+            do {
+                for try await mutationEvent in mutationEvents {
+                    guard posts.contains(where: { $0.id == mutationEvent.modelId }) else {
+                        return
+                    }
 
-            if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue,
-               mutationEvent.version == 1 {
-                postsSyncedToCloudCount += 1
-                self.log.debug("Post saved and synced from cloud \(mutationEvent.modelId) \(postsSyncedToCloudCount)")
-                postsSyncedToCloud.fulfill()
+                    if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue,
+                       mutationEvent.version == 1 {
+                        postsSyncedToCloudCount += 1
+                        self.log.debug("Post saved and synced from cloud \(mutationEvent.modelId) \(postsSyncedToCloudCount)")
+                        postsSyncedToCloud.fulfill()
+                    }
+                }
+            } catch {
+                XCTFail("Failed \(error)")
             }
         }
 
@@ -513,40 +513,40 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 
         let postsDeletedFromCloud = expectation(description: "All posts deleted and synced to cloud")
         postsDeletedFromCloud.expectedFulfillmentCount = count
-        var postsDeletedFromCloudCount = 0
         
-        sink = Amplify.DataStore.publisher(for: Post.self).sink { completed in
-            switch completed {
-            case .finished:
-                break
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        } receiveValue: { mutationEvent in
-            guard posts.contains(where: { $0.id == mutationEvent.modelId }) else {
-                return
-            }
+        let task2 = Task {
+            var postsDeletedFromCloudCount = 0
+            let mutationEvents = Amplify.DataStore.observe(Post.self)
+            do {
+                for try await mutationEvent in mutationEvents {
+                    guard capturedPosts.contains(where: { $0.id == mutationEvent.modelId }) else {
+                        return
+                    }
 
-            if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue,
-                      mutationEvent.version == 1 {
-                self.log.debug(
-                    "Post deleted locally \(mutationEvent.modelId)")
-                postsDeletedLocally.fulfill()
-            } else if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue,
-                      mutationEvent.version == 2 {
-                postsDeletedFromCloudCount += 1
-                self.log.debug(
-                    "Post deleted and synced from cloud \(mutationEvent.modelId) \(postsDeletedFromCloudCount)")
-                postsDeletedFromCloud.fulfill()
+                    if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue,
+                              mutationEvent.version == 1 {
+                        self.log.debug(
+                            "Post deleted locally \(mutationEvent.modelId)")
+                        postsDeletedLocally.fulfill()
+                    } else if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue,
+                              mutationEvent.version == 2 {
+                        postsDeletedFromCloudCount += 1
+                        self.log.debug(
+                            "Post deleted and synced from cloud \(mutationEvent.modelId) \(postsDeletedFromCloudCount)")
+                        postsDeletedFromCloud.fulfill()
+                    }
+                }
+            } catch {
+                XCTFail("Failed \(error)")
             }
         }
+        
         DispatchQueue.concurrentPerform(iterations: count) { index in
             Task {
                 try await Amplify.DataStore.delete(capturedPosts[index])
             }
         }
         await waitForExpectations(timeout: 100)
-        sink.cancel()
     }
 
     // MARK: - Helpers
