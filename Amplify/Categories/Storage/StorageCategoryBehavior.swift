@@ -117,7 +117,6 @@ public protocol StorageCategoryBehavior {
     func getURL(key: String,
                 options: StorageGetURLOperation.Request.Options?) async throws -> URL
 
-
     /// Retrieve the object from storage into memory.
     ///
     /// - Parameters:
@@ -127,6 +126,18 @@ public protocol StorageCategoryBehavior {
     @discardableResult
     func downloadData(key: String,
                       options: StorageDownloadDataOperation.Request.Options?) async throws -> StorageDownloadDataTask
+
+    /// Download to file the object from storage.
+    ///
+    /// - Parameters:
+    ///   - key: The unique identifier for the object in storage.
+    ///   - local: The local file to download destination
+    ///   - options: Parameters to specific plugin behavior
+    /// - Returns: A task that provides progress updates and the key which was used to download
+    @discardableResult
+    func downloadFile(key: String,
+                      local: URL,
+                      options: StorageDownloadFileOperation.Request.Options?) async throws -> StorageDownloadFileTask
 
     /// Delete object from storage
     ///

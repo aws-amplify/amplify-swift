@@ -102,6 +102,49 @@ class AWSS3StoragePluginAsyncBehaviorTests: AWSS3StoragePluginTests {
         XCTAssertEqual(1, storageService.downloadCalled)
     }
 
+    func testPluginDownloadFileListener() {
+        let done = expectation(description: "done")
+        storageService.storageServiceDownloadEvents = [.completed(nil)]
+        let operation = storagePlugin.downloadFile(key: testKey,
+                                                   local: testURL,
+                                                   options: nil,
+                                                   progressListener: nil) { result in
+            do {
+                _ = try result.get()
+            } catch {
+                XCTFail("Error: \(error)")
+            }
+            done.fulfill()
+        }
+
+        wait(for: [done], timeout: 1.0)
+
+        XCTAssertEqual(1, storageService.downloadCalled)
+
+        _ = operation
+    }
+
+    func testPluginDownloadFileAsync() async throws {
+        let done = asyncExpectation(description: "done")
+        storageService.storageServiceDownloadEvents = [.completed(nil)]
+        
+        Task {
+            let task = try await storagePlugin.downloadFile(key: testKey,
+                                                            local: testURL,
+                                                            options: nil)
+            do {
+                _ = try await task.value
+            } catch {
+                XCTFail("Error: \(error)")
+            }
+            await done.fulfill()
+        }
+
+        await waitForExpectations([done], timeout: 3.0)
+
+        XCTAssertEqual(1, storageService.downloadCalled)
+    }
+
     func testPluginRemoveListener() {
         let done = expectation(description: "done")
         storageService.storageServiceDeleteEvents = [.completed(())]

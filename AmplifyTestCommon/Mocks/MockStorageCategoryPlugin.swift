@@ -131,6 +131,18 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
     }
 
     @discardableResult
+    public func downloadFile(key: String,
+                             local: URL,
+                             options: StorageDownloadFileOperation.Request.Options?) async throws -> StorageDownloadFileTask {
+        notify("downloadFile")
+        let options = options ?? StorageDownloadFileRequest.Options()
+        let request = StorageDownloadFileRequest(key: key, local: local, options: options)
+        let operation = MockStorageDownloadFileOperation(request: request)
+        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
+        return taskAdapter
+    }
+
+    @discardableResult
     public func list(options: StorageListOperation.Request.Options?) async throws -> StorageListResult {
         notify("list")
         let options = options ?? StorageListRequest.Options()
