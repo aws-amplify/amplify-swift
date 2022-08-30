@@ -15,15 +15,23 @@ public enum SelectionSetFieldType {
     case model
     case embedded
     case value
+    case collection
 }
 
 public class SelectionSetField {
+
+    static var typename: SelectionSetField {
+        .init(name: "__typename", fieldType: .value)
+    }
+
     var name: String?
     var fieldType: SelectionSetFieldType
+
     public init(name: String? = nil, fieldType: SelectionSetFieldType) {
         self.name = name
         self.fieldType = fieldType
     }
+
 }
 
 extension SelectionSet {
@@ -44,14 +52,14 @@ extension SelectionSet {
                 let associatedModelName = field.associatedModelName,
                 let schema = ModelRegistry.modelSchema(from: associatedModelName) {
                 let child = SelectionSet(value: .init(name: field.name, fieldType: .model))
-                child.withModelFields(schema.graphQLFields)
+                child.withModelFields(schema.primaryKey.fields)
                 self.addChild(settingParentOf: child)
             } else {
                 self.addChild(settingParentOf: .init(value: .init(name: field.graphQLName, fieldType: .value)))
             }
         }
 
-        addChild(settingParentOf: .init(value: .init(name: "__typename", fieldType: .value)))
+        addChild(settingParentOf: .init(value: .typename))
     }
 
     func withEmbeddableFields(_ fields: [ModelField]) {
@@ -64,7 +72,7 @@ extension SelectionSet {
                 self.addChild(settingParentOf: .init(value: .init(name: field.name, fieldType: .value)))
             }
         }
-        addChild(settingParentOf: .init(value: .init(name: "__typename", fieldType: .value)))
+        addChild(settingParentOf: .init(value: .typename))
     }
 
     /// Generate the string value of the `SelectionSet` used in the GraphQL query document
@@ -85,7 +93,8 @@ extension SelectionSet {
     /// ```
     func stringValue(indentSize: Int = 0) -> String {
         var result = [String]()
-        let indent = indentSize == 0 ? "" : String(repeating: "  ", count: indentSize)
+        let indentValue = "  "
+        let indent = indentSize == 0 ? "" : String(repeating: indentValue, count: indentSize)
 
         switch value.fieldType {
         case .model, .pagination, .embedded:
@@ -100,6 +109,16 @@ extension SelectionSet {
                     result.append(innerSelectionSetField.stringValue(indentSize: indentSize))
                 }
             }
+        case .collection:
+            // TODO: fix optional unwrap
+            let doubleIndent = String(repeating: indentValue, count: indentSize + 1)
+            result.append(indent + (value.name ?? "") + " {")
+            result.append(doubleIndent + "items {")
+            children.forEach { innerSelectionSetField in
+                result.append(innerSelectionSetField.stringValue(indentSize: indentSize + 2))
+            }
+            result.append(doubleIndent + "}")
+            result.append(indent + "}")
         case .value:
             guard let name = value.name else {
                 return ""
@@ -109,4 +128,63 @@ extension SelectionSet {
 
         return result.joined(separator: "\n    ")
     }
+
+    /// Find a child in the tree matching its `value.name`.
+    ///
+    /// - Parameters:
+    ///   - byName name: the name to match the child node of type `SelectionSetField`
+    ///
+    /// - Returns: the matched `SelectionSet` or `nil` if there's no child with the specified name.
+    func findChild(byName name: String) -> SelectionSet? {
+        return children.first { $0.value.name == name }
+    }
+
+    /// Replaces or adds a new child to the selection set tree. When a child node exists
+    /// with a matching `name` property of the `SelectionSetField` the node will be replaced
+    /// while retaining its position in the children list. Otherwise the call is
+    /// delegated to `addChild(settingParentOf:)`.
+    ///
+    /// - Parameters:
+    ///   - child: the child node to be replaced.
+    func replaceChild(_ child: SelectionSet) {
+        if let index = children.firstIndex(where: { $0.value.name == child.value.name }) {
+            children.insert(child, at: index)
+            children.remove(at: index + 1)
+            child.parent = self
+        } else {
+            addChild(settingParentOf: child)
+        }
+    }
+
+    /// Merges a subtree into the this `SelectionSet`. The subtree position will be determined
+    /// by the value of the node's `name`. When an existing node is found the algorithm will
+    /// merge its children to ensure no values are lost or incorrectly overwritten.
+    ///
+    /// - Parameters:
+    ///   - with selectionSet: the subtree to be merged into the current tree.
+    ///
+    /// - Seealso:
+    ///   - `find(byName:)`
+    ///   - `replaceChild(_)`
+    func merge(with selectionSet: SelectionSet) {
+        let name = selectionSet.value.name ?? ""
+        if let existingField = findChild(byName: name) {
+            var replaceFields: [SelectionSet] = []
+            selectionSet.children.forEach { child in
+                if child.value.fieldType != .value, let childName = child.value.name {
+                    if existingField.findChild(byName: childName) != nil {
+                        existingField.merge(with: child)
+                    } else {
+                        replaceFields.append(child)
+                    }
+                } else {
+                    replaceFields.append(child)
+                }
+            }
+            replaceFields.forEach(existingField.replaceChild)
+        } else {
+            addChild(settingParentOf: selectionSet)
+        }
+    }
+
 }

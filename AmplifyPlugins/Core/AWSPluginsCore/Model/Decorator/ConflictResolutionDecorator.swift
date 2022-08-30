@@ -58,7 +58,7 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
         switch selectionSet.value.fieldType {
         case .value, .embedded:
             break
-        case .model:
+        case .model, .collection:
             selectionSet.addChild(settingParentOf: .init(value: .init(name: "_version", fieldType: .value)))
             selectionSet.addChild(settingParentOf: .init(value: .init(name: "_deleted", fieldType: .value)))
             selectionSet.addChild(settingParentOf: .init(value: .init(name: "_lastChangedAt", fieldType: .value)))
