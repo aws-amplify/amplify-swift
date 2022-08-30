@@ -55,11 +55,12 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
     // 1. `teamID` and `team`
     // 2. With random `teamID` and `team`
     func testCreateAndGetProject() async throws {
-        let team2 = Team2(name: "name")
-        _ = try await Amplify.API.mutate(request: .create(team2))
-        let project2a = Project2(teamID: team2.id, team: team2)
-        _ = try await Amplify.API.mutate(request: .create(project2a))
-       
+        guard let team = try await createTeam2(name: "name"),
+              let project2a = try await createProject2(teamID: team.id, team: team),
+              let project2b = try await createProject2(teamID: team.id, team: team) else {
+            XCTFail("Could not create team and a project")
+            return
+        }
         let result = try await Amplify.API.query(request: .get(Project2.self, byId: project2a.id))
         switch result {
         case .success(let queriedProjectOptional):
@@ -68,13 +69,10 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
                 return
             }
             XCTAssertEqual(queriedProject.id, project2a.id)
-            XCTAssertEqual(queriedProject.teamID, team2.id)
+            XCTAssertEqual(queriedProject.teamID, team.id)
         case .failure(let response):
             XCTFail("Failed with: \(response)")
         }
-        
-        let project2b = Project2(teamID: "randomTeamID", team: team2)
-        _ = try await Amplify.API.mutate(request: .create(project2b))
         let result2 = try await Amplify.API.query(request: .get(Project2.self, byId: project2b.id))
         switch result2 {
         case .success(let queriedProjectOptional):
@@ -83,43 +81,40 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
                 return
             }
             XCTAssertEqual(queriedProject.id, project2b.id)
-            XCTAssertEqual(queriedProject.teamID, team2.id)
+            XCTAssertEqual(queriedProject.teamID, team.id)
         case .failure(let response):
             XCTFail("Failed with: \(response)")
         }
     }
 
     func testUpdateProjectWithAnotherTeam() async throws {
-        let team2 = Team2(name: "name")
-        _ = try await Amplify.API.mutate(request: .create(team2))
-        let project2 = Project2(teamID: team2.id, team: team2 )
-        let createdProjectResult = try await Amplify.API.mutate(request: .create(project2))
-        switch createdProjectResult {
-        case .success(var createdProject):
-            let anotherTeam = Team2(name: "name")
-            guard case .success(let createdAnotherTeam) = try await Amplify.API.mutate(request: .create(anotherTeam)) else {
-                XCTFail("Failed to create another team")
-                return
-            }
-            createdProject.team = createdAnotherTeam
-    
-            guard case .success(let updatedProject) = try await Amplify.API.mutate(request: .update(createdProject)) else {
-                XCTFail("Failed to update project to another team")
-                return
-            }
-            XCTAssertEqual(updatedProject.teamID, anotherTeam.id)
-            // The team object does not get retrieved from the service and is `nil`, but should be eager loaded to contain the `team`
-            //  XCTAssertEqual(updatedProject.team, anotherTeam)
-        case .failure(let response):
-            XCTFail("Failed with: \(response)")
+        guard let team = try await createTeam2(name: "name"),
+              var project2 = try await createProject2(teamID: team.id, team: team) else {
+            XCTFail("Could not create team and a project")
+            return
         }
+        let anotherTeam = Team2(name: "name")
+        guard case .success(let createdAnotherTeam) = try await Amplify.API.mutate(request: .create(anotherTeam)) else {
+            XCTFail("Failed to create another team")
+            return
+        }
+        project2.team = createdAnotherTeam
+
+        guard case .success(let updatedProject) = try await Amplify.API.mutate(request: .update(project2)) else {
+            XCTFail("Failed to update project to another team")
+            return
+        }
+        XCTAssertEqual(updatedProject.teamID, anotherTeam.id)
+        // The team object does not get retrieved from the service and is `nil`, but should be eager loaded to contain the `team`
+        //  XCTAssertEqual(updatedProject.team, anotherTeam)
     }
     
     func testDeleteAndGetProject() async throws {
-        let team2 = Team2(name: "name")
-        _ = try await Amplify.API.mutate(request: .create(team2))
-        let project2 = Project2(teamID: team2.id, team: team2)
-        _ = try await Amplify.API.mutate(request: .create(project2))
+        guard let team = try await createTeam2(name: "name"),
+              let project2 = try await createProject2(teamID: team.id, team: team) else {
+            XCTFail("Could not create team and a project")
+            return
+        }
         let deletedProjectResult = try await Amplify.API.mutate(request: .delete(project2))
         switch deletedProjectResult {
         case .success(let deletedProject):
@@ -141,22 +136,19 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
     }
 
     func testListProjectsByTeamID() async throws {
-        guard let team = try await createTeam2(name: "name") else {
-            XCTFail("Could not create team")
-            return
-        }
-        guard try await createProject2(teamID: team.id, team: team) != nil else {
-            XCTFail("Could not create project")
+        guard let team = try await createTeam2(name: "name"),
+              try await createProject2(teamID: team.id, team: team) != nil else {
+            XCTFail("Could not create team and two projects")
             return
         }
         let predicate = Project2.keys.teamID.eq(team.id)
         let result = try await Amplify.API.query(request: .list(Project2.self, where: predicate))
-            switch result {
-                case .success(let projects):
-                    print(projects)
-                case .failure(let graphQLResponse):
-                    XCTFail("Failed with: \(graphQLResponse)")
-            }
+        switch result {
+        case .success(let projects):
+            print(projects)
+        case .failure(let graphQLResponse):
+            XCTFail("Failed with: \(graphQLResponse)")
+        }
     }
 
     // Create two projects for the same team, then list the projects by teamID, and expect two projects
@@ -192,15 +184,13 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
     
     func createTeam2(id: String = UUID().uuidString, name: String) async throws ->  Team2? {
         let team = Team2(id: id, name: name)
-        var result: Team2?
-        let event = try await Amplify.API.mutate(request: .create(team))
-            switch event {
-                case .success(let team):
-                    result = team
-                default:
-                    XCTFail("Could not get data back")
-                }
-        return result
+        let graphQLResponse = try await Amplify.API.mutate(request: .create(team))
+        switch graphQLResponse {
+        case .success(let team):
+            return team
+        case .failure(let graphQLResponseError):
+            throw graphQLResponseError
+        }
     }
 
     func createProject2(id: String = UUID().uuidString,
@@ -208,20 +198,19 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
                         teamID: String,
                         team: Team2? = nil) async throws -> Project2? {
         let project = Project2(id: id, name: name, teamID: teamID, team: team)
-        var result: Project2?
-        let event = try await Amplify.API.mutate(request: .create(project))
-            switch event {
-            case .success(let project):
-                    result = project
-            case .failure(let graphQLResponseError):
-                    XCTFail("Failed with error: \(graphQLResponseError)")
-                }
-        return result
+        let graphQLResponse = try await Amplify.API.mutate(request: .create(project))
+        switch graphQLResponse {
+        case .success(let project):
+            return project
+        case .failure(let graphQLResponseError):
+            throw graphQLResponseError
+        }
     }
 }
 
 extension Team2: Equatable {
-    public static func == (lhs: Team2, rhs: Team2) -> Bool {
+    public static func == (lhs: Team2,
+                           rhs: Team2) -> Bool {
         return lhs.id == rhs.id
         && lhs.name == rhs.name
         && lhs.createdAt == rhs.createdAt
