@@ -6,108 +6,138 @@
 //
 
 import XCTest
-@testable import AWSCognitoAuthPlugin
+@testable import HSM
 
 class StateMachineListenerTests: XCTestCase {
 
     var stateMachine: CounterStateMachine!
-    var tokens = Set<CounterStateMachine.StateChangeListenerToken>()
 
     override func setUpWithError() throws {
         stateMachine = CounterStateMachine.logging()
     }
 
-    func testNotifiesOnListen() {
-        stateMachine.send(Counter.Event(id: "test", eventType: .increment))
-        let subscribed = expectation(description: "subscribed")
-        let notified = expectation(description: "notified")
-        stateMachine.listen { state in
-            notified.fulfill()
-            XCTAssertEqual(state.value, 1)
-        }
-        onSubscribe: {
-            subscribed.fulfill()
-        }
-        .store(in: &tokens)
+    func testNotifiesOnListen() async {
 
-        waitForExpectations(timeout: 0.1)
+        await stateMachine.send(Counter.Event(id: "test", eventType: .increment))
+        let seq = await stateMachine.listen()
+        for await state in seq {
+            XCTAssertEqual(state.value, 1)
+            if state.value == 1 {
+                break
+            }
+        }
     }
 
-    func testNotifiesOnStateChange() {
-        stateMachine.send(Counter.Event(id: "test", eventType: .increment))
-        let subscribed = expectation(description: "subscribed")
+    func testNotifiesOnStateChange() async {
+
+        await stateMachine.send(Counter.Event(id: "test", eventType: .increment))
+        let seq = await stateMachine.listen()
         let notified = expectation(description: "notified")
         notified.expectedFulfillmentCount = 2
-        stateMachine.listen { _ in
-            notified.fulfill()
+        Task {
+            for await _ in seq {
+                notified.fulfill()
+            }
         }
-        onSubscribe: {
-            subscribed.fulfill()
-        }
-        .store(in: &tokens)
-
-        wait(for: [subscribed], timeout: 0.1)
-
         let event = Counter.Event(id: "test", eventType: .increment)
-        stateMachine.send(event)
-        waitForExpectations(timeout: 0.1)
+        await stateMachine.send(event)
+        await waitForExpectations(timeout: 0.1)
     }
 
-    func testDoesNotNotifyOnNoStateChange() {
-        stateMachine.send(Counter.Event(id: "test", eventType: .increment))
-        let subscribed = expectation(description: "subscribed")
+    func testDoesNotNotifyOnNoStateChange() async {
+        await stateMachine.send(Counter.Event(id: "test", eventType: .increment))
+
         let notified = expectation(description: "notified")
         notified.expectedFulfillmentCount = 1
-        stateMachine.listen { _ in
-            notified.fulfill()
+        let seq = await stateMachine.listen()
+        Task {
+            for await _ in seq {
+                notified.fulfill()
+            }
         }
-        onSubscribe: {
-            subscribed.fulfill()
-        }
-        .store(in: &tokens)
-
-        wait(for: [subscribed], timeout: 0.1)
 
         let event = Counter.Event(id: "test", eventType: .adjustBy(0))
-        stateMachine.send(event)
-        waitForExpectations(timeout: 0.1)
+        await stateMachine.send(event)
+        await waitForExpectations(timeout: 0.1)
     }
 
-    func testDoesNotNotifyAfterUnsubscribe() {
-        stateMachine.send(Counter.Event(id: "test", eventType: .increment))
-        let subscribed = expectation(description: "subscribed")
+    func testDoesNotNotifyAfterUnsubscribe() async {
+        await stateMachine.send(Counter.Event(id: "test", eventType: .increment))
+
         let notified = expectation(description: "notified")
         notified.expectedFulfillmentCount = 1
-        let token = stateMachine.listen { _ in
-            notified.fulfill()
-        }
-        onSubscribe: {
-            subscribed.fulfill()
+        let seq = await stateMachine.listen()
+        Task {
+            for await _ in seq {
+                notified.fulfill()
+
+            }
         }
 
-        wait(for: [subscribed], timeout: 0.1)
-
-        stateMachine.cancel(listenerToken: token)
+        seq.cancel()
         let event = Counter.Event(id: "test", eventType: .increment)
-        stateMachine.send(event)
-        waitForExpectations(timeout: 0.1)
+        await stateMachine.send(event)
+        await waitForExpectations(timeout: 0.1)
     }
 
-    func testDoesNotNotifyIfCancelledImmediately() {
-        stateMachine.send(Counter.Event(id: "test", eventType: .increment))
+    func testOrderOfSubsription() async {
+        let loop = 1_000
+        for _ in 1...loop {
+
+            let notified = expectation(description: "notified")
+            notified.expectedFulfillmentCount = 3
+            await stateMachine.send(Counter.Event(id: "set1", eventType: .set(10)))
+            let seq = await stateMachine.listen()
+            Task.detached {
+                // Send a new event with a delay so that the send happens after subscription is set.
+                try await Task.sleep(nanoseconds: 1_000)
+                await self.stateMachine.send(Counter.Event(id: "set2", eventType: .set(11)))
+            }
+            Task {
+                var count = 0
+                for await state in seq {
+                    if count == 0 {
+                        count += 1
+                        XCTAssertEqual(state.value, 10)
+                    } else if count == 1 {
+                        count += 1
+                        XCTAssertEqual(state.value, 11)
+                    } else {
+                        XCTAssertEqual(state.value, 12)
+                    }
+                    notified.fulfill()
+                }
+            }
+
+            Task.detached {
+                try await Task.sleep(nanoseconds: 1_000_000)
+                await self.stateMachine.send(Counter.Event(id: "set3", eventType: .set(12)))
+            }
+            await waitForExpectations(timeout: 2)
+            seq.cancel()
+        }
+    }
+
+    func testCancelListen() async {
+        await stateMachine.send(Counter.Event(id: "test", eventType: .increment))
 
         let notified = expectation(description: "notified")
-        notified.isInverted = true
-        let token = stateMachine.listen({ _ in
-                notified.fulfill()
-            },
-            onSubscribe: nil
-        )
+        notified.expectedFulfillmentCount = 1
+        let seq = await stateMachine.listen()
+        let task = Task {
+            for try await _ in seq {
+                if Task.isCancelled {
+                    notified.fulfill()
+                    break
+                }
+            }
 
-        stateMachine.cancel(listenerToken: token)
-        let event = Counter.Event(id: "test", eventType: .increment)
-        stateMachine.send(event)
-        waitForExpectations(timeout: 0.1)
+        }
+
+        let event = Counter.Event(id: "test", eventType: .adjustBy(0))
+        await stateMachine.send(event)
+        task.cancel()
+        await waitForExpectations(timeout: 0.1)
     }
 
 }

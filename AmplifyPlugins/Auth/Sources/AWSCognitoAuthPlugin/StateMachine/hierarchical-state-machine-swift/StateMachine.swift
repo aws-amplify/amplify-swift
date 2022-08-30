@@ -7,47 +7,11 @@
 
 import Foundation
 
-// Base, system-wide dispatch queue to act as a target queue for individual StateMachines
-private let baseQueue = DispatchQueue(
-    label: "com.amazonaws.statemachine.Base",
-    attributes: [.concurrent]
-)
-
 /// Captures a weak reference to the value
-class WeakWrapper<T>: Hashable where T: AnyObject, T: Hashable {
+class WeakWrapper<T> where T: AnyObject {
     private(set) weak var value: T?
     init(_ value: T) {
         self.value = value
-    }
-
-    static func == (lhs: WeakWrapper<T>, rhs: WeakWrapper<T>) -> Bool {
-        lhs === rhs
-    }
-
-    func hash(into hasher: inout Hasher) {
-        value?.hash(into: &hasher)
-    }
-}
-
-/// Wrap any type in a reference
-class Box<BoxedValue>: Hashable where BoxedValue: Hashable {
-    let value: BoxedValue
-    init(_ value: BoxedValue) {
-        self.value = value
-    }
-
-    static func == (lhs: Box<BoxedValue>, rhs: Box<BoxedValue>) -> Bool {
-        lhs === rhs
-    }
-
-    func hash(into hasher: inout Hasher) {
-        value.hash(into: &hasher)
-    }
-}
-
-extension Box where BoxedValue == UUID {
-    func store(in tokens: inout Set<Box<BoxedValue>>) {
-        tokens.insert(self)
     }
 }
 
@@ -62,153 +26,43 @@ extension Box where BoxedValue == UUID {
 /// - StateChangedListeners, which are notified whenever the state changes
 /// - EffectExecutor, which resolves and executes Effects returned from event
 /// processing
-class StateMachine<
+actor StateMachine<
     StateType,
     EnvironmentType: Environment
 > where StateType: State {
-    /// Listeners are invoked a minimum of one time: Each listener receives the current
-    /// state as soon as it subscribes, and will be invoked on each subsequent state change.
-    typealias StateChangedListener = (StateType) -> Void
-    typealias StateChangeListenerToken = Box<UUID>
-    typealias OnSubscribedCallback = () -> Void
+
+    /// AsyncSequences are invoked a minimum of one time: Each sequence receives the current
+    /// state as soon as `listen()` is invoked, and will receive each subsequent state change.
+    typealias StateChangeSequence = StateAsyncSequence<StateType>
 
     private let environment: EnvironmentType
-    private let executor: EffectExecutor
     private let resolver: AnyResolver<StateType>
 
-    /// Backing queue for both consistencyQueue and notificationQueue
-    private let concurrentQueue: DispatchQueue
-
-    /// Manages consistency of internal state machine state
-    let operationQueue: OperationQueue
-
-    private var currentState: StateType
-
-    private var subscribers: [WeakWrapper<StateChangeListenerToken>: StateChangedListener]
-    private var pendingCancellations: AtomicValue<Set<StateChangeListenerToken>>
+    private(set) var currentState: StateType
+    private var subscribers: [WeakWrapper<StateAsyncSequence<StateType>>]
 
     init<ResolverType>(
         resolver: ResolverType,
         environment: EnvironmentType,
-        initialState: StateType? = nil,
-        concurrentQueue: DispatchQueue? = nil,
-        executor: EffectExecutor? = nil
+        initialState: StateType? = nil
     ) where ResolverType: StateMachineResolver, ResolverType.StateType == StateType {
         self.resolver = resolver.eraseToAnyResolver()
         self.environment = environment
         self.currentState = initialState ?? resolver.defaultState
 
-        let resolvedConcurrentQueue = concurrentQueue ?? baseQueue
-        self.concurrentQueue = resolvedConcurrentQueue
-
-        self.executor = executor
-            ?? ConcurrentEffectExecutor(concurrentQueue: resolvedConcurrentQueue)
-
-        let operationQueue = OperationQueue()
-        operationQueue.maxConcurrentOperationCount = 1
-        operationQueue.underlyingQueue = resolvedConcurrentQueue
-        operationQueue.name = "\(resolvedConcurrentQueue.label).\(StateType.self).operation"
-        operationQueue.isSuspended = false
-        self.operationQueue = operationQueue
-
-        self.subscribers = [:]
-        self.pendingCancellations = AtomicValue<Set<StateChangeListenerToken>>(initialValue: [])
+        self.subscribers = []
     }
 
-    /// Start listening to state changes updates. Asynchronously invokes listener on a background
-    /// queue with the current state.
+    /// Start listening to state change updates. The current state and all subsequent state changes will be sent to the sequence.
     ///
-    /// Both `listener` and `onSubscribe` will be invoked on a background queue. If the work performed
-    /// must be performed on a specific queue, the caller must dispatch appropriately.
-    ///
-    /// - Parameters:
-    ///   - listener: Listener to be invoked on state changes
-    ///   - onSubscribe: callback to invoke when subscription is complete.
-    /// - Returns: A token that can be used to unsubscribe the listener
-    func listen(
-        _ listener: @escaping StateChangedListener,
-        onSubscribe: OnSubscribedCallback?
-    ) -> StateChangeListenerToken {
-        let token = StateChangeListenerToken(UUID())
-        operationQueue.addOperation {
-            self.addSubscription(
-                token: token,
-                listener: listener,
-                onSubscribe: onSubscribe
-            )
-        }
-        return token
-    }
-
-    /// Stop listening to state changes updates.
-    ///
-    /// Internally, this method registers a pending cancellation. If a new event comes in between the time `cancel` is called
-    /// and the time the pending cancellation is processed, the event will not be dispatched to the listener.
-    ///
-    /// - Parameter listenerToken: Identifies the listener to be removed
-    func cancel(listenerToken: StateChangeListenerToken) {
-        pendingCancellations.with { $0.insert(listenerToken) }
-        operationQueue.addOperation {
-            self.removeSubscription(listenerToken: listenerToken)
-        }
-    }
-
-    /// Invokes `completion` with the current state
-    ///
-    /// - Parameter completion: a callback to invoke with the current state
-    func getCurrentState(_ completion: @escaping (StateType) -> Void) {
-        operationQueue.addOperation {
-            completion(self.currentState)
-        }
-    }
-
-    var currentMachineState: StateType {
-        get async {
-            await withCheckedContinuation { continuation in
-                self.operationQueue.addOperation {
-                    continuation.resume(returning: self.currentState)
-                }
-            }
-        }
-    }
-
-    // MARK: - Isolated methods
-
-    /// Must be invoked on operationQueue
-    /// - Parameters:
-    ///   - token: the token, which will be retained weakly in the subscribers map
-    ///   - listener: the listener to invoke when the state has changed
-    ///   - onSubscribe: the callback to invoke when subscription is complete
-    private func addSubscription(
-        token: Box<UUID>,
-        listener: @escaping StateChangedListener,
-        onSubscribe: OnSubscribedCallback?
-    ) {
-        guard !pendingCancellations.get().contains(token) else {
-            return
-        }
-
+    /// - Returns: An async sequence that get states asynchronously
+    func listen() -> StateChangeSequence {
+        let sequence = StateAsyncSequence<StateType>()
         let currentState = self.currentState
-        let wrappedToken = WeakWrapper(token)
-
-        subscribers[wrappedToken] = listener
-
-        onSubscribe?()
-
-        concurrentQueue.async {
-            listener(currentState)
-        }
-    }
-
-    /// Must be invoked on operationQueue
-    ///
-    /// - Parameter listenerToken: the token of the listener to remove
-    private func removeSubscription(listenerToken: StateChangeListenerToken) {
-        pendingCancellations.with { $0.remove(listenerToken) }
-        guard let itemToRemove = subscribers.first(where: { $0.key.value == listenerToken }) else {
-            return
-        }
-        subscribers[itemToRemove.key] = nil
+        let wrappedSequence = WeakWrapper(sequence)
+        subscribers.append(wrappedSequence)
+        sequence.send(currentState)
+        return sequence
     }
 }
 
@@ -220,13 +74,14 @@ extension StateMachine: EventDispatcher {
     /// machine's state and invokes listeners with the new state. Regardless of whether
     /// the state is new or not, the state machine will execute any effects from the
     /// event resolution process.
-    func send(_ event: StateMachineEvent) {
-        operationQueue.addOperation {
-            self.process(event: event)
+    func send(_ event: StateMachineEvent) async {
+        if Task.isCancelled {
+            return
         }
+        process(event: event)
     }
 
-    /// Must be invoked on operationQueue
+
     private func process(event: StateMachineEvent) {
         let resolution = resolver.resolve(
             oldState: currentState,
@@ -235,39 +90,30 @@ extension StateMachine: EventDispatcher {
 
         if currentState != resolution.newState {
             currentState = resolution.newState
-            let subscribersToRemove = subscribers
-                .filter { !notify(subscriberElement: $0, about: resolution.newState) }
-            subscribersToRemove.forEach {
-                subscribers.removeValue(forKey: $0.key)
+            subscribers.removeAll { item in
+                !notify(subscriberElement: item, about: resolution.newState)
             }
         }
         execute(resolution.actions)
     }
 
-    /// Must be invoked on operationQueue
     /// - Parameters:
-    ///   - subscriberElement: a dictionary element containing the subscriber token and listener
+    ///   - subscriberElement: A weak wrapped async sequence
     ///   - newState: The new state to be sent
     /// - Returns: true if the subscriber was notified, false if the wrapper reference was nil or a cancellation was pending
     private func notify(
-        subscriberElement: Dictionary<WeakWrapper<Box<UUID>>, (StateType) -> Void>.Element,
+        subscriberElement: WeakWrapper<StateChangeSequence>,
         about newState: StateType
     ) -> Bool {
-        let weakWrapper = subscriberElement.key
+
 
         // If weak reference has become nil, do not process, and return false so caller can remove
         // the subscription from the subscribers list
-        guard let token = weakWrapper.value else {
+        guard let sequence = subscriberElement.value else {
             return false
         }
 
-        // If there is a pending cancellation for this subscriber, do not process, and return
-        //  false so caller can remove the subscription from the subscribers list
-        guard !pendingCancellations.get().contains(token) else {
-            return false
-        }
-
-        subscriberElement.value(newState)
+        sequence.send(newState)
         return true
     }
 
@@ -275,6 +121,6 @@ extension StateMachine: EventDispatcher {
         guard !actions.isEmpty else {
             return
         }
-        executor.execute(actions, dispatchingTo: self, environment: environment)
+        ConcurrentEffectExecutor.execute(actions, dispatchingTo: self, environment: environment)
     }
 }
