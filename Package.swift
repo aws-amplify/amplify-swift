@@ -341,10 +341,6 @@ let package = Package(
         .library(
             name: "AmplifyAsyncTesting",
             targets: ["AmplifyAsyncTesting"]
-        ),
-        .library(
-            name: "HSM",
-            targets: ["HSM"]
         )
     ],
     dependencies: dependencies,
