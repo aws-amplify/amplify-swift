@@ -96,110 +96,91 @@ extension GraphQLConnectionScenario3Tests {
 
         await task.cancel()
     }
-
-    func testOnDeletePostSubscriptionWithModel() {
-        let connectedInvoked = expectation(description: "Connection established")
-        let disconnectedInvoked = expectation(description: "Connection disconnected")
-        let completedInvoked = expectation(description: "Completed invoked")
-        let progressInvoked = expectation(description: "progress invoked")
-
-        let operation = Amplify.API.subscribe(
-            request: .subscription(of: Post3.self, type: .onDelete),
-            valueListener: { event in
-                switch event {
+    
+    func testOnDeletePostSubscriptionWithModel() async throws {
+        let connectingInvoked = AsyncExpectation(description: "Connection connecting")
+        let connectedInvoked = AsyncExpectation(description: "Connection established")
+        let progressInvoked = AsyncExpectation(description: "progress invoked")
+        
+        let task = try await Amplify.API.subscribe(request: .subscription(of: Post3.self, type: .onDelete))
+        let subscription = await task.subscription
+        Task {
+            for await subscriptionEvent in subscription {
+                switch subscriptionEvent {
                 case .connection(let state):
                     switch state {
                     case .connecting:
-                        break
+                        await connectingInvoked.fulfill()
                     case .connected:
-                        connectedInvoked.fulfill()
+                        await connectedInvoked.fulfill()
                     case .disconnected:
-                        disconnectedInvoked.fulfill()
+                        break
                     }
                 case .data:
-                    progressInvoked.fulfill()
+                    await progressInvoked.fulfill()
                 }
-        },
-            completionListener: { event in
-                switch event {
-                case .failure(let error):
-                    XCTFail("Unexpected .failed event: \(error)")
-                case .success:
-                    completedInvoked.fulfill()
-                }
-        })
-        XCTAssertNotNil(operation)
-        wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+            }
+        }
+        await waitForExpectations([connectingInvoked, connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
 
-        guard let post = createPost(id: uuid, title: title) else {
+        guard let post = try await createPost(id: uuid, title: title) else {
             XCTFail("Failed to create post")
             return
         }
 
-        guard deletePost(post: post) != nil else {
+        guard try await deletePost(post: post) != nil else {
             XCTFail("Failed to update post")
             return
         }
 
-        wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
-        operation.cancel()
-        wait(for: [disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
-        XCTAssertTrue(operation.isFinished)
+        await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        await task.cancel()
     }
 
-    func testOnCreateCommentSubscriptionWithModel() {
-        let connectedInvoked = expectation(description: "Connection established")
-        let disconnectedInvoked = expectation(description: "Connection disconnected")
-        let completedInvoked = expectation(description: "Completed invoked")
-        let progressInvoked = expectation(description: "progress invoked")
-
-        let operation = Amplify.API.subscribe(
-            request: .subscription(of: Comment3.self, type: .onCreate),
-            valueListener: { event in
-                switch event {
+    func testOnCreateCommentSubscriptionWithModel() async throws {
+        let connectingInvoked = AsyncExpectation(description: "Connection connecting")
+        let connectedInvoked = AsyncExpectation(description: "Connection established")
+        let progressInvoked = AsyncExpectation(description: "progress invoked")
+        let task = try await Amplify.API.subscribe(request: .subscription(of: Comment3.self, type: .onCreate))
+        let subscription = await task.subscription
+        Task {
+            for await subscriptionEvent in subscription {
+                switch subscriptionEvent {
                 case .connection(let state):
                     switch state {
                     case .connecting:
-                        break
+                        await connectingInvoked.fulfill()
                     case .connected:
-                        connectedInvoked.fulfill()
+                        await connectedInvoked.fulfill()
                     case .disconnected:
-                        disconnectedInvoked.fulfill()
+                        break
                     }
                 case .data:
-                    progressInvoked.fulfill()
+                    await progressInvoked.fulfill()
                 }
-        },
-            completionListener: { event in
-                switch event {
-                case .failure(let error):
-                    XCTFail("Unexpected .failed event: \(error)")
-                case .success:
-                    completedInvoked.fulfill()
-                }
-        })
-        XCTAssertNotNil(operation)
-        wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+            }
+        }
+        XCTAssertNotNil(task)
+        await waitForExpectations([connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
 
-        guard let createdPost = createPost(id: uuid, title: title) else {
+        guard let createdPost = try await createPost(id: uuid, title: title) else {
             XCTFail("Failed to create post")
             return
         }
 
-        guard createComment(postID: createdPost.id, content: "content") != nil else {
+        guard try await createComment(postID: createdPost.id, content: "content") != nil else {
             XCTFail("Failed to create comment with post")
             return
         }
 
-        wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
-        operation.cancel()
-        wait(for: [disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
-        XCTAssertTrue(operation.isFinished)
+        await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        await task.cancel()
+
     }
 }

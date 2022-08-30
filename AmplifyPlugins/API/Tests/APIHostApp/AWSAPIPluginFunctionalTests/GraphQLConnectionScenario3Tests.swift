@@ -30,7 +30,7 @@ import XCTest
  */
 class GraphQLConnectionScenario3Tests: XCTestCase {
 
-    override func setUp() {
+    override func setUp() async throws {
         do {
             Amplify.Logging.logLevel = .verbose
             try Amplify.add(plugin: AWSAPIPlugin())
@@ -51,43 +51,32 @@ class GraphQLConnectionScenario3Tests: XCTestCase {
         await Amplify.reset()
     }
 
-    func testQuerySinglePost() {
-        guard let post = createPost(title: "title") else {
+    func testQuerySinglePost() async throws {
+        guard let post = try await createPost(title: "title") else {
             XCTFail("Failed to set up test")
             return
         }
 
-        let requestInvokedSuccessfully = expectation(description: "request completed")
-        _ = Amplify.API.query(request: .get(Post3.self, byId: post.id)) { event in
-            switch event {
-            case .success(let graphQLResponse):
-                guard case let .success(data) = graphQLResponse else {
-                    XCTFail("Missing successful response")
-                    return
-                }
-                guard let resultPost = data else {
-                    XCTFail("Missing post from query")
-                    return
-                }
-
-                XCTAssertEqual(resultPost.id, post.id)
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("Unexpected .failed event: \(error)")
-            }
+        let graphQLResponse = try await Amplify.API.query(request: .get(Post3.self, byId: post.id))
+        guard case let .success(data) = graphQLResponse else {
+            XCTFail("Missing successful response")
+            return
         }
-
-        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
+        guard let resultPost = data else {
+            XCTFail("Missing post from query")
+            return
+        }
+        XCTAssertEqual(resultPost.id, post.id)
     }
 
     // Create a post and a comment for the post
     // Retrieve the comment and ensure that the comment is associated with the correct post
-    func testCreatAndGetComment() {
-        guard let post = createPost(title: "title") else {
+    func testCreatAndGetComment() async throws {
+        guard let post = try await createPost(title: "title") else {
             XCTFail("Could not create post")
             return
         }
-        guard let comment = createComment(postID: post.id, content: "content") else {
+        guard let comment = try await createComment(postID: post.id, content: "content") else {
             XCTFail("Could not create comment")
             return
         }
@@ -119,16 +108,16 @@ class GraphQLConnectionScenario3Tests: XCTestCase {
     // Create another post that will be used to update the existing comment
     // Update the existing comment to point to the other post
     // Expect that the queried comment is associated with the other post
-    func testUpdateComment() {
-        guard let post = createPost(title: "title") else {
+    func testUpdateComment() async throws {
+        guard let post = try await createPost(title: "title") else {
             XCTFail("Could not create post")
             return
         }
-        guard var comment = createComment(postID: post.id, content: "content") else {
+        guard var comment = try await createComment(postID: post.id, content: "content") else {
             XCTFail("Could not create comment")
             return
         }
-        guard let anotherPost = createPost(title: "title") else {
+        guard let anotherPost = try await createPost(title: "title") else {
             XCTFail("Could not create post")
             return
         }
@@ -151,11 +140,11 @@ class GraphQLConnectionScenario3Tests: XCTestCase {
         wait(for: [updateCommentSuccessful], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testUpdateExistingPost() {
+    func testUpdateExistingPost() async throws {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
-        guard var post = createPost(id: uuid, title: title) else {
+        guard var post = try await createPost(id: uuid, title: title) else {
             XCTFail("Failed to ensure at least one Post to be retrieved on the listQuery")
             return
         }
@@ -179,11 +168,11 @@ class GraphQLConnectionScenario3Tests: XCTestCase {
         wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testDeleteExistingPost() {
+    func testDeleteExistingPost() async throws {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
-        guard let post = createPost(id: uuid, title: title) else {
+        guard let post = try await createPost(id: uuid, title: title) else {
             XCTFail("Could not create post")
             return
         }
@@ -228,12 +217,12 @@ class GraphQLConnectionScenario3Tests: XCTestCase {
     // Create a post and then create a comment associated with the post
     // Delete the comment and then query for the comment
     // Expected query should return `nil` comment
-    func testDeleteAndGetComment() {
-        guard let post = createPost(title: "title") else {
+    func testDeleteAndGetComment() async throws {
+        guard let post = try await createPost(title: "title") else {
             XCTFail("Could not create post")
             return
         }
-        guard let comment = createComment(postID: post.id, content: "content") else {
+        guard let comment = try await createComment(postID: post.id, content: "content") else {
             XCTFail("Could not create comment")
             return
         }

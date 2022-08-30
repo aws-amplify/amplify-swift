@@ -140,61 +140,42 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
         }
     }
 
-    func testListProjectsByTeamID() {
-        guard let team = createTeam2(name: "name") else {
+    func testListProjectsByTeamID() async throws {
+        guard let team = try await createTeam2(name: "name") else {
             XCTFail("Could not create team")
             return
         }
-        guard createProject2(teamID: team.id, team: team) != nil else {
+        guard try await createProject2(teamID: team.id, team: team) != nil else {
             XCTFail("Could not create project")
             return
         }
-        let listProjectByTeamIDCompleted = expectation(description: "list projects completed")
         let predicate = Project2.keys.teamID.eq(team.id)
-        Amplify.API.query(request: .list(Project2.self, where: predicate)) { result in
+        let result = try await Amplify.API.query(request: .list(Project2.self, where: predicate))
             switch result {
-            case .success(let result):
-                switch result {
                 case .success(let projects):
                     print(projects)
-                    listProjectByTeamIDCompleted.fulfill()
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
+                case .failure(let graphQLResponse):
+                    XCTFail("Failed with: \(graphQLResponse)")
             }
-        }
-        wait(for: [listProjectByTeamIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
     // Create two projects for the same team, then list the projects by teamID, and expect two projects
     // after exhausting the paginated list via `hasNextPage` and `getNextPage`
     func testPaginatedListProjectsByTeamID() async throws {
-        guard let team = createTeam2(name: "name"),
-              createProject2(teamID: team.id, team: team) != nil,
-              createProject2(teamID: team.id, team: team) != nil else {
+        guard let team = try await createTeam2(name: "name"),
+              try await createProject2(teamID: team.id, team: team) != nil,
+              try await createProject2(teamID: team.id, team: team) != nil else {
             XCTFail("Could not create team and two projects")
             return
         }
-        let listProjectByTeamIDCompleted = expectation(description: "list projects completed")
         var results: List<Project2>?
         let predicate = Project2.keys.teamID.eq(team.id)
-        Amplify.API.query(request: .list(Project2.self, where: predicate, limit: 1)) { result in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .success(let projects):
-                    results = projects
-                    listProjectByTeamIDCompleted.fulfill()
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+        let result = try await Amplify.API.query(request: .list(Project2.self, where: predicate, limit: 1))
+        guard case .success(let projects) = result else {
+            XCTFail("Missing Successful response")
+            return
         }
-        wait(for: [listProjectByTeamIDCompleted], timeout: TestCommonConstants.networkTimeout)
+        results = projects
         guard var subsequentResults = results else {
             XCTFail("Could not get first results")
             return
@@ -208,51 +189,33 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
         }
         XCTAssertEqual(resultsArray.count, 2)
     }
-
-    func createTeam2(id: String = UUID().uuidString, name: String) -> Team2? {
+    
+    func createTeam2(id: String = UUID().uuidString, name: String) async throws ->  Team2? {
         let team = Team2(id: id, name: name)
         var result: Team2?
-        let requestInvokedSuccessfully = expectation(description: "request completed")
-        Amplify.API.mutate(request: .create(team)) { event in
+        let event = try await Amplify.API.mutate(request: .create(team))
             switch event {
-            case .success(let data):
-                switch data {
                 case .success(let team):
                     result = team
                 default:
                     XCTFail("Could not get data back")
                 }
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("Failed \(error)")
-            }
-        }
-        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 
     func createProject2(id: String = UUID().uuidString,
                         name: String? = nil,
                         teamID: String,
-                        team: Team2? = nil) -> Project2? {
+                        team: Team2? = nil) async throws -> Project2? {
         let project = Project2(id: id, name: name, teamID: teamID, team: team)
         var result: Project2?
-        let requestInvokedSuccessfully = expectation(description: "request completed")
-        Amplify.API.mutate(request: .create(project)) { event in
+        let event = try await Amplify.API.mutate(request: .create(project))
             switch event {
-            case .success(let data):
-                switch data {
-                case .success(let project):
+            case .success(let project):
                     result = project
-                default:
-                    XCTFail("Could not get data back")
+            case .failure(let graphQLResponseError):
+                    XCTFail("Failed with error: \(graphQLResponseError)")
                 }
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("Failed \(error)")
-            }
-        }
-        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 }

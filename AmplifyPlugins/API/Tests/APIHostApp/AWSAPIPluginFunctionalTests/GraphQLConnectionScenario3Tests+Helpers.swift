@@ -11,90 +11,54 @@ import XCTest
 @testable import APIHostApp
 
 extension GraphQLConnectionScenario3Tests {
-
-    func createPost(id: String = UUID().uuidString, title: String) -> Post3? {
+    
+    func createPost(id: String = UUID().uuidString, title: String) async throws -> Post3? {
         let post = Post3(id: id, title: title)
         var result: Post3?
-        let requestInvokedSuccessfully = expectation(description: "request completed")
-        Amplify.API.mutate(request: .create(post)) { event in
+        let event = try await Amplify.API.mutate(request: .create(post))
             switch event {
-            case .success(let data):
-                switch data {
                 case .success(let post):
                     result = post
-                default:
-                    XCTFail("Could not get data back")
+                case .failure(let graphQLResponseError):
+                    XCTFail("Failed with error: \(graphQLResponseError)")
                 }
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("Failed \(error)")
-            }
-        }
-        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 
-    func createComment(id: String = UUID().uuidString, postID: String, content: String) -> Comment3? {
+    func createComment(id: String = UUID().uuidString, postID: String, content: String) async throws -> Comment3? {
         let comment = Comment3(id: id, postID: postID, content: content)
         var result: Comment3?
-        let requestInvokedSuccessfully = expectation(description: "request completed")
-        Amplify.API.mutate(request: .create(comment)) { event in
+        let event = try await Amplify.API.mutate(request: .create(comment))
             switch event {
-            case .success(let data):
-                switch data {
                 case .success(let comment):
                     result = comment
-                default:
-                    XCTFail("Could not get data back")
+                case .failure(let graphQLResponseError):
+                XCTFail("Failed with error: \(graphQLResponseError)")
                 }
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("Failed \(error)")
-            }
-        }
-        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 
-    func mutatePost(post: Post3) -> Post3? {
+    func mutatePost(post: Post3) async throws -> Post3? {
         var result: Post3?
-        let requestInvokedSuccessfully = expectation(description: "request completed")
-        _ = Amplify.API.mutate(request: .update(post)) { event in
+        let event = try await Amplify.API.mutate(request: .update(post))
             switch event {
-            case .success(let data):
-                switch data {
-                case .success(let post):
-                    result = post
-                default:
-                    XCTFail("Could not get data back")
-                }
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("Failed \(error)")
+            case .success(let post):
+                result = post
+            case .failure(let graphQLResponseError):
+                XCTFail("Failed with error: \(graphQLResponseError)")
             }
-        }
-        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 
-    func deletePost(post: Post3) -> Post3? {
+    func deletePost(post: Post3) async throws -> Post3? {
         var result: Post3?
-        let requestInvokedSuccessfully = expectation(description: "request completed")
-        _ = Amplify.API.mutate(request: .delete(post)) { event in
+        let event = try await Amplify.API.mutate(request: .delete(post))
             switch event {
-            case .success(let data):
-                switch data {
-                case .success(let post):
-                    result = post
-                default:
-                    XCTFail("Could not get data back")
-                }
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("Failed \(error)")
+            case .success(let post):
+                result = post
+            case .failure(let graphQLResponseError):
+                XCTFail("Failed with error: \(graphQLResponseError)")
             }
-        }
-        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
         return result
     }
 }
