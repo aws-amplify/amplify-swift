@@ -18,6 +18,10 @@ public protocol Model: Codable {
     /// A reference to the `ModelSchema` associated with this model.
     static var schema: ModelSchema { get }
 
+    /// The reference to the root path. It might be `nil` if models do not support
+    /// property references.
+    static var rootPath: PropertyContainerPath? { get }
+
     /// The name of the model, as registered in `ModelRegistry`.
     static var modelName: String { get }
 
@@ -70,4 +74,8 @@ extension Model {
             return ModelIdentifier<Self, ModelIdentifierFormat.Custom>(fields: fields)
         }
     }
+
+    /// The `rootPath` is set to `nil` by default. Specific models should override this
+    /// behavior and provide the proper path reference when available.
+    public static var rootPath: PropertyContainerPath? { nil }
 }
