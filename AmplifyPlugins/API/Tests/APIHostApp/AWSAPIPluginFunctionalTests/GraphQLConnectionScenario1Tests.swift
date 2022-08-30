@@ -72,29 +72,23 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
     }
     
     func testUpdateProjectWithAnotherTeam() async throws {
-        guard let team = try await createTeam(name: "name") else {
+        guard let team = try await createTeam(name: "name"),
+              var project = try await createProject(team: team) else {
             XCTFail("Could not create a Team")
             return
         }
-        let project = Project1(team: team)
-        let createdProjectResult = try await Amplify.API.mutate(request: .create(project))
-        switch createdProjectResult {
-        case .success(var createdProject):
-            let anotherTeam = Team1(name: "name")
-            guard case .success(let createdAnotherTeam) = try await Amplify.API.mutate(request: .create(anotherTeam)) else {
-                XCTFail("Failed to create another team")
-                return
-            }
-            createdProject.team = createdAnotherTeam
-            
-            guard case .success(let updatedProject) = try await Amplify.API.mutate(request: .update(createdProject)) else {
-                XCTFail("Failed to update project to another team")
-                return
-            }
-            XCTAssertEqual(updatedProject.team, anotherTeam)
-        case .failure(let response):
-            XCTFail("Failed with: \(response)")
+        let anotherTeam = Team1(name: "name")
+        guard case .success(let createdAnotherTeam) = try await Amplify.API.mutate(request: .create(anotherTeam)) else {
+            XCTFail("Failed to create another team")
+            return
         }
+        project.team = createdAnotherTeam
+
+        guard case .success(let updatedProject) = try await Amplify.API.mutate(request: .update(project)) else {
+            XCTFail("Failed to update project to another team")
+            return
+        }
+        XCTAssertEqual(updatedProject.team, anotherTeam)
     }
     
     func testDeleteAndGetProject() async throws {
