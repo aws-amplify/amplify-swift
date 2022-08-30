@@ -36,7 +36,7 @@ class GraphQLScalarTests: GraphQLTestBase {
         await Amplify.reset()
     }
 
-    func testScalarContainer() throws {
+    func testScalarContainer() async throws {
         let container = ScalarContainer(myString: "myString",
                                         myInt: 1,
                                         myDouble: 1.0,
@@ -52,40 +52,27 @@ class GraphQLScalarTests: GraphQLTestBase {
                                         myIPAddress: "123.12.34.56")
         let updatedContainer = ScalarContainer(id: container.id)
 
-        guard case .success(let createdModel) = mutateModel(request: .create(container)) else {
-            XCTFail("Failed to create model")
-            return
-        }
+        let createdModel = try await mutateModel(request: .create(container))
         XCTAssertEqual(createdModel, container)
 
-        guard case .success(let updatedModel) = mutateModel(request: .update(updatedContainer)) else {
-            XCTFail("Failed to update model")
-            return
-        }
+        let updatedModel = try await mutateModel(request: .update(updatedContainer))
         XCTAssertEqual(updatedModel, updatedContainer)
 
-        guard case .success(let queriedModel) =
-                queryModel(request: .get(ScalarContainer.self, byId: container.id)) else {
+        guard let queriedModel =
+                try await queryModel(request: .get(ScalarContainer.self, byId: container.id)) else {
             XCTFail("Failed to query model")
             return
         }
         XCTAssertEqual(queriedModel, updatedContainer)
 
-        guard case .success(let deletedModel) = mutateModel(request: .delete(updatedContainer)) else {
-            XCTFail("Failed to delete model")
-            return
-        }
+        let deletedModel = try await mutateModel(request: .delete(updatedContainer))
         XCTAssertEqual(deletedModel, updatedContainer)
 
-        guard case .success(let emptyModel) =
-                queryModel(request: .get(ScalarContainer.self, byId: container.id)) else {
-            XCTFail("Failed to query deleted model")
-            return
-        }
+        let emptyModel = try await queryModel(request: .get(ScalarContainer.self, byId: container.id))
         XCTAssertNil(emptyModel)
     }
 
-    func testListIntContainer() throws {
+    func testListIntContainer() async throws {
         let container = ListIntContainer(
             test: 1,
             nullableInt: 1,
@@ -102,40 +89,26 @@ class GraphQLScalarTests: GraphQLTestBase {
                                                 nullableIntList: [1, 2, 3],
                                                 nullableIntNullableList: [1, 2, 3])
 
-        guard case .success(let createdModel) = mutateModel(request: .create(container)) else {
-            XCTFail("Failed to create model")
-            return
-        }
+        let createdModel = try await mutateModel(request: .create(container))
         XCTAssertEqual(createdModel, container)
 
-        guard case .success(let updatedModel) = mutateModel(request: .update(updatedContainer)) else {
-            XCTFail("Failed to update model")
-            return
-        }
+        let updatedModel = try await mutateModel(request: .update(updatedContainer))
         XCTAssertEqual(updatedModel, updatedContainer)
 
-        guard case .success(let queriedModel) =
-                queryModel(request: .get(ListIntContainer.self, byId: container.id)) else {
+        guard let queriedModel = try await queryModel(request: .get(ListIntContainer.self, byId: container.id)) else {
             XCTFail("Failed to query model")
             return
         }
         XCTAssertEqual(queriedModel, updatedContainer)
 
-        guard case .success(let deletedModel) = mutateModel(request: .delete(updatedContainer)) else {
-            XCTFail("Failed to delete model")
-            return
-        }
+        let deletedModel = try await mutateModel(request: .delete(updatedContainer))
         XCTAssertEqual(deletedModel, updatedContainer)
 
-        guard case .success(let emptyModel) =
-                queryModel(request: .get(ListIntContainer.self, byId: container.id)) else {
-            XCTFail("Failed to query deleted model")
-            return
-        }
+        let emptyModel = try await queryModel(request: .get(ListIntContainer.self, byId: container.id))
         XCTAssertNil(emptyModel)
     }
 
-    func testListStringContainer() throws {
+    func testListStringContainer() async throws {
         let container = ListStringContainer(
             test: "test",
             nullableString: nil,
@@ -151,40 +124,27 @@ class GraphQLScalarTests: GraphQLTestBase {
                                                    stringNullableList: ["value1"],
                                                    nullableStringList: ["value1"],
                                                    nullableStringNullableList: ["value1"])
-        guard case .success(let createdModel) = mutateModel(request: .create(container)) else {
-            XCTFail("Failed to create model")
-            return
-        }
+        let createdModel = try await mutateModel(request: .create(container))
         XCTAssertEqual(createdModel, container)
 
-        guard case .success(let updatedModel) = mutateModel(request: .update(updatedContainer)) else {
-            XCTFail("Failed to update model")
-            return
-        }
+        let updatedModel = try await mutateModel(request: .update(updatedContainer))
         XCTAssertEqual(updatedModel, updatedContainer)
 
-        guard case .success(let queriedModel) =
-                queryModel(request: .get(ListStringContainer.self, byId: container.id)) else {
+        guard let queriedModel = try await queryModel(request: .get(ListStringContainer.self,
+                                                                    byId: container.id)) else {
             XCTFail("Failed to query model")
             return
         }
         XCTAssertEqual(queriedModel, updatedContainer)
 
-        guard case .success(let deletedModel) = mutateModel(request: .delete(updatedContainer)) else {
-            XCTFail("Failed to delete model")
-            return
-        }
+        let deletedModel = try await mutateModel(request: .delete(updatedContainer))
         XCTAssertEqual(deletedModel, updatedContainer)
 
-        guard case .success(let emptyModel) =
-                queryModel(request: .get(ListStringContainer.self, byId: container.id)) else {
-            XCTFail("Failed to query deleted model")
-            return
-        }
+        let emptyModel = try await queryModel(request: .get(ListStringContainer.self, byId: container.id))
         XCTAssertNil(emptyModel)
     }
 
-    func testListContainerWithNil() {
+    func testListContainerWithNil() async throws {
         let container = ListStringContainer(
             test: "test",
             nullableString: nil,
@@ -200,40 +160,27 @@ class GraphQLScalarTests: GraphQLTestBase {
                                                    stringNullableList: ["value1"],
                                                    nullableStringList: ["value1"],
                                                    nullableStringNullableList: ["value1"])
-        guard case .success(let createdModel) = mutateModel(request: .create(container)) else {
-            XCTFail("Failed to create model")
-            return
-        }
+        let createdModel = try await mutateModel(request: .create(container))
         XCTAssertEqual(createdModel, container)
 
-        guard case .success(let updatedModel) = mutateModel(request: .update(updatedContainer)) else {
-            XCTFail("Failed to update model")
-            return
-        }
+        let updatedModel = try await mutateModel(request: .update(updatedContainer))
         XCTAssertEqual(updatedModel, updatedContainer)
 
-        guard case .success(let queriedModel) =
-                queryModel(request: .get(ListStringContainer.self, byId: container.id)) else {
+        guard let queriedModel = try await queryModel(request: .get(ListStringContainer.self,
+                                                                    byId: container.id)) else {
             XCTFail("Failed to query model")
             return
         }
         XCTAssertEqual(queriedModel, updatedContainer)
 
-        guard case .success(let deletedModel) = mutateModel(request: .delete(updatedContainer)) else {
-            XCTFail("Failed to delete model")
-            return
-        }
+        let deletedModel = try await mutateModel(request: .delete(updatedContainer))
         XCTAssertEqual(deletedModel, updatedContainer)
 
-        guard case .success(let emptyModel) =
-                queryModel(request: .get(ListStringContainer.self, byId: container.id)) else {
-            XCTFail("Failed to query deleted model")
-            return
-        }
+        let emptyModel = try await queryModel(request: .get(ListStringContainer.self, byId: container.id))
         XCTAssertNil(emptyModel)
     }
 
-    func testEnumTestModel() throws {
+    func testEnumTestModel() async throws {
         let container = EnumTestModel(enumVal: .valueOne,
                                       nullableEnumVal: .valueTwo,
                                       enumList: [.valueOne],
@@ -247,40 +194,26 @@ class GraphQLScalarTests: GraphQLTestBase {
                                              enumNullableList: [.valueTwo, .valueOne],
                                              nullableEnumList: [.valueTwo, .valueOne],
                                              nullableEnumNullableList: [.valueOne, .valueTwo])
-        guard case .success(let createdModel) = mutateModel(request: .create(container)) else {
-            XCTFail("Failed to create model")
-            return
-        }
+        let createdModel = try await mutateModel(request: .create(container))
         XCTAssertEqual(createdModel, container)
 
-        guard case .success(let updatedModel) = mutateModel(request: .update(updatedContainer)) else {
-            XCTFail("Failed to update model")
-            return
-        }
+        let updatedModel = try await mutateModel(request: .update(updatedContainer))
         XCTAssertEqual(updatedModel, updatedContainer)
 
-        guard case .success(let queriedModel) =
-                queryModel(request: .get(EnumTestModel.self, byId: container.id)) else {
+        guard let queriedModel = try await queryModel(request: .get(EnumTestModel.self, byId: container.id)) else {
             XCTFail("Failed to query model")
             return
         }
         XCTAssertEqual(queriedModel, updatedContainer)
 
-        guard case .success(let deletedModel) = mutateModel(request: .delete(updatedContainer)) else {
-            XCTFail("Failed to delete model")
-            return
-        }
+        let deletedModel = try await mutateModel(request: .delete(updatedContainer))
         XCTAssertEqual(deletedModel, updatedContainer)
 
-        guard case .success(let emptyModel) =
-                queryModel(request: .get(EnumTestModel.self, byId: container.id)) else {
-            XCTFail("Failed to query deleted model")
-            return
-        }
+        let emptyModel = try await queryModel(request: .get(EnumTestModel.self, byId: container.id))
         XCTAssertNil(emptyModel)
     }
 
-    func testNestedEnumTestModel() throws {
+    func testNestedEnumTestModel() async throws {
         let container = NestedTypeTestModel(nestedVal: .init(valueOne: 1),
                                             nullableNestedVal: .init(),
                                             nestedList: [.init(valueTwo: "value2")],
@@ -296,36 +229,23 @@ class GraphQLScalarTests: GraphQLTestBase {
                                                    nullableNestedList: [],
                                                    nullableNestedNullableList: nil)
 
-        guard case .success(let createdModel) = mutateModel(request: .create(container)) else {
-            XCTFail("Failed to create model")
-            return
-        }
+        let createdModel = try await mutateModel(request: .create(container))
         XCTAssertEqual(createdModel, container)
 
-        guard case .success(let updatedModel) = mutateModel(request: .update(updatedContainer)) else {
-            XCTFail("Failed to update model")
-            return
-        }
+        let updatedModel = try await mutateModel(request: .update(updatedContainer))
         XCTAssertEqual(updatedModel, updatedContainer)
 
-        guard case .success(let queriedModel) =
-                queryModel(request: .get(NestedTypeTestModel.self, byId: container.id)) else {
+        guard let queriedModel = try await queryModel(request: .get(NestedTypeTestModel.self,
+                                                                    byId: container.id)) else {
             XCTFail("Failed to query model")
             return
         }
         XCTAssertEqual(queriedModel, updatedContainer)
 
-        guard case .success(let deletedModel) = mutateModel(request: .delete(updatedContainer)) else {
-            XCTFail("Failed to delete model")
-            return
-        }
+        let deletedModel = try await mutateModel(request: .delete(updatedContainer))
         XCTAssertEqual(deletedModel, updatedContainer)
 
-        guard case .success(let emptyModel) =
-                queryModel(request: .get(NestedTypeTestModel.self, byId: container.id)) else {
-            XCTFail("Failed to query deleted model")
-            return
-        }
+        let emptyModel = try await queryModel(request: .get(NestedTypeTestModel.self, byId: container.id))
         XCTAssertNil(emptyModel)
     }
 }
