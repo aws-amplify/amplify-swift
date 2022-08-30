@@ -60,11 +60,11 @@ class GraphQLConnectionScenario6Tests: XCTestCase {
     }
 
     func testGetBlogThenFetchPostsThenFetchComments() async throws {
-        guard let blog = createBlog(name: "name"),
-              let post1 = createPost(title: "title", blog: blog),
-              let post2 = createPost(title: "title", blog: blog),
-              let comment1post1 = createComment(post: post1, content: "content"),
-              let comment2post1 = createComment(post: post1, content: "content") else {
+        guard let blog = try await createBlog(name: "name"),
+              let post1 = try await createPost(title: "title", blog: blog),
+              let post2 = try await createPost(title: "title", blog: blog),
+              let comment1post1 = try await createComment(post: post1, content: "content"),
+              let comment2post1 = try await createComment(post: post1, content: "content") else {
             XCTFail("Could not create blog, posts, and comments")
             return
         }
@@ -129,69 +129,36 @@ class GraphQLConnectionScenario6Tests: XCTestCase {
         return list.elements
     }
 
-    func createBlog(id: String = UUID().uuidString, name: String) -> Blog6? {
+    func createBlog(id: String = UUID().uuidString, name: String) async throws -> Blog6? {
         let blog = Blog6(id: id, name: name)
-        var result: Blog6?
-        let requestInvokedSuccessfully = expectation(description: "request completed")
-        Amplify.API.mutate(request: .create(blog)) { event in
-            switch event {
-            case .success(let data):
-                switch data {
-                case .success(let post):
-                    result = post
-                default:
-                    XCTFail("Could not get data back")
-                }
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("Failed \(error)")
-            }
+        let data = try await Amplify.API.mutate(request: .create(blog))
+        switch data {
+        case .success(let post):
+            return post
+        case .failure(let error):
+            throw error
         }
-        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
-        return result
     }
 
-    func createPost(id: String = UUID().uuidString, title: String, blog: Blog6) -> Post6? {
+    func createPost(id: String = UUID().uuidString, title: String, blog: Blog6) async throws -> Post6? {
         let post = Post6(id: id, title: title, blog: blog)
-        var result: Post6?
-        let requestInvokedSuccessfully = expectation(description: "request completed")
-        Amplify.API.mutate(request: .create(post)) { event in
-            switch event {
-            case .success(let data):
-                switch data {
-                case .success(let post):
-                    result = post
-                default:
-                    XCTFail("Could not get data back")
-                }
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("Failed \(error)")
-            }
+        let data = try await Amplify.API.mutate(request: .create(post))
+        switch data {
+        case .success(let post):
+            return post
+        case .failure(let error):
+            throw error
         }
-        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
-        return result
     }
 
-    func createComment(id: String = UUID().uuidString, post: Post6, content: String) -> Comment6? {
+    func createComment(id: String = UUID().uuidString, post: Post6, content: String) async throws -> Comment6? {
         let comment = Comment6(id: id, post: post, content: content)
-        var result: Comment6?
-        let requestInvokedSuccessfully = expectation(description: "request completed")
-        Amplify.API.mutate(request: .create(comment)) { event in
-            switch event {
-            case .success(let data):
-                switch data {
-                case .success(let comment):
-                    result = comment
-                default:
-                    XCTFail("Could not get data back")
-                }
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("Failed \(error)")
-            }
+        let data = try await Amplify.API.mutate(request: .create(comment))
+        switch data {
+        case .success(let comment):
+            return comment
+        case .failure(let error):
+            throw error
         }
-        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
-        return result
     }
 }

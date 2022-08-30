@@ -100,7 +100,6 @@ class GraphQLConnectionScenario5Tests: XCTestCase {
             XCTFail("Could not create user")
             return
         }
-        let listPostEditorByEditorIdCompleted = expectation(description: "list postEditor by editorID complete")
         let predicateByUserId = PostEditor5.keys.editor.eq(user.id)
         let result = try await Amplify.API.query(request: .list(PostEditor5.self, where: predicateByUserId))
         switch result {
