@@ -43,5 +43,20 @@ extension Post {
       .field(post.status, is: .optional, ofType: .enum(type: PostStatus.self)),
       .hasMany(post.comments, is: .optional, ofType: Comment.self, associatedWith: Comment.keys.post)
     )
-    }
+  }
+
+  public class Path : ModelPath<Post> {}
+
+  public static var rootPath: PropertyContainerPath? { Path() }
+
+}
+
+extension ModelPath where ModelType == Post {
+    var id: FieldPath<String> { id() }
+    var title: FieldPath<String> { string("title") }
+    var content: FieldPath<String> { string("content") }
+    var createdAt: FieldPath<Temporal.DateTime> { datetime("createdAt") }
+    var updatedAt: FieldPath<Temporal.DateTime> { datetime("updatedAt") }
+    var draft: FieldPath<Bool> { bool("draft") }
+    var comments: ModelPath<Comment> { Comment.Path(name: "comments", isCollection: true, parent: self) }
 }
