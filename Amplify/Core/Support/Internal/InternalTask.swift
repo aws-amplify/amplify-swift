@@ -81,14 +81,27 @@ public protocol InternalTaskAsyncThrowingSequence: AnyObject {
 
 public protocol InternalTaskChannel {
     associatedtype InProcess: Sendable
+
+    /// Sends element to sequence
+    /// - Parameter element: element
     func send(_ element: InProcess)
+
+    /// Terminates sequence
     func finish()
 }
 
 public protocol InternalTaskThrowingChannel {
     associatedtype InProcess: Sendable
+
+    /// Sends element to sequence
+    /// - Parameter element: element
     func send(_ element: InProcess)
+
+    /// Fails sequence
+    /// - Parameter error: error
     func fail(_ error: Error)
+
+    /// Terminates sequence
     func finish()
 }
 
@@ -97,6 +110,8 @@ public protocol InternalTaskThrowingChannel {
 public protocol InternalTaskRunner: AnyObject, AmplifyCancellable {
     associatedtype Request: AmplifyOperationRequest
     var request: Request { get }
+
+    /// Run task
     func run() async throws
 }
 
@@ -124,8 +139,17 @@ public protocol InternalTaskHubResult {
     typealias OperationResult = Result<Success, Failure>
     typealias ResultListener = (OperationResult) -> Void
 
+    /// Subscribe for result
+    /// - Parameter resultListener: result listener
+    /// - Returns: unsubscribe token
     func subscribe(resultListener: @escaping ResultListener) -> UnsubscribeToken
+
+    /// Unsubscribe from Hub channel
+    /// - Parameter token: unsubscribe token
     func unsubscribe(_ token: UnsubscribeToken)
+
+    /// Dispatch result to Hub channel
+    /// - Parameter result: result
     func dispatch(result: OperationResult)
 }
 
@@ -135,7 +159,16 @@ public protocol InternalTaskHubInProcess {
 
     typealias InProcessListener = (InProcess) -> Void
 
+    /// Subscribe for result
+    /// - Parameter resultListener: result listener
+    /// - Returns: unsubscribe token
     func subscribe(inProcessListener: @escaping InProcessListener) -> UnsubscribeToken
+
+    /// Unsubscribe from Hub channel
+    /// - Parameter token: unsubscribe token
     func unsubscribe(_ token: UnsubscribeToken)
+
+    /// Dispatch value to sequence
+    /// - Parameter inProcess: InProcess value
     func dispatch(inProcess: InProcess)
 }
