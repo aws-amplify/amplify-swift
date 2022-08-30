@@ -24,7 +24,6 @@ extension APICategory: APICategoryGraphQLBehavior {
                                      listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R> {
         plugin.mutate(request: request, listener: listener)
     }
-    
     public func mutate<R: Decodable>(request: GraphQLRequest<R>) async throws -> GraphQLTask<R>.Success {
         try await plugin.mutate(request: request)
     }

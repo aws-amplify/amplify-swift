@@ -28,24 +28,24 @@ class GraphQLMutateCombineTests: OperationTestBase {
         let receivedFailure = expectation(description: "Received failed")
         receivedFailure.isInverted = true
 
-        let sink = apiPlugin.mutate(request: request)
-            .resultPublisher
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .failure:
-                    receivedFailure.fulfill()
-                case .finished:
-                    receivedFinish.fulfill()
-                }
-            }, receiveValue: { mutateResult in
-                switch mutateResult {
-                case .success(let jsonValue):
-                    XCTAssertEqual(jsonValue, testJSONData)
-                    receivedValue.fulfill()
-                case .failure:
-                    receivedResponseError.fulfill()
-                }
-            })
+        let sink = Amplify.Publisher.create {
+            try await self.apiPlugin.mutate(request: request)
+        }.sink(receiveCompletion: { completion in
+            switch completion {
+            case .failure:
+                receivedFailure.fulfill()
+            case .finished:
+                receivedFinish.fulfill()
+            }
+        }, receiveValue: { mutateResult in
+            switch mutateResult {
+            case .success(let jsonValue):
+                XCTAssertEqual(jsonValue, testJSONData)
+                receivedValue.fulfill()
+            case .failure:
+                receivedResponseError.fulfill()
+            }
+        })
 
         waitForExpectations(timeout: 0.05)
         sink.cancel()
@@ -64,23 +64,23 @@ class GraphQLMutateCombineTests: OperationTestBase {
         let receivedFailure = expectation(description: "Received failed")
         receivedFailure.isInverted = true
 
-        let sink = apiPlugin.mutate(request: request)
-            .resultPublisher
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .failure:
-                    receivedFailure.fulfill()
-                case .finished:
-                    receivedFinish.fulfill()
-                }
-            }, receiveValue: { mutateResult in
-                switch mutateResult {
-                case .success:
-                    receivedValue.fulfill()
-                case .failure:
-                    receivedResponseError.fulfill()
-                }
-            })
+        let sink = Amplify.Publisher.create {
+            try await self.apiPlugin.mutate(request: request)
+        }.sink(receiveCompletion: { completion in
+            switch completion {
+            case .failure:
+                receivedFailure.fulfill()
+            case .finished:
+                receivedFinish.fulfill()
+            }
+        }, receiveValue: { mutateResult in
+            switch mutateResult {
+            case .success:
+                receivedValue.fulfill()
+            case .failure:
+                receivedResponseError.fulfill()
+            }
+        })
 
         waitForExpectations(timeout: 0.05)
         sink.cancel()
@@ -99,55 +99,26 @@ class GraphQLMutateCombineTests: OperationTestBase {
         let receivedFinish = expectation(description: "Received finished")
         receivedFinish.isInverted = true
         let receivedFailure = expectation(description: "Received failed")
-
-        let sink = apiPlugin.mutate(request: request)
-            .resultPublisher
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .failure:
-                    receivedFailure.fulfill()
-                case .finished:
-                    receivedFinish.fulfill()
-                }
-            }, receiveValue: { mutateResult in
-                switch mutateResult {
-                case .success:
-                    receivedValue.fulfill()
-                case .failure:
-                    receivedResponseError.fulfill()
-                }
-            })
-
-        waitForExpectations(timeout: 0.05)
-        sink.cancel()
-    }
-
-    func testMutateCancels() throws {
-        let sentData = #"{"data": {"foo": true}}"# .data(using: .utf8)!
-        try setUpPluginForSingleResponse(sending: sentData, for: .graphQL)
-
-        let request = GraphQLRequest(document: testDocument, variables: nil, responseType: JSONValue.self)
-
-        let receivedFinish = expectation(description: "Received finished")
-        let receivedFailure = expectation(description: "Received failed")
-        receivedFailure.isInverted = true
-
-        let operation = apiPlugin.mutate(request: request)
-        let sink = operation
-            .resultPublisher
-            .sink(receiveCompletion: { completion in
-                switch completion {
-                case .failure:
-                    receivedFailure.fulfill()
-                case .finished:
-                    receivedFinish.fulfill()
-                }
-            }, receiveValue: { _ in })
-
-        operation.cancel()
+        
+        let sink = Amplify.Publisher.create {
+            try await self.apiPlugin.mutate(request: request)
+        }.sink(receiveCompletion: { completion in
+            switch completion {
+            case .failure:
+                receivedFailure.fulfill()
+            case .finished:
+                receivedFinish.fulfill()
+            }
+        }, receiveValue: { mutateResult in
+            switch mutateResult {
+            case .success:
+                receivedValue.fulfill()
+            case .failure:
+                receivedResponseError.fulfill()
+            }
+        })
 
         waitForExpectations(timeout: 0.05)
         sink.cancel()
     }
-
 }
