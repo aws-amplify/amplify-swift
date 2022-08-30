@@ -45,20 +45,32 @@ class AWSHTTPURLResponseTests: XCTestCase {
             XCTFail("Failed to initialize `AWSHTTPURLResponse`")
             return
         }
-        let data = NSKeyedArchiver.archivedData(withRootObject: response)
-        XCTAssertNotNil(data)
-        guard let unarchivedResponse = NSKeyedUnarchiver.unarchiveObject(with: data) as? AWSHTTPURLResponse else {
-            XCTFail("Failed to unarchive `AWSHTTPURLResponse` data")
+        let data : Data
+        do {
+            data = try NSKeyedArchiver.archivedData(withRootObject: response, requiringSecureCoding: false)
+            XCTAssertNotNil(data)
+        } catch (let error) {
+            XCTFail("Failed to archive data : \(error)")
             return
         }
-        XCTAssertNotNil(unarchivedResponse)
-        XCTAssertNotNil(unarchivedResponse.body)
-        XCTAssertNotNil(unarchivedResponse.url)
-        XCTAssertNil(unarchivedResponse.mimeType)
-        XCTAssertEqual(unarchivedResponse.expectedContentLength, -1)
-        XCTAssertNil(unarchivedResponse.textEncodingName)
-        XCTAssertNotNil(unarchivedResponse.suggestedFilename)
-        XCTAssertEqual(unarchivedResponse.statusCode, 200)
-        XCTAssertEqual(unarchivedResponse.allHeaderFields.count, 2)
+        
+        do {
+            guard let unarchivedResponse = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? AWSHTTPURLResponse else {
+                XCTFail("Failure while unarchiving")
+                return
+            }
+            XCTAssertNotNil(unarchivedResponse)
+            XCTAssertNotNil(unarchivedResponse.body)
+            XCTAssertNotNil(unarchivedResponse.url)
+            XCTAssertNil(unarchivedResponse.mimeType)
+            XCTAssertEqual(unarchivedResponse.expectedContentLength, -1)
+            XCTAssertNil(unarchivedResponse.textEncodingName)
+            XCTAssertNotNil(unarchivedResponse.suggestedFilename)
+            XCTAssertEqual(unarchivedResponse.statusCode, 200)
+            XCTAssertEqual(unarchivedResponse.allHeaderFields.count, 2)
+        } catch (let error) {
+            XCTFail("Failed to unarchive `AWSHTTPURLResponse` data \(error)")
+            return
+        }
     }
 }

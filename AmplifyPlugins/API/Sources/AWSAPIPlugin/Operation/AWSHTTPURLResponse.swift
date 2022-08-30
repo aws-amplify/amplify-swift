@@ -49,6 +49,10 @@ public class AWSHTTPURLResponse: HTTPURLResponse {
         super.init(coder: coder)
     }
 
+    public override class var supportsSecureCoding: Bool {
+        return true
+    }
+    
     public override func encode(with coder: NSCoder) {
         coder.encode(body, forKey: "body")
         coder.encode(response, forKey: "response")
