@@ -34,4 +34,7 @@ class StateAsyncSequence<Element: Sendable>: AsyncSequence {
         continuation.finish()
     }
 
+    deinit {
+        print("deinit!!!")
+    }
 }

@@ -59,8 +59,8 @@ actor StateMachine<
     func listen() -> StateChangeSequence {
         let sequence = StateAsyncSequence<StateType>()
         let currentState = self.currentState
-        let wrappedToken = WeakWrapper(sequence)
-        subscribers.append(wrappedToken)
+        let wrappedSequence = WeakWrapper(sequence)
+        subscribers.append(wrappedSequence)
         sequence.send(currentState)
         return sequence
     }
@@ -97,9 +97,8 @@ extension StateMachine: EventDispatcher {
         execute(resolution.actions)
     }
 
-    /// Must be invoked on operationQueue
     /// - Parameters:
-    ///   - subscriberElement: a dictionary element containing the subscriber token and listener
+    ///   - subscriberElement: A weak wrapped async sequence
     ///   - newState: The new state to be sent
     /// - Returns: true if the subscriber was notified, false if the wrapper reference was nil or a cancellation was pending
     private func notify(
