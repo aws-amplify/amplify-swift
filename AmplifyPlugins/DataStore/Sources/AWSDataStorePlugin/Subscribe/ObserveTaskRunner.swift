@@ -24,7 +24,7 @@ class ObserveTaskRunner: InternalTaskRunner, InternalTaskAsyncThrowingSequence, 
 
     var publisher: AnyPublisher<MutationEvent, DataStoreError>
     var sink: AnyCancellable?
-    var context = InternalTaskAsyncThrowingSequenceContext<MutationEvent>()
+    var context = InternalTaskAsyncThrowingSequenceContext<InProcess>()
     
     private var running = false
     
