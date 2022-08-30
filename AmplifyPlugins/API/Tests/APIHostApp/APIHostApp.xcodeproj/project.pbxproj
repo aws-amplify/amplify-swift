@@ -618,6 +618,7 @@
 			isa = PBXGroup;
 			children = (
 				39E0F2AC28A441B100939D9F /* TestConfigHelper.swift */,
+				219253B928BEC25600820737 /* AsyncExpectation.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -1164,6 +1165,7 @@
 				39E0F2AA28A440A700939D9F /* GraphQLWithUserPoolIntegrationTests.swift in Sources */,
 				39E0F2AF28A4425C00939D9F /* Todo.swift in Sources */,
 				39E0F2AD28A441B100939D9F /* TestConfigHelper.swift in Sources */,
+				219253BA28BEC25600820737 /* AsyncExpectation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
