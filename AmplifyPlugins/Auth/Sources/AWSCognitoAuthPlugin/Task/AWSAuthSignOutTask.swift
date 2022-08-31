@@ -25,6 +25,7 @@ class AWSAuthSignOutTask: AuthSignOutTask {
 
     func execute() async throws {
         do {
+            await didConfigure()
             try await doSignOut()
             cancelToken()
         } catch {
@@ -33,7 +34,7 @@ class AWSAuthSignOutTask: AuthSignOutTask {
         }
     }
 
-    func doSignOut() async throws {
+    private func doSignOut() async throws {
         try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
             stateMachineToken = authStateMachine.listen {[weak self] in
                 guard let self = self else { return }
@@ -59,6 +60,16 @@ class AWSAuthSignOutTask: AuthSignOutTask {
                 }
                 self.sendSignOutEvent()
             }
+        }
+    }
+    
+    private func didConfigure() async {
+        await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<Void, Never>) in
+            stateMachineToken = authStateMachine.listen({ [weak self] state in
+                guard let self = self, case .configured = state else { return }
+                self.authStateMachine.cancel(listenerToken: self.stateMachineToken!)
+                continuation.resume()
+            }, onSubscribe: {})
         }
     }
     

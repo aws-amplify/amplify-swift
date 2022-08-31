@@ -34,6 +34,7 @@ public class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask {
 
     public func execute() async throws -> FederateToIdentityPoolResult {
         do {
+            await didConfigure()
             let state = await getCurrentState()
             guard case .configured(let authNState, let authZState) = state  else {
                 throw AuthError.invalidState("Federation could not be completed.", AuthPluginErrorConstants.invalidStateError, nil)
@@ -53,6 +54,16 @@ public class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask {
         } catch {
             cancelToken()
             throw error
+        }
+    }
+    
+    private func didConfigure() async {
+        await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<Void, Never>) in
+            stateMachineToken = authStateMachine.listen({ [weak self] state in
+                guard let self = self, case .configured = state else { return }
+                self.authStateMachine.cancel(listenerToken: self.stateMachineToken!)
+                continuation.resume()
+            }, onSubscribe: {})
         }
     }
 

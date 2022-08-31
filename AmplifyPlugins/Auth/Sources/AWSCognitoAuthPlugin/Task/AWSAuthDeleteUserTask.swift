@@ -24,8 +24,19 @@ class AWSAuthDeleteUserTask: AuthDeleteUserTask {
     }
 
     func execute() async throws {
+        await didConfigure()
         let accessToken = try await getAccessToken()
         try await deleteUser(with: accessToken)
+    }
+    
+    private func didConfigure() async {
+        await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<Void, Never>) in
+            stateListenerToken = authStateMachine.listen({ [weak self] state in
+                guard let self = self, case .configured = state else { return }
+                self.authStateMachine.cancel(listenerToken: self.stateListenerToken!)
+                continuation.resume()
+            }, onSubscribe: {})
+        }
     }
 
     private func getAccessToken() async throws -> String {

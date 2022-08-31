@@ -28,6 +28,8 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
             throw validationError
         }
         
+        await didConfigure()
+        
         return try await withCheckedThrowingContinuation{ (continuation: CheckedContinuation<AuthSignInResult, Error>) in
             let invalidStateError = AuthError.invalidState("User is not attempting signIn operation",
                                                            AuthPluginErrorConstants.invalidStateError, nil)
@@ -93,6 +95,16 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
                     continuation.resume(throwing: invalidStateError)
                 }
             } onSubscribe: { }
+        }
+    }
+    
+    private func didConfigure() async {
+        await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<Void, Never>) in
+            stateListenerToken = authStateMachine.listen({ [weak self] state in
+                guard let self = self, case .configured = state else { return }
+                self.authStateMachine.cancel(listenerToken: self.stateListenerToken!)
+                continuation.resume()
+            }, onSubscribe: {})
         }
     }
     

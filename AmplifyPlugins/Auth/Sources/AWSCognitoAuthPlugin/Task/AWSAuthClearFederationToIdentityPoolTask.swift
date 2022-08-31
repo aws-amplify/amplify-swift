@@ -21,6 +21,7 @@ public extension HubPayload.EventName.Auth {
 public class AWSAuthClearFederationToIdentityPoolTask: AuthClearFederationToIdentityPoolTask {
     let authStateMachine: AuthStateMachine
     let clearFederationHelper: ClearFederationOperationHelper
+    private var stateMachineToken: AuthStateMachineToken?
     
     public var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.clearedFederationToIdentityPoolAPI
@@ -32,6 +33,7 @@ public class AWSAuthClearFederationToIdentityPoolTask: AuthClearFederationToIden
     }
 
     public func execute() async throws {
+        await didConfigure()
         return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             clearFederationHelper.clearFederation(authStateMachine) { result in
                 switch result {
@@ -41,6 +43,16 @@ public class AWSAuthClearFederationToIdentityPoolTask: AuthClearFederationToIden
                     continuation.resume(throwing: error)
                 }
             }
+        }
+    }
+    
+    private func didConfigure() async {
+        await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<Void, Never>) in
+            stateMachineToken = authStateMachine.listen({ [weak self] state in
+                guard let self = self, case .configured = state else { return }
+                self.authStateMachine.cancel(listenerToken: self.stateMachineToken!)
+                continuation.resume()
+            }, onSubscribe: {})
         }
     }
 }

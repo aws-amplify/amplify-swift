@@ -18,6 +18,7 @@ class AWSAuthFetchUserAttributeTask: AuthFetchUserAttributeTask {
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
+    private var stateMachineToken: AuthStateMachineToken?
     
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.fetchUserAttributesAPI
@@ -32,6 +33,7 @@ class AWSAuthFetchUserAttributeTask: AuthFetchUserAttributeTask {
 
     func execute() async throws -> [AuthUserAttribute] {
         do {
+            await didConfigure()
             let accessToken = try await getAccessToken()
             return try await getUserAttributes(with: accessToken)
         } catch let error as GetUserOutputError {
@@ -40,6 +42,16 @@ class AWSAuthFetchUserAttributeTask: AuthFetchUserAttributeTask {
             throw error
         } catch let error {
             throw AuthError.unknown("Unable to execute auth task", error)
+        }
+    }
+    
+    private func didConfigure() async {
+        await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<Void, Never>) in
+            stateMachineToken = authStateMachine.listen({ [weak self] state in
+                guard let self = self, case .configured = state else { return }
+                self.authStateMachine.cancel(listenerToken: self.stateMachineToken!)
+                continuation.resume()
+            }, onSubscribe: {})
         }
     }
 
