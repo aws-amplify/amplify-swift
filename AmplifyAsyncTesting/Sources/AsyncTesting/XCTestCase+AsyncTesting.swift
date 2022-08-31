@@ -1,15 +1,8 @@
-//
-// Copyright Amazon.com Inc. or its affiliates.
-// All Rights Reserved.
-//
-// SPDX-License-Identifier: Apache-2.0
-//
-
 import Foundation
 import XCTest
 
 extension XCTestCase {
-
+    
     /// Creates a new async expectation with an associated description.
     ///
     /// Use this method to create ``AsyncExpectation`` instances that can be
@@ -30,7 +23,7 @@ extension XCTestCase {
                          isInverted: isInverted,
                          expectedFulfillmentCount: expectedFulfillmentCount)
     }
-
+    
     /// Waits for the test to fulfill a set of expectations within a specified time.
     /// - Parameters:
     ///   - expectations: An array of async expectations that must be fulfilled.
@@ -45,5 +38,5 @@ extension XCTestCase {
                                                file: file,
                                                line: line)
     }
-
+    
 }

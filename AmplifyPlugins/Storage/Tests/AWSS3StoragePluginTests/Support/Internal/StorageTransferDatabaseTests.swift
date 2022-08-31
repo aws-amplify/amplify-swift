@@ -10,6 +10,7 @@ import XCTest
 @testable import AWSS3StoragePlugin
 @testable import Amplify
 import AmplifyTestCommon
+import AmplifyAsyncTesting
 
 // swiftlint:disable line_length
 

@@ -13,6 +13,7 @@ import Combine
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
 @testable import AWSDataStorePlugin
+import AmplifyAsyncTesting
 
 class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
 
@@ -117,7 +118,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         try await startAmplifyAndWaitForSync()
 
         // Save initial model
-        let createdNewItem = AsyncExpectation(description: "createdNewItem")
+        let createdNewItem = asyncExpectation(description: "createdNewItem")
         let postCopy = post
         Task {
             _ = try await Amplify.DataStore.save(postCopy)
@@ -146,7 +147,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         // will be scheduled and probably in "waiting" mode when we send the network unavailable
         // notification below.
         post.content = "Update 1"
-        let savedUpdate1 = AsyncExpectation(description: "savedUpdate1")
+        let savedUpdate1 = asyncExpectation(description: "savedUpdate1")
         let postCopy1 = post
         Task {
             _ = try await Amplify.DataStore.save(postCopy1)
@@ -193,7 +194,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         // also expect that it will be overwritten by the next mutation, without ever being synced
         // to the service.
         post.content = "Update 2"
-        let savedUpdate2 = AsyncExpectation(description: "savedUpdate2")
+        let savedUpdate2 = asyncExpectation(description: "savedUpdate2")
         let postCopy2 = post
         Task {
             _ = try await Amplify.DataStore.save(postCopy2)
@@ -210,7 +211,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         // even if there were multiple not-in-process mutations, after the reconciliation completes
         // there would only be one record in the MutationEvent table.
         post.content = expectedFinalContent
-        let savedFinalUpdate = AsyncExpectation(description: "savedFinalUpdate")
+        let savedFinalUpdate = asyncExpectation(description: "savedFinalUpdate")
         let postCopy3 = post
         Task {
             _ = try await Amplify.DataStore.save(postCopy3)
