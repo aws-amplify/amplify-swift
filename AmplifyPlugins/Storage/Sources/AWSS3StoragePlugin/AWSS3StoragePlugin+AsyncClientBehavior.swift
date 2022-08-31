@@ -30,7 +30,7 @@ extension AWSS3StoragePlugin {
 
     @discardableResult
     public func downloadData(key: String,
-                             options: StorageDownloadDataOperation.Request.Options?) async throws -> StorageDownloadDataTask {
+                      options: StorageDownloadDataOperation.Request.Options? = nil) async throws -> StorageDownloadDataTask {
         let options = options ?? StorageDownloadDataRequest.Options()
         let request = StorageDownloadDataRequest(key: key, options: options)
         let operation = AWSS3StorageDownloadDataOperation(request,

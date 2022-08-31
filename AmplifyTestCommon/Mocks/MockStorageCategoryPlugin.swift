@@ -109,8 +109,8 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
     }
 
     @discardableResult
-    public func remove(key: String,
-                       options: StorageRemoveRequest.Options? = nil) async throws -> String {
+    func remove(key: String,
+                options: StorageRemoveRequest.Options? = nil) async throws -> String {
         notify("remove")
         let options = options ?? StorageRemoveRequest.Options()
         let request = StorageRemoveRequest(key: key, options: options)
@@ -120,8 +120,8 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
     }
 
     @discardableResult
-    public func downloadData(key: String,
-                             options: StorageDownloadDataOperation.Request.Options?) async throws -> StorageDownloadDataTask {
+    func downloadData(key: String,
+                      options: StorageDownloadDataOperation.Request.Options? = nil) async throws -> StorageDownloadDataTask {
         notify("downloadData")
         let options = options ?? StorageDownloadDataRequest.Options()
         let request = StorageDownloadDataRequest(key: key, options: options)
@@ -131,9 +131,9 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
     }
 
     @discardableResult
-    public func downloadFile(key: String,
-                             local: URL,
-                             options: StorageDownloadFileOperation.Request.Options?) async throws -> StorageDownloadFileTask {
+    func downloadFile(key: String,
+                      local: URL,
+                      options: StorageDownloadFileOperation.Request.Options?) async throws -> StorageDownloadFileTask {
         notify("downloadFile")
         let options = options ?? StorageDownloadFileRequest.Options()
         let request = StorageDownloadFileRequest(key: key, local: local, options: options)
@@ -143,9 +143,9 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
     }
 
     @discardableResult
-    public func uploadData(key: String,
-                           data: Data,
-                           options: StorageUploadDataOperation.Request.Options?) async throws -> StorageUploadDataTask {
+    func uploadData(key: String,
+                    data: Data,
+                    options: StorageUploadDataOperation.Request.Options?) async throws -> StorageUploadDataTask {
         notify("uploadData")
         let options = options ?? StorageUploadDataRequest.Options()
         let request = StorageUploadDataRequest(key: key, data: data, options: options)
@@ -155,9 +155,9 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
     }
 
     @discardableResult
-    public func uploadFile(key: String,
-                           local: URL,
-                           options: StorageUploadFileOperation.Request.Options?) async throws -> StorageUploadFileTask {
+    func uploadFile(key: String,
+                    local: URL,
+                    options: StorageUploadFileOperation.Request.Options?) async throws -> StorageUploadFileTask {
         notify("uploadFile")
         let options = options ?? StorageUploadFileRequest.Options()
         let request = StorageUploadFileRequest(key: key, local: local, options: options)
@@ -167,7 +167,7 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
     }
 
     @discardableResult
-    public func list(options: StorageListOperation.Request.Options?) async throws -> StorageListResult {
+    func list(options: StorageListOperation.Request.Options?) async throws -> StorageListResult {
         notify("list")
         let options = options ?? StorageListRequest.Options()
         let request = StorageListRequest(options: options)
@@ -185,7 +185,7 @@ class MockSecondStorageCategoryPlugin: MockStorageCategoryPlugin {
 }
 
 class MockStorageGetURLOperation: AmplifyOperation<StorageGetURLRequest, URL, StorageError>,
-StorageGetURLOperation {
+                                  StorageGetURLOperation {
     override func pause() {
     }
 
@@ -200,10 +200,10 @@ StorageGetURLOperation {
 }
 
 class MockStorageDownloadDataOperation: AmplifyInProcessReportingOperation<
-    StorageDownloadDataRequest,
-    Progress,
-    Data,
-    StorageError
+StorageDownloadDataRequest,
+Progress,
+Data,
+StorageError
 >, StorageDownloadDataOperation {
     override func pause() {
     }
@@ -219,10 +219,10 @@ class MockStorageDownloadDataOperation: AmplifyInProcessReportingOperation<
 }
 
 class MockStorageDownloadFileOperation: AmplifyInProcessReportingOperation<
-    StorageDownloadFileRequest,
-    Progress,
-    Void,
-    StorageError
+StorageDownloadFileRequest,
+Progress,
+Void,
+StorageError
 >, StorageDownloadFileOperation {
     override func pause() {
     }
@@ -238,10 +238,10 @@ class MockStorageDownloadFileOperation: AmplifyInProcessReportingOperation<
 }
 
 class MockStorageUploadDataOperation: AmplifyInProcessReportingOperation<
-    StorageUploadDataRequest,
-    Progress,
-    String,
-    StorageError
+StorageUploadDataRequest,
+Progress,
+String,
+StorageError
 >, StorageUploadDataOperation {
     override func pause() {
     }
@@ -257,10 +257,10 @@ class MockStorageUploadDataOperation: AmplifyInProcessReportingOperation<
 }
 
 class MockStorageUploadFileOperation: AmplifyInProcessReportingOperation<
-    StorageUploadFileRequest,
-    Progress,
-    String,
-    StorageError
+StorageUploadFileRequest,
+Progress,
+String,
+StorageError
 >, StorageUploadFileOperation {
     override func pause() {
     }
@@ -276,7 +276,7 @@ class MockStorageUploadFileOperation: AmplifyInProcessReportingOperation<
 }
 
 class MockStorageRemoveOperation: AmplifyOperation<StorageRemoveRequest, String, StorageError>,
-StorageRemoveOperation {
+                                  StorageRemoveOperation {
     override func pause() {
     }
 
@@ -291,7 +291,7 @@ StorageRemoveOperation {
 }
 
 class MockStorageListOperation: AmplifyOperation<StorageListRequest, StorageListResult, StorageError>,
-StorageListOperation {
+                                StorageListOperation {
     override func pause() {
     }
 
