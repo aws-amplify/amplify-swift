@@ -322,7 +322,10 @@ let package = Package(
         .library(
             name: "AWSPinpointAnalyticsPlugin",
             targets: ["AWSPinpointAnalyticsPlugin"]
-        )
+        ),
+        .library(
+            name: "AmplifyAsyncTesting",
+            targets: ["AmplifyAsyncTesting"]),
     ],
     dependencies: dependencies,
     targets: targets
