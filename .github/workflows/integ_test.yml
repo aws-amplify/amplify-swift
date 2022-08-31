@@ -1,7 +1,7 @@
 name: Integration Tests
 on:
   push:
-    branches: [dev-preview]
+    branches: [dev-preview, phantum/fix_auth_integ]
 
 permissions:
     id-token: write
@@ -55,7 +55,6 @@ jobs:
           scheme: AnalyticsHostApp
 
   auth-integration-test:
-    continue-on-error: true
     needs: prepare-for-test
     runs-on: macos-12
     environment: IntegrationTest
