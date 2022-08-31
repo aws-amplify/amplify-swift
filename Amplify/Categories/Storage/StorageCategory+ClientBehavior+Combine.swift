@@ -64,7 +64,7 @@ extension StorageCategoryBehavior {
         getURL(key: key, options: nil, resultListener: nil)
     }
 
-    /// List the object identifiers under the heiarchy specified by the path, relative to access level, from storage
+    /// List the object identifiers under the hierarchy specified by the path, relative to access level, from storage
     ///
     /// - Parameters:
     ///   - options: Parameters to specific plugin behavior
