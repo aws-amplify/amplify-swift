@@ -9,6 +9,7 @@ import XCTest
 @testable import AWSAPIPlugin
 @testable import Amplify
 @testable import APIHostApp
+import AmplifyAsyncTesting
 
 /*
  A one-to-one connection where a project has a team.

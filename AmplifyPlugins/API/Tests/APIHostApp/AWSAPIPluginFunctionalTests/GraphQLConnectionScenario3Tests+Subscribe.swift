@@ -9,12 +9,13 @@ import XCTest
 @testable import AWSAPIPlugin
 @testable import Amplify
 @testable import APIHostApp
+import AmplifyAsyncTesting
 
 extension GraphQLConnectionScenario3Tests {
 
     func testOnCreatePostSubscriptionWithModel() async throws {
-        let connectedInvoked = AsyncExpectation(description: "Connection established")
-        let progressInvoked = AsyncExpectation(description: "progress invoked", expectedFulfillmentCount: 2)
+        let connectedInvoked = asyncExpectation(description: "Connection established")
+        let progressInvoked = asyncExpectation(description: "progress invoked", expectedFulfillmentCount: 2)
         let uuid = UUID().uuidString
         let uuid2 = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))

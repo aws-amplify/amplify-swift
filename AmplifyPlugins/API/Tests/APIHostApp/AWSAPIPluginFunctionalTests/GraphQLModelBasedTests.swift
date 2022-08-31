@@ -9,6 +9,7 @@ import XCTest
 @testable import AWSAPIPlugin
 @testable import Amplify
 @testable import APIHostApp
+import AmplifyAsyncTesting
 
 // swiftlint:disable type_body_length
 class GraphQLModelBasedTests: XCTestCase {
