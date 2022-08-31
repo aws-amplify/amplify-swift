@@ -49,7 +49,7 @@ extension StorageCategory: StorageCategoryBehavior {
     }
 
     @discardableResult
-    public func list(options: StorageListOperation.Request.Options?) async throws -> StorageListResult {
+    public func list(options: StorageListOperation.Request.Options? = nil) async throws -> StorageListResult {
         try await plugin.list(options: options)
     }
 
