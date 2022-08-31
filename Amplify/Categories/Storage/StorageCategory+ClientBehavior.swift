@@ -38,7 +38,7 @@ extension StorageCategory: StorageCategoryBehavior {
     @discardableResult
     public func uploadFile(key: String,
                            local: URL,
-                           options: StorageUploadFileOperation.Request.Options?) async throws -> StorageUploadFileTask {
+                           options: StorageUploadFileOperation.Request.Options? = nil) async throws -> StorageUploadFileTask {
         try await plugin.uploadFile(key: key, local: local, options: options)
     }
 
