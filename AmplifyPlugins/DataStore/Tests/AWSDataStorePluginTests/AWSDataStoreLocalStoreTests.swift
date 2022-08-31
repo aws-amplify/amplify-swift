@@ -291,7 +291,8 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
         var snapshotCount = 0
         let allSnapshotsReceived = expectation(description: "query snapshots received")
 
-        let sink = Amplify.DataStore.observeQuery(for: Post.self).sink { completed in
+        let subscription = Amplify.DataStore.observeQuery(for: Post.self)
+        let sink = Amplify.Publisher.create(subscription).sink { completed in
             switch completed {
             case .finished:
                 break

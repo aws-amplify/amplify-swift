@@ -300,10 +300,47 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
         let snapshot = DataStoreQuerySnapshot<M>(items: [], isSynced: false)
         return Result.Publisher(snapshot).eraseToAnyPublisher()
     }
+    
+    func observeQuery<M: Model>(for modelType: M.Type,
+                                where predicate: QueryPredicate?,
+                                sort sortInput: QuerySortInput?) -> AmplifyAsyncThrowingSequence<DataStoreQuerySnapshot<M>> {
+        
+        let request = ObserveQueryRequest(options: [])
+        let taskRunner = MockObserveQueryTaskRunner<M>(request: request)
+        return taskRunner.sequence
+    }
 }
 
 class MockSecondDataStoreCategoryPlugin: MockDataStoreCategoryPlugin {
     override var key: String {
         return "MockSecondDataStoreCategoryPlugin"
     }
+}
+
+
+class ObserveQueryRequest: AmplifyOperationRequest {
+    var options: Any
+    
+    typealias Options = Any
+    
+    init(options: Any) {
+        self.options = options
+    }
+    
+}
+
+class MockObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel {
+
+    public typealias Request = ObserveQueryRequest
+    public typealias InProcess = DataStoreQuerySnapshot<M>
+    public var request: ObserveQueryRequest
+    public var context = InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>>()
+    func run() async throws {
+
+    }
+
+    init(request: ObserveQueryRequest) {
+        self.request = request
+    }
+
 }
