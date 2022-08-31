@@ -55,7 +55,6 @@ extension GraphQLConnectionScenario3Tests {
         _ = try await Amplify.API.mutate(request: .create(post2))
 
         await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
-        await task.cancel()
     }
     
     func testOnUpdatePostSubscriptionWithModel() async throws {
