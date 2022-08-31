@@ -11,7 +11,7 @@ extension StorageCategory: StorageCategoryBehavior {
 
     @discardableResult
     public func getURL(key: String,
-                       options: StorageGetURLOperation.Request.Options?) async throws -> URL {
+                       options: StorageGetURLOperation.Request.Options? = nil) async throws -> URL {
         try await plugin.getURL(key: key, options: options)
     }
 
