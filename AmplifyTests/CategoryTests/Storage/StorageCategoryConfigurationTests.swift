@@ -100,7 +100,7 @@ class StorageCategoryConfigurationTests: XCTestCase {
         XCTAssertNotNil(try Amplify.Storage.getPlugin(for: "MockSecondStorageCategoryPlugin"))
     }
 
-    func testCanUseDefaultPluginIfOnlyOnePlugin() throws {
+    func testCanUseDefaultPluginIfOnlyOnePlugin() async throws {
         let plugin = MockStorageCategoryPlugin()
         let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
         plugin.listeners.append { message in
@@ -115,29 +115,37 @@ class StorageCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        _ = Amplify.Storage.downloadData(key: "", options: nil, resultListener: nil)
+        let done = asyncExpectation(description: "done")
 
-        waitForExpectations(timeout: 1.0)
+        Task {
+            _ = try await Amplify.Storage.downloadData(key: "", options: nil)
+            await done.fulfill()
+        }
+
+        await waitForExpectations([done])
     }
 
-    func testCanUseSpecifiedPlugin() throws {
+    func testCanUseSpecifiedPlugin() async throws {
         let plugin1 = MockStorageCategoryPlugin()
         let methodShouldNotBeInvokedOnDefaultPlugin =
-            expectation(description: "test method should not be invoked on default plugin")
-        methodShouldNotBeInvokedOnDefaultPlugin.isInverted = true
+            asyncExpectation(description: "test method should not be invoked on default plugin", isInverted: true)
         plugin1.listeners.append { message in
             if message == "downloadData" {
-                methodShouldNotBeInvokedOnDefaultPlugin.fulfill()
+                Task {
+                    await methodShouldNotBeInvokedOnDefaultPlugin.fulfill()
+                }
             }
         }
         try Amplify.add(plugin: plugin1)
 
         let plugin2 = MockSecondStorageCategoryPlugin()
         let methodShouldBeInvokedOnSecondPlugin =
-            expectation(description: "test method should be invoked on second plugin")
+            asyncExpectation(description: "test method should be invoked on second plugin")
         plugin2.listeners.append { message in
             if message == "downloadData" {
-                methodShouldBeInvokedOnSecondPlugin.fulfill()
+                Task {
+                    await methodShouldBeInvokedOnSecondPlugin.fulfill()
+                }
             }
         }
         try Amplify.add(plugin: plugin2)
@@ -152,12 +160,19 @@ class StorageCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(storage: storageConfig)
 
         try Amplify.configure(amplifyConfig)
-        _ = try Amplify.Storage.getPlugin(for: "MockSecondStorageCategoryPlugin")
-            .downloadData(key: "", options: nil, progressListener: nil, resultListener: nil)
-        waitForExpectations(timeout: 1.0)
+
+        let done = asyncExpectation(description: "done")
+
+        Task {
+        _ = try await Amplify.Storage.getPlugin(for: "MockSecondStorageCategoryPlugin")
+            .downloadData(key: "", options: nil)
+            await done.fulfill()
+        }
+
+        await waitForExpectations([methodShouldNotBeInvokedOnDefaultPlugin, methodShouldBeInvokedOnSecondPlugin, done])
     }
 
-    func testPreconditionFailureInvokingWithMultiplePlugins() throws {
+    func testPreconditionFailureInvokingWithMultiplePlugins() async throws {
         let plugin1 = MockStorageCategoryPlugin()
         try Amplify.add(plugin: plugin1)
 
@@ -179,26 +194,33 @@ class StorageCategoryConfigurationTests: XCTestCase {
             MockStorageCategoryPlugin()
         }
 
-        // a precondition failure will happen since 2 plugins are added
-        _ = Amplify.Storage.downloadData(key: "", options: nil, resultListener: nil)
+        let done = asyncExpectation(description: "done")
+
+        Task {
+            // a precondition failure will happen since 2 plugins are added
+            _ = try await Amplify.Storage.downloadData(key: "", options: nil)
+            await done.fulfill()
+        }
+
+        await waitForExpectations([done])
 
         XCTAssertGreaterThan(registry.messages.count, 0)
     }
 
-    func testCanConfigurePluginDirectly() throws {
+    func testCanConfigurePluginDirectly() async throws {
         let plugin = MockStorageCategoryPlugin()
         let configureShouldBeInvokedFromCategory =
-            expectation(description: "Configure should be invoked by Amplify.configure()")
+            asyncExpectation(description: "Configure should be invoked by Amplify.configure()")
         let configureShouldBeInvokedDirectly =
-            expectation(description: "Configure should be invoked by getPlugin().configure()")
+        asyncExpectation(description: "Configure should be invoked by getPlugin().configure()")
 
         var invocationCount = 0
         plugin.listeners.append { message in
             if message == "configure(using:)" {
                 invocationCount += 1
                 switch invocationCount {
-                case 1: configureShouldBeInvokedFromCategory.fulfill()
-                case 2: configureShouldBeInvokedDirectly.fulfill()
+                case 1: Task { await configureShouldBeInvokedFromCategory.fulfill() }
+                case 2: Task { await configureShouldBeInvokedDirectly.fulfill() }
                 default: XCTFail("Expected configure() to be called only two times, but got \(invocationCount)")
                 }
             }
@@ -213,17 +235,28 @@ class StorageCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
         try Amplify.Storage.getPlugin(for: "MockStorageCategoryPlugin").configure(using: true)
-        waitForExpectations(timeout: 1.0)
+
+        await waitForExpectations([configureShouldBeInvokedFromCategory, configureShouldBeInvokedDirectly])
     }
 
-    func testPreconditionFailureInvokingBeforeConfig() throws {
+    func testPreconditionFailureInvokingBeforeConfig() async throws {
         let plugin = MockStorageCategoryPlugin()
         try Amplify.add(plugin: plugin)
 
+        let registry = TypeRegistry.register(type: StorageCategoryPlugin.self) { _ in plugin }
+
         // Remember, this test must be invoked with a category that doesn't include an Amplify-supplied default plugin
-        try XCTAssertThrowFatalError {
-            _ = Amplify.Storage.downloadData(key: "foo", options: nil, resultListener: nil)
+
+        let done = asyncExpectation(description: "done")
+
+        Task {
+            _ = try await Amplify.Storage.downloadData(key: "foo", options: nil)
+            await done.fulfill()
         }
+
+        await waitForExpectations([done])
+
+        XCTAssertEqual(registry.messages.count, 1)
     }
 
     // MARK: - Test internal config behavior guarantees
