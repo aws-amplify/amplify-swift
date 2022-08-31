@@ -17,3 +17,5 @@ public enum SubscriptionConnectionState {
     /// The subscription has been disconnected because of a lifecycle event or manual disconnect request
     case disconnected
 }
+
+extension SubscriptionConnectionState: Sendable { }

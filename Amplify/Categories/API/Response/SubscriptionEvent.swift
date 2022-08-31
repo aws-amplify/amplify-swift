@@ -6,10 +6,12 @@
 //
 
 /// Event for subscription
-public enum SubscriptionEvent<T> {
+public enum GraphQLSubscriptionEvent<T: Decodable> {
     /// The subscription's connection state has changed.
     case connection(SubscriptionConnectionState)
 
     /// The subscription received data.
-    case data(T)
+    case data(GraphQLResponse<T>)
 }
+
+extension GraphQLSubscriptionEvent: Sendable { }

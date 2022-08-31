@@ -15,7 +15,7 @@ open class GraphQLOperation<R: Decodable>: AmplifyOperation<
 /// GraphQL Subscription Operation
 open class GraphQLSubscriptionOperation<R: Decodable>: AmplifyInProcessReportingOperation<
     GraphQLOperationRequest<R>,
-    SubscriptionEvent<GraphQLResponse<R>>,
+    GraphQLSubscriptionEvent<R>,
     Void,
     APIError
 > { }
@@ -36,17 +36,3 @@ public extension GraphQLOperation {
 }
 
 public typealias GraphQLTask<R: Decodable> = GraphQLOperation<R>.TaskAdapter
-
-public extension GraphQLSubscriptionOperation {
-    typealias TaskAdapter = AmplifyInProcessReportingOperationTaskAdapter<Request, InProcess, Success, Failure>
-}
-
-public typealias GraphQLSubscriptionTask<R: Decodable> = GraphQLSubscriptionOperation<R>.TaskAdapter
-
-public extension GraphQLSubscriptionTask {
-    var subscription : AmplifyAsyncSequence<InProcess> {
-        get async {
-            await inProcess
-        }
-    }
-}
