@@ -96,7 +96,7 @@ public protocol StorageCategoryBehavior {
     ///   - resultListener: Triggered when the remove is complete
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
     @discardableResult
-    @available(*, renamed: "StorageCategoryBehavior.remove(key:)")
+    @available(*, renamed: "StorageCategoryBehavior.remove(key:options:)")
     func remove(key: String,
                 options: StorageRemoveOperation.Request.Options?,
                 resultListener: StorageRemoveOperation.ResultListener?) -> StorageRemoveOperation
