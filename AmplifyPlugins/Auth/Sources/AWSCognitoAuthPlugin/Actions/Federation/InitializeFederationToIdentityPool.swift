@@ -14,7 +14,7 @@ struct InitializeFederationToIdentityPool: Action {
     let federatedToken: FederatedToken
     let developerProvidedIdentityId: IdentityID?
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
         let authProviderLoginsMap = AuthProviderLoginsMap(federatedToken: federatedToken)
         let event: FetchAuthSessionEvent
@@ -30,7 +30,7 @@ struct InitializeFederationToIdentityPool: Action {
         }
 
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-        dispatcher.send(event)
+        await dispatcher.send(event)
     }
 }
 

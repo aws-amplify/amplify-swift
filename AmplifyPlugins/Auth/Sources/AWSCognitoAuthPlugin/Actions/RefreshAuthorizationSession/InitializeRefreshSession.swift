@@ -16,7 +16,7 @@ struct InitializeRefreshSession: Action {
 
     let isForceRefresh: Bool
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
@@ -36,7 +36,7 @@ struct InitializeRefreshSession: Action {
             guard let config = (environment as? AuthEnvironment)?.userPoolConfigData else {
                 event = .init(eventType: .throwError(.noUserPool))
                 logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-                dispatcher.send(event)
+                await dispatcher.send(event)
                 return
             }
             let tokens = signedInData.cognitoUserPoolTokens
@@ -56,7 +56,7 @@ struct InitializeRefreshSession: Action {
         }
 
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-        dispatcher.send(event)
+        await dispatcher.send(event)
     }
 }
 

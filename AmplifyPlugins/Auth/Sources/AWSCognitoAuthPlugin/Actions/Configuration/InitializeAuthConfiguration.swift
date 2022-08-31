@@ -13,7 +13,7 @@ struct InitializeAuthConfiguration: Action {
 
     let authConfiguration: AuthConfiguration
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
@@ -21,24 +21,22 @@ struct InitializeAuthConfiguration: Action {
 
         let credentialStoreClient = authEnvironment?.credentialStoreClientFactory()
 
-        Task {
-            var credentials = AmplifyCredentials.noCredentials
+        var credentials = AmplifyCredentials.noCredentials
 
-            do {
-                let data = try await credentialStoreClient?.fetchData(
-                    type: .amplifyCredentials)
-                if case .amplifyCredentials(let fetchedCredentials) = data {
-                    credentials = fetchedCredentials
-                }
-            } catch {
-                logError("Error when loading amplify credentials: \(error)", environment: environment)
+        do {
+            let data = try await credentialStoreClient?.fetchData(
+                type: .amplifyCredentials)
+            if case .amplifyCredentials(let fetchedCredentials) = data {
+                credentials = fetchedCredentials
             }
-
-            let event = AuthEvent.init(
-                eventType: .validateCredentialAndConfiguration(authConfiguration, credentials))
-            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-            dispatcher.send(event)
+        } catch {
+            logError("Error when loading amplify credentials: \(error)", environment: environment)
         }
+
+        let event = AuthEvent.init(
+            eventType: .validateCredentialAndConfiguration(authConfiguration, credentials))
+        logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+        await dispatcher.send(event)
 
     }
 }

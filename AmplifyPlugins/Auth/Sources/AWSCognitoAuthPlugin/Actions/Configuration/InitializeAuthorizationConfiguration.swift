@@ -14,7 +14,7 @@ struct InitializeAuthorizationConfiguration: Action {
     let storedCredentials: AmplifyCredentials
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                        environment: Environment) {
+                        environment: Environment) async {
         // ATM this is a no-op action
         logVerbose("\(#fileID) Starting execution", environment: environment)
         var event: AuthorizationEvent
@@ -25,7 +25,7 @@ struct InitializeAuthorizationConfiguration: Action {
             event = AuthorizationEvent(eventType: .cachedCredentialsAvailable(storedCredentials))
         }
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-        dispatcher.send(event)
+        await dispatcher.send(event)
     }
 }
 

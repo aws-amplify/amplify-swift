@@ -12,7 +12,7 @@ struct InitializeFetchUnAuthSession: Action {
 
     let identifier = "InitializeFetchUnAuthSession"
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
         let configuration = (environment as? AuthEnvironment)?.configuration
@@ -26,7 +26,7 @@ struct InitializeFetchUnAuthSession: Action {
             event = .init(eventType: .fetchUnAuthIdentityID)
         }
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-        dispatcher.send(event)
+        await dispatcher.send(event)
     }
 }
 
