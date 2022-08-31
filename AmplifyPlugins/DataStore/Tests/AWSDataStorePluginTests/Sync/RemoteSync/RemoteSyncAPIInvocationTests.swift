@@ -12,6 +12,7 @@ import Combine
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
+import AmplifyAsyncTesting
 
 /// Tests that DataStore invokes proper API methods to fulfill remote sync
 class RemoteSyncAPIInvocationTests: XCTestCase {
@@ -103,7 +104,7 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
         }
 
         try Amplify.configure(amplifyConfig)
-        let startSuccess = AsyncExpectation(description: "start success")
+        let startSuccess = asyncExpectation(description: "start success")
         Task {
             _ = try await Amplify.DataStore.start()
             await startSuccess.fulfill()
