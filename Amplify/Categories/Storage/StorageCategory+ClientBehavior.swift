@@ -8,98 +8,16 @@
 import Foundation
 
 extension StorageCategory: StorageCategoryBehavior {
-    @discardableResult
-    @available(*, renamed: "StorageCategoryBehavior.getURL(key:options:)")
-    public func getURL(key: String,
-                       options: StorageGetURLRequest.Options? = nil,
-                       resultListener: StorageGetURLOperation.ResultListener?) -> StorageGetURLOperation {
-        return plugin.getURL(key: key, options: options, resultListener: resultListener)
-    }
-
-    @discardableResult
-    @available(*, renamed: "StorageCategoryBehavior.downloadData(key:options:)")
-    public func downloadData(key: String,
-                             options: StorageDownloadDataRequest.Options? = nil,
-                             progressListener: ProgressListener? = nil,
-                             resultListener: StorageDownloadDataOperation.ResultListener?
-    ) -> StorageDownloadDataOperation {
-        return plugin.downloadData(key: key,
-                                   options: options,
-                                   progressListener: progressListener,
-                                   resultListener: resultListener)
-    }
-
-    @discardableResult
-    @available(*, renamed: "StorageCategoryBehavior.downloadFile(key:local:options:)")
-    public func downloadFile(key: String,
-                             local: URL,
-                             options: StorageDownloadFileRequest.Options? = nil,
-                             progressListener: ProgressListener? = nil,
-                             resultListener: StorageDownloadFileOperation.ResultListener?
-    ) -> StorageDownloadFileOperation {
-        return plugin.downloadFile(key: key,
-                                   local: local,
-                                   options: options,
-                                   progressListener: progressListener,
-                                   resultListener: resultListener)
-    }
-
-    @discardableResult
-    @available(*, renamed: "StorageCategoryBehavior.uploadData(key:data:options:)")
-    public func uploadData(key: String,
-                           data: Data,
-                           options: StorageUploadDataRequest.Options? = nil,
-                           progressListener: ProgressListener? = nil,
-                           resultListener: StorageUploadDataOperation.ResultListener?
-    ) -> StorageUploadDataOperation {
-        return plugin.uploadData(key: key,
-                                 data: data,
-                                 options: options,
-                                 progressListener: progressListener,
-                                 resultListener: resultListener)
-    }
-
-    @discardableResult
-    @available(*, renamed: "StorageCategoryBehavior.uploadFile(key:data:options:)")
-    public func uploadFile(key: String,
-                           local: URL,
-                           options: StorageUploadFileRequest.Options? = nil,
-                           progressListener: ProgressListener? = nil,
-                           resultListener: StorageUploadFileOperation.ResultListener?
-    ) -> StorageUploadFileOperation {
-        return plugin.uploadFile(key: key,
-                                 local: local,
-                                 options: options,
-                                 progressListener: progressListener,
-                                 resultListener: resultListener)
-    }
-
-    @discardableResult
-    @available(*, renamed: "StorageCategoryBehavior.remove(key:options:)")
-    public func remove(key: String,
-                       options: StorageRemoveRequest.Options? = nil,
-                       resultListener: StorageRemoveOperation.ResultListener?) -> StorageRemoveOperation {
-        return plugin.remove(key: key, options: options, resultListener: resultListener)
-    }
-
-    @discardableResult
-    @available(*, renamed: "StorageCategoryBehavior.list(options:)")
-    public func list(options: StorageListRequest.Options? = nil,
-                     resultListener: StorageListOperation.ResultListener?) -> StorageListOperation {
-        return plugin.list(options: options, resultListener: resultListener)
-    }
-
-    // MARK: - Async API -
 
     @discardableResult
     public func getURL(key: String,
-                options: StorageGetURLOperation.Request.Options?) async throws -> URL {
+                       options: StorageGetURLOperation.Request.Options?) async throws -> URL {
         try await plugin.getURL(key: key, options: options)
     }
 
     @discardableResult
     public func downloadData(key: String,
-                      options: StorageDownloadDataOperation.Request.Options? = nil) async throws -> StorageDownloadDataTask {
+                             options: StorageDownloadDataOperation.Request.Options? = nil) async throws -> StorageDownloadDataTask {
         try await plugin.downloadData(key: key, options: options)
     }
 
@@ -112,15 +30,15 @@ extension StorageCategory: StorageCategoryBehavior {
 
     @discardableResult
     public func uploadData(key: String,
-                    data: Data,
-                    options: StorageUploadDataOperation.Request.Options?) async throws -> StorageUploadDataTask {
+                           data: Data,
+                           options: StorageUploadDataOperation.Request.Options?) async throws -> StorageUploadDataTask {
         try await plugin.uploadData(key: key, data: data, options: options)
     }
 
     @discardableResult
     public func uploadFile(key: String,
-                    local: URL,
-                    options: StorageUploadFileOperation.Request.Options?) async throws -> StorageUploadFileTask {
+                           local: URL,
+                           options: StorageUploadFileOperation.Request.Options?) async throws -> StorageUploadFileTask {
         try await plugin.uploadFile(key: key, local: local, options: options)
     }
 
@@ -134,4 +52,5 @@ extension StorageCategory: StorageCategoryBehavior {
     public func list(options: StorageListOperation.Request.Options?) async throws -> StorageListResult {
         try await plugin.list(options: options)
     }
+
 }
