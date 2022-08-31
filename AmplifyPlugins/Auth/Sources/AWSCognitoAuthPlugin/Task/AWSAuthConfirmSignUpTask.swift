@@ -25,6 +25,7 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask {
 
     func execute() async throws -> AuthSignUpResult {
         do {
+            await didConfigure()
             try await validateCurrentState()
             let result = try await doConfirmSignUp()
             cancelToken()
@@ -32,6 +33,16 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask {
         } catch {
             cancelToken()
             throw error
+        }
+    }
+
+    private func didConfigure() async {
+        await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<Void, Never>) in
+            stateMachineToken = authStateMachine.listen({ [weak self] state in
+                guard let self = self, case .configured = state else { return }
+                self.authStateMachine.cancel(listenerToken: self.stateMachineToken!)
+                continuation.resume()
+            }, onSubscribe: {})
         }
     }
     
