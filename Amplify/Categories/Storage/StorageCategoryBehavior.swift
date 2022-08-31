@@ -17,6 +17,7 @@ public protocol StorageCategoryBehavior {
     ///   - resultListener: Triggered when the operation is complete
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
     @discardableResult
+    @available(*, renamed: "StorageCategoryBehavior.getURL(key:options:)")
     func getURL(key: String,
                 options: StorageGetURLOperation.Request.Options?,
                 resultListener: StorageGetURLOperation.ResultListener?) -> StorageGetURLOperation
@@ -30,6 +31,7 @@ public protocol StorageCategoryBehavior {
     ///   - resultListener: Triggered when the download is complete
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
     @discardableResult
+    @available(*, renamed: "StorageCategoryBehavior.downloadData(key:options:)")
     func downloadData(key: String,
                       options: StorageDownloadDataOperation.Request.Options?,
                       progressListener: ProgressListener?,
@@ -45,6 +47,7 @@ public protocol StorageCategoryBehavior {
     ///   - resultListener: Triggered when the download is complete
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
     @discardableResult
+    @available(*, renamed: "StorageCategoryBehavior.downloadFile(key:local:options:)")
     func downloadFile(key: String,
                       local: URL,
                       options: StorageDownloadFileOperation.Request.Options?,
@@ -61,6 +64,7 @@ public protocol StorageCategoryBehavior {
     ///   - resultListener: Triggered when the upload is complete
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
     @discardableResult
+    @available(*, renamed: "StorageCategoryBehavior.uploadData(key:data:options:)")
     func uploadData(key: String,
                     data: Data,
                     options: StorageUploadDataOperation.Request.Options?,
@@ -77,6 +81,7 @@ public protocol StorageCategoryBehavior {
     ///   - resultListener: Triggered when the upload is complete
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
     @discardableResult
+    @available(*, renamed: "StorageCategoryBehavior.uploadFile(key:data:options:)")
     func uploadFile(key: String,
                     local: URL,
                     options: StorageUploadFileOperation.Request.Options?,
@@ -91,6 +96,7 @@ public protocol StorageCategoryBehavior {
     ///   - resultListener: Triggered when the remove is complete
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
     @discardableResult
+    @available(*, renamed: "StorageCategoryBehavior.remove(key:options:)")
     func remove(key: String,
                 options: StorageRemoveOperation.Request.Options?,
                 resultListener: StorageRemoveOperation.ResultListener?) -> StorageRemoveOperation
@@ -102,6 +108,7 @@ public protocol StorageCategoryBehavior {
     ///   - resultListener: Triggered when the list is complete
     /// - Returns: An operation object that provides notifications and actions related to the execution of the work
     @discardableResult
+    @available(*, renamed: "StorageCategoryBehavior.list(options:)")
     func list(options: StorageListOperation.Request.Options?,
               resultListener: StorageListOperation.ResultListener?) -> StorageListOperation
 
