@@ -46,8 +46,8 @@ class DataStoreConnectionScenario3Tests: SyncEngineIntegrationTestBase {
         try await startAmplifyAndWaitForSync()
         let post = Post3(title: "title")
         let comment = Comment3(postID: post.id, content: "content")
-        let syncedPostReceived = AsyncExpectation(description: "received post from sync event")
-        let syncCommentReceived = AsyncExpectation(description: "received comment from sync event")
+        let syncedPostReceived = asyncExpectation(description: "received post from sync event")
+        let syncCommentReceived = asyncExpectation(description: "received comment from sync event")
         let hubListener = Amplify.Hub.listen(to: .dataStore,
                                              eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
