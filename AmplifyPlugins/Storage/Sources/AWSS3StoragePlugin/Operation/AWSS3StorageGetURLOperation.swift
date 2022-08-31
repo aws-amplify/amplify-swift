@@ -19,8 +19,6 @@ public class AWSS3StorageGetURLOperation: AmplifyOperation<
     URL,
     StorageError
 >, StorageGetURLOperation {
-    public typealias TaskAdapter = AmplifyOperationTaskAdapter<Request, Success, Failure>
-
     let storageConfiguration: AWSS3StoragePluginConfiguration
     let storageService: AWSS3StorageServiceBehaviour
     let authService: AWSAuthServiceBehavior
@@ -100,5 +98,3 @@ public class AWSS3StorageGetURLOperation: AmplifyOperation<
         dispatch(result: result)
     }
 }
-
-public typealias AWSS3StorageGetURLTask = AWSS3StorageGetURLOperation.TaskAdapter
