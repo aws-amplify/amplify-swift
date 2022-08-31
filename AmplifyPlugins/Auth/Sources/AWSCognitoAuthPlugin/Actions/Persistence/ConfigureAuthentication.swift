@@ -16,7 +16,7 @@ struct ConfigureAuthentication: Action {
     func execute(
         withDispatcher dispatcher: EventDispatcher,
         environment: Environment
-    ) {
+    ) async {
         logVerbose("\(#fileID) Start execution", environment: environment)
         let authenticationEvent: AuthenticationEvent
         switch storedCredentials {
@@ -30,12 +30,12 @@ struct ConfigureAuthentication: Action {
         }
 
         logVerbose("\(#fileID) Sending event \(authenticationEvent.type)", environment: environment)
-        dispatcher.send(authenticationEvent)
+        await dispatcher.send(authenticationEvent)
 
         let authStateEvent = AuthEvent(eventType: .authenticationConfigured(configuration,
                                                                             storedCredentials))
         logVerbose("\(#fileID) Sending event \(authStateEvent.type)", environment: environment)
-        dispatcher.send(authStateEvent)
+        await dispatcher.send(authStateEvent)
     }
 }
 

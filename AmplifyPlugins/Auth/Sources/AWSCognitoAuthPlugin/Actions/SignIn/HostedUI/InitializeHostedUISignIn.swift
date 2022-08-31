@@ -15,7 +15,7 @@ struct InitializeHostedUISignIn: Action {
 
     let options: HostedUIOptions
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         guard let environment = environment as? AuthEnvironment,
@@ -24,7 +24,7 @@ struct InitializeHostedUISignIn: Action {
             let error = AuthenticationError.configuration(message: message)
             let event = AuthenticationEvent(eventType: .error(error))
             logVerbose("\(#fileID) Sending event \(event)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
             return
         }
 
@@ -33,13 +33,11 @@ struct InitializeHostedUISignIn: Action {
         Should not happen, initialize hostedUISignIn should always start with presentationanchor
         """)
         }
-        Task {
-            await initializeHostedUI(
-                presentationAnchor: presentationAnchor,
-                environment: environment,
-                hostedUIEnvironment: hostedUIEnvironment,
-                dispatcher: dispatcher)
-        }
+        await initializeHostedUI(
+            presentationAnchor: presentationAnchor,
+            environment: environment,
+            hostedUIEnvironment: hostedUIEnvironment,
+            dispatcher: dispatcher)
     }
 
     func initializeHostedUI(presentationAnchor: AuthUIPresentationAnchor,
@@ -53,7 +51,7 @@ struct InitializeHostedUISignIn: Action {
         guard let proofKey = randomGenerator.generateRandom(byteSize: 32) else {
             let event = HostedUIEvent(eventType: .throwError(.hostedUI(.proofCalculation)))
             logVerbose("\(#fileID) Sending event \(event)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
             return
         }
 
@@ -79,16 +77,16 @@ struct InitializeHostedUISignIn: Action {
                                                     options: options)
             let event = HostedUIEvent(eventType: .showHostedUI(signInData))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
         } catch let error as HostedUIError {
             let event = HostedUIEvent(eventType: .throwError(.hostedUI(error)))
             logVerbose("\(#fileID) Sending event \(event)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
             return
         } catch {
             let event = HostedUIEvent(eventType: .throwError(.hostedUI(.signInURI)))
             logVerbose("\(#fileID) Sending event \(event)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
             return
         }
     }
