@@ -21,7 +21,7 @@ class ShowHostedUISignIn: NSObject, Action {
         self.signingInData = signInData
     }
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         guard let environment = environment as? AuthEnvironment,
@@ -30,7 +30,7 @@ class ShowHostedUISignIn: NSObject, Action {
             let error = AuthenticationError.configuration(message: message)
             let event = AuthenticationEvent(eventType: .error(error))
             logVerbose("\(#fileID) Sending event \(event)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
             return
         }
 
@@ -40,7 +40,7 @@ class ShowHostedUISignIn: NSObject, Action {
               let callbackURLScheme = callbackURL.scheme else {
             let event = SignInEvent(eventType: .throwAuthError(.hostedUI(.signInURI)))
             logVerbose("\(#fileID) Sending event \(event)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
             return
         }
 
@@ -57,7 +57,7 @@ class ShowHostedUISignIn: NSObject, Action {
                     self.logVerbose("\(#fileID) Received error \(error)", environment: environment)
                     let event = HostedUIEvent(eventType: .throwError(.hostedUI(error)))
                     self.logVerbose("\(#fileID) Sending event \(event)", environment: environment)
-                    dispatcher.send(event)
+                    await dispatcher.send(event)
                 case .success(let queryItems):
                     guard let code = queryItems.first(where: { $0.name == "code" })?.value,
                           let state = queryItems.first(where: { $0.name == "state" })?.value,
@@ -65,7 +65,7 @@ class ShowHostedUISignIn: NSObject, Action {
 
                         let event = HostedUIEvent(eventType: .throwError(.hostedUI(.codeValidation)))
                         self.logVerbose("\(#fileID) Sending event \(event)", environment: environment)
-                        dispatcher.send(event)
+                        await dispatcher.send(event)
                         return
                     }
 
@@ -75,7 +75,7 @@ class ShowHostedUISignIn: NSObject, Action {
                                                 options: self.signingInData.options)
                     let event = HostedUIEvent(eventType: .fetchToken(result))
                     self.logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-                    dispatcher.send(event)
+                    await dispatcher.send(event)
                 }
             }
     }

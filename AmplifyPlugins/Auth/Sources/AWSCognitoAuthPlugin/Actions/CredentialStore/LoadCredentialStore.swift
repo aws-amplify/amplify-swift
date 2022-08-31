@@ -14,7 +14,7 @@ struct LoadCredentialStore: Action {
 
     let credentialStoreType: CredentialStoreDataType
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
@@ -23,7 +23,7 @@ struct LoadCredentialStore: Action {
                 eventType: .throwError(KeychainStoreError.configuration(
                     message: AuthPluginErrorConstants.configurationError)))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
             return
         }
 
@@ -49,11 +49,11 @@ struct LoadCredentialStore: Action {
             let event = CredentialStoreEvent(
                 eventType: .completedOperation(credentialStoreData))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
         } catch let error as KeychainStoreError {
             let event = CredentialStoreEvent(eventType: .throwError(error))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
         } catch {
             let event = CredentialStoreEvent(
                 eventType: .throwError(
@@ -61,7 +61,7 @@ struct LoadCredentialStore: Action {
                 )
             )
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
         }
 
     }

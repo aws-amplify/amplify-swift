@@ -14,7 +14,7 @@ struct InitializeFetchAuthSessionWithUserPool: Action {
 
     let signedInData: SignedInData
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         let tokens = signedInData.cognitoUserPoolTokens
         logVerbose("\(#fileID) Starting execution", environment: environment)
         let configuration = (environment as? AuthEnvironment)?.configuration
@@ -35,7 +35,7 @@ struct InitializeFetchAuthSessionWithUserPool: Action {
             event = .init(eventType: .throwError(.noUserPool))
         }
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-        dispatcher.send(event)
+        await dispatcher.send(event)
     }
 }
 
