@@ -13,6 +13,7 @@ class AWSAuthDeleteUserTask: AuthDeleteUserTask {
     private let authStateMachine: AuthStateMachine
     private var stateListenerToken: AuthStateMachineToken?
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
+    private let taskHelper: AWSAuthTaskHelper
     
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.deleteUserAPI
@@ -21,22 +22,13 @@ class AWSAuthDeleteUserTask: AuthDeleteUserTask {
     init(authStateMachine: AuthStateMachine) {
         self.authStateMachine = authStateMachine
         self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()
+        self.taskHelper = AWSAuthTaskHelper(stateMachineToken: self.stateListenerToken, authStateMachine: authStateMachine)
     }
 
     func execute() async throws {
-        await didConfigure()
+        await taskHelper.didStateMachineConfigured()
         let accessToken = try await getAccessToken()
         try await deleteUser(with: accessToken)
-    }
-    
-    private func didConfigure() async {
-        await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<Void, Never>) in
-            stateListenerToken = authStateMachine.listen({ [weak self] state in
-                guard let self = self, case .configured = state else { return }
-                self.authStateMachine.cancel(listenerToken: self.stateListenerToken!)
-                continuation.resume()
-            }, onSubscribe: {})
-        }
     }
 
     private func getAccessToken() async throws -> String {

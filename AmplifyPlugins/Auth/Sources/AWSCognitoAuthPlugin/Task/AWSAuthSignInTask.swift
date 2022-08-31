@@ -13,6 +13,7 @@ class AWSAuthSignInTask: AuthSignInTask {
     private let request: AuthSignInRequest
     private let authStateMachine: AuthStateMachine
     private var stateMachineToken: AuthStateMachineToken?
+    private let taskHelper: AWSAuthTaskHelper
     
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.signInAPI
@@ -21,22 +22,13 @@ class AWSAuthSignInTask: AuthSignInTask {
     init(_ request: AuthSignInRequest, authStateMachine: AuthStateMachine) {
         self.request = request
         self.authStateMachine = authStateMachine
+        self.taskHelper = AWSAuthTaskHelper(stateMachineToken: self.stateMachineToken, authStateMachine: authStateMachine)
     }
 
     func execute() async throws -> AuthSignInResult {
-        await didConfigure()
+        await taskHelper.didStateMachineConfigured()
         try await validateCurrentState()
         return try await doSignIn()
-    }
-
-    private func didConfigure() async {
-        await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<Void, Never>) in
-            stateMachineToken = authStateMachine.listen({ [weak self] state in
-                guard let self = self, case .configured = state else { return }
-                self.authStateMachine.cancel(listenerToken: self.stateMachineToken!)
-                continuation.resume()
-            }, onSubscribe: {})
-        }
     }
 
     private func validateCurrentState() async throws {

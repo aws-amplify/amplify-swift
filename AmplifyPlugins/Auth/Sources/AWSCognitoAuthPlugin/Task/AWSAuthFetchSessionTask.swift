@@ -13,6 +13,7 @@ class AWSAuthFetchSessionTask: AuthFetchSessionTask {
     private let authStateMachine: AuthStateMachine
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
     private var stateMachineToken: AuthStateMachineToken?
+    private let taskHelper: AWSAuthTaskHelper
     
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.fetchSessionAPI
@@ -22,10 +23,11 @@ class AWSAuthFetchSessionTask: AuthFetchSessionTask {
         self.request = request
         self.authStateMachine = authStateMachine
         self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()
+        self.taskHelper = AWSAuthTaskHelper(stateMachineToken: self.stateMachineToken, authStateMachine: authStateMachine)
     }
 
     func execute() async throws -> AuthSession {
-        await didConfigure()
+        await taskHelper.didStateMachineConfigured()
         return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<AuthSession, Error>) in
             let doesNeedForceRefresh = request.options.forceRefresh
             fetchAuthSessionHelper.fetch( authStateMachine, forceRefresh: doesNeedForceRefresh) {result in
@@ -36,16 +38,6 @@ class AWSAuthFetchSessionTask: AuthFetchSessionTask {
                     continuation.resume(throwing: error)
                 }
             }
-        }
-    }
-    
-    private func didConfigure() async {
-        await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<Void, Never>) in
-            stateMachineToken = authStateMachine.listen({ [weak self] state in
-                guard let self = self, case .configured = state else { return }
-                self.authStateMachine.cancel(listenerToken: self.stateMachineToken!)
-                continuation.resume()
-            }, onSubscribe: {})
         }
     }
 }

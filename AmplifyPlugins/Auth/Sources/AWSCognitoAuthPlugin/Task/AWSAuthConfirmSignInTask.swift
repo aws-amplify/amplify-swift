@@ -13,6 +13,7 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
     private let request: AuthConfirmSignInRequest
     private let authStateMachine: AuthStateMachine
     private var stateListenerToken: AuthStateMachineToken?
+    private let taskHelper: AWSAuthTaskHelper
     
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.confirmSignInAPI
@@ -21,6 +22,7 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
     init(_ request: AuthConfirmSignInRequest, stateMachine: AuthStateMachine) {
         self.request = request
         self.authStateMachine = stateMachine
+        self.taskHelper = AWSAuthTaskHelper(stateMachineToken: self.stateListenerToken, authStateMachine: authStateMachine)
     }
 
     func execute() async throws -> AuthSignInResult {
@@ -28,7 +30,7 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
             throw validationError
         }
         
-        await didConfigure()
+        await taskHelper.didStateMachineConfigured()
         
         return try await withCheckedThrowingContinuation{ (continuation: CheckedContinuation<AuthSignInResult, Error>) in
             let invalidStateError = AuthError.invalidState("User is not attempting signIn operation",
@@ -95,16 +97,6 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
                     continuation.resume(throwing: invalidStateError)
                 }
             } onSubscribe: { }
-        }
-    }
-    
-    private func didConfigure() async {
-        await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<Void, Never>) in
-            stateListenerToken = authStateMachine.listen({ [weak self] state in
-                guard let self = self, case .configured = state else { return }
-                self.authStateMachine.cancel(listenerToken: self.stateListenerToken!)
-                continuation.resume()
-            }, onSubscribe: {})
         }
     }
     

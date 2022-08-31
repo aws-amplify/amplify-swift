@@ -18,6 +18,7 @@ class AWSAuthChangePasswordTask: AuthChangePasswordTask {
     private let userPoolFactory: CognitoUserPoolFactory
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
     private var stateMachineToken: AuthStateMachineToken?
+    private let taskHelper: AWSAuthTaskHelper
     
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.changePasswordAPI
@@ -31,27 +32,18 @@ class AWSAuthChangePasswordTask: AuthChangePasswordTask {
         self.authStateMachine = authStateMachine
         self.userPoolFactory = userPoolFactory
         self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()
+        self.taskHelper = AWSAuthTaskHelper(stateMachineToken: self.stateMachineToken, authStateMachine: authStateMachine)
     }
 
     func execute() async throws {
         do {
-            await didConfigure()
+            await taskHelper.didStateMachineConfigured()
             let accessToken = try await getAccessToken()
             try await changePassword(with: accessToken)
         } catch let error as ChangePasswordOutputError {
             throw error.authError
         } catch let error {
             throw AuthError.configuration("Unable to execute auth task", AuthPluginErrorConstants.configurationError, error)
-        }
-    }
-    
-    private func didConfigure() async {
-        await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<Void, Never>) in
-            stateMachineToken = authStateMachine.listen({ [weak self] state in
-                guard let self = self, case .configured = state else { return }
-                self.authStateMachine.cancel(listenerToken: self.stateMachineToken!)
-                continuation.resume()
-            }, onSubscribe: {})
         }
     }
 

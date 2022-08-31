@@ -18,6 +18,7 @@ class AWSAuthAttributeResendConfirmationCodeTask: AuthAttributeResendConfirmatio
     private let userPoolFactory: CognitoUserPoolFactory
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
     private var stateMachineToken: AuthStateMachineToken?
+    private let taskHelper: AWSAuthTaskHelper
     
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.attributeResendConfirmationCodeAPI
@@ -28,11 +29,12 @@ class AWSAuthAttributeResendConfirmationCodeTask: AuthAttributeResendConfirmatio
         self.authStateMachine = authStateMachine
         self.userPoolFactory = userPoolFactory
         self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()
+        self.taskHelper = AWSAuthTaskHelper(stateMachineToken: self.stateMachineToken, authStateMachine: authStateMachine)
     }
 
     func execute() async throws -> AuthCodeDeliveryDetails {
         do {
-            await didConfigure()
+            await taskHelper.didStateMachineConfigured()
             let accessToken = try await getAccessToken()
             let devices = try await initiateGettingVerificationCode(with: accessToken)
             return devices
@@ -44,16 +46,6 @@ class AWSAuthAttributeResendConfirmationCodeTask: AuthAttributeResendConfirmatio
             throw AuthError.configuration("Unable to execute auth task",
                                           AuthPluginErrorConstants.configurationError,
                                           error)
-        }
-    }
-    
-    private func didConfigure() async {
-        await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<Void, Never>) in
-            stateMachineToken = authStateMachine.listen({ [weak self] state in
-                guard let self = self, case .configured = state else { return }
-                self.authStateMachine.cancel(listenerToken: self.stateMachineToken!)
-                continuation.resume()
-            }, onSubscribe: {})
         }
     }
 

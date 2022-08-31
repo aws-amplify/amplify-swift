@@ -13,6 +13,7 @@ class AWSAuthSignOutTask: AuthSignOutTask {
     private let request: AuthSignOutRequest
     private let authStateMachine: AuthStateMachine
     private var stateMachineToken: AuthStateMachineToken?
+    private let taskHelper: AWSAuthTaskHelper
     
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.signOutAPI
@@ -21,11 +22,12 @@ class AWSAuthSignOutTask: AuthSignOutTask {
     init(_ request: AuthSignOutRequest, authStateMachine: AuthStateMachine) {
         self.request = request
         self.authStateMachine = authStateMachine
+        self.taskHelper = AWSAuthTaskHelper(stateMachineToken: self.stateMachineToken, authStateMachine: authStateMachine)
     }
 
     func execute() async throws {
         do {
-            await didConfigure()
+            await taskHelper.didStateMachineConfigured()
             try await doSignOut()
             cancelToken()
         } catch {
@@ -60,16 +62,6 @@ class AWSAuthSignOutTask: AuthSignOutTask {
                 }
                 self.sendSignOutEvent()
             }
-        }
-    }
-    
-    private func didConfigure() async {
-        await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<Void, Never>) in
-            stateMachineToken = authStateMachine.listen({ [weak self] state in
-                guard let self = self, case .configured = state else { return }
-                self.authStateMachine.cancel(listenerToken: self.stateMachineToken!)
-                continuation.resume()
-            }, onSubscribe: {})
         }
     }
     
