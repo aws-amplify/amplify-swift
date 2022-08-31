@@ -22,9 +22,6 @@ extension AuthenticationState: CustomDebugDictionaryConvertible {
         case .signedOut(let signedOutData):
             additionalMetadataDictionary = signedOutData.debugDictionary
 
-        case .signingUp(let signUpState):
-            additionalMetadataDictionary = signUpState.debugDictionary
-
         case .signingIn(let signInState):
             additionalMetadataDictionary = signInState.debugDictionary
 

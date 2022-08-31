@@ -18,9 +18,6 @@ enum AuthenticationState: State {
     /// System is configured and ready for user to sign in
     case signedOut(SignedOutData)
 
-    /// System is trying to sign up
-    case signingUp(SignUpState)
-
     /// System is trying to sign in
     case signingIn(SignInState)
 
@@ -52,7 +49,6 @@ extension AuthenticationState {
         case .configured: return "AuthenticationState.configured"
         case .signingOut: return "AuthenticationState.signingOut"
         case .signedOut: return "AuthenticationState.signedOut"
-        case .signingUp: return "AuthenticationState.signingUp"
         case .signingIn: return "AuthenticationState.signingIn"
         case .signedIn: return "AuthenticationState.signedIn"
         case .clearingFederation: return "AuthenticationState.clearingFederation"
