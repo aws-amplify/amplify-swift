@@ -95,7 +95,7 @@ public protocol StorageCategoryBehavior {
                 options: StorageRemoveOperation.Request.Options?,
                 resultListener: StorageRemoveOperation.ResultListener?) -> StorageRemoveOperation
 
-    /// List the object identifiers under the heiarchy specified by the path, relative to access level, from storage
+    /// List the object identifiers under the hierarchy specified by the path, relative to access level, from storage
     ///
     /// - Parameters:
     ///   - options: Parameters to specific plugin behavior
@@ -173,7 +173,7 @@ public protocol StorageCategoryBehavior {
     func remove(key: String,
                 options: StorageRemoveOperation.Request.Options?) async throws -> String
 
-    /// List the object identifiers under the heiarchy specified by the path, relative to access level, from storage
+    /// List the object identifiers under the hierarchy specified by the path, relative to access level, from storage
     ///
     /// - Parameters:
     ///   - options: Parameters to specific plugin behavior

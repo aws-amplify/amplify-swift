@@ -92,7 +92,7 @@ extension StorageCategory: StorageCategoryBehavior {
 
     @discardableResult
     public func downloadData(key: String,
-                      options: StorageDownloadDataOperation.Request.Options?) async throws -> StorageDownloadDataTask {
+                      options: StorageDownloadDataOperation.Request.Options? = nil) async throws -> StorageDownloadDataTask {
         try await plugin.downloadData(key: key, options: options)
     }
 
