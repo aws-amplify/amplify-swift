@@ -7,110 +7,43 @@
 
 import Foundation
 import Amplify
+import AWSCognitoIdentityProvider
 
 class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask {
 
     private let request: AuthConfirmSignUpRequest
-    private let authStateMachine: AuthStateMachine
-    private var stateMachineToken: AuthStateMachineToken?
+    private let authEnvironment: AuthEnvironment
 
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.confirmSignUpAPI
     }
     
-    init(_ request: AuthConfirmSignUpRequest, authStateMachine: AuthStateMachine) {
+    init(_ request: AuthConfirmSignUpRequest, authEnvironment: AuthEnvironment) {
         self.request = request
-        self.authStateMachine = authStateMachine
+        self.authEnvironment = authEnvironment
     }
-
+    
     func execute() async throws -> AuthSignUpResult {
+        try request.hasError()
+        let userPoolEnvironment = authEnvironment.userPoolEnvironment
         do {
-            await didConfigure()
-            try await validateCurrentState()
-            let result = try await doConfirmSignUp()
-            cancelToken()
-            return result
-        } catch {
-            cancelToken()
+
+            let client = try userPoolEnvironment.cognitoUserPoolFactory()
+            let input = ConfirmSignUpInput(username: request.username,
+                                           confirmationCode: request.code,
+                                           environment: userPoolEnvironment)
+            _ = try await client.confirmSignUp(input: input)
+            return AuthSignUpResult(.done)
+        } catch let error as AuthError {
             throw error
-        }
-    }
-
-    private func didConfigure() async {
-        await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<Void, Never>) in
-            stateMachineToken = authStateMachine.listen({ [weak self] state in
-                guard let self = self, case .configured = state else { return }
-                self.authStateMachine.cancel(listenerToken: self.stateMachineToken!)
-                continuation.resume()
-            }, onSubscribe: {})
-        }
-    }
-    
-    func validateCurrentState() async throws {
-        try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
-            self?.authStateMachine.getCurrentState { state in
-                guard case .configured(let authenticationState, _) = state else {
-                    return
-                }
-
-                switch authenticationState {
-                case .signedOut, .signingUp:
-                    continuation.resume()
-                default:
-                    let error = AuthError.invalidState("Auth state must be signed out to signup", "", nil)
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
-
-    }
-    
-    func doConfirmSignUp() async throws -> AuthSignUpResult {
-        try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<AuthSignUpResult, Error>) in
-            stateMachineToken = authStateMachine.listen { state in
-                guard case .configured(let authNState, _) = state else {
-                    return
-                }
-
-                switch authNState {
-                case .signingUp(let signUpState):
-                    switch signUpState {
-                    case .signedUp:
-                        continuation.resume(returning: AuthSignUpResult(.done))
-                    case .error(let error):
-                        continuation.resume(throwing: error.authError)
-                    default:
-                        break
-                    }
-                default:
-                    break
-                }
-            } onSubscribe: { [weak self] in
-                guard let self = self else { return }
-                self.sendConfirmSignUpEvent(continuation)
-            }
-        }
-    }
-    
-    private func sendConfirmSignUpEvent(_ continuation: CheckedContinuation<AuthSignUpResult, Error>) {
-        guard !request.code.isEmpty else {
-               let error = AuthError.validation(
-                AuthPluginErrorConstants.confirmSignUpCodeError.field,
-                AuthPluginErrorConstants.confirmSignUpCodeError.errorDescription,
-                AuthPluginErrorConstants.confirmSignUpCodeError.recoverySuggestion, nil)
-            continuation.resume(throwing: error)
-            return
-        }
-        let confirmSignUpData = ConfirmSignUpEventData(
-            username: request.username,
-            confirmationCode: request.code)
-        let event = SignUpEvent(eventType: .confirmSignUp(confirmSignUpData))
-        authStateMachine.send(event)
-    }
-    
-    private func cancelToken() {
-        if let token = stateMachineToken {
-            authStateMachine.cancel(listenerToken: token)
+        } catch let error as ConfirmSignUpOutputError {
+            throw error.authError
+        } catch let error {
+            let error = AuthError.configuration(
+                "Unable to create a Swift SDK user pool service",
+                AuthPluginErrorConstants.configurationError,
+                error)
+            throw error
         }
     }
 }

@@ -56,8 +56,6 @@ class AWSAuthSignInTask: AuthSignInTask {
                 case .signedOut:
                     self.cancelToken()
                     continuation.resume(with: .success(Void()))
-                case .signingUp:
-                    self.sendCancelSignUpEvent()
                 default: break
                 }
             }, onSubscribe: {})
@@ -111,11 +109,6 @@ class AWSAuthSignInTask: AuthSignInTask {
             signInMethod: .apiBased(authFlowType())
         )
         let event = AuthenticationEvent.init(eventType: .signInRequested(signInData))
-        authStateMachine.send(event)
-    }
-
-    private func sendCancelSignUpEvent() {
-        let event = AuthenticationEvent(eventType: .cancelSignUp)
         authStateMachine.send(event)
     }
 

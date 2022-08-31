@@ -63,9 +63,6 @@ struct HostedUISignInHelper {
                     cancelToken(token)
                     continuation.resume()
 
-                case .signingUp:
-                    sendCancelSignUpEvent()
-
                 case .signingIn:
                    sendCancelSignInEvent()
 
@@ -148,11 +145,6 @@ struct HostedUISignInHelper {
                                          password: nil,
                                          signInMethod: .hostedUI(hostedUIOptions))
         let event = AuthenticationEvent.init(eventType: .signInRequested(signInData))
-        authStateMachine.send(event)
-    }
-
-    private func sendCancelSignUpEvent() {
-        let event = AuthenticationEvent(eventType: .cancelSignUp)
         authStateMachine.send(event)
     }
 
