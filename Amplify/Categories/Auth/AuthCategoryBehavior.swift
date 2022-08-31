@@ -106,10 +106,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///
     /// - Parameters:
     ///   - options: Parameters specific to plugin behavior
-    ///   - listener: Triggered when the operation completes.
-    @discardableResult
-    func fetchAuthSession(options: AuthFetchSessionOperation.Request.Options?,
-                          listener: AuthFetchSessionOperation.ResultListener?) -> AuthFetchSessionOperation
+    func fetchAuthSession(options: AuthFetchSessionRequest.Options?) async throws -> AuthSession
 
     /// Initiate a reset password flow for the user
     ///

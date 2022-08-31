@@ -40,7 +40,7 @@ class AWSAuthResendSignUpCodeTask: AuthResendSignUpCodeTask {
         } catch let error as AuthError {
             throw error
         } catch let error {
-            throw AuthError.unknown("Unable to create a Swift SDK user pool service", error)
+            throw AuthError.unknown("Unable to execute auth task", error)
         }
     }
     

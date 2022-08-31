@@ -8,24 +8,22 @@
 import Foundation
 import Amplify
 import AWSPluginsCore
+import ClientRuntime
 import AWSCognitoIdentityProvider
 
-class AWSAuthChangePasswordTask: AuthChangePasswordTask {
+class AWSAuthConfirmUserAttributeTask: AuthConfirmUserAttributeTask {
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
-    
-    private let request: AuthChangePasswordRequest
+
+    private let request: AuthConfirmUserAttributeRequest
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
     
     var eventName: HubPayloadEventName {
-        HubPayload.EventName.Auth.changePasswordAPI
+        HubPayload.EventName.Auth.confirmUserAttributesAPI
     }
 
-    init(_ request: AuthChangePasswordRequest,
-         authStateMachine: AuthStateMachine,
-         userPoolFactory: @escaping CognitoUserPoolFactory
-    ) {
+    init(_ request: AuthConfirmUserAttributeRequest, authStateMachine: AuthStateMachine, userPoolFactory: @escaping CognitoUserPoolFactory) {
         self.request = request
         self.authStateMachine = authStateMachine
         self.userPoolFactory = userPoolFactory
@@ -35,11 +33,13 @@ class AWSAuthChangePasswordTask: AuthChangePasswordTask {
     func execute() async throws {
         do {
             let accessToken = try await getAccessToken()
-            try await changePassword(with: accessToken)
-        } catch let error as ChangePasswordOutputError {
+            try await confirmUserAttribute(with: accessToken)
+        } catch let error as VerifyUserAttributeOutputError {
             throw error.authError
+        } catch let error as AuthError {
+            throw error
         } catch let error {
-            throw AuthError.configuration("Unable to execute auth task", AuthPluginErrorConstants.configurationError, error)
+            throw AuthError.unknown("Unable to execute auth task", error)
         }
     }
 
@@ -48,12 +48,19 @@ class AWSAuthChangePasswordTask: AuthChangePasswordTask {
             fetchAuthSessionHelper.fetch(authStateMachine) { result in
                 switch result {
                 case .success(let session):
-                    guard let cognitoTokenProvider = session as? AuthCognitoTokensProvider,
-                          let tokens = try? cognitoTokenProvider.getCognitoTokens().get() else {
+                    guard let cognitoTokenProvider = session as? AuthCognitoTokensProvider else {
                         continuation.resume(throwing: AuthError.unknown("Unable to fetch auth session", nil))
                         return
                     }
-                    continuation.resume(returning: tokens.accessToken)
+
+                    do {
+                        let tokens = try cognitoTokenProvider.getCognitoTokens().get()
+                        continuation.resume(returning: tokens.accessToken)
+                    } catch let error as AuthError {
+                        continuation.resume(throwing: error)
+                    } catch {
+                        continuation.resume(throwing:AuthError.unknown("Unable to fetch auth session", error))
+                    }
                 case .failure(let error):
                     continuation.resume(throwing: error)
                 }
@@ -61,9 +68,14 @@ class AWSAuthChangePasswordTask: AuthChangePasswordTask {
         }
     }
 
-    func changePassword(with accessToken: String) async throws {
+    func confirmUserAttribute(with accessToken: String) async throws {
         let userPoolService = try userPoolFactory()
-        let input = ChangePasswordInput(accessToken: accessToken, previousPassword: request.oldPassword, proposedPassword: request.newPassword)
-        _ = try await userPoolService.changePassword(input: input)
+
+        let input = VerifyUserAttributeInput(
+            accessToken: accessToken,
+            attributeName: request.attributeKey.rawValue,
+            code: request.confirmationCode)
+
+        _ = try await userPoolService.verifyUserAttribute(input: input)
     }
 }

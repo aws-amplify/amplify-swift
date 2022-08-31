@@ -32,7 +32,7 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
     ///         - identity id = valid values
     ///         - cognito tokens = valid values
     ///
-    func testSignInSessionWithIdentityPoolEnabled() {
+    func testSignInSessionWithIdentityPoolEnabled() async throws {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
@@ -55,32 +55,20 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
                          mockGetCredentialsResponse: getCredentials) },
                                          initialState: initialState)
 
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options()) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let session):
+        let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
+        XCTAssertTrue(session.isSignedIn)
 
-                XCTAssertTrue(session.isSignedIn)
+        let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
+        XCTAssertNotNil(creds?.accessKey)
+        XCTAssertNotNil(creds?.secretKey)
 
-                let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
-                XCTAssertNotNil(creds?.accessKey)
-                XCTAssertNotNil(creds?.secretKey)
+        let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
+        XCTAssertNotNil(identityId)
 
-                let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
-                XCTAssertNotNil(identityId)
-
-                let tokens = try? (session as? AuthCognitoTokensProvider)?.getCognitoTokens().get()
-                XCTAssertNotNil(tokens?.accessToken)
-                XCTAssertNotNil(tokens?.idToken)
-                XCTAssertNotNil(tokens?.refreshToken)
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
-            }
-        }
-        wait(for: [resultExpectation], timeout: apiTimeout)
+        let tokens = try? (session as? AuthCognitoTokensProvider)?.getCognitoTokens().get()
+        XCTAssertNotNil(tokens?.accessToken)
+        XCTAssertNotNil(tokens?.idToken)
+        XCTAssertNotNil(tokens?.refreshToken)
     }
 
     /// Test force refresh signedIn session with a user signed In to userPool and identityPool enabled
@@ -95,7 +83,7 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
     ///         - identity id = valid values
     ///         - cognito tokens = valid values
     ///
-    func testForceRefreshSignInSessionWithIdentityPoolEnabled() {
+    func testForceRefreshSignInSessionWithIdentityPoolEnabled() async throws {
         let resultExpectation = expectation(description: "Should receive a result")
         resultExpectation.assertForOverFulfill = true
         resultExpectation.expectedFulfillmentCount = 3
@@ -127,31 +115,22 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
             userPool: { MockIdentityProvider(mockInitiateAuthResponse: initAuth) },
             identityPool: { MockIdentity(mockGetCredentialsResponse: awsCredentials) },
             initialState: initialState)
+        let session = try await plugin.fetchAuthSession(options: .forceRefresh())
+        resultExpectation.fulfill()
+        XCTAssertTrue(session.isSignedIn)
 
-        _ = plugin.fetchAuthSession(options: .forceRefresh()) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let session):
+        let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
+        XCTAssertNotNil(creds?.accessKey)
+        XCTAssertNotNil(creds?.secretKey)
 
-                XCTAssertTrue(session.isSignedIn)
+        let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
+        XCTAssertNotNil(identityId)
 
-                let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
-                XCTAssertNotNil(creds?.accessKey)
-                XCTAssertNotNil(creds?.secretKey)
-
-                let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
-                XCTAssertNotNil(identityId)
-
-                let tokens = try? (session as? AuthCognitoTokensProvider)?.getCognitoTokens().get()
-                XCTAssertNotNil(tokens?.accessToken)
-                XCTAssertNotNil(tokens?.idToken)
-                XCTAssertNotNil(tokens?.refreshToken)
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
-            }
-        }
+        let tokens = try? (session as? AuthCognitoTokensProvider)?.getCognitoTokens().get()
+        XCTAssertNotNil(tokens?.accessToken)
+        XCTAssertNotNil(tokens?.idToken)
+        XCTAssertNotNil(tokens?.refreshToken)
+        
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
@@ -167,7 +146,7 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
     ///         - identity id = valid values
     ///         - cognito tokens = signedOut
     ///
-    func testSignInToIdentityPoolSession() {
+    func testSignInToIdentityPoolSession() async throws {
 
         let initialState = AuthState.configured(
             AuthenticationState.signedOut(.testData),
@@ -191,35 +170,22 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
                          mockGetCredentialsResponse: getCredentials) },
                                          initialState: initialState)
 
+        let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
+        XCTAssertFalse(session.isSignedIn)
 
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options()) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let session):
+        let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
+        XCTAssertNotNil(creds?.accessKey)
+        XCTAssertNotNil(creds?.secretKey)
 
-                XCTAssertFalse(session.isSignedIn)
+        let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
+        XCTAssertNotNil(identityId)
 
-                let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
-                XCTAssertNotNil(creds?.accessKey)
-                XCTAssertNotNil(creds?.secretKey)
-
-                let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
-                XCTAssertNotNil(identityId)
-
-                let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
-                guard case .failure(let error) = tokensResult,
-                      case .signedOut = error else {
-                    XCTFail("Should return signed out error")
-                    return
-                }
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
-            }
+        let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
+        guard case .failure(let error) = tokensResult,
+              case .signedOut = error else {
+            XCTFail("Should return signed out error")
+            return
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test signedIn session with session expired
@@ -234,7 +200,7 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
     ///         - identity id = sessionExpired error
     ///         - cognito tokens = sessionExpired error
     ///
-    func testSignInSessionWithExpiredToken() {
+    func testSignInSessionWithExpiredToken() async throws {
 
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
@@ -247,40 +213,28 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         }
 
         let plugin = configurePluginWith(userPool: { MockIdentityProvider(mockInitiateAuthResponse: initAuth) }, initialState: initialState)
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options()) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let session):
+        let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
+        XCTAssertTrue(session.isSignedIn)
 
-                XCTAssertTrue(session.isSignedIn)
-
-                let credentialsResult = (session as? AuthAWSCredentialsProvider)?.getAWSCredentials()
-                guard case .failure(let error) = credentialsResult, case .sessionExpired = error else {
-                    XCTFail("Should return sessionExpired error")
-                    return
-                }
-
-                let identityIdResult = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
-                guard case .failure(let identityIdError) = identityIdResult,
-                      case .sessionExpired = identityIdError else {
-                    XCTFail("Should return sessionExpired error")
-                    return
-                }
-
-                let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
-                guard case .failure(let tokenError) = tokensResult,
-                      case .sessionExpired = tokenError else {
-                    XCTFail("Should return sessionExpired error")
-                    return
-                }
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
-            }
+        let credentialsResult = (session as? AuthAWSCredentialsProvider)?.getAWSCredentials()
+        guard case .failure(let error) = credentialsResult, case .sessionExpired = error else {
+            XCTFail("Should return sessionExpired error")
+            return
         }
-        wait(for: [resultExpectation], timeout: 100)
+
+        let identityIdResult = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
+        guard case .failure(let identityIdError) = identityIdResult,
+              case .sessionExpired = identityIdError else {
+            XCTFail("Should return sessionExpired error")
+            return
+        }
+
+        let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
+        guard case .failure(let tokenError) = tokensResult,
+              case .sessionExpired = tokenError else {
+            XCTFail("Should return sessionExpired error")
+            return
+        }
     }
 
     /// Test signedIn session with session expired while fetching aws credentials
@@ -295,7 +249,7 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
     ///         - identity id = sessionExpired error
     ///         - cognito tokens = sessionExpired error
     ///
-    func testSignInSessionWithExpiredTokenInAWSCredentials() {
+    func testSignInSessionWithExpiredTokenInAWSCredentials() async throws {
 
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
@@ -320,40 +274,28 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
             identityPool: { MockIdentity(mockGetCredentialsResponse: awsCredentials) },
             initialState: initialState)
 
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options()) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let session):
-
-                XCTAssertTrue(session.isSignedIn)
-
-                let credentialsResult = (session as? AuthAWSCredentialsProvider)?.getAWSCredentials()
-                guard case .failure(let error) = credentialsResult, case .sessionExpired = error else {
-                    XCTFail("Should return sessionExpired error")
-                    return
-                }
-
-                let identityIdResult = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
-                guard case .failure(let identityIdError) = identityIdResult,
-                      case .sessionExpired = identityIdError else {
-                    XCTFail("Should return sessionExpired error")
-                    return
-                }
-
-                let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
-                guard case .failure(let tokenError) = tokensResult,
-                      case .sessionExpired = tokenError else {
-                    XCTFail("Should return sessionExpired error")
-                    return
-                }
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
-            }
+        let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
+        
+        XCTAssertTrue(session.isSignedIn)
+        let credentialsResult = (session as? AuthAWSCredentialsProvider)?.getAWSCredentials()
+        guard case .failure(let error) = credentialsResult, case .sessionExpired = error else {
+            XCTFail("Should return sessionExpired error")
+            return
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
+
+        let identityIdResult = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
+        guard case .failure(let identityIdError) = identityIdResult,
+              case .sessionExpired = identityIdError else {
+            XCTFail("Should return sessionExpired error")
+            return
+        }
+
+        let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
+        guard case .failure(let tokenError) = tokensResult,
+              case .sessionExpired = tokenError else {
+            XCTFail("Should return sessionExpired error")
+            return
+        }
     }
 
     //
@@ -542,7 +484,7 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
     ///         - identity id = unknown error
     ///         - cognito tokens = unknown error
     ///
-    func testSignInSessionWithInvalidToken() {
+    func testSignInSessionWithInvalidToken() async throws {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
@@ -558,40 +500,29 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let plugin = configurePluginWith(
             userPool: { MockIdentityProvider(mockInitiateAuthResponse: initAuth) },
             initialState: initialState)
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options()) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let session):
-
-                XCTAssertTrue(session.isSignedIn)
-
-                let credentialsResult = (session as? AuthAWSCredentialsProvider)?.getAWSCredentials()
-                guard case .failure(let error) = credentialsResult, case .unknown = error else {
-                    XCTFail("Should return unknown error")
-                    return
-                }
-
-                let identityIdResult = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
-                guard case .failure(let identityIdError) = identityIdResult,
-                      case .unknown = identityIdError else {
-                    XCTFail("Should return unknown error")
-                    return
-                }
-
-                let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
-                guard case .failure(let tokenError) = tokensResult,
-                      case .unknown = tokenError else {
-                    XCTFail("Should return unknown error")
-                    return
-                }
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
-            }
+        
+        let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
+        
+        XCTAssertTrue(session.isSignedIn)
+        let credentialsResult = (session as? AuthAWSCredentialsProvider)?.getAWSCredentials()
+        guard case .failure(let error) = credentialsResult, case .unknown = error else {
+            XCTFail("Should return unknown error")
+            return
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
+
+        let identityIdResult = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
+        guard case .failure(let identityIdError) = identityIdResult,
+              case .unknown = identityIdError else {
+            XCTFail("Should return unknown error")
+            return
+        }
+
+        let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
+        guard case .failure(let tokenError) = tokensResult,
+              case .unknown = tokenError else {
+            XCTFail("Should return unknown error")
+            return
+        }
     }
 
     /// Test signedIn session with invalid response for aws credentials
@@ -606,7 +537,7 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
     ///         - identity id = unknown error
     ///         - cognito tokens = unknown error
     ///
-    func testSignInSessionWithInvalidAWSCredentials() {
+    func testSignInSessionWithInvalidAWSCredentials() async throws {
         let initialState = AuthState.configured(
             AuthenticationState.signedIn(.testData),
             AuthorizationState.sessionEstablished(
@@ -626,40 +557,29 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
             userPool: { MockIdentityProvider(mockInitiateAuthResponse: initAuth) },
             identityPool: { MockIdentity(mockGetCredentialsResponse: awsCredentials) },
             initialState: initialState)
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options()) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let session):
-
-                XCTAssertTrue(session.isSignedIn)
-
-                let credentialsResult = (session as? AuthAWSCredentialsProvider)?.getAWSCredentials()
-                guard case .failure(let error) = credentialsResult, case .unknown = error else {
-                    XCTFail("Should return unknown error")
-                    return
-                }
-
-                let identityIdResult = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
-                guard case .failure(let identityIdError) = identityIdResult,
-                      case .unknown = identityIdError else {
-                    XCTFail("Should return unknown error")
-                    return
-                }
-
-                let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
-                guard case .failure(let tokenError) = tokensResult,
-                      case .unknown = tokenError else {
-                    XCTFail("Should return unknown error")
-                    return
-                }
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
-            }
+        
+        let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
+        
+        XCTAssertTrue(session.isSignedIn)
+        let credentialsResult = (session as? AuthAWSCredentialsProvider)?.getAWSCredentials()
+        guard case .failure(let error) = credentialsResult, case .unknown = error else {
+            XCTFail("Should return unknown error")
+            return
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
+
+        let identityIdResult = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
+        guard case .failure(let identityIdError) = identityIdResult,
+              case .unknown = identityIdError else {
+            XCTFail("Should return unknown error")
+            return
+        }
+
+        let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
+        guard case .failure(let tokenError) = tokensResult,
+              case .unknown = tokenError else {
+            XCTFail("Should return unknown error")
+            return
+        }
     }
 
     /// Test signedOut state credential refresh
@@ -675,7 +595,7 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
     ///         - identity id = unknown error
     ///         - cognito tokens = unknown error
     ///
-    func testSignOutSessionRefresh() {
+    func testSignOutSessionRefresh() async throws {
         let initialState = AuthState.configured(
             AuthenticationState.signedOut(.testData),
             AuthorizationState.sessionEstablished(
@@ -692,38 +612,26 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let plugin = configurePluginWith(
             identityPool: { MockIdentity(mockGetCredentialsResponse: awsCredentials) },
             initialState: initialState)
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options()) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let session):
-
-                XCTAssertFalse(session.isSignedIn)
-
-                let credentialsResult = (session as? AuthAWSCredentialsProvider)?.getAWSCredentials()
-                guard case .success = credentialsResult else {
-                    XCTFail("Should return valid credentials")
-                    return
-                }
-
-                let identityIdResult = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
-                guard case .success = identityIdResult else {
-                    XCTFail("Should return identity id")
-                    return
-                }
-
-                let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
-                guard case .failure(let tokenError) = tokensResult,
-                      case .signedOut =  tokenError else {
-                    XCTFail("Should return signedOut error")
-                    return
-                }
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
-            }
+        
+        let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
+        XCTAssertFalse(session.isSignedIn)
+        let credentialsResult = (session as? AuthAWSCredentialsProvider)?.getAWSCredentials()
+        guard case .success = credentialsResult else {
+            XCTFail("Should return valid credentials")
+            return
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
+
+        let identityIdResult = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
+        guard case .success = identityIdResult else {
+            XCTFail("Should return identity id")
+            return
+        }
+
+        let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
+        guard case .failure(let tokenError) = tokensResult,
+              case .signedOut =  tokenError else {
+            XCTFail("Should return signedOut error")
+            return
+        }
     }
 }

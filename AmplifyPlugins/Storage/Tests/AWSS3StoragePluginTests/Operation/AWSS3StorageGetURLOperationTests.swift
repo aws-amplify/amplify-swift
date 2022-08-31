@@ -42,7 +42,7 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
         XCTAssertTrue(operation.isFinished)
     }
 
-    func testGetURLOperationGetIdentityIdError() {
+    func testGetURLOperationGetIdentityIdError() async throws {
         mockAuthService.getIdentityIdError = AuthError.service("", "", "")
 
         let options = StorageGetURLRequest.Options(expires: testExpires)
@@ -67,11 +67,11 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
+        await waitForExpectations(timeout: 1)
         XCTAssertTrue(operation.isFinished)
-        waitForExpectations(timeout: 1)
     }
 
-    func testGetOperationGetPresignedURL() {
+    func testGetOperationGetPresignedURL() async throws {
         mockAuthService.identityId = testIdentityId
         mockStorageService.storageServiceGetPreSignedURLEvents = [
             StorageEvent.completed(URL(fileURLWithPath: "path"))]
@@ -95,14 +95,13 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
         }
 
         operation.start()
-
+        await waitForExpectations(timeout: 1)
         XCTAssertTrue(operation.isFinished)
         XCTAssertEqual(mockStorageService.getPreSignedURLCalled, 1)
-        waitForExpectations(timeout: 1)
         mockStorageService.verifyGetPreSignedURL(serviceKey: expectedServiceKey, expires: expectedExpires)
     }
 
-    func testGetOperationGetPresignedURLFailed() {
+    func testGetOperationGetPresignedURLFailed() async throws {
         mockAuthService.identityId = testIdentityId
         mockStorageService.storageServiceGetPreSignedURLEvents = [
             StorageEvent.failed(StorageError.service("", ""))]
@@ -126,14 +125,13 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
         }
 
         operation.start()
-
+        await waitForExpectations(timeout: 1)
         XCTAssertTrue(operation.isFinished)
         XCTAssertEqual(mockStorageService.getPreSignedURLCalled, 1)
-        waitForExpectations(timeout: 1)
         mockStorageService.verifyGetPreSignedURL(serviceKey: expectedServiceKey, expires: expectedExpires)
     }
 
-    func testGetOperationGetPresignedURLFromTargetIdentityId() {
+    func testGetOperationGetPresignedURLFromTargetIdentityId() async throws {
         mockStorageService.storageServiceGetPreSignedURLEvents = [
             StorageEvent.completed(URL(fileURLWithPath: "path"))]
 
@@ -155,10 +153,9 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
         }
 
         operation.start()
-
+        await waitForExpectations(timeout: 1)
         XCTAssertTrue(operation.isFinished)
         XCTAssertEqual(mockStorageService.getPreSignedURLCalled, 1)
-        waitForExpectations(timeout: 1)
         mockStorageService.verifyGetPreSignedURL(serviceKey: expectedServiceKey,
                                                  expires: StorageGetURLRequest.Options.defaultExpireInSeconds)
     }

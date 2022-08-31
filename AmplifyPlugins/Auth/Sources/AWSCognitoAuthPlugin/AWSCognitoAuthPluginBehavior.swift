@@ -24,26 +24,16 @@ protocol AWSCognitoAuthPluginBehavior: AuthCategoryPlugin {
     ///   - withProviderToken: Provider token to start the federation for
     ///   - provider: Auth provider for the federation. See `Amplify.AuthProvider`
     ///   - options: Parameters specific to plugin behavior.
-    ///   - listener: Triggered when the operation completes.
-    /// - Returns: AWSAuthFederateToIdentityPoolOperation
-    @discardableResult
     func federateToIdentityPool(
         withProviderToken: String,
         for provider: AuthProvider,
-        options: AuthFederateToIdentityPoolRequest.Options?,
-        listener: AWSAuthFederateToIdentityPoolOperation.ResultListener?
-    ) -> AWSAuthFederateToIdentityPoolOperation
+        options: AuthFederateToIdentityPoolRequest.Options?
+    ) async throws -> FederateToIdentityPoolResult
 
     /// Clear federation to identity pool
     ///
     /// - Parameters:
     ///   - options: Parameters specific to plugin behavior.
-    ///   - listener: Triggered when the operation completes.
-    /// - Returns: AWSAuthClearFederationToIdentityPoolOperation
-    @discardableResult
-    func clearFederationToIdentityPool(
-        options: AuthClearFederationToIdentityPoolRequest.Options?,
-        listener: AWSAuthClearFederationToIdentityPoolOperation.ResultListener?
-    ) -> AWSAuthClearFederationToIdentityPoolOperation
+    func clearFederationToIdentityPool(options: AuthClearFederationToIdentityPoolRequest.Options?) async throws
 
 }

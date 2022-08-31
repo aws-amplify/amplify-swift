@@ -51,18 +51,15 @@ extension AuthCategory: AuthCategoryBehavior {
     }
 
     public func signOut(options: AuthSignOutRequest.Options? = nil) async throws {
-        return try await plugin.signOut(options: options)
+        try await plugin.signOut(options: options)
     }
     
     public func deleteUser() async throws {
         try await plugin.deleteUser()
     }
 
-    @discardableResult
-    public func fetchAuthSession(options: AuthFetchSessionOperation.Request.Options? = nil,
-                                 listener: AuthFetchSessionOperation.ResultListener?) -> AuthFetchSessionOperation {
-        return plugin.fetchAuthSession(options: options,
-                                       listener: listener)
+    public func fetchAuthSession(options: AuthFetchSessionRequest.Options? = nil) async throws -> AuthSession {
+        return try await plugin.fetchAuthSession(options: options)
     }
 
     public func resetPassword(for username: String, options: AuthResetPasswordRequest.Options? = nil) async throws -> AuthResetPasswordResult {
@@ -75,6 +72,6 @@ extension AuthCategory: AuthCategoryBehavior {
         confirmationCode: String,
         options: AuthConfirmResetPasswordRequest.Options? = nil
     ) async throws {
-        return try await plugin.confirmResetPassword(for: username, with: newPassword, confirmationCode: confirmationCode, options: options)
+        try await plugin.confirmResetPassword(for: username, with: newPassword, confirmationCode: confirmationCode, options: options)
     }
 }

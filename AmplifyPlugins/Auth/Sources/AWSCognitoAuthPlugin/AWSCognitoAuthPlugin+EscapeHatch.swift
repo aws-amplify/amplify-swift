@@ -15,40 +15,21 @@ public extension AWSCognitoAuthPlugin {
     func federateToIdentityPool(
         withProviderToken: String,
         for provider: AuthProvider,
-        options: AuthFederateToIdentityPoolRequest.Options? = nil,
-        listener: AWSAuthFederateToIdentityPoolOperation.ResultListener?
-    ) -> AWSAuthFederateToIdentityPoolOperation {
+        options: AuthFederateToIdentityPoolRequest.Options? = nil
+    ) async throws -> FederateToIdentityPoolResult {
 
         let options = options ?? AuthFederateToIdentityPoolRequest.Options()
-        let request = AuthFederateToIdentityPoolRequest(
-            token: withProviderToken,
-            provider: provider,
-            options: options)
-        let operation = AWSAuthFederateToIdentityPoolOperation(
-            request,
-            authStateMachine: authStateMachine,
-            resultListener: listener)
+        let request = AuthFederateToIdentityPoolRequest(token: withProviderToken, provider: provider, options: options)
+        let task = AWSAuthFederateToIdentityPoolTask(request, authStateMachine: authStateMachine)
+        return try await task.value
 
-        queue.addOperation(operation)
-        return operation
     }
 
-    func clearFederationToIdentityPool(
-        options: AuthClearFederationToIdentityPoolRequest.Options? = nil,
-        listener: AWSAuthClearFederationToIdentityPoolOperation.ResultListener?
-    ) -> AWSAuthClearFederationToIdentityPoolOperation {
-
+    func clearFederationToIdentityPool(options: AuthClearFederationToIdentityPoolRequest.Options? = nil) async throws {
         let options = options ?? AuthClearFederationToIdentityPoolRequest.Options()
-        let request = AuthClearFederationToIdentityPoolRequest(
-            options: options)
-        let operation = AWSAuthClearFederationToIdentityPoolOperation(
-            request,
-            authStateMachine: authStateMachine,
-            resultListener: listener)
-
-        queue.addOperation(operation)
-        return operation
-
+        let request = AuthClearFederationToIdentityPoolRequest(options: options)
+        let task = AWSAuthClearFederationToIdentityPoolTask(request, authStateMachine: authStateMachine)
+        try await task.value
     }
 
     func getEscapeHatch() -> AWSCognitoAuthService {

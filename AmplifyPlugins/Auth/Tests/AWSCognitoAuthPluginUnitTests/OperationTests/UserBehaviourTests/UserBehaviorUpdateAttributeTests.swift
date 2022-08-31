@@ -20,7 +20,7 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a successful result with .done as the next step
     ///
-    func testSuccessfulUpdateUserAttributes() {
+    func testSuccessfulUpdateUserAttributes() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
             UpdateUserAttributesOutputResponse(codeDeliveryDetailsList: [
@@ -29,22 +29,11 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
                       destination: "destination")])
         })
 
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com")) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let attributes):
-                guard case .done = attributes.nextStep else {
-                    XCTFail("Result should be .done for next step")
-                    return
-                }
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
-            }
+        let attributes = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
+        guard case .done = attributes.nextStep else {
+            XCTFail("Result should be .done for next step")
+            return
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a updateUserAttributes call with empty code delivery result
@@ -55,21 +44,12 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - Then:
     ///    - I should NOT get an error
     ///
-    func testUpdateUserAttributesWithEmptyResult() {
+    func testUpdateUserAttributesWithEmptyResult() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
             UpdateUserAttributesOutputResponse()
         })
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com")) { result in
-            switch result {
-            case .success:
-                resultExpectation.fulfill()
-            case .failure:
-                XCTFail("Should not product any error")
-            }
-        }
-        wait(for: [resultExpectation], timeout: apiTimeout)
+        _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
     }
 
     // MARK: Service error handling test
@@ -83,33 +63,24 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .aliasExists as underlyingError
     ///
-    func testUpdateUserAttributesWithAliasExistsException() {
+    func testUpdateUserAttributesWithAliasExistsException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
             throw UpdateUserAttributesOutputError.aliasExistsException(.init())
         })
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com")) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .aliasExists = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be aliasExists \(error)")
-                    return
-                }
-
+            guard case .aliasExists = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be aliasExists \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a updateUserAttributes call with CodeDeliveryFailureException response from service
@@ -121,33 +92,24 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .codeDelivery as underlyingError
     ///
-    func testUpdateUserAttributesWithCodeDeliveryFailureException() {
+    func testUpdateUserAttributesWithCodeDeliveryFailureException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
             throw UpdateUserAttributesOutputError.codeDeliveryFailureException(.init())
         })
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com")) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .codeDelivery = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be codeDelivery \(error)")
-                    return
-                }
-
+            guard case .codeDelivery = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be codeDelivery \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a updateUserAttributes call with CodeMismatchException response from service
@@ -159,33 +121,24 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .codeMismatch as underlyingError
     ///
-    func testUpdateUserAttributesWithCodeMismatchException() {
+    func testUpdateUserAttributesWithCodeMismatchException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
             throw UpdateUserAttributesOutputError.codeMismatchException(.init())
         })
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com")) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .codeMismatch = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be codeMismatch \(error)")
-                    return
-                }
-
+            guard case .codeMismatch = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be codeMismatch \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a updateUserAttributes call with CodeExpiredException response from service
@@ -197,33 +150,24 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .codeExpired as underlyingError
     ///
-    func testUpdateUserAttributesWithExpiredCodeException() {
+    func testUpdateUserAttributesWithExpiredCodeException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
             throw UpdateUserAttributesOutputError.expiredCodeException(.init())
         })
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com")) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .codeExpired = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be codeExpired \(error)")
-                    return
-                }
-
+            guard case .codeExpired = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be codeExpired \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a updateUserAttributes call with InternalErrorException response from service
@@ -234,29 +178,20 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - Then:
     ///    - I should get an .unknown error
     ///
-    func testUpdateUserAttributesWithInternalErrorException() {
+    func testUpdateUserAttributesWithInternalErrorException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
             throw UpdateUserAttributesOutputError.unknown(.init(httpResponse: .init(body: .empty, statusCode: .ok)))
         })
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com")) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .unknown = error else {
-                    XCTFail("Should produce an unknown error instead of \(error)")
-                    return
-                }
-
+        do {
+            _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.unknown = error else {
+                XCTFail("Should produce an unknown error instead of \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a updateUserAttributes call with InvalidEmailRoleAccessPolicy response from service
@@ -268,32 +203,24 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a --
     ///
-    func testUpdateUserAttributesWithInvalidEmailRoleAccessPolicyException() {
+    func testUpdateUserAttributesWithInvalidEmailRoleAccessPolicyException() async throws {
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
             throw UpdateUserAttributesOutputError.invalidEmailRoleAccessPolicyException(.init())
         })
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com")) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .emailRole = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be email role \(error)")
-                    return
-                }
-
+            guard case .emailRole = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be email role \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)    }
+    }
 
     /// Test a updateUserAttributes call with InvalidLambdaResponseException response from service
     ///
@@ -304,32 +231,23 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .lambda as underlyingError
     ///
-    func testUpdateUserAttributesWithInvalidLambdaResponseException() {
+    func testUpdateUserAttributesWithInvalidLambdaResponseException() async throws {
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
             throw UpdateUserAttributesOutputError.invalidLambdaResponseException(.init())
         })
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com")) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be lambda \(error)")
-                    return
-                }
-
+            guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be lambda \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a updateUserAttributes call with InvalidParameterException response from service
@@ -342,33 +260,24 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with  .invalidParameter as underlyingError
     ///
-    func testUpdateUserAttributesWithInvalidParameterException() {
+    func testUpdateUserAttributesWithInvalidParameterException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
             throw UpdateUserAttributesOutputError.invalidParameterException(.init())
         })
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com")) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be invalidParameter \(error)")
-                    return
-                }
-
+            guard case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be invalidParameter \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a updateUserAttributes call with InvalidSmsRoleAccessPolicy response from service
@@ -380,32 +289,23 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a --
     ///
-    func testUpdateUserAttributesWithinvalidSmsRoleAccessPolicyException() {
+    func testUpdateUserAttributesWithinvalidSmsRoleAccessPolicyException() async throws {
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
             throw UpdateUserAttributesOutputError.invalidSmsRoleAccessPolicyException(.init())
         })
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com")) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be sms exists \(error)")
-                    return
-                }
-
+            guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be sms exists \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a updateUserAttributes call with InvalidSmsRoleTrustRelationship response from service
@@ -417,32 +317,24 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a --
     ///
-    func testUpdateUserAttributesCodeWithInvalidSmsRoleTrustRelationshipException() {
+    func testUpdateUserAttributesCodeWithInvalidSmsRoleTrustRelationshipException() async throws {
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
             throw UpdateUserAttributesOutputError.invalidSmsRoleTrustRelationshipException(.init())
         })
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com")) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be sms role \(error)")
-                    return
-                }
-
+            guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be sms role \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)    }
+    }
 
     /// Test a updateUserAttributes call with NotAuthorizedException response from service
     ///
@@ -454,28 +346,20 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .notAuthorized error
     ///
-    func testUpdateUserAttributesWithNotAuthorizedException() {
+    func testUpdateUserAttributesWithNotAuthorizedException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
             throw UpdateUserAttributesOutputError.notAuthorizedException(.init())
         })
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com")) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .notAuthorized = error else {
-                    XCTFail("Should produce notAuthorized error instead of \(error)")
-                    return
-                }
+        do {
+            _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.notAuthorized = error else {
+                XCTFail("Should produce notAuthorized error instead of \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a updateUserAttributes call with PasswordResetRequiredException response from service
@@ -488,32 +372,24 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .passwordResetRequired as underlyingError
     ///
-    func testUpdateUserAttributesWithPasswordResetRequiredException() {
+    func testUpdateUserAttributesWithPasswordResetRequiredException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
             throw UpdateUserAttributesOutputError.passwordResetRequiredException(.init())
         })
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com")) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .passwordResetRequired = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be passwordResetRequired \(error)")
-                    return
-                }
+            guard case .passwordResetRequired = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be passwordResetRequired \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a updateUserAttributes call with ResourceNotFoundException response from service
@@ -526,32 +402,24 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .resourceNotFound as underlyingError
     ///
-    func testUpdateUserAttributesWithResourceNotFoundException() {
+    func testUpdateUserAttributesWithResourceNotFoundException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
             throw UpdateUserAttributesOutputError.resourceNotFoundException(.init())
         })
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com")) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be resourceNotFound \(error)")
-                    return
-                }
+            guard case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be resourceNotFound \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a updateUserAttributes call with TooManyRequestsException response from service
@@ -564,33 +432,24 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .requestLimitExceeded as underlyingError
     ///
-    func testUpdateUserAttributesWithTooManyRequestsException() {
+    func testUpdateUserAttributesWithTooManyRequestsException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
             throw UpdateUserAttributesOutputError.tooManyRequestsException(.init())
         })
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com")) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be requestLimitExceeded \(error)")
-                    return
-                }
-
+            guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be requestLimitExceeded \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a updateUserAttributes call with UnexpectedLambdaException response from service
@@ -603,33 +462,24 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .lambda as underlyingError
     ///
-    func testUpdateUserAttributesWithUnexpectedLambdaException() {
+    func testUpdateUserAttributesWithUnexpectedLambdaException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
             throw UpdateUserAttributesOutputError.unexpectedLambdaException(.init())
         })
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com")) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be lambda \(error)")
-                    return
-                }
-
+            guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be lambda \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a updateUserAttributes call with UserLambdaValidationException response from service
@@ -642,33 +492,24 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .lambda as underlyingError
     ///
-    func testUpdateUserAttributesWithUserLambdaValidationException() {
+    func testUpdateUserAttributesWithUserLambdaValidationException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
             throw UpdateUserAttributesOutputError.userLambdaValidationException(.init())
         })
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com")) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be lambda \(error)")
-                    return
-                }
-
+            guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be lambda \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a updateUserAttributes call with UserNotFound response from service
@@ -681,33 +522,24 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .userNotConfirmed as underlyingError
     ///
-    func testUpdateUserAttributesWithUserNotConfirmedException() {
+    func testUpdateUserAttributesWithUserNotConfirmedException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
             throw UpdateUserAttributesOutputError.userNotConfirmedException(.init())
         })
-        let resultExpectation = expectation(description: "Should receive a result")
-       _ = plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com")) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .userNotConfirmed = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be userNotConfirmed \(error)")
-                    return
-                }
-
+            guard case .userNotConfirmed = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be userNotConfirmed \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a updateUserAttributes call with UserNotFound response from service
@@ -720,33 +552,24 @@ class UserBehaviorUpdateAttributesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .userNotFound error
     ///
-    func testUpdateUserAttributesWithUserNotFoundException() {
+    func testUpdateUserAttributesWithUserNotFoundException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(mockUpdateUserAttributeResponse: { _ in
             throw UpdateUserAttributesOutputError.userNotFoundException(.init())
         })
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com")) { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.update(userAttribute: AuthUserAttribute(.email, value: "Amplify@amazon.com"))
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be userNotFound \(error)")
-                    return
-                }
-
+            guard case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be userNotFound \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
 }

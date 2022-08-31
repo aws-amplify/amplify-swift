@@ -27,7 +27,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
     ///         - valid aws credentials
     ///         - valid identity id
     ///
-    func testFederateToIdentityPool() {
+    func testFederateToIdentityPool() async throws {
 
         let provider = AuthProvider.facebook
         let authenticationToken = "authenticationToken"
@@ -97,26 +97,16 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                         mockGetCredentialsResponse: getCredentials)
                 },
                 initialState: initialState)
-            let resultExpectation = expectation(description: "Should receive a result")
-            _ = plugin.federateToIdentityPool(
-                withProviderToken: authenticationToken,
-                for: provider) { result in
-                    defer {
-                        resultExpectation.fulfill()
-                    }
-                    switch result {
-                    case .success(let federatedResult):
-                        XCTAssertNotNil(federatedResult)
-                        XCTAssertEqual(federatedResult.credentials.sessionKey, credentials.sessionToken)
-                        XCTAssertEqual(federatedResult.credentials.accessKey, credentials.accessKeyId)
-                        XCTAssertEqual(federatedResult.credentials.secretKey, credentials.secretKey)
-                        XCTAssertEqual(federatedResult.identityId, mockIdentityId)
-
-                    case .failure(let error):
-                        XCTFail("Received failure with error \(error)")
-                    }
-                }
-            wait(for: [resultExpectation], timeout: apiTimeout)
+            do {
+                let federatedResult = try await plugin.federateToIdentityPool(withProviderToken: authenticationToken, for: provider)
+                XCTAssertNotNil(federatedResult)
+                XCTAssertEqual(federatedResult.credentials.sessionKey, credentials.sessionToken)
+                XCTAssertEqual(federatedResult.credentials.accessKey, credentials.accessKeyId)
+                XCTAssertEqual(federatedResult.credentials.secretKey, credentials.secretKey)
+                XCTAssertEqual(federatedResult.identityId, mockIdentityId)
+            } catch {
+                XCTFail("Received failure with error \(error)")
+            }
         }
     }
 
@@ -130,7 +120,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
     ///         - valid aws credentials
     ///         - valid identity id
     ///
-    func testMultipleFederationToIdentityPool() {
+    func testMultipleFederationToIdentityPool() async throws {
 
         let provider = AuthProvider.facebook
         let authenticationToken = "authenticationToken"
@@ -179,49 +169,29 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             },
             initialState: initialState)
 
-        let firstResultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.federateToIdentityPool(
-            withProviderToken: authenticationToken,
-            for: provider) { result in
-                defer {
-                    firstResultExpectation.fulfill()
-                }
-                switch result {
-                case .success(let federatedResult):
-                    XCTAssertNotNil(federatedResult)
-                    XCTAssertEqual(federatedResult.credentials.sessionKey, credentials.sessionToken)
-                    XCTAssertEqual(federatedResult.credentials.accessKey, credentials.accessKeyId)
-                    XCTAssertEqual(federatedResult.credentials.secretKey, credentials.secretKey)
-                    XCTAssertEqual(federatedResult.credentials.expiration, credentials.expiration)
-                    XCTAssertEqual(federatedResult.identityId, mockIdentityId)
-
-                case .failure(let error):
-                    XCTFail("Received failure with error \(error)")
-                }
-            }
-        wait(for: [firstResultExpectation], timeout: apiTimeout)
-
-        let secondResultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.federateToIdentityPool(
-            withProviderToken: authenticationToken,
-            for: provider) { result in
-                defer {
-                    secondResultExpectation.fulfill()
-                }
-                switch result {
-                case .success(let federatedResult):
-                    XCTAssertNotNil(federatedResult)
-                    XCTAssertEqual(federatedResult.credentials.sessionKey, credentials.sessionToken)
-                    XCTAssertEqual(federatedResult.credentials.accessKey, credentials.accessKeyId)
-                    XCTAssertEqual(federatedResult.credentials.secretKey, credentials.secretKey)
-                    XCTAssertEqual(federatedResult.credentials.expiration, credentials.expiration)
-                    XCTAssertEqual(federatedResult.identityId, mockIdentityId)
-
-                case .failure(let error):
-                    XCTFail("Received failure with error \(error)")
-                }
-            }
-        wait(for: [secondResultExpectation], timeout: apiTimeout)
+        do {
+            let federatedResult = try await plugin.federateToIdentityPool(withProviderToken: authenticationToken, for: provider)
+            XCTAssertNotNil(federatedResult)
+            XCTAssertEqual(federatedResult.credentials.sessionKey, credentials.sessionToken)
+            XCTAssertEqual(federatedResult.credentials.accessKey, credentials.accessKeyId)
+            XCTAssertEqual(federatedResult.credentials.secretKey, credentials.secretKey)
+            XCTAssertEqual(federatedResult.credentials.expiration, credentials.expiration)
+            XCTAssertEqual(federatedResult.identityId, mockIdentityId)
+        } catch {
+            XCTFail("Received failure with error \(error)")
+        }
+        
+        do {
+            let secondFederatedResult = try await plugin.federateToIdentityPool(withProviderToken: authenticationToken, for: provider)
+            XCTAssertNotNil(secondFederatedResult)
+            XCTAssertEqual(secondFederatedResult.credentials.sessionKey, credentials.sessionToken)
+            XCTAssertEqual(secondFederatedResult.credentials.accessKey, credentials.accessKeyId)
+            XCTAssertEqual(secondFederatedResult.credentials.secretKey, credentials.secretKey)
+            XCTAssertEqual(secondFederatedResult.credentials.expiration, credentials.expiration)
+            XCTAssertEqual(secondFederatedResult.identityId, mockIdentityId)
+        } catch {
+            XCTFail("Received failure with error \(error)")
+        }
     }
 
     /// Test federated to identity pool with invalid initial states
@@ -232,7 +202,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
     /// - Then:
     ///    - I should get a valid invalid state error with the following details:
     ///
-    func testFederateToIdentityPoolWithInvalidInitialState() {
+    func testFederateToIdentityPoolWithInvalidInitialState() async throws {
 
         let provider = AuthProvider.facebook
         let authenticationToken = "authenticationToken"
@@ -264,24 +234,15 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                         mockGetCredentialsResponse: getCredentials)
                 },
                 initialState: initialState)
-            let resultExpectation = expectation(description: "Should receive a result")
-            _ = plugin.federateToIdentityPool(
-                withProviderToken: authenticationToken,
-                for: provider) { result in
-                    defer {
-                        resultExpectation.fulfill()
-                    }
-                    switch result {
-                    case .success:
-                        XCTFail("Should not succeed")
-                    case .failure(let error):
-                        guard case .invalidState = error else {
-                            XCTFail("Should receive invalid state error")
-                            return
-                        }
-                    }
+            do {
+                _ = try await plugin.federateToIdentityPool(withProviderToken: authenticationToken, for: provider)
+                XCTFail("Should not succeed")
+            } catch {
+                guard case AuthError.invalidState = error else {
+                    XCTFail("Should receive invalid state error")
+                    return
                 }
-            wait(for: [resultExpectation], timeout: apiTimeout)
+            }
         }
     }
 
@@ -293,7 +254,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
     /// - Then:
     ///    - I should get success result
     ///
-    func testClearFederationToIdentityPool() {
+    func testClearFederationToIdentityPool() async throws {
 
         let getId: MockIdentity.MockGetIdResponse = { input in
             XCTFail("Get ID should not get called")
@@ -323,19 +284,11 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                         mockGetCredentialsResponse: getCredentials)
                 },
                 initialState: initialState)
-            let resultExpectation = expectation(description: "Should receive a result")
-            _ = plugin.clearFederationToIdentityPool() { result in
-                defer {
-                    resultExpectation.fulfill()
-                }
-                switch result {
-                case .success:
-                    break
-                case .failure(let error):
-                    XCTFail("Received failure with error \(error)")
-                }
+            do {
+                try await plugin.clearFederationToIdentityPool()
+            } catch {
+                XCTFail("Received failure with error \(error)")
             }
-            wait(for: [resultExpectation], timeout: apiTimeout)
         }
     }
 
@@ -347,7 +300,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
     /// - Then:
     ///    - I should get an invalid state error
     ///
-    func testClearFederationToIdentityPoolInvalidState() {
+    func testClearFederationToIdentityPoolInvalidState() async throws {
 
         let getId: MockIdentity.MockGetIdResponse = { input in
             XCTFail("Get ID should not get called")
@@ -380,22 +333,15 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                         mockGetCredentialsResponse: getCredentials)
                 },
                 initialState: initialState)
-            let resultExpectation = expectation(description: "Should receive a result")
-            _ = plugin.clearFederationToIdentityPool() { result in
-                defer {
-                    resultExpectation.fulfill()
-                }
-                switch result {
-                case .success:
-                    XCTFail("Should not succeed")
-                case .failure(let error):
-                    guard case .invalidState = error else {
-                        XCTFail("Should receive invalid state error")
-                        return
-                    }
+            do {
+                try await plugin.clearFederationToIdentityPool()
+                XCTFail("Should not succeed")
+            } catch {
+                guard case AuthError.invalidState = error else {
+                    XCTFail("Should receive invalid state error")
+                    return
                 }
             }
-            wait(for: [resultExpectation], timeout: apiTimeout)
         }
     }
 
@@ -411,7 +357,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
     ///         - valid identity id
     ///         - invalid user pool tokens error
     ///
-    func testFetchAuthSessionWithExpiredCredentialsWhenFederatedToIdentityPool() {
+    func testFetchAuthSessionWithExpiredCredentialsWhenFederatedToIdentityPool() async throws {
 
         let provider = AuthProvider.facebook
         let mockIdentityId = "mockIdentityId"
@@ -461,33 +407,26 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                     mockGetCredentialsResponse: getCredentials)
             },
             initialState: initialState)
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options()) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let session):
+        do {
+            let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
+            XCTAssertTrue(session.isSignedIn)
 
-                XCTAssertTrue(session.isSignedIn)
+            let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
+            XCTAssertNotNil(creds?.accessKey)
+            XCTAssertNotNil(creds?.secretKey)
+            XCTAssertEqual(creds?.secretKey, credentials.secretKey)
+            XCTAssertEqual(creds?.accessKey, credentials.accessKeyId)
 
-                let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
-                XCTAssertNotNil(creds?.accessKey)
-                XCTAssertNotNil(creds?.secretKey)
-                XCTAssertEqual(creds?.secretKey, credentials.secretKey)
-                XCTAssertEqual(creds?.accessKey, credentials.accessKeyId)
+            let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
+            XCTAssertNotNil(identityId)
+            XCTAssertEqual(identityId, mockIdentityId)
 
-                let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
-                XCTAssertNotNil(identityId)
-                XCTAssertEqual(identityId, mockIdentityId)
-
-                let tokens = try? (session as? AuthCognitoTokensProvider)?.getCognitoTokens().get()
-                XCTAssertNil(tokens)
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
-            }
+            let tokens = try? (session as? AuthCognitoTokensProvider)?.getCognitoTokens().get()
+            XCTAssertNil(tokens)
+        } catch {
+            XCTFail("Received failure with error \(error)")
         }
-        wait(for: [resultExpectation, cognitoAPIExpectation], timeout: apiTimeout)
+        wait(for: [cognitoAPIExpectation], timeout: apiTimeout)
     }
 
     /// Test fetchAuthSession when federated to identity pool with valid credentials
@@ -502,7 +441,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
     ///         - valid identity id
     ///         - invalid user pool tokens error
     ///
-    func testFetchAuthSessionWithValidCredentialsWhenFederatedToIdentityPool() {
+    func testFetchAuthSessionWithValidCredentialsWhenFederatedToIdentityPool() async throws {
 
         let mockIdentityId = "mockIdentityId"
 
@@ -538,33 +477,24 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                     mockGetCredentialsResponse: getCredentials)
             },
             initialState: initialState)
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options()) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let session):
+        do {
+            let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
+            XCTAssertTrue(session.isSignedIn)
+            let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
+            XCTAssertNotNil(creds?.accessKey)
+            XCTAssertNotNil(creds?.secretKey)
+            XCTAssertEqual(creds?.secretKey, credentials.secretKey)
+            XCTAssertEqual(creds?.accessKey, credentials.accessKeyId)
 
-                XCTAssertTrue(session.isSignedIn)
+            let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
+            XCTAssertNotNil(identityId)
+            XCTAssertEqual(identityId, mockIdentityId)
 
-                let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
-                XCTAssertNotNil(creds?.accessKey)
-                XCTAssertNotNil(creds?.secretKey)
-                XCTAssertEqual(creds?.secretKey, credentials.secretKey)
-                XCTAssertEqual(creds?.accessKey, credentials.accessKeyId)
-
-                let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
-                XCTAssertNotNil(identityId)
-                XCTAssertEqual(identityId, mockIdentityId)
-
-                let tokens = try? (session as? AuthCognitoTokensProvider)?.getCognitoTokens().get()
-                XCTAssertNil(tokens)
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
-            }
+            let tokens = try? (session as? AuthCognitoTokensProvider)?.getCognitoTokens().get()
+            XCTAssertNil(tokens)
+        } catch {
+            XCTFail("Received failure with error \(error)")
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test fetchAuthSession forceRefresh when federated to identity pool with valid credentials
@@ -579,7 +509,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
     ///         - valid identity id
     ///         - invalid user pool tokens error
     ///
-    func testFetchAuthSessionWithForceRefreshWhenFederatedToIdentityPool() {
+    func testFetchAuthSessionWithForceRefreshWhenFederatedToIdentityPool() async throws {
 
         let provider = AuthProvider.facebook
         let mockIdentityId = "mockIdentityId"
@@ -629,33 +559,26 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                     mockGetCredentialsResponse: getCredentials)
             },
             initialState: initialState)
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.fetchAuthSession(options: .forceRefresh()) { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let session):
+        
+        do {
+            let session = try await plugin.fetchAuthSession(options: .forceRefresh())
+            XCTAssertTrue(session.isSignedIn)
+            let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
+            XCTAssertNotNil(creds?.accessKey)
+            XCTAssertNotNil(creds?.secretKey)
+            XCTAssertEqual(creds?.secretKey, credentials.secretKey)
+            XCTAssertEqual(creds?.accessKey, credentials.accessKeyId)
 
-                XCTAssertTrue(session.isSignedIn)
+            let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
+            XCTAssertNotNil(identityId)
+            XCTAssertEqual(identityId, mockIdentityId)
 
-                let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
-                XCTAssertNotNil(creds?.accessKey)
-                XCTAssertNotNil(creds?.secretKey)
-                XCTAssertEqual(creds?.secretKey, credentials.secretKey)
-                XCTAssertEqual(creds?.accessKey, credentials.accessKeyId)
-
-                let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
-                XCTAssertNotNil(identityId)
-                XCTAssertEqual(identityId, mockIdentityId)
-
-                let tokens = try? (session as? AuthCognitoTokensProvider)?.getCognitoTokens().get()
-                XCTAssertNil(tokens)
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
-            }
+            let tokens = try? (session as? AuthCognitoTokensProvider)?.getCognitoTokens().get()
+            XCTAssertNil(tokens)
+        } catch {
+            XCTFail("Received failure with error \(error)")
         }
-        wait(for: [resultExpectation, cognitoAPIExpectation], timeout: apiTimeout)
+        wait(for: [cognitoAPIExpectation], timeout: apiTimeout)
     }
 
     /// Test federated to identity pool with developer provided identity Id
@@ -668,7 +591,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
     ///         - valid aws credentials
     ///         - valid identity id
     ///
-    func testFederateToIdentityPoolWithDeveloperProvidedIdentity() {
+    func testFederateToIdentityPoolWithDeveloperProvidedIdentity() async throws {
 
         let provider = AuthProvider.facebook
         let authenticationToken = "authenticationToken"
@@ -725,27 +648,19 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                         mockGetCredentialsResponse: getCredentials)
                 },
                 initialState: initialState)
-            let resultExpectation = expectation(description: "Should receive a result")
-            _ = plugin.federateToIdentityPool(
-                withProviderToken: authenticationToken,
-                for: provider,
-                options: .init(developerProvidedIdentityID: mockIdentityId)) { result in
-                    defer {
-                        resultExpectation.fulfill()
-                    }
-                    switch result {
-                    case .success(let federatedResult):
-                        XCTAssertNotNil(federatedResult)
-                        XCTAssertEqual(federatedResult.credentials.sessionKey, credentials.sessionToken)
-                        XCTAssertEqual(federatedResult.credentials.accessKey, credentials.accessKeyId)
-                        XCTAssertEqual(federatedResult.credentials.secretKey, credentials.secretKey)
-                        XCTAssertEqual(federatedResult.identityId, mockIdentityId)
-
-                    case .failure(let error):
-                        XCTFail("Received failure with error \(error)")
-                    }
-                }
-            wait(for: [resultExpectation], timeout: apiTimeout)
+            do {
+                let federatedResult = try await plugin.federateToIdentityPool(
+                    withProviderToken: authenticationToken,
+                    for: provider,
+                    options: .init(developerProvidedIdentityID: mockIdentityId))
+                XCTAssertNotNil(federatedResult)
+                XCTAssertEqual(federatedResult.credentials.sessionKey, credentials.sessionToken)
+                XCTAssertEqual(federatedResult.credentials.accessKey, credentials.accessKeyId)
+                XCTAssertEqual(federatedResult.credentials.secretKey, credentials.secretKey)
+                XCTAssertEqual(federatedResult.identityId, mockIdentityId)
+            } catch {
+                XCTFail("Received failure with error \(error)")
+            }
         }
     }
 

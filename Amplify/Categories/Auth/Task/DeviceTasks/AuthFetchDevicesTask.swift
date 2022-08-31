@@ -7,14 +7,10 @@
 
 import Foundation
 
-public protocol AuthForgetDeviceOperation: AmplifyOperation<
-    AuthForgetDeviceRequest,
-    Void,
-    AuthError
-> {}
+public protocol AuthFetchDevicesTask: AmplifyAuthTask where Request == AuthFetchDevicesRequest, Success == [AuthDevice], Failure == AuthError {}
 
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let forgetDeviceAPI = "Auth.forgetDeviceAPI"
+    static let fetchDevicesAPI = "Auth.fetchDevicesAPI"
 }

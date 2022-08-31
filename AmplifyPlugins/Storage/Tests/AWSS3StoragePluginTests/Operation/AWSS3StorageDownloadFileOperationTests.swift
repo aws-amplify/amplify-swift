@@ -43,7 +43,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         XCTAssertTrue(operation.isFinished)
     }
 
-    func testDownloadFileOperationGetIdentityIdError() {
+    func testDownloadFileOperationGetIdentityIdError() async throws {
         mockAuthService.getIdentityIdError = AuthError.service("", "", "")
         let request = StorageDownloadFileRequest(key: testKey,
                                                  local: testURL,
@@ -67,9 +67,9 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         }
 
         operation.start()
-
+        
+        await waitForExpectations(timeout: 1)
         XCTAssertTrue(operation.isFinished)
-        waitForExpectations(timeout: 1)
     }
 
     func testDownloadFileOperationDownloadLocal() {
@@ -144,7 +144,7 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: url)
     }
 
-    func testGetOperationDownloadLocalFromTargetIdentityId() {
+    func testGetOperationDownloadLocalFromTargetIdentityId() async throws {
         let task = StorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceDownloadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
@@ -177,8 +177,8 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
+        await waitForExpectations(timeout: 1)
         XCTAssertTrue(operation.isFinished)
-        waitForExpectations(timeout: 1)
         mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: url)
     }
 

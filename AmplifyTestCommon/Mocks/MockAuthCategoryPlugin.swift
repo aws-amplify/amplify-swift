@@ -14,10 +14,6 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         return nil
     }
 
-    public func getCurrentUser(closure: @escaping (Result<AuthUser?, Error>) -> Void) {
-        closure(.success(nil))
-    }
-
     func signIn(username: String,
                 password: String,
                 options: AuthSignInRequest.Options?) async throws -> AuthSignInResult {
@@ -70,8 +66,7 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
         fatalError()
     }
 
-    public func fetchAuthSession(options: AuthFetchSessionOperation.Request.Options? = nil,
-                                 listener: AuthFetchSessionOperation.ResultListener?) -> AuthFetchSessionOperation {
+    public func fetchAuthSession(options: AuthFetchSessionRequest.Options? = nil) async throws -> AuthSession {
         fatalError()
     }
 
@@ -86,39 +81,27 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
             fatalError()
     }
 
-    public func fetchUserAttributes(
-        options: AuthFetchUserAttributeOperation.Request.Options? = nil,
-        listener: AuthFetchUserAttributeOperation.ResultListener?
-    ) -> AuthFetchUserAttributeOperation {
+    public func fetchUserAttributes(options: AuthFetchUserAttributesRequest.Options? = nil) async throws -> [AuthUserAttribute] {
             fatalError()
     }
 
-    public func update(userAttribute: AuthUserAttribute,
-                       options: AuthUpdateUserAttributeOperation.Request.Options? = nil,
-                       listener: AuthUpdateUserAttributeOperation.ResultListener?) -> AuthUpdateUserAttributeOperation {
+    public func update(userAttribute: AuthUserAttribute, options: AuthUpdateUserAttributeRequest.Options? = nil) async throws -> AuthUpdateAttributeResult {
         fatalError()
     }
 
-    public func update(userAttributes: [AuthUserAttribute],
-                       options: AuthUpdateUserAttributesOperation.Request.Options? = nil,
-                       listener: AuthUpdateUserAttributesOperation.ResultListener?)
-        -> AuthUpdateUserAttributesOperation {
+    public func update(userAttributes: [AuthUserAttribute], options: AuthUpdateUserAttributesRequest.Options? = nil) async throws -> [AuthUserAttributeKey: AuthUpdateAttributeResult] {
             fatalError()
     }
 
-    public func resendConfirmationCode(for attributeKey: AuthUserAttributeKey,
-                                       options: AuthAttributeResendConfirmationCodeOperation.Request.Options? = nil,
-                                       listener: AuthAttributeResendConfirmationCodeOperation.ResultListener?)
-        -> AuthAttributeResendConfirmationCodeOperation {
+    public func resendConfirmationCode(for attributeKey: AuthUserAttributeKey, options: AuthAttributeResendConfirmationCodeRequest.Options? = nil)
+        async throws -> AuthCodeDeliveryDetails {
             fatalError()
 
     }
 
     public func confirm(userAttribute: AuthUserAttributeKey,
                         confirmationCode: String,
-                        options: AuthConfirmUserAttributeOperation.Request.Options? = nil,
-                        listener: AuthConfirmUserAttributeOperation.ResultListener?)
-        -> AuthConfirmUserAttributeOperation {
+                        options: AuthConfirmUserAttributeRequest.Options? = nil) async throws {
             fatalError()
     }
 
@@ -129,22 +112,15 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
 
     }
 
-    public func fetchDevices(
-        options: AuthFetchDevicesOperation.Request.Options? = nil,
-        listener: AuthFetchDevicesOperation.ResultListener?) -> AuthFetchDevicesOperation {
+    public func fetchDevices(options: AuthFetchDevicesRequest.Options? = nil) -> [AuthDevice] {
         fatalError()
     }
 
-    public func forgetDevice(
-        _ device: AuthDevice? = nil,
-        options: AuthForgetDeviceOperation.Request.Options? = nil,
-        listener: AuthForgetDeviceOperation.ResultListener?) -> AuthForgetDeviceOperation {
+    public func forgetDevice(_ device: AuthDevice? = nil, options: AuthForgetDeviceRequest.Options? = nil) async throws {
         fatalError()
     }
 
-    public func rememberDevice(
-        options: AuthRememberDeviceOperation.Request.Options? = nil,
-        listener: AuthRememberDeviceOperation.ResultListener?) -> AuthRememberDeviceOperation {
+    public func rememberDevice( options: AuthRememberDeviceRequest.Options? = nil) async throws {
         fatalError()
     }
 

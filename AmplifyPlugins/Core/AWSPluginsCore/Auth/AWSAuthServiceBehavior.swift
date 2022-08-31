@@ -16,8 +16,7 @@ public protocol AWSAuthServiceBehavior: AnyObject {
     func getTokenClaims(tokenString: String) -> Result<[String: AnyObject], AuthError>
 
     /// Retrieves the identity identifier of for the Auth service
-    /// - Parameter completion: Completion handler defined for the input `Result<String, AuthError>`
-    func getIdentityID(completion: @escaping (Result<String, AuthError>) -> Void)
+    func getIdentityID() async throws -> String
     
     /// Retrieves the token from the Auth token provider
     func getUserPoolAccessToken() async throws -> String
