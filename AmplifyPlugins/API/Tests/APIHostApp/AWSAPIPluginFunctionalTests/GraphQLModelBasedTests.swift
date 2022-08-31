@@ -445,9 +445,9 @@ class GraphQLModelBasedTests: XCTestCase {
         return try await createPost(post: post)
     }
 
-    func createComment(content: String, post: Post) -> Comment? {
+    func createComment(content: String, post: Post) async throws -> Comment? {
         let comment = Comment(content: content, createdAt: .now(), post: post)
-        return createComment(comment: comment)
+        return try await createComment(comment: comment)
     }
 
     func createPost(post: Post) async throws -> Post? {
@@ -460,70 +460,33 @@ class GraphQLModelBasedTests: XCTestCase {
         }
     }
 
-    func createComment(comment: Comment) -> Comment? {
-        var result: Comment?
-        let requestInvokedSuccessfully = expectation(description: "request completed")
-
-        _ = Amplify.API.mutate(request: .create(comment)) { event in
-            switch event {
-            case .success(let data):
-                switch data {
-                case .success(let comment):
-                    result = comment
-                default:
-                    XCTFail("Could not get data back")
-                }
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+    func createComment(comment: Comment) async throws -> Comment? {
+        let data = try await Amplify.API.mutate(request: .create(comment))
+        switch data {
+        case .success(let comment):
+            return comment
+        case .failure(let error):
+            throw error
         }
-        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
-        return result
     }
 
-    func mutatePost(_ post: Post, expect: XCTestExpectation? = nil) -> Post? {
-        var result: Post?
-        let requestInvokedSuccessfully = expect ?? expectation(description: "request completed")
-        _ = Amplify.API.mutate(request: .update(post)) { event in
-            switch event {
-            case .success(let data):
-                switch data {
-                case .success(let post):
-                    result = post
-                default:
-                    XCTFail("Could not get data back")
-                }
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+    func mutatePost(_ post: Post) async throws -> Post {
+        let data = try await Amplify.API.mutate(request: .update(post))
+        switch data {
+        case .success(let post):
+            return post
+        case .failure(let error):
+            throw error
         }
-        if expect == nil {
-            wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
-        }
-        return result
     }
 
-    func deletePost(post: Post) -> Post? {
-        var result: Post?
-        let requestInvokedSuccessfully = expectation(description: "request completed")
-
-        _ = Amplify.API.mutate(request: .delete(post)) { event in
-            switch event {
-            case .success(let data):
-                switch data {
-                case .success(let post):
-                    result = post
-                default:
-                    XCTFail("Could not get data back")
-                }
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+    func deletePost(post: Post) async throws -> Post {
+        let data = try await Amplify.API.mutate(request: .delete(post))
+        switch data {
+        case .success(let post):
+            return post
+        case .failure(let error):
+            throw error
         }
-        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
-        return result
     }
 }
