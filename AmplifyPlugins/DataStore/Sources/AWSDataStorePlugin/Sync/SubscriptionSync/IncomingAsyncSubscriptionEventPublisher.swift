@@ -20,7 +20,7 @@ import Foundation
 /// incoming successful events onto a `Publisher`, that queue processors can subscribe to.
 final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
     typealias Payload = MutationSync<AnyModel>
-    typealias Event = SubscriptionEvent<GraphQLResponse<Payload>>
+    typealias Event = GraphQLSubscriptionEvent<Payload>
 
     private var onCreateOperation: RetryableGraphQLSubscriptionOperation<Payload>?
     private var onCreateValueListener: GraphQLSubscriptionOperation<Payload>.InProcessListener?

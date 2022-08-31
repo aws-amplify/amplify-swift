@@ -25,8 +25,8 @@ class SubscriptionViewModel: ObservableObject {
 
     func subscribe() async {
         do {
-            let task = try await apiPlugin.subscribe(request: .subscription(of: Todo.self, type: .onCreate))
-            await task.subscription.forEach { subscriptionEvent in
+            let subscription = apiPlugin.subscribe(request: .subscription(of: Todo.self, type: .onCreate))
+            try await subscription.forEach { subscriptionEvent in
                 await self.processSubscription(subscriptionEvent)
             }
                     
@@ -35,7 +35,7 @@ class SubscriptionViewModel: ObservableObject {
         }
     }
     
-    func processSubscription(_ subscriptionEvent: GraphQLSubscriptionTask<Todo>.InProcess) async {
+    func processSubscription(_ subscriptionEvent: GraphQLSubscriptionEvent<Todo>) async {
         switch subscriptionEvent {
         case .connection(let subscriptionConnectionState):
             print("Subscription connect state is \(subscriptionConnectionState)")

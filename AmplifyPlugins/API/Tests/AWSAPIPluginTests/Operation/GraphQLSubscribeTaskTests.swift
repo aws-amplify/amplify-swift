@@ -14,10 +14,8 @@ import Amplify
 import AmplifyAsyncTesting
 import AppSyncRealTimeClient
 
-class GraphQLSubscribeCombineTests: OperationTestBase {
+class GraphQLSubscribeTasksTests: OperationTestBase {
 
-    var sink: AnyCancellable?
-    
     // Setup expectations
     var onSubscribeInvoked: AsyncExpectation!
     var receivedCompletionSuccess: AsyncExpectation!
@@ -244,36 +242,36 @@ class GraphQLSubscribeCombineTests: OperationTestBase {
             responseType: JSONValue.self
         )
         let subscription = apiPlugin.subscribe(request: request)
-        sink = Amplify.Publisher.create(subscription).sink { completion in
-            switch completion {
-            case .failure:
-                Task { await self.receivedCompletionFailure.fulfill() }
-            case .finished:
-                Task { await self.receivedCompletionSuccess.fulfill() }
-            }
-        } receiveValue: { subscriptionEvent in
-            switch subscriptionEvent {
-            case .connection(let connectionState):
-                switch connectionState {
-                case .connecting:
-                    Task { await self.receivedStateValueConnecting.fulfill() }
-                case .connected:
-                    Task { await self.receivedStateValueConnected.fulfill() }
-                case .disconnected:
-                    Task { await self.receivedStateValueDisconnected.fulfill() }
-                }
-            case .data(let result):
-                switch result {
-                case .success(let actualValue):
-                    if let expectedValue = expectedValue {
-                        XCTAssertEqual(actualValue, expectedValue)
+        Task {
+            do {
+                for try await subscriptionEvent in subscription {
+                    switch subscriptionEvent {
+                    case .connection(let connectionState):
+                        switch connectionState {
+                        case .connecting:
+                            await self.receivedStateValueConnecting.fulfill()
+                        case .connected:
+                            await self.receivedStateValueConnected.fulfill()
+                        case .disconnected:
+                            await self.receivedStateValueDisconnected.fulfill()
+                        }
+                    case .data(let result):
+                        switch result {
+                        case .success(let actualValue):
+                            if let expectedValue = expectedValue {
+                                XCTAssertEqual(actualValue, expectedValue)
+                            }
+                            await self.receivedDataValueSuccess.fulfill()
+                        case .failure:
+                            await self.receivedDataValueError.fulfill()
+                        }
                     }
-                    Task { await self.receivedDataValueSuccess.fulfill() }
-                case .failure:
-                    Task { await self.receivedDataValueError.fulfill() }
                 }
+                
+                await self.receivedCompletionSuccess.fulfill()
+            } catch {
+                await self.receivedCompletionFailure.fulfill()
             }
         }
     }
-
 }

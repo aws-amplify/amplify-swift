@@ -11,75 +11,71 @@ import XCTest
 @testable import APIHostApp
 
 extension GraphQLModelBasedTests {
-    // TODO: Migrate this test to new async APIs
-    func testConcurrentSubscriptions() throws {
+    
+    func testConcurrentSubscriptions() async throws {
         let count = 50
-        let connectedInvoked = expectation(description: "Connection established")
-        connectedInvoked.expectedFulfillmentCount = count
-        let disconnectedInvoked = expectation(description: "Connection disconnected")
-        disconnectedInvoked.expectedFulfillmentCount = count
-        let completedInvoked = expectation(description: "Completed invoked")
-        completedInvoked.expectedFulfillmentCount = count
-        let progressInvoked = expectation(description: "progress invoked")
-        progressInvoked.expectedFulfillmentCount = count
+        let connectedInvoked = asyncExpectation(description: "Connection established", expectedFulfillmentCount: count)
+        let disconnectedInvoked = asyncExpectation(description: "Connection disconnected", expectedFulfillmentCount: count)
+        let completedInvoked = asyncExpectation(description: "Completed invoked", expectedFulfillmentCount: count)
+        let progressInvoked = asyncExpectation(description: "progress invoked", expectedFulfillmentCount: count)
+
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
 
-        let operations = AtomicValue<[GraphQLSubscriptionOperation<Post>]>(initialValue: [])
-        DispatchQueue.concurrentPerform(iterations: count) { _ in
-            let operation = Amplify.API.subscribe(
-                request: .subscription(of: Post.self, type: .onCreate),
-                valueListener: { event in
-                    switch event {
-                    case .connection(let state):
-                        switch state {
-                        case .connecting:
-                            break
-                        case .connected:
-                            connectedInvoked.fulfill()
-                        case .disconnected:
-                            disconnectedInvoked.fulfill()
-                        }
-                    case .data(let result):
-                        switch result {
-                        case .success(let post):
-                            if post.id == uuid {
-                                progressInvoked.fulfill()
+        let sequences = await withTaskGroup(of: AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<Post>>.self) { group -> [AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<Post>>] in
+            for _ in 0..<count {
+                group.addTask {
+                    let subscription = Amplify.API.subscribe(request: .subscription(of: Post.self, type: .onCreate))
+                    Task {
+                        for try await subscriptionEvent in subscription {
+                            switch subscriptionEvent {
+                            case .connection(let state):
+                                switch state {
+                                case .connecting:
+                                    break
+                                case .connected:
+                                    await connectedInvoked.fulfill()
+                                case .disconnected:
+                                    await disconnectedInvoked.fulfill()
+                                }
+                            case .data(let result):
+                                switch result {
+                                case .success(let post):
+                                    if post.id == uuid {
+                                        await progressInvoked.fulfill()
+                                    }
+                                case .failure(let error):
+                                    XCTFail("\(error)")
+                                }
                             }
-                        case .failure(let error):
-                            XCTFail("\(error)")
                         }
+                        await completedInvoked.fulfill()
                     }
-
-            },
-                completionListener: { event in
-                    switch event {
-                    case .failure(let error):
-                        XCTFail("Unexpected .failed event: \(error)")
-                    case .success:
-                        completedInvoked.fulfill()
-                    }
-            })
-            operations.append(operation)
+                    return subscription
+                }
+            }
+            
+            var sequences = [AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<Post>>]()
+            for await sequence in group {
+                sequences.append(sequence)
+            }
+            return sequences
+            
         }
-
-        wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
-        XCTAssertEqual(operations.get().count, count)
-        guard createPost(id: uuid, title: title) != nil else {
+    
+        await waitForExpectations([connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+        XCTAssertEqual(sequences.count, count)
+        
+        guard try await createPost(id: uuid, title: title) != nil else {
             XCTFail("Failed to create post")
             return
         }
 
-        wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
-        DispatchQueue.concurrentPerform(iterations: count) { index in
-            operations.get()[index].cancel()
+        await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        sequences.forEach { sequence in
+            sequence.cancel()
         }
-        wait(for: [disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
-
-        let completedOperations = operations.get()
-        for operation in completedOperations {
-            XCTAssertTrue(operation.isFinished)
-        }
+        await waitForExpectations([disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 }

@@ -62,7 +62,7 @@ class GraphQLConnectionScenario6Tests: XCTestCase {
     func testGetBlogThenFetchPostsThenFetchComments() async throws {
         guard let blog = try await createBlog(name: "name"),
               let post1 = try await createPost(title: "title", blog: blog),
-              let post2 = try await createPost(title: "title", blog: blog),
+              try await createPost(title: "title", blog: blog) != nil,
               let comment1post1 = try await createComment(post: post1, content: "content"),
               let comment2post1 = try await createComment(post: post1, content: "content") else {
             XCTFail("Could not create blog, posts, and comments")

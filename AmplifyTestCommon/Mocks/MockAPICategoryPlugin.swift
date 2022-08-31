@@ -146,7 +146,7 @@ class MockAPICategoryPlugin: MessageReporter,
             return operation
     }
 
-    func subscribe<R: Decodable>(request: GraphQLRequest<R>) async throws -> GraphQLSubscriptionTask<R> {
+    func subscribe<R: Decodable>(request: GraphQLRequest<R>) -> AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<R>> {
         notify(
                 """
                 subscribe(request:listener:) document: \(request.document); \
@@ -161,9 +161,9 @@ class MockAPICategoryPlugin: MessageReporter,
                                                  variables: request.variables,
                                                  responseType: request.responseType,
                                                  options: requestOptions)
-        let operation = MockSubscriptionGraphQLOperation(request: request, responseType: request.responseType)
-        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
-        return taskAdapter
+        
+        let taskRunner = MockAWSGraphQLSubscriptionTaskRunner(request: request)
+        return taskRunner.sequence
     }
     
     public func reachabilityPublisher(for apiName: String?) -> AnyPublisher<ReachabilityUpdate, Never>? {
@@ -430,4 +430,20 @@ class MockFunctionAuthProvider: AmplifyFunctionAuthProvider {
             return "token"
         }
     }
+}
+
+class MockAWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel {
+    
+    public typealias Request = GraphQLOperationRequest<R>
+    public typealias InProcess = GraphQLSubscriptionEvent<R>
+    public var request: GraphQLOperationRequest<R>
+    public var context = InternalTaskAsyncThrowingSequenceContext<GraphQLSubscriptionEvent<R>>()
+    func run() async throws {
+        
+    }
+    
+    init(request: GraphQLOperationRequest<R>) {
+        self.request = request
+    }
+    
 }

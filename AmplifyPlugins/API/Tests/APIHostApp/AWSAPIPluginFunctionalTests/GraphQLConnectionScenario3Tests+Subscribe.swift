@@ -20,35 +20,37 @@ extension GraphQLConnectionScenario3Tests {
         let uuid2 = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
-        let task = try await Amplify.API.subscribe(request: .subscription(of: Post3.self, type: .onCreate))
-        let subscription = await task.subscription
+        let subscription = Amplify.API.subscribe(request: .subscription(of: Post3.self, type: .onCreate))
         Task {
-            for await subscriptionEvent in subscription {
-                switch subscriptionEvent {
-                case .connection(let state):
-                    switch state {
-                    case .connecting:
-                        break
-                    case .connected:
-                        await connectedInvoked.fulfill()
-                    case .disconnected:
-                        break
-                    }
-                case .data(let result):
-                    switch result {
-                    case .success(let post):
-                        if post.id == uuid || post.id == uuid2 {
-                            
-                            await progressInvoked.fulfill()
+            do {
+                for try await subscriptionEvent in subscription {
+                    switch subscriptionEvent {
+                    case .connection(let state):
+                        switch state {
+                        case .connecting:
+                            break
+                        case .connected:
+                            await connectedInvoked.fulfill()
+                        case .disconnected:
+                            break
                         }
-                    case .failure(let error):
-                        XCTFail("\(error)")
+                    case .data(let result):
+                        switch result {
+                        case .success(let post):
+                            if post.id == uuid || post.id == uuid2 {
+                                
+                                await progressInvoked.fulfill()
+                            }
+                        case .failure(let error):
+                            XCTFail("\(error)")
+                        }
                     }
                 }
+            } catch {
+                XCTFail("Unexpected subscription failure")
             }
         }
         
-        XCTAssertNotNil(task)
         await waitForExpectations([connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         let post = Post3(id: uuid, title: title)
         _ = try await Amplify.API.mutate(request: .create(post))
@@ -63,23 +65,26 @@ extension GraphQLConnectionScenario3Tests {
         let connectedInvoked = AsyncExpectation(description: "Connection established")
         let progressInvoked = AsyncExpectation(description: "progress invoked")
 
-        let task = try await Amplify.API.subscribe(request: .subscription(of: Post3.self, type: .onUpdate))
-        let subscription = await task.subscription
+        let subscription = Amplify.API.subscribe(request: .subscription(of: Post3.self, type: .onUpdate))
         Task {
-            for await subscriptionEvent in subscription {
-                switch subscriptionEvent {
-                case .connection(let state):
-                    switch state {
-                    case .connecting:
-                        await connectingInvoked.fulfill()
-                    case .connected:
-                        await connectedInvoked.fulfill()
-                    case .disconnected:
-                        break
+            do {
+                for try await subscriptionEvent in subscription {
+                    switch subscriptionEvent {
+                    case .connection(let state):
+                        switch state {
+                        case .connecting:
+                            await connectingInvoked.fulfill()
+                        case .connected:
+                            await connectedInvoked.fulfill()
+                        case .disconnected:
+                            break
+                        }
+                    case .data:
+                        await progressInvoked.fulfill()
                     }
-                case .data:
-                    await progressInvoked.fulfill()
                 }
+            } catch {
+                XCTFail("Unexpected subscription failure")
             }
         }
                                  
@@ -93,8 +98,6 @@ extension GraphQLConnectionScenario3Tests {
         _ = try await Amplify.API.mutate(request: .update(post))
 
         await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
-
-        await task.cancel()
     }
     
     func testOnDeletePostSubscriptionWithModel() async throws {
@@ -102,23 +105,26 @@ extension GraphQLConnectionScenario3Tests {
         let connectedInvoked = AsyncExpectation(description: "Connection established")
         let progressInvoked = AsyncExpectation(description: "progress invoked")
         
-        let task = try await Amplify.API.subscribe(request: .subscription(of: Post3.self, type: .onDelete))
-        let subscription = await task.subscription
+        let subscription = Amplify.API.subscribe(request: .subscription(of: Post3.self, type: .onDelete))
         Task {
-            for await subscriptionEvent in subscription {
-                switch subscriptionEvent {
-                case .connection(let state):
-                    switch state {
-                    case .connecting:
-                        await connectingInvoked.fulfill()
-                    case .connected:
-                        await connectedInvoked.fulfill()
-                    case .disconnected:
-                        break
+            do {
+                for try await subscriptionEvent in subscription {
+                    switch subscriptionEvent {
+                    case .connection(let state):
+                        switch state {
+                        case .connecting:
+                            await connectingInvoked.fulfill()
+                        case .connected:
+                            await connectedInvoked.fulfill()
+                        case .disconnected:
+                            break
+                        }
+                    case .data:
+                        await progressInvoked.fulfill()
                     }
-                case .data:
-                    await progressInvoked.fulfill()
                 }
+            } catch {
+                XCTFail("Unexpected subscription failure")
             }
         }
         await waitForExpectations([connectingInvoked, connectedInvoked], timeout: TestCommonConstants.networkTimeout)
@@ -137,33 +143,34 @@ extension GraphQLConnectionScenario3Tests {
         }
 
         await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
-        await task.cancel()
     }
 
     func testOnCreateCommentSubscriptionWithModel() async throws {
         let connectingInvoked = AsyncExpectation(description: "Connection connecting")
         let connectedInvoked = AsyncExpectation(description: "Connection established")
         let progressInvoked = AsyncExpectation(description: "progress invoked")
-        let task = try await Amplify.API.subscribe(request: .subscription(of: Comment3.self, type: .onCreate))
-        let subscription = await task.subscription
+        let subscription = Amplify.API.subscribe(request: .subscription(of: Comment3.self, type: .onCreate))
         Task {
-            for await subscriptionEvent in subscription {
-                switch subscriptionEvent {
-                case .connection(let state):
-                    switch state {
-                    case .connecting:
-                        await connectingInvoked.fulfill()
-                    case .connected:
-                        await connectedInvoked.fulfill()
-                    case .disconnected:
-                        break
+            do {
+                for try await subscriptionEvent in subscription {
+                    switch subscriptionEvent {
+                    case .connection(let state):
+                        switch state {
+                        case .connecting:
+                            await connectingInvoked.fulfill()
+                        case .connected:
+                            await connectedInvoked.fulfill()
+                        case .disconnected:
+                            break
+                        }
+                    case .data:
+                        await progressInvoked.fulfill()
                     }
-                case .data:
-                    await progressInvoked.fulfill()
                 }
+            } catch {
+                XCTFail("Unexpected subscription failure")
             }
         }
-        XCTAssertNotNil(task)
         await waitForExpectations([connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
@@ -180,7 +187,5 @@ extension GraphQLConnectionScenario3Tests {
         }
 
         await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
-        await task.cancel()
-
     }
 }
