@@ -9,6 +9,7 @@ import Foundation
 
 extension StorageCategory: StorageCategoryBehavior {
     @discardableResult
+    @available(*, renamed: "StorageCategoryBehavior.getURL(key:options:)")
     public func getURL(key: String,
                        options: StorageGetURLRequest.Options? = nil,
                        resultListener: StorageGetURLOperation.ResultListener?) -> StorageGetURLOperation {
@@ -16,6 +17,7 @@ extension StorageCategory: StorageCategoryBehavior {
     }
 
     @discardableResult
+    @available(*, renamed: "StorageCategoryBehavior.downloadData(key:options:)")
     public func downloadData(key: String,
                              options: StorageDownloadDataRequest.Options? = nil,
                              progressListener: ProgressListener? = nil,
@@ -28,6 +30,7 @@ extension StorageCategory: StorageCategoryBehavior {
     }
 
     @discardableResult
+    @available(*, renamed: "StorageCategoryBehavior.downloadFile(key:local:options:)")
     public func downloadFile(key: String,
                              local: URL,
                              options: StorageDownloadFileRequest.Options? = nil,
@@ -42,6 +45,7 @@ extension StorageCategory: StorageCategoryBehavior {
     }
 
     @discardableResult
+    @available(*, renamed: "StorageCategoryBehavior.uploadData(key:data:options:)")
     public func uploadData(key: String,
                            data: Data,
                            options: StorageUploadDataRequest.Options? = nil,
@@ -56,6 +60,7 @@ extension StorageCategory: StorageCategoryBehavior {
     }
 
     @discardableResult
+    @available(*, renamed: "StorageCategoryBehavior.uploadFile(key:data:options:)")
     public func uploadFile(key: String,
                            local: URL,
                            options: StorageUploadFileRequest.Options? = nil,
@@ -70,6 +75,7 @@ extension StorageCategory: StorageCategoryBehavior {
     }
 
     @discardableResult
+    @available(*, renamed: "StorageCategoryBehavior.remove(key:options:)")
     public func remove(key: String,
                        options: StorageRemoveRequest.Options? = nil,
                        resultListener: StorageRemoveOperation.ResultListener?) -> StorageRemoveOperation {
@@ -77,6 +83,7 @@ extension StorageCategory: StorageCategoryBehavior {
     }
 
     @discardableResult
+    @available(*, renamed: "StorageCategoryBehavior.list(options:)")
     public func list(options: StorageListRequest.Options? = nil,
                      resultListener: StorageListOperation.ResultListener?) -> StorageListOperation {
         return plugin.list(options: options, resultListener: resultListener)
