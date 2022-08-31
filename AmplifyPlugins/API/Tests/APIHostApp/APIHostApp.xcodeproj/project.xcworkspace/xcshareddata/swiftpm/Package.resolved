@@ -1,106 +1,104 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "AppSyncRealTimeClient",
-        "repositoryURL": "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git",
-        "state": {
-          "branch": null,
-          "revision": "da88cf1cab82e281e7277cd9feb9efc87a057041",
-          "version": "2.1.1"
-        }
-      },
-      {
-        "package": "AwsCrt",
-        "repositoryURL": "https://github.com/awslabs/aws-crt-swift.git",
-        "state": {
-          "branch": null,
-          "revision": "d654b82a55aec736ad8b4354027acab17394a060",
-          "version": "0.2.2"
-        }
-      },
-      {
-        "package": "AWSSwiftSDK",
-        "repositoryURL": "https://github.com/awslabs/aws-sdk-swift.git",
-        "state": {
-          "branch": null,
-          "revision": "eea9a9ac6aab16e99eec10169a56336f79ce2e37",
-          "version": "0.2.6"
-        }
-      },
-      {
-        "package": "CwlCatchException",
-        "repositoryURL": "https://github.com/mattgallagher/CwlCatchException.git",
-        "state": {
-          "branch": null,
-          "revision": "35f9e770f54ce62dd8526470f14c6e137cef3eea",
-          "version": "2.1.1"
-        }
-      },
-      {
-        "package": "CwlPreconditionTesting",
-        "repositoryURL": "https://github.com/mattgallagher/CwlPreconditionTesting.git",
-        "state": {
-          "branch": null,
-          "revision": "c21f7bab5ca8eee0a9998bbd17ca1d0eb45d4688",
-          "version": "2.1.0"
-        }
-      },
-      {
-        "package": "ClientRuntime",
-        "repositoryURL": "https://github.com/awslabs/smithy-swift.git",
-        "state": {
-          "branch": null,
-          "revision": "83de16a9d66c942248305aafd57f842eb2363358",
-          "version": "0.2.5"
-        }
-      },
-      {
-        "package": "SQLite.swift",
-        "repositoryURL": "https://github.com/stephencelis/SQLite.swift.git",
-        "state": {
-          "branch": null,
-          "revision": "0a9893ec030501a3956bee572d6b4fdd3ae158a1",
-          "version": "0.12.2"
-        }
-      },
-      {
-        "package": "Starscream",
-        "repositoryURL": "https://github.com/daltoniam/Starscream",
-        "state": {
-          "branch": null,
-          "revision": "df8d82047f6654d8e4b655d1b1525c64e1059d21",
-          "version": "4.0.4"
-        }
-      },
-      {
-        "package": "swift-collections",
-        "repositoryURL": "https://github.com/apple/swift-collections",
-        "state": {
-          "branch": null,
-          "revision": "48254824bb4248676bf7ce56014ff57b142b77eb",
-          "version": "1.0.2"
-        }
-      },
-      {
-        "package": "swift-log",
-        "repositoryURL": "https://github.com/apple/swift-log.git",
-        "state": {
-          "branch": null,
-          "revision": "5d66f7ba25daf4f94100e7022febf3c75e37a6c7",
-          "version": "1.4.2"
-        }
-      },
-      {
-        "package": "XMLCoder",
-        "repositoryURL": "https://github.com/MaxDesiatov/XMLCoder.git",
-        "state": {
-          "branch": null,
-          "revision": "ca932442d7481700f5434a7b138c47dd42d9902b",
-          "version": "0.14.0"
-        }
+  "pins" : [
+    {
+      "identity" : "aws-appsync-realtime-client-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git",
+      "state" : {
+        "revision" : "da88cf1cab82e281e7277cd9feb9efc87a057041",
+        "version" : "2.1.1"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "aws-crt-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/awslabs/aws-crt-swift.git",
+      "state" : {
+        "revision" : "d654b82a55aec736ad8b4354027acab17394a060",
+        "version" : "0.2.2"
+      }
+    },
+    {
+      "identity" : "aws-sdk-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/awslabs/aws-sdk-swift.git",
+      "state" : {
+        "revision" : "eea9a9ac6aab16e99eec10169a56336f79ce2e37",
+        "version" : "0.2.6"
+      }
+    },
+    {
+      "identity" : "cwlcatchexception",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mattgallagher/CwlCatchException.git",
+      "state" : {
+        "revision" : "35f9e770f54ce62dd8526470f14c6e137cef3eea",
+        "version" : "2.1.1"
+      }
+    },
+    {
+      "identity" : "cwlpreconditiontesting",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mattgallagher/CwlPreconditionTesting.git",
+      "state" : {
+        "revision" : "c21f7bab5ca8eee0a9998bbd17ca1d0eb45d4688",
+        "version" : "2.1.0"
+      }
+    },
+    {
+      "identity" : "smithy-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/awslabs/smithy-swift.git",
+      "state" : {
+        "revision" : "83de16a9d66c942248305aafd57f842eb2363358",
+        "version" : "0.2.5"
+      }
+    },
+    {
+      "identity" : "sqlite.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stephencelis/SQLite.swift.git",
+      "state" : {
+        "revision" : "0a9893ec030501a3956bee572d6b4fdd3ae158a1",
+        "version" : "0.12.2"
+      }
+    },
+    {
+      "identity" : "starscream",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/daltoniam/Starscream",
+      "state" : {
+        "revision" : "df8d82047f6654d8e4b655d1b1525c64e1059d21",
+        "version" : "4.0.4"
+      }
+    },
+    {
+      "identity" : "swift-collections",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-collections",
+      "state" : {
+        "revision" : "48254824bb4248676bf7ce56014ff57b142b77eb",
+        "version" : "1.0.2"
+      }
+    },
+    {
+      "identity" : "swift-log",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-log.git",
+      "state" : {
+        "revision" : "5d66f7ba25daf4f94100e7022febf3c75e37a6c7",
+        "version" : "1.4.2"
+      }
+    },
+    {
+      "identity" : "xmlcoder",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/MaxDesiatov/XMLCoder.git",
+      "state" : {
+        "revision" : "ca932442d7481700f5434a7b138c47dd42d9902b",
+        "version" : "0.14.0"
+      }
+    }
+  ],
+  "version" : 2
 }

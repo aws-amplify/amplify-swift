@@ -91,15 +91,6 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
         }
     }
     
-    public func load(completion: @escaping (Result<[Element], CoreError>) -> Void) {
-        switch loadedState {
-        case .loaded(let elements, _, _):
-            completion(.success(elements))
-        case .notLoaded(let associatedId, let associatedField):
-            load(associatedId: associatedId, associatedField: associatedField, completion: completion)
-        }
-    }
-    
     public func load() async throws -> [Element] {
         switch loadedState {
         case .loaded(let elements, _, _):
@@ -110,51 +101,6 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
     }
 
     //// Internal `load` to perform the retrieval of the first page and storing it in memory
-    func load(associatedId: String,
-              associatedField: String,
-              completion: @escaping (Result<[Element], CoreError>) -> Void ) {
-        let predicate: QueryPredicate = field(associatedField) == associatedId
-        let filter = predicate.graphQLFilter(for: Element.schema)
-        let request = GraphQLRequest<JSONValue>.listQuery(responseType: JSONValue.self,
-                                                          modelSchema: Element.schema,
-                                                          filter: filter,
-                                                          limit: limit,
-                                                          apiName: apiName)
-        Amplify.API.query(request: request) { result in
-            switch result {
-            case .success(let graphQLResponse):
-                switch graphQLResponse {
-                case .success(let graphQLData):
-                    guard let listResponse = try? AppSyncListResponse.initWithMetadata(type: Element.self,
-                                                                                       graphQLData: graphQLData,
-                                                                                       apiName: self.apiName) else {
-                        completion(.failure(CoreError.listOperation("""
-                                                The AppSync response return successfully, but could not decode to
-                                                AWSAppSyncListResponse from: \(graphQLData)
-                                                """, "", nil)))
-                        return
-                    }
-
-                    self.loadedState = .loaded(elements: listResponse.items,
-                                               nextToken: listResponse.nextToken,
-                                               filter: filter)
-                    completion(.success(listResponse.items))
-                case .failure(let graphQLError):
-                    Amplify.API.log.error(error: graphQLError)
-                    completion(.failure(.listOperation(
-                                            "The AppSync response returned successfully with GraphQL errors.",
-                                            "Check the underlying error for the failed GraphQL response.",
-                                            graphQLError)))
-                }
-            case .failure(let apiError):
-                Amplify.API.log.error(error: apiError)
-                completion(.failure(.listOperation("The AppSync request failed",
-                                                   "See underlying `APIError` for more details.",
-                                                   apiError)))
-            }
-        }
-    }
-    
     func load(associatedId: String,
               associatedField: String) async throws -> [Element] {
         let predicate: QueryPredicate = field(associatedField) == associatedId

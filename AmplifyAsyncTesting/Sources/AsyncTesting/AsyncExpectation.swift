@@ -23,8 +23,8 @@ public actor AsyncExpectation {
     }
     public typealias AsyncExpectationContinuation = CheckedContinuation<Void, Error>
     public let expectationDescription: String
-    public let isInverted: Bool
-    public let expectedFulfillmentCount: Int
+    public var isInverted: Bool
+    public var expectedFulfillmentCount: Int
 
     private var fulfillmentCount: Int = 0
     private var continuation: AsyncExpectationContinuation?
@@ -32,6 +32,14 @@ public actor AsyncExpectation {
 
     public var isFulfilled: Bool {
         state == .fulfilled
+    }
+    
+    public func setShouldTrigger(_ shouldTrigger: Bool) {
+        self.isInverted = !shouldTrigger
+    }
+    
+    public func setExpectedFulfillmentCount(_ count: Int) {
+        self.expectedFulfillmentCount = count
     }
 
     public init(description: String,
