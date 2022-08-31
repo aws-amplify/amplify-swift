@@ -16,7 +16,6 @@ class AWSAuthChangePasswordTask: AuthChangePasswordTask {
     private let request: AuthChangePasswordRequest
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
-    private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
     private var stateMachineToken: AuthStateMachineToken?
     private let taskHelper: AWSAuthTaskHelper
     
@@ -31,37 +30,18 @@ class AWSAuthChangePasswordTask: AuthChangePasswordTask {
         self.request = request
         self.authStateMachine = authStateMachine
         self.userPoolFactory = userPoolFactory
-        self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()
         self.taskHelper = AWSAuthTaskHelper(stateMachineToken: self.stateMachineToken, authStateMachine: authStateMachine)
     }
 
     func execute() async throws {
         do {
             await taskHelper.didStateMachineConfigured()
-            let accessToken = try await getAccessToken()
+            let accessToken = try await taskHelper.getAccessToken()
             try await changePassword(with: accessToken)
         } catch let error as ChangePasswordOutputError {
             throw error.authError
         } catch let error {
             throw AuthError.configuration("Unable to execute auth task", AuthPluginErrorConstants.configurationError, error)
-        }
-    }
-
-    private func getAccessToken() async throws -> String {
-        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<String, Error>) in
-            fetchAuthSessionHelper.fetch(authStateMachine) { result in
-                switch result {
-                case .success(let session):
-                    guard let cognitoTokenProvider = session as? AuthCognitoTokensProvider,
-                          let tokens = try? cognitoTokenProvider.getCognitoTokens().get() else {
-                        continuation.resume(throwing: AuthError.unknown("Unable to fetch auth session", nil))
-                        return
-                    }
-                    continuation.resume(returning: tokens.accessToken)
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
-            }
         }
     }
 

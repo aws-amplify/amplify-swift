@@ -12,7 +12,6 @@ import AWSPluginsCore
 class AWSAuthDeleteUserTask: AuthDeleteUserTask {
     private let authStateMachine: AuthStateMachine
     private var stateListenerToken: AuthStateMachineToken?
-    private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
     private let taskHelper: AWSAuthTaskHelper
     
     var eventName: HubPayloadEventName {
@@ -21,41 +20,13 @@ class AWSAuthDeleteUserTask: AuthDeleteUserTask {
 
     init(authStateMachine: AuthStateMachine) {
         self.authStateMachine = authStateMachine
-        self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()
         self.taskHelper = AWSAuthTaskHelper(stateMachineToken: self.stateListenerToken, authStateMachine: authStateMachine)
     }
 
     func execute() async throws {
         await taskHelper.didStateMachineConfigured()
-        let accessToken = try await getAccessToken()
+        let accessToken = try await taskHelper.getAccessToken()
         try await deleteUser(with: accessToken)
-    }
-
-    private func getAccessToken() async throws -> String {
-        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<String, Error>) in
-            fetchAuthSessionHelper.fetch(authStateMachine) { result in
-                switch result {
-                case .success(let session):
-                    guard let cognitoTokenProvider = session as? AuthCognitoTokensProvider else {
-                        let error = AuthError.unknown("Unable to fetch auth session", nil)
-                        continuation.resume(throwing: error)
-                        return
-                    }
-                    do {
-                        let tokens = try cognitoTokenProvider.getCognitoTokens().get()
-                        continuation.resume(returning: tokens.accessToken)
-                    }
-                    catch let error as AuthError {
-                        continuation.resume(throwing: error)
-                    } catch {
-                        let error = AuthError.unknown("Unable to fetch auth session", nil)
-                        continuation.resume(throwing: error)
-                    }
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
     }
 
     private func deleteUser(with token: String) async throws {

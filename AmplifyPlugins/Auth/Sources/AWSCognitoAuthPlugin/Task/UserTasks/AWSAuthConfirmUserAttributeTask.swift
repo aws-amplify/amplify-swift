@@ -17,7 +17,6 @@ class AWSAuthConfirmUserAttributeTask: AuthConfirmUserAttributeTask {
     private let request: AuthConfirmUserAttributeRequest
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
-    private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
     private var stateMachineToken: AuthStateMachineToken?
     private let taskHelper: AWSAuthTaskHelper
     
@@ -29,14 +28,13 @@ class AWSAuthConfirmUserAttributeTask: AuthConfirmUserAttributeTask {
         self.request = request
         self.authStateMachine = authStateMachine
         self.userPoolFactory = userPoolFactory
-        self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()
         self.taskHelper = AWSAuthTaskHelper(stateMachineToken: self.stateMachineToken, authStateMachine: authStateMachine)
     }
 
     func execute() async throws {
         do {
             await taskHelper.didStateMachineConfigured()
-            let accessToken = try await getAccessToken()
+            let accessToken = try await taskHelper.getAccessToken()
             try await confirmUserAttribute(with: accessToken)
         } catch let error as VerifyUserAttributeOutputError {
             throw error.authError
@@ -44,31 +42,6 @@ class AWSAuthConfirmUserAttributeTask: AuthConfirmUserAttributeTask {
             throw error
         } catch let error {
             throw AuthError.unknown("Unable to execute auth task", error)
-        }
-    }
-
-    private func getAccessToken() async throws -> String {
-        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<String, Error>) in
-            fetchAuthSessionHelper.fetch(authStateMachine) { result in
-                switch result {
-                case .success(let session):
-                    guard let cognitoTokenProvider = session as? AuthCognitoTokensProvider else {
-                        continuation.resume(throwing: AuthError.unknown("Unable to fetch auth session", nil))
-                        return
-                    }
-
-                    do {
-                        let tokens = try cognitoTokenProvider.getCognitoTokens().get()
-                        continuation.resume(returning: tokens.accessToken)
-                    } catch let error as AuthError {
-                        continuation.resume(throwing: error)
-                    } catch {
-                        continuation.resume(throwing:AuthError.unknown("Unable to fetch auth session", error))
-                    }
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
-            }
         }
     }
 
