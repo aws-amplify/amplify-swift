@@ -22,3 +22,5 @@ public struct DataStoreQuerySnapshot<M: Model> {
         self.isSynced = isSynced
     }
 }
+
+extension DataStoreQuerySnapshot: Sendable { }

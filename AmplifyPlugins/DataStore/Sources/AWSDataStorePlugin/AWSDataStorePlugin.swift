@@ -10,6 +10,12 @@ import Combine
 import AWSPluginsCore
 import Foundation
 
+enum DataStoreState {
+    case start(storageEngine: StorageEngineBehavior)
+    case stop
+    case clear
+}
+
 final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     public var key: PluginKey = "awsDataStorePlugin"
@@ -22,6 +28,8 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     /// The Publisher that sends mutation events to subscribers
     var dataStorePublisher: ModelSubcriptionBehavior?
+    
+    var dataStoreStateSubject = PassthroughSubject<DataStoreState, DataStoreError>()
 
     var dispatchedModelSyncedEvents: [ModelName: AtomicValue<Bool>]
 
@@ -139,12 +147,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         switch initStorageEngine() {
         case .success:
             storageEngine.startSync { result in
-
-                self.operationQueue.operations.forEach { operation in
-                    if let operation = operation as? DataStoreObserveQueryOperation {
-                        operation.startObserveQuery(with: self.storageEngine)
-                    }
-                }
+                self.dataStoreStateSubject.send(.start(storageEngine: self.storageEngine))
                 completion(result)
             }
         case .failure(let error):

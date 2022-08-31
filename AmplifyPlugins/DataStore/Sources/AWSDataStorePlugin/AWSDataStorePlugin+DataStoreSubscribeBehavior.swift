@@ -9,7 +9,7 @@ import Amplify
 import Combine
 
 extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
-
+    
     public var publisher: AnyPublisher<MutationEvent, DataStoreError> {
         initStorageEngineAndStartSync()
         // Force-unwrapping: The optional 'dataStorePublisher' is expected
@@ -27,41 +27,28 @@ extension AWSDataStorePlugin: DataStoreSubscribeBehavior {
     }
     
     public func observeQuery<M: Model>(for modelType: M.Type,
-                                       where predicate: QueryPredicate? = nil,
-                                       sort sortInput: QuerySortInput? = nil)
-    -> AnyPublisher<DataStoreQuerySnapshot<M>, DataStoreError> {
-        return observeQuery(for: modelType,
-                            modelSchema: modelType.schema,
-                            where: predicate,
-                            sort: sortInput?.asSortDescriptors())
-    }
-
-    public func observeQuery<M: Model>(for modelType: M.Type,
-                                       modelSchema: ModelSchema,
-                                       where predicate: QueryPredicate? = nil,
-                                       sort sortInput: [QuerySortDescriptor]? = nil)
-    -> AnyPublisher<DataStoreQuerySnapshot<M>, DataStoreError> {
+                                       where predicate: QueryPredicate?,
+                                       sort sortInput: QuerySortInput?) -> AmplifyAsyncThrowingSequence<DataStoreQuerySnapshot<M>> {
         initStorageEngineAndStartSync()
-
+        
+        let modelSchema = modelType.schema
         guard let dataStorePublisher = dataStorePublisher else {
-            return Fail(error: DataStoreError.unknown(
-                            "`dataStorePublisher` is expected to exist for deployment targets >=iOS13.0",
-                            "", nil)).eraseToAnyPublisher()
+            return Fatal.preconditionFailure("`dataStorePublisher` is expected to exist for deployment targets >=iOS13.0")
         }
         guard let dispatchedModelSyncedEvent = dispatchedModelSyncedEvents[modelSchema.name] else {
-            return Fail(error: DataStoreError.unknown(
-                            "`dispatchedModelSyncedEvent` is expected to exist for \(modelSchema.name)",
-                            "", nil)).eraseToAnyPublisher()
+            return Fatal.preconditionFailure("`dispatchedModelSyncedEvent` is expected to exist for \(modelSchema.name)")
         }
-        let operation = AWSDataStoreObserveQueryOperation(modelType: modelType,
-                                                          modelSchema: modelSchema,
-                                                          predicate: predicate,
-                                                          sortInput: sortInput,
-                                                          storageEngine: storageEngine,
-                                                          dataStorePublisher: dataStorePublisher,
-                                                          dataStoreConfiguration: dataStoreConfiguration,
-                                                          dispatchedModelSyncedEvent: dispatchedModelSyncedEvent)
-        operationQueue.addOperation(operation)
-        return operation.publisher
+        let request = ObserveQueryRequest(options: [])
+        let taskRunner = ObserveQueryTaskRunner(request: request,
+                                                modelType: modelType,
+                                                modelSchema: modelType.schema,
+                                                predicate: predicate,
+                                                sortInput: sortInput?.asSortDescriptors(),
+                                                storageEngine: storageEngine,
+                                                dataStorePublisher: dataStorePublisher,
+                                                dataStoreConfiguration: dataStoreConfiguration,
+                                                dispatchedModelSyncedEvent: dispatchedModelSyncedEvent,
+                                                dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
+        return taskRunner.sequence
     }
 }

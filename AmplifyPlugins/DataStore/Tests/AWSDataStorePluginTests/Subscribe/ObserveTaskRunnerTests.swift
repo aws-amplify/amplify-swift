@@ -1,8 +1,8 @@
 //
-//  ObserveTaskRunnerTests.swift
-//  
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
 //
-//  Created by Law, Michael on 8/29/22.
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import XCTest
