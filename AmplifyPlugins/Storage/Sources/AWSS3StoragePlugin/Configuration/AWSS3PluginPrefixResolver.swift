@@ -62,15 +62,19 @@ struct StorageAccessLevelAwarePrefixResolver: AWSS3PluginPrefixResolver {
     func resolvePrefix(for accessLevel: StorageAccessLevel,
                        targetIdentityId: String?,
                        completion: @escaping (Result<String, StorageError>) -> Void) {
-        authService.getIdentityID { identityIdResult in
-            switch identityIdResult {
-            case .success(let identityId):
+        Task {
+            do {
+                let identityId = try await authService.getIdentityID()
                 let prefix = StorageRequestUtils.getAccessLevelPrefix(accessLevel: accessLevel,
                                                                       identityId: identityId,
                                                                       targetIdentityId: targetIdentityId)
                 completion(.success(prefix))
-            case .failure(let error):
-                completion(.failure(StorageError.authError(error.errorDescription, error.recoverySuggestion)))
+            } catch {
+                guard let authError = error as? AuthError else {
+                    completion(.failure(StorageError.unknown("Uknown Auth Error", error)))
+                    return
+                }
+                completion(.failure(StorageError.authError(authError.errorDescription, authError.recoverySuggestion)))
             }
         }
     }

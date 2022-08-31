@@ -90,17 +90,11 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         return try await task.value
     }
     
-    public func fetchAuthSession(options: AuthFetchSessionOperation.Request.Options?,
-                                 listener: AuthFetchSessionOperation.ResultListener?)
-    -> AuthFetchSessionOperation {
+    public func fetchAuthSession(options: AuthFetchSessionRequest.Options?) async throws -> AuthSession {
         let options = options ?? AuthFetchSessionRequest.Options()
         let request = AuthFetchSessionRequest(options: options)
-        let fetchAuthSessionOperation = AWSAuthFetchSessionOperation(
-            request,
-            authStateMachine: authStateMachine,
-            resultListener: listener)
-        queue.addOperation(fetchAuthSessionOperation)
-        return fetchAuthSessionOperation
+        let task = AWSAuthFetchSessionTask(request, authStateMachine: authStateMachine)
+        return try await task.value
     }
     
     public func resetPassword(for username: String, options: AuthResetPasswordRequest.Options?) async throws -> AuthResetPasswordResult {

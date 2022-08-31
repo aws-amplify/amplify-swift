@@ -30,20 +30,12 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
         return cognitoCredentialsProvider
     }
 
-    public func getIdentityId() -> Result<String, AuthError> {
+    public func getIdentityID() async throws -> String {
         if let error = getIdentityIdError {
-            return .failure(error)
+            throw error
         }
 
-        return .success(identityId ?? "IdentityId")
-    }
-
-    public func getIdentityID(completion: @escaping (Result<String, AuthError>) -> Void) {
-        if let error = getIdentityIdError {
-            completion(.failure(error))
-        }
-
-        completion(.success(identityId ?? "IdentityId"))
+        return identityId ?? "IdentityId"
     }
     
     public func getUserPoolAccessToken() async throws -> String {

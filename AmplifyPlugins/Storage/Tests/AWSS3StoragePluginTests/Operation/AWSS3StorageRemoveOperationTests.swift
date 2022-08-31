@@ -41,7 +41,7 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
         waitForExpectations(timeout: 1)
     }
 
-    func testRemoveOperationGetIdentityIdError() {
+    func testRemoveOperationGetIdentityIdError() async throws {
         mockAuthService.getIdentityIdError = AuthError.service("", "", "")
 
         let options = StorageRemoveRequest.Options()
@@ -64,12 +64,11 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
         }
 
         operation.start()
-
+        await waitForExpectations(timeout: 1)
         XCTAssertTrue(operation.isFinished)
-        waitForExpectations(timeout: 1)
     }
 
-    func testRemoveOperationDeleteSuccess() {
+    func testRemoveOperationDeleteSuccess() async throws {
         mockStorageService.storageServiceDeleteEvents = [StorageEvent.completedVoid]
         let options = StorageRemoveRequest.Options()
         let request = StorageRemoveRequest(key: testKey, options: options)
@@ -90,12 +89,12 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
-        waitForExpectations(timeout: 1)
+        await waitForExpectations(timeout: 1)
         XCTAssertTrue(operation.isFinished)
         mockStorageService.verifyDelete(serviceKey: expectedServiceKey)
     }
 
-    func testRemoveOperationDeleteFail() {
+    func testRemoveOperationDeleteFail() async throws {
         mockStorageService.storageServiceDeleteEvents = [StorageEvent.failed(StorageError.service("", ""))]
         let options = StorageRemoveRequest.Options()
         let request = StorageRemoveRequest(key: testKey, options: options)
@@ -116,7 +115,7 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
-        waitForExpectations(timeout: 1)
+        await waitForExpectations(timeout: 1)
         XCTAssertTrue(operation.isFinished)
         mockStorageService.verifyDelete(serviceKey: expectedServiceKey)
     }

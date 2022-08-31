@@ -13,6 +13,7 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
     private let request: AuthConfirmSignInRequest
     private let authStateMachine: AuthStateMachine
     private var stateListenerToken: AuthStateMachineToken?
+    private let taskHelper: AWSAuthTaskHelper
     
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.confirmSignInAPI
@@ -21,12 +22,15 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
     init(_ request: AuthConfirmSignInRequest, stateMachine: AuthStateMachine) {
         self.request = request
         self.authStateMachine = stateMachine
+        self.taskHelper = AWSAuthTaskHelper(stateMachineToken: self.stateListenerToken, authStateMachine: authStateMachine)
     }
 
     func execute() async throws -> AuthSignInResult {
         if let validationError = request.hasError() {
             throw validationError
         }
+        
+        await taskHelper.didStateMachineConfigured()
         
         return try await withCheckedThrowingContinuation{ (continuation: CheckedContinuation<AuthSignInResult, Error>) in
             let invalidStateError = AuthError.invalidState("User is not attempting signIn operation",

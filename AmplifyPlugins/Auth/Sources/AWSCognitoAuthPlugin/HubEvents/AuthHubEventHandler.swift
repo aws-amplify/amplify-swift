@@ -81,7 +81,7 @@ class AuthHubEventHandler: AuthHubEventBehavior {
                 self?.sendUserSignedOutEvent()
 
             case HubPayload.EventName.Auth.fetchSessionAPI:
-                guard let event = payload.data as? AWSAuthFetchSessionOperation.OperationResult,
+                guard let event = payload.data as? AWSAuthFetchSessionTask.AmplifyAuthTaskResult,
                     case let .success(result) = event else {
                         return
                 }

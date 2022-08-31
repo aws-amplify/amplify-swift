@@ -9,29 +9,16 @@ import Foundation
 
 extension AuthCategory: AuthCategoryDeviceBehavior {
 
-    @discardableResult
-    public func fetchDevices(
-        options: AuthFetchDevicesOperation.Request.Options? = nil,
-        listener: AuthFetchDevicesOperation.ResultListener?) -> AuthFetchDevicesOperation {
-        return plugin.fetchDevices(options: options,
-                                   listener: listener)
+    public func fetchDevices( options: AuthFetchDevicesRequest.Options? = nil) async throws -> [AuthDevice] {
+        return try await plugin.fetchDevices(options: options)
     }
 
-    @discardableResult
-    public func forgetDevice(
-        _ device: AuthDevice? = nil,
-        options: AuthForgetDeviceOperation.Request.Options? = nil,
-        listener: AuthForgetDeviceOperation.ResultListener?) -> AuthForgetDeviceOperation {
-        return plugin.forgetDevice(device,
-                                   options: options,
-                                   listener: listener)
+    public func forgetDevice( _ device: AuthDevice? = nil, options: AuthForgetDeviceRequest.Options? = nil) async throws {
+        try await plugin.forgetDevice(device, options: options)
     }
 
-    @discardableResult
-    public func rememberDevice(
-        options: AuthRememberDeviceOperation.Request.Options? = nil,
-        listener: AuthRememberDeviceOperation.ResultListener?) -> AuthRememberDeviceOperation {
-        plugin.rememberDevice(options: options, listener: listener)
+    public func rememberDevice(options: AuthRememberDeviceRequest.Options? = nil) async throws {
+        try await plugin.rememberDevice(options: options)
     }
 
 }

@@ -41,16 +41,20 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
     /// - When:
     ///    - I call fetchUserAttributes operation
     /// - Then:
-    ///    - I should get a valid operation object
+    ///    - I should get a valid task execution
     ///
-    func testFetchUserAttributesRequest() {
-        let operationFinished = expectation(description: "Operation should finish")
+    func testFetchUserAttributesRequest() async throws {
+        mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
+            GetUserOutputResponse(
+                mFAOptions: [],
+                preferredMfaSetting: "",
+                userAttributes: [.init(name: "email", value: "Amplify@amazon.com")],
+                userMFASettingList: [],
+                username: ""
+            )
+        })
         let options = AuthFetchUserAttributesRequest.Options()
-        let operation = plugin.fetchUserAttributes(options: options) { _ in
-            operationFinished.fulfill()
-        }
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 1)
+        _ = try await plugin.fetchUserAttributes(options: options)
     }
 
     /// Test fetchDevices operation can be invoked without options
@@ -59,15 +63,19 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
     /// - When:
     ///    - I call fetchDevices operation
     /// - Then:
-    ///    - I should get a valid operation object
+    ///    - I should get a valid task execution
     ///
-    func testFetchUserAttributesRequestWithoutOptions() {
-        let operationFinished = expectation(description: "Operation should finish")
-        let operation = plugin.fetchUserAttributes { _ in
-            operationFinished.fulfill()
-        }
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 1)
+    func testFetchUserAttributesRequestWithoutOptions() async throws {
+        mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
+            GetUserOutputResponse(
+                mFAOptions: [],
+                preferredMfaSetting: "",
+                userAttributes: [.init(name: "email", value: "Amplify@amazon.com")],
+                userMFASettingList: [],
+                username: ""
+            )
+        })
+        _ = try await plugin.fetchUserAttributes()
     }
 
     /// Test update(userAttribute:) operation can be invoked
@@ -76,18 +84,13 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
     /// - When:
     ///    - I call update(userAttribute:) operation
     /// - Then:
-    ///    - I should get a valid operation object
+    ///    - I should get a valid task execution
     ///
-    func testUpdateUserAttributeRequest() {
-        let operationFinished = expectation(description: "Operation should finish")
+    func testUpdateUserAttributeRequest() async throws {
         let emailAttribute = AuthUserAttribute(.email, value: "email")
         let pluginOptions = AWSUpdateUserAttributeOptions(metadata: ["key": "value"])
         let options = AuthUpdateUserAttributeRequest.Options(pluginOptions: pluginOptions)
-        let operation = plugin.update(userAttribute: emailAttribute, options: options) { _ in
-            operationFinished.fulfill()
-        }
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 1)
+        _ = try await plugin.update(userAttribute: emailAttribute, options: options)
     }
 
     /// Test update(userAttribute:) operation can be invoked without options
@@ -96,16 +99,11 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
     /// - When:
     ///    - I call update(userAttribute:) operation
     /// - Then:
-    ///    - I should get a valid operation object
+    ///    - I should get a valid task execution
     ///
-    func testUpdateUserAttributeRequestWithoutOptions() {
-        let operationFinished = expectation(description: "Operation should finish")
+    func testUpdateUserAttributeRequestWithoutOptions() async throws {
         let emailAttribute = AuthUserAttribute(.email, value: "email")
-        let operation = plugin.update(userAttribute: emailAttribute) { _ in
-            operationFinished.fulfill()
-        }
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 1)
+        _ = try await plugin.update(userAttribute: emailAttribute)
     }
 
     /// Test update(userAttributes:) operation can be invoked
@@ -114,19 +112,14 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
     /// - When:
     ///    - I call update(userAttributes:) operation
     /// - Then:
-    ///    - I should get a valid operation object
+    ///    - I should get a valid task completion
     ///
-    func testUpdateUserAttributesRequest() {
-        let operationFinished = expectation(description: "Operation should finish")
+    func testUpdateUserAttributesRequest() async throws {
         let emailAttribute = AuthUserAttribute(.email, value: "email")
         let phoneAttribute = AuthUserAttribute(.phoneNumber, value: "123213")
         let pluginOptions = AWSUpdateUserAttributesOptions(metadata: ["key": "value"])
         let options = AuthUpdateUserAttributesRequest.Options(pluginOptions: pluginOptions)
-        let operation = plugin.update(userAttributes: [emailAttribute, phoneAttribute], options: options) { _ in
-            operationFinished.fulfill()
-        }
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 1)
+        _ = try await plugin.update(userAttributes: [emailAttribute, phoneAttribute], options: options)
     }
 
     /// Test update(userAttributes:) operation can be invoked without options
@@ -135,17 +128,12 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
     /// - When:
     ///    - I call update(userAttributes:) operation
     /// - Then:
-    ///    - I should get a valid operation object
+    ///    - I should get a valid task completion
     ///
-    func testUpdateUserAttributesRequestWithoutOptions() {
-        let operationFinished = expectation(description: "Operation should finish")
+    func testUpdateUserAttributesRequestWithoutOptions() async throws {
         let emailAttribute = AuthUserAttribute(.email, value: "email")
         let phoneAttribute = AuthUserAttribute(.phoneNumber, value: "123213")
-        let operation = plugin.update(userAttributes: [emailAttribute, phoneAttribute]) { _ in
-            operationFinished.fulfill()
-        }
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 1)
+        _ = try await plugin.update(userAttributes: [emailAttribute, phoneAttribute])
     }
 
     /// Test resendConfirmationCode(for:) operation can be invoked
@@ -154,17 +142,19 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
     /// - When:
     ///    - I call resendConfirmationCode(for:)  operation
     /// - Then:
-    ///    - I should get a valid operation object
+    ///    - I should get a valid task completion
     ///
-    func testResendConfirmationCodeAttributeRequest() {
-        let operationFinished = expectation(description: "Operation should finish")
+    func testResendConfirmationCodeAttributeRequest() async throws {
+        mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
+            GetUserAttributeVerificationCodeOutputResponse(
+                codeDeliveryDetails: .init(
+                    attributeName: "attributeName",
+                    deliveryMedium: .email,
+                    destination: "destination"))
+        })
         let pluginOptions = AWSAttributeResendConfirmationCodeOptions(metadata: ["key": "value"])
         let options = AuthAttributeResendConfirmationCodeRequest.Options(pluginOptions: pluginOptions)
-        let operation = plugin.resendConfirmationCode(for: .email, options: options) { _ in
-            operationFinished.fulfill()
-        }
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 1)
+        _ = try await plugin.resendConfirmationCode(for: .email, options: options)
     }
 
     /// Test resendConfirmationCode(for:)  operation can be invoked without options
@@ -173,15 +163,17 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
     /// - When:
     ///    - I call resendConfirmationCode(for:)  operation
     /// - Then:
-    ///    - I should get a valid operation object
+    ///    - I should get a valid task completion
     ///
-    func testResendConfirmationCodeAttributeRequestWithoutOptions() {
-        let operationFinished = expectation(description: "Operation should finish")
-        let operation = plugin.resendConfirmationCode(for: .email) { _ in
-            operationFinished.fulfill()
-        }
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 1)
+    func testResendConfirmationCodeAttributeRequestWithoutOptions() async throws {
+        mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
+            GetUserAttributeVerificationCodeOutputResponse(
+                codeDeliveryDetails: .init(
+                    attributeName: "attributeName",
+                    deliveryMedium: .email,
+                    destination: "destination"))
+        })
+        _ = try await plugin.resendConfirmationCode(for: .email)
     }
 
     /// Test confirm(userAttribute: ) operation can be invoked
@@ -192,14 +184,9 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
     /// - Then:
     ///    - I should get a valid operation object
     ///
-    func testConfirmUserAttributeRequest() {
-        let operationFinished = expectation(description: "Operation should finish")
+    func testConfirmUserAttributeRequest() async throws {
         let options = AuthConfirmUserAttributeRequest.Options()
-        let operation = plugin.confirm(userAttribute: .email, confirmationCode: "code", options: options) { _ in
-            operationFinished.fulfill()
-        }
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 1)
+        try await plugin.confirm(userAttribute: .email, confirmationCode: "code", options: options)
     }
 
     /// Test confirm(userAttribute: )  operation can be invoked without options
@@ -210,13 +197,8 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
     /// - Then:
     ///    - I should get a valid operation object
     ///
-    func testConfirmUserAttributeRequestWithoutOptions() {
-        let operationFinished = expectation(description: "Operation should finish")
-        let operation = plugin.confirm(userAttribute: .email, confirmationCode: "code") { _ in
-            operationFinished.fulfill()
-        }
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 1)
+    func testConfirmUserAttributeRequestWithoutOptions() async throws {
+        try await plugin.confirm(userAttribute: .email, confirmationCode: "code")
     }
 
     /// Test update(oldPassword:to: ) operation can be invoked

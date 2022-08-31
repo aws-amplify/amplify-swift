@@ -8,25 +8,23 @@
 import Foundation
 import Amplify
 import AWSPluginsCore
+import ClientRuntime
 import AWSCognitoIdentityProvider
 
-class AWSAuthChangePasswordTask: AuthChangePasswordTask {
+class AWSAuthRememberDeviceTask: AuthRememberDeviceTask {
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
-    
-    private let request: AuthChangePasswordRequest
+
+    private let request: AuthRememberDeviceRequest
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
     private var stateMachineToken: AuthStateMachineToken?
     private let taskHelper: AWSAuthTaskHelper
     
     var eventName: HubPayloadEventName {
-        HubPayload.EventName.Auth.changePasswordAPI
+        HubPayload.EventName.Auth.rememberDeviceAPI
     }
 
-    init(_ request: AuthChangePasswordRequest,
-         authStateMachine: AuthStateMachine,
-         userPoolFactory: @escaping CognitoUserPoolFactory
-    ) {
+    init(_ request: AuthRememberDeviceRequest, authStateMachine: AuthStateMachine, userPoolFactory: @escaping CognitoUserPoolFactory) {
         self.request = request
         self.authStateMachine = authStateMachine
         self.userPoolFactory = userPoolFactory
@@ -37,17 +35,25 @@ class AWSAuthChangePasswordTask: AuthChangePasswordTask {
         do {
             await taskHelper.didStateMachineConfigured()
             let accessToken = try await taskHelper.getAccessToken()
-            try await changePassword(with: accessToken)
-        } catch let error as ChangePasswordOutputError {
+            try await rememberDevice(with: accessToken)
+        } catch let error as UpdateDeviceStatusOutputError {
             throw error.authError
+        } catch let error as SdkError<UpdateDeviceStatusOutputError> {
+            throw error.authError
+        } catch let error as AuthError {
+            throw error
         } catch let error {
-            throw AuthError.configuration("Unable to execute auth task", AuthPluginErrorConstants.configurationError, error)
+            throw AuthError.unknown("Unable to execute auth task", error)
         }
     }
 
-    func changePassword(with accessToken: String) async throws {
+    private func rememberDevice(with accessToken: String) async throws {
         let userPoolService = try userPoolFactory()
-        let input = ChangePasswordInput(accessToken: accessToken, previousPassword: request.oldPassword, proposedPassword: request.newPassword)
-        _ = try await userPoolService.changePassword(input: input)
+
+        // TODO: Pass in device key when implemented
+        let input = UpdateDeviceStatusInput(accessToken: accessToken,
+                                            deviceKey: nil,
+                                            deviceRememberedStatus: .remembered)
+        _ = try await userPoolService.updateDeviceStatus(input: input)
     }
 }

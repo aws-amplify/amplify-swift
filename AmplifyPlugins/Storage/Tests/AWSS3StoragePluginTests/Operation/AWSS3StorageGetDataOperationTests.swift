@@ -41,7 +41,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         XCTAssertTrue(operation.isFinished)
     }
 
-    func testDownloadDataOperationGetIdentityIdError() {
+    func testDownloadDataOperationGetIdentityIdError() async throws {
         mockAuthService.getIdentityIdError = AuthError.service("", "", "")
         let request = StorageDownloadDataRequest(key: testKey, options: StorageDownloadDataRequest.Options())
         let failedInvoked = expectation(description: "failed was invoked on operation")
@@ -64,11 +64,11 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
+        await waitForExpectations(timeout: 1)
         XCTAssertTrue(operation.isFinished)
-        waitForExpectations(timeout: 1)
     }
 
-    func testDownloadDataOperationDownloadData() {
+    func testDownloadDataOperationDownloadData() async throws {
         let task = StorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceDownloadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
@@ -96,12 +96,12 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
+        await waitForExpectations(timeout: 1)
         XCTAssertTrue(operation.isFinished)
-        waitForExpectations(timeout: 1)
         mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: nil)
     }
 
-    func testDownloadDataOperationDownloadDataFailed() {
+    func testDownloadDataOperationDownloadDataFailed() async throws {
         let task = StorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceDownloadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
@@ -129,12 +129,12 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
+        await waitForExpectations(timeout: 1)
         XCTAssertTrue(operation.isFinished)
-        waitForExpectations(timeout: 1)
         mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: nil)
     }
 
-    func testGetOperationDownloadDataFromTargetIdentityId() {
+    func testGetOperationDownloadDataFromTargetIdentityId() async throws {
         let task = StorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceDownloadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
@@ -164,8 +164,8 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
+        await waitForExpectations(timeout: 1)
         XCTAssertTrue(operation.isFinished)
-        waitForExpectations(timeout: 1)
         mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: nil)
     }
 

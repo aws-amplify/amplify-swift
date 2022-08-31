@@ -28,35 +28,25 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
     ///
     /// - Given: Given a configured auth plugin
     /// - When:
-    ///    - I call rememberDevice operation
+    ///    - I call rememberDevice task
     /// - Then:
-    ///    - I should get a valid operation object
+    ///    - I should get a successfully executed task
     ///
-    func testRememberDeviceRequest() {
-        let operationFinished = expectation(description: "Operation should finish")
+    func testRememberDeviceRequest() async throws {
         let options = AuthRememberDeviceRequest.Options()
-        let operation = plugin.rememberDevice(options: options) { _ in
-            operationFinished.fulfill()
-        }
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: apiTimeout)
+        try await plugin.rememberDevice(options: options)
     }
 
     /// Test rememberDevice operation can be invoked without options
     ///
     /// - Given: Given a configured auth plugin
     /// - When:
-    ///    - I call rememberDevice operation
+    ///    - I call rememberDevice task
     /// - Then:
-    ///    - I should get a valid operation object
+    ///    - I should get a successfully executed task
     ///
-    func testRememberDeviceRequestWithoutOptions() {
-        let operationFinished = expectation(description: "Operation should finish")
-        let operation = plugin.rememberDevice { _ in
-            operationFinished.fulfill()
-        }
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: apiTimeout)
+    func testRememberDeviceRequestWithoutOptions() async throws {
+        try await plugin.rememberDevice(options: nil)
     }
 
     /// Test a successful rememberDevice call
@@ -65,20 +55,10 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
     /// - When:
     ///    - I invoke rememberDevice
     /// - Then:
-    ///    - I should get a successful result indicating device status updated
+    ///    - I should get a successfully executed task
     ///
-    func testSuccessfulRememberDevice() {
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.rememberDevice { result in
-            switch result {
-            case .success:
-                resultExpectation.fulfill()
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
-            }
-        }
-
-        wait(for: [resultExpectation], timeout: apiTimeout)
+    func testSuccessfulRememberDevice() async throws {
+        try await plugin.rememberDevice(options: nil)
     }
 
     // MARK: - Service error for UpdateDeviceStatus
@@ -92,30 +72,22 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .unknown error
     ///
-    func testRememberDeviceWithInternalErrorException() {
+    func testRememberDeviceWithInternalErrorException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockRememberDeviceResponse: { _ in
                 throw UpdateDeviceStatusOutputError.internalErrorException(InternalErrorException(message: "internal error"))
             }
         )
-
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.rememberDevice { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let listDevicesResult):
-                XCTFail("Should not produce result - \(listDevicesResult)")
-            case .failure(let error):
-                guard case .unknown = error else {
-                    XCTFail("Should produce unknown error")
-                    return
-                }
+        do {
+            try await plugin.rememberDevice(options: nil)
+            XCTFail("Should not succeed")
+        } catch {
+            guard case AuthError.unknown = error else {
+                XCTFail("Should produce unknown error")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a rememberDevice call with InvalidParameterException response from service
@@ -128,35 +100,26 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with  .invalidParameter as underlyingError
     ///
-    func testRememberDeviceWithInvalidParameterException() {
+    func testRememberDeviceWithInvalidParameterException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockRememberDeviceResponse: { _ in
                 throw UpdateDeviceStatusOutputError.invalidParameterException(InvalidParameterException(message: "invalid parameter"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.rememberDevice { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            try await plugin.rememberDevice(options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be invalidParameter \(error)")
-                    return
-                }
-
+            guard case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be invalidParameter \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a rememberDevice call with InvalidParameterException response from service
@@ -169,30 +132,22 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .configuration error
     ///
-    func testRememberDeviceWithInvalidUserPoolConfigurationException() {
+    func testRememberDeviceWithInvalidUserPoolConfigurationException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockRememberDeviceResponse: { _ in
                 throw UpdateDeviceStatusOutputError.invalidUserPoolConfigurationException(InvalidUserPoolConfigurationException(message: "invalid user pool configuration"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.rememberDevice { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .configuration = error else {
-                    XCTFail("Should produce configuration error instead of \(error)")
-                    return
-                }
+        do {
+            try await plugin.rememberDevice(options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.configuration = error else {
+                XCTFail("Should produce configuration error instead of \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a rememberDevice call with NotAuthorizedException response from service
@@ -205,30 +160,22 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .notAuthorized error
     ///
-    func testRememberDeviceWithNotAuthorizedException() {
+    func testRememberDeviceWithNotAuthorizedException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockRememberDeviceResponse: { _ in
                 throw UpdateDeviceStatusOutputError.notAuthorizedException(NotAuthorizedException(message: "not authorized"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.rememberDevice { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .notAuthorized = error else {
-                    XCTFail("Should produce notAuthorized error instead of \(error)")
-                    return
-                }
+        do {
+            try await plugin.rememberDevice(options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.notAuthorized = error else {
+                XCTFail("Should produce notAuthorized error instead of \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a rememberDevice call with PasswordResetRequiredException response from service
@@ -241,34 +188,26 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .passwordResetRequired as underlyingError
     ///
-    func testRememberDeviceWithPasswordResetRequiredException() {
+    func testRememberDeviceWithPasswordResetRequiredException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockRememberDeviceResponse: { _ in
                 throw UpdateDeviceStatusOutputError.passwordResetRequiredException(PasswordResetRequiredException(message: "password reset required"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.rememberDevice { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            try await plugin.rememberDevice(options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .passwordResetRequired = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be passwordResetRequired \(error)")
-                    return
-                }
+            guard case .passwordResetRequired = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be passwordResetRequired \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a rememberDevice call with ResourceNotFound response from service
@@ -281,35 +220,26 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .resourceNotFound as underlyingError
     ///
-    func testRememberDeviceWithResourceNotFoundException() {
+    func testRememberDeviceWithResourceNotFoundException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockRememberDeviceResponse: { _ in
                 throw UpdateDeviceStatusOutputError.resourceNotFoundException(ResourceNotFoundException(message: "resource not found"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.rememberDevice { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            try await plugin.rememberDevice(options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be resourceNotFound \(error)")
-                    return
-                }
-
+            guard case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be resourceNotFound \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a rememberDevice call with TooManyRequestsException response from service
@@ -322,35 +252,26 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .requestLimitExceeded as underlyingError
     ///
-    func testRememberDeviceWithTooManyRequestsException() {
+    func testRememberDeviceWithTooManyRequestsException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockRememberDeviceResponse: { _ in
                 throw UpdateDeviceStatusOutputError.tooManyRequestsException(TooManyRequestsException(message: "too many requests"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.rememberDevice { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            try await plugin.rememberDevice(options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be requestLimitExceeded \(error)")
-                    return
-                }
-
+            guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be requestLimitExceeded \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a rememberDevice call with UserNotFound response from service
@@ -363,35 +284,26 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .userNotConfirmed as underlyingError
     ///
-    func testRememberDeviceWithUserNotConfirmedException() {
+    func testRememberDeviceWithUserNotConfirmedException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockRememberDeviceResponse: { _ in
                 throw UpdateDeviceStatusOutputError.userNotConfirmedException(UserNotConfirmedException(message: "user not confirmed"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.rememberDevice { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            try await plugin.rememberDevice(options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .userNotConfirmed = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be userNotFound \(error)")
-                    return
-                }
-
+            guard case .userNotConfirmed = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be userNotFound \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a rememberDevice call with UserNotFound response from service
@@ -404,35 +316,26 @@ class DeviceBehaviorRememberDeviceTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .userNotFound as underlyingError
     ///
-    func testRememberDeviceWithUserNotFoundException() {
+    func testRememberDeviceWithUserNotFoundException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockRememberDeviceResponse: { _ in
                 throw UpdateDeviceStatusOutputError.userNotFoundException(UserNotFoundException(message: "user not found"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.rememberDevice { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            try await plugin.rememberDevice(options: nil)
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be userNotFound \(error)")
-                    return
-                }
-
+            guard case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be userNotFound \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
 }

@@ -12,23 +12,27 @@ class AWSAuthWebUISignInTask: AuthWebUISignInTask {
 
     private let helper: HostedUISignInHelper
     private let request: AuthWebUISignInRequest
-    
+    private let authStateMachine: AuthStateMachine
+    private var stateMachineToken: AuthStateMachineToken?
+    private let taskHelper: AWSAuthTaskHelper
     let eventName: HubPayloadEventName
+    
     init(_ request: AuthWebUISignInRequest,
          authConfiguration: AuthConfiguration,
          authStateMachine: AuthStateMachine,
          eventName: String
     ) {
         self.request = request
-        self.helper = HostedUISignInHelper(request: request,
-                                           authstateMachine: authStateMachine,
-                                           configuration: authConfiguration)
+        self.authStateMachine = authStateMachine
+        self.helper = HostedUISignInHelper(request: request, authstateMachine: authStateMachine, configuration: authConfiguration)
         self.eventName = eventName
+        self.taskHelper = AWSAuthTaskHelper(stateMachineToken: self.stateMachineToken, authStateMachine: authStateMachine)
     }
 
     func execute() async throws -> AuthSignInResult {
 
         do {
+            await taskHelper.didStateMachineConfigured()
             let result = try await helper.initiateSignIn()
             return result
         } catch let autherror as AuthErrorConvertible {

@@ -30,16 +30,16 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     /// - When:
     ///    - I call fetchDevices operation
     /// - Then:
-    ///    - I should get a valid operation object
+    ///    - I should get a successful task execution
     ///
-    func testFetchDevicesRequest() {
-        let operationFinished = expectation(description: "Operation should finish")
+    func testFetchDevicesRequest() async throws {
+        mockIdentityProvider = MockIdentityProvider(
+            mockListDevicesOutputResponse: { _ in
+                ListDevicesOutputResponse(devices: [CognitoIdentityProviderClientTypes.DeviceType(deviceKey: "id")], paginationToken: nil)
+            }
+        )
         let options = AuthFetchDevicesRequest.Options()
-        let operation = plugin.fetchDevices(options: options) { _ in
-            operationFinished.fulfill()
-        }
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: apiTimeout)
+        _ = try await plugin.fetchDevices(options: options)
     }
 
     /// Test fetchDevices operation can be invoked without options
@@ -48,15 +48,15 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     /// - When:
     ///    - I call fetchDevices operation
     /// - Then:
-    ///    - I should get a valid operation object
+    ///    - I should get a successful task execution
     ///
-    func testFetchDevicesRequestWithoutOptions() {
-        let operationFinished = expectation(description: "Operation should finish")
-        let operation = plugin.fetchDevices { _ in
-            operationFinished.fulfill()
-        }
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: apiTimeout)
+    func testFetchDevicesRequestWithoutOptions() async throws {
+        mockIdentityProvider = MockIdentityProvider(
+            mockListDevicesOutputResponse: { _ in
+                ListDevicesOutputResponse(devices: [CognitoIdentityProviderClientTypes.DeviceType(deviceKey: "id")], paginationToken: nil)
+            }
+        )
+        _ = try await plugin.fetchDevices()
     }
 
     /// Test a successful fetchDevices call
@@ -67,30 +67,18 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a successful result with one device fetched
     ///
-    func testSuccessfulListDevices() {
+    func testSuccessfulListDevices() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
                 ListDevicesOutputResponse(devices: [CognitoIdentityProviderClientTypes.DeviceType(deviceKey: "id")], paginationToken: nil)
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.fetchDevices { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let listDevicesResult):
-                guard listDevicesResult.count == 1 else {
-                    XCTFail("Result should have device count of 1")
-                    return
-                }
-            case .failure(let error):
-                XCTFail("Received failure with error \(error)")
-            }
+        let listDevicesResult = try await plugin.fetchDevices()
+        guard listDevicesResult.count == 1 else {
+            XCTFail("Result should have device count of 1")
+            return
         }
-
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a fetchDevices call with invalid response from service
@@ -101,30 +89,22 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .unknown error
     ///
-    func testListDevicesWithInvalidResult() {
+    func testListDevicesWithInvalidResult() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
                 ListDevicesOutputResponse(devices: nil, paginationToken: nil)
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.fetchDevices { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let listDevicesResult):
-                XCTFail("Should not receive a success response \(listDevicesResult)")
-            case .failure(let error):
-                guard case .unknown = error else {
-                    XCTFail("Should receive unknown error instead got \(error)")
-                    return
-                }
+        do {
+            let listDevicesResult = try await plugin.fetchDevices()
+            XCTFail("Should not receive a success response \(listDevicesResult)")
+        } catch {
+            guard case AuthError.unknown = error else {
+                XCTFail("Should receive unknown error instead got \(error)")
+                return
             }
         }
-
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     // MARK: - Service error for listDevices
@@ -139,29 +119,22 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .unknown error
     ///
-    func testListDevicesWithInternalErrorException() {
+    func testListDevicesWithInternalErrorException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
                 throw ListDevicesOutputError.internalErrorException(InternalErrorException(message: "internal error"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.fetchDevices { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-            switch result {
-            case .success(let listDevicesResult):
-                XCTFail("Should not produce result - \(listDevicesResult)")
-            case .failure(let error):
-                guard case .unknown = error else {
-                    XCTFail("Should produce unknown error")
-                    return
-                }
+        do {
+            let listDevicesResult = try await plugin.fetchDevices()
+            XCTFail("Should not receive a success response \(listDevicesResult)")
+        } catch {
+            guard case AuthError.unknown = error else {
+                XCTFail("Should produce unknown error")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a fetchDevices call with InvalidParameterException response from service
@@ -174,35 +147,26 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with  .invalidParameter as underlyingError
     ///
-    func testListDevicesWithInvalidParameterException() {
+    func testListDevicesWithInvalidParameterException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
                 throw ListDevicesOutputError.invalidParameterException(InvalidParameterException(message: "invalid parameter"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.fetchDevices { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.fetchDevices()
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be invalidParameter \(error)")
-                    return
-                }
-
+            guard case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be invalidParameter \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a fetchDevices call with InvalidParameterException response from service
@@ -215,30 +179,22 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .configuration error
     ///
-    func testListDevicesWithInvalidUserPoolConfigurationException() {
+    func testListDevicesWithInvalidUserPoolConfigurationException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
                 throw ListDevicesOutputError.invalidUserPoolConfigurationException(InvalidUserPoolConfigurationException(message: "invalid user pool configuration"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.fetchDevices { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .configuration = error else {
-                    XCTFail("Should produce configuration error instead of \(error)")
-                    return
-                }
+        do {
+            _ = try await plugin.fetchDevices()
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.configuration = error else {
+                XCTFail("Should produce configuration error instead of \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a fetchDevices call with NotAuthorizedException response from service
@@ -251,30 +207,22 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .notAuthorized error
     ///
-    func testListDevicesWithNotAuthorizedException() {
+    func testListDevicesWithNotAuthorizedException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
                 throw ListDevicesOutputError.notAuthorizedException(NotAuthorizedException(message: "not authorized"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.fetchDevices { result in
-            defer {
-                resultExpectation.fulfill()
-            }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .notAuthorized = error else {
-                    XCTFail("Should produce notAuthorized error instead of \(error)")
-                    return
-                }
+        do {
+            _ = try await plugin.fetchDevices()
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.notAuthorized = error else {
+                XCTFail("Should produce notAuthorized error instead of \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a fetchDevices call with PasswordResetRequiredException response from service
@@ -287,34 +235,26 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .passwordResetRequired as underlyingError
     ///
-    func testListDevicesWithPasswordResetRequiredException() {
+    func testListDevicesWithPasswordResetRequiredException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
                 throw ListDevicesOutputError.passwordResetRequiredException(PasswordResetRequiredException(message: "password reset required"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.fetchDevices { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.fetchDevices()
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .passwordResetRequired = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be passwordResetRequired \(error)")
-                    return
-                }
+            guard case .passwordResetRequired = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be passwordResetRequired \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a fetchDevices call with ResourceNotFound response from service
@@ -327,35 +267,26 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .resourceNotFound as underlyingError
     ///
-    func testListDevicesWithResourceNotFoundException() {
+    func testListDevicesWithResourceNotFoundException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
                 throw ListDevicesOutputError.resourceNotFoundException(ResourceNotFoundException(message: "resource not found"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.fetchDevices { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.fetchDevices()
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be resourceNotFound \(error)")
-                    return
-                }
-
+            guard case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be resourceNotFound \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a fetchDevices call with TooManyRequestsException response from service
@@ -368,35 +299,26 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .requestLimitExceeded as underlyingError
     ///
-    func testListDevicesWithTooManyRequestsException() {
+    func testListDevicesWithTooManyRequestsException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
                 throw ListDevicesOutputError.tooManyRequestsException(TooManyRequestsException(message: "too many requests"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.fetchDevices { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.fetchDevices()
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be requestLimitExceeded \(error)")
-                    return
-                }
-
+            guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be requestLimitExceeded \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a fetchDevices call with UserNotFound response from service
@@ -409,35 +331,26 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .userNotConfirmed as underlyingError
     ///
-    func testListDevicesWithUserNotConfirmedException() {
+    func testListDevicesWithUserNotConfirmedException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
                 throw ListDevicesOutputError.userNotConfirmedException(UserNotConfirmedException(message: "user not confirmed"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.fetchDevices { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.fetchDevices()
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .userNotConfirmed = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be userNotFound \(error)")
-                    return
-                }
-
+            guard case .userNotConfirmed = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be userNotFound \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
     /// Test a fetchDevices call with UserNotFound response from service
@@ -450,35 +363,26 @@ class DeviceBehaviorFetchDevicesTests: BasePluginTest {
     /// - Then:
     ///    - I should get a .service error with .userNotFound as underlyingError
     ///
-    func testListDevicesWithUserNotFoundException() {
+    func testListDevicesWithUserNotFoundException() async throws {
 
         mockIdentityProvider = MockIdentityProvider(
             mockListDevicesOutputResponse: { _ in
                 throw ListDevicesOutputError.userNotFoundException(UserNotFoundException(message: "user not found"))
             }
         )
-        let resultExpectation = expectation(description: "Should receive a result")
-        _ = plugin.fetchDevices { result in
-            defer {
-                resultExpectation.fulfill()
+        do {
+            _ = try await plugin.fetchDevices()
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
             }
-
-            switch result {
-            case .success:
-                XCTFail("Should return an error if the result from service is invalid")
-            case .failure(let error):
-                guard case .service(_, _, let underlyingError) = error else {
-                    XCTFail("Should produce service error instead of \(error)")
-                    return
-                }
-                guard case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
-                    XCTFail("Underlying error should be userNotFound \(error)")
-                    return
-                }
-
+            guard case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be userNotFound \(error)")
+                return
             }
         }
-        wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
 }

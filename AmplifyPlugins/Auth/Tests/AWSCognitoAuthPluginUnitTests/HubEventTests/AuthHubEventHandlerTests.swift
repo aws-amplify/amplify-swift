@@ -148,7 +148,7 @@ class AuthHubEventHandlerTests: XCTestCase {
     /// - Then:
     ///    - I should receive a sessionExpired hub event
     ///
-    func testSessionExpiredHubEvent() {
+    func testSessionExpiredHubEvent() async throws {
 
         configurePluginForSessionExpiredEvent()
 
@@ -161,13 +161,7 @@ class AuthHubEventHandlerTests: XCTestCase {
                 break
             }
         }
-
-        _ = plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options()) { result in
-            if case .failure(let error) = result {
-                XCTFail("Received failure with error \(error)")
-            }
-        }
-
+        let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
         wait(for: [hubEventExpectation], timeout: networkTimeout)
     }
 
@@ -244,7 +238,7 @@ class AuthHubEventHandlerTests: XCTestCase {
     /// - Then:
     ///    - I should receive a federatedToIdentityPool hub event
     ///
-    func testFederatedToIdentityPoolHubEvent() {
+    func testFederatedToIdentityPoolHubEvent() async throws {
 
         configurePluginForFederationEvent()
 
@@ -257,14 +251,7 @@ class AuthHubEventHandlerTests: XCTestCase {
                 break
             }
         }
-
-        _ = plugin.federateToIdentityPool(
-            withProviderToken: "someToken",
-            for: .facebook) { result in
-                if case .failure(let error) = result {
-                    XCTFail("Received failure with error \(error)")
-                }
-            }
+        _ = try await  plugin.federateToIdentityPool(withProviderToken: "someToken",for: .facebook)
 
         wait(for: [hubEventExpectation], timeout: networkTimeout)
     }
@@ -277,7 +264,7 @@ class AuthHubEventHandlerTests: XCTestCase {
     /// - Then:
     ///    - I should receive a federationToIdentityPoolCleared hub event
     ///
-    func testClearedFederationHubEvent() {
+    func testClearedFederationHubEvent() async throws {
 
         configurePluginForClearedFederationEvent()
 
@@ -291,11 +278,7 @@ class AuthHubEventHandlerTests: XCTestCase {
             }
         }
 
-        _ = plugin.clearFederationToIdentityPool() { result in
-            if case .failure(let error) = result {
-                XCTFail("Received failure with error \(error)")
-            }
-        }
+        try await plugin.clearFederationToIdentityPool()
 
         wait(for: [hubEventExpectation], timeout: networkTimeout)
     }

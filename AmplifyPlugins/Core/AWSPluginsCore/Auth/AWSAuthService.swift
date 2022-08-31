@@ -18,24 +18,13 @@ public class AWSAuthService: AWSAuthServiceBehavior {
     }
 
     /// Retrieves the identity identifier for this authentication session from Cognito.
-    /// - Parameter completion: Completion handler defined for the input `Result<String, AuthError>`
-    public func getIdentityID(completion: @escaping (Result<String, AuthError>) -> Void) {
-        Amplify.Auth.fetchAuthSession { event in
-            switch event {
-            case .success(let session):
-                guard
-                    let identityID = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
-                else {
-                    return completion(.failure(.unknown("""
-                    Did not receive a valid response from fetchAuthSession for identityId.
-                    """)))
-                }
-
-                completion(identityID)
-            case .failure(let error):
-                completion(.failure(error))
-            }
+    public func getIdentityID() async throws -> String {
+        let session = try await Amplify.Auth.fetchAuthSession()
+        guard let identityID = (session as? AuthCognitoIdentityProvider)?.getIdentityId() else {
+            let error = AuthError.unknown(" Did not receive a valid response from fetchAuthSession for identityId.")
+            throw error
         }
+        return try identityID.get()
     }
 
     // This algorithm was heavily based on the implementation here:
@@ -83,27 +72,16 @@ public class AWSAuthService: AWSAuthServiceBehavior {
     
     /// Retrieves the Cognito token from the AuthCognitoTokensProvider
     public func getUserPoolAccessToken() async throws -> String {
-        try await withCheckedThrowingContinuation { continuation in
-            Amplify.Auth.fetchAuthSession { [weak self] event in
-                switch event {
-                case .success(let session):
-                    guard let tokenResult = self?.getTokenString(from: session) else {
-                        let error = AuthError.unknown(
-                            "Did not receive a valid response from fetchAuthSession for get token."
-                        )
-                        continuation.resume(throwing: error)
-                        return
-                    }
-                    switch tokenResult {
-                    case .success(let token):
-                        continuation.resume(returning: token)
-                    case .failure(let error):
-                        continuation.resume(throwing: error)
-                    }
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
-            }
+        let authSession = try await Amplify.Auth.fetchAuthSession()
+        guard let tokenResult = getTokenString(from: authSession) else {
+            let error = AuthError.unknown("Did not receive a valid response from fetchAuthSession for get token.")
+            throw error
+        }
+        switch tokenResult {
+        case .success(let token):
+            return token
+        case .failure(let error):
+            throw error
         }
     }
 

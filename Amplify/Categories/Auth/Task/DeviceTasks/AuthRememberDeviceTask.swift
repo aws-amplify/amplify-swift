@@ -7,14 +7,10 @@
 
 import Foundation
 
-public protocol AuthConfirmUserAttributeOperation: AmplifyOperation<
-    AuthConfirmUserAttributeRequest,
-    Void,
-    AuthError
-> {}
+public protocol AuthRememberDeviceTask: AmplifyAuthTask where Request == AuthRememberDeviceRequest, Success == Void, Failure == AuthError {}
 
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let confirmUserAttributesAPI = "Auth.confirmUserAttributesAPI"
+    static let rememberDeviceAPI = "Auth.rememberDeviceAPI"
 }
