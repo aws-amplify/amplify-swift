@@ -36,7 +36,7 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask {
             return AuthSignUpResult(.done)
         } catch let error as AuthError {
             throw error
-        } catch let error as ConfirmSignUpOutputError {
+        } catch let error as AuthErrorConvertible {
             throw error.authError
         } catch let error {
             let error = AuthError.configuration(
