@@ -29,13 +29,11 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
     override func setUp() async throws {
         do {
-            await Amplify.reset()
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSS3StoragePlugin())
-            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
-                forResource: AWSS3StoragePluginTestBase.amplifyConfiguration)
+            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfiguration)
             try Amplify.configure(amplifyConfig)
-            signUp()
+            await signUp()
         } catch {
             XCTFail("Failed to initialize and configure Amplify \(error)")
         }
@@ -55,24 +53,24 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
     // MARK: Common Helper functions
 
-    func uploadData(key: String, dataString: String) {
-        uploadData(key: key, data: dataString.data(using: .utf8)!)
+    func uploadData(key: String, dataString: String) async {
+        await uploadData(key: key, data: dataString.data(using: .utf8)!)
     }
 
-    func uploadData(key: String, data: Data) {
-        let completeInvoked = expectation(description: "Completed is invoked")
+    func uploadData(key: String, data: Data) async {
+        let completeInvoked = asyncExpectation(description: "Completed is invoked")
 
-        let operation = Amplify.Storage.uploadData(key: key, data: data, options: nil) { event in
-            switch event {
-            case .success:
-                completeInvoked.fulfill()
-            case .failure(let error):
+        Task {
+            do {
+                _ = try await Amplify.Storage.uploadData(key: key, data: data, options: nil)
+                await completeInvoked.fulfill()
+            } catch {
                 XCTFail("Failed with \(error)")
+                await completeInvoked.fulfill()
             }
         }
 
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 60)
+        await waitForExpectations([completeInvoked], timeout: 60)
     }
 
     static func getBucketFromConfig(forResource: String) throws -> String {
@@ -89,39 +87,40 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         return bucketValue
     }
 
-    func signUp() {
-        guard !AWSS3StoragePluginTestBase.isFirstUserSignedUp,
-              !AWSS3StoragePluginTestBase.isSecondUserSignedUp else {
+    func signUp() async {
+        guard !Self.isFirstUserSignedUp, !Self.isSecondUserSignedUp else {
             return
         }
 
-        let registerFirstUserComplete = expectation(description: "register completed")
-        let registerSecondUserComplete = expectation(description: "register completed")
-        AuthSignInHelper.signUpUser(
-            username: AWSS3StoragePluginTestBase.user1,
-            password: AWSS3StoragePluginTestBase.password,
-            email: AWSS3StoragePluginTestBase.email1) { didSucceed, error in
-                if didSucceed {
-                    registerFirstUserComplete.fulfill()
-                    AWSS3StoragePluginTestBase.isFirstUserSignedUp = true
-                } else {
-                    XCTFail("Failed to Sign up user \(error.debugDescription)")
-                }
+        let registerFirstUserComplete = asyncExpectation(description: "register firt user completed")
+        Task {
+            do {
+                try await AuthSignInHelper.signUpUser(username: AWSS3StoragePluginTestBase.user1,
+                                                      password: AWSS3StoragePluginTestBase.password,
+                                                      email: AWSS3StoragePluginTestBase.email1)
+                Self.isFirstUserSignedUp = true
+                await registerFirstUserComplete.fulfill()
+            } catch {
+                await registerFirstUserComplete.fulfill()
+                XCTFail("Failed to Sign up user: \(error)")
+            }
         }
 
-        AuthSignInHelper.signUpUser(
-            username: AWSS3StoragePluginTestBase.user2,
-            password: AWSS3StoragePluginTestBase.password,
-            email: AWSS3StoragePluginTestBase.email2) { didSucceed, error in
-                if didSucceed {
-                    registerSecondUserComplete.fulfill()
-                    AWSS3StoragePluginTestBase.isSecondUserSignedUp = true
-                } else {
-                    XCTFail("Failed to Sign up user \(error.debugDescription)")
-                }
+        let registerSecondUserComplete = asyncExpectation(description: "register second user completed")
+        Task {
+            do {
+                try await AuthSignInHelper.signUpUser(username: AWSS3StoragePluginTestBase.user2,
+                                                      password: AWSS3StoragePluginTestBase.password,
+                                                      email: AWSS3StoragePluginTestBase.email2)
+                Self.isSecondUserSignedUp = true
+                await registerSecondUserComplete.fulfill()
+            } catch {
+                await registerSecondUserComplete.fulfill()
+                XCTFail("Failed to Sign up user: \(error)")
+            }
         }
 
-        wait(for: [registerFirstUserComplete, registerSecondUserComplete], timeout: TestCommonConstants.networkTimeout)
-
+        await waitForExpectations([registerFirstUserComplete, registerSecondUserComplete],
+                                  timeout: TestCommonConstants.networkTimeout)
     }
 }
