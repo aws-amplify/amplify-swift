@@ -102,10 +102,12 @@ class StorageCategoryConfigurationTests: XCTestCase {
 
     func testCanUseDefaultPluginIfOnlyOnePlugin() async throws {
         let plugin = MockStorageCategoryPlugin()
-        let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
+        let methodInvokedOnDefaultPlugin = asyncExpectation(description: "test method invoked on default plugin")
         plugin.listeners.append { message in
             if message == "downloadData" {
-                methodInvokedOnDefaultPlugin.fulfill()
+                Task {
+                    await methodInvokedOnDefaultPlugin.fulfill()
+                }
             }
         }
         try Amplify.add(plugin: plugin)
