@@ -8,103 +8,91 @@
 import XCTest
 import Amplify
 @testable import AWSS3StoragePlugin
-import AWSS3
+import AmplifyAsyncTesting
 
 class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
 
     /// Given: Object with key `key` does not exist in storage
     /// When: Call the get API
     /// Then: The operation fails with StorageError.keyNotFound
-    func testGetNonexistentKey() {
+    func testGetNonexistentKey() async {
         let key = UUID().uuidString
         let expectedKey = "public/" + key
-        let failInvoked = expectation(description: "Failed is invoked")
-        let options = StorageDownloadDataRequest.Options()
-        let operation = Amplify.Storage.downloadData(
-            key: key,
-            options: options,
-            progressListener: nil) { event in
-                switch event {
-                case .success:
-                    XCTFail("Should not have completed successfully")
-                case .failure(let error):
-                    guard case let .keyNotFound(key, _, _, _) = error else {
-                        XCTFail("Should have been validation error")
-                        return
-                    }
-
-                    XCTAssertEqual(key, expectedKey)
-                    failInvoked.fulfill()
+        let failInvoked = asyncExpectation(description: "Failed is invoked")
+        Task {
+            do {
+                let options = StorageDownloadDataRequest.Options()
+                _ = try await Amplify.Storage.downloadData(key: key, options: options).value
+                XCTFail("Should not have completed successfully")
+                await failInvoked.fulfill()
+            } catch {
+                await failInvoked.fulfill()
+                guard let storageError = error as? StorageError,
+                      case let .keyNotFound(key, _, _, _) = storageError else {
+                    XCTFail("Expected keyNotFound error, got \(error)")
+                    return
                 }
+                XCTAssertEqual(key, expectedKey)
+            }
         }
-
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations([failInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: Object does not exist in storage
     /// When: Call the downloadFile API with path to local file
     /// Then: Download fails and local file should not exist
-    func testDownloadToFileNonexistentKey() {
+    func testDownloadToFileNonexistentKey() async {
         let key = UUID().uuidString
         let expectedKey = "public/" + key
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
-        let failInvoked = expectation(description: "Failed is invoked")
-        let operation = Amplify.Storage.downloadFile(
-            key: key,
-            local: fileURL,
-            progressListener: nil) { event in
-                switch event {
-                case .success:
-                    XCTFail("Should not have completed successfully")
-                case .failure(let error):
-                    guard case let .keyNotFound(key, _, _, _) = error else {
-                        XCTFail("Should have been validation error")
-                        return
-                    }
-
-                    if FileManager.default.fileExists(atPath: fileURL.path) {
-                        XCTFail("local file should not exist")
-                    }
-
-                    XCTAssertEqual(key, expectedKey)
-                    failInvoked.fulfill()
+        let failInvoked = asyncExpectation(description: "Failed is invoked")
+        Task {
+            do {
+                _ = try await Amplify.Storage.downloadFile(key: key, local: fileURL, options: nil).value
+                XCTFail("Should not have completed successfully")
+                await failInvoked.fulfill()
+            } catch {
+                await failInvoked.fulfill()
+                guard let storageError = error as? StorageError,
+                      case let .keyNotFound(key, _, _, _) = storageError else {
+                    XCTFail("Expected keyNotFound error, got \(error)")
+                    return
                 }
-        }
 
-        XCTAssertNotNil(operation)
-        wait(for: [failInvoked], timeout: TestCommonConstants.networkTimeout)
+                if FileManager.default.fileExists(atPath: fileURL.path) {
+                    XCTFail("local file should not exist")
+                }
+                XCTAssertEqual(key, expectedKey)
+            }
+        }
+        await waitForExpectations([failInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: A path to file that does not exist
     /// When: Upload the file
     /// Then: The operation fails with StorageError.missingLocalFile
-    func testUploadFileFromMissingFile() {
+    func testUploadFileFromMissingFile() async {
         let key = UUID().uuidString
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
-        let failedInvoked = expectation(description: "Failed is invoked")
-        let operation = Amplify.Storage.uploadFile(
-            key: key,
-            local: fileURL,
-            options: nil,
-            progressListener: nil) { event in
-                switch event {
-                case .success:
-                    XCTFail("Completed event is received")
-                case .failure(let error):
-                    guard case .localFileNotFound = error else {
-                        XCTFail("Should have been service error with missing File description, not \(error)")
-                        return
-                    }
-                    // XCTAssertEqual(error.0, StorageErrorConstants.missingFile.errorDescription)
-                    failedInvoked.fulfill()
+        let failedInvoked = asyncExpectation(description: "Failed is invoked")
+        Task {
+            do {
+                _ = try await Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil).value
+                XCTFail("Completed event is received")
+                await failedInvoked.fulfill()
+            } catch {
+                await failedInvoked.fulfill()
+                guard let storageError = error as? StorageError,
+                      case let .localFileNotFound(description, _, _) = storageError else {
+                    XCTFail("Expected localFileNotFound error, got \(error)")
+                    return
                 }
+                XCTAssertEqual(description, StorageErrorConstants.localFileNotFound.errorDescription)
+            }
         }
-
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations([failedInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     // TODO: possibly after understanding content-type
