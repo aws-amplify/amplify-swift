@@ -23,8 +23,6 @@ class AWSAuthConfirmSignUpTaskTests: XCTestCase {
 
     var queue: OperationQueue?
 
-    let initialState = AuthState.configured(.signedOut(.init(lastKnownUserName: nil)), .configured)
-
     override func setUp() {
         super.setUp()
         queue = OperationQueue()
@@ -38,14 +36,14 @@ class AWSAuthConfirmSignUpTaskTests: XCTestCase {
             return try .init(httpResponse: MockHttpResponse.ok)
         }
 
-        let statemachine = Defaults.makeDefaultAuthStateMachine(
-            initialState: initialState,
+        let authEnvironment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: {MockIdentityProvider(mockConfirmSignUpResponse: confirmSignUp)})
+
 
         let request = AuthConfirmSignUpRequest(username: "jeffb",
                                                code: "213",
                                                options: AuthConfirmSignUpRequest.Options())
-        let task = AWSAuthConfirmSignUpTask(request, authStateMachine: statemachine)
+        let task = AWSAuthConfirmSignUpTask(request, authEnvironment: authEnvironment)
         let confirmSignUpResult = try await task.value
         print("Confirm Sign Up Result: \(confirmSignUpResult)")
         wait(for: [functionExpectation], timeout: 1)
@@ -58,8 +56,7 @@ class AWSAuthConfirmSignUpTaskTests: XCTestCase {
             throw try ConfirmSignUpOutputError(httpResponse: MockHttpResponse.ok)
         }
 
-        let statemachine = Defaults.makeDefaultAuthStateMachine(
-            initialState: initialState,
+        let authEnvironment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: {MockIdentityProvider(mockConfirmSignUpResponse: confirmSignUp)})
 
         let request = AuthConfirmSignUpRequest(username: "jeffb",
@@ -67,7 +64,7 @@ class AWSAuthConfirmSignUpTaskTests: XCTestCase {
                                                options: AuthConfirmSignUpRequest.Options())
 
         do {
-            let task = AWSAuthConfirmSignUpTask(request, authStateMachine: statemachine)
+            let task = AWSAuthConfirmSignUpTask(request, authEnvironment: authEnvironment)
             _ = try await task.value
             XCTFail("Should not produce success response")
         } catch {

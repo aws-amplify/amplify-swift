@@ -63,10 +63,13 @@ public extension InternalTaskAsyncThrowingSequence where Self: InternalTaskRunne
 
 public extension InternalTaskChannel where Self: InternalTaskRunner & InternalTaskAsyncSequence {
 
+    /// Sends element to sequence
+    /// - Parameter element: element
     func send(_ element: InProcess) {
         context.sequence?.send(element)
     }
 
+    /// Terminates sequence
     func finish() {
         context.sequence?.finish()
     }
@@ -75,14 +78,19 @@ public extension InternalTaskChannel where Self: InternalTaskRunner & InternalTa
 
 public extension InternalTaskThrowingChannel where Self: InternalTaskRunner & InternalTaskAsyncThrowingSequence {
 
+    /// Sends element to sequence
+    /// - Parameter element: element
     func send(_ element: InProcess) {
         context.sequence?.send(element)
     }
 
+    /// Terminates sequence
     func finish() {
         context.sequence?.finish()
     }
 
+    /// Fails sequence
+    /// - Parameter error: error
     func fail(_ error: Error) {
         context.sequence?.fail(error)
     }

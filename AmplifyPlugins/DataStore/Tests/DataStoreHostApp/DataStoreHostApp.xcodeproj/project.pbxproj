@@ -15,7 +15,6 @@
 		21182143289BFBC4001B5945 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 21182142289BFBC4001B5945 /* AWSAPIPlugin */; };
 		21182145289BFBC4001B5945 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 21182144289BFBC4001B5945 /* AWSCognitoAuthPlugin */; };
 		21182147289BFBC4001B5945 /* AWSDataStorePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 21182146289BFBC4001B5945 /* AWSDataStorePlugin */; };
-		212E3F9828BD03FC000B7989 /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212E3F9728BD03FC000B7989 /* AsyncExpectation.swift */; };
 		213DBB9C28A5743600B30280 /* ModelImplicitDefaultPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB6228A5743200B30280 /* ModelImplicitDefaultPk+Schema.swift */; };
 		213DBB9D28A5743600B30280 /* ModelImplicitDefaultPk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB6328A5743200B30280 /* ModelImplicitDefaultPk.swift */; };
 		213DBB9E28A5743600B30280 /* ModelExplicitDefaultPk+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB6428A5743200B30280 /* ModelExplicitDefaultPk+Schema.swift */; };
@@ -157,6 +156,8 @@
 		213DBC6128A5808400B30280 /* TodoIAMPrivate+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA8B289BFE4E00B32A39 /* TodoIAMPrivate+Schema.swift */; };
 		213DBC6228A5808400B30280 /* TodoIAMPublic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA8D289BFE4E00B32A39 /* TodoIAMPublic.swift */; };
 		213DBC6328A5841400B30280 /* HubListenerTestUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFE13289C073100B32A39 /* HubListenerTestUtilities.swift */; };
+		219253BC28BFE7D100820737 /* AmplifyAsyncTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 219253BB28BFE7D100820737 /* AmplifyAsyncTesting */; };
+		219253BE28BFE84100820737 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 219253BD28BFE84000820737 /* XCTest.framework */; };
 		21977DBF289C171A005B49D6 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977DBE289C1719005B49D6 /* TestConfigHelper.swift */; };
 		21BBFB4A289BFF9400B32A39 /* AWSDataStorePluginConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F2289BFE3400B32A39 /* AWSDataStorePluginConfigurationTests.swift */; };
 		21BBFB4B289BFFA000B32A39 /* DataStoreConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F1289BFE3400B32A39 /* DataStoreConfigurationTests.swift */; };
@@ -555,7 +556,6 @@
 		21182133289BFB4F001B5945 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		21182136289BFB4F001B5945 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		2118213E289BFB63001B5945 /* amplify-ios-staging */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios-staging"; path = ../../../..; sourceTree = "<group>"; };
-		212E3F9728BD03FC000B7989 /* AsyncExpectation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncExpectation.swift; sourceTree = "<group>"; };
 		213DBB6128A4172000B30280 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		213DBB6228A5743200B30280 /* ModelImplicitDefaultPk+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ModelImplicitDefaultPk+Schema.swift"; sourceTree = "<group>"; };
 		213DBB6328A5743200B30280 /* ModelImplicitDefaultPk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelImplicitDefaultPk.swift; sourceTree = "<group>"; };
@@ -623,6 +623,7 @@
 		213DBC5828A57FFE00B30280 /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
 		213DBC5A28A5800F00B30280 /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
 		213DBC5C28A5801900B30280 /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
+		219253BD28BFE84000820737 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		21977D84289C1633005B49D6 /* primarykey_schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = primarykey_schema.graphql; sourceTree = "<group>"; };
 		21977DBE289C1719005B49D6 /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
 		21BBF9E6289BFE3400B32A39 /* DataStoreCustomPrimaryKeyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreCustomPrimaryKeyTests.swift; sourceTree = "<group>"; };
@@ -1071,6 +1072,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				21182143289BFBC4001B5945 /* AWSAPIPlugin in Frameworks */,
+				219253BE28BFE84100820737 /* XCTest.framework in Frameworks */,
+				219253BC28BFE7D100820737 /* AmplifyAsyncTesting in Frameworks */,
 				21182141289BFBC4001B5945 /* Amplify in Frameworks */,
 				21182145289BFBC4001B5945 /* AWSCognitoAuthPlugin in Frameworks */,
 				21182147289BFBC4001B5945 /* AWSDataStorePlugin in Frameworks */,
@@ -1193,6 +1196,7 @@
 		2118213F289BFBC4001B5945 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				219253BD28BFE84000820737 /* XCTest.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1328,7 +1332,6 @@
 				21BBF9ED289BFE3400B32A39 /* SyncEngineIntegrationV2TestBase.swift */,
 				21BBF9EE289BFE3400B32A39 /* DataStoreHubEvent.swift */,
 				21BBF9F0289BFE3400B32A39 /* TestModelV2Registration.swift */,
-				212E3F9728BD03FC000B7989 /* AsyncExpectation.swift */,
 			);
 			path = TestSupport;
 			sourceTree = "<group>";
@@ -2254,6 +2257,7 @@
 				21182142289BFBC4001B5945 /* AWSAPIPlugin */,
 				21182144289BFBC4001B5945 /* AWSCognitoAuthPlugin */,
 				21182146289BFBC4001B5945 /* AWSDataStorePlugin */,
+				219253BB28BFE7D100820737 /* AmplifyAsyncTesting */,
 			);
 			productName = DataStoreHostApp;
 			productReference = 2118212C289BFB4B001B5945 /* DataStoreHostApp.app */;
@@ -2785,7 +2789,6 @@
 				21BBFE0F289C06E400B32A39 /* BookAuthor+Schema.swift in Sources */,
 				21BBFDD3289C06E400B32A39 /* Comment3+Schema.swift in Sources */,
 				21BBFDCB289C06E400B32A39 /* Team1.swift in Sources */,
-				212E3F9828BD03FC000B7989 /* AsyncExpectation.swift in Sources */,
 				21BBFE10289C06E400B32A39 /* UserAccount+Schema.swift in Sources */,
 				21BBFDB2289C06E400B32A39 /* Post+Schema.swift in Sources */,
 				21BBFDBE289C06E400B32A39 /* User.swift in Sources */,
@@ -3740,6 +3743,10 @@
 		21182146289BFBC4001B5945 /* AWSDataStorePlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AWSDataStorePlugin;
+		};
+		219253BB28BFE7D100820737 /* AmplifyAsyncTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AmplifyAsyncTesting;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

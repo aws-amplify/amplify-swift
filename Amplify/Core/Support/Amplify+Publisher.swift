@@ -69,7 +69,7 @@ public extension Amplify {
         ///
         /// - Parameter sequence: The AsyncSequence for which to create the Publisher.
         /// - Returns: The Publisher for the given AsyncSequence.
-        static func create<Sequence: AsyncSequence>(
+        public static func create<Sequence: AsyncSequence>(
             _ sequence: Sequence
         ) -> AnyPublisher<Sequence.Element, Error> {
             let subject = PassthroughSubject<Sequence.Element, Error>()

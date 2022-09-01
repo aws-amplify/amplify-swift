@@ -44,7 +44,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         var snapshots = [DataStoreQuerySnapshot<Post>]()
         let snapshotWithIsSynced = expectation(description: "query snapshot with isSynced true")
         snapshotWithIsSynced.assertForOverFulfill = false
-        Amplify.DataStore.observeQuery(for: Post.self).sink { completed in
+        Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self)).sink { completed in
             switch completed {
             case .finished:
                 break
@@ -86,7 +86,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         snapshotWithIsSynced.assertForOverFulfill = false
         var snapshotWithIsSyncedFulfilled = false
         let predicate = Post.keys.title.beginsWith("xyz")
-        Amplify.DataStore.observeQuery(for: Post.self, where: predicate).sink { completed in
+        Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self, where: predicate)).sink { completed in
             switch completed {
             case .finished:
                 break
@@ -130,8 +130,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         let post2 = Post(title: "title", content: "content", createdAt: .now().add(value: 1, to: .second))
         let snapshotWithSavedPost = expectation(description: "query snapshot with saved post")
         snapshotWithSavedPost.assertForOverFulfill = false
-        Amplify.DataStore.observeQuery(for: Post.self,
-                                       sort: .ascending(Post.keys.createdAt))
+        Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self, sort: .ascending(Post.keys.createdAt)))
         .sink { completed in
             switch completed {
             case .finished:
@@ -179,7 +178,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         let snapshotWithIsSynced = expectation(description: "query snapshot with isSynced true")
         snapshotWithIsSynced.assertForOverFulfill = false
         var snapshots = [DataStoreQuerySnapshot<Post>]()
-        Amplify.DataStore.observeQuery(for: Post.self).sink { completed in
+        Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self)).sink { completed in
             switch completed {
             case .finished:
                 break
@@ -231,7 +230,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                 snapshotExpectation1.fulfill()
             }
         }
-        Amplify.DataStore.observeQuery(for: Post.self, where: predicate).sink { completed in
+        Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self, where: predicate)).sink { completed in
             switch completed {
             case .finished:
                 break
@@ -358,9 +357,9 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                 snapshotExpectation1.fulfill()
             }
         }
-        Amplify.DataStore.observeQuery(for: Post.self,
-                                       where: Post.keys.content == testId,
-                                       sort: .ascending(Post.keys.title))
+        Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self,
+                                                                where: Post.keys.content == testId,
+                                                                sort: .ascending(Post.keys.title)))
         .sink { completed in
             switch completed {
             case .finished:
@@ -502,12 +501,13 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForReady()
         let firstSnapshotWithIsSynced = expectation(description: "query snapshot with isSynced true")
-        var onComplete: ((Subscribers.Completion<DataStoreError>) -> Void) = { _ in }
-        Amplify.DataStore.observeQuery(for: Post.self).sink { onComplete($0) } receiveValue: { querySnapshot in
-            if querySnapshot.isSynced {
-                firstSnapshotWithIsSynced.fulfill()
-            }
-        }.store(in: &cancellables)
+        var onComplete: ((Subscribers.Completion<Error>) -> Void) = { _ in }
+        Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self))
+            .sink { onComplete($0) } receiveValue: { querySnapshot in
+                if querySnapshot.isSynced {
+                    firstSnapshotWithIsSynced.fulfill()
+                }
+            }.store(in: &cancellables)
         await waitForExpectations(timeout: 100)
         
         let observeQueryReceivedCompleted = expectation(description: "observeQuery received completed")
@@ -536,12 +536,13 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForReady()
         let firstSnapshotWithIsSynced = expectation(description: "query snapshot with isSynced true")
-        var onComplete: ((Subscribers.Completion<DataStoreError>) -> Void) = { _ in }
-        Amplify.DataStore.observeQuery(for: Post.self).sink { onComplete($0) } receiveValue: { querySnapshot in
-            if querySnapshot.isSynced {
-                firstSnapshotWithIsSynced.fulfill()
-            }
-        }.store(in: &cancellables)
+        var onComplete: ((Subscribers.Completion<Error>) -> Void) = { _ in }
+        Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self))
+            .sink { onComplete($0) } receiveValue: { querySnapshot in
+                if querySnapshot.isSynced {
+                    firstSnapshotWithIsSynced.fulfill()
+                }
+            }.store(in: &cancellables)
         await waitForExpectations(timeout: 100)
         
         let observeQueryReceivedCompleted = expectation(description: "observeQuery received completed")
@@ -563,14 +564,15 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         try await startAmplifyAndWaitForReady()
         let firstSnapshot = expectation(description: "first query snapshot")
         var querySnapshots = [DataStoreQuerySnapshot<Post>]()
-        var onComplete: ((Subscribers.Completion<DataStoreError>) -> Void) = { _ in }
+        var onComplete: ((Subscribers.Completion<Error>) -> Void) = { _ in }
         var onSnapshot: ((DataStoreQuerySnapshot<Post>) -> Void) = { querySnapshot in
             querySnapshots.append(querySnapshot)
             if querySnapshots.count == 1 {
                 firstSnapshot.fulfill()
             }
         }
-        Amplify.DataStore.observeQuery(for: Post.self).sink { onComplete($0) } receiveValue: { onSnapshot($0) }
+        Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self))
+            .sink { onComplete($0) } receiveValue: { onSnapshot($0) }
             .store(in: &cancellables)
         await waitForExpectations(timeout: 100)
         

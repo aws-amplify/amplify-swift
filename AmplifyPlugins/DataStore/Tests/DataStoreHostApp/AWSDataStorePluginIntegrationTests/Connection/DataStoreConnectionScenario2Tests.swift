@@ -10,6 +10,7 @@ import XCTest
 @testable import Amplify
 @testable import AWSDataStorePlugin
 @testable import DataStoreHostApp
+import AmplifyAsyncTesting
 
 /*
  A one-to-one connection where a project has one team,
@@ -46,8 +47,8 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase {
         try await startAmplifyAndWaitForSync()
         let team = Team2(name: "name1")
         let project = Project2(teamID: team.id, team: team)
-        let syncedTeamReceived = AsyncExpectation(description: "received team from sync event")
-        let syncProjectReceived = AsyncExpectation(description: "received project from sync event")
+        let syncedTeamReceived = asyncExpectation(description: "received team from sync event")
+        let syncProjectReceived = asyncExpectation(description: "received project from sync event")
         let hubListener = Amplify.Hub.listen(to: .dataStore,
                                              eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
@@ -92,7 +93,7 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase {
         let anotherTeam = Team2(name: "name1")
         var project = Project2(teamID: team.id, team: team)
         let expectedUpdatedProject = Project2(id: project.id, name: project.name, teamID: anotherTeam.id)
-        let syncUpdatedProjectReceived = AsyncExpectation(description: "received updated project from sync path")
+        let syncUpdatedProjectReceived = asyncExpectation(description: "received updated project from sync path")
         let hubListener = Amplify.Hub.listen(to: .dataStore,
                                              eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
@@ -134,9 +135,9 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase {
         let team = try await saveTeam(name: "name")
         let project = try await saveProject(teamID: team.id, team: team)
 
-        let createReceived = AsyncExpectation(description: "received created items from cloud",
+        let createReceived = asyncExpectation(description: "received created items from cloud",
                                               expectedFulfillmentCount: 2) // 1 project and 1 team
-        let deleteReceived = AsyncExpectation(description: "Delete notification received",
+        let deleteReceived = asyncExpectation(description: "Delete notification received",
                                               expectedFulfillmentCount: 2) // 1 project and 1 team
         let hubListener = Amplify.Hub.listen(to: .dataStore,
                                              eventName: HubPayload.EventName.DataStore.syncReceived) { payload in

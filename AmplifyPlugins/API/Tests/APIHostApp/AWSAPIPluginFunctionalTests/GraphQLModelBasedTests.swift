@@ -9,6 +9,7 @@ import XCTest
 @testable import AWSAPIPlugin
 @testable import Amplify
 @testable import APIHostApp
+import AmplifyAsyncTesting
 
 // swiftlint:disable type_body_length
 class GraphQLModelBasedTests: XCTestCase {
@@ -271,42 +272,43 @@ class GraphQLModelBasedTests: XCTestCase {
         let uuid2 = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
-        let task = try await Amplify.API.subscribe(request: .subscription(of: Post.self, type: .onCreate))
-        let subscription = await task.subscription
+        let subscription = Amplify.API.subscribe(request: .subscription(of: Post.self, type: .onCreate))
         Task {
-            for await subscriptionEvent in subscription {
-                switch subscriptionEvent {
-                case .connection(let state):
-                    switch state {
-                    case .connecting:
-                        break
-                    case .connected:
-                        await connectedInvoked.fulfill()
-                    case .disconnected:
-                        break
-                    }
-                case .data(let result):
-                    switch result {
-                    case .success(let post):
-                        if post.id == uuid || post.id == uuid2 {
-                            await progressInvoked.fulfill()
+            do {
+                for try await subscriptionEvent in subscription {
+                    switch subscriptionEvent {
+                    case .connection(let state):
+                        switch state {
+                        case .connecting:
+                            break
+                        case .connected:
+                            await connectedInvoked.fulfill()
+                        case .disconnected:
+                            break
                         }
-                    case .failure(let error):
-                        XCTFail("\(error)")
+                    case .data(let result):
+                        switch result {
+                        case .success(let post):
+                            if post.id == uuid || post.id == uuid2 {
+                                await progressInvoked.fulfill()
+                            }
+                        case .failure(let error):
+                            XCTFail("\(error)")
+                        }
                     }
                 }
+            } catch {
+                XCTFail("Unexpected subscription failure")
             }
         }
         
-        XCTAssertNotNil(task)
-        try await AsyncExpectation.waitForExpectations([connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations([connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         
         let post = Post(id: uuid, title: title, content: "content", createdAt: .now())
         _ = try await Amplify.API.mutate(request: .create(post))
         let post2 = Post(id: uuid2, title: title, content: "content", createdAt: .now())
         _ = try await Amplify.API.mutate(request: .create(post2))
-        try await AsyncExpectation.waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
-        await task.cancel()
+        await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
     }
     
     func testOnUpdatePostSubscriptionWithModel() async throws {
@@ -314,27 +316,30 @@ class GraphQLModelBasedTests: XCTestCase {
         let connectedInvoked = AsyncExpectation(description: "Connection established")
         let progressInvoked = AsyncExpectation(description: "progress invoked")
         
-        let task = try await Amplify.API.subscribe(request: .subscription(of: Post.self, type: .onUpdate))
-        let subscription = await task.subscription
+        let subscription = Amplify.API.subscribe(request: .subscription(of: Post.self, type: .onUpdate))
         Task {
-            for await subscriptionEvent in subscription {
-                switch subscriptionEvent {
-                case .connection(let state):
-                    switch state {
-                    case .connecting:
-                        await connectingInvoked.fulfill()
-                    case .connected:
-                        await connectedInvoked.fulfill()
-                    case .disconnected:
-                        break
+            do {
+                for try await subscriptionEvent in subscription {
+                    switch subscriptionEvent {
+                    case .connection(let state):
+                        switch state {
+                        case .connecting:
+                            await connectingInvoked.fulfill()
+                        case .connected:
+                            await connectedInvoked.fulfill()
+                        case .disconnected:
+                            break
+                        }
+                    case .data:
+                        await progressInvoked.fulfill()
                     }
-                case .data:
-                    await progressInvoked.fulfill()
                 }
+            } catch {
+                XCTFail("Unexpected subscription failure")
             }
         }
         
-        try await AsyncExpectation.waitForExpectations([connectingInvoked, connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations([connectingInvoked, connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
@@ -343,9 +348,7 @@ class GraphQLModelBasedTests: XCTestCase {
         _ = try await Amplify.API.mutate(request: .create(post))
         _ = try await Amplify.API.mutate(request: .update(post))
         
-        try await AsyncExpectation.waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
-        
-        await task.cancel()
+        await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
     }
     
     func testOnDeletePostSubscriptionWithModel() async throws {
@@ -353,27 +356,30 @@ class GraphQLModelBasedTests: XCTestCase {
         let connectedInvoked = AsyncExpectation(description: "Connection established")
         let progressInvoked = AsyncExpectation(description: "progress invoked")
         
-        let task = try await Amplify.API.subscribe(request: .subscription(of: Post.self, type: .onDelete))
-        let subscription = await task.subscription
+        let subscription = Amplify.API.subscribe(request: .subscription(of: Post.self, type: .onDelete))
         Task {
-            for await subscriptionEvent in subscription {
-                switch subscriptionEvent {
-                case .connection(let state):
-                    switch state {
-                    case .connecting:
-                        await connectingInvoked.fulfill()
-                    case .connected:
-                        await connectedInvoked.fulfill()
-                    case .disconnected:
-                        break
+            do {
+                for try await subscriptionEvent in subscription {
+                    switch subscriptionEvent {
+                    case .connection(let state):
+                        switch state {
+                        case .connecting:
+                            await connectingInvoked.fulfill()
+                        case .connected:
+                            await connectedInvoked.fulfill()
+                        case .disconnected:
+                            break
+                        }
+                    case .data:
+                        await progressInvoked.fulfill()
                     }
-                case .data:
-                    await progressInvoked.fulfill()
                 }
+            } catch {
+                XCTFail("Unexpected subscription failure")
             }
         }
         
-        try await AsyncExpectation.waitForExpectations([connectingInvoked, connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations([connectingInvoked, connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
@@ -382,9 +388,7 @@ class GraphQLModelBasedTests: XCTestCase {
         _ = try await Amplify.API.mutate(request: .create(post))
         _ = try await Amplify.API.mutate(request: .delete(post))
         
-        try await AsyncExpectation.waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
-        
-        await task.cancel()
+        await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
     }
     
     func testOnCreateCommentSubscriptionWithModel() async throws {
@@ -394,147 +398,95 @@ class GraphQLModelBasedTests: XCTestCase {
         let uuid2 = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
-        let task = try await Amplify.API.subscribe(request: .subscription(of: Comment.self, type: .onCreate))
-        let subscription = await task.subscription
+        let subscription = Amplify.API.subscribe(request: .subscription(of: Comment.self, type: .onCreate))
         Task {
-            for await subscriptionEvent in subscription {
-                switch subscriptionEvent {
-                case .connection(let state):
-                    switch state {
-                    case .connecting:
-                        break
-                    case .connected:
-                        await connectedInvoked.fulfill()
-                    case .disconnected:
-                        break
-                    }
-                case .data(let result):
-                    switch result {
-                    case .success(let comment):
-                        if comment.id == uuid || comment.id == uuid2 {
-                            await progressInvoked.fulfill()
+            do {
+                for try await subscriptionEvent in subscription {
+                    switch subscriptionEvent {
+                    case .connection(let state):
+                        switch state {
+                        case .connecting:
+                            break
+                        case .connected:
+                            await connectedInvoked.fulfill()
+                        case .disconnected:
+                            break
                         }
-                    case .failure(let error):
-                        XCTFail("\(error)")
+                    case .data(let result):
+                        switch result {
+                        case .success(let comment):
+                            if comment.id == uuid || comment.id == uuid2 {
+                                await progressInvoked.fulfill()
+                            }
+                        case .failure(let error):
+                            XCTFail("\(error)")
+                        }
                     }
                 }
+            } catch {
+                XCTFail("Unexpected subscription failure")
             }
         }
         
-        XCTAssertNotNil(task)
-        try await AsyncExpectation.waitForExpectations([connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations([connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         let post = Post(id: uuid, title: title, content: "content", createdAt: .now())
         _ = try await Amplify.API.mutate(request: .create(post))
         let comment = Comment(id: uuid, content: "content", createdAt: .now(), post: post)
         _ = try await Amplify.API.mutate(request: .create(comment))
         let comment2 = Comment(id: uuid2, content: "content", createdAt: .now(), post: post)
         _ = try await Amplify.API.mutate(request: .create(comment2))
-        try await AsyncExpectation.waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
-        await task.cancel()
+        await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     // MARK: Helpers
 
-    func createPost(id: String, title: String, expect: XCTestExpectation? = nil) -> Post? {
+    func createPost(id: String, title: String) async throws -> Post? {
         let post = Post(id: id, title: title, content: "content", createdAt: .now())
-        return createPost(post: post, expect: expect)
+        return try await createPost(post: post)
     }
 
-    func createComment(content: String, post: Post) -> Comment? {
+    func createComment(content: String, post: Post) async throws -> Comment? {
         let comment = Comment(content: content, createdAt: .now(), post: post)
-        return createComment(comment: comment)
+        return try await createComment(comment: comment)
     }
 
-    func createPost(post: Post, expect: XCTestExpectation? = nil) -> Post? {
-        var result: Post? = post
-        
-        let requestInvokedSuccessfully = expect ?? expectation(description: "request completed")
-
-        _ = Amplify.API.mutate(request: .create(post)) { event in
-            switch event {
-            case .success(let data):
-                switch data {
-                case .success(let post):
-                    result = post
-                default:
-                    XCTFail("Create Post was not successful: \(data)")
-                }
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+    func createPost(post: Post) async throws -> Post? {
+        let data = try await Amplify.API.mutate(request: .create(post))
+        switch data {
+        case .success(let post):
+            return post
+        case .failure(let error):
+            throw error
         }
-        if expect == nil {
-            wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
-        }
-        
-        return result
     }
 
-    func createComment(comment: Comment) -> Comment? {
-        var result: Comment?
-        let requestInvokedSuccessfully = expectation(description: "request completed")
-
-        _ = Amplify.API.mutate(request: .create(comment)) { event in
-            switch event {
-            case .success(let data):
-                switch data {
-                case .success(let comment):
-                    result = comment
-                default:
-                    XCTFail("Could not get data back")
-                }
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+    func createComment(comment: Comment) async throws -> Comment? {
+        let data = try await Amplify.API.mutate(request: .create(comment))
+        switch data {
+        case .success(let comment):
+            return comment
+        case .failure(let error):
+            throw error
         }
-        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
-        return result
     }
 
-    func mutatePost(_ post: Post, expect: XCTestExpectation? = nil) -> Post? {
-        var result: Post?
-        let requestInvokedSuccessfully = expect ?? expectation(description: "request completed")
-        _ = Amplify.API.mutate(request: .update(post)) { event in
-            switch event {
-            case .success(let data):
-                switch data {
-                case .success(let post):
-                    result = post
-                default:
-                    XCTFail("Could not get data back")
-                }
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+    func mutatePost(_ post: Post) async throws -> Post {
+        let data = try await Amplify.API.mutate(request: .update(post))
+        switch data {
+        case .success(let post):
+            return post
+        case .failure(let error):
+            throw error
         }
-        if expect == nil {
-            wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
-        }
-        return result
     }
 
-    func deletePost(post: Post) -> Post? {
-        var result: Post?
-        let requestInvokedSuccessfully = expectation(description: "request completed")
-
-        _ = Amplify.API.mutate(request: .delete(post)) { event in
-            switch event {
-            case .success(let data):
-                switch data {
-                case .success(let post):
-                    result = post
-                default:
-                    XCTFail("Could not get data back")
-                }
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+    func deletePost(post: Post) async throws -> Post {
+        let data = try await Amplify.API.mutate(request: .delete(post))
+        switch data {
+        case .success(let post):
+            return post
+        case .failure(let error):
+            throw error
         }
-        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
-        return result
     }
 }

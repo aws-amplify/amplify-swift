@@ -77,16 +77,7 @@ class MockAPICategoryPlugin: MessageReporter,
         // model is being mutated
         notify("mutate(request) document: \(request.document); variables: \(String(describing: request.variables))")
 
-        let requestOptions = GraphQLOperationRequest<R>.Options(pluginOptions: nil)
-        let request = GraphQLOperationRequest<R>(apiName: request.apiName,
-                                                 operationType: .mutation,
-                                                 document: request.document,
-                                                 variables: request.variables,
-                                                 responseType: request.responseType,
-                                                 options: requestOptions)
-        let operation = MockGraphQLOperation(request: request, responseType: request.responseType)
-        let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
-        return try await taskAdapter.value
+        return .failure(.unknown("", "'", nil))
     }
 
     func query<R: Decodable>(request: GraphQLRequest<R>,
@@ -112,7 +103,7 @@ class MockAPICategoryPlugin: MessageReporter,
     }
 
     func query<R: Decodable>(request: GraphQLRequest<R>) async throws -> GraphQLTask<R>.Success {
-        notify("query(request:listener:) request: \(request)")
+        notify("query(request:) request: \(request)")
 
         if let responder = responders[.queryRequestResponse] as? QueryRequestResponder<R> {
             
@@ -124,17 +115,7 @@ class MockAPICategoryPlugin: MessageReporter,
                 throw error
             }
         }
-        
-        let requestOptions = GraphQLOperationRequest<R>.Options(pluginOptions: nil)
-        let request = GraphQLOperationRequest<R>(apiName: request.apiName,
-                                                 operationType: .query,
-                                                 document: request.document,
-                                                 variables: request.variables,
-                                                 responseType: request.responseType,
-                                                 options: requestOptions)
-        let operation = MockGraphQLOperation(request: request, responseType: request.responseType)
-        let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
-        return try await taskAdapter.value
+        return .failure(.unknown("", "", nil))        
     }
     
     func subscribe<R: Decodable>(request: GraphQLRequest<R>,
@@ -165,7 +146,7 @@ class MockAPICategoryPlugin: MessageReporter,
             return operation
     }
 
-    func subscribe<R: Decodable>(request: GraphQLRequest<R>) async throws -> GraphQLSubscriptionTask<R> {
+    func subscribe<R: Decodable>(request: GraphQLRequest<R>) -> AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<R>> {
         notify(
                 """
                 subscribe(request:listener:) document: \(request.document); \
@@ -180,9 +161,9 @@ class MockAPICategoryPlugin: MessageReporter,
                                                  variables: request.variables,
                                                  responseType: request.responseType,
                                                  options: requestOptions)
-        let operation = MockSubscriptionGraphQLOperation(request: request, responseType: request.responseType)
-        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
-        return taskAdapter
+        
+        let taskRunner = MockAWSGraphQLSubscriptionTaskRunner(request: request)
+        return taskRunner.sequence
     }
     
     public func reachabilityPublisher(for apiName: String?) -> AnyPublisher<ReachabilityUpdate, Never>? {
@@ -213,15 +194,7 @@ class MockAPICategoryPlugin: MessageReporter,
     
     func get(request: RESTRequest) async throws -> RESTTask.Success {
         notify("get")
-        let operationRequest = RESTOperationRequest(apiName: request.apiName,
-                                                    operationType: .get,
-                                                    path: request.path,
-                                                    queryParameters: request.queryParameters,
-                                                    body: request.body,
-                                                    options: RESTOperationRequest.Options())
-        let operation = MockAPIOperation(request: operationRequest)
-        let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
-        return try await taskAdapter.value
+        return Data()
     }
 
     func put(request: RESTRequest, listener: RESTOperation.ResultListener?) -> RESTOperation {
@@ -457,4 +430,20 @@ class MockFunctionAuthProvider: AmplifyFunctionAuthProvider {
             return "token"
         }
     }
+}
+
+class MockAWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel {
+    
+    public typealias Request = GraphQLOperationRequest<R>
+    public typealias InProcess = GraphQLSubscriptionEvent<R>
+    public var request: GraphQLOperationRequest<R>
+    public var context = InternalTaskAsyncThrowingSequenceContext<GraphQLSubscriptionEvent<R>>()
+    func run() async throws {
+        
+    }
+    
+    init(request: GraphQLOperationRequest<R>) {
+        self.request = request
+    }
+    
 }

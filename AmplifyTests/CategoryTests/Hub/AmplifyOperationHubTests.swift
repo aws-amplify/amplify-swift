@@ -54,45 +54,49 @@ class AmplifyOperationHubTests: XCTestCase {
     /// Given: A configured system
     /// When: I perform an operation with an `listener` listener
     /// Then: That listener is notified when an event occurs
-    func testlistenerViaOperationInit() {
-        let listenerInvoked = expectation(description: "listener was invoked")
-        let operation = Amplify.Storage.getURL(key: "foo") { _ in
-            listenerInvoked.fulfill()
-        }
-        if let mockOperation = operation as? MockDispatchingStorageGetURLOperation {
-            mockOperation.doMockDispatch()
-        }
-        waitForExpectations(timeout: 1.0)
+    func testlistenerViaOperationInit() throws {
+        throw XCTSkip("Storage listeners removed")
+        // TODO: consider rewriting with async API
+//        let listenerInvoked = expectation(description: "listener was invoked")
+//        let operation = Amplify.Storage.getURL(key: "foo") { _ in
+//            listenerInvoked.fulfill()
+//        }
+//        if let mockOperation = operation as? MockDispatchingStorageGetURLOperation {
+//            mockOperation.doMockDispatch()
+//        }
+//        waitForExpectations(timeout: 1.0)
     }
 
     /// Given: A configured system
     /// When: I subscribe to Hub events filtered by operation ID
     /// Then: My listener receives events for that ID
     func testListenerViaHubListen() throws {
-        let listenerInvoked = expectation(description: "listener was invoked")
-        let operation = Amplify.Storage.getURL(key: "foo") { _ in
-            listenerInvoked.fulfill()
-        }
-
-        let operationId = operation.id
-
-        let token = Amplify.Hub.listen(to: .storage) { payload in
-            guard let context = payload.context as? AmplifyOperationContext<StorageListRequest> else {
-                return
-            }
-
-            if context.operationId == operationId {
-                listenerInvoked.fulfill()
-            }
-        }
-
-        try waitForToken(token)
-
-        if let mockOperation = operation as? MockDispatchingStorageGetURLOperation {
-            mockOperation.doMockDispatch()
-        }
-
-        waitForExpectations(timeout: 1.0)
+        throw XCTSkip("Storage listeners removed")
+        // TODO: consider rewriting with async API
+//        let listenerInvoked = expectation(description: "listener was invoked")
+//        let operation = Amplify.Storage.getURL(key: "foo") { _ in
+//            listenerInvoked.fulfill()
+//        }
+//
+//        let operationId = operation.id
+//
+//        let token = Amplify.Hub.listen(to: .storage) { payload in
+//            guard let context = payload.context as? AmplifyOperationContext<StorageListRequest> else {
+//                return
+//            }
+//
+//            if context.operationId == operationId {
+//                listenerInvoked.fulfill()
+//            }
+//        }
+//
+//        try waitForToken(token)
+//
+//        if let mockOperation = operation as? MockDispatchingStorageGetURLOperation {
+//            mockOperation.doMockDispatch()
+//        }
+//
+//        waitForExpectations(timeout: 1.0)
     }
 
     // Convenience to let tests wait for a listener to be registered. Instead of returning a bool, simply throws if the
@@ -230,7 +234,7 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
     @discardableResult
     public func downloadData(key: String,
-                      options: StorageDownloadDataOperation.Request.Options?) async throws -> StorageDownloadDataTask {
+                      options: StorageDownloadDataOperation.Request.Options? = nil) async throws -> StorageDownloadDataTask {
         let options = options ?? StorageDownloadDataRequest.Options()
         let request = StorageDownloadDataRequest(key: key, options: options)
         let operation = MockDispatchingStorageDownloadDataOperation(request: request)
@@ -256,6 +260,17 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
         let options = options ?? StorageUploadDataRequest.Options()
         let request = StorageUploadDataRequest(key: key, data: data, options: options)
         let operation = MockDispatchingStorageUploadDataOperation(request: request)
+        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
+        return taskAdapter
+    }
+
+    @discardableResult
+    public func uploadFile(key: String,
+                           local: URL,
+                           options: StorageUploadFileOperation.Request.Options?) async throws -> StorageUploadFileTask {
+        let options = options ?? StorageUploadFileRequest.Options()
+        let request = StorageUploadFileRequest(key: key, local: local, options: options)
+        let operation = MockDispatchingStorageUploadFileOperation(request: request)
         let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
         return taskAdapter
     }

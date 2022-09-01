@@ -57,7 +57,7 @@ final class IncomingAsyncSubscriptionEventToAnyModelMapper: Subscriber, AmplifyC
 
     // MARK: - Event processing
 
-    private func dispose(of subscriptionEvent: SubscriptionEvent<GraphQLResponse<Payload>>) {
+    private func dispose(of subscriptionEvent: GraphQLSubscriptionEvent<Payload>) {
         log.verbose("dispose(of subscriptionEvent): \(subscriptionEvent)")
         switch subscriptionEvent {
         case .connection(let connectionState):

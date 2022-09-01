@@ -50,21 +50,9 @@ extension GraphQLModelBasedTests {
         resultsArray.append(contentsOf: subsequentResults)
 
         while subsequentResults.hasNextPage() {
-            let semaphore = DispatchSemaphore(value: 0)
-            subsequentResults.getNextPage { result in
-                defer {
-                    semaphore.signal()
-                }
-                switch result {
-                case .success(let listResult):
-                    subsequentResults = listResult
-                    resultsArray.append(contentsOf: subsequentResults)
-                case .failure(let coreError):
-                    XCTFail("Unexpected error: \(coreError)")
-                }
-
-            }
-            semaphore.wait()
+            let listResult = try await subsequentResults.getNextPage()
+            subsequentResults = listResult
+            resultsArray.append(contentsOf: subsequentResults)
         }
         XCTAssertEqual(resultsArray.count, 2)
     }
@@ -100,32 +88,18 @@ extension GraphQLModelBasedTests {
             return
         }
         while subsequentResults.hasNextPage() {
-            let semaphore = DispatchSemaphore(value: 0)
-            subsequentResults.getNextPage { result in
-                defer {
-                    semaphore.signal()
-                }
-                switch result {
-                case .success(let listResult):
-                    subsequentResults = listResult
-                case .failure(let coreError):
-                    XCTFail("Unexpected error: \(coreError)")
-                }
-            }
-            semaphore.wait()
+            let listResult = try await subsequentResults.getNextPage()
+            subsequentResults = listResult
         }
         XCTAssertFalse(subsequentResults.hasNextPage())
         
-        subsequentResults.getNextPage { result in
-
-            switch result {
-            case .success(let listResult):
-                XCTFail("Unexpected .success \(listResult)")
-            case .failure(let coreError):
-                guard case .clientValidation = coreError else {
-                    XCTFail("Unexpected CoreError \(coreError)")
-                    return
-                }
+        do {
+            let listResult = try await subsequentResults.getNextPage()
+            XCTFail("Unexpected \(listResult)")
+        } catch let coreError as CoreError {
+            guard case .clientValidation = coreError else {
+                XCTFail("Unexpected CoreError \(coreError)")
+                return
             }
         }
     }
@@ -160,13 +134,11 @@ extension GraphQLModelBasedTests {
             return
         }
         
-        retrievedPost.comments?.fetch { result in
-            switch result {
-            case .success(let comments):
-                XCTFail("Should have failed to fetch comments \(comments)")
-            case .failure(let coreError):
-                XCTAssertNotNil(coreError)
-            }
+        do {
+            try await retrievedPost.comments?.fetch()
+            XCTFail("Should have failed to fetch")
+        } catch {
+            XCTAssertNotNil(error)
         }
     }
 }

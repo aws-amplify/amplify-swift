@@ -5,10 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Foundation
 import XCTest
-@testable import Amplify
-@testable import AmplifyTestCommon
+@testable import AmplifyAsyncTesting
 
 actor AsyncRunner {
     typealias VoidNeverContinuation = CheckedContinuation<Void, Never>
@@ -16,12 +14,11 @@ actor AsyncRunner {
 
     public nonisolated func run(timeout: Double = 5.0) async {
         await withTaskCancellationHandler {
+            await handleRun(timeout: timeout)
+        } onCancel: {
             Task {
                 await finish()
             }
-            print("cancel")
-        } operation: {
-            await handleRun(timeout: timeout)
         }
     }
 
@@ -89,7 +86,7 @@ final class AsyncExpectationTests: XCTestCase {
         let delay = 0.01
         let notYetDone = asyncExpectation(description: "not yet done", isInverted: true)
         let done = asyncExpectation(description: "done")
-
+        
         let task = Task {
             await AsyncRunner().run()
             XCTAssertTrue(Task.isCancelled)

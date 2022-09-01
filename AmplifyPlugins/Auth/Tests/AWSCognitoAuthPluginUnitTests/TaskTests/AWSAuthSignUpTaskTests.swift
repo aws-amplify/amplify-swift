@@ -36,11 +36,9 @@ class AWSAuthSignUpTaskTests: XCTestCase {
         let request = AuthSignUpRequest(username: "jeffb",
                                         password: "Valid&99",
                                         options: AuthSignUpRequest.Options())
-
-        let statemachine = Defaults.makeDefaultAuthStateMachine(
-            initialState: initialState,
+        let authEnvironment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: {MockIdentityProvider(mockSignUpResponse: signUp)})
-        let task = AWSAuthSignUpTask(request, authStateMachine: statemachine)
+        let task = AWSAuthSignUpTask(request, authEnvironment: authEnvironment)
         let signUpResult = try await task.value
         print("Sign Up Result: \(signUpResult)")
         wait(for: [functionExpectation], timeout: 1)
@@ -61,11 +59,10 @@ class AWSAuthSignUpTaskTests: XCTestCase {
                                         password: "Valid&99",
                                         options: AuthSignUpRequest.Options())
 
-        let statemachine = Defaults.makeDefaultAuthStateMachine(
-            initialState: initialState,
+        let authEnvironment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: {MockIdentityProvider(mockSignUpResponse: signUp)})
+        let task = AWSAuthSignUpTask(request, authEnvironment: authEnvironment)
         do {
-            let task = AWSAuthSignUpTask(request, authStateMachine: statemachine)
             _ = try await task.value
             XCTFail("Should not produce success response")
         } catch {
@@ -89,13 +86,10 @@ class AWSAuthSignUpTaskTests: XCTestCase {
                                         password: "Valid&99",
                                         options: AuthSignUpRequest.Options())
 
-        let initialState = AuthState.configured(.signingUp(.notStarted), .configured)
-        let statemachine = Defaults.makeDefaultAuthStateMachine(
-            initialState: initialState,
+        let authEnvironment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: {MockIdentityProvider(mockSignUpResponse: signUp)})
-        let task = AWSAuthSignUpTask(request, authStateMachine: statemachine)
+        let task = AWSAuthSignUpTask(request, authEnvironment: authEnvironment)
         let signUpResult = try await task.value
-        print("Sign Up Result: \(signUpResult)")
         wait(for: [functionExpectation], timeout: 1)
     }
 }

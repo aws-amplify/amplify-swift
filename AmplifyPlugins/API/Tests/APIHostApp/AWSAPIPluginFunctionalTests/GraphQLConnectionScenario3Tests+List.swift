@@ -30,230 +30,139 @@ import XCTest
  */
 extension GraphQLConnectionScenario3Tests {
 
-    func testGetPostThenIterateComments() {
-        guard let post = createPost(title: "title"),
-              createComment(postID: post.id, content: "content") != nil,
-              createComment(postID: post.id, content: "content") != nil else {
+    func testGetPostThenIterateComments() async throws {
+        guard let post = try await createPost(title: "title"),
+             try await createComment(postID: post.id, content: "content") != nil,
+             try await createComment(postID: post.id, content: "content") != nil else {
             XCTFail("Could not create post and two comments")
             return
         }
 
-        let getPostCompleted = expectation(description: "get post complete")
         var results: List<Comment3>?
-        Amplify.API.query(request: .get(Post3.self, byId: post.id)) { result in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .success(let queriedPostOptional):
-                    guard let queriedPost = queriedPostOptional else {
-                        XCTFail("Could not get post")
-                        return
-                    }
-                    XCTAssertEqual(queriedPost.id, post.id)
-                    results = queriedPost.comments
-                    getPostCompleted.fulfill()
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
+        let result = try await Amplify.API.query(request: .get(Post3.self, byId: post.id))
+        switch result {
+        case .success(let queriedPostOptional):
+            guard let queriedPost = queriedPostOptional else {
+                XCTFail("Could not get post")
+                return
             }
+            XCTAssertEqual(queriedPost.id, post.id)
+            results = queriedPost.comments
+        case .failure(let response):
+            XCTFail("Failed with: \(response)")
         }
-        wait(for: [getPostCompleted], timeout: TestCommonConstants.networkTimeout)
         guard var comments = results else {
             XCTFail("Could not get comments")
             return
         }
         var resultsArray: [Comment3] = []
-        let fetchSuccess = expectation(description: "Fetch successful")
-        comments.fetch { results in
-            switch results {
-            case .success:
-                fetchSuccess.fulfill()
-            case .failure:
-                XCTFail("Failed to lazy load comments")
-            }
-        }
-        wait(for: [fetchSuccess], timeout: TestCommonConstants.networkTimeout)
+        try await comments.fetch()
         for comment in comments {
             resultsArray.append(comment)
         }
         while comments.hasNextPage() {
-            let getNextPageSuccess = expectation(description: "Get next page successfully")
-            comments.getNextPage { result in
-                defer {
-                    getNextPageSuccess.fulfill()
-                }
-                switch result {
-                case .success(let listResult):
-                    comments = listResult
-                    resultsArray.append(contentsOf: comments)
-                case .failure(let coreError):
-                    XCTFail("Unexpected error: \(coreError)")
-                }
-
-            }
-            wait(for: [getNextPageSuccess], timeout: TestCommonConstants.networkTimeout)
+            let listResult = try await comments.getNextPage()
+            comments = listResult
+            resultsArray.append(contentsOf: comments)
         }
         XCTAssertEqual(resultsArray.count, 2)
     }
 
-    func testGetPostThenFetchComments() {
-        guard let post = createPost(title: "title"),
-              createComment(postID: post.id, content: "content") != nil,
-              createComment(postID: post.id, content: "content") != nil else {
+    func testGetPostThenFetchComments() async throws {
+        guard let post = try await createPost(title: "title"),
+              try await createComment(postID: post.id, content: "content") != nil,
+              try await createComment(postID: post.id, content: "content") != nil else {
             XCTFail("Could not create post and two comments")
             return
         }
 
-        let getPostCompleted = expectation(description: "get post complete")
         var results: List<Comment3>?
-        Amplify.API.query(request: .get(Post3.self, byId: post.id)) { result in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .success(let queriedPostOptional):
-                    guard let queriedPost = queriedPostOptional else {
-                        XCTFail("Could not get post")
-                        return
-                    }
-                    XCTAssertEqual(queriedPost.id, post.id)
-                    results = queriedPost.comments
-                    getPostCompleted.fulfill()
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
+        let result = try await Amplify.API.query(request: .get(Post3.self, byId: post.id))
+        switch result {
+        case .success(let queriedPostOptional):
+            guard let queriedPost = queriedPostOptional else {
+                XCTFail("Could not get post")
+                return
             }
+            XCTAssertEqual(queriedPost.id, post.id)
+            results = queriedPost.comments
+        case .failure(let response):
+            XCTFail("Failed with: \(response)")
         }
-        wait(for: [getPostCompleted], timeout: TestCommonConstants.networkTimeout)
         guard var comments = results else {
             XCTFail("Could not get comments")
             return
         }
         var resultsArray: [Comment3] = []
-        let fetchSemaphore = DispatchSemaphore(value: 0)
-        comments.fetch { fetchResults in
-            switch fetchResults {
-            case .success:
-                fetchSemaphore.signal()
-            case .failure(let error):
-                XCTFail("Could not fetch comments \(error)")
-            }
-        }
-        fetchSemaphore.wait()
+        try await comments.fetch()
         resultsArray.append(contentsOf: comments)
         while comments.hasNextPage() {
-            let semaphore = DispatchSemaphore(value: 0)
-            comments.getNextPage { result in
-                defer {
-                    semaphore.signal()
-                }
-                switch result {
-                case .success(let listResult):
-                    comments = listResult
-                    resultsArray.append(contentsOf: comments)
-                case .failure(let coreError):
-                    XCTFail("Unexpected error: \(coreError)")
-                }
-
-            }
-            semaphore.wait()
+            let listResult = try await comments.getNextPage()
+            comments = listResult
+            resultsArray.append(contentsOf: comments)
         }
         XCTAssertEqual(resultsArray.count, 2)
     }
 
     // Create a post and list the posts
-    func testListPost() {
-        guard createPost(title: "title") != nil else {
+    func testListPost() async throws {
+        guard try await createPost(title: "title") != nil else {
             XCTFail("Failed to ensure at least one Post to be retrieved on the listQuery")
             return
         }
 
-        let requestInvokedSuccessfully = expectation(description: "request completed")
-
-        _ = Amplify.API.query(request: .list(Post3.self)) { event in
-            switch event {
-            case .success(let graphQLResponse):
-                guard case let .success(posts) = graphQLResponse else {
-                    XCTFail("Missing successful response")
-                    return
-                }
-                XCTAssertTrue(!posts.isEmpty)
-                print(posts)
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("Unexpected .failed event: \(error)")
-            }
+        let graphQLResponse = try await Amplify.API.query(request: .list(Post3.self))
+        guard case let .success(posts) = graphQLResponse else {
+            XCTFail("Missing successful response")
+            return
         }
-
-        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
+        XCTAssertTrue(!posts.isEmpty)
     }
 
-    func testListPostWithPredicate() {
+    func testListPostWithPredicate() async throws {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let uniqueTitle = testMethodName + uuid + "Title"
-        guard let createdPost = createPost(id: uuid, title: uniqueTitle) else {
+        guard try await createPost(id: uuid, title: uniqueTitle) != nil else {
             XCTFail("Failed to ensure at least one Post to be retrieved on the listQuery")
             return
         }
 
-        let requestInvokedSuccessfully = expectation(description: "request completed")
         let post = Post3.keys
         let predicate = post.id == uuid && post.title == uniqueTitle
-        _ = Amplify.API.query(request: .list(Post3.self, where: predicate)) { event in
-            switch event {
-            case .success(let graphQLResponse):
-                guard case let .success(posts) = graphQLResponse else {
-                    XCTFail("Missing successful response")
-                    return
-                }
-                XCTAssertEqual(posts.count, 1)
-                guard let singlePost = posts.first else {
-                    XCTFail("Should only have a single post with the unique title")
-                    return
-                }
-                XCTAssertEqual(singlePost.id, uuid)
-                XCTAssertEqual(singlePost.title, uniqueTitle)
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("Unexpected .failed event: \(error)")
-            }
+        let graphQLResponse = try await Amplify.API.query(request: .list(Post3.self, where: predicate))
+        guard case let .success(posts) = graphQLResponse else {
+            XCTFail("Missing successful response")
+            return
         }
-
-        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
+        XCTAssertEqual(posts.count, 1)
+        guard let singlePost = posts.first else {
+            XCTFail("Should only have a single post with the unique title")
+            return
+        }
+        XCTAssertEqual(singlePost.id, uuid)
+        XCTAssertEqual(singlePost.title, uniqueTitle)
     }
 
     // Create a post and a comment with that post
     // list the comments by postId
-    func testListCommentsByPostID() {
-        guard let post = createPost(title: "title") else {
+    func testListCommentsByPostID() async throws {
+        guard let post = try await createPost(title: "title") else {
             XCTFail("Could not create post")
             return
         }
-        guard createComment(postID: post.id, content: "content") != nil else {
+        guard try await createComment(postID: post.id, content: "content") != nil else {
             XCTFail("Could not create comment")
             return
         }
-        let listCommentByPostIDCompleted = expectation(description: "list projects completed")
         let predicate = Comment3.keys.postID.eq(post.id)
-        Amplify.API.query(request: .list(Comment3.self, where: predicate)) { result in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .success(let comments):
-                    print(comments)
-                    listCommentByPostIDCompleted.fulfill()
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+        let result = try await Amplify.API.query(request: .list(Comment3.self, where: predicate))
+        switch result {
+        case .success(let comments):
+            XCTAssertEqual(comments.count, 1)
+        case .failure(let response):
+            XCTFail("Failed with: \(response)")
         }
-        wait(for: [listCommentByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Test paginated list query returns a List containing pagination functionality. This test also aggregates page
@@ -265,37 +174,28 @@ extension GraphQLConnectionScenario3Tests {
     ///    - subsequent queries exhaust the results from the API to retrieve the remaining results
     /// - Then:
     ///    - the in-memory Array is a populated with exactly two comments.
-    func testPaginatedListCommentsByPostID() {
-        guard let post = createPost(title: "title") else {
+    func testPaginatedListCommentsByPostID() async throws {
+        guard let post = try await createPost(title: "title") else {
             XCTFail("Could not create post")
             return
         }
-        guard createComment(postID: post.id, content: "content") != nil else {
+        guard try await createComment(postID: post.id, content: "content") != nil else {
             XCTFail("Could not create comment")
             return
         }
-        guard createComment(postID: post.id, content: "content") != nil else {
+        guard try await createComment(postID: post.id, content: "content") != nil else {
             XCTFail("Could not create comment")
             return
         }
-        let listCommentByPostIDCompleted = expectation(description: "list projects completed")
         var results: List<Comment3>?
         let predicate = Comment3.keys.postID.eq(post.id)
-        Amplify.API.query(request: .list(Comment3.self, where: predicate, limit: 1)) { result in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .success(let comments):
-                    results = comments
-                    listCommentByPostIDCompleted.fulfill()
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+        let result = try await Amplify.API.query(request: .list(Comment3.self, where: predicate, limit: 1))
+        switch result {
+        case .success(let comments):
+            results = comments
+        case .failure(let response):
+            XCTFail("Failed with: \(response)")
         }
-        wait(for: [listCommentByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
         guard var subsequentResults = results else {
             XCTFail("Could not get first results")
             return
@@ -303,21 +203,9 @@ extension GraphQLConnectionScenario3Tests {
         var resultsArray: [Comment3] = []
         resultsArray.append(contentsOf: subsequentResults)
         while subsequentResults.hasNextPage() {
-            let semaphore = DispatchSemaphore(value: 0)
-            subsequentResults.getNextPage { result in
-                defer {
-                    semaphore.signal()
-                }
-                switch result {
-                case .success(let listResult):
-                    subsequentResults = listResult
-                    resultsArray.append(contentsOf: subsequentResults)
-                case .failure(let coreError):
-                    XCTFail("Unexpected error: \(coreError)")
-                }
-
-            }
-            semaphore.wait()
+            let listResult = try await subsequentResults.getNextPage()
+            subsequentResults = listResult
+            resultsArray.append(contentsOf: subsequentResults)
         }
         XCTAssertEqual(resultsArray.count, 2)
     }
@@ -330,70 +218,34 @@ extension GraphQLConnectionScenario3Tests {
     ///    - A `fetch` is made when `hasNextPage` returns false.
     /// - Then:
     ///    - A validation error is returned
-    func testPaginatedListFetchValidationError() throws {
+    func testPaginatedListFetchValidationError() async throws {
         let uuid1 = UUID().uuidString
-        guard createPost(id: uuid1, title: "title") != nil else {
+        guard try await createPost(id: uuid1, title: "title") != nil else {
             XCTFail("Failed to create post")
             return
         }
-
-        let firstQueryCompleted = expectation(description: "first query completed")
         let post = Post3.keys
         let predicate = post.id == uuid1
-        var results: List<Post3>?
         let request: GraphQLRequest<List<Post3>> = GraphQLRequest<Post3>.list(Post3.self, where: predicate)
-        _ = Amplify.API.query(request: request) { event in
-            switch event {
-            case .success(let response):
-                guard case let .success(graphQLResponse) = response else {
-                    XCTFail("Missing successful response")
-                    return
-                }
-
-                results = graphQLResponse
-                firstQueryCompleted.fulfill()
-            case .failure(let error):
-                XCTFail("Unexpected .failure event: \(error)")
-            }
-        }
-
-        wait(for: [firstQueryCompleted], timeout: TestCommonConstants.networkTimeout)
-        guard var subsequentResults = results else {
-            XCTFail("Could not get first results")
+        let response = try await Amplify.API.query(request: request)
+        guard case let .success(graphQLResponse) = response else {
+            XCTFail("Missing successful response")
             return
         }
+        var subsequentResults = graphQLResponse
         while subsequentResults.hasNextPage() {
-            let semaphore = DispatchSemaphore(value: 0)
-            subsequentResults.getNextPage { result in
-                defer {
-                    semaphore.signal()
-                }
-                switch result {
-                case .success(let listResult):
-                    subsequentResults = listResult
-                case .failure(let coreError):
-                    XCTFail("Unexpected error: \(coreError)")
-                }
-
-            }
-            semaphore.wait()
+            let listResult = try await subsequentResults.getNextPage()
+            subsequentResults = listResult
         }
         XCTAssertFalse(subsequentResults.hasNextPage())
-        let invalidFetchCompleted = expectation(description: "fetch completed with validation error")
-        subsequentResults.getNextPage { result in
-
-            switch result {
-            case .success(let listResult):
-                XCTFail("Unexpected .success \(listResult)")
-            case .failure(let coreError):
-                guard case .clientValidation = coreError else {
-                    XCTFail("Unexpected CoreError \(coreError)")
-                    return
-                }
-                invalidFetchCompleted.fulfill()
+        do {
+            let listResult = try await subsequentResults.getNextPage()
+            XCTFail("Unexpected \(listResult)")
+        } catch let coreError as CoreError {
+            guard case .clientValidation = coreError else {
+                XCTFail("Unexpected CoreError \(coreError)")
+                return
             }
         }
-
-        wait(for: [invalidFetchCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 }

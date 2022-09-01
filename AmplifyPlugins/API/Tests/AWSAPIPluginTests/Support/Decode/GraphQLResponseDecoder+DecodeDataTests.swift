@@ -10,6 +10,7 @@ import XCTest
 import AWSPluginsCore
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
+import AmplifyAsyncTesting
 
 extension GraphQLResponseDecoderTests {
 
@@ -110,7 +111,7 @@ extension GraphQLResponseDecoderTests {
 
         let result = try decoder.decodeToResponseType(graphQLData)
         XCTAssertNotNil(result)
-        let fetchCompleted = AsyncExpectation(description: "Fetch completed")
+        let fetchCompleted = asyncExpectation(description: "Fetch completed")
         Task {
             try await result.fetch()
             XCTAssertEqual(result.count, 2)

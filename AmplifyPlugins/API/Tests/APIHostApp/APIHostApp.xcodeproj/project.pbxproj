@@ -83,11 +83,12 @@
 		21698CC72889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CC22889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift */; };
 		21698CC92889D75F004BD994 /* SocialNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CC42889D75F004BD994 /* SocialNote.swift */; };
 		21698CCB2889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CC62889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift */; };
+		219253C228BFEAD800820737 /* AmplifyAsyncTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 219253C128BFEAD800820737 /* AmplifyAsyncTesting */; };
+		219253C428BFEBE400820737 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 219253C328BFEBE200820737 /* XCTest.framework */; };
 		21E73E6F28898D7900D7DB7E /* APIHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E73E6E28898D7900D7DB7E /* APIHostAppApp.swift */; };
 		21E73E7128898D7900D7DB7E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E73E7028898D7900D7DB7E /* ContentView.swift */; };
 		21E73E7328898D7A00D7DB7E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21E73E7228898D7A00D7DB7E /* Assets.xcassets */; };
 		21E73E7628898D7A00D7DB7E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21E73E7528898D7A00D7DB7E /* Preview Assets.xcassets */; };
-		21EE281428AD33A7003FBCE2 /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EE281328AD33A7003FBCE2 /* AsyncExpectation.swift */; };
 		395906B628AC4AC8004B96B1 /* RESTWithIAMIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BC728899BC8004BD994 /* RESTWithIAMIntegrationTests.swift */; };
 		395906B928AC4C3A004B96B1 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395906B828AC4C3A004B96B1 /* TestConfigHelper.swift */; };
 		395906CA28AC6468004B96B1 /* RESTWithUserPoolIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BCE28899BCF004BD994 /* RESTWithUserPoolIntegrationTests.swift */; };
@@ -151,19 +152,6 @@
 			remoteInfo = APIHostApp;
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		21698BEE2889A157004BD994 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		21262523289ABB0C003788E3 /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
@@ -255,13 +243,13 @@
 		21698CC42889D75F004BD994 /* SocialNote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocialNote.swift; sourceTree = "<group>"; };
 		21698CC52889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Support.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GraphQLAuthDirectiveIntegrationTests+Support.swift"; sourceTree = "<group>"; };
 		21698CC62889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLAuthDirectiveIntegrationTests.swift; sourceTree = "<group>"; };
+		219253C328BFEBE200820737 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		21D335B7289867FC00657B12 /* amplify-ios-staging */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios-staging"; path = ../../../..; sourceTree = "<group>"; };
 		21E73E6B28898D7900D7DB7E /* APIHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = APIHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		21E73E6E28898D7900D7DB7E /* APIHostAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIHostAppApp.swift; sourceTree = "<group>"; };
 		21E73E7028898D7900D7DB7E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		21E73E7228898D7A00D7DB7E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		21E73E7528898D7A00D7DB7E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		21EE281328AD33A7003FBCE2 /* AsyncExpectation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncExpectation.swift; sourceTree = "<group>"; };
 		395906AC28AC4A16004B96B1 /* AWSAPIPluginRESTIAMTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginRESTIAMTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		395906B828AC4C3A004B96B1 /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
 		395906C028AC63A9004B96B1 /* AWSAPIPluginRESTUserPoolTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginRESTUserPoolTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -300,6 +288,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				21698BDD28899ED5004BD994 /* AWSAPIPlugin in Frameworks */,
+				219253C428BFEBE400820737 /* XCTest.framework in Frameworks */,
+				219253C228BFEAD800820737 /* AmplifyAsyncTesting in Frameworks */,
 				21698BF02889A163004BD994 /* AWSCognitoAuthPlugin in Frameworks */,
 				21698CC02889D5A9004BD994 /* CwlPreconditionTesting in Frameworks */,
 				21698BDB28899ED5004BD994 /* Amplify in Frameworks */,
@@ -341,7 +331,6 @@
 			isa = PBXGroup;
 			children = (
 				21262523289ABB0C003788E3 /* TestConfigHelper.swift */,
-				21EE281328AD33A7003FBCE2 /* AsyncExpectation.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -491,6 +480,7 @@
 		21698BD728899EBB004BD994 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				219253C328BFEBE200820737 /* XCTest.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -628,6 +618,7 @@
 			isa = PBXGroup;
 			children = (
 				39E0F2AC28A441B100939D9F /* TestConfigHelper.swift */,
+				219253B928BEC25600820737 /* AsyncExpectation.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -698,7 +689,6 @@
 				21E73E6728898D7800D7DB7E /* Sources */,
 				21E73E6828898D7800D7DB7E /* Frameworks */,
 				21E73E6928898D7800D7DB7E /* Resources */,
-				21698BEE2889A157004BD994 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -710,6 +700,7 @@
 				21698BDC28899ED5004BD994 /* AWSAPIPlugin */,
 				21698BEF2889A163004BD994 /* AWSCognitoAuthPlugin */,
 				21698CBF2889D5A9004BD994 /* CwlPreconditionTesting */,
+				219253C128BFEAD800820737 /* AmplifyAsyncTesting */,
 			);
 			productName = APIHostApp;
 			productReference = 21E73E6B28898D7900D7DB7E /* APIHostApp.app */;
@@ -1102,7 +1093,6 @@
 				21262731289ABFEB003788E3 /* ScalarContainer+Schema.swift in Sources */,
 				21262752289ABFEB003788E3 /* Project1.swift in Sources */,
 				2126273A289ABFEB003788E3 /* Team1+Schema.swift in Sources */,
-				21EE281428AD33A7003FBCE2 /* AsyncExpectation.swift in Sources */,
 				21262749289ABFEB003788E3 /* AmplifyModels.swift in Sources */,
 				21262735289ABFEB003788E3 /* User5.swift in Sources */,
 				21698AB72889996A004BD994 /* GraphQLConnectionScenario1Tests.swift in Sources */,
@@ -1175,6 +1165,7 @@
 				39E0F2AA28A440A700939D9F /* GraphQLWithUserPoolIntegrationTests.swift in Sources */,
 				39E0F2AF28A4425C00939D9F /* Todo.swift in Sources */,
 				39E0F2AD28A441B100939D9F /* TestConfigHelper.swift in Sources */,
+				219253BA28BEC25600820737 /* AsyncExpectation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1789,6 +1780,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 21698CBE2889D5A9004BD994 /* XCRemoteSwiftPackageReference "CwlPreconditionTesting" */;
 			productName = CwlPreconditionTesting;
+		};
+		219253C128BFEAD800820737 /* AmplifyAsyncTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AmplifyAsyncTesting;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

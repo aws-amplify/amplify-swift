@@ -64,119 +64,89 @@ class GraphQLConnectionScenario5Tests: XCTestCase {
         await Amplify.reset()
     }
 
-    func testListPostEditorByPost() {
-        guard let post = createPost(title: "title") else {
+    func testListPostEditorByPost() async throws {
+        guard let post = try await createPost(title: "title") else {
             XCTFail("Could not create post")
             return
         }
-        guard let user = createUser(username: "username") else {
+        guard let user = try await createUser(username: "username") else {
             XCTFail("Could not create user")
             return
         }
-        guard createPostEditor(post: post, editor: user) != nil else {
+        guard try await createPostEditor(post: post, editor: user) != nil else {
             XCTFail("Could not create user")
             return
         }
-        let listPostEditorByPostIDCompleted = expectation(description: "list postEditor by postID complete")
         let predicateByPostId = PostEditor5.keys.post.eq(post.id)
-        Amplify.API.query(request: .list(PostEditor5.self, where: predicateByPostId)) { result in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .success(let projects):
-                    print(projects)
-                    listPostEditorByPostIDCompleted.fulfill()
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+        let result = try await Amplify.API.query(request: .list(PostEditor5.self, where: predicateByPostId))
+        switch result {
+        case .success(let projects):
+            XCTAssertNotNil(projects)
+        case .failure(let response):
+            XCTFail("Failed with: \(response)")
         }
-        wait(for: [listPostEditorByPostIDCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testListPostEditorByUser() {
-        guard let post = createPost(title: "title") else {
+    func testListPostEditorByUser() async throws {
+        guard let post = try await createPost(title: "title") else {
             XCTFail("Could not create post")
             return
         }
-        guard let user = createUser(username: "username") else {
+        guard let user = try await createUser(username: "username") else {
             XCTFail("Could not create user")
             return
         }
-        guard createPostEditor(post: post, editor: user) != nil else {
+        guard try await createPostEditor(post: post, editor: user) != nil else {
             XCTFail("Could not create user")
             return
         }
-        let listPostEditorByEditorIdCompleted = expectation(description: "list postEditor by editorID complete")
         let predicateByUserId = PostEditor5.keys.editor.eq(user.id)
-        Amplify.API.query(request: .list(PostEditor5.self, where: predicateByUserId)) { result in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .success(let projects):
-                    print(projects)
-                    listPostEditorByEditorIdCompleted.fulfill()
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+        let result = try await Amplify.API.query(request: .list(PostEditor5.self, where: predicateByUserId))
+        switch result {
+        case .success(let projects):
+            XCTAssertNotNil(projects)
+        case .failure(let response):
+            XCTFail("Failed with: \(response)")
         }
-        wait(for: [listPostEditorByEditorIdCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
     // Create a Post and a User, Create a PostEditor with the post and user
     // Get the post and fetch the PostEditors for that post
     // The Posteditor contains the user which is connected the post
-    func testGetPostThenFetchPostEditorsToRetrieveUser() {
-        guard let post = createPost(title: "title") else {
+    func testGetPostThenFetchPostEditorsToRetrieveUser() async throws {
+        guard let post = try await createPost(title: "title") else {
             XCTFail("Could not create post")
             return
         }
-        guard let user = createUser(username: "username") else {
+        guard let user = try await createUser(username: "username") else {
             XCTFail("Could not create user")
             return
         }
-        guard createPostEditor(post: post, editor: user) != nil else {
+        guard try await createPostEditor(post: post, editor: user) != nil else {
             XCTFail("Could not create user")
             return
         }
         let getPostCompleted = expectation(description: "get post complete")
         let fetchPostEditorCompleted = expectation(description: "fetch postEditors complete")
         var results: List<PostEditor5>?
-        Amplify.API.query(request: .get(Post5.self, byId: post.id)) { result in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .success(let queriedPostOptional):
-                    guard let queriedPost = queriedPostOptional else {
-                        XCTFail("Could not get post")
-                        return
-                    }
-                    XCTAssertEqual(queriedPost.id, post.id)
-                    getPostCompleted.fulfill()
-                    guard let editors = queriedPost.editors else {
-                        XCTFail("Could not get postEditors")
-                        return
-                    }
-                    editors.fetch { fetchResults in
-                        switch fetchResults {
-                        case .success:
-                            results = editors
-                            fetchPostEditorCompleted.fulfill()
-                        case .failure(let error):
-                            XCTFail("Could not fetch postEditors \(error)")
-                        }
-                    }
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
+        let response = try await Amplify.API.query(request: .get(Post5.self, byId: post.id))
+        switch response {
+        case .success(let queriedPostOptional):
+            guard let queriedPost = queriedPostOptional else {
+                XCTFail("Could not get post")
+                return
             }
+            XCTAssertEqual(queriedPost.id, post.id)
+            getPostCompleted.fulfill()
+            guard let editors = queriedPost.editors else {
+                XCTFail("Could not get postEditors")
+                return
+            }
+            try await editors.fetch()
+            results = editors
+            fetchPostEditorCompleted.fulfill()
+        case .failure(let response):
+            XCTFail("Failed with: \(response)")
         }
         wait(for: [getPostCompleted, fetchPostEditorCompleted], timeout: TestCommonConstants.networkTimeout)
         guard var subsequentResults = results else {
@@ -186,21 +156,9 @@ class GraphQLConnectionScenario5Tests: XCTestCase {
         var resultsArray: [PostEditor5] = []
         resultsArray.append(contentsOf: subsequentResults)
         while subsequentResults.hasNextPage() {
-            let semaphore = DispatchSemaphore(value: 0)
-            subsequentResults.getNextPage { result in
-                defer {
-                    semaphore.signal()
-                }
-                switch result {
-                case .success(let listResult):
-                    subsequentResults = listResult
-                    resultsArray.append(contentsOf: subsequentResults)
-                case .failure(let coreError):
-                    XCTFail("Unexpected error: \(coreError)")
-                }
-
-            }
-            semaphore.wait()
+            let listResult = try await subsequentResults.getNextPage()
+            subsequentResults = listResult
+            resultsArray.append(contentsOf: subsequentResults)
         }
         XCTAssertEqual(resultsArray.count, 1)
         guard let postEditor = resultsArray.first else {
@@ -214,60 +172,48 @@ class GraphQLConnectionScenario5Tests: XCTestCase {
     // create first PostEditor with the `post1` and user and create second postEditor with `post2` and user.
     // Get the user and fetch the PostEditors for that user
     // The PostEditors should contain the two posts `post1` and `post2`
-    func testGetUserThenFetchPostEditorsToRetrievePosts() {
-        guard let post1 = createPost(title: "title") else {
+    func testGetUserThenFetchPostEditorsToRetrievePosts() async throws {
+        guard let post1 = try await createPost(title: "title") else {
             XCTFail("Could not create post")
             return
         }
-        guard let post2 = createPost(title: "title") else {
+        guard let post2 = try await createPost(title: "title") else {
             XCTFail("Could not create post")
             return
         }
-        guard let user = createUser(username: "username") else {
+        guard let user = try await createUser(username: "username") else {
             XCTFail("Could not create user")
             return
         }
-        guard createPostEditor(post: post1, editor: user) != nil else {
+        guard try await createPostEditor(post: post1, editor: user) != nil else {
             XCTFail("Could not create postEditor with `post1`")
             return
         }
-        guard createPostEditor(post: post2, editor: user) != nil else {
+        guard try await createPostEditor(post: post2, editor: user) != nil else {
             XCTFail("Could not create postEditor with `post2`")
             return
         }
         let getUserCompleted = expectation(description: "get user complete")
         let fetchPostEditorCompleted = expectation(description: "fetch postEditors complete")
         var results: List<PostEditor5>?
-        Amplify.API.query(request: .get(User5.self, byId: user.id)) { result in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .success(let queriedUserOptional):
-                    guard let queriedUser = queriedUserOptional else {
-                        XCTFail("Could not get post")
-                        return
-                    }
-                    XCTAssertEqual(queriedUser.id, user.id)
-                    getUserCompleted.fulfill()
-                    guard let posts = queriedUser.posts else {
-                        XCTFail("Could not get postEditors")
-                        return
-                    }
-                    posts.fetch { fetchResults in
-                        switch fetchResults {
-                        case .success:
-                            results = posts
-                            fetchPostEditorCompleted.fulfill()
-                        case .failure(let error):
-                            XCTFail("Could not fetch postEditors \(error)")
-                        }
-                    }
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
+        let response = try await Amplify.API.query(request: .get(User5.self, byId: user.id))
+        switch response {
+        case .success(let queriedUserOptional):
+            guard let queriedUser = queriedUserOptional else {
+                XCTFail("Could not get post")
+                return
             }
+            XCTAssertEqual(queriedUser.id, user.id)
+            getUserCompleted.fulfill()
+            guard let posts = queriedUser.posts else {
+                XCTFail("Could not get postEditors")
+                return
+            }
+            try await posts.fetch()
+            results = posts
+            fetchPostEditorCompleted.fulfill()
+        case .failure(let response):
+            XCTFail("Failed with: \(response)")
         }
         wait(for: [getUserCompleted, fetchPostEditorCompleted], timeout: TestCommonConstants.networkTimeout)
 
@@ -278,21 +224,9 @@ class GraphQLConnectionScenario5Tests: XCTestCase {
         var resultsArray: [PostEditor5] = []
         resultsArray.append(contentsOf: subsequentResults)
         while subsequentResults.hasNextPage() {
-            let semaphore = DispatchSemaphore(value: 0)
-            subsequentResults.getNextPage { result in
-                defer {
-                    semaphore.signal()
-                }
-                switch result {
-                case .success(let listResult):
-                    subsequentResults = listResult
-                    resultsArray.append(contentsOf: subsequentResults)
-                case .failure(let coreError):
-                    XCTFail("Unexpected error: \(coreError)")
-                }
-
-            }
-            semaphore.wait()
+            let listResult = try await subsequentResults.getNextPage()
+            subsequentResults = listResult
+            resultsArray.append(contentsOf: subsequentResults)
         }
         XCTAssertEqual(resultsArray.count, 2)
         XCTAssertTrue(resultsArray.contains(where: { (postEditor) -> Bool in
@@ -303,69 +237,36 @@ class GraphQLConnectionScenario5Tests: XCTestCase {
         }))
     }
 
-    func createPost(id: String = UUID().uuidString, title: String) -> Post5? {
+    func createPost(id: String = UUID().uuidString, title: String) async throws -> Post5? {
         let post = Post5(id: id, title: title)
-        var result: Post5?
-        let requestInvokedSuccessfully = expectation(description: "request completed")
-        Amplify.API.mutate(request: .create(post)) { event in
-            switch event {
-            case .success(let data):
-                switch data {
-                case .success(let post):
-                    result = post
-                default:
-                    XCTFail("Could not get data back")
-                }
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("Failed \(error)")
-            }
+        let data = try await Amplify.API.mutate(request: .create(post))
+        switch data {
+        case .success(let post):
+            return post
+        case .failure(let error):
+            throw error
         }
-        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
-        return result
     }
 
-    func createUser(id: String = UUID().uuidString, username: String) -> User5? {
+    func createUser(id: String = UUID().uuidString, username: String) async throws -> User5? {
         let user = User5(id: id, username: username)
-        var result: User5?
-        let requestInvokedSuccessfully = expectation(description: "request completed")
-        Amplify.API.mutate(request: .create(user)) { event in
-            switch event {
-            case .success(let data):
-                switch data {
-                case .success(let comment):
-                    result = comment
-                default:
-                    XCTFail("Could not get data back")
-                }
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("Failed \(error)")
-            }
+        let data = try await Amplify.API.mutate(request: .create(user))
+        switch data {
+        case .success(let user):
+            return user
+        case .failure(let error):
+            throw error
         }
-        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
-        return result
     }
 
-    func createPostEditor(id: String = UUID().uuidString, post: Post5, editor: User5) -> PostEditor5? {
+    func createPostEditor(id: String = UUID().uuidString, post: Post5, editor: User5) async throws -> PostEditor5? {
         let postEditor = PostEditor5(id: id, post: post, editor: editor)
-        var result: PostEditor5?
-        let requestInvokedSuccessfully = expectation(description: "request completed")
-        Amplify.API.mutate(request: .create(postEditor)) { event in
-            switch event {
-            case .success(let data):
-                switch data {
-                case .success(let comment):
-                    result = comment
-                default:
-                    XCTFail("Could not get data back")
-                }
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("Failed \(error)")
-            }
+        let data = try await Amplify.API.mutate(request: .create(postEditor))
+        switch data {
+        case .success(let postEditor):
+            return postEditor
+        case .failure(let error):
+            throw error
         }
-        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
-        return result
     }
 }

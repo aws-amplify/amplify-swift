@@ -7,7 +7,13 @@
 
 import Foundation
 import XCTest
-import Amplify
+
+extension Task where Success == Never, Failure == Never {
+    static func sleep(seconds: Double) async throws {
+        let nanoseconds = UInt64(seconds * Double(NSEC_PER_SEC))
+        try await Task.sleep(nanoseconds: nanoseconds)
+    }
+}
 
 public actor AsyncExpectation {
     enum State {
@@ -17,8 +23,8 @@ public actor AsyncExpectation {
     }
     public typealias AsyncExpectationContinuation = CheckedContinuation<Void, Error>
     public let expectationDescription: String
-    public let isInverted: Bool
-    public let expectedFulfillmentCount: Int
+    public var isInverted: Bool
+    public var expectedFulfillmentCount: Int
 
     private var fulfillmentCount: Int = 0
     private var continuation: AsyncExpectationContinuation?
@@ -26,6 +32,14 @@ public actor AsyncExpectation {
 
     public var isFulfilled: Bool {
         state == .fulfilled
+    }
+    
+    public func setShouldTrigger(_ shouldTrigger: Bool) {
+        self.isInverted = !shouldTrigger
+    }
+    
+    public func setExpectedFulfillmentCount(_ count: Int) {
+        self.expectedFulfillmentCount = count
     }
 
     public init(description: String,
@@ -60,13 +74,13 @@ public actor AsyncExpectation {
     }
 
     internal nonisolated func wait() async throws {
-        try await withTaskCancellationHandler(handler: {
+        try await withTaskCancellationHandler {
+            try await handleWait()
+        } onCancel: {
             Task {
                 await cancel()
             }
-        }, operation: {
-            try await handleWait()
-        })
+        }
     }
 
     internal func timeOut(file: StaticString = #filePath,

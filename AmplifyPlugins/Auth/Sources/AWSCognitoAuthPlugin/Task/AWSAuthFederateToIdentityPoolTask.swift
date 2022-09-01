@@ -22,6 +22,7 @@ public class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask {
     private let request: AuthFederateToIdentityPoolRequest
     private let authStateMachine: AuthStateMachine
     private var stateMachineToken: AuthStateMachineToken?
+    private let taskHelper: AWSAuthTaskHelper
     
     public var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.federateToIdentityPoolAPI
@@ -30,11 +31,12 @@ public class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask {
     init(_ request: AuthFederateToIdentityPoolRequest, authStateMachine: AuthStateMachine) {
         self.request = request
         self.authStateMachine = authStateMachine
+        self.taskHelper = AWSAuthTaskHelper(stateMachineToken: self.stateMachineToken, authStateMachine: authStateMachine)
     }
 
     public func execute() async throws -> FederateToIdentityPoolResult {
         do {
-            await didConfigure()
+            await taskHelper.didStateMachineConfigured()
             let state = await getCurrentState()
             guard case .configured(let authNState, let authZState) = state  else {
                 throw AuthError.invalidState("Federation could not be completed.", AuthPluginErrorConstants.invalidStateError, nil)
@@ -54,16 +56,6 @@ public class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask {
         } catch {
             cancelToken()
             throw error
-        }
-    }
-    
-    private func didConfigure() async {
-        await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<Void, Never>) in
-            stateMachineToken = authStateMachine.listen({ [weak self] state in
-                guard let self = self, case .configured = state else { return }
-                self.authStateMachine.cancel(listenerToken: self.stateMachineToken!)
-                continuation.resume()
-            }, onSubscribe: {})
         }
     }
 

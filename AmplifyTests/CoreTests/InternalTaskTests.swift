@@ -10,6 +10,7 @@ import XCTest
 
 @testable import Amplify
 @testable import AmplifyTestCommon
+import AmplifyAsyncTesting
 
 class InternalTaskTests: XCTestCase {
     

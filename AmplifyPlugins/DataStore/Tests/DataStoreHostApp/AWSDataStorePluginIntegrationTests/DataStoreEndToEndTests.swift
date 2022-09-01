@@ -474,15 +474,17 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         }
         let postsSyncedToCloud = expectation(description: "All posts saved and synced to cloud")
         postsSyncedToCloud.expectedFulfillmentCount = count
-        var postsSyncedToCloudCount = 0
+        
 
         log.debug("Created posts: [\(posts.map { $0.identifier })]")
 
-        let task = Task {
+        let postsCopy = posts
+        Task {
+            var postsSyncedToCloudCount = 0
             let mutationEvents = Amplify.DataStore.observe(Post.self)
             do {
                 for try await mutationEvent in mutationEvents {
-                    guard posts.contains(where: { $0.id == mutationEvent.modelId }) else {
+                    guard postsCopy.contains(where: { $0.id == mutationEvent.modelId }) else {
                         return
                     }
 
@@ -514,7 +516,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         let postsDeletedFromCloud = expectation(description: "All posts deleted and synced to cloud")
         postsDeletedFromCloud.expectedFulfillmentCount = count
         
-        let task2 = Task {
+        Task {
             var postsDeletedFromCloudCount = 0
             let mutationEvents = Amplify.DataStore.observe(Post.self)
             do {

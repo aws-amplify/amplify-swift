@@ -15,83 +15,15 @@ protocol DataStoreObserveQueryOperation {
     func startObserveQuery(with storageEngine: StorageEngineBehavior)
 }
 
-public class ObserveQueryPublisher<M: Model>: Publisher {
-    public typealias Output = DataStoreQuerySnapshot<M>
-    public typealias Failure = DataStoreError
-
-    weak var operation: AWSDataStoreObserveQueryOperation<M>?
-
-    func configure(operation: AWSDataStoreObserveQueryOperation<M>) {
-        self.operation = operation
-    }
-
-    public func receive<S>(subscriber: S)
-    where S: Subscriber, ObserveQueryPublisher.Failure == S.Failure, ObserveQueryPublisher.Output == S.Input {
-        let subscription = ObserveQuerySubscription<S, M>(operation: operation)
-        subscription.target = subscriber
-        subscriber.receive(subscription: subscription)
+class ObserveQueryRequest: AmplifyOperationRequest {
+    var options: Any
+    
+    typealias Options = Any
+    
+    init(options: Any) {
+        self.options = options
     }
 }
-
-class ObserveQuerySubscription<Target: Subscriber, M: Model>: Subscription
-where Target.Input == DataStoreQuerySnapshot<M>, Target.Failure == DataStoreError {
-
-    private let serialQueue = DispatchQueue(label: "com.amazonaws.ObserveQuerySubscription.serialQueue",
-                                            target: DispatchQueue.global())
-    var target: Target?
-    var sink: AnyCancellable?
-    weak var operation: AWSDataStoreObserveQueryOperation<M>?
-
-    init(operation: AWSDataStoreObserveQueryOperation<M>?) {
-        self.operation = operation
-        self.sink = operation?
-            .passthroughPublisher
-            .sink(receiveCompletion: onReceiveCompletion(completed:),
-                  receiveValue: onReceiveValue(snapshot:))
-    }
-
-    func onReceiveCompletion(completed: Subscribers.Completion<DataStoreError>) {
-        serialQueue.async {
-            self.target?.receive(completion: completed)
-            self.target = nil
-            self.sink = nil
-            self.operation = nil
-        }
-    }
-
-    func onReceiveValue(snapshot: DataStoreQuerySnapshot<M>) {
-        _ = target?.receive(snapshot)
-    }
-
-    /// This subscription doesn't respond to demand, since it'll
-    /// simply emit events according to its underlying operation
-    /// but we still have to implement this method
-    /// in order to conform to the Subscription protocol:
-    func request(_ demand: Subscribers.Demand) {
-        if demand != .unlimited {
-            log.verbose("Setting the Demand is not supported. The subscriber will receive all values for this API.")
-        }
-
-    }
-
-    /// When the subscription is cancelled, cancel the underlying operation
-    func cancel() {
-        serialQueue.async {
-            self.operation?.cancel()
-        }
-    }
-
-    /// When app code recreates the subscription, the previous subscription
-    /// will be deallocated. At this time, cancel the underlying operation
-    deinit {
-        self.operation?.cancel()
-        self.target = nil
-        self.sink = nil
-        self.operation = nil
-    }
-}
-
-extension ObserveQuerySubscription: DefaultLogger { }
 
 /// Publishes a stream of `DataStoreQuerySnapshot` events.
 ///
@@ -107,13 +39,16 @@ extension ObserveQuerySubscription: DefaultLogger { }
 ///
 /// This operation should perform its methods under the serial DispatchQueue `serialQueue` to ensure all its properties
 /// remain thread-safe.
-
-public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation, DataStoreObserveQueryOperation {
-
+class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel, DataStoreObserveQueryOperation {
+    typealias Request = ObserveQueryRequest
+    typealias InProcess = DataStoreQuerySnapshot<M>
+    var request: ObserveQueryRequest
+    var context = InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>>()
+    
     private let serialQueue = DispatchQueue(label: "com.amazonaws.AWSDataStoreObseverQueryOperation.serialQueue",
                                             target: DispatchQueue.global())
     private let itemsChangedPeriodicPublishTimeInSeconds: DispatchQueue.SchedulerTimeType.Stride = 2
-
+    
     let modelType: M.Type
     let modelSchema: ModelSchema
     let predicate: QueryPredicate?
@@ -128,28 +63,30 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
     var currentItems: SortedList<M>
     var batchItemsChangedSink: AnyCancellable?
     var itemsChangedSink: AnyCancellable?
-
-    /// Internal publisher for `ObserveQueryPublisher` to pass events back to subscribers
-    let passthroughPublisher: PassthroughSubject<DataStoreQuerySnapshot<M>, DataStoreError>
-
-    /// External subscribers subscribe to this publisher
-    private let observeQueryPublisher: ObserveQueryPublisher<M>
-    public var publisher: AnyPublisher<DataStoreQuerySnapshot<M>, DataStoreError> {
-        return observeQueryPublisher.eraseToAnyPublisher()
-    }
-
+    
     var currentSnapshot: DataStoreQuerySnapshot<M> {
         DataStoreQuerySnapshot<M>(items: currentItems.sortedModels, isSynced: dispatchedModelSyncedEvent.get())
     }
-
-    init(modelType: M.Type,
+    
+    private var running = false
+    
+    var dataStoreStatePublisher: AnyPublisher<DataStoreState, DataStoreError>
+    var dataStoreStateSink: AnyCancellable?
+    
+    init(request: ObserveQueryRequest = .init(options: []),
+         context: InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>> = InternalTaskAsyncThrowingSequenceContext<DataStoreQuerySnapshot<M>>(),
+         modelType: M.Type,
          modelSchema: ModelSchema,
          predicate: QueryPredicate?,
          sortInput: [QuerySortDescriptor]?,
          storageEngine: StorageEngineBehavior,
          dataStorePublisher: ModelSubcriptionBehavior,
          dataStoreConfiguration: DataStoreConfiguration,
-         dispatchedModelSyncedEvent: AtomicValue<Bool>) {
+         dispatchedModelSyncedEvent: AtomicValue<Bool>,
+         dataStoreStatePublisher: AnyPublisher<DataStoreState, DataStoreError>) {
+        self.request = request
+        self.context = context
+        
         self.modelType = modelType
         self.modelSchema = modelSchema
         self.predicate = predicate
@@ -161,17 +98,42 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
         self.stopwatch = Stopwatch()
         self.observeQueryStarted = false
         self.currentItems = SortedList(sortInput: sortInput, modelSchema: modelSchema)
-        self.passthroughPublisher = PassthroughSubject<DataStoreQuerySnapshot<M>, DataStoreError>()
-        self.observeQueryPublisher = ObserveQueryPublisher()
-        super.init()
-        observeQueryPublisher.configure(operation: self)
+    
+        self.dataStoreStatePublisher = dataStoreStatePublisher
     }
-
-    override public func main() {
+    
+    func run() async throws {
+        guard !running else { return }
+        running = true
+        
+        subscribeToDataStoreState()
         startObserveQuery()
     }
+    
+    func subscribeToDataStoreState() {
+        serialQueue.async { [weak self] in
+            guard let self = self else { return }
+            
+            self.dataStoreStateSink = self.dataStoreStatePublisher.sink { completion in
+                switch completion {
+                case .finished:
+                    self.finish()
+                case .failure(let error):
+                    self.fail(error)
+                }
+            } receiveValue: { state in
+                switch state {
+                case .start(let storageEngine):
+                    self.startObserveQuery(storageEngine)
+                case .stop, .clear:
+                    self.resetState()
+                }
+            }
 
-    override public func cancel() {
+        }
+    }
+    
+    public func cancel() {
         serialQueue.sync {
             if let itemsChangedSink = itemsChangedSink {
                 itemsChangedSink.cancel()
@@ -180,10 +142,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
             if let batchItemsChangedSink = batchItemsChangedSink {
                 batchItemsChangedSink.cancel()
             }
-            passthroughPublisher.send(completion: .finished)
         }
-        super.cancel()
-        finish()
     }
 
     func resetState() {
@@ -206,10 +165,6 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
 
     private func startObserveQuery(_ storageEngine: StorageEngineBehavior? = nil) {
         serialQueue.async {
-            if self.isCancelled || self.isFinished {
-                self.finish()
-                return
-            }
 
             if self.observeQueryStarted {
                 return
@@ -229,10 +184,6 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
     // MARK: - Query
 
     func initialQuery() {
-        if isCancelled || isFinished {
-            finish()
-            return
-        }
         startSnapshotStopWatch()
         storageEngine.query(
             modelType,
@@ -241,18 +192,12 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
             sort: sortInput,
             paginationInput: nil,
             completion: { queryResult in
-                if isCancelled || isFinished {
-                    finish()
-                    return
-                }
-
                 switch queryResult {
                 case .success(let queriedModels):
                     currentItems.set(sortedModels: queriedModels)
                     sendSnapshot()
                 case .failure(let error):
-                    self.passthroughPublisher.send(completion: .failure(error))
-                    self.finish()
+                    fail(error)
                     return
                 }
             })
@@ -308,10 +253,6 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
 
     func onItemsChangeDuringSync(mutationEvents: [MutationEvent]) {
         serialQueue.async {
-            if self.isCancelled || self.isFinished {
-                self.finish()
-                return
-            }
             guard self.observeQueryStarted, !mutationEvents.isEmpty else {
                 return
             }
@@ -328,10 +269,6 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
     // remove the item requires that check on `currentItems` and is required to be performed under the serial queue.
     func onItemChangeAfterSync(mutationEvent: MutationEvent) {
         serialQueue.async {
-            if self.isCancelled || self.isFinished {
-                self.finish()
-                return
-            }
             guard self.observeQueryStarted else {
                 return
             }
@@ -401,7 +338,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
     }
 
     private func sendSnapshot() {
-        passthroughPublisher.send(currentSnapshot)
+        send(currentSnapshot)
         if log.logLevel >= .debug {
             let time = stopwatch.stop()
             log.debug("Time to generate snapshot: \(time) seconds. isSynced: \(dispatchedModelSyncedEvent.get()), count: \(currentSnapshot.items.count)")
@@ -411,19 +348,14 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
     private func onReceiveCompletion(completed: Subscribers.Completion<DataStoreError>) {
         serialQueue.async { [weak self] in
             guard let self = self else { return }
-            if self.isCancelled || self.isFinished {
-                self.finish()
-                return
-            }
             switch completed {
             case .finished:
-                self.passthroughPublisher.send(completion: .finished)
+                self.finish()
             case .failure(let error):
-                self.passthroughPublisher.send(completion: .failure(error))
+                self.fail(error)
             }
-            self.finish()
         }
     }
 }
 
-extension AWSDataStoreObserveQueryOperation: DefaultLogger { }
+extension ObserveQueryTaskRunner: DefaultLogger { }

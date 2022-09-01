@@ -9,6 +9,7 @@ import XCTest
 @testable import AWSAPIPlugin
 @testable import Amplify
 @testable import APIHostApp
+import AmplifyAsyncTesting
 
 /*
  A one-to-one connection where a project has a team.
@@ -28,34 +29,35 @@ import XCTest
 
  */
 class GraphQLConnectionScenario1Tests: XCTestCase {
-
+    
     override func setUp() async throws {
         do {
             Amplify.Logging.logLevel = .verbose
             try Amplify.add(plugin: AWSAPIPlugin())
-
+            
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
-                            forResource: GraphQLModelBasedTests.amplifyConfiguration)
+                forResource: GraphQLModelBasedTests.amplifyConfiguration)
             try Amplify.configure(amplifyConfig)
-
+            
             ModelRegistry.register(modelType: Project1.self)
             ModelRegistry.register(modelType: Team1.self)
-
+            
         } catch {
             XCTFail("Error during setup: \(error)")
         }
     }
-
+    
     override func tearDown() async throws {
         await Amplify.reset()
     }
-
+    
     func testCreateAndGetProject() async throws {
-        let team = Team1(name: "name")
-        _ = try await Amplify.API.mutate(request: .create(team))
-        let project = Project1(team: team)
-        _ = try await Amplify.API.mutate(request: .create(project))
-
+        guard let team = try await createTeam(name: "name"),
+              let project = try await createProject(team: team) else {
+            XCTFail("Could not create team and a project")
+            return
+        }
+        
         let result = try await Amplify.API.query(request: .get(Project1.self, byId: project.id))
         switch result {
         case .success(let queriedProjectOptional):
@@ -69,36 +71,33 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
             XCTFail("Failed with: \(response)")
         }
     }
-
-    func testUpdateProjectWithAnotherTeam() async throws {
-        let team = Team1(name: "name")
-        _ = try await Amplify.API.mutate(request: .create(team))
-        let project = Project1(team: team)
-        let createdProjectResult = try await Amplify.API.mutate(request: .create(project))
-        switch createdProjectResult {
-        case .success(var createdProject):
-            let anotherTeam = Team1(name: "name")
-            guard case .success(let createdAnotherTeam) = try await Amplify.API.mutate(request: .create(anotherTeam)) else {
-                XCTFail("Failed to create another team")
-                return
-            }
-            createdProject.team = createdAnotherTeam
     
-            guard case .success(let updatedProject) = try await Amplify.API.mutate(request: .update(createdProject)) else {
-                XCTFail("Failed to update project to another team")
-                return
-            }
-            XCTAssertEqual(updatedProject.team, anotherTeam)
-        case .failure(let response):
-            XCTFail("Failed with: \(response)")
+    func testUpdateProjectWithAnotherTeam() async throws {
+        guard let team = try await createTeam(name: "name"),
+              var project = try await createProject(team: team) else {
+            XCTFail("Could not create a Team")
+            return
         }
+        let anotherTeam = Team1(name: "name")
+        guard case .success(let createdAnotherTeam) = try await Amplify.API.mutate(request: .create(anotherTeam)) else {
+            XCTFail("Failed to create another team")
+            return
+        }
+        project.team = createdAnotherTeam
+
+        guard case .success(let updatedProject) = try await Amplify.API.mutate(request: .update(project)) else {
+            XCTFail("Failed to update project to another team")
+            return
+        }
+        XCTAssertEqual(updatedProject.team, anotherTeam)
     }
     
     func testDeleteAndGetProject() async throws {
-        let team = Team1(name: "name")
-        _ = try await Amplify.API.mutate(request: .create(team))
-        let project = Project1(team: team)
-        _ = try await Amplify.API.mutate(request: .create(project))
+        guard let team = try await createTeam(name: "name"),
+              let project = try await createProject(team: team) else {
+            XCTFail("Could not create team and a project")
+            return
+        }
         let deletedProjectResult = try await Amplify.API.mutate(request: .delete(project))
         switch deletedProjectResult {
         case .success(let deletedProject):
@@ -122,10 +121,11 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
     // The filter we are passing into is the ProjectTeamID, but the API doesn't have the field ProjectTeamID
     //    so we are disabling it
     func testListProjectsByTeamID() async throws {
-        let team = Team1(name: "name")
-        _ = try await Amplify.API.mutate(request: .create(team))
-        let project = Project1(team: team)
-        _ = try await Amplify.API.mutate(request: .create(project))
+        guard let team = try await createTeam(name: "name"),
+              let project = try await createProject(team: team) else {
+            XCTFail("Could not create team and a project")
+            return
+        }
         let predicate = Project1.keys.team.eq(team.id)
         let event = try await Amplify.API.query(request: .list(Project1.self, where: predicate))
         switch event {
@@ -136,104 +136,67 @@ class GraphQLConnectionScenario1Tests: XCTestCase {
             XCTFail("Failed with: \(response)")
         }
     }
-
-    func testPaginatedListProjects() {
-        guard let team = createTeam(name: "name"),
-              let projecta = createProject(team: team),
-              let projectb = createProject(team: team) else {
-            XCTFail("Could not create team and two projects")
-            return
-        }
-
-        let listProjectByTeamIDCompleted = expectation(description: "list projects completed")
-        var results: List<Project1>?
-        let predicate = Project1.keys.id == projecta.id || Project1.keys.id == projectb.id
-        let request: GraphQLRequest<List<Project1>> = GraphQLRequest<Project1>.list(Project1.self, where: predicate)
-        Amplify.API.query(request: request) { result in
-            switch result {
-            case .success(let result):
-                switch result {
-                case .success(let projects):
-                    results = projects
-                    listProjectByTeamIDCompleted.fulfill()
-                case .failure(let response):
-                    XCTFail("Failed with: \(response)")
-                }
-            case .failure(let error):
-                XCTFail("\(error)")
+    
+    func testPaginatedListProjects() async throws {
+        let testCompleted = asyncExpectation(description: "test completed")
+        Task {
+            guard let team = try await createTeam(name: "name"),
+                  let projecta = try await createProject(team: team),
+                  let projectb = try await createProject(team: team) else {
+                XCTFail("Could not create team and two projects")
+                return
             }
-        }
-        wait(for: [listProjectByTeamIDCompleted], timeout: TestCommonConstants.networkTimeout)
-        guard var subsequentResults = results else {
-            XCTFail("Could not get first results")
-            return
-        }
-        var resultsArray: [Project1] = []
-        resultsArray.append(contentsOf: subsequentResults)
-        while subsequentResults.hasNextPage() {
-            let semaphore = DispatchSemaphore(value: 0)
-            subsequentResults.getNextPage { result in
-                defer {
-                    semaphore.signal()
-                }
-                switch result {
-                case .success(let listResult):
-                    subsequentResults = listResult
-                    resultsArray.append(contentsOf: subsequentResults)
-                case .failure(let coreError):
-                    XCTFail("Unexpected error: \(coreError)")
-                }
-
+            
+            var results: List<Project1>?
+            let predicate = Project1.keys.id == projecta.id || Project1.keys.id == projectb.id
+            let request: GraphQLRequest<List<Project1>> = GraphQLRequest<Project1>.list(Project1.self, where: predicate)
+            
+            let result = try await Amplify.API.query(request: request)
+            
+            guard case .success(let projects) = result else {
+                XCTFail("Missing Successful response")
+                return
             }
-            semaphore.wait()
+            results = projects
+            guard var subsequentResults = results else {
+                XCTFail("Could not get first results")
+                return
+            }
+            var resultsArray: [Project1] = []
+            resultsArray.append(contentsOf: subsequentResults)
+            while subsequentResults.hasNextPage() {
+                let listResult = try await subsequentResults.getNextPage()
+                subsequentResults = listResult
+                resultsArray.append(contentsOf: subsequentResults)
+            }
+            XCTAssertEqual(resultsArray.count, 2)
+            await testCompleted.fulfill()
         }
-        XCTAssertEqual(resultsArray.count, 2)
+        await waitForExpectations([testCompleted], timeout: TestCommonConstants.networkTimeout)
     }
-
-    func createTeam(id: String = UUID().uuidString, name: String) -> Team1? {
+    
+    func createTeam(id: String = UUID().uuidString, name: String) async throws -> Team1? {
         let team = Team1(id: id, name: name)
-        var result: Team1?
-        let requestInvokedSuccessfully = expectation(description: "request completed")
-        Amplify.API.mutate(request: .create(team)) { event in
-            switch event {
-            case .success(let data):
-                switch data {
-                case .success(let team):
-                    result = team
-                default:
-                    XCTFail("Could not get data back")
-                }
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("Failed \(error)")
-            }
+        let graphQLResponse = try await Amplify.API.mutate(request: .create(team))
+        switch graphQLResponse {
+        case .success(let team):
+            return team
+        case .failure(let graphQLResponseError):
+            throw graphQLResponseError
         }
-        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
-        return result
     }
-
+    
     func createProject(id: String = UUID().uuidString,
                        name: String? = nil,
-                       team: Team1? = nil) -> Project1? {
+                       team: Team1? = nil) async throws -> Project1? {
         let project = Project1(id: id, name: name, team: team)
-        var result: Project1?
-        let requestInvokedSuccessfully = expectation(description: "request completed")
-        Amplify.API.mutate(request: .create(project)) { event in
-            switch event {
-            case .success(let data):
-                switch data {
-                case .success(let project):
-                    result = project
-                default:
-                    XCTFail("Could not get data back")
-                }
-                requestInvokedSuccessfully.fulfill()
-            case .failure(let error):
-                XCTFail("Failed \(error)")
-            }
+        let graphQLResponse = try await Amplify.API.mutate(request: .create(project))
+        switch graphQLResponse {
+        case .success(let project):
+            return project
+        case .failure(let graphQLResponseError):
+            throw graphQLResponseError
         }
-        wait(for: [requestInvokedSuccessfully], timeout: TestCommonConstants.networkTimeout)
-        return result
     }
 }
 

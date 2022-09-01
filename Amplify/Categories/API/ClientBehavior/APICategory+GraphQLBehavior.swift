@@ -9,6 +9,7 @@ extension APICategory: APICategoryGraphQLBehavior {
     
     // MARK: - Request-based GraphQL operations
 
+    @available(*, deprecated, renamed: "query(request:)")
     @discardableResult
     public func query<R: Decodable>(request: GraphQLRequest<R>,
                                     listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R> {
@@ -19,6 +20,7 @@ extension APICategory: APICategoryGraphQLBehavior {
         try await plugin.query(request: request)
     }
 
+    @available(*, deprecated, renamed: "mutate(request:)")
     @discardableResult
     public func mutate<R: Decodable>(request: GraphQLRequest<R>,
                                      listener: GraphQLOperation<R>.ResultListener?) -> GraphQLOperation<R> {
@@ -29,6 +31,7 @@ extension APICategory: APICategoryGraphQLBehavior {
         try await plugin.mutate(request: request)
     }
 
+    @available(*, deprecated, renamed: "subscribe(request:)")
     public func subscribe<R>(request: GraphQLRequest<R>,
                              valueListener: GraphQLSubscriptionOperation<R>.InProcessListener?,
                              completionListener: GraphQLSubscriptionOperation<R>.ResultListener?)
@@ -36,7 +39,7 @@ extension APICategory: APICategoryGraphQLBehavior {
             plugin.subscribe(request: request, valueListener: valueListener, completionListener: completionListener)
     }
     
-    public func subscribe<R>(request: GraphQLRequest<R>) async throws -> GraphQLSubscriptionTask<R> {
-        try await plugin.subscribe(request: request)
+    public func subscribe<R>(request: GraphQLRequest<R>) -> AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<R>> {
+        plugin.subscribe(request: request)
     }
 }

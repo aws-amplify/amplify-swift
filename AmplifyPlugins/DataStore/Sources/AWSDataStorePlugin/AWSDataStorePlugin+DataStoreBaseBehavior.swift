@@ -393,11 +393,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
     public func stop(completion: @escaping DataStoreCallback<Void>) {
         storageEngineInitQueue.sync {
-            operationQueue.operations.forEach { operation in
-                if let operation = operation as? DataStoreObserveQueryOperation {
-                    operation.resetState()
-                }
-            }
+            self.dataStoreStateSubject.send(.stop)
             dispatchedModelSyncedEvents.forEach { _, dispatchedModelSynced in
                 dispatchedModelSynced.set(false)
             }
@@ -429,11 +425,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         }
 
         storageEngineInitQueue.sync {
-            operationQueue.operations.forEach { operation in
-                if let operation = operation as? DataStoreObserveQueryOperation {
-                    operation.resetState()
-                }
-            }
+            self.dataStoreStateSubject.send(.clear)
             dispatchedModelSyncedEvents.forEach { _, dispatchedModelSynced in
                 dispatchedModelSynced.set(false)
             }

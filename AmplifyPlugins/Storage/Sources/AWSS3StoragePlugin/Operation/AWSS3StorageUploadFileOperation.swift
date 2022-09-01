@@ -34,8 +34,8 @@ public class AWSS3StorageUploadFileOperation: AmplifyInProcessReportingOperation
          storageConfiguration: AWSS3StoragePluginConfiguration,
          storageService: AWSS3StorageServiceBehaviour,
          authService: AWSAuthServiceBehavior,
-         progressListener: InProcessListener?,
-         resultListener: ResultListener?) {
+         progressListener: InProcessListener? = nil,
+         resultListener: ResultListener? = nil) {
 
         self.storageConfiguration = storageConfiguration
         self.storageService = storageService
@@ -99,30 +99,31 @@ public class AWSS3StorageUploadFileOperation: AmplifyInProcessReportingOperation
 
         let prefixResolver = storageConfiguration.prefixResolver ??
         StorageAccessLevelAwarePrefixResolver(authService: authService)
-        prefixResolver.resolvePrefix(for: request.options.accessLevel,
-                                        targetIdentityId: request.options.targetIdentityId) { prefixResolution in
-            switch prefixResolution {
-            case .success(let prefix):
-                let serviceKey = prefix + self.request.key
-                let serviceMetadata = StorageRequestUtils.getServiceMetadata(self.request.options.metadata)
+
+        Task {
+            do {
+                let prefix = try await prefixResolver.resolvePrefix(for: request.options.accessLevel, targetIdentityId: request.options.targetIdentityId)
+                let serviceKey = prefix + request.key
+                let serviceMetadata = StorageRequestUtils.getServiceMetadata(request.options.metadata)
                 if uploadSize > StorageUploadFileRequest.Options.multiPartUploadSizeThreshold {
-                    self.storageService.multiPartUpload(serviceKey: serviceKey,
-                                                        uploadSource: .local(self.request.local),
-                                                        contentType: self.request.options.contentType,
+                    storageService.multiPartUpload(serviceKey: serviceKey,
+                                                        uploadSource: .local(request.local),
+                                                        contentType: request.options.contentType,
                                                         metadata: serviceMetadata) { [weak self] event in
                         self?.onServiceEvent(event: event)
                     }
                 } else {
-                    self.storageService.upload(serviceKey: serviceKey,
-                                               uploadSource: .local(self.request.local),
-                                               contentType: self.request.options.contentType,
+                    storageService.upload(serviceKey: serviceKey,
+                                               uploadSource: .local(request.local),
+                                               contentType: request.options.contentType,
                                                metadata: serviceMetadata) { [weak self] event in
                         self?.onServiceEvent(event: event)
                     }
                 }
-            case .failure(let error):
-                self.dispatch(error)
-                self.finish()
+
+            } catch {
+                dispatch(StorageError(error: error))
+                finish()
             }
         }
     }

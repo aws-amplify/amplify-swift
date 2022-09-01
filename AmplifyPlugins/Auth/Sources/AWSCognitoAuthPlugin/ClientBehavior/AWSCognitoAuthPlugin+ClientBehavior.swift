@@ -17,7 +17,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         let request = AuthSignUpRequest(username: username,
                                         password: password,
                                         options: options)
-        let task = AWSAuthSignUpTask(request, authStateMachine: authStateMachine)
+        let task = AWSAuthSignUpTask(request, authEnvironment: authEnvironment)
         return try await task.value
     }
     
@@ -29,7 +29,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         let request = AuthConfirmSignUpRequest(username: username,
                                                code: confirmationCode,
                                                options: options)
-        let task = AWSAuthConfirmSignUpTask(request, authStateMachine: authStateMachine)
+        let task = AWSAuthConfirmSignUpTask(request, authEnvironment: authEnvironment)
         return try await task.value
     }
     

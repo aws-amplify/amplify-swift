@@ -39,19 +39,12 @@ extension AuthenticationState {
             case .signedOut(let signedOutData):
                 if let authEvent = event as? AuthenticationEvent {
                     return resolveSignedOut( byApplying: authEvent, to: signedOutData)
-                } else if let signUpEvent = event as? SignUpEvent {
-                    let resolver = SignUpState.Resolver()
-                    let resolution = resolver.resolve(oldState: .notStarted, byApplying: signUpEvent)
-                    let newState = AuthenticationState.signingUp(resolution.newState)
-                    return .init(newState: newState, actions: resolution.actions)
                 } else if let authZEvent = event.isAuthorizationEvent,
                           case .startFederationToIdentityPool = authZEvent {
                     return .init(newState: .federatingToIdentityPool)
                 } else {
                     return .from(oldState)
                 }
-            case .signingUp:
-                return resolveSigningUpState(oldState: oldState, event: event)
             case .signingIn:
                 return resolveSigningInState(oldState: oldState, event: event)
             case .signedIn(let signedInData):
@@ -209,26 +202,6 @@ extension AuthenticationState {
                 let newState = AuthenticationState.deletingUser(signedInData, resolution.newState)
                 return .init(newState: newState, actions: resolution.actions)
             }
-
-        private func resolveSigningUpState(oldState: AuthenticationState,
-                                           event: StateMachineEvent)  -> StateResolution<StateType> {
-            if let authEvent = event as? AuthenticationEvent,
-               case .error(let error) = authEvent.eventType {
-                return .from(.error(error))
-            }
-            if let authEvent = event as? AuthenticationEvent,
-               case .cancelSignUp = authEvent.eventType {
-                let signedOutData = SignedOutData(lastKnownUserName: nil)
-                return .from(.signedOut(signedOutData))
-            }
-            guard case .signingUp(let signUpState) = oldState else {
-                return .from(oldState)
-            }
-            let resolver = SignUpState.Resolver()
-            let resolution = resolver.resolve(oldState: signUpState, byApplying: event)
-            let newState = AuthenticationState.signingUp(resolution.newState)
-            return .init(newState: newState, actions: resolution.actions)
-        }
 
         private func resolveSigningInState(oldState: AuthenticationState,
                                            event: StateMachineEvent) -> StateResolution<StateType> {

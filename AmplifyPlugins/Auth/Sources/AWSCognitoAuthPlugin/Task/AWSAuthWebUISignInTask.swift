@@ -14,6 +14,7 @@ class AWSAuthWebUISignInTask: AuthWebUISignInTask {
     private let request: AuthWebUISignInRequest
     private let authStateMachine: AuthStateMachine
     private var stateMachineToken: AuthStateMachineToken?
+    private let taskHelper: AWSAuthTaskHelper
     let eventName: HubPayloadEventName
     
     init(_ request: AuthWebUISignInRequest,
@@ -25,12 +26,13 @@ class AWSAuthWebUISignInTask: AuthWebUISignInTask {
         self.authStateMachine = authStateMachine
         self.helper = HostedUISignInHelper(request: request, authstateMachine: authStateMachine, configuration: authConfiguration)
         self.eventName = eventName
+        self.taskHelper = AWSAuthTaskHelper(stateMachineToken: self.stateMachineToken, authStateMachine: authStateMachine)
     }
 
     func execute() async throws -> AuthSignInResult {
 
         do {
-            await didConfigure()
+            await taskHelper.didStateMachineConfigured()
             let result = try await helper.initiateSignIn()
             return result
         } catch let autherror as AuthErrorConvertible {
@@ -40,16 +42,6 @@ class AWSAuthWebUISignInTask: AuthWebUISignInTask {
         } catch let error {
             let error = AuthError.unknown("Not able to signIn to the webUI", error)
             throw error
-        }
-    }
-    
-    private func didConfigure() async {
-        await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<Void, Never>) in
-            stateMachineToken = authStateMachine.listen({ [weak self] state in
-                guard let self = self, case .configured = state else { return }
-                self.authStateMachine.cancel(listenerToken: self.stateMachineToken!)
-                continuation.resume()
-            }, onSubscribe: {})
         }
     }
 }

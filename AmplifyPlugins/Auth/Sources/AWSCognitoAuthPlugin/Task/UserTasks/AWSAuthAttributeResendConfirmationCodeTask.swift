@@ -16,8 +16,8 @@ class AWSAuthAttributeResendConfirmationCodeTask: AuthAttributeResendConfirmatio
     private let request: AuthAttributeResendConfirmationCodeRequest
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
-    private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
     private var stateMachineToken: AuthStateMachineToken?
+    private let taskHelper: AWSAuthTaskHelper
     
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.attributeResendConfirmationCodeAPI
@@ -27,13 +27,13 @@ class AWSAuthAttributeResendConfirmationCodeTask: AuthAttributeResendConfirmatio
         self.request = request
         self.authStateMachine = authStateMachine
         self.userPoolFactory = userPoolFactory
-        self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()
+        self.taskHelper = AWSAuthTaskHelper(stateMachineToken: self.stateMachineToken, authStateMachine: authStateMachine)
     }
 
     func execute() async throws -> AuthCodeDeliveryDetails {
         do {
-            await didConfigure()
-            let accessToken = try await getAccessToken()
+            await taskHelper.didStateMachineConfigured()
+            let accessToken = try await taskHelper.getAccessToken()
             let devices = try await initiateGettingVerificationCode(with: accessToken)
             return devices
         } catch let error as GetUserAttributeVerificationCodeOutputError {
@@ -44,41 +44,6 @@ class AWSAuthAttributeResendConfirmationCodeTask: AuthAttributeResendConfirmatio
             throw AuthError.configuration("Unable to execute auth task",
                                           AuthPluginErrorConstants.configurationError,
                                           error)
-        }
-    }
-    
-    private func didConfigure() async {
-        await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<Void, Never>) in
-            stateMachineToken = authStateMachine.listen({ [weak self] state in
-                guard let self = self, case .configured = state else { return }
-                self.authStateMachine.cancel(listenerToken: self.stateMachineToken!)
-                continuation.resume()
-            }, onSubscribe: {})
-        }
-    }
-
-    private func getAccessToken() async throws -> String {
-        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<String, Error>) in
-            fetchAuthSessionHelper.fetch(authStateMachine) { result in
-                switch result {
-                case .success(let session):
-                    guard let cognitoTokenProvider = session as? AuthCognitoTokensProvider else {
-                        continuation.resume(throwing: AuthError.unknown("Unable to fetch auth session", nil))
-                        return
-                    }
-
-                    do {
-                        let tokens = try cognitoTokenProvider.getCognitoTokens().get()
-                        continuation.resume(returning: tokens.accessToken)
-                    } catch let error as AuthError {
-                        continuation.resume(throwing: error)
-                    } catch {
-                        continuation.resume(throwing:AuthError.unknown("Unable to fetch auth session", error))
-                    }
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
-            }
         }
     }
 

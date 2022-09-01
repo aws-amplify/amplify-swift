@@ -13,8 +13,6 @@ import AWSPluginsCore
 @testable import AWSDataStorePlugin
 @testable import DataStoreHostApp
 
-
-
 // swiftlint:disable cyclomatic_complexity
 // swiftlint:disable type_body_length
 class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
@@ -213,9 +211,9 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         updatedPost.title = "MyUpdatedPost"
         updatedPost.content = "This is my updated post."
 
-        let saveSyncReceived = AsyncExpectation(description: "Received create mutation event on subscription for Post")
-        let updateSyncReceived = AsyncExpectation(description: "Received update mutation event on subscription for Post")
-        let deleteSyncReceived = AsyncExpectation(description: "Received delete mutation event on subscription for Post")
+        let saveSyncReceived = asyncExpectation(description: "Received create mutation event on subscription for Post")
+        let updateSyncReceived = asyncExpectation(description: "Received update mutation event on subscription for Post")
+        let deleteSyncReceived = asyncExpectation(description: "Received delete mutation event on subscription for Post")
 
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,

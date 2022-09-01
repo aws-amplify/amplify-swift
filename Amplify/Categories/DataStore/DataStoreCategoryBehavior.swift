@@ -87,5 +87,5 @@ public protocol DataStoreSubscribeBehavior {
     func observeQuery<M: Model>(for modelType: M.Type,
                                 where predicate: QueryPredicate?,
                                 sort sortInput: QuerySortInput?)
-    -> AnyPublisher<DataStoreQuerySnapshot<M>, DataStoreError>
+        -> AmplifyAsyncThrowingSequence<DataStoreQuerySnapshot<M>>
 }
