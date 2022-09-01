@@ -16,7 +16,6 @@ class AWSAuthAttributeResendConfirmationCodeTask: AuthAttributeResendConfirmatio
     private let request: AuthAttributeResendConfirmationCodeRequest
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
-    private var stateMachineToken: AuthStateMachineToken?
     private let taskHelper: AWSAuthTaskHelper
     
     var eventName: HubPayloadEventName {
@@ -27,7 +26,7 @@ class AWSAuthAttributeResendConfirmationCodeTask: AuthAttributeResendConfirmatio
         self.request = request
         self.authStateMachine = authStateMachine
         self.userPoolFactory = userPoolFactory
-        self.taskHelper = AWSAuthTaskHelper(stateMachineToken: self.stateMachineToken, authStateMachine: authStateMachine)
+        self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
     }
 
     func execute() async throws -> AuthCodeDeliveryDetails {
