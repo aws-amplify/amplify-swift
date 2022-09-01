@@ -150,13 +150,7 @@ struct HostedUISignInHelper {
 
     private func sendCancelSignInEvent() {
         let event = AuthenticationEvent(eventType: .cancelSignIn)
-        authStateMachine.send(event)
-    }
-
-    private func cancelToken(_ token: AuthStateMachineToken?) {
-        if let token = token {
-            authStateMachine.cancel(listenerToken: token)
-        }
+        await authStateMachine.send(event)
     }
 
 }

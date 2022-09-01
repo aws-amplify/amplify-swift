@@ -7,7 +7,7 @@
 
 import Amplify
 import Foundation
-import Security
+@_spi(KeychainStore) import AWSPluginsCore
 
 protocol CredentialStoreStateBehaviour {
     
@@ -18,8 +18,7 @@ protocol CredentialStoreStateBehaviour {
 }
 
 class CredentialStoreOperationClient: CredentialStoreStateBehaviour {
-    
-    var credentialStoreStateListenerToken: CredentialStoreStateMachine.StateChangeListenerToken!
+
     let credentialStoreStateMachine: CredentialStoreStateMachine
     
     init(credentialStoreStateMachine: CredentialStoreStateMachine) {
@@ -48,57 +47,45 @@ class CredentialStoreOperationClient: CredentialStoreStateBehaviour {
     }
     
     func sendEventAndListenToStateChanges(event: CredentialStoreEvent) async throws -> CredentialStoreData {
-        let credentials: CredentialStoreData = try await withCheckedThrowingContinuation({ continuation in
-            self.credentialStoreStateListenerToken = credentialStoreStateMachine.listen { state in
-
-                switch state {
-                case .success(let credentialStoreData):
-                    continuation.resume(returning: credentialStoreData)
-                case .error(let error):
-                    continuation.resume(throwing: error)
-                    
-                default: break
-                }
-            } onSubscribe: {
-                self.credentialStoreStateMachine.send(event)
+        let stateSequences = await credentialStoreStateMachine.listen()
+        await credentialStoreStateMachine.send(event)
+        for await state in stateSequences {
+            switch state {
+            case .success(let credentialStoreData):
+                return credentialStoreData
+            case .error(let error):
+                throw error
+            default: continue
             }
-        })
-        credentialStoreStateMachine.cancel(listenerToken: self.credentialStoreStateListenerToken)
-        
-        return credentials
+        }
+        throw KeychainStoreError.unknown("Could not complete the operation")
     }
     
     func sendDeleteEventAndListenToStateChanges(event: CredentialStoreEvent) async throws {
-        try await withCheckedThrowingContinuation({
-            (continuation: CheckedContinuation<Void, Error>) -> Void in
-            self.credentialStoreStateListenerToken = credentialStoreStateMachine.listen { state in
-                
-                switch state {
-                case .clearedCredential:
-                    continuation.resume()
-                case .error(let error):
-                    continuation.resume(throwing: error)
-                default: break
-                }
-            } onSubscribe: {
-                self.credentialStoreStateMachine.send(event)
+
+        let stateSequences = await credentialStoreStateMachine.listen()
+        await credentialStoreStateMachine.send(event)
+        for await state in stateSequences {
+            switch state {
+            case .clearedCredential:
+                return
+            case .error(let error):
+                throw error
+            default: continue
             }
-        })
-        credentialStoreStateMachine.cancel(listenerToken: self.credentialStoreStateListenerToken)
+        }
     }
 
     func waitForValidState() async {
-        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            self.credentialStoreStateListenerToken = credentialStoreStateMachine.listen { state in
-                switch state {
-                case .idle, .notConfigured:
-                    continuation.resume()
+        let stateSequences = await credentialStoreStateMachine.listen()
 
-                default: break
-                }
-            } onSubscribe: { }
+        for await state in stateSequences {
+            switch state {
+            case .idle, .notConfigured:
+                return
+            default: continue
+            }
         }
-        credentialStoreStateMachine.cancel(listenerToken: self.credentialStoreStateListenerToken)
     }
     
 }

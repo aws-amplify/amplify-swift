@@ -12,7 +12,6 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
 
     private let request: AuthConfirmSignInRequest
     private let authStateMachine: AuthStateMachine
-    private var stateListenerToken: AuthStateMachineToken?
     private let taskHelper: AWSAuthTaskHelper
     
     var eventName: HubPayloadEventName {
@@ -22,7 +21,7 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
     init(_ request: AuthConfirmSignInRequest, stateMachine: AuthStateMachine) {
         self.request = request
         self.authStateMachine = stateMachine
-        self.taskHelper = AWSAuthTaskHelper(stateMachineToken: self.stateListenerToken, authStateMachine: authStateMachine)
+        self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
     }
 
     func execute() async throws -> AuthSignInResult {
@@ -100,9 +99,4 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
         }
     }
     
-    private func cancelToken() {
-        if let token = stateListenerToken {
-            authStateMachine.cancel(listenerToken: token)
-        }
-    }
 }
