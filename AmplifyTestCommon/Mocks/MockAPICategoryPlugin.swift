@@ -76,7 +76,16 @@ class MockAPICategoryPlugin: MessageReporter,
         // This is a really weighty notification message, but needed for tests to be able to assert that a particular
         // model is being mutated
         notify("mutate(request) document: \(request.document); variables: \(String(describing: request.variables))")
-
+        
+        if let responder = responders[.mutateRequestResponse] as? MutateRequestResponder<R> {
+            let result = responder.callback(request)
+            switch result {
+            case .success(let response):
+                return response
+            case .failure(let error):
+                throw error
+            }
+        }
         return .failure(.unknown("", "'", nil))
     }
 

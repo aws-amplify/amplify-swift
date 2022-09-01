@@ -37,6 +37,11 @@
                BlueprintName = "AWSDataStoreCategoryPluginTests"
                ReferencedContainer = "container:">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "OutgoingMutationQueueNetworkTests/testLastMutationSentWhenNoNetwork()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

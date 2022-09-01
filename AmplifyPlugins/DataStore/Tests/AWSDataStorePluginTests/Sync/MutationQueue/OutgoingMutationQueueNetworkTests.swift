@@ -96,7 +96,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
 
         // The first response is a success for the initial "Create" mutation
         let apiRespondedWithSuccess = expectation(description: "apiRespondedWithSuccess")
-        let acceptInitialMutation = setUpInitialMutationRequestResponder(
+        let acceptInitialMutation = setUpInitialMutationRequestResponder2(
             for: try post.eraseToAnyModel(),
             fulfilling: apiRespondedWithSuccess,
             incrementing: version
@@ -108,12 +108,13 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         // mutations, at which point we can resume internet connectivity and ensure the API gets
         // called with the latest mutation. The delay simulates network time--this is to allow us
         // to add mutations to the pending queue while there is one in process.
-        let rejectMutationsWithRetriableError = setUpRetriableErrorRequestResponder(
-            listenerDelay: 0.25
+        let rejectMutationsWithRetriableError = setUpRetriableErrorRequestResponder2(
+            //listenerDelay: 0.25
         )
 
         // Start by accepting the initial "create" mutation
-        apiPlugin.responders = [.mutateRequestListener: acceptInitialMutation]
+        //apiPlugin.responders = [.mutateRequestListener: acceptInitialMutation]
+        apiPlugin.responders = [.mutateRequestResponse: acceptInitialMutation]
 
         try await startAmplifyAndWaitForSync()
 
@@ -130,7 +131,8 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
 
         // Set the responder to reject the mutation. Make sure to push a retry advice before sending
         // a new mutation.
-        apiPlugin.responders = [.mutateRequestListener: rejectMutationsWithRetriableError]
+        //apiPlugin.responders = [.mutateRequestListener: rejectMutationsWithRetriableError]
+        apiPlugin.responders = [.mutateRequestResponse: rejectMutationsWithRetriableError]
 
         // NOTE: This policy is not used by the SyncMutationToCloudOperation, only by the
         // RemoteSyncEngine.
@@ -233,7 +235,7 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
         // mutation to succeed. This is where we will assert that we've seen the last mutation
         // to be processed
         let expectedFinalContentReceived = expectation(description: "expectedFinalContentReceived")
-        let acceptSubsequentMutations = setUpSubsequentMutationRequestResponder(
+        let acceptSubsequentMutations = setUpSubsequentMutationRequestResponder2(
             for: try post.eraseToAnyModel(),
             fulfilling: expectedFinalContentReceived,
             whenContentContains: expectedFinalContent,
@@ -280,6 +282,28 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
             return nil
         }
     }
+    
+    private func setUpInitialMutationRequestResponder2(
+        for model: AnyModel,
+        fulfilling expectation: XCTestExpectation,
+        incrementing version: AtomicValue<Int>
+    ) -> MutateRequestResponder<MutationSync<AnyModel>> {
+        MutateRequestResponder<MutationSync<AnyModel>> { _ in
+            let mockResponse = MutationSync(
+                model: model,
+                syncMetadata: MutationSyncMetadata(
+                    id: model.id,
+                    deleted: false,
+                    lastChangedAt: Date().unixSeconds,
+                    version: version.increment()
+                )
+            )
+
+                
+            expectation.fulfill()
+            return .success(.success(mockResponse))
+        }
+    }
 
     /// Returns a responder that executes the eventListener after a delay, to simulate network lag
     private func setUpRetriableErrorRequestResponder(
@@ -290,6 +314,12 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
                 eventListener?(.failure(self.connectionError))
             }
             return nil
+        }
+    }
+    
+    private func setUpRetriableErrorRequestResponder2() -> MutateRequestResponder<MutationSync<AnyModel>> {
+        MutateRequestResponder<MutationSync<AnyModel>> { _ in
+            return .failure(self.connectionError)
         }
     }
 
@@ -323,6 +353,40 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
             }
 
             return nil
+        }
+
+    }
+    
+    private func setUpSubsequentMutationRequestResponder2(
+        for model: AnyModel,
+        fulfilling expectation: XCTestExpectation,
+        whenContentContains expectedFinalContent: String,
+        incrementing version: AtomicValue<Int>
+    ) -> MutateRequestResponder<MutationSync<AnyModel>> {
+        MutateRequestResponder<MutationSync<AnyModel>> { request in
+            guard let input = request.variables?["input"] as? [String: Any],
+                  let content = input["content"] as? String else {
+                XCTFail("Unexpected request structure: no `content` in variables.")
+                return .failure(.unknown("", "", nil))
+            }
+
+            let mockResponse = MutationSync(
+                model: model,
+                syncMetadata: MutationSyncMetadata(
+                    id: model.id,
+                    deleted: false,
+                    lastChangedAt: Date().unixSeconds,
+                    version: version.increment()
+                )
+            )
+
+            if content == expectedFinalContent {
+                expectation.fulfill()
+                return .success(.success(mockResponse))
+            } else {
+                return .failure(self.connectionError)
+            }
+            
         }
 
     }

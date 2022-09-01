@@ -13,6 +13,7 @@ extension MockAPICategoryPlugin {
         case queryRequestResponse
         case subscribeRequestListener
         case mutateRequestListener
+        case mutateRequestResponse
     }
 }
 
@@ -29,6 +30,11 @@ typealias QueryRequestResponder<R: Decodable> = MockResponder<
 typealias MutateRequestListenerResponder<R: Decodable> = MockResponder<
     (GraphQLRequest<R>, GraphQLOperation<R>.ResultListener?),
     GraphQLOperation<R>?
+>
+
+typealias MutateRequestResponder<R: Decodable> = MockResponder<
+    (GraphQLRequest<R>),
+    GraphQLOperation<R>.OperationResult
 >
 
 typealias SubscribeRequestListenerResponder<R: Decodable> = MockResponder<
