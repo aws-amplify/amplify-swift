@@ -35,7 +35,7 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get a completed signIn flow event.
     ///
-    func testSuccessfulSignInEvent() {
+    func testSuccessfulSignInEvent() async throws {
 
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
@@ -51,14 +51,11 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
             }
         }
 
-        AuthSignInHelper.registerAndSignInUser(
+        _ = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail) { _, error in
-                if let unwrappedError = error {
-                    XCTFail("Unable to sign in with error: \(unwrappedError)")
-                }
-            }
+            email: defaultTestEmail)
+        
         wait(for: [signInExpectation], timeout: networkTimeout)
     }
 
@@ -70,7 +67,7 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get a completed signOut flow event.
     ///
-    func testSuccessfulSignOutEvent() {
+    func testSuccessfulSignOutEvent() async throws {
 
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
@@ -86,17 +83,11 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
             }
         }
 
-        AuthSignInHelper.registerAndSignInUser(
+        _ = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail) { _, error in
-                if let unwrappedError = error {
-                    XCTFail("Unable to sign in with error: \(unwrappedError)")
-                } else {
-                    _ = Amplify.Auth.signOut()
-                }
-            }
-        wait(for: [signOutExpectation], timeout: networkTimeout)
+            email: defaultTestEmail)
+        try await Amplify.Auth.signOut()
     }
 
     /// Test hub event for session expired of a valid user
@@ -107,7 +98,7 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get a session expired flow event.
     ///
-    func testSessionExpiredEvent() throws {
+    func testSessionExpiredEvent() async throws {
         throw XCTSkip("TODO: fix this test. We need to find a way to mock credential store")
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
@@ -126,20 +117,16 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
             }
         }
 
-        AuthSignInHelper.registerAndSignInUser(
-            username: username,
-            password: password,
-            email: defaultTestEmail) { _, error in
-                if let unwrappedError = error {
-                    XCTFail("Unable to sign in with error: \(unwrappedError)")
-                } else {
-                    Amplify.Auth.fetchAuthSession { _ in
-                        // Manually invalidate the tokens and then try to fetch the session.
-                        AuthSessionHelper.invalidateSession(with: self.amplifyConfiguration)
-                        Amplify.Auth.fetchAuthSession { _ in }
-                    }
-                }
-            }
+        do {
+            _ = try await AuthSignInHelper.registerAndSignInUser(
+                username: username,
+                password: password,
+                email: defaultTestEmail)
+        } catch {
+            _ = try await Amplify.Auth.fetchAuthSession()
+            AuthSessionHelper.invalidateSession(with: self.amplifyConfiguration)
+            _ = try await Amplify.Auth.fetchAuthSession()
+        }
         wait(for: [signInExpectation, sessionExpiredExpectation], timeout: networkTimeout, enforceOrder: true)
     }
 
@@ -151,7 +138,7 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get successful deleteUser flow event
     ///
-    func testSuccessfulDeletedUserEvent() {
+    func testSuccessfulDeletedUserEvent() async throws {
 
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
@@ -170,23 +157,17 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
             }
         }
 
-        AuthSignInHelper.registerAndSignInUser(
+        _ = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail) { _, error in
-                if let unwrappedError = error {
-                    XCTFail("Unable to sign in with error: \(unwrappedError)")
-                }
-            }
+            email: defaultTestEmail)
         wait(for: [signInExpectation], timeout: networkTimeout)
 
-        _ = Amplify.Auth.deleteUser { result in
-            switch result {
-            case .success:
-                print("Success deleteUser")
-            case .failure(let error):
-                XCTFail("deleteUser should not fail - \(error)")
-            }
+        do {
+            try await Amplify.Auth.deleteUser()
+            print("Success deleteUser")
+        } catch {
+            XCTFail("deleteUser should not fail - \(error)")
         }
         wait(for: [deletedUserExpectation], timeout: networkTimeout)
     }

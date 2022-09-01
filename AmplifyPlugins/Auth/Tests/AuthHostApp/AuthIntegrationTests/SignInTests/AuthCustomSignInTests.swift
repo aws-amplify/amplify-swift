@@ -55,54 +55,33 @@ class AuthCustomSignInTests: AWSAuthBaseTest {
     ///         event.response.failAuthentication = true;
     ///     }
     ///
-    func testSuccessfulSignInWithCustomAuthSRP() {
+    func testSuccessfulSignInWithCustomAuthSRP() async throws {
 
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
-        let signUpExpectation = expectation(description: "SignUp operation should complete")
-        AuthSignInHelper.signUpUser(username: username, password: password,
-                                    email: defaultTestEmail) { didSucceed, error in
-            signUpExpectation.fulfill()
-            XCTAssertTrue(didSucceed, "Signup operation failed - \(String(describing: error))")
-        }
-        wait(for: [signUpExpectation], timeout: networkTimeout)
+        let isSignedUp = try await AuthSignInHelper.signUpUser(username: username, password: password,
+                                    email: defaultTestEmail)
+        XCTAssertTrue(isSignedUp)
 
         var confirmationCodeForValidation = ""
-
-        let operationExpectation = expectation(description: "Operation should complete")
         let option = AWSAuthSignInOptions(authFlowType: .customWithSRP)
-        let operation = Amplify.Auth.signIn(
-            username: username,
-            password: password,
-            options: .init(pluginOptions: option)) { result in
-                switch result {
-                case .success(let data):
-                    if case .confirmSignInWithCustomChallenge(let additionalInfo) = data.nextStep {
-                        confirmationCodeForValidation = additionalInfo?["code"] ?? ""
-                    }
-                    operationExpectation.fulfill()
-                case .failure:
-                    XCTFail("SignIn with invalid auth flow should not succeed")
-                }
+        do {
+            let result = try await Amplify.Auth.signIn(username: username, password: password, options: AuthSignInRequest.Options(pluginOptions: option))
+            if case .confirmSignInWithCustomChallenge(let additionalInfo) = result.nextStep {
+                confirmationCodeForValidation = additionalInfo?["code"] ?? ""
             }
-        XCTAssertNotNil(operation, "SignIn operation should not be nil")
-        wait(for: [operationExpectation], timeout: networkTimeout)
-
-        let confirmSignInOperationExpectation = expectation(description: "Confirm Sign in operation should complete")
-        let confirmSignInOperation = Amplify.Auth.confirmSignIn(challengeResponse: confirmationCodeForValidation) { result in
-            switch result {
-            case .success(let confirmSignInResult):
-                if case .done = confirmSignInResult.nextStep, confirmSignInResult.isSignedIn {
-                    confirmSignInOperationExpectation.fulfill()
-                }
-            case .failure:
-                XCTFail("Sign In confirmation failed")
-            }
+        } catch {
+            XCTFail("SignIn with invalid auth flow should not succeed")
         }
 
-        XCTAssertNotNil(confirmSignInOperation, "Confirm SignIn operation should not be nil")
-        wait(for: [confirmSignInOperationExpectation], timeout: networkTimeout)
+        
+        do {
+            let confirmSignInResult = try await Amplify.Auth.confirmSignIn(challengeResponse: confirmationCodeForValidation)
+            XCTAssertTrue(confirmSignInResult.isSignedIn)
+        } catch {
+            XCTFail("Sign In confirmation failed")
+        }
     }
 
     /// Test  signIn with different flow type in the same session
@@ -138,64 +117,40 @@ class AuthCustomSignInTests: AWSAuthBaseTest {
     ///         event.response.failAuthentication = true;
     ///     }
     ///
-    func testRuntimeAuthFlowSwitch() {
+    func testRuntimeAuthFlowSwitch() async throws {
 
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
-        let signUpExpectation = expectation(description: "SignUp operation should complete")
-        AuthSignInHelper.signUpUser(username: username, password: password,
-                                    email: defaultTestEmail) { didSucceed, error in
-            signUpExpectation.fulfill()
-            XCTAssertTrue(didSucceed, "Signup operation failed - \(String(describing: error))")
-        }
-        wait(for: [signUpExpectation], timeout: networkTimeout)
+        let isSignedUp = try await AuthSignInHelper.signUpUser(username: username, password: password,
+                                    email: defaultTestEmail)
+        XCTAssertTrue(isSignedUp)
 
-        let operationExpectation = expectation(description: "Operation should complete")
         let option = AWSAuthSignInOptions(authFlowType: .customWithSRP)
-        let operation = Amplify.Auth.signIn(username: username,
-                                            password: password,
-                                            options: .init(pluginOptions: option)) { result in
-            switch result {
-            case .success:
-                operationExpectation.fulfill()
-            case .failure:
-                XCTFail("Should successfully login")
-            }
-        }
-        XCTAssertNotNil(operation, "SignIn operation should not be nil")
-        wait(for: [operationExpectation], timeout: networkTimeout)
-
-        let signOutExpectation = expectation(description: "Sign out operation should complete")
-        let signOutOperation = Amplify.Auth.signOut { result in
-            switch result {
-            case .success:
-                signOutExpectation.fulfill()
-            case .failure:
-                XCTFail("Sign out should succeed")
-            }
+        do {
+            let signInResult = try await Amplify.Auth.signIn(username: username,
+                                              password: password,
+                                              options: AuthSignInRequest.Options(pluginOptions: option))
+            XCTAssertTrue(signInResult.isSignedIn, "SignIn should be complete")
+        } catch {
+            XCTFail("Should successfully login")
         }
 
-        XCTAssertNotNil(signOutOperation, "SignIn operation should not be nil")
-        wait(for: [signOutExpectation], timeout: networkTimeout)
+        do {
+            try await Amplify.Auth.signOut()
+        } catch {
+            XCTFail("Should successfully logout")
+        }
 
-        let srpOperationExpectation = expectation(description: "Operation should complete")
         let srpOption = AWSAuthSignInOptions(authFlowType: .userSRP)
-        let srpOperation = Amplify.Auth.signIn(username: username,
-                                            password: password,
-                                            options: .init(pluginOptions: srpOption)) { result in
-            defer {
-                srpOperationExpectation.fulfill()
-            }
-            switch result {
-            case .success(let signInResult):
-                XCTAssertTrue(signInResult.isSignedIn, "SignIn should be complete")
-            case .failure(let error):
-                XCTFail("SignIn with a valid username/password should not fail \(error)")
-            }
+        do {
+            let signInResult = try await Amplify.Auth.signIn(username: username,
+                                              password: password,
+                                              options: AuthSignInRequest.Options(pluginOptions: srpOption))
+            XCTAssertTrue(signInResult.isSignedIn, "SignIn should be complete")
+        } catch {
+            XCTFail("SignIn with a valid username/password should not fail \(error)")
         }
-        XCTAssertNotNil(srpOperation, "SignIn operation should not be nil")
-        wait(for: [srpOperationExpectation], timeout: networkTimeout)
     }
 
     /// Test  signIn with authflowtype as customAuth
@@ -232,54 +187,33 @@ class AuthCustomSignInTests: AWSAuthBaseTest {
     ///
     ///        return event;
     ///    };
-    func testSuccessfulSignInWithCustomAuth() {
+    func testSuccessfulSignInWithCustomAuth() async throws {
 
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
-        let signUpExpectation = expectation(description: "SignUp operation should complete")
-        AuthSignInHelper.signUpUser(username: username, password: password,
-                                    email: defaultTestEmail) { didSucceed, error in
-            signUpExpectation.fulfill()
-            XCTAssertTrue(didSucceed, "Signup operation failed - \(String(describing: error))")
-        }
-        wait(for: [signUpExpectation], timeout: networkTimeout)
+        let isSignedUp = try await AuthSignInHelper.signUpUser(username: username, password: password, email: defaultTestEmail)
+        XCTAssertTrue(isSignedUp)
 
         var confirmationCodeForValidation = ""
-
-        let operationExpectation = expectation(description: "Operation should complete")
         let option = AWSAuthSignInOptions(authFlowType: .custom)
-        let operation = Amplify.Auth.signIn(
-            username: username,
-            password: password,
-            options: .init(pluginOptions: option)) { result in
-                switch result {
-                case .success(let data):
-                    if case .confirmSignInWithCustomChallenge(let additionalInfo) = data.nextStep {
-                        confirmationCodeForValidation = additionalInfo?["code"] ?? ""
-                    }
-                    operationExpectation.fulfill()
-                case .failure:
-                    XCTFail("SignIn with invalid auth flow should not succeed")
-                }
+        do {
+            let signInResult = try await Amplify.Auth.signIn(username: username,
+                                              password: password,
+                                              options: AuthSignInRequest.Options(pluginOptions: option))
+            if case .confirmSignInWithCustomChallenge(let additionalInfo) = signInResult.nextStep {
+                confirmationCodeForValidation = additionalInfo?["code"] ?? ""
             }
-        XCTAssertNotNil(operation, "SignIn operation should not be nil")
-        wait(for: [operationExpectation], timeout: networkTimeout)
-
-        let confirmSignInOperationExpectation = expectation(description: "Confirm Sign in operation should complete")
-        let confirmSignInOperation = Amplify.Auth.confirmSignIn(challengeResponse: confirmationCodeForValidation) { result in
-            switch result {
-            case .success(let confirmSignInResult):
-                if case .done = confirmSignInResult.nextStep, confirmSignInResult.isSignedIn {
-                    confirmSignInOperationExpectation.fulfill()
-                }
-            case .failure:
-                XCTFail("Sign In confirmation failed")
-            }
+        } catch {
+            XCTFail("SignIn with invalid auth flow should not succeed")
         }
-
-        XCTAssertNotNil(confirmSignInOperation, "Confirm SignIn operation should not be nil")
-        wait(for: [confirmSignInOperationExpectation], timeout: networkTimeout)
+        
+        do {
+            let confirmSignInResult = try await Amplify.Auth.confirmSignIn(challengeResponse: confirmationCodeForValidation)
+            XCTAssertTrue(confirmSignInResult.isSignedIn)
+        } catch {
+            XCTFail("Sign In confirmation failed")
+        }
     }
 
 }

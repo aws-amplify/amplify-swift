@@ -32,31 +32,27 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should receive a valid session in signed in state, which is not the same as before
     ///
-    func testSuccessfulForceSessionFetch() {
+    func testSuccessfulForceSessionFetch() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        let signInExpectation = expectation(description: "SignIn operation should complete")
-        AuthSignInHelper.registerAndSignInUser(username: username, password: password,
-                                               email: defaultTestEmail) { didSucceed, error in
-            signInExpectation.fulfill()
-            XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
-        }
-        wait(for: [signInExpectation], timeout: networkTimeout)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username, password: password,
+                                               email: defaultTestEmail)
+        XCTAssertTrue(didSucceed, "SignIn operation failed")
 
-        let firstCognitoSession = AuthSessionHelper.getCurrentAmplifySession(
+        let firstCognitoSession = try await AuthSessionHelper.getCurrentAmplifySession(
             for: self,
             with: networkTimeout)
 
-        let secondCognitoSession = AuthSessionHelper.getCurrentAmplifySession(
+        let secondCognitoSession = try await AuthSessionHelper.getCurrentAmplifySession(
             for: self,
             with: networkTimeout)
 
-        let thirdCognitoSession = AuthSessionHelper.getCurrentAmplifySession(
+        let thirdCognitoSession = try await AuthSessionHelper.getCurrentAmplifySession(
             shouldForceRefresh: true,
             for: self,
             with: networkTimeout)
 
-        let fourthCognitoSession = AuthSessionHelper.getCurrentAmplifySession(
+        let fourthCognitoSession = try await AuthSessionHelper.getCurrentAmplifySession(
             for: self,
             with: networkTimeout)
 
@@ -78,30 +74,15 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should receive a valid session in signed in state
     ///
-    func testSuccessfulSessionFetch() {
+    func testSuccessfulSessionFetch() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        let signInExpectation = expectation(description: "SignIn operation should complete")
-        AuthSignInHelper.registerAndSignInUser(username: username, password: password,
-                                               email: defaultTestEmail) { didSucceed, error in
-            signInExpectation.fulfill()
-            XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
-        }
-        wait(for: [signInExpectation], timeout: networkTimeout)
-
-        let authSessionExpectation = expectation(description: "Received event result from fetchAuth")
-        _ = Amplify.Auth.fetchAuthSession { result in
-            defer {
-                authSessionExpectation.fulfill()
-            }
-            switch result {
-            case .success(let session):
-                XCTAssertTrue(session.isSignedIn, "Session state should be signed In")
-            case .failure(let error):
-                XCTFail("Should not receive error \(error)")
-            }
-        }
-        wait(for: [authSessionExpectation], timeout: networkTimeout)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username, password: password,
+                                               email: defaultTestEmail)
+        XCTAssertTrue(didSucceed, "SignIn operation failed")
+        
+        let session = try await Amplify.Auth.fetchAuthSession()
+        XCTAssertTrue(session.isSignedIn, "Session state should be signed In")
     }
 
     /// Test if I get sessionExpired error on session expiry
@@ -112,54 +93,36 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get the signedin state as true but with token result as sessionExpired
     ///
-    func testSessionExpired() throws {
+    func testSessionExpired() async throws {
         throw XCTSkip("TODO: fix this test. We need to find a way to mock credential store")
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        let signInExpectation = expectation(description: "SignIn operation should complete")
-        AuthSignInHelper.registerAndSignInUser(username: username, password: password,
-                                               email: defaultTestEmail) { didSucceed, error in
-            signInExpectation.fulfill()
-            XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
-        }
-        wait(for: [signInExpectation], timeout: networkTimeout)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username, password: password,
+                                               email: defaultTestEmail)
+        XCTAssertTrue(didSucceed, "SignIn operation failed")
 
-        let authSessionExpectation = expectation(description: "Received event result from fetchAuth")
-        _ = Amplify.Auth.fetchAuthSession { result in
-            defer {
-                authSessionExpectation.fulfill()
-            }
-
-            do {
-                let authSession = try result.get() as? AuthCognitoTokensProvider
-                _ = try authSession?.getCognitoTokens().get()
-            } catch {
-                XCTFail("Should not receive error \(error)")
-            }
+        let session = try await Amplify.Auth.fetchAuthSession()
+        do {
+            let authSession = session as? AuthCognitoTokensProvider
+            _ = try authSession?.getCognitoTokens().get()
+        } catch {
+            XCTFail("Should not receive error \(error)")
         }
-        wait(for: [authSessionExpectation], timeout: networkTimeout)
 
         // Manually invalidate the tokens and then try to fetch the session.
         AuthSessionHelper.invalidateSession(with: self.amplifyConfiguration)
-        let authSessionExpiredExpectation = expectation(description: "Received event result from fetchAuth")
-        _ = Amplify.Auth.fetchAuthSession { result in
-            defer {
-                authSessionExpiredExpectation.fulfill()
-            }
-
-            do {
-                let authSession = try result.get() as? AuthCognitoTokensProvider
-                _ = try authSession?.getCognitoTokens().get()
-                XCTFail("Should not receive a valid token")
-            } catch {
-                guard let authError = error as? AuthError,
-                      case .sessionExpired = authError else {
-                    XCTFail("Should receive a session expired error but received \(error)")
-                    return
-                }
+        let anotherSession = try await Amplify.Auth.fetchAuthSession()
+        do {
+            let authSession = anotherSession as? AuthCognitoTokensProvider
+            _ = try authSession?.getCognitoTokens().get()
+            XCTFail("Should not receive a valid token")
+        } catch {
+            guard let authError = error as? AuthError,
+                  case .sessionExpired = authError else {
+                XCTFail("Should receive a session expired error but received \(error)")
+                return
             }
         }
-        wait(for: [authSessionExpiredExpectation], timeout: networkTimeout)
     }
 
     /// Test if signedOut error is returned when session is cleared
@@ -170,53 +133,35 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get the signedin state as false but with token result as seignedOut
     ///
-    func testSessionCleared() throws {
+    func testSessionCleared() async throws {
         throw XCTSkip("TODO: fix this test. We need to find a way to mock credential store")
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        let signInExpectation = expectation(description: "SignIn operation should complete")
-        AuthSignInHelper.registerAndSignInUser(username: username, password: password,
-                                               email: defaultTestEmail) { didSucceed, error in
-            signInExpectation.fulfill()
-            XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
-        }
-        wait(for: [signInExpectation], timeout: networkTimeout)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username, password: password,
+                                               email: defaultTestEmail)
+        XCTAssertTrue(didSucceed, "SignIn operation failed")
 
-        let authSessionExpectation = expectation(description: "Received event result from fetchAuth")
-        _ = Amplify.Auth.fetchAuthSession { result in
-            defer {
-                authSessionExpectation.fulfill()
-            }
-
-            do {
-                let authSession = try result.get() as? AuthCognitoTokensProvider
-                _ = try authSession?.getCognitoTokens().get()
-            } catch {
-                XCTFail("Should not receive error \(error)")
-            }
+        let session = try await Amplify.Auth.fetchAuthSession()
+        do {
+            let authSession = session as? AuthCognitoTokensProvider
+            _ = try authSession?.getCognitoTokens().get()
+        } catch {
+            XCTFail("Should not receive error \(error)")
         }
-        wait(for: [authSessionExpectation], timeout: networkTimeout)
 
         AuthSessionHelper.clearSession()
-        let authSessionExpiredExpectation = expectation(description: "Received event result from fetchAuth")
-        _ = Amplify.Auth.fetchAuthSession { result in
-            defer {
-                authSessionExpiredExpectation.fulfill()
-            }
-
-            do {
-                let authSession = try result.get() as? AuthCognitoTokensProvider
-                _ = try authSession?.getCognitoTokens().get()
-                XCTFail("Should not receive a valid token")
-            } catch {
-                guard let authError = error as? AuthError,
-                      case .signedOut = authError else {
-                    XCTFail("Should receive a session expired error but received \(error)")
-                    return
-                }
+        let anotherSession = try await Amplify.Auth.fetchAuthSession()
+        do {
+            let authSession = anotherSession as? AuthCognitoTokensProvider
+            _ = try authSession?.getCognitoTokens().get()
+            XCTFail("Should not receive a valid token")
+        } catch {
+            guard let authError = error as? AuthError,
+                  case .signedOut = authError else {
+                XCTFail("Should receive a session expired error but received \(error)")
+                return
             }
         }
-        wait(for: [authSessionExpiredExpectation], timeout: networkTimeout)
     }
 
     /// Test if successful session is retreived after a user signin and tried to fetch auth session multiple times
@@ -227,42 +172,17 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should receive a valid session in signed in state
     ///
-    func testMultipleSuccessfulSessionFetch() {
+    func testMultipleSuccessfulSessionFetch() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-        let signInExpectation = expectation(description: "SignIn operation should complete")
-        AuthSignInHelper.registerAndSignInUser(username: username, password: password,
-                                               email: defaultTestEmail) { didSucceed, error in
-            signInExpectation.fulfill()
-            XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
-        }
-        wait(for: [signInExpectation], timeout: networkTimeout)
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username, password: password,
+                                               email: defaultTestEmail)
+        XCTAssertTrue(didSucceed, "SignIn operation failed")
 
-        let firstAuthSessionExpectation = expectation(description: "Received event result from fetchAuth")
-        _ = Amplify.Auth.fetchAuthSession { result in
-            defer {
-                firstAuthSessionExpectation.fulfill()
-            }
-            switch result {
-            case .success(let session):
-                XCTAssertTrue(session.isSignedIn, "Session state should be signed In")
-            case .failure(let error):
-                XCTFail("Should not receive error \(error)")
-            }
-        }
+        let firstSession = try await Amplify.Auth.fetchAuthSession()
+        XCTAssertTrue(firstSession.isSignedIn, "Session state should be signed In")
 
-        let secondAuthSessionExpectation = expectation(description: "Received event result from fetchAuth")
-        _ = Amplify.Auth.fetchAuthSession { result in
-            defer {
-                secondAuthSessionExpectation.fulfill()
-            }
-            switch result {
-            case .success(let session):
-                XCTAssertTrue(session.isSignedIn, "Session state should be signed In")
-            case .failure(let error):
-                XCTFail("Should not receive error \(error)")
-            }
-        }
-        wait(for: [firstAuthSessionExpectation, secondAuthSessionExpectation], timeout: networkTimeout)
+        let secondSession = try await Amplify.Auth.fetchAuthSession()
+        XCTAssertTrue(secondSession.isSignedIn, "Session state should be signed In")
     }
 }

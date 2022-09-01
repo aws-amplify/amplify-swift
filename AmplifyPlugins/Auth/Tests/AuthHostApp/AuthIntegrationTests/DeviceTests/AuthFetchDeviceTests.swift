@@ -34,7 +34,7 @@ class AuthFetchDeviceTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get a successful result with empty devices list
     ///
-    func testSuccessfulFetchDevices() {
+    func testSuccessfulFetchDevices() async throws {
 
         // register a user and signin
         let username = "integTest\(UUID().uuidString)"
@@ -51,48 +51,16 @@ class AuthFetchDeviceTests: AWSAuthBaseTest {
             }
         }
 
-        AuthSignInHelper.registerAndSignInUser(
+        _ = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail) { _, error in
-                if let unwrappedError = error {
-                    XCTFail("Unable to sign in with error: \(unwrappedError)")
-                }
-            }
+            email: defaultTestEmail)
         wait(for: [signInExpectation], timeout: networkTimeout)
 
         // fetch devices
-        let fetchDevicesExpectation = expectation(description: "Received result from fetchDevices")
-        _ = Amplify.Auth.fetchDevices { result in
-            switch result {
-            case .success(let devices):
-                XCTAssertNotNil(devices)
-                XCTAssertEqual(devices.count, 1)
-                fetchDevicesExpectation.fulfill()
-            case .failure(let error):
-                XCTFail("error fetching devices \(error)")
-            }
-        }
-        wait(for: [fetchDevicesExpectation], timeout: networkTimeout)
+        let devices = try await Amplify.Auth.fetchDevices()
+        XCTAssertNotNil(devices)
+        XCTAssertEqual(devices.count, 1)
     }
 
-    /// Calling cancel in fetch devices operation should cancel
-    ///
-    /// - Given: A valid username
-    /// - When:
-    ///    - I invoke fetchDevices with the username and then call cancel
-    /// - Then:
-    ///    - I should not get any result back
-    ///
-    func testCancelFetchDevices() {
-        let operationExpectation = expectation(description: "Operation should not complete")
-        operationExpectation.isInverted = true
-        let operation = Amplify.Auth.fetchDevices { result in
-            operationExpectation.fulfill()
-            XCTFail("Received result \(result)")
-        }
-        XCTAssertNotNil(operation, "fetchDevices operations should not be nil")
-        operation.cancel()
-        wait(for: [operationExpectation], timeout: networkTimeout)
-    }
 }

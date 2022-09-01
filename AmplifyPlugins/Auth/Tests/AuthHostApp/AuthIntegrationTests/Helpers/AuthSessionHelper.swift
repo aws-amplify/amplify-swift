@@ -18,23 +18,11 @@ struct AuthSessionHelper {
     static func getCurrentAmplifySession(
         shouldForceRefresh: Bool = false,
         for testCase: XCTestCase,
-        with timeout: TimeInterval) -> AWSAuthCognitoSession? {
+        with timeout: TimeInterval) async throws -> AWSAuthCognitoSession? {
             var cognitoSession: AWSAuthCognitoSession?
-            let authSessionExpectation = testCase.expectation(description: "Received event result from fetchAuth")
-            _ = Amplify.Auth.fetchAuthSession(
-                options: .init(forceRefresh: shouldForceRefresh)) { result in
-                    defer {
-                        authSessionExpectation.fulfill()
-                    }
-                    switch result {
-                    case .success(let session):
-                        cognitoSession = (session as? AWSAuthCognitoSession)
-                        XCTAssertTrue(session.isSignedIn, "Session state should be signed In")
-                    case .failure(let error):
-                        XCTFail("Should not receive error \(error)")
-                    }
-                }
-            testCase.wait(for: [authSessionExpectation], timeout: timeout)
+            let session = try await Amplify.Auth.fetchAuthSession(options: .init(forceRefresh: shouldForceRefresh))
+            cognitoSession = (session as? AWSAuthCognitoSession)
+            XCTAssertTrue(session.isSignedIn, "Session state should be signed In")
             return cognitoSession
         }
 

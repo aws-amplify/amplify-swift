@@ -32,19 +32,9 @@ class SignedOutAuthSessionTests: AWSAuthBaseTest {
     /// - Then:
     ///    - Valid response with signedOut state = false
     ///
-    func testSuccessfulSessionFetch() {
-        let authSessionExpectation = expectation(description: "Received event result from fetchAuth")
-        let operation = Amplify.Auth.fetchAuthSession { event in
-            switch event {
-            case .success(let result):
-                XCTAssertFalse(result.isSignedIn, "Session state should be not signed In")
-            case .failure(let error):
-                XCTFail("Should not receive error \(error)")
-            }
-            authSessionExpectation.fulfill()
-        }
-        XCTAssertNotNil(operation, "Operation should not be nil")
-        wait(for: [authSessionExpectation], timeout: networkTimeout)
+    func testSuccessfulSessionFetch() async throws {
+        let result = try await Amplify.Auth.fetchAuthSession()
+        XCTAssertFalse(result.isSignedIn, "Session state should be not signed In")
     }
 
     /// Test if we can retreive valid credentials for a signedOut session.
@@ -55,26 +45,15 @@ class SignedOutAuthSessionTests: AWSAuthBaseTest {
     /// - Then:
     ///    - Valid response with signedOut state = false
     ///
-    func testSuccessfulSessionFetchWithCredentials() {
-        let authSessionExpectation = expectation(description: "Received event result from fetchAuth")
-        let operation = Amplify.Auth.fetchAuthSession {event in
-            switch event {
-            case .success(let result):
-                XCTAssertFalse(result.isSignedIn, "Session state should be not signed In")
-                let credentialsResult = (result as? AuthAWSCredentialsProvider)?.getAWSCredentials()
-                guard let awsCredentails = try? credentialsResult?.get() else {
-                    XCTFail("Could not fetch aws credentials")
-                    return
-                }
-                XCTAssertNotNil(awsCredentails.accessKey, "Access key should not be nil")
-
-            case .failure(let error):
-                XCTFail("Should not receive error \(error)")
-            }
-            authSessionExpectation.fulfill()
+    func testSuccessfulSessionFetchWithCredentials() async throws {
+        let result = try await Amplify.Auth.fetchAuthSession()
+        XCTAssertFalse(result.isSignedIn, "Session state should be not signed In")
+        let credentialsResult = (result as? AuthAWSCredentialsProvider)?.getAWSCredentials()
+        guard let awsCredentails = try? credentialsResult?.get() else {
+            XCTFail("Could not fetch aws credentials")
+            return
         }
-        XCTAssertNotNil(operation, "Operation should not be nil")
-        wait(for: [authSessionExpectation], timeout: networkTimeout)
+        XCTAssertNotNil(awsCredentails.accessKey, "Access key should not be nil")
     }
 
     /// Test if we can retreive valid credentials for a signedOut session multiple times
@@ -85,45 +64,24 @@ class SignedOutAuthSessionTests: AWSAuthBaseTest {
     /// - Then:
     ///    - Valid response with signedOut state = false
     ///
-    func testMultipleSuccessfulSessionFetchWithCredentials() {
-        let firstAuthSessionExpectation = expectation(description: "Received event result from fetchAuth")
-        let firstOperation = Amplify.Auth.fetchAuthSession {event in
-            switch event {
-            case .success(let result):
-                XCTAssertFalse(result.isSignedIn, "Session state should be not signed In")
-                let credentialsResult = (result as? AuthAWSCredentialsProvider)?.getAWSCredentials()
-                guard let awsCredentails = try? credentialsResult?.get() else {
-                    XCTFail("Could not fetch aws credentials")
-                    return
-                }
-                XCTAssertNotNil(awsCredentails.accessKey, "Access key should not be nil")
-
-            case .failure(let error):
-                XCTFail("Should not receive error \(error)")
-            }
-            firstAuthSessionExpectation.fulfill()
+    func testMultipleSuccessfulSessionFetchWithCredentials() async throws {
+        let firstResult = try await Amplify.Auth.fetchAuthSession()
+        XCTAssertFalse(firstResult.isSignedIn, "Session state should be not signed In")
+        let credentialsResult = (firstResult as? AuthAWSCredentialsProvider)?.getAWSCredentials()
+        guard let awsCredentails = try? credentialsResult?.get() else {
+            XCTFail("Could not fetch aws credentials")
+            return
         }
+        XCTAssertNotNil(awsCredentails.accessKey, "Access key should not be nil")
 
-        let secondAuthSessionExpectation = expectation(description: "Received event result from fetchAuth")
-        let secondOperation = Amplify.Auth.fetchAuthSession {event in
-            switch event {
-            case .success(let result):
-                XCTAssertFalse(result.isSignedIn, "Session state should be not signed In")
-                let credentialsResult = (result as? AuthAWSCredentialsProvider)?.getAWSCredentials()
-                guard let awsCredentails = try? credentialsResult?.get() else {
-                    XCTFail("Could not fetch aws credentials")
-                    return
-                }
-                XCTAssertNotNil(awsCredentails.accessKey, "Access key should not be nil")
-
-            case .failure(let error):
-                XCTFail("Should not receive error \(error)")
-            }
-            secondAuthSessionExpectation.fulfill()
+        let secondResult = try await Amplify.Auth.fetchAuthSession()
+        XCTAssertFalse(secondResult.isSignedIn, "Session state should be not signed In")
+        let credentialsSecondResult = (secondResult as? AuthAWSCredentialsProvider)?.getAWSCredentials()
+        guard let awsSecondCredentails = try? credentialsSecondResult?.get() else {
+            XCTFail("Could not fetch aws credentials")
+            return
         }
-        XCTAssertNotNil(firstOperation, "Operation should not be nil")
-        XCTAssertNotNil(secondOperation, "Operation should not be nil")
-        wait(for: [firstAuthSessionExpectation, secondAuthSessionExpectation], timeout: networkTimeout)
+        XCTAssertNotNil(awsSecondCredentails.accessKey, "Access key should not be nil")
     }
 
     /// Test whether fetchAuth returns signedOut error
@@ -134,27 +92,16 @@ class SignedOutAuthSessionTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get a session with token result as signedOut.
     ///
-    func testCognitoTokenSignedOutError() {
+    func testCognitoTokenSignedOutError() async throws {
+        let result = try await Amplify.Auth.fetchAuthSession()
+        XCTAssertFalse(result.isSignedIn, "Session state should be not signed In")
 
-        let authSessionExpectation = expectation(description: "Received event result from fetchAuth")
-        let operation = Amplify.Auth.fetchAuthSession {event in
-            switch event {
-            case .success(let result):
-                XCTAssertFalse(result.isSignedIn, "Session state should be not signed In")
-
-                let tokensResult = (result as? AuthCognitoTokensProvider)?.getCognitoTokens()
-                guard case let .failure(authError) = tokensResult,
-                      case .signedOut = authError
-                else {
-                    XCTFail("Should produce signedOut error.")
-                    return
-                }
-            case .failure(let error):
-                XCTFail("Should not receive error \(error)")
-            }
-            authSessionExpectation.fulfill()
+        let tokensResult = (result as? AuthCognitoTokensProvider)?.getCognitoTokens()
+        guard case let .failure(authError) = tokensResult,
+              case .signedOut = authError
+        else {
+            XCTFail("Should produce signedOut error.")
+            return
         }
-        XCTAssertNotNil(operation, "Operation should not be nil")
-        wait(for: [authSessionExpectation], timeout: networkTimeout)
     }
 }
