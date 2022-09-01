@@ -11,25 +11,28 @@ extension AWSCognitoAuthPlugin {
 
     func listenToStateMachineChanges() {
 
-        self.authStateListenerToken = authStateMachine.listen { state in
-            self.log.verbose("""
-            Auth state change:
 
-            \(state)
+        Task {
+            let stateSequences = await authStateMachine.listen()
+            for await state in stateSequences {
+                self.log.verbose("""
+                Auth state change:
 
-            """)
+                \(state)
 
-        } onSubscribe: { }
+                """)
+            }
+        }
+        Task {
+            let stateSequences = await credentialStoreStateMachine.listen()
+            for await state in stateSequences {
+                self.log.verbose("""
+                Credential Store state change:
 
-        self.credentialStoreStateListenerToken = credentialStoreStateMachine.listen { state in
-            self.log.verbose("""
-            Credential Store state change:
+                \(state)
 
-            \(state)
-
-            """)
-
-        } onSubscribe: { }
-
+                """)
+            }
+        }
     }
 }
