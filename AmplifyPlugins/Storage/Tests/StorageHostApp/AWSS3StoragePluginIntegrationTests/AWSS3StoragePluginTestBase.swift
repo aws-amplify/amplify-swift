@@ -59,18 +59,9 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
     func uploadData(key: String, data: Data) async {
         let completeInvoked = asyncExpectation(description: "Completed is invoked")
-
-        Task {
-            do {
-                _ = try await Amplify.Storage.uploadData(key: key, data: data, options: nil)
-                await completeInvoked.fulfill()
-            } catch {
-                XCTFail("Failed with \(error)")
-                await completeInvoked.fulfill()
-            }
+        await wait(with: completeInvoked, timeout: 60) {
+            _ = try await Amplify.Storage.uploadData(key: key, data: data, options: nil).value
         }
-
-        await waitForExpectations([completeInvoked], timeout: 60)
     }
 
     static func getBucketFromConfig(forResource: String) throws -> String {
@@ -101,8 +92,8 @@ class AWSS3StoragePluginTestBase: XCTestCase {
                 Self.isFirstUserSignedUp = true
                 await registerFirstUserComplete.fulfill()
             } catch {
-                await registerFirstUserComplete.fulfill()
                 XCTFail("Failed to Sign up user: \(error)")
+                await registerFirstUserComplete.fulfill()
             }
         }
 
@@ -115,12 +106,86 @@ class AWSS3StoragePluginTestBase: XCTestCase {
                 Self.isSecondUserSignedUp = true
                 await registerSecondUserComplete.fulfill()
             } catch {
-                await registerSecondUserComplete.fulfill()
                 XCTFail("Failed to Sign up user: \(error)")
+                await registerSecondUserComplete.fulfill()
             }
         }
 
         await waitForExpectations([registerFirstUserComplete, registerSecondUserComplete],
                                   timeout: TestCommonConstants.networkTimeout)
+    }
+
+    func getURL(key: String, options: StorageGetURLRequest.Options? = nil) async -> URL? {
+        return await wait(name: "Get URL completed", timeout: TestCommonConstants.networkTimeout) {
+            return try await Amplify.Storage.getURL(key: key, options: options)
+        }
+    }
+
+    // MARK: - Async Testing Helpers
+    @discardableResult
+    func wait<T>(with expectation: AsyncExpectation,
+                 timeout: TimeInterval = TestCommonConstants.networkTimeout,
+                 action: @escaping () async throws -> T) async -> T? {
+        let task = Task { () -> T? in
+            defer {
+                Task {
+                    await expectation.fulfill()
+                }
+            }
+            do {
+                return try await action()
+            } catch {
+                if !(error is CancellationError) {
+                    XCTFail("Failed with \(error)")
+                }
+                return nil
+            }
+        }
+        await waitForExpectations([expectation], timeout: timeout)
+        task.cancel()
+        return await task.value
+
+    }
+
+    @discardableResult
+    func wait<T>(name: String,
+                 timeout: TimeInterval = TestCommonConstants.networkTimeout,
+                 action: @escaping () async throws -> T) async -> T? {
+        let expectation = asyncExpectation(description: name)
+        return await wait(with: expectation, timeout: timeout, action: action)
+    }
+
+    @discardableResult
+    func waitError<T>(with expectation: AsyncExpectation,
+                      timeout: TimeInterval = TestCommonConstants.networkTimeout,
+                      action: @escaping () async throws -> T) async -> Error? {
+        let task = Task { () -> Error? in
+            defer {
+                Task {
+                    await expectation.fulfill()
+                }
+            }
+            do {
+                let result = try await action()
+                XCTFail("Should not have completed, got \(result)")
+                return nil
+            } catch {
+                if error is CancellationError {
+                    return nil
+                }
+                return error
+            }
+        }
+        await waitForExpectations([expectation], timeout: timeout)
+        task.cancel()
+        return await task.value
+    }
+
+    @discardableResult
+    func waitError<T>(name: String,
+                      timeout: TimeInterval = TestCommonConstants.networkTimeout,
+                      action: @escaping () async throws -> T) async -> Error? {
+        let expectation = asyncExpectation(description: name)
+        return await waitError(with: expectation, timeout: timeout, action: action)
     }
 }
