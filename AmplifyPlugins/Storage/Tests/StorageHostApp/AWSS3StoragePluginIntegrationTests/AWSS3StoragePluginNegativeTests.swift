@@ -9,7 +9,6 @@ import XCTest
 import Amplify
 @testable import AWSS3StoragePlugin
 import AWSS3
-@testable import AmplifyTestCommon
 
 class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
 

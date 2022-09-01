@@ -9,8 +9,6 @@ import Combine
 import XCTest
 import Amplify
 
-@testable import AmplifyTestCommon
-
 /// Tests asserting that Storage Operations dispatch progress updates via various flavors of the API.
 ///
 /// These tests are useful to play around with the different thresholds for progress notifications.
@@ -69,7 +67,7 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
             }, receiveValue: { _ in })
             .store(in: &cancellables)
 
-        uploadOperation.progressPublisher
+        uploadOperation.inProcessPublisher
             .sink { progress in
                 progressReceived.fulfill()
                 print("Progress: \(progress.fractionCompleted)")
@@ -110,7 +108,7 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
         let progressValueReceived = expectation(description: "progressValueReceived")
         progressValueReceived.isInverted = true
         let progressCompletionReceived = expectation(description: "progressCompletionReceived")
-        uploadOperation.progressPublisher
+        uploadOperation.inProcessPublisher
             .sink(
                 receiveCompletion: { _ in progressCompletionReceived.fulfill() },
                 receiveValue: { _ in progressValueReceived.fulfill() }

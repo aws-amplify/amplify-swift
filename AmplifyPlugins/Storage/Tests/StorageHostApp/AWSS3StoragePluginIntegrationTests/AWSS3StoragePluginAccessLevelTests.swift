@@ -11,7 +11,6 @@ import AWSS3
 import AWSPluginsCore
 import AWSCognitoAuthPlugin
 @testable import AWSS3StoragePlugin
-@testable import AmplifyTestCommon
 
 class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 

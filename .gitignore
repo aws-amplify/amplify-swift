@@ -20,6 +20,7 @@ Thumbs.db
 !AmplifyPlugins/Auth/Tests/AuthHostApp/AuthHostApp.xcodeproj/project.xcworkspace
 !AmplifyPlugins/DataStore/Tests/DataStoreHostApp/DataStoreHostApp.xcodeproj/project.xcworkspace
 !AmplifyPlugins/API/Tests/APIHostApp/APIHostApp.xcodeproj/project.xcworkspace
+!AmplifyPlugins/Storage/Tests/StorageHostApp/StorageHostApp.xcodeproj/project.xcworkspace
 Amplify.xcodeproj/xcuserdata
 Amplify.xcworkspace/xcuserdata
 xcuserdata
