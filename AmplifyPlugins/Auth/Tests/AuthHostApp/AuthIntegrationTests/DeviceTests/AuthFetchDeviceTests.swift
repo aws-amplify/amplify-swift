@@ -8,6 +8,7 @@
 import XCTest
 @testable import Amplify
 import AWSCognitoAuthPlugin
+import AmplifyAsyncTesting
 
 class AuthFetchDeviceTests: AWSAuthBaseTest {
 
@@ -40,12 +41,15 @@ class AuthFetchDeviceTests: AWSAuthBaseTest {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
-        let signInExpectation = expectation(description: "SignIn event should be fired")
+        let signInExpectation = asyncExpectation(description: "SignIn event should be fired")
 
         unsubscribeToken = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {
             case HubPayload.EventName.Auth.signedIn:
-                signInExpectation.fulfill()
+                Task {
+                    await signInExpectation.fulfill()
+                }
+                
             default:
                 break
             }
@@ -55,12 +59,11 @@ class AuthFetchDeviceTests: AWSAuthBaseTest {
             username: username,
             password: password,
             email: defaultTestEmail)
-        wait(for: [signInExpectation], timeout: networkTimeout)
+        await waitForExpectations([signInExpectation], timeout: networkTimeout)
 
         // fetch devices
         let devices = try await Amplify.Auth.fetchDevices()
         XCTAssertNotNil(devices)
         XCTAssertEqual(devices.count, 1)
     }
-
 }
