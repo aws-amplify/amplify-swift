@@ -26,11 +26,11 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
     private let apiError: APIError?
     private let completion: (Result<MutationEvent?, Error>) -> Void
     private var mutationOperation: AtomicValue<GraphQLOperation<MutationSync<AnyModel>>?>
-    private weak var api: APICategoryGraphQLBehavior?
+    private weak var api: APICategoryGraphQLBehaviorExtended?
 
     init(dataStoreConfiguration: DataStoreConfiguration,
          mutationEvent: MutationEvent,
-         api: APICategoryGraphQLBehavior,
+         api: APICategoryGraphQLBehaviorExtended,
          storageAdapter: StorageEngineAdapter,
          graphQLResponseError: GraphQLResponseError<MutationSync<AnyModel>>? = nil,
          apiError: APIError? = nil,

@@ -13,7 +13,7 @@ import Foundation
 final class InitialSyncOperation: AsynchronousOperation {
     typealias SyncQueryResult = PaginatedList<AnyModel>
 
-    private weak var api: APICategoryGraphQLBehavior?
+    private weak var api: APICategoryGraphQLBehaviorExtended?
     private weak var reconciliationQueue: IncomingEventReconciliationQueue?
     private weak var storageAdapter: StorageEngineAdapter?
     private let dataStoreConfiguration: DataStoreConfiguration
@@ -36,7 +36,7 @@ final class InitialSyncOperation: AsynchronousOperation {
     }
 
     init(modelSchema: ModelSchema,
-         api: APICategoryGraphQLBehavior?,
+         api: APICategoryGraphQLBehaviorExtended?,
          reconciliationQueue: IncomingEventReconciliationQueue?,
          storageAdapter: StorageEngineAdapter?,
          dataStoreConfiguration: DataStoreConfiguration,

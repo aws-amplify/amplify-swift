@@ -56,6 +56,9 @@
                <Test
                   Identifier = "DataStoreCategoryConfigurationTests/testPreconditionFailureInvokingWithMultiplePlugins()">
                </Test>
+               <Test
+                  Identifier = "StorageCategoryConfigurationTests">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

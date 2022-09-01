@@ -360,32 +360,24 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         let queryRequest =
             GraphQLRequest<MutationSyncResult?>.query(modelName: updatedPost.modelName, byId: updatedPost.id)
         let apiQuerySuccess = expectation(description: "API query is successful")
-        Amplify.API.query(request: queryRequest) { result in
-            switch result {
-            case .success(let mutationSyncResult):
-                switch mutationSyncResult {
-                case .success(let data):
-                    guard let post = data else {
-                        XCTFail("Failed to get data")
-                        return
-                    }
-
-                    XCTAssertEqual(post.model["title"] as? String, updatedPost.title)
-                    XCTAssertEqual(post.model["content"] as? String, updatedPost.content)
-                    XCTAssertEqual(post.model["rating"] as? Double, updatedPost.rating)
-                    // version can be anything between 3 to 11 depending on how many
-                    // pending mutations are overwritten in pending mutation queue
-                    // while the first update mutation is being processed
-                    XCTAssertTrue(post.syncMetadata.version >= 3 && post.syncMetadata.version <= 11)
-                    apiQuerySuccess.fulfill()
-                case .failure(let error):
-                    XCTFail("Error: \(error)")
-                }
-            case .failure(let error):
-                XCTFail("Error: \(error)")
+        let mutationSyncResult = try await Amplify.API.query(request: queryRequest)
+        switch mutationSyncResult {
+        case .success(let data):
+            guard let post = data else {
+                XCTFail("Failed to get data")
+                return
             }
+            
+            XCTAssertEqual(post.model["title"] as? String, updatedPost.title)
+            XCTAssertEqual(post.model["content"] as? String, updatedPost.content)
+            XCTAssertEqual(post.model["rating"] as? Double, updatedPost.rating)
+            // version can be anything between 3 to 11 depending on how many
+            // pending mutations are overwritten in pending mutation queue
+            // while the first update mutation is being processed
+            XCTAssertTrue(post.syncMetadata.version >= 3 && post.syncMetadata.version <= 11)
+        case .failure(let error):
+            XCTFail("Error: \(error)")
         }
-        wait(for: [apiQuerySuccess], timeout: networkTimeout)
     }
     
     func queryPost(byId id: String) async throws -> Post? {

@@ -17,7 +17,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
 
     typealias MutationSyncCloudResult = GraphQLOperation<MutationSync<AnyModel>>.OperationResult
 
-    private weak var api: APICategoryGraphQLBehavior?
+    private weak var api: APICategoryGraphQLBehaviorExtended?
     private let mutationEvent: MutationEvent
     private let completion: GraphQLOperation<MutationSync<AnyModel>>.ResultListener
     private let requestRetryablePolicy: RequestRetryablePolicy
@@ -31,7 +31,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
     private var authTypesIterator: AWSAuthorizationTypeIterator?
 
     init(mutationEvent: MutationEvent,
-         api: APICategoryGraphQLBehavior,
+         api: APICategoryGraphQLBehaviorExtended,
          authModeStrategy: AuthModeStrategy,
          networkReachabilityPublisher: AnyPublisher<ReachabilityUpdate, Never>? = nil,
          currentAttemptNumber: Int = 1,

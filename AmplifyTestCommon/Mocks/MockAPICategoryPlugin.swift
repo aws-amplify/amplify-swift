@@ -6,12 +6,14 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Combine
 import Foundation
 
 class MockAPICategoryPlugin: MessageReporter,
                              APICategoryPlugin,
-                             APICategoryReachabilityBehavior {
+                             APICategoryReachabilityBehavior,
+                             APICategoryGraphQLBehaviorExtended {
 
     var authProviderFactory: APIAuthProviderFactory?
 

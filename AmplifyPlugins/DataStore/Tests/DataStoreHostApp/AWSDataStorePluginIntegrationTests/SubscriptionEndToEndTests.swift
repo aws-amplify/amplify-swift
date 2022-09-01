@@ -67,7 +67,7 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
             return
         }
 
-        sendCreateRequest(withId: id, content: originalContent)
+        try await sendCreateRequest(withId: id, content: originalContent)
         await waitForExpectations(timeout: networkTimeout)
         let createSyncData = await getMutationSync(forPostWithId: id)
         XCTAssertNotNil(createSyncData)
@@ -103,7 +103,7 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
             XCTFail("Listener not registered for hub")
             return
         }
-        sendUpdateRequest(forId: id, content: updatedContent, version: 1)
+        try await sendUpdateRequest(forId: id, content: updatedContent, version: 1)
         await waitForExpectations(timeout: networkTimeout)
         let updateSyncData = await getMutationSync(forPostWithId: id)
         XCTAssertNotNil(updateSyncData)
@@ -141,7 +141,7 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
             return
         }
         
-        sendDeleteRequest(forId: id, version: 2)
+        try await sendDeleteRequest(forId: id, version: 2)
         await waitForExpectations(timeout: networkTimeout)
         let deleteSyncData = await getMutationSync(forPostWithId: id)
         XCTAssertNil(deleteSyncData)
@@ -149,7 +149,7 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
 
     // MARK: - Utilities
 
-    func sendCreateRequest(withId id: Model.Identifier, content: String) {
+    func sendCreateRequest(withId id: Model.Identifier, content: String) async throws {
         // Note: The hand-written documents must include the sync/conflict resolution fields in order for the
         // subscription to get them
         let document = """
@@ -174,22 +174,16 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
                                      responseType: Post.self,
                                      decodePath: "createPost")
 
-        _ = Amplify.API.mutate(request: request) { result in
-            switch result {
-            case .success(let graphQLResult):
-                switch graphQLResult {
-                case .success(let post):
-                    XCTAssertNotNil(post)
-                case .failure(let errors):
-                    XCTFail(String(describing: errors))
-                }
-            case .failure(let error):
-                XCTFail(String(describing: error))
-            }
+        let graphQLResult = try await Amplify.API.mutate(request: request)
+        switch graphQLResult {
+        case .success(let post):
+            XCTAssertNotNil(post)
+        case .failure(let errors):
+            XCTFail(String(describing: errors))
         }
     }
 
-    func sendUpdateRequest(forId id: Model.Identifier, content: String, version: Int) {
+    func sendUpdateRequest(forId id: String, content: String, version: Int) async throws {
         // Note: The hand-written documents must include the sync/conflict resolution fields in order for the
         // subscription to get them
         let document = """
@@ -210,22 +204,16 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
                                      responseType: Post.self,
                                      decodePath: "updatePost")
 
-        _ = Amplify.API.mutate(request: request) { result in
-            switch result {
-            case .success(let graphQLResult):
-                switch graphQLResult {
-                case .success(let post):
-                    XCTAssertNotNil(post)
-                case .failure(let errors):
-                    XCTFail(String(describing: errors))
-                }
-            case .failure(let error):
-                XCTFail(String(describing: error))
-            }
+        let graphQLResult = try await Amplify.API.mutate(request: request)
+        switch graphQLResult {
+        case .success(let post):
+            XCTAssertNotNil(post)
+        case .failure(let errors):
+            XCTFail(String(describing: errors))
         }
     }
 
-    func sendDeleteRequest(forId id: Model.Identifier, version: Int) {
+    func sendDeleteRequest(forId id: String, version: Int) async throws {
         // Note: The hand-written documents must include the sync/conflict resolution fields in order for the
         // subscription to get them
         let document = """
@@ -245,22 +233,16 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
                                      responseType: Post.self,
                                      decodePath: "deletePost")
 
-        _ = Amplify.API.mutate(request: request) { result in
-            switch result {
-            case .success(let graphQLResult):
-                switch graphQLResult {
-                case .success(let post):
-                    XCTAssertNotNil(post)
-                case .failure(let errors):
-                    XCTFail(String(describing: errors))
-                }
-            case .failure(let error):
-                XCTFail(String(describing: error))
-            }
+        let graphQLResult = try await Amplify.API.mutate(request: request)
+        switch graphQLResult {
+        case .success(let post):
+            XCTAssertNotNil(post)
+        case .failure(let errors):
+            XCTFail(String(describing: errors))
         }
     }
 
-    func getMutationSync(forPostWithId id: Model.Identifier) async -> MutationSync<AnyModel>? {
+    func getMutationSync(forPostWithId id: String) async -> MutationSync<AnyModel>? {
         let queryComplete = expectation(description: "Query completed")
         var postFromQuery: Post?
         storageAdapter.query(Post.self, predicate: Post.keys.id == id) { result in
