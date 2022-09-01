@@ -12,7 +12,6 @@ class AWSAuthSignOutTask: AuthSignOutTask {
 
     private let request: AuthSignOutRequest
     private let authStateMachine: AuthStateMachine
-    private var stateMachineToken: AuthStateMachineToken?
     private let taskHelper: AWSAuthTaskHelper
     
     var eventName: HubPayloadEventName {
@@ -26,56 +25,38 @@ class AWSAuthSignOutTask: AuthSignOutTask {
     }
 
     func execute() async throws {
-        do {
-            await taskHelper.didStateMachineConfigured()
-            try await doSignOut()
-            cancelToken()
-        } catch {
-            cancelToken()
-            throw error
-        }
+        await taskHelper.didStateMachineConfigured()
+        try await doSignOut()
     }
 
     private func doSignOut() async throws {
-        try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
-            stateMachineToken = authStateMachine.listen {[weak self] in
-                guard let self = self else { return }
-                guard case .configured(let authNState, _) = $0 else {
-                    let error = AuthError.invalidState("Auth State not in a valid state", AuthPluginErrorConstants.invalidStateError,nil)
-                    continuation.resume(throwing: error)
-                    return
-                }
 
-                switch authNState {
-                case .signedOut:
-                    continuation.resume(returning: Void())
-                case .error(let error):
-                    continuation.resume(throwing: error.authError)
-                case .signingIn:
-                    self.authStateMachine.send(AuthenticationEvent.init(eventType: .cancelSignIn))
-                default:
-                    break
-                }
-            } onSubscribe: { [weak self] in
-                guard let self = self else {
-                    return
-                }
-                self.sendSignOutEvent()
+        let stateSequences = await authStateMachine.listen()
+        await sendSignOutEvent()
+        for await state in stateSequences {
+            guard case .configured(let authNState, _) = state else {
+                let error = AuthError.invalidState("Auth State not in a valid state", AuthPluginErrorConstants.invalidStateError,nil)
+                throw error
+            }
+
+            switch authNState {
+            case .signedOut:
+                return
+            case .error(let error):
+                throw error.authError
+            case .signingIn:
+                await authStateMachine.send(AuthenticationEvent.init(eventType: .cancelSignIn))
+            default:
+                continue
             }
         }
     }
     
-    private func sendSignOutEvent() {
+    private func sendSignOutEvent() async {
         let signOutData = SignOutEventData(
             globalSignOut: request.options.globalSignOut,
             presentationAnchor: request.options.presentationAnchorForWebUI)
         let event = AuthenticationEvent(eventType: .signOutRequested(signOutData))
-        authStateMachine.send(event)
-    }
-    
-    private func cancelToken() {
-        if let token = stateMachineToken {
-            authStateMachine.cancel(listenerToken: token)
-        }
+        await authStateMachine.send(event)
     }
 }

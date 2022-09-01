@@ -17,7 +17,6 @@ class AWSAuthForgetDeviceTask: AuthForgetDeviceTask {
     private let request: AuthForgetDeviceRequest
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
-    private var stateMachineToken: AuthStateMachineToken?
     private let taskHelper: AWSAuthTaskHelper
     
     var eventName: HubPayloadEventName {

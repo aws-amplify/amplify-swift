@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-@testable import HSM
+@testable import AWSCognitoAuthPlugin
 
 struct ColorCounter: State {
     let color: Color

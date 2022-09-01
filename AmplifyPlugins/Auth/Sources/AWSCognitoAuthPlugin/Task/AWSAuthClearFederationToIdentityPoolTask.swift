@@ -36,15 +36,6 @@ public class AWSAuthClearFederationToIdentityPoolTask: AuthClearFederationToIden
 
     public func execute() async throws {
         await taskHelper.didStateMachineConfigured()
-        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            clearFederationHelper.clearFederation(authStateMachine) { result in
-                switch result {
-                case .success:
-                    continuation.resume(returning: Void())
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
+        return try await clearFederationHelper.clearFederation(authStateMachine)
     }
 }

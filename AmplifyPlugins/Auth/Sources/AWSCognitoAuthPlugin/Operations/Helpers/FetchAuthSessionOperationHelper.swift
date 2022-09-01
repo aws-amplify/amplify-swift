@@ -17,8 +17,6 @@ class FetchAuthSessionOperationHelper {
     func fetch(_ authStateMachine: AuthStateMachine,
                forceRefresh: Bool = false) async throws -> AuthSession {
         let state = await authStateMachine.currentState
-
-
         guard case .configured(_, let authorizationState) = state  else {
             let message = "Auth state machine not in configured state: \(state)"
             let error = AuthError.invalidState(message, "", nil)
@@ -85,9 +83,6 @@ class FetchAuthSessionOperationHelper {
                 return try await listenForSession(authStateMachine: authStateMachine)
             }
 
-        case .refreshingSession, .fetchingUnAuthSession, .fetchingAuthSessionWithUserPool, .signingIn:
-            return try await listenForSession(authStateMachine: authStateMachine)
-
         case .error(let error):
             if case .sessionExpired = error {
                 let session = AuthCognitoSignedInSessionHelper.makeExpiredSignedInSession()
@@ -101,8 +96,9 @@ class FetchAuthSessionOperationHelper {
                 await authStateMachine.send(event)
                 return try await listenForSession(authStateMachine: authStateMachine)
             }
-        default: break
 
+        default:
+            return try await listenForSession(authStateMachine: authStateMachine)
         }
     }
 
@@ -126,6 +122,8 @@ class FetchAuthSessionOperationHelper {
             default: continue
             }
         }
+        throw AuthError.invalidState("Could not fetch session due to internal error",
+                                     "Auth plugin is in an invalid state")
     }
 
     func sessionResultWithError(_ error: AuthorizationError,

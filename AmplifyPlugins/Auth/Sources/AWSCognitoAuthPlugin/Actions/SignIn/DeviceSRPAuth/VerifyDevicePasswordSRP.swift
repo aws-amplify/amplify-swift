@@ -60,7 +60,7 @@ struct VerifyDevicePasswordSRP: Action {
                 signature: signature,
                 environment: userPoolEnv)
 
-            let responseEvent = await try UserPoolSignInHelper.sendRespondToAuth(
+            let responseEvent = try await UserPoolSignInHelper.sendRespondToAuth(
                 request: request,
                 for: username,
                 environment: userPoolEnv)

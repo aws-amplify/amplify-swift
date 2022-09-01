@@ -6,7 +6,7 @@
 //
 
 import Foundation
-@testable import HSM
+@testable import AWSCognitoAuthPlugin
 
 extension Counter {
     struct Event: StateMachineEvent {
