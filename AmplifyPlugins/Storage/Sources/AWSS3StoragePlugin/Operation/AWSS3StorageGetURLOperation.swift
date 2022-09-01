@@ -58,21 +58,20 @@ public class AWSS3StorageGetURLOperation: AmplifyOperation<
 
         let prefixResolver = storageConfiguration.prefixResolver ??
             StorageAccessLevelAwarePrefixResolver(authService: authService)
-        prefixResolver.resolvePrefix(for: request.options.accessLevel,
-                                        targetIdentityId: request.options.targetIdentityId) { prefixResolution in
-            switch prefixResolution {
-            case .success(let prefix):
-                let serviceKey = prefix + self.request.key
-                self.storageService.getPreSignedURL(serviceKey: serviceKey,
-                                                    expires: self.request.options.expires) { [weak self] event in
+
+        Task {
+            do {
+                let prefix = try await prefixResolver.resolvePrefix(for: request.options.accessLevel, targetIdentityId: request.options.targetIdentityId)
+                let serviceKey = prefix + request.key
+                storageService.getPreSignedURL(serviceKey: serviceKey,
+                                                    expires: request.options.expires) { [weak self] event in
                     self?.onServiceEvent(event: event)
                 }
-            case .failure(let error):
-                self.dispatch(error)
-                self.finish()
+            } catch {
+                dispatch(StorageError(error: error))
+                finish()
             }
         }
-
     }
 
     private func onServiceEvent(event: StorageEvent<Void, Void, URL, StorageError>) {

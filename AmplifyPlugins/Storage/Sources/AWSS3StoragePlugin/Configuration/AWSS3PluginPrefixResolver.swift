@@ -11,43 +11,15 @@ import AWSPluginsCore
 
 /// Resolves the final prefix prepended to the S3 key for a given request.
 public protocol AWSS3PluginPrefixResolver {
-    @available(*, deprecated, message: "Implement resolvePrefix with `completion` instead.")
-    func resolvePrefix(for accessLevel: StorageAccessLevel, targetIdentityId: String?) -> Result<String, StorageError>
-
     func resolvePrefix(for accessLevel: StorageAccessLevel,
-                       targetIdentityId: String?,
-                       completion: @escaping (Result<String, StorageError>) -> Void)
-}
-
-/// Provide default conformance to `AWSS3PluginPrefixResolver`
-extension AWSS3PluginPrefixResolver {
-
-    /// The default conformance to this method will fail with falal error to indicate that developers, if providing
-    /// their own prefix resolver, should conform to the asynchronous version of `resolvePrefix` with completion
-    /// closure. The synchronous version existed originally without the async vserion and now has the below default
-    /// implementation to allow new conforming classes without the requirement to conform to the synchronous version,
-    /// and can conform to just the asynchronous method.
-    public func resolvePrefix(for accessLevel: StorageAccessLevel,
-                              targetIdentityId: String?) -> Result<String, StorageError> {
-        fatalError("Protocol conformance should implement `resolvePrefix(for:targetIdentityId:completion)`.")
-    }
-
-    /// The default conformance of the asynchronous method calls the synchronous `resolvePrefix` for backwards
-    /// compatibility for developers that originally implemented the synchronous version (which now has the deprecated
-    /// flag).
-    public func resolvePrefix(for accessLevel: StorageAccessLevel,
-                              targetIdentityId: String?,
-                              completion: @escaping (Result<String, StorageError>) -> Void) {
-        completion(resolvePrefix(for: accessLevel, targetIdentityId: targetIdentityId))
-    }
+                       targetIdentityId: String?) async throws -> String
 }
 
 /// Convenience resolver. Resolves the provided key as-is, with no manipulation
 public struct PassThroughPrefixResolver: AWSS3PluginPrefixResolver {
-
     public func resolvePrefix(for accessLevel: StorageAccessLevel,
-                              targetIdentityId: String?) -> Result<String, StorageError> {
-        return .success("")
+                              targetIdentityId: String?) async throws -> String {
+        ""
     }
 }
 
@@ -60,22 +32,18 @@ struct StorageAccessLevelAwarePrefixResolver: AWSS3PluginPrefixResolver {
     }
 
     func resolvePrefix(for accessLevel: StorageAccessLevel,
-                       targetIdentityId: String?,
-                       completion: @escaping (Result<String, StorageError>) -> Void) {
-        Task {
-            do {
-                let identityId = try await authService.getIdentityID()
-                let prefix = StorageRequestUtils.getAccessLevelPrefix(accessLevel: accessLevel,
-                                                                      identityId: identityId,
-                                                                      targetIdentityId: targetIdentityId)
-                completion(.success(prefix))
-            } catch {
-                guard let authError = error as? AuthError else {
-                    completion(.failure(StorageError.unknown("Uknown Auth Error", error)))
-                    return
-                }
-                completion(.failure(StorageError.authError(authError.errorDescription, authError.recoverySuggestion)))
+                       targetIdentityId: String?) async throws -> String {
+        do {
+            let identityId = try await authService.getIdentityID()
+            let prefix = StorageRequestUtils.getAccessLevelPrefix(accessLevel: accessLevel,
+                                                                  identityId: identityId,
+                                                                  targetIdentityId: targetIdentityId)
+            return prefix
+        } catch {
+            guard let authError = error as? AuthError else {
+                throw StorageError.unknown("Unknown Auth Error", error)
             }
+            throw StorageError.authError(authError.errorDescription, authError.recoverySuggestion)
         }
     }
 }
