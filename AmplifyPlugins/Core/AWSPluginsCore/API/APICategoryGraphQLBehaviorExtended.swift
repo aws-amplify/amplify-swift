@@ -10,7 +10,7 @@ import Amplify
 
 /// Extending the existing `APICategoryGraphQLBehavior` to include callback based APIs.
 ///
-/// This exists to allow DataSore to continue to use the `APICategoryGraphQLCallbackBehavior` APIs without exposing
+/// This exists to allow DataStore to continue to use the `APICategoryGraphQLCallbackBehavior` APIs without exposing
 /// them publicly from Amplify in `APICategoryGraphQLBehavior`. Eventually, the goal is for DataStore to use the
 /// Async APIs, at which point, this protocol can be completely removed. Introducing this protocol allows Amplify to
 /// to fully deprecate the callback based APIs, while allowing DataStore a gradual migration path forward in moving
