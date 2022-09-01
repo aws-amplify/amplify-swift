@@ -17,6 +17,7 @@
 		684FB0C028BEB1AB00C8A6EB /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 684FB0BF28BEB1AB00C8A6EB /* AWSCognitoAuthPlugin */; };
 		684FB0C328BEB45600C8A6EB /* AuthSignInHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB0C228BEB45600C8A6EB /* AuthSignInHelper.swift */; };
 		68828E3B28C0FB8F006E7C0A /* AmplifyAsyncTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 68828E3A28C0FB8F006E7C0A /* AmplifyAsyncTesting */; };
+		68828E3D28C136EB006E7C0A /* AWSS3StoragePluginBasicIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB08428BEAF8E00C8A6EB /* AWSS3StoragePluginBasicIntegrationTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -296,6 +297,7 @@
 				684FB0C328BEB45600C8A6EB /* AuthSignInHelper.swift in Sources */,
 				684FB0B528BEB08900C8A6EB /* AWSS3StoragePluginAccessLevelTests.swift in Sources */,
 				684FB0B328BEB08900C8A6EB /* AWSS3StoragePluginTestBase.swift in Sources */,
+				68828E3D28C136EB006E7C0A /* AWSS3StoragePluginBasicIntegrationTests.swift in Sources */,
 				684FB0BE28BEB08F00C8A6EB /* TestConfigHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
