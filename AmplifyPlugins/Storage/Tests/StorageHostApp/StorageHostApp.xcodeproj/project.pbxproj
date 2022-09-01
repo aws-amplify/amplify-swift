@@ -18,6 +18,9 @@
 		684FB0C328BEB45600C8A6EB /* AuthSignInHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB0C228BEB45600C8A6EB /* AuthSignInHelper.swift */; };
 		68828E3B28C0FB8F006E7C0A /* AmplifyAsyncTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 68828E3A28C0FB8F006E7C0A /* AmplifyAsyncTesting */; };
 		68828E3D28C136EB006E7C0A /* AWSS3StoragePluginBasicIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB08428BEAF8E00C8A6EB /* AWSS3StoragePluginBasicIntegrationTests.swift */; };
+		68828E3E28C1546F006E7C0A /* AWSS3StoragePluginConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB08028BEAF8E00C8A6EB /* AWSS3StoragePluginConfigurationTests.swift */; };
+		68828E3F28C1549B006E7C0A /* AWSS3StoragePluginUploadFileResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB08A28BEAF8E00C8A6EB /* AWSS3StoragePluginUploadFileResumabilityTests.swift */; };
+		68828E4028C1549E006E7C0A /* AWSS3StoragePluginDownloadFileResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB08928BEAF8E00C8A6EB /* AWSS3StoragePluginDownloadFileResumabilityTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -296,7 +299,10 @@
 			files = (
 				684FB0C328BEB45600C8A6EB /* AuthSignInHelper.swift in Sources */,
 				684FB0B528BEB08900C8A6EB /* AWSS3StoragePluginAccessLevelTests.swift in Sources */,
+				68828E4028C1549E006E7C0A /* AWSS3StoragePluginDownloadFileResumabilityTests.swift in Sources */,
 				684FB0B328BEB08900C8A6EB /* AWSS3StoragePluginTestBase.swift in Sources */,
+				68828E3F28C1549B006E7C0A /* AWSS3StoragePluginUploadFileResumabilityTests.swift in Sources */,
+				68828E3E28C1546F006E7C0A /* AWSS3StoragePluginConfigurationTests.swift in Sources */,
 				68828E3D28C136EB006E7C0A /* AWSS3StoragePluginBasicIntegrationTests.swift in Sources */,
 				684FB0BE28BEB08F00C8A6EB /* TestConfigHelper.swift in Sources */,
 			);
