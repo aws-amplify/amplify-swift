@@ -26,10 +26,10 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
     ///    - User signs in, retrieves tods, sync engine is started and reconciles local store with the ownerId
     ///    - The todo now it contains the ownerId
     func testUnauthenticatedSavesToLocalStoreIsReconciledWithCloudStoreAfterAuthentication() async throws {
-        setup(withModels: ModelsRegistration(), testType: .defaultAuthCognito)
+        try await setup(withModels: ModelsRegistration(), testType: .defaultAuthCognito)
         let savedLocalTodo = TodoExplicitOwnerField(content: "owner saved model")
-        saveModel(savedLocalTodo)
-        let queriedNoteOptional = queryModel(TodoExplicitOwnerField.self, byId: savedLocalTodo.id)
+        try await saveModel(savedLocalTodo)
+        let queriedNoteOptional = try await queryModel(TodoExplicitOwnerField.self, byId: savedLocalTodo.id)
         guard let model = queriedNoteOptional else {
             XCTFail("Failed to query local model")
             return
@@ -57,7 +57,7 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
             return
         }
 
-        signIn(user: user1)
+        try await signIn(user: user1)
 
         wait(for: [syncReceivedInvoked], timeout: TestCommonConstants.networkTimeout)
         Amplify.Hub.removeListener(syncReceivedListener)

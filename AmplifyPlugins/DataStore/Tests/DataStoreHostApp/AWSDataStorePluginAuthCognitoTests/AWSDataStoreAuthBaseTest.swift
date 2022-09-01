@@ -75,9 +75,9 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
     }
 
     override func tearDown() async throws {
-        clearDataStore()
+        try await clearDataStore()
         requests = []
-        signOut()
+        try await signOut()
         await Amplify.reset()
     }
 
@@ -157,7 +157,7 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
     /// - Parameter models: DataStore models
     func setup(withModels models: AmplifyModelRegistration,
                testType: DataStoreAuthTestType,
-               apiPluginFactory: () -> AWSAPIPlugin = { AWSAPIPlugin() }) {
+               apiPluginFactory: () -> AWSAPIPlugin = { AWSAPIPlugin() }) async throws {
         do {
             setupCredentials(forAuthStrategy: testType)
 
@@ -179,21 +179,14 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
             let apiName = try apiEndpointName()
             try apiPlugin.add(interceptor: authRecorderInterceptor, for: apiName)
 
-            signOut()
+            try await signOut()
         } catch {
             XCTFail("Error during setup: \(error)")
         }
     }
 
-    func clearDataStore() {
-        let semaphore = DispatchSemaphore(value: 0)
-        Amplify.DataStore.clear {
-            if case let .failure(error) = $0 {
-                XCTFail("DataStore clear failed \(error)")
-            }
-            semaphore.signal()
-        }
-        semaphore.wait()
+    func clearDataStore() async throws {
+        try await Amplify.DataStore.clear()
     }
 }
 
@@ -203,41 +196,43 @@ extension AWSDataStoreAuthBaseTest {
     /// - Parameter user
     func signIn(user: TestUser?,
                 file: StaticString = #file,
-                line: UInt = #line) {
+                line: UInt = #line) async throws {
         guard let user = user else {
             XCTFail("Invalid user", file: file, line: line)
             return
         }
-        let signInInvoked = expectation(description: "sign in completed")
-        _ = Amplify.Auth.signIn(username: user.username,
-                                password: user.password, options: nil) { result in
-            switch result {
-            case .failure(let error):
-                XCTFail("Signin failure \(error)", file: file, line: line)
-                signInInvoked.fulfill() // won't count as pass
-            case .success:
-                signInInvoked.fulfill()
-            }
-        }
-        wait(for: [signInInvoked], timeout: TestCommonConstants.networkTimeout)
+//        let signInInvoked = expectation(description: "sign in completed")
+        _ = try await Amplify.Auth.signIn(username: user.username,
+                                password: user.password, options: nil)
+//        { result in
+//            switch result {
+//            case .failure(let error):
+//                XCTFail("Signin failure \(error)", file: file, line: line)
+//                signInInvoked.fulfill() // won't count as pass
+//            case .success:
+//                signInInvoked.fulfill()
+//            }
+//        }
+//        wait(for: [signInInvoked], timeout: TestCommonConstants.networkTimeout)
         XCTAssert(isSignedIn(), file: file, line: line)
     }
 
     /// Signout current signed-in user
     func signOut(file: StaticString = #file,
-                 line: UInt = #line) {
-        let signoutInvoked = expectation(description: "sign out completed")
-        _ = Amplify.Auth.signOut { result in
-            switch result {
-            case .failure(let error):
-                XCTFail("Signout failure \(error)", file: file, line: line)
-                signoutInvoked.fulfill() // won't count as pass
-
-            case .success:
-                signoutInvoked.fulfill()
-            }
-        }
-        wait(for: [signoutInvoked], timeout: TestCommonConstants.networkTimeout)
+                 line: UInt = #line) async throws {
+//        let signoutInvoked = expectation(description: "sign out completed")
+        _ = try await Amplify.Auth.signOut()
+//        { result in
+//            switch result {
+//            case .failure(let error):
+//                XCTFail("Signout failure \(error)", file: file, line: line)
+//                signoutInvoked.fulfill() // won't count as pass
+//
+//            case .success:
+//                signoutInvoked.fulfill()
+//            }
+//        }
+//        wait(for: [signoutInvoked], timeout: TestCommonConstants.networkTimeout)
         XCTAssert(!isSignedIn(), file: file, line: line)
     }
 
@@ -325,21 +320,23 @@ extension AWSDataStoreAuthBaseTest {
     func queryModel<M: Model>(_ model: M.Type,
                               byId id: String,
                               file: StaticString = #file,
-                              line: UInt = #line) -> M? {
-        var queriedModel: M?
-        let queriedInvoked = expectation(description: "Model queried")
+                              line: UInt = #line) async throws -> M? {
+        let queriedModel: M?
+//        let queriedInvoked = expectation(description: "Model queried")
 
-        Amplify.DataStore.query(M.self, byId: id) { result in
-            switch result {
-            case .success(let model):
-                queriedModel = model
-                queriedInvoked.fulfill()
-            case .failure(let error):
-                XCTFail("Failed to query model \(error)", file: file, line: line)
-            }
-        }
+        let modelOptional = try await Amplify.DataStore.query(M.self, byId: id)
+        queriedModel = modelOptional
+//        { result in
+//            switch result {
+//            case .success(let model):
+//                queriedModel = model
+//                queriedInvoked.fulfill()
+//            case .failure(let error):
+//                XCTFail("Failed to query model \(error)", file: file, line: line)
+//            }
+//        }
 
-        wait(for: [queriedInvoked], timeout: TestCommonConstants.networkTimeout)
+//        wait(for: [queriedInvoked], timeout: TestCommonConstants.networkTimeout)
         return queriedModel
     }
 }
@@ -353,24 +350,25 @@ extension AWSDataStoreAuthBaseTest {
     ///   - onFailure: on failure callback
     func assertQuerySuccess<M: Model>(modelType: M.Type,
                                       _ expectations: AuthTestExpectations,
-                                      onFailure: @escaping (_ error: DataStoreError) -> Void) {
-        Amplify.DataStore.query(modelType).sink {
-            if case let .failure(error) = $0 {
-                onFailure(error)
-            }
-        }
-        receiveValue: { posts in
+                                      onFailure: @escaping (_ error: DataStoreError) -> Void) async throws {
+        let posts = try await Amplify.DataStore.query(modelType)
+//            .sink {
+//            if case let .failure(error) = $0 {
+//                onFailure(error)
+//            }
+//        }
+//        receiveValue: { posts in
             XCTAssertNotNil(posts)
-            expectations.query.fulfill()
-        }.store(in: &requests)
-        wait(for: [expectations.query],
-             timeout: 60)
+//            expectations.query.fulfill()
+//        }.store(in: &requests)
+//        wait(for: [expectations.query],
+//             timeout: 60)
     }
 
     /// Asserts that DataStore is in a ready state and subscriptions are established
     /// - Parameter events: DataStore Hub events
     func assertDataStoreReady(_ expectations: AuthTestExpectations,
-                              expectedModelSynced: Int = 1) {
+                              expectedModelSynced: Int = 1) async throws {
         var modelSyncedCount = 0
         let dataStoreEvents = HubPayload.EventName.DataStore.self
         Amplify
@@ -396,7 +394,7 @@ extension AWSDataStoreAuthBaseTest {
             }
             .store(in: &requests)
 
-        Amplify.DataStore.start { _ in }
+        try await Amplify.DataStore.start ()
 
         wait(for: [expectations.subscriptionsEstablished,
                    expectations.modelsSynced,
@@ -412,7 +410,7 @@ extension AWSDataStoreAuthBaseTest {
     ///   - onFailure: failure callback
     func assertMutations<M: Model>(model: M,
                                    _ expectations: AuthTestExpectations,
-                                   onFailure: @escaping (_ error: DataStoreError) -> Void) {
+                                   onFailure: @escaping (_ error: DataStoreError) -> Void) async throws {
         Amplify
             .Hub
             .publisher(for: .dataStore)
@@ -435,27 +433,29 @@ extension AWSDataStoreAuthBaseTest {
             }
             .store(in: &requests)
 
-        Amplify.DataStore.save(model).sink {
-            if case let .failure(error) = $0 {
-                onFailure(error)
-            }
-        }
-        receiveValue: { posts in
+        let posts = try await Amplify.DataStore.save(model)
+//            .sink {
+//            if case let .failure(error) = $0 {
+//                onFailure(error)
+//            }
+//        }
+//        receiveValue: { posts in
             XCTAssertNotNil(posts)
-            expectations.mutationSave.fulfill()
-        }.store(in: &requests)
+//            expectations.mutationSave.fulfill()
+//        }.store(in: &requests)
 
-        wait(for: [expectations.mutationSave, expectations.mutationSaveProcessed], timeout: 60)
+//        wait(for: [expectations.mutationSave, expectations.mutationSaveProcessed], timeout: 60)
 
-        Amplify.DataStore.delete(M.self, withId: model.identifier).sink {
-            if case let .failure(error) = $0 {
-                onFailure(error)
-            }
-        }
-        receiveValue: { posts in
-            XCTAssertNotNil(posts)
-            expectations.mutationDelete.fulfill()
-        }.store(in: &requests)
+        let deleteposts = try await Amplify.DataStore.delete(posts)
+//            .sink {
+//            if case let .failure(error) = $0 {
+//                onFailure(error)
+//            }
+//        }
+//    var receiveValue: { posts; in
+            XCTAssertNotNil(deleteposts)
+//            expectations.mutationDelete.fulfill()
+//        }.store(in: &requests)
 
         wait(for: [expectations.mutationDelete, expectations.mutationDeleteProcessed], timeout: 60)
     }
