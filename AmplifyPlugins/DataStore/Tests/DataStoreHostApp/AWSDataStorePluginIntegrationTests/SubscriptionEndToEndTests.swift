@@ -40,7 +40,10 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
         let originalContent = "Original content from SubscriptionTests at \(Date())"
         let updatedContent = "UPDATED CONTENT from SubscriptionTests at \(Date())"
 
-        let createReceived = expectation(description: "createReceived")
+        let createReceived = asyncExpectation(description: "createReceived")
+        let updateReceived = asyncExpectation(description: "updateReceived")
+        let deleteReceived = asyncExpectation(description: "deleteReceived")
+
         var hubListener = Amplify.Hub.listen(to: .dataStore,
                                              eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
@@ -53,11 +56,11 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
             }
             switch mutationEvent.mutationType {
             case GraphQLMutationType.create.rawValue:
-                createReceived.fulfill()
+                Task { await createReceived.fulfill() }
             case GraphQLMutationType.update.rawValue:
-                break
+                Task { await updateReceived.fulfill() }
             case GraphQLMutationType.delete.rawValue:
-                break
+                Task { await deleteReceived.fulfill() }
             default:
                 break
             }
@@ -67,8 +70,10 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
             return
         }
 
-        sendCreateRequest(withId: id, content: originalContent)
-        await waitForExpectations(timeout: networkTimeout)
+        // Act: send create mutation
+        try await sendCreateRequest(withId: id, content: originalContent)
+        await waitForExpectations([createReceived], timeout: networkTimeout)
+        // Assert
         let createSyncData = await getMutationSync(forPostWithId: id)
         XCTAssertNotNil(createSyncData)
         let createdPost = createSyncData?.model.instance as? Post
@@ -77,34 +82,10 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
         XCTAssertEqual(createSyncData?.syncMetadata.version, 1)
         XCTAssertEqual(createSyncData?.syncMetadata.deleted, false)
         
-        let updateReceived = expectation(description: "updateReceived")
-        hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
-            guard let mutationEvent = payload.data as? MutationEvent else {
-                XCTFail("Can't cast payload as mutation event")
-                return
-            }
-            guard mutationEvent.modelId == id else {
-                print("Received unrelated mutation, skipping \(mutationEvent)")
-                return
-            }
-            switch mutationEvent.mutationType {
-            case GraphQLMutationType.create.rawValue:
-                break
-            case GraphQLMutationType.update.rawValue:
-                updateReceived.fulfill()
-            case GraphQLMutationType.delete.rawValue:
-                break
-            default:
-                break
-            }
-        }
-        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
-            XCTFail("Listener not registered for hub")
-            return
-        }
-        sendUpdateRequest(forId: id, content: updatedContent, version: 1)
-        await waitForExpectations(timeout: networkTimeout)
+        // Act: send update mutation
+        try await sendUpdateRequest(forId: id, content: updatedContent, version: 1)
+        await waitForExpectations([updateReceived], timeout: networkTimeout)
+        // Assert
         let updateSyncData = await getMutationSync(forPostWithId: id)
         XCTAssertNotNil(updateSyncData)
         let updatedPost = updateSyncData?.model.instance as? Post
@@ -112,44 +93,18 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
         XCTAssertEqual(updatedPost?.content, updatedContent)
         XCTAssertEqual(updateSyncData?.syncMetadata.version, 2)
         XCTAssertEqual(updateSyncData?.syncMetadata.deleted, false)
-
-        let deleteReceived = expectation(description: "deleteReceived")
-
-        hubListener = Amplify.Hub.listen(to: .dataStore,
-                                             eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
-            guard let mutationEvent = payload.data as? MutationEvent else {
-                XCTFail("Can't cast payload as mutation event")
-                return
-            }
-            guard mutationEvent.modelId == id else {
-                print("Received unrelated mutation, skipping \(mutationEvent)")
-                return
-            }
-            switch mutationEvent.mutationType {
-            case GraphQLMutationType.create.rawValue:
-                break
-            case GraphQLMutationType.update.rawValue:
-                break
-            case GraphQLMutationType.delete.rawValue:
-                deleteReceived.fulfill()
-            default:
-                break
-            }
-        }
-        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
-            XCTFail("Listener not registered for hub")
-            return
-        }
         
-        sendDeleteRequest(forId: id, version: 2)
-        await waitForExpectations(timeout: networkTimeout)
+        // Act: send delete mutation
+        try await sendDeleteRequest(forId: id, version: 2)
+        await waitForExpectations([deleteReceived], timeout: networkTimeout)
+        // Assert
         let deleteSyncData = await getMutationSync(forPostWithId: id)
         XCTAssertNil(deleteSyncData)
     }
 
     // MARK: - Utilities
 
-    func sendCreateRequest(withId id: Model.Identifier, content: String) {
+    func sendCreateRequest(withId id: Model.Identifier, content: String) async throws {
         // Note: The hand-written documents must include the sync/conflict resolution fields in order for the
         // subscription to get them
         let document = """
@@ -174,22 +129,16 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
                                      responseType: Post.self,
                                      decodePath: "createPost")
 
-        _ = Amplify.API.mutate(request: request) { result in
-            switch result {
-            case .success(let graphQLResult):
-                switch graphQLResult {
-                case .success(let post):
-                    XCTAssertNotNil(post)
-                case .failure(let errors):
-                    XCTFail(String(describing: errors))
-                }
-            case .failure(let error):
-                XCTFail(String(describing: error))
-            }
+        let graphQLResult = try await Amplify.API.mutate(request: request)
+        switch graphQLResult {
+        case .success(let post):
+            XCTAssertNotNil(post)
+        case .failure(let errors):
+            XCTFail(String(describing: errors))
         }
     }
 
-    func sendUpdateRequest(forId id: Model.Identifier, content: String, version: Int) {
+    func sendUpdateRequest(forId id: String, content: String, version: Int) async throws {
         // Note: The hand-written documents must include the sync/conflict resolution fields in order for the
         // subscription to get them
         let document = """
@@ -210,22 +159,16 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
                                      responseType: Post.self,
                                      decodePath: "updatePost")
 
-        _ = Amplify.API.mutate(request: request) { result in
-            switch result {
-            case .success(let graphQLResult):
-                switch graphQLResult {
-                case .success(let post):
-                    XCTAssertNotNil(post)
-                case .failure(let errors):
-                    XCTFail(String(describing: errors))
-                }
-            case .failure(let error):
-                XCTFail(String(describing: error))
-            }
+        let graphQLResult = try await Amplify.API.mutate(request: request)
+        switch graphQLResult {
+        case .success(let post):
+            XCTAssertNotNil(post)
+        case .failure(let errors):
+            XCTFail(String(describing: errors))
         }
     }
 
-    func sendDeleteRequest(forId id: Model.Identifier, version: Int) {
+    func sendDeleteRequest(forId id: String, version: Int) async throws {
         // Note: The hand-written documents must include the sync/conflict resolution fields in order for the
         // subscription to get them
         let document = """
@@ -245,22 +188,16 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
                                      responseType: Post.self,
                                      decodePath: "deletePost")
 
-        _ = Amplify.API.mutate(request: request) { result in
-            switch result {
-            case .success(let graphQLResult):
-                switch graphQLResult {
-                case .success(let post):
-                    XCTAssertNotNil(post)
-                case .failure(let errors):
-                    XCTFail(String(describing: errors))
-                }
-            case .failure(let error):
-                XCTFail(String(describing: error))
-            }
+        let graphQLResult = try await Amplify.API.mutate(request: request)
+        switch graphQLResult {
+        case .success(let post):
+            XCTAssertNotNil(post)
+        case .failure(let errors):
+            XCTFail(String(describing: errors))
         }
     }
 
-    func getMutationSync(forPostWithId id: Model.Identifier) async -> MutationSync<AnyModel>? {
+    func getMutationSync(forPostWithId id: String) async -> MutationSync<AnyModel>? {
         let queryComplete = expectation(description: "Query completed")
         var postFromQuery: Post?
         storageAdapter.query(Post.self, predicate: Post.keys.id == id) { result in

@@ -57,7 +57,7 @@ class RemoteSyncEngineTests: XCTestCase {
             XCTFail("We should not expect the sync engine not to continue")
         })
 
-        remoteSyncEngine.start()
+        remoteSyncEngine.start(api: MockAPICategoryPlugin(), auth: nil)
 
         wait(for: [failureOnStorageAdapter], timeout: defaultAsyncWaitTimeout)
         remoteSyncEngineSink.cancel()
@@ -123,7 +123,7 @@ class RemoteSyncEngineTests: XCTestCase {
         MockAWSInitialSyncOrchestrator.setResponseOnSync(result: .failure(
             DataStoreError.internalOperation("forceError", "none", URLError(.notConnectedToInternet))))
 
-        remoteSyncEngine.start(api: apiPlugin)
+        remoteSyncEngine.start(api: apiPlugin, auth: nil)
 
         wait(for: [storageAdapterAvailable,
                    subscriptionsPaused,
@@ -183,7 +183,7 @@ class RemoteSyncEngineTests: XCTestCase {
                 }
             })
 
-        remoteSyncEngine.start(api: apiPlugin)
+        remoteSyncEngine.start(api: apiPlugin, auth: nil)
 
         wait(for: [storageAdapterAvailable,
                    subscriptionsPaused,
@@ -254,7 +254,7 @@ class RemoteSyncEngineTests: XCTestCase {
                 }
             })
 
-        remoteSyncEngine.start(api: apiPlugin)
+        remoteSyncEngine.start(api: apiPlugin, auth: nil)
 
         wait(for: [storageAdapterAvailable,
                    subscriptionsPaused,
@@ -331,7 +331,7 @@ class RemoteSyncEngineTests: XCTestCase {
                 }
             })
 
-        remoteSyncEngine.start(api: apiPlugin)
+        remoteSyncEngine.start(api: apiPlugin, auth: nil)
 
         wait(for: [storageAdapterAvailable,
                    subscriptionsPaused,

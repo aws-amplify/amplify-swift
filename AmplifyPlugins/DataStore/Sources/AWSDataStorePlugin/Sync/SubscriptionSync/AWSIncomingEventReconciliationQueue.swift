@@ -13,7 +13,7 @@ import Foundation
 // Used for testing:
 typealias IncomingEventReconciliationQueueFactory =
     ([ModelSchema],
-    APICategoryGraphQLBehavior,
+    APICategoryGraphQLBehaviorExtended,
     StorageEngineAdapter,
     [DataStoreSyncExpression],
     AuthCategoryBehavior?,
@@ -41,7 +41,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     }
 
     init(modelSchemas: [ModelSchema],
-         api: APICategoryGraphQLBehavior,
+         api: APICategoryGraphQLBehaviorExtended,
          storageAdapter: StorageEngineAdapter,
          syncExpressions: [DataStoreSyncExpression],
          auth: AuthCategoryBehavior? = nil,

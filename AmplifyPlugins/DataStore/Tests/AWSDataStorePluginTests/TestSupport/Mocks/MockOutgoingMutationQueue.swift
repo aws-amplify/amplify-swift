@@ -17,7 +17,7 @@ class MockOutgoingMutationQueue: OutgoingMutationQueueBehavior {
         completion()
     }
 
-    func startSyncingToCloud(api: APICategoryGraphQLBehavior,
+    func startSyncingToCloud(api: APICategoryGraphQLBehaviorExtended,
                              mutationEventPublisher: MutationEventPublisher,
                              reconciliationQueue: IncomingEventReconciliationQueue?) {
         // no-op
