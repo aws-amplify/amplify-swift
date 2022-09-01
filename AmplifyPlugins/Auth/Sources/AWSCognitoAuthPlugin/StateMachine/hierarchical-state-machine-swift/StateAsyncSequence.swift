@@ -33,8 +33,4 @@ class StateAsyncSequence<Element: Sendable>: AsyncSequence {
     func cancel() {
         continuation.finish()
     }
-
-    deinit {
-        print("deinit!!!")
-    }
 }

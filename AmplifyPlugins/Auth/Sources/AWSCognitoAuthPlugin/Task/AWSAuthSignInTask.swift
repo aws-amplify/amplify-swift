@@ -12,7 +12,6 @@ class AWSAuthSignInTask: AuthSignInTask {
 
     private let request: AuthSignInRequest
     private let authStateMachine: AuthStateMachine
-    private var stateMachineToken: AuthStateMachineToken?
     private let taskHelper: AWSAuthTaskHelper
     
     var eventName: HubPayloadEventName {
@@ -32,68 +31,59 @@ class AWSAuthSignInTask: AuthSignInTask {
     }
 
     private func validateCurrentState() async throws {
-        try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
-            stateMachineToken = authStateMachine.listen({ state in
-                guard let self = self, case .configured(let authenticationState, _) = state else {
-                    return
-                }
 
-                switch authenticationState {
-                case .signedIn:
-                    let error = AuthError.invalidState(
-                        "There is already a user in signedIn state. SignOut the user first before calling signIn",
-                        AuthPluginErrorConstants.invalidStateError, nil)
-                    self.cancelToken()
-                    continuation.resume(throwing: error)
-                case .signedOut:
-                    self.cancelToken()
-                    continuation.resume(with: .success(Void()))
-                default: break
-                }
-            }, onSubscribe: {})
+        let stateSequences = await authStateMachine.listen()
+        for await state in stateSequences {
+            guard case .configured(let authenticationState, _) = state else {
+                continue
+            }
+
+            switch authenticationState {
+            case .signedIn:
+                let error = AuthError.invalidState(
+                    "There is already a user in signedIn state. SignOut the user first before calling signIn",
+                    AuthPluginErrorConstants.invalidStateError, nil)
+                throw error
+            case .signedOut:
+                break
+            default: continue
+            }
         }
     }
 
     private func doSignIn() async throws -> AuthSignInResult {
-        return try await withCheckedThrowingContinuation{ [weak self] (continuation: CheckedContinuation<AuthSignInResult, Error>) in
-            stateMachineToken = authStateMachine.listen { [weak self] in
-                guard let self = self else {
-                    return
-                }
-                guard case .configured(let authNState,
-                                       let authZState) = $0 else { return }
+        let stateSequences = await authStateMachine.listen()
+        await sendSignInEvent()
+        for await state in stateSequences {
+            guard case .configured(let authNState,
+                                   let authZState) = state else { continue }
 
-                switch authNState {
+            switch authNState {
 
-                case .signedIn:
-                    if case .sessionEstablished = authZState {
-                        let result = AuthSignInResult(nextStep: .done)
-                        self.cancelToken()
-                        continuation.resume(returning: result)
-                    } else if case .error(let error) = authZState {
-                        let error = AuthError.unknown("Sign in reached an error state", error)
-                        self.cancelToken()
-                        continuation.resume(throwing: error)
-                    }
-                case .error(let error):
+            case .signedIn:
+                if case .sessionEstablished = authZState {
+                    return AuthSignInResult(nextStep: .done)
+                } else if case .error(let error) = authZState {
                     let error = AuthError.unknown("Sign in reached an error state", error)
-                    self.cancelToken()
-                    continuation.resume(throwing: error)
-
-                case .signingIn(let signInState):
-                    guard let result = UserPoolSignInHelper.checkNextStep(signInState) else {
-                        return
-                    }
-                    self.cancelToken()
-                    continuation.resume(with: result)
-                default:
-                    break
+                    throw error
                 }
-            } onSubscribe: { self?.sendSignInEvent() }
+            case .error(let error):
+                let error = AuthError.unknown("Sign in reached an error state", error)
+                throw error
+
+            case .signingIn(let signInState):
+                guard let result = try UserPoolSignInHelper.checkNextStep(signInState) else {
+                    continue
+                }
+                return result
+            default:
+                continue
+            }
         }
+        throw AuthError.unknown("Sign in reached an error state")
     }
 
-    private func sendSignInEvent() {
+    private func sendSignInEvent() async {
         let signInData = SignInEventData(
             username: request.username,
             password: request.password,
@@ -101,13 +91,7 @@ class AWSAuthSignInTask: AuthSignInTask {
             signInMethod: .apiBased(authFlowType())
         )
         let event = AuthenticationEvent.init(eventType: .signInRequested(signInData))
-        authStateMachine.send(event)
-    }
-
-    private func cancelToken() {
-        if let token = stateMachineToken {
-            authStateMachine.cancel(listenerToken: token)
-        }
+        await authStateMachine.send(event)
     }
 
     private func authFlowType() -> AuthFlowType {

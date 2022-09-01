@@ -8,9 +8,10 @@
 import Foundation
 import Amplify
 
-public protocol AuthFederateToIdentityPoolTask: AmplifyAuthTask where Request == AuthFederateToIdentityPoolRequest,
-                                                                        Success == FederateToIdentityPoolResult,
-                                                                        Failure == AuthError {}
+public protocol AuthFederateToIdentityPoolTask: AmplifyAuthTask
+where Request == AuthFederateToIdentityPoolRequest,
+      Success == FederateToIdentityPoolResult,
+      Failure == AuthError {}
 
 public extension HubPayload.EventName.Auth {
     /// eventName for HubPayloads emitted by this operation
@@ -21,7 +22,6 @@ public class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask {
 
     private let request: AuthFederateToIdentityPoolRequest
     private let authStateMachine: AuthStateMachine
-    private var stateMachineToken: AuthStateMachineToken?
     private let taskHelper: AWSAuthTaskHelper
     
     public var eventName: HubPayloadEventName {
@@ -35,79 +35,58 @@ public class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask {
     }
 
     public func execute() async throws -> FederateToIdentityPoolResult {
-        do {
-            await taskHelper.didStateMachineConfigured()
-            let state = await getCurrentState()
-            guard case .configured(let authNState, let authZState) = state  else {
-                throw AuthError.invalidState("Federation could not be completed.", AuthPluginErrorConstants.invalidStateError, nil)
-            }
-
-            if isValidAuthNStateToStart(authNState) && isValidAuthZStateToStart(authZState) {
-                // Clear previous federation before beginning a new one
-                if case .federatedToIdentityPool = authNState {
-                    try await clearPreviousFederation()
-                }
-                let federatedResult = try await startFederatingToIdentityPool()
-                cancelToken()
-                return federatedResult
-            } else {
-                throw AuthError.invalidState("Federation could not be completed.", AuthPluginErrorConstants.invalidStateError, nil)
-            }
-        } catch {
-            cancelToken()
-            throw error
+        await taskHelper.didStateMachineConfigured()
+        let state = await authStateMachine.currentState
+        guard case .configured(let authNState, let authZState) = state  else {
+            throw AuthError.invalidState(
+                "Federation could not be completed.",
+                AuthPluginErrorConstants.invalidStateError, nil)
         }
-    }
 
-    private func getCurrentState() async -> AuthState {
-        await withCheckedContinuation { (continuation: CheckedContinuation<AuthState, Never>) in
-            authStateMachine.getCurrentState { state in
-                continuation.resume(returning: state)
+        if isValidAuthNStateToStart(authNState) && isValidAuthZStateToStart(authZState) {
+            // Clear previous federation before beginning a new one
+            if case .federatedToIdentityPool = authNState {
+                try await clearPreviousFederation()
             }
+            return try await startFederatingToIdentityPool()
+        } else {
+            throw AuthError.invalidState(
+                "Federation could not be completed.",
+                AuthPluginErrorConstants.invalidStateError, nil)
         }
     }
 
     func clearPreviousFederation() async throws {
         let clearFederationHelper = ClearFederationOperationHelper()
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            clearFederationHelper.clearFederation(authStateMachine) { result in
-                switch result {
-                case .success:
-                    continuation.resume(returning: Void())
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
+        try await clearFederationHelper.clearFederation(authStateMachine)
     }
 
     func startFederatingToIdentityPool() async throws -> FederateToIdentityPoolResult {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<FederateToIdentityPoolResult, Error>) in
-            stateMachineToken = authStateMachine.listen { [weak self] state in
-                guard  case .configured(let authNState, let authZState) = state else {
-                    return
-                }
 
-                switch (authNState, authZState) {
-                case (.federatedToIdentityPool, .sessionEstablished(let credentials)):
-                    self?.getFederatedResult(credentials, continuation)
-                case (.error(_), .error(let authZError)):
-                    continuation.resume(throwing: authZError.authError)
-                default:
-                    break
-                }
+        let stateSequences = await authStateMachine.listen()
+        await sendStartFederatingToIdentityPoolEvent()
+        for await state in stateSequences {
+            guard  case .configured(let authNState, let authZState) = state else {
+                continue
+            }
 
-            } onSubscribe: { [weak self] in
-                self?.sendStartFederatingToIdentityPoolEvent()
+            switch (authNState, authZState) {
+            case (.federatedToIdentityPool, .sessionEstablished(let credentials)):
+                return try getFederatedResult(credentials)
+            case (.error(_), .error(let authZError)):
+                throw authZError.authError
+            default:
+                continue
             }
         }
+        throw AuthError.unknown("Could not start federation to Identity Pool")
     }
 
-    func sendStartFederatingToIdentityPoolEvent() {
+    func sendStartFederatingToIdentityPoolEvent() async {
         let federatedToken = FederatedToken(token: request.token, provider: request.provider)
         let identityId = request.options.developerProvidedIdentityID
         let event = AuthorizationEvent.init( eventType: .startFederationToIdentityPool(federatedToken, identityId))
-        authStateMachine.send(event)
+        await authStateMachine.send(event)
     }
 
     func isValidAuthNStateToStart(_ authNState: AuthenticationState) -> Bool {
@@ -128,21 +107,18 @@ public class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask {
         }
     }
 
-    private func getFederatedResult(_ result: AmplifyCredentials, _ continuation: CheckedContinuation<FederateToIdentityPoolResult, Error>) {
+    private func getFederatedResult(_ result: AmplifyCredentials)
+    throws -> FederateToIdentityPoolResult {
+
         switch result {
         case .identityPoolWithFederation(_, let identityId, let awsCredentials):
             let federatedResult = FederateToIdentityPoolResult(
                 credentials: awsCredentials,
                 identityId: identityId)
-            continuation.resume(returning: federatedResult)
+            return federatedResult
         default:
-            continuation.resume(throwing: AuthError.unknown("Unable to parse credentials to expected output", nil))
+            throw AuthError.unknown("Unable to parse credentials to expected output", nil)
         }
     }
-    
-    private func cancelToken() {
-        if let token = stateMachineToken {
-            authStateMachine.cancel(listenerToken: token)
-        }
-    }
+
 }
