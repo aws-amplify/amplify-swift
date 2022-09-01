@@ -59,17 +59,17 @@ public class AWSS3StorageRemoveOperation: AmplifyOperation<
 
         let prefixResolver = storageConfiguration.prefixResolver ??
             StorageAccessLevelAwarePrefixResolver(authService: authService)
-        prefixResolver.resolvePrefix(for: request.options.accessLevel,
-                                        targetIdentityId: nil) { prefixResolution in
-            switch prefixResolution {
-            case .success(let prefix):
-                let serviceKey = prefix + self.request.key
-                self.storageService.delete(serviceKey: serviceKey) { [weak self] event in
+
+        Task {
+            do {
+                let prefix = try await prefixResolver.resolvePrefix(for: request.options.accessLevel, targetIdentityId: nil)
+                let serviceKey = prefix + request.key
+                storageService.delete(serviceKey: serviceKey) { [weak self] event in
                     self?.onServiceEvent(event: event)
                 }
-            case .failure(let error):
-                self.dispatch(error)
-                self.finish()
+            } catch {
+                dispatch(StorageError(error: error))
+                finish()
             }
         }
     }
