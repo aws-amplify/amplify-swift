@@ -80,7 +80,7 @@ struct TestJsonModelRegistration: AmplifyModelRegistration {
         let belongsTo = ModelField(name: "post",
                                    type: .model(name: "Post"),
                                    isRequired: true,
-                                   association: .belongsTo(associatedWith: nil, targetName: "postId"))
+                                   association: .belongsTo(associatedWith: nil, targetNames: ["postId"]))
         let commentSchema = ModelSchema(name: "Comment",
                                         listPluralName: "Comments",
                                         syncPluralName: "Comments",

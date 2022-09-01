@@ -251,7 +251,7 @@ public enum ModelFieldDefinition {
                       is: nullability,
                       isReadOnly: isReadOnly,
                       ofType: .model(type: type),
-                      association: .hasOne(associatedWith: associatedKey, targetName: targetName))
+                      association: .hasOne(associatedWith: associatedKey, targetNames: targetName.map { [$0] } ?? []))
     }
 
     public static func hasOne(_ key: CodingKey,
@@ -277,7 +277,7 @@ public enum ModelFieldDefinition {
                       is: nullability,
                       isReadOnly: isReadOnly,
                       ofType: .model(type: type),
-                      association: .belongsTo(associatedWith: associatedKey, targetName: targetName))
+                      association: .belongsTo(associatedWith: associatedKey, targetNames: targetName.map { [$0] } ?? []))
     }
 
     public static func belongsTo(_ key: CodingKey,
