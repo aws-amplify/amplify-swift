@@ -1,7 +1,7 @@
 name: Integration Tests
 on:
   push:
-    branches: [dev-preview, phantum/fix_auth_integ]
+    branches: [dev-preview]
 
 permissions:
     id-token: write
