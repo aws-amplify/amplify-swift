@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import HSM
+@testable import AWSCognitoAuthPlugin
 
 class StateMachineTests: XCTestCase {
 
