@@ -12,66 +12,67 @@ import XCTest
 @testable import Amplify
 
 class StorageBackgroundEventsRegistryTests: XCTestCase {
-    override func setUp() {
-    }
 
-    override func tearDown() {
-    }
-
-    func testRegisteringAndRunningHandler() throws {
-        let exp = expectation(description: #function)
-
+    func testRegisteringAndUnregister() async throws {
         let identifier = UUID().uuidString
-        var called = false
-        let backgroundEventCompletionHandler: StorageBackgroundEventsRegistry.StorageBackgroundEventsHandler = {
-            called = true
-            exp.fulfill()
-        }
-
+        let otherIdentifier = UUID().uuidString
         StorageBackgroundEventsRegistry.register(identifier: identifier)
 
-        let handled = StorageBackgroundEventsRegistry.handleBackgroundEvent(identifier: identifier, completionHandler: backgroundEventCompletionHandler)
+        let done = asyncExpectation(description: "done", expectedFulfillmentCount: 2)
 
-        XCTAssertTrue(handled)
-
-        XCTAssertNotNil(StorageBackgroundEventsRegistry.findCompletionHandler(for: identifier))
-
-        guard let handler = StorageBackgroundEventsRegistry.findCompletionHandler(for: identifier) else {
-            XCTFail()
-            return
+        Task {
+            let handled = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
+                StorageBackgroundEventsRegistry.handleBackgroundEvents(identifier: identifier, continuation: continuation)
+                Task {
+                    await done.fulfill()
+                }
+            }
+            XCTAssertTrue(handled)
         }
 
-        // run handler
-        handler()
+        Task {
+            let otherHandled = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
+                StorageBackgroundEventsRegistry.handleBackgroundEvents(identifier: otherIdentifier, continuation: continuation)
+                Task {
+                    await done.fulfill()
+                }
+            }
+            XCTAssertFalse(otherHandled)
+        }
 
-        wait(for: [exp], timeout: 1.0)
-        XCTAssertTrue(called)
+        Task {
+            handleEvents(for: identifier)
+            handleEvents(for: otherIdentifier)
+        }
+
+        await waitForExpectations([done])
     }
 
-    func testRegisteringAndUnregister() throws {
+    func testHandlingUnregisteredIdentifier() async throws {
         let identifier = UUID().uuidString
-        let backgroundEventCompletionHandler: StorageBackgroundEventsRegistry.StorageBackgroundEventsHandler = {
+        let otherIdentifier = UUID().uuidString
+        StorageBackgroundEventsRegistry.register(identifier: otherIdentifier)
+
+        let done = asyncExpectation(description: "done")
+
+        Task {
+            let handled = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
+                StorageBackgroundEventsRegistry.handleBackgroundEvents(identifier: identifier, continuation: continuation)
+                Task {
+                    await done.fulfill()
+                }
             }
+            XCTAssertFalse(handled)
+        }
 
-        StorageBackgroundEventsRegistry.register(identifier: identifier)
-        let handled = StorageBackgroundEventsRegistry.handleBackgroundEvent(identifier: identifier, completionHandler: backgroundEventCompletionHandler)
-
-        XCTAssertTrue(handled)
-        XCTAssertNotNil(StorageBackgroundEventsRegistry.findCompletionHandler(for: identifier))
-
-        StorageBackgroundEventsRegistry.removeCompletionHandler(for: identifier)
-
-        XCTAssertNil(StorageBackgroundEventsRegistry.findCompletionHandler(for: identifier))
+        await waitForExpectations([done])
     }
 
-    func testHandlingUnregisteredIdentifier() throws {
-        let identifier = UUID().uuidString
-        let backgroundEventCompletionHandler: StorageBackgroundEventsRegistry.StorageBackgroundEventsHandler = {
-            }
-
-        let handled = StorageBackgroundEventsRegistry.handleBackgroundEvent(identifier: identifier, completionHandler: backgroundEventCompletionHandler)
-
-        XCTAssertFalse(handled)
+    // Simulates URLSessionDelegate behavior
+    func handleEvents(for identifier: String) {
+        if let continuation = StorageBackgroundEventsRegistry.getContinuation(for: identifier) {
+            continuation.resume(returning: true)
+        }
     }
 
 }

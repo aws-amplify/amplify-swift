@@ -12,7 +12,7 @@ import Amplify
 import AWSPluginsCore
 
 extension AWSS3StoragePlugin {
-    
+
     @discardableResult
     public func getURL(key: String,
                        options: StorageGetURLOperation.Request.Options?) async throws -> URL {
@@ -27,7 +27,7 @@ extension AWSS3StoragePlugin {
         
         return try await taskAdapter.value
     }
-    
+
     @discardableResult
     public func downloadData(key: String,
                              options: StorageDownloadDataOperation.Request.Options? = nil) async throws -> StorageDownloadDataTask {
@@ -42,7 +42,7 @@ extension AWSS3StoragePlugin {
         
         return taskAdapter
     }
-    
+
     @discardableResult
     public func downloadFile(key: String,
                              local: URL,
@@ -55,10 +55,10 @@ extension AWSS3StoragePlugin {
                                                           authService: authService)
         let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
         queue.addOperation(operation)
-        
+
         return taskAdapter
     }
-    
+
     @discardableResult
     public func uploadData(key: String,
                            data: Data,
@@ -74,7 +74,7 @@ extension AWSS3StoragePlugin {
         
         return taskAdapter
     }
-    
+
     @discardableResult
     public func uploadFile(key: String,
                            local: URL,
@@ -90,7 +90,7 @@ extension AWSS3StoragePlugin {
         
         return taskAdapter
     }
-    
+
     @discardableResult
     public func remove(key: String,
                        options: StorageRemoveOperation.Request.Options?) async throws -> String {
@@ -105,7 +105,7 @@ extension AWSS3StoragePlugin {
         
         return try await taskAdapter.value
     }
-    
+
     public func list(options: StorageListRequest.Options? = nil) async throws -> StorageListResult {
         let options = options ?? StorageListRequest.Options()
         let request = StorageListRequest(options: options)
@@ -118,5 +118,11 @@ extension AWSS3StoragePlugin {
         
         return try await taskAdapter.value
     }
-    
+
+    public func handleBackgroundEvents(identifier: String) async -> Bool {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
+            StorageBackgroundEventsRegistry.handleBackgroundEvents(identifier: identifier, continuation: continuation)
+        }
+    }
+
 }

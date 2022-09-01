@@ -54,10 +54,12 @@ extension StorageServiceSessionDelegate: URLSessionDelegate {
         logURLSessionActivity("Session did finish background events")
 
         if let identifier = storageService?.identifier,
-           let handler = StorageBackgroundEventsRegistry.findCompletionHandler(for: identifier) {
+           let continuation = StorageBackgroundEventsRegistry.getContinuation(for: identifier) {
             // Must be run on main thread as covered by Apple Developer docs.
-            DispatchQueue.main.async(execute: handler)
-            StorageBackgroundEventsRegistry.removeCompletionHandler(for: identifier)
+            Task { @MainActor in
+                continuation.resume(returning: true)
+            }
+            StorageBackgroundEventsRegistry.removeContinuation(for: identifier)
         }
     }
 
