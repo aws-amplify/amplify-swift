@@ -14,12 +14,12 @@ struct InitiateGuestSignOut: Action {
 
     let signOutEventData: SignOutEventData
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         let event = SignOutEvent(eventType: .signOutGuest)
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-        dispatcher.send(event)
+        await dispatcher.send(event)
     }
 
 }

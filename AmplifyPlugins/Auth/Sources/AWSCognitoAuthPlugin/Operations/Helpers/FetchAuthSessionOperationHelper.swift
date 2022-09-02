@@ -136,7 +136,7 @@ class FetchAuthSessionOperationHelper {
         }
         switch error {
         case .sessionError(let fetchError, let credentials):
-            return sessionResultWithFetchError(fetchError,
+            return try sessionResultWithFetchError(fetchError,
                                         authenticationState: authenticationState,
                                         existingCredentials: credentials)
         case .sessionExpired:
@@ -156,7 +156,7 @@ class FetchAuthSessionOperationHelper {
     func sessionResultWithFetchError(_ error: FetchSessionError,
                                 authenticationState: AuthenticationState,
                                 existingCredentials: AmplifyCredentials)
-    -> Result<AuthSession, AuthError> {
+    throws -> AuthSession {
 
         var isSignedIn = false
         if case .signedIn = authenticationState {
@@ -167,13 +167,11 @@ class FetchAuthSessionOperationHelper {
 
         case .notAuthorized:
             if !isSignedIn {
-                let session = AuthCognitoSignedOutSessionHelper.makeSessionWithNoGuestAccess()
-                return .success(session)
+                return AuthCognitoSignedOutSessionHelper.makeSessionWithNoGuestAccess()
             }
         case .noCredentialsToRefresh:
             if !isSignedIn {
-                let session = AuthCognitoSignedOutSessionHelper.makeSessionWithNoGuestAccess()
-                return .success(session)
+                return AuthCognitoSignedOutSessionHelper.makeSessionWithNoGuestAccess()
             }
         default: break
 
@@ -184,7 +182,7 @@ class FetchAuthSessionOperationHelper {
                                             identityIdResult: .failure(error),
                                             awsCredentialsResult: .failure(error),
                                             cognitoTokensResult: .failure(error))
-        return .success(session)
+        return session
     }
 
 }
