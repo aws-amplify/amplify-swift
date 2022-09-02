@@ -22,18 +22,11 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let options = StorageListRequest.Options(accessLevel: .protected,
                                                  targetIdentityId: nil,
                                                  path: key)
-        Task {
-            do {
-                let result = try await Amplify.Storage.list(options: options)
-                XCTAssertEqual(result.items.count, 0)
-                await completeInvoked.fulfill()
-            } catch {
-                XCTFail("Failed with \(error)")
-                await completeInvoked.fulfill()
-            }
+        let result = await wait(with: completeInvoked) {
+            return try await Amplify.Storage.list(options: options)
         }
-
-        await waitForExpectations([completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        XCTAssertNotNil(result)
+        XCTAssertEqual(result?.items.count, 0)
     }
 
     /// Given: An unauthenticated user
@@ -45,22 +38,20 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let options = StorageListRequest.Options(accessLevel: .private,
                                                  targetIdentityId: nil,
                                                  path: key)
-        Task {
-            do {
-                _ = try await Amplify.Storage.list(options: options)
-                XCTFail("Should not have completed")
-                await listFailedExpectation.fulfill()
-            } catch {
-                await listFailedExpectation.fulfill()
-                guard let storageError = error as? StorageError,
-                      case let .accessDenied(description, _, _) = storageError else {
-                    XCTFail("Expected accessDenied error, got \(error)")
-                    return
-                }
-                XCTAssertEqual(description, StorageErrorConstants.accessDenied.errorDescription)
-            }
+        let listError = await waitError(with: listFailedExpectation) {
+            return try await Amplify.Storage.list(options: options)
         }
-        await waitForExpectations([listFailedExpectation], timeout: TestCommonConstants.networkTimeout)
+
+        guard let listError = listError else {
+            XCTFail("Expected error from List operation")
+            return
+        }
+
+        guard case let .accessDenied(description, _, _) = (listError as? StorageError) else {
+            XCTFail("Expected accessDenied error, got \(listError)")
+            return
+        }
+        XCTAssertEqual(description, StorageErrorConstants.accessDenied.errorDescription)
     }
 
     /// Given: `user1` user uploads some data with protected access level
@@ -109,47 +100,35 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         XCTAssertNotEqual(user1IdentityId, user2IdentityId)
 
         // list keys as user2
-        let listExpectation = asyncExpectation(description: "List operation should be successful")
-        Task {
-            let keys = await list(path: key, accessLevel: accessLevel)
-            await listExpectation.fulfill()
-            XCTAssertNotNil(keys)
-            XCTAssertEqual(keys!.count, 1)
-        }
-        await waitForExpectations([listExpectation], timeout: TestCommonConstants.networkTimeout)
+        let keys = await list(path: key, accessLevel: accessLevel)
+        XCTAssertNotNil(keys)
+        XCTAssertEqual(keys?.count, 1)
 
         // get key as user2
-        let getExpectation = asyncExpectation(description: "Get Operation should be successful")
-        Task {
-            let data = await get(key: key, accessLevel: accessLevel)
-            await getExpectation.fulfill()
-            XCTAssertNotNil(data)
-        }
-        await waitForExpectations([getExpectation], timeout: TestCommonConstants.networkTimeout)
+        let data =  await get(key: key, accessLevel: accessLevel)
+        XCTAssertNotNil(data)
 
         // remove key as user2
         await remove(key: key, accessLevel: accessLevel)
 
         // get key after removal should return NotFound
-        let getFailedExpectation = asyncExpectation(description: "Get Operation should fail")
-        Task {
-            do {
-                let getOptions = StorageDownloadDataRequest.Options(accessLevel: accessLevel,
-                                                                    targetIdentityId: nil)
-                let result = try await Amplify.Storage.downloadData(key: key, options: getOptions).value
-                XCTFail("Should not have completed with result \(result)")
-                await getFailedExpectation.fulfill()
-            } catch {
-                await getFailedExpectation.fulfill()
-                guard let storageError = error as? StorageError,
-                      case let .keyNotFound(_, description, _, _) = storageError else {
-                    XCTFail("Expected notFound error, got \(error)")
-                    return
-                }
-                XCTAssertEqual(description, StorageErrorConstants.localFileNotFound.errorDescription)
-            }
+        let getFailedExpectation = asyncExpectation(description: "Download operation should fail")
+        let getOptions = StorageDownloadDataRequest.Options(accessLevel: accessLevel,
+                                                            targetIdentityId: nil)
+        let getError = await waitError(with: getFailedExpectation) {
+            return try await Amplify.Storage.downloadData(key: key, options: getOptions).value
         }
-        await waitForExpectations([getFailedExpectation], timeout: TestCommonConstants.networkTimeout)
+
+        guard let getError = getError else {
+            XCTFail("Expected error from Download operation")
+            return
+        }
+
+        guard case .keyNotFound(_, description, _, _) = (getError as? StorageError) else {
+            XCTFail("Expected notFound error, got \(getError)")
+            return
+        }
+        XCTAssertEqual(description, StorageErrorConstants.localFileNotFound.errorDescription)
     }
 
     /// GivenK: `user1` user uploads some data with protected access level
@@ -174,23 +153,13 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         XCTAssertNotEqual(user1IdentityId, user2IdentityId)
 
         // list keys for user1 as user2
-        let listExpectation = asyncExpectation(description: "List operation should be successful")
-        Task {
-            let keys = await list(path: key, accessLevel: accessLevel, targetIdentityId: user1IdentityId)
-            await listExpectation.fulfill()
-            XCTAssertNotNil(keys)
-            XCTAssertEqual(keys!.count, 1)
-        }
-        await waitForExpectations([listExpectation], timeout: TestCommonConstants.networkTimeout)
+        let keys = await list(path: key, accessLevel: accessLevel, targetIdentityId: user1IdentityId)
+        XCTAssertNotNil(keys)
+        XCTAssertEqual(keys?.count, 1)
 
         // get key for user1 as user2
-        let getExpectation = asyncExpectation(description: "Get Operation should be successful")
-        Task {
-            let data = await get(key: key, accessLevel: accessLevel, targetIdentityId: user1IdentityId)
-            await getExpectation.fulfill()
-            XCTAssertNotNil(data)
-        }
-        await waitForExpectations([getExpectation], timeout: TestCommonConstants.networkTimeout)
+        let data =  await get(key: key, accessLevel: accessLevel, targetIdentityId: user1IdentityId)
+        XCTAssertNotNil(data)
     }
 
     /// Given: `user1` user uploads some data with private access level
@@ -217,46 +186,37 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
         // list keys for user1 as user2 - should fail with validation error
         let listFailedExpectation = asyncExpectation(description: "List operation should fail")
-        Task {
-            do {
-                let listOptions = StorageListRequest.Options(accessLevel: accessLevel,
-                                                             targetIdentityId: user1IdentityId,
-                                                             path: key)
-                _ = try await Amplify.Storage.list(options: listOptions)
-                XCTFail("Should not have completed")
-                await listFailedExpectation.fulfill()
-            } catch {
-                await listFailedExpectation.fulfill()
-                guard let storageError = error as? StorageError,
-                      case .validation = storageError else {
-                    XCTFail("Expected validation error, got \(error)")
-                    return
-                }
-            }
+        let listOptions = StorageListRequest.Options(accessLevel: accessLevel,
+                                                     targetIdentityId: user1IdentityId,
+                                                     path: key)
+        let listError = await waitError(with: listFailedExpectation) {
+            return try await Amplify.Storage.list(options: listOptions)
         }
 
-        await waitForExpectations([listFailedExpectation], timeout: TestCommonConstants.networkTimeout)
+
+
+        guard case .validation  = (listError as? StorageError) else {
+            XCTFail("Expected validation error, got \(listError ?? "nil")")
+            return
+        }
 
         // get key for user1 as user2 - should fail with validation error
-        let getFailedExpectation = asyncExpectation(description: "Get Operation should fail")
-        Task {
-            do {
-                let getOptions = StorageDownloadDataRequest.Options(accessLevel: accessLevel,
-                                                                    targetIdentityId: user1IdentityId)
-                let result = try await Amplify.Storage.downloadData(key: key, options: getOptions).value
-                XCTFail("Should not have completed, got \(result)")
-                await getFailedExpectation.fulfill()
-            } catch {
-                await getFailedExpectation.fulfill()
-                guard let storageError = error as? StorageError,
-                      case .validation = storageError else {
-                    XCTFail("Expected validation error, got \(error)")
-                    return
-                }
-            }
+        let getFailedExpectation = asyncExpectation(description: "Download operation should fail")
+        let getOptions = StorageDownloadDataRequest.Options(accessLevel: accessLevel,
+                                                            targetIdentityId: user1IdentityId)
+        let getError = await waitError(with: getFailedExpectation) {
+            return try await Amplify.Storage.downloadData(key: key, options: getOptions).value
         }
 
-        await waitForExpectations([getFailedExpectation], timeout: TestCommonConstants.networkTimeout)
+        guard let getError = getError else {
+            XCTFail("Expected error from download operation")
+            return
+        }
+
+        guard case .validation = (getError as? StorageError) else {
+            XCTFail("Expected validation error, got \(getError)")
+            return
+        }
     }
 
     // MARK: - Common test functions
@@ -268,148 +228,94 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         await upload(key: key, data: key, accessLevel: accessLevel)
 
         // List
-        let listExpectation = asyncExpectation(description: "List operation should be successful")
-        Task {
-            let keys = await list(path: key, accessLevel: accessLevel)
-            await listExpectation.fulfill()
-            XCTAssertNotNil(keys)
-            XCTAssertEqual(keys!.count, 1)
-        }
-        await waitForExpectations([listExpectation], timeout: TestCommonConstants.networkTimeout)
+        let keys = await list(path: key, accessLevel: accessLevel)
+        XCTAssertNotNil(keys)
+        XCTAssertEqual(keys?.count, 1)
 
         // Get
-        let getExpectation = asyncExpectation(description: "Get Operation should be successful")
-        Task {
-            let data = await get(key: key, accessLevel: accessLevel)
-            await getExpectation.fulfill()
-            XCTAssertNotNil(data)
-        }
-        await waitForExpectations([getExpectation], timeout: TestCommonConstants.networkTimeout)
+        let data = await get(key: key, accessLevel: accessLevel)
+        XCTAssertNotNil(data)
 
         // Remove
         await remove(key: key, accessLevel: accessLevel)
 
         // Get key after removal should return NotFound
         let getFailedExpectation = asyncExpectation(description: "Get Operation should fail")
-        Task {
-            do {
-                let getOptions = StorageDownloadDataRequest.Options(accessLevel: accessLevel,
-                                                                    targetIdentityId: nil)
-                let result = try await Amplify.Storage.downloadData(key: key, options: getOptions).value
-                XCTFail("Should not have completed with result \(result)")
-                await getFailedExpectation.fulfill()
-            } catch {
-                await getFailedExpectation.fulfill()
-                guard let storageError = error as? StorageError,
-                      case let .keyNotFound(_, description, _, _) = storageError else {
-                    XCTFail("Expected notFound error, got \(error)")
-                    return
-                }
-                XCTAssertEqual(description, StorageErrorConstants.localFileNotFound.errorDescription)
-            }
+        let getOptions = StorageDownloadDataRequest.Options(accessLevel: accessLevel,
+                                                            targetIdentityId: nil)
+        let getError = await waitError(with: getFailedExpectation) {
+            return try await Amplify.Storage.downloadData(key: key, options: getOptions).value
         }
-        await waitForExpectations([getFailedExpectation], timeout: TestCommonConstants.networkTimeout)
+
+        guard let getError = getError else {
+            XCTFail("Expected error from download operation")
+            return
+        }
+
+        guard case .keyNotFound(_, description, _, _) = (getError as? StorageError) else {
+            XCTFail("Expected notFound error, got \(getError)")
+            return
+        }
+        XCTAssertEqual(description, StorageErrorConstants.localFileNotFound.errorDescription)
     }
 
     // MARK: StoragePlugin Helper functions
 
     private func list(path: String, accessLevel: StorageAccessLevel, targetIdentityId: String? = nil) async -> [StorageListResult.Item]? {
-        let listOptions = StorageListRequest.Options(accessLevel: accessLevel,
-                                                     targetIdentityId: targetIdentityId,
-                                                     path: path)
-        do {
+        return await wait(name: "List operation should be successful") {
+            let listOptions = StorageListRequest.Options(accessLevel: accessLevel,
+                                                         targetIdentityId: targetIdentityId,
+                                                         path: path)
             return try await Amplify.Storage.list(options: listOptions).items
-        } catch {
-            XCTFail("Failed to list with error \(error)")
-            return nil
         }
     }
 
     private func get(key: String, accessLevel: StorageAccessLevel, targetIdentityId: String? = nil) async -> Data? {
-        let getOptions = StorageDownloadDataRequest.Options(accessLevel: accessLevel,
-                                               targetIdentityId: targetIdentityId)
-        do {
+        return await wait(name: "Download operation should be successful") {
+            let getOptions = StorageDownloadDataRequest.Options(accessLevel: accessLevel,
+                                                                targetIdentityId: targetIdentityId)
             return try await Amplify.Storage.downloadData(key: key, options: getOptions).value
-        } catch {
-            XCTFail("Failed to get with error \(error)")
-            return nil
         }
     }
 
     private func upload(key: String, data: String, accessLevel: StorageAccessLevel) async {
-        let uploadExpectation = asyncExpectation(description: "Upload operation should be successful")
-        Task {
-            do {
-                let options = StorageUploadDataRequest.Options(accessLevel: accessLevel)
-                _ = try await Amplify.Storage.uploadData(key: key, data: data.data(using: .utf8)!, options: options)
-                await uploadExpectation.fulfill()
-            } catch {
-                await uploadExpectation.fulfill()
-                XCTFail("Failed to put \(key) with error \(error)")
-            }
+        let options = StorageUploadDataRequest.Options(accessLevel: accessLevel)
+        let result = await wait(name: "Upload operation should be successful") {
+            return try await Amplify.Storage.uploadData(key: key, data: data.data(using: .utf8)!, options: options).value
         }
-
-        await waitForExpectations([uploadExpectation], timeout: TestCommonConstants.networkTimeout)
+        XCTAssertNotNil(result)
     }
 
     private func remove(key: String, accessLevel: StorageAccessLevel) async {
-        let removeExpectation = asyncExpectation(description: "Remove Operation should be successful")
-        Task {
-            do {
-                let removeOptions = StorageRemoveRequest.Options(accessLevel: accessLevel)
-                _ = try await Amplify.Storage.remove(key: key, options: removeOptions)
-                await removeExpectation.fulfill()
-            } catch {
-                XCTFail("Failed to remove with error \(error)")
-                await removeExpectation.fulfill()
-            }
-
+        let removeOptions = StorageRemoveRequest.Options(accessLevel: accessLevel)
+        let result = await wait(name: "Remove operation should be successful") {
+            return try await Amplify.Storage.remove(key: key, options: removeOptions)
         }
-        await waitForExpectations([removeExpectation], timeout: TestCommonConstants.networkTimeout)
+        XCTAssertNotNil(result)
     }
 
     // Auth Helpers
 
     private func signIn(username: String, password: String) async {
-        let signInInvoked = asyncExpectation(description: "sign in completed")
-        Task {
-            do {
-                _ = try await Amplify.Auth.signIn(username: username, password: password)
-                await signInInvoked.fulfill()
-            } catch {
-                await signInInvoked.fulfill()
-                XCTFail("Failed to Sign in user \(error)")
-            }
+        let result = await wait(name: "Sign in completed") {
+            return try await Amplify.Auth.signIn(username: username, password: password)
         }
-        await waitForExpectations([signInInvoked], timeout: TestCommonConstants.networkTimeout)
+        XCTAssertNotNil(result)
     }
 
     func getIdentityId() async -> String? {
-        do {
+        return await wait(name: "Fetch Aush Session completed") {
             guard let session = try await Amplify.Auth.fetchAuthSession() as? AuthCognitoIdentityProvider else {
                 XCTFail("Could not get auth session as AuthCognitoIdentityProvider")
-                return nil
+                throw AuthError.unknown("Could not get session", nil)
             }
             return try session.getIdentityId().get()
-
-        } catch {
-            XCTFail("Failed to get auth session \(error)")
-            return nil
         }
     }
 
     func signOut() async {
-        let signOutCompleted = asyncExpectation(description: "sign out completed")
-        Task {
-            do {
-                _ = try await Amplify.Auth.signOut()
-                await signOutCompleted.fulfill()
-            } catch {
-                await signOutCompleted.fulfill()
-                XCTFail("Could not sign out user \(error)")
-            }
+        await wait(name: "Sign out completed") {
+            try await Amplify.Auth.signOut()
         }
-
-        await waitForExpectations([signOutCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 }

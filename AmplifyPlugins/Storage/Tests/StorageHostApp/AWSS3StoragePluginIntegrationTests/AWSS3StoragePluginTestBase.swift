@@ -59,9 +59,10 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
     func uploadData(key: String, data: Data) async {
         let completeInvoked = asyncExpectation(description: "Completed is invoked")
-        await wait(with: completeInvoked, timeout: 60) {
-            _ = try await Amplify.Storage.uploadData(key: key, data: data, options: nil).value
+        let result = await wait(with: completeInvoked, timeout: 60) {
+            return try await Amplify.Storage.uploadData(key: key, data: data, options: nil).value
         }
+        XCTAssertNotNil(result)
     }
 
     static func getBucketFromConfig(forResource: String) throws -> String {
