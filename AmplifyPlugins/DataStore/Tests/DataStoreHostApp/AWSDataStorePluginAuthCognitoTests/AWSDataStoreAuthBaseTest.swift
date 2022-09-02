@@ -245,7 +245,7 @@ extension AWSDataStoreAuthBaseTest {
     //        case noAuthSessioncognito
     //        case noUserSub
     //    }
-    func getUserSub() async throws -> String! {
+    func getUserSub() async throws -> String {
         var resultOptional: String?
         do {
             let authSession = try await Amplify.Auth.fetchAuthSession(options: nil)
