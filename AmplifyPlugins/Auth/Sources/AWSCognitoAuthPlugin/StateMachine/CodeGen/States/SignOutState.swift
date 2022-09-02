@@ -11,7 +11,7 @@ enum SignOutState: State {
     case notStarted
     case signingOutGlobally
     case revokingToken
-    case signingOutLocally(SignedInData)
+    case signingOutLocally(SignedInData?)
     case signingOutHostedUI
     case signedOut(SignedOutData)
     case error(AuthenticationError)

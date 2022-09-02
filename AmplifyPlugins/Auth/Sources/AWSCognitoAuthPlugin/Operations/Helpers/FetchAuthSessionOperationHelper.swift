@@ -135,6 +135,10 @@ class FetchAuthSessionOperationHelper {
             isSignedIn = true
         }
         switch error {
+        case .sessionError(let fetchError, let credentials):
+            return sessionResultWithFetchError(fetchError,
+                                        authenticationState: authenticationState,
+                                        existingCredentials: credentials)
         case .sessionExpired:
             let session = AuthCognitoSignedInSessionHelper.makeExpiredSignedInSession()
             return session
@@ -147,6 +151,40 @@ class FetchAuthSessionOperationHelper {
                                                 cognitoTokensResult: .failure(error))
             return session
         }
+    }
+
+    func sessionResultWithFetchError(_ error: FetchSessionError,
+                                authenticationState: AuthenticationState,
+                                existingCredentials: AmplifyCredentials)
+    -> Result<AuthSession, AuthError> {
+
+        var isSignedIn = false
+        if case .signedIn = authenticationState {
+            isSignedIn = true
+        }
+
+        switch error {
+
+        case .notAuthorized:
+            if !isSignedIn {
+                let session = AuthCognitoSignedOutSessionHelper.makeSessionWithNoGuestAccess()
+                return .success(session)
+            }
+        case .noCredentialsToRefresh:
+            if !isSignedIn {
+                let session = AuthCognitoSignedOutSessionHelper.makeSessionWithNoGuestAccess()
+                return .success(session)
+            }
+        default: break
+
+        }
+        let message = "Unknown error occurred"
+        let error = AuthError.unknown(message)
+        let session = AWSAuthCognitoSession(isSignedIn: isSignedIn,
+                                            identityIdResult: .failure(error),
+                                            awsCredentialsResult: .failure(error),
+                                            cognitoTokensResult: .failure(error))
+        return .success(session)
     }
 
 }

@@ -102,7 +102,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         mockHostedUIResult = .failure(.cancelled)
         let errorExpectation  = expectation(description: "SignIn operation should complete")
         do {
-            let result = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
+            _ = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
             XCTFail("Should not succeed")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error,
