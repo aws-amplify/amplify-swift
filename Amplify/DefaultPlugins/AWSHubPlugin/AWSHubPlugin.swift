@@ -42,7 +42,7 @@ final public class AWSHubPlugin: HubCategoryPlugin {
 
     /// Removes listeners and empties the message queue
     public func reset() async {
-        dispatcher.destroy()
+        await dispatcher.destroy()
     }
 
     public func dispatch(to channel: HubChannel, payload: HubPayload) {
