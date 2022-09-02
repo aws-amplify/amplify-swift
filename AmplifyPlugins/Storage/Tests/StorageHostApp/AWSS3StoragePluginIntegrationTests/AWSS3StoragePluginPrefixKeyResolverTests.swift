@@ -10,49 +10,31 @@ import AWSS3StoragePlugin
 
 @testable import Amplify
 import AWSCognitoAuthPlugin
+import AmplifyAsyncTesting
 
-class AWSS3StoragePluginKeyResolverTests: XCTestCase {
-
-    static let amplifyConfiguration = "AWSS3StoragePluginTests-amplifyconfiguration"
+class AWSS3StoragePluginKeyResolverTests: AWSS3StoragePluginTestBase {
 
     override func setUp() async throws {
-        await Amplify.reset()
         do {
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
-            try Amplify.add(plugin: AWSS3StoragePlugin(
-                configuration: .prefixResolver(MockGuestOverridePrefixResolver())))
-            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
-                forResource: AWSS3StoragePluginTestBase.amplifyConfiguration)
+            try Amplify.add(plugin: AWSS3StoragePlugin(configuration: .prefixResolver(MockGuestOverridePrefixResolver())))
+            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: AWSS3StoragePluginTestBase.amplifyConfiguration)
             try Amplify.configure(amplifyConfig)
         } catch {
             XCTFail("Failed to initialize and configure Amplify \(error)")
         }
     }
 
-    override func tearDown() async throws {
-        await Amplify.reset()
-        // Unforunately, `sleep` has been added here to get more consistent test runs. The SDK will be used with
-        // same key to create a URLSession. The `sleep` helps avoid the error:
-        // ```
-        // A background URLSession with identifier
-        // com.amazonaws.AWSS3TransferUtility.Default.Identifier.awsS3StoragePlugin already exists!`
-        // ```
-        // TODO: Remove in the future when the plugin no longer depends on the SDK and have addressed this problem.
-        sleep(5)
-    }
-
     // This mock resolver shows how to perform an upload to the `.guest` access level with a custom prefix value.
     struct MockGuestOverridePrefixResolver: AWSS3PluginPrefixResolver {
-        func resolvePrefix(for accessLevel: StorageAccessLevel,
-                           targetIdentityId: String?,
-                           completion: @escaping (Result<String, StorageError>) -> Void) {
+        func resolvePrefix(for accessLevel: StorageAccessLevel, targetIdentityId: String?) async throws -> String {
             switch accessLevel {
             case .guest:
-                completion(.success("public/customPublic/"))
+                return "public/customPublic/"
             case .protected:
-                completion(.failure(.configuration("`.protected` StorageAccessLevel is not used", "", nil)))
+                throw StorageError.configuration("`.protected` StorageAccessLevel is not used", "", nil)
             case .private:
-                completion(.failure(.configuration("`.protected` StorageAccessLevel is not used", "", nil)))
+                throw StorageError.configuration("`.protected` StorageAccessLevel is not used", "", nil)
             }
         }
     }
@@ -66,55 +48,38 @@ class AWSS3StoragePluginKeyResolverTests: XCTestCase {
     /// - Then:
     ///    - Download is successful
     ///
-    func testUploadListDownload() {
+    func testUploadListDownload() async {
         let key = UUID().uuidString
         let data = key.data(using: .utf8)!
-        let uploadCompleted = expectation(description: "upload completed")
-
-        _ = Amplify.Storage.uploadData(key: key, data: data) { event in
-            switch event {
-            case .success:
-                uploadCompleted.fulfill()
-            case .failure(let error):
-                XCTFail("Failed with \(error)")
-            }
+        let uploadCompleted = asyncExpectation(description: "upload completed")
+        await wait(with: uploadCompleted) {
+            _ = try await Amplify.Storage.uploadData(key: key, data: data)
         }
-        wait(for: [uploadCompleted], timeout: TestCommonConstants.networkTimeout)
 
-        let listCompleted = expectation(description: "list completed")
+        let listCompleted = asyncExpectation(description: "list completed")
         let listOptions = StorageListRequest.Options(path: key)
-        var resultItem: StorageListResult.Item?
-        _ = Amplify.Storage.list(options: listOptions) { event in
-            switch event {
-            case .success(let result):
-                XCTAssertNotNil(result)
-                XCTAssertNotNil(result.items)
-                XCTAssertEqual(result.items.count, 1)
-                resultItem = result.items.first
-                listCompleted.fulfill()
-            case .failure(let error):
-                XCTFail("Failed with \(error)")
-            }
+        let result = await wait(with: listCompleted) {
+            return try await Amplify.Storage.list(options: listOptions)
         }
-        wait(for: [listCompleted], timeout: TestCommonConstants.networkTimeout)
 
-        guard let item = resultItem else {
+        guard let items = result?.items else {
+            XCTFail("Failed to list items")
+            return
+        }
+        XCTAssertEqual(items.count, 1)
+
+        guard let item = items.first else {
             XCTFail("Failed to retrieve key from List API")
             return
         }
         XCTAssertEqual(item.key, key)
-        let downloadCompleted = expectation(description: "download completed")
-        _ = Amplify.Storage.downloadData(key: item.key) { event in
-            switch event {
-            case .success(let data):
-                XCTAssertNotNil(data)
-                downloadCompleted.fulfill()
-            case .failure(let error):
-                XCTFail("Failed with \(error)")
-            }
+
+        let downloadCompleted = asyncExpectation(description: "download completed")
+        let downloadedData = await wait(with: downloadCompleted) {
+            return try await Amplify.Storage.downloadData(key: item.key).value
         }
 
-        wait(for: [downloadCompleted], timeout: TestCommonConstants.networkTimeout)
+        XCTAssertNotNil(downloadedData)
     }
 
     /// Storage operations (upload, remove, download) performed using a developer defined prefixkey resolver.
@@ -125,47 +90,34 @@ class AWSS3StoragePluginKeyResolverTests: XCTestCase {
     /// - Then:
     ///    - The removed file should not exist with accurate error
     ///
-    func testUploadRemoveDownload() {
+    func testUploadRemoveDownload() async {
         let key = UUID().uuidString
         let data = key.data(using: .utf8)!
-        let uploadCompleted = expectation(description: "upload completed")
-
-        _ = Amplify.Storage.uploadData(key: key, data: data) { event in
-            switch event {
-            case .success:
-                uploadCompleted.fulfill()
-            case .failure(let error):
-                XCTFail("Failed with \(error)")
-            }
+        let uploadCompleted = asyncExpectation(description: "upload completed")
+        let uploadResult = await wait(with: uploadCompleted) {
+            try await Amplify.Storage.uploadData(key: key, data: data)
         }
-        wait(for: [uploadCompleted], timeout: TestCommonConstants.networkTimeout)
+        XCTAssertNotNil(uploadResult)
 
-        let removeCompleted = expectation(description: "remove completed")
-        Amplify.Storage.remove(key: key) { event in
-            switch event {
-            case .success(let result):
-                XCTAssertNotNil(result)
-                removeCompleted.fulfill()
-            case .failure(let error):
-                XCTFail("Failed with \(error)")
-            }
+        let removeCompleted = asyncExpectation(description: "remove completed")
+        let removeResult = await wait(with: removeCompleted) {
+            try await Amplify.Storage.remove(key: key)
         }
-        wait(for: [removeCompleted], timeout: TestCommonConstants.networkTimeout)
+        XCTAssertNotNil(removeResult)
 
-        let downloadCompleted = expectation(description: "download completed")
-        _ = Amplify.Storage.downloadData(key: key) { event in
-            switch event {
-            case .success:
-                XCTFail("Should have failed")
-            case .failure(let error):
-                guard case .keyNotFound = error else {
-                    XCTFail("Should have failed with .keyNotFound")
-                    return
-                }
-                downloadCompleted.fulfill()
-            }
+        let downloadCompleted = asyncExpectation(description: "download completed")
+        let downloadError = await waitError(with: downloadCompleted) {
+            return try await Amplify.Storage.downloadData(key: key).value
         }
 
-        wait(for: [downloadCompleted], timeout: TestCommonConstants.networkTimeout)
+        guard let downloadError = downloadError else {
+            XCTFail("Download should have failed")
+            return
+        }
+
+        guard case .keyNotFound = downloadError as? StorageError else {
+            XCTFail("Should have failed with .keyNotFound, got \(downloadError)")
+            return
+        }
     }
 }
