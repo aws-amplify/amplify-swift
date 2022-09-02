@@ -24,30 +24,7 @@ import Amplify
 /// of ~0-1MB. After ~1 MB, I start getting notified more frequently.
 class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
 
-    func testUploadProgressViaListener() async {
-        let timestamp = String(Date().timeIntervalSince1970)
-        let key = "testUploadProgressViaListener-\(timestamp)"
-
-        let resultReceived = expectation(description: "resultReceived")
-        let progressReceived = expectation(description: "progressReceived")
-        progressReceived.assertForOverFulfill = false
-        _ = Amplify.Storage.uploadData(
-            key: key,
-            data: .testDataOfSize(.bytes(100)),
-            progressListener: { progress in
-                progressReceived.fulfill()
-                print("Progress: \(progress.fractionCompleted)")
-            }, resultListener: { result in
-                resultReceived.fulfill()
-                print("Result received: \(result)")
-            }
-        )
-
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
-        await self.removeTestFile(withKey: key)
-    }
-
-    func testUploadProgressViaPublisher() async {
+    func testUploadProgressViaPublisher() async throws {
         var cancellables = Set<AnyCancellable>()
 
         let timestamp = String(Date().timeIntervalSince1970)
@@ -56,7 +33,7 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
         let completionReceived = expectation(description: "resultReceived")
         let progressReceived = expectation(description: "progressReceived")
         progressReceived.assertForOverFulfill = false
-        let uploadOperation = Amplify.Storage.uploadData(
+        let uploadOperation = try await Amplify.Storage.uploadData(
             key: key,
             data: .testDataOfSize(.bytes(100)))
 
@@ -78,20 +55,18 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
         await self.removeTestFile(withKey: key)
     }
 
-    func testPublisherDeliveryAfterUploadCompletes() async {
+    func testPublisherDeliveryAfterUploadCompletes() async throws {
         var cancellables = Set<AnyCancellable>()
 
         let timestamp = String(Date().timeIntervalSince1970)
         let key = "testUploadProgressDeliveryAfterCompletion-\(timestamp)"
 
         // Wait for the upload to complete
-        let uploadComplete = expectation(description: "uploadComplete")
-        let uploadOperation = Amplify.Storage.uploadData(
+        let uploadOperation = try await Amplify.Storage.uploadData(
             key: key,
-            data: .testDataOfSize(.bytes(100)),
-            resultListener: { _ in uploadComplete.fulfill() }
+            data: .testDataOfSize(.bytes(100))
         )
-        wait(for: [uploadComplete], timeout: TestCommonConstants.networkTimeout)
+        _ = try await uploadOperation.value
 
         // Result publisher should immediately complete, and should deliver a value
         let resultCompletionReceived = expectation(description: "resultCompletionReceived")
@@ -121,10 +96,10 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
     // MARK: - Utilities
 
     private func removeTestFile(withKey key: String) async {
-        await withCheckedContinuation { continuation in
-            _ = Amplify.Storage.remove(key: key) { _ in
-                continuation.resume()
-            }
+        do {
+            try await Amplify.Storage.remove(key: key)
+        } catch {
+            XCTFail("Unable to remove \(key)")
         }
     }
 }

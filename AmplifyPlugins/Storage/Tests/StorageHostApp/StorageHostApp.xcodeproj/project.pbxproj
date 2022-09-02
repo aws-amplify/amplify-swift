@@ -24,6 +24,7 @@
 		68828E4128C154E5006E7C0A /* AWSS3StoragePluginNegativeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB08328BEAF8E00C8A6EB /* AWSS3StoragePluginNegativeTests.swift */; };
 		68828E4228C15B8B006E7C0A /* AWSS3StoragePluginOptionsUsabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB08128BEAF8E00C8A6EB /* AWSS3StoragePluginOptionsUsabilityTests.swift */; };
 		68828E4528C26D2D006E7C0A /* AWSS3StoragePluginPrefixKeyResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB07F28BEAF8E00C8A6EB /* AWSS3StoragePluginPrefixKeyResolverTests.swift */; };
+		68828E4628C2736C006E7C0A /* AWSS3StoragePluginProgressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB08C28BEAF8E00C8A6EB /* AWSS3StoragePluginProgressTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -301,6 +302,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				684FB0C328BEB45600C8A6EB /* AuthSignInHelper.swift in Sources */,
+				68828E4628C2736C006E7C0A /* AWSS3StoragePluginProgressTests.swift in Sources */,
 				684FB0B528BEB08900C8A6EB /* AWSS3StoragePluginAccessLevelTests.swift in Sources */,
 				68828E4028C1549E006E7C0A /* AWSS3StoragePluginDownloadFileResumabilityTests.swift in Sources */,
 				68828E4528C26D2D006E7C0A /* AWSS3StoragePluginPrefixKeyResolverTests.swift in Sources */,
