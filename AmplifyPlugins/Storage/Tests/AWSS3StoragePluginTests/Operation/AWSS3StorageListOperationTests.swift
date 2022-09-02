@@ -43,13 +43,13 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
         XCTAssertTrue(operation.isFinished)
     }
 
-    func testListOperationGetIdentityIdError() {
+    func testListOperationGetIdentityIdError() async throws {
         mockAuthService.getIdentityIdError = AuthError.service("", "", "")
 
         let options = StorageListRequest.Options(path: testPath)
         let request = StorageListRequest(options: options)
 
-        let failedInvoked = expectation(description: "failed was invoked on operation")
+        let failedInvoked = asyncExpectation(description: "failed was invoked on operation")
         let operation = AWSS3StorageListOperation(request,
                                                   storageConfiguration: testStorageConfiguration,
                                                   storageService: mockStorageService,
@@ -60,7 +60,10 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
                                                               XCTFail("Should have failed with authError")
                                                               return
                                                           }
-                                                          failedInvoked.fulfill()
+                                                          Task {
+                                                              await Task.yield()
+                                                              await failedInvoked.fulfill()
+                                                          }
                                                       default:
                                                           XCTFail("Should have received failed event")
                                                       }
@@ -68,7 +71,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
-        waitForExpectations(timeout: 1)
+        await waitForExpectations([failedInvoked])
         XCTAssertTrue(operation.isFinished)
     }
 
