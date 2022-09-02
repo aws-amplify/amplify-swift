@@ -30,44 +30,17 @@ class AuthConfirmResetPasswordTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get a userNotFound error.
     ///
-    func testUserNotFoundResetPassword() {
-        let confirmResetPasswordExpectation = expectation(description: "Received event result from resetPassword")
-        _ = Amplify.Auth.confirmResetPassword(for: "user-non-exists", with: "password", confirmationCode: "123", options: nil) { result in
-            switch result {
-            case .success:
-                XCTFail("resetPassword with non existing user should not return result")
-            case .failure(let error):
-                guard let cognitoError = error.underlyingError as? AWSCognitoAuthError,
-                      case .userNotFound = cognitoError else {
-                          print(error)
-                          XCTFail("Should return userNotFound")
-                          return
-                      }
-                confirmResetPasswordExpectation.fulfill()
-            }
+    func testUserNotFoundResetPassword() async throws {
+        do {
+            try await Amplify.Auth.confirmResetPassword(for: "user-non-exists", with: "password", confirmationCode: "123", options: nil)
+            XCTFail("resetPassword with non existing user should not return result")
+        } catch {
+            guard let authError = error as? AuthError, let cognitoError = authError.underlyingError as? AWSCognitoAuthError,
+                  case .userNotFound = cognitoError else {
+                      print(error)
+                      XCTFail("Should return userNotFound")
+                      return
+                  }
         }
-        wait(for: [confirmResetPasswordExpectation], timeout: networkTimeout)
-    }
-
-    /// Calling cancel in confirmResetPassword operation should cancel
-    ///
-    /// - Given: A valid username
-    /// - When:
-    ///    - I invoke confirmResetPassword with the username and then call cancel
-    /// - Then:
-    ///    - I should not get any result back
-    ///
-    func testCancelResetPassword() {
-        let username = "integTest\(UUID().uuidString)"
-
-        let operationExpectation = expectation(description: "Operation should not complete")
-        operationExpectation.isInverted = true
-        let operation = Amplify.Auth.confirmResetPassword(for: username, with: "password", confirmationCode: "123", options: nil) { result in
-            operationExpectation.fulfill()
-            XCTFail("Received result \(result)")
-        }
-        XCTAssertNotNil(operation, "confirmResetPassword operations should not be nil")
-        operation.cancel()
-        wait(for: [operationExpectation], timeout: networkTimeout)
     }
 }

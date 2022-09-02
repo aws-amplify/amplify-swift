@@ -11,10 +11,10 @@ import AWSCognitoAuthPlugin
 
 class AuthSignUpTests: AWSAuthBaseTest {
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         initializeAmplify()
-        Amplify.Auth.signOut { _ in }
+        try await Amplify.Auth.signOut()
     }
 
     override func tearDown() async throws {
@@ -31,27 +31,16 @@ class AuthSignUpTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get a signup complete step.
     ///
-    func testSuccessfulRegisterUser() {
+    func testSuccessfulRegisterUser() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
         let options = AuthSignUpRequest.Options(userAttributes: [
             AuthUserAttribute(.email, value: defaultTestEmail)])
-        let operationExpectation = expectation(description: "Operation should complete")
-        let operation = Amplify.Auth.signUp(username: username,
+        let signUpResult = try await Amplify.Auth.signUp(username: username,
                                             password: password,
-                                            options: options) { result in
-            defer {
-                operationExpectation.fulfill()
-            }
-            switch result {
-            case .success(let signUpResult):
-                XCTAssertTrue(signUpResult.isSignUpComplete, "Signup should be complete")
-            case .failure(let error):
-                XCTFail("SignUp a new user should not fail \(error)")
-            }
-        }
-        XCTAssertNotNil(operation, "SignUp operations should not be nil")
-        wait(for: [operationExpectation], timeout: networkTimeout)
+                                            options: options)
+        XCTAssertTrue(signUpResult.isSignUpComplete, "Signup should be complete")
+
     }
 
     //    /// Test if user registration is successful.
@@ -101,27 +90,19 @@ class AuthSignUpTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get validation error.
     ///
-    func testRegisterUserValidation() {
+    func testRegisterUserValidation() async throws {
         let username = ""
         let password = "P123@\(UUID().uuidString)"
 
-        let operationExpectation = expectation(description: "Operation should complete")
-        let operation = Amplify.Auth.signUp(username: username, password: password) { result in
-            defer {
-                operationExpectation.fulfill()
-            }
-            switch result {
-            case .success:
-                XCTFail("SignUp with validation error should not succeed")
-            case .failure(let error):
-                guard case .validation = error else {
-                    XCTFail("Should return validation error")
-                    return
-                }
+        do {
+            _ = try await Amplify.Auth.signUp(username: username, password: password)
+            XCTFail("SignUp with validation error should not succeed")
+        } catch {
+            guard case AuthError.validation = error else {
+                XCTFail("Should return validation error")
+                return
             }
         }
-        XCTAssertNotNil(operation, "SignUp operations should not be nil")
-        wait(for: [operationExpectation], timeout: networkTimeout)
     }
 
     /// Test if registering an already existing user gives userexists error
@@ -132,59 +113,24 @@ class AuthSignUpTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get a user exists error
     ///
-    func testRegisterExistingUser() {
+    func testRegisterExistingUser()  async throws{
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
-        let firstSignUpOperation = expectation(description: "Operation should complete")
-        AuthSignInHelper.signUpUser(username: username, password: password, email: defaultTestEmail) { success, error in
-            XCTAssertTrue(success, "SignUp operation should succeed. But failed \(String(describing: error))")
-            firstSignUpOperation.fulfill()
-        }
-        wait(for: [firstSignUpOperation], timeout: networkTimeout)
+        let success = try await AuthSignInHelper.signUpUser(username: username, password: password, email: defaultTestEmail)
+        XCTAssertTrue(success, "SignUp operation should succeed, but failed")
 
-        let operationExpectation = expectation(description: "Operation should complete")
         let options = AuthSignUpRequest.Options(userAttributes: [AuthUserAttribute(.email, value: defaultTestEmail)])
 
-        let operation = Amplify.Auth.signUp(username: username, password: password, options: options) { result in
-            defer {
-                operationExpectation.fulfill()
-            }
-            switch result {
-            case .success:
-                XCTFail("SignUp with an already registered user should not succeed")
-            case .failure(let error):
-                guard let cognitoError = error.underlyingError as? AWSCognitoAuthError,
-                      case .usernameExists = cognitoError else {
-                          XCTFail("Should return usernameExists")
-                          return
-                      }
-            }
+        do {
+            _ = try await Amplify.Auth.signUp(username: username, password: password, options: options)
+            XCTFail("SignUp with an already registered user should not succeed")
+        } catch {
+            guard let authError = error as? AuthError, let cognitoError = authError.underlyingError as? AWSCognitoAuthError,
+                  case .usernameExists = cognitoError else {
+                      XCTFail("Should return usernameExists")
+                      return
+                  }
         }
-        XCTAssertNotNil(operation, "SignUp operations should not be nil")
-        wait(for: [operationExpectation], timeout: 50)
-    }
-
-    /// Calling cancel in signUp operation should cancel
-    ///
-    /// - Given: A valid username and password
-    /// - When:
-    ///    - I invoke signUp with the username password and then call cancel
-    /// - Then:
-    ///    - I should not get any result back
-    ///
-    func testCancelSignUpOperation() {
-        let username = "integTest\(UUID().uuidString)"
-        let password = "P123@\(UUID().uuidString)"
-
-        let operationExpectation = expectation(description: "Operation should not complete")
-        operationExpectation.isInverted = true
-        let operation = Amplify.Auth.signUp(username: username, password: password) { result in
-            XCTFail("Received result \(result)")
-            operationExpectation.fulfill()
-        }
-        XCTAssertNotNil(operation, "SignUp operations should not be nil")
-        operation.cancel()
-        wait(for: [operationExpectation], timeout: networkTimeout)
     }
 }

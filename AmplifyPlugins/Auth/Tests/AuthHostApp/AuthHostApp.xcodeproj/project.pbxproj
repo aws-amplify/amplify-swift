@@ -26,6 +26,7 @@
 		485CB5C027B61F1E006CCEC7 /* SignedOutAuthSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5BC27B61F1D006CCEC7 /* SignedOutAuthSessionTests.swift */; };
 		485CB5C127B61F1E006CCEC7 /* AuthSignOutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5BD27B61F1D006CCEC7 /* AuthSignOutTests.swift */; };
 		485CB5C227B61F1E006CCEC7 /* AuthSRPSignInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5BE27B61F1D006CCEC7 /* AuthSRPSignInTests.swift */; };
+		73822B7828C1179A00E49EEE /* AmplifyAsyncTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 73822B7728C1179A00E49EEE /* AmplifyAsyncTesting */; };
 		9737C74E287E208400DA0D2B /* AuthRememberDeviceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737C74D287E208400DA0D2B /* AuthRememberDeviceTests.swift */; };
 		9737C7502880BFD600DA0D2B /* AuthForgetDeviceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737C74F2880BFD600DA0D2B /* AuthForgetDeviceTests.swift */; };
 		97829201286B802E000DE190 /* AuthResetPasswordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97829200286B802E000DE190 /* AuthResetPasswordTests.swift */; };
@@ -95,6 +96,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73822B7828C1179A00E49EEE /* AmplifyAsyncTesting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -312,6 +314,9 @@
 				485CB5A427B61E04006CCEC7 /* PBXTargetDependency */,
 			);
 			name = AuthIntegrationTests;
+			packageProductDependencies = (
+				73822B7728C1179A00E49EEE /* AmplifyAsyncTesting */,
+			);
 			productName = AuthIntegrationTests;
 			productReference = 485CB59F27B61E04006CCEC7 /* AuthIntegrationTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -690,6 +695,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		73822B7728C1179A00E49EEE /* AmplifyAsyncTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AmplifyAsyncTesting;
+		};
 		B4EBE93C27BCBE440005AE5C /* Amplify */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Amplify;
