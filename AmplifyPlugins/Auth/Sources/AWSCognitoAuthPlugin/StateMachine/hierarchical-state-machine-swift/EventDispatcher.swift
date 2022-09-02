@@ -6,5 +6,5 @@
 //
 
 protocol EventDispatcher {
-    func send(_ event: StateMachineEvent)
+    func send(_ event: StateMachineEvent) async
 }

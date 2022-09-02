@@ -14,13 +14,13 @@ struct ThrowSignInError: Action {
     let error: Error
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) {
+                 environment: Environment) async {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
         let event = AuthenticationEvent(
             eventType: .error(.service(message: "\(error)")))
         logVerbose("\(#fileID) Sending event \(event)", environment: environment)
-        dispatcher.send(event)
+        await dispatcher.send(event)
 
     }
 }

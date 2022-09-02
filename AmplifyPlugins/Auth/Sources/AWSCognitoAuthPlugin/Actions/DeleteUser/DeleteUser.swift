@@ -15,14 +15,14 @@ struct DeleteUser: Action {
 
     let accessToken: String
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         guard let environment = environment as? UserPoolEnvironment else {
             let message = AuthPluginErrorConstants.configurationError
             let error = AuthenticationError.configuration(message: message)
             let event = SignOutEvent(id: UUID().uuidString, eventType: .signedOutFailure(error))
-            dispatcher.send(event)
+            await dispatcher.send(event)
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             return
         }
@@ -33,7 +33,7 @@ struct DeleteUser: Action {
         } catch {
             let authError = AuthenticationError.configuration(message: "Failed to get CognitoUserPool client: \(error)")
             let event = SignOutEvent(id: UUID().uuidString, eventType: .signedOutFailure(authError))
-            dispatcher.send(event)
+            await dispatcher.send(event)
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             return
         }
@@ -59,7 +59,7 @@ struct DeleteUser: Action {
                 logVerbose("\(#fileID) Delete user failed \(error)", environment: environment)
             }
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
         }
     }
 }

@@ -12,7 +12,7 @@ import AWSCognitoIdentityProvider
 
 class SignOutGloballyTests: XCTestCase {
 
-    func testGlobalSignOutInvoked() {
+    func testGlobalSignOutInvoked() async {
         let globalSignOutInvoked = expectation(description: "globalSignOutInvoked")
         let identityProviderFactory: BasicUserPoolEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
@@ -30,15 +30,15 @@ class SignOutGloballyTests: XCTestCase {
         )
         let action = SignOutGlobally(signedInData: .testData)
 
-        action.execute(
+        await action.execute(
             withDispatcher: MockDispatcher { _ in },
             environment: environment
         )
 
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
-    func testFailedGlobalSignOutTriggersRevokeToken() {
+    func testFailedGlobalSignOutTriggersRevokeToken() async {
         let identityProviderFactory: BasicUserPoolEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
                 mockGlobalSignOutResponse: { _ in
@@ -68,15 +68,15 @@ class SignOutGloballyTests: XCTestCase {
             }
         }
 
-        action.execute(
+        await action.execute(
             withDispatcher: dispatcher,
             environment: environment
         )
 
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
-    func testSuccessfulGlobalSignOutTriggersRevokeToken() {
+    func testSuccessfulGlobalSignOutTriggersRevokeToken() async {
         let identityProviderFactory: BasicUserPoolEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
                 mockGlobalSignOutResponse: { _ in
@@ -106,12 +106,12 @@ class SignOutGloballyTests: XCTestCase {
             }
         }
 
-        action.execute(
+        await action.execute(
             withDispatcher: dispatcher,
             environment: environment
         )
 
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
 }

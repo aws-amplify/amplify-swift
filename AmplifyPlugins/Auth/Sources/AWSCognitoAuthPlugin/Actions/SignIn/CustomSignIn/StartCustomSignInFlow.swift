@@ -15,11 +15,11 @@ struct StartCustomSignInFlow: Action {
 
     let deviceMetadata: DeviceMetadata
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Start execution", environment: environment)
         let event = SignInEvent(id: UUID().uuidString, eventType: .initiateCustomSignIn(signInEventData, deviceMetadata))
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-        dispatcher.send(event)
+        await dispatcher.send(event)
     }
 }
 

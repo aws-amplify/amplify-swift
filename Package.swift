@@ -325,7 +325,8 @@ let package = Package(
         ),
         .library(
             name: "AmplifyAsyncTesting",
-            targets: ["AmplifyAsyncTesting"]),
+            targets: ["AmplifyAsyncTesting"]
+        )
     ],
     dependencies: dependencies,
     targets: targets

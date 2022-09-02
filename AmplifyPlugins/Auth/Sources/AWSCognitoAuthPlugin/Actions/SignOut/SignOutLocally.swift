@@ -11,26 +11,23 @@ struct SignOutLocally: Action {
 
     var identifier: String = "SignOutLocally"
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         let credentialStoreClient = (environment as? AuthEnvironment)?.credentialStoreClientFactory()
 
-        Task {
-            let event: StateMachineEvent
-            do {
-                try await credentialStoreClient?.deleteData(type: .amplifyCredentials)
-                event = SignOutEvent(eventType: .signedOutSuccess)
+        let event: StateMachineEvent
+        do {
+            try await credentialStoreClient?.deleteData(type: .amplifyCredentials)
+            event = SignOutEvent(eventType: .signedOutSuccess)
 
-            } catch {
-                let signOutError = AuthenticationError.unknown(message: "Unable to clear credential store: \(error)")
-                event = SignOutEvent(eventType: .signedOutFailure(signOutError))
-                logError("\(#fileID) Sending event \(event.type) with error \(error)", environment: environment)
-            }
-            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-            dispatcher.send(event)
-
+        } catch {
+            let signOutError = AuthenticationError.unknown(message: "Unable to clear credential store: \(error)")
+            event = SignOutEvent(eventType: .signedOutFailure(signOutError))
+            logError("\(#fileID) Sending event \(event.type) with error \(error)", environment: environment)
         }
+        logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+        await dispatcher.send(event)
     }
 }
 

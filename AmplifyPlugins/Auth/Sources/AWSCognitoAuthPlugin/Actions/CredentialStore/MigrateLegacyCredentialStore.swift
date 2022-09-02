@@ -28,7 +28,7 @@ struct MigrateLegacyCredentialStore: Action {
     private let AWSCognitoAuthUserRefreshToken = "refreshToken"
     private let AWSCognitoAuthUserTokenExpiration = "tokenExpiration"
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
@@ -37,7 +37,7 @@ struct MigrateLegacyCredentialStore: Action {
                 eventType: .throwError(KeychainStoreError.configuration(
                     message: AuthPluginErrorConstants.configurationError)))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
             return
         }
 
@@ -94,17 +94,17 @@ struct MigrateLegacyCredentialStore: Action {
 
             let event = CredentialStoreEvent(eventType: .loadCredentialStore(.amplifyCredentials))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
         } catch let error as KeychainStoreError {
             let event = CredentialStoreEvent(eventType: .throwError(error))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
         } catch {
             let event = CredentialStoreEvent(
                 eventType: .throwError(
                     KeychainStoreError.unknown("An unknown error occurred", error)))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
         }
     }
 

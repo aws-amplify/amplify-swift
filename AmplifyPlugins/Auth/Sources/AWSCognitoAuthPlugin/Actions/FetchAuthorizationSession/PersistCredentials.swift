@@ -15,7 +15,7 @@ struct PersistCredentials: Action {
 
     let credentials: AmplifyCredentials
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
@@ -31,7 +31,7 @@ struct PersistCredentials: Action {
                 event = AuthorizationEvent(eventType: .throwError(authorizationError))
             }
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
         }
 
     }

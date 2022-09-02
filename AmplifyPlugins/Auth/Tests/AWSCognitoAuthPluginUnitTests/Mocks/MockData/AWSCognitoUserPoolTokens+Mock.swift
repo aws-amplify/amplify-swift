@@ -21,7 +21,7 @@ extension AWSCognitoUserPoolTokens {
             idToken: CognitoAuthTestHelper.buildToken(for: tokenData),
             accessToken: CognitoAuthTestHelper.buildToken(for: tokenData),
             refreshToken: "refreshToken",
-            expiresIn: 121)
+            expiresIn: Int(Date(timeIntervalSinceNow: 121).timeIntervalSince1970))
     }
 
     static let expiredTestData = AWSCognitoUserPoolTokens(

@@ -19,7 +19,7 @@ class LoadCredentialsTests: XCTestCase {
     /// - When: The load credential action  is executed
     /// - Then:
     ///    - the credentials should be retrieved from the credential store
-    func testLoadCredentials() {
+    func testLoadCredentials() async {
         let mockedData = "mock"
         let testData = AmplifyCredentials.testData
         let loadCredentialHandlerInvoked = expectation(description: "loadCredentialHandlerInvoked")
@@ -49,7 +49,7 @@ class LoadCredentialsTests: XCTestCase {
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest"))
 
         let action = LoadCredentialStore(credentialStoreType: .amplifyCredentials)
-        action.execute(withDispatcher: MockDispatcher { event in
+        await action.execute(withDispatcher: MockDispatcher { event in
 
             guard let event = event as? CredentialStoreEvent else {
                 XCTFail("Expected event to be CredentialStoreEvent")
@@ -67,7 +67,7 @@ class LoadCredentialsTests: XCTestCase {
             }
         }, environment: environment)
 
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
     /// Test is responsible to check if configuration error is correctly caught by the action
@@ -76,7 +76,7 @@ class LoadCredentialsTests: XCTestCase {
     /// - When: The load credential action  is executed
     /// - Then:
     ///    - The action should throw an error
-    func testLoadCredentialsInvalidEnvironment() {
+    func testLoadCredentialsInvalidEnvironment() async {
         let expectation = expectation(description: "throwLoadCredentialConfigurationError")
 
         let expectedError = KeychainStoreError.configuration(
@@ -85,7 +85,7 @@ class LoadCredentialsTests: XCTestCase {
         let environment = MockInvalidEnvironment()
 
         let action = LoadCredentialStore(credentialStoreType: .amplifyCredentials)
-        action.execute(withDispatcher: MockDispatcher { event in
+        await action.execute(withDispatcher: MockDispatcher { event in
 
             guard let event = event as? CredentialStoreEvent else {
                 XCTFail("Expected event to be CredentialStoreEvent")
@@ -99,7 +99,7 @@ class LoadCredentialsTests: XCTestCase {
             }
         }, environment: environment)
 
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
     /// Test is responsible to check if the load credentials handle a known error
@@ -108,7 +108,7 @@ class LoadCredentialsTests: XCTestCase {
     /// - When: The load credential action is executed
     /// - Then:
     ///    - the action should throw a known error
-    func testLoadCredentialsKnownException() {
+    func testLoadCredentialsKnownException() async {
         let mockedData = "mock"
         let expectation = expectation(description: "loadCredentialErrorInvoked")
 
@@ -139,7 +139,7 @@ class LoadCredentialsTests: XCTestCase {
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest"))
 
         let action = LoadCredentialStore(credentialStoreType: .amplifyCredentials)
-        action.execute(withDispatcher: MockDispatcher { event in
+        await action.execute(withDispatcher: MockDispatcher { event in
 
             guard let event = event as? CredentialStoreEvent else {
                 XCTFail("Expected event to be CredentialStoreEvent")
@@ -153,7 +153,7 @@ class LoadCredentialsTests: XCTestCase {
             }
         }, environment: environment)
 
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
     /// Test is responsible to check if the load credentials handle an unknown error
@@ -162,7 +162,7 @@ class LoadCredentialsTests: XCTestCase {
     /// - When: The load credential action is executed
     /// - Then:
     ///    - the action should throw an  unknown error
-    func testLoadCredentialsUnknownKnownException() {
+    func testLoadCredentialsUnknownKnownException() async {
         let mockedData = "mock"
         let expectation = expectation(description: "loadCredentialErrorInvoked")
 
@@ -196,7 +196,7 @@ class LoadCredentialsTests: XCTestCase {
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest"))
 
         let action = LoadCredentialStore(credentialStoreType: .amplifyCredentials)
-        action.execute(withDispatcher: MockDispatcher { event in
+        await action.execute(withDispatcher: MockDispatcher { event in
 
             guard let event = event as? CredentialStoreEvent else {
                 XCTFail("Expected event to be CredentialStoreEvent")
@@ -210,7 +210,7 @@ class LoadCredentialsTests: XCTestCase {
             }
         }, environment: environment)
 
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
 }

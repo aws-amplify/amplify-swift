@@ -17,27 +17,17 @@ struct RefreshUserPoolTokens: Action {
 
     let existingSignedIndata: SignedInData
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
-
-        Task {
-            await refresh(
-                withDispatcher: dispatcher,
-                environment: environment
-            )
-        }
-    }
-
-    func refresh(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
 
         do {
 
             logVerbose("\(#fileID) Starting execution", environment: environment)
             guard let environment = environment as? UserPoolEnvironment else {
                 let event = RefreshSessionEvent.init(eventType: .throwError(.noUserPool))
-                dispatcher.send(event)
+                await dispatcher.send(event)
                 return
             }
-            
+
             let authEnv = try environment.authEnvironment()
             let config = environment.userPoolConfiguration
             let client = try? environment.cognitoUserPoolFactory()
@@ -71,7 +61,7 @@ struct RefreshUserPoolTokens: Action {
             else {
 
                 let event = RefreshSessionEvent(eventType: .throwError(.invalidTokens))
-                dispatcher.send(event)
+                await dispatcher.send(event)
                 logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
                 return
             }
@@ -98,16 +88,15 @@ struct RefreshUserPoolTokens: Action {
                 event = .init(eventType: .refreshedCognitoUserPool(signedInData))
             }
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
 
         } catch {
             let event = RefreshSessionEvent(eventType: .throwError(.service(error)))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
         }
 
         logVerbose("\(#fileID) Initiate auth complete", environment: environment)
-
     }
 }
 
