@@ -85,18 +85,18 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
     // MARK: - Test Helpers
     func makeExpectations() -> AuthTestExpectations {
         AuthTestExpectations(
-            subscriptionsEstablished: AsyncExpectation(description: "Subscriptions established"),
-            modelsSynced: AsyncExpectation(description: "Models synced"),
+            subscriptionsEstablished: asyncExpectation(description: "Subscriptions established"),
+            modelsSynced: asyncExpectation(description: "Models synced"),
 
-            query: AsyncExpectation(description: "Query success"),
+            query: asyncExpectation(description: "Query success"),
 
-            mutationSave: AsyncExpectation(description: "Mutation save success"),
-            mutationSaveProcessed: AsyncExpectation(description: "Mutation save processed"),
+            mutationSave: asyncExpectation(description: "Mutation save success"),
+            mutationSaveProcessed: asyncExpectation(description: "Mutation save processed"),
 
-            mutationDelete: AsyncExpectation(description: "Mutation delete success"),
-            mutationDeleteProcessed: AsyncExpectation(description: "Mutation delete processed"),
+            mutationDelete: asyncExpectation(description: "Mutation delete success"),
+            mutationDeleteProcessed: asyncExpectation(description: "Mutation delete processed"),
 
-            ready: AsyncExpectation(description: "Ready")
+            ready: asyncExpectation(description: "Ready")
         )
     }
 
@@ -193,6 +193,10 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
 
 // MARK: - Auth helpers
 extension AWSDataStoreAuthBaseTest {
+    //Test if the user has signedIn
+    func testSignIn() async throws {
+        try await signIn(user: user1)
+    }
     /// Signin given user
     /// - Parameter user
     func signIn(user: TestUser?,
@@ -206,11 +210,8 @@ extension AWSDataStoreAuthBaseTest {
             let response = try await Amplify.Auth.signIn(username: user.username,
                                                      password: user.password, options: nil)
             print("received response for signIn \(response)")
-            let result = try await isSignedIn()
-            XCTAssert(result)
-            //XCTAssert(isSignedIn(), file: file, line: line)
-            //rhs: @autoclosure () async throws -> Bool
-            //lhs: @autoclosure () throws -> Bool
+            let isSignedIn = try await isSignedIn()
+            XCTAssert(isSignedIn)
         } catch {
             print("Failed to signIn user with error: \(error)")
         }
@@ -222,13 +223,10 @@ extension AWSDataStoreAuthBaseTest {
         do {
             _ = try await Amplify.Auth.signOut()
             print("signOut successfull")
-            let result = try await !isSignedIn()
-            XCTAssert(result)
-            //XCTAssert(!isSignedIn(), file: file, line: line)
-            //rhs: @autoclosure () async throws -> Bool
-            //lhs: @autoclosure () throws -> Bool
+            let isSignedIn = try await !isSignedIn()
+            XCTAssertFalse(isSignedIn)
         } catch {
-            print("Failed to signOut user with error: \(error)")
+            XCTFail("Failed to signOut user with error: \(error)")
         }
     }
 
@@ -253,8 +251,7 @@ extension AWSDataStoreAuthBaseTest {
             let authSession = try await Amplify.Auth.fetchAuthSession(options: nil)
             let cognitoAuthSession = authSession as? AuthCognitoIdentityProvider
             let userSub = try cognitoAuthSession?.getUserSub().get()
-            let resultOptional = userSub
-            return resultOptional
+            resultOptional = userSub
         }
         catch {
             XCTFail("Failed to get auth session \(error)")
@@ -290,13 +287,7 @@ extension AWSDataStoreAuthBaseTest {
                               byId id: String,
                               file: StaticString = #file,
                               line: UInt = #line) async throws -> M? {
-        var queriedModel: M?
-        do {
-            queriedModel = try await Amplify.DataStore.query(M.self, byId: id)
-        } catch {
-            XCTFail("Failed to query model \(error)", file: file, line: line)
-        }
-        return queriedModel
+        return try await Amplify.DataStore.query(M.self, byId: id)
     }
 }
 
@@ -398,10 +389,8 @@ extension AWSDataStoreAuthBaseTest {
                 XCTAssertNotNil(posts)
                 let deletedposts: () = try await Amplify.DataStore.delete(posts)
                 XCTAssertNotNil(deletedposts)
-            } catch crudError.notDeleted(let error) {
-                XCTFail("Unable to delete posts from Datastore with errors: \(String(describing: error))")
-            } catch crudError.notSaved(let error) {
-                XCTFail("Unable to save posts from Datastore with errors: \(String(describing: error))")
+            } catch let error as DataStoreError {
+                onFailure(error)
             }
         }
         await waitForExpectations([expectations.mutationSave,
