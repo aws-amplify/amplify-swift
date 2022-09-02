@@ -51,7 +51,7 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
         let options = options ?? StorageDownloadDataRequest.Options()
         let request = StorageDownloadDataRequest(key: key, options: options)
         let operation = MockStorageDownloadDataOperation(request: request)
-        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
+        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation, subscribeEnabled: false)
         return taskAdapter
     }
 
@@ -63,7 +63,7 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
         let options = options ?? StorageDownloadFileRequest.Options()
         let request = StorageDownloadFileRequest(key: key, local: local, options: options)
         let operation = MockStorageDownloadFileOperation(request: request)
-        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
+        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation, subscribeEnabled: false)
         return taskAdapter
     }
 
@@ -75,7 +75,7 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
         let options = options ?? StorageUploadDataRequest.Options()
         let request = StorageUploadDataRequest(key: key, data: data, options: options)
         let operation = MockStorageUploadDataOperation(request: request)
-        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
+        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation, subscribeEnabled: false)
         return taskAdapter
     }
 
@@ -87,7 +87,7 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
         let options = options ?? StorageUploadFileRequest.Options()
         let request = StorageUploadFileRequest(key: key, local: local, options: options)
         let operation =  MockStorageUploadFileOperation(request: request)
-        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation)
+        let taskAdapter = AmplifyInProcessReportingOperationTaskAdapter(operation: operation, subscribeEnabled: false)
         return taskAdapter
     }
 
