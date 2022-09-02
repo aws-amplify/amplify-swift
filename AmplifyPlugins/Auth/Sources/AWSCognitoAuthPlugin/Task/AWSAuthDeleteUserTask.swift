@@ -44,7 +44,7 @@ class AWSAuthDeleteUserTask: AuthDeleteUserTask {
 
             switch deleteUserState {
             case .userDeleted:
-                break
+                return
             case .error(let error):
                 throw error
             default:

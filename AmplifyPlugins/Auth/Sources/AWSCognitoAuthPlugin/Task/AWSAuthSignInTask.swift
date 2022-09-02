@@ -45,7 +45,7 @@ class AWSAuthSignInTask: AuthSignInTask {
                     AuthPluginErrorConstants.invalidStateError, nil)
                 throw error
             case .signedOut:
-                break
+                return
             default: continue
             }
         }

@@ -12,7 +12,7 @@ import AWSCognitoIdentityProvider
 
 class InitiateAuthSRPTests: XCTestCase {
 
-    func testInitiate() {
+    func testInitiate() async {
         let initiateAuthInvoked = expectation(description: "initiateAuthInvoked")
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
@@ -27,15 +27,15 @@ class InitiateAuthSRPTests: XCTestCase {
             userPoolFactory: identityProviderFactory)
         let action = InitiateAuthSRP(username: "testUser", password: "testPassword")
 
-        action.execute(
+        await action.execute(
             withDispatcher: MockDispatcher { _ in },
             environment: environment
         )
 
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
-    func testFailedInitiateAuthPropagatesError() {
+    func testFailedInitiateAuthPropagatesError() async {
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
                 mockInitiateAuthResponse: { _ in
@@ -65,15 +65,15 @@ class InitiateAuthSRPTests: XCTestCase {
 
         }
 
-        action.execute(
+        await action.execute(
             withDispatcher: dispatcher,
             environment: environment
         )
 
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
-    func testSuccessfulInitiateAuthPropagatesSuccess() {
+    func testSuccessfulInitiateAuthPropagatesSuccess() async {
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
                 mockInitiateAuthResponse: { _ in
@@ -101,12 +101,12 @@ class InitiateAuthSRPTests: XCTestCase {
             }
         }
 
-        action.execute(
+        await action.execute(
             withDispatcher: dispatcher,
             environment: environment
         )
 
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
 }
