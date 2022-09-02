@@ -350,10 +350,6 @@ extension AWSDataStoreAuthBaseTest {
                              timeout: 60)
     }
     
-    enum crudError: Error {
-        case notSaved(Error: String?)
-        case notDeleted(Error: String?)
-    }
     /// Assert that a save and a delete mutation complete successfully.
     /// - Parameters:
     ///   - model: model instance saved and then deleted
