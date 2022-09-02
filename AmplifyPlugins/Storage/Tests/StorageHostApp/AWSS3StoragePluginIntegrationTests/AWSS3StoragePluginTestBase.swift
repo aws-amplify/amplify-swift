@@ -57,6 +57,18 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         await uploadData(key: key, data: dataString.data(using: .utf8)!)
     }
 
+    func uploadTask(key: String, data: Data) async -> StorageUploadDataTask? {
+        return await wait(name: "Upload Task created") {
+            return try await Amplify.Storage.uploadData(key: key, data: data)
+        }
+    }
+
+    func downloadTask(key: String) async -> StorageDownloadDataTask? {
+        return await wait(name: "Upload Task created") {
+            return try await Amplify.Storage.downloadData(key: key)
+        }
+    }
+
     func uploadData(key: String, data: Data) async {
         let completeInvoked = asyncExpectation(description: "Completed is invoked")
         let result = await wait(with: completeInvoked, timeout: 60) {
@@ -162,9 +174,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
                       action: @escaping () async throws -> T) async -> Error? {
         let task = Task { () -> Error? in
             defer {
-                Task {
-                    await expectation.fulfill()
-                }
+                Task { await expectation.fulfill() }
             }
             do {
                 let result = try await action()

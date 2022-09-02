@@ -17,17 +17,16 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
     /// Given: A large data object to upload
     /// When: Call the put API and pause the operation
     /// Then: The operation is stalled (no progress, completed, or failed event)
-    func testUploadLargeDataThenPause() async throws {
-        var cancellables = Set<AnyCancellable>()
+    func testUploadLargeDataThenPause() async {
         let key = UUID().uuidString
+        guard let task = await uploadTask(key: key, data: AWSS3StoragePluginTestBase.largeDataObject) else {
+            XCTFail("Unable to create Upload task")
+            return
+        }
+
+        var cancellables = Set<AnyCancellable>()
         let progressInvoked = expectation(description: "Progress invoked")
         progressInvoked.assertForOverFulfill = false
-        let task = try await Amplify.Storage.uploadData(
-            key: key,
-            data: AWSS3StoragePluginTestBase.largeDataObject,
-            options: nil
-        )
-
         task.inProcessPublisher.sink { progress in
             // To simulate a normal scenario, fulfill the progressInvoked expectation after some progress (30%)
             if progress.fractionCompleted > 0.3 {
@@ -70,18 +69,16 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
     /// Given: A large data object to upload
     /// When: Call the put API, pause, and then resume the operation,
     /// Then: The operation should complete successfully
-    func testUploadLargeDataAndPauseThenResume() async throws {
-        var cancellables = Set<AnyCancellable>()
+    func testUploadLargeDataAndPauseThenResume() async {
         let key = UUID().uuidString
+        guard let task = await uploadTask(key: key, data: AWSS3StoragePluginTestBase.largeDataObject) else {
+            XCTFail("Unable to create Upload task")
+            return
+        }
+
+        var cancellables = Set<AnyCancellable>()
         let progressInvoked = expectation(description: "Progress invoked")
         progressInvoked.assertForOverFulfill = false
-
-        let task = try await Amplify.Storage.uploadData(
-            key: key,
-            data: AWSS3StoragePluginTestBase.largeDataObject,
-            options: nil
-        )
-
         task.inProcessPublisher.sink { progress in
             // To simulate a normal scenario, fulfill the progressInvoked expectation after some progress (30%)
             if progress.fractionCompleted > 0.3 {
@@ -112,18 +109,16 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
     /// Given: A large data object to upload
     /// When: Call the put API, pause, and then resume tthe operation,
     /// Then: The operation should complete successfully
-    func testUploadLargeDataAndCancel() async throws {
-        var cancellables = Set<AnyCancellable>()
+    func testUploadLargeDataAndCancel() async {
         let key = UUID().uuidString
+        guard let task = await uploadTask(key: key, data: AWSS3StoragePluginTestBase.largeDataObject) else {
+            XCTFail("Unable to create Upload task")
+            return
+        }
+
+        var cancellables = Set<AnyCancellable>()
         let progressInvoked = expectation(description: "Progress invoked")
         progressInvoked.assertForOverFulfill = false
-
-        let task = try await Amplify.Storage.uploadData(
-            key: key,
-            data: AWSS3StoragePluginTestBase.largeDataObject,
-            options: nil
-        )
-
         task.inProcessPublisher.sink { progress in
             // To simulate a normal scenario, fulfill the progressInvoked expectation after some progress (30%)
             if progress.fractionCompleted > 0.3 {
