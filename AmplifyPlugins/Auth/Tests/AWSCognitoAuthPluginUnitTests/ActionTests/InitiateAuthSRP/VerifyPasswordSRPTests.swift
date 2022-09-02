@@ -22,7 +22,7 @@ class VerifyPasswordSRPTests: XCTestCase {
     /// - Then:
     ///    - Cognito client should invoke the api `respondToAuthChallengeCallback`
     ///
-    func testInitiatePasswordVerifier() {
+    func testInitiatePasswordVerifier() async {
         let verifyPasswordInvoked = expectation(
             description: "verifyPasswordInvoked"
         )
@@ -41,12 +41,12 @@ class VerifyPasswordSRPTests: XCTestCase {
         let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
                                        authResponse: data)
 
-        action.execute(
+        await action.execute(
             withDispatcher: MockDispatcher { _ in },
             environment: environment
         )
 
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
     /// Test empty response is returned by Cognito proper error is thrown
@@ -57,7 +57,7 @@ class VerifyPasswordSRPTests: XCTestCase {
     /// - Then:
     ///    - Should send an event with proper error
     ///
-    func testPasswordVerifierWithEmptyResponse() {
+    func testPasswordVerifierWithEmptyResponse() async {
 
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
@@ -92,8 +92,8 @@ class VerifyPasswordSRPTests: XCTestCase {
 
         }
 
-        action.execute(withDispatcher: dispatcher, environment: environment)
-        waitForExpectations(timeout: 0.1)
+        await action.execute(withDispatcher: dispatcher, environment: environment)
+        await waitForExpectations(timeout: 0.1)
     }
 
     /// Test invalid challenge response from initiate auth
@@ -104,7 +104,7 @@ class VerifyPasswordSRPTests: XCTestCase {
     /// - Then:
     ///    - Should send an event with proper error
     ///
-    func testPasswordVerifierWithInvalidChallengeParams() {
+    func testPasswordVerifierWithInvalidChallengeParams() async {
 
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
@@ -139,8 +139,8 @@ class VerifyPasswordSRPTests: XCTestCase {
                   }
         }
 
-        action.execute(withDispatcher: dispatcher, environment: environment)
-        waitForExpectations(timeout: 0.1)
+        await action.execute(withDispatcher: dispatcher, environment: environment)
+        await waitForExpectations(timeout: 0.1)
     }
 
     /// Test  challenge response with no salt from initiate auth
@@ -151,7 +151,7 @@ class VerifyPasswordSRPTests: XCTestCase {
     /// - Then:
     ///    - Should send an event with proper error
     ///
-    func testPasswordVerifierWithSaltNotPresent() {
+    func testPasswordVerifierWithSaltNotPresent() async {
 
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
@@ -186,8 +186,8 @@ class VerifyPasswordSRPTests: XCTestCase {
                   }
         }
 
-        action.execute(withDispatcher: dispatcher, environment: environment)
-        waitForExpectations(timeout: 0.1)
+        await action.execute(withDispatcher: dispatcher, environment: environment)
+        await waitForExpectations(timeout: 0.1)
     }
 
     /// Test  challenge response with no secretblock from initiate auth
@@ -198,7 +198,7 @@ class VerifyPasswordSRPTests: XCTestCase {
     /// - Then:
     ///    - Should send an event with proper error
     ///
-    func testPasswordVerifierWithSecretBlockNotPresent() {
+    func testPasswordVerifierWithSecretBlockNotPresent() async {
 
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
@@ -233,8 +233,8 @@ class VerifyPasswordSRPTests: XCTestCase {
                   }
         }
 
-        action.execute(withDispatcher: dispatcher, environment: environment)
-        waitForExpectations(timeout: 0.1)
+        await action.execute(withDispatcher: dispatcher, environment: environment)
+        await waitForExpectations(timeout: 0.1)
     }
 
     /// Test  challenge response with no SRPB from initiate auth
@@ -245,7 +245,7 @@ class VerifyPasswordSRPTests: XCTestCase {
     /// - Then:
     ///    - Should send an event with proper error
     ///
-    func testPasswordVerifierWithSRPBNotPresent() {
+    func testPasswordVerifierWithSRPBNotPresent() async {
 
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
@@ -280,8 +280,8 @@ class VerifyPasswordSRPTests: XCTestCase {
                   }
         }
 
-        action.execute(withDispatcher: dispatcher, environment: environment)
-        waitForExpectations(timeout: 0.1)
+        await action.execute(withDispatcher: dispatcher, environment: environment)
+        await waitForExpectations(timeout: 0.1)
     }
 
     /// Test  an exception from the SRP calculation
@@ -292,7 +292,7 @@ class VerifyPasswordSRPTests: XCTestCase {
     /// - Then:
     ///    - Should send an event with proper error
     ///
-    func testPasswordVerifierException() {
+    func testPasswordVerifierException() async {
 
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
@@ -327,8 +327,8 @@ class VerifyPasswordSRPTests: XCTestCase {
                   }
         }
 
-        action.execute(withDispatcher: dispatcher, environment: environment)
-        waitForExpectations(timeout: 0.1)
+        await action.execute(withDispatcher: dispatcher, environment: environment)
+        await waitForExpectations(timeout: 0.1)
     }
 
     /// Test  successful response from the VerifyPasswordSRP
@@ -339,7 +339,7 @@ class VerifyPasswordSRPTests: XCTestCase {
     /// - Then:
     ///    - Should send an event with the result
     ///
-    func testSuccessfulRespondToAuthChallengePropagatesSuccess() {
+    func testSuccessfulRespondToAuthChallengePropagatesSuccess() async {
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
@@ -369,8 +369,8 @@ class VerifyPasswordSRPTests: XCTestCase {
             }
         }
 
-        action.execute(withDispatcher: dispatcher, environment: environment)
-        waitForExpectations(timeout: 0.1)
+        await action.execute(withDispatcher: dispatcher, environment: environment)
+        await waitForExpectations(timeout: 0.1)
     }
 
     /// Test  successful response from the VerifyPasswordSRP
@@ -381,7 +381,7 @@ class VerifyPasswordSRPTests: XCTestCase {
     /// - Then:
     ///    - Should send an event with service error
     ///
-    func testRespondToAuthChallengePropagatesError() {
+    func testRespondToAuthChallengePropagatesError() async {
         let identityProviderFactory: CognitoFactory = {
             MockIdentityProvider(
                 mockRespondToAuthChallengeResponse: { _ in
@@ -415,8 +415,8 @@ class VerifyPasswordSRPTests: XCTestCase {
                   }
         }
 
-        action.execute(withDispatcher: dispatcher, environment: environment)
-        waitForExpectations(timeout: 0.1)
+        await action.execute(withDispatcher: dispatcher, environment: environment)
+        await waitForExpectations(timeout: 0.1)
     }
 
 }

@@ -14,13 +14,13 @@ import Amplify
 
 class FetchAuthAWSCredentialsTests: XCTestCase {
 
-    func testNoEnvironment() {
+    func testNoEnvironment() async {
 
         let expectation = expectation(description: "noAuthorizationEnvironment")
 
         let action = FetchAuthAWSCredentials(loginsMap: [:], identityID: "identityID")
 
-        action.execute(withDispatcher: MockDispatcher { event in
+        await action.execute(withDispatcher: MockDispatcher { event in
 
             guard let event = event as? FetchAuthSessionEvent else {return}
 
@@ -30,10 +30,10 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
                 expectation.fulfill()
             }
         }, environment: MockInvalidEnvironment())
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
-    func testInvalidIdentitySuccessfullResponse() {
+    func testInvalidIdentitySuccessfullResponse() async {
 
         let expectation = expectation(description: "fetchAWSCredentials")
         let identityProviderFactory: BasicAuthorizationEnvironment.CognitoIdentityFactory = {
@@ -49,7 +49,7 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
 
         let action = FetchAuthAWSCredentials(loginsMap: [:], identityID: "identityID")
 
-        action.execute(withDispatcher: MockDispatcher { event in
+        await action.execute(withDispatcher: MockDispatcher { event in
 
             guard let event = event as? FetchAuthSessionEvent else { return }
 
@@ -60,10 +60,10 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
             }
         }, environment: authEnvironment)
 
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
-    func testInvalidAWSCredentialSuccessfulResponse() {
+    func testInvalidAWSCredentialSuccessfulResponse() async {
 
         let expectation = expectation(description: "fetchAWSCredentials")
         let identityProviderFactory: BasicAuthorizationEnvironment.CognitoIdentityFactory = {
@@ -79,7 +79,7 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
 
         let action = FetchAuthAWSCredentials(loginsMap: [:], identityID: "identityID")
 
-        action.execute(
+        await action.execute(
             withDispatcher: MockDispatcher { event in
 
                 guard let event = event as? FetchAuthSessionEvent else { return }
@@ -93,10 +93,10 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
             environment: authEnvironment
         )
 
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
-    func testValidSuccessfulResponse() {
+    func testValidSuccessfulResponse() async {
 
         let credentialValidExpectation = expectation(description: "awsCredentialsAreValid")
 
@@ -124,7 +124,7 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
 
         let action = FetchAuthAWSCredentials(loginsMap: [:], identityID: "identityID")
 
-        action.execute(
+        await action.execute(
             withDispatcher: MockDispatcher { event in
 
                 if let event = event as? FetchAuthSessionEvent,
@@ -134,10 +134,10 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
             },
             environment: authEnvironment
         )
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
-    func testFailureResponse() {
+    func testFailureResponse() async {
         let expectation = expectation(description: "failureError")
         let testError = NSError(domain: "testError", code: 0, userInfo: nil)
 
@@ -154,7 +154,7 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
 
         let action = FetchAuthAWSCredentials(loginsMap: [:], identityID: "identityID")
 
-        action.execute(
+        await action.execute(
             withDispatcher: MockDispatcher { event in
 
                 if let fetchAWSCredentialEvent = event as? FetchAuthSessionEvent,
@@ -166,7 +166,7 @@ class FetchAuthAWSCredentialsTests: XCTestCase {
             },
             environment: authEnvironment
         )
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
 }
