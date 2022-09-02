@@ -15,18 +15,18 @@ class AWSDataStoreCategoryPluginAuthOwnerIntegrationTests: AWSDataStoreAuthBaseT
     /// When: DataStore query/mutation operations are sent with CognitoUserPools
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for an authenticated users
-    func testImplicitCustomOwner() {
-        setup(withModels: CustomOwnerImplicitModelRegistration(),
+    func testImplicitCustomOwner() async throws {
+        try await setup(withModels: CustomOwnerImplicitModelRegistration(),
               testType: .defaultAuthCognito)
 
-        signIn(user: user1)
+        try await signIn(user: user1)
 
         let expectations = makeExpectations()
 
-        assertDataStoreReady(expectations)
+        try await assertDataStoreReady(expectations)
 
         // Query
-        assertQuerySuccess(modelType: TodoCustomOwnerImplicit.self,
+        try await assertQuerySuccess(modelType: TodoCustomOwnerImplicit.self,
                            expectations) { error in
             XCTFail("Error query \(error)")
         }
@@ -34,7 +34,7 @@ class AWSDataStoreCategoryPluginAuthOwnerIntegrationTests: AWSDataStoreAuthBaseT
         let todo = TodoCustomOwnerImplicit(title: "title")
 
         // Mutations
-        assertMutations(model: todo, expectations) { error in
+        try await assertMutations(model: todo, expectations) { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -45,18 +45,18 @@ class AWSDataStoreCategoryPluginAuthOwnerIntegrationTests: AWSDataStoreAuthBaseT
     /// When: DataStore query/mutation operations are sent with CognitoUserPools
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for an authenticated users
-    func testExplicitCustomOwner() {
-        setup(withModels: CustomOwnerExplicitModelRegistration(),
+    func testExplicitCustomOwner() async throws {
+        try await setup(withModels: CustomOwnerExplicitModelRegistration(),
               testType: .defaultAuthCognito)
 
-        signIn(user: user1)
+        try await signIn(user: user1)
 
         let expectations = makeExpectations()
 
-        assertDataStoreReady(expectations)
+        try await assertDataStoreReady(expectations)
 
         // Query
-        assertQuerySuccess(modelType: TodoCustomOwnerExplicit.self,
+        try await assertQuerySuccess(modelType: TodoCustomOwnerExplicit.self,
                            expectations) { error in
             XCTFail("Error query \(error)")
         }
@@ -64,7 +64,7 @@ class AWSDataStoreCategoryPluginAuthOwnerIntegrationTests: AWSDataStoreAuthBaseT
         let todo = TodoCustomOwnerExplicit(title: "title")
 
         // Mutations
-        assertMutations(model: todo, expectations) { error in
+        try await assertMutations(model: todo, expectations) { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -75,18 +75,18 @@ class AWSDataStoreCategoryPluginAuthOwnerIntegrationTests: AWSDataStoreAuthBaseT
     /// When: DataStore query/mutation operations are sent with CognitoUserPools
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for an authenticated users
-    func testExplicitOwner() {
-        setup(withModels: ExplicitOwnerModelRegistration(),
+    func testExplicitOwner() async throws {
+        try await setup(withModels: ExplicitOwnerModelRegistration(),
               testType: .defaultAuthCognito)
 
-        signIn(user: user1)
+        try await signIn(user: user1)
 
         let expectations = makeExpectations()
 
-        assertDataStoreReady(expectations)
+        try await assertDataStoreReady(expectations)
 
         // Query
-        assertQuerySuccess(modelType: TodoExplicitOwnerField.self,
+        try await assertQuerySuccess(modelType: TodoExplicitOwnerField.self,
                            expectations) { error in
             XCTFail("Error query \(error)")
         }
@@ -94,7 +94,7 @@ class AWSDataStoreCategoryPluginAuthOwnerIntegrationTests: AWSDataStoreAuthBaseT
         let todo = TodoExplicitOwnerField(content: "content")
 
         // Mutations
-        assertMutations(model: todo, expectations) { error in
+        try await assertMutations(model: todo, expectations) { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -105,18 +105,18 @@ class AWSDataStoreCategoryPluginAuthOwnerIntegrationTests: AWSDataStoreAuthBaseT
     /// When: DataStore query/mutation operations are sent with CognitoUserPools
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for an authenticated users
-    func testImplicitOwner() {
-        setup(withModels: ImplicitOwnerModelRegistration(),
+    func testImplicitOwner() async throws {
+        try await setup(withModels: ImplicitOwnerModelRegistration(),
               testType: .defaultAuthCognito)
 
-        signIn(user: user1)
+        try await signIn(user: user1)
 
         let expectations = makeExpectations()
 
-        assertDataStoreReady(expectations)
+        try await assertDataStoreReady(expectations)
 
         // Query
-        assertQuerySuccess(modelType: TodoImplicitOwnerField.self,
+        try await assertQuerySuccess(modelType: TodoImplicitOwnerField.self,
                            expectations) { error in
             XCTFail("Error query \(error)")
         }
@@ -124,7 +124,7 @@ class AWSDataStoreCategoryPluginAuthOwnerIntegrationTests: AWSDataStoreAuthBaseT
         let todo = TodoImplicitOwnerField(content: "content")
 
         // Mutations
-        assertMutations(model: todo, expectations) { error in
+        try await assertMutations(model: todo, expectations) { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -135,18 +135,18 @@ class AWSDataStoreCategoryPluginAuthOwnerIntegrationTests: AWSDataStoreAuthBaseT
     /// When: DataStore query/mutation operations are sent with CognitoUserPools
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for an authenticated users
-    func testAllowPrivate() {
-        setup(withModels: AllowPrivateModelRegistration(),
+    func testAllowPrivate() async throws {
+        try await setup(withModels: AllowPrivateModelRegistration(),
               testType: .defaultAuthCognito)
 
-        signIn(user: user1)
+        try await signIn(user: user1)
 
         let expectations = makeExpectations()
 
-        assertDataStoreReady(expectations)
+        try await assertDataStoreReady(expectations)
 
         // Query
-        assertQuerySuccess(modelType: TodoCognitoPrivate.self,
+        try await assertQuerySuccess(modelType: TodoCognitoPrivate.self,
                            expectations) { error in
             XCTFail("Error query \(error)")
         }
@@ -154,7 +154,7 @@ class AWSDataStoreCategoryPluginAuthOwnerIntegrationTests: AWSDataStoreAuthBaseT
         let todo = TodoCognitoPrivate(title: "title")
 
         // Mutations
-        assertMutations(model: todo, expectations) { error in
+        try await assertMutations(model: todo, expectations) { error in
             XCTFail("Error mutation \(error)")
         }
 

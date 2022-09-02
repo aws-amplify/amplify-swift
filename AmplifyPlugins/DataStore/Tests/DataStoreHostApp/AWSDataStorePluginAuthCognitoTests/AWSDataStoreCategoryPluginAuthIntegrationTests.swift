@@ -26,10 +26,10 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
     ///    - User signs in, retrieves tods, sync engine is started and reconciles local store with the ownerId
     ///    - The todo now it contains the ownerId
     func testUnauthenticatedSavesToLocalStoreIsReconciledWithCloudStoreAfterAuthentication() async throws {
-        setup(withModels: ModelsRegistration(), testType: .defaultAuthCognito)
+        try await setup(withModels: ModelsRegistration(), testType: .defaultAuthCognito)
         let savedLocalTodo = TodoExplicitOwnerField(content: "owner saved model")
-        saveModel(savedLocalTodo)
-        let queriedNoteOptional = queryModel(TodoExplicitOwnerField.self, byId: savedLocalTodo.id)
+        try await saveModel(savedLocalTodo)
+        let queriedNoteOptional = try await queryModel(TodoExplicitOwnerField.self, byId: savedLocalTodo.id)
         guard let model = queriedNoteOptional else {
             XCTFail("Failed to query local model")
             return
@@ -39,7 +39,7 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
             return
         }
 
-        let syncReceivedInvoked = expectation(description: "Received SyncReceived event")
+//        let syncReceivedInvoked = expectation(description: "Received SyncReceived event")
         var remoteTodoOptional: TodoExplicitOwnerField?
         let syncReceivedListener = Amplify.Hub.listen(to: .dataStore, eventName: syncReceived) { payload in
             guard let mutationEvent = payload.data as? MutationEvent,
@@ -49,7 +49,7 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
             }
             if todo.id == savedLocalTodo.id {
                 remoteTodoOptional = todo
-                syncReceivedInvoked.fulfill()
+//                syncReceivedInvoked.fulfill()
             }
         }
         guard try await HubListenerTestUtilities.waitForListener(with: syncReceivedListener, timeout: 5.0) else {
@@ -57,9 +57,9 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
             return
         }
 
-        signIn(user: user1)
+        try await signIn(user: user1)
 
-        wait(for: [syncReceivedInvoked], timeout: TestCommonConstants.networkTimeout)
+//        wait(for: [syncReceivedInvoked], timeout: TestCommonConstants.networkTimeout)
         Amplify.Hub.removeListener(syncReceivedListener)
         guard let remoteTodo = remoteTodoOptional else {
             XCTFail("Should have received a SyncReceived event with the remote note reconciled to local store")
