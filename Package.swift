@@ -2,7 +2,7 @@
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 import PackageDescription
 
-let platforms: [SupportedPlatform] = [.iOS(.v13)]
+let platforms: [SupportedPlatform] = [.iOS(.v13), .macOS(.v10_15)]
 let dependencies: [Package.Dependency] = [
     .package(url: "https://github.com/awslabs/aws-sdk-swift.git", exact: "0.2.6"),
     .package(url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git", from: "2.1.1"),
