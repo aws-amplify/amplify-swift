@@ -27,6 +27,7 @@
 		68828E4628C2736C006E7C0A /* AWSS3StoragePluginProgressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB08C28BEAF8E00C8A6EB /* AWSS3StoragePluginProgressTests.swift */; };
 		68828E4728C27745006E7C0A /* AWSS3StoragePluginPutDataResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB08828BEAF8E00C8A6EB /* AWSS3StoragePluginPutDataResumabilityTests.swift */; };
 		68828E4828C2AAA6006E7C0A /* AWSS3StoragePluginGetDataResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB08B28BEAF8E00C8A6EB /* AWSS3StoragePluginGetDataResumabilityTests.swift */; };
+		68CCAF5728C7840F00825197 /* XCTestCase+AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68CCAF5628C7840F00825197 /* XCTestCase+AsyncExpectation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +61,7 @@
 		684FB0A928BEB07200C8A6EB /* AWSS3StoragePluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSS3StoragePluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		684FB0C228BEB45600C8A6EB /* AuthSignInHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignInHelper.swift; sourceTree = "<group>"; };
 		684FB0C528BEB84800C8A6EB /* StorageHostApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = StorageHostApp.entitlements; sourceTree = "<group>"; };
+		68CCAF5628C7840F00825197 /* XCTestCase+AsyncExpectation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AsyncExpectation.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,6 +164,7 @@
 			children = (
 				684FB09D28BEAFE700C8A6EB /* TestConfigHelper.swift */,
 				684FB0C228BEB45600C8A6EB /* AuthSignInHelper.swift */,
+				68CCAF5628C7840F00825197 /* XCTestCase+AsyncExpectation.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -307,6 +310,7 @@
 				68828E4828C2AAA6006E7C0A /* AWSS3StoragePluginGetDataResumabilityTests.swift in Sources */,
 				68828E4628C2736C006E7C0A /* AWSS3StoragePluginProgressTests.swift in Sources */,
 				684FB0B528BEB08900C8A6EB /* AWSS3StoragePluginAccessLevelTests.swift in Sources */,
+				68CCAF5728C7840F00825197 /* XCTestCase+AsyncExpectation.swift in Sources */,
 				68828E4028C1549E006E7C0A /* AWSS3StoragePluginDownloadFileResumabilityTests.swift in Sources */,
 				68828E4528C26D2D006E7C0A /* AWSS3StoragePluginPrefixKeyResolverTests.swift in Sources */,
 				684FB0B328BEB08900C8A6EB /* AWSS3StoragePluginTestBase.swift in Sources */,
