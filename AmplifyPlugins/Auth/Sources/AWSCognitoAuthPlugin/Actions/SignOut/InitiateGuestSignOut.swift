@@ -5,33 +5,35 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Amplify
 import Foundation
 
-struct StartMigrateAuthFlow: Action {
+struct InitiateGuestSignOut: Action {
 
-    var identifier: String = "StartMigrateAuthFlow"
+    var identifier: String = "InitiateGuestSignOut"
 
-    let signInEventData: SignInEventData
-    let deviceMetadata: DeviceMetadata
+    let signOutEventData: SignOutEventData
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
-        logVerbose("\(#fileID) Start execution", environment: environment)
-        let event = SignInEvent(id: UUID().uuidString, eventType: .initiateMigrateAuth(signInEventData, deviceMetadata))
+        logVerbose("\(#fileID) Starting execution", environment: environment)
+
+        let event = SignOutEvent(eventType: .signOutGuest)
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         await dispatcher.send(event)
     }
+
 }
 
-extension StartMigrateAuthFlow: CustomDebugDictionaryConvertible {
+extension InitiateGuestSignOut: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "identifier": identifier,
-            "signInEventData": signInEventData.debugDictionary
+            "signOutEventData": signOutEventData.debugDictionary
         ]
     }
 }
 
-extension StartMigrateAuthFlow: CustomDebugStringConvertible {
+extension InitiateGuestSignOut: CustomDebugStringConvertible {
     var debugDescription: String {
         debugDictionary.debugDescription
     }

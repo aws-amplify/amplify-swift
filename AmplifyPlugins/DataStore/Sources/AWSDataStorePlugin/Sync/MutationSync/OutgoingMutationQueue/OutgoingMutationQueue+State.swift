@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Combine
 
 extension OutgoingMutationQueue {
@@ -15,7 +16,7 @@ extension OutgoingMutationQueue {
         // Startup/config states
         case notInitialized
         case stopped
-        case starting(APICategoryGraphQLBehavior, MutationEventPublisher, IncomingEventReconciliationQueue?)
+        case starting(APICategoryGraphQLBehaviorExtended, MutationEventPublisher, IncomingEventReconciliationQueue?)
 
         // Event loop
         case requestingEvent

@@ -28,40 +28,38 @@ struct InitiateMigrateAuth: Action {
     }
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) {
+                 environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        Task {
-            do {
-                let userPoolEnv = try environment.userPoolEnvironment()
-                let authEnv = try environment.authEnvironment()
-                let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
-                    for: username,
-                    credentialStoreClient: authEnv.credentialStoreClientFactory())
-                let request = InitiateAuthInput.migrateAuth(
-                    username: username,
-                    password: password,
-                    clientMetadata: clientMetadata,
-                    asfDeviceId: asfDeviceId,
-                    deviceMetadata: deviceMetadata,
-                    environment: userPoolEnv)
+        do {
+            let userPoolEnv = try environment.userPoolEnvironment()
+            let authEnv = try environment.authEnvironment()
+            let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
+                for: username,
+                credentialStoreClient: authEnv.credentialStoreClientFactory())
+            let request = InitiateAuthInput.migrateAuth(
+                username: username,
+                password: password,
+                clientMetadata: clientMetadata,
+                asfDeviceId: asfDeviceId,
+                deviceMetadata: deviceMetadata,
+                environment: userPoolEnv)
 
-                let responseEvent = try await sendRequest(request: request,
-                                                          environment: userPoolEnv)
-                logVerbose("\(#fileID) Sending event \(responseEvent)", environment: environment)
-                dispatcher.send(responseEvent)
+            let responseEvent = try await sendRequest(request: request,
+                                                      environment: userPoolEnv)
+            logVerbose("\(#fileID) Sending event \(responseEvent)", environment: environment)
+            await dispatcher.send(responseEvent)
 
-            } catch let error as SignInError {
-                logVerbose("\(#fileID) Raised error \(error)", environment: environment)
-                let event = SignInEvent(eventType: .throwAuthError(error))
-                dispatcher.send(event)
-            } catch {
-                logVerbose("\(#fileID) Caught error \(error)", environment: environment)
-                let authError = SignInError.service(error: error)
-                let event = SignInEvent(
-                    eventType: .throwAuthError(authError)
-                )
-                dispatcher.send(event)
-            }
+        } catch let error as SignInError {
+            logVerbose("\(#fileID) Raised error \(error)", environment: environment)
+            let event = SignInEvent(eventType: .throwAuthError(error))
+            await dispatcher.send(event)
+        } catch {
+            logVerbose("\(#fileID) Caught error \(error)", environment: environment)
+            let authError = SignInError.service(error: error)
+            let event = SignInEvent(
+                eventType: .throwAuthError(authError)
+            )
+            await dispatcher.send(event)
         }
 
     }

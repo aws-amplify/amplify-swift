@@ -14,7 +14,7 @@ import Foundation
 typealias ModelReconciliationQueueFactory = (
     ModelSchema,
     StorageEngineAdapter,
-    APICategoryGraphQLBehavior,
+    APICategoryGraphQLBehaviorExtended,
     ReconcileAndSaveOperationQueue,
     QueryPredicate?,
     AuthCategoryBehavior?,
@@ -78,7 +78,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
 
     init(modelSchema: ModelSchema,
          storageAdapter: StorageEngineAdapter?,
-         api: APICategoryGraphQLBehavior,
+         api: APICategoryGraphQLBehaviorExtended,
          reconcileAndSaveQueue: ReconcileAndSaveOperationQueue,
          modelPredicate: QueryPredicate?,
          auth: AuthCategoryBehavior?,

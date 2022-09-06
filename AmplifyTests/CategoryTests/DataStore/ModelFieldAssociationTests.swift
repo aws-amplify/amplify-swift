@@ -17,7 +17,7 @@ class ModelFieldAssociationTests: XCTestCase {
     }
 
     func testBelongsToWithCodingKeys() {
-        let belongsTo = ModelAssociation.belongsTo(associatedWith: Comment.keys.post, targetName: "postID")
+        let belongsTo = ModelAssociation.belongsTo(associatedWith: Comment.keys.post, targetNames: ["postID"])
         guard case .belongsTo(let fieldName, let target) = belongsTo else {
             XCTFail("Should create belongsTo association")
             return
@@ -36,7 +36,7 @@ class ModelFieldAssociationTests: XCTestCase {
     }
 
     func testHasOneWithCodingKeys() {
-        let hasOne = ModelAssociation.hasOne(associatedWith: Comment.keys.post, targetName: nil)
+        let hasOne = ModelAssociation.hasOne(associatedWith: Comment.keys.post, targetNames: [])
         guard case .hasOne(let fieldName, let target) = hasOne else {
             XCTFail("Should create hasOne association")
             return
@@ -46,7 +46,7 @@ class ModelFieldAssociationTests: XCTestCase {
     }
 
     func testHasOneWithCodingKeysWithTargetName() {
-        let hasOne = ModelAssociation.hasOne(associatedWith: Comment.keys.post, targetName: "postID")
+        let hasOne = ModelAssociation.hasOne(associatedWith: Comment.keys.post, targetNames: ["postID"])
         guard case .hasOne(let fieldName, let target) = hasOne else {
             XCTFail("Should create hasOne association")
             return
@@ -66,7 +66,7 @@ class ModelFieldAssociationTests: XCTestCase {
     }
 
     func testModelFieldWithBelongsToAssociation() {
-        let belongsTo = ModelAssociation.belongsTo(associatedWith: nil, targetName: "commentPostId")
+        let belongsTo = ModelAssociation.belongsTo(associatedWith: nil, targetNames: ["commentPostId"])
         let field = ModelField.init(name: "post",
                                     type: .model(type: Post.self),
                                     association: belongsTo)
@@ -90,7 +90,7 @@ class ModelFieldAssociationTests: XCTestCase {
     }
 
     func testModelFieldWithHasOneAssociation() {
-        let hasOne = ModelAssociation.hasOne(associatedWith: Comment.keys.post, targetName: "postID")
+        let hasOne = ModelAssociation.hasOne(associatedWith: Comment.keys.post, targetNames: ["postID"])
         let field = ModelField.init(name: "comment",
                                     type: .model(type: Comment.self),
                                     association: hasOne)

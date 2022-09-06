@@ -22,9 +22,6 @@ class AuthConfigureOperation: ConfigureOperation {
     let authStateMachine: AuthStateMachine
     let credentialStoreStateMachine: CredentialStoreStateMachine
 
-    var authToken: AuthStateMachine.StateChangeListenerToken?
-    var credentialStoreToken: CredentialStoreStateMachine.StateChangeListenerToken?
-
     init(request: AuthConfigureRequest,
          authStateMachine: AuthStateMachine,
          credentialStoreStateMachine: CredentialStoreStateMachine) {
@@ -37,10 +34,6 @@ class AuthConfigureOperation: ConfigureOperation {
                    request: request)
     }
 
-    deinit {
-        authToken = nil
-        credentialStoreToken = nil
-    }
 
     override public func main() {
         if isCancelled {
@@ -52,20 +45,18 @@ class AuthConfigureOperation: ConfigureOperation {
     }
 
     func sendConfigureAuthEvent() {
-        authToken = authStateMachine.listen({ [weak self] state in
-            switch state {
-            case .configured:
-                self?.finish()
-            default: break
-            }
-        }, onSubscribe: {[weak self] in
-            guard let self = self else {
-                return
-            }
-
+        Task {
             let event = AuthEvent(eventType: .configureAuth(self.authConfiguration))
-            self.authStateMachine.send(event)
-        })
+            await self.authStateMachine.send(event)
+            let stateSequences = await authStateMachine.listen()
+            for await state in stateSequences {
+                if case .configured = state {
+                    finish()
+                    break
+                }
+            }
+        }
+
     }
 }
 

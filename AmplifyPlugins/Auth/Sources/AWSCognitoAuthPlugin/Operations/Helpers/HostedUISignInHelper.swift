@@ -31,45 +31,40 @@ struct HostedUISignInHelper {
     }
 
     func isValidState() async throws {
-        try await withCheckedThrowingContinuation { (continuation: (CheckedContinuation<Void, Error>)) in
-            authStateMachine.getCurrentState { state in
-                guard case .configured(let authenticationState, _) = state else {
-                    return
-                }
-
-                switch authenticationState {
-                case .signedIn:
-                    let error = AuthError.invalidState(
-                        "There is already a user in signedIn state. SignOut the user first before calling signIn",
-                        AuthPluginErrorConstants.invalidStateError, nil)
-                    continuation.resume(with: .failure(error))
-
-                default:
-                    continuation.resume(with: .success(Void()))
-                }
+        let stateSequences = await authStateMachine.listen()
+        for await state in stateSequences {
+            guard case .configured(let authenticationState, _) = state else {
+                continue
+            }
+            switch authenticationState {
+            case .signedIn:
+                throw AuthError.invalidState(
+                    "There is already a user in signedIn state. SignOut the user first before calling signIn",
+                    AuthPluginErrorConstants.invalidStateError, nil)
+            default:
+                return
             }
         }
     }
 
     private func prepareForSignIn() async {
-        var token: AuthStateMachine.StateChangeListenerToken?
-        await withCheckedContinuation { (continuation: (CheckedContinuation<Void, Never>)) in
-            token = authStateMachine.listen { 
 
-                guard case .configured(let authNState, _) = $0 else { return }
+        let stateSequences = await authStateMachine.listen()
 
-                switch authNState {
-                case .signedOut:
-                    cancelToken(token)
-                    continuation.resume()
+        for await state in stateSequences {
+            guard case .configured(let authNState, _) = state else { continue }
 
-                case .signingIn:
-                   sendCancelSignInEvent()
+            switch authNState {
+            case .signedOut:
+                return
 
-                default:
-                    break
+            case .signingIn:
+                Task {
+                    await sendCancelSignInEvent()
                 }
-            } onSubscribe: { }
+            default:
+                continue
+            }
         }
     }
 
@@ -91,42 +86,35 @@ struct HostedUISignInHelper {
             let authError = AuthenticationError.configuration(message: message)
             throw authError
         }
-        var token: AuthStateMachine.StateChangeListenerToken?
-        return try await withCheckedThrowingContinuation { (continuation: (CheckedContinuation<AuthSignInResult, Error>)) in
-            token = authStateMachine.listen {  state in
+        let stateSequences = await authStateMachine.listen()
+        await sendSignInEvent(oauthConfiguration: oauthConfiguration)
+        for await state in stateSequences {
+            guard case .configured(let authNState,
+                                   let authZState) = state else { continue }
 
-                guard case .configured(let authNState,
-                                       let authZState) = state else { return }
-
-                switch authNState {
-                case .signedIn:
-                    if case .sessionEstablished = authZState {
-                       cancelToken(token)
-                        continuation.resume(with: .success(AuthSignInResult(nextStep: .done)))
-                    }
-
-                case .error(let error):
-                    cancelToken(token)
-                    let error = AuthError.unknown("Sign in reached an error state", error)
-                    continuation.resume(with: .failure(error))
-
-                case .signingIn(let signInState):
-                    guard let result = UserPoolSignInHelper.checkNextStep(signInState) else {
-                        return
-                    }
-                   cancelToken(token)
-                    continuation.resume(with: result)
-                default:
-                    break
+            switch authNState {
+            case .signedIn:
+                if case .sessionEstablished = authZState {
+                   return AuthSignInResult(nextStep: .done)
                 }
-            } onSubscribe: {
-                sendSignInEvent(oauthConfiguration: oauthConfiguration)
+
+            case .error(let error):
+                throw AuthError.unknown("Sign in reached an error state", error)
+
+            case .signingIn(let signInState):
+                guard let result = try UserPoolSignInHelper.checkNextStep(signInState) else {
+                    continue
+                }
+                return result
+            default:
+                continue
             }
         }
+        throw AuthError.unknown("Could not signin to webUI")
 
     }
 
-    private func sendSignInEvent(oauthConfiguration: OAuthConfigurationData) {
+    private func sendSignInEvent(oauthConfiguration: OAuthConfigurationData) async {
 
         let pluginOptions = request.options.pluginOptions as? AWSAuthWebUISignInOptions
         let privateSession = pluginOptions?.preferPrivateSession ?? false
@@ -145,18 +133,12 @@ struct HostedUISignInHelper {
                                          password: nil,
                                          signInMethod: .hostedUI(hostedUIOptions))
         let event = AuthenticationEvent.init(eventType: .signInRequested(signInData))
-        authStateMachine.send(event)
+        await authStateMachine.send(event)
     }
 
-    private func sendCancelSignInEvent() {
+    private func sendCancelSignInEvent() async {
         let event = AuthenticationEvent(eventType: .cancelSignIn)
-        authStateMachine.send(event)
-    }
-
-    private func cancelToken(_ token: AuthStateMachineToken?) {
-        if let token = token {
-            authStateMachine.cancel(listenerToken: token)
-        }
+        await authStateMachine.send(event)
     }
 
 }

@@ -19,11 +19,17 @@ extension StorageEngine {
                                                "Ensure the API category has been setup and configured for your project", nil)))
             return
         }
-
+        guard let apiGraphQL = api as? APICategoryGraphQLBehaviorExtended else {
+            log.info("Unable to find GraphQL API plugin for syncEngine. syncEngine will not be started")
+            completion(.failure(.configuration("Unable to find suitable GraphQL API plugin for syncEngine. syncEngine will not be started",
+                                               "Ensure the API category has been setup and configured for your project", nil)))
+            return
+        }
+        
         let authPluginRequired = StorageEngine.requiresAuthPlugin(api)
 
         guard authPluginRequired else {
-            syncEngine?.start(api: api, auth: nil)
+            syncEngine?.start(api: apiGraphQL, auth: nil)
             completion(.successfulVoid)
             return
         }
@@ -34,7 +40,7 @@ extension StorageEngine {
                                                "Ensure the Auth category has been setup and configured for your project", nil)))
             return
         }
-        syncEngine?.start(api: api, auth: auth)
+        syncEngine?.start(api: apiGraphQL, auth: auth)
         completion(.successfulVoid)
     }
 

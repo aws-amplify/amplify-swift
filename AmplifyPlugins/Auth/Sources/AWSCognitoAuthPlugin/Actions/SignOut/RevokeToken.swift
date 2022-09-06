@@ -13,14 +13,14 @@ struct RevokeToken: Action {
     var identifier: String = "RevokeToken"
     let signedInData: SignedInData
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         guard let environment = environment as? UserPoolEnvironment else {
             let message = AuthPluginErrorConstants.configurationError
             let error = AuthenticationError.configuration(message: message)
             let event = SignOutEvent(id: UUID().uuidString, eventType: .signedOutFailure(error))
-            dispatcher.send(event)
+            await dispatcher.send(event)
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             return
         }
@@ -31,7 +31,7 @@ struct RevokeToken: Action {
         } catch {
             let authError = AuthenticationError.configuration(message: "Failed to get CognitoUserPool client: \(error)")
             let event = SignOutEvent(id: UUID().uuidString, eventType: .signedOutFailure(authError))
-            dispatcher.send(event)
+            await dispatcher.send(event)
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
             return
         }
@@ -42,18 +42,15 @@ struct RevokeToken: Action {
         let refreshToken = signedInData.cognitoUserPoolTokens.refreshToken
 
         let input = RevokeTokenInput(clientId: clientId, clientSecret: clientSecret, token: refreshToken)
-
-        Task {
-            do {
-                _ = try await client.revokeToken(input: input)
-                logVerbose("\(#fileID) Revoke token succeeded", environment: environment)
-            } catch {
-                logVerbose("\(#fileID) Revoke token failed \(error)", environment: environment)
-            }
-            let event = SignOutEvent(eventType: .signOutLocally(signedInData))
-            logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-            dispatcher.send(event)
+        do {
+            _ = try await client.revokeToken(input: input)
+            logVerbose("\(#fileID) Revoke token succeeded", environment: environment)
+        } catch {
+            logVerbose("\(#fileID) Revoke token failed \(error)", environment: environment)
         }
+        let event = SignOutEvent(eventType: .signOutLocally(signedInData))
+        logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+        await dispatcher.send(event)
     }
 }
 

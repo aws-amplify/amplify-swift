@@ -32,28 +32,16 @@ class FederatedSessionTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get a not authorized error
     ///
-    func testUnsuccessfulFederation() {
-
-        let operationExpectation = expectation(description: "Operation should complete")
+    func testUnsuccessfulFederation() async throws {
         let authCognitoPlugin = try! Amplify.Auth.getPlugin(for: "awsCognitoAuthPlugin") as! AWSCognitoAuthPlugin
-        let operation = authCognitoPlugin.federateToIdentityPool(
-            withProviderToken: "someToken",
-            for: .facebook) { result in
-                defer {
-                    operationExpectation.fulfill()
-                }
-                switch result {
-                case .success:
-                    XCTFail("Federation should not succeed")
-                case .failure(let error):
-                    guard case .notAuthorized = error else {
-                        XCTFail("SignIn with a valid username/password should not fail \(error)")
-                        return
-                    }
-                }
+        do {
+            _ = try await authCognitoPlugin.federateToIdentityPool( withProviderToken: "someToken", for: .facebook)
+        } catch {
+            guard case AuthError.notAuthorized = error else {
+                XCTFail("SignIn with a valid username/password should not fail \(error)")
+                return
             }
-        XCTAssertNotNil(operation, "SignIn operation should not be nil")
-        wait(for: [operationExpectation], timeout: networkTimeout)
+        }
     }
 
 }

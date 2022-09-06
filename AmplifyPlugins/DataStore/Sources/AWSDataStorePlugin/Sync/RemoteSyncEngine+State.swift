@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Combine
 
 extension RemoteSyncEngine {
@@ -17,10 +18,10 @@ extension RemoteSyncEngine {
         case pausingSubscriptions
         case pausingMutationQueue
         case clearingStateOutgoingMutations(StorageEngineAdapter)
-        case initializingSubscriptions(APICategoryGraphQLBehavior, StorageEngineAdapter)
+        case initializingSubscriptions(APICategoryGraphQLBehaviorExtended, StorageEngineAdapter)
         case performingInitialSync
         case activatingCloudSubscriptions
-        case activatingMutationQueue(APICategoryGraphQLBehavior, MutationEventPublisher, IncomingEventReconciliationQueue?)
+        case activatingMutationQueue(APICategoryGraphQLBehaviorExtended, MutationEventPublisher, IncomingEventReconciliationQueue?)
         case notifyingSyncStarted
 
         case syncEngineActive

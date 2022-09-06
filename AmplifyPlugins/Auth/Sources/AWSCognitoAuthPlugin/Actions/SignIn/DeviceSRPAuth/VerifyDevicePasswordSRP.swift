@@ -16,7 +16,7 @@ struct VerifyDevicePasswordSRP: Action {
     let authResponse: SignInResponseBehavior
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) {
+                 environment: Environment) async {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
         do {
@@ -39,7 +39,7 @@ struct VerifyDevicePasswordSRP: Action {
                 let event = SignInEvent(
                     eventType: .throwPasswordVerifierError(authError)
                 )
-                dispatcher.send(event)
+                await dispatcher.send(event)
                 return
             }
 
@@ -60,27 +60,27 @@ struct VerifyDevicePasswordSRP: Action {
                 signature: signature,
                 environment: userPoolEnv)
 
-            try UserPoolSignInHelper.sendRespondToAuth(
+            let responseEvent = try await UserPoolSignInHelper.sendRespondToAuth(
                 request: request,
                 for: username,
-                environment: userPoolEnv) { responseEvent in
-                    logVerbose("\(#fileID) Sending event \(responseEvent)",
-                               environment: environment)
-                    dispatcher.send(responseEvent)
-                }
+                environment: userPoolEnv)
+            logVerbose("\(#fileID) Sending event \(responseEvent)",
+                       environment: environment)
+            await dispatcher.send(responseEvent)
+
         } catch let error as SignInError {
             logVerbose("\(#fileID) SRPSignInError \(error)", environment: environment)
             let event = SignInEvent(
                 eventType: .throwPasswordVerifierError(error)
             )
-            dispatcher.send(event)
+            await dispatcher.send(event)
         } catch {
             logVerbose("\(#fileID) SRPSignInError Generic \(error)", environment: environment)
             let authError = SignInError.service(error: error)
             let event = SignInEvent(
                 eventType: .throwAuthError(authError)
             )
-            dispatcher.send(event)
+            await dispatcher.send(event)
         }
     }
 }

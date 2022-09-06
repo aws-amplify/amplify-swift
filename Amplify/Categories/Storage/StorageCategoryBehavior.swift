@@ -85,4 +85,9 @@ public protocol StorageCategoryBehavior {
     @discardableResult
     func list(options: StorageListOperation.Request.Options?) async throws -> StorageListResult
 
+    /// Handles background events which are related to URLSession
+    /// - Parameter identifier: identifier
+    /// - Returns: returns true if the identifier is handled by Amplify
+    func handleBackgroundEvents(identifier: String) async -> Bool
+
 }

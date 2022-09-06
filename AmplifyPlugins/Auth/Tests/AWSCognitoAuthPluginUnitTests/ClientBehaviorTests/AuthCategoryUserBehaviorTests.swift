@@ -12,15 +12,6 @@ import XCTest
 
 class AuthCategoryUserBehaviorTests: XCTestCase {
 
-    func testGetUserUserWhileNotConfigured() async throws {
-        let authState: AuthState = .notConfigured
-        let plugin = try createPlugin(authState: authState)
-
-        let user = await plugin.getCurrentUser()
-
-        XCTAssertNil(user)
-    }
-
     func testGetCurrentUserWhileSignedIn() async throws {
         let userId = "xyz987"
         let userName = "abc123"
@@ -39,7 +30,7 @@ class AuthCategoryUserBehaviorTests: XCTestCase {
                               file: StaticString = #filePath,
                               line: UInt = #line) throws -> AWSCognitoAuthPlugin {
         let plugin = AWSCognitoAuthPlugin()
-        plugin.authStateMachine = MockAuthStateMachine(authState: authState)
+        plugin.authStateMachine = Defaults.makeDefaultAuthStateMachine(initialState: authState)
 
         return plugin
     }

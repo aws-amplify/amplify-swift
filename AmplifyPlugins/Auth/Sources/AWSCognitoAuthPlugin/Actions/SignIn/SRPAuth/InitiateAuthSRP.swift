@@ -32,59 +32,57 @@ struct InitiateAuthSRP: Action {
     }
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) {
+                 environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        Task {
-            do {
-                let authEnv = try environment.authEnvironment()
-                let srpEnv = try environment.srpEnvironment()
-                let userPoolEnv = try environment.userPoolEnvironment()
-                let nHexValue = srpEnv.srpConfiguration.nHexValue
-                let gHexValue = srpEnv.srpConfiguration.gHexValue
+        do {
+            let authEnv = try environment.authEnvironment()
+            let srpEnv = try environment.srpEnvironment()
+            let userPoolEnv = try environment.userPoolEnvironment()
+            let nHexValue = srpEnv.srpConfiguration.nHexValue
+            let gHexValue = srpEnv.srpConfiguration.gHexValue
 
-                let srpClient = try SRPSignInHelper.srpClient(srpEnv)
-                let srpKeyPair = srpClient.generateClientKeyPair()
+            let srpClient = try SRPSignInHelper.srpClient(srpEnv)
+            let srpKeyPair = srpClient.generateClientKeyPair()
 
-                let srpStateData = SRPStateData(
-                    username: username,
-                    password: password,
-                    NHexValue: nHexValue,
-                    gHexValue: gHexValue,
-                    srpKeyPair: srpKeyPair,
-                    deviceMetadata: deviceMetadata,
-                    clientTimestamp: Date())
+            let srpStateData = SRPStateData(
+                username: username,
+                password: password,
+                NHexValue: nHexValue,
+                gHexValue: gHexValue,
+                srpKeyPair: srpKeyPair,
+                deviceMetadata: deviceMetadata,
+                clientTimestamp: Date())
 
-                let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
-                    for: username,
-                    credentialStoreClient: authEnv.credentialStoreClientFactory())
+            let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
+                for: username,
+                credentialStoreClient: authEnv.credentialStoreClientFactory())
 
-                let request = InitiateAuthInput.srpInput(
-                    username: username,
-                    publicSRPAHexValue: srpKeyPair.publicKeyHexValue,
-                    authFlowType: authFlowType,
-                    clientMetadata: clientMetadata,
-                    asfDeviceId: asfDeviceId,
-                    deviceMetadata: deviceMetadata,
-                    environment: userPoolEnv)
+            let request = InitiateAuthInput.srpInput(
+                username: username,
+                publicSRPAHexValue: srpKeyPair.publicKeyHexValue,
+                authFlowType: authFlowType,
+                clientMetadata: clientMetadata,
+                asfDeviceId: asfDeviceId,
+                deviceMetadata: deviceMetadata,
+                environment: userPoolEnv)
 
-                let responseEvent = try await sendRequest(request: request,
-                                                          environment: userPoolEnv,
-                                                          srpStateData: srpStateData)
-                logVerbose("\(#fileID) Sending event \(responseEvent)", environment: srpEnv)
-                dispatcher.send(responseEvent)
+            let responseEvent = try await sendRequest(request: request,
+                                                      environment: userPoolEnv,
+                                                      srpStateData: srpStateData)
+            logVerbose("\(#fileID) Sending event \(responseEvent)", environment: srpEnv)
+            await dispatcher.send(responseEvent)
 
-            } catch let error as SignInError {
-                logVerbose("\(#fileID) Raised error \(error)", environment: environment)
-                let event = SignInEvent(eventType: .throwAuthError(error))
-                dispatcher.send(event)
-            } catch {
-                logVerbose("\(#fileID) Caught error \(error)", environment: environment)
-                let authError = SignInError.service(error: error)
-                let event = SignInEvent(
-                    eventType: .throwAuthError(authError)
-                )
-                dispatcher.send(event)
-            }
+        } catch let error as SignInError {
+            logVerbose("\(#fileID) Raised error \(error)", environment: environment)
+            let event = SignInEvent(eventType: .throwAuthError(error))
+            await dispatcher.send(event)
+        } catch {
+            logVerbose("\(#fileID) Caught error \(error)", environment: environment)
+            let authError = SignInError.service(error: error)
+            let event = SignInEvent(
+                eventType: .throwAuthError(authError)
+            )
+            await dispatcher.send(event)
         }
 
     }

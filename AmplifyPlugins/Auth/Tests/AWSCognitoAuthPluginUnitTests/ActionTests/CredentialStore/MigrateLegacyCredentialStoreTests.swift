@@ -19,7 +19,7 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
     /// - When: The migration legacy store action is executed
     /// - Then:
     ///    - the new credential store should get the correct identityId, userPoolTokens and awsCredentials
-    func testSaveLegacyCredentials() {
+    func testSaveLegacyCredentials() async {
         let mockedData = "mock"
         let saveCredentialHandlerInvoked = expectation(description: "saveCredentialHandlerInvoked")
 
@@ -70,9 +70,9 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest"))
 
         let action = MigrateLegacyCredentialStore()
-        action.execute(withDispatcher: MockDispatcher { _ in }, environment: environment)
+        await action.execute(withDispatcher: MockDispatcher { _ in }, environment: environment)
 
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
     /// Test is responsible for making sure that the legacy credential store clearing up is getting called for user pool and identity pool
@@ -81,7 +81,7 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
     /// - When: The migration legacy store action is executed
     /// - Then:
     ///    - The remove all method gets called for both user pool and identity pool
-    func testClearLegacyCredentialStore() {
+    func testClearLegacyCredentialStore() async {
         let migrationCompletionInvoked = expectation(description: "migrationCompletionInvoked")
         migrationCompletionInvoked.expectedFulfillmentCount = 2
 
@@ -113,9 +113,9 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest"))
 
         let action = MigrateLegacyCredentialStore()
-        action.execute(withDispatcher: MockDispatcher { _ in }, environment: environment)
+        await action.execute(withDispatcher: MockDispatcher { _ in }, environment: environment)
 
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
 
     }
 

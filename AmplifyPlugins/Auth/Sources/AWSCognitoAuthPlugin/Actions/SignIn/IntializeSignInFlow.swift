@@ -14,14 +14,12 @@ struct InitializeSignInFlow: Action {
 
     let signInEventData: SignInEventData
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
-        Task {
-            let signInEvent = await createSignInEvent(from: environment)
-            logVerbose("\(#fileID) Sending event \(signInEvent.type)", environment: environment)
-            dispatcher.send(signInEvent)
-        }
+        let signInEvent = await createSignInEvent(from: environment)
+        logVerbose("\(#fileID) Sending event \(signInEvent.type)", environment: environment)
+        await dispatcher.send(signInEvent)
     }
 
     func createSignInEvent(from environment: Environment) async -> SignInEvent {

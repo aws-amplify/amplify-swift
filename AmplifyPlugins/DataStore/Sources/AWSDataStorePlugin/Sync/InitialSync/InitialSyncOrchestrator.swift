@@ -19,7 +19,7 @@ protocol InitialSyncOrchestrator {
 typealias InitialSyncOrchestratorFactory =
     (DataStoreConfiguration,
      AuthModeStrategy,
-    APICategoryGraphQLBehavior?,
+     APICategoryGraphQLBehaviorExtended?,
     IncomingEventReconciliationQueue?,
     StorageEngineAdapter?) -> InitialSyncOrchestrator
 
@@ -30,7 +30,7 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
     private var initialSyncOperationSinks: [String: AnyCancellable]
 
     private let dataStoreConfiguration: DataStoreConfiguration
-    private weak var api: APICategoryGraphQLBehavior?
+    private weak var api: APICategoryGraphQLBehaviorExtended?
     private weak var reconciliationQueue: IncomingEventReconciliationQueue?
     private weak var storageAdapter: StorageEngineAdapter?
     private let authModeStrategy: AuthModeStrategy
@@ -52,7 +52,7 @@ final class AWSInitialSyncOrchestrator: InitialSyncOrchestrator {
 
     init(dataStoreConfiguration: DataStoreConfiguration,
          authModeStrategy: AuthModeStrategy,
-         api: APICategoryGraphQLBehavior?,
+         api: APICategoryGraphQLBehaviorExtended?,
          reconciliationQueue: IncomingEventReconciliationQueue?,
          storageAdapter: StorageEngineAdapter?) {
         self.initialSyncOperationSinks = [:]

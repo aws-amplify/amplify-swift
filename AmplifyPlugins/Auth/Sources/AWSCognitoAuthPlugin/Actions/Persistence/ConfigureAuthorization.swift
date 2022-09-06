@@ -11,13 +11,13 @@ struct ConfigureAuthorization: Action {
 
     let identifier = "ConfigureAuthorization"
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
         // Send Authorization configured event to move the Auth state to configured
         let event = AuthEvent(eventType: .authorizationConfigured)
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-        dispatcher.send(event)
+        await dispatcher.send(event)
     }
 }
 

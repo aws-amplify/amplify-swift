@@ -14,13 +14,13 @@ import AWSCognitoIdentityProvider
 
 class RefreshUserPoolTokensTests: XCTestCase {
 
-    func testNoUserPoolEnvironment() {
+    func testNoUserPoolEnvironment() async {
 
         let expectation = expectation(description: "noUserPoolEnvironment")
 
         let action = RefreshUserPoolTokens(existingSignedIndata: .testData)
 
-        action.execute(withDispatcher: MockDispatcher { event in
+        await action.execute(withDispatcher: MockDispatcher { event in
 
             guard let event = event as? RefreshSessionEvent else {
                 return
@@ -34,10 +34,10 @@ class RefreshUserPoolTokensTests: XCTestCase {
         }, environment: MockInvalidEnvironment()
         )
 
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
-    func testInvalidSuccessfulResponse() {
+    func testInvalidSuccessfulResponse() async {
 
         let expectation = expectation(description: "refreshUserPoolTokens")
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
@@ -50,7 +50,7 @@ class RefreshUserPoolTokensTests: XCTestCase {
 
         let action = RefreshUserPoolTokens(existingSignedIndata: .testData)
 
-        action.execute(withDispatcher: MockDispatcher { event in
+        await action.execute(withDispatcher: MockDispatcher { event in
 
             guard let event = event as? RefreshSessionEvent else { return }
 
@@ -63,10 +63,10 @@ class RefreshUserPoolTokensTests: XCTestCase {
             userPoolFactory: identityProviderFactory)
         )
 
-        waitForExpectations(timeout: 1)
+        await waitForExpectations(timeout: 1)
     }
 
-    func testValidSuccessfulResponse() {
+    func testValidSuccessfulResponse() async {
 
         let expectation = expectation(description: "refreshUserPoolTokens")
         let identityProviderFactory: BasicSRPAuthEnvironment.CognitoUserPoolFactory = {
@@ -84,7 +84,7 @@ class RefreshUserPoolTokensTests: XCTestCase {
 
         let action = RefreshUserPoolTokens(existingSignedIndata: .testData)
 
-        action.execute(withDispatcher: MockDispatcher { event in
+        await action.execute(withDispatcher: MockDispatcher { event in
 
             if let userPoolEvent = event as? RefreshSessionEvent,
                case .refreshIdentityInfo = userPoolEvent.eventType {
@@ -93,10 +93,10 @@ class RefreshUserPoolTokensTests: XCTestCase {
         }, environment: Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: identityProviderFactory)
         )
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
-    func testFailureResponse() {
+    func testFailureResponse() async {
 
         let expectation = expectation(description: "failureError")
 
@@ -117,7 +117,7 @@ class RefreshUserPoolTokensTests: XCTestCase {
 
         let action = RefreshUserPoolTokens(existingSignedIndata: .testData)
 
-        action.execute(withDispatcher: MockDispatcher { event in
+        await action.execute(withDispatcher: MockDispatcher { event in
 
             if let userPoolEvent = event as? RefreshSessionEvent,
                case let .throwError(error) = userPoolEvent.eventType {
@@ -127,7 +127,7 @@ class RefreshUserPoolTokensTests: XCTestCase {
             }
         }, environment: environment)
         
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
 }

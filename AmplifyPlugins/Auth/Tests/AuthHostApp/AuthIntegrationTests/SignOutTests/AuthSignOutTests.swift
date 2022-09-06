@@ -39,24 +39,18 @@ class AuthSignOutTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get a completed signout flow.
     ///
-    func testGlobalSignOut() {
+    func testGlobalSignOut() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
-        let signUpExpectation = expectation(description: "SignUp operation should complete")
-        AuthSignInHelper.registerAndSignInUser(username: username,
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
                                     password: password,
-                                    email: defaultTestEmail) { didSucceed, error in
-            signUpExpectation.fulfill()
-            XCTAssertTrue(didSucceed, "Signup operation failed - \(String(describing: error))")
-        }
-        wait(for: [signUpExpectation], timeout: networkTimeout)
+                                    email: defaultTestEmail)
+        
+        XCTAssertTrue(didSucceed, "Signup operation failed")
 
         print("calling signOut...")
-        let signOutExpectation = expectation(description: "SignOut operation should complete")
-        let signOutOperation = signOut(globalSignOut: true, completion: signOutExpectation.fulfill)
-        wait(for: [signOutExpectation], timeout: networkTimeout)
-        XCTAssertTrue(signOutOperation.isFinished, "SignOut operation should be finished.")
+        try await signOut(globalSignOut: true)
     }
 
     /// Test successful signOut with globalSignout disabled.
@@ -67,24 +61,15 @@ class AuthSignOutTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get a completed signout flow.
     ///
-    func testNonGlobalSignOut() {
+    func testNonGlobalSignOut() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
-
-        let signUpExpectation = expectation(description: "SignUp operation should complete")
-        AuthSignInHelper.registerAndSignInUser(username: username,
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
                                     password: password,
-                                    email: defaultTestEmail) { didSucceed, error in
-            signUpExpectation.fulfill()
-            XCTAssertTrue(didSucceed, "Signup operation failed - \(String(describing: error))")
-        }
-        wait(for: [signUpExpectation], timeout: networkTimeout)
-
+                                    email: defaultTestEmail)
+        XCTAssertTrue(didSucceed, "Signup operation failed")
         print("calling signOut...")
-        let signOutExpectation = expectation(description: "SignOut operation should complete")
-        let signOutOperation = signOut(globalSignOut: false, completion: signOutExpectation.fulfill)
-        wait(for: [signOutExpectation], timeout: networkTimeout)
-        XCTAssertTrue(signOutOperation.isFinished, "SignOut operation should be finished.")
+        try await signOut(globalSignOut: false)
     }
 
     /// Test if invoking signOut without unauthenticate state does not fail
@@ -95,38 +80,12 @@ class AuthSignOutTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get a successul result
     ///
-    func testSignedOutWithUnAuthState() {
-        let operationExpectation = expectation(description: "Operation should complete")
-        let operation = Amplify.Auth.signOut { result in
-            defer {
-                operationExpectation.fulfill()
-            }
-            switch result {
-            case .success:
-                print("Success signout")
-            case .failure(let error):
-                XCTFail("SignOut should not fail - \(error)")
-            }
-        }
-        XCTAssertNotNil(operation, "SignOut operation should not be nil")
-        wait(for: [operationExpectation], timeout: networkTimeout)
+    func testSignedOutWithUnAuthState() async throws {
+        try await Amplify.Auth.signOut()
     }
 
-    private func signOut(globalSignOut: Bool, completion: @escaping () -> Void) -> AuthSignOutOperation {
+    private func signOut(globalSignOut: Bool) async throws {
         let options = AuthSignOutRequest.Options(globalSignOut: globalSignOut)
-
-        let operation = Amplify.Auth.signOut(options: options) { result in
-            defer {
-                completion()
-            }
-            switch result {
-            case .success:
-                print("SignOut complete.")
-            case .failure(let error):
-                XCTFail("SignOut should not fail: \(error)")
-            }
-        }
-        XCTAssertNotNil(operation, "SignOut operation should not be nil")
-        return operation
+        try await Amplify.Auth.signOut(options: options)
     }
 }

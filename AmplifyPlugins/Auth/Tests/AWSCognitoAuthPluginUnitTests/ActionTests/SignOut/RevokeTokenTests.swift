@@ -12,7 +12,7 @@ import AWSCognitoIdentityProvider
 
 class RevokeTokenTests: XCTestCase {
 
-    func testRevokeTokenInvoked() {
+    func testRevokeTokenInvoked() async {
         let revokeTokenInvoked = expectation(description: "revokeTokenInvoked")
         let identityProviderFactory: BasicUserPoolEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
@@ -30,15 +30,15 @@ class RevokeTokenTests: XCTestCase {
         )
         let action = RevokeToken(signedInData: .testData)
 
-        action.execute(
+        await action.execute(
             withDispatcher: MockDispatcher { _ in },
             environment: environment
         )
 
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
-    func testFailedRevokeTokenTriggersClearCredentialStore() {
+    func testFailedRevokeTokenTriggersClearCredentialStore() async {
         let identityProviderFactory: BasicUserPoolEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
                 mockRevokeTokenResponse: { _ in
@@ -68,15 +68,15 @@ class RevokeTokenTests: XCTestCase {
             }
         }
 
-        action.execute(
+        await action.execute(
             withDispatcher: dispatcher,
             environment: environment
         )
 
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
-    func testSuccessfulRevokeTokenTriggersClearCredentialStore() {
+    func testSuccessfulRevokeTokenTriggersClearCredentialStore() async {
         let identityProviderFactory: BasicUserPoolEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
                 mockRevokeTokenResponse: { _ in
@@ -106,12 +106,12 @@ class RevokeTokenTests: XCTestCase {
             }
         }
 
-        action.execute(
+        await action.execute(
             withDispatcher: dispatcher,
             environment: environment
         )
 
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
 }

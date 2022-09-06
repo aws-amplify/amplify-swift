@@ -112,6 +112,7 @@ class AmplifyOperationHubTests: XCTestCase {
 }
 
 class MockDispatchingStoragePlugin: StorageCategoryPlugin {
+
     var key: PluginKey = "MockDispatchingStoragePlugin"
 
     let queue = DispatchQueue(label: "MockDispatchingStoragePlugin.dispatch")
@@ -214,6 +215,10 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
         let operation = MockDispatchingStorageListOperation(request: request,
                                                             resultListener: resultListener)
         return operation
+    }
+
+    func handleBackgroundEvents(identifier: String) async -> Bool {
+        false
     }
 
     func reset() {

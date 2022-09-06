@@ -8,6 +8,7 @@
 import XCTest
 @testable import Amplify
 import AWSCognitoAuthPlugin
+import AmplifyAsyncTesting
 
 class AuthEventIntegrationTests: AWSAuthBaseTest {
 
@@ -35,31 +36,30 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get a completed signIn flow event.
     ///
-    func testSuccessfulSignInEvent() {
+    func testSuccessfulSignInEvent() async throws {
 
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
-        let signInExpectation = expectation(description: "SignIn event should be fired")
+        let signInExpectation = asyncExpectation(description: "SignIn event should be fired")
 
         unsubscribeToken = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {
             case HubPayload.EventName.Auth.signedIn:
-                signInExpectation.fulfill()
+                Task {
+                    await signInExpectation.fulfill()
+                }
             default:
                 break
             }
         }
 
-        AuthSignInHelper.registerAndSignInUser(
+        _ = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail) { _, error in
-                if let unwrappedError = error {
-                    XCTFail("Unable to sign in with error: \(unwrappedError)")
-                }
-            }
-        wait(for: [signInExpectation], timeout: networkTimeout)
+            email: defaultTestEmail)
+        
+        await waitForExpectations([signInExpectation], timeout: networkTimeout)
     }
 
     /// Test hub event for successful signOut of a valid user
@@ -70,33 +70,30 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get a completed signOut flow event.
     ///
-    func testSuccessfulSignOutEvent() {
+    func testSuccessfulSignOutEvent() async throws {
 
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
-        let signOutExpectation = expectation(description: "SignOut event should be fired")
+        let signOutExpectation = asyncExpectation(description: "SignOut event should be fired")
 
         unsubscribeToken = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {
             case HubPayload.EventName.Auth.signedOut:
-                signOutExpectation.fulfill()
+                Task {
+                    await signOutExpectation.fulfill()
+                }
             default:
                 break
             }
         }
 
-        AuthSignInHelper.registerAndSignInUser(
+        _ = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail) { _, error in
-                if let unwrappedError = error {
-                    XCTFail("Unable to sign in with error: \(unwrappedError)")
-                } else {
-                    _ = Amplify.Auth.signOut()
-                }
-            }
-        wait(for: [signOutExpectation], timeout: networkTimeout)
+            email: defaultTestEmail)
+        try await Amplify.Auth.signOut()
+        await waitForExpectations([signOutExpectation], timeout: networkTimeout)
     }
 
     /// Test hub event for session expired of a valid user
@@ -107,40 +104,41 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get a session expired flow event.
     ///
-    func testSessionExpiredEvent() throws {
+    func testSessionExpiredEvent() async throws {
         throw XCTSkip("TODO: fix this test. We need to find a way to mock credential store")
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
-        let signInExpectation = expectation(description: "SignIn event should be fired")
-        let sessionExpiredExpectation = expectation(description: "Session expired event should be fired")
+        let signInExpectation = asyncExpectation(description: "SignIn event should be fired")
+        let sessionExpiredExpectation = asyncExpectation(description: "Session expired event should be fired")
 
         unsubscribeToken = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {
             case HubPayload.EventName.Auth.signedIn:
-                signInExpectation.fulfill()
+                Task {
+                    await signInExpectation.fulfill()
+                }
             case HubPayload.EventName.Auth.sessionExpired:
-                sessionExpiredExpectation.fulfill()
+                Task {
+                    await sessionExpiredExpectation.fulfill()
+                }
+                
             default:
                 break
             }
         }
 
-        AuthSignInHelper.registerAndSignInUser(
-            username: username,
-            password: password,
-            email: defaultTestEmail) { _, error in
-                if let unwrappedError = error {
-                    XCTFail("Unable to sign in with error: \(unwrappedError)")
-                } else {
-                    Amplify.Auth.fetchAuthSession { _ in
-                        // Manually invalidate the tokens and then try to fetch the session.
-                        AuthSessionHelper.invalidateSession(with: self.amplifyConfiguration)
-                        Amplify.Auth.fetchAuthSession { _ in }
-                    }
-                }
-            }
-        wait(for: [signInExpectation, sessionExpiredExpectation], timeout: networkTimeout, enforceOrder: true)
+        do {
+            _ = try await AuthSignInHelper.registerAndSignInUser(
+                username: username,
+                password: password,
+                email: defaultTestEmail)
+        } catch {
+            _ = try await Amplify.Auth.fetchAuthSession()
+            AuthSessionHelper.invalidateSession(with: self.amplifyConfiguration)
+            _ = try await Amplify.Auth.fetchAuthSession()
+        }
+        await waitForExpectations( [signInExpectation, sessionExpiredExpectation], timeout: networkTimeout)
     }
 
     /// Test hub event for successful deletion of a valid user
@@ -151,43 +149,41 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get successful deleteUser flow event
     ///
-    func testSuccessfulDeletedUserEvent() {
+    func testSuccessfulDeletedUserEvent() async throws {
 
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
-        let signInExpectation = expectation(description: "SignIn operation should complete")
-        let deletedUserExpectation = expectation(description: "UserDeleted event should be fired")
+        let signInExpectation = asyncExpectation(description: "SignIn operation should complete")
+        let deletedUserExpectation = asyncExpectation(description: "UserDeleted event should be fired")
 
         unsubscribeToken = Amplify.Hub.listen(to: .auth) { payload in
             switch payload.eventName {
             case HubPayload.EventName.Auth.signedIn:
-                signInExpectation.fulfill()
+                Task {
+                    await signInExpectation.fulfill()
+                }
             case HubPayload.EventName.Auth.userDeleted:
-                deletedUserExpectation.fulfill()
+                Task {
+                    await deletedUserExpectation.fulfill()
+                }
             default:
                 break
             }
         }
 
-        AuthSignInHelper.registerAndSignInUser(
+        _ = try await AuthSignInHelper.registerAndSignInUser(
             username: username,
             password: password,
-            email: defaultTestEmail) { _, error in
-                if let unwrappedError = error {
-                    XCTFail("Unable to sign in with error: \(unwrappedError)")
-                }
-            }
-        wait(for: [signInExpectation], timeout: networkTimeout)
+            email: defaultTestEmail)
+        await waitForExpectations( [signInExpectation], timeout: networkTimeout)
 
-        _ = Amplify.Auth.deleteUser { result in
-            switch result {
-            case .success:
-                print("Success deleteUser")
-            case .failure(let error):
-                XCTFail("deleteUser should not fail - \(error)")
-            }
+        do {
+            try await Amplify.Auth.deleteUser()
+            print("Success deleteUser")
+        } catch {
+            XCTFail("deleteUser should not fail - \(error)")
         }
-        wait(for: [deletedUserExpectation], timeout: networkTimeout)
+        await waitForExpectations( [deletedUserExpectation], timeout: networkTimeout)
     }
 }

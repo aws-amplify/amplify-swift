@@ -23,7 +23,7 @@ final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPubl
     }
 
     init(modelSchema: ModelSchema,
-         api: APICategoryGraphQLBehavior,
+         api: APICategoryGraphQLBehaviorExtended,
          modelPredicate: QueryPredicate?,
          auth: AuthCategoryBehavior?,
          authModeStrategy: AuthModeStrategy) async {

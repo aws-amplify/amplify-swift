@@ -18,7 +18,7 @@ class ClearCredentialsTests: XCTestCase {
     /// - When: The clear credential action  is executed
     /// - Then:
     ///    - the credentials should be cleared
-    func testClearCredentials() {
+    func testClearCredentials() async {
         let mockedData = "mock"
         let expectation = expectation(description: "clearCredentialHandlerInvoked")
 
@@ -47,10 +47,10 @@ class ClearCredentialsTests: XCTestCase {
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest"))
 
         let action = ClearCredentialStore(dataStoreType: .amplifyCredentials)
-        action.execute(withDispatcher: MockDispatcher { _ in },
+        await action.execute(withDispatcher: MockDispatcher { _ in },
                         environment: environment)
 
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
     /// Test is responsible to check if configuration error is correctly caught by the action
@@ -59,7 +59,7 @@ class ClearCredentialsTests: XCTestCase {
     /// - When: The clear credential action  is executed
     /// - Then:
     ///    - The action should throw an error
-    func testClearCredentialsInvalidEnvironment() {
+    func testClearCredentialsInvalidEnvironment() async {
         let expectation = expectation(description: "throwClearCredentialConfigurationError")
 
         let expectedError = KeychainStoreError.configuration(
@@ -68,7 +68,7 @@ class ClearCredentialsTests: XCTestCase {
         let environment = MockInvalidEnvironment()
 
         let action = ClearCredentialStore(dataStoreType: .amplifyCredentials)
-        action.execute(withDispatcher: MockDispatcher { event in
+        await action.execute(withDispatcher: MockDispatcher { event in
 
             guard let event = event as? CredentialStoreEvent else {
                 XCTFail("Expected event to be CredentialStoreEvent")
@@ -82,7 +82,7 @@ class ClearCredentialsTests: XCTestCase {
             }
         }, environment: environment)
 
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
     /// Test is responsible to check if the clear credentials handle a known error
@@ -91,7 +91,7 @@ class ClearCredentialsTests: XCTestCase {
     /// - When: The clear credential action is executed
     /// - Then:
     ///    - the action should throw a known error
-    func testClearCredentialsKnownException() {
+    func testClearCredentialsKnownException() async {
         let mockedData = "mock"
         let expectation = expectation(description: "clearCredentialErrorInvoked")
 
@@ -122,7 +122,7 @@ class ClearCredentialsTests: XCTestCase {
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest"))
 
         let action = ClearCredentialStore(dataStoreType: .amplifyCredentials)
-        action.execute(withDispatcher: MockDispatcher { event in
+        await action.execute(withDispatcher: MockDispatcher { event in
 
             guard let event = event as? CredentialStoreEvent else {
                 XCTFail("Expected event to be CredentialStoreEvent")
@@ -136,7 +136,7 @@ class ClearCredentialsTests: XCTestCase {
             }
         }, environment: environment)
 
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
     /// Test is responsible to check if the clear credentials handle an unknown error
@@ -145,7 +145,7 @@ class ClearCredentialsTests: XCTestCase {
     /// - When: The clear credential action is executed
     /// - Then:
     ///    - the action should throw an  unknown error
-    func testClearCredentialsUnknownKnownException() {
+    func testClearCredentialsUnknownKnownException() async {
         let mockedData = "mock"
         let expectation = expectation(description: "clearCredentialErrorInvoked")
 
@@ -177,7 +177,7 @@ class ClearCredentialsTests: XCTestCase {
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest"))
 
         let action = ClearCredentialStore(dataStoreType: .amplifyCredentials)
-        action.execute(withDispatcher: MockDispatcher { event in
+        await action.execute(withDispatcher: MockDispatcher { event in
 
             guard let event = event as? CredentialStoreEvent else {
                 XCTFail("Expected event to be CredentialStoreEvent")
@@ -191,7 +191,7 @@ class ClearCredentialsTests: XCTestCase {
             }
         }, environment: environment)
 
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
 }

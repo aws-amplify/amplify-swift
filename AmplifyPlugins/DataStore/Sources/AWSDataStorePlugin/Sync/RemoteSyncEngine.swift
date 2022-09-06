@@ -20,7 +20,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     private var authModeStrategy: AuthModeStrategy
 
     // Assigned at `start`
-    weak var api: APICategoryGraphQLBehavior?
+    weak var api: APICategoryGraphQLBehaviorExtended?
     weak var auth: AuthCategoryBehavior?
 
     // Assigned and released inside `performInitialQueries`, but we maintain a reference so we can `reset`
@@ -196,7 +196,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     }
     // swiftlint:enable cyclomatic_complexity
 
-    func start(api: APICategoryGraphQLBehavior = Amplify.API, auth: AuthCategoryBehavior? = Amplify.Auth) {
+    func start(api: APICategoryGraphQLBehaviorExtended, auth: AuthCategoryBehavior?) {
         guard storageAdapter != nil else {
             log.error(error: DataStoreError.nilStorageAdapter())
             remoteSyncTopicPublisher.send(completion: .failure(DataStoreError.nilStorageAdapter()))
@@ -272,7 +272,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         }
     }
     
-    private func initializeSubscriptions(api: APICategoryGraphQLBehavior,
+    private func initializeSubscriptions(api: APICategoryGraphQLBehaviorExtended,
                                          storageAdapter: StorageEngineAdapter) async {
         log.debug(#function)
         let syncableModelSchemas = ModelRegistry.modelSchemas.filter { $0.isSyncable }
@@ -354,7 +354,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         reconciliationQueue.start()
     }
 
-    private func startMutationQueue(api: APICategoryGraphQLBehavior,
+    private func startMutationQueue(api: APICategoryGraphQLBehaviorExtended,
                                     mutationEventPublisher: MutationEventPublisher,
                                     reconciliationQueue: IncomingEventReconciliationQueue?) {
         log.debug(#function)

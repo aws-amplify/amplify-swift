@@ -11,13 +11,13 @@ import XCTest
 
 class InitializeFetchAuthSessionTests: XCTestCase {
 
-    func testInitializeUserPoolTokens() {
+    func testInitializeUserPoolTokens()  async {
         let expectation = expectation(description: "initializeUserPool")
         let action = InitializeFetchAuthSessionWithUserPool(signedInData: .testData)
 
         let environment = Defaults.makeDefaultAuthEnvironment()
 
-        action.execute(withDispatcher: MockDispatcher { event in
+        await action.execute(withDispatcher: MockDispatcher { event in
 
                 guard let event = event as? FetchAuthSessionEvent else {
                     XCTFail("Expected event to be FetchAuthSessionEvent")
@@ -32,7 +32,7 @@ class InitializeFetchAuthSessionTests: XCTestCase {
             environment: environment
         )
 
-        waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 0.1)
     }
 
 }

@@ -31,35 +31,21 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
     /// - Then:
     ///    - The request should be successful and the email attribute should have the correct value
     ///
-    func testSuccessfulFetchAttribute() throws {
+    func testSuccessfulFetchAttribute() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
-        let signInExpectation = expectation(description: "SignIn operation should complete")
-        AuthSignInHelper.registerAndSignInUser(username: username,
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
                                                password: password,
-                                               email: defaultTestEmail) { didSucceed, error in
-            signInExpectation.fulfill()
-            XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
+                                               email: defaultTestEmail)
+        XCTAssertTrue(didSucceed, "SignIn operation failed")
+
+        let attributes = try await Amplify.Auth.fetchUserAttributes()
+        if let emailAttribute = attributes.filter({ $0.key == .email }).first {
+            XCTAssertEqual(emailAttribute.value, self.defaultTestEmail)
+        } else {
+            XCTFail("Email attribute not found")
         }
-        wait(for: [signInExpectation], timeout: networkTimeout)
-
-        let fetchUserAttributeExpectation = expectation(description: "Fetch User Attribute operation should complete")
-
-        _ = Amplify.Auth.fetchUserAttributes(listener: { result in
-            switch result {
-            case .success(let attributes):
-                if let emailAttribute = attributes.filter({ $0.key == .email }).first {
-                    XCTAssertEqual(emailAttribute.value, self.defaultTestEmail)
-                } else {
-                    XCTFail("Email attribute not found")
-                }
-                fetchUserAttributeExpectation.fulfill()
-            case .failure(let error):
-                XCTFail("Failed to fetch user attribute with \(error)")
-            }
-        })
-        wait(for: [fetchUserAttributeExpectation], timeout: networkTimeout)
     }
 
     /// Test updating the user's email attribute.
@@ -74,49 +60,26 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
     /// - Then:
     ///    - The request should be successful and the email specified should receive a confirmation code
     ///
-    func testSuccessfulUpdateEmailAttribute() throws {
+    func testSuccessfulUpdateEmailAttribute() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
         let updatedEmail = "\(username)@amazon.com"
 
-        let signInExpectation = expectation(description: "SignIn operation should complete")
-        AuthSignInHelper.registerAndSignInUser(username: username,
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
                                                password: password,
-                                               email: defaultTestEmail) { didSucceed, error in
-            signInExpectation.fulfill()
-            XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
-        }
-        wait(for: [signInExpectation], timeout: networkTimeout)
+                                               email: defaultTestEmail)
+        XCTAssertTrue(didSucceed, "SignIn operation failed")
 
-        let updateExpectation = expectation(description: "Update operation should complete")
         let pluginOptions = AWSUpdateUserAttributeOptions(metadata: ["mydata": "myvalue"])
         let options = AuthUpdateUserAttributeRequest.Options(pluginOptions: pluginOptions)
-        _ = Amplify.Auth.update(userAttribute: AuthUserAttribute(.email, value: updatedEmail), options: options) { result in
-            switch result {
-            case .success:
-                updateExpectation.fulfill()
-            case .failure(let error):
-                XCTFail("Failed to update user attribute with \(error)")
-            }
+        _ = try await Amplify.Auth.update(userAttribute: AuthUserAttribute(.email, value: updatedEmail), options: options)
+
+        let updatedAttributes = try await Amplify.Auth.fetchUserAttributes()
+        if let emailAttribute = updatedAttributes.filter({ $0.key == .email }).first {
+            XCTAssertEqual(emailAttribute.value, updatedEmail)
+        } else {
+            XCTFail("Email attribute not found")
         }
-        wait(for: [updateExpectation], timeout: networkTimeout)
-
-        let fetchUserAttributeExpectation = expectation(description: "Fetch User Attribute operation should complete")
-
-        _ = Amplify.Auth.fetchUserAttributes(listener: { result in
-            switch result {
-            case .success(let attributes):
-                if let emailAttribute = attributes.filter({ $0.key == .email }).first {
-                    XCTAssertEqual(emailAttribute.value, updatedEmail)
-                } else {
-                    XCTFail("Email attribute not found")
-                }
-                fetchUserAttributeExpectation.fulfill()
-            case .failure(let error):
-                XCTFail("Failed to fetch user attribute with \(error)")
-            }
-        })
-        wait(for: [fetchUserAttributeExpectation], timeout: networkTimeout)
     }
 
     /// Test updating the user's email and name attributes.
@@ -131,61 +94,37 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
     /// - Then:
     ///    - The request should be successful and the email, name specified should receive a confirmation code
     ///
-    func testSuccessfulUpdateOfMultipleAttributes() throws {
+    func testSuccessfulUpdateOfMultipleAttributes() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
         let updatedFamilyName = "\(username)@amazon.com"
         let updatedName = "Name\(UUID().uuidString)"
 
-        let signInExpectation = expectation(description: "SignIn operation should complete")
-        AuthSignInHelper.registerAndSignInUser(username: username,
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
                                                password: password,
-                                               email: defaultTestEmail) { didSucceed, error in
-            signInExpectation.fulfill()
-            XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
-        }
-        wait(for: [signInExpectation], timeout: networkTimeout)
+                                               email: defaultTestEmail)
+        XCTAssertTrue(didSucceed, "SignIn operation failed")
 
-        let updateExpectation = expectation(description: "Update operation should complete")
         let pluginOptions = AWSUpdateUserAttributesOptions(metadata: ["mydata": "myvalue"])
         let options = AuthUpdateUserAttributesRequest.Options(pluginOptions: pluginOptions)
         let attributes = [
             AuthUserAttribute(.familyName, value: updatedFamilyName),
             AuthUserAttribute(.name, value: updatedName)
         ]
-        _ = Amplify.Auth.update(
-            userAttributes: attributes, options: options) { result in
-            switch result {
-            case .success:
-                updateExpectation.fulfill()
-            case .failure(let error):
-                XCTFail("Failed to update user attribute with \(error)")
-            }
+        _ = try await Amplify.Auth.update(userAttributes: attributes, options: options)
+
+        let updatedAttributes = try await Amplify.Auth.fetchUserAttributes()
+        if let familyNameAttribute = updatedAttributes.filter({ $0.key == .familyName }).first {
+            XCTAssertEqual(familyNameAttribute.value, updatedFamilyName)
+        } else {
+            XCTFail("family name attribute not found")
         }
-        wait(for: [updateExpectation], timeout: networkTimeout)
 
-        let fetchUserAttributeExpectation = expectation(description: "Fetch User Attribute operation should complete")
-
-        _ = Amplify.Auth.fetchUserAttributes(listener: { result in
-            switch result {
-            case .success(let attributes):
-                if let emailAttribute = attributes.filter({ $0.key == .familyName }).first {
-                    XCTAssertEqual(emailAttribute.value, updatedFamilyName)
-                } else {
-                    XCTFail("Email attribute not found")
-                }
-
-                if let emailAttribute = attributes.filter({ $0.key == .name }).first {
-                    XCTAssertEqual(emailAttribute.value, updatedName)
-                } else {
-                    XCTFail("Email attribute not found")
-                }
-                fetchUserAttributeExpectation.fulfill()
-            case .failure(let error):
-                XCTFail("Failed to fetch user attribute with \(error)")
-            }
-        })
-        wait(for: [fetchUserAttributeExpectation], timeout: networkTimeout)
+        if let nameAttribute = attributes.filter({ $0.key == .name }).first {
+            XCTAssertEqual(nameAttribute.value, updatedName)
+        } else {
+            XCTFail("name attribute not found")
+        }
     }
 
     /// Test resending code for the user's updated email attribute.
@@ -200,46 +139,20 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
     /// - Then:
     ///    - The request should be successful and the email specified should receive a second confirmation code
     ///
-    func testSuccessfulResendConfirmationCodeWithUpdatedEmail() throws {
+    func testSuccessfulResendConfirmationCodeWithUpdatedEmail() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
         let updatedEmail = "\(username)@amazon.com"
 
-        let signInExpectation = expectation(description: "SignIn operation should complete")
-        AuthSignInHelper.registerAndSignInUser(username: username,
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
                                                password: password,
-                                               email: defaultTestEmail) { didSucceed, error in
-            signInExpectation.fulfill()
-            XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
-        }
-        wait(for: [signInExpectation], timeout: networkTimeout)
+                                               email: defaultTestEmail)
+        XCTAssertTrue(didSucceed, "SignIn operation failed")
 
-        let updateExpectation = expectation(description: "Update operation should complete")
-
-        _ = Amplify.Auth.update(userAttribute: AuthUserAttribute(.email, value: updatedEmail)) { result in
-            switch result {
-            case .success:
-                updateExpectation.fulfill()
-            case .failure(let error):
-                XCTFail("Failed to update user attribute with \(error)")
-            }
-        }
-        wait(for: [updateExpectation], timeout: networkTimeout)
-
-        let resendExpectation = expectation(description: "ResendConfirmationCode operation should complete")
-
+        _ = try await Amplify.Auth.update(userAttribute: AuthUserAttribute(.email, value: updatedEmail))
         let pluginOptions = AWSAttributeResendConfirmationCodeOptions(metadata: ["mydata": "myvalue"])
         let options = AuthAttributeResendConfirmationCodeRequest.Options(pluginOptions: pluginOptions)
-        _ = Amplify.Auth.resendConfirmationCode(for: .email, options: options) { result in
-            switch result {
-            case .success(let deliveryDetails):
-                print("Resend code send to - \(deliveryDetails)")
-                resendExpectation.fulfill()
-            case .failure(let error):
-                print("Resend code failed with error \(error)")
-            }
-        }
-        wait(for: [resendExpectation], timeout: networkTimeout)
+        _ = try await Amplify.Auth.resendConfirmationCode(for: .email, options: options)
     }
 
     /// Test resending code for the user's updated email attribute.
@@ -254,33 +167,18 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
     /// - Then:
     ///    - The request should be successful and the email specified should receive a second confirmation code
     ///
-    func testSuccessfulResendConfirmationCode() throws {
+    func testSuccessfulResendConfirmationCode() async throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
 
-        let signInExpectation = expectation(description: "SignIn operation should complete")
-        AuthSignInHelper.registerAndSignInUser(username: username,
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
                                                password: password,
-                                               email: defaultTestEmail) { didSucceed, error in
-            signInExpectation.fulfill()
-            XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
-        }
-        wait(for: [signInExpectation], timeout: networkTimeout)
-
-        let resendExpectation = expectation(description: "ResendConfirmationCode operation should complete")
+                                               email: defaultTestEmail)
+        XCTAssertTrue(didSucceed, "SignIn operation failed")
 
         let pluginOptions = AWSAttributeResendConfirmationCodeOptions(metadata: ["mydata": "myvalue"])
         let options = AuthAttributeResendConfirmationCodeRequest.Options(pluginOptions: pluginOptions)
-        _ = Amplify.Auth.resendConfirmationCode(for: .email, options: options) { result in
-            switch result {
-            case .success(let deliveryDetails):
-                print("Resend code send to - \(deliveryDetails)")
-                resendExpectation.fulfill()
-            case .failure(let error):
-                print("Resend code failed with error \(error)")
-            }
-        }
-        wait(for: [resendExpectation], timeout: networkTimeout)
+        _ = try await Amplify.Auth.resendConfirmationCode(for: .email, options: options)
     }
 
     /// Test changing/updating users password.
@@ -291,46 +189,23 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
     /// - Then:
     ///    - The request should be successful and the password should be updated
     ///
-    func testSuccessfulChangePassword() throws {
+    func testSuccessfulChangePassword() async throws {
         let username = "integTest\(UUID().uuidString)"
         let oldPassword = "P123@\(UUID().uuidString)"
         let updatedPassword = "P123@\(UUID().uuidString)"
 
-        let signInExpectation = expectation(description: "SignIn operation should complete")
-        AuthSignInHelper.registerAndSignInUser(username: username,
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
                                                password: oldPassword,
-                                               email: defaultTestEmail) { didSucceed, error in
-            signInExpectation.fulfill()
-            XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
+                                               email: defaultTestEmail)
+        XCTAssertTrue(didSucceed, "SignIn operation failed")
+
+        try await Amplify.Auth.update(oldPassword: oldPassword, to: updatedPassword)
+
+        let attributes = try await Amplify.Auth.fetchUserAttributes()
+        if let emailAttribute = attributes.filter({ $0.key == .email }).first {
+            XCTAssertEqual(emailAttribute.value, self.defaultTestEmail)
+        } else {
+            XCTFail("Email attribute not found")
         }
-        wait(for: [signInExpectation], timeout: networkTimeout)
-
-        let changePasswordExpectation = expectation(description: "Change operation should complete")
-
-        _ = Amplify.Auth.update(oldPassword: oldPassword, to: updatedPassword) { result in
-            switch result {
-            case .success:
-                changePasswordExpectation.fulfill()
-            case .failure(let error):
-                print("Failed to change password \(error)")
-            }
-        }
-        wait(for: [changePasswordExpectation], timeout: networkTimeout)
-
-        let fetchUserAttributeExpectation = expectation(description: "Fetch User Attribute operation should complete")
-
-        _ = Amplify.Auth.fetchUserAttributes(listener: { result in
-            switch result {
-            case .success(let attributes):
-                if let emailAttribute = attributes.filter({ $0.key == .email }).first {
-                    XCTAssertEqual(emailAttribute.value, self.defaultTestEmail)
-                } else {
-                    XCTFail("Email attribute not found")
-                }
-                fetchUserAttributeExpectation.fulfill()
-            case .failure(let error):
-                XCTFail("Failed to fetch user attribute with \(error)")
-            }
-        })
-        wait(for: [fetchUserAttributeExpectation], timeout: networkTimeout)
-    }}
+    }
+}

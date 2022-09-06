@@ -12,72 +12,72 @@ import AWSCognitoIdentityProvider
 struct UserPoolSignInHelper {
 
     static func checkNextStep(_ signInState: SignInState)
-    -> Result<AuthSignInResult, AuthError>? {
+    throws -> AuthSignInResult? {
 
         if case .signingInWithSRP(let srpState, _) = signInState,
            case .error(let signInError) = srpState {
-            return validateError(signInError: signInError)
+            return try validateError(signInError: signInError)
         } else if case .signingInWithSRPCustom(let srpState, _) = signInState,
                   case .error(let signInError) = srpState {
-            return validateError(signInError: signInError)
+            return try validateError(signInError: signInError)
         } else if case .signingInViaMigrateAuth(let migratedAuthState, _) = signInState,
                   case .error(let signInError) = migratedAuthState {
-            return validateError(signInError: signInError)
+            return try validateError(signInError: signInError)
         } else if case .signingInWithCustom(let customAuthState, _) = signInState,
                   case .error(let signInError) = customAuthState {
-            return validateError(signInError: signInError)
+            return try validateError(signInError: signInError)
         } else if case .resolvingChallenge(let challengeState, let challengeType) = signInState,
                   case .waitingForAnswer(let challenge) = challengeState {
-            return validateResult(for: challengeType, with: challenge)
+            return try validateResult(for: challengeType, with: challenge)
         } else if case .signingInWithHostedUI(let hostedUIState) = signInState,
                   case .error(let hostedUIError) = hostedUIState {
-            return validateError(signInError: hostedUIError)
+            return try validateError(signInError: hostedUIError)
         }
         return nil
     }
 
-    private static func validateResult(for challengeType: AuthChallengeType, with challenge: RespondToAuthChallenge) -> Result<AuthSignInResult, AuthError> {
+    private static func validateResult(for challengeType: AuthChallengeType,
+                                       with challenge: RespondToAuthChallenge)
+    throws -> AuthSignInResult {
         switch challengeType {
         case .smsMfa:
             let delivery = challenge.codeDeliveryDetails
-            return .success(.init(nextStep: .confirmSignInWithSMSMFACode(delivery, challenge.parameters)))
+            return .init(nextStep: .confirmSignInWithSMSMFACode(delivery, challenge.parameters))
         case .customChallenge:
-            return .success(.init(nextStep: .confirmSignInWithCustomChallenge(challenge.parameters)))
+            return .init(nextStep: .confirmSignInWithCustomChallenge(challenge.parameters))
         case .newPasswordRequired:
-            return .success(.init(nextStep: .confirmSignInWithNewPassword(challenge.parameters)))
+            return .init(nextStep: .confirmSignInWithNewPassword(challenge.parameters))
         case .unknown:
-            return .failure(.unknown("Challenge not supported", nil))
+            throw AuthError.unknown("Challenge not supported", nil)
         }
     }
 
-    private static func validateError(signInError: SignInError) -> Result<AuthSignInResult, AuthError> {
+    private static func validateError(signInError: SignInError) throws -> AuthSignInResult {
         if signInError.isUserUnConfirmed {
-            return .success(AuthSignInResult(nextStep: .confirmSignUp(nil)))
+            return AuthSignInResult(nextStep: .confirmSignUp(nil))
         } else if signInError.isResetPassword {
-            return .success(AuthSignInResult(nextStep: .resetPassword(nil)))
+            return AuthSignInResult(nextStep: .resetPassword(nil))
         } else {
-            return .failure(signInError.authError)
+            throw signInError.authError
         }
     }
 
-    static func sendRespondToAuth(request: RespondToAuthChallengeInput,
-                                  for username: String,
-                                  environment: UserPoolEnvironment,
-                                  callback: @escaping (StateMachineEvent) -> Void) throws {
+    static func sendRespondToAuth(
+        request: RespondToAuthChallengeInput,
+        for username: String,
+        environment: UserPoolEnvironment) async throws -> StateMachineEvent {
+            
+            let client = try environment.cognitoUserPoolFactory()
 
-        let client = try environment.cognitoUserPoolFactory()
-
-        Task {
             do {
                 let response = try await client.respondToAuthChallenge(input: request)
                 let event = try self.parseResponse(response, for: username)
-                callback(event)
+                return event
             } catch {
                 let authError = SignInError.service(error: error)
-                callback(SignInEvent(eventType: .throwAuthError(authError)))
+                return SignInEvent(eventType: .throwAuthError(authError))
             }
         }
-    }
 
     static func parseResponse(
         _ response: SignInResponseBehavior,

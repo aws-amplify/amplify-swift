@@ -8,50 +8,24 @@
 import Amplify
 import XCTest
 
-typealias CompletionType = (Bool, AuthError?) -> Void
-
 enum AuthSignInHelper {
 
-    static func signUpUser(username: String,
-                           password: String,
-                           email: String,
-                           completionHandler: @escaping CompletionType) {
-
+    static func signUpUser(username: String, password: String, email: String) async throws -> Bool {
         let options = AuthSignUpRequest.Options(userAttributes: [AuthUserAttribute(.email, value: email)])
-        _ = Amplify.Auth.signUp(username: username, password: password, options: options) { result in
-            switch result {
-            case .success(let signUpResult):
-                completionHandler(signUpResult.isSignUpComplete, nil)
-            case .failure(let error):
-                completionHandler(false, error)
-            }
-        }
+        let result = try await Amplify.Auth.signUp(username: username, password: password, options: options)
+        return result.isSignUpComplete
     }
 
-    static func signInUser(username: String, password: String, completionHandler: @escaping CompletionType) {
-        _ = Amplify.Auth.signIn(username: username,
-                                password: password) { result in
-            switch result {
-            case .success(let signInResult):
-                completionHandler(signInResult.isSignedIn, nil)
-            case .failure(let error):
-                completionHandler(false, error)
-            }
-
-        }
+    static func signInUser(username: String, password: String) async throws -> AuthSignInResult {
+        return try await Amplify.Auth.signIn(username: username, password: password, options: nil)
     }
 
-    static func registerAndSignInUser(username: String,
-                                      password: String,
-                                      email: String,
-                                      completionHandler: @escaping CompletionType) {
-
-        AuthSignInHelper.signUpUser(username: username, password: password, email: email) { signUpSuccess, error in
-            guard signUpSuccess else {
-                completionHandler(signUpSuccess, error)
-                return
-            }
-            AuthSignInHelper.signInUser(username: username, password: password, completionHandler: completionHandler)
+    static func registerAndSignInUser(username: String, password: String, email: String) async throws -> Bool {
+        let signedUp = try await AuthSignInHelper.signUpUser(username: username, password: password, email: email)
+        guard signedUp else {
+            throw AuthError.invalidState("Auth sign up failed", "", nil)
         }
+        let result = try await AuthSignInHelper.signInUser(username: username, password: password)
+        return result.isSignedIn
     }
 }

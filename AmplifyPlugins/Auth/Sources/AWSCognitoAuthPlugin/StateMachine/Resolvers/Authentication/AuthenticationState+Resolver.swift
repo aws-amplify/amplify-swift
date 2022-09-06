@@ -168,6 +168,13 @@ extension AuthenticationState {
             case .signInRequested(let signInData):
                 let action = InitializeSignInFlow(signInEventData: signInData)
                 return .init(newState: .signingIn(.notStarted), actions: [action])
+            case .signOutRequested(let eventData):
+                let action = InitiateGuestSignOut(signOutEventData: eventData)
+                let signOutState = SignOutState.notStarted
+                return .init(
+                    newState: AuthenticationState.signingOut(signOutState),
+                    actions: [action]
+                )
             default:
                 return .from(.signedOut(currentSignedOutData))
             }

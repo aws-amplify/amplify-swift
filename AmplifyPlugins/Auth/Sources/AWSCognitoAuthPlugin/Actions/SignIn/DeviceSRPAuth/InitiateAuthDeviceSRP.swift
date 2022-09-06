@@ -18,7 +18,7 @@ struct InitiateAuthDeviceSRP: Action {
     let authResponse: SignInResponseBehavior
 
     func execute(withDispatcher dispatcher: EventDispatcher,
-                 environment: Environment) {
+                 environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         do {
@@ -58,19 +58,19 @@ struct InitiateAuthDeviceSRP: Action {
 
                 }
                 logVerbose("\(#fileID) Sending event \(event)", environment: srpEnv)
-                dispatcher.send(event)
+                await dispatcher.send(event)
             }
         } catch let error as SignInError {
             logVerbose("\(#fileID) Raised error \(error)", environment: environment)
             let event = SignInEvent(eventType: .throwAuthError(error))
-            dispatcher.send(event)
+            await dispatcher.send(event)
         } catch {
             logVerbose("\(#fileID) Caught error \(error)", environment: environment)
             let authError = SignInError.service(error: error)
             let event = SignInEvent(
                 eventType: .throwAuthError(authError)
             )
-            dispatcher.send(event)
+            await dispatcher.send(event)
         }
     }
 

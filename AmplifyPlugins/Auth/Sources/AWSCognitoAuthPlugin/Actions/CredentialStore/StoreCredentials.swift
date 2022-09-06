@@ -14,7 +14,7 @@ struct StoreCredentials: Action {
 
     let credentials: CredentialStoreData
 
-    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) {
+    func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
@@ -23,7 +23,7 @@ struct StoreCredentials: Action {
                 eventType: .throwError(KeychainStoreError.configuration(
                     message: AuthPluginErrorConstants.configurationError)))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
             return
         }
         let credentialStoreEnvironment = credentialEnvironment.credentialStoreEnvironment
@@ -43,16 +43,16 @@ struct StoreCredentials: Action {
             let event = CredentialStoreEvent(
                 eventType: .completedOperation(credentials))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
         } catch let error as KeychainStoreError {
             let event = CredentialStoreEvent(eventType: .throwError(error))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
         } catch {
             let event = CredentialStoreEvent(
                 eventType: .throwError(KeychainStoreError.unknown("An unknown error occurred", error)))
             logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-            dispatcher.send(event)
+            await dispatcher.send(event)
         }
 
     }

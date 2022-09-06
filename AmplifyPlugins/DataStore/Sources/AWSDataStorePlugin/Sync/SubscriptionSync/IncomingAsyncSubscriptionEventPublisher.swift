@@ -47,7 +47,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
     private let modelName: ModelName
 
     init(modelSchema: ModelSchema,
-         api: APICategoryGraphQLBehavior,
+         api: APICategoryGraphQLBehaviorExtended,
          modelPredicate: QueryPredicate?,
          auth: AuthCategoryBehavior?,
          authModeStrategy: AuthModeStrategy,
@@ -195,7 +195,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
 
     static func makeAPIRequest(for modelSchema: ModelSchema,
                                subscriptionType: GraphQLSubscriptionType,
-                               api: APICategoryGraphQLBehavior,
+                               api: APICategoryGraphQLBehaviorExtended,
                                auth: AuthCategoryBehavior?,
                                authType: AWSAuthorizationType?,
                                awsAuthService: AWSAuthServiceBehavior) async -> GraphQLRequest<Payload> {
@@ -225,7 +225,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         return request
     }
 
-    static func hasOIDCAuthProviderAvailable(api: APICategoryGraphQLBehavior) -> AmplifyOIDCAuthProvider? {
+    static func hasOIDCAuthProviderAvailable(api: APICategoryGraphQLBehaviorExtended) -> AmplifyOIDCAuthProvider? {
         if let apiPlugin = api as? APICategoryAuthProviderFactoryBehavior,
             let oidcAuthProvider = apiPlugin.apiAuthProviderFactory().oidcAuthProvider() {
             return oidcAuthProvider
@@ -282,7 +282,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
 extension IncomingAsyncSubscriptionEventPublisher {
     static func apiRequestFactoryFor(for modelSchema: ModelSchema,
                                      subscriptionType: GraphQLSubscriptionType,
-                                     api: APICategoryGraphQLBehavior,
+                                     api: APICategoryGraphQLBehaviorExtended,
                                      auth: AuthCategoryBehavior?,
                                      awsAuthService: AWSAuthServiceBehavior,
                                      authTypeProvider: AWSAuthorizationTypeIterator) -> RetryableGraphQLOperation<Payload>.RequestFactory {

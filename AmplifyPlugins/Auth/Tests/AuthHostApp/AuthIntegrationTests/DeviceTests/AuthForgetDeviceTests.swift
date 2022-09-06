@@ -103,24 +103,4 @@ class AuthForgetDeviceTests: AWSAuthBaseTest {
 //        }
 //        wait(for: [fetchDevicesExpectation], timeout: networkTimeout)
 //    }
-
-    /// Calling cancel in forgetDevice operation should cancel
-    ///
-    /// - Given: A valid user session
-    /// - When:
-    ///    - I invoke forgetDevice and then call cancel
-    /// - Then:
-    ///    - I should not get any result back
-    ///
-    func testCancelForgetDevice() {
-        let operationExpectation = expectation(description: "Operation should not complete")
-        operationExpectation.isInverted = true
-        let operation = Amplify.Auth.forgetDevice { result in
-            operationExpectation.fulfill()
-            XCTFail("Received result \(result)")
-        }
-        XCTAssertNotNil(operation, "forgetDevice operations should not be nil")
-        operation.cancel()
-        wait(for: [operationExpectation], timeout: networkTimeout)
-    }
 }

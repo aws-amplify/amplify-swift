@@ -30,44 +30,17 @@ class AuthResetPasswordTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get a userNotFound error.
     ///
-    func testUserNotFoundResetPassword() {
-        let resetPasswordExpectation = expectation(description: "Received event result from resetPassword")
-        _ = Amplify.Auth.resetPassword(for: "user-non-exists", options: nil) { result in
-            switch result {
-            case .success:
-                XCTFail("resetPassword with non existing user should not return result")
-            case .failure(let error):
-                guard let cognitoError = error.underlyingError as? AWSCognitoAuthError,
-                      case .userNotFound = cognitoError else {
-                    print(error)
-                    XCTFail("Should return userNotFound")
-                    return
-                }
-                resetPasswordExpectation.fulfill()
+    func testUserNotFoundResetPassword() async throws {
+        do {
+            try await Amplify.Auth.resetPassword(for: "user-non-exists", options: nil)
+            XCTFail("resetPassword with non existing user should not return result")
+        } catch {
+            guard let authError = error as? AuthError, let cognitoError = authError.underlyingError as? AWSCognitoAuthError,
+                  case .userNotFound = cognitoError else {
+                print(error)
+                XCTFail("Should return userNotFound")
+                return
             }
         }
-        wait(for: [resetPasswordExpectation], timeout: networkTimeout)
-    }
-
-    /// Calling cancel in resetPassword operation should cancel
-    ///
-    /// - Given: A valid username
-    /// - When:
-    ///    - I invoke resetPassword with the username and then call cancel
-    /// - Then:
-    ///    - I should not get any result back
-    ///
-    func testCancelResetPassword() {
-        let username = "integTest\(UUID().uuidString)"
-
-        let operationExpectation = expectation(description: "Operation should not complete")
-        operationExpectation.isInverted = true
-        let operation = Amplify.Auth.resetPassword(for: username, options: nil) { result in
-            operationExpectation.fulfill()
-            XCTFail("Received result \(result)")
-        }
-        XCTAssertNotNil(operation, "resetPassword operations should not be nil")
-        operation.cancel()
-        wait(for: [operationExpectation], timeout: networkTimeout)
     }
 }

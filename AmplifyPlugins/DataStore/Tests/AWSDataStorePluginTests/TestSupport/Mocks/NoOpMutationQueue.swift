@@ -7,6 +7,7 @@
 
 @testable import Amplify
 @testable import AWSDataStorePlugin
+import AWSPluginsCore
 import Combine
 
 /// A mutation queue that takes no action on either pause or start, to let these unit tests operate on the
@@ -16,7 +17,7 @@ class NoOpMutationQueue: OutgoingMutationQueueBehavior {
         completion()
     }
 
-    func startSyncingToCloud(api: APICategoryGraphQLBehavior,
+    func startSyncingToCloud(api: APICategoryGraphQLBehaviorExtended,
                              mutationEventPublisher: MutationEventPublisher,
                              reconciliationQueue: IncomingEventReconciliationQueue?) {
         // do nothing
