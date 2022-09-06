@@ -8,7 +8,7 @@
 import XCTest
 
 @testable import Amplify
-import AWSS3StoragePlugin
+@testable import AWSS3StoragePlugin
 import AmplifyAsyncTesting
 import AWSCognitoAuthPlugin
 
@@ -44,15 +44,13 @@ class AWSS3StoragePluginTestBase: XCTestCase {
     }
 
     override func tearDown() async throws {
+        invalidateCurrentSession()
         await Amplify.reset()
-        // Unforunately, `sleep` has been added here to get more consistent test runs. The SDK will be used with
-        // same key to create a URLSession. The `sleep` helps avoid the error:
-        // ```
-        // A background URLSession with identifier
-        // com.amazonaws.AWSS3TransferUtility.Default.Identifier.awsS3StoragePlugin already exists!`
-        // ```
-        // TODO: Remove in the future when the plugin no longer depends on the SDK and have addressed this problem.
-        sleep(5)
+        // `sleep` has been added here to get more consistent test runs.
+        // The plugin will always create a URLSession with the same key, so we need to invalidate it first.
+        // However, it needs some time to properly clean up before creating and using a new session.
+        // The `sleep` helps avoid the error: "Task created in a session that has been invalidated"
+        sleep(1)
     }
 
     // MARK: Common Helper functions
@@ -142,5 +140,18 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         await wait(name: "Sign out completed") {
             try await Amplify.Auth.signOut()
         }
+    }
+
+    private func invalidateCurrentSession() {
+        guard let plugin = try? Amplify.Storage.getPlugin(for: "awsS3StoragePlugin") as? AWSS3StoragePlugin,
+              let service = plugin.storageService as? AWSS3StorageService else {
+            print("Unable to to cast to AWSS3StorageService")
+            return
+        }
+
+        if let delegate = service.urlSession.delegate as? StorageServiceSessionDelegate {
+            delegate.storageService = nil
+        }
+        service.urlSession.invalidateAndCancel()
     }
 }
