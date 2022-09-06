@@ -32,7 +32,7 @@ class AmplifyOperationHubTests: XCTestCase {
     /// Given: An AmplifyOperation
     /// When: I invoke Hub.listen(to: operation)
     /// Then: I am notified of events for that operation, in the operation event listener format
-    func testlistenerViaListenToOperation() throws {
+    func testlistenerViaListenToOperation() async throws {
         let options = StorageListRequest.Options(pluginOptions: ["pluginDelay": 0.5])
         let request = StorageListRequest(options: options)
 
@@ -44,11 +44,11 @@ class AmplifyOperationHubTests: XCTestCase {
             listenerWasInvoked.fulfill()
         }
 
-        try waitForToken(token)
+        try await waitForToken(token)
 
         operation.doMockDispatch()
 
-        waitForExpectations(timeout: 1.0)
+        await waitForExpectations(timeout: 1.0)
     }
 
     /// Given: A configured system
@@ -101,10 +101,10 @@ class AmplifyOperationHubTests: XCTestCase {
 
     // Convenience to let tests wait for a listener to be registered. Instead of returning a bool, simply throws if the
     // listener is not registered
-    private func waitForToken(_ token: UnsubscribeToken) throws {
+    private func waitForToken(_ token: UnsubscribeToken) async throws {
         // swiftlint:disable:next force_cast
         let hubPlugin = try Amplify.Hub.getPlugin(for: AWSHubPlugin.key) as! AWSHubPlugin
-        guard try HubListenerTestUtilities.waitForListener(with: token, plugin: hubPlugin, timeout: 1.0) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: token, plugin: hubPlugin, timeout: 1.0) else {
             throw "Listener not registered"
         }
     }

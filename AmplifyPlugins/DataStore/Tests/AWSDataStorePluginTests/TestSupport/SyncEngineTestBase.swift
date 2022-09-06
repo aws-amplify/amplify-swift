@@ -192,12 +192,13 @@ class SyncEngineTestBase: XCTestCase {
         }
 
         do {
-            guard try HubListenerTestUtilities.waitForListener(with: token, timeout: 5.0) else {
+            Task {
+            guard try await HubListenerTestUtilities.waitForListener(with: token, timeout: 5.0) else {
                 XCTFail("Never registered listener for sync started")
                 return
             }
 
-            Task {
+            
                 try await startAmplify()
             }
         } catch {

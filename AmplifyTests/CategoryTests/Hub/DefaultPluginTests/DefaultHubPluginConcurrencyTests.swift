@@ -38,7 +38,7 @@ class DefaultHubPluginConcurrencyTests: XCTestCase {
     /// - ...to multiple channels
     /// - ...to multiple subscribers
     /// Then: All messages are delivered, to the correct listeners
-    func testConcurrentMessageDelivery() throws {
+    func testConcurrentMessageDelivery() async throws {
         let channelCount = 10
         let listenersPerChannel = 50
         let messagesExpectedPerListener = 10
@@ -61,7 +61,7 @@ class DefaultHubPluginConcurrencyTests: XCTestCase {
                     messageReceived.fulfill()
                 }
 
-                guard try HubListenerTestUtilities.waitForListener(with: token, plugin: plugin, timeout: 1.0) else {
+                guard try await HubListenerTestUtilities.waitForListener(with: token, plugin: plugin, timeout: 1.0) else {
                     XCTFail("Listener \(listenerIteration) on channel \(channel) not registered")
                     return
                 }

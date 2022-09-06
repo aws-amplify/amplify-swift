@@ -63,7 +63,7 @@ class RemoteSyncEngineTests: XCTestCase {
         remoteSyncEngineSink.cancel()
     }
 
-    func testFailureOnInitialSync() throws {
+    func testFailureOnInitialSync() async throws {
         let storageAdapterAvailable = expectation(description: "storageAdapterAvailable")
         let subscriptionsPaused = expectation(description: "subscriptionsPaused")
         let mutationsPaused = expectation(description: "mutationsPaused")
@@ -88,7 +88,7 @@ class RemoteSyncEngineTests: XCTestCase {
             subscriptionsEstablishedReceived.fulfill()
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
         }

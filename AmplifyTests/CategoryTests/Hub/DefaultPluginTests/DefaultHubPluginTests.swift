@@ -57,13 +57,13 @@ class DefaultHubPluginTests: XCTestCase {
     /// Given: The default Hub plugin
     /// When: I invoke listen(to:eventName:)
     /// Then: I receive messages with that event name
-    func testDefaultPluginListenEventName() throws {
+    func testDefaultPluginListenEventName() async throws {
         let expectedMessageReceived = expectation(description: "Message was received as expected")
         let unsubscribeToken = plugin.listen(to: .storage, eventName: "TEST_EVENT") { _ in
             expectedMessageReceived.fulfill()
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: unsubscribeToken, plugin: plugin, timeout: 0.5) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: unsubscribeToken, plugin: plugin, timeout: 0.5) else {
             XCTFail("Token with \(unsubscribeToken.id) was not registered")
             return
         }
@@ -75,7 +75,7 @@ class DefaultHubPluginTests: XCTestCase {
     /// Given: The default Hub plugin with a registered listener
     /// When: I dispatch a message
     /// Then: My listener is invoked with the message
-    func testDefaultPluginDispatches() throws {
+    func testDefaultPluginDispatches() async throws {
         let messageReceived = expectation(description: "Message was received")
 
         // We have other tests for multiple message delivery, and since await Amplify.reset() is known to leave in-process
@@ -86,19 +86,19 @@ class DefaultHubPluginTests: XCTestCase {
             messageReceived.fulfill()
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: token, plugin: plugin, timeout: 0.5) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: token, plugin: plugin, timeout: 0.5) else {
             XCTFail("Token with \(token.id) was not registered")
             return
         }
 
         plugin.dispatch(to: .storage, payload: HubPayload(eventName: "TEST_EVENT"))
-        waitForExpectations(timeout: 0.5)
+        await waitForExpectations(timeout: 0.5)
     }
 
     /// Given: A subscription token from a previous call to the default Hub plugin's `listen` method
     /// When: I invoke removeListener()
     /// Then: My listener is removed, and I receive no more events
-    func testDefaultPluginRemoveListener() throws {
+    func testDefaultPluginRemoveListener() async throws {
         let expectedMessageReceived = expectation(description: "Message was received as expected")
         let unexpectedMessageReceived = expectation(description: "Message was received after removing listener")
         unexpectedMessageReceived.isInverted = true
@@ -118,7 +118,7 @@ class DefaultHubPluginTests: XCTestCase {
             }
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: unsubscribeToken,
+        guard try await HubListenerTestUtilities.waitForListener(with: unsubscribeToken,
                                                               plugin: plugin,
                                                               timeout: 0.5) else {
             XCTFail("Token with \(unsubscribeToken.id) was not registered")
@@ -130,7 +130,7 @@ class DefaultHubPluginTests: XCTestCase {
 
         plugin.removeListener(unsubscribeToken)
 
-        isStillRegistered.set(
+        await isStillRegistered.set(
             try HubListenerTestUtilities.waitForListener(with: unsubscribeToken,
                                                          plugin: plugin,
                                                          timeout: 0.5)

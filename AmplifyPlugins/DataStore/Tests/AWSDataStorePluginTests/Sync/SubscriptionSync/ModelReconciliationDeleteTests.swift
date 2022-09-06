@@ -161,7 +161,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
                                                    eventName: HubPayload.EventName.DataStore.syncReceived) { _ in
             syncReceivedNotification.fulfill()
         }
-        guard try HubListenerTestUtilities.waitForListener(with: syncReceivedToken, timeout: 5.0) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: syncReceivedToken, timeout: 5.0) else {
             XCTFail("Sync listener never registered")
             return
         }
