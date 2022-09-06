@@ -33,7 +33,7 @@ struct HubListenerTestUtilities {
 
         let deadline = Date(timeIntervalSinceNow: timeout)
         while !hasListener && Date() < deadline {
-            if resolvedPlugin.hasListener(withToken: token) {
+            if await resolvedPlugin.hasListener(withToken: token) {
                 hasListener = true
                 break
             }

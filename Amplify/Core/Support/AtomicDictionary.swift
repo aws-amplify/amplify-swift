@@ -7,9 +7,7 @@
 
 import Foundation
 
-final class AtomicDictionary<Key: Hashable, Value> {
-    let lock = NSLock()
-
+actor AtomicDictionary<Key: Hashable, Value> {
     private var value: [Key: Value]
 
     init(initialValue: [Key: Value] = [Key: Value]()) {
@@ -17,48 +15,33 @@ final class AtomicDictionary<Key: Hashable, Value> {
     }
 
     var count: Int {
-        lock.execute {
-            value.count
-        }
+        value.count
     }
 
     var keys: [Key] {
-        lock.execute {
-            Array(value.keys)
-        }
+        Array(value.keys)
     }
 
     var values: [Value] {
-        lock.execute {
-            Array(value.values)
-        }
+        Array(value.values)
     }
 
     // MARK: - Functions
 
     func getValue(forKey key: Key) -> Value? {
-        lock.execute {
-            value[key]
-        }
+        value[key]
     }
 
     func removeAll() {
-        lock.execute {
-            value = [:]
-        }
+        value = [:]
     }
 
     @discardableResult
     func removeValue(forKey key: Key) -> Value? {
-        lock.execute {
-            value.removeValue(forKey: key)
-        }
+        value.removeValue(forKey: key)
     }
 
     func set(value: Value, forKey key: Key) {
-        lock.execute {
-            self.value[key] = value
-        }
+        self.value[key] = value
     }
-
 }
