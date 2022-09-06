@@ -49,7 +49,7 @@ class AuthHubEventHandlerTests: XCTestCase {
             XCTFail("Received failure with error \(error)")
         }
 
-        wait(for: [hubEventExpectation], timeout: networkTimeout)
+        await waitForExpectations(timeout: networkTimeout)
     }
 
     /// Test whether HubEvent emits a signOut event for mocked signOut operation
@@ -75,7 +75,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         }
 
         try await plugin.signOut(options: nil)
-        wait(for: [hubEventExpectation], timeout: networkTimeout)
+        await waitForExpectations(timeout: networkTimeout)
     }
 
     /// Test whether HubEvent emits a confirmSignedIn event for mocked signIn operation
@@ -106,7 +106,7 @@ class AuthHubEventHandlerTests: XCTestCase {
             XCTFail("Received failure with error \(error)")
         }
 
-        wait(for: [hubEventExpectation], timeout: networkTimeout)
+        await waitForExpectations(timeout: networkTimeout)
     }
 
     /// Test whether HubEvent emits a deletedUser event for mocked delete user operation
@@ -137,7 +137,7 @@ class AuthHubEventHandlerTests: XCTestCase {
             XCTFail("Received failure with error \(error)")
         }
         
-        wait(for: [hubEventExpectation], timeout: networkTimeout)
+        await waitForExpectations(timeout: networkTimeout)
     }
 
     /// Test whether HubEvent emits a sessionExpired event for mocked fetchSession operation with expired tokens
@@ -162,7 +162,7 @@ class AuthHubEventHandlerTests: XCTestCase {
             }
         }
         _ = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
-        wait(for: [hubEventExpectation], timeout: networkTimeout)
+        await waitForExpectations(timeout: networkTimeout)
     }
 
     /// Test whether HubEvent emits a mocked signedIn event for webUI signIn
@@ -253,7 +253,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         }
         _ = try await  plugin.federateToIdentityPool(withProviderToken: "someToken",for: .facebook)
 
-        wait(for: [hubEventExpectation], timeout: networkTimeout)
+        await waitForExpectations(timeout: networkTimeout)
     }
 
     /// Test whether HubEvent emits a federationToIdentityPoolCleared event for mocked federated operation
@@ -280,7 +280,7 @@ class AuthHubEventHandlerTests: XCTestCase {
 
         try await plugin.clearFederationToIdentityPool()
 
-        wait(for: [hubEventExpectation], timeout: networkTimeout)
+        await waitForExpectations(timeout: networkTimeout)
     }
 
     private func configurePluginForSignInEvent() {
