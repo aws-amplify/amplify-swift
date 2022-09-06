@@ -38,7 +38,6 @@ struct HubListenerTestUtilities {
                 break
             }
             try? await Task.sleep(seconds: 0.01)
-//            Thread.sleep(forTimeInterval: 0.01)
         }
 
         return hasListener
