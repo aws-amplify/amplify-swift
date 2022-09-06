@@ -176,7 +176,7 @@ class ModelReconciliationDeleteTests: SyncEngineTestBase {
         let remoteMutationSync = MutationSync(model: anyModel, syncMetadata: remoteSyncMetadata)
         valueListener(.data(.success(remoteMutationSync)))
 
-        wait(for: [syncReceivedNotification], timeout: 1.0)
+        await waitForExpectations(timeout: 1)
 
         let finalLocalMetadata = try storageAdapter.queryMutationSyncMetadata(for: model.id,
                                                                                  modelName: MockSynced.modelName)
