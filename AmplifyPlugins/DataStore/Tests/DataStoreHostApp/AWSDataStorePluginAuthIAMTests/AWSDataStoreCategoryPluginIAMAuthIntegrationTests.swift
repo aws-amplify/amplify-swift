@@ -15,18 +15,18 @@ class AWSDataStoreCategoryPluginIAMAuthIntegrationTests: AWSDataStoreAuthBaseTes
     /// When: DataStore query/mutation operations are sent with IAM
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for authenticated users
-    func testIAMAllowPrivate() {
-        setup(withModels: IAMPrivateModelRegistration(),
+    func testIAMAllowPrivate() async {
+        await setup(withModels: IAMPrivateModelRegistration(),
               testType: .defaultAuthIAM)
 
-        signIn(user: user1)
+        await signIn(user: user1)
 
         let expectations = makeExpectations()
 
-        assertDataStoreReady(expectations)
+        await assertDataStoreReady(expectations)
 
         // Query
-        assertQuerySuccess(modelType: TodoIAMPrivate.self,
+        await assertQuerySuccess(modelType: TodoIAMPrivate.self,
                            expectations) { error in
             XCTFail("Error query \(error)")
         }
@@ -34,7 +34,7 @@ class AWSDataStoreCategoryPluginIAMAuthIntegrationTests: AWSDataStoreAuthBaseTes
         let todo = TodoIAMPrivate(title: "title")
 
         // Mutations
-        assertMutations(model: todo, expectations) { error in
+        await assertMutations(model: todo, expectations) { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -45,16 +45,16 @@ class AWSDataStoreCategoryPluginIAMAuthIntegrationTests: AWSDataStoreAuthBaseTes
     /// When: DataStore query/mutation operations are sent with IAM
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for unauthenticated users
-    func testIAMAllowPublic() {
-        setup(withModels: IAMPublicModelRegistration(),
+    func testIAMAllowPublic() async{
+        await setup(withModels: IAMPublicModelRegistration(),
               testType: .defaultAuthIAM)
 
         let expectations = makeExpectations()
 
-        assertDataStoreReady(expectations)
+        await assertDataStoreReady(expectations)
 
         // Query
-        assertQuerySuccess(modelType: TodoIAMPublic.self,
+        await assertQuerySuccess(modelType: TodoIAMPublic.self,
                            expectations) { error in
             XCTFail("Error query \(error)")
         }
@@ -62,7 +62,7 @@ class AWSDataStoreCategoryPluginIAMAuthIntegrationTests: AWSDataStoreAuthBaseTes
         let todo = TodoIAMPublic(title: "title")
 
         // Mutations
-        assertMutations(model: todo, expectations) { error in
+        await assertMutations(model: todo, expectations) { error in
             XCTFail("Error mutation \(error)")
         }
 
