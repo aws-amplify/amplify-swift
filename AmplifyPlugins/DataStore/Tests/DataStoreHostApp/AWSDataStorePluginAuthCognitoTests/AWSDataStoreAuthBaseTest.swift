@@ -209,7 +209,8 @@ extension AWSDataStoreAuthBaseTest {
             let isSignedIn = try await isSignedIn()
             XCTAssert(isSignedIn)
         } catch {
-            print("Failed to signIn user with error: \(error)")
+            XCTFail("SignIn failure \(error)", file: file, line: line)
+            throw error
         }
     }
 
@@ -222,7 +223,8 @@ extension AWSDataStoreAuthBaseTest {
             let isSignedIn = try await isSignedIn()
             XCTAssertFalse(isSignedIn)
         } catch {
-            XCTFail("Failed to signOut user with error: \(error)")
+            XCTFail("SignOut failure \(error)", file: file, line: line)
+            throw error
         }
     }
 
@@ -231,32 +233,37 @@ extension AWSDataStoreAuthBaseTest {
             let authSession = try await Amplify.Auth.fetchAuthSession()
             return authSession.isSignedIn
         } catch {
-            fatalError("Failed to get auth session of signed In user with error: \(error)")
+            XCTFail("fetchAuthSession failure \(error)")
+            throw error
         }
     }
     
-   func getUserSub() async throws -> String {
-       do {
-           let authSession = try await Amplify.Auth.fetchAuthSession(options: nil)
-           let cognitoAuthSession = authSession as? AuthCognitoIdentityProvider
-           guard let userSub = try cognitoAuthSession?.getUserSub().get() else {
-               throw "Failed to get userSub"
-           }
-           return userSub
-       } catch {
-           throw error
-       }
-   }
+    func getUserSub() async throws -> String {
+        do {
+            let authSession = try await Amplify.Auth.fetchAuthSession()
+            let cognitoAuthSession = authSession as? AuthCognitoIdentityProvider
+            guard let userSub = try cognitoAuthSession?.getUserSub().get() else {
+                XCTFail("Missing userSub() from session")
+                throw "Failed to get userSub"
+            }
+            return userSub
+        } catch {
+            XCTFail("Failed to get auth session \(error)")
+            throw error
+        }
+    }
     
     func getIdentityId() async throws -> String! {
         do {
-            let authSession = try await Amplify.Auth.fetchAuthSession(options: nil)
+            let authSession = try await Amplify.Auth.fetchAuthSession()
             let cognitoAuthSession = authSession as? AuthCognitoIdentityProvider
             guard let identityId = try cognitoAuthSession?.getIdentityId().get() else {
+                XCTFail("Failed to get identityId")
                 throw "Failed to get identityId"
             }
             return identityId
         } catch {
+            XCTFail("Failed to get auth session \(error)")
             throw error
         }
     }
@@ -309,22 +316,22 @@ extension AWSDataStoreAuthBaseTest {
                 if event.eventName == dataStoreEvents.modelSynced {
                     modelSyncedCount += 1
                     if modelSyncedCount == expectedModelSynced {
-                    Task { await expectations.modelsSynced.fulfill() }
+                        Task { await expectations.modelsSynced.fulfill() }
                     }
                 }
-
+                
                 if event.eventName == dataStoreEvents.ready {
                     Task { await expectations.ready.fulfill() }
                 }
             }
             .store(in: &requests)
-
+        
         try await Amplify.DataStore.start()
         
         await waitForExpectations([expectations.subscriptionsEstablished,
                                    expectations.modelsSynced,
                                    expectations.ready],
-                             timeout: 60)
+                                  timeout: 60)
     }
     
     /// Assert that a save and a delete mutation complete successfully.
