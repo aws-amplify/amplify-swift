@@ -71,6 +71,10 @@ extension SignOutState {
                 let action = ShowHostedUISignOut(signOutEvent: signOutEventData,
                                                  signInData: signedInData)
                 return .init(newState: .signingOutHostedUI, actions: [action])
+            case .signOutGuest:
+                let action = SignOutLocally()
+                return .init(newState: .signingOutLocally(nil),
+                             actions: [action])
             default:
                 return .from(oldState)
             }
@@ -132,11 +136,11 @@ extension SignOutState {
         private func resolveSigningOutLocally(
             byApplying event: SignOutEvent,
             from oldState: SignOutState,
-            signedInData: SignedInData)
+            signedInData: SignedInData?)
         -> StateResolution<SignOutState> {
             switch event.eventType {
             case .signedOutSuccess:
-                let signedOutData = SignedOutData(lastKnownUserName: signedInData.userName)
+                let signedOutData = SignedOutData(lastKnownUserName: signedInData?.userName)
                 return .from(.signedOut(signedOutData))
             case .signedOutFailure:
                 let error = AuthenticationError.unknown(message: "Failed in clearing data from store")

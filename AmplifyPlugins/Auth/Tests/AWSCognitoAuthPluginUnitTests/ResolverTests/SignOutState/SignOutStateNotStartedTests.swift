@@ -27,7 +27,7 @@ class SignOutStateNotStartedTests: XCTestCase {
                     ).newState,
                     oldState
                 )
-            case .signOutGlobally, .revokeToken, .invokeHostedUISignOut:
+            case .signOutGlobally, .revokeToken, .invokeHostedUISignOut, .signOutGuest:
                 // Supported
                 break
             }

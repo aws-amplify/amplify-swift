@@ -89,7 +89,7 @@ class AWSAuthSignUpTaskTests: XCTestCase {
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: {MockIdentityProvider(mockSignUpResponse: signUp)})
         let task = AWSAuthSignUpTask(request, authEnvironment: authEnvironment)
-        let signUpResult = try await task.value
+        _ = try await task.value
         wait(for: [functionExpectation], timeout: 1)
     }
 }

@@ -26,13 +26,13 @@ class AWSAuthSignOutTask: AuthSignOutTask {
 
     func execute() async throws {
         await taskHelper.didStateMachineConfigured()
+        await sendSignOutEvent()
         try await doSignOut()
     }
 
     private func doSignOut() async throws {
 
         let stateSequences = await authStateMachine.listen()
-        await sendSignOutEvent()
         for await state in stateSequences {
             guard case .configured(let authNState, _) = state else {
                 let error = AuthError.invalidState("Auth State not in a valid state", AuthPluginErrorConstants.invalidStateError,nil)

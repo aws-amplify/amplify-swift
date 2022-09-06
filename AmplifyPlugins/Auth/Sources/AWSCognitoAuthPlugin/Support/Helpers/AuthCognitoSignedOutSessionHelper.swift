@@ -25,29 +25,6 @@ struct AuthCognitoSignedOutSessionHelper {
         return authSession
     }
 
-//    /// Creates a signedOut session by handling the error
-//    /// - Parameter error: Error received while fetching session information
-//    /// - Returns: SignedOut session with isSignedIn = false and appropriate error result for other values.
-//    static func makeSignedOutSession(withError error: Error) -> AWSAuthCognitoSession {
-//
-//        if let urlError = error as NSError?, urlError.domain == NSURLErrorDomain {
-//            return makeOfflineSignedOutSession()
-//
-//        } else if let awsMobileClientError = error as? AWSMobileClientError {
-//            if case .guestAccessNotAllowed = awsMobileClientError {
-//                return makeSessionWithNoGuestAccess()
-//            } else if case .identityIdUnavailable = awsMobileClientError {
-//                return makeSignedOutSessionWithServiceIssue()
-//            }
-//        }
-//        if let authError = error as? AuthError {
-//            return makeSignedOutSession(withUnhandledError: authError)
-//        } else {
-//            let authError = AuthErrorHelper.toAuthError(error)
-//            return makeSignedOutSession(withUnhandledError: authError)
-//        }
-//    }
-
     /// Guest/SignedOut session with any unhandled error
     ///
     /// The unhandled error is passed as identityId and aws credentials result. UserSub and Cognito Tokens will still

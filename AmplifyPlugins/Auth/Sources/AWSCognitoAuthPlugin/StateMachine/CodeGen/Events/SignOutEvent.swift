@@ -15,6 +15,7 @@ struct SignOutEvent: StateMachineEvent {
         case signOutGlobally(SignedInData)
         case revokeToken(SignedInData)
         case signOutLocally(SignedInData)
+        case signOutGuest
         case invokeHostedUISignOut(SignOutEventData, SignedInData)
         case signedOutSuccess
         case signedOutFailure(AuthenticationError)
@@ -38,6 +39,8 @@ struct SignOutEvent: StateMachineEvent {
             return "SignOutEvent.signedOutSuccess"
         case .signedOutFailure:
             return "SignOutEvent.signedOutFailure"
+        case .signOutGuest:
+            return "SignOutEvent.signOutGuest"
         }
     }
 
@@ -59,6 +62,7 @@ extension SignOutEvent.EventType: Equatable {
         case (.signOutGlobally, .signOutGlobally),
             (.revokeToken, .revokeToken),
             (.signOutLocally, .signOutLocally),
+            (.signOutGuest, .signOutGuest),
             (.signedOutSuccess, .signedOutSuccess),
             (.signedOutFailure, .signedOutFailure):
             return true
