@@ -47,7 +47,7 @@ struct ConfigurationHelper {
                    case .string(let authFlowTypeJSON) = authJson.value(at: "authenticationFlowType") {
 
             switch authFlowTypeJSON {
-            case "CUSTOM_AUTH": authFlowType = .custom
+            case "CUSTOM_AUTH": authFlowType = .customWithSRP
             case "USER_SRP_AUTH": authFlowType = .userSRP
             default: authFlowType = .unknown
             }

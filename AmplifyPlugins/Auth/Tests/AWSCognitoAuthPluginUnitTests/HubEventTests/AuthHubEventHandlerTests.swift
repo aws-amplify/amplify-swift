@@ -161,7 +161,7 @@ class AuthHubEventHandlerTests: XCTestCase {
                 break
             }
         }
-        let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
+        _ = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
         wait(for: [hubEventExpectation], timeout: networkTimeout)
     }
 
