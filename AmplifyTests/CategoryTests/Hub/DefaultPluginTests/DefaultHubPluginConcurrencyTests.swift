@@ -68,9 +68,11 @@ class DefaultHubPluginConcurrencyTests: XCTestCase {
                 messagesReceived.append(messageReceived)
             }
         }
+        
+        let capturedChannels = channels
 
         DispatchQueue.concurrentPerform(iterations: channels.count) { iteration in
-            let channel = channels[iteration]
+            let channel = capturedChannels[iteration]
             for messageIteration in 0 ..< messagesExpectedPerListener {
                 let payload = HubPayload(eventName: "Message \(messageIteration), channel \(channel)")
                 plugin.dispatch(to: channel, payload: payload)
