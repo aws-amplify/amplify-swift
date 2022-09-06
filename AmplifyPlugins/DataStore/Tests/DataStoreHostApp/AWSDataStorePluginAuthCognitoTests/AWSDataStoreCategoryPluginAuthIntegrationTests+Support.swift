@@ -11,16 +11,18 @@ import Amplify
 import DataStoreHostApp
 
 extension AWSDataStoreCategoryPluginAuthIntegrationTests {
-    func saveModel<T: Model>(_ model: T) {
-        let localSaveInvoked = expectation(description: "local model was saved")
-        Amplify.DataStore.save(model) { result in
-            switch result {
-            case .success(let todo):
-                localSaveInvoked.fulfill()
-            case .failure(let error):
+    func saveModel<T: Model>(_ model: T) async throws {
+        let localSaveInvoked = asyncExpectation(description: "local model was saved")
+        Task {
+            do {
+                let savedposts = try await Amplify.DataStore.save(model)
+                print("Local model was saved: \(savedposts)")
+                await localSaveInvoked.fulfill()
+            } catch {
                 XCTFail("Failed to save model \(error)")
+                throw error
             }
         }
-        wait(for: [localSaveInvoked], timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations([localSaveInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 }
