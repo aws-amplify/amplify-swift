@@ -312,10 +312,4 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
             return try session.getIdentityId().get()
         }
     }
-
-    func signOut() async {
-        await wait(name: "Sign out completed") {
-            try await Amplify.Auth.signOut()
-        }
-    }
 }

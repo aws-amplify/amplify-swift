@@ -29,10 +29,14 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
     override func setUp() async throws {
         do {
+            await Amplify.reset()
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSS3StoragePlugin())
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfiguration)
             try Amplify.configure(amplifyConfig)
+            if await Amplify.Auth.getCurrentUser() != nil {
+                await signOut()
+            }
             await signUp()
         } catch {
             XCTFail("Failed to initialize and configure Amplify \(error)")
@@ -131,6 +135,12 @@ class AWSS3StoragePluginTestBase: XCTestCase {
     func getURL(key: String, options: StorageGetURLRequest.Options? = nil) async -> URL? {
         return await wait(name: "Get URL completed", timeout: TestCommonConstants.networkTimeout) {
             return try await Amplify.Storage.getURL(key: key, options: options)
+        }
+    }
+
+    func signOut() async {
+        await wait(name: "Sign out completed") {
+            try await Amplify.Auth.signOut()
         }
     }
 }
