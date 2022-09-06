@@ -193,10 +193,6 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
 
 // MARK: - Auth helpers
 extension AWSDataStoreAuthBaseTest {
-    //Test if the user has signedIn
-    func testSignIn() async throws {
-        try await signIn(user: user1)
-    }
     /// Signin given user
     /// - Parameter user
     func signIn(user: TestUser?,
@@ -223,7 +219,7 @@ extension AWSDataStoreAuthBaseTest {
         do {
             _ = try await Amplify.Auth.signOut()
             print("signOut successfull")
-            let isSignedIn = try await !isSignedIn()
+            let isSignedIn = try await isSignedIn()
             XCTAssertFalse(isSignedIn)
         } catch {
             XCTFail("Failed to signOut user with error: \(error)")
@@ -239,48 +235,30 @@ extension AWSDataStoreAuthBaseTest {
         }
     }
     
-    // trying to catch specific errors to getUserSub() below
-    //    enum AuthError: Error {
-    //        case noAuthSession
-    //        case noAuthSessioncognito
-    //        case noUserSub
-    //    }
-    func getUserSub() async throws -> String {
-        var resultOptional: String?
-        do {
-            let authSession = try await Amplify.Auth.fetchAuthSession(options: nil)
-            let cognitoAuthSession = authSession as? AuthCognitoIdentityProvider
-            let userSub = try cognitoAuthSession?.getUserSub().get()
-            resultOptional = userSub
-        }
-        catch {
-            XCTFail("Failed to get auth session \(error)")
-        }
-        guard let result = resultOptional else {
-            XCTFail("Failed to query")
-            return ""
-        }
-        return result
-    }
-
+   func getUserSub() async throws -> String {
+       do {
+           let authSession = try await Amplify.Auth.fetchAuthSession(options: nil)
+           let cognitoAuthSession = authSession as? AuthCognitoIdentityProvider
+           guard let userSub = try cognitoAuthSession?.getUserSub().get() else {
+               throw "Failed to get userSub"
+           }
+           return userSub
+       } catch {
+           throw error
+       }
+   }
+    
     func getIdentityId() async throws -> String! {
-        var resultOptional: String?
         do {
             let authSession = try await Amplify.Auth.fetchAuthSession(options: nil)
             let cognitoAuthSession = authSession as? AuthCognitoIdentityProvider
-            let identityId = try cognitoAuthSession?.getIdentityId().get()
-            resultOptional = identityId
-            return resultOptional
+            guard let identityId = try cognitoAuthSession?.getIdentityId().get() else {
+                throw "Failed to get identityId"
+            }
+            return identityId
+        } catch {
+            throw error
         }
-        catch {
-            XCTFail("Failed to get auth session \(error)")
-        }
-        guard let result = resultOptional else {
-            XCTFail("Could not get identityId for user")
-            return ""
-        }
-
-        return result
     }
 
     func queryModel<M: Model>(_ model: M.Type,
@@ -313,7 +291,6 @@ extension AWSDataStoreAuthBaseTest {
         await waitForExpectations([expectations.query], timeout: 60)
     }
     
-
     /// Asserts that DataStore is in a ready state and subscriptions are established
     /// - Parameter events: DataStore Hub events
     func assertDataStoreReady(_ expectations: AuthTestExpectations,
@@ -342,7 +319,7 @@ extension AWSDataStoreAuthBaseTest {
             }
             .store(in: &requests)
 
-        try await Amplify.DataStore.start ()
+        try await Amplify.DataStore.start()
         
         await waitForExpectations([expectations.subscriptionsEstablished,
                                    expectations.modelsSynced,
@@ -383,8 +360,10 @@ extension AWSDataStoreAuthBaseTest {
             do {
                 let posts = try await Amplify.DataStore.save(model)
                 XCTAssertNotNil(posts)
+                Task { await expectations.mutationSave.fulfill() }
                 let deletedposts: () = try await Amplify.DataStore.delete(posts)
                 XCTAssertNotNil(deletedposts)
+                Task { await expectations.mutationDelete.fulfill() }
             } catch let error as DataStoreError {
                 onFailure(error)
             }
