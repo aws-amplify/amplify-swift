@@ -37,27 +37,27 @@ class DefaultHubPluginCustomChannelTests: XCTestCase {
     /// Given: A listener to a custom channel
     /// When: A message is dispatched to that custom channel
     /// Then: The listener is invoked
-    func testMessageReceivedOnCustomChannel() throws {
+    func testMessageReceivedOnCustomChannel() async throws {
         let eventReceived = expectation(description: "Event received")
 
         let listener = plugin.listen(to: .custom("CustomChannel1"), isIncluded: nil) { _ in
             eventReceived.fulfill()
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: listener, plugin: plugin, timeout: 0.5) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: listener, plugin: plugin, timeout: 0.5) else {
             XCTFail("listener1 not registered")
             return
         }
 
         plugin.dispatch(to: .custom("CustomChannel1"), payload: HubPayload(eventName: "TEST_EVENT"))
 
-        waitForExpectations(timeout: 0.5)
+        await waitForExpectations(timeout: 0.5)
     }
 
     /// Given: A listener to a custom channel
     /// When: A message is dispatched to a different custom channel
     /// Then: The listener is not invoked
-    func testMessageNotReceivedOnDifferentCustomChannel() throws {
+    func testMessageNotReceivedOnDifferentCustomChannel() async throws {
         let eventReceived = expectation(description: "Event received")
         eventReceived.isInverted = true
 
@@ -65,20 +65,20 @@ class DefaultHubPluginCustomChannelTests: XCTestCase {
             eventReceived.fulfill()
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: listener, plugin: plugin, timeout: 0.5) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: listener, plugin: plugin, timeout: 0.5) else {
             XCTFail("listener1 not registered")
             return
         }
 
         plugin.dispatch(to: .custom("CustomChannel2"), payload: HubPayload(eventName: "TEST_EVENT"))
 
-        waitForExpectations(timeout: 0.5)
+        await waitForExpectations(timeout: 0.5)
     }
 
     /// Given: Multiple listeners to a custom channel
     /// When: A message is dispatched to that custom channel
     /// Then: All listeners are invoked
-    func testMultipleSubscribersOnCustomChannel() throws {
+    func testMultipleSubscribersOnCustomChannel() async throws {
         let listener1Invoked = expectation(description: "Listener 1 invoked")
         let listener2Invoked = expectation(description: "Listener 2 invoked")
 
@@ -86,7 +86,7 @@ class DefaultHubPluginCustomChannelTests: XCTestCase {
             listener1Invoked.fulfill()
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: listener1, plugin: plugin, timeout: 0.5) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: listener1, plugin: plugin, timeout: 0.5) else {
             XCTFail("listener1 not registered")
             return
         }
@@ -95,14 +95,14 @@ class DefaultHubPluginCustomChannelTests: XCTestCase {
             listener2Invoked.fulfill()
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: listener2, plugin: plugin, timeout: 0.5) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: listener2, plugin: plugin, timeout: 0.5) else {
             XCTFail("listener2 not registered")
             return
         }
 
         plugin.dispatch(to: .custom("CustomChannel1"), payload: HubPayload(eventName: "TEST_EVENT"))
 
-        waitForExpectations(timeout: 0.5)
+        await waitForExpectations(timeout: 0.5)
     }
 
 }

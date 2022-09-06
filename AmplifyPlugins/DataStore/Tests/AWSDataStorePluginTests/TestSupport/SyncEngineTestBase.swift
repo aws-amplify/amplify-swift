@@ -190,20 +190,22 @@ class SyncEngineTestBase: XCTestCase {
                 }
             }
         }
-
-        do {
-            guard try HubListenerTestUtilities.waitForListener(with: token, timeout: 5.0) else {
+        
+        
+        Task {
+            guard try await HubListenerTestUtilities.waitForListener(with: token, timeout: 5.0) else {
                 XCTFail("Never registered listener for sync started")
                 return
             }
-
-            Task {
+            
+            do {
                 try await startAmplify()
+            } catch {
+                Amplify.Hub.removeListener(token)
+                completion(.failure(error))
             }
-        } catch {
-            Amplify.Hub.removeListener(token)
-            completion(.failure(error))
         }
+        
     }
 
     /// Starts amplify by invoking `Amplify.configure(amplifyConfig)`, and waits to receive a `syncStarted` Hub message

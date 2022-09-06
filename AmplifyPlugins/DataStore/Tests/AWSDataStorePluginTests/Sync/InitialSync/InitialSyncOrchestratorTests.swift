@@ -23,7 +23,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
     ///    - The orchestrator starts up
     /// - Then:
     ///    - It performs a sync query for each registered model
-    func testInvokesCompletionCallback() throws {
+    func testInvokesCompletionCallback() async throws {
         ModelRegistry.reset()
         PostCommentModelRegistration().registerModels(registry: ModelRegistry.self)
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { _, listener in
@@ -62,7 +62,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
             syncQueriesStartedReceived.fulfill()
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
         }
@@ -96,7 +96,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
             syncCallbackReceived.fulfill()
         }
 
-        waitForExpectations(timeout: 1)
+        await waitForExpectations(timeout: 1)
         XCTAssertEqual(orchestrator.syncOperationQueue.maxConcurrentOperationCount, 1)
         Amplify.Hub.removeListener(hubListener)
         sink.cancel()
@@ -107,7 +107,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
     ///    - The orchestrator starts up
     /// - Then:
     ///    - Finish with an error for each sync query that fails.
-    func testFinishWithAPIError() throws {
+    func testFinishWithAPIError() async throws {
         ModelRegistry.reset()
         PostCommentModelRegistration().registerModels(registry: ModelRegistry.self)
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { request, listener in
@@ -153,7 +153,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
             syncQueriesStartedReceived.fulfill()
         }
 
-        guard try HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
+        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
             XCTFail("Listener not registered for hub")
             return
         }
@@ -195,7 +195,7 @@ class InitialSyncOrchestratorTests: XCTestCase {
             syncCallbackReceived.fulfill()
         }
 
-        waitForExpectations(timeout: 1)
+        await waitForExpectations(timeout: 1)
         XCTAssertEqual(orchestrator.syncOperationQueue.maxConcurrentOperationCount, 1)
         Amplify.Hub.removeListener(hubListener)
         sink.cancel()
