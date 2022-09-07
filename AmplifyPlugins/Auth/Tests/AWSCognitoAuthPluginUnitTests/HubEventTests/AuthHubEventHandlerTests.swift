@@ -74,7 +74,7 @@ class AuthHubEventHandlerTests: XCTestCase {
             }
         }
 
-        try await plugin.signOut(options: nil)
+        _ = await plugin.signOut(options: nil)
         await waitForExpectations(timeout: networkTimeout)
     }
 
