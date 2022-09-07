@@ -16,7 +16,8 @@ extension AWSS3StorageService {
                          onEvent: @escaping StorageServiceGetPreSignedURLEventHandler) {
         Task {
             do {
-                onEvent(.completed(try await preSignedURLBuilder.getPreSignedURL(key: serviceKey)))
+                onEvent(.completed(try await preSignedURLBuilder.getPreSignedURL(key: serviceKey,
+                                                                                 expires: Int64(expires))))
             } catch {
                 onEvent(.failed(StorageError.unknown("Failed to get pre-signed URL", nil)))
             }
