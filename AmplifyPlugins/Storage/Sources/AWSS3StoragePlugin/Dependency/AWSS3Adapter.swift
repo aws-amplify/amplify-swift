@@ -34,7 +34,7 @@ class AWSS3Adapter: AWSS3Behavior {
         Task {
             let input = DeleteObjectInput(bucket: request.bucket, key: request.key)
             do {
-                _ = try await awsS3.deleteObject(input: input)
+                _ = try await awsS3.deleteObject(input: input, config: config)
                 completion(.success(()))
             } catch {
                 completion(.failure(StorageError(error: error)))
