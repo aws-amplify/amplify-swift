@@ -39,7 +39,7 @@ extension SignOutEvent {
 
     static let signedOutSuccess = SignOutEvent(
         id: "signedOutSuccess",
-        eventType: .signedOutSuccess
+        eventType: .signedOutSuccess()
     )
 
     static let signedOutFailure = SignOutEvent(

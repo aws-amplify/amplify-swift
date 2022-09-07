@@ -19,7 +19,11 @@ class SignOutStateNotStartedTests: XCTestCase {
     func testUnsupported() {
         func assertIfUnsupported(_ event: SignOutEvent) {
             switch event.eventType {
-            case .signOutLocally, .signedOutSuccess, .signedOutFailure:
+            case .signOutLocally,
+                    .signedOutSuccess,
+                    .signedOutFailure,
+                    .userCancelled,
+                    .globalSignOutError:
                 XCTAssertEqual(
                     resolver.resolve(
                         oldState: oldState,
@@ -27,7 +31,10 @@ class SignOutStateNotStartedTests: XCTestCase {
                     ).newState,
                     oldState
                 )
-            case .signOutGlobally, .revokeToken, .invokeHostedUISignOut, .signOutGuest:
+            case .signOutGlobally,
+                    .revokeToken,
+                    .invokeHostedUISignOut,
+                    .signOutGuest:
                 // Supported
                 break
             }

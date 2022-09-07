@@ -83,11 +83,11 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         return try await task.value
     }
     
-    public func signOut(options: AuthSignOutRequest.Options?) async throws {
+    public func signOut(options: AuthSignOutRequest.Options? = nil) async -> AuthSignOutResult {
         let options = options ?? AuthSignOutRequest.Options()
         let request = AuthSignOutRequest(options: options)
         let task = AWSAuthSignOutTask(request, authStateMachine: authStateMachine)
-        return try await task.value
+        return await task.value
     }
     
     public func fetchAuthSession(options: AuthFetchSessionRequest.Options?) async throws -> AuthSession {

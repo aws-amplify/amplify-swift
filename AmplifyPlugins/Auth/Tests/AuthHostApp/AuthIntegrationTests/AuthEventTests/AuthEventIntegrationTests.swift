@@ -92,7 +92,7 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
             username: username,
             password: password,
             email: defaultTestEmail)
-        try await Amplify.Auth.signOut()
+        _ = await Amplify.Auth.signOut()
         await waitForExpectations([signOutExpectation], timeout: networkTimeout)
     }
 

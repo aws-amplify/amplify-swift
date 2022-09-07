@@ -40,16 +40,14 @@ class SignOutStateResolverTests: XCTestCase {
                 expected: .revokingToken),
             SignOutStateSequence(
                 oldState: .signingOutGlobally,
-                event: SignOutEvent(eventType: .signedOutFailure(.testData)),
-                expected: .error(.testData)),
+                event: SignOutEvent(eventType: .globalSignOutError(
+                    .testData,
+                    globalSignOutError: .init(accessToken: "", error: .service("", "", nil)))),
+                expected: .buildingRevokeTokenError),
             SignOutStateSequence(
                 oldState: .revokingToken,
                 event: SignOutEvent(eventType: .signOutLocally(.testData)),
                 expected: .signingOutLocally(.testData)),
-            SignOutStateSequence(
-                oldState: .revokingToken,
-                event: SignOutEvent(eventType: .signedOutFailure(.testData)),
-                expected: .error(.testData))
         ]
 
         for sequence in validSequences {

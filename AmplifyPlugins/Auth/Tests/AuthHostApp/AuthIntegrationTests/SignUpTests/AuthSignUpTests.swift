@@ -14,7 +14,7 @@ class AuthSignUpTests: AWSAuthBaseTest {
     override func setUp() async throws {
         try await super.setUp()
         initializeAmplify()
-        try await Amplify.Auth.signOut()
+        _ = await Amplify.Auth.signOut()
     }
 
     override func tearDown() async throws {

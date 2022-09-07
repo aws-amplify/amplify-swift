@@ -50,8 +50,8 @@ extension AuthCategory: AuthCategoryBehavior {
         return try await plugin.confirmSignIn(challengeResponse: challengeResponse, options: options)
     }
 
-    public func signOut(options: AuthSignOutRequest.Options? = nil) async throws {
-        try await plugin.signOut(options: options)
+    public func signOut(options: AuthSignOutRequest.Options? = nil) async -> AuthSignOutResult {
+        return await plugin.signOut(options: options)
     }
     
     public func deleteUser() async throws {

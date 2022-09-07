@@ -28,7 +28,9 @@ class RevokeTokenTests: XCTestCase {
             cognitoUserPoolFactory: identityProviderFactory,
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF
         )
-        let action = RevokeToken(signedInData: .testData)
+        let action = RevokeToken(signedInData: .testData,
+                                 hostedUIError: nil,
+                                 globalSignOutError: nil)
 
         await action.execute(
             withDispatcher: MockDispatcher { _ in },
@@ -53,7 +55,9 @@ class RevokeTokenTests: XCTestCase {
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF
         )
 
-        let action = RevokeToken(signedInData: .testData)
+        let action = RevokeToken(signedInData: .testData,
+                                  hostedUIError: nil,
+                                  globalSignOutError: nil)
 
         let clearCredentialStoreEventSent = expectation(description: "clearCredentialStoreEventSent")
         let dispatcher = MockDispatcher { event in
@@ -62,7 +66,7 @@ class RevokeTokenTests: XCTestCase {
                 return
             }
 
-            if case let .signOutLocally(signInData) = event.eventType {
+            if case let .signOutLocally(signInData, _, _, _) = event.eventType {
                 XCTAssertNotNil(signInData)
                 clearCredentialStoreEventSent.fulfill()
             }
@@ -91,7 +95,9 @@ class RevokeTokenTests: XCTestCase {
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF
         )
 
-        let action = RevokeToken(signedInData: .testData)
+        let action = RevokeToken(signedInData: .testData,
+                                 hostedUIError: nil,
+                                 globalSignOutError: nil)
 
         let clearCredentialStoreEventSent = expectation(description: "clearCredentialStoreEventSent")
         let dispatcher = MockDispatcher { event in
@@ -100,7 +106,7 @@ class RevokeTokenTests: XCTestCase {
                 return
             }
 
-            if case let .signOutLocally(signInData) = event.eventType {
+            if case let .signOutLocally(signInData, _, _, _) = event.eventType {
                 XCTAssertNotNil(signInData)
                 clearCredentialStoreEventSent.fulfill()
             }

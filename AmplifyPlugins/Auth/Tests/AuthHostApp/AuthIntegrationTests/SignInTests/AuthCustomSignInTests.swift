@@ -137,7 +137,7 @@ class AuthCustomSignInTests: AWSAuthBaseTest {
         }
 
         do {
-            try await Amplify.Auth.signOut()
+            _ = await Amplify.Auth.signOut()
         } catch {
             XCTFail("Should successfully logout")
         }

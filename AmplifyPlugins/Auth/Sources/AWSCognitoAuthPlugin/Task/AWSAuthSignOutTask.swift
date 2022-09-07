@@ -24,32 +24,41 @@ class AWSAuthSignOutTask: AuthSignOutTask {
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
     }
 
-    func execute() async throws {
+    func execute() async -> AuthSignOutResult {
         await taskHelper.didStateMachineConfigured()
         await sendSignOutEvent()
-        try await doSignOut()
+        return await doSignOut()
     }
 
-    private func doSignOut() async throws {
+    private func doSignOut() async -> AuthSignOutResult {
 
         let stateSequences = await authStateMachine.listen()
         for await state in stateSequences {
             guard case .configured(let authNState, _) = state else {
                 let error = AuthError.invalidState("Auth State not in a valid state", AuthPluginErrorConstants.invalidStateError,nil)
-                throw error
+                return AWSCognitoSignOutResult.failed(error)
             }
 
             switch authNState {
-            case .signedOut:
-                return
+            case .signedOut(let data):
+                if (data.revokeTokenError != nil ||
+                    data.globalSignOutError != nil ||
+                    data.hostedUIError != nil) {
+                    return AWSCognitoSignOutResult.partial(
+                        revokeTokenError: data.revokeTokenError,
+                        globalSignOutError: data.globalSignOutError,
+                        hostedUIError: data.hostedUIError)
+                }
+                return AWSCognitoSignOutResult.complete
             case .error(let error):
-                throw error.authError
+                return AWSCognitoSignOutResult.failed(error.authError)
             case .signingIn:
                 await authStateMachine.send(AuthenticationEvent.init(eventType: .cancelSignIn))
             default:
                 continue
             }
         }
+        fatalError()
     }
     
     private func sendSignOutEvent() async {
