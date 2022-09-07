@@ -66,13 +66,11 @@ public class AmplifyInProcessReportingOperationTaskAdapter<Request: AmplifyOpera
     var resultToken: UnsubscribeToken? = nil
     var inProcessToken: UnsubscribeToken? = nil
 
-    public init(operation: AmplifyInProcessReportingOperation<Request, InProcess, Success, Failure>, subscribeEnabled: Bool = true) {
+    public init(operation: AmplifyInProcessReportingOperation<Request, InProcess, Success, Failure>) {
         self.operation = operation
         self.childTask = ChildTask(parent: operation)
-        if subscribeEnabled {
-            resultToken = operation.subscribe(resultListener: resultListener)
-            inProcessToken = operation.subscribe(inProcessListener: inProcessListener)
-        }
+        resultToken = operation.subscribe(resultListener: resultListener)
+        inProcessToken = operation.subscribe(inProcessListener: inProcessListener)
     }
 
     deinit {
