@@ -39,5 +39,3 @@ extension AmplifyAuthTaskNonThrowing {
         Amplify.Hub.dispatch(to: channel, payload: payload)
     }
 }
-
-protocol AuthSignOutTask: AmplifyAuthTaskNonThrowing where Request == AuthSignOutRequest, Success == AuthSignOutResult { }
