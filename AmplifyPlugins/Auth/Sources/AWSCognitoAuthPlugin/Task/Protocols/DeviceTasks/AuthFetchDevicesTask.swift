@@ -4,12 +4,14 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-import Foundation
 
-public protocol AuthConfirmSignInTask: AmplifyAuthTask where Request == AuthConfirmSignInRequest, Success == AuthSignInResult, Failure == AuthError {}
+import Foundation
+import Amplify
+
+protocol AuthFetchDevicesTask: AmplifyAuthTask where Request == AuthFetchDevicesRequest, Success == [AuthDevice], Failure == AuthError {}
 
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let confirmSignInAPI = "Auth.confirmSignInAPI"
+    static let fetchDevicesAPI = "Auth.fetchDevicesAPI"
 }

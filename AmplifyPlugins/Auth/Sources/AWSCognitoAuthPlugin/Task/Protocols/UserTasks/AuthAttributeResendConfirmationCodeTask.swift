@@ -5,7 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-public protocol AuthAttributeResendConfirmationCodeTask: AmplifyAuthTask where Request == AuthAttributeResendConfirmationCodeRequest, Success == AuthCodeDeliveryDetails, Failure == AuthError {}
+import Amplify
+
+protocol AuthAttributeResendConfirmationCodeTask: AmplifyAuthTask where Request == AuthAttributeResendConfirmationCodeRequest, Success == AuthCodeDeliveryDetails, Failure == AuthError {}
 
 public extension HubPayload.EventName.Auth {
 

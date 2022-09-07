@@ -6,11 +6,12 @@
 //
 
 import Foundation
+import Amplify
 
-public protocol AuthChangePasswordTask: AmplifyAuthTask where Request == AuthChangePasswordRequest, Success == Void, Failure == AuthError {}
+protocol AuthConfirmSignUpTask: AmplifyAuthTask where Request == AuthConfirmSignUpRequest, Success == AuthSignUpResult, Failure == AuthError {}
 
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let changePasswordAPI = "Auth.changePasswordAPI"
+    static let confirmSignUpAPI = "Auth.confirmSignUpAPI"
 }

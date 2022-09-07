@@ -8,10 +8,9 @@
 import Foundation
 import Amplify
 
-public protocol AuthClearFederationToIdentityPoolTask: AmplifyAuthTask
-where Request == AuthClearFederationToIdentityPoolRequest,
-      Success == Void,
-      Failure == AuthError {}
+protocol AuthClearFederationToIdentityPoolTask: AmplifyAuthTask where Request == AuthClearFederationToIdentityPoolRequest,
+                                                                      Success == Void,
+                                                                      Failure == AuthError {}
 
 public extension HubPayload.EventName.Auth {
 

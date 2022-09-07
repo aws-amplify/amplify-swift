@@ -5,8 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 import Foundation
+import Amplify
 
-public protocol AuthSignInTask: AmplifyAuthTask where Request == AuthSignInRequest, Success == AuthSignInResult, Failure == AuthError { }
+protocol AuthSignInTask: AmplifyAuthTask where Request == AuthSignInRequest, Success == AuthSignInResult, Failure == AuthError { }
 
 public extension HubPayload.EventName.Auth {
 

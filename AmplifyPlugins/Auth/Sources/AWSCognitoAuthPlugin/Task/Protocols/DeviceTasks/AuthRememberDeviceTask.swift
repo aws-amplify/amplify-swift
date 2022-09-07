@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import Amplify
 
-public protocol AuthRememberDeviceTask: AmplifyAuthTask where Request == AuthRememberDeviceRequest, Success == Void, Failure == AuthError {}
+protocol AuthRememberDeviceTask: AmplifyAuthTask where Request == AuthRememberDeviceRequest, Success == Void, Failure == AuthError {}
 
 public extension HubPayload.EventName.Auth {
 

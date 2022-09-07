@@ -4,13 +4,13 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
-
 import Foundation
+import Amplify
 
-public protocol AuthFetchDevicesTask: AmplifyAuthTask where Request == AuthFetchDevicesRequest, Success == [AuthDevice], Failure == AuthError {}
+protocol AuthDeleteUserTask: AmplifyAuthTask where Request == Void, Success == Void, Failure == AuthError { }
 
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let fetchDevicesAPI = "Auth.fetchDevicesAPI"
+    static let deleteUserAPI = "Auth.deleteUserAPI"
 }
