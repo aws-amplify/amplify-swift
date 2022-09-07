@@ -368,16 +368,23 @@ extension AWSDataStoreAuthBaseTest {
                 let posts = try await Amplify.DataStore.save(model)
                 XCTAssertNotNil(posts)
                 Task { await expectations.mutationSave.fulfill() }
-                let deletedposts: () = try await Amplify.DataStore.delete(posts)
+            } catch let error as DataStoreError {
+                onFailure(error)
+            }
+        }
+        await waitForExpectations([expectations.mutationSave,
+                                   expectations.mutationSaveProcessed], timeout: 60)
+        Task {
+            do {
+                let deletedposts: () = try await Amplify.DataStore.delete(model)
                 XCTAssertNotNil(deletedposts)
                 Task { await expectations.mutationDelete.fulfill() }
             } catch let error as DataStoreError {
                 onFailure(error)
             }
         }
-        await waitForExpectations([expectations.mutationSave,
-                                   expectations.mutationSaveProcessed,
-                                   expectations.mutationDelete, expectations.mutationDeleteProcessed], timeout: 60)
+        await waitForExpectations([expectations.mutationDelete,
+                                   expectations.mutationDeleteProcessed], timeout: 60)
     }
 
     func assertUsedAuthTypes(_ authTypes: [AWSAuthorizationType],
