@@ -6,11 +6,12 @@
 //
 
 import Foundation
+import Amplify
 
-public protocol AuthForgetDeviceTask: AmplifyAuthTask where Request == AuthForgetDeviceRequest, Success == Void, Failure == AuthError {}
+protocol AuthConfirmResetPasswordTask: AmplifyAuthTask where Request == AuthConfirmResetPasswordRequest, Success == Void, Failure == AuthError {}
 
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let forgetDeviceAPI = "Auth.forgetDeviceAPI"
+    static let confirmResetPasswordAPI = "Auth.confirmResetPasswordAPI"
 }

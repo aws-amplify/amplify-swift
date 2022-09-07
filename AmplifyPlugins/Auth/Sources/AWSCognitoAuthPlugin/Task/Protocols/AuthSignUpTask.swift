@@ -6,11 +6,13 @@
 //
 
 import Foundation
+import Amplify
 
-public protocol AuthFetchSessionTask: AmplifyAuthTask where Request == AuthFetchSessionRequest, Success == AuthSession, Failure == AuthError {}
+protocol AuthSignUpTask: AmplifyAuthTask where Request == AuthSignUpRequest, Success == AuthSignUpResult, Failure == AuthError {}
 
 public extension HubPayload.EventName.Auth {
 
     /// eventName for HubPayloads emitted by this operation
-    static let fetchSessionAPI = "Auth.fetchSessionAPI"
+    static let signUpAPI = "Auth.signUpAPI"
 }
+

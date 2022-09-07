@@ -8,10 +8,9 @@
 import Foundation
 import Amplify
 
-public protocol AuthFederateToIdentityPoolTask: AmplifyAuthTask
-where Request == AuthFederateToIdentityPoolRequest,
-      Success == FederateToIdentityPoolResult,
-      Failure == AuthError {}
+protocol AuthFederateToIdentityPoolTask: AmplifyAuthTask where Request == AuthFederateToIdentityPoolRequest,
+                                                               Success == FederateToIdentityPoolResult,
+                                                               Failure == AuthError {}
 
 public extension HubPayload.EventName.Auth {
     /// eventName for HubPayloads emitted by this operation

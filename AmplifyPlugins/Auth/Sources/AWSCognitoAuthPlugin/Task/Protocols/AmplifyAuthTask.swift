@@ -5,8 +5,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 import Foundation
+import Amplify
 
-public protocol AmplifyAuthTask {
+protocol AmplifyAuthTask {
 
     associatedtype Success
     associatedtype Request
@@ -24,7 +25,7 @@ public protocol AmplifyAuthTask {
 
 }
 
-public extension AmplifyAuthTask {
+extension AmplifyAuthTask {
     var value: Success {
         get async throws {
             do {

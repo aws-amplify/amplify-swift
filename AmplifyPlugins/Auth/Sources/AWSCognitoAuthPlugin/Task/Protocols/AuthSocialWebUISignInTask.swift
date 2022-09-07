@@ -7,8 +7,9 @@
 
 #if canImport(AuthenticationServices)
 import Foundation
+import Amplify
 
-public protocol AuthSocialWebUISignInTask: AmplifyAuthTask where Request == AuthWebUISignInRequest, Success == AuthSignInResult, Failure == AuthError { }
+protocol AuthSocialWebUISignInTask: AmplifyAuthTask where Request == AuthWebUISignInRequest, Success == AuthSignInResult, Failure == AuthError { }
 
 public extension HubPayload.EventName.Auth {
     /// eventName for HubPayloads emitted by this operation
