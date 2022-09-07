@@ -165,7 +165,7 @@ class AmplifyConfigurationInitializationTests: XCTestCase {
         let config = AmplifyConfiguration(analytics: analyticsConfiguration)
         try Amplify.configure(config)
 
-        wait(for: [notificationReceived], timeout: 1.0)
+        await waitForExpectations(timeout: 1.0)
     }
 
     // MARK: - Utilities

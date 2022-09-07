@@ -184,9 +184,8 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
             valueListener: valueListener,
             completionListener: completionListener
         )
-        wait(for: [receivedFailure], timeout: 0.3)
-        XCTAssert(operation.isFinished)
         await waitForExpectations(timeout: 0.3)
+        XCTAssert(operation.isFinished)
     }
 
     func testCallingCancelWhileCreatingConnectionShouldCallCompletionListener() async {
