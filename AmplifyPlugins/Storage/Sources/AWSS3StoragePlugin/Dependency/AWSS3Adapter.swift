@@ -34,7 +34,7 @@ class AWSS3Adapter: AWSS3Behavior {
         Task {
             let input = DeleteObjectInput(bucket: request.bucket, key: request.key)
             do {
-                _ = try await awsS3.deleteObject(input: input)
+                _ = try await awsS3.deleteObject(input: input, config: config)
                 completion(.success(()))
             } catch {
                 completion(.failure(StorageError(error: error)))
@@ -48,11 +48,15 @@ class AWSS3Adapter: AWSS3Behavior {
     ///   - completion: handle which return a result with list of items
     func listObjectsV2(_ request: AWSS3ListObjectsV2Request, completion: @escaping (Result<StorageListResult, StorageError>) -> Void) {
         Task {
+            var finalPrefix: String?
+            if let prefix = request.prefix {
+                finalPrefix = prefix + (request.path ?? "")
+            }
             let input = ListObjectsV2Input(bucket: request.bucket,
                                            continuationToken: request.continuationToken,
                                            delimiter: request.delimiter,
                                            maxKeys: request.maxKeys,
-                                           prefix: request.prefix,
+                                           prefix: finalPrefix,
                                            startAfter: request.startAfter)
             do {
                 let response = try await awsS3.listObjectsV2(input: input)

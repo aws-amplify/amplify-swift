@@ -16,6 +16,7 @@ import AWSClientRuntime
 struct AWSS3ListObjectsV2Request {
     let bucket: String
     let prefix: String?
+    let path: String?
     let continuationToken: String?
     let delimiter: String?
     let maxKeys: Int
@@ -23,12 +24,14 @@ struct AWSS3ListObjectsV2Request {
 
     init(bucket: String,
          prefix: String? = nil,
+         path: String? = nil,
          continuationToken: String? = nil,
          delimiter: String? = nil,
          maxKeys: Int = 1_000,
          startAfter: String? = nil) {
         self.bucket = bucket
         self.prefix = prefix
+        self.path = path
         self.continuationToken = continuationToken
         self.delimiter = delimiter
         self.maxKeys = maxKeys

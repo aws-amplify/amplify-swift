@@ -30,7 +30,19 @@ class StorageTransferResponse {
                 error = .httpStatusError(statusCode, "Redirection error", self.error)
             } else if statusCode / 100 == 4 {
                 // 400 range: Client Error
-                error = .httpStatusError(statusCode, "Client error", self.error)
+                let description = errorDescription(forStatusCode: statusCode)
+                if [401, 403].contains(statusCode) {
+                    error = .accessDenied(description,
+                                          "Make sure the user has access to the key before trying to download it.",
+                                          self.error)
+                } else if 404 == statusCode {
+                    error = .keyNotFound(transferTask.key,
+                                         description,
+                                         "Make sure the key exists before trying to download it.",
+                                         self.error)
+                } else {
+                    error = .httpStatusError(statusCode, "Client error", self.error)
+                }
             } else if statusCode / 100 == 5 {
                 // 500 range: Server Error
                 error = .httpStatusError(statusCode, "Server error", self.error)
@@ -80,4 +92,19 @@ class StorageTransferResponse {
         self.transferTask = transferTask
     }
 
+    private func errorDescription(forStatusCode statusCode: Int) -> ErrorDescription {
+        let description: String
+        switch statusCode {
+        case 401:
+            description = "Unauthorized"
+        case 403:
+            description = "Forbidden"
+        case 404:
+            description = "NotFound"
+        default:
+            description = ""
+        }
+
+        return "Received HTTP Response status code \(statusCode) \(description)"
+    }
 }
