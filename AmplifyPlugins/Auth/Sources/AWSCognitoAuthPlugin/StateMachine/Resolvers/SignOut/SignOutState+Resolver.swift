@@ -40,11 +40,13 @@ extension SignOutState {
                 return resolveSigningOutLocally(byApplying: signOutEvent,
                                                 from: oldState,
                                                 signedInData: signedInData)
-            case .signingOutHostedUI:
+            case .signingOutHostedUI(let signedInData):
                 guard let signOutEvent = event as? SignOutEvent else {
                     return .from(oldState)
                 }
-                return resolveHostedUISignOut(byApplying: signOutEvent, from: oldState)
+                return resolveHostedUISignOut(byApplying: signOutEvent,
+                                              signedInData: signedInData,
+                                              from: oldState)
             case .buildingRevokeTokenError:
                 guard let signOutEvent = event as? SignOutEvent else {
                     return .from(oldState)
@@ -81,7 +83,7 @@ extension SignOutState {
                 case .invokeHostedUISignOut(let signOutEventData, let signedInData):
                     let action = ShowHostedUISignOut(signOutEvent: signOutEventData,
                                                      signInData: signedInData)
-                    return .init(newState: .signingOutHostedUI, actions: [action])
+                    return .init(newState: .signingOutHostedUI(signedInData), actions: [action])
                 case .signOutGuest:
                     let action = SignOutLocally(hostedUIError: nil,
                                                 globalSignOutError: nil,
@@ -94,6 +96,7 @@ extension SignOutState {
             }
 
         private func resolveHostedUISignOut(byApplying signOutEvent: SignOutEvent,
+                                            signedInData: SignedInData,
                                             from oldState: SignOutState)
         -> StateResolution<SignOutState> {
             switch signOutEvent.eventType {
@@ -115,7 +118,8 @@ extension SignOutState {
                     actions: [action]
                 )
             case .userCancelled:
-                return .from(.error(.service(message: "User cancelled signOut")))
+                let action = CancelSignOut(signedInData: signedInData)
+                return .init(newState: .error(.userCancelled), actions: [action])
             default:
                 return .from(oldState)
             }
@@ -202,8 +206,8 @@ extension SignOutState {
                 )
                 return .from(.signedOut(signedOutData))
             case .signedOutFailure:
-                let error = AuthenticationError.unknown(message: "Failed in clearing data from store")
-                return .from(.error(error))
+                let action = CancelSignOut(signedInData: signedInData)
+                return .init(newState: .error(.localSignOut), actions: [action])
             default:
                 return .from(oldState)
             }

@@ -37,6 +37,9 @@ struct AuthenticationEvent: StateMachineEvent {
         /// Emitted when we should cancel the signIn
         case cancelSignIn
 
+        /// Emitted when we should cancel the signIn
+        case cancelSignOut(SignedInData?)
+
         /// Emitted when we should clear the federation to identity pool
         case clearFederationToIdentityPool
 
@@ -74,6 +77,8 @@ struct AuthenticationEvent: StateMachineEvent {
             return "AuthenticationEvent.signOut"
         case .cancelSignIn:
             return "AuthenticationEvent.cancelSignIn"
+        case .cancelSignOut:
+            return "AuthenticationEvent.cancelSignOut"
         case .clearFederationToIdentityPool:
             return "AuthenticationEvent.clearFederationToIdentityPool"
         case .clearedFederationToIdentityPool:

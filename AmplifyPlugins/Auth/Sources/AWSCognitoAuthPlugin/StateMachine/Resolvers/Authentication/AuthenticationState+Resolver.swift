@@ -244,14 +244,20 @@ extension AuthenticationState {
             byApplying event: StateMachineEvent,
             to signOutState: SignOutState
         ) -> StateResolution<StateType> {
+            if let authenEvent = event.isAuthenticationEvent,
+               case .cancelSignOut(let data) = authenEvent {
+
+                if let signedInData = data {
+                    return .from(.signedIn(signedInData))
+                } else {
+                    return .from(.signedOut(.init()))
+                }
+            }
             let resolver = SignOutState.Resolver()
             let resolution = resolver.resolve(oldState: signOutState, byApplying: event)
             switch resolution.newState {
             case .signedOut(let signedOutData):
                 let newState = AuthenticationState.signedOut(signedOutData)
-                return .init(newState: newState, actions: resolution.actions)
-            case .error(let error):
-                let newState = AuthenticationState.error(error)
                 return .init(newState: newState, actions: resolution.actions)
             default:
                 let newState = AuthenticationState.signingOut(resolution.newState)

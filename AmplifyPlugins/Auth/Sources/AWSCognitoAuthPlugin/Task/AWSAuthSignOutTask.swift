@@ -50,10 +50,12 @@ class AWSAuthSignOutTask: AuthSignOutTask {
                         hostedUIError: data.hostedUIError)
                 }
                 return AWSCognitoSignOutResult.complete
-            case .error(let error):
-                return AWSCognitoSignOutResult.failed(error.authError)
             case .signingIn:
                 await authStateMachine.send(AuthenticationEvent.init(eventType: .cancelSignIn))
+            case .signingOut(let state):
+                if case .error(let error) = state {
+                    return AWSCognitoSignOutResult.failed(error.authError)
+                }
             default:
                 continue
             }

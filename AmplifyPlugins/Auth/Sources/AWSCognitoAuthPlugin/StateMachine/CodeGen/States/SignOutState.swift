@@ -13,9 +13,9 @@ enum SignOutState: State {
     case revokingToken
     case buildingRevokeTokenError
     case signingOutLocally(SignedInData?)
-    case signingOutHostedUI
+    case signingOutHostedUI(SignedInData)
     case signedOut(SignedOutData)
-    case error(AuthenticationError)
+    case error(SignOutError)
 }
 
 extension SignOutState {
