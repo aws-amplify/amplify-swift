@@ -41,6 +41,9 @@ extension FetchAuthSessionState {
                         identityID: identityId)
                     return .init(newState: .fetchingAWSCredentials(identityId, loginsMapProvider),
                                  actions: [action])
+                case .throwError(let error):
+                    return .init(newState: .error(error),
+                                 actions: [InformSessionError(error: error)])
                 default:
                     return .from(oldState)
                 }

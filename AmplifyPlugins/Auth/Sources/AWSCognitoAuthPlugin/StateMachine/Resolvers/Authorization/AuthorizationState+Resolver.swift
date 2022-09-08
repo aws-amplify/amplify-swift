@@ -134,11 +134,11 @@ extension AuthorizationState {
 
             case .signingOut(let credentials):
                 if let signOutEvent = event.isSignOutEvent,
-                    case .signedOutSuccess = signOutEvent {
+                   case .signedOutSuccess = signOutEvent {
                     return .init(newState: .configured)
                 }
                 if let authenEvent = event.isAuthenticationEvent,
-                    case .cancelSignOut = authenEvent {
+                   case .cancelSignOut = authenEvent {
                     if let credentials = credentials {
                         return .init(newState: .sessionEstablished(credentials))
                     } else {
@@ -191,18 +191,28 @@ extension AuthorizationState {
                     let action = PersistCredentials(credentials: amplifyCredentials)
                     return .init(newState: .storingCredentials(amplifyCredentials),
                                  actions: [action])
-                } else if case .receivedSessionError = event.isAuthorizationEvent {
-                    // TODO: Handle session errors correctly and pass them back to the user
-                    let amplifyCredentials = AmplifyCredentials.userPoolOnly(signedInData: signedInData)
-                    let action = PersistCredentials(credentials: amplifyCredentials)
-                    return .init(newState: .storingCredentials(amplifyCredentials),
-                                 actions: [action])
-                } else if case .throwError = event.isAuthorizationEvent {
-                    // TODO: Handle session errors correctly and pass them back to the user
-                    let amplifyCredentials = AmplifyCredentials.userPoolOnly(signedInData: signedInData)
-                    let action = PersistCredentials(credentials: amplifyCredentials)
-                    return .init(newState: .storingCredentials(amplifyCredentials),
-                                 actions: [action])
+                } else if case .receivedSessionError(let fetchError) = event.isAuthorizationEvent {
+                    let amplifyCredentials = AmplifyCredentials.userPoolOnly(
+                        signedInData: signedInData)
+
+                    if case .noIdentityPool = fetchError {
+                        let action = PersistCredentials(credentials: amplifyCredentials)
+                        return .init(newState: .storingCredentials(amplifyCredentials),
+                                     actions: [action])
+                    }
+
+                    let authorizationError = AuthorizationError.sessionError(
+                        fetchError,
+                        amplifyCredentials)
+                    return .init(newState: .error(authorizationError))
+
+                } else if case .throwError(let error) = event.isAuthorizationEvent {
+                    let amplifyCredentials = AmplifyCredentials.userPoolOnly(
+                        signedInData: signedInData)
+                    let authorizationError = AuthorizationError.sessionError(
+                        .service(error),
+                        amplifyCredentials)
+                    return .init(newState: .error(authorizationError))
                 }
 
                 let resolver = FetchAuthSessionState.Resolver()
