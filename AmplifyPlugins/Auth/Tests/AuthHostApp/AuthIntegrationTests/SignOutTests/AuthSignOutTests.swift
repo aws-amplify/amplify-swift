@@ -81,11 +81,11 @@ class AuthSignOutTests: AWSAuthBaseTest {
     ///    - I should get a successul result
     ///
     func testSignedOutWithUnAuthState() async throws {
-        try await Amplify.Auth.signOut()
+        _ = await Amplify.Auth.signOut()
     }
 
     private func signOut(globalSignOut: Bool) async throws {
         let options = AuthSignOutRequest.Options(globalSignOut: globalSignOut)
-        try await Amplify.Auth.signOut(options: options)
+        _ = await Amplify.Auth.signOut(options: options)
     }
 }

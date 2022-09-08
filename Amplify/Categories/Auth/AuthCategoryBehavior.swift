@@ -97,7 +97,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///
     /// - Parameters:
     ///   - options: Parameters specific to plugin behavior.
-    func signOut(options: AuthSignOutRequest.Options?) async throws 
+    func signOut(options: AuthSignOutRequest.Options?) async -> AuthSignOutResult
 
     /// Delete the account of the currently logged-in user.
     func deleteUser() async throws

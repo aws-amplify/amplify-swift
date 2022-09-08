@@ -32,7 +32,7 @@ class AuthResetPasswordTests: AWSAuthBaseTest {
     ///
     func testUserNotFoundResetPassword() async throws {
         do {
-            try await Amplify.Auth.resetPassword(for: "user-non-exists", options: nil)
+            _ = try await Amplify.Auth.resetPassword(for: "user-non-exists", options: nil)
             XCTFail("resetPassword with non existing user should not return result")
         } catch {
             guard let authError = error as? AuthError, let cognitoError = authError.underlyingError as? AWSCognitoAuthError,

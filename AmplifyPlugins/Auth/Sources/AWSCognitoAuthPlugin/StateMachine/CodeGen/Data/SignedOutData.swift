@@ -6,18 +6,33 @@
 //
 
 struct SignedOutData {
+
     let lastKnownUserName: String?
+    let hostedUIError: AWSCognitoHostedUIError?
+    let globalSignOutError: AWSCognitoGlobalSignOutError?
+    let revokeTokenError: AWSCognitoRevokeTokenError?
 
     init(
-        lastKnownUserName: String? = nil
+        lastKnownUserName: String? = nil,
+        hostedUIError: AWSCognitoHostedUIError? = nil,
+        globalSignOutError: AWSCognitoGlobalSignOutError? = nil,
+        revokeTokenError: AWSCognitoRevokeTokenError? = nil
     ) {
         self.lastKnownUserName = lastKnownUserName
+        self.hostedUIError = hostedUIError
+        self.globalSignOutError = globalSignOutError
+        self.revokeTokenError = revokeTokenError
     }
 }
 
-extension SignedOutData: Codable { }
+extension SignedOutData: Equatable {
+    static func == (lhs: SignedOutData, rhs: SignedOutData) -> Bool {
+        return lhs.lastKnownUserName == rhs.lastKnownUserName &&
+        lhs.globalSignOutError?.accessToken == rhs.globalSignOutError?.accessToken &&
+        lhs.revokeTokenError?.refreshToken == rhs.revokeTokenError?.refreshToken
 
-extension SignedOutData: Equatable { }
+    }
+}
 
 extension SignedOutData: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {

@@ -30,9 +30,7 @@ class ShowHostedUISignOut: NSObject, Action {
               let hostedUIEnvironment = environment.hostedUIEnvironment else {
             let message = AuthPluginErrorConstants.configurationError
             let error = AuthenticationError.configuration(message: message)
-            let event = SignOutEvent(eventType: .signedOutFailure(error))
-            logVerbose("\(#fileID) Sending event \(event)", environment: environment)
-            await dispatcher.send(event)
+            await sendEvent(with: error, dispatcher: dispatcher, environment: environment)
             return
         }
         let hostedUIConfig = hostedUIEnvironment.configuration
@@ -40,9 +38,7 @@ class ShowHostedUISignOut: NSObject, Action {
         guard let callbackURL = URL(string: hostedUIConfig.oauth.signOutRedirectURI),
               let callbackURLScheme = callbackURL.scheme else {
             let error = AuthenticationError.configuration(message: "Callback URL could not be retrieved")
-            let event = SignOutEvent(eventType: .signedOutFailure(error))
-            logVerbose("\(#fileID) Sending event \(event)", environment: environment)
-            await dispatcher.send(event)
+            await sendEvent(with: error, dispatcher: dispatcher, environment: environment)
             return
         }
         
@@ -59,24 +55,49 @@ class ShowHostedUISignOut: NSObject, Action {
                     continuation.resume(with: result)
                 }
             }
-            let event: SignOutEvent
-            if self.signOutEvent.globalSignOut {
-                event = SignOutEvent(eventType: .signOutGlobally(self.signInData))
-            } else {
-                event = SignOutEvent(eventType: .revokeToken(self.signInData))
-            }
-            self.logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
-            await dispatcher.send(event)
-            
+
+            await sendEvent(with: nil, dispatcher: dispatcher, environment: environment)
+
         } catch HostedUIError.signOutURI {
             let error = AuthenticationError.configuration(message: "Could not create logout URL")
-            let event = SignOutEvent(eventType: .signedOutFailure(error))
-            logVerbose("\(#fileID) Sending event \(event)", environment: environment)
-            await dispatcher.send(event)
+            await sendEvent(with: error, dispatcher: dispatcher, environment: environment)
             return
         } catch {
             self.logVerbose("\(#fileID) Received error \(error)", environment: environment)
+            await sendEvent(with: error, dispatcher: dispatcher, environment: environment)
         }
+    }
+
+    func sendEvent(with error: Error?,
+                   dispatcher: EventDispatcher,
+                   environment: Environment) async {
+        
+        var hostedUIError: AWSCognitoHostedUIError? = nil
+        if let hostedUIInternalError = error as? HostedUIError,
+           case .cancelled = hostedUIInternalError {
+           let event = SignOutEvent(eventType: .userCancelled)
+            self.logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+            await dispatcher.send(event)
+            return
+        }
+
+        if let error = error as? AuthErrorConvertible {
+            hostedUIError = AWSCognitoHostedUIError(error: error.authError)
+        } else if let error = error {
+            let serviceError = AuthError.service("HostedUI failed with error",
+                                                 "", error)
+            hostedUIError = AWSCognitoHostedUIError(error: serviceError)
+        }
+        let event: SignOutEvent
+        if self.signOutEvent.globalSignOut {
+            event = SignOutEvent(eventType: .signOutGlobally(self.signInData,
+                                                             hostedUIError: hostedUIError))
+        } else {
+            event = SignOutEvent(eventType: .revokeToken(self.signInData,
+                                                         hostedUIError: hostedUIError))
+        }
+        self.logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
+        await dispatcher.send(event)
     }
 }
 

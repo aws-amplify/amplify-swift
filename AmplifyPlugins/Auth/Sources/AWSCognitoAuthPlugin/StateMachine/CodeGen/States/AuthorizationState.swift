@@ -15,7 +15,7 @@ enum AuthorizationState: State {
 
     case signingIn
 
-    case signingOut
+    case signingOut(AmplifyCredentials?)
 
     case clearingFederation
 

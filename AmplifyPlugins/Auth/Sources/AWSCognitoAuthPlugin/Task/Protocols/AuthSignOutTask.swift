@@ -7,7 +7,7 @@
 import Foundation
 import Amplify
 
-protocol AuthSignOutTask: AmplifyAuthTask where Request == AuthSignOutRequest, Success == Void, Failure == AuthError { }
+protocol AuthSignOutTask: AmplifyAuthTaskNonThrowing where Request == AuthSignOutRequest, Success == AuthSignOutResult { }
 
 public extension HubPayload.EventName.Auth {
 

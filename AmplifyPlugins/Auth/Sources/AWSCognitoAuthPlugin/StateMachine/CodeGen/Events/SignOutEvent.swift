@@ -12,15 +12,38 @@ struct SignOutEvent: StateMachineEvent {
     var data: Any?
 
     enum EventType {
-        case signOutGlobally(SignedInData)
-        case revokeToken(SignedInData)
-        case signOutLocally(SignedInData)
-        case signOutGuest
-        case invokeHostedUISignOut(SignOutEventData, SignedInData)
-        case signedOutSuccess
-        case signedOutFailure(AuthenticationError)
-    }
+        case signOutGlobally(
+            SignedInData,
+            hostedUIError: AWSCognitoHostedUIError? = nil)
 
+        case revokeToken(
+            SignedInData,
+            hostedUIError: AWSCognitoHostedUIError? = nil,
+            globalSignOutError: AWSCognitoGlobalSignOutError? = nil)
+
+        case signOutLocally(
+            SignedInData,
+            hostedUIError: AWSCognitoHostedUIError? = nil,
+            globalSignOutError: AWSCognitoGlobalSignOutError? = nil,
+            revokeTokenError: AWSCognitoRevokeTokenError? = nil)
+        
+        case signOutGuest
+
+        case invokeHostedUISignOut(SignOutEventData, SignedInData)
+
+        case signedOutSuccess(hostedUIError: AWSCognitoHostedUIError? = nil,
+                              globalSignOutError: AWSCognitoGlobalSignOutError? = nil,
+                              revokeTokenError: AWSCognitoRevokeTokenError? = nil)
+
+        case globalSignOutError(SignedInData,
+                                globalSignOutError: AWSCognitoGlobalSignOutError,
+                                hostedUIError: AWSCognitoHostedUIError? = nil)
+
+        case signedOutFailure(AuthenticationError)
+
+        case userCancelled
+    }
+    
     let id: String
     let eventType: EventType
     let time: Date?
@@ -39,8 +62,12 @@ struct SignOutEvent: StateMachineEvent {
             return "SignOutEvent.signedOutSuccess"
         case .signedOutFailure:
             return "SignOutEvent.signedOutFailure"
+        case .globalSignOutError:
+            return "SignOutEvent.globalSignOutError"
         case .signOutGuest:
             return "SignOutEvent.signOutGuest"
+        case .userCancelled:
+            return "SignOutEvent.userCancelled"
         }
     }
 
@@ -61,10 +88,13 @@ extension SignOutEvent.EventType: Equatable {
         switch (lhs, rhs) {
         case (.signOutGlobally, .signOutGlobally),
             (.revokeToken, .revokeToken),
+            (.invokeHostedUISignOut, .invokeHostedUISignOut),
             (.signOutLocally, .signOutLocally),
-            (.signOutGuest, .signOutGuest),
             (.signedOutSuccess, .signedOutSuccess),
-            (.signedOutFailure, .signedOutFailure):
+            (.signedOutFailure, .signedOutFailure),
+            (.globalSignOutError, .globalSignOutError),
+            (.signOutGuest, .signOutGuest),
+            (.userCancelled, .userCancelled):
             return true
         default:
             return false

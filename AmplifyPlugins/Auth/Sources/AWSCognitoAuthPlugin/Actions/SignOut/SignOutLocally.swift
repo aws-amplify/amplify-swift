@@ -10,6 +10,9 @@ import Foundation
 struct SignOutLocally: Action {
 
     var identifier: String = "SignOutLocally"
+    let hostedUIError: AWSCognitoHostedUIError?
+    let globalSignOutError: AWSCognitoGlobalSignOutError?
+    let revokeTokenError: AWSCognitoRevokeTokenError?
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
@@ -19,10 +22,14 @@ struct SignOutLocally: Action {
         let event: StateMachineEvent
         do {
             try await credentialStoreClient?.deleteData(type: .amplifyCredentials)
-            event = SignOutEvent(eventType: .signedOutSuccess)
+            event = SignOutEvent(eventType: .signedOutSuccess(
+                hostedUIError: hostedUIError,
+                globalSignOutError: globalSignOutError,
+                revokeTokenError: revokeTokenError))
 
         } catch {
-            let signOutError = AuthenticationError.unknown(message: "Unable to clear credential store: \(error)")
+            let signOutError = AuthenticationError.unknown(
+                message: "Unable to clear credential store: \(error)")
             event = SignOutEvent(eventType: .signedOutFailure(signOutError))
             logError("\(#fileID) Sending event \(event.type) with error \(error)", environment: environment)
         }

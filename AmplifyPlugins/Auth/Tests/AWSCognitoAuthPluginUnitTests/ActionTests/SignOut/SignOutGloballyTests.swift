@@ -28,7 +28,7 @@ class SignOutGloballyTests: XCTestCase {
             cognitoUserPoolFactory: identityProviderFactory,
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF
         )
-        let action = SignOutGlobally(signedInData: .testData)
+        let action = SignOutGlobally(signedInData: .testData, hostedUIError: nil)
 
         await action.execute(
             withDispatcher: MockDispatcher { _ in },
@@ -38,7 +38,7 @@ class SignOutGloballyTests: XCTestCase {
         await waitForExpectations(timeout: 0.1)
     }
 
-    func testFailedGlobalSignOutTriggersRevokeToken() async {
+    func testFailedGlobalSignOutTriggersBuildRevokeError() async {
         let identityProviderFactory: BasicUserPoolEnvironment.CognitoUserPoolFactory = {
             MockIdentityProvider(
                 mockGlobalSignOutResponse: { _ in
@@ -53,7 +53,7 @@ class SignOutGloballyTests: XCTestCase {
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF
         )
 
-        let action = SignOutGlobally(signedInData: .testData)
+        let action = SignOutGlobally(signedInData: .testData, hostedUIError: nil)
 
         let revokeTokenEventSent = expectation(description: "revokeTokenEventSent")
         let dispatcher = MockDispatcher { event in
@@ -62,7 +62,7 @@ class SignOutGloballyTests: XCTestCase {
                 return
             }
 
-            if case let .revokeToken(signInData) = event.eventType {
+            if case .globalSignOutError(let signInData, _, _) = event.eventType {
                 XCTAssertNotNil(signInData)
                 revokeTokenEventSent.fulfill()
             }
@@ -91,7 +91,7 @@ class SignOutGloballyTests: XCTestCase {
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF
         )
 
-        let action = SignOutGlobally(signedInData: .testData)
+        let action = SignOutGlobally(signedInData: .testData, hostedUIError: nil)
 
         let revokeTokenEventSent = expectation(description: "revokeTokenEventSent")
         let dispatcher = MockDispatcher { event in
@@ -100,7 +100,7 @@ class SignOutGloballyTests: XCTestCase {
                 return
             }
 
-            if case let .revokeToken(signInData) = event.eventType {
+            if case let .revokeToken(signInData, _, _) = event.eventType {
                 XCTAssertNotNil(signInData)
                 revokeTokenEventSent.fulfill()
             }

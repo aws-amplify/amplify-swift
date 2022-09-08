@@ -134,8 +134,13 @@ class StateMachineListenerTests: XCTestCase {
 
         }
 
-        let event = Counter.Event(id: "test", eventType: .adjustBy(0))
-        await stateMachine.send(event)
+        Task {
+            for _ in 1...100 {
+                let event = Counter.Event(id: "test", eventType: .adjustBy(0))
+                await stateMachine.send(event)
+            }
+        }
+
         task.cancel()
         await waitForExpectations(timeout: 0.1)
     }
