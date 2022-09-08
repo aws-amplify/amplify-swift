@@ -103,8 +103,8 @@ final class SQLiteMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMig
             sql += "SELECT id, \'\(modelName)\' as tableName FROM \(modelName)"
         }
         sql = "INSERT INTO \(MutationSyncMetadataMigration.MutationSyncMetadataCopy.modelName) (id,deleted,lastChangedAt,version) " +
-        "select models.tableName || '|' || mm.id, mm.deleted, mm.lastChangedAt, mm.version " +
-        "from MutationSyncMetadata mm INNER JOIN (" + sql + ") as models on mm.id=models.id"
+        "select mm.id, mm.deleted, mm.lastChangedAt, mm.version " +
+        "from MutationSyncMetadata mm INNER JOIN (" + sql + ") as models on mm.id=models.tableName || '|' || models.id"
         try connection.execute(sql)
         return sql
     }
