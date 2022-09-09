@@ -138,12 +138,9 @@
 		213DBC4328A5787400B30280 /* PrivateIAMPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFAB0289BFE4E00B32A39 /* PrivateIAMPost.swift */; };
 		213DBC4428A5787400B30280 /* OwnerPrivatePublicUPIAMAPIPost+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFAAF289BFE4E00B32A39 /* OwnerPrivatePublicUPIAMAPIPost+Schema.swift */; };
 		213DBC4528A5787B00B30280 /* AWSDataStoreMultiAuthSingleRuleTests+Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFAA3289BFE4E00B32A39 /* AWSDataStoreMultiAuthSingleRuleTests+Models.swift */; };
-		213DBC4628A5787B00B30280 /* AWSDataStoreMultiAuthThreeRulesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFADB289BFE4E00B32A39 /* AWSDataStoreMultiAuthThreeRulesTests.swift */; };
 		213DBC4728A5787B00B30280 /* AWSDataStoreMultiAuthThreeRulesTests+Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFADE289BFE4E00B32A39 /* AWSDataStoreMultiAuthThreeRulesTests+Models.swift */; };
 		213DBC4828A5787B00B30280 /* AWSDataStoreMultiAuthTwoRulesTests+Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFAE0289BFE4E00B32A39 /* AWSDataStoreMultiAuthTwoRulesTests+Models.swift */; };
 		213DBC4928A5787B00B30280 /* AWSDataStoreMultiAuthSingleRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFAA4289BFE4E00B32A39 /* AWSDataStoreMultiAuthSingleRuleTests.swift */; };
-		213DBC4A28A5787B00B30280 /* AWSDataStoreMultiAuthTwoRulesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFADD289BFE4E00B32A39 /* AWSDataStoreMultiAuthTwoRulesTests.swift */; };
-		213DBC4B28A5787B00B30280 /* AWSDataStoreMultiAuthCombinationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFADF289BFE4E00B32A39 /* AWSDataStoreMultiAuthCombinationTests.swift */; };
 		213DBC5328A57CDE00B30280 /* AWSDataStoreAuthBaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBC5228A57CDE00B30280 /* AWSDataStoreAuthBaseTest.swift */; };
 		213DBC5528A57CF100B30280 /* AWSDataStoreAuthBaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBC5428A57CF100B30280 /* AWSDataStoreAuthBaseTest.swift */; };
 		213DBC5728A57CFA00B30280 /* AWSDataStoreAuthBaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBC5628A57CFA00B30280 /* AWSDataStoreAuthBaseTest.swift */; };
@@ -495,6 +492,9 @@
 		979722FA28B7E98A00679E3C /* DataStoreConnectionScenario6V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA05289BFE3400B32A39 /* DataStoreConnectionScenario6V2Tests.swift */; };
 		979722FB28B7FD3D00679E3C /* DataStoreConnectionScenario7V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA09289BFE3400B32A39 /* DataStoreConnectionScenario7V2Tests.swift */; };
 		979722FC28B8082900679E3C /* DataStoreConnectionScenario8V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9FE289BFE3400B32A39 /* DataStoreConnectionScenario8V2Tests.swift */; };
+		97CABB4B28C921A30041E213 /* AWSDataStoreMultiAuthCombinationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFADF289BFE4E00B32A39 /* AWSDataStoreMultiAuthCombinationTests.swift */; };
+		97CABB4C28C921A30041E213 /* AWSDataStoreMultiAuthThreeRulesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFADB289BFE4E00B32A39 /* AWSDataStoreMultiAuthThreeRulesTests.swift */; };
+		97CABB4D28C921A30041E213 /* AWSDataStoreMultiAuthTwoRulesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFADD289BFE4E00B32A39 /* AWSDataStoreMultiAuthTwoRulesTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2690,6 +2690,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				97CABB4B28C921A30041E213 /* AWSDataStoreMultiAuthCombinationTests.swift in Sources */,
+				97CABB4C28C921A30041E213 /* AWSDataStoreMultiAuthThreeRulesTests.swift in Sources */,
+				97CABB4D28C921A30041E213 /* AWSDataStoreMultiAuthTwoRulesTests.swift in Sources */,
 				213DBC4828A5787B00B30280 /* AWSDataStoreMultiAuthTwoRulesTests+Models.swift in Sources */,
 				213DBC1328A5787400B30280 /* PrivatePublicUPAPIPost+Schema.swift in Sources */,
 				213DBC2028A5787400B30280 /* OwnerOIDCPost+Schema.swift in Sources */,
@@ -2724,10 +2727,8 @@
 				213DBC2728A5787400B30280 /* PrivatePrivatePublicUPIAMAPIPost+Schema.swift in Sources */,
 				213DBC2C28A5787400B30280 /* OwnerPublicUPIAMPost+Schema.swift in Sources */,
 				213DBC1828A5787400B30280 /* PrivatePublicUPIAMPost.swift in Sources */,
-				213DBC4A28A5787B00B30280 /* AWSDataStoreMultiAuthTwoRulesTests.swift in Sources */,
 				213DBC3A28A5787400B30280 /* GroupPrivateUPIAMPost.swift in Sources */,
 				213DBC3328A5787400B30280 /* PublicPublicIAMAPIPost.swift in Sources */,
-				213DBC4B28A5787B00B30280 /* AWSDataStoreMultiAuthCombinationTests.swift in Sources */,
 				213DBC2328A5787400B30280 /* PrivatePublicIAMAPIPost+Schema.swift in Sources */,
 				213DBC1F28A5787400B30280 /* PrivatePrivateUPIAMPost.swift in Sources */,
 				213DBC4428A5787400B30280 /* OwnerPrivatePublicUPIAMAPIPost+Schema.swift in Sources */,
@@ -2735,7 +2736,6 @@
 				213DBC3F28A5787400B30280 /* PrivatePublicPublicUPAPIIAMPost.swift in Sources */,
 				213DBC4528A5787B00B30280 /* AWSDataStoreMultiAuthSingleRuleTests+Models.swift in Sources */,
 				213DBC3428A5787400B30280 /* OwnerUPPost+Schema.swift in Sources */,
-				213DBC4628A5787B00B30280 /* AWSDataStoreMultiAuthThreeRulesTests.swift in Sources */,
 				213DBC2D28A5787400B30280 /* GroupPrivateUPIAMPost+Schema.swift in Sources */,
 				213DBC1428A5787400B30280 /* OwnerPublicOIDAPIPost+Schema.swift in Sources */,
 				213DBC2F28A5787400B30280 /* PublicPublicIAMAPIPost+Schema.swift in Sources */,

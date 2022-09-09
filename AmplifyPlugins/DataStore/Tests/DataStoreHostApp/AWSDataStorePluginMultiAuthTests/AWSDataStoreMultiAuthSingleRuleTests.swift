@@ -16,23 +16,23 @@ class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreAuthBaseTest {
     /// When: DataStore query/mutation operations are sent with CognitoUserPools
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for an authenticated users
-    func testOwnerUserPools() {
-        setup(withModels: UserPoolsOwnerModels(), testType: .multiAuth)
+    func testOwnerUserPools() async {
+        await setup(withModels: UserPoolsOwnerModels(), testType: .multiAuth)
 
-        signIn(user: user1)
+        await signIn(user: user1)
 
         let expectations = makeExpectations()
 
-        assertDataStoreReady(expectations)
+        await assertDataStoreReady(expectations)
 
         // Query
-        assertQuerySuccess(modelType: OwnerUPPost.self,
+        await assertQuerySuccess(modelType: OwnerUPPost.self,
                            expectations) { error in
             XCTFail("Error query \(error)")
         }
 
         // Mutations
-        assertMutations(model: OwnerUPPost(name: "name"), expectations) { error in
+        await assertMutations(model: OwnerUPPost(name: "name"), expectations) { error in
             XCTFail("Error mutation \(error)")
         }
 
@@ -52,23 +52,23 @@ class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreAuthBaseTest {
     /// When: DataStore query/mutation operations are sent with CognitoUserPools
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for an authenticated users
-    func testGroupUserPools() {
-        setup(withModels: UserPoolsGroupModels(), testType: .multiAuth)
+    func testGroupUserPools() async {
+        await setup(withModels: UserPoolsGroupModels(), testType: .multiAuth)
 
         // user1 is part of the "Admins" group
-        signIn(user: user1)
+        await signIn(user: user1)
 
         let expectations = makeExpectations()
-        assertDataStoreReady(expectations)
+        await assertDataStoreReady(expectations)
 
         // Query
-        assertQuerySuccess(modelType: GroupUPPost.self,
+        await assertQuerySuccess(modelType: GroupUPPost.self,
                            expectations) { error in
             XCTFail("Error query \(error)")
         }
 
         // Mutation
-        assertMutations(model: GroupUPPost(name: "name"),
+        await assertMutations(model: GroupUPPost(name: "name"),
                         expectations) { error in
             XCTFail("Error mutation \(error)")
         }
@@ -79,29 +79,29 @@ class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreAuthBaseTest {
     /// Given: a user who doesn't belong to "Admins" groups signed in with CognitoUserPools
     /// When: DataStore.start is called
     /// Then: DataStore is successfully initialized
-    func testGroupUserPoolsWithNonAdminsUser() {
-        setup(withModels: UserPoolsGroupModels(), testType: .multiAuth)
+    func testGroupUserPoolsWithNonAdminsUser() async {
+        await setup(withModels: UserPoolsGroupModels(), testType: .multiAuth)
 
         // user2 is not part of the "Admins" group
-        signIn(user: user2)
+        await signIn(user: user2)
 
         let expectations = makeExpectations()
 
         // we're only interested in "ready-state" expectations
-        expectations.query.fulfill()
-        expectations.mutationSave.fulfill()
-        expectations.mutationSaveProcessed.fulfill()
-        expectations.mutationDelete.fulfill()
-        expectations.mutationDeleteProcessed.fulfill()
+        await expectations.query.fulfill()
+        await expectations.mutationSave.fulfill()
+        await expectations.mutationSaveProcessed.fulfill()
+        await expectations.mutationDelete.fulfill()
+        await expectations.mutationDeleteProcessed.fulfill()
 
         // GroupUPPost won't sync for user2 but DataStore should reach a
         // "ready" state
-        expectations.modelsSynced.fulfill()
-        assertDataStoreReady(expectations, expectedModelSynced: 0)
+        await expectations.modelsSynced.fulfill()
+        await assertDataStoreReady(expectations, expectedModelSynced: 0)
 
         assertUsedAuthTypes([.amazonCognitoUserPools])
 
-        wait(for: [
+        await waitForExpectations([
                 expectations.query,
                 expectations.mutationSave,
                 expectations.mutationSaveProcessed,
@@ -118,22 +118,22 @@ class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreAuthBaseTest {
     /// When: DataStore query/mutation operations are sent with CognitoUserPools
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for authenticated users
-    func testPrivateUserPools() {
-        setup(withModels: UserPoolsPrivateModels(), testType: .multiAuth)
+    func testPrivateUserPools() async {
+        await setup(withModels: UserPoolsPrivateModels(), testType: .multiAuth)
 
-        signIn(user: user1)
+        await signIn(user: user1)
 
         let expectations = makeExpectations()
 
-        assertDataStoreReady(expectations)
+        await assertDataStoreReady(expectations)
 
-        assertQuerySuccess(modelType: PrivateUPPost.self,
+        await assertQuerySuccess(modelType: PrivateUPPost.self,
                            expectations) { error in
             XCTFail("Error query \(error)")
         }
 
         // Mutations
-        assertMutations(model: PrivateUPPost(name: "name"),
+        await assertMutations(model: PrivateUPPost(name: "name"),
                         expectations) { error in
             XCTFail("Error mutation \(error)")
         }
@@ -145,22 +145,22 @@ class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreAuthBaseTest {
     /// When: DataStore query/mutation operations are sent with IAM
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for authenticated users
-    func testPrivateIAM() {
-        setup(withModels: IAMPrivateModels(), testType: .multiAuth)
+    func testPrivateIAM() async {
+        await setup(withModels: IAMPrivateModels(), testType: .multiAuth)
 
-        signIn(user: user1)
+        await signIn(user: user1)
 
         let expectations = makeExpectations()
 
-        assertDataStoreReady(expectations)
+        await assertDataStoreReady(expectations)
 
-        assertQuerySuccess(modelType: PrivateIAMPost.self,
+        await assertQuerySuccess(modelType: PrivateIAMPost.self,
                            expectations, onFailure: { error in
             XCTFail("Error query \(error)")
         })
 
         // Mutation
-        assertMutations(model: PrivateIAMPost(name: "name"),
+        await assertMutations(model: PrivateIAMPost(name: "name"),
                         expectations) { error in
             XCTFail("Error mutation \(error)")
         }
@@ -172,21 +172,21 @@ class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreAuthBaseTest {
     /// When: DataStore query/mutation operations are sent with IAM auth for all users
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed for all users
-    func testPublicIAM() {
-        setup(withModels: IAMPublicModels(), testType: .multiAuth)
+    func testPublicIAM() async {
+        await setup(withModels: IAMPublicModels(), testType: .multiAuth)
 
         let expectations = makeExpectations()
 
-        assertDataStoreReady(expectations)
+        await assertDataStoreReady(expectations)
 
         // Query
-        assertQuerySuccess(modelType: PublicIAMPost.self,
+        await assertQuerySuccess(modelType: PublicIAMPost.self,
                            expectations, onFailure: { error in
             XCTFail("Error query \(error)")
         })
 
         // Mutation
-        assertMutations(model: PublicIAMPost(name: "name"),
+        await assertMutations(model: PublicIAMPost(name: "name"),
                         expectations) { error in
             XCTFail("Error mutation \(error)")
         }
@@ -198,21 +198,21 @@ class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreAuthBaseTest {
     /// When: DataStore query/mutation operations are sent with API key for all users
     /// Then: DataStore is successfully initialized, query returns a result,
     ///      mutation is processed
-    func testPublicAPIKey() {
-        setup(withModels: APIKeyPublicModels(), testType: .multiAuth)
+    func testPublicAPIKey() async{
+        await setup(withModels: APIKeyPublicModels(), testType: .multiAuth)
 
         let expectations = makeExpectations()
 
-        assertDataStoreReady(expectations)
+        await assertDataStoreReady(expectations)
 
         // Query
-        assertQuerySuccess(modelType: PublicAPIPost.self,
+        await assertQuerySuccess(modelType: PublicAPIPost.self,
                            expectations, onFailure: { error in
             XCTFail("Error query \(error)")
         })
 
         // Mutation
-        assertMutations(model: PublicAPIPost(name: "name"),
+        await assertMutations(model: PublicAPIPost(name: "name"),
                         expectations) { error in
             XCTFail("Error mutation \(error)")
         }

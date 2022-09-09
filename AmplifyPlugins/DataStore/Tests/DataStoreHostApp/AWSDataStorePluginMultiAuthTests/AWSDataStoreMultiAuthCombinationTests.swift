@@ -16,34 +16,34 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
     /// Given: an unauthenticated user
     /// When: DataStore start is called
     /// Then: DataStore is successfully initialized.
-    func testDataStoreReadyState() {
-        setup(withModels: PrivatePublicComboModels(),
+    func testDataStoreReadyState() async {
+        await setup(withModels: PrivatePublicComboModels(),
               testType: .multiAuth)
-        signIn(user: user1)
+        await signIn(user: user1)
 
         let expectations = makeExpectations()
-        let startExpectation = expectation(description: "DataStore start success")
+        let startExpectation = asyncExpectation(description: "DataStore start success")
 
-        assertDataStoreReady(expectations)
+        await assertDataStoreReady(expectations)
 
         // manually start DataStore as we won't trigger any operation
-        Amplify.DataStore.start {
-            switch $0 {
-            case .failure(let error):
+        Task {
+            do {
+                try await Amplify.DataStore.start()
+                await startExpectation.fulfill()
+            } catch(let error) {
                 XCTFail("DataStore start failure \(error)")
-            case .success:
-                startExpectation.fulfill()
             }
         }
 
         // we're only interested in "ready-state" expectations
-        expectations.query.fulfill()
-        expectations.mutationSave.fulfill()
-        expectations.mutationSaveProcessed.fulfill()
-        expectations.mutationDelete.fulfill()
-        expectations.mutationDeleteProcessed.fulfill()
+        await expectations.query.fulfill()
+        await expectations.mutationSave.fulfill()
+        await expectations.mutationSaveProcessed.fulfill()
+        await expectations.mutationDelete.fulfill()
+        await expectations.mutationDeleteProcessed.fulfill()
 
-        wait(for: [
+        await waitForExpectations([
                 startExpectation,
                 expectations.query,
                 expectations.mutationSave,
@@ -57,23 +57,23 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
     /// Then:
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests f
     ///   or PrivatePublicComboUPPost are sent with IAM auth for authenticated users.
-    func testOperationsForPrivatePublicComboUPPost() {
-        setup(withModels: PrivatePublicComboModels(),
+    func testOperationsForPrivatePublicComboUPPost() async {
+        await setup(withModels: PrivatePublicComboModels(),
               testType: .multiAuth)
-        signIn(user: user1)
+        await signIn(user: user1)
 
         let expectations = makeExpectations()
 
-        assertDataStoreReady(expectations)
+        await assertDataStoreReady(expectations)
 
         // Query
-        assertQuerySuccess(modelType: PrivatePublicComboUPPost.self,
+        await assertQuerySuccess(modelType: PrivatePublicComboUPPost.self,
                            expectations, onFailure: { error in
             XCTFail("Error query \(error)")
         })
 
         // Mutation
-        assertMutations(model: PrivatePublicComboUPPost(name: "name"),
+        await assertMutations(model: PrivatePublicComboUPPost(name: "name"),
                         expectations) { error in
             XCTFail("Error mutation \(error)")
         }
@@ -86,23 +86,23 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
     /// Then:
     /// - DataStore is successfully initialized, sync/mutation/subscription network requests
     ///   for PrivatePublicComboAPIPost are sent with API key auth for authenticated users.
-    func testOperationsForPrivatePublicComboAPIPostAuthenticatedUser() {
-        setup(withModels: PrivatePublicComboModels(),
+    func testOperationsForPrivatePublicComboAPIPostAuthenticatedUser() async {
+        await setup(withModels: PrivatePublicComboModels(),
               testType: .multiAuth)
-        signIn(user: user1)
+        await signIn(user: user1)
 
         let expectations = makeExpectations()
 
-        assertDataStoreReady(expectations)
+        await assertDataStoreReady(expectations)
 
         // Query
-        assertQuerySuccess(modelType: PrivatePublicComboAPIPost.self,
+        await assertQuerySuccess(modelType: PrivatePublicComboAPIPost.self,
                            expectations, onFailure: { error in
             XCTFail("Error query \(error)")
         })
 
         // Mutation
-        assertMutations(model: PrivatePublicComboAPIPost(name: "name"),
+        await assertMutations(model: PrivatePublicComboAPIPost(name: "name"),
                         expectations) { error in
             XCTFail("Error mutation \(error)")
         }
@@ -117,23 +117,23 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
     ///
     ///   PrivatePublicComboUPPost does not sync for unauthenticated users, but it does not block the other models
     ///   from syncing and DataStore getting to a “ready” state.
-    func testOperationsForPrivatePublicComboAPIPost() {
-        setup(withModels: PrivatePublicComboModels(),
+    func testOperationsForPrivatePublicComboAPIPost() async {
+        await setup(withModels: PrivatePublicComboModels(),
               testType: .multiAuth)
 
         let expectations = makeExpectations()
 
         // PrivatePublicComboUPPost won't sync for unauthenticated users
-        assertDataStoreReady(expectations, expectedModelSynced: 1)
+        await assertDataStoreReady(expectations, expectedModelSynced: 1)
 
         // Query
-        assertQuerySuccess(modelType: PrivatePublicComboAPIPost.self,
+        await assertQuerySuccess(modelType: PrivatePublicComboAPIPost.self,
                            expectations, onFailure: { error in
             XCTFail("Error query \(error)")
         })
 
         // Mutation
-        assertMutations(model: PrivatePublicComboAPIPost(name: "name"),
+        await assertMutations(model: PrivatePublicComboAPIPost(name: "name"),
                         expectations) { error in
             XCTFail("Error mutation \(error)")
         }
