@@ -88,8 +88,6 @@ extension StateMachine: EventDispatcher {
             byApplying: event
         )
 
-        print("Current - \(currentState)")
-        print("new - \(resolution.newState)")
         if currentState != resolution.newState {
             currentState = resolution.newState
             subscribers.removeAll { item in
