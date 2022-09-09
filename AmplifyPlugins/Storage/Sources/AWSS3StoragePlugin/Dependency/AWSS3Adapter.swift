@@ -89,7 +89,7 @@ class AWSS3Adapter: AWSS3Behavior {
                                                    metadata: request.metadata)
 
             do {
-                let response = try await awsS3.createMultipartUpload(input: input)
+                let response = try await awsS3.createMultipartUpload(input: input, config: config)
                 guard let bucket = response.bucket, let key = response.key, let uploadId = response.uploadId else {
                     completion(.failure(StorageError.unknown("Invalid response for creating multipart upload", nil)))
                     return
@@ -129,7 +129,7 @@ class AWSS3Adapter: AWSS3Behavior {
             let completedMultipartUpload = S3ClientTypes.CompletedMultipartUpload(parts: parts)
             let input = CompleteMultipartUploadInput(bucket: request.bucket, key: request.key, multipartUpload: completedMultipartUpload, uploadId: request.uploadId)
             do {
-                let response = try await awsS3.completeMultipartUpload(input: input)
+                let response = try await awsS3.completeMultipartUpload(input: input, config: config)
                 guard let eTag = response.eTag else {
                     completion(.failure(StorageError.unknown("Invalid response for completing multipart upload", nil)))
                     return
