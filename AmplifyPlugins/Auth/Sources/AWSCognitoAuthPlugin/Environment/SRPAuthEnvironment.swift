@@ -5,9 +5,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-// TODO: Refactor this: shouldn't be depending on HLC constructs like
-// AWSCognitoIdentityUserPoolConfiguration nor AWSServiceInfo, nor even really on
-// SRP dependencies
 struct BasicSRPAuthEnvironment: SRPAuthEnvironment {
 
     typealias SRPClientFactory = (String, String) throws -> SRPClientBehavior
@@ -20,14 +17,15 @@ struct BasicSRPAuthEnvironment: SRPAuthEnvironment {
     // Optional
     let eventIDFactory: EventIDFactory
     let srpClientFactory: SRPClientFactory
-    let srpConfiguration: SRPCommonConfig
+    let srpConfiguration: (nHexValue: String, gHexValue: String)
 
     init(
         userPoolConfiguration: UserPoolConfigurationData,
         cognitoUserPoolFactory: @escaping CognitoUserPoolFactory,
         eventIDFactory: @escaping EventIDFactory = UUIDFactory.factory,
         srpClientFactory: @escaping SRPClientFactory = AmplifySRPClient.init(NHexValue:gHexValue:),
-        srpConfiguration: SRPCommonConfig = SRPCommonConfig()
+        srpConfiguration: (nHexValue: String, gHexValue: String) = (nHexValue: SRPCommonConfig.nHexValue,
+                                                                    gHexValue: SRPCommonConfig.gHexValue)
     ) {
         self.userPoolConfiguration = userPoolConfiguration
         self.cognitoUserPoolFactory = cognitoUserPoolFactory
@@ -38,10 +36,9 @@ struct BasicSRPAuthEnvironment: SRPAuthEnvironment {
     }
 }
 
-// TODO: Convert to enum
-struct SRPCommonConfig {
+enum SRPCommonConfig {
     // Use the 3072 bit from - https://datatracker.ietf.org/doc/html/rfc5054#appendix-A
-    let nHexValue =
+    static let nHexValue =
     "FFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD129024E088A67CC74020BBEA63B139B2" +
     "2514A08798E3404DDEF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245E485B576625E7E" +
     "C6F44C42E9A637ED6B0BFF5CB6F406B7EDEE386BFB5A899FA5AE9F24117C4B1FE649286651ECE45" +
@@ -52,7 +49,7 @@ struct SRPCommonConfig {
     "D060C7DB3970F85A6E1E4C7ABF5AE8CDB0933D71E8C94E04A25619DCEE3D2261AD2EE6BF12FFA06" +
     "D98A0864D87602733EC86A64521F2B18177B200CBBE117577A615D6C770988C0BAD946E208E24FA" +
     "074E5AB3143DB5BFCE0FD108E4B82D120A93AD2CAFFFFFFFFFFFFFFFF"
-    let gHexValue = "2"
+    static let gHexValue = "2"
 }
 
 protocol SRPAuthEnvironment: Environment {
@@ -60,7 +57,7 @@ protocol SRPAuthEnvironment: Environment {
 
     var eventIDFactory: EventIDFactory { get }
     var srpClientFactory: SRPClientFactory { get }
-    var srpConfiguration: SRPCommonConfig { get }
+    var srpConfiguration: (nHexValue: String, gHexValue: String) { get }
 }
 
 extension AuthEnvironment: SRPAuthEnvironment {
@@ -73,7 +70,7 @@ extension AuthEnvironment: SRPAuthEnvironment {
         srpSignInEnvironment.srpAuthEnvironment.srpClientFactory
     }
 
-    var srpConfiguration: SRPCommonConfig {
+    var srpConfiguration: (nHexValue: String, gHexValue: String) {
         srpSignInEnvironment.srpAuthEnvironment.srpConfiguration
     }
 }
