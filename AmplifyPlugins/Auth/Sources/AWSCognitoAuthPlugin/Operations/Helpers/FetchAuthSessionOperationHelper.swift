@@ -87,8 +87,15 @@ class FetchAuthSessionOperationHelper {
             if case .sessionExpired = error {
                 let session = AuthCognitoSignedInSessionHelper.makeExpiredSignedInSession()
                 return session
-            } else if case .sessionError = error {
-                let event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
+            } else if case .sessionError(_, let amplifyCredentials) = error {
+                var event: AuthorizationEvent
+                // If there was no credentials before, we try to get the unauth session
+                // else, we try to refresh the credentials.
+                if case .noCredentials = amplifyCredentials {
+                    event = AuthorizationEvent(eventType: .fetchUnAuthSession)
+                } else {
+                    event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
+                }
                 await authStateMachine.send(event)
                 return try await listenForSession(authStateMachine: authStateMachine)
             } else {
