@@ -75,14 +75,14 @@ class SQLiteMutationSyncMetadataMigrationDelegateTests: MutationSyncMetadataMigr
         try setUpAllModels()
         let restaurant = Restaurant(restaurantName: "name")
         save(restaurant)
-        let metadata = MutationSyncMetadata(modelId: restaurant.id, modelName: Restaurant.modelName, deleted: false, lastChangedAt: 1, version: 1)
+        let metadata = MutationSyncMetadata(id: restaurant.id, deleted: false, lastChangedAt: 1, version: 1)
         saveMutationSyncMetadata(metadata)
         guard let mutationSyncMetadatas = queryMutationSyncMetadata() else {
             XCTFail("Could not get metadata")
             return
         }
         XCTAssertEqual(mutationSyncMetadatas.count, 1)
-        XCTAssertEqual(mutationSyncMetadatas[0].modelId, restaurant.id)
+        XCTAssertEqual(mutationSyncMetadatas[0].id, restaurant.id)
 
         let delegate = SQLiteMutationSyncMetadataMigrationDelegate(storageAdapter: storageAdapter,
                                                                    modelSchemas: modelSchemas)
