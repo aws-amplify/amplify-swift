@@ -36,11 +36,12 @@ extension RefreshSessionState: Equatable {
             (.refreshingUserPoolToken, .refreshingUserPoolToken),
             (.refreshingUserPoolTokenWithIdentity, .refreshingUserPoolTokenWithIdentity),
             (.refreshingAWSCredentialsWithUserPoolTokens, .refreshingAWSCredentialsWithUserPoolTokens),
-            (.fetchingAuthSessionWithUserPool, .fetchingAuthSessionWithUserPool),
             (.refreshed, .refreshed),
             (.error, .error):
             return true
-
+        case  (.fetchingAuthSessionWithUserPool(let lhsFetchState, _),
+            .fetchingAuthSessionWithUserPool(let rhsFetchState, _)):
+            return lhsFetchState == rhsFetchState
         default:
             return false
         }
