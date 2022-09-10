@@ -228,5 +228,3 @@ extension AWSCognitoAuthPlugin {
 extension CognitoIdentityProviderClient: CognitoUserPoolBehavior {}
 
 extension CognitoIdentityClient: CognitoIdentityBehavior {}
-
-

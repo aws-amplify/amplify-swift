@@ -50,7 +50,7 @@ struct SignOutGlobally: Action {
     }
 
     func invokeNextStep(with error: Error?, dispatcher: EventDispatcher, environment: Environment) async {
-        var globalSignOutError: AWSCognitoGlobalSignOutError? = nil
+        var globalSignOutError: AWSCognitoGlobalSignOutError?
         if let authErrorConvertible = error as? AuthErrorConvertible {
             let internalError = authErrorConvertible.authError
             globalSignOutError = AWSCognitoGlobalSignOutError(

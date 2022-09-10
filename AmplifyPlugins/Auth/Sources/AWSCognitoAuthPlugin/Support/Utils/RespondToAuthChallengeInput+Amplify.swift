@@ -127,7 +127,7 @@ extension RespondToAuthChallengeInput {
                 challengeResponses["DEVICE_KEY"] = data.deviceKey
             }
 
-            var userContextData: CognitoIdentityProviderClientTypes.UserContextDataType? = nil
+            var userContextData: CognitoIdentityProviderClientTypes.UserContextDataType?
             if let asfDeviceId = asfDeviceId,
                let encodedData = CognitoUserPoolASF.encodedContext(
                 username: username,

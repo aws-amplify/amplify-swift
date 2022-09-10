@@ -9,7 +9,7 @@ import Foundation
 import Amplify
 
 extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
-    
+
     public func signUp(username: String,
                        password: String?,
                        options: AuthSignUpRequest.Options?) async throws -> AuthSignUpResult {
@@ -20,7 +20,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         let task = AWSAuthSignUpTask(request, authEnvironment: authEnvironment)
         return try await task.value
     }
-    
+
     public func confirmSignUp(for username: String,
                               confirmationCode: String,
                               options: AuthConfirmSignUpRequest.Options?)
@@ -32,7 +32,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         let task = AWSAuthConfirmSignUpTask(request, authEnvironment: authEnvironment)
         return try await task.value
     }
-    
+
     public func resendSignUpCode(for username: String, options: AuthResendSignUpCodeRequest.Options?) async throws -> AuthCodeDeliveryDetails {
         let options = options ?? AuthResendSignUpCodeRequest.Options()
         let request = AuthResendSignUpCodeRequest(username: username, options: options)
@@ -54,11 +54,10 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         )
         return try await task.value
     }
-    
+
     public func signInWithWebUI(for authProvider: AuthProvider,
                                 presentationAnchor: AuthUIPresentationAnchor,
-                                options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult
-    {
+                                options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult {
         let options = options ?? AuthWebUISignInRequest.Options()
         let request = AuthWebUISignInRequest(presentationAnchor: presentationAnchor,
                                              authProvider: authProvider,
@@ -72,38 +71,38 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         return try await task.value
     }
 #endif
-    
+
     public func confirmSignIn(challengeResponse: String,
                               options: AuthConfirmSignInRequest.Options? = nil) async throws -> AuthSignInResult {
-        
+
         let options = options ?? AuthConfirmSignInRequest.Options()
         let request = AuthConfirmSignInRequest(challengeResponse: challengeResponse,
                                                options: options)
         let task = AWSAuthConfirmSignInTask(request, stateMachine: authStateMachine)
         return try await task.value
     }
-    
+
     public func signOut(options: AuthSignOutRequest.Options? = nil) async -> AuthSignOutResult {
         let options = options ?? AuthSignOutRequest.Options()
         let request = AuthSignOutRequest(options: options)
         let task = AWSAuthSignOutTask(request, authStateMachine: authStateMachine)
         return await task.value
     }
-    
+
     public func fetchAuthSession(options: AuthFetchSessionRequest.Options?) async throws -> AuthSession {
         let options = options ?? AuthFetchSessionRequest.Options()
         let request = AuthFetchSessionRequest(options: options)
         let task = AWSAuthFetchSessionTask(request, authStateMachine: authStateMachine)
         return try await task.value
     }
-    
+
     public func resetPassword(for username: String, options: AuthResetPasswordRequest.Options?) async throws -> AuthResetPasswordResult {
         let options = options ?? AuthResetPasswordRequest.Options()
         let request = AuthResetPasswordRequest(username: username, options: options)
         let task = AWSAuthResetPasswordTask(request, environment: authEnvironment, authConfiguration: authConfiguration)
         return try await task.value
     }
-    
+
     public func confirmResetPassword(for username: String,
                                      with newPassword: String,
                                      confirmationCode: String,
@@ -116,7 +115,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         let task = AWSAuthConfirmResetPasswordTask(request, environment: authEnvironment, authConfiguration: authConfiguration)
         return try await task.value
     }
-    
+
     public func signIn(username: String?,
                        password: String?,
                        options: AuthSignInRequest.Options?) async throws -> AuthSignInResult {

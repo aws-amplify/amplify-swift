@@ -9,9 +9,9 @@ import Foundation
 import Amplify
 
 extension AmplifyCredentials {
-    
+
     var cognitoSession: AWSAuthCognitoSession {
-        
+
         switch self {
         case .userPoolOnly(let signedInData):
             let identityError = AuthCognitoSignedInSessionHelper.identityIdErrorForInvalidConfiguration()

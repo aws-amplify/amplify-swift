@@ -34,7 +34,7 @@ struct AuthProviderLoginsMap: LoginsMapProvider {
 
     let federatedToken: FederatedToken
 
-    var loginsMap: [String : String] {
+    var loginsMap: [String: String] {
         [federatedToken.provider.identityPoolProviderName: federatedToken.token]
     }
 }

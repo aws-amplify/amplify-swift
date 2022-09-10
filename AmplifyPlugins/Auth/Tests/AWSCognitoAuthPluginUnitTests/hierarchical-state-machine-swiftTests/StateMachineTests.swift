@@ -16,7 +16,7 @@ class StateMachineTests: XCTestCase {
         XCTAssertEqual(state.value, 0)
     }
 
-    func testBasicReceive() async  {
+    func testBasicReceive() async {
         let testMachine = CounterStateMachine.logging()
         let increment = Counter.Event(id: "1", eventType: .increment)
         await testMachine.send(increment)
@@ -30,7 +30,7 @@ class StateMachineTests: XCTestCase {
     /// - The StateMachine receives multiple events concurrently
     /// Then:
     /// - It applies the events in order of receipt
-    func testConcurrentReceive() async  {
+    func testConcurrentReceive() async {
         // Logging will significantly impact performance on these tight loops, so adjust expectation
         // timeout accordingly if you need to log
         let testMachine = CounterStateMachine.default()
@@ -62,7 +62,7 @@ class StateMachineTests: XCTestCase {
     /// receiving an event. `receive` is asynchronous, so we'd expect some of
     /// the current values to be out of sync if the state machine didn't
     /// properly serialize access.
-    func testConcurrentReceiveAndRead() async  {
+    func testConcurrentReceiveAndRead() async {
         // Logging will significantly impact performance on these tight loops, so adjust expectation
         // timeout accordingly if you need to log
         let testMachine = CounterStateMachine.default()
@@ -82,7 +82,7 @@ class StateMachineTests: XCTestCase {
     /// - The state machine receives a resolution that includes actions
     /// Then:
     /// - It executes the action
-    func testExecutesEffects() async  {
+    func testExecutesEffects() async {
         let action1WasExecuted = expectation(description: "action1WasExecuted")
         let action2WasExecuted = expectation(description: "action2WasExecuted")
 
@@ -112,7 +112,7 @@ class StateMachineTests: XCTestCase {
     /// - The effect `dispatches` a new event
     /// Then:
     /// - The StateMachine processes the new event
-    func testDispatchesFromAction() async  {
+    func testDispatchesFromAction() async {
         let action1WasExecuted = expectation(description: "action1WasExecuted")
         let action2WasExecuted = expectation(description: "action2WasExecuted")
 

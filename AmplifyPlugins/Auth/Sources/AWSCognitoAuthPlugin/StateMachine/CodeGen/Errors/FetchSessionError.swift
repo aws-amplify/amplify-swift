@@ -86,6 +86,4 @@ extension FetchSessionError: AuthErrorConvertible {
         }
     }
 
-
 }
-

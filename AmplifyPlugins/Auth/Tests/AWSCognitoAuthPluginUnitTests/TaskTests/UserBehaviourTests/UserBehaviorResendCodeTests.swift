@@ -31,7 +31,7 @@ class UserBehaviorResendCodeTests: BasePluginTest {
                     deliveryMedium: .email,
                     destination: "destination"))
         })
-        
+
         let attribute = try await plugin.resendConfirmationCode(for: .email)
         guard case .email = attribute.destination else {
             XCTFail("Result should be .email for attributeKey")

@@ -19,7 +19,7 @@ class AWSAuthConfirmResetPasswordTask: AuthConfirmResetPasswordTask {
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.confirmResetPasswordAPI
     }
-    
+
     init(_ request: AuthConfirmResetPasswordRequest, environment: AuthEnvironment, authConfiguration: AuthConfiguration) {
         self.request = request
         self.environment = environment
@@ -42,7 +42,7 @@ class AWSAuthConfirmResetPasswordTask: AuthConfirmResetPasswordTask {
             throw AuthError.unknown("Unable to execute auth task", error)
         }
     }
-    
+
     func confirmResetPassword() async throws {
         let userPoolService = try environment.cognitoUserPoolFactory()
         let clientMetaData = (request.options.pluginOptions

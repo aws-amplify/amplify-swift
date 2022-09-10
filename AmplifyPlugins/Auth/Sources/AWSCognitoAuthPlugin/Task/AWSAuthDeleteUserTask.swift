@@ -12,7 +12,7 @@ import AWSPluginsCore
 class AWSAuthDeleteUserTask: AuthDeleteUserTask {
     private let authStateMachine: AuthStateMachine
     private let taskHelper: AWSAuthTaskHelper
-    
+
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.deleteUserAPI
     }

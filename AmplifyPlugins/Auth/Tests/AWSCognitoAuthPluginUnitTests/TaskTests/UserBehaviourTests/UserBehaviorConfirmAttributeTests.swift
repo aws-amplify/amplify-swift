@@ -271,7 +271,7 @@ class UserBehaviorConfirmAttributeTests: BasePluginTest {
         mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutputResponse: { _ in
             throw VerifyUserAttributeOutputError.tooManyRequestsException(.init())
         })
-        
+
         do {
             try await plugin.confirm(userAttribute: .email, confirmationCode: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -302,7 +302,7 @@ class UserBehaviorConfirmAttributeTests: BasePluginTest {
         mockIdentityProvider = MockIdentityProvider(mockConfirmUserAttributeOutputResponse: { _ in
             throw VerifyUserAttributeOutputError.userNotConfirmedException(.init())
         })
-        
+
         do {
             try await plugin.confirm(userAttribute: .email, confirmationCode: "code")
             XCTFail("Should return an error if the result from service is invalid")

@@ -75,7 +75,6 @@ class AuthCustomSignInTests: AWSAuthBaseTest {
             XCTFail("SignIn with invalid auth flow should not succeed")
         }
 
-        
         do {
             let confirmSignInResult = try await Amplify.Auth.confirmSignIn(challengeResponse: confirmationCodeForValidation)
             XCTAssertTrue(confirmSignInResult.isSignedIn)
@@ -207,7 +206,7 @@ class AuthCustomSignInTests: AWSAuthBaseTest {
         } catch {
             XCTFail("SignIn with invalid auth flow should not succeed")
         }
-        
+
         do {
             let confirmSignInResult = try await Amplify.Auth.confirmSignIn(challengeResponse: confirmationCodeForValidation)
             XCTAssertTrue(confirmSignInResult.isSignedIn)

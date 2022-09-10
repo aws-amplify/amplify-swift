@@ -10,7 +10,7 @@ import XCTest
 @testable import AWSCognitoAuthPlugin
 
 class EscapeHatchTests: XCTestCase {
-    
+
     let skipBrokenTests = true
 
     override func tearDown() async throws {
@@ -29,7 +29,7 @@ class EscapeHatchTests: XCTestCase {
         if skipBrokenTests {
             throw XCTSkip("TODO: fix this test")
         }
-        
+
         let plugin = AWSCognitoAuthPlugin()
         try Amplify.add(plugin: plugin)
 
@@ -76,7 +76,7 @@ class EscapeHatchTests: XCTestCase {
         if skipBrokenTests {
             throw XCTSkip("TODO: fix this test")
         }
-        
+
         let plugin = AWSCognitoAuthPlugin()
         try Amplify.add(plugin: plugin)
 
@@ -116,7 +116,7 @@ class EscapeHatchTests: XCTestCase {
         if skipBrokenTests {
             throw XCTSkip("TODO: fix this test")
         }
-        
+
         let plugin = AWSCognitoAuthPlugin()
         try Amplify.add(plugin: plugin)
 

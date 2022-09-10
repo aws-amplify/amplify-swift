@@ -97,9 +97,9 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
         do {
-            let _ = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
+            _ = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
             XCTFail("Should not produce a success result")
-            
+
         } catch {
             guard case AuthError.unknown = error else {
                 XCTFail("Should produce unknown error")
@@ -120,9 +120,9 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
         do {
-            let _ = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
+            _ = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
             XCTFail("Should not produce a success result")
-            
+
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error else {
                 XCTFail("Should produce service error instead of \(error)")
@@ -147,9 +147,9 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
         do {
-            let _ = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
+            _ = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
             XCTFail("Should not produce a success result")
-            
+
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error else {
                 XCTFail("Should produce service error instead of \(error)")
@@ -175,9 +175,9 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
         do {
-            let _ = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
+            _ = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
             XCTFail("Should not produce a success result")
-            
+
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error else {
                 XCTFail("Should produce service error instead of \(error)")
@@ -203,9 +203,9 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
         do {
-            let _ = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
+            _ = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
             XCTFail("Should not produce a success result")
-            
+
         } catch {
             guard case AuthError.configuration = error else {
                 XCTFail("Should produce configuration error instead of \(error)")
@@ -227,9 +227,9 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
         do {
-            let _ = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
+            _ = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
             XCTFail("Should not produce a success result")
-            
+
         } catch {
             guard case AuthError.notAuthorized = error else {
                 XCTFail("Should produce not authorized error instead of \(error)")
@@ -328,7 +328,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
         do {
-            let _ = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
+            _ = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
             XCTFail("Should not produce a success result")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error else {
@@ -355,7 +355,7 @@ class AWSAuthMigrationSignInTaskTests: XCTestCase {
         mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: initiateAuth)
         let pluginOptions = AWSAuthSignInOptions(authFlowType: .userPassword)
         do {
-            let _ = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
+            _ = try await plugin.signIn(username: "username", password: "password", options: AuthSignInRequest.Options(pluginOptions: pluginOptions))
             XCTFail("Should not produce a success result")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error else {

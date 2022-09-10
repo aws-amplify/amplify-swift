@@ -130,7 +130,7 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         XCTAssertNotNil(tokens?.accessToken)
         XCTAssertNotNil(tokens?.idToken)
         XCTAssertNotNil(tokens?.refreshToken)
-        
+
         wait(for: [resultExpectation], timeout: apiTimeout)
     }
 
@@ -275,7 +275,7 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
             initialState: initialState)
 
         let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
-        
+
         XCTAssertTrue(session.isSignedIn)
         let credentialsResult = (session as? AuthAWSCredentialsProvider)?.getAWSCredentials()
         guard case .failure(let error) = credentialsResult, case .sessionExpired = error else {
@@ -500,9 +500,9 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let plugin = configurePluginWith(
             userPool: { MockIdentityProvider(mockInitiateAuthResponse: initAuth) },
             initialState: initialState)
-        
+
         let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
-        
+
         XCTAssertTrue(session.isSignedIn)
         let credentialsResult = (session as? AuthAWSCredentialsProvider)?.getAWSCredentials()
         guard case .failure(let error) = credentialsResult, case .unknown = error else {
@@ -557,9 +557,9 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
             userPool: { MockIdentityProvider(mockInitiateAuthResponse: initAuth) },
             identityPool: { MockIdentity(mockGetCredentialsResponse: awsCredentials) },
             initialState: initialState)
-        
+
         let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
-        
+
         XCTAssertTrue(session.isSignedIn)
         let credentialsResult = (session as? AuthAWSCredentialsProvider)?.getAWSCredentials()
         guard case .failure(let error) = credentialsResult, case .unknown = error else {
@@ -612,7 +612,7 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let plugin = configurePluginWith(
             identityPool: { MockIdentity(mockGetCredentialsResponse: awsCredentials) },
             initialState: initialState)
-        
+
         let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
         XCTAssertFalse(session.isSignedIn)
         let credentialsResult = (session as? AuthAWSCredentialsProvider)?.getAWSCredentials()

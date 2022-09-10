@@ -11,7 +11,6 @@ extension AWSCognitoAuthPlugin {
 
     func listenToStateMachineChanges() {
 
-
         Task {
             let stateSequences = await authStateMachine.listen()
             for await state in stateSequences {

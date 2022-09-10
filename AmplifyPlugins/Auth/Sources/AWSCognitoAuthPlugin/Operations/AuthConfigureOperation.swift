@@ -34,7 +34,6 @@ class AuthConfigureOperation: ConfigureOperation {
                    request: request)
     }
 
-
     override public func main() {
         if isCancelled {
             finish()

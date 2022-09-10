@@ -18,7 +18,7 @@ class AWSAuthFetchDevicesTask: AuthFetchDevicesTask {
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
     private let taskHelper: AWSAuthTaskHelper
-    
+
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.fetchDevicesAPI
     }
@@ -51,7 +51,7 @@ class AWSAuthFetchDevicesTask: AuthFetchDevicesTask {
         let userPoolService = try userPoolFactory()
         let input = ListDevicesInput(accessToken: accessToken)
         let result = try await userPoolService.listDevices(input: input)
-        
+
         guard let devices = result.devices else {
             let authError = AuthError.unknown("Unable to get devices list from response", nil)
             throw authError

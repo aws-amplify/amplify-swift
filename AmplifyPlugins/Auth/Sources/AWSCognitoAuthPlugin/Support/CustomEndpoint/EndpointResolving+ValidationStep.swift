@@ -25,7 +25,7 @@ extension EndpointResolving.ValidationStep {
             }
         }
     }
-    
+
     /// Validate that the input string forms a valid URL when prepending `https://` as the scheme.
     static func validURL() -> Self where Input == String, Output == (URLComponents, String) {
         .init { endpoint in
@@ -40,7 +40,7 @@ extension EndpointResolving.ValidationStep {
             return (components, host)
         }
     }
-    
+
     /// Validate that the input `URLComponents` don't contain a path.
     static func pathIsEmpty() -> Self where Input == (URLComponents, String), Output == Void {
         .init { (components, endpoint) in
@@ -66,7 +66,7 @@ extension AuthError {
             """
         )
     }
-    
+
     fileprivate static func invalidScheme(_ endpoint: String) -> AuthError {
         .configuration(
             "Error configuring AWSCognitoAuthPlugin",
@@ -79,7 +79,7 @@ extension AuthError {
             """
         )
     }
-    
+
     fileprivate static func invalidPath(
         endpoint: String,
         components: URLComponents

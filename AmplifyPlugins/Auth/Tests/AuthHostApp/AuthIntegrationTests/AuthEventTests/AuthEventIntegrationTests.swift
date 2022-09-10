@@ -58,7 +58,7 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
             username: username,
             password: password,
             email: defaultTestEmail)
-        
+
         await waitForExpectations([signInExpectation], timeout: networkTimeout)
     }
 
@@ -122,7 +122,7 @@ class AuthEventIntegrationTests: AWSAuthBaseTest {
                 Task {
                     await sessionExpiredExpectation.fulfill()
                 }
-                
+
             default:
                 break
             }

@@ -24,7 +24,7 @@ struct HostedUISignInHelper {
         self.configuration = configuration
     }
 
-    func initiateSignIn() async throws -> AuthSignInResult  {
+    func initiateSignIn() async throws -> AuthSignInResult {
         try await isValidState()
         await prepareForSignIn()
         return try await doSignIn()

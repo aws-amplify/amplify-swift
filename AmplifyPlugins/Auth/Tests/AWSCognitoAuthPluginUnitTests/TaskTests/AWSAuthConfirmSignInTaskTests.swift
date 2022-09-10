@@ -36,7 +36,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             mockRespondToAuthChallengeResponse: { _ in
             return .testData()
         })
-        
+
         do {
             let confirmSignInResult = try await plugin.confirmSignIn(challengeResponse: "code")
             guard case .done = confirmSignInResult.nextStep else {
@@ -63,7 +63,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             mockRespondToAuthChallengeResponse: { _ in
             return .testData()
         })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "")
             XCTFail("Should not succeed")
@@ -74,7 +74,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             }
         }
     }
-    
+
     /// Test a confirmSignIn call with an empty confirmation code followed by a second valaid confirmSignIn call
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a successul response
@@ -89,7 +89,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             mockRespondToAuthChallengeResponse: { _ in
             return .testData()
         })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "")
             XCTFail("Should not succeed")
@@ -98,7 +98,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 XCTFail("Should produce validation error instead of \(error)")
                 return
             }
-            
+
             do {
                 let confirmSignInResult = try await plugin.confirmSignIn(challengeResponse: "code")
                 XCTAssertTrue(confirmSignInResult.isSignedIn, "Signin result should be complete")
@@ -126,7 +126,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.aliasExistsException(
                     .init(message: "Exception"))
         })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -157,7 +157,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.codeMismatchException(
                     .init(message: "Exception"))
         })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -189,7 +189,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.expiredCodeException(
                     .init(message: "Exception"))
         })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -220,7 +220,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.internalErrorException(
                     .init(message: "Exception"))
         })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -247,7 +247,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.invalidLambdaResponseException(
                     .init(message: "Exception"))
         })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -280,7 +280,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.invalidParameterException(
                     .init(message: "Exception"))
         })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -313,7 +313,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.invalidPasswordException(
                     .init(message: "Exception"))
         })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -344,7 +344,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.invalidSmsRoleAccessPolicyException(
                     .init(message: "Exception"))
         })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -375,7 +375,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.invalidSmsRoleTrustRelationshipException(
                     .init(message: "Exception"))
         })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -459,7 +459,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.mFAMethodNotFoundException(
                     .init(message: "Exception"))
         })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should not succeed")
@@ -492,7 +492,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.notAuthorizedException(
                     .init(message: "Exception"))
         })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -550,7 +550,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.resourceNotFoundException(
                     .init(message: "Exception"))
         })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -583,7 +583,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.softwareTokenMFANotFoundException(
                     .init(message: "Exception"))
         })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -616,7 +616,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.tooManyRequestsException(
                     .init(message: "Exception"))
         })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -649,7 +649,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.unexpectedLambdaException(
                     .init(message: "Exception"))
         })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -682,7 +682,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.userLambdaValidationException(
                     .init(message: "Exception"))
         })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
@@ -715,7 +715,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.userNotConfirmedException(
                     .init(message: "Exception"))
         })
-        
+
         do {
             let confirmSignInResult = try await plugin.confirmSignIn(challengeResponse: "code")
             guard case .confirmSignUp = confirmSignInResult.nextStep else {
@@ -744,7 +744,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 throw RespondToAuthChallengeOutputError.userNotFoundException(
                     .init(message: "Exception"))
         })
-        
+
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")

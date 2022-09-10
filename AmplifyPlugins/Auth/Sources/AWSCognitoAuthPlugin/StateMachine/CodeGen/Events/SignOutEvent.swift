@@ -26,7 +26,7 @@ struct SignOutEvent: StateMachineEvent {
             hostedUIError: AWSCognitoHostedUIError? = nil,
             globalSignOutError: AWSCognitoGlobalSignOutError? = nil,
             revokeTokenError: AWSCognitoRevokeTokenError? = nil)
-        
+
         case signOutGuest
 
         case invokeHostedUISignOut(SignOutEventData, SignedInData)
@@ -43,7 +43,7 @@ struct SignOutEvent: StateMachineEvent {
 
         case userCancelled
     }
-    
+
     let id: String
     let eventType: EventType
     let time: Date?

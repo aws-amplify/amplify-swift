@@ -65,7 +65,7 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
                 try ConfirmForgotPasswordOutputResponse(httpResponse: MockHttpResponse.ok)
             }
         )
-        try await plugin.confirmResetPassword(for: "username",  with: "newpassword", confirmationCode: "code", options: nil)
+        try await plugin.confirmResetPassword(for: "username", with: "newpassword", confirmationCode: "code", options: nil)
     }
 
     /// Test a confirmResetPassword call with empty username

@@ -15,7 +15,7 @@ class AWSAuthResendSignUpCodeTask: AuthResendSignUpCodeTask {
     private let request: AuthResendSignUpCodeRequest
     private let environment: AuthEnvironment
     private let authConfiguration: AuthConfiguration
-    
+
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.resendSignUpCodeAPI
     }
@@ -43,7 +43,7 @@ class AWSAuthResendSignUpCodeTask: AuthResendSignUpCodeTask {
             throw AuthError.unknown("Unable to execute auth task", error)
         }
     }
-    
+
     func resendSignUpCode() async throws -> AuthCodeDeliveryDetails {
         let userPoolEnvironment = try environment.userPoolEnvironment()
         let userPoolService = try userPoolEnvironment.cognitoUserPoolFactory()
@@ -82,7 +82,7 @@ class AWSAuthResendSignUpCodeTask: AuthResendSignUpCodeTask {
             let error = AuthError.unknown("Unable to get Auth code delivery details", nil)
             throw error
         }
-                
+
         return deliveryDetails
     }
 }

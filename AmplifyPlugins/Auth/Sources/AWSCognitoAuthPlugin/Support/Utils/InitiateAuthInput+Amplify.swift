@@ -81,11 +81,11 @@ extension InitiateAuthInput {
                                  asfDeviceId: String,
                                  deviceMetadata: DeviceMetadata,
                                  environment: UserPoolEnvironment) -> InitiateAuthInput {
-        
+
         let authParameters = [
             "REFRESH_TOKEN": refreshToken
         ]
-        
+
         return buildInput(username: username,
                           authFlowType: .refreshTokenAuth,
                           authParameters: authParameters,
@@ -93,7 +93,7 @@ extension InitiateAuthInput {
                           asfDeviceId: asfDeviceId,
                           deviceMetadata: deviceMetadata,
                           environment: environment)
-        
+
     }
 
     static func buildInput(username: String,
@@ -121,7 +121,7 @@ extension InitiateAuthInput {
             authParameters["DEVICE_KEY"] = data.deviceKey
         }
 
-        var userContextData: CognitoIdentityProviderClientTypes.UserContextDataType? = nil
+        var userContextData: CognitoIdentityProviderClientTypes.UserContextDataType?
         if let asfDeviceId = asfDeviceId,
            let encodedData = CognitoUserPoolASF.encodedContext(
             username: username,

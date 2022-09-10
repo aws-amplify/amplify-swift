@@ -13,11 +13,11 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
     private let request: AuthConfirmSignInRequest
     private let authStateMachine: AuthStateMachine
     private let taskHelper: AWSAuthTaskHelper
-    
+
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.confirmSignInAPI
     }
-    
+
     init(_ request: AuthConfirmSignInRequest, stateMachine: AuthStateMachine) {
         self.request = request
         self.authStateMachine = stateMachine
@@ -28,7 +28,7 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
         if let validationError = request.hasError() {
             throw validationError
         }
-        
+
         await taskHelper.didStateMachineConfigured()
 
         let invalidStateError = AuthError.invalidState(
@@ -65,7 +65,7 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
                        }
                    } else if case .resolvingChallenge(let challengeState, _) = signInState {
                        switch challengeState {
-                       case .waitingForAnswer(_):
+                       case .waitingForAnswer:
                            // Convert the attributes to [String: String]
                            let attributePrefix = AuthPluginConstants.cognitoIdentityUserUserAttributePrefix
                            let attributes = self.request.options.userAttributes?.reduce(
@@ -88,5 +88,5 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
         }
         throw invalidStateError
     }
-    
+
 }

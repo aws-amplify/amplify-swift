@@ -155,7 +155,7 @@ extension RefreshSessionState {
                 return .from(oldState)
 
             case .refreshingAWSCredentialsWithUserPoolTokens(let signedInData, _):
-                
+
                 if case .throwError(let error) = event.isFetchSessionEvent {
                     let action = InformSessionError(error: error)
                     return .init(newState: .error(error), actions: [action])

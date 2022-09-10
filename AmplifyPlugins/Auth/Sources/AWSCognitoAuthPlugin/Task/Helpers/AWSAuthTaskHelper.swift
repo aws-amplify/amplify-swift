@@ -14,7 +14,7 @@ class AWSAuthTaskHelper {
 
     private let authStateMachine: AuthStateMachine
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
-    
+
     init(authStateMachine: AuthStateMachine) {
         self.authStateMachine = authStateMachine
         self.fetchAuthSessionHelper = FetchAuthSessionOperationHelper()
@@ -26,7 +26,7 @@ class AWSAuthTaskHelper {
             if case .configured = state { return }
         }
     }
-    
+
     func getAccessToken() async throws -> String {
 
         let session = try await fetchAuthSessionHelper.fetch(authStateMachine)

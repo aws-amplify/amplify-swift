@@ -12,7 +12,7 @@ struct FederatedToken {
 
     let token: String
     let provider: AuthProvider
-    
+
 }
 
 extension FederatedToken: CustomDebugDictionaryConvertible {

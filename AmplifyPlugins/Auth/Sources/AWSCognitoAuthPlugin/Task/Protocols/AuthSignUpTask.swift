@@ -15,4 +15,3 @@ public extension HubPayload.EventName.Auth {
     /// eventName for HubPayloads emitted by this operation
     static let signUpAPI = "Auth.signUpAPI"
 }
-

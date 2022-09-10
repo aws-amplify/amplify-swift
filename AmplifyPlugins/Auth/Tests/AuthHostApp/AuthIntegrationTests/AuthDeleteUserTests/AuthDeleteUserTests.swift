@@ -43,7 +43,7 @@ class AuthDeleteUserTests: AWSAuthBaseTest {
         // Check if the auth session is signed in
         let session = try await Amplify.Auth.fetchAuthSession()
         XCTAssertTrue(session.isSignedIn, "Auth session should be signedIn")
-        
+
         do {
             try await Amplify.Auth.deleteUser()
             print("Success deleteUser")
@@ -83,7 +83,7 @@ class AuthDeleteUserTests: AWSAuthBaseTest {
         do {
             try await Amplify.Auth.deleteUser()
             XCTFail("Should not get success")
-            
+
         } catch {
             guard case AuthError.signedOut = error else {
                 XCTFail("Should produce signedOut error instead of \(error)")
