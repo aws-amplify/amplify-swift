@@ -15,7 +15,7 @@ class AWSAuthResetPasswordTask: AuthResetPasswordTask {
     private let request: AuthResetPasswordRequest
     private let environment: AuthEnvironment
     private let authConfiguration: AuthConfiguration
-    
+
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.resetPasswordAPI
     }
@@ -42,7 +42,7 @@ class AWSAuthResetPasswordTask: AuthResetPasswordTask {
             throw AuthError.unknown("Unable to execute auth task", error)
         }
     }
-    
+
     func resetPassword() async throws -> AuthResetPasswordResult {
         let userPoolEnvironment = try environment.userPoolEnvironment()
         let userPoolService = try userPoolEnvironment.cognitoUserPoolFactory()

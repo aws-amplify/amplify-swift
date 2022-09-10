@@ -15,7 +15,7 @@ class AWSAuthWebUISignInTask: AuthWebUISignInTask {
     private let authStateMachine: AuthStateMachine
     private let taskHelper: AWSAuthTaskHelper
     let eventName: HubPayloadEventName
-    
+
     init(_ request: AuthWebUISignInRequest,
          authConfiguration: AuthConfiguration,
          authStateMachine: AuthStateMachine,

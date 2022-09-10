@@ -15,7 +15,7 @@ import AWSCognitoIdentityProvider
 
 class AuthenticationProviderDeleteUserTests: BasePluginTest {
 
-    func testDeleteUserSuccess() async  {
+    func testDeleteUserSuccess() async {
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
                 try RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
@@ -57,7 +57,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 throw DeleteUserOutputError.unknown(.init(httpResponse: .init(body: .empty, statusCode: .badRequest)))
             }
         )
-        
+
         do {
             try await plugin.deleteUser()
             XCTFail("Should not get success")
@@ -157,7 +157,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 throw DeleteUserOutputError.passwordResetRequiredException(.init())
             }
         )
-        
+
         do {
             try await plugin.deleteUser()
             XCTFail("Should not get success")
@@ -191,7 +191,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 throw DeleteUserOutputError.resourceNotFoundException(.init())
             }
         )
-        
+
         do {
             try await plugin.deleteUser()
             XCTFail("Should not get success")
@@ -225,7 +225,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 throw DeleteUserOutputError.tooManyRequestsException(.init())
             }
         )
-        
+
         do {
             try await plugin.deleteUser()
             XCTFail("Should not get success")
@@ -259,7 +259,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 throw DeleteUserOutputError.userNotConfirmedException(.init())
             }
         )
-        
+
         do {
             try await plugin.deleteUser()
             XCTFail("Should not get success")
@@ -293,7 +293,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
                 throw DeleteUserOutputError.userNotFoundException(.init())
             }
         )
-        
+
         do {
             try await plugin.deleteUser()
             XCTFail("Should not get success")

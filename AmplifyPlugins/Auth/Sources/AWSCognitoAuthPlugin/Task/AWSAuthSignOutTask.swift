@@ -13,7 +13,7 @@ class AWSAuthSignOutTask: AuthSignOutTask {
     private let request: AuthSignOutRequest
     private let authStateMachine: AuthStateMachine
     private let taskHelper: AWSAuthTaskHelper
-    
+
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.signOutAPI
     }
@@ -35,15 +35,15 @@ class AWSAuthSignOutTask: AuthSignOutTask {
         let stateSequences = await authStateMachine.listen()
         for await state in stateSequences {
             guard case .configured(let authNState, _) = state else {
-                let error = AuthError.invalidState("Auth State not in a valid state", AuthPluginErrorConstants.invalidStateError,nil)
+                let error = AuthError.invalidState("Auth State not in a valid state", AuthPluginErrorConstants.invalidStateError, nil)
                 return AWSCognitoSignOutResult.failed(error)
             }
 
             switch authNState {
             case .signedOut(let data):
-                if (data.revokeTokenError != nil ||
+                if data.revokeTokenError != nil ||
                     data.globalSignOutError != nil ||
-                    data.hostedUIError != nil) {
+                    data.hostedUIError != nil {
                     return AWSCognitoSignOutResult.partial(
                         revokeTokenError: data.revokeTokenError,
                         globalSignOutError: data.globalSignOutError,
@@ -62,7 +62,7 @@ class AWSAuthSignOutTask: AuthSignOutTask {
         }
         fatalError()
     }
-    
+
     private func sendSignOutEvent() async {
         let signOutData = SignOutEventData(
             globalSignOut: request.options.globalSignOut,

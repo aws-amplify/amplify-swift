@@ -54,7 +54,7 @@ struct RevokeToken: Action {
     }
 
     func invokeNextStep(with error: Error?, dispatcher: EventDispatcher, environment: Environment) async {
-        var revokeTokenError: AWSCognitoRevokeTokenError? = nil
+        var revokeTokenError: AWSCognitoRevokeTokenError?
         if let authErrorConvertible = error as? AuthErrorConvertible {
             let internalError = authErrorConvertible.authError
             revokeTokenError = AWSCognitoRevokeTokenError(

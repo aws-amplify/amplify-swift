@@ -49,7 +49,7 @@ class AuthFetchDeviceTests: AWSAuthBaseTest {
                 Task {
                     await signInExpectation.fulfill()
                 }
-                
+
             default:
                 break
             }

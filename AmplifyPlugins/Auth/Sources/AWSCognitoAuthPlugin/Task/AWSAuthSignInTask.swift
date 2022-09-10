@@ -13,11 +13,11 @@ class AWSAuthSignInTask: AuthSignInTask {
     private let request: AuthSignInRequest
     private let authStateMachine: AuthStateMachine
     private let taskHelper: AWSAuthTaskHelper
-    
+
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.signInAPI
     }
-    
+
     init(_ request: AuthSignInRequest, authStateMachine: AuthStateMachine) {
         self.request = request
         self.authStateMachine = authStateMachine

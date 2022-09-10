@@ -18,7 +18,7 @@ class AWSAuthRememberDeviceTask: AuthRememberDeviceTask {
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
     private let taskHelper: AWSAuthTaskHelper
-    
+
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.rememberDeviceAPI
     }

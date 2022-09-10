@@ -10,15 +10,14 @@ import AWSCognitoIdentityProvider
 import Foundation
 
 struct ConfirmDevice: Action {
-    
+
     var identifier: String = "ConfirmDevice"
-    
+
     let signedInData: SignedInData
-    
+
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        
-        
+
         do {
             let userpoolEnv = try environment.userPoolEnvironment()
             let client = try userpoolEnv.cognitoUserPoolFactory()
@@ -29,16 +28,16 @@ struct ConfirmDevice: Action {
                 await dispatcher.send(event)
                 return
             }
-            
+
             let srpClient = try SRPSignInHelper.srpClient(srpEnv)
-            
+
             let passwordVerifier = srpClient.generateDevicePasswordVerifier(
                 deviceGroupKey: deviceMetadata.deviceGroupKey,
                 deviceKey: deviceMetadata.deviceKey,
                 password: deviceMetadata.deviceSecret)
-            
+
             let deviceName = DeviceInfo.current.name
-            
+
             let base64EncodedVerifier = passwordVerifier.passwordVerifier.base64EncodedString()
             let base64EncodedSalt = passwordVerifier.salt.base64EncodedString()
             let verifier = CognitoIdentityProviderClientTypes.DeviceSecretVerifierConfigType(
@@ -49,11 +48,11 @@ struct ConfirmDevice: Action {
                 deviceKey: deviceMetadata.deviceKey,
                 deviceName: deviceName,
                 deviceSecretVerifierConfig: verifier)
-            
+
             let response = try await client.confirmDevice(input: input)
             logVerbose("Successfully completed device confirmation with result \(response)",
                        environment: environment)
-            
+
             // Save the device metadata to keychain
             let credentialStoreClient = (environment as? AuthEnvironment)?.credentialStoreClientFactory()
             _ = try await credentialStoreClient?.storeData(
@@ -64,11 +63,11 @@ struct ConfirmDevice: Action {
             logError("Failed to confirm the device \(error)",
                      environment: environment)
         }
-        
+
         let event = SignInEvent(eventType: .finalizeSignIn(signedInData))
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         await dispatcher.send(event)
-        
+
     }
 }
 

@@ -22,7 +22,7 @@ public class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask {
     private let request: AuthFederateToIdentityPoolRequest
     private let authStateMachine: AuthStateMachine
     private let taskHelper: AWSAuthTaskHelper
-    
+
     public var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.federateToIdentityPoolAPI
     }
@@ -72,7 +72,7 @@ public class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask {
             switch (authNState, authZState) {
             case (.federatedToIdentityPool, .sessionEstablished(let credentials)):
                 return try getFederatedResult(credentials)
-            case (.error(_), .error(let authZError)):
+            case (.error, .error(let authZError)):
                 throw authZError.authError
             default:
                 continue

@@ -12,12 +12,12 @@ import AWSCognitoIdentityProvider
 
 class AWSAuthChangePasswordTask: AuthChangePasswordTask {
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
-    
+
     private let request: AuthChangePasswordRequest
     private let authStateMachine: AuthStateMachine
     private let userPoolFactory: CognitoUserPoolFactory
     private let taskHelper: AWSAuthTaskHelper
-    
+
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.changePasswordAPI
     }

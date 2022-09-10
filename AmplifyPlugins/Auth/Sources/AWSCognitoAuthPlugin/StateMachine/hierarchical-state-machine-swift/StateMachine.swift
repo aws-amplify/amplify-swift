@@ -81,7 +81,6 @@ extension StateMachine: EventDispatcher {
         process(event: event)
     }
 
-
     private func process(event: StateMachineEvent) {
         let resolution = resolver.resolve(
             oldState: currentState,
@@ -105,7 +104,6 @@ extension StateMachine: EventDispatcher {
         subscriberElement: WeakWrapper<StateChangeSequence>,
         about newState: StateType
     ) -> Bool {
-
 
         // If weak reference has become nil, do not process, and return false so caller can remove
         // the subscription from the subscribers list

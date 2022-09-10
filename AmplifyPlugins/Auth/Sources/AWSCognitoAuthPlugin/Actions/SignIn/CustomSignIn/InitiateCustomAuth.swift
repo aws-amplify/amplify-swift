@@ -45,7 +45,6 @@ struct InitiateCustomAuth: Action {
             logVerbose("\(#fileID) Sending event \(responseEvent)", environment: environment)
             await dispatcher.send(responseEvent)
 
-
         } catch let error as SignInError {
             logVerbose("\(#fileID) Raised error \(error)", environment: environment)
             let event = SignInEvent(eventType: .throwAuthError(error))

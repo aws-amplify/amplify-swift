@@ -8,7 +8,7 @@
 import AWSPluginsCore
 import Amplify
 
-struct CredentialEnvironment: Environment, LoggerProvider  {
+struct CredentialEnvironment: Environment, LoggerProvider {
     let authConfiguration: AuthConfiguration
     let credentialStoreEnvironment: CredentialStoreEnvironment
     let logger: Logger

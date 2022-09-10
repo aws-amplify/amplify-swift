@@ -85,9 +85,8 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                 AuthorizationState.configured),
             AuthState.configured(
                 AuthenticationState.signedOut(.testData),
-                AuthorizationState.error(.sessionExpired)),
+                AuthorizationState.error(.sessionExpired))
         ]
-
 
         for initialState in statesToTest {
             let plugin = configurePluginWith(
@@ -180,7 +179,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
         } catch {
             XCTFail("Received failure with error \(error)")
         }
-        
+
         do {
             let secondFederatedResult = try await plugin.federateToIdentityPool(withProviderToken: authenticationToken, for: provider)
             XCTAssertNotNil(secondFederatedResult)
@@ -256,12 +255,12 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
     ///
     func testClearFederationToIdentityPool() async throws {
 
-        let getId: MockIdentity.MockGetIdResponse = { input in
+        let getId: MockIdentity.MockGetIdResponse = { _ in
             XCTFail("Get ID should not get called")
             return .init(identityId: "mockIdentityId")
         }
 
-        let getCredentials: MockIdentity.MockGetCredentialsResponse = { input in
+        let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
             XCTFail("Get AWS Credentials should not get called")
             return .init(credentials: .none, identityId: "mockIdentityId")
         }
@@ -272,9 +271,8 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                 AuthorizationState.sessionEstablished(.identityPoolWithFederation(
                     federatedToken: .testData,
                     identityID: "identityId",
-                    credentials: .testData))),
+                    credentials: .testData)))
         ]
-
 
         for initialState in statesToTest {
             let plugin = configurePluginWith(
@@ -302,12 +300,12 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
     ///
     func testClearFederationToIdentityPoolInvalidState() async throws {
 
-        let getId: MockIdentity.MockGetIdResponse = { input in
+        let getId: MockIdentity.MockGetIdResponse = { _ in
             XCTFail("Get ID should not get called")
             return .init(identityId: "mockIdentityId")
         }
 
-        let getCredentials: MockIdentity.MockGetCredentialsResponse = { input in
+        let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
             XCTFail("Get AWS Credentials should not get called")
             return .init(credentials: .none, identityId: "mockIdentityId")
         }
@@ -323,7 +321,6 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                     identityID: "identityId",
                     credentials: .testData)))
         ]
-
 
         for initialState in statesToTest {
             let plugin = configurePluginWith(
@@ -372,7 +369,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
         let cognitoAPIExpectation = expectation(description: "Cognito API gets called")
         cognitoAPIExpectation.expectedFulfillmentCount = 1
 
-        let getId: MockIdentity.MockGetIdResponse = { input in
+        let getId: MockIdentity.MockGetIdResponse = { _ in
             XCTFail("Get ID should not get called")
             return .init(identityId: "mockIdentityId")
         }
@@ -452,12 +449,12 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             secretKey: "secretKey",
             sessionToken: "sessionKey")
 
-        let getId: MockIdentity.MockGetIdResponse = { input in
+        let getId: MockIdentity.MockGetIdResponse = { _ in
             XCTFail("Get ID should not get called")
             return .init(identityId: "mockIdentityId")
         }
 
-        let getCredentials: MockIdentity.MockGetCredentialsResponse = { input in
+        let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
             XCTFail("Get AWS Credentials should not get called")
             return .init(credentials: .none, identityId: "mockIdentityId")
         }
@@ -524,7 +521,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
         let cognitoAPIExpectation = expectation(description: "Cognito API gets called")
         cognitoAPIExpectation.expectedFulfillmentCount = 1
 
-        let getId: MockIdentity.MockGetIdResponse = { input in
+        let getId: MockIdentity.MockGetIdResponse = { _ in
             XCTFail("Get ID should not get called")
             return .init(identityId: "mockIdentityId")
         }
@@ -559,7 +556,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                     mockGetCredentialsResponse: getCredentials)
             },
             initialState: initialState)
-        
+
         do {
             let session = try await plugin.fetchAuthSession(options: .forceRefresh())
             XCTAssertTrue(session.isSignedIn)
@@ -603,7 +600,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             secretKey: "secretKey",
             sessionToken: "sessionKey")
 
-        let getId: MockIdentity.MockGetIdResponse = { input in
+        let getId: MockIdentity.MockGetIdResponse = { _ in
             XCTFail("Get ID should not get called")
             return .init(identityId: mockIdentityId)
         }
@@ -638,7 +635,6 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                 AuthenticationState.notConfigured,
                 AuthorizationState.configured)
         ]
-
 
         for initialState in statesToTest {
             let plugin = configurePluginWith(

@@ -207,7 +207,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             }
         }
     }
-    
+
     /// Test a signIn with nil as reponse from service followed by a second signIn with a valid response
     ///
     /// - Given: Given an auth plugin with mocked service. Mock nil response from service followed by a valid response
@@ -246,7 +246,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                     challengeParameters: [:],
                     session: "session")
             })
-            
+
             do {
                 let result = try await plugin.signIn(username: "username", password: "password", options: options)
                 XCTAssertTrue(result.isSignedIn, "Signin result should be complete")

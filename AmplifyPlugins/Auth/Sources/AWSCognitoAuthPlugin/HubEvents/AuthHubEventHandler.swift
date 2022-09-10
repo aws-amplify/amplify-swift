@@ -81,10 +81,9 @@ class AuthHubEventHandler: AuthHubEventBehavior {
 
                 case .complete, .partial:
                     self?.sendUserSignedOutEvent()
-                case .failed(_):
+                case .failed:
                     break
                 }
-
 
             case HubPayload.EventName.Auth.fetchSessionAPI:
                 guard let event = payload.data as? AWSAuthFetchSessionTask.AmplifyAuthTaskResult,

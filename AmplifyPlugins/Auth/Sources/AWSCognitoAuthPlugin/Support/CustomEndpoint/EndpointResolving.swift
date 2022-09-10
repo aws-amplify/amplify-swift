@@ -19,7 +19,7 @@ extension EndpointResolving {
     ) throws -> U {
         try validationStep.validate(input)
     }
-    
+
     static let userPool = EndpointResolving { endpoint in
         // We want to enforce that the endpoint is excluded from the
         // configuration so as not to give the impression that other
@@ -29,14 +29,14 @@ extension EndpointResolving {
         // So we're going to fail if any scheme is included
         // in the configuration.
         try validate(endpoint, with: .schemeIsEmpty())
-        
+
         // Next let's prepend the https scheme and confirm that the url
         // itself is valid. If not, we'll throw an error.
         let (components, host) = try validate(endpoint, with: .validURL())
-        
+
         // Finally, let's confirm that the endpoint doesn't contain a path.
         try validate((components, endpoint), with: .pathIsEmpty())
-        
+
         return ClientRuntime.Endpoint(host: host)
     }
 }

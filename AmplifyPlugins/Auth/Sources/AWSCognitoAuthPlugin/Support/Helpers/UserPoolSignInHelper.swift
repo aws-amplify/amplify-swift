@@ -66,7 +66,7 @@ struct UserPoolSignInHelper {
         request: RespondToAuthChallengeInput,
         for username: String,
         environment: UserPoolEnvironment) async throws -> StateMachineEvent {
-            
+
             let client = try environment.cognitoUserPoolFactory()
 
             do {

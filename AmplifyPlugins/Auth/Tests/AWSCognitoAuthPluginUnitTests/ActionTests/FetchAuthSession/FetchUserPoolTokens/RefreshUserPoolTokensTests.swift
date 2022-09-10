@@ -126,7 +126,7 @@ class RefreshUserPoolTokensTests: XCTestCase {
                 expectation.fulfill()
             }
         }, environment: environment)
-        
+
         await waitForExpectations(timeout: 0.1)
     }
 

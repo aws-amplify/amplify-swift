@@ -85,7 +85,7 @@ class ClientBehaviorResetPasswordTests: AWSCognitoAuthClientBehaviorTests {
                 ForgotPasswordOutputResponse(codeDeliveryDetails: nil)
             }
         )
-        
+
         do {
             _ = try await plugin.resetPassword(for: "user", options: nil)
             XCTFail("Should not succeed")

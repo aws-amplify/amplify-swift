@@ -17,12 +17,12 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask {
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.confirmSignUpAPI
     }
-    
+
     init(_ request: AuthConfirmSignUpRequest, authEnvironment: AuthEnvironment) {
         self.request = request
         self.authEnvironment = authEnvironment
     }
-    
+
     func execute() async throws -> AuthSignUpResult {
         try request.hasError()
         let userPoolEnvironment = authEnvironment.userPoolEnvironment

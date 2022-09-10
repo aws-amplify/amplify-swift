@@ -19,7 +19,6 @@ public enum AWSCognitoSignOutResult: AuthSignOutResult {
     case failed(AuthError)
 }
 
-
 public struct AWSCognitoRevokeTokenError {
     let refreshToken: String
     let error: AuthError

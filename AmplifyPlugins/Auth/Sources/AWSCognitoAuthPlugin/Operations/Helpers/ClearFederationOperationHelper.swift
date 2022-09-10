@@ -36,7 +36,7 @@ struct ClearFederationOperationHelper {
             }
 
             switch authNState {
-            case .signedOut(_):
+            case .signedOut:
                 return
             case .error(let error):
                 throw error.authError

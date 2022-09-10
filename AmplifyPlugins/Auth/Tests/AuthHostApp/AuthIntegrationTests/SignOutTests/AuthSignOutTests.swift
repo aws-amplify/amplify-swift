@@ -46,7 +46,7 @@ class AuthSignOutTests: AWSAuthBaseTest {
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
                                     password: password,
                                     email: defaultTestEmail)
-        
+
         XCTAssertTrue(didSucceed, "Signup operation failed")
 
         print("calling signOut...")

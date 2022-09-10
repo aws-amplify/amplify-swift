@@ -39,7 +39,6 @@ class AWSAuthConfirmSignUpTaskTests: XCTestCase {
         let authEnvironment = Defaults.makeDefaultAuthEnvironment(
             userPoolFactory: {MockIdentityProvider(mockConfirmSignUpResponse: confirmSignUp)})
 
-
         let request = AuthConfirmSignUpRequest(username: "jeffb",
                                                code: "213",
                                                options: AuthConfirmSignUpRequest.Options())

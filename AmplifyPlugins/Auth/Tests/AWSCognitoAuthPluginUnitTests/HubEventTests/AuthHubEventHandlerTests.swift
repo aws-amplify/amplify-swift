@@ -136,7 +136,7 @@ class AuthHubEventHandlerTests: XCTestCase {
         } catch {
             XCTFail("Received failure with error \(error)")
         }
-        
+
         await waitForExpectations(timeout: networkTimeout)
     }
 
@@ -189,7 +189,7 @@ class AuthHubEventHandlerTests: XCTestCase {
                 break
             }
         }
-        
+
         do {
             _ = try await plugin.signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor(), options: nil)
         } catch {
@@ -251,7 +251,7 @@ class AuthHubEventHandlerTests: XCTestCase {
                 break
             }
         }
-        _ = try await  plugin.federateToIdentityPool(withProviderToken: "someToken",for: .facebook)
+        _ = try await  plugin.federateToIdentityPool(withProviderToken: "someToken", for: .facebook)
 
         await waitForExpectations(timeout: networkTimeout)
     }

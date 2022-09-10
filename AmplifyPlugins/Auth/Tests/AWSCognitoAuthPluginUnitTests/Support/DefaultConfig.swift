@@ -277,7 +277,6 @@ struct MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
 
     }
 
-
     func saveASFDevice(_ deviceId: String, for username: String) throws {
 
     }

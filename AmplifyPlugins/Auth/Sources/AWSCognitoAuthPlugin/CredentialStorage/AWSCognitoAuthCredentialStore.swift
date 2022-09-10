@@ -163,7 +163,7 @@ extension AWSCognitoAuthCredentialStore: AmplifyAuthCredentialStoreBehavior {
         let encodedMetadata = try encode(object: deviceId)
         try keychain._set(encodedMetadata, key: key)
     }
-    
+
     func retrieveASFDevice(for username: String) throws -> String {
         let key = generateASFDeviceKey(for: username, with: authConfiguration)
         let encodedData = try keychain._getData(key)

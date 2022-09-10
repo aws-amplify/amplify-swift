@@ -25,7 +25,7 @@ protocol AmplifyAuthTaskNonThrowing {
 
 extension AmplifyAuthTaskNonThrowing {
     var value: Success {
-        get async  {
+        get async {
             let valueReturned = await execute()
             dispatch(result: valueReturned)
             return valueReturned

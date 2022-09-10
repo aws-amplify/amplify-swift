@@ -10,22 +10,22 @@ import Foundation
 import AuthenticationServices
 
 class ShowHostedUISignOut: NSObject, Action {
-    
+
     var identifier: String = "ShowHostedUISignOut"
-    
+
     let signOutEvent: SignOutEventData
     let signInData: SignedInData
-    
+
     var sessionAdapter: HostedUISessionBehavior?
-    
+
     init(signOutEvent: SignOutEventData, signInData: SignedInData) {
         self.signInData = signInData
         self.signOutEvent = signOutEvent
     }
-    
+
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
-        
+
         guard let environment = environment as? AuthEnvironment,
               let hostedUIEnvironment = environment.hostedUIEnvironment else {
             let message = AuthPluginErrorConstants.configurationError
@@ -34,14 +34,14 @@ class ShowHostedUISignOut: NSObject, Action {
             return
         }
         let hostedUIConfig = hostedUIEnvironment.configuration
-        
+
         guard let callbackURL = URL(string: hostedUIConfig.oauth.signOutRedirectURI),
               let callbackURLScheme = callbackURL.scheme else {
             let error = AuthenticationError.configuration(message: "Callback URL could not be retrieved")
             await sendEvent(with: error, dispatcher: dispatcher, environment: environment)
             return
         }
-        
+
         do {
             let logoutURL = try HostedUIRequestHelper.createSignOutURL(configuration: hostedUIConfig)
             _ = try await withCheckedThrowingContinuation {
@@ -71,8 +71,8 @@ class ShowHostedUISignOut: NSObject, Action {
     func sendEvent(with error: Error?,
                    dispatcher: EventDispatcher,
                    environment: Environment) async {
-        
-        var hostedUIError: AWSCognitoHostedUIError? = nil
+
+        var hostedUIError: AWSCognitoHostedUIError?
         if let hostedUIInternalError = error as? HostedUIError,
            case .cancelled = hostedUIInternalError {
            let event = SignOutEvent(eventType: .userCancelled)

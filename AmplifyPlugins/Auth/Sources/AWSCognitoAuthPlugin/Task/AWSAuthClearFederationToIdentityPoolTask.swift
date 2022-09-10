@@ -22,7 +22,7 @@ public class AWSAuthClearFederationToIdentityPoolTask: AuthClearFederationToIden
     private let authStateMachine: AuthStateMachine
     private let clearFederationHelper: ClearFederationOperationHelper
     private let taskHelper: AWSAuthTaskHelper
-    
+
     public var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.clearedFederationToIdentityPoolAPI
     }

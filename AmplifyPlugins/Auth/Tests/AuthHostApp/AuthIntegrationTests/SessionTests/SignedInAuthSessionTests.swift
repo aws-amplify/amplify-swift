@@ -80,7 +80,7 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
         let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username, password: password,
                                                email: defaultTestEmail)
         XCTAssertTrue(didSucceed, "SignIn operation failed")
-        
+
         let session = try await Amplify.Auth.fetchAuthSession()
         XCTAssertTrue(session.isSignedIn, "Session state should be signed In")
     }
