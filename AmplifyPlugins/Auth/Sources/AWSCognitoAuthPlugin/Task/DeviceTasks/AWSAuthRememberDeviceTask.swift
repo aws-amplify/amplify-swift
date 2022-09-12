@@ -12,21 +12,22 @@ import ClientRuntime
 import AWSCognitoIdentityProvider
 
 class AWSAuthRememberDeviceTask: AuthRememberDeviceTask {
-    typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
 
     private let request: AuthRememberDeviceRequest
     private let authStateMachine: AuthStateMachine
-    private let userPoolFactory: CognitoUserPoolFactory
+    private let environment: AuthEnvironment
     private let taskHelper: AWSAuthTaskHelper
 
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.rememberDeviceAPI
     }
 
-    init(_ request: AuthRememberDeviceRequest, authStateMachine: AuthStateMachine, userPoolFactory: @escaping CognitoUserPoolFactory) {
+    init(_ request: AuthRememberDeviceRequest,
+         authStateMachine: AuthStateMachine,
+         environment: AuthEnvironment) {
         self.request = request
         self.authStateMachine = authStateMachine
-        self.userPoolFactory = userPoolFactory
+        self.environment = environment
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
     }
 
@@ -34,7 +35,8 @@ class AWSAuthRememberDeviceTask: AuthRememberDeviceTask {
         do {
             await taskHelper.didStateMachineConfigured()
             let accessToken = try await taskHelper.getAccessToken()
-            try await rememberDevice(with: accessToken)
+            let username = try await getCurrentUsername()
+            try await rememberDevice(with: accessToken, username: username)
         } catch let error as UpdateDeviceStatusOutputError {
             throw error.authError
         } catch let error as SdkError<UpdateDeviceStatusOutputError> {
@@ -46,13 +48,28 @@ class AWSAuthRememberDeviceTask: AuthRememberDeviceTask {
         }
     }
 
-    private func rememberDevice(with accessToken: String) async throws {
-        let userPoolService = try userPoolFactory()
+    func getCurrentUsername() async throws -> String {
+        let authState = await authStateMachine.currentState
+        if case .configured(let authenticationState, _) = authState,
+           case .signedIn(let signInData) = authenticationState {
+           return signInData.userName
+        }
+        throw AuthError.unknown("Unable to get username for the signedIn user")
+    }
 
-        // TODO: Pass in device key when implemented
-        let input = UpdateDeviceStatusInput(accessToken: accessToken,
-                                            deviceKey: nil,
-                                            deviceRememberedStatus: .remembered)
-        _ = try await userPoolService.updateDeviceStatus(input: input)
+    private func rememberDevice(with accessToken: String, username: String) async throws {
+        let userPoolService = try environment.cognitoUserPoolFactory()
+        let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
+            for: environment,
+            with: username)
+        if case .metadata(let data) = deviceMetadata {
+            let input = UpdateDeviceStatusInput(accessToken: accessToken,
+                                                deviceKey: data.deviceKey,
+                                                deviceRememberedStatus: .remembered)
+            _ = try await userPoolService.updateDeviceStatus(input: input)
+        } else {
+            throw AuthError.unknown("Unable to get device metadata")
+        }
+
     }
 }
