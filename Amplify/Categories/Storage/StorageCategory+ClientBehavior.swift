@@ -9,6 +9,12 @@ import Foundation
 
 extension StorageCategory: StorageCategoryBehavior {
 
+    public var activeTransfers: AmplifyAsyncSequence<StorageActiveTransfer> {
+        get async throws {
+            try await plugin.activeTransfers
+        }
+    }
+
     @discardableResult
     public func getURL(key: String,
                        options: StorageGetURLOperation.Request.Options? = nil) async throws -> URL {

@@ -119,6 +119,12 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
     func configure(using configuration: Any?) throws {}
 
+    var activeTransfers: AmplifyAsyncSequence<StorageActiveTransfer> {
+        get async throws {
+            Fatal.notImplemented()
+        }
+    }
+
     func getURL(key: String,
                 options: StorageGetURLRequest.Options? = nil,
                 resultListener: StorageGetURLOperation.ResultListener? = nil) -> StorageGetURLOperation {
