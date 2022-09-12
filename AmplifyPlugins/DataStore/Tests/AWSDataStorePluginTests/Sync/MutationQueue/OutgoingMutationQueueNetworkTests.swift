@@ -265,7 +265,8 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
             let mockResponse = MutationSync(
                 model: model,
                 syncMetadata: MutationSyncMetadata(
-                    id: model.id,
+                    modelId: model.id,
+                    modelName: model.modelName,
                     deleted: false,
                     lastChangedAt: Date().unixSeconds,
                     version: version.increment()
@@ -309,7 +310,8 @@ class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
             let mockResponse = MutationSync(
                 model: model,
                 syncMetadata: MutationSyncMetadata(
-                    id: model.id,
+                    modelId: model.id,
+                    modelName: model.modelName,
                     deleted: false,
                     lastChangedAt: Date().unixSeconds,
                     version: version.increment()

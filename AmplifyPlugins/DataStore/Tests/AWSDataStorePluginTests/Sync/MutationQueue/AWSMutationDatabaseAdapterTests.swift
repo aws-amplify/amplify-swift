@@ -46,7 +46,7 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
                                          modelSchema: model1.schema,
                                          mutationType: MutationEvent.MutationType.create)
         let queryPredicate = post.title == model1.title
-        let graphQLFilterJSON = try GraphQLFilterConverter.toJSON(queryPredicate)
+        let graphQLFilterJSON = try GraphQLFilterConverter.toJSON(queryPredicate, modelSchema: model1.schema)
         let candidateUpdate = try MutationEvent(model: model1,
                                                 modelSchema: model1.schema,
                                                 mutationType: MutationEvent.MutationType.update,
@@ -61,7 +61,7 @@ class AWSMutationDatabaseAdapterTests: XCTestCase {
                                          modelSchema: model1.schema,
                                          mutationType: MutationEvent.MutationType.create)
         let queryPredicate = post.title == model1.title
-        let graphQLFilterJSON = try GraphQLFilterConverter.toJSON(queryPredicate)
+        let graphQLFilterJSON = try GraphQLFilterConverter.toJSON(queryPredicate, modelSchema: model1.schema)
         let candidateUpdate = try MutationEvent(model: model1,
                                                 modelSchema: model1.schema,
                                                 mutationType: MutationEvent.MutationType.delete,
