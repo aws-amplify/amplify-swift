@@ -57,3 +57,5 @@ extension RespondToAuthChallenge {
     }
 
 }
+
+extension RespondToAuthChallenge: Codable { }

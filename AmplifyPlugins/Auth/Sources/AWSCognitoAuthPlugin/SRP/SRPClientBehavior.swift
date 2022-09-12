@@ -42,3 +42,5 @@ enum SRPError: Error {
 
     case illegalParameter
 }
+
+extension SRPError: Codable { }

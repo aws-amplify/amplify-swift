@@ -24,3 +24,5 @@ public struct AuthCodeDeliveryDetails {
         self.attributeKey = attributeKey
     }
 }
+
+extension AuthCodeDeliveryDetails: Equatable {}

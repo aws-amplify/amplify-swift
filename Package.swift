@@ -154,14 +154,17 @@ let authTargets: [Target] = [
         ],
         cSettings: [
             .unsafeFlags(["-flto=thin"])  // for Dead Code Elimination
-        ]    ),
+        ]
+    ),
     .testTarget(
         name: "AWSCognitoAuthPluginUnitTests",
         dependencies: [
             "AWSCognitoAuthPlugin",
-            "AWSPluginsTestCommon"
+            "AWSPluginsTestCommon",
+            "AmplifyTestCommon"
         ],
-        path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests"
+        path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests",
+        resources: [.copy("TestResources")]
     ),
     .testTarget(
         name: "AmplifyBigIntegerTests",

@@ -1,0 +1,77 @@
+{
+    "UserAgent": "aws-amplify-cli/2.0",
+    "Version": "1.0",
+    "auth": {
+        "plugins": {
+            "awsCognitoAuthPlugin": {
+                "UserAgent": "aws-amplify/cli",
+                "Version": "0.1.0",
+                "IdentityManager": {
+                    "Default": {}
+                },
+                "CredentialsProvider": {
+                    "CognitoIdentity": {
+                        "Default": {
+                            "PoolId": "us-east-1:XXX",
+                            "Region": "us-east-1"
+                        }
+                    }
+                },
+                "CognitoUserPool": {
+                    "Default": {
+                        "PoolId": "us-east-1_XXX",
+                        "AppClientId": "testAppClientId",
+                        "Region": "us-east-1"
+                    }
+                },
+                "Auth": {
+                    "Default": {
+                        "OAuth": {
+                            "WebDomain": "XXX-dev.auth.us-east-1.amazoncognito.com",
+                            "AppClientId": "XXX",
+                            "SignInRedirectURI": "myapp://",
+                            "SignOutRedirectURI": "myapp://",
+                            "Scopes": [
+                                "phone",
+                                "email",
+                                "openid",
+                                "profile",
+                                "aws.cognito.signin.user.admin"
+                            ]
+                        },
+                        "authenticationFlowType": "USER_SRP_AUTH",
+                        "socialProviders": [
+                            "GOOGLE"
+                        ],
+                        "usernameAttributes": [],
+                        "signupAttributes": [
+                            "EMAIL"
+                        ],
+                        "passwordProtectionSettings": {
+                            "passwordPolicyMinLength": 8,
+                            "passwordPolicyCharacters": []
+                        },
+                        "mfaConfiguration": "OFF",
+                        "mfaTypes": [
+                            "SMS"
+                        ],
+                        "verificationMechanisms": [
+                            "EMAIL"
+                        ]
+                    }
+                },
+                "PinpointAnalytics": {
+                    "Default": {
+                        "AppId": "XXX",
+                        "Region": "us-east-1"
+                    }
+                },
+                "PinpointTargeting": {
+                    "Default": {
+                        "Region": "us-east-1"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -43,3 +43,5 @@ extension SignInEventData: CustomDebugStringConvertible {
         debugDictionary.debugDescription
     }
 }
+
+extension SignInEventData: Codable { }

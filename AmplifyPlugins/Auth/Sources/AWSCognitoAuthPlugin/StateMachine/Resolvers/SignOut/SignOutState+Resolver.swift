@@ -199,7 +199,7 @@ extension SignOutState {
                                    globalSignOutError: let globalSignOutError,
                                    revokeTokenError: let revokeTokenError):
                 let signedOutData = SignedOutData(
-                    lastKnownUserName: signedInData?.userName,
+                    lastKnownUserName: signedInData?.username,
                     hostedUIError: hostedUIError,
                     globalSignOutError: globalSignOutError,
                     revokeTokenError: revokeTokenError

@@ -11,3 +11,5 @@ struct SRPKeys {
     let publicKeyHexValue: String
     let privateKeyHexValue: String
 }
+
+extension SRPKeys: Codable { }

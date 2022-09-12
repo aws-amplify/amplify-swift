@@ -22,3 +22,6 @@ public enum DeliveryDestination {
     /// Unknown destination with optional associated value destination detail
     case unknown(Destination?)
 }
+
+extension DeliveryDestination: Equatable { }
+

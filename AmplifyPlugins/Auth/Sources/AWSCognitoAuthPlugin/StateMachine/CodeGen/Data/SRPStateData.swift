@@ -64,3 +64,5 @@ extension SRPStateData: CustomDebugStringConvertible {
         debugDictionary.debugDescription
     }
 }
+
+extension SRPStateData: Codable { }

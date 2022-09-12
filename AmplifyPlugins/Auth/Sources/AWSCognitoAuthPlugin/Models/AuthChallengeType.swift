@@ -34,3 +34,5 @@ extension CognitoIdentityProviderClientTypes.ChallengeNameType {
         }
     }
 }
+
+extension AuthChallengeType: Codable { }

@@ -81,7 +81,7 @@ class AWSAuthResetPasswordTask: AuthResetPasswordTask {
             let authError = AuthError.unknown("Unable to get Auth code delivery details", nil)
             throw authError
         }
-        let nextStep = AuthResetPasswordStep.confirmResetPasswordWithCode(deliveryDetails, nil)
+        let nextStep = AuthResetPasswordStep.confirmResetPasswordWithCode(deliveryDetails, [:])
         let authResetPasswordResult = AuthResetPasswordResult(isPasswordReset: false, nextStep: nextStep)
         return authResetPasswordResult
     }
