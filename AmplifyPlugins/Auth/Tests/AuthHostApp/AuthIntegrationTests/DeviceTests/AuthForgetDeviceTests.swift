@@ -26,81 +26,44 @@ class AuthForgetDeviceTests: AWSAuthBaseTest {
         sleep(2)
     }
 
-//    /// TODO: Verify this test when an API for deviceKey is implemented
-//    /// Calling forget device should return a successful result
-//    ///
-//    /// - Given: A valid username is registered and sign in
-//    /// - When:
-//    ///    - I invoke rememberDevice, followed by forgetDevice and fetchDevice
-//    /// - Then:
-//    ///    - I should get a successful result for forgetDevice and rememberDevice and fetchDevices should
-//    ///      return empty result
-//    ///
-//    func testSuccessfulForgetDevice() {
-//
-//        // register a user and signin
-//        let username = "integTest\(UUID().uuidString)"
-//        let password = "P123@\(UUID().uuidString)"
-//
-//        let signInExpectation = expectation(description: "SignIn event should be fired")
-//
-//        unsubscribeToken = Amplify.Hub.listen(to: .auth) { payload in
-//            switch payload.eventName {
-//            case HubPayload.EventName.Auth.signedIn:
-//                signInExpectation.fulfill()
-//            default:
-//                break
-//            }
-//        }
-//
-//        AuthSignInHelper.registerAndSignInUser(
-//            username: username,
-//            password: password,
-//            email: defaultTestEmail) { _, error in
-//                if let unwrappedError = error {
-//                    XCTFail("Unable to sign in with error: \(unwrappedError)")
-//                }
-//            }
-//        wait(for: [signInExpectation], timeout: networkTimeout)
-//
-//        // remember device
-//        let rememberDeviceExpectation = expectation(description: "Received result from rememberDevice")
-//        _ = Amplify.Auth.rememberDevice { result in
-//            switch result {
-//            case .success:
-//                rememberDeviceExpectation.fulfill()
-//            case .failure(let error):
-//                XCTFail("error remembering device \(error)")
-//            }
-//        }
-//        wait(for: [rememberDeviceExpectation], timeout: networkTimeout)
-//
-//
-//        // forget device
-//        let forgetDeviceExpectation = expectation(description: "Received result from forgetDevice")
-//        _ = Amplify.Auth.forgetDevice { result in
-//            switch result {
-//            case .success:
-//                forgetDeviceExpectation.fulfill()
-//            case .failure(let error):
-//                XCTFail("error forgetting device \(error)")
-//            }
-//        }
-//        wait(for: [forgetDeviceExpectation], timeout: networkTimeout)
-//
-//
-//        // fetch devices
-//        let fetchDevicesExpectation = expectation(description: "Received result from fetchDevices")
-//        _ = Amplify.Auth.fetchDevices { result in
-//            switch result {
-//            case .success(let devices):
-//                XCTAssertNotNil(devices)
-//                XCTAssertEqual(devices.count, 0)
-//                fetchDevicesExpectation.fulfill()
-//            case .failure(let error):
-//                XCTFail("error fetching devices \(error)")
-//            }
-//        }
-//        wait(for: [fetchDevicesExpectation], timeout: networkTimeout)
-//    }
+    /// Calling forget device should return a successful result
+    ///
+    /// - Given: A valid username is registered and sign in
+    /// - When:
+    ///    - I invoke rememberDevice, followed by forgetDevice and fetchDevice
+    /// - Then:
+    ///    - I should get a successful result for forgetDevice and rememberDevice and fetchDevices should
+    ///      return empty result
+    ///
+    func testSuccessfulForgetDevice() async throws {
+
+        /// register a user and signin
+        let username = "integTest\(UUID().uuidString)"
+        let password = "P123@\(UUID().uuidString)"
+
+        let signInExpectation = asyncExpectation(description: "SignIn event should be fired")
+
+        unsubscribeToken = Amplify.Hub.listen(to: .auth) { payload in
+            switch payload.eventName {
+            case HubPayload.EventName.Auth.signedIn:
+                Task {
+                    await signInExpectation.fulfill()
+                }
+            default:
+                break
+            }
+        }
+
+        _ = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail)
+        await waitForExpectations([signInExpectation], timeout: networkTimeout)
+
+        _ = try await Amplify.Auth.rememberDevice()
+        _ = try await Amplify.Auth.forgetDevice()
+        let devices = try await Amplify.Auth.fetchDevices()
+        XCTAssertNotNil(devices)
+        XCTAssertEqual(devices.count, 0)
+    }
 }
