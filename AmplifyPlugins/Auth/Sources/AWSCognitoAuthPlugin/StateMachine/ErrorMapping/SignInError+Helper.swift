@@ -19,11 +19,25 @@ extension SignInError {
                case .service(let serviceError, _) = cognitoError,
                case .userNotConfirmedException = serviceError {
                 return true
+            } else if let cognitoError = serviceError as? SdkError<InitiateAuthOutputError>,
+                      case .client(let clientError, _) = cognitoError,
+                      case .retryError(let retryError) = clientError,
+                      let cognitoServiceError = retryError as? SdkError<InitiateAuthOutputError>,
+                      case .service(let internalServiceError, _) = cognitoServiceError,
+                      case .userNotConfirmedException = internalServiceError {
+                return true
             } else if let cognitoError = serviceError as? SdkError<RespondToAuthChallengeOutputError>,
                       case .service(let serviceError, _) = cognitoError,
                       case .userNotConfirmedException = serviceError {
                 return true
-            } else if let cognitoError = serviceError as? InitiateAuthOutputError,
+            } else if let cognitoError = serviceError as? SdkError<RespondToAuthChallengeOutputError>,
+                       case .client(let clientError, _) = cognitoError,
+                       case .retryError(let retryError) = clientError,
+                       let cognitoServiceError = retryError as? SdkError<RespondToAuthChallengeOutputError>,
+                       case .service(let internalServiceError, _) = cognitoServiceError,
+                       case .userNotConfirmedException = internalServiceError {
+                 return true
+             } else if let cognitoError = serviceError as? InitiateAuthOutputError,
                       case .userNotConfirmedException = cognitoError {
                 return true
             } else if let cognitoError = serviceError as? RespondToAuthChallengeOutputError,
@@ -43,9 +57,23 @@ extension SignInError {
                case .service(let serviceError, _) = cognitoError,
                case .passwordResetRequiredException = serviceError {
                 return true
-            } else if let cognitoError = serviceError as? SdkError<RespondToAuthChallengeOutputError>,
+            }  else if let cognitoError = serviceError as? SdkError<InitiateAuthOutputError>,
+                       case .client(let clientError, _) = cognitoError,
+                       case .retryError(let retryError) = clientError,
+                       let cognitoServiceError = retryError as? SdkError<InitiateAuthOutputError>,
+                       case .service(let internalServiceError, _) = cognitoServiceError,
+                       case .passwordResetRequiredException = internalServiceError {
+                 return true
+             } else if let cognitoError = serviceError as? SdkError<RespondToAuthChallengeOutputError>,
                       case .service(let serviceError, _) = cognitoError,
                       case .passwordResetRequiredException = serviceError {
+                return true
+            } else if let cognitoError = serviceError as? SdkError<RespondToAuthChallengeOutputError>,
+                      case .client(let clientError, _) = cognitoError,
+                      case .retryError(let retryError) = clientError,
+                      let cognitoServiceError = retryError as? SdkError<RespondToAuthChallengeOutputError>,
+                      case .service(let internalServiceError, _) = cognitoServiceError,
+                      case .passwordResetRequiredException = internalServiceError {
                 return true
             } else if let cognitoError = serviceError as? InitiateAuthOutputError,
                       case .passwordResetRequiredException = cognitoError {

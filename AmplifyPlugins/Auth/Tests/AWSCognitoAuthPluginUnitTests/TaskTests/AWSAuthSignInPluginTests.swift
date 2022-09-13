@@ -10,6 +10,7 @@ import AWSCognitoIdentity
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+import ClientRuntime
 
 class AWSAuthSignInPluginTests: BasePluginTest {
 
@@ -709,6 +710,37 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         }
     }
 
+    /// Test a signIn with `PasswordResetRequiredException` from service
+    ///
+    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    ///   PasswordResetRequiredException response for signIn
+    ///
+    /// - When:
+    ///    - I invoke signIn
+    /// - Then:
+    ///    - I should get a .resetPassword as next step
+    ///
+    func testSignInWithPasswordResetRequiredException2() async {
+        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+            let serviceError = SdkError<InitiateAuthOutputError>
+                .service(.passwordResetRequiredException(PasswordResetRequiredException()),
+                         .init(body: .none, statusCode: .badRequest))
+            throw SdkError<InitiateAuthOutputError>.client(.retryError(serviceError), nil)
+        })
+
+        let options = AuthSignInRequest.Options()
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            guard case .resetPassword = result.nextStep else {
+                XCTFail("Result should be .resetPassword for next step")
+                return
+            }
+            XCTAssertFalse(result.isSignedIn, "Signin result should not be complete")
+        } catch {
+            XCTFail("Should not produce error - \(error)")
+        }
+    }
+
     /// Test a signIn with `ResourceNotFoundException` from service
     ///
     /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
@@ -834,6 +866,37 @@ class AWSAuthSignInPluginTests: BasePluginTest {
     func testSignInWithUserNotConfirmedException() async {
         self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
             throw InitiateAuthOutputError.userNotConfirmedException(.init())
+        })
+
+        let options = AuthSignInRequest.Options()
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            guard case .confirmSignUp = result.nextStep else {
+                XCTFail("Result should be .confirmSignUp for next step")
+                return
+            }
+            XCTAssertFalse(result.isSignedIn, "Signin result should not be complete")
+        } catch {
+            XCTFail("Should not produce error - \(error)")
+        }
+    }
+
+    /// Test a signIn with `UserNotConfirmedException` from service
+    ///
+    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    ///   UserNotConfirmedException response for signIn
+    ///
+    /// - When:
+    ///    - I invoke signIn
+    /// - Then:
+    ///    - I should get a .confirmSignUp as next step
+    ///
+    func testSignInWithUserNotConfirmedException2() async {
+        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+            let serviceError = SdkError<InitiateAuthOutputError>
+                .service(.userNotConfirmedException(UserNotConfirmedException()),
+                         .init(body: .none, statusCode: .badRequest))
+            throw SdkError<InitiateAuthOutputError>.client(.retryError(serviceError), nil)
         })
 
         let options = AuthSignInRequest.Options()
