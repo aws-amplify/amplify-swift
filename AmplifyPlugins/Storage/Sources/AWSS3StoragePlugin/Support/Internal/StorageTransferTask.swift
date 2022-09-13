@@ -175,7 +175,7 @@ class StorageTransferTask {
         logger.debug("Cancelling storage transfer task: \(taskIdentifier ?? 0)")
 
         status = .cancelled
-
+        subTasks = []
         storageTransferDatabase.removeTransferRequest(task: self)
     }
 
