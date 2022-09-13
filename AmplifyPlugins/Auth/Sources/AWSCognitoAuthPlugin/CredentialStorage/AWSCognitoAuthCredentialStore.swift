@@ -12,16 +12,19 @@ import Amplify
 struct AWSCognitoAuthCredentialStore {
 
     // Credential store constants
-    private let service = "com.amplify.credentialStore"
+    private let service = "com.amplify.awsCognitoAuthPlugin"
     private let sessionKey = "session"
     private let deviceMetadataKey = "deviceMetadata"
     private let deviceASFKey = "deviceASF"
     private let authConfigurationKey = "authConfiguration"
 
     // User defaults constants
+    private let userDefaultsNameSpace = "amplify_secure_storage_scopes.awsCognitoAuthPlugin"
     /// This UserDefault Key is used to check if Keychain already has items stored on a fresh install
     /// If this flag doesn't exist, previous keychain values for Amplify would be wiped out
-    private let isKeychainConfiguredKey = "isKeychainConfigured"
+    private var isKeychainConfiguredKey {
+        "\(userDefaultsNameSpace).isKeychainConfigured"
+    }
 
     private let authConfiguration: AuthConfiguration
     private let keychain: KeychainStoreBehavior
