@@ -114,7 +114,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
             // tell the session the upload part has started
             self.session?.handle(uploadPartEvent: .started(partNumber: partNumber, taskIdentifier: uploadTask.taskIdentifier))
 
-            uploadTask.resume()
+            subTask.resume()
         }
 
         let partialFileResultHandler: (Result<URL, Error>) -> Void = { [weak self] result in

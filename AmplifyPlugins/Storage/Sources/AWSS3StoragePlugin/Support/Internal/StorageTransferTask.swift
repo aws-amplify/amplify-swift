@@ -58,6 +58,7 @@ class StorageTransferTask {
         }
         return text
     }
+    private var subTasks: [WeakRef<StorageTransferTask>] = []
 
     init(transferID: String = UUID().uuidString,
          transferType: StorageTransferType,
@@ -159,7 +160,14 @@ class StorageTransferTask {
             logger.warn("Unable to cancel when already completed")
             return
         }
-        guard let sessionTask = sessionTask else {
+
+        if case .multiPartUpload = transferType {
+            for subTask in subTasks.values(where: { $0.status != .completed }) {
+                subTask.cancel()
+            }
+        } else if let sessionTask = sessionTask {
+            sessionTask.cancel()
+        } else {
             logger.warn("Session Task must be defined")
             return
         }
@@ -167,7 +175,6 @@ class StorageTransferTask {
         logger.debug("Cancelling storage transfer task: \(taskIdentifier ?? 0)")
 
         status = .cancelled
-        sessionTask.cancel()
 
         storageTransferDatabase.removeTransferRequest(task: self)
     }
@@ -177,14 +184,20 @@ class StorageTransferTask {
             logger.debug("Unable to resume unless paused")
             return
         }
-        guard let sessionTask = sessionTask else {
+
+        if case .multiPartUpload = transferType {
+            for subTask in subTasks.values(where: { $0.status == .paused }) {
+                subTask.resume()
+            }
+        } else if let sessionTask = sessionTask {
+            sessionTask.resume()
+        } else {
             logger.warn("Session Task must be defined")
             return
         }
 
         logger.debug("Resuming storage transfer task: \(taskIdentifier ?? 0)")
 
-        sessionTask.resume()
         status = .inProgress
 
         let reference = StorageTaskReference(self)
@@ -195,6 +208,8 @@ class StorageTransferTask {
             onEvent(.initiated(reference))
         case .multiPartUpload(let onEvent):
             onEvent(.initiated(reference))
+        case .multiPartUploadPart(_, _):
+            break
         default:
             fatalError("Unsupported transfer type: \(transferType.rawValue)")
         }
@@ -207,14 +222,20 @@ class StorageTransferTask {
             logger.debug("Unable to suspend unless in progress")
             return
         }
-        guard let sessionTask = sessionTask else {
+
+        if case .multiPartUpload = transferType {
+            for subTask in subTasks.values(where: { $0.status == .inProgress }) {
+                subTask.suspend()
+            }
+        } else if let sessionTask = sessionTask {
+            sessionTask.suspend()
+        } else {
             logger.warn("Session Task must be defined")
             return
         }
 
         logger.debug("Suspending storage transfer task: \(taskIdentifier ?? 0)")
 
-        sessionTask.suspend()
         status = .paused
 
         storageTransferDatabase.updateTransferRequest(task: self)
@@ -225,7 +246,7 @@ class StorageTransferTask {
             logger.warn("Unable to complete after cancelled")
             return
         }
-        guard status == .completed else {
+        guard status != .completed else {
             logger.warn("Task is already completed")
             return
         }
@@ -233,7 +254,18 @@ class StorageTransferTask {
         logger.debug("Completing storage transfer task: \(taskIdentifier ?? 0)")
 
         status = .completed
+        subTasks = []
         storageTransferDatabase.removeTransferRequest(task: self)
+    }
+
+    func addSubTask(_ subTask: StorageTransferTask) {
+        guard case .multiPartUpload = transferType else {
+            logger.warn("Transfer type: \(transferType.rawValue) does not support sub tasks.")
+            return
+        }
+
+        let weakTask = WeakRef(subTask)
+        subTasks.append(weakTask)
     }
 }
 
@@ -252,6 +284,15 @@ extension URLRequest {
 
         requestHeaders.forEach { key, value in
             setValue(value, forHTTPHeaderField: key)
+        }
+    }
+}
+
+private extension Array where Element == WeakRef<StorageTransferTask> {
+    mutating func values(where isIncluded: (StorageTransferTask) -> Bool) -> [StorageTransferTask] {
+        return compactMap { reference in
+            guard let task = reference.value else { return nil }
+            return isIncluded(task) ? task : nil
         }
     }
 }

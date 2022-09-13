@@ -181,6 +181,7 @@ class StorageMultipartUploadSession {
 
     func startUpload() {
         do {
+            transferTask.notify(progress: Progress(totalUnitCount: 0))
             let reference = StorageTaskReference(transferTask)
             onEvent(.initiated(reference))
             try client.createMultipartUpload()
@@ -260,6 +261,7 @@ class StorageMultipartUploadSession {
 
                 if let uploadId = multipartUpload.uploadId {
                     try client.completeMultipartUpload(uploadId: uploadId)
+                    transferTask.complete()
                 } else {
                     fatalError("Invalid state")
                 }
@@ -304,7 +306,7 @@ class StorageMultipartUploadSession {
                     // the next call does async work
                     let subTask = createSubTask(partNumber: partNumber)
                     try client.uploadPart(partNumber: partNumber, multipartUpload: multipartUpload, subTask: subTask)
-
+                    transferTask.addSubTask(subTask)
                     lastNumber = partNumber
                 }
             }
