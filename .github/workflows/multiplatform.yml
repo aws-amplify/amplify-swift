@@ -35,25 +35,14 @@ jobs:
       matrix:
         platform:
           - macOS
-          - iOS
         xcode:
           - ^13
-          - ^14
         swift:
           - ~5.6
-          - ~5.7
         command:
           - test
         scheme:
           - Amplify
-          - AWSPluginsCore
-          - AWSAPIPlugin
-          - AWSCognitoAuthPlugin
-          - AWSDataStorePlugin
-          - AWSLocationGeoPlugin
-          - AWSPinpointAnalyticsPlugin
-          - AWSS3StoragePlugin
-          - HSM
     steps:
       - name: Checkout
         uses: actions/checkout@v3
