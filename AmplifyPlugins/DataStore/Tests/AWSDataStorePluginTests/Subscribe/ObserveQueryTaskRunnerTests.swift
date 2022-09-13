@@ -25,6 +25,14 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
         dataStorePublisher = DataStorePublisher()
     }
     
+    ///  An item changed observed will be returned in a single snapshot
+    ///
+    /// - Given:  The operation has started and the first query has completed.
+    /// - When:
+    ///    -  Observe an item change.
+    /// - Then:
+    ///    - The item observed will be returned in the second snapshot
+    ///
     func testItemChangedWillGenerateSnapshot() async throws {
         let firstSnapshot = asyncExpectation(description: "first query snapshots")
         let secondSnapshot = asyncExpectation(description: "second query snapshots")
@@ -62,6 +70,104 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
         let post = try createPost(id: "1")
         dataStorePublisher.send(input: post)
         await waitForExpectations([secondSnapshot], timeout: 10)
+    }
+    
+    ///  Items observed will be returned in a single snapshot on isSynced toggled
+    ///  from false to true. The operation will internally listen to .modelSynced event from
+    ///  the Hub.
+    ///
+    /// - Given:  The operation has started and the first query has completed.
+    /// - When:
+    ///    - Observe items when .modelSynced internally in the Hub
+    /// - Then:
+    ///    - The items observed will be returned in the second snapshot
+    ///
+    func testGenerateSnapshotOnObserveQueryWhenModelSynced() async throws {
+        let firstSnapshot = asyncExpectation(description: "first query snapshots")
+        let secondSnapshot = asyncExpectation(description: "second query snapshots")
+        let dispatchedModelSyncedEvent = AtomicValue(initialValue: false)
+        let taskRunner = ObserveQueryTaskRunner(
+            modelType: Post.self,
+            modelSchema: Post.schema,
+            predicate: nil,
+            sortInput: nil,
+            storageEngine: storageEngine,
+            dataStorePublisher: dataStorePublisher,
+            dataStoreConfiguration: .default,
+            dispatchedModelSyncedEvent: dispatchedModelSyncedEvent,
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
+        let snapshots = taskRunner.sequence
+        Task {
+            var querySnapshots = [DataStoreQuerySnapshot<Post>]()
+            do {
+                for try await querySnapshot in snapshots {
+                    querySnapshots.append(querySnapshot)
+                    if querySnapshots.count == 1 {
+                        XCTAssertEqual(querySnapshot.items.count, 0)
+                        XCTAssertEqual(querySnapshot.isSynced, false)
+                        await firstSnapshot.fulfill()
+                    } else if querySnapshots.count == 2 {
+                        XCTAssertEqual(querySnapshot.items.count, 0)
+                        XCTAssertEqual(querySnapshot.isSynced, true)
+                        await secondSnapshot.fulfill()
+                    }
+                }
+            } catch {
+                XCTFail("Failed with error \(error)")
+            }
+        }
+        
+        await waitForExpectations([firstSnapshot], timeout: 1)
+        
+        dispatchedModelSyncedEvent.set(true)
+        let readyEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced)
+        Amplify.Hub.dispatch(to: .dataStore, payload: readyEventPayload)
+        await waitForExpectations([secondSnapshot], timeout: 10)
+    }
+    
+    /// StorageEngine returns two Posts in a single snapshot
+    ///
+    /// - Given:  The operation has started and the first query has completed.
+    /// - When:
+    ///    -  Two posts are queried through StorageEngine
+    /// - Then:
+    ///    - The items queried will return two posts in the first snapshot
+    ///
+    func testFirstSnapshotFromStorageQueryReturnsTwoPosts() async {
+        let firstSnapshot = asyncExpectation(description: "firstSnapshot received")
+        let taskRunner = ObserveQueryTaskRunner(
+            modelType: Post.self,
+            modelSchema: Post.schema,
+            predicate: nil,
+            sortInput: nil,
+            storageEngine: storageEngine,
+            dataStorePublisher: dataStorePublisher,
+            dataStoreConfiguration: .default,
+            dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
+        let post = Post(title: "model1",
+                        content: "content1",
+                        createdAt: .now())
+        storageEngine.responders[.query] = QueryResponder<Post>(callback: { _ in
+            return .success([post, Post(title: "model1", content: "content1", createdAt: .now())])
+        })
+        let snapshots = taskRunner.sequence
+        Task {
+            var querySnapshots = [DataStoreQuerySnapshot<Post>]()
+            do {
+                for try await querySnapshot in snapshots {
+                    querySnapshots.append(querySnapshot)
+                    if querySnapshots.count == 1 {
+                        XCTAssertEqual(querySnapshot.items.count, 2)
+                        await firstSnapshot.fulfill()
+                    }
+                }
+                
+            } catch {
+                XCTFail("Failed with error \(error)")
+            }
+        }
+        await waitForExpectations([firstSnapshot], timeout: 10)
     }
     
     /// Multiple item changed observed will be returned in a single snapshot

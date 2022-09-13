@@ -63,7 +63,7 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
     var currentItems: SortedList<M>
     var batchItemsChangedSink: AnyCancellable?
     var itemsChangedSink: AnyCancellable?
-    
+    var readyEventSink: AnyCancellable?
     var currentSnapshot: DataStoreQuerySnapshot<M> {
         DataStoreQuerySnapshot<M>(items: currentItems.sortedModels, isSynced: dispatchedModelSyncedEvent.get())
     }
@@ -142,6 +142,10 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
             if let batchItemsChangedSink = batchItemsChangedSink {
                 batchItemsChangedSink.cancel()
             }
+            
+            if let readyEventSink = readyEventSink {
+                        readyEventSink.cancel()
+            }
         }
     }
 
@@ -177,6 +181,7 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
             }
             self.log.verbose("Start ObserveQuery")
             self.subscribeToItemChanges()
+            self.subscribeToModelSyncedEvent()
             self.initialQuery()
         }
     }
@@ -228,6 +233,14 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
                 .receive(on: self.serialQueue)
                 .sink(receiveCompletion: self.onReceiveCompletion(completed:),
                       receiveValue: self.onItemChangeAfterSync(mutationEvent:))
+        }
+    }
+    
+    func subscribeToModelSyncedEvent() {
+        readyEventSink = Amplify.Hub.publisher(for: .dataStore).sink { event in
+            if event.eventName == HubPayload.EventName.DataStore.modelSynced {
+                self.sendSnapshot()
+            }
         }
     }
 
