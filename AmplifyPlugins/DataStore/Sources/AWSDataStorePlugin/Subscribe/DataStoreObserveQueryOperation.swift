@@ -144,7 +144,7 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
             }
             
             if let readyEventSink = readyEventSink {
-                        readyEventSink.cancel()
+                readyEventSink.cancel()
             }
         }
     }
