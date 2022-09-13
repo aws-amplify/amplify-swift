@@ -22,7 +22,7 @@ struct AWSCognitoAuthCredentialStore {
     private let userDefaultsNameSpace = "amplify_secure_storage_scopes.awsCognitoAuthPlugin"
     /// This UserDefault Key is used to check if Keychain already has items stored on a fresh install
     /// If this flag doesn't exist, previous keychain values for Amplify would be wiped out
-    private var isKeychainConfiguredKey {
+    private var isKeychainConfiguredKey: String {
         "\(userDefaultsNameSpace).isKeychainConfigured"
     }
 
