@@ -13,7 +13,7 @@ import AmplifyTestCommon
 
 class AmplifyAuthCognitoPluginTests: XCTestCase {
 
-    let apiTimeout = 2.0
+    let apiTimeout = 1.0
     let testSuitesResourcePath = "/TestResources/TestSuites"
 
     func testAuthCognitoPlugin() {
@@ -83,7 +83,7 @@ class AmplifyAuthCognitoPluginTests: XCTestCase {
                     expectation.fulfill()
                 }
             }
-            wait(for: [expectation], timeout: 1)
+            wait(for: [expectation], timeout: apiTimeout)
 
         }
 
