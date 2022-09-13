@@ -25,7 +25,10 @@ struct FeatureSpecification: Codable {
     init(fileName: String,
          fileExtension: String = "") {
         let bundle = Bundle.authCognitoTestBundle()
-        let url = bundle.url(forResource: fileName, withExtension: fileExtension, subdirectory: "TestResources/TestSuites")!
+        let url = bundle.url(
+            forResource: fileName,
+            withExtension: fileExtension,
+            subdirectory: "TestResources/TestSuites")!
         let fileData: Data = try! Data(contentsOf: url)
         self = try! JSONDecoder().decode(
             FeatureSpecification.self, from: fileData)

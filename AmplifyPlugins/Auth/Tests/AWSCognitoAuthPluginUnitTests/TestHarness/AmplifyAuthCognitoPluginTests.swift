@@ -27,36 +27,37 @@ class AmplifyAuthCognitoPluginTests: XCTestCase {
             XCTContext.runActivity(named: testInputFile) { activity in
                 let specification = FeatureSpecification.init(fileName: testInputFile)
                 let authTestHarness = AuthTestHarness(featureSpecification: specification)
-                beginTest(with: authTestHarness)
+                beginTest(for: authTestHarness.plugin,
+                          with: authTestHarness)
             }
         }
     }
 
-    func beginTest(with testHarness: AuthTestHarness) {
+    func beginTest(
+        for plugin: AWSCognitoAuthPlugin,
+        with testHarness: AuthTestHarness) {
 
-        switch testHarness.testHarnessInput.amplifyAPI {
+            switch testHarness.apiUnderTest {
             case .resetPassword(let resetPasswordRequest,
                                 let expectedOutput):
-            validateResetPasswordAPI(
-                plugin: testHarness.getPlugin(),
-                request: resetPasswordRequest,
-                expectedOutput: expectedOutput)
+                validateAPI(expectedOutput: expectedOutput) {
+                    return try await plugin.resetPassword(
+                        for: resetPasswordRequest.username,
+                        options: .init())
+                }
+            }
         }
-    }
 
-    func validateResetPasswordAPI(
-        plugin: AWSCognitoAuthPlugin,
-        request: AuthResetPasswordRequest,
-        expectedOutput: Result<AuthResetPasswordResult, AuthError>?) {
-
+    
+    // Helper to validate API Result
+    func validateAPI<T: Equatable>(
+        expectedOutput: Result<T, AuthError>?,
+        apiCall: @escaping () async throws -> T) {
 
             let expectation = expectation(description: "Reset password expectation")
-
             Task {
                 do {
-                    let result = try await plugin.resetPassword(
-                        for: request.username,
-                        options: .init())
+                    let result = try await apiCall()
                     if let expectedOutput = expectedOutput {
                         switch expectedOutput {
                         case .success(let expectedResult):
@@ -76,7 +77,6 @@ class AmplifyAuthCognitoPluginTests: XCTestCase {
                             XCTAssertEqual(expectedError, error)
                         }
                     }
-
                     expectation.fulfill()
                 } catch {
                     XCTFail("Reset password API should throw AuthError")
@@ -84,28 +84,5 @@ class AmplifyAuthCognitoPluginTests: XCTestCase {
                 }
             }
             wait(for: [expectation], timeout: apiTimeout)
-
         }
-
-
-//    func validateChangePasswordAPI(
-//        plugin: AWSCognitoAuthPlugin,
-//        request: UpdatePasswordAPI.Request,
-//        response: UpdatePasswordAPI.Response) async {
-//
-//            let resultExpectation = expectation(description: "Should receive a result")
-//
-//
-//            do {
-//                let result = try await plugin.update(
-//                    oldPassword: request.oldPassword,
-//                    to: request.newPassword)
-//                resultExpectation.fulfill()
-//            } catch {
-//
-//            }
-//
-//            wait(for: [resultExpectation], timeout: apiTimeout)
-//        }
-
 }
