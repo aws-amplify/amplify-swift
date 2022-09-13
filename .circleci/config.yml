@@ -9,7 +9,18 @@ orbs:
       macos: circleci/macos@2
       node: circleci/node@5.0.2
       ruby: circleci/ruby@1.6.0
+      aws-cli: circleci/aws-cli@3.1.1
     commands:
+      send-metric-on-fail:
+        description: Send failure datapoint to cloudwatch
+        steps:
+          - run:
+              name: Send failure datapoint to cloudwatch
+              command: |
+                payload="{\"jobName\": \"${CIRCLE_JOB}\", \"projectRepoName\": \"${CIRCLE_PROJECT_REPONAME}\"}"
+                echo $payload
+                aws lambda invoke --function-name CircleCIWorkflowFailureHandler --payload "$payload" --cli-binary-format raw-in-base64-out response.json
+              when: on_fail
       run-with-retry:
         description: Run command with retry
         parameters:
@@ -73,6 +84,10 @@ orbs:
         steps:
           - checkout:
               path: ~/ios-canaries
+          - aws-cli/setup:
+              role-session-name: ${CIRCLE_WORKFLOW_JOB_ID}
+              role-arn: ${AWS_ROLE_ARN}
+              session-duration: '2000'
           - node/install
           - run: npm install -g @aws-amplify/cli
           - run: amplify init --quickstart --frontend ios
@@ -87,6 +102,7 @@ orbs:
           - run-with-retry:
               label: Run tests
               command: bundle exec fastlane scan
+          - send-metric-on-fail
 
 defaults: &defaults
   macos:
@@ -441,10 +457,14 @@ workflows:
         - equal: [ "Canaries", << pipeline.schedule.name >> ]
     jobs:
       - getting-started-smoke-test/ios:
+          context:
+            - cloudwatch-monitoring
           xcode-version: "13.3.0"
           simulator-os-version: "15.4"
           simulator-device: "iPhone 13"
       - getting-started-smoke-test/ios:
+          context:
+            - cloudwatch-monitoring
           xcode-version: "12.5.1"
           simulator-os-version: "14.5"
           simulator-device: "iPhone 12"
