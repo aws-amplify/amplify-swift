@@ -3,11 +3,11 @@ PODS:
     - Amplify/Default (= 1.28.0)
   - Amplify/Default (1.28.0)
   - AmplifyPlugins/AWSCognitoAuthPlugin (1.28.0):
-    - AWSAuthCore (~> 2.27.0)
-    - AWSCognitoIdentityProvider (~> 2.27.0)
-    - AWSCognitoIdentityProviderASF (~> 2.27.0)
-    - AWSCore (~> 2.27.0)
-    - AWSMobileClient (~> 2.27.0)
+    - AWSAuthCore (~> 2.28.0)
+    - AWSCognitoIdentityProvider (~> 2.28.0)
+    - AWSCognitoIdentityProviderASF (~> 2.28.0)
+    - AWSCore (~> 2.28.0)
+    - AWSMobileClient (~> 2.28.0)
     - AWSPluginsCore (= 1.28.0)
   - AmplifyTestCommon (1.28.0):
     - Amplify (= 1.28.0)
@@ -15,38 +15,38 @@ PODS:
     - CwlPreconditionTesting (~> 2.0)
   - AmplifyTestCommon/AWSPluginsTestCommon (1.28.0):
     - Amplify (= 1.28.0)
-    - AWSCore (~> 2.27.0)
-    - AWSMobileClient (~> 2.27.0)
+    - AWSCore (~> 2.28.0)
+    - AWSMobileClient (~> 2.28.0)
     - AWSPluginsCore (= 1.28.0)
     - CwlPreconditionTesting (~> 2.0)
-  - AWSAuthCore (2.27.13):
-    - AWSCore (= 2.27.13)
-  - AWSCognitoIdentityProvider (2.27.13):
-    - AWSCognitoIdentityProviderASF (= 2.27.13)
-    - AWSCore (= 2.27.13)
-  - AWSCognitoIdentityProviderASF (2.27.13):
-    - AWSCore (= 2.27.13)
-  - AWSComprehend (2.27.13):
-    - AWSCore (= 2.27.13)
-  - AWSCore (2.27.13)
-  - AWSMobileClient (2.27.13):
-    - AWSAuthCore (= 2.27.13)
-    - AWSCognitoIdentityProvider (= 2.27.13)
-    - AWSCognitoIdentityProviderASF (= 2.27.13)
-    - AWSCore (= 2.27.13)
+  - AWSAuthCore (2.28.0):
+    - AWSCore (= 2.28.0)
+  - AWSCognitoIdentityProvider (2.28.0):
+    - AWSCognitoIdentityProviderASF (= 2.28.0)
+    - AWSCore (= 2.28.0)
+  - AWSCognitoIdentityProviderASF (2.28.0):
+    - AWSCore (= 2.28.0)
+  - AWSComprehend (2.28.0):
+    - AWSCore (= 2.28.0)
+  - AWSCore (2.28.0)
+  - AWSMobileClient (2.28.0):
+    - AWSAuthCore (= 2.28.0)
+    - AWSCognitoIdentityProvider (= 2.28.0)
+    - AWSCognitoIdentityProviderASF (= 2.28.0)
+    - AWSCore (= 2.28.0)
   - AWSPluginsCore (1.28.0):
     - Amplify (= 1.28.0)
-    - AWSCore (~> 2.27.0)
-  - AWSPolly (2.27.13):
-    - AWSCore (= 2.27.13)
-  - AWSRekognition (2.27.13):
-    - AWSCore (= 2.27.13)
-  - AWSTextract (2.27.13):
-    - AWSCore (= 2.27.13)
-  - AWSTranscribeStreaming (2.27.13):
-    - AWSCore (= 2.27.13)
-  - AWSTranslate (2.27.13):
-    - AWSCore (= 2.27.13)
+    - AWSCore (~> 2.28.0)
+  - AWSPolly (2.28.0):
+    - AWSCore (= 2.28.0)
+  - AWSRekognition (2.28.0):
+    - AWSCore (= 2.28.0)
+  - AWSTextract (2.28.0):
+    - AWSCore (= 2.28.0)
+  - AWSTranscribeStreaming (2.28.0):
+    - AWSCore (= 2.28.0)
+  - AWSTranslate (2.28.0):
+    - AWSCore (= 2.28.0)
   - CwlCatchException (2.1.1):
     - CwlCatchExceptionSupport (~> 2.1.1)
   - CwlCatchExceptionSupport (2.1.1)
@@ -57,19 +57,19 @@ PODS:
     - CwlMachBadInstructionHandler (~> 2.1.0)
     - CwlPosixPreconditionTesting (~> 2.1.0)
   - SwiftFormat/CLI (0.44.17)
-  - SwiftLint (0.48.0)
+  - SwiftLint (0.49.1)
 
 DEPENDENCIES:
   - Amplify (from `../../`)
   - AmplifyPlugins/AWSCognitoAuthPlugin (from `../../`)
   - AmplifyTestCommon (from `../../`)
-  - AWSComprehend (~> 2.27.0)
+  - AWSComprehend (~> 2.28.0)
   - AWSPluginsCore (from `../../`)
-  - AWSPolly (~> 2.27.0)
-  - AWSRekognition (~> 2.27.0)
-  - AWSTextract (~> 2.27.0)
-  - AWSTranscribeStreaming (~> 2.27.0)
-  - AWSTranslate (~> 2.27.0)
+  - AWSPolly (~> 2.28.0)
+  - AWSRekognition (~> 2.28.0)
+  - AWSTextract (~> 2.28.0)
+  - AWSTranscribeStreaming (~> 2.28.0)
+  - AWSTranslate (~> 2.28.0)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `2.1.0`)
   - SwiftFormat/CLI (= 0.44.17)
   - SwiftLint
@@ -114,28 +114,28 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Amplify: dfa12fad1609b1388d0b2fb6f99b3140cd942d09
-  AmplifyPlugins: 1bac66d0349fa307008f6f7711b09d0f80e78c30
-  AmplifyTestCommon: e57e82d994f4a142a3e6f0fc241d76e42ee3c561
-  AWSAuthCore: 9898614783bd6375742b58a1df38c6a8b8276eda
-  AWSCognitoIdentityProvider: c105df15533a029230c325acd2be60ff45e8f3f9
-  AWSCognitoIdentityProviderASF: e0f40ef2f5c2c357b77553144e8f41a6c0b0b81b
-  AWSComprehend: 6df4aac1993525de60d5354f9a89b8e392e3afbf
-  AWSCore: 05edadb5f3d0b92a50ea8c66b06f1a10477878da
-  AWSMobileClient: a49361347ff5c0cff946b3f777936c0fdf9c190d
-  AWSPluginsCore: 7f0f984d787a4fe79d3d52c3d34e1779d1fc9bb8
-  AWSPolly: 5af733b72b5cf12405b1eeb6e284cba3ec4ce3ad
-  AWSRekognition: 7d338c1258982e8644b92b8fac09331877953be8
-  AWSTextract: 403f3a90fb8a3eb40452b8e39d29016e1478f3ba
-  AWSTranscribeStreaming: ba3ca4d5947286a3a410146a4358ef904b7ca8c8
-  AWSTranslate: 45beab6bbd86c0a88431dd960109c08f3288e5c3
+  AmplifyPlugins: ef3c6cae5a1352da7e2f199dea48e6d6bda629e5
+  AmplifyTestCommon: 32f67b880f88cb1de451c60789564cf00665a51a
+  AWSAuthCore: 658c331fe5cbc58608ced499aa0d8d46c57e9c96
+  AWSCognitoIdentityProvider: 9778edc430206a1bf67ff5f0c7a7b130fa4a5380
+  AWSCognitoIdentityProviderASF: a82f81ad75fce6d8c826ed394fa3cf7c51306897
+  AWSComprehend: 631a037ba78f24fde6f85ee3ed67e45bf2eaa5ff
+  AWSCore: 0ebe9ba8a459893cdf268ce0bae61875efd0182b
+  AWSMobileClient: 8d466f135e8d851a76e57cbfe65bb67eb522b64c
+  AWSPluginsCore: d22061af1f1afbb6ef8fa7024a7a7edd57d80347
+  AWSPolly: 6092036f1d7bc7cdc57445d61f3df9f49dd02c5d
+  AWSRekognition: 593399de686ebf501c6f239bf0a277d586aa14be
+  AWSTextract: cbe6440c78968789cc1439362f42e988a05e1753
+  AWSTranscribeStreaming: 9d89fabbbad94a740a2ce597257cbd5cae2066c3
+  AWSTranslate: 943610820a6513f886d57f82581264d7feac8026
   CwlCatchException: 86760545af2a490a23e964d76d7c77442dbce79b
   CwlCatchExceptionSupport: a004322095d7101b945442c86adc7cec0650f676
   CwlMachBadInstructionHandler: aa1fe9f2d08b29507c150d099434b2890247e7f8
   CwlPosixPreconditionTesting: 1ba4471964405941f79b3f06bbcf3c2be782950c
   CwlPreconditionTesting: 73ae5de517a8761e5e40fb4136c6a26365af0440
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
-  SwiftLint: 284cea64b6187c5d6bd83e9a548a64104d546447
+  SwiftLint: 32ee33ded0636d0905ef6911b2b67bbaeeedafa5
 
 PODFILE CHECKSUM: f96d753f1be77936c8d187f6834c2082b94be4f4
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.11.2
