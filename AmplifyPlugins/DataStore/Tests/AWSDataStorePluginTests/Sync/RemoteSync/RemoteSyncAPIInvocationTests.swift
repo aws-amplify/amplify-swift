@@ -12,7 +12,7 @@ import Combine
 @testable import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSDataStorePlugin
-import AmplifyAsyncTesting
+@_implementationOnly import AmplifyAsyncTesting
 
 /// Tests that DataStore invokes proper API methods to fulfill remote sync
 class RemoteSyncAPIInvocationTests: XCTestCase {
