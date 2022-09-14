@@ -30,7 +30,7 @@ jobs:
 
   analytics-integration-test:
     needs: prepare-for-test
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -54,12 +54,11 @@ jobs:
           project_path: ./AmplifyPlugins/Analytics/
           workspace: AnalyticsCategoryPlugin.xcworkspace
           scheme: AWSPinpointAnalyticsPluginIntegrationTests
-          xcode-version: '13.3.1'
 
   api-integration-test:
     continue-on-error: true
     needs: prepare-for-test
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -83,7 +82,6 @@ jobs:
           project_path: ./AmplifyPlugins/API/
           workspace: APICategoryPlugin.xcworkspace
           scheme: AWSAPICategoryPluginFunctionalTests
-          xcode-version: '13.3.1'
 
   api-graphqliam-integration-test:
     if: ${{ false }}
@@ -115,7 +113,7 @@ jobs:
 
   api-graphqluserpool-integration-test:
     needs: [api-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -139,7 +137,6 @@ jobs:
           project_path: ./AmplifyPlugins/API/
           workspace: APICategoryPlugin.xcworkspace
           scheme: GraphQLWithUserPoolIntegrationTests
-          xcode-version: '13.3.1'
 
   api-restiam-integration-test:
     if: ${{ false }}
@@ -228,7 +225,7 @@ jobs:
   auth-integration-test:
     continue-on-error: true
     needs: prepare-for-test
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -252,12 +249,11 @@ jobs:
           project_path: ./AmplifyPlugins/Auth/
           workspace: AWSCognitoAuthPlugin.xcworkspace
           scheme: AWSCognitoAuthPluginIntegrationTests
-          xcode-version: '13.3.1'
 
   datastore-integration-test:
     continue-on-error: true
     needs: prepare-for-test
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -281,7 +277,6 @@ jobs:
           project_path: ./AmplifyPlugins/DataStore/
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreCategoryPluginIntegrationTests
-          xcode-version: '13.3.1'
 
   datastore-integration-hub-test:
     if: ${{ false }}
@@ -313,7 +308,7 @@ jobs:
   datastore-integration-local-test:
     continue-on-error: true
     needs: [datastore-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -337,12 +332,11 @@ jobs:
           project_path: ./AmplifyPlugins/DataStore/
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationLocalTests
-          xcode-version: '13.3.1'
 
   datastore-integration-V1-S1-test:
     continue-on-error: true
     needs: [datastore-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -366,7 +360,6 @@ jobs:
           project_path: ./AmplifyPlugins/DataStore/
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV1Scenario1Tests
-          xcode-version: '13.3.1'
 
   datastore-integration-V1-S2-test:
     if: ${{ false }}
@@ -749,7 +742,7 @@ jobs:
   datastore-integration-V2-test:
     continue-on-error: true
     needs: [datastore-integration-test]
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -773,7 +766,6 @@ jobs:
           project_path: ./AmplifyPlugins/DataStore/
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV2Tests
-          xcode-version: '13.3.1'
 
   datastore-integration-observe-query-test:
     if: ${{ false }}
@@ -861,7 +853,7 @@ jobs:
 
   geo-integration-test:
     needs: prepare-for-test
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -885,12 +877,11 @@ jobs:
           project_path: ./AmplifyPlugins/Geo/
           workspace: GeoCategoryPlugin.xcworkspace
           scheme: AWSLocationGeoPluginIntegrationTests
-          xcode-version: '13.3.1'
 
   predictions-integration-test:
     continue-on-error: true
     needs: prepare-for-test
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -924,12 +915,11 @@ jobs:
           project_path: ./AmplifyPlugins/Predictions/
           workspace: PredictionsCategoryPlugin.xcworkspace
           scheme: CoreMLPredictionsPluginIntegrationTests
-          xcode-version: '13.3.1'
 
   storage-integration-test:
     continue-on-error: true
     needs: prepare-for-test
-    runs-on: macos-latest
+    runs-on: macos-12
     environment: IntegrationTest
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -953,4 +943,3 @@ jobs:
           project_path: ./AmplifyPlugins/Storage/
           workspace: StoragePlugin.xcworkspace
           scheme: AWSS3StoragePluginFunctionalTests
-          xcode-version: '13.3.1'
