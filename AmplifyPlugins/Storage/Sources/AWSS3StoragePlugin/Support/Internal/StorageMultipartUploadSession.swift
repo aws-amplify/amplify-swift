@@ -209,6 +209,7 @@ class StorageMultipartUploadSession {
                 uploadParts(uploadFile: uploadFile, uploadId: uploadId, partSize: partSize, parts: parts)
             case .paused(_, _, _, let parts):
                 cancelInProgressParts(parts: parts)
+                transferTask.notify(progress: parts.progress)
             case .completed:
                 onEvent(.completed(()))
             case .aborted:
@@ -230,7 +231,7 @@ class StorageMultipartUploadSession {
         do {
             try multipartUpload.transition(uploadPartEvent: uploadPartEvent)
 
-            // update the transerTask with every state transition
+            // update the transferTask with every state transition
             transferTask.multipartUpload = multipartUpload
 
             if uploadPartEvent.isCompleted {
