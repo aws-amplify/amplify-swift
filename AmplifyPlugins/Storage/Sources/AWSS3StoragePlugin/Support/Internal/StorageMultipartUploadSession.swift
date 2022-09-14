@@ -207,6 +207,8 @@ class StorageMultipartUploadSession {
             case .parts(let uploadId, let uploadFile, let partSize, let parts):
                 transferTask.uploadId = uploadId
                 uploadParts(uploadFile: uploadFile, uploadId: uploadId, partSize: partSize, parts: parts)
+            case .paused(_, _, _, let parts):
+                cancelInProgressParts(parts: parts)
             case .completed:
                 onEvent(.completed(()))
             case .aborted:
@@ -276,6 +278,18 @@ class StorageMultipartUploadSession {
         }
     }
 
+    func cancelInProgressParts(parts: StorageUploadParts) {
+        let taskIdentifiers = parts.inProgress.compactMap {
+            if case .inProgress(_, _, let taskIdentifier) = $0 {
+                return taskIdentifier
+            } else {
+                return nil
+            }
+        }
+
+        client.cancelUploadTasks(taskIdentifiers: taskIdentifiers)
+    }
+
     func uploadParts(uploadFile: UploadFile, uploadId: UploadID, partSize: StorageUploadPartSize, parts: StorageUploadParts) {
         logger.debug(#function)
 
@@ -293,7 +307,6 @@ class StorageMultipartUploadSession {
             if maxPartsCount > 0 {
                 let end = min(maxPartsCount, pendingPartNumbers.count)
                 let numbers = pendingPartNumbers[0..<end]
-                var lastNumber: Int? = 0
                 // queue upload part first
                 numbers.forEach { partNumber in
                     handle(uploadPartEvent: .queued(partNumber: partNumber))
@@ -304,8 +317,6 @@ class StorageMultipartUploadSession {
                     // the next call does async work
                     let subTask = createSubTask(partNumber: partNumber)
                     try client.uploadPart(partNumber: partNumber, multipartUpload: multipartUpload, subTask: subTask)
-
-                    lastNumber = partNumber
                 }
             }
         } catch {

@@ -17,6 +17,7 @@ enum StorageMultipartUpload {
     case none
     case creating
     case created(uploadId: UploadID, uploadFile: UploadFile)
+    case paused(uploadId: UploadID, uploadFile: UploadFile, partSize: StorageUploadPartSize, parts: StorageUploadParts)
     case parts(uploadId: UploadID, uploadFile: UploadFile, partSize: StorageUploadPartSize, parts: StorageUploadParts)
     case completing(taskIdentifier: TaskIdentifier)
     case completed(uploadId: UploadID)
@@ -189,6 +190,21 @@ enum StorageMultipartUpload {
         case .created(let uploadFile, let uploadId):
             self = .created(uploadId: uploadId, uploadFile: uploadFile)
             try createParts(uploadFile: uploadFile, uploadId: uploadId, logger: logger)
+        case .pausing:
+            switch self {
+            case .parts(let uploadId, let uploadFile, let partSize, let parts):
+                self = .paused(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: parts)
+            default:
+                throw Failure.invalidStateTransition(reason: "Cannot abort from current state: \(self)")
+            }
+        case .resuming:
+            switch self {
+            case .paused(let uploadId, let uploadFile, let partSize, let parts):
+                self = .parts(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: parts)
+            default:
+                throw Failure.invalidStateTransition(reason: "Cannot abort from current state: \(self)")
+            }
+            break
         case .completing(let taskIdentifier):
             self = .completing(taskIdentifier: taskIdentifier)
         case .completed(let uploadId):
