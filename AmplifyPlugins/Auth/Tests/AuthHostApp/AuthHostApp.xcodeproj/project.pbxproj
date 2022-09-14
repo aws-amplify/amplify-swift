@@ -76,6 +76,7 @@
 		97829200286B802E000DE190 /* AuthResetPasswordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthResetPasswordTests.swift; sourceTree = "<group>"; };
 		97829202286E41FA000DE190 /* AuthConfirmResetPasswordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfirmResetPasswordTests.swift; sourceTree = "<group>"; };
 		97B370C42878DA5A00F1C088 /* AuthFetchDeviceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFetchDeviceTests.swift; sourceTree = "<group>"; };
+		B436F2E328D141C600BC6960 /* AmplifyAsyncTesting */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AmplifyAsyncTesting; path = ../../../../AmplifyAsyncTesting; sourceTree = "<group>"; };
 		B43C26C727BC9D54003F3BF7 /* AuthSignUpTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthSignUpTests.swift; sourceTree = "<group>"; };
 		B43C26C827BC9D54003F3BF7 /* AuthConfirmSignUpTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthConfirmSignUpTests.swift; sourceTree = "<group>"; };
 		B43C26C927BC9D54003F3BF7 /* AuthResendSignUpCodeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthResendSignUpCodeTests.swift; sourceTree = "<group>"; };
@@ -242,6 +243,7 @@
 			isa = PBXGroup;
 			children = (
 				B443B8C127BD707B009DA19B /* amplify-ios-staging */,
+				B436F2E328D141C600BC6960 /* AmplifyAsyncTesting */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
