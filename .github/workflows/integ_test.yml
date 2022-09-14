@@ -1,7 +1,7 @@
 name: Integration Tests
 on:
   push:
-    branches: [main]
+    branches: [main, chore/update-xcode-ver-integ-tests]
 
 permissions:
     id-token: write
