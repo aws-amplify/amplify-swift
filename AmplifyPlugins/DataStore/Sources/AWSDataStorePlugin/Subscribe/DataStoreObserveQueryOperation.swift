@@ -63,7 +63,7 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
     var currentItems: SortedList<M>
     var batchItemsChangedSink: AnyCancellable?
     var itemsChangedSink: AnyCancellable?
-    var readyEventSink: AnyCancellable?
+    var modelSyncedEventSink: AnyCancellable?
     var currentSnapshot: DataStoreQuerySnapshot<M> {
         DataStoreQuerySnapshot<M>(items: currentItems.sortedModels, isSynced: dispatchedModelSyncedEvent.get())
     }
@@ -143,8 +143,8 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
                 batchItemsChangedSink.cancel()
             }
             
-            if let readyEventSink = readyEventSink {
-                        readyEventSink.cancel()
+            if let modelSyncedEventSink = modelSyncedEventSink {
+                modelSyncedEventSink.cancel()
             }
         }
     }
@@ -160,6 +160,7 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
             self.currentItems.reset()
             self.itemsChangedSink = nil
             self.batchItemsChangedSink = nil
+            self.modelSyncedEventSink = nil
         }
     }
 
@@ -237,8 +238,8 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
     }
     
     func subscribeToModelSyncedEvent() {
-        readyEventSink = Amplify.Hub.publisher(for: .dataStore).sink { event in
-            if event.eventName == HubPayload.EventName.DataStore.modelSynced {
+        modelSyncedEventSink = Amplify.Hub.publisher(for: .dataStore).sink { event in
+            if event.eventName == HubPayload.EventName.DataStore.modelSynced, case let modelSyncedEvent = event.data as? ModelSyncedEvent, modelSyncedEvent?.modelName == self.modelSchema.name {
                 self.sendSnapshot()
             }
         }

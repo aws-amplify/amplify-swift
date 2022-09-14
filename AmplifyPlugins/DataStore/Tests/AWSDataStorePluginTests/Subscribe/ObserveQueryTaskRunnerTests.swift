@@ -72,19 +72,20 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
         await waitForExpectations([secondSnapshot], timeout: 10)
     }
     
-    ///  Items observed will be returned in a single snapshot on isSynced toggled
-    ///  from false to true. The operation will internally listen to .modelSynced event from
+    ///  ObserveQuery will send a single snapshot when the sync state toggles
+    ///  from false to true. The operation internally listens to .modelSynced event from
     ///  the Hub.
     ///
-    /// - Given:  The operation has started and the first query has completed.
+    /// - Given: ObserveQuery has started and the first snapshot has been received.
     /// - When:
-    ///    - Observe items when .modelSynced internally in the Hub
+    ///    - modelSyncedEvent is sent to the Hub
     /// - Then:
-    ///    - The items observed will be returned in the second snapshot
+    ///    - ObserveQuery will send a second snapshot
     ///
     func testGenerateSnapshotOnObserveQueryWhenModelSynced() async throws {
         let firstSnapshot = asyncExpectation(description: "first query snapshots")
         let secondSnapshot = asyncExpectation(description: "second query snapshots")
+        let thirdSnapshot = asyncExpectation(description: "third query snapshot", isInverted: true)
         let dispatchedModelSyncedEvent = AtomicValue(initialValue: false)
         let taskRunner = ObserveQueryTaskRunner(
             modelType: Post.self,
@@ -110,6 +111,9 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
                         XCTAssertEqual(querySnapshot.items.count, 0)
                         XCTAssertEqual(querySnapshot.isSynced, true)
                         await secondSnapshot.fulfill()
+                    } else if querySnapshots.count == 3 {
+                        XCTFail("Should not receive third snapshot for a Model change")
+                        await thirdSnapshot.fulfill()
                     }
                 }
             } catch {
@@ -117,19 +121,24 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
             }
         }
         
-        await waitForExpectations([firstSnapshot], timeout: 1)
+        await waitForExpectations([firstSnapshot], timeout: 5)
         
         dispatchedModelSyncedEvent.set(true)
-        let readyEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced)
-        Amplify.Hub.dispatch(to: .dataStore, payload: readyEventPayload)
+        let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced, data: ModelSyncedEvent(modelName: Post.modelName, isFullSync: true, isDeltaSync: false, added: 0, updated: 0, deleted: 0))
+        Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
         await waitForExpectations([secondSnapshot], timeout: 10)
+        
+        let newModelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced, data: ModelSyncedEvent(modelName: Blog6.modelName, isFullSync: true, isDeltaSync: false, added: 0, updated: 0, deleted: 0))
+        Amplify.Hub.dispatch(to: .dataStore, payload: newModelSyncedEventPayload)
+        await waitForExpectations([thirdSnapshot], timeout: 20)
     }
     
-    /// StorageEngine returns two Posts in a single snapshot
+    /// ObserveQuery will send the first snapshot with 2 items when storage engine
+    /// is mocked to return 2 items.
     ///
-    /// - Given:  The operation has started and the first query has completed.
+    /// - Given: ObserveQuery starts
     /// - When:
-    ///    -  Two posts are queried through StorageEngine
+    ///    -  ObserveQuery performs the initial query, two posts are queried through StorageEngine
     /// - Then:
     ///    - The items queried will return two posts in the first snapshot
     ///
