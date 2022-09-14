@@ -13,7 +13,7 @@ import Combine
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
 @testable import AWSDataStorePlugin
-import AmplifyAsyncTesting
+import AmplifyAsyncTestingInternal
 
 class OutgoingMutationQueueNetworkTests: SyncEngineTestBase {
 

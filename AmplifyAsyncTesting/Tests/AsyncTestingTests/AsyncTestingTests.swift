@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import AmplifyAsyncTesting
+@testable import AmplifyAsyncTestingInternal
 
 actor AsyncRunner {
     typealias VoidNeverContinuation = CheckedContinuation<Void, Never>

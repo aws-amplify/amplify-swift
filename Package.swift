@@ -36,7 +36,8 @@ let amplifyTargets: [Target] = [
         dependencies: [
             "Amplify",
             "CwlPreconditionTesting",
-            "AWSPluginsCore"
+            "AWSPluginsCore",
+            "AmplifyAsyncTestingInternal"
         ],
         path: "AmplifyTestCommon",
         exclude: [
@@ -252,6 +253,20 @@ let geoTargets: [Target] = [
     )
 ]
 
+let asyncTestingTargets: [Target] = [
+    .target(
+        name: "AmplifyAsyncTestingInternal",
+        dependencies: [],
+        path: "AmplifyAsyncTesting/Sources/AsyncTesting",
+        linkerSettings: [.linkedFramework("XCTest")]
+    ),
+    .testTarget(
+        name: "AmplifyAsyncTestingTests",
+        dependencies: ["AmplifyAsyncTestingInternal"],
+        path: "AmplifyAsyncTesting/Tests/AsyncTestingTests"
+    )
+]
+
 let analyticsTargets: [Target] = [
     .target(
         name: "AWSPinpointAnalyticsPlugin",
@@ -274,7 +289,7 @@ let analyticsTargets: [Target] = [
 ]
 
 let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTargets + storageTargets +
-                        geoTargets + analyticsTargets
+                        geoTargets + analyticsTargets + asyncTestingTargets
 
 let package = Package(
     name: "Amplify",

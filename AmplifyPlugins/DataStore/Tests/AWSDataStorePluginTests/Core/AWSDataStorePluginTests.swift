@@ -7,7 +7,7 @@
 
 import XCTest
 import AmplifyTestCommon
-import AmplifyAsyncTesting
+import AmplifyAsyncTestingInternal
 
 @testable import Amplify
 @testable import AWSDataStorePlugin
