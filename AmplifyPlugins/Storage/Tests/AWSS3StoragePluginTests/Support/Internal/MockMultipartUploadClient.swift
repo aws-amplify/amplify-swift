@@ -10,8 +10,6 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
         case mockFailure
     }
 
-    var partNumbersToFail: [Int] = []
-
     var uploadPartCount = 0
     var completeMultipartUploadCount = 0
     var abortMultipartUploadCount = 0
@@ -24,6 +22,7 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
     var didCreate: ((StorageMultipartUploadSession) -> Void)?
     var didStartPartUpload: ((StorageMultipartUploadSession, PartNumber) -> Void)?
     var didTransferBytesForPartUpload: ((StorageMultipartUploadSession, PartNumber, Int) -> Void)?
+    var shouldFailPartUpload: ((StorageMultipartUploadSession, PartNumber) -> Bool)?
     var didCompletePartUpload: ((StorageMultipartUploadSession, PartNumber, String, TaskIdentifier) -> Void)?
     var didFailPartUpload: ((StorageMultipartUploadSession, PartNumber, Error) -> Void)?
     var didCompleteMultipartUpload: ((StorageMultipartUploadSession, UploadID) -> Void)?
@@ -63,23 +62,21 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
 
         subTask.sessionTask = MockStorageSessionTask(taskIdentifier: taskIdentifier, state: .suspended)
 
-        if !partNumbersToFail.contains(partNumber) {
-            session.handle(uploadPartEvent: .started(partNumber: partNumber, taskIdentifier: taskIdentifier))
-            didStartPartUpload?(session, partNumber)
-            let bytesTransferred = part.bytes / 2
-            session.handle(uploadPartEvent: .progressUpdated(partNumber: partNumber, bytesTransferred: bytesTransferred, taskIdentifier: taskIdentifier))
-            didTransferBytesForPartUpload?(session, partNumber, bytesTransferred)
-            let eTag = UUID().uuidString
-            session.handle(uploadPartEvent: .completed(partNumber: partNumber, eTag: eTag, taskIdentifier: taskIdentifier))
-            didCompletePartUpload?(session, partNumber, eTag, taskIdentifier)
-        } else {
-            print("Failing part: \(partNumber)")
-            session.handle(uploadPartEvent: .started(partNumber: partNumber, taskIdentifier: taskIdentifier))
-            didStartPartUpload?(session, partNumber)
-            let error = Failure.mockFailure
-            session.handle(uploadPartEvent: .failed(partNumber: partNumber, error: error))
-            didFailPartUpload?(session, partNumber, error)
+        session.handle(uploadPartEvent: .started(partNumber: partNumber, taskIdentifier: taskIdentifier))
+        didStartPartUpload?(session, partNumber)
+
+        let bytesTransferred = part.bytes / 2
+        session.handle(uploadPartEvent: .progressUpdated(partNumber: partNumber, bytesTransferred: bytesTransferred, taskIdentifier: taskIdentifier))
+        didTransferBytesForPartUpload?(session, partNumber, bytesTransferred)
+
+        if shouldFailPartUpload?(session, partNumber) ?? false {
+            session.handle(uploadPartEvent: .failed(partNumber: partNumber, error: Failure.mockFailure))
+            return
         }
+
+        let eTag = UUID().uuidString
+        session.handle(uploadPartEvent: .completed(partNumber: partNumber, eTag: eTag, taskIdentifier: taskIdentifier))
+        didCompletePartUpload?(session, partNumber, eTag, taskIdentifier)
     }
 
     func completeMultipartUpload(uploadId: UploadID) throws {

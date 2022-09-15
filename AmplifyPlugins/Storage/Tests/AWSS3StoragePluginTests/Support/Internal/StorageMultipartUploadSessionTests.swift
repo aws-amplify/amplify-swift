@@ -181,6 +181,106 @@ class StorageMultipartUploadSessionTests: XCTestCase {
         closureSession = nil
     }
 
+    func testPartUploadFailedOnce() throws {
+        let initiatedExp = expectation(description: "Initiated")
+        let completedExp = expectation(description: "Completed")
+
+        var failCount = 0
+        let bucket = "my-bucket"
+        let key = "key.txt"
+        let onEvent: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler = { event in
+            switch event {
+            case .initiated:
+                print("Initiated")
+                initiatedExp.fulfill()
+            case .inProcess(let progress):
+                print("Progress: \(String(format: "%.2f", progress.fractionCompleted))")
+            case .failed(let error):
+                print("Error: \(error)")
+                XCTFail("Must not fail")
+            case .completed:
+                print("Completed")
+                completedExp.fulfill()
+            }
+        }
+
+        let client = MockMultipartUploadClient() // creates an UploadFile for the mock process
+        client.shouldFailPartUpload = { _, partNumber in
+            if failCount == 0, partNumber == 5 {
+                print("failing on \(partNumber)")
+                failCount += 1
+                return true
+            } else {
+                return false
+            }
+        }
+
+        let session = StorageMultipartUploadSession(client: client, bucket: bucket, key: key, onEvent: onEvent)
+
+        session.startUpload()
+
+        wait(for: [initiatedExp, completedExp], timeout: 300.0)
+
+        XCTAssertEqual(session.inProgressCount, 0)
+        XCTAssertTrue(session.isCompleted)
+
+        XCTAssertEqual(client.completeMultipartUploadCount, 1)
+        XCTAssertEqual(client.abortMultipartUploadCount, 0)
+        XCTAssertEqual(client.errorCount, 0)
+        XCTAssertGreaterThan(client.uploadPartCount, 0)
+    }
+
+
+
+    func testPartUploadFailedOverLimit() throws {
+        let initiatedExp = expectation(description: "Initiated")
+        let completedExp = expectation(description: "Completed")
+
+        var failCount = 0
+        let bucket = "my-bucket"
+        let key = "key.txt"
+        let onEvent: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler = { event in
+            switch event {
+            case .initiated:
+                print("Initiated")
+                initiatedExp.fulfill()
+            case .inProcess(let progress):
+                print("Progress: \(String(format: "%.2f", progress.fractionCompleted))")
+            case .failed(let error):
+                print("Error: \(error)")
+                XCTFail("Must not fail")
+            case .completed:
+                print("Completed")
+                completedExp.fulfill()
+            }
+        }
+
+        let client = MockMultipartUploadClient() // creates an UploadFile for the mock process
+        client.shouldFailPartUpload = { _, partNumber in
+            if partNumber == 5 {
+                print("failing on \(partNumber)")
+                failCount += 1
+                return true
+            } else {
+                return false
+            }
+        }
+
+        let session = StorageMultipartUploadSession(client: client, bucket: bucket, key: key, onEvent: onEvent)
+
+        session.startUpload()
+
+        wait(for: [initiatedExp, completedExp], timeout: 300.0)
+
+        XCTAssertEqual(session.inProgressCount, 0)
+        XCTAssertTrue(session.isAborted)
+
+        XCTAssertEqual(client.completeMultipartUploadCount, 0)
+        XCTAssertEqual(client.abortMultipartUploadCount, 1)
+        XCTAssertEqual(client.errorCount, 0)
+        XCTAssertGreaterThan(client.uploadPartCount, 0)
+    }
+
     // MARK: - Private -
 
     private func createFile() throws -> URL {

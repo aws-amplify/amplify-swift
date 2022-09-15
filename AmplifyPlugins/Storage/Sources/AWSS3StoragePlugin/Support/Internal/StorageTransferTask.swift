@@ -139,6 +139,10 @@ class StorageTransferTask {
         status == .error
     }
 
+    func incrementRetryCount() {
+        retryCount += 1
+    }
+
     func notify(progress: Progress) {
         transferType.notify(progress: progress)
         status = .inProgress

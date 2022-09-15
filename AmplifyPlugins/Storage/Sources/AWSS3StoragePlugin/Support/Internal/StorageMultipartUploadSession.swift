@@ -29,6 +29,7 @@ class StorageMultipartUploadSession {
         case invalidStateTransition
         case partsNotDone
         case partsFailed
+        case partsUploadRetryLimitExceeded(underlyingError: Error?)
     }
 
     private let behavior: StorageMultipartUploadBehavior
@@ -230,7 +231,6 @@ class StorageMultipartUploadSession {
                 break
             }
         } catch {
-            // TODO: determine if a retry should be attempted
             fail(error: error)
         }
     }
@@ -276,16 +276,32 @@ class StorageMultipartUploadSession {
                 } else {
                     fatalError("Invalid state")
                 }
-            } else if partsFailed {
-                if let uploadId = multipartUpload.uploadId {
-                    try client.abortMultipartUpload(uploadId: uploadId, error: uploadPartEvent.error)
+            } else if case .failed(let partNumber, let error) = uploadPartEvent {
+                retryPartUpload(partNumber: partNumber, error: error)
+            }
+        } catch {
+            fail(error: error)
+        }
+    }
+
+    private func retryPartUpload(partNumber: PartNumber, error: Error) {
+        do {
+            if transferTask.isBelowRetryLimit {
+                // increment retry count and move upload part back to pending
+                transferTask.incrementRetryCount()
+                if case .parts(let uploadId, let uploadFile, let partSize, var parts) = multipartUpload {
+                    let part = try parts.find(partNumber: partNumber)
+                    let index = partNumber - 1
+                    parts[index] = .pending(bytes: part.bytes)
+                    multipartUpload = .parts(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: parts)
                 } else {
                     fatalError("Invalid state")
                 }
+            } else {
+                throw Failure.partsUploadRetryLimitExceeded(underlyingError: error)
             }
         } catch {
-            // TODO: determine if a retry should be attempted
-            fail(error: error)
+            handle(multipartUploadEvent: .aborting(error: error))
         }
     }
 

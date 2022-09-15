@@ -270,19 +270,17 @@ enum StorageMultipartUpload {
             parts[index] = .inProgress(bytes: part.bytes, bytesTransferred: 0, taskIdentifier: taskIdentifier)
         case .progressUpdated(_, let bytesTransferred, _):
             guard case .inProgress(let bytes, _, let taskIdentifier) = part else {
-                throw Failure.invalidStateTransition(reason: "")
+                throw Failure.invalidStateTransition(reason: "Part cannot update progress in current state: \(self)")
             }
             parts[index] = .inProgress(bytes: bytes, bytesTransferred: bytesTransferred, taskIdentifier: taskIdentifier)
         case .completed(_, let eTag, _):
             guard case .inProgress(let bytes, _, _) = part else {
-                throw Failure.invalidStateTransition(reason: "")
+                throw Failure.invalidStateTransition(reason: "Part cannot be completed in current state: \(self)")
             }
             parts[index] = StorageUploadPart.completed(bytes: bytes, eTag: eTag)
-        case .failed(_, let error):
-            let part = parts[index]
-            parts[index] = .failed(bytes: part.bytes, bytesTransferred: parts.bytesTransferred, error: error)
-            // TODO: Retry logic should be applied when it reaches this state and parts can be used to resume
-            try transition(multipartUploadEvent: .failed(uploadId: uploadId, error: error))
+        case .failed:
+            // handle part failure in the session with Transfer Task which has retry count and limit
+            break
         }
         self = .parts(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: parts)
     }
