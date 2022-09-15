@@ -114,7 +114,7 @@ class AWSAuthSignUpAPITests: BasePluginTest {
         }
 
 
-        XCTAssertEqual(deliveryDetails?.destination, .email("random@random.com"))
+        XCTAssertNotNil(deliveryDetails?.destination)
         XCTAssertEqual(deliveryDetails?.attributeKey, .unknown("some attribute"))
         XCTAssertEqual(additionalInfo, ["usersub": ""])
 
@@ -153,8 +153,8 @@ class AWSAuthSignUpAPITests: BasePluginTest {
         }
 
 
-        XCTAssertEqual(deliveryDetails?.destination, nil)
-        XCTAssertEqual(deliveryDetails?.attributeKey, nil)
+        XCTAssertNil(deliveryDetails?.destination)
+        XCTAssertNil(deliveryDetails?.attributeKey)
         XCTAssertEqual(additionalInfo, ["usersub": ""])
 
 
