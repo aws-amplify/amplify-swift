@@ -283,7 +283,6 @@ workflows:
           sdk: iphonesimulator
           destination: << pipeline.parameters.ios-destination >>
           requires:
-            - install_gems
             - build_amplify_ios_spm
       - unit_test:
           name: ios_unit_test_awspluginscore
@@ -291,7 +290,6 @@ workflows:
           sdk: iphonesimulator
           destination: << pipeline.parameters.ios-destination >>
           requires:
-            - install_gems
             - build_amplify_ios_spm
       - unit_test:
           name: ios_unit_test_analytics
@@ -299,7 +297,6 @@ workflows:
           sdk: iphonesimulator
           destination: << pipeline.parameters.ios-destination >>
           requires:
-            - install_gems
             - build_amplify_ios_spm
       - unit_test:
           name: ios_unit_test_api
@@ -307,7 +304,6 @@ workflows:
           sdk: iphonesimulator
           destination: << pipeline.parameters.ios-destination >>
           requires:
-            - install_gems
             - build_amplify_ios_spm
       - unit_test:
           name: ios_unit_test_auth
@@ -315,7 +311,6 @@ workflows:
           sdk: iphonesimulator
           destination: << pipeline.parameters.ios-destination >>
           requires:
-            - install_gems
             - build_amplify_ios_spm
       - unit_test:
           name: ios_unit_test_datastore
@@ -323,7 +318,6 @@ workflows:
           sdk: iphonesimulator
           destination: << pipeline.parameters.ios-destination >>
           requires:
-            - install_gems
             - build_amplify_ios_spm
       - unit_test:
           name: ios_unit_test_geo
@@ -331,7 +325,6 @@ workflows:
           sdk: iphonesimulator
           destination: << pipeline.parameters.ios-destination >>
           requires:
-            - install_gems
             - build_amplify_ios_spm
       - unit_test:
           name: ios_unit_test_storage
@@ -339,7 +332,6 @@ workflows:
           sdk: iphonesimulator
           destination: << pipeline.parameters.ios-destination >>
           requires:
-            - install_gems
             - build_amplify_ios_spm
       - unit_test:
           name: macos_unit_test_amplify
@@ -347,7 +339,6 @@ workflows:
           sdk: macosx
           destination: << pipeline.parameters.macos-destination >>
           requires:
-            - install_gems
             - build_amplify_macos_spm
       - unit_test:
           name: macos_unit_test_awspluginscore
@@ -355,7 +346,6 @@ workflows:
           sdk: macosx
           destination: << pipeline.parameters.macos-destination >>
           requires:
-            - install_gems
             - build_amplify_macos_spm
       - unit_test:
           name: macos_unit_test_analytics
@@ -363,7 +353,6 @@ workflows:
           sdk: macosx
           destination: << pipeline.parameters.macos-destination >>
           requires:
-            - install_gems
             - build_amplify_macos_spm
       - unit_test:
           name: macos_unit_test_api
@@ -371,7 +360,6 @@ workflows:
           sdk: macosx
           destination: << pipeline.parameters.macos-destination >>
           requires:
-            - install_gems
             - build_amplify_macos_spm
       - unit_test:
           name: macos_unit_test_auth
@@ -379,7 +367,6 @@ workflows:
           sdk: macosx
           destination: << pipeline.parameters.macos-destination >>
           requires:
-            - install_gems
             - build_amplify_macos_spm
       - unit_test:
           name: macos_unit_test_datastore
@@ -387,7 +374,6 @@ workflows:
           sdk: macosx
           destination: << pipeline.parameters.macos-destination >>
           requires:
-            - install_gems
             - build_amplify_macos_spm
       - unit_test:
           name: macos_unit_test_geo
@@ -395,7 +381,6 @@ workflows:
           sdk: macosx
           destination: << pipeline.parameters.macos-destination >>
           requires:
-            - install_gems
             - build_amplify_macos_spm
       - unit_test:
           name: macos_unit_test_storage
@@ -403,7 +388,6 @@ workflows:
           sdk: macosx
           destination: << pipeline.parameters.macos-destination >>
           requires:
-            - install_gems
             - build_amplify_macos_spm
       
 
