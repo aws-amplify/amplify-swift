@@ -166,14 +166,22 @@ jobs:
           paths:
             - vendor/bundle
 
-  build_amplify_spm:
+  build_amplify_ios_spm:
     <<: *defaults
     steps:
       - *restore_repo
       - make_artifacts_directory
       - run:
-          name: Build amplify for SPM
-          command: xcodebuild build-for-testing -scheme Amplify-Package -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 14,OS=latest" | tee "artifacts/build-Ampify-for-SPM.log" | xcpretty
+          name: Build amplify for ios SPM
+          command: xcodebuild build -scheme Amplify-Package -sdk iphonesimulator -destination "<< pipeline.parameters.ios-destination >>" | tee "artifacts/build-Ampify-for-ios-SPM.log" | xcpretty
+  build_amplify_macos_spm:
+    <<: *defaults
+    steps:
+      - *restore_repo
+      - make_artifacts_directory
+      - run:
+          name: Build amplify for macos SPM
+          command: xcodebuild build -scheme Amplify-Package -sdk macosx -destination "<< pipeline.parameters.macos-destination >>" | tee "artifacts/build-Ampify-for-macos-SPM.log" | xcpretty
 
   unit_test:
     <<: *defaults
@@ -193,7 +201,7 @@ jobs:
       - make_artifacts_directory
       - run:
           name: Build << parameters.scheme >>
-          command: xcodebuild build-for-testing -scheme <<parameters.scheme>> -sdk << parameters.sdk >> -destination "<<parameters.destination>>" | tee "artifacts/build-<< parameters.scheme >>.log" | xcpretty
+          command: xcodebuild build-for-testing -scheme <<parameters.scheme>> -sdk << parameters.sdk >> -destination "<<parameters.destination>>" | tee "artifacts/build-<< parameters.scheme >>-<< parameters.scheme >>.log" | xcpretty
       - run:
           name: Test << parameters.scheme >>
           command: xcodebuild test -scheme <<parameters.scheme>> -sdk << parameters.sdk >> -destination "<<parameters.destination>>" | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]} | xcpretty --simple --color --report junit
@@ -263,9 +271,12 @@ workflows:
       - install_gems:
           requires:
             - checkout_code
-      - build_amplify_spm:
+      - build_amplify_ios_spm:
           requires:
-            - install_gems            
+            - install_gems
+      - build_amplify_macos_spm:
+          requires:
+            - install_gems         
       - unit_test:
           name: ios_unit_test_amplify
           scheme: Amplify
@@ -273,6 +284,7 @@ workflows:
           destination: << pipeline.parameters.ios-destination >>
           requires:
             - install_gems
+            - build_amplify_ios_spm
       - unit_test:
           name: ios_unit_test_awspluginscore
           scheme: AWSPluginsCore
@@ -280,6 +292,7 @@ workflows:
           destination: << pipeline.parameters.ios-destination >>
           requires:
             - install_gems
+            - build_amplify_ios_spm
       - unit_test:
           name: ios_unit_test_analytics
           scheme: AWSPinpointAnalyticsPlugin
@@ -287,6 +300,7 @@ workflows:
           destination: << pipeline.parameters.ios-destination >>
           requires:
             - install_gems
+            - build_amplify_ios_spm
       - unit_test:
           name: ios_unit_test_api
           scheme: AWSAPIPlugin
@@ -294,6 +308,7 @@ workflows:
           destination: << pipeline.parameters.ios-destination >>
           requires:
             - install_gems
+            - build_amplify_ios_spm
       - unit_test:
           name: ios_unit_test_auth
           scheme: AWSCognitoAuthPlugin
@@ -301,6 +316,7 @@ workflows:
           destination: << pipeline.parameters.ios-destination >>
           requires:
             - install_gems
+            - build_amplify_ios_spm
       - unit_test:
           name: ios_unit_test_datastore
           scheme: AWSDataStorePlugin
@@ -308,6 +324,7 @@ workflows:
           destination: << pipeline.parameters.ios-destination >>
           requires:
             - install_gems
+            - build_amplify_ios_spm
       - unit_test:
           name: ios_unit_test_geo
           scheme: AWSLocationGeoPlugin
@@ -315,6 +332,7 @@ workflows:
           destination: << pipeline.parameters.ios-destination >>
           requires:
             - install_gems
+            - build_amplify_ios_spm
       - unit_test:
           name: ios_unit_test_storage
           scheme: AWSS3StoragePlugin
@@ -322,6 +340,7 @@ workflows:
           destination: << pipeline.parameters.ios-destination >>
           requires:
             - install_gems
+            - build_amplify_ios_spm
       - unit_test:
           name: macos_unit_test_amplify
           scheme: Amplify
@@ -329,6 +348,7 @@ workflows:
           destination: << pipeline.parameters.macos-destination >>
           requires:
             - install_gems
+            - build_amplify_macos_spm
       - unit_test:
           name: macos_unit_test_awspluginscore
           scheme: AWSPluginsCore
@@ -336,6 +356,7 @@ workflows:
           destination: << pipeline.parameters.macos-destination >>
           requires:
             - install_gems
+            - build_amplify_macos_spm
       - unit_test:
           name: macos_unit_test_analytics
           scheme: AWSPinpointAnalyticsPlugin
@@ -343,6 +364,7 @@ workflows:
           destination: << pipeline.parameters.macos-destination >>
           requires:
             - install_gems
+            - build_amplify_macos_spm
       - unit_test:
           name: macos_unit_test_api
           scheme: AWSAPIPlugin
@@ -350,6 +372,7 @@ workflows:
           destination: << pipeline.parameters.macos-destination >>
           requires:
             - install_gems
+            - build_amplify_macos_spm
       - unit_test:
           name: macos_unit_test_auth
           scheme: AWSCognitoAuthPlugin
@@ -357,6 +380,7 @@ workflows:
           destination: << pipeline.parameters.macos-destination >>
           requires:
             - install_gems
+            - build_amplify_macos_spm
       - unit_test:
           name: macos_unit_test_datastore
           scheme: AWSDataStorePlugin
@@ -364,6 +388,7 @@ workflows:
           destination: << pipeline.parameters.macos-destination >>
           requires:
             - install_gems
+            - build_amplify_macos_spm
       - unit_test:
           name: macos_unit_test_geo
           scheme: AWSLocationGeoPlugin
@@ -371,6 +396,7 @@ workflows:
           destination: << pipeline.parameters.macos-destination >>
           requires:
             - install_gems
+            - build_amplify_macos_spm
       - unit_test:
           name: macos_unit_test_storage
           scheme: AWSS3StoragePlugin
@@ -378,6 +404,7 @@ workflows:
           destination: << pipeline.parameters.macos-destination >>
           requires:
             - install_gems
+            - build_amplify_macos_spm
       
 
   # Scheduled smoke test workflow
