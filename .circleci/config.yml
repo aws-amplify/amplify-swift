@@ -90,7 +90,7 @@ orbs:
 
 defaults: &defaults
   macos:
-    xcode: '13.0.0'
+    xcode: '13.3.0'
   working_directory: ~/amplify-ios
   environment:
     BUNDLE_PATH: vendor/bundle
