@@ -1,5 +1,3 @@
-require_relative './amplify_pods.rb'
-
 opt_out_usage
 default_platform(:ios)
 
@@ -12,7 +10,7 @@ platform :ios do
     sh('git', 'fetch', '--tags')
     sh('git', 'fetch')
   end
-  desc "Create a pre-release version by pushing a tag to GitHub, and pushing pods to CocoaPods"
+  desc "Create a pre-release version by pushing a tag to GitHub"
   lane :unstable do 
     next_version = calculate_next_canary_version
 
@@ -24,11 +22,9 @@ platform :ios do
     # Create tag and push to origin
     add_tag(version: next_version)
 
-    # Push to CocoaPods
-    release_pods()
   end
 
-  desc "Create a release version by building and committing a changelog, pushing a tag to GitHub, and pushing pods to CocoaPods"  
+  desc "Create a release version by building and committing a changelog, pushing a tag to GitHub"  
   lane :release do
     next_version, commits = calculate_next_release_version
 
@@ -45,33 +41,13 @@ platform :ios do
     # Create tag and push to origin
     add_tag(version: next_version)
 
-    # Push pods
-    release_pods()
-
     post_release(version: next_version, changelog: changelog)
   end
 
   desc "Increment versions"
   private_lane :increment_versions do |options|
     version = options[:version].to_s
-
-    AmplifyPods.pods.each do |pod|
-      spec, constants, plist_paths = pod.values
-
-      UI.message("Incrementing version for #{spec}")
-
-      constants.each do |constant|
-        set_key_value(file: spec, key: constant, value: version)
-      end
-
-      plist_paths.each do |plist_path|
-        set_info_plist_value(path: plist_path, key: PLIST_KEY, value: version)
-      end
-
-      # One-offs
-      set_key_value(file: "AmplifyPlugins/Core/AWSPluginsCore/ServiceConfiguration/AmplifyAWSServiceConfiguration.swift", key: "version", value: version)
-      set_key_value(file: "build-support/dependencies.rb", key: "AMPLIFY_VERSION", value: version)
-    end
+    set_key_value(file: "AmplifyPlugins/Core/AWSPluginsCore/ServiceConfiguration/AmplifyAWSServiceConfiguration.swift", key: "version", value: version)
   end
   
   desc "Commit and push"
@@ -97,32 +73,6 @@ platform :ios do
     push_git_tags(tag: next_tag)
   end
 
-  desc "Release pods"
-  private_lane :release_pods do
-    AmplifyPods.pods.each do |pod|
-      if pod[:no_push]
-        UI.message "Skipping pushing pod #{pod[:spec]}"
-        next
-      end
-
-      UI.message "Pushing pod #{pod[:spec]}"
-
-      with_retry do
-        begin
-          pod_push(path: pod[:spec], allow_warnings: true, synchronous: true)
-        rescue StandardError => e
-          raise e unless e.message =~ /Unable to accept duplicate entry/i
-          UI.important("Version already exists. Ignoring")
-        end
-      end
-
-      unless pod == AmplifyPods.pods.last
-        # This shouldn't be necessary... but it is
-        sh('bundle', 'exec', 'pod', 'repo', 'update')
-      end
-    end
-  end
-
   desc "Post-release"
   private_lane :post_release do |options|
     version = options[:version].to_s
@@ -131,14 +81,6 @@ platform :ios do
     plugin_root = File.expand_path("#{ENV['CIRCLE_WORKING_DIRECTORY']}/AmplifyPlugins")
   
     sh('bundle', 'exec', 'swift', 'package', 'update')
-
-    sh('bundle', 'exec', 'pod', 'repo', 'update')
-
-    # increment plugin lock files by calling pod update on each
-    AmplifyPods.plugins.each do |plugin|
-      path = "#{plugin_root}/#{plugin}"
-      Dir.chdir(path){ sh('pod', 'update') }
-    end
 
     write_changelog(changelog: changelog, path: 'CHANGELOG.md')
 

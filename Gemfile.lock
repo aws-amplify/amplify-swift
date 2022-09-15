@@ -304,8 +304,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  cocoapods (= 1.11.3)
-  cocoapods-downloader (= 1.6.3)
   fastlane (= 2.205.1)
   fastlane-plugin-release_actions!
   jazzy (= 0.14.2)
