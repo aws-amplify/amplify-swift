@@ -1,5 +1,7 @@
 # Changelog
 ## Unreleased
+## 1.28.1 (2022-09-15)
+
 ## 1.28.0 (2022-08-08)
 
 ### Features
