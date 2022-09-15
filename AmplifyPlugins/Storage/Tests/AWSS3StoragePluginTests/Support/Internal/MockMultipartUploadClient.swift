@@ -4,6 +4,7 @@ import XCTest
 @testable import Amplify
 
 class MockMultipartUploadClient: StorageMultipartUploadClient {
+
     enum Failure: Error {
         case sessionNotIntegrated
         case mockFailure
@@ -20,6 +21,14 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
     let uploadFile: UploadFile
     var session: StorageMultipartUploadSession?
 
+    var didCreate: ((StorageMultipartUploadSession) -> Void)?
+    var didStartPartUpload: ((StorageMultipartUploadSession, PartNumber) -> Void)?
+    var didTransferBytesForPartUpload: ((StorageMultipartUploadSession, PartNumber, Int) -> Void)?
+    var didCompletePartUpload: ((StorageMultipartUploadSession, PartNumber, String, TaskIdentifier) -> Void)?
+    var didFailPartUpload: ((StorageMultipartUploadSession, PartNumber, Error) -> Void)?
+    var didCompleteMultipartUpload: ((StorageMultipartUploadSession, UploadID) -> Void)?
+    var didAbortMultipartUpload: ((StorageMultipartUploadSession, UploadID) -> Void)?
+
     init(uploadFile: UploadFile? = nil) {
         self.uploadFile = uploadFile ?? UploadFile(fileURL: URL(fileURLWithPath: "/tmp/upload.txt"), temporaryFileCreated: true, size: UInt64(Bytes.megabytes(42).bytes))
     }
@@ -33,6 +42,7 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
 
         let uploadId = UUID().uuidString
         session.handle(multipartUploadEvent: .created(uploadFile: uploadFile, uploadId: uploadId))
+        didCreate?(session)
     }
 
     func uploadPart(partNumber: PartNumber, multipartUpload: StorageMultipartUpload, subTask: StorageTransferTask) throws {
@@ -55,13 +65,20 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
 
         if !partNumbersToFail.contains(partNumber) {
             session.handle(uploadPartEvent: .started(partNumber: partNumber, taskIdentifier: taskIdentifier))
-            session.handle(uploadPartEvent: .progressUpdated(partNumber: partNumber, bytesTransferred: part.bytes / 2, taskIdentifier: taskIdentifier))
+            didStartPartUpload?(session, partNumber)
+            let bytesTransferred = part.bytes / 2
+            session.handle(uploadPartEvent: .progressUpdated(partNumber: partNumber, bytesTransferred: bytesTransferred, taskIdentifier: taskIdentifier))
+            didTransferBytesForPartUpload?(session, partNumber, bytesTransferred)
             let eTag = UUID().uuidString
             session.handle(uploadPartEvent: .completed(partNumber: partNumber, eTag: eTag, taskIdentifier: taskIdentifier))
+            didCompletePartUpload?(session, partNumber, eTag, taskIdentifier)
         } else {
             print("Failing part: \(partNumber)")
             session.handle(uploadPartEvent: .started(partNumber: partNumber, taskIdentifier: taskIdentifier))
-            session.handle(uploadPartEvent: .failed(partNumber: partNumber, error: Failure.mockFailure))
+            didStartPartUpload?(session, partNumber)
+            let error = Failure.mockFailure
+            session.handle(uploadPartEvent: .failed(partNumber: partNumber, error: error))
+            didFailPartUpload?(session, partNumber, error)
         }
     }
 
@@ -71,6 +88,7 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
         completeMultipartUploadCount += 1
 
         session.handle(multipartUploadEvent: .completed(uploadId: uploadId))
+        didCompleteMultipartUpload?(session, uploadId)
     }
 
     func abortMultipartUpload(uploadId: UploadID, error: Error?) throws {
@@ -78,7 +96,12 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
 
         abortMultipartUploadCount += 1
 
-        session.handle(multipartUploadEvent: .aborted(uploadId: uploadId))
+        session.handle(multipartUploadEvent: .aborted(uploadId: uploadId, error: error))
+        didAbortMultipartUpload?(session, uploadId)
+    }
+
+    func cancelUploadTasks(taskIdentifiers: [TaskIdentifier]) {
+        print("Canceling upload tasks")
     }
 
 }

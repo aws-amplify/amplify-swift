@@ -169,11 +169,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
         serviceProxy.awsS3.abortMultipartUpload(.init(bucket: bucket, key: key, uploadId: uploadId)) { result in
             switch result {
             case .success:
-                if let error = error {
-                    session.fail(error: error)
-                } else {
-                    session.handle(multipartUploadEvent: .aborted(uploadId: uploadId))
-                }
+                session.handle(multipartUploadEvent: .aborted(uploadId: uploadId, error: error))
             case .failure(let error):
                 session.fail(error: error)
             }

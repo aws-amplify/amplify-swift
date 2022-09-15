@@ -21,8 +21,8 @@ enum StorageMultipartUpload {
     case parts(uploadId: UploadID, uploadFile: UploadFile, partSize: StorageUploadPartSize, parts: StorageUploadParts)
     case completing(taskIdentifier: TaskIdentifier)
     case completed(uploadId: UploadID)
-    case aborting(taskIdentifier: TaskIdentifier)
-    case aborted(uploadId: UploadID)
+    case aborting(uploadId: UploadID, error: Error?)
+    case aborted(uploadId: UploadID, error: Error?)
     case failed(uploadId: UploadID?, parts: StorageUploadParts?, error: Error)
 
     init(uploadId: UploadID, uploadFile: UploadFile, partSize: StorageUploadPartSize, parts: StorageUploadParts) {
@@ -44,7 +44,8 @@ enum StorageMultipartUpload {
         case .created(let uploadId, _),
                 .parts(let uploadId, _, _, _),
                 .completed(let uploadId),
-                .aborted(let uploadId):
+                .aborting(let uploadId, _),
+                .aborted(let uploadId, _):
             return uploadId
         default:
             return nil
@@ -65,8 +66,7 @@ enum StorageMultipartUpload {
     var taskIdentifier: TaskIdentifier? {
         let result: Int?
         switch self {
-        case .completing(let taskIdentifier),
-                .aborting(let taskIdentifier):
+        case .completing(let taskIdentifier):
             result = taskIdentifier
         default:
             result = nil
@@ -96,6 +96,14 @@ enum StorageMultipartUpload {
 
     var isCompleted: Bool {
         if case .completed = self {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    var isPaused: Bool {
+        if case .paused = self {
             return true
         } else {
             return false
@@ -214,12 +222,16 @@ enum StorageMultipartUpload {
             default:
                 throw Failure.invalidStateTransition(reason: "Cannot complete from current state: \(self)")
             }
-        case .aborting(let taskIdentifier):
-            self = .aborting(taskIdentifier: taskIdentifier)
-        case .aborted(let uploadId):
+        case .aborting(let error):
+            if let uploadId = uploadId {
+                self = .aborting(uploadId: uploadId, error: error)
+            } else {
+                throw Failure.invalidStateTransition(reason: "Cannot abort from current state: \(self)")
+            }
+        case .aborted(let uploadId, let error):
             switch self {
-            case .created, .parts:
-                self = .aborted(uploadId: uploadId)
+            case .created, .parts, .aborting:
+                self = .aborted(uploadId: uploadId, error: error)
             default:
                 throw Failure.invalidStateTransition(reason: "Cannot abort from current state: \(self)")
             }

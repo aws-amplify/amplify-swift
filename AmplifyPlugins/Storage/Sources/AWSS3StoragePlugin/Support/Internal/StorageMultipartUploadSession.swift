@@ -37,7 +37,7 @@ class StorageMultipartUploadSession {
 
     private let queue = DispatchQueue(label: "com.amazon.aws.amplify.multipartupload-session", target: .global())
     private let id = UUID()
-    fileprivate var multipartUpload: StorageMultipartUpload
+    private var multipartUpload: StorageMultipartUpload
     private let client: StorageMultipartUploadClient
     private let onEvent: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler
 
@@ -169,6 +169,14 @@ class StorageMultipartUploadSession {
         }
     }
 
+    var isPaused: Bool {
+        multipartUpload.isPaused
+    }
+
+    var isAborted: Bool {
+        multipartUpload.isAborted
+    }
+
     var isCompleted: Bool {
         multipartUpload.isCompleted
     }
@@ -212,6 +220,8 @@ class StorageMultipartUploadSession {
                 transferTask.notify(progress: parts.progress)
             case .completed:
                 onEvent(.completed(()))
+            case .aborting:
+                try abort()
             case .aborted:
                 onEvent(.completed(()))
             case .failed(_, _, let error):
@@ -279,7 +289,15 @@ class StorageMultipartUploadSession {
         }
     }
 
-    func cancelInProgressParts(parts: StorageUploadParts) {
+    private func abort() throws {
+        if let uploadId = multipartUpload.uploadId {
+            try client.abortMultipartUpload(uploadId: uploadId)
+        } else {
+            fatalError("Invalid state")
+        }
+    }
+
+    private func cancelInProgressParts(parts: StorageUploadParts) {
         let taskIdentifiers = parts.inProgress.compactMap {
             if case .inProgress(_, _, let taskIdentifier) = $0 {
                 return taskIdentifier
@@ -291,7 +309,7 @@ class StorageMultipartUploadSession {
         client.cancelUploadTasks(taskIdentifiers: taskIdentifiers)
     }
 
-    func uploadParts(uploadFile: UploadFile, uploadId: UploadID, partSize: StorageUploadPartSize, parts: StorageUploadParts) {
+    private func uploadParts(uploadFile: UploadFile, uploadId: UploadID, partSize: StorageUploadPartSize, parts: StorageUploadParts) {
         logger.debug(#function)
 
         guard inProgressCount < concurrentLimit else {
@@ -314,7 +332,8 @@ class StorageMultipartUploadSession {
                 }
 
                 // then start upload
-                try numbers.forEach { partNumber in
+                for partNumber in numbers {
+                    guard !isAborted else { return }
                     // the next call does async work
                     let subTask = createSubTask(partNumber: partNumber)
                     try client.uploadPart(partNumber: partNumber, multipartUpload: multipartUpload, subTask: subTask)
