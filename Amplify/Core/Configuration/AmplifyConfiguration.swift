@@ -95,10 +95,6 @@ extension Amplify {
     ///
     /// - Parameter configuration: The AmplifyConfiguration for specified Categories
     public static func configure(_ configuration: AmplifyConfiguration? = nil) throws {
-        guard !isRunningForSwiftUIPreviews else {
-            log.info("Running for SwiftUI previews, skipping configuration.")
-            return
-        }
         log.info("Configuring")
         log.debug("Configuration: \(String(describing: configuration))")
         guard !isConfigured else {
@@ -111,13 +107,24 @@ extension Amplify {
             throw error
         }
 
-        let configuration = try Amplify.resolve(configuration: configuration)
+        let resolvedConfiguration: AmplifyConfiguration
+        do {
+            resolvedConfiguration = try Amplify.resolve(configuration: configuration)
+        } catch {
+            log.info("Failed to find Amplify configuration.")
+            if isRunningForSwiftUIPreviews {
+                log.info("Running for SwiftUI previews with no configuration file present, skipping configuration.")
+                return
+            } else {
+                throw error
+            }
+        }
 
         // Always configure Logging, Hub and Auth first, so they are available to other categories.
         // Auth is a special case for other plugins which depend on using Auth when being configured themselves.
         let manuallyConfiguredCategories = [CategoryType.logging, .hub, .auth]
         for categoryType in manuallyConfiguredCategories {
-            try configure(categoryType.category, using: configuration)
+            try configure(categoryType.category, using: resolvedConfiguration)
         }
 
         // Looping through all categories to ensure we don't accidentally forget a category at some point in the future
@@ -125,17 +132,17 @@ extension Amplify {
         for categoryType in remainingCategories {
             switch categoryType {
             case .analytics:
-                try configure(Analytics, using: configuration)
+                try configure(Analytics, using: resolvedConfiguration)
             case .api:
-                try configure(API, using: configuration)
+                try configure(API, using: resolvedConfiguration)
             case .dataStore:
-                try configure(DataStore, using: configuration)
+                try configure(DataStore, using: resolvedConfiguration)
             case .geo:
-                try configure(Geo, using: configuration)
+                try configure(Geo, using: resolvedConfiguration)
             case .predictions:
-                try configure(Predictions, using: configuration)
+                try configure(Predictions, using: resolvedConfiguration)
             case .storage:
-                try configure(Storage, using: configuration)
+                try configure(Storage, using: resolvedConfiguration)
             case .hub, .logging, .auth:
                 // Already configured
                 break
