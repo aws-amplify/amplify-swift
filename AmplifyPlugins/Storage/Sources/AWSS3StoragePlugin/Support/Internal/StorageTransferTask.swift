@@ -31,8 +31,27 @@ class StorageTransferTask {
 
     // support for multipart uploads
     internal var uploadId: UploadID?
-    internal var multipartUpload: StorageMultipartUpload?
+    internal var multipartUpload: StorageMultipartUpload? {
+        didSet {
+            if let multipartUpload = multipartUpload {
+                if multipartUpload.inProgress {
+                    status = .inProgress
+                } else if multipartUpload.isPaused {
+                    status = .paused
+                } else if multipartUpload.isCompleted {
+                    status = .completed
+                } else if multipartUpload.isAborted {
+                    status = .completed
+                } else if multipartUpload.isFailed {
+                    status = .error
+                }
+            }
+        }
+    }
     internal var uploadPart: StorageUploadPart?
+
+    // proxy for StorageMultipartUploadSession
+    internal var proxyStorageTask: StorageTask?
 
     internal var partNumber: PartNumber? {
         switch transferType {
@@ -115,8 +134,7 @@ class StorageTransferTask {
             self.uploadId = persistableTransferTask.uploadId
         }
 
-        // this task is persisted by the db directly when
-        // this instance is created
+        // this task is persisted by the db directly when instance is created
     }
 
     // Task Identifier is unique to each task in this instance of URLSession
@@ -156,6 +174,7 @@ class StorageTransferTask {
         transferType.fail(error: error)
         status = .error
         storageTransferDatabase.removeTransferRequest(task: self)
+        proxyStorageTask = nil
     }
 
     func cancel() {
@@ -163,17 +182,22 @@ class StorageTransferTask {
             logger.warn("Unable to cancel when already completed")
             return
         }
-        guard let sessionTask = sessionTask else {
-            logger.warn("Session Task must be defined")
+
+        if let sessionTask = sessionTask {
+            logger.debug("Cancelling storage transfer task: \(taskIdentifier ?? 0)")
+            sessionTask.cancel()
+            status = .cancelled
+        } else if let proxyStorageTask = proxyStorageTask {
+            logger.debug("Cancelling multipart upload: \(uploadId ?? "-")")
+            proxyStorageTask.cancel()
+            status = .cancelled
+        } else {
+            logger.warn("Session Task or Proxy Storage Task must be defined")
             return
         }
 
-        logger.debug("Cancelling storage transfer task: \(taskIdentifier ?? 0)")
-
-        status = .cancelled
-        sessionTask.cancel()
-
         storageTransferDatabase.removeTransferRequest(task: self)
+        proxyStorageTask = nil
     }
 
     func resume() {
@@ -181,15 +205,19 @@ class StorageTransferTask {
             logger.debug("Unable to resume unless paused")
             return
         }
-        guard let sessionTask = sessionTask else {
-            logger.warn("Session Task must be defined")
+
+        if let sessionTask = sessionTask {
+            logger.debug("Resuming storage transfer task: \(taskIdentifier ?? 0)")
+            sessionTask.resume()
+            status = .inProgress
+        } else if let proxyStorageTask = proxyStorageTask {
+            logger.debug("Resuming multipart upload: \(uploadId ?? "-")")
+            proxyStorageTask.resume()
+            status = .inProgress
+        } else {
+            logger.warn("Session Task or Proxy Storage Task must be defined")
             return
         }
-
-        logger.debug("Resuming storage transfer task: \(taskIdentifier ?? 0)")
-
-        sessionTask.resume()
-        status = .inProgress
 
         let reference = StorageTaskReference(self)
         switch transferType {
@@ -211,15 +239,19 @@ class StorageTransferTask {
             logger.debug("Unable to suspend unless in progress")
             return
         }
-        guard let sessionTask = sessionTask else {
-            logger.warn("Session Task must be defined")
+        
+        if let sessionTask = sessionTask {
+            logger.debug("Suspending storage transfer task: \(taskIdentifier ?? 0)")
+            sessionTask.suspend()
+            status = .paused
+        } else if let proxyStorageTask = proxyStorageTask {
+            logger.debug("Resuming multipart upload: \(uploadId ?? "-")")
+            proxyStorageTask.pause()
+            status = .paused
+        } else {
+            logger.warn("Session Task or Proxy Storage Task must be defined")
             return
         }
-
-        logger.debug("Suspending storage transfer task: \(taskIdentifier ?? 0)")
-
-        sessionTask.suspend()
-        status = .paused
 
         storageTransferDatabase.updateTransferRequest(task: self)
     }
@@ -238,6 +270,7 @@ class StorageTransferTask {
 
         status = .completed
         storageTransferDatabase.removeTransferRequest(task: self)
+        proxyStorageTask = nil
     }
 }
 
@@ -247,7 +280,6 @@ extension StorageTransferTask: StorageTask {
     }
 }
 
-// TODO: support with unit test
 extension URLRequest {
     mutating func setHTTPRequestHeaders(transferTask: StorageTransferTask) {
         guard let requestHeaders = transferTask.requestHeaders else {

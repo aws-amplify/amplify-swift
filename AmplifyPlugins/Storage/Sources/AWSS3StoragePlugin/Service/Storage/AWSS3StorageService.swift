@@ -156,7 +156,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
                 guard let session = StorageMultipartUploadSession(client: client, transferTask: pair.transferTask, multipartUpload: multipartUpload, logger: logger) else {
                     return
                 }
-                session.resume()
+                session.restart()
                 register(multipartUploadSession: session)
             }
         }

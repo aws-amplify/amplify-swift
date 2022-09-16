@@ -79,6 +79,9 @@ class StorageMultipartUploadSession {
         multipartUpload = .none
         self.client.integrate(session: self)
 
+        // attach session to transferTask
+        transferTask.proxyStorageTask = self
+
         logger.info("Concurrency Limit is \(self.concurrentLimit) [based on active processors]")
     }
 
@@ -102,7 +105,7 @@ class StorageMultipartUploadSession {
         self.logger = logger
     }
 
-    func resume() {
+    func restart() {
         guard let uploadFile = multipartUpload.uploadFile,
               let uploadId = multipartUpload.uploadId,
               let partSize = multipartUpload.partSize,
@@ -323,6 +326,20 @@ class StorageMultipartUploadSession {
         }
 
         client.cancelUploadTasks(taskIdentifiers: taskIdentifiers)
+
+        queue.sync {
+            if case .paused(let uploadId, let uploadFile, let partSize, let parts) = multipartUpload {
+                let pausedParts = parts.map { part in
+                    if case .inProgress = part {
+                        return StorageUploadPart.pending(bytes: part.bytes)
+                    } else {
+                        return part
+                    }
+                }
+                multipartUpload = .paused(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: pausedParts)
+            }
+        }
+
     }
 
     private func uploadParts(uploadFile: UploadFile, uploadId: UploadID, partSize: StorageUploadPartSize, parts: StorageUploadParts) {
@@ -356,7 +373,6 @@ class StorageMultipartUploadSession {
                 }
             }
         } catch {
-            // TODO: determine if a retry should be attempted
             fail(error: error)
         }
     }
@@ -367,4 +383,20 @@ extension StorageMultipartUploadSession: Equatable {
     static func == (lhs: StorageMultipartUploadSession, rhs: StorageMultipartUploadSession) -> Bool {
         lhs.id == rhs.id
     }
+}
+
+extension StorageMultipartUploadSession: StorageTask {
+
+    func pause() {
+        handle(multipartUploadEvent: .pausing)
+    }
+
+    func resume() {
+        handle(multipartUploadEvent: .resuming)
+    }
+
+    func cancel() {
+        handle(multipartUploadEvent: .aborting(error: nil))
+    }
+
 }

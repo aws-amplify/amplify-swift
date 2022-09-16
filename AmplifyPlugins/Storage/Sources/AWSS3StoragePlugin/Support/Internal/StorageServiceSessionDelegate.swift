@@ -84,6 +84,11 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if let error = error {
+            let nsError = error as NSError
+            if nsError.domain == NSURLErrorDomain, nsError.code == NSURLErrorCancelled {
+                logURLSessionActivity("Session task cancelled: \(task.taskIdentifier)")
+                return
+            }
             logURLSessionActivity("Session task did complete with error: \(task.taskIdentifier) [\(error)]", warning: true)
         } else {
             logURLSessionActivity("Session task did complete: \(task.taskIdentifier)")

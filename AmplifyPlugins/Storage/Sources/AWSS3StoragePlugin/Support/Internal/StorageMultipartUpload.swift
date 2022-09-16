@@ -77,6 +77,8 @@ enum StorageMultipartUpload {
     var parts: StorageUploadParts? {
         if case .parts(_, _, _, let parts) = self {
             return parts
+        } else if case .paused(_, _, _, let parts) = self {
+            return parts
         } else {
             return nil
         }
@@ -90,6 +92,15 @@ enum StorageMultipartUpload {
         if case .parts = self {
             return true
         } else {
+            return false
+        }
+    }
+
+    var inProgress: Bool {
+        switch self {
+        case .creating, .created, .parts, .completing:
+            return true
+        default:
             return false
         }
     }
