@@ -124,13 +124,17 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
         await waitForExpectations([firstSnapshot], timeout: 5)
         
         dispatchedModelSyncedEvent.set(true)
-        let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced, data: ModelSyncedEvent(modelName: Post.modelName, isFullSync: true, isDeltaSync: false, added: 0, updated: 0, deleted: 0))
+        let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
+                                                 data: ModelSyncedEvent(modelName: Post.modelName, isFullSync: true,
+                                                                        isDeltaSync: false, added: 0, updated: 0,
+                                                                        deleted: 0))
         Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
         await waitForExpectations([secondSnapshot], timeout: 10)
         
-        let newModelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced, data: ModelSyncedEvent(modelName: Blog6.modelName, isFullSync: true, isDeltaSync: false, added: 0, updated: 0, deleted: 0))
-        Amplify.Hub.dispatch(to: .dataStore, payload: newModelSyncedEventPayload)
-        await waitForExpectations([thirdSnapshot], timeout: 20)
+        let modelSyncedEventNotMatch = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
+                                                  data: ModelSyncedEvent.Builder().modelName)
+        Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventNotMatch)
+        await waitForExpectations([thirdSnapshot], timeout: 10)
     }
     
     /// ObserveQuery will send the first snapshot with 2 items when storage engine

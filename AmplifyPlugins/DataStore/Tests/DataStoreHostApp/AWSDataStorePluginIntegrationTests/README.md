@@ -22,7 +22,7 @@ The following steps demonstrate how to set up DataStore with a conflict resoluti
 ? Choose a schema template: `Blank Schema`
 ? Do you want to edit the schema now? Y
 ```
-When asked to provide the schema, create the `schema.graphql` file
+When asked to provide the schema, create the `schema.graphql` file 
 ```
 enum PostStatus {
     PRIVATE
@@ -236,9 +236,11 @@ type CustomerOrder @model
 }
 
 ```
-3. If you are using the latest CLI, update cli.json to include `"useExperimentalPipelinedTransformer": false` to ensure that it will use the v1 transformer.
+3. If you are using the latest CLI, update cli.json to include `"useExperimentalPipelinedTransformer": false` and "transformerversion": 1, to ensure that it will use the v1 transformer.
 
 4. `amplify push`
+
+? Do you want to generate code for your newly created GraphQL API ? `No`
 
 5. Copy `amplifyconfiguration.json` to a new file named `AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`
 

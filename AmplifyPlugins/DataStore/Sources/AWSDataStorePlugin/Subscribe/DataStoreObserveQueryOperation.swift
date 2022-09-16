@@ -239,7 +239,9 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
     
     func subscribeToModelSyncedEvent() {
         modelSyncedEventSink = Amplify.Hub.publisher(for: .dataStore).sink { event in
-            if event.eventName == HubPayload.EventName.DataStore.modelSynced, case let modelSyncedEvent = event.data as? ModelSyncedEvent, modelSyncedEvent?.modelName == self.modelSchema.name {
+            if event.eventName == HubPayload.EventName.DataStore.modelSynced,
+               let modelSyncedEvent = event.data as? ModelSyncedEvent,
+               modelSyncedEvent.modelName == self.modelSchema.name {
                 self.sendSnapshot()
             }
         }
