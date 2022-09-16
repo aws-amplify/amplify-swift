@@ -7,6 +7,10 @@
 
 import Foundation
 
+private func getDocumentPath() -> URL? {
+    return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+}
+
 public class Attachment<Metadata: EmbeddableAttachment>: Codable, AttachmentBehavior {
     
     enum AttachedState {
@@ -30,6 +34,58 @@ public class Attachment<Metadata: EmbeddableAttachment>: Codable, AttachmentBeha
     public func attachFile(_ file: URL) {
         self.state = .file(file)
     }
+    
+    // MARK: - save
+    
+    public func save() async throws -> URL {
+        guard let metadata = metadata else {
+            throw StorageError.validation("Metadata", "Missing metadata", "", nil)
+        }
+        switch state {
+        case .data(let data):
+            let path = metadata.accessLevel ?? "public"
+            
+            let url = getFilePath(path: path, key: metadata.key)
+            do {
+                print("Saving to \(url)")
+                try data.write(to: url)
+            } catch {
+                print(error)
+            }
+            return url
+        case .file(let file):
+            return file
+        case .empty:
+            throw StorageError.validation("Metadata", "No data or file to upload", "", nil)
+        }
+    }
+    public func save(_ completion: @escaping DataStoreCallback<URL>) {
+        Task {
+            do {
+                let url = try await save()
+                completion(Result<URL, DataStoreError>.success(url))
+            } catch {
+                completion(.failure(DataStoreError.internalOperation("Attachment Save failed", "", error)))
+            }
+        }
+    }
+    
+    func getFilePath(path: String, key: String) -> URL {
+        guard let documentsPath = getDocumentPath() else {
+            return Fatal.preconditionFailure("Could not create the database. The `.documentDirectory` is invalid")
+        }
+        let folderURL = documentsPath.appendingPathComponent("\(path)/")
+        if !FileManager.default.fileExists(atPath: folderURL.path) {
+            do {
+                try FileManager.default.createDirectory(atPath: folderURL.path, withIntermediateDirectories: true, attributes: nil)
+            }
+            catch {}
+        }
+        let fileURL = folderURL.appendingPathComponent("\(key)")
+        return fileURL
+    }
+    
+    // MARK: - Upload
     
     public func upload() async throws -> String {
         guard let metadata = metadata else {
@@ -61,7 +117,7 @@ public class Attachment<Metadata: EmbeddableAttachment>: Codable, AttachmentBeha
                                                         options: request.options)
     }
     
-    func uploadFile(_ file: URL) async throws -> StorageUploadFileTask {
+    public func uploadFile(_ file: URL) async throws -> StorageUploadFileTask {
         guard let metadata = metadata else {
             throw StorageError.validation("Metadata", "Missing metadata", "", nil)
         }
@@ -89,6 +145,15 @@ public class Attachment<Metadata: EmbeddableAttachment>: Codable, AttachmentBeha
         return try await Amplify.Storage.downloadFile(key: metadata.key, local: local, options: options)
     }
     
+    public func removeFile() throws {
+        guard let metadata = metadata else {
+            throw StorageError.validation("Metadata", "Missing metadata", "", nil)
+        }
+        let path = metadata.accessLevel ?? "public"
+        let url = getFilePath(path: path, key: metadata.key)
+        try FileManager.default.removeItem(at: url)
+    }
+    
     public func remove() async throws {
         guard let metadata = metadata else {
             throw StorageError.validation("Metadata", "Missing metadata", "", nil)
@@ -101,6 +166,13 @@ public class Attachment<Metadata: EmbeddableAttachment>: Codable, AttachmentBeha
         guard let metadata = metadata else {
             throw StorageError.validation("Metadata", "Missing metadata", "", nil)
         }
+        let path = metadata.accessLevel ?? "public"
+        let url = getFilePath(path: path, key: metadata.key)
+        if FileManager.default.fileExists(atPath: url.path) {
+            print("FILE EXISTS, returning immedaitely")
+            return url
+        }
+        
         let options = StorageGetURLRequest.Options(accessLevel: .guest)
         return try await Amplify.Storage.getURL(key: metadata.key, options: options)
     }

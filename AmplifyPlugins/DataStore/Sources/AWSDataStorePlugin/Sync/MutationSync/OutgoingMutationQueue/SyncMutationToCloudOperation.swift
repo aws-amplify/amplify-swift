@@ -94,9 +94,38 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
             return
         }
 
-        if let apiRequest = createAPIRequest(mutationType: mutationType, authType: authType) {
-            sendMutation(describedBy: apiRequest)
+        // Storage related
+        do {
+            let model = try mutationEvent.decodeModel()
+            guard let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName) else {
+                return Fatal.preconditionFailure("""
+                Could not retrieve schema for the model \(mutationEvent.modelName), verify that datastore is
+                initialized.
+                """)
+            }
+            if let attachment = model.getAttachments(modelSchema).first, mutationType == .create {
+                Task {
+                    do {
+                        let url = try await attachment.getURL()
+                        _ = try await attachment.uploadFile(url)
+                
+                        if let apiRequest = createAPIRequest(mutationType: mutationType, authType: authType) {
+                            sendMutation(describedBy: apiRequest)
+                        }
+                    }
+                }
+                
+            } else {
+                if let apiRequest = createAPIRequest(mutationType: mutationType, authType: authType) {
+                    sendMutation(describedBy: apiRequest)
+                }
+            }
+        } catch {
+            print("nothing to do ")
         }
+//        if let apiRequest = createAPIRequest(mutationType: mutationType, authType: authType) {
+//            sendMutation(describedBy: apiRequest)
+//        }
     }
 
     /// Creates a GraphQLRequest based on given `mutationType`
@@ -210,6 +239,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
             let advice = getRetryAdviceIfRetryable(error: error)
 
             guard advice.shouldRetry else {
+                // Should probably remove uploaded storage objects here.
                 finish(result: .failure(error))
                 return
             }
@@ -224,6 +254,49 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
             return
         }
 
+        // we should continue to validate this result, and if successful update or delete
+        // we should either attachment.upload(file) or attachment.removeRemote().
+        do {
+            let model = try mutationEvent.decodeModel()
+            guard let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName) else {
+                return Fatal.preconditionFailure("""
+                Could not retrieve schema for the model \(mutationEvent.modelName), verify that datastore is
+                initialized.
+                """)
+            }
+            guard let mutationType = GraphQLMutationType(rawValue: mutationEvent.mutationType) else {
+                let dataStoreError = DataStoreError.decodingError(
+                    "Invalid mutation type",
+                    """
+                    The incoming mutation event had a mutation type of \(mutationEvent.mutationType), which does not
+                    match any known GraphQL mutation type. Ensure you only send valid mutation types:
+                    \(GraphQLMutationType.allCases)
+                    """
+                )
+                log.error(error: dataStoreError)
+                let apiError = APIError.unknown("Invalid mutation type", "", dataStoreError)
+                finish(result: .failure(apiError))
+                return
+            }
+            if let attachment = model.getAttachments(modelSchema).first {
+                
+                Task {
+                    do {
+                        if mutationType == .create {
+                            let url = try await attachment.getURL()
+                            _ = try await attachment.uploadFile(url)
+                        } else if mutationType == .delete {
+                            try await attachment.remove()
+                        }
+                        
+                    }
+                }
+                
+            } 
+        } catch {
+            print("nothing to do ")
+        }
+        
         finish(result: cloudResult)
     }
 

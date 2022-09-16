@@ -130,7 +130,7 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
          save(model, modelSchema: model.schema, condition: condition, completion: completion)
      }
 
-    func save<M: Model>(_ model: M, modelSchema: ModelSchema, condition: QueryPredicate? = nil, completion: DataStoreCallback<M>) {
+    func save<M: Model>(_ model: M, modelSchema: ModelSchema, condition: QueryPredicate? = nil, completion: @escaping DataStoreCallback<M>) {
         guard let connection = connection else {
             completion(.failure(DataStoreError.nilSQLiteConnection()))
             return
@@ -149,11 +149,62 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                     return
                 }
 
-                let statement = InsertStatement(model: model, modelSchema: modelSchema)
-                _ = try connection.prepare(statement.stringValue).run(statement.variables)
-            }
-
-            if modelExists {
+                if let attachment = model.getAttachments(modelSchema).first {
+                    attachment.save { result in
+                        switch result {
+                        case .success:
+                            let statement = InsertStatement(model: model, modelSchema: modelSchema)
+                            do {
+                                _ = try connection.prepare(statement.stringValue).run(statement.variables)
+                            } catch {
+                                Task {
+                                    do {
+                                        try attachment.removeFile()
+                                    } catch {
+                                        print("Failed to remove fail")
+                                    }
+                                }
+                                completion(.failure(causedBy: error))
+                            }
+                            // load the recent saved instance and pass it back to the callback
+                            self.query(modelType, modelSchema: modelSchema, predicate: model.identifier(schema: modelSchema).predicate) {
+                                switch $0 {
+                                case .success(let result):
+                                    if let saved = result.first {
+                                        completion(.success(saved))
+                                    } else {
+                                        completion(.failure(.nonUniqueResult(model: modelType.modelName,
+                                                                             count: result.count)))
+                                    }
+                                case .failure(let error):
+                                    completion(.failure(error))
+                                }
+                            }
+                        case .failure(let error):
+                            completion(.failure(causedBy: error))
+                            return
+                        }
+                    }
+                    
+                } else {
+                    let statement = InsertStatement(model: model, modelSchema: modelSchema)
+                    _ = try connection.prepare(statement.stringValue).run(statement.variables)
+                    // load the recent saved instance and pass it back to the callback
+                    self.query(modelType, modelSchema: modelSchema, predicate: model.identifier(schema: modelSchema).predicate) {
+                        switch $0 {
+                        case .success(let result):
+                            if let saved = result.first {
+                                completion(.success(saved))
+                            } else {
+                                completion(.failure(.nonUniqueResult(model: modelType.modelName,
+                                                                     count: result.count)))
+                            }
+                        case .failure(let error):
+                            completion(.failure(error))
+                        }
+                    }
+                }
+            } else { // if modelExists {
                 if let condition = condition, !condition.isAll {
                     let modelExistsWithCondition = try exists(modelSchema,
                                                               withIdentifier: modelIdentifier,
@@ -172,22 +223,63 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
                                                 modelSchema: modelSchema,
                                                 condition: condition)
                 _ = try connection.prepare(statement.stringValue).run(statement.variables)
+                
+                if let attachment = model.getAttachments(modelSchema).first {
+                    attachment.save { result in
+                        switch result {
+                        case .success:
+                            print("Update then save successful")
+                            // load the recent saved instance and pass it back to the callback
+                            self.query(modelType, modelSchema: modelSchema, predicate: model.identifier(schema: modelSchema).predicate) {
+                                switch $0 {
+                                case .success(let result):
+                                    if let saved = result.first {
+                                        completion(.success(saved))
+                                    } else {
+                                        completion(.failure(.nonUniqueResult(model: modelType.modelName,
+                                                                             count: result.count)))
+                                    }
+                                case .failure(let error):
+                                    completion(.failure(error))
+                                }
+                            }
+                        case .failure(let error):
+                            completion(.failure(causedBy: error))
+                            return
+                        }
+                    }
+                } else {
+                    // load the recent saved instance and pass it back to the callback
+                    self.query(modelType, modelSchema: modelSchema, predicate: model.identifier(schema: modelSchema).predicate) {
+                        switch $0 {
+                        case .success(let result):
+                            if let saved = result.first {
+                                completion(.success(saved))
+                            } else {
+                                completion(.failure(.nonUniqueResult(model: modelType.modelName,
+                                                                     count: result.count)))
+                            }
+                        case .failure(let error):
+                            completion(.failure(error))
+                        }
+                    }
+                }
             }
 
             // load the recent saved instance and pass it back to the callback
-            query(modelType, modelSchema: modelSchema, predicate: model.identifier(schema: modelSchema).predicate) {
-                switch $0 {
-                case .success(let result):
-                    if let saved = result.first {
-                        completion(.success(saved))
-                    } else {
-                        completion(.failure(.nonUniqueResult(model: modelType.modelName,
-                                                             count: result.count)))
-                    }
-                case .failure(let error):
-                    completion(.failure(error))
-                }
-            }
+//            query(modelType, modelSchema: modelSchema, predicate: model.identifier(schema: modelSchema).predicate) {
+//                switch $0 {
+//                case .success(let result):
+//                    if let saved = result.first {
+//                        completion(.success(saved))
+//                    } else {
+//                        completion(.failure(.nonUniqueResult(model: modelType.modelName,
+//                                                             count: result.count)))
+//                    }
+//                case .failure(let error):
+//                    completion(.failure(error))
+//                }
+//            }
         } catch {
             completion(.failure(causedBy: error))
         }

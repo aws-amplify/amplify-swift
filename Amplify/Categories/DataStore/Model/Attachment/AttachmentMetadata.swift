@@ -9,14 +9,13 @@ import Foundation
 
 public protocol EmbeddableAttachment: Embeddable, AttachmentMetadata { }
 
-
 public protocol AttachmentMetadata {
     var key: String { get }
     var accessLevel: String? { get }
     var identityId: String? { get }
 }
 
-protocol AttachmentBehavior {
+public protocol AttachmentBehavior {
     associatedtype Metadata: EmbeddableAttachment
 
     // Retrieve the underlying embedded attachment metadata
@@ -45,7 +44,11 @@ protocol AttachmentBehavior {
     
     // Remove the object from Storage
     func remove() async throws
+    func removeFile() throws
     
     // Get a URL for the object stored in Storage
     func getURL() async throws -> URL
+    
+    func save() async throws -> URL
+    func save(_ completion: @escaping DataStoreCallback<URL>)
 }

@@ -333,3 +333,54 @@ extension ModelField {
         }
     }
 }
+
+extension Model {
+    public func getAttachments(_ modelSchema: ModelSchema) -> [any AttachmentBehavior] {
+        
+        let fields = fieldsForMutation(modelSchema)
+        
+        var attachments = [any AttachmentBehavior]()
+        
+        for (modelField, modelFieldValue) in fields {
+            let name = modelField.name
+
+            guard let value = modelFieldValue else {
+                continue
+            }
+            
+            switch modelField.type {
+            case .embedded, .embeddedCollection:
+                print("FOUND the embedded")
+                if let attachment = value as? (any AttachmentBehavior) {
+                    print("FOUND attachment! \(attachment.metadata?.key)")
+                    attachments.append(attachment)
+                }
+            default:
+                continue
+            }
+        }
+        return attachments
+    }
+    
+    /// Returns an array of model fields sorted by predefined rules (see ModelSchema+sortedFields)
+    /// and filtered according the following criteria:
+    /// - fields are not read-only
+    /// - fields exist on the model
+    private func fieldsForMutation(_ modelSchema: ModelSchema) -> [(ModelField, Any?)] {
+        modelSchema.sortedFields.compactMap { field in
+            guard !field.isReadOnly,
+                  let fieldValue = getFieldValue(for: field.name,
+                                                 modelSchema: modelSchema) else {
+                return nil
+            }
+            return (field, fieldValue)
+        }
+    }
+    private func getFieldValue(for modelFieldName: String, modelSchema: ModelSchema) -> Any?? {
+        if let jsonModel = self as? JSONValueHolder {
+            return jsonModel.jsonValue(for: modelFieldName, modelSchema: modelSchema) ?? nil
+        } else {
+            return self[modelFieldName] ?? nil
+        }
+    }
+}
