@@ -182,7 +182,6 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
             }
             self.log.verbose("Start ObserveQuery")
             self.subscribeToItemChanges()
-            self.subscribeToModelSyncedEvent()
             self.initialQuery()
         }
     }
@@ -202,6 +201,7 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
                 case .success(let queriedModels):
                     currentItems.set(sortedModels: queriedModels)
                     sendSnapshot()
+                    subscribeToModelSyncedEvent()
                 case .failure(let error):
                     fail(error)
                     return

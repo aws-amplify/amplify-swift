@@ -38,7 +38,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///    - The first snapshot should have `isSynced` false
     ///    - Eventually one of the query snapshots will be returned with `isSynced` true
     ///
-    func testObserQuerySequence() async throws {
+    func testObserveQueryAsyncInitialSync() async throws {
         await setUp(withModels: TestModelRegistration())
         try startAmplify()
         try await clearDataStore()
@@ -254,15 +254,13 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         var snapshotCount = 0
         let predicate = Post.keys.title.beginsWith("xyz") && Post.keys.content == testId
         let snapshotExpectation1 = asyncExpectation(description: "received snapshot 1")
-        var onSnapshot: ((DataStoreQuerySnapshot<Post>) -> Void) = { querySnapshot in
-            snapshotCount += 1
-            let items = querySnapshot.items
-            if snapshotCount == 1 {
-                self.log.info("1. \(querySnapshot)")
-                XCTAssertEqual(items.count, 0)
-                Task { await snapshotExpectation1.fulfill() }
-            }
-        }
+        let snapshotExpectation23 = asyncExpectation(description: "received snapshot 2 / 3",
+                                                     expectedFulfillmentCount: 2)
+        let snapshotExpectation4 = asyncExpectation(description: "received snapshot 4")
+        let snapshotExpectation56 = asyncExpectation(description: "received snapshot 5 / 6",
+                                                     expectedFulfillmentCount: 2)
+        let snapshotExpectation7 = asyncExpectation(description: "received snapshot 7")
+        let snapshotExpectation8 = asyncExpectation(description: "received snapshot 8")
         Amplify.Publisher.create(Amplify.DataStore.observeQuery(for: Post.self, where: predicate)).sink { completed in
             switch completed {
             case .finished:
@@ -270,94 +268,70 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
             case .failure(let error):
                 XCTFail("\(error)")
             }
-        } receiveValue: { onSnapshot($0) }.store(in: &cancellables)
-        await waitForExpectations([snapshotExpectation1], timeout: 10)
-        
-        // (1) Add model that matches predicate - should be received on the snapshot
-        let postMatchPredicate = Post(title: "xyz 1", content: testId, createdAt: .now())
-        let snapshotExpectation23 = asyncExpectation(description: "received snapshot 2 / 3",
-                                                     expectedFulfillmentCount: 2)
-        onSnapshot = { querySnapshot in
+        } receiveValue: { querySnapshot in
             snapshotCount += 1
             let items = querySnapshot.items
-            if snapshotCount == 2 || snapshotCount == 3 {
+            if snapshotCount == 1 {
+                self.log.info("1. \(querySnapshot)")
+                XCTAssertEqual(items.count, 0)
+                Task { await snapshotExpectation1.fulfill() }
+            } else if snapshotCount == 2 || snapshotCount == 3 {
                 // See (1), subsequent snapshot should have item with "xyz 1".
                 self.log.info("2/3. \(querySnapshot)")
                 XCTAssertEqual(items.count, 1)
                 XCTAssertEqual(items[0].title, "xyz 1")
                 Task { await snapshotExpectation23.fulfill() }
-            }
-        }
-        try await savePostAndWaitForSync(postMatchPredicate)
-        await waitForExpectations([snapshotExpectation23], timeout: 10)
-
-        // (2) Add model that does not match predicate - should not be received on the snapshot
-        // (3) Update model that used to match the predicate to no longer match - should be removed from snapshot
-        let postDoesNotMatch = Post(title: "doesNotMatch", content: testId, createdAt: .now())
-        let snapshotExpectation4 = asyncExpectation(description: "received snapshot 4")
-        onSnapshot = { querySnapshot in
-            snapshotCount += 1
-            let items = querySnapshot.items
-            if snapshotCount == 4 {
+            } else if snapshotCount == 4 {
                 // See (2), should not be added to the snapshot.
                 // See (3), should be removed from the snapshot. So the resulting snapshot is empty.
                 self.log.info("4. \(querySnapshot)")
                 XCTAssertEqual(items.count, 0)
                 Task { await snapshotExpectation4.fulfill() }
-            }
-        }
-        let postDoesNotMatchExpectation = asyncExpectation(description: "received postDoesNotMatchExpectation")
-        try await savePostAndWaitForSync(postDoesNotMatch, postSyncedExpctation: postDoesNotMatchExpectation)
-        var postMatchPredicateNoLongerMatches = postMatchPredicate
-        postMatchPredicateNoLongerMatches.title = "doesNotMatch"
-        try await savePostAndWaitForSync(postMatchPredicateNoLongerMatches)
-
-
-        // (4) Update model that does not match predicate to match - should be added to snapshot
-        let snapshotExpectation56 = asyncExpectation(description: "received snapshot 5 / 6",
-                                                     expectedFulfillmentCount: 2)
-        var postDoesNotMatchNowMatches = postDoesNotMatch
-        postDoesNotMatchNowMatches.title = "xyz 2"
-        onSnapshot = { querySnapshot in
-            snapshotCount += 1
-            let items = querySnapshot.items
-            if snapshotCount == 5 || snapshotCount == 6 {
+            } else if snapshotCount == 5 || snapshotCount == 6 {
                 // See (4). the post that now matches the snapshot should be added
                 self.log.info("5/6. \(querySnapshot)")
                 XCTAssertEqual(items.count, 1)
                 XCTAssertEqual(items[0].title, "xyz 2")
                 Task { await snapshotExpectation56.fulfill() }
-            }
-        }
-        try await savePostAndWaitForSync(postDoesNotMatchNowMatches)
-
-        // (5) Delete the model that matches the predicate - should be removed
-        let snapshotExpectation7 = asyncExpectation(description: "received snapshot 7")
-        onSnapshot = { querySnapshot in
-            snapshotCount += 1
-            let items = querySnapshot.items
-            if snapshotCount == 7 {
+            } else if snapshotCount == 7 {
                 // See (5). the post that matched the predicate was deleted
                 self.log.info("7. \(querySnapshot)")
                 XCTAssertEqual(items.count, 0)
                 Task { await snapshotExpectation7.fulfill() }
-            }
-        }
-        try await deletePostAndWaitForSync(postDoesNotMatchNowMatches)
-
-        // (6) Delete the model that does not match predicate - should have no snapshot emitted
-        let snapshotExpectation8 = asyncExpectation(description: "received snapshot 8")
-        onSnapshot = { querySnapshot in
-            snapshotCount += 1
-            let items = querySnapshot.items
-            if snapshotCount == 8 {
+            } else if snapshotCount == 8 {
                 // See (6). Snapshot that is emitted due to "xyz 3" should not contain the deleted model
                 self.log.info("8. \(querySnapshot)")
                 XCTAssertEqual(items.count, 1)
                 XCTAssertEqual(items[0].title, "xyz 3")
                 Task { await snapshotExpectation8.fulfill() }
             }
-        }
+        }.store(in: &cancellables)
+        await waitForExpectations([snapshotExpectation1], timeout: 10)
+        
+        // (1) Add model that matches predicate - should be received on the snapshot
+        let postMatchPredicate = Post(title: "xyz 1", content: testId, createdAt: .now())
+        
+        try await savePostAndWaitForSync(postMatchPredicate)
+        await waitForExpectations([snapshotExpectation23], timeout: 10)
+
+        // (2) Add model that does not match predicate - should not be received on the snapshot
+        // (3) Update model that used to match the predicate to no longer match - should be removed from snapshot
+        let postDoesNotMatch = Post(title: "doesNotMatch", content: testId, createdAt: .now())        
+        let postDoesNotMatchExpectation = asyncExpectation(description: "received postDoesNotMatchExpectation")
+        try await savePostAndWaitForSync(postDoesNotMatch, postSyncedExpctation: postDoesNotMatchExpectation)
+        var postMatchPredicateNoLongerMatches = postMatchPredicate
+        postMatchPredicateNoLongerMatches.title = "doesNotMatch"
+        try await savePostAndWaitForSync(postMatchPredicateNoLongerMatches)
+
+        // (4) Update model that does not match predicate to match - should be added to snapshot
+        var postDoesNotMatchNowMatches = postDoesNotMatch
+        postDoesNotMatchNowMatches.title = "xyz 2"
+        try await savePostAndWaitForSync(postDoesNotMatchNowMatches)
+
+        // (5) Delete the model that matches the predicate - should be removed
+        try await deletePostAndWaitForSync(postDoesNotMatchNowMatches)
+
+        // (6) Delete the model that does not match predicate - should have no snapshot emitted
         let postMatchPredicateNoLongerMatchesExpectation = asyncExpectation(description: " received")
         try await deletePostAndWaitForSync(postMatchPredicateNoLongerMatches,
                                            postSyncedExpctation: postMatchPredicateNoLongerMatchesExpectation)
