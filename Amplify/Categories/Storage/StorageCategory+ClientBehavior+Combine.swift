@@ -61,7 +61,7 @@ extension StorageCategoryBehavior {
         key: String,
         options: StorageGetURLRequest.Options? = nil
     ) -> StorageGetURLOperation {
-        getURL(key: key, options: nil, resultListener: nil)
+        getURL(key: key, options: options, resultListener: nil)
     }
 
     /// List the object identifiers under the heiarchy specified by the path, relative to access level, from storage
