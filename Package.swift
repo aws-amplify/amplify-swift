@@ -159,8 +159,7 @@ let authTargets: [Target] = [
         name: "AWSCognitoAuthPluginUnitTests",
         dependencies: [
             "AWSCognitoAuthPlugin",
-            "AWSPluginsTestCommon",
-            "AmplifyTestCommon"
+            "AWSPluginsTestCommon"
         ],
         path: "AmplifyPlugins/Auth/Tests/AWSCognitoAuthPluginUnitTests"
     ),
