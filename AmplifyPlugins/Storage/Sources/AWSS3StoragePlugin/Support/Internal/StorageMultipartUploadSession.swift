@@ -323,7 +323,7 @@ class StorageMultipartUploadSession {
     }
 
     private func cancelInProgressParts(parts: StorageUploadParts) {
-        let taskIdentifiers = parts.inProgress.compactMap {
+        let taskIdentifiers: [TaskIdentifier] = parts.inProgress.compactMap {
             if case .inProgress(_, _, let taskIdentifier) = $0 {
                 return taskIdentifier
             } else {
@@ -335,7 +335,7 @@ class StorageMultipartUploadSession {
 
         queue.sync {
             if case .paused(let uploadId, let uploadFile, let partSize, let parts) = multipartUpload {
-                let pausedParts = parts.map { part in
+                let pausedParts: StorageUploadParts = parts.map { part in
                     if case .inProgress = part {
                         return StorageUploadPart.pending(bytes: part.bytes)
                     } else {
