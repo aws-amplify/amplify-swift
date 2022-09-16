@@ -61,7 +61,6 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
         }
 
         subTask.sessionTask = MockStorageSessionTask(taskIdentifier: taskIdentifier, state: .suspended)
-
         session.handle(uploadPartEvent: .started(partNumber: partNumber, taskIdentifier: taskIdentifier))
         didStartPartUpload?(session, partNumber)
 
@@ -74,9 +73,13 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
             return
         }
 
-        let eTag = UUID().uuidString
-        session.handle(uploadPartEvent: .completed(partNumber: partNumber, eTag: eTag, taskIdentifier: taskIdentifier))
-        didCompletePartUpload?(session, partNumber, eTag, taskIdentifier)
+        if let part = session.part(for: partNumber) {
+            if part.inProgress {
+                let eTag = UUID().uuidString
+                session.handle(uploadPartEvent: .completed(partNumber: partNumber, eTag: eTag, taskIdentifier: taskIdentifier))
+                didCompletePartUpload?(session, partNumber, eTag, taskIdentifier)
+            }
+        }
     }
 
     func completeMultipartUpload(uploadId: UploadID) throws {

@@ -185,6 +185,12 @@ class StorageMultipartUploadSession {
         multipartUpload.isCompleted
     }
 
+    func part(for number: PartNumber) -> StorageUploadPart? {
+        queue.sync {
+            multipartUpload.part(for: number)
+        }
+    }
+
     func getPendingPartNumbers() -> [Int] {
         queue.sync {
             multipartUpload.pendingPartNumbers

@@ -230,8 +230,6 @@ class StorageMultipartUploadSessionTests: XCTestCase {
         XCTAssertGreaterThan(client.uploadPartCount, 0)
     }
 
-
-
     func testPartUploadFailedOverLimit() throws {
         let initiatedExp = expectation(description: "Initiated")
         let completedExp = expectation(description: "Completed")
