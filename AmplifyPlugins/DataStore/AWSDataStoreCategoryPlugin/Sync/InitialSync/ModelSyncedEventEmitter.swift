@@ -102,7 +102,7 @@ final class ModelSyncedEventEmitter {
             return modelSchema.name == event.modelName
         case .mutationEventDropped(let modelName, _):
             return modelSchema.name == modelName
-        case .initialized, .started, .paused:
+        case .notStarted, .initialized, .started, .paused:
             return false
         }
     }
@@ -130,7 +130,7 @@ final class ModelSyncedEventEmitter {
                 modelSyncedEventTopic.send(.mutationEventApplied(event))
             case .mutationEventDropped(let modelName, let error):
                 modelSyncedEventTopic.send(.mutationEventDropped(modelName: modelName, error: error))
-            case .initialized, .started, .paused:
+            case .notStarted, .initialized, .started, .paused:
                 return
             }
             return
@@ -161,7 +161,7 @@ final class ModelSyncedEventEmitter {
             if shouldSendModelSyncedEvent {
                 sendModelSyncedEvent()
             }
-        case .initialized, .started, .paused:
+        case .notStarted, .initialized, .started, .paused:
             return
         }
     }

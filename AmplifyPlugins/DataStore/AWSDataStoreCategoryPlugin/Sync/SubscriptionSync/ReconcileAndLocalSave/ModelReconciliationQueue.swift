@@ -15,6 +15,7 @@ enum ModelConnectionDisconnectedReason {
 }
 
 enum ModelReconciliationQueueEvent {
+    case notStarted
     case started
     case paused
     case connected(modelName: String)

@@ -10,6 +10,7 @@ import AWSPluginsCore
 import Combine
 
 enum IncomingEventReconciliationQueueEvent {
+    case notStarted
     case initialized
     case started
     case paused

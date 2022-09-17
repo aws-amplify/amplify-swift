@@ -27,7 +27,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
 
     private var modelReconciliationQueueSinks: [String: AnyCancellable]
 
-    private let eventReconciliationQueueTopic: PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>
+    private let eventReconciliationQueueTopic: CurrentValueSubject<IncomingEventReconciliationQueueEvent, DataStoreError>
     var publisher: AnyPublisher<IncomingEventReconciliationQueueEvent, DataStoreError> {
         return eventReconciliationQueueTopic.eraseToAnyPublisher()
     }
@@ -39,8 +39,10 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     private var modelReconciliationQueueFactory: ModelReconciliationQueueFactory
 
     private var isInitialized: Bool {
-        reconciliationQueueConnectionStatus.count == reconciliationQueues.count
+        Amplify.log.verbose("[InitializeSubscription.5] \(reconciliationQueueConnectionStatus.count)/\(modelSchemasCount) initialized")
+        return modelSchemasCount == reconciliationQueueConnectionStatus.count
     }
+    private let modelSchemasCount: Int
 
     init(modelSchemas: [ModelSchema],
          api: APICategoryGraphQLBehavior,
@@ -49,8 +51,9 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
          auth: AuthCategoryBehavior? = nil,
          authModeStrategy: AuthModeStrategy,
          modelReconciliationQueueFactory: ModelReconciliationQueueFactory? = nil) {
+        self.modelSchemasCount = modelSchemas.count
         self.modelReconciliationQueueSinks = [:]
-        self.eventReconciliationQueueTopic = PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>()
+        self.eventReconciliationQueueTopic = CurrentValueSubject<IncomingEventReconciliationQueueEvent, DataStoreError>(.notStarted)
         self.reconciliationQueues = [:]
         self.reconciliationQueueConnectionStatus = [:]
         self.reconcileAndSaveQueue = ReconcileAndSaveQueue(modelSchemas)
@@ -66,6 +69,12 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
                 $0.modelSchema.name == modelName
             })
             let modelPredicate = syncExpression?.modelPredicate() ?? nil
+            guard reconciliationQueues[modelName] == nil else {
+                Amplify.DataStore.log
+                    .warn("Duplicate model name found: \(modelName), not subscribing")
+                continue
+            }
+            Amplify.log.verbose("[InitializeSubscription.5] Creating reconciliationQueues \(modelName) \(reconciliationQueues.count)")
             let queue = self.modelReconciliationQueueFactory(modelSchema,
                                                              storageAdapter,
                                                              api,
@@ -74,14 +83,11 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
                                                              auth,
                                                              authModeStrategy,
                                                              nil)
-            guard reconciliationQueues[modelName] == nil else {
-                Amplify.DataStore.log
-                    .warn("Duplicate model name found: \(modelName), not subscribing")
-                continue
-            }
             reconciliationQueues[modelName] = queue
+            Amplify.log.verbose("[InitializeSubscription.5] Sink reconciliationQueues \(modelName) \(reconciliationQueues.count)")
             let modelReconciliationQueueSink = queue.publisher.sink(receiveCompletion: onReceiveCompletion(completed:),
                                                                     receiveValue: onReceiveValue(receiveValue:))
+            Amplify.log.verbose("[InitializeSubscription.5] Sink done reconciliationQueues \(modelName) \(reconciliationQueues.count)")
             modelReconciliationQueueSinks[modelName] = modelReconciliationQueueSink
         }
     }
@@ -118,27 +124,32 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     }
 
     private func onReceiveValue(receiveValue: ModelReconciliationQueueEvent) {
+
         switch receiveValue {
         case .mutationEvent(let event):
             eventReconciliationQueueTopic.send(.mutationEventApplied(event))
         case .mutationEventDropped(let modelName, let error):
             eventReconciliationQueueTopic.send(.mutationEventDropped(modelName: modelName, error: error))
         case .connected(modelName: let modelName):
+
             connectionStatusSerialQueue.async {
+                Amplify.log.verbose("[InitializeSubscription.4] .connected \(modelName)")
                 self.reconciliationQueueConnectionStatus[modelName] = true
                 if self.isInitialized {
+                    Amplify.log.verbose("[InitializeSubscription.6] connected isInitialized")
                     self.eventReconciliationQueueTopic.send(.initialized)
                 }
             }
         case .disconnected(modelName: let modelName, reason: .operationDisabled),
              .disconnected(modelName: let modelName, reason: .unauthorized):
             connectionStatusSerialQueue.async {
-                Amplify.log.debug("Disconnected subscription for \(modelName) reason: \(receiveValue)")
+                Amplify.log.verbose("[InitializeSubscription.4] subscription disconnected [\(modelName)] reason: [\(receiveValue)]")
                 // A disconnected subscription due to operation disabled or unauthorized will still contribute
                 // to the overall state of the reconciliation queue system on sending the `.initialized` event
                 // since subscriptions may be disabled and have to reconcile locally sourced mutation evemts.
                 self.reconciliationQueueConnectionStatus[modelName] = true
                 if self.isInitialized {
+                    Amplify.log.verbose("[InitializeSubscription.6] disconnected isInitialized")
                     self.eventReconciliationQueueTopic.send(.initialized)
                 }
             }

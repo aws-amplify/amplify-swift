@@ -61,7 +61,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             case .initialized:
                 expectInitialized.fulfill()
             default:
-                XCTFail("Should not expect any other state, received: \(event)")
+                break
             }
         })
 
@@ -91,7 +91,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             case .initialized:
                 expectInitialized.fulfill()
             default:
-                XCTFail("Should not expect any other state, received: \(event)")
+                break
             }
         })
 
@@ -122,7 +122,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             case .initialized:
                 expectInitialized.fulfill()
             default:
-                XCTFail("Should not expect any other state, received: \(event)")
+                break
             }
         })
 
@@ -154,7 +154,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             case .initialized:
                 expectInitialized.fulfill()
             default:
-                XCTFail("Should not expect any other state, received: \(event)")
+                break
             }
         })
 
@@ -188,7 +188,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             case .initialized:
                 expectInitialized.fulfill()
             default:
-                XCTFail("Should not expect any other state, received: \(event)")
+                break
             }
         })
 
