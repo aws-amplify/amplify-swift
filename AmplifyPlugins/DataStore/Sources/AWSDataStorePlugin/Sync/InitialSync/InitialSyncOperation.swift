@@ -78,9 +78,7 @@ final class InitialSyncOperation: AsynchronousOperation {
             return nil
         }
 
-        // TODO: Update to use TimeInterval.milliseconds when it is pushed to main branch
-        // https://github.com/aws-amplify/amplify-ios/issues/398
-        let lastSyncDate = Date(timeIntervalSince1970: TimeInterval(lastSync) / 1_000)
+        let lastSyncDate = Date(timeIntervalSince1970: TimeInterval.milliseconds(Double(lastSync)))
         let secondsSinceLastSync = (lastSyncDate.timeIntervalSinceNow * -1)
         if secondsSinceLastSync < 0 {
             log.info("lastSyncTime was in the future, assuming base query")
