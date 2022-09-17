@@ -197,9 +197,9 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             modelReconciliationQueueSubject.send(completion: .finished)
         case .failure(let dataStoreError):
             if case let .api(error, _) = dataStoreError,
-               case let APIError.operationError(_, _, underlyingError) = error,
-               isUnauthorizedError(underlyingError) {
-                
+               case let APIError.operationError(errorDescription, _, underlyingError) = error,
+               isUnauthorizedError(errorDescription: errorDescription, underlyingError) {
+
                 log.verbose("[InitializeSubscription.3] AWSModelReconciliationQueue determined unauthorized \(modelSchema.name)")
                 modelReconciliationQueueSubject.send(.disconnected(modelName: modelSchema.name, reason: .unauthorized))
                 return
@@ -271,7 +271,10 @@ extension AWSModelReconciliationQueue {
         return errorTypeValue
     }
 
-    private func isUnauthorizedError(_ error: Error?) -> Bool {
+    private func isUnauthorizedError(errorDescription: String, _ error: Error?) -> Bool {
+        if errorDescription.range(of: "Unauthorized", options: .caseInsensitive) != nil {
+            return true
+        }
         if let responseError = error as? GraphQLResponseError<ResponseType>,
            let graphQLError = graphqlErrors(from: responseError)?.first,
            let errorTypeValue = errorTypeValueFrom(graphQLError: graphQLError),
