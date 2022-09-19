@@ -43,7 +43,7 @@ class AnalyticsCategoryClientAPITests: XCTestCase {
             }
         }
 
-        analytics.identifyUser("test")
+        analytics.identifyUser(userId: "test")
         waitForExpectations(timeout: 1.0)
     }
 

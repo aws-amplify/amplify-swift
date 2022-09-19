@@ -10,7 +10,7 @@ import AWSPinpoint
 import Foundation
 
 extension AWSPinpointAnalyticsPlugin {
-    public func identifyUser(_ identityId: String, withProfile userProfile: AnalyticsUserProfile?) {
+    public func identifyUser(userId: String, userProfile: AnalyticsUserProfile?) {
         if !isEnabled {
             log.warn("Cannot identify user. Analytics is disabled. Call Amplify.Analytics.enable() to enable")
             return
@@ -18,13 +18,13 @@ extension AWSPinpointAnalyticsPlugin {
 
         Task {
             let currentEndpointProfile =  await pinpoint.currentEndpointProfile()
-            currentEndpointProfile.addIdentityId(identityId)
+            currentEndpointProfile.addUserId(userId)
             if let userProfile = userProfile {
                 currentEndpointProfile.addUserProfile(userProfile)
             }
             do {
                 try await pinpoint.update(currentEndpointProfile)
-                Amplify.Hub.dispatchIdentifyUser(identityId, userProfile: userProfile)
+                Amplify.Hub.dispatchIdentifyUser(userId, userProfile: userProfile)
             } catch {
                 Amplify.Hub.dispatchIdentifyUser(AnalyticsErrorHelper.getDefaultError(error))
             }

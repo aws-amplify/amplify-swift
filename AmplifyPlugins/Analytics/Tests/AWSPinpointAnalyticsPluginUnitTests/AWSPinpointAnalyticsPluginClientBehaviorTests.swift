@@ -58,10 +58,10 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
                                                properties: testProperties)
         let expectedEndpointProfile = PinpointEndpointProfile(applicationId: "appId",
                                                               endpointId: "endpointId")
-        expectedEndpointProfile.addIdentityId(testIdentityId)
+        expectedEndpointProfile.addUserId(testIdentityId)
         expectedEndpointProfile.addUserProfile(userProfile)
 
-        analyticsPlugin.identifyUser(testIdentityId, withProfile: userProfile)
+        analyticsPlugin.identifyUser(userId: testIdentityId, userProfile: userProfile)
 
         waitForExpectations(timeout: 1)
         mockPinpoint.verifyCurrentEndpointProfile()
@@ -74,7 +74,7 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
     func testIdentifyUserDispatchesErrorForIsEnabledFalse() {
         analyticsPlugin.isEnabled = false
 
-        analyticsPlugin.identifyUser(testIdentityId, withProfile: nil)
+        analyticsPlugin.identifyUser(userId: testIdentityId, userProfile: nil)
 
         XCTAssertEqual(mockPinpoint.currentEndpointProfileCalled, 0)
         XCTAssertEqual(mockPinpoint.updateEndpointProfileCalled, 0)
@@ -109,10 +109,10 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
                                                properties: testProperties)
         let expectedEndpointProfile = PinpointEndpointProfile(applicationId: "appId",
                                                               endpointId: "endpointId")
-        expectedEndpointProfile.addIdentityId(testIdentityId)
+        expectedEndpointProfile.addUserId(testIdentityId)
         expectedEndpointProfile.addUserProfile(userProfile)
 
-        analyticsPlugin.identifyUser(testIdentityId, withProfile: userProfile)
+        analyticsPlugin.identifyUser(userId: testIdentityId, userProfile: userProfile)
 
         waitForExpectations(timeout: 1)
         mockPinpoint.verifyCurrentEndpointProfile()
