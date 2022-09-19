@@ -19,13 +19,13 @@ We deeply appreciate your feedback on this Developer Preview as we work towards 
 
 ## Features/APIs
 
+- [Analytics](https://docs.amplify.aws/lib/analytics/getting-started/q/platform/ios) - for logging metrics and understanding your users.
 - [API (GraphQL)](https://docs.amplify.aws/lib/graphqlapi/getting-started/q/platform/ios) - for adding a GraphQL endpoint to your app.
 - [API (REST)](https://docs.amplify.aws/lib/restapi/getting-started/q/platform/ios) - for adding a REST endpoint to your app.
 - [Authentication](https://docs.amplify.aws/lib/auth/getting-started/q/platform/ios) - for managing your users.
-   - _Note: Authentication category only supports **Sign Up**, **Sign In**, **Sign Out** and **Fetch Auth Session** API's._
 - [DataStore](https://docs.amplify.aws/lib/datastore/getting-started/q/platform/ios) - for making it easier to program for a distributed data store for offline and online scenarios.
+- [Geo](https://docs.amplify.aws/lib/geo/getting-started/q/platform/ios) - for adding location-based capabilities to your app.
 - [Storage](https://docs.amplify.aws/lib/storage/getting-started/q/platform/ios) - store complex objects like pictures and videos to the cloud.
-
 
 All services and features not listed above are supported via the [Swift SDK](https://github.com/awslabs/aws-sdk-swift) or if supported by a category can be accessed via the Escape Hatch like below:
 
@@ -49,7 +49,7 @@ let task = awsS3.headBucket(input: input) { result in
 
 ## Platform Support
 
-Amplify supports iOS 13 and above. There are currently no plans to support Amplify on watchOS, tvOS, or macOS.
+Amplify supports iOS 13+ and macOS 10.15+. There are currently no plans to support Amplify on watchOS or tvOS.
 
 ## License
 
@@ -57,37 +57,37 @@ This library is licensed under the Apache 2.0 License.
 
 ## Installation
 
-Amplify requires Xcode 12 or higher to build.
+Amplify requires Xcode 13.4 or higher to build.
 
 | For more detailed instructions, follow the getting started guides in our [documentation site](https://docs.amplify.aws/lib/q/platform/ios)   |
 |-------------------------------------------------|
 
 ### Swift Package Manager
 
-1. Swift Package Manager is distributed with Xcode. To start adding the Amplify Libraries to your iOS project, open your project in Xcode and select **File > Swift Packages > Add Package Dependency**.
+1. Swift Package Manager is distributed with Xcode. To start adding the Amplify Libraries to your iOS project, open your project in Xcode and select **File > Add Packages**.
 
-    ![Add package dependency](readme-images/spm-setup-01-add-package-dependency.png)
+    ![Add package dependency](readme-images/spm-setup-01-add-package.png)
 
-1. Enter the Amplify iOS GitHub repo URL (`https://github.com/aws-amplify/amplify-ios`) into the search bar and click **Next**.
+1. Enter the Amplify iOS GitHub repo URL (`https://github.com/aws-amplify/amplify-ios`) into the search bar.
 
-    ![Search for repo](readme-images/spm-setup-02-search-amplify-repo.png)
+1. You'll see the Amplify iOS repository rules for which version of Amplify you want Swift Package Manager to install. Choose **Branch** for the Dependency Rule and enter `dev-preview` as the branch name, then click **Add Package**.
 
-1. You'll see the Amplify iOS repository rules for which version of Amplify you want Swift Package Manager to install. Choose the first rule, **Version**, as it will use the latest compatible version of the dependency that can be detected from the `main` branch, then click **Next**.
-
-    ![Dependency version options](readme-images/spm-setup-03-dependency-version-options.png)
+    ![Dependency version options](readme-images/spm-setup-02-amplify-repo-options.png)
 
 1. Choose which of the libraries you want added to your project. Always select the **Amplify** library. The "Plugin" to install depends on which categories you are using:
 
     - API: **AWSAPIPlugin**
+    - Analytics: **AWSPinpointAnalyticsPlugin**
     - Auth: **AWSCognitoAuthPlugin**
     - DataStore: **AWSDataStorePlugin**
+    - Geo: **AWSLocationGeoPlugin**
     - Storage: **AWSS3StoragePlugin**
 
-    ![Select dependencies](readme-images/spm-setup-04-select-dependencies.png)
+    ![Select dependencies](readme-images/spm-setup-03-select-dependencies.png)
 
-    Select all that are appropriate, then click **Finish**.
+    Select all that are appropriate, then click **Add Package**.
 
-    You can always go back and modify which SPM packages are included in your project by opening the Swift Packages tab for your project: Click on the Project file in the Xcode navigator, then click on your project's icon, then select the **Swift Packages** tab.
+    You can always go back and modify which SPM packages are included in your project by opening the `Package Dependencies` tab for your project: Click on the Project file in the Xcode navigator, then click on your project under the Project section, then select the **Package Dependencies** tab.
 
 1. In your app code, explicitly import a plugin when you need to add a plugin to Amplify, access plugin options, or access a category escape hatch.
 
@@ -102,6 +102,7 @@ Amplify requires Xcode 12 or higher to build.
         do {
             try Amplify.add(AWSAPIPlugin())
             // and so on ...
+            try Amplify.configure()
         } catch {
             assertionFailure("Error initializing Amplify: \(error)")
         }
