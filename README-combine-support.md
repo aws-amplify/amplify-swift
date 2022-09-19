@@ -1,8 +1,8 @@
-# Combine support for Amplify for iOS
+# Combine support in Amplify
 
 <img src="https://s3.amazonaws.com/aws-mobile-hub-images/aws-amplify-logo.png" alt="AWS Amplify" width="550" >
 
-The default Amplify library for iOS supports iOS 11 and higher, and ships with APIs that return results on `Result` callbacks, as in:
+Amplify supports iOS 13+ and macOS 10.15+, and ships with APIs that leverage Swift Concurrenty (async/await) to return values, as in:
 
 ```swift
 Amplify.DataStore.save(Post(title: "My Post", content: "My content", ...), completion: { result in
