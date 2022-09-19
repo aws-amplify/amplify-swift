@@ -319,4 +319,10 @@ extension Sequence where Element == StorageUploadPart {
         }
     }
 
+    var progress: Progress {
+        let progress = Progress(totalUnitCount: Int64(totalBytes))
+        progress.completedUnitCount = Int64(bytesTransferred)
+        return progress
+    }
+
 }

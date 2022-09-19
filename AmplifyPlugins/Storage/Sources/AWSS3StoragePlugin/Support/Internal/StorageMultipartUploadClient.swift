@@ -17,6 +17,8 @@ protocol StorageMultipartUploadClient {
     func uploadPart(partNumber: PartNumber, multipartUpload: StorageMultipartUpload, subTask: StorageTransferTask) throws
     func completeMultipartUpload(uploadId: UploadID) throws
     func abortMultipartUpload(uploadId: UploadID, error: Error?) throws
+
+    func cancelUploadTasks(taskIdentifiers: [TaskIdentifier])
 }
 
 extension StorageMultipartUploadClient {
@@ -167,15 +169,21 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
         serviceProxy.awsS3.abortMultipartUpload(.init(bucket: bucket, key: key, uploadId: uploadId)) { result in
             switch result {
             case .success:
-                if let error = error {
-                    session.fail(error: error)
-                } else {
-                    session.handle(multipartUploadEvent: .aborted(uploadId: uploadId))
-                }
+                session.handle(multipartUploadEvent: .aborted(uploadId: uploadId, error: error))
             case .failure(let error):
                 session.fail(error: error)
             }
             serviceProxy.unregister(multipartUploadSession: session)
+        }
+    }
+
+    func cancelUploadTasks(taskIdentifiers: [TaskIdentifier]) {
+        serviceProxy?.urlSession.getActiveTasks { tasks in
+            for task in tasks {
+                if taskIdentifiers.contains(task.taskIdentifier) {
+                    task.cancel()
+                }
+            }
         }
     }
 

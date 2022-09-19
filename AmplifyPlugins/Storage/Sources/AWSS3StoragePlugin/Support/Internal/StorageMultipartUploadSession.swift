@@ -29,6 +29,7 @@ class StorageMultipartUploadSession {
         case invalidStateTransition
         case partsNotDone
         case partsFailed
+        case partsUploadRetryLimitExceeded(underlyingError: Error?)
     }
 
     private let behavior: StorageMultipartUploadBehavior
@@ -37,7 +38,7 @@ class StorageMultipartUploadSession {
 
     private let queue = DispatchQueue(label: "com.amazon.aws.amplify.multipartupload-session", target: .global())
     private let id = UUID()
-    fileprivate var multipartUpload: StorageMultipartUpload
+    private var multipartUpload: StorageMultipartUpload
     private let client: StorageMultipartUploadClient
     private let onEvent: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler
 
@@ -78,6 +79,9 @@ class StorageMultipartUploadSession {
         multipartUpload = .none
         self.client.integrate(session: self)
 
+        // attach session to transferTask
+        transferTask.proxyStorageTask = self
+
         logger.info("Concurrency Limit is \(self.concurrentLimit) [based on active processors]")
     }
 
@@ -101,7 +105,7 @@ class StorageMultipartUploadSession {
         self.logger = logger
     }
 
-    func resume() {
+    func restart() {
         guard let uploadFile = multipartUpload.uploadFile,
               let uploadId = multipartUpload.uploadId,
               let partSize = multipartUpload.partSize,
@@ -169,8 +173,22 @@ class StorageMultipartUploadSession {
         }
     }
 
+    var isPaused: Bool {
+        multipartUpload.isPaused
+    }
+
+    var isAborted: Bool {
+        multipartUpload.isAborted
+    }
+
     var isCompleted: Bool {
         multipartUpload.isCompleted
+    }
+
+    func part(for number: PartNumber) -> StorageUploadPart? {
+        queue.sync {
+            multipartUpload.part(for: number)
+        }
     }
 
     func getPendingPartNumbers() -> [Int] {
@@ -207,8 +225,13 @@ class StorageMultipartUploadSession {
             case .parts(let uploadId, let uploadFile, let partSize, let parts):
                 transferTask.uploadId = uploadId
                 uploadParts(uploadFile: uploadFile, uploadId: uploadId, partSize: partSize, parts: parts)
+            case .paused(_, _, _, let parts):
+                cancelInProgressParts(parts: parts)
+                transferTask.notify(progress: parts.progress)
             case .completed:
                 onEvent(.completed(()))
+            case .aborting:
+                try abort()
             case .aborted:
                 onEvent(.completed(()))
             case .failed(_, _, let error):
@@ -217,7 +240,6 @@ class StorageMultipartUploadSession {
                 break
             }
         } catch {
-            // TODO: determine if a retry should be attempted
             fail(error: error)
         }
     }
@@ -228,7 +250,7 @@ class StorageMultipartUploadSession {
         do {
             try multipartUpload.transition(uploadPartEvent: uploadPartEvent)
 
-            // update the transerTask with every state transition
+            // update the transferTask with every state transition
             transferTask.multipartUpload = multipartUpload
 
             if uploadPartEvent.isCompleted {
@@ -263,20 +285,70 @@ class StorageMultipartUploadSession {
                 } else {
                     fatalError("Invalid state")
                 }
-            } else if partsFailed {
-                if let uploadId = multipartUpload.uploadId {
-                    try client.abortMultipartUpload(uploadId: uploadId, error: uploadPartEvent.error)
-                } else {
-                    fatalError("Invalid state")
-                }
+            } else if case .failed(let partNumber, let error) = uploadPartEvent {
+                retryPartUpload(partNumber: partNumber, error: error)
             }
         } catch {
-            // TODO: determine if a retry should be attempted
             fail(error: error)
         }
     }
 
-    func uploadParts(uploadFile: UploadFile, uploadId: UploadID, partSize: StorageUploadPartSize, parts: StorageUploadParts) {
+    private func retryPartUpload(partNumber: PartNumber, error: Error) {
+        do {
+            if transferTask.isBelowRetryLimit {
+                // increment retry count and move upload part back to pending
+                transferTask.incrementRetryCount()
+                if case .parts(let uploadId, let uploadFile, let partSize, var parts) = multipartUpload {
+                    let part = try parts.find(partNumber: partNumber)
+                    let index = partNumber - 1
+                    parts[index] = .pending(bytes: part.bytes)
+                    multipartUpload = .parts(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: parts)
+                } else {
+                    fatalError("Invalid state")
+                }
+            } else {
+                throw Failure.partsUploadRetryLimitExceeded(underlyingError: error)
+            }
+        } catch {
+            handle(multipartUploadEvent: .aborting(error: error))
+        }
+    }
+
+    private func abort() throws {
+        if let uploadId = multipartUpload.uploadId {
+            try client.abortMultipartUpload(uploadId: uploadId)
+        } else {
+            fatalError("Invalid state")
+        }
+    }
+
+    private func cancelInProgressParts(parts: StorageUploadParts) {
+        let taskIdentifiers: [TaskIdentifier] = parts.inProgress.compactMap {
+            if case .inProgress(_, _, let taskIdentifier) = $0 {
+                return taskIdentifier
+            } else {
+                return nil
+            }
+        }
+
+        client.cancelUploadTasks(taskIdentifiers: taskIdentifiers)
+
+        queue.sync {
+            if case .paused(let uploadId, let uploadFile, let partSize, let parts) = multipartUpload {
+                let pausedParts: StorageUploadParts = parts.map { part in
+                    if case .inProgress = part {
+                        return StorageUploadPart.pending(bytes: part.bytes)
+                    } else {
+                        return part
+                    }
+                }
+                multipartUpload = .paused(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: pausedParts)
+            }
+        }
+
+    }
+
+    private func uploadParts(uploadFile: UploadFile, uploadId: UploadID, partSize: StorageUploadPartSize, parts: StorageUploadParts) {
         logger.debug(#function)
 
         guard inProgressCount < concurrentLimit else {
@@ -293,23 +365,20 @@ class StorageMultipartUploadSession {
             if maxPartsCount > 0 {
                 let end = min(maxPartsCount, pendingPartNumbers.count)
                 let numbers = pendingPartNumbers[0..<end]
-                var lastNumber: Int? = 0
                 // queue upload part first
                 numbers.forEach { partNumber in
                     handle(uploadPartEvent: .queued(partNumber: partNumber))
                 }
 
                 // then start upload
-                try numbers.forEach { partNumber in
+                for partNumber in numbers {
+                    guard !isAborted else { return }
                     // the next call does async work
                     let subTask = createSubTask(partNumber: partNumber)
                     try client.uploadPart(partNumber: partNumber, multipartUpload: multipartUpload, subTask: subTask)
-
-                    lastNumber = partNumber
                 }
             }
         } catch {
-            // TODO: determine if a retry should be attempted
             fail(error: error)
         }
     }
@@ -320,4 +389,20 @@ extension StorageMultipartUploadSession: Equatable {
     static func == (lhs: StorageMultipartUploadSession, rhs: StorageMultipartUploadSession) -> Bool {
         lhs.id == rhs.id
     }
+}
+
+extension StorageMultipartUploadSession: StorageTask {
+
+    func pause() {
+        handle(multipartUploadEvent: .pausing)
+    }
+
+    func resume() {
+        handle(multipartUploadEvent: .resuming)
+    }
+
+    func cancel() {
+        handle(multipartUploadEvent: .aborting(error: nil))
+    }
+
 }

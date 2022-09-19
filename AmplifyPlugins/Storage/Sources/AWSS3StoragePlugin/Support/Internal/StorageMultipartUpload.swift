@@ -17,11 +17,12 @@ enum StorageMultipartUpload {
     case none
     case creating
     case created(uploadId: UploadID, uploadFile: UploadFile)
+    case paused(uploadId: UploadID, uploadFile: UploadFile, partSize: StorageUploadPartSize, parts: StorageUploadParts)
     case parts(uploadId: UploadID, uploadFile: UploadFile, partSize: StorageUploadPartSize, parts: StorageUploadParts)
     case completing(taskIdentifier: TaskIdentifier)
     case completed(uploadId: UploadID)
-    case aborting(taskIdentifier: TaskIdentifier)
-    case aborted(uploadId: UploadID)
+    case aborting(uploadId: UploadID, error: Error?)
+    case aborted(uploadId: UploadID, error: Error?)
     case failed(uploadId: UploadID?, parts: StorageUploadParts?, error: Error)
 
     init(uploadId: UploadID, uploadFile: UploadFile, partSize: StorageUploadPartSize, parts: StorageUploadParts) {
@@ -43,7 +44,8 @@ enum StorageMultipartUpload {
         case .created(let uploadId, _),
                 .parts(let uploadId, _, _, _),
                 .completed(let uploadId),
-                .aborted(let uploadId):
+                .aborting(let uploadId, _),
+                .aborted(let uploadId, _):
             return uploadId
         default:
             return nil
@@ -64,8 +66,7 @@ enum StorageMultipartUpload {
     var taskIdentifier: TaskIdentifier? {
         let result: Int?
         switch self {
-        case .completing(let taskIdentifier),
-                .aborting(let taskIdentifier):
+        case .completing(let taskIdentifier):
             result = taskIdentifier
         default:
             result = nil
@@ -75,6 +76,8 @@ enum StorageMultipartUpload {
 
     var parts: StorageUploadParts? {
         if case .parts(_, _, _, let parts) = self {
+            return parts
+        } else if case .paused(_, _, _, let parts) = self {
             return parts
         } else {
             return nil
@@ -93,8 +96,25 @@ enum StorageMultipartUpload {
         }
     }
 
+    var inProgress: Bool {
+        switch self {
+        case .creating, .created, .parts, .completing:
+            return true
+        default:
+            return false
+        }
+    }
+
     var isCompleted: Bool {
         if case .completed = self {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    var isPaused: Bool {
+        if case .paused = self {
             return true
         } else {
             return false
@@ -189,6 +209,21 @@ enum StorageMultipartUpload {
         case .created(let uploadFile, let uploadId):
             self = .created(uploadId: uploadId, uploadFile: uploadFile)
             try createParts(uploadFile: uploadFile, uploadId: uploadId, logger: logger)
+        case .pausing:
+            switch self {
+            case .parts(let uploadId, let uploadFile, let partSize, let parts):
+                self = .paused(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: parts)
+            default:
+                throw Failure.invalidStateTransition(reason: "Cannot abort from current state: \(self)")
+            }
+        case .resuming:
+            switch self {
+            case .paused(let uploadId, let uploadFile, let partSize, let parts):
+                self = .parts(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: parts)
+            default:
+                throw Failure.invalidStateTransition(reason: "Cannot abort from current state: \(self)")
+            }
+            break
         case .completing(let taskIdentifier):
             self = .completing(taskIdentifier: taskIdentifier)
         case .completed(let uploadId):
@@ -198,12 +233,16 @@ enum StorageMultipartUpload {
             default:
                 throw Failure.invalidStateTransition(reason: "Cannot complete from current state: \(self)")
             }
-        case .aborting(let taskIdentifier):
-            self = .aborting(taskIdentifier: taskIdentifier)
-        case .aborted(let uploadId):
+        case .aborting(let error):
+            if let uploadId = uploadId {
+                self = .aborting(uploadId: uploadId, error: error)
+            } else {
+                throw Failure.invalidStateTransition(reason: "Cannot abort from current state: \(self)")
+            }
+        case .aborted(let uploadId, let error):
             switch self {
-            case .created, .parts:
-                self = .aborted(uploadId: uploadId)
+            case .created, .parts, .aborting:
+                self = .aborted(uploadId: uploadId, error: error)
             default:
                 throw Failure.invalidStateTransition(reason: "Cannot abort from current state: \(self)")
             }
@@ -242,19 +281,17 @@ enum StorageMultipartUpload {
             parts[index] = .inProgress(bytes: part.bytes, bytesTransferred: 0, taskIdentifier: taskIdentifier)
         case .progressUpdated(_, let bytesTransferred, _):
             guard case .inProgress(let bytes, _, let taskIdentifier) = part else {
-                throw Failure.invalidStateTransition(reason: "")
+                throw Failure.invalidStateTransition(reason: "Part cannot update progress in current state: \(self)")
             }
             parts[index] = .inProgress(bytes: bytes, bytesTransferred: bytesTransferred, taskIdentifier: taskIdentifier)
         case .completed(_, let eTag, _):
             guard case .inProgress(let bytes, _, _) = part else {
-                throw Failure.invalidStateTransition(reason: "")
+                throw Failure.invalidStateTransition(reason: "Part cannot be completed in current state: \(self)")
             }
             parts[index] = StorageUploadPart.completed(bytes: bytes, eTag: eTag)
-        case .failed(_, let error):
-            let part = parts[index]
-            parts[index] = .failed(bytes: part.bytes, bytesTransferred: parts.bytesTransferred, error: error)
-            // TODO: Retry logic should be applied when it reaches this state and parts can be used to resume
-            try transition(multipartUploadEvent: .failed(uploadId: uploadId, error: error))
+        case .failed:
+            // handle part failure in the session with Transfer Task which has retry count and limit
+            break
         }
         self = .parts(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: parts)
     }
