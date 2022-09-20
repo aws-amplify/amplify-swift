@@ -10,9 +10,9 @@
 import Foundation
 
 
-struct AmplifyAPIDecodingHelper {
+struct TestHarnessAPIDecoder {
 
-    static func decodeAmplifyAPI(
+    static func decode(
         specification: FeatureSpecification) -> AmplifyAPI {
 
             guard let expectedAmplifyResponseValidation = specification.validations.first(where: { validation in

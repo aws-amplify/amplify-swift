@@ -34,7 +34,7 @@ extension AuthTestHarnessInput {
     }
 
     private static func getAmplifyAPIUnderTest(from specification: FeatureSpecification) -> AmplifyAPI {
-        return AmplifyAPIDecodingHelper.decodeAmplifyAPI(
+        return TestHarnessAPIDecoder.decode(
             specification: specification)
     }
 

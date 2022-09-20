@@ -9,19 +9,17 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
-import AmplifyTestCommon
 
 class AmplifyAuthCognitoPluginTests: XCTestCase {
 
     let apiTimeout = 1.0
-    let testSuitesResourcePath = "/TestResources/TestSuites"
 
     func testAuthCognitoPlugin() {
 
         // Load the json configs
         let bundle = Bundle.authCognitoTestBundle()
         let testInputFiles = try! FileManager.default.contentsOfDirectory(
-            atPath: bundle.resourcePath! + testSuitesResourcePath)
+            atPath: bundle.resourcePath! + "/" + AuthTestHarnessConstants.testSuitesPath)
 
         for testInputFile in testInputFiles {
             XCTContext.runActivity(named: testInputFile) { activity in
@@ -58,25 +56,10 @@ class AmplifyAuthCognitoPluginTests: XCTestCase {
             Task {
                 do {
                     let result = try await apiCall()
-                    if let expectedOutput = expectedOutput {
-                        switch expectedOutput {
-                        case .success(let expectedResult):
-                            XCTAssertEqual(expectedResult, result)
-                        case .failure(_):
-                            XCTFail("Reset Password API should throw an error")
-                        }
-                    }
+                    XCTAssertEqual(expectedOutput, Result.success(result))
                     expectation.fulfill()
-
                 } catch let error as AuthError {
-                    if let expectedOutput = expectedOutput {
-                        switch expectedOutput {
-                        case .success(_):
-                            XCTFail("Reset Password API should not throw an error: \(error)")
-                        case .failure(let expectedError):
-                            XCTAssertEqual(expectedError, error)
-                        }
-                    }
+                    XCTAssertEqual(expectedOutput, Result.failure(error))
                     expectation.fulfill()
                 } catch {
                     XCTFail("Reset password API should throw AuthError")

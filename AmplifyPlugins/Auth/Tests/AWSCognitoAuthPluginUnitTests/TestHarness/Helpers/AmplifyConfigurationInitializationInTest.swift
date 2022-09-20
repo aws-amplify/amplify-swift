@@ -16,7 +16,7 @@ extension AmplifyConfiguration {
         let url = bundle.url(
             forResource: fileName,
             withExtension: fileExtension,
-            subdirectory: "TestResources/AuthConfigurations")!
+            subdirectory: AuthTestHarnessConstants.authConfigurationResourcePath)!
         self = try! AmplifyConfiguration.loadAmplifyConfiguration(from: url)
     }
 }

@@ -28,7 +28,7 @@ struct FeatureSpecification: Codable {
         let url = bundle.url(
             forResource: fileName,
             withExtension: fileExtension,
-            subdirectory: "TestResources/TestSuites")!
+            subdirectory: AuthTestHarnessConstants.testSuitesPath)!
         let fileData: Data = try! Data(contentsOf: url)
         self = try! JSONDecoder().decode(
             FeatureSpecification.self, from: fileData)
