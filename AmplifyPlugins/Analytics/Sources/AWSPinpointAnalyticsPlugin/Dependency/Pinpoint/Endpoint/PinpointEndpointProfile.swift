@@ -44,8 +44,8 @@ class PinpointEndpointProfile: Codable, AnalyticsPropertiesModel {
         self.user = user
     }
 
-    func addIdentityId(_ identityId: String) {
-        user.userId = identityId
+    func addUserId(_ userId: String) {
+        user.userId = userId
     }
 
     func addUserProfile(_ userProfile: AnalyticsUserProfile) {

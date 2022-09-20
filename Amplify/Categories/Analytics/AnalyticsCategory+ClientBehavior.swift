@@ -6,8 +6,8 @@
 //
 
 extension AnalyticsCategory: AnalyticsCategoryBehavior {
-    public func identifyUser(_ identityId: String, withProfile userProfile: AnalyticsUserProfile? = nil) {
-        plugin.identifyUser(identityId, withProfile: userProfile)
+    public func identifyUser(userId: String, userProfile: AnalyticsUserProfile? = nil) {
+        plugin.identifyUser(userId: userId, userProfile: userProfile)
     }
 
     public func record(event: AnalyticsEvent) {

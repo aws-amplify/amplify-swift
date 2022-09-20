@@ -28,7 +28,7 @@ class NotificationListeningAnalyticsPlugin: AnalyticsCategoryPlugin {
         }
     }
 
-    func identifyUser(_ identityId: String, withProfile userProfile: AnalyticsUserProfile?) {
+    func identifyUser(userId identityId: String, userProfile: AnalyticsUserProfile?) {
         // Do nothing
     }
 

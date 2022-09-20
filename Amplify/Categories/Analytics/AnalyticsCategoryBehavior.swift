@@ -16,9 +16,9 @@ public protocol AnalyticsCategoryBehavior {
     /// Allows you to tie a user to their actions and record traits about them. It includes
     /// an unique User ID and any optional traits you know about them like their email, name, etc.
     ///
-    /// - Parameter identityId: The unique identifier for the user
+    /// - Parameter userId: The unique identifier for the user
     /// - Parameter userProfile: User specific data (e.g. plan, accountType, email, age, location, etc)
-    func identifyUser(_ identityId: String, withProfile userProfile: AnalyticsUserProfile?)
+    func identifyUser(userId: String, userProfile: AnalyticsUserProfile?)
 
     /// Record the actions your users perform. Every action triggers what we call an “event”,
     /// which can also have associated properties.

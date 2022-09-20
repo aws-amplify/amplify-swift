@@ -65,14 +65,14 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
                                                plan: "plan",
                                                location: location,
                                                properties: properties)
-        Amplify.Analytics.identifyUser(userId, withProfile: userProfile)
+        Amplify.Analytics.identifyUser(userId: userId, userProfile: userProfile)
 
         await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
 
         // Remove userId from the current endpoint
         let endpointClient = endpointClient()
         let currentProfile = await endpointClient.currentEndpointProfile()
-        currentProfile.addIdentityId("")
+        currentProfile.addUserId("")
         try await endpointClient.updateEndpointProfile(with: currentProfile)
     }
 
