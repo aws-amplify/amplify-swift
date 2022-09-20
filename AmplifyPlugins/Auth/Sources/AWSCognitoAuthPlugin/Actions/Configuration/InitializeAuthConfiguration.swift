@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AWSPluginsCore
 
 struct InitializeAuthConfiguration: Action {
 
@@ -29,7 +30,11 @@ struct InitializeAuthConfiguration: Action {
             if case .amplifyCredentials(let fetchedCredentials) = data {
                 credentials = fetchedCredentials
             }
-        } catch {
+        }
+        catch KeychainStoreError.itemNotFound {
+            logVerbose("No existing session found.", environment: environment)
+        }
+        catch {
             logError("Error when loading amplify credentials: \(error)", environment: environment)
         }
 
