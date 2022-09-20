@@ -52,7 +52,7 @@ class AWSAuthRememberDeviceTask: AuthRememberDeviceTask {
         let authState = await authStateMachine.currentState
         if case .configured(let authenticationState, _) = authState,
            case .signedIn(let signInData) = authenticationState {
-           return signInData.userName
+           return signInData.username
         }
         throw AuthError.unknown("Unable to get username for the signedIn user")
     }

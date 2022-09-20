@@ -67,7 +67,7 @@ public extension AWSCognitoAuthPlugin {
         let authState = await authStateMachine.currentState
         if case .configured(let authenticationState, _) = authState,
            case .signedIn(let signInData) = authenticationState {
-            let authUser = AWSCognitoAuthUser(username: signInData.userName, userId: signInData.userId)
+            let authUser = AWSCognitoAuthUser(username: signInData.username, userId: signInData.userId)
             return authUser
         } else {
             return nil

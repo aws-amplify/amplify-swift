@@ -88,3 +88,6 @@ public enum AuthUserAttributeKey {
 }
 
 extension AuthUserAttributeKey: Hashable {}
+
+extension AuthUserAttributeKey: Equatable {}
+

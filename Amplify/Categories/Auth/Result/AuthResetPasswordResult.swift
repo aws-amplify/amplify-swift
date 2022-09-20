@@ -24,6 +24,8 @@ public struct AuthResetPasswordResult {
     }
 }
 
+extension AuthResetPasswordResult: Equatable {}
+
 /// The next step in Auth.resetPassword api
 public enum AuthResetPasswordStep {
 
@@ -38,3 +40,5 @@ public enum AuthResetPasswordStep {
     case done
 
 }
+
+extension AuthResetPasswordStep: Equatable {}

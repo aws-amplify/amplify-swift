@@ -9,7 +9,7 @@ import Foundation
 
 struct SignedInData {
     let userId: String
-    let userName: String
+    let username: String
     let signedInDate: Date
     let signInMethod: SignInMethod
     let deviceMetadata: DeviceMetadata
@@ -22,7 +22,7 @@ struct SignedInData {
     ) {
         let user = try? TokenParserHelper.getAuthUser(accessToken: cognitoUserPoolTokens.accessToken)
         self.userId = user?.userId ?? "unknown"
-        self.userName = user?.username ?? "unknown"
+        self.username = user?.username ?? "unknown"
         self.signedInDate = signedInDate
         self.signInMethod = signInMethod
         self.deviceMetadata = deviceMetadata
@@ -38,7 +38,7 @@ extension SignedInData: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "userId": userId.masked(),
-            "userName": userName.masked(),
+            "userName": username.masked(),
             "signedInDate": signedInDate,
             "signInMethod": signInMethod,
             "deviceMetadata": deviceMetadata,
