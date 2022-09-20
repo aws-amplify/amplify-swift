@@ -214,7 +214,17 @@ extension AWSInitialSyncOrchestrator {
               else {
             return false
         }
-
+        
+        // Failure to retrieve the token to make the request is considered an authorization error.
+        if case let .api(amplifyError, _) = datastoreError,
+           let apiError = amplifyError as? APIError,
+           case .operationError(let errorDescription, _, _) = apiError,
+           errorDescription.contains("Failed to retrieve authorization token") {
+            return true
+        }
+           
+        // If token was retrieved, and request was sent, but service returned an error response,
+        // check that it is an Unauthorized error
         if case let .api(apiError, _) = datastoreError,
            let responseError = apiError as? GraphQLResponseError<ResponseType>,
            let graphQLError = graphqlErrors(from: responseError)?.first,
