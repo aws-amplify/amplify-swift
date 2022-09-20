@@ -23,7 +23,7 @@ extension XCTestCase {
     ///   
     /// - Returns:The result of successfuly running `action`, or `nil` if it threw an error.
     @discardableResult
-    public func wait<T>(with expectation: AsyncExpectation,
+    func wait<T>(with expectation: AsyncExpectation,
                  timeout: TimeInterval = TestCommonConstants.networkTimeout,
                  action: @escaping () async throws -> T) async -> T? {
         let task = Task { () -> T? in
@@ -55,7 +55,7 @@ extension XCTestCase {
     ///
     /// - Returns:The result of successfuly running `action`, or `nil` if it threw an error.
     @discardableResult
-    public func wait<T>(name: String,
+    func wait<T>(name: String,
                  timeout: TimeInterval = TestCommonConstants.networkTimeout,
                  action: @escaping () async throws -> T) async -> T? {
         let expectation = asyncExpectation(description: name)
@@ -75,7 +75,7 @@ extension XCTestCase {
     ///
     /// - Returns:The error thrown during the execution of `action`, or `nil` if it run successfully.
     @discardableResult
-    public func waitError<T>(with expectation: AsyncExpectation,
+    func waitError<T>(with expectation: AsyncExpectation,
                       timeout: TimeInterval = TestCommonConstants.networkTimeout,
                       action: @escaping () async throws -> T) async -> Error? {
         let task = Task { () -> Error? in
@@ -109,7 +109,7 @@ extension XCTestCase {
     ///
     /// - Returns:The error thrown during the execution of `action`, or `nil` if it run successfully.
     @discardableResult
-    public func waitError<T>(name: String,
+    func waitError<T>(name: String,
                       timeout: TimeInterval = TestCommonConstants.networkTimeout,
                       action: @escaping () async throws -> T) async -> Error? {
         let expectation = asyncExpectation(description: name)
