@@ -53,7 +53,7 @@ class AWSS3StoragePluginKeyResolverTests: AWSS3StoragePluginTestBase {
         let data = key.data(using: .utf8)!
         let uploadCompleted = asyncExpectation(description: "upload completed")
         await wait(with: uploadCompleted) {
-            _ = try await Amplify.Storage.uploadData(key: key, data: data)
+            _ = try await Amplify.Storage.uploadData(key: key, data: data).value
         }
 
         let listCompleted = asyncExpectation(description: "list completed")
@@ -80,6 +80,9 @@ class AWSS3StoragePluginKeyResolverTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(downloadedData)
+        
+        // Remove the key
+        await remove(key: key)
     }
 
     /// Storage operations (upload, remove, download) performed using a developer defined prefixkey resolver.

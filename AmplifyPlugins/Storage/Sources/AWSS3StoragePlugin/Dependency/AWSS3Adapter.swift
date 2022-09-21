@@ -66,6 +66,8 @@ class AWSS3Adapter: AWSS3Behavior {
                 }
                 let listResult = StorageListResult(items: items)
                 completion(.success(listResult))
+            } catch let error as SdkError<ListObjectsV2OutputError> {
+                completion(.failure(error.storageError))
             } catch {
                 completion(.failure(StorageError(error: error)))
             }

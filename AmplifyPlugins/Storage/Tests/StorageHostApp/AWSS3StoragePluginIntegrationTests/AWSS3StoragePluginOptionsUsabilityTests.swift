@@ -69,6 +69,9 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         }
         task2.resume()
         await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        
+        // Remove the key
+        await remove(key: key)
     }
 
 //    /// Given: An object uploaded with metadata with key `metadataKey` and value `metadataValue`

@@ -25,6 +25,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         await wait(with: completeInvoked) {
             return try await Amplify.Storage.uploadData(key: key, data: data, options: nil).value
         }
+        
+        // Remove the key
+        await remove(key: key)
     }
 
     /// Given: A empty data object
@@ -37,6 +40,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         await wait(with: completeInvoked) {
             return try await Amplify.Storage.uploadData(key: key, data: data, options: nil).value
         }
+        
+        // Remove the key
+        await remove(key: key)
     }
 
     /// Given: A file with contents
@@ -53,6 +59,8 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         await wait(with: completeInvoked) {
             return try await Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil).value
         }
+        // Remove the key
+        await remove(key: key)
     }
 
     /// Given: A file with empty contents
@@ -68,6 +76,8 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         await wait(with: completeInvoked) {
             return try await Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil).value
         }
+        // Remove the key
+        await remove(key: key)
     }
 
     /// Given: A large  data object
@@ -81,6 +91,8 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
                                                         data: AWSS3StoragePluginTestBase.largeDataObject,
                                                         options: nil).value
         }
+        // Remove the key
+        await remove(key: key)
     }
 
     /// Given: A large file
@@ -99,6 +111,8 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         await wait(with: completeInvoked, timeout: 600) {
             return try await Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil).value
         }
+        // Remove the key
+        await remove(key: key)
     }
 
     /// Given: An object in storage
@@ -111,6 +125,8 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         await wait(with: completeInvoked) {
             return try await Amplify.Storage.downloadData(key: key, options: .init()).value
         }
+        // Remove the key
+        await remove(key: key)
     }
 
     /// Given: An object in storage
@@ -139,6 +155,8 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             XCTFail("Failed to read file that has been downloaded to")
         }
         removeIfExists(fileURL)
+        // Remove the key
+        await remove(key: key)
     }
 
     /// Given: An object in storage
@@ -180,6 +198,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         task.resume()
 
         await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        
+        // Remove the key
+        await remove(key: key)
     }
 
     /// Given: An object in storage
@@ -210,6 +231,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             XCTAssertNotNil(item.lastModified)
             XCTAssertNotNil(item.size)
         }
+        
+        // Remove the key
+        await remove(key: key)
     }
 
     /// Given: No object in storage for the key
@@ -258,6 +282,9 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         for item in items {
             XCTAssertTrue(keys.contains(item.key), "The key that was uploaded should match the key listed")
         }
+        
+        // Remove the key
+        await remove(key: key)
     }
 
     /// Given: Objects with identifiers specified in `keys` array stored in folder named (`key1`+`key2`)
@@ -290,6 +317,13 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         XCTAssertEqual(items.count, keys.count)
         for item in items {
             XCTAssertTrue(keys.contains(item.key), "The key that was uploaded should match the key listed")
+        }
+        
+        // Remove the keys
+        for fileIndex in 1 ... 10 {
+            let key = folder + "file" + String(fileIndex) + ".txt"
+            keys.append(key)
+            await remove(key: key)
         }
     }
 

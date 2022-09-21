@@ -61,6 +61,8 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
         .store(in: &cancellables)
 
         await waitForExpectations(timeout: 30)
+        // Remove the key
+        await remove(key: key)
     }
 
     /// Given: A large data object in storage
@@ -103,6 +105,8 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
 
         task.resume()
         await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        // Remove the key
+        await remove(key: key)
     }
 
     /// Given: A large data object in storage
@@ -139,5 +143,7 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
 
         task.cancel()
         await waitForExpectations(timeout: 30)
+        // Remove the key
+        await remove(key: key)
     }
 }

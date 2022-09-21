@@ -124,11 +124,10 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
             return
         }
 
-        guard case .keyNotFound(_, description, _, _) = (getError as? StorageError) else {
+        guard case .keyNotFound(_, _, _, _) = (getError as? StorageError) else {
             XCTFail("Expected notFound error, got \(getError)")
             return
         }
-        XCTAssertEqual(description, StorageErrorConstants.localFileNotFound.errorDescription)
     }
 
     /// GivenK: `user1` user uploads some data with protected access level
@@ -160,6 +159,11 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         // get key for user1 as user2
         let data =  await get(key: key, accessLevel: accessLevel, targetIdentityId: user1IdentityId)
         XCTAssertNotNil(data)
+        
+        // Remove the key as user1
+        await signOut()
+        await signIn(username: AWSS3StoragePluginTestBase.user1, password: AWSS3StoragePluginTestBase.password)
+        await remove(key: key, accessLevel: accessLevel)
     }
 
     /// Given: `user1` user uploads some data with private access level
@@ -217,6 +221,11 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
             XCTFail("Expected validation error, got \(getError)")
             return
         }
+        
+        // Remove the key as user1
+        await signOut()
+        await signIn(username: AWSS3StoragePluginTestBase.user1, password: AWSS3StoragePluginTestBase.password)
+        await remove(key: key, accessLevel: accessLevel)
     }
 
     // MARK: - Common test functions
@@ -252,11 +261,10 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
             return
         }
 
-        guard case .keyNotFound(_, description, _, _) = (getError as? StorageError) else {
+        guard case .keyNotFound(_, _, _, _) = (getError as? StorageError) else {
             XCTFail("Expected notFound error, got \(getError)")
             return
         }
-        XCTAssertEqual(description, StorageErrorConstants.localFileNotFound.errorDescription)
     }
 
     // MARK: StoragePlugin Helper functions
@@ -286,14 +294,6 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         XCTAssertNotNil(result)
     }
 
-    private func remove(key: String, accessLevel: StorageAccessLevel) async {
-        let removeOptions = StorageRemoveRequest.Options(accessLevel: accessLevel)
-        let result = await wait(name: "Remove operation should be successful") {
-            return try await Amplify.Storage.remove(key: key, options: removeOptions)
-        }
-        XCTAssertNotNil(result)
-    }
-
     // Auth Helpers
 
     private func signIn(username: String, password: String) async {
@@ -304,7 +304,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     }
 
     func getIdentityId() async -> String? {
-        return await wait(name: "Fetch Aush Session completed") {
+        return await wait(name: "Fetch Auth Session completed") {
             guard let session = try await Amplify.Auth.fetchAuthSession() as? AuthCognitoIdentityProvider else {
                 XCTFail("Could not get auth session as AuthCognitoIdentityProvider")
                 throw AuthError.unknown("Could not get session", nil)

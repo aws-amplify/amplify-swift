@@ -52,7 +52,8 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
             .store(in: &cancellables)
 
         await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
-        await self.removeTestFile(withKey: key)
+        // Remove the key
+        await remove(key: key)
     }
 
     func testPublisherDeliveryAfterUploadCompletes() async throws {
@@ -90,17 +91,8 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
             )
             .store(in: &cancellables)
         await waitForExpectations(timeout: 0.5)
-        await self.removeTestFile(withKey: key)
-    }
-
-    // MARK: - Utilities
-
-    private func removeTestFile(withKey key: String) async {
-        do {
-            try await Amplify.Storage.remove(key: key)
-        } catch {
-            XCTFail("Unable to remove \(key)")
-        }
+        // Remove the key
+        await remove(key: key)
     }
 }
 

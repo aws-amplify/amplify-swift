@@ -78,6 +78,18 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         }
         XCTAssertNotNil(result)
     }
+    
+    func remove(key: String, accessLevel: StorageAccessLevel? = nil) async {
+        var removeOptions: StorageRemoveRequest.Options? = nil
+        if let accessLevel = accessLevel {
+            removeOptions = .init(accessLevel: accessLevel)
+        }
+
+        let result = await wait(name: "Remove operation should be successful") {
+            return try await Amplify.Storage.remove(key: key, options: removeOptions)
+        }
+        XCTAssertNotNil(result)
+    }
 
     static func getBucketFromConfig(forResource: String) throws -> String {
         let data = try TestConfigHelper.retrieve(forResource: forResource)

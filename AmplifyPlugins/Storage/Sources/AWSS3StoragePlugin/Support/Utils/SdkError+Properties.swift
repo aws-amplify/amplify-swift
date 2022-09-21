@@ -31,7 +31,16 @@ extension SdkError {
     }
 
     var statusCode: HttpStatusCode? {
-        httpResponse?.statusCode
+        if let statusCode = httpResponse?.statusCode {
+            return statusCode
+        }
+        
+        guard case let .retryError(error) = clientError,
+           let sdkError = error as? Self else {
+            return nil
+        }
+        
+        return sdkError.statusCode
     }
 
     var clientError: ClientError? {
@@ -69,7 +78,9 @@ extension SdkError {
         if let statusCode = statusCode?.rawValue,
            !isOk(statusCode: statusCode) {
             if isAccessDenied(statusCode: statusCode) {
-                storageError = StorageError.accessDenied(localizedDescription, "", self)
+                storageError = StorageError.accessDenied(StorageErrorConstants.accessDenied.errorDescription,
+                                                         StorageErrorConstants.accessDenied.recoverySuggestion,
+                                                         self)
             } else if isNotFound(statusCode: statusCode) {
                 storageError = StorageError.keyNotFound(StorageError.serviceKey,
                                                         "Received HTTP Response status code 404 NotFound",

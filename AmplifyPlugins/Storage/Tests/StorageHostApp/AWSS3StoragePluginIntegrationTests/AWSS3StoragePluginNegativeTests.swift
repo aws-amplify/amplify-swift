@@ -86,7 +86,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
 
         guard let storageError = uploadError as? StorageError,
               case let .localFileNotFound(description, _, _) = storageError else {
-            XCTFail("Expected keyNotFound error, got \(uploadError)")
+            XCTFail("Expected localFileNotFound error, got \(uploadError)")
             return
         }
 

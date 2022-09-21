@@ -64,6 +64,8 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
         // If the sleep is not added, await Amplify.reset() will be trigerred in the tear down method which will remove all the plugins, 
         // Removing all the plugins when operation is still cancelling, results in undesired behavior from the storage/auth plugin 
         sleep(5)
+        // Remove the key
+        await remove(key: key)
     }
 
     /// Given: A large data object to upload
@@ -104,6 +106,8 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
 
         task.resume()
         await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        // Remove the key
+        await remove(key: key)
     }
 
     /// Given: A large data object to upload
@@ -138,5 +142,7 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
 
         task.cancel()
         await waitForExpectations(timeout: 30)
+        // Remove the key
+        await remove(key: key)
     }
 }
