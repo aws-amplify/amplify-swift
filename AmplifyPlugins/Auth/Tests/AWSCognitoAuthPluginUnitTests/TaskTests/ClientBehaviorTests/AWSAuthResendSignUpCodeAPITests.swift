@@ -13,7 +13,7 @@ import AWSCognitoIdentity
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
 
-class ClientBehaviorResendSignUpCodeTests: AWSCognitoAuthClientBehaviorTests {
+class AWSAuthResendSignUpCodeAPITests: AWSCognitoAuthClientBehaviorTests {
 
     override func setUp() {
         super.setUp()

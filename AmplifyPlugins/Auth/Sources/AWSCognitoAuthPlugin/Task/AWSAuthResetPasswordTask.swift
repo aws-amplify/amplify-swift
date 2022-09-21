@@ -56,7 +56,7 @@ class AWSAuthResetPasswordTask: AuthResetPasswordTask {
         case .userPoolsAndIdentityPools(let data, _):
             userPoolConfigurationData = data
         case .identityPools:
-            let error = AuthError.configuration("UserPool configuration is missing", AuthPluginErrorConstants.configurationError)
+            let error = AuthError.configuration("IdentityPool configuration is missing", AuthPluginErrorConstants.configurationError)
             throw error
         }
         let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
