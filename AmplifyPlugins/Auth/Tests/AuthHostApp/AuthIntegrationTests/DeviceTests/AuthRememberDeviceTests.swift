@@ -15,6 +15,7 @@ class AuthRememberDeviceTests: AWSAuthBaseTest {
     var unsubscribeToken: UnsubscribeToken!
 
     override func setUp() async throws {
+        throw XCTSkip("Device Tracking is currently disabled. Remove once a new configuration is created for V2")
         try await super.setUp()
         AuthSessionHelper.clearSession()
     }
