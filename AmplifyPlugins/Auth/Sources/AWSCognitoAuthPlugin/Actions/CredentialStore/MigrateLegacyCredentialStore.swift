@@ -22,6 +22,8 @@ struct MigrateLegacyCredentialStore: Action {
     private let AWSCredentialsProviderKeychainExpiration = "expiration"
     private let AWSCredentialsProviderKeychainIdentityId = "identityId"
 
+    private let FederationProviderKey = "federationProvider"
+
     private let AWSCognitoAuthUserPoolCurrentUser = "currentUser"
     private let AWSCognitoAuthUserAccessToken = "accessToken"
     private let AWSCognitoAuthUserIdToken = "idToken"
@@ -61,6 +63,8 @@ struct MigrateLegacyCredentialStore: Action {
             awsCredentials = storedAWSCredentials
         }
 
+        let signInMethod = (try? getSignInMethod(from: credentialStoreEnvironment,
+                                                 with: authConfiguration)) ?? .unknown
         do {
             if let identityId = identityId,
                let awsCredentials = awsCredentials,
@@ -71,11 +75,11 @@ struct MigrateLegacyCredentialStore: Action {
                 try amplifyCredentialStore.saveCredential(credentials)
 
             } else if let identityId = identityId,
-               let awsCredentials = awsCredentials,
-               let userPoolTokens = userPoolTokens {
+                      let awsCredentials = awsCredentials,
+                      let userPoolTokens = userPoolTokens {
                 let signedInData = SignedInData(
                     signedInDate: Date.distantPast,
-                    signInMethod: .apiBased(.userSRP),
+                    signInMethod: signInMethod,
                     cognitoUserPoolTokens: userPoolTokens)
                 let credentials = AmplifyCredentials.userPoolAndIdentityPool(
                     signedInData: signedInData,
@@ -86,7 +90,7 @@ struct MigrateLegacyCredentialStore: Action {
             } else if let userPoolTokens = userPoolTokens {
                 let signedInData = SignedInData(
                     signedInDate: Date.distantPast,
-                    signInMethod: .apiBased(.userSRP),
+                    signInMethod: signInMethod,
                     cognitoUserPoolTokens: userPoolTokens)
                 let credentials = AmplifyCredentials.userPoolOnly(signedInData: signedInData)
                 try amplifyCredentialStore.saveCredential(credentials)
@@ -162,6 +166,34 @@ struct MigrateLegacyCredentialStore: Action {
                                             accessToken: accessToken,
                                             refreshToken: refreshToken,
                                             expiration: tokenExpiration)
+        }
+
+    private func getSignInMethod(
+        from credentialStoreEnvironment: CredentialStoreEnvironment,
+        with authConfiguration: AuthConfiguration) throws -> SignInMethod {
+
+            let serviceKey = "\(String.init(describing: Bundle.main.bundleIdentifier)).AWSMobileClient"
+            let legacyKeychainStore = credentialStoreEnvironment.legacyKeychainStoreFactory(serviceKey)
+            defer { try? legacyKeychainStore._removeAll() }
+
+            let federationProvider = try legacyKeychainStore._getString(FederationProviderKey)
+            switch federationProvider {
+            case "hostedUI":
+                let userPoolConfig = authConfiguration.getUserPoolConfiguration()
+                let scopes = userPoolConfig?.hostedUIConfig?.oauth.scopes
+                let provider = HostedUIProviderInfo(authProvider: nil,
+                                                    idpIdentifier: nil,
+                                                    federationProviderName: nil)
+                return .hostedUI(.init(scopes: scopes ?? [],
+                                       providerInfo: provider,
+                                       presentationAnchor: nil,
+                                       preferPrivateSession: false))
+            case "userPools":
+                return .apiBased(.userSRP)
+            default:
+                return .unknown
+            }
+
         }
 
     private func userPoolNamespace(userPoolConfig: UserPoolConfigurationData,
