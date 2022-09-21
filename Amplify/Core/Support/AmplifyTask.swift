@@ -37,7 +37,7 @@ public protocol AmplifyInProcessReportingTask {
 }
 
 public extension AmplifyInProcessReportingTask where InProcess == Progress {
-    var progress : AmplifyAsyncSequence<InProcess> {
+    var progress : AmplifyAsyncSequence<InProcess> { // swiftlint:disable:this colon
         get async {
             await inProcess
         }

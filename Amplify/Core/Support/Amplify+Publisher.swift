@@ -47,7 +47,7 @@ public extension Amplify {
                     }
                 }
             }
-            .handleEvents(receiveCancel: { task.cancel() } )
+            .handleEvents(receiveCancel: { task.cancel() } ) // swiftlint:disable:this closing_brace
             .eraseToAnyPublisher()
         }
         

@@ -238,7 +238,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
         }
     }
 
-    func submit(_ mutationEvent: MutationEvent, completion: @escaping (Result<MutationEvent, DataStoreError>)->Void) {
+    func submit(_ mutationEvent: MutationEvent, completion: @escaping (Result<MutationEvent, DataStoreError>)->Void) { // swiftlint:disable:this return_arrow_whitespace
         mutationEventIngester.submit(mutationEvent: mutationEvent, completion: completion)
     }
 

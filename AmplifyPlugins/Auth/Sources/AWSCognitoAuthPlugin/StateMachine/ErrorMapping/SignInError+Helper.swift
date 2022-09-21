@@ -57,7 +57,7 @@ extension SignInError {
                case .service(let serviceError, _) = cognitoError,
                case .passwordResetRequiredException = serviceError {
                 return true
-            }  else if let cognitoError = serviceError as? SdkError<InitiateAuthOutputError>,
+            }  else if let cognitoError = serviceError as? SdkError<InitiateAuthOutputError>, // swiftlint:disable:this statement_position
                        case .client(let clientError, _) = cognitoError,
                        case .retryError(let retryError) = clientError,
                        let cognitoServiceError = retryError as? SdkError<InitiateAuthOutputError>,

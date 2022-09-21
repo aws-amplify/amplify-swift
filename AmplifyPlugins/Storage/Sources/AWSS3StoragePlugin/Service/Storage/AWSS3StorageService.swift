@@ -56,7 +56,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
         let awsS3 = AWSS3Adapter(s3Client, config: clientConfig)
         let preSignedURLBuilder = AWSS3PreSignedURLBuilderAdapter(config: clientConfig, bucket: bucket)
 
-        var _sessionConfiguration: URLSessionConfiguration
+        var _sessionConfiguration: URLSessionConfiguration // swiftlint:disable:this identifier_name
         if let sessionConfiguration = sessionConfiguration {
             _sessionConfiguration = sessionConfiguration
         } else {

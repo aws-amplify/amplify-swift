@@ -13,7 +13,7 @@ extension AuthenticationState {
 
         init() { }
 
-        func resolve(
+        func resolve( // swiftlint:disable:this cyclomatic_complexity
             oldState: StateType,
             byApplying event: StateMachineEvent
         ) -> StateResolution<StateType> {

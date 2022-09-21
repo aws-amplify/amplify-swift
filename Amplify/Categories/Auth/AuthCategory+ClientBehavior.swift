@@ -63,7 +63,7 @@ extension AuthCategory: AuthCategoryBehavior {
     }
 
     public func resetPassword(for username: String, options: AuthResetPasswordRequest.Options? = nil) async throws -> AuthResetPasswordResult {
-        return try await plugin.resetPassword(for: username,options: options)
+        return try await plugin.resetPassword(for: username,options: options) // swiftlint:disable:this comma
     }
 
     public func confirmResetPassword(

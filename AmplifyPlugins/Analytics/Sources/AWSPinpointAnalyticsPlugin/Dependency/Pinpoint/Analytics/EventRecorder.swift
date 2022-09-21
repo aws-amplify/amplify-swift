@@ -81,7 +81,7 @@ class EventRecorder: AnalyticsEventRecording {
     func submitAllEvents() async throws -> [PinpointEvent] {
         submittedEvents = []
         let eventsBatch = try getBatchRecords()
-        if eventsBatch.count > 0 {
+        if eventsBatch.count > 0 { // swiftlint:disable:this empty_count
             let endpointProfile = await endpointClient.currentEndpointProfile()
             try await processBatch(eventsBatch, endpointProfile: endpointProfile)
         }
@@ -96,7 +96,7 @@ class EventRecorder: AnalyticsEventRecording {
         try await submit(pinpointEvents: eventBatch, endpointProfile: endpointProfile)
         try storage.removeFailedEvents()
         let nextEventsBatch = try getBatchRecords()
-        if nextEventsBatch.count > 0 {
+        if nextEventsBatch.count > 0 { // swiftlint:disable:this empty_count
             try await processBatch(nextEventsBatch, endpointProfile: endpointProfile)
         }
     }

@@ -178,7 +178,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                 
             let associatedModelIds = queriedModels.map { $0.1.identifier(schema: modelSchema).stringValue }
             associatedModels.append(contentsOf: queriedModels)
-            associatedModels.append(contentsOf: await recurseQueryAssociatedModels(modelSchema: associatedModelSchema,                                           ids: associatedModelIds))
+            associatedModels.append(contentsOf: await recurseQueryAssociatedModels(modelSchema: associatedModelSchema,                                           ids: associatedModelIds)) // swiftlint:disable:this comma
         }
         return associatedModels
     }

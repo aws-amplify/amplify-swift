@@ -28,7 +28,7 @@ extension VerifyDevicePasswordSRP {
         do {
             let dateStr = stateData.clientTimestamp.utcString
             let clientClass = type(of: srpClient)
-            let u = try clientClass.calculateUHexValue(
+            let u = try clientClass.calculateUHexValue( // swiftlint:disable:this identifier_name
                 clientPublicKeyHexValue: stateData.srpKeyPair.publicKeyHexValue,
                 serverPublicKeyHexValue: serverPublicBHexString)
             // HKDF

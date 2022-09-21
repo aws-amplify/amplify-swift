@@ -30,10 +30,10 @@ struct InitializeAuthConfiguration: Action {
             if case .amplifyCredentials(let fetchedCredentials) = data {
                 credentials = fetchedCredentials
             }
-        }
+        } // swiftlint:disable:this statement_position
         catch KeychainStoreError.itemNotFound {
             logVerbose("No existing session found.", environment: environment)
-        }
+        } // swiftlint:disable:this statement_position
         catch {
             logError("Error when loading amplify credentials: \(error)", environment: environment)
         }

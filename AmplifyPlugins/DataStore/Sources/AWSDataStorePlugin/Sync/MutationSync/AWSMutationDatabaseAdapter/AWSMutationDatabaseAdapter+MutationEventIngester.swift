@@ -13,7 +13,7 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
 
     /// Accepts a mutation event without a version, applies the latest version from the MutationSyncMetadata table,
     /// writes the updated mutation event to the local database, then submits it to `mutationEventSubject`
-    func submit(mutationEvent: MutationEvent, completion: @escaping (Result<MutationEvent, DataStoreError>)->Void) {
+    func submit(mutationEvent: MutationEvent, completion: @escaping (Result<MutationEvent, DataStoreError>)->Void) { // swiftlint:disable:this return_arrow_whitespace
         Task {
             log.verbose("\(#function): \(mutationEvent)")
             
@@ -32,7 +32,7 @@ extension AWSMutationDatabaseAdapter: MutationEventIngester {
     /// rejects the event with an error
     func resolveConflictsThenSave(mutationEvent: MutationEvent,
                                   storageAdapter: StorageEngineAdapter,
-                                  completion: @escaping (Result<MutationEvent, DataStoreError>)->Void) {
+                                  completion: @escaping (Result<MutationEvent, DataStoreError>)->Void) { // swiftlint:disable:this return_arrow_whitespace
 
         // We don't want to query MutationSync<AnyModel> because a) we already have the model, and b) delete mutations
         // are submitted *after* the delete has already been applied to the local data store, meaning there is no model
