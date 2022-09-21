@@ -10,13 +10,13 @@ import XCTest
 
 class CredentialStoreConfigurationTests: AWSAuthBaseTest {
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         AuthSessionHelper.clearSession()
     }
 
-    override func tearDown() {
-        super.tearDown()
+    override func tearDown() async throws {
+        try await super.tearDown()
         AuthSessionHelper.clearSession()
     }
 
@@ -203,7 +203,7 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         }
 
         // When configuration don't change changed
-        UserDefaults.standard.removeObject(forKey: "isKeychainConfigured")
+        UserDefaults.standard.removeObject(forKey: "amplify_secure_storage_scopes.awsCognitoAuthPlugin.isKeychainConfigured")
         let newCredentialStore = AWSCognitoAuthCredentialStore(authConfiguration: initialAuthConfig)
 
         // Then credentials should be nil

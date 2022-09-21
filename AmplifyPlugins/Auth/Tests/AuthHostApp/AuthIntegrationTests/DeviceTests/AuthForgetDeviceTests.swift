@@ -13,17 +13,14 @@ class AuthForgetDeviceTests: AWSAuthBaseTest {
 
     var unsubscribeToken: UnsubscribeToken!
 
-    override func setUp() {
-        super.setUp()
-        initializeAmplify()
+    override func setUp() async throws {
+        try await super.setUp()
         AuthSessionHelper.clearSession()
     }
 
     override func tearDown() async throws {
         try await super.tearDown()
-        await Amplify.reset()
         AuthSessionHelper.clearSession()
-        sleep(2)
     }
 
     /// Calling forget device should return a successful result

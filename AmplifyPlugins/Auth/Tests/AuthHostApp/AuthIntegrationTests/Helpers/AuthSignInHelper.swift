@@ -9,6 +9,13 @@ import Amplify
 import XCTest
 
 enum AuthSignInHelper {
+    
+    static func signOut() async {
+        let session = try? await Amplify.Auth.fetchAuthSession()
+        if session?.isSignedIn ?? false {
+            _ = await Amplify.Auth.signOut()
+        }
+    }
 
     static func signUpUser(username: String, password: String, email: String) async throws -> Bool {
         let options = AuthSignUpRequest.Options(userAttributes: [AuthUserAttribute(.email, value: email)])

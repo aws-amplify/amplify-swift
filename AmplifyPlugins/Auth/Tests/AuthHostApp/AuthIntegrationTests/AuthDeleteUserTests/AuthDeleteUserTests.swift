@@ -11,16 +11,9 @@ import AWSCognitoAuthPlugin
 
 class AuthDeleteUserTests: AWSAuthBaseTest {
 
-    override func setUp() {
-        super.setUp()
-        initializeAmplify()
+    override func setUp() async throws {
+        try await super.setUp()
         AuthSessionHelper.clearSession()
-    }
-
-    override func tearDown() async throws {
-        try await super.tearDown()
-        await Amplify.reset()
-        sleep(2)
     }
 
     /// Test deleteUser in authenticated state

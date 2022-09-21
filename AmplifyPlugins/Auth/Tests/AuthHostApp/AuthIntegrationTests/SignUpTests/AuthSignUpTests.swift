@@ -11,18 +11,6 @@ import AWSCognitoAuthPlugin
 
 class AuthSignUpTests: AWSAuthBaseTest {
 
-    override func setUp() async throws {
-        try await super.setUp()
-        initializeAmplify()
-        _ = await Amplify.Auth.signOut()
-    }
-
-    override func tearDown() async throws {
-        try await super.tearDown()
-        await Amplify.reset()
-        sleep(2)
-    }
-
     /// Test if user registration is successful.
     ///
     /// - Given: A username that is not present in the system
