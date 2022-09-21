@@ -10,7 +10,7 @@ import XCTest
 
 extension XCTestCase {
 
-    static let networkTimeout = TimeInterval(10)
+    static let defaultNetworkTimeoutForAsyncExpectations = TimeInterval(10)
 
     /// Creates a new async expectation with an associated description.
     ///
@@ -56,13 +56,13 @@ extension XCTestCase {
     ///
     /// - Parameters:
     ///   - expectation: The async expectation that will be fulfilled once the code in `action` completes.
-    ///   - timeout: How long to wait for `action` to complete. Defaults to `TestCommonConstants.networkTimeout`.
+    ///   - timeout: How long to wait for `action` to complete. Defaults to 10 seconds.
     ///   - action: Closure containing async code.
     ///
     /// - Returns:The result of successfuly running `action`, or `nil` if it threw an error.
     @discardableResult
     func wait<T>(with expectation: AsyncExpectation,
-                 timeout: TimeInterval = networkTimeout,
+                 timeout: TimeInterval = defaultNetworkTimeoutForAsyncExpectations,
                  action: @escaping () async throws -> T) async -> T? {
         let task = Task { () -> T? in
             defer {
@@ -88,13 +88,13 @@ extension XCTestCase {
     ///
     /// - Parameters:
     ///   - name: The name that will be used to create the async expectation that will be fulfilled once the code in `action` completes.
-    ///   - timeout: How long to wait for `action` to complete. Defaults to `TestCommonConstants.networkTimeout`.
+    ///   - timeout: How long to wait for `action` to complete. Defaults to 10 seconds.
     ///   - action: Closure containing async code.
     ///
     /// - Returns:The result of successfuly running `action`, or `nil` if it threw an error.
     @discardableResult
     func wait<T>(name: String,
-                 timeout: TimeInterval = networkTimeout,
+                 timeout: TimeInterval = defaultNetworkTimeoutForAsyncExpectations,
                  action: @escaping () async throws -> T) async -> T? {
         let expectation = asyncExpectation(description: name)
         return await wait(with: expectation, timeout: timeout, action: action)
@@ -108,13 +108,13 @@ extension XCTestCase {
     ///
     /// - Parameters:
     ///   - expectation: The async expectation that will be fulfilled once the code in `action` completes.
-    ///   - timeout: How long to wait for `action` to complete. Defaults to `TestCommonConstants.networkTimeout`.
+    ///   - timeout: How long to wait for `action` to complete. Defaults to 10 seconds.
     ///   - action: Closure containing async code.
     ///
     /// - Returns:The error thrown during the execution of `action`, or `nil` if it run successfully.
     @discardableResult
     func waitError<T>(with expectation: AsyncExpectation,
-                      timeout: TimeInterval = networkTimeout,
+                      timeout: TimeInterval = defaultNetworkTimeoutForAsyncExpectations,
                       action: @escaping () async throws -> T) async -> Error? {
         let task = Task { () -> Error? in
             defer {
@@ -142,13 +142,13 @@ extension XCTestCase {
     ///
     /// - Parameters:
     ///   - expectation: The async expectation that will be fulfilled once the code in `action` completes.
-    ///   - timeout: How long to wait for `action` to complete. Defaults to `TestCommonConstants.networkTimeout`.
+    ///   - timeout: How long to wait for `action` to complete. Defaults to 10 seconds.
     ///   - action: Closure containing async code.
     ///
     /// - Returns:The error thrown during the execution of `action`, or `nil` if it run successfully.
     @discardableResult
     func waitError<T>(name: String,
-                      timeout: TimeInterval = networkTimeout,
+                      timeout: TimeInterval = defaultNetworkTimeoutForAsyncExpectations,
                       action: @escaping () async throws -> T) async -> Error? {
         let expectation = asyncExpectation(description: name)
         return await waitError(with: expectation, timeout: timeout, action: action)
