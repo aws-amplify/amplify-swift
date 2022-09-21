@@ -225,7 +225,6 @@ enum Defaults {
 struct MockCredentialStoreOperationClient: CredentialStoreStateBehaviour {
 
     func fetchData(type: CredentialStoreDataType) async throws -> CredentialStoreData {
-        throw KeychainStoreError.itemNotFound
         switch type {
         case .amplifyCredentials:
             return .amplifyCredentials(.testData)
