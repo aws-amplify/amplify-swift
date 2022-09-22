@@ -82,6 +82,10 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
                            continue
                        }
                    }
+               case .notConfigured:
+                   throw AuthError.configuration(
+                    "UserPool configuration is missing",
+                    AuthPluginErrorConstants.configurationError)
                default:
                    throw invalidStateError
                }

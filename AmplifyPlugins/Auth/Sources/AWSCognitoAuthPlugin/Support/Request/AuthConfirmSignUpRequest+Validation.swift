@@ -10,6 +10,15 @@ import Amplify
 extension AuthConfirmSignUpRequest {
 
     func hasError() throws {
+
+        guard !username.isEmpty else {
+            let error = AuthError.validation(
+                AuthPluginErrorConstants.signUpUsernameError.field,
+                AuthPluginErrorConstants.signUpUsernameError.errorDescription,
+                AuthPluginErrorConstants.signUpUsernameError.recoverySuggestion, nil)
+            throw error
+        }
+
         guard !code.isEmpty else {
                let error = AuthError.validation(
                 AuthPluginErrorConstants.confirmSignUpCodeError.field,

@@ -393,54 +393,51 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
 
     // TODO: Fix the test below
 
-//    /// Test a confirmSignIn with User pool configuration from service
-//    ///
-//    /// - Given: an auth plugin with mocked service with no User Pool configuration
-//    ///
-//    /// - When:
-//    ///    - I invoke confirmSignIn with a valid confirmation code
-//    /// - Then:
-//    ///    - I should get a .configuration error
-//    ///
-//    func testConfirmSignInWithInvalidUserPoolConfigurationException() {
-//        let identityPoolConfigData = Defaults.makeIdentityConfigData()
-//        let authorizationEnvironment = BasicAuthorizationEnvironment(
-//            identityPoolConfiguration: identityPoolConfigData,
-//            cognitoIdentityFactory: Defaults.makeIdentity)
-//        let environment = AuthEnvironment(
-//            configuration: .identityPools(identityPoolConfigData),
-//            userPoolConfigData: nil,
-//            identityPoolConfigData: identityPoolConfigData,
-//            authenticationEnvironment: nil,
-//            authorizationEnvironment: authorizationEnvironment,
-//            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
-//        )
-//        let stateMachine = Defaults.authStateMachineWith(environment: environment,
-//                                                         initialState: initialState)
-//        let plugin = AWSCognitoAuthPlugin()
-//        plugin.configure(
-//            authConfiguration: .identityPools(identityPoolConfigData),
-//            authEnvironment: environment,
-//            authStateMachine: stateMachine,
-//            credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
-//            hubEventHandler: MockAuthHubEventBehavior())
-//       let resultExpectation = expectation(description: "Should receive a result")
-//        _ = plugin.confirmSignIn(challengeResponse: "code") { result in
-//            defer {
-//                resultExpectation.fulfill()
-//            }
-//            switch result {
-//            case .success(let signinResult):
-//                XCTFail("Should not produce result - \(signinResult)")
-//            case .failure(let error):
-//                guard case .configuration = error else {
-//                    XCTFail("Should produce configuration intead produced \(error)")
-//                    return
-//                }
-//            }
-//        }
-//        wait(for: [resultExpectation], timeout: apiTimeout)
-//    }
+    /// Test a confirmSignIn with User pool configuration from service
+    ///
+    /// - Given: an auth plugin with mocked service with no User Pool configuration
+    ///
+    /// - When:
+    ///    - I invoke confirmSignIn with a valid confirmation code
+    /// - Then:
+    ///    - I should get a .configuration error
+    ///
+    func testConfirmSignInWithInvalidUserPoolConfigurationException() async {
+        let identityPoolConfigData = Defaults.makeIdentityConfigData()
+        let authorizationEnvironment = BasicAuthorizationEnvironment(
+            identityPoolConfiguration: identityPoolConfigData,
+            cognitoIdentityFactory: Defaults.makeIdentity)
+        let environment = AuthEnvironment(
+            configuration: .identityPools(identityPoolConfigData),
+            userPoolConfigData: nil,
+            identityPoolConfigData: identityPoolConfigData,
+            authenticationEnvironment: nil,
+            authorizationEnvironment: authorizationEnvironment,
+            credentialStoreClientFactory: Defaults.makeCredentialStoreOperationBehaviour,
+            logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
+        )
+        let stateMachine = Defaults.authStateMachineWith(environment: environment,
+                                                         initialState: .notConfigured)
+        let plugin = AWSCognitoAuthPlugin()
+        plugin.configure(
+            authConfiguration: .identityPools(identityPoolConfigData),
+            authEnvironment: environment,
+            authStateMachine: stateMachine,
+            credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
+            hubEventHandler: MockAuthHubEventBehavior())
+
+
+        do {
+            _ = try await plugin.confirmSignIn(challengeResponse: "code")
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.configuration(_, _, _) = error else {
+                XCTFail("Should produce configuration instead produced \(error)")
+                return
+            }
+        }
+
+    }
 
     /// Test a confirmSignIn with MFAMethodNotFoundException from service
     ///
