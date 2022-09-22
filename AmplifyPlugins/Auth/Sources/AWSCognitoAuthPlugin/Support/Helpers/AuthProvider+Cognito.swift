@@ -47,4 +47,22 @@ extension AuthProvider {
             return providerName
         }
     }
+
+    init(identityPoolProviderName: String) {
+        switch identityPoolProviderName {
+        case "www.amazon.com":
+            self = .amazon
+        case "appleid.apple.com":
+            self = .apple
+        case "graph.facebook.com":
+            self = .facebook
+        case "accounts.google.com":
+            self = .google
+        case "api.twitter.com":
+            self = .twitter
+        default:
+            self = .oidc(identityPoolProviderName)
+        }
+
+    }
 }
