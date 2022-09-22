@@ -56,6 +56,7 @@ struct VerifyPasswordSRP: Action {
             let responseEvent = try await UserPoolSignInHelper.sendRespondToAuth(
                 request: request,
                 for: username,
+                signInMethod: .apiBased(.userSRP),
                 environment: userPoolEnv)
             logVerbose("\(#fileID) Sending event \(responseEvent)",
                        environment: environment)

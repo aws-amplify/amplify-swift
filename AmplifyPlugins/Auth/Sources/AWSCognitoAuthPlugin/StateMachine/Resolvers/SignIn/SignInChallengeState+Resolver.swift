@@ -21,17 +21,18 @@ extension SignInChallengeState {
             switch oldState {
             case .notStarted:
 
-                if case .waitForAnswer(let challenge) = event.isChallengeEvent {
-                    return .init(newState: .waitingForAnswer(challenge))
+                if case .waitForAnswer(let challenge, let signInMethod) = event.isChallengeEvent {
+                    return .init(newState: .waitingForAnswer(challenge, signInMethod))
                 }
                 return .from(oldState)
 
-            case .waitingForAnswer(let challenge):
+            case .waitingForAnswer(let challenge, let signInMethod):
 
                 if case .verifyChallengeAnswer(let answerEventData) = event.isChallengeEvent {
                     let action = VerifySignInChallenge(
                         challenge: challenge,
-                        confirmSignEventData: answerEventData)
+                        confirmSignEventData: answerEventData,
+                        signInMethod: signInMethod)
                     return .init(newState: .verifying(challenge, answerEventData.answer), actions: [action])
                 }
                 return .from(oldState)

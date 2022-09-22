@@ -13,7 +13,7 @@ extension SignInChallengeState {
         var additionalMetadataDictionary: [String: Any] = [:]
         switch self {
 
-        case .waitingForAnswer(let respondAuthChallenge),
+        case .waitingForAnswer(let respondAuthChallenge, _),
                 .verifying(let respondAuthChallenge, _):
             additionalMetadataDictionary = respondAuthChallenge.debugDictionary
         case .error(let respondAuthChallenge, let error):

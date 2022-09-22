@@ -71,7 +71,9 @@ struct InitiateMigrateAuth: Action {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
         let response = try await cognitoClient.initiateAuth(input: request)
-        return try UserPoolSignInHelper.parseResponse(response, for: username)
+        return try UserPoolSignInHelper.parseResponse(response,
+                                                      for: username,
+                                                      signInMethod: .apiBased(.userPassword))
     }
 
 }

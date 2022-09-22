@@ -17,6 +17,8 @@ struct VerifySignInChallenge: Action {
 
     let confirmSignEventData: ConfirmSignInEventData
 
+    let signInMethod: SignInMethod
+
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
@@ -39,6 +41,7 @@ struct VerifySignInChallenge: Action {
             let responseEvent = try await UserPoolSignInHelper.sendRespondToAuth(
                 request: input,
                 for: username,
+                signInMethod: signInMethod,
                 environment: userpoolEnv)
             logVerbose("\(#fileID) Sending event \(responseEvent)",
                        environment: environment)

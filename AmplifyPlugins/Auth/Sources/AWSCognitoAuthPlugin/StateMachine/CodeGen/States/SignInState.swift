@@ -13,7 +13,7 @@ enum SignInState: State {
     case signingInWithSRPCustom(SRPSignInState, SignInEventData)
     case signingInWithCustom(CustomSignInState, SignInEventData)
     case signingInViaMigrateAuth(MigrateSignInState, SignInEventData)
-    case resolvingChallenge(SignInChallengeState, AuthChallengeType)
+    case resolvingChallenge(SignInChallengeState, AuthChallengeType, SignInMethod)
     case signingInWithHostedUI(HostedUISignInState)
     case confirmingDevice
     case resolvingDeviceSrpa(DeviceSRPState)

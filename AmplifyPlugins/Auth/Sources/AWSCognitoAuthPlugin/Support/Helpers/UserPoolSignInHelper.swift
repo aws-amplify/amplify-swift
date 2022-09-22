@@ -26,8 +26,8 @@ struct UserPoolSignInHelper {
         } else if case .signingInWithCustom(let customAuthState, _) = signInState,
                   case .error(let signInError) = customAuthState {
             return try validateError(signInError: signInError)
-        } else if case .resolvingChallenge(let challengeState, let challengeType) = signInState,
-                  case .waitingForAnswer(let challenge) = challengeState {
+        } else if case .resolvingChallenge(let challengeState, let challengeType, _) = signInState,
+                  case .waitingForAnswer(let challenge, _) = challengeState {
             return try validateResult(for: challengeType, with: challenge)
         } else if case .signingInWithHostedUI(let hostedUIState) = signInState,
                   case .error(let hostedUIError) = hostedUIState {
@@ -65,13 +65,14 @@ struct UserPoolSignInHelper {
     static func sendRespondToAuth(
         request: RespondToAuthChallengeInput,
         for username: String,
+        signInMethod: SignInMethod,
         environment: UserPoolEnvironment) async throws -> StateMachineEvent {
 
             let client = try environment.cognitoUserPoolFactory()
 
             do {
                 let response = try await client.respondToAuthChallenge(input: request)
-                let event = try self.parseResponse(response, for: username)
+                let event = try self.parseResponse(response, for: username, signInMethod: signInMethod)
                 return event
             } catch {
                 let authError = SignInError.service(error: error)
@@ -81,7 +82,8 @@ struct UserPoolSignInHelper {
 
     static func parseResponse(
         _ response: SignInResponseBehavior,
-        for username: String) throws -> StateMachineEvent {
+        for username: String,
+        signInMethod: SignInMethod) throws -> StateMachineEvent {
 
             if let authenticationResult = response.authenticationResult,
                let idToken = authenticationResult.idToken,
@@ -94,8 +96,7 @@ struct UserPoolSignInHelper {
                                                               expiresIn: authenticationResult.expiresIn)
                 let signedInData = SignedInData(
                     signedInDate: Date(),
-                    // TODO: remove hardcoded sign in method
-                    signInMethod: .apiBased(.userSRP),
+                    signInMethod: signInMethod,
                     deviceMetadata: authenticationResult.deviceMetadata,
                     cognitoUserPoolTokens: userPoolTokens)
 

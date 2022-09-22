@@ -11,7 +11,7 @@ enum SignInChallengeState: State {
 
     case notStarted
 
-    case waitingForAnswer(RespondToAuthChallenge)
+    case waitingForAnswer(RespondToAuthChallenge, SignInMethod)
 
     case verifying(RespondToAuthChallenge, String)
 

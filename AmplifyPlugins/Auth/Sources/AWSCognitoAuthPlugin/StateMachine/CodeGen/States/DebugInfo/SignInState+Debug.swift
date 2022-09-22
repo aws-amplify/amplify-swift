@@ -21,9 +21,10 @@ extension SignInState {
             )
         case .signingInWithHostedUI(let substate):
             additionalMetadataDictionary = substate.debugDictionary
-        case .resolvingChallenge(let challengeState, let challengeType):
+        case .resolvingChallenge(let challengeState, let challengeType, let signInMethod):
             additionalMetadataDictionary = challengeState.debugDictionary
             additionalMetadataDictionary["challengeType"] = challengeType
+            additionalMetadataDictionary["signInMethod"] = signInMethod
         default:
             additionalMetadataDictionary = [:]
         }
