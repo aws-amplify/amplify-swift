@@ -11,18 +11,6 @@ import AWSCognitoAuthPlugin
 
 class AuthConfirmSignUpTests: AWSAuthBaseTest {
 
-    override func setUp() async throws {
-        try await super.setUp()
-        initializeAmplify()
-        try await Amplify.Auth.signOut()
-    }
-
-    override func tearDown() async throws {
-        try await super.tearDown()
-        await Amplify.reset()
-        sleep(2)
-    }
-
     /// Test if confirmSignUp returns userNotFound error for a non existing user
     ///
     /// - Given: A user which is not registered to the configured user pool

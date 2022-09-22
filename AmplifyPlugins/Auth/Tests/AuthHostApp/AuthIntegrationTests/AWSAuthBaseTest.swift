@@ -20,6 +20,17 @@ class AWSAuthBaseTest: XCTestCase {
     let credentialsFile = "testconfiguration/AWSCognitoAuthPluginIntegrationTests-credentials"
 
     var amplifyConfiguration: AmplifyConfiguration!
+    
+    override func setUp() async throws {
+        try await super.setUp()
+        initializeAmplify()
+        await Amplify.Auth.signOut()
+    }
+    
+    override func tearDown() async throws {
+        try await super.tearDown()
+        await Amplify.reset()
+    }
 
     func initializeAmplify() {
         do {

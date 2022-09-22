@@ -14,17 +14,15 @@ class AuthFetchDeviceTests: AWSAuthBaseTest {
 
     var unsubscribeToken: UnsubscribeToken!
 
-    override func setUp() {
-        super.setUp()
-        initializeAmplify()
+    override func setUp() async throws {
+        throw XCTSkip("Device Tracking is currently disabled. Remove once a new configuration is created for V2")
+        try await super.setUp()
         AuthSessionHelper.clearSession()
     }
 
     override func tearDown() async throws {
         try await super.tearDown()
-        await Amplify.reset()
         AuthSessionHelper.clearSession()
-        sleep(2)
     }
 
     /// Calling fetch devices with a user signed in should return a successful result
@@ -55,10 +53,15 @@ class AuthFetchDeviceTests: AWSAuthBaseTest {
             }
         }
 
-        _ = try await AuthSignInHelper.registerAndSignInUser(
-            username: username,
-            password: password,
-            email: defaultTestEmail)
+        do {
+            _ = try await AuthSignInHelper.registerAndSignInUser(
+                username: username,
+                password: password,
+                email: defaultTestEmail)
+        } catch {
+            print(error)
+        }
+        
         await waitForExpectations([signInExpectation], timeout: networkTimeout)
 
         // fetch devices

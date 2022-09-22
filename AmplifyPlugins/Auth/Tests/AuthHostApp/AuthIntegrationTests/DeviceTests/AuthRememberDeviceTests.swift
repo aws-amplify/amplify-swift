@@ -14,17 +14,15 @@ class AuthRememberDeviceTests: AWSAuthBaseTest {
 
     var unsubscribeToken: UnsubscribeToken!
 
-    override func setUp() {
-        super.setUp()
-        initializeAmplify()
+    override func setUp() async throws {
+        throw XCTSkip("Device Tracking is currently disabled. Remove once a new configuration is created for V2")
+        try await super.setUp()
         AuthSessionHelper.clearSession()
     }
 
     override func tearDown() async throws {
         try await super.tearDown()
-        await Amplify.reset()
         AuthSessionHelper.clearSession()
-        sleep(2)
     }
 
     /// Calling remember device should return a successful result

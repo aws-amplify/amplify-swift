@@ -14,9 +14,8 @@ class AuthSignOutTests: AWSAuthBaseTest {
     // This can only be called once per process.
     private static var setSDKLogLevelDebug = true
 
-    override func setUp() {
-        super.setUp()
-        initializeAmplify()
+    override func setUp() async throws {
+        try await super.setUp()
         AuthSessionHelper.clearSession()
         if Self.setSDKLogLevelDebug {
             SDKLoggingSystem.initialize(logLevel: .debug)
@@ -26,9 +25,7 @@ class AuthSignOutTests: AWSAuthBaseTest {
 
     override func tearDown() async throws {
         try await super.tearDown()
-        await Amplify.reset()
         AuthSessionHelper.clearSession()
-        sleep(2)
     }
 
     /// Test successful signOut with globalSignout enabled.

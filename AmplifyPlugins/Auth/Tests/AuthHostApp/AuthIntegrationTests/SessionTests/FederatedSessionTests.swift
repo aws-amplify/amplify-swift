@@ -12,16 +12,14 @@ import AWSPluginsCore
 
 class FederatedSessionTests: AWSAuthBaseTest {
 
-    override func setUp() {
-        super.setUp()
-        initializeAmplify()
+    override func setUp() async throws {
+        try await super.setUp()
         AuthSessionHelper.clearSession()
     }
 
     override func tearDown() async throws {
         try await super.tearDown()
         AuthSessionHelper.clearSession()
-        await Amplify.reset()
     }
 
     /// Test unsuccessful federation

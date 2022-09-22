@@ -11,17 +11,6 @@ import AWSCognitoAuthPlugin
 
 class AuthConfirmResetPasswordTests: AWSAuthBaseTest {
 
-    override func setUp() {
-        super.setUp()
-        initializeAmplify()
-    }
-
-    override func tearDown() async throws {
-        try await super.tearDown()
-        await Amplify.reset()
-        sleep(2)
-    }
-
     /// Test if confirmResetPassword returns userNotFound error for a non existing user
     ///
     /// - Given: A user which is not registered to the configured user pool
