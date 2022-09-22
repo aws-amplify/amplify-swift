@@ -83,7 +83,7 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
     ///    - The remove all method gets called for both user pool and identity pool
     func testClearLegacyCredentialStore() async {
         let migrationCompletionInvoked = expectation(description: "migrationCompletionInvoked")
-        migrationCompletionInvoked.expectedFulfillmentCount = 2
+        migrationCompletionInvoked.expectedFulfillmentCount = 3
 
         let mockLegacyKeychainStoreBehavior = MockKeychainStoreBehavior(
             data: "mock",
