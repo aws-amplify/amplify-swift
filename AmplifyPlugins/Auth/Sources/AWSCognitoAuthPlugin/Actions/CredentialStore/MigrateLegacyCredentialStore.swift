@@ -23,6 +23,7 @@ struct MigrateLegacyCredentialStore: Action {
     private let AWSCredentialsProviderKeychainIdentityId = "identityId"
 
     private let FederationProviderKey = "federationProvider"
+    private let LoginsMapKey = "loginsMap"
 
     private let AWSCognitoAuthUserPoolCurrentUser = "currentUser"
     private let AWSCognitoAuthUserAccessToken = "accessToken"
@@ -62,21 +63,37 @@ struct MigrateLegacyCredentialStore: Action {
             identityId = storedIdentityId
             awsCredentials = storedAWSCredentials
         }
-
+        let loginsMap = getCachedLoginMaps(from: credentialStoreEnvironment)
         let signInMethod = (try? getSignInMethod(from: credentialStoreEnvironment,
                                                  with: authConfiguration)) ?? .unknown
         do {
             if let identityId = identityId,
                let awsCredentials = awsCredentials,
                userPoolTokens == nil {
-                let credentials = AmplifyCredentials.identityPoolOnly(
-                    identityID: identityId,
-                    credentials: awsCredentials)
-                try amplifyCredentialStore.saveCredential(credentials)
+
+                if !loginsMap.isEmpty,
+                   let providerName = loginsMap.first?.key,
+                   let providerToken = loginsMap.first?.value {
+                    logVerbose("\(#fileID) Federated signIn", environment: environment)
+                    let provider = AuthProvider(identityPoolProviderName: providerName)
+                    let credentials = AmplifyCredentials.identityPoolWithFederation(
+                        federatedToken: .init(token: providerToken, provider: provider),
+                        identityID: identityId,
+                        credentials: awsCredentials)
+                    try amplifyCredentialStore.saveCredential(credentials)
+
+                } else {
+                    logVerbose("\(#fileID) Guest user", environment: environment)
+                    let credentials = AmplifyCredentials.identityPoolOnly(
+                        identityID: identityId,
+                        credentials: awsCredentials)
+                    try amplifyCredentialStore.saveCredential(credentials)
+                }
 
             } else if let identityId = identityId,
                       let awsCredentials = awsCredentials,
                       let userPoolTokens = userPoolTokens {
+                logVerbose("\(#fileID) User pool with identity pool", environment: environment)
                 let signedInData = SignedInData(
                     signedInDate: Date.distantPast,
                     signInMethod: signInMethod,
@@ -88,6 +105,7 @@ struct MigrateLegacyCredentialStore: Action {
                 try amplifyCredentialStore.saveCredential(credentials)
 
             } else if let userPoolTokens = userPoolTokens {
+                logVerbose("\(#fileID) Only user pool", environment: environment)
                 let signedInData = SignedInData(
                     signedInDate: Date.distantPast,
                     signInMethod: signInMethod,
@@ -167,6 +185,23 @@ struct MigrateLegacyCredentialStore: Action {
                                             refreshToken: refreshToken,
                                             expiration: tokenExpiration)
         }
+
+    private func getCachedLoginMaps(
+        from credentialStoreEnvironment: CredentialStoreEnvironment)
+    -> [String: String] {
+
+        let serviceKey = "\(String.init(describing: Bundle.main.bundleIdentifier)).AWSMobileClient"
+        let legacyKeychainStore = credentialStoreEnvironment.legacyKeychainStoreFactory(serviceKey)
+
+        guard let data = try? legacyKeychainStore._getData(LoginsMapKey) else {
+            return [:]
+        }
+
+        guard let loginMaps = try? JSONDecoder().decode([String: String].self, from: data) else {
+            return [:]
+        }
+        return loginMaps
+    }
 
     private func getSignInMethod(
         from credentialStoreEnvironment: CredentialStoreEnvironment,
