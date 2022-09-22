@@ -151,7 +151,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         }
 
         XCTAssertNotNil(operation)
-        waitForExpectations(timeout: 600)
+        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: An object in storage
