@@ -154,6 +154,29 @@ class AmplifyPublisherTests: XCTestCase {
         XCTAssertEqual(input, output)
         sink.cancel()
     }
+    
+    func testCreateFromAmplifyAsyncThrowingSequenceSuccess() async throws {
+        let input = Array(1...100)
+        let sequence = createAmplifyAsyncThrowingSequence(elements: input)
+        var output = [Int]()
+        let finished = expectation(description: "completion finished")
+        
+        let sink = Amplify.Publisher.create(sequence)
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    finished.fulfill()
+                case .failure(let error):
+                    XCTFail("Failed with error: \(error)")
+                }
+            } receiveValue: { value in
+                output.append(value)
+            }
+
+        await waitForExpectations(timeout: 1)
+        XCTAssertEqual(input, output)
+        sink.cancel()
+    }
 
     func testCreateFromBasicAsyncSequenceSuccess() async throws {
         let expected = [1, 2, 4, 8, 16]
@@ -251,6 +274,17 @@ class AmplifyPublisherTests: XCTestCase {
 
     private func createAmplifyAsyncSequence<Element>(elements: [Element]) -> AmplifyAsyncSequence<Element> {
         let sequence = AmplifyAsyncSequence<Element>()
+        Task {
+            for element in elements {
+                sequence.send(element)
+            }
+            sequence.finish()
+        }
+        return sequence
+    }
+    
+    private func createAmplifyAsyncThrowingSequence<Element>(elements: [Element]) -> AmplifyAsyncThrowingSequence<Element> {
+        let sequence = AmplifyAsyncThrowingSequence<Element>()
         Task {
             for element in elements {
                 sequence.send(element)
