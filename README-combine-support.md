@@ -34,7 +34,7 @@ let sink = Amplify.Publisher.create {
 ```
 
 ```swift
-let subscription = try await Amplify.API.subscribe(
+let subscription = Amplify.API.subscribe(
     request: .subscription(of: Todo.self, type: .onCreate)
 )
 
