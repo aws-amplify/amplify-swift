@@ -174,8 +174,9 @@ struct MockedAuthCognitoPluginHelper {
                                         randomStringFactory: makeRandomString)
     }
 
-    private func authorizationEnvironment(identityPoolConfigData: IdentityPoolConfigurationData) -> AuthorizationEnvironment {
-        BasicAuthorizationEnvironment(identityPoolConfiguration: identityPoolConfigData,
+    private func authorizationEnvironment(
+        identityPoolConfigData: IdentityPoolConfigurationData) -> BasicAuthorizationEnvironment {
+            BasicAuthorizationEnvironment(identityPoolConfiguration: identityPoolConfigData,
                                       cognitoIdentityFactory: makeIdentityClient)
     }
 
