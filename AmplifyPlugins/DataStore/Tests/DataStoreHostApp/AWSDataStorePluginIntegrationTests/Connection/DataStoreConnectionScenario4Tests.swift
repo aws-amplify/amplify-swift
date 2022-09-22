@@ -103,7 +103,6 @@ class DataStoreConnectionScenario4Tests: SyncEngineIntegrationTestBase {
         try await startAmplifyAndWaitForSync()
         let post = try await savePost(title: "title")
         _ = try await saveComment(content: "content", post: post)
-        let listCommentByPostIDCompleted = expectation(description: "list projects completed")
         let predicate = Comment4.keys.post.eq(post.id)
         let queriedComments = try await Amplify.DataStore.query(Comment4.self, where: predicate)
         XCTAssertEqual(queriedComments.count, 1)
