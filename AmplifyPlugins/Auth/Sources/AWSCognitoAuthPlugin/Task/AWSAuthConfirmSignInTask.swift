@@ -48,7 +48,7 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
                    throw AuthError.unknown("Sign in reached an error state", error)
 
                case .signingIn(let signInState):
-                   if case .resolvingChallenge(let challengeState, _) = signInState,
+                   if case .resolvingChallenge(let challengeState, _, _) = signInState,
                       case .error(_, let signInError) = challengeState {
                        let authError = signInError.authError
                        if case .service(_, _, let serviceError) = authError,
@@ -63,7 +63,7 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
                        } else {
                            throw authError
                        }
-                   } else if case .resolvingChallenge(let challengeState, _) = signInState {
+                   } else if case .resolvingChallenge(let challengeState, _, _) = signInState {
                        switch challengeState {
                        case .waitingForAnswer:
                            // Convert the attributes to [String: String]

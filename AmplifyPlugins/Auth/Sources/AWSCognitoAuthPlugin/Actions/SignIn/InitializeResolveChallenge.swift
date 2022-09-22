@@ -14,10 +14,12 @@ struct InitializeResolveChallenge: Action {
 
     let challenge: RespondToAuthChallenge
 
+    let signInMethod: SignInMethod
+
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
-        let event = SignInChallengeEvent(eventType: .waitForAnswer(challenge))
+        let event = SignInChallengeEvent(eventType: .waitForAnswer(challenge, signInMethod))
         logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
         await dispatcher.send(event)
     }

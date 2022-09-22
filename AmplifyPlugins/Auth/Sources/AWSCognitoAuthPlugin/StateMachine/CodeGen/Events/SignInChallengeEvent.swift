@@ -11,7 +11,7 @@ struct SignInChallengeEvent: StateMachineEvent {
 
     enum EventType: Equatable {
 
-        case waitForAnswer(RespondToAuthChallenge)
+        case waitForAnswer(RespondToAuthChallenge, SignInMethod)
 
         case verifyChallengeAnswer(ConfirmSignInEventData)
 

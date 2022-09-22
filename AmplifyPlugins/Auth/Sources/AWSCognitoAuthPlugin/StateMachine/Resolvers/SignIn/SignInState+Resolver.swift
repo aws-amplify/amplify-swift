@@ -67,12 +67,18 @@ extension SignInState {
                 return .init(newState: newState, actions: resolution.actions)
 
             case .signingInWithSRP(let srpSignInState, let signInEventData):
-
+                let signInMethod = SignInMethod.apiBased(.userSRP)
                 if let signInEvent = event as? SignInEvent,
                    case .receivedChallenge(let challenge) = signInEvent.eventType {
-                    let action = InitializeResolveChallenge(challenge: challenge)
+                    let action = InitializeResolveChallenge(challenge: challenge,
+                                                            signInMethod: signInMethod)
                     let subState = SignInChallengeState.notStarted
-                    return .init(newState: .resolvingChallenge(subState, challenge.challenge.authChallengeType), actions: [action])
+                    return .init(newState:
+                            .resolvingChallenge(
+                                subState,
+                                challenge.challenge.authChallengeType,
+                                signInMethod
+                            ), actions: [action])
                 }
 
                 if let signInEvent = event as? SignInEvent,
@@ -99,12 +105,17 @@ extension SignInState {
                 return .init(newState: signingInWithSRP, actions: resolution.actions)
 
             case .signingInWithCustom(let customSignInState, let signInEventData):
-
+                let signInMethod = SignInMethod.apiBased(.customWithoutSRP)
                 if let signInEvent = event as? SignInEvent,
                    case .receivedChallenge(let challenge) = signInEvent.eventType {
-                    let action = InitializeResolveChallenge(challenge: challenge)
+                    let action = InitializeResolveChallenge(challenge: challenge,
+                                                            signInMethod: signInMethod)
                     let subState = SignInChallengeState.notStarted
-                    return .init(newState: .resolvingChallenge(subState, challenge.challenge.authChallengeType), actions: [action])
+                    return .init(newState: .resolvingChallenge(
+                        subState,
+                        challenge.challenge.authChallengeType,
+                        signInMethod
+                    ), actions: [action])
                 }
 
                 if let signInEvent = event as? SignInEvent,
@@ -121,12 +132,16 @@ extension SignInState {
                 return .init(newState: signingInWithCustom, actions: resolution.actions)
 
             case .signingInViaMigrateAuth(let migrateSignInState, let signInEventData):
-
+                let signInMethod = SignInMethod.apiBased(.userPassword)
                 if let signInEvent = event as? SignInEvent,
                    case .receivedChallenge(let challenge) = signInEvent.eventType {
-                    let action = InitializeResolveChallenge(challenge: challenge)
+                    let action = InitializeResolveChallenge(challenge: challenge,
+                                                            signInMethod: signInMethod)
                     let subState = SignInChallengeState.notStarted
-                    return .init(newState: .resolvingChallenge(subState, challenge.challenge.authChallengeType), actions: [action])
+                    return .init(newState: .resolvingChallenge(
+                        subState,
+                        challenge.challenge.authChallengeType,
+                        signInMethod), actions: [action])
                 }
 
                 if let signInEvent = event as? SignInEvent,
@@ -142,7 +157,7 @@ extension SignInState {
                     resolution.newState, signInEventData)
                 return .init(newState: signingInWithMigration, actions: resolution.actions)
 
-            case .resolvingChallenge(let challengeState, let challengeType):
+            case .resolvingChallenge(let challengeState, let challengeType, let signInMethod):
 
                 if let signInEvent = event as? SignInEvent,
                    case .confirmDevice(let signedInData) = signInEvent.eventType {
@@ -155,23 +170,35 @@ extension SignInState {
                 // Example newPasswordRequired -> sms_mfa
                 if let signInEvent = event as? SignInEvent,
                    case .receivedChallenge(let challenge) = signInEvent.eventType {
-                    let action = InitializeResolveChallenge(challenge: challenge)
+                    let action = InitializeResolveChallenge(challenge: challenge,
+                                                            signInMethod: signInMethod)
                     let subState = SignInChallengeState.notStarted
-                    return .init(newState: .resolvingChallenge(subState, challenge.challenge.authChallengeType), actions: [action])
+                    return .init(newState: .resolvingChallenge(
+                        subState,
+                        challenge.challenge.authChallengeType,
+                        signInMethod), actions: [action])
                 }
 
                 let resolution = SignInChallengeState.Resolver().resolve(
                     oldState: challengeState,
                     byApplying: event)
-                return .init(newState: .resolvingChallenge(resolution.newState, challengeType),
-                             actions: resolution.actions)
+                return .init(newState: .resolvingChallenge(
+                    resolution.newState,
+                    challengeType,
+                    signInMethod), actions: resolution.actions)
 
             case .signingInWithSRPCustom(let srpSignInState, let signInEventData):
+                let signInMethod = SignInMethod.apiBased(.customWithSRP)
                 if let signInEvent = event as? SignInEvent,
                    case .receivedChallenge(let challenge) = signInEvent.eventType {
-                    let action = InitializeResolveChallenge(challenge: challenge)
+                    let action = InitializeResolveChallenge(challenge: challenge,
+                                                            signInMethod: signInMethod)
                     let subState = SignInChallengeState.notStarted
-                    return .init(newState: .resolvingChallenge(subState, challenge.challenge.authChallengeType), actions: [action])
+                    return .init(newState: .resolvingChallenge(
+                        subState,
+                        challenge.challenge.authChallengeType,
+                        signInMethod
+                    ), actions: [action])
                 }
 
                 if let signInEvent = event as? SignInEvent,
@@ -187,12 +214,16 @@ extension SignInState {
                                                                           signInEventData)
                 return .init(newState: signingInWithSRP, actions: resolution.actions)
             case .resolvingDeviceSrpa(let deviceSrpState):
-
+                let signInMethod = SignInMethod.apiBased(.userSRP)
                 if let signInEvent = event as? SignInEvent,
                    case .receivedChallenge(let challenge) = signInEvent.eventType {
-                    let action = InitializeResolveChallenge(challenge: challenge)
+                    let action = InitializeResolveChallenge(challenge: challenge,
+                                                            signInMethod: signInMethod)
                     let subState = SignInChallengeState.notStarted
-                    return .init(newState: .resolvingChallenge(subState, challenge.challenge.authChallengeType), actions: [action])
+                    return .init(newState: .resolvingChallenge(
+                        subState,
+                        challenge.challenge.authChallengeType,
+                        signInMethod), actions: [action])
                 }
 
                 let resolution = DeviceSRPState.Resolver().resolve(oldState: deviceSrpState,

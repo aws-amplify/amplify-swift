@@ -311,7 +311,10 @@ class AuthHubEventHandlerTests: XCTestCase {
 
     private func configurePluginForConfirmSignInEvent() {
         let initialState = AuthState.configured(
-            AuthenticationState.signingIn(.resolvingChallenge(.waitingForAnswer(.testData), .smsMfa)),
+            AuthenticationState.signingIn(.resolvingChallenge(
+                .waitingForAnswer(.testData, .apiBased(.userSRP)),
+                .smsMfa,
+                .apiBased(.userSRP))),
             AuthorizationState.sessionEstablished(.testData))
 
         let mockIdentityProvider = MockIdentityProvider(
