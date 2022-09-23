@@ -69,7 +69,7 @@ public class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask {
                 continue
             }
         }
-        throw AuthError.unknown("Could not start federation to Identity Pool")
+        throw AuthError.unknown("Could not start federation to Identity Pool. The previous federation to identity pool credentials have been retained")
     }
 
     func sendStartFederatingToIdentityPoolEvent() async {
