@@ -43,10 +43,6 @@ public class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask {
         }
 
         if isValidAuthNStateToStart(authNState) && isValidAuthZStateToStart(authZState) {
-            // Clear previous federation before beginning a new one
-            if case .federatedToIdentityPool = authNState {
-                try await clearPreviousFederation()
-            }
             return try await startFederatingToIdentityPool()
         } else {
             throw AuthError.invalidState(
@@ -55,15 +51,10 @@ public class AWSAuthFederateToIdentityPoolTask: AuthFederateToIdentityPoolTask {
         }
     }
 
-    func clearPreviousFederation() async throws {
-        let clearFederationHelper = ClearFederationOperationHelper()
-        try await clearFederationHelper.clearFederation(authStateMachine)
-    }
-
     func startFederatingToIdentityPool() async throws -> FederateToIdentityPoolResult {
 
-        let stateSequences = await authStateMachine.listen()
         await sendStartFederatingToIdentityPoolEvent()
+        let stateSequences = await authStateMachine.listen()
         for await state in stateSequences {
             guard  case .configured(let authNState, let authZState) = state else {
                 continue

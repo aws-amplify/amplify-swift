@@ -26,8 +26,17 @@ class AWSAuthSignOutTask: AuthSignOutTask {
 
     func execute() async -> AuthSignOutResult {
         await taskHelper.didStateMachineConfigured()
-        await sendSignOutEvent()
-        return await doSignOut()
+        if  case .configured(let authNState, _) = await authStateMachine.currentState,
+            isValidAuthNStateToStart(authNState) {
+            await sendSignOutEvent()
+            return await doSignOut()
+        } else {
+            let invalidStateError = AuthError.invalidState(
+                "The user is currently federated to identity pool. You must call clearFederationToIdentityPool to clear credentials.",
+                AuthPluginErrorConstants.invalidStateError, nil)
+            return AWSCognitoSignOutResult.failed(invalidStateError)
+        }
+
     }
 
     private func doSignOut() async -> AuthSignOutResult {
@@ -61,6 +70,15 @@ class AWSAuthSignOutTask: AuthSignOutTask {
             }
         }
         fatalError()
+    }
+
+    func isValidAuthNStateToStart(_ authNState: AuthenticationState) -> Bool {
+        switch authNState {
+        case .signedIn:
+            return true
+        default:
+            return false
+        }
     }
 
     private func sendSignOutEvent() async {

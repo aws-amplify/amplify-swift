@@ -73,4 +73,22 @@ class AWSAuthSignOutTaskTests: BasePluginTest {
         XCTAssertNil(globalSignOutError)
         XCTAssertNil(hostedUIError)
     }
+
+    func testInvalidStateForSignOut() async {
+
+        let initialState = AuthState.configured(
+            AuthenticationState.federatedToIdentityPool,
+            AuthorizationState.sessionEstablished(.testData))
+
+        let authPlugin = configureCustomPluginWith(initialState: initialState)
+
+        guard let result = await authPlugin.signOut() as? AWSCognitoSignOutResult,
+              case .failed(let authError) = result,
+              case .invalidState = authError else {
+
+            XCTFail("Sign out during federation should not succeed")
+            return
+        }
+
+    }
 }
