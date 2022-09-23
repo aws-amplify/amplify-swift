@@ -22,8 +22,8 @@ struct MigrateLegacyCredentialStore: Action {
     private let AWSCredentialsProviderKeychainExpiration = "expiration"
     private let AWSCredentialsProviderKeychainIdentityId = "identityId"
 
-    private let FederationProviderKey = "federationProvider"
-    private let LoginsMapKey = "loginsMap"
+    private let FederationProviderKey = "federationProvider" // swiftlint:disable:this identifier_name
+    private let LoginsMapKey = "loginsMap" // swiftlint:disable:this identifier_name
 
     private let AWSCognitoAuthUserPoolCurrentUser = "currentUser"
     private let AWSCognitoAuthUserAccessToken = "accessToken"

@@ -13,7 +13,7 @@ extension SignInState {
         typealias StateType = SignInState
         let defaultState = SignInState.notStarted
 
-        func resolve( // swiftlint:disable:this cyclomatic_complexity
+        func resolve( // swiftlint:disable:this cyclomatic_complexity function_body_length
             oldState: SignInState,
             byApplying event: StateMachineEvent)
         -> StateResolution<SignInState> {
