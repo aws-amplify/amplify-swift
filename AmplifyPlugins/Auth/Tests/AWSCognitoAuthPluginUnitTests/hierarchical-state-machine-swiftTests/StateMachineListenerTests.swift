@@ -80,7 +80,7 @@ class StateMachineListenerTests: XCTestCase {
         await waitForExpectations(timeout: 0.1)
     }
 
-    func testOrderOfSubsription() async {
+    func testOrderOfSubsription() async throws {
         let loop = 1_000
         for _ in 1...loop {
 
@@ -88,11 +88,8 @@ class StateMachineListenerTests: XCTestCase {
             notified.expectedFulfillmentCount = 3
             await stateMachine.send(Counter.Event(id: "set1", eventType: .set(10)))
             let seq = await stateMachine.listen()
-            Task.detached {
-                // Send a new event with a delay so that the send happens after subscription is set.
-                try await Task.sleep(nanoseconds: 1_000)
-                await self.stateMachine.send(Counter.Event(id: "set2", eventType: .set(11)))
-            }
+            //try await Task.sleep(nanoseconds: 1_000)
+            await self.stateMachine.send(Counter.Event(id: "set2", eventType: .set(11)))
             Task {
                 var count = 0
                 for await state in seq {
