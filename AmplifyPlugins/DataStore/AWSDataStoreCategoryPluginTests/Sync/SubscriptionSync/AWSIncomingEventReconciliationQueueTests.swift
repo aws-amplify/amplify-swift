@@ -211,7 +211,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             case .initialized:
                 expectInitialized.fulfill()
             default:
-                break
+                XCTFail("Should not expect any other state, received: \(event)")
             }
         })
 
