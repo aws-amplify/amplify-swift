@@ -71,7 +71,6 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     private let reconcileAndSaveQueue: ReconcileAndSaveOperationQueue
 
     private var incomingEventsSink: AnyCancellable?
-    private var incomingEventsSink2: AnyCancellable?
     private var reconcileAndLocalSaveOperationSinks: AtomicValue<Set<AnyCancellable?>>
 
     private let modelReconciliationQueueSubject: CurrentValueSubject<ModelReconciliationQueueEvent, DataStoreError>
@@ -92,7 +91,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         self.storageAdapter = storageAdapter
 
         self.modelPredicate = modelPredicate
-        self.modelReconciliationQueueSubject = CurrentValueSubject<ModelReconciliationQueueEvent, DataStoreError>(.notStarted)
+        self.modelReconciliationQueueSubject = CurrentValueSubject<ModelReconciliationQueueEvent, DataStoreError>(.idle)
         self.reconcileAndSaveQueue = reconcileAndSaveQueue
 
         self.incomingSubscriptionEventQueue = OperationQueue()

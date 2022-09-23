@@ -442,7 +442,7 @@ extension ModelReconciliationQueueBehaviorTests {
             XCTFail("Not expecting a call to completion, received \(value)")
         }, receiveValue: { event in
             switch event {
-            case .notStarted:
+            case .idle:
                 break
             default:
                 eventSentViaPublisher.fulfill()
@@ -469,7 +469,7 @@ extension ModelReconciliationQueueBehaviorTests {
             XCTFail("Not expecting a call to completion, received \(value)")
         }, receiveValue: { event in
             switch event {
-            case .notStarted:
+            case .idle:
                 break
             default:
                 eventSentViaPublisher.fulfill()
@@ -496,7 +496,7 @@ extension ModelReconciliationQueueBehaviorTests {
             eventSentViaPublisher.fulfill()
         }, receiveValue: { value in
             switch value {
-            case .notStarted:
+            case .idle:
                 break
             default:
                 XCTFail("Not expecting a successful call, received \(value)")

@@ -17,12 +17,12 @@ final class AWSIncomingSubscriptionEventPublisher: IncomingSubscriptionEventPubl
 
     private let asyncEvents: IncomingAsyncSubscriptionEventPublisher
     private let mapper: IncomingAsyncSubscriptionEventToAnyModelMapper
-    private let subscriptionEventSubject: PassthroughSubject<IncomingSubscriptionEventPublisherEvent, DataStoreError> 
+    private let subscriptionEventSubject: PassthroughSubject<IncomingSubscriptionEventPublisherEvent, DataStoreError>
     private var mapperSink: AnyCancellable?
     var publisher: AnyPublisher<IncomingSubscriptionEventPublisherEvent, DataStoreError> {
         return subscriptionEventSubject.eraseToAnyPublisher()
     }
-    
+
     init(modelSchema: ModelSchema,
          api: APICategoryGraphQLBehavior,
          modelPredicate: QueryPredicate?,

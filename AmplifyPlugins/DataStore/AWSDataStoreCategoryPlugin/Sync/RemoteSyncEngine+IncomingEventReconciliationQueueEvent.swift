@@ -53,7 +53,7 @@ extension RemoteSyncEngine {
                                                                      reconciliationQueue))
         case .paused:
             remoteSyncTopicPublisher.send(.subscriptionsPaused)
-        case .notStarted, .mutationEventDropped, .mutationEventApplied:
+        case .idle, .mutationEventDropped, .mutationEventApplied:
             break
         }
     }
