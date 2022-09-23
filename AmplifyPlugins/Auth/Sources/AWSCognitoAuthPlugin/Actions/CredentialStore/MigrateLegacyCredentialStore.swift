@@ -21,6 +21,11 @@ struct MigrateLegacyCredentialStore: Action {
     private let AWSCredentialsProviderKeychainSessionToken = "sessionKey"
     private let AWSCredentialsProviderKeychainExpiration = "expiration"
     private let AWSCredentialsProviderKeychainIdentityId = "identityId"
+    private let AWSCognitoIdentityUserPoolCurrentUser = "currentUser"
+    private let AWSCognitoIdentityUserDeviceId = "device.id"
+    private let AWSCognitoIdentityUserAsfDeviceId = "asf.device.id"
+    private let AWSCognitoIdentityUserDeviceSecret = "device.secret"
+    private let AWSCognitoIdentityUserDeviceGroup = "device.group"
 
     private let FederationProviderKey = "federationProvider"
     private let LoginsMapKey = "loginsMap"
@@ -51,7 +56,8 @@ struct MigrateLegacyCredentialStore: Action {
 
         var identityId: String?
         var awsCredentials: AuthAWSCognitoCredentials?
-
+        migrateDeviceDetails(from: credentialStoreEnvironment,
+                             with: authConfiguration)
         let userPoolTokens = try? getUserPoolTokens(from: credentialStoreEnvironment,
                                                     with: authConfiguration)
 
@@ -129,6 +135,70 @@ struct MigrateLegacyCredentialStore: Action {
             await dispatcher.send(event)
         }
     }
+
+    private func migrateDeviceDetails(
+        from credentialStoreEnvironment: CredentialStoreEnvironment,
+        with authConfiguration: AuthConfiguration) {
+            guard let bundleIdentifier = Bundle.main.bundleIdentifier,
+                  let userPoolConfig = authConfiguration.getUserPoolConfiguration()
+            else {
+                return
+            }
+
+            let serviceKey = "\(bundleIdentifier).\(UserPoolClassKey)"
+            let legacyKeychainStore = credentialStoreEnvironment.legacyKeychainStoreFactory(serviceKey)
+
+            guard let currentUsername = try? legacyKeychainStore._getString(
+                userPoolNamespace(
+                    userPoolConfig: userPoolConfig,
+                    for: AWSCognitoIdentityUserPoolCurrentUser
+                )
+            ) else {
+                return
+            }
+            let deviceId = try? legacyKeychainStore._getString(
+                userPoolNamespace(
+                    withUser: currentUsername,
+                    userPoolConfig: userPoolConfig,
+                    for: AWSCognitoIdentityUserDeviceId
+                )
+            )
+            let deviceSecret = try? legacyKeychainStore._getString(
+                userPoolNamespace(
+                    withUser: currentUsername,
+                    userPoolConfig: userPoolConfig,
+                    for: AWSCognitoIdentityUserDeviceSecret
+                )
+            )
+            let deviceGroup = try? legacyKeychainStore._getString(
+                userPoolNamespace(
+                    withUser: currentUsername,
+                    userPoolConfig: userPoolConfig,
+                    for: AWSCognitoIdentityUserDeviceGroup
+                )
+            )
+            let asfDeviceId = try? legacyKeychainStore._getString(
+                userPoolNamespace(
+                    withUser: currentUsername,
+                    userPoolConfig: userPoolConfig,
+                    for: AWSCognitoIdentityUserAsfDeviceId
+                )
+            )
+
+            let amplifyCredentialStore = credentialStoreEnvironment.amplifyCredentialStoreFactory()
+            if let deviceId = deviceId,
+               let deviceSecret = deviceSecret,
+               let deviceGroup = deviceGroup {
+                let deviceMetaData = DeviceMetadata.metadata(.init(deviceKey: deviceId,
+                                                                   deviceGroupKey: deviceGroup,
+                                                                   deviceSecret: deviceSecret))
+                try? amplifyCredentialStore.saveDevice(deviceMetaData, for: currentUsername)
+            }
+
+            if let asfDeviceId = asfDeviceId {
+                try? amplifyCredentialStore.saveASFDevice(asfDeviceId, for: currentUsername)
+            }
+        }
 
     private func getUserPoolTokens(
         from credentialStoreEnvironment: CredentialStoreEnvironment,
@@ -234,6 +304,12 @@ struct MigrateLegacyCredentialStore: Action {
     private func userPoolNamespace(userPoolConfig: UserPoolConfigurationData,
                                    for key: String) -> String {
         return "\(userPoolConfig.clientId).\(key)"
+    }
+
+    private func userPoolNamespace(withUser userName: String,
+                                   userPoolConfig: UserPoolConfigurationData,
+                                   for key: String) -> String {
+        return "\(userPoolConfig.poolId).\(userName).\(key)"
     }
 
     private func getIdentityIdAndAWSCredentials(
