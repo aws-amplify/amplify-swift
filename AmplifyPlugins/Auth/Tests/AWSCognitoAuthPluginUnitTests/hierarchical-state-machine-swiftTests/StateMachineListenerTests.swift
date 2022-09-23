@@ -88,7 +88,6 @@ class StateMachineListenerTests: XCTestCase {
             notified.expectedFulfillmentCount = 3
             await stateMachine.send(Counter.Event(id: "set1", eventType: .set(10)))
             let seq = await stateMachine.listen()
-            //try await Task.sleep(nanoseconds: 1_000)
             await self.stateMachine.send(Counter.Event(id: "set2", eventType: .set(11)))
             Task {
                 var count = 0
