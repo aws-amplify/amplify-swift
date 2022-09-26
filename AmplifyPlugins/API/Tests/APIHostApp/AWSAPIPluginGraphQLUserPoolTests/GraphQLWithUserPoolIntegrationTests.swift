@@ -9,6 +9,7 @@ import XCTest
 import Foundation
 import AWSAPIPlugin
 import AWSCognitoAuthPlugin
+@_implementationOnly import AmplifyAsyncTesting
 
 @testable import Amplify
 @testable import APIHostApp

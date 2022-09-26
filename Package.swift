@@ -7,7 +7,8 @@ let dependencies: [Package.Dependency] = [
     .package(url: "https://github.com/awslabs/aws-sdk-swift.git", exact: "0.2.6"),
     .package(url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git", from: "2.1.1"),
     .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.12.2"),
-    .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0")
+    .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0"),
+    .package(name: "AmplifyAsyncTesting", path: "AmplifyAsyncTesting")
 ]
 let swiftSettings: [SwiftSetting]? = [.define("DEV_PREVIEW_BUILD")]
 
@@ -36,8 +37,7 @@ let amplifyTargets: [Target] = [
         dependencies: [
             "Amplify",
             "CwlPreconditionTesting",
-            "AWSPluginsCore",
-            "AmplifyAsyncTesting"
+            "AWSPluginsCore"
         ],
         path: "AmplifyTestCommon",
         exclude: [
@@ -55,7 +55,8 @@ let amplifyTargets: [Target] = [
         name: "AmplifyTests",
         dependencies: [
             "Amplify",
-            "AmplifyTestCommon"
+            "AmplifyTestCommon",
+            "AmplifyAsyncTesting"
         ],
         path: "AmplifyTests",
         exclude: [
@@ -108,7 +109,8 @@ let apiTargets: [Target] = [
         dependencies: [
             "AWSAPIPlugin",
             "AmplifyTestCommon",
-            "AWSPluginsTestCommon"
+            "AWSPluginsTestCommon",
+            "AmplifyAsyncTesting"
         ],
         path: "AmplifyPlugins/API/Tests/AWSAPIPluginTests",
         exclude: [
@@ -193,7 +195,8 @@ let dataStoreTargets: [Target] = [
         name: "AWSDataStoreCategoryPluginTests",
         dependencies: [
             "AWSDataStorePlugin",
-            "AmplifyTestCommon"
+            "AmplifyTestCommon",
+            "AmplifyAsyncTesting"
         ],
         path: "AmplifyPlugins/DataStore/Tests/AWSDataStorePluginTests",
         exclude: [
@@ -220,7 +223,8 @@ let storageTargets: [Target] = [
         dependencies: [
             "AWSS3StoragePlugin",
             "AmplifyTestCommon",
-            "AWSPluginsTestCommon"
+            "AWSPluginsTestCommon",
+            "AmplifyAsyncTesting"
         ],
         path: "AmplifyPlugins/Storage/Tests/AWSS3StoragePluginTests",
         exclude: [
@@ -277,22 +281,8 @@ let analyticsTargets: [Target] = [
     )
 ]
 
-let asyncTestingTargets: [Target] = [
-    .target(
-        name: "AmplifyAsyncTesting",
-        dependencies: [],
-        path: "AmplifyAsyncTesting/Sources/AsyncTesting",
-        linkerSettings: [.linkedFramework("XCTest")]
-    ),
-    .testTarget(
-        name: "AmplifyAsyncTestingTests",
-        dependencies: ["AmplifyAsyncTesting"],
-        path: "AmplifyAsyncTesting/Tests/AsyncTestingTests"
-    )
-]
-
 let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTargets + storageTargets +
-                        geoTargets + analyticsTargets + asyncTestingTargets
+                        geoTargets + analyticsTargets
 
 let package = Package(
     name: "Amplify",
@@ -325,10 +315,6 @@ let package = Package(
         .library(
             name: "AWSPinpointAnalyticsPlugin",
             targets: ["AWSPinpointAnalyticsPlugin"]
-        ),
-        .library(
-            name: "AmplifyAsyncTesting",
-            targets: ["AmplifyAsyncTesting"]
         )
     ],
     dependencies: dependencies,

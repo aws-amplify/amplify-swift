@@ -10,7 +10,7 @@ import XCTest
 import AWSPluginsCore
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
-import AmplifyAsyncTesting
+@_implementationOnly import AmplifyAsyncTesting
 
 extension GraphQLResponseDecoderTests {
 
