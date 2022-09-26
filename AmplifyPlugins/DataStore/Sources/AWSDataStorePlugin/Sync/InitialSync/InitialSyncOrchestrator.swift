@@ -208,8 +208,8 @@ extension AWSInitialSyncOrchestrator {
             return false
         }
         
-        // The following check is to catgorize the error as an unauthorized error when the process fails to retrieve
-        // the autorization token. This is taken directly from `AuthTokenURLRequestInterceptor`'s error handling path
+        // The following check is to categorize the error as an unauthorized error when the process fails to retrieve
+        // the authorization token. This is taken directly from `AuthTokenURLRequestInterceptor`'s error handling path
         // that returns an APIError.operationError with an underlying AuthError.
         //
         // A signed out user, or a signed in user's session that has expired, will result the `getToken()` to
