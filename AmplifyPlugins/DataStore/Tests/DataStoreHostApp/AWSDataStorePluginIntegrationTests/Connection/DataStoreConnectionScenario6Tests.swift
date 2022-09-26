@@ -76,6 +76,7 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
             XCTFail("Could not set up - failed to get a post and its comments")
             return
         }
+        try await comments.fetch()
         XCTAssertEqual(comments.count, 2)
         XCTAssertTrue(comments.contains(where: { (comment) -> Bool in
             comment.id == comment1post1.id
@@ -83,7 +84,8 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
         XCTAssertTrue(comments.contains(where: { (comment) -> Bool in
             comment.id == comment2post1.id
         }))
-        if let post = comments[0].post {
+        if let post = comments[0].post, let comments = post.comments {
+            try await comments.fetch()
             XCTAssertEqual(post.comments?.count, 2)
         }
     }
@@ -140,6 +142,7 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
         XCTAssertEqual(eagerlyLoadedBlog.id, blog.id)
         XCTAssertEqual(eagerlyLoadedBlog.name, blog.name)
         if let postsInEagerlyLoadedBlog = eagerlyLoadedBlog.posts {
+            try await postsInEagerlyLoadedBlog.fetch()
             XCTAssertEqual(postsInEagerlyLoadedBlog.count, 1)
             XCTAssertTrue(postsInEagerlyLoadedBlog.contains(where: {(postIn) -> Bool in
                 postIn.id == post.id
@@ -156,11 +159,13 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
             XCTFail("Should not be in loaded state")
             return
         }
+        try await lazilyLoadedComments.fetch()
         XCTAssertEqual(lazilyLoadedComments.count, 1)
         XCTAssertEqual(lazilyLoadedComments[0].id, comment.id)
-        if let fetchedPost = lazilyLoadedComments[0].post {
+        if let fetchedPost = lazilyLoadedComments[0].post, let comments = fetchedPost.comments {
             XCTAssertEqual(fetchedPost.id, post.id)
-            XCTAssertEqual(fetchedPost.comments?.count, 1)
+            try await comments.fetch()
+            XCTAssertEqual(comments.count, 1)
         }
     }
 
