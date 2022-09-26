@@ -427,8 +427,13 @@ extension ModelReconciliationQueueBehaviorTests {
 
         let queueSink = queue.publisher.sink(receiveCompletion: { value in
             XCTFail("Not expecting a call to completion, received \(value)")
-        }, receiveValue: { _ in
-            eventSentViaPublisher.fulfill()
+        }, receiveValue: { event in
+            switch event {
+            case .idle:
+                break
+            default:
+                eventSentViaPublisher.fulfill()
+            }
         })
 
         subscriptionEventsSubject.send(completion: completion)
@@ -450,8 +455,13 @@ extension ModelReconciliationQueueBehaviorTests {
 
         let queueSink = queue.publisher.sink(receiveCompletion: { value in
             XCTFail("Not expecting a call to completion, received \(value)")
-        }, receiveValue: { _ in
-            eventSentViaPublisher.fulfill()
+        }, receiveValue: { event in
+            switch event {
+            case .idle:
+                break
+            default:
+                eventSentViaPublisher.fulfill()
+            }
         })
 
         subscriptionEventsSubject.send(completion: completion)
@@ -474,7 +484,12 @@ extension ModelReconciliationQueueBehaviorTests {
         let queueSink = queue.publisher.sink(receiveCompletion: { _ in
             eventSentViaPublisher.fulfill()
         }, receiveValue: { value in
-            XCTFail("Not expecting a successful call, received \(value)")
+            switch value {
+            case .idle:
+                break
+            default:
+                XCTFail("Not expecting a successful call, received \(value)")
+            }
         })
 
         subscriptionEventsSubject.send(completion: completion)

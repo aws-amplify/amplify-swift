@@ -207,7 +207,30 @@ extension AWSInitialSyncOrchestrator {
               else {
             return false
         }
+        
+        // The following check is to categorize the error as an unauthorized error when the process fails to retrieve
+        // the authorization token. This is taken directly from `AuthTokenURLRequestInterceptor`'s error handling path
+        // that returns an APIError.operationError with an underlying AuthError.
+        //
+        // A signed out user, or a signed in user's session that has expired, will result the `getToken()` to
+        // return an error. The request is never sent over the network to the service to apply its auth check and is
+        // returned immediately to this calling code.
+        //
+        // The check itself is not the most ideal contract for checking when there is an authorization error, however it
+        // does have some stability since `operationError` is a local implementation detail. The underlying error check
+        // for AuthError means that the AuthError could be any case. For example, if the AuthError changes, it will
+        // still be categorized as unauthorized by this code. If a specific type like `AuthError.unauthorized` is
+        // introduced in the future, this code will still return true, which is crucial to prevent the sync
+        // orchestrator from failing the entire sync process.
+        if case let .api(amplifyError, _) = datastoreError,
+           let apiError = amplifyError as? APIError,
+           case .operationError(_, _, let underlyingError) = apiError,
+           (underlyingError as? AuthError) != nil {
+            return true
+        }
 
+        // If token was retrieved, and request was sent, but service returned an error response,
+        // check that it is an Unauthorized error from the GraphQL response payload.
         if case let .api(apiError, _) = datastoreError,
            let responseError = apiError as? GraphQLResponseError<ResponseType>,
            let graphQLError = graphqlErrors(from: responseError)?.first,
