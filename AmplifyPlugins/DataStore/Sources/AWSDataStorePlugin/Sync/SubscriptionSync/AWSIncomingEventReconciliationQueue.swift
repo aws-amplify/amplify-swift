@@ -25,7 +25,7 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
 
     private var modelReconciliationQueueSinks: AtomicValue<[String: AnyCancellable]> = AtomicValue(initialValue: [:])
 
-    private let eventReconciliationQueueTopic: PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>
+    private let eventReconciliationQueueTopic: CurrentValueSubject<IncomingEventReconciliationQueueEvent, DataStoreError>
     var publisher: AnyPublisher<IncomingEventReconciliationQueueEvent, DataStoreError> {
         return eventReconciliationQueueTopic.eraseToAnyPublisher()
     }
@@ -37,9 +37,11 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
     private var modelReconciliationQueueFactory: ModelReconciliationQueueFactory
 
     private var isInitialized: Bool {
-        reconciliationQueueConnectionStatus.count == reconciliationQueues.get().count
+        log.verbose("[InitializeSubscription.5] \(reconciliationQueueConnectionStatus.count)/\(modelSchemasCount) initialized")
+        return modelSchemasCount == reconciliationQueueConnectionStatus.count
     }
-
+    private let modelSchemasCount: Int
+    
     init(modelSchemas: [ModelSchema],
          api: APICategoryGraphQLBehaviorExtended,
          storageAdapter: StorageEngineAdapter,
@@ -47,8 +49,9 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
          auth: AuthCategoryBehavior? = nil,
          authModeStrategy: AuthModeStrategy,
          modelReconciliationQueueFactory: ModelReconciliationQueueFactory? = nil) async {
+        self.modelSchemasCount = modelSchemas.count
         self.modelReconciliationQueueSinks.set([:])
-        self.eventReconciliationQueueTopic = PassthroughSubject<IncomingEventReconciliationQueueEvent, DataStoreError>()
+        self.eventReconciliationQueueTopic = CurrentValueSubject<IncomingEventReconciliationQueueEvent, DataStoreError>(.idle)
         self.reconciliationQueues.set([:])
         self.reconciliationQueueConnectionStatus = [:]
         self.reconcileAndSaveQueue = ReconcileAndSaveQueue(modelSchemas)
@@ -70,6 +73,10 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
                 $0.modelSchema.name == modelName
             })
             let modelPredicate = syncExpression?.modelPredicate() ?? nil
+            guard reconciliationQueues.get()[modelName] == nil else {
+                log.warn("Duplicate model name found: \(modelName), not subscribing")
+                continue
+            }
             let queue = await self.modelReconciliationQueueFactory(modelSchema,
                                                              storageAdapter,
                                                              api,
@@ -78,19 +85,17 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
                                                              auth,
                                                              authModeStrategy,
                                                              nil)
-            guard reconciliationQueues.get()[modelName] == nil else {
-                Amplify.DataStore.log
-                    .warn("Duplicate model name found: \(modelName), not subscribing")
-                continue
-            }
+            
             reconciliationQueues.with { reconciliationQueues in
                 reconciliationQueues[modelName] = queue
             }
+            log.verbose("[InitializeSubscription.5] Sink reconciliationQueues \(modelName) \(reconciliationQueues.get().count)")
             let modelReconciliationQueueSink = queue.publisher.sink(receiveCompletion: onReceiveCompletion(completed:),
                                                                     receiveValue: onReceiveValue(receiveValue:))
             modelReconciliationQueueSinks.with { modelReconciliationQueueSinks in
                 modelReconciliationQueueSinks[modelName] = modelReconciliationQueueSink
             }
+            log.verbose("[InitializeSubscription.5] Sink done reconciliationQueues \(modelName) \(reconciliationQueues.get().count)")
         }
     }
 
@@ -133,20 +138,23 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
             eventReconciliationQueueTopic.send(.mutationEventDropped(modelName: modelName, error: error))
         case .connected(modelName: let modelName):
             connectionStatusSerialQueue.async {
+                self.log.verbose("[InitializeSubscription.4] .connected \(modelName)")
                 self.reconciliationQueueConnectionStatus[modelName] = true
                 if self.isInitialized {
+                    self.log.verbose("[InitializeSubscription.6] connected isInitialized")
                     self.eventReconciliationQueueTopic.send(.initialized)
                 }
             }
         case .disconnected(modelName: let modelName, reason: .operationDisabled),
              .disconnected(modelName: let modelName, reason: .unauthorized):
             connectionStatusSerialQueue.async {
-                Amplify.log.debug("Disconnected subscription for \(modelName) reason: \(receiveValue)")
+                self.log.verbose("[InitializeSubscription.4] subscription disconnected [\(modelName)] reason: [\(receiveValue)]")
                 // A disconnected subscription due to operation disabled or unauthorized will still contribute
                 // to the overall state of the reconciliation queue system on sending the `.initialized` event
                 // since subscriptions may be disabled and have to reconcile locally sourced mutation evemts.
                 self.reconciliationQueueConnectionStatus[modelName] = true
                 if self.isInitialized {
+                    self.log.verbose("[InitializeSubscription.6] disconnected isInitialized")
                     self.eventReconciliationQueueTopic.send(.initialized)
                 }
             }
@@ -171,6 +179,8 @@ final class AWSIncomingEventReconciliationQueue: IncomingEventReconciliationQueu
 
 }
 
+extension AWSIncomingEventReconciliationQueue: DefaultLogger { }
+
 // MARK: - Static factory
 extension AWSIncomingEventReconciliationQueue {
     static let factory: IncomingEventReconciliationQueueFactory = { modelSchemas, api, storageAdapter, syncExpressions, auth, authModeStrategy, _ in
@@ -192,19 +202,19 @@ extension AWSIncomingEventReconciliationQueue: Resettable {
             guard let queue = queue as? Resettable else {
                 continue
             }
-            Amplify.log.verbose("Resetting reconciliationQueue")
+            log.verbose("Resetting reconciliationQueue")
             await queue.reset()
-            Amplify.log.verbose("Resetting reconciliationQueue: finished")
+            log.verbose("Resetting reconciliationQueue: finished")
         }
 
-        Amplify.log.verbose("Resetting reconcileAndSaveQueue")
+        log.verbose("Resetting reconcileAndSaveQueue")
         reconcileAndSaveQueue.cancelAllOperations()
         reconcileAndSaveQueue.waitUntilOperationsAreFinished()
-        Amplify.log.verbose("Resetting reconcileAndSaveQueue: finished")
+        log.verbose("Resetting reconcileAndSaveQueue: finished")
 
-        Amplify.log.verbose("Cancelling AWSIncomingEventReconciliationQueue")
+        log.verbose("Cancelling AWSIncomingEventReconciliationQueue")
         cancel()
-        Amplify.log.verbose("Cancelling AWSIncomingEventReconciliationQueue: finished")
+        log.verbose("Cancelling AWSIncomingEventReconciliationQueue: finished")
     }
 
 }

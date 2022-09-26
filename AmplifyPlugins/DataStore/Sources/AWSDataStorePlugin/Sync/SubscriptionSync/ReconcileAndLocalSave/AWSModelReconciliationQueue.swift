@@ -71,7 +71,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
     private var incomingEventsSink: AnyCancellable?
     private var reconcileAndLocalSaveOperationSinks: AtomicValue<Set<AnyCancellable?>>
 
-    private let modelReconciliationQueueSubject: PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>
+    private let modelReconciliationQueueSubject: CurrentValueSubject<ModelReconciliationQueueEvent, DataStoreError>
     var publisher: AnyPublisher<ModelReconciliationQueueEvent, DataStoreError> {
         return modelReconciliationQueueSubject.eraseToAnyPublisher()
     }
@@ -89,7 +89,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
         self.storageAdapter = storageAdapter
 
         self.modelPredicate = modelPredicate
-        self.modelReconciliationQueueSubject = PassthroughSubject<ModelReconciliationQueueEvent, DataStoreError>()
+        self.modelReconciliationQueueSubject = CurrentValueSubject<ModelReconciliationQueueEvent, DataStoreError>(.idle)
 
         self.reconcileAndSaveQueue = reconcileAndSaveQueue
 
@@ -118,11 +118,11 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             .publisher
             .sink(receiveCompletion: { [weak self] completion in
                 self?.receiveCompletion(completion)
-                }, receiveValue: { [weak self] receiveValue in
-                    self?.receive(receiveValue)
+            }, receiveValue: { [weak self] receiveValue in
+                self?.receive(receiveValue)
             })
     }
-
+    
     /// (Re)starts the incoming subscription event queue.
     func start() {
         incomingSubscriptionEventQueue.isSuspended = false
@@ -202,18 +202,20 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             modelReconciliationQueueSubject.send(completion: .finished)
         case .failure(let dataStoreError):
             if case let .api(error, _) = dataStoreError,
-               case let APIError.operationError(_, _, underlyingError) = error,
-               isUnauthorizedError(underlyingError) {
+               case let APIError.operationError(errorDescription, _, underlyingError) = error,
+               isUnauthorizedError(errorDescription: errorDescription, underlyingError) {
+                log.verbose("[InitializeSubscription.3] AWSModelReconciliationQueue determined unauthorized \(modelSchema.name)")
                 modelReconciliationQueueSubject.send(.disconnected(modelName: modelSchema.name, reason: .unauthorized))
                 return
             }
             if case let .api(error, _) = dataStoreError,
                case let APIError.operationError(_, _, underlyingError) = error,
                isOperationDisabledError(underlyingError) {
+                log.verbose("[InitializeSubscription.3] AWSModelReconciliationQueue determined isOperationDisabledError \(modelSchema.name)")
                 modelReconciliationQueueSubject.send(.disconnected(modelName: modelSchema.name, reason: .operationDisabled))
                 return
             }
-            log.error("receiveCompletion: error: \(dataStoreError)")
+            log.error("[InitializeSubscription.3] AWSModelReconciliationQueue receiveCompletion: error: \(dataStoreError)")
             modelReconciliationQueueSubject.send(completion: .failure(dataStoreError))
         }
     }
@@ -262,7 +264,10 @@ extension AWSModelReconciliationQueue {
         return errorTypeValue
     }
 
-    private func isUnauthorizedError(_ error: Error?) -> Bool {
+    private func isUnauthorizedError(errorDescription: String, _ error: Error?) -> Bool {
+        if errorDescription.range(of: "Unauthorized", options: .caseInsensitive) != nil {
+            return true
+        }
         if let responseError = error as? GraphQLResponseError<ResponseType>,
            let graphQLError = graphqlErrors(from: responseError)?.first,
            let errorTypeValue = errorTypeValueFrom(graphQLError: graphQLError),
