@@ -102,7 +102,7 @@ extension AWSCognitoAuthPlugin {
         setUserPreferencesForService(service: service)
         return service
     }
-    
+
     func setUserPreferencesForService(service: AmplifyAWSServiceConfiguration) {
         guard let networkPreferences = networkPreferences else {
             return

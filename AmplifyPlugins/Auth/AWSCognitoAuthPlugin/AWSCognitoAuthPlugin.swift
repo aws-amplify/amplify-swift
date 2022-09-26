@@ -44,7 +44,7 @@ final public class AWSCognitoAuthPlugin: AuthCategoryPlugin {
     public var key: PluginKey {
         return "awsCognitoAuthPlugin"
     }
-    
+
     /// The user network preferences for timeout and retry
     let networkPreferences: AWSCognitoNetworkPreferences?
 
@@ -60,7 +60,7 @@ final public class AWSCognitoAuthPlugin: AuthCategoryPlugin {
     public init() {
         self.networkPreferences = nil
     }
-    
+
     /// Instantiates an instance of the AWSCognitoAuthPlugin with custom network preferences
     /// - Parameters:
     ///   - networkPreferences: network preferences
