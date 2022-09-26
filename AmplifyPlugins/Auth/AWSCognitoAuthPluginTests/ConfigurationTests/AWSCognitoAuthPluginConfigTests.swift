@@ -7,7 +7,7 @@
 
 import XCTest
 @testable import Amplify
-import AWSCognitoAuthPlugin
+@testable import AWSCognitoAuthPlugin
 
 class AWSCognitoAuthPluginConfigTests: XCTestCase {
 
@@ -317,5 +317,43 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
         }
         expectationList.append(signUpExpectation2)
         wait(for: expectationList, timeout: 10, enforceOrder: true)
+    }
+    
+    func testUserNetworkPreferencesForIdentityPoolService() throws {
+        let networkPreferences = AWSCognitoNetworkPreferences(maxRetryCount: 0,
+                                                              timeoutIntervalForRequest: 30,
+                                                              timeoutIntervalForResource: 30)
+        let plugin = AWSCognitoAuthPlugin(networkPreferences: networkPreferences)
+
+        let json = JSONValue(dictionaryLiteral: ("CredentialsProvider",
+                                                  .init(dictionaryLiteral: ("CognitoIdentity",
+                                                                            .init(dictionaryLiteral: ("Default",
+                                                                                                      .init(dictionaryLiteral: ("Region", "us-east-1"))))))))
+        let identityPoolConfig = plugin.identityPoolServiceConfiguration(from: json)
+
+        XCTAssertEqual(identityPoolConfig?.maxRetryCount, networkPreferences.maxRetryCount)
+        XCTAssertEqual(identityPoolConfig?.timeoutIntervalForResource, networkPreferences.timeoutIntervalForResource)
+        XCTAssertEqual(identityPoolConfig?.timeoutIntervalForRequest, networkPreferences.timeoutIntervalForRequest)
+    }
+    
+    func testUserNetworkPreferencesForUserPoolService() throws {
+        let networkPreferences = AWSCognitoNetworkPreferences(maxRetryCount: 0,
+                                                              timeoutIntervalForRequest: 30,
+                                                              timeoutIntervalForResource: 30)
+        let plugin = AWSCognitoAuthPlugin(networkPreferences: networkPreferences)
+        
+        let json = JSONValue(dictionaryLiteral: ("CognitoUserPool",
+                                                 .init(dictionaryLiteral: ("Default",
+                                                                           .init(dictionaryLiteral: ("Region", "us-east-1"))))))
+        let identityPoolConfig = try plugin.userPoolServiceConfiguration(from: json)
+
+        XCTAssertEqual(identityPoolConfig?.maxRetryCount, networkPreferences.maxRetryCount)
+        XCTAssertEqual(identityPoolConfig?.timeoutIntervalForResource, networkPreferences.timeoutIntervalForResource)
+        XCTAssertEqual(identityPoolConfig?.timeoutIntervalForRequest, networkPreferences.timeoutIntervalForRequest)
+    }
+    
+    func testNoUserPreferences() throws {
+        let plugin = AWSCognitoAuthPlugin()
+        XCTAssertNil(plugin.networkPreferences)
     }
 }
