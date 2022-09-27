@@ -169,18 +169,26 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
         }
     }
 
+    /// Ensure that the delete with `.all` predicate works as expected.
+    /// There may be additional blogs/post/comments from other tests that are being deleted as part of this test
+    /// We ignore those and only assert that that 6 models created in this test were deleted successfully.
     func testDeleteAll() async throws {
         await setUp(withModels: TestModelRegistration())
         try await startAmplifyAndWaitForReady()
         var cancellables = Set<AnyCancellable>()
         let remoteEventReceived = expectation(description: "received mutation event with version 1")
-        let commentId = UUID().uuidString
+        remoteEventReceived.expectedFulfillmentCount = 2
+        let commentId1 = UUID().uuidString
+        let commentId2 = UUID().uuidString
         
         let task = Task {
             let mutationEvents = Amplify.DataStore.observe(Comment6.self)
             do {
                 for try await mutationEvent in mutationEvents {
-                    if mutationEvent.modelId == commentId && mutationEvent.version == 1 {
+                    if mutationEvent.modelId == commentId1 && mutationEvent.version == 1 {
+                        remoteEventReceived.fulfill()
+                    }
+                    if mutationEvent.modelId == commentId2 && mutationEvent.version == 1 {
                         remoteEventReceived.fulfill()
                     }
                 }
@@ -191,21 +199,12 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
         
         let blog = try await saveBlog(name: "name")
         let post = try await savePost(title: "title", blog: blog)
-        _ = try await saveComment(id: commentId, post: post, content: "content")
+        _ = try await saveComment(id: commentId1, post: post, content: "content")
+        let blog2 = try await saveBlog(name: "name")
+        let post2 = try await savePost(title: "title", blog: blog2)
+        _ = try await saveComment(id: commentId2, post: post2, content: "content")
 
         await waitForExpectations(timeout: 5)
-
-        let blogs = try await Amplify.DataStore.query(Blog6.self)
-        var blogCount = blogs.count
-        let posts = try await Amplify.DataStore.query(Post6.self)
-        var postCount = posts.count
-
-        let retrievedCommentCount = expectation(description: "retrieved comment count")
-        let comments = try await Amplify.DataStore.query(Comment6.self)
-        var commentCount = comments.count
-
-        let totalCount = blogCount + postCount + commentCount
-        Amplify.Logging.verbose("Retrieved blog \(blogCount) post \(postCount) comment \(commentCount)")
 
         let outboxMutationProcessed = expectation(description: "received outboxMutationProcessed")
         var processedSoFar = 0
@@ -213,20 +212,32 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
             .sink { payload in
                 let event = DataStoreHubEvent(payload: payload)
                 switch event {
-                case .outboxMutationProcessed:
-                    processedSoFar += 1
-                    print("Processed so far \(processedSoFar)")
-                    if processedSoFar == totalCount {
+                case .outboxMutationProcessed(let mutationEvent):
+                    if mutationEvent.modelName == Blog6.modelName,
+                       let model = mutationEvent.element.model as? Blog6,
+                       model.id == blog.id || model.id == blog2.id {
+                        processedSoFar += 1
+                    } else if mutationEvent.modelName == Post6.modelName,
+                              let model = mutationEvent.element.model as? Post6,
+                              model.id == post.id || model.id == post2.id {
+                        processedSoFar += 1
+                    } else if mutationEvent.modelName == Comment6.modelName,
+                              let model = mutationEvent.element.model as? Comment6,
+                              model.id == commentId1 || model.id == commentId2 {
+                        processedSoFar += 1
+                    }
+                    
+                    Amplify.Logging.verbose("Processed so far \(processedSoFar)/6")
+                    if processedSoFar == 6 {
                         outboxMutationProcessed.fulfill()
                     }
                 default:
                     break
                 }
             }.store(in: &cancellables)
-
-        let deleteSuccess = expectation(description: "Delete all successful")
+        
         try await Amplify.DataStore.delete(Blog6.self, where: QueryPredicateConstant.all)
-
+        
         await waitForExpectations(timeout: 10)
     }
 
