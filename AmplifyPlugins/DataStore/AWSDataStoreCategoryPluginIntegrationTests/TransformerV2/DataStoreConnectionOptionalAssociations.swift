@@ -178,7 +178,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
     }
 
     func testRemovePostFromCommentAndBlogFromPost() throws {
-        setUp(withModels: TestModelRegistration())
+        setUp(withModels: TestModelRegistration(), logLevel: .verbose)
         try startAmplifyAndWaitForSync()
         guard let blog = saveBlog(),
               let post = savePost(withBlog: blog),
@@ -199,19 +199,38 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         XCTAssertEqual(queriedPost.blog?.id, blog.id)
 
         queriedComment.post = nil
-        queriedPost.blog = nil
-        guard savePost(queriedPost) != nil,
-              saveComment(queriedComment) != nil else {
+        // A mock GraphQL request is created to assert that the request variables contains the "postId"
+        // with the value `nil` which is sent to the API to persist the removal of the association.
+        let request = GraphQLRequest<Comment>.createMutation(of: queriedComment, version: 1)
+        guard let variables = request.variables,
+              let input = variables["input"] as? [String: Any?],
+              let postValue = input["postId"],
+              postValue == nil else {
+            XCTFail("Failed to retrieve input object from GraphQL variables")
+            return
+        }
+
+        guard saveComment(queriedComment) != nil else {
             XCTFail("Failed to update comment and post")
             return
         }
-        guard let queriedCommentWithoutPost = queryComment(id: comment.id),
-              let queriedPostWithoutBlog = queryPost(id: post.id) else {
-            XCTFail("Failed to query comment and post")
+        guard let queriedCommentWithoutPost = queryComment(id: comment.id) else {
+            XCTFail("Failed to query comment without post")
             return
         }
 
         XCTAssertNil(queriedCommentWithoutPost.post)
+
+        queriedPost.blog = nil
+        guard savePost(queriedPost) != nil else {
+            XCTFail("Failed to update comment and post")
+            return
+        }
+
+        guard let queriedPostWithoutBlog = queryPost(id: post.id) else {
+            XCTFail("Failed to query post")
+            return
+        }
         XCTAssertNil(queriedPostWithoutBlog.blog)
     }
 
