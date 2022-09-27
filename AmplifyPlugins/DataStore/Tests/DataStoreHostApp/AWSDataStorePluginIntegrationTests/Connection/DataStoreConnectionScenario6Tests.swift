@@ -9,6 +9,7 @@ import XCTest
 import Combine
 @testable import Amplify
 @testable import AWSDataStorePlugin
+@testable import DataStoreHostApp
 
 /*
  ```

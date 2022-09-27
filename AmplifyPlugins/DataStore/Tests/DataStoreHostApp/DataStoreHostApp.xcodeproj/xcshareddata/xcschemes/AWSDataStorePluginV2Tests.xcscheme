@@ -39,9 +39,6 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "DataStoreConnectionOptionalAssociations">
-               </Test>
-               <Test
                   Identifier = "DataStoreModelWithCustomTimestampTests">
                </Test>
                <Test

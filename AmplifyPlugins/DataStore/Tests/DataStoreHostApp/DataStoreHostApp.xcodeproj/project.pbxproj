@@ -156,6 +156,8 @@
 		219253BC28BFE7D100820737 /* AmplifyAsyncTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 219253BB28BFE7D100820737 /* AmplifyAsyncTesting */; };
 		219253BE28BFE84100820737 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 219253BD28BFE84000820737 /* XCTest.framework */; };
 		21977DBF289C171A005B49D6 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977DBE289C1719005B49D6 /* TestConfigHelper.swift */; };
+		219B518528E3A4B00080EDCC /* DataStoreConnectionOptionalAssociations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA00289BFE3400B32A39 /* DataStoreConnectionOptionalAssociations.swift */; };
+		219B518628E3A7150080EDCC /* DataStoreHubEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9EE289BFE3400B32A39 /* DataStoreHubEvent.swift */; };
 		21BBFB4A289BFF9400B32A39 /* AWSDataStorePluginConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F2289BFE3400B32A39 /* AWSDataStorePluginConfigurationTests.swift */; };
 		21BBFB4B289BFFA000B32A39 /* DataStoreConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F1289BFE3400B32A39 /* DataStoreConfigurationTests.swift */; };
 		21BBFB4C289BFFA300B32A39 /* DataStoreConsecutiveUpdatesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA16289BFE3400B32A39 /* DataStoreConsecutiveUpdatesTests.swift */; };
@@ -199,7 +201,6 @@
 		21BBFC06289C036300B32A39 /* DataStoreInternal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9EB289BFE3400B32A39 /* DataStoreInternal.swift */; };
 		21BBFC07289C036600B32A39 /* HubEventsIntegrationTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9EC289BFE3400B32A39 /* HubEventsIntegrationTestBase.swift */; };
 		21BBFC08289C036800B32A39 /* SyncEngineIntegrationV2TestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9ED289BFE3400B32A39 /* SyncEngineIntegrationV2TestBase.swift */; };
-		21BBFC09289C036A00B32A39 /* DataStoreHubEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9EE289BFE3400B32A39 /* DataStoreHubEvent.swift */; };
 		21BBFC0B289C037000B32A39 /* TestModelV2Registration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F0289BFE3400B32A39 /* TestModelV2Registration.swift */; };
 		21BBFC0E289C038500B32A39 /* DataStoreConnectionScenario5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F4289BFE3400B32A39 /* DataStoreConnectionScenario5Tests.swift */; };
 		21BBFC0F289C038700B32A39 /* DataStoreConnectionScenario2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBF9F5289BFE3400B32A39 /* DataStoreConnectionScenario2Tests.swift */; };
@@ -1167,6 +1168,7 @@
 		2118212E289BFB4B001B5945 /* DataStoreHostApp */ = {
 			isa = PBXGroup;
 			children = (
+				21BBF9EE289BFE3400B32A39 /* DataStoreHubEvent.swift */,
 				21BBFE13289C073100B32A39 /* HubListenerTestUtilities.swift */,
 				213DBB6128A4172000B30280 /* Info.plist */,
 				2118212F289BFB4B001B5945 /* DataStoreHostAppApp.swift */,
@@ -1330,7 +1332,6 @@
 				21BBF9EB289BFE3400B32A39 /* DataStoreInternal.swift */,
 				21BBF9EC289BFE3400B32A39 /* HubEventsIntegrationTestBase.swift */,
 				21BBF9ED289BFE3400B32A39 /* SyncEngineIntegrationV2TestBase.swift */,
-				21BBF9EE289BFE3400B32A39 /* DataStoreHubEvent.swift */,
 				21BBF9F0289BFE3400B32A39 /* TestModelV2Registration.swift */,
 			);
 			path = TestSupport;
@@ -2646,6 +2647,7 @@
 			files = (
 				21182132289BFB4B001B5945 /* ContentView.swift in Sources */,
 				213DBC6328A5841400B30280 /* HubListenerTestUtilities.swift in Sources */,
+				219B518628E3A7150080EDCC /* DataStoreHubEvent.swift in Sources */,
 				21182130289BFB4B001B5945 /* DataStoreHostAppApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2803,7 +2805,6 @@
 				21BBFD2E289C06E400B32A39 /* User+Schema.swift in Sources */,
 				21BBFD95289C06E400B32A39 /* NestedTypeTestModel.swift in Sources */,
 				21BBFC0E289C038500B32A39 /* DataStoreConnectionScenario5Tests.swift in Sources */,
-				21BBFC09289C036A00B32A39 /* DataStoreHubEvent.swift in Sources */,
 				21BBFD9C289C06E400B32A39 /* Category.swift in Sources */,
 				21BBFD62289C06E400B32A39 /* TodoWithDefaultValueV2.swift in Sources */,
 				21BBFD8E289C06E400B32A39 /* Nested.swift in Sources */,
@@ -3001,6 +3002,7 @@
 				97731E8E28B3BD39006F180B /* Post7V2+Schema.swift in Sources */,
 				97731E8728B3BD39006F180B /* Post3V2.swift in Sources */,
 				97731ED028B3BD39006F180B /* TodoWithDefaultValueV2+Schema.swift in Sources */,
+				219B518528E3A4B00080EDCC /* DataStoreConnectionOptionalAssociations.swift in Sources */,
 				97731E8928B3BD39006F180B /* Project4bV2+Schema.swift in Sources */,
 				97731E8528B3BD39006F180B /* Comment3V2.swift in Sources */,
 				97731ECC28B3BD39006F180B /* Comment6V2+Schema.swift in Sources */,
