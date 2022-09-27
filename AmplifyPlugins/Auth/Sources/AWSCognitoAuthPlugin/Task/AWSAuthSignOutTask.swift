@@ -26,15 +26,22 @@ class AWSAuthSignOutTask: AuthSignOutTask {
 
     func execute() async -> AuthSignOutResult {
         await taskHelper.didStateMachineConfigured()
-        if  case .configured(let authNState, _) = await authStateMachine.currentState,
-            isValidAuthNStateToStart(authNState) {
+
+        guard case .configured(let authNState, _) = await authStateMachine.currentState else {
+            return invalidStateResult()
+
+        }
+
+        if isValidAuthNStateToStart(authNState) {
             await sendSignOutEvent()
             return await doSignOut()
-        } else {
+        } else if case .federatedToIdentityPool = authNState {
             let invalidStateError = AuthError.invalidState(
                 "The user is currently federated to identity pool. You must call clearFederationToIdentityPool to clear credentials.",
                 AuthPluginErrorConstants.invalidStateError, nil)
             return AWSCognitoSignOutResult.failed(invalidStateError)
+        } else {
+            return invalidStateResult()
         }
 
     }
@@ -44,8 +51,7 @@ class AWSAuthSignOutTask: AuthSignOutTask {
         let stateSequences = await authStateMachine.listen()
         for await state in stateSequences {
             guard case .configured(let authNState, _) = state else {
-                let error = AuthError.invalidState("Auth State not in a valid state", AuthPluginErrorConstants.invalidStateError, nil)
-                return AWSCognitoSignOutResult.failed(error)
+                return invalidStateResult()
             }
 
             switch authNState {
@@ -79,6 +85,11 @@ class AWSAuthSignOutTask: AuthSignOutTask {
         default:
             return false
         }
+    }
+
+    func invalidStateResult() -> AuthSignOutResult {
+        let error = AuthError.invalidState("Auth State not in a valid state", AuthPluginErrorConstants.invalidStateError, nil)
+        return AWSCognitoSignOutResult.failed(error)
     }
 
     private func sendSignOutEvent() async {
