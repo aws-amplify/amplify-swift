@@ -9,34 +9,19 @@ import XCTest
 import Amplify
 import AWSS3StoragePlugin
 import AWSS3
-@testable import AmplifyTestCommon
 
 class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
 
     /// Given: An object in storage
     /// When: Call the GetURL API with 10 second expiry time
     /// Then: Retrieve data successfully when the URL has not expired and fail to after the expiry time
-    func testGetRemoteURLWithExpires() {
+    func testGetRemoteURLWithExpires() async {
         let key = UUID().uuidString
-        uploadData(key: key, dataString: key)
-
-        var remoteURLOptional: URL?
-        let completeInvoked = expectation(description: "Completed is invoked")
+        await uploadData(key: key, dataString: key)
 
         let expires = 10
         let options = StorageGetURLRequest.Options(expires: expires)
-        let operation = Amplify.Storage.getURL(key: key, options: options) { result in
-            switch result {
-            case .success(let result):
-                remoteURLOptional = result
-                completeInvoked.fulfill()
-            case .failure(let error):
-                XCTFail("Failed with \(error)")
-            }
-        }
-        XCTAssertNotNil(operation)
-        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
-        guard let remoteURL = remoteURLOptional else {
+        guard let remoteURL = await getURL(key: key, options: options) else {
             XCTFail("Failed to get remoteURL")
             return
         }
@@ -63,7 +48,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
             dataTaskCompleteInvoked.fulfill()
         }
         task.resume()
-        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
 
         sleep(15)
 
@@ -83,7 +68,10 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
             urlExpired.fulfill()
         }
         task2.resume()
-        waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        
+        // Remove the key
+        await remove(key: key)
     }
 
 //    /// Given: An object uploaded with metadata with key `metadataKey` and value `metadataValue`
