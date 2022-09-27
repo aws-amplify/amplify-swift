@@ -178,7 +178,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
     }
 
     func testRemovePostFromCommentAndBlogFromPost() throws {
-        setUp(withModels: TestModelRegistration(), logLevel: .verbose)
+        setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         guard let blog = saveBlog(),
               let post = savePost(withBlog: blog),
@@ -201,7 +201,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         queriedComment.post = nil
         // A mock GraphQL request is created to assert that the request variables contains the "postId"
         // with the value `nil` which is sent to the API to persist the removal of the association.
-        let request = GraphQLRequest<Comment>.createMutation(of: queriedComment, version: 1)
+        let request = GraphQLRequest<Comment8>.createMutation(of: queriedComment, version: 1)
         guard let variables = request.variables,
               let input = variables["input"] as? [String: Any?],
               let postValue = input["postId"],
@@ -211,7 +211,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
         }
 
         guard saveComment(queriedComment) != nil else {
-            XCTFail("Failed to update comment and post")
+            XCTFail("Failed to update comment")
             return
         }
         guard let queriedCommentWithoutPost = queryComment(id: comment.id) else {
