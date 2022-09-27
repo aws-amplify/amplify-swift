@@ -40,6 +40,30 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
         XCTAssertTrue(result.isSignUpComplete, "Signin result should be complete")
     }
 
+    func testSuccessfulSignUpWithOptions() async throws {
+
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockConfirmSignUpResponse: { request in
+                XCTAssertNotNil(request.clientMetadata)
+                XCTAssertEqual(request.clientMetadata?["key"], "value")
+                return .init()
+            }
+        )
+
+        let pluginOptions = AWSAuthConfirmSignUpOptions(metadata: ["key": "value"])
+        let options = AuthConfirmSignUpRequest.Options(pluginOptions: pluginOptions)
+        let result = try await self.plugin.confirmSignUp(
+            for: "jeffb",
+            confirmationCode: "123456",
+            options: options)
+
+        guard case .done = result.nextStep else {
+            XCTFail("Result should be .done for next step")
+            return
+        }
+        XCTAssertTrue(result.isSignUpComplete, "Signin result should be complete")
+    }
+
     func testSignUpWithEmptyUsername() async {
 
         self.mockIdentityProvider = MockIdentityProvider(

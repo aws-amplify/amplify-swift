@@ -46,7 +46,7 @@ class AWSAuthUpdateUserAttributeTask: AuthUpdateUserAttributeTask {
     }
 
     func updateUserAttribute(with accessToken: String) async throws -> AuthUpdateAttributeResult {
-        let clientMetaData = (request.options.pluginOptions as? AWSUpdateUserAttributeOptions)?.metadata ?? [:]
+        let clientMetaData = (request.options.pluginOptions as? AWSAuthUpdateUserAttributeOptions)?.metadata ?? [:]
 
         let finalResult = try await UpdateAttributesOperationHelper.update(
             attributes: [request.userAttribute],

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct AWSUpdateUserAttributeOptions {
+public struct AWSAuthUpdateUserAttributesOptions {
 
     /// A map of custom key-value pairs that you can provide as input for any custom workflows that this action triggers.
     public let metadata: [String: String]?

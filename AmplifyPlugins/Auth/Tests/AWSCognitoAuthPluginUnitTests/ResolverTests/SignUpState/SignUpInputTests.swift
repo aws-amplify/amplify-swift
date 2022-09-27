@@ -27,6 +27,8 @@ class SignUpInputTests: XCTestCase {
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF)
         let input = SignUpInput(username: username,
                                 password: password,
+                                clientMetadata: [:],
+                                validationData: [:],
                                 attributes: [:],
                                 environment: environment)
 
@@ -47,6 +49,8 @@ class SignUpInputTests: XCTestCase {
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF)
         let input = SignUpInput(username: username,
                                 password: password,
+                                clientMetadata: [:],
+                                validationData: [:],
                                 attributes: [:],
                                 environment: environment)
 
@@ -68,6 +72,8 @@ class SignUpInputTests: XCTestCase {
             cognitoUserPoolASFFactory: Defaults.makeDefaultASF)
         let input = SignUpInput(username: username,
                                 password: password,
+                                clientMetadata: [:],
+                                validationData: [:],
                                 attributes: [:],
                                 environment: environment)
 

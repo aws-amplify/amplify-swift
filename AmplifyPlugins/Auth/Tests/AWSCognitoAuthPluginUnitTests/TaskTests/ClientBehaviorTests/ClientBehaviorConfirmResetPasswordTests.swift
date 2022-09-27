@@ -94,6 +94,30 @@ class ClientBehaviorConfirmResetPasswordTests: AWSCognitoAuthClientBehaviorTests
         }
     }
 
+    /// Test a confirmResetPassword call with plugin options
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a successul response
+    /// - When:
+    ///    - I invoke confirmResetPassword with an empty username, a new password and a confirmation code
+    /// - Then:
+    ///    - I should get an .validation error
+    ///
+    func testConfirmResetPasswordWithPluginOptions() async throws {
+
+        mockIdentityProvider = MockIdentityProvider(
+            mockConfirmForgotPasswordOutputResponse: { request in
+                XCTAssertNoThrow(request.clientMetadata)
+                XCTAssertEqual(request.clientMetadata?["key"], "value")
+                return try ConfirmForgotPasswordOutputResponse(httpResponse: MockHttpResponse.ok)
+            }
+        )
+        let pluginOptions = AWSAuthConfirmResetPasswordOptions(metadata: ["key": "value"])
+        try await plugin.confirmResetPassword(for: "username",
+                                              with: "newpassword",
+                                              confirmationCode: "code",
+                                              options: .init(pluginOptions: pluginOptions))
+    }
+
     /// Test a confirmResetPassword call with empty new password
     ///
     /// - Given: an auth plugin with mocked service. Mocked service should mock a successul response

@@ -15,6 +15,8 @@ extension SignUpInput {
     typealias CognitoAttributeType = CognitoIdentityProviderClientTypes.AttributeType
     init(username: String,
          password: String,
+         clientMetadata: [String: String]?,
+         validationData: [String: String]?,
          attributes: [String: String],
          asfDeviceId: String? = nil,
          environment: UserPoolEnvironment) {
@@ -22,7 +24,7 @@ extension SignUpInput {
         let configuration = environment.userPoolConfiguration
         let secretHash = Self.calculateSecretHash(username: username,
                                                   userPoolConfiguration: configuration)
-        let validationData = Self.getValidationData()
+        let validationData = Self.getValidationData(with: validationData)
         let convertedAttributes = Self.convertAttributes(attributes)
         var userContextData: CognitoIdentityProviderClientTypes.UserContextDataType?
         if let asfDeviceId = asfDeviceId,
@@ -34,6 +36,7 @@ extension SignUpInput {
             userContextData = .init(encodedData: encodedData)
         }
         self.init(clientId: configuration.clientId,
+                  clientMetadata: clientMetadata,
                   password: password,
                   secretHash: secretHash,
                   userAttributes: convertedAttributes,
@@ -57,8 +60,15 @@ extension SignUpInput {
             return nil
         }
 
-    private static func getValidationData() -> [CognitoIdentityProviderClientTypes.AttributeType]? {
-        cognitoValidationData
+    private static func getValidationData(with devProvidedData: [String: String]?)
+    -> [CognitoIdentityProviderClientTypes.AttributeType]? {
+
+        if let devProvidedData = devProvidedData {
+            return devProvidedData.compactMap { (key, value) in
+                return CognitoIdentityProviderClientTypes.AttributeType(name: key, value: value)
+            } + (cognitoValidationData ?? [])
+        }
+        return cognitoValidationData
     }
 
     private static var cognitoValidationData: [CognitoIdentityProviderClientTypes.AttributeType]? {

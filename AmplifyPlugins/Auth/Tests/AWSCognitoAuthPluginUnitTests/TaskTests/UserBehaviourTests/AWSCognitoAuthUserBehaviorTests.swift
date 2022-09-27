@@ -88,7 +88,7 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
     ///
     func testUpdateUserAttributeRequest() async throws {
         let emailAttribute = AuthUserAttribute(.email, value: "email")
-        let pluginOptions = AWSUpdateUserAttributeOptions(metadata: ["key": "value"])
+        let pluginOptions = AWSAuthUpdateUserAttributeOptions(metadata: ["key": "value"])
         let options = AuthUpdateUserAttributeRequest.Options(pluginOptions: pluginOptions)
         _ = try await plugin.update(userAttribute: emailAttribute, options: options)
     }
@@ -117,7 +117,7 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
     func testUpdateUserAttributesRequest() async throws {
         let emailAttribute = AuthUserAttribute(.email, value: "email")
         let phoneAttribute = AuthUserAttribute(.phoneNumber, value: "123213")
-        let pluginOptions = AWSUpdateUserAttributesOptions(metadata: ["key": "value"])
+        let pluginOptions = AWSAuthUpdateUserAttributesOptions(metadata: ["key": "value"])
         let options = AuthUpdateUserAttributesRequest.Options(pluginOptions: pluginOptions)
         _ = try await plugin.update(userAttributes: [emailAttribute, phoneAttribute], options: options)
     }
@@ -147,6 +147,30 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
     func testResendConfirmationCodeAttributeRequest() async throws {
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { _ in
             GetUserAttributeVerificationCodeOutputResponse(
+                codeDeliveryDetails: .init(
+                    attributeName: "attributeName",
+                    deliveryMedium: .email,
+                    destination: "destination"))
+        })
+        let pluginOptions = AWSAttributeResendConfirmationCodeOptions(metadata: ["key": "value"])
+        let options = AuthAttributeResendConfirmationCodeRequest.Options(pluginOptions: pluginOptions)
+        _ = try await plugin.resendConfirmationCode(for: .email, options: options)
+    }
+
+    /// Test resendConfirmationCode(for:) operation can be invoked with plugin options
+    ///
+    /// - Given: Given a configured auth plugin
+    /// - When:
+    ///    - I call resendConfirmationCode(for:)  operation
+    /// - Then:
+    ///    - I should get a valid task completion
+    ///
+    func testResendConfirmationCodeWithPluginOptions() async throws {
+        mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeVerificationCodeOutputResponse: { request in
+
+            XCTAssertNotNil(request.clientMetadata)
+            XCTAssertEqual(request.clientMetadata?["key"], "value")
+            return GetUserAttributeVerificationCodeOutputResponse(
                 codeDeliveryDetails: .init(
                     attributeName: "attributeName",
                     deliveryMedium: .email,

@@ -28,6 +28,9 @@ class AWSAuthSignUpTask: AuthSignUpTask {
         let userPoolEnvironment = authEnvironment.userPoolEnvironment
         try request.hasError()
 
+        let pluginOptions = request.options.pluginOptions as? AWSAuthSignUpOptions
+        let metaData = pluginOptions?.metadata
+        let validationData = pluginOptions?.validationData
         do {
             let client = try userPoolEnvironment.cognitoUserPoolFactory()
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
@@ -39,6 +42,8 @@ class AWSAuthSignUpTask: AuthSignUpTask {
                 } ?? [:]
             let input = SignUpInput(username: request.username,
                                     password: request.password!,
+                                    clientMetadata: metaData,
+                                    validationData: validationData,
                                     attributes: attributes,
                                     asfDeviceId: asfDeviceId,
                                     environment: userPoolEnvironment)

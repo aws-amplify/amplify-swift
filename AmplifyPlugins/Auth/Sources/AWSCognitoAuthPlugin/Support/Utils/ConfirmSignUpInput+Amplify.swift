@@ -11,6 +11,7 @@ import AWSCognitoIdentityProvider
 extension ConfirmSignUpInput {
     init(username: String,
          confirmationCode: String,
+         clientMetadata: [String: String]?,
          asfDeviceId: String? = nil,
          environment: UserPoolEnvironment
     ) {
@@ -30,6 +31,7 @@ extension ConfirmSignUpInput {
         }
         self.init(
             clientId: configuration.clientId,
+            clientMetadata: clientMetadata,
             confirmationCode: confirmationCode,
             secretHash: secretHash,
             userContextData: userContextData, username: username)
