@@ -47,7 +47,7 @@ class AWSAuthResetPasswordTask: AuthResetPasswordTask {
         let userPoolEnvironment = try environment.userPoolEnvironment()
         let userPoolService = try userPoolEnvironment.cognitoUserPoolFactory()
         let clientMetaData = (request.options.pluginOptions
-                              as? AWSResendSignUpCodeOptions)?.metadata ?? [:]
+                              as? AWSAuthResendSignUpCodeOptions)?.metadata ?? [:]
 
         let userPoolConfigurationData: UserPoolConfigurationData
         switch authConfiguration {

@@ -47,7 +47,7 @@ class AWSAuthResendSignUpCodeTask: AuthResendSignUpCodeTask {
     func resendSignUpCode() async throws -> AuthCodeDeliveryDetails {
         let userPoolEnvironment = try environment.userPoolEnvironment()
         let userPoolService = try userPoolEnvironment.cognitoUserPoolFactory()
-        let clientMetaData = (request.options.pluginOptions as? AWSResendSignUpCodeOptions)?.metadata ?? [:]
+        let clientMetaData = (request.options.pluginOptions as? AWSAuthResendSignUpCodeOptions)?.metadata ?? [:]
 
         let userPoolConfigurationData: UserPoolConfigurationData
         switch authConfiguration {

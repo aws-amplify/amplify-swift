@@ -7,9 +7,8 @@
 
 import Foundation
 
-public struct AWSResendSignUpCodeOptions {
+public struct AWSAuthConfirmSignUpOptions {
 
-    /// A map of custom key-value pairs that you can provide as input
     public let metadata: [String: String]?
 
     public init(metadata: [String: String]? = nil) {

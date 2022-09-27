@@ -28,9 +28,11 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask {
         let userPoolEnvironment = authEnvironment.userPoolEnvironment
         do {
 
+            let metadata = (request.options.pluginOptions as? AWSAuthConfirmSignUpOptions)?.metadata
             let client = try userPoolEnvironment.cognitoUserPoolFactory()
             let input = ConfirmSignUpInput(username: request.username,
                                            confirmationCode: request.code,
+                                           clientMetadata: metadata,
                                            environment: userPoolEnvironment)
             _ = try await client.confirmSignUp(input: input)
             return AuthSignUpResult(.done)

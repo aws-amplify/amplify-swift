@@ -46,7 +46,7 @@ class AWSAuthConfirmResetPasswordTask: AuthConfirmResetPasswordTask {
     func confirmResetPassword() async throws {
         let userPoolService = try environment.cognitoUserPoolFactory()
         let clientMetaData = (request.options.pluginOptions
-                              as? AWSResendSignUpCodeOptions)?.metadata ?? [:]
+                              as? AWSAuthConfirmResetPasswordOptions)?.metadata ?? [:]
 
         let userPoolConfigurationData: UserPoolConfigurationData
         switch authConfiguration {
