@@ -119,11 +119,9 @@ struct HostedUISignInHelper {
         let pluginOptions = request.options.pluginOptions as? AWSAuthWebUISignInOptions
         let privateSession = pluginOptions?.preferPrivateSession ?? false
         let idpIdentifier = pluginOptions?.idpIdentifier
-        let federationProviderName = pluginOptions?.federationProviderName
 
         let providerInfo = HostedUIProviderInfo(authProvider: request.authProvider,
-                                                idpIdentifier: idpIdentifier,
-                                                federationProviderName: federationProviderName)
+                                                idpIdentifier: idpIdentifier)
         let scopeFromConfig = oauthConfiguration.scopes
         let hostedUIOptions = HostedUIOptions(scopes: request.options.scopes ?? scopeFromConfig,
                                               providerInfo: providerInfo,

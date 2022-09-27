@@ -18,12 +18,6 @@ public struct AWSAuthWebUISignInOptions {
     /// user must select one of them to continue.
     public let idpIdentifier: String?
 
-    /// Provider name to which the signedIn user will be federated in the AWS Cognito Identity Pool
-    ///
-    /// `federationProviderName` is required if you are signIn directly with a third party provider. For example if you
-    /// are using Auth0, specify the `federationProviderName` as <your_domain>.auth0.com.
-    public let federationProviderName: String?
-
     /// Starts the webUI signin in a private browser session, if supported by the current browser.
     ///
     /// Note that this value internally sets `prefersEphemeralWebBrowserSession` in ASWebAuthenticationSession.
@@ -32,10 +26,8 @@ public struct AWSAuthWebUISignInOptions {
     public let preferPrivateSession: Bool
 
     public init(idpIdentifier: String? = nil,
-                federationProviderName: String? = nil,
                 preferPrivateSession: Bool = false) {
         self.idpIdentifier = idpIdentifier
-        self.federationProviderName = federationProviderName
         self.preferPrivateSession = preferPrivateSession
     }
 }

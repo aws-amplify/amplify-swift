@@ -287,8 +287,7 @@ struct MigrateLegacyCredentialStore: Action {
                 let userPoolConfig = authConfiguration.getUserPoolConfiguration()
                 let scopes = userPoolConfig?.hostedUIConfig?.oauth.scopes
                 let provider = HostedUIProviderInfo(authProvider: nil,
-                                                    idpIdentifier: nil,
-                                                    federationProviderName: nil)
+                                                    idpIdentifier: nil)
                 return .hostedUI(.init(scopes: scopes ?? [],
                                        providerInfo: provider,
                                        presentationAnchor: nil,
