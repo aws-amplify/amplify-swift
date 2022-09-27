@@ -58,12 +58,7 @@ extension AWSS3StorageService {
         request.httpMethod = "PUT"
 
         request.setValue(contentType, forHTTPHeaderField: "Content-Type")
-
-        /*
-        let userAgent = AWSServiceConfiguration.baseUserAgent()
         request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
-         */
-
         request.setHTTPRequestHeaders(transferTask: transferTask)
 
         let uploadTask = urlSession.uploadTask(with: request, fromFile: fileURL)

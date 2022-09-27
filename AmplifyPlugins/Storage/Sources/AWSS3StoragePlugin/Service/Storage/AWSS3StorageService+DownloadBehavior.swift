@@ -44,12 +44,7 @@ extension AWSS3StorageService {
         var request = URLRequest(url: preSignedURL)
         request.cachePolicy = .reloadIgnoringLocalCacheData
         request.httpMethod = "GET"
-
-        /*
-         let userAgent = AWSServiceConfiguration.baseUserAgent()
-         request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
-         */
-
+        request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
         request.setHTTPRequestHeaders(transferTask: transferTask)
 
         let downloadTask = urlSession.downloadTask(with: request)

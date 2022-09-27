@@ -22,6 +22,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
     var bucket: String!
 
     var s3Client: S3Client!
+    let userAgent: String
 
     let storageConfiguration: StorageConfiguration
     let sessionConfiguration: URLSessionConfiguration
@@ -103,6 +104,8 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
         self.preSignedURLBuilder = preSignedURLBuilder
         self.awsS3 = awsS3
         self.bucket = bucket
+
+        self.userAgent = "\(AmplifyAWSServiceConfiguration.frameworkMetaData())"
 
         StorageBackgroundEventsRegistry.register(identifier: identifier)
 

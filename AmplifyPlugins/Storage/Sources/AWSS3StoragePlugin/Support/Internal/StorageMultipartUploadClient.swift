@@ -100,11 +100,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
             var request = URLRequest(url: preSignedURL)
             request.cachePolicy = .reloadIgnoringLocalCacheData
             request.httpMethod = "PUT"
-
-            /*
-            let userAgent = AWSServiceConfiguration.baseUserAgent().appending(" MultiPart")
-            request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
-             */
+            request.setValue(serviceProxy.userAgent, forHTTPHeaderField: "User-Agent")
 
             let uploadTask = serviceProxy.urlSession.uploadTask(with: request, fromFile: partialFileURL)
             subTask.sessionTask = uploadTask
