@@ -4,8 +4,9 @@ AWS Amplify provides a declarative and easy-to-use interface across different ca
 
 Our default implementation works with Amazon Web Services (AWS), but AWS Amplify is designed to be open and pluggable for any custom backend or service.
 
-- **API Documentation**
-  https://docs.amplify.aws/start/q/integration/ios
+[**API Documentation**](https://aws-amplify.github.io/amplify-ios/docs/)
+
+[**Getting Started Guide**](https://docs.amplify.aws/start/q/integration/ios)
 
 [![Cocoapods](https://img.shields.io/cocoapods/v/Amplify)](https://cocoapods.org/pods/Amplify)
 [![CircleCI](https://circleci.com/gh/aws-amplify/amplify-ios.svg?style=shield)](https://circleci.com/gh/aws-amplify/amplify-ios)
@@ -210,8 +211,8 @@ Open your project using ./YOUR-PROJECT-NAME.xcworkspace file. Remember to always
 ## Reporting Bugs/Feature Requests
 
 [![Open Bugs](https://img.shields.io/github/issues/aws-amplify/amplify-ios/bug?color=d73a4a&label=bugs)](https://github.com/aws-amplify/amplify-ios/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
-[![Open Questions](https://img.shields.io/github/issues/aws-amplify/amplify-ios/usage%20question?color=558dfd&label=questions)](https://github.com/aws-amplify/amplify-ios/issues?q=is%3Aissue+label%3A%22usage+question%22+is%3Aopen)
-[![Feature Requests](https://img.shields.io/github/issues/aws-amplify/amplify-ios/feature%20request?color=ff9001&label=feature%20requests)](https://github.com/aws-amplify/amplify-ios/issues?q=is%3Aissue+label%3A%22feature+request%22+is%3Aopen+)
+[![Open Questions](https://img.shields.io/github/issues/aws-amplify/amplify-ios/usage%20question?color=558dfd&label=questions)](https://github.com/aws-amplify/amplify-ios/issues?q=is%3Aissue+label%3A%22question%22+is%3Aopen+)
+[![Feature Requests](https://img.shields.io/github/issues/aws-amplify/amplify-ios/feature%20request?color=ff9001&label=feature%20requests)](https://github.com/aws-amplify/amplify-ios/issues?q=is%3Aissue+label%3A%22feature-request%22+is%3Aopen+)
 [![Closed Issues](https://img.shields.io/github/issues-closed/aws-amplify/amplify-ios?color=%2325CC00)](https://github.com/aws-amplify/amplify-ios/issues?q=is%3Aissue+is%3Aclosed+)
 
 We welcome you to use the GitHub issue tracker to report bugs or suggest features.
