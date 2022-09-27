@@ -26,7 +26,7 @@ struct ClearFederationOperationHelper {
         }
     }
 
-    func startClearingFederation(with authStateMachine: AuthStateMachine) async throws {
+    private func startClearingFederation(with authStateMachine: AuthStateMachine) async throws {
         let stateSequences = await authStateMachine.listen()
         let event = AuthenticationEvent.init(eventType: .clearFederationToIdentityPool)
         await authStateMachine.send(event)

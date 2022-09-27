@@ -61,6 +61,28 @@ class BasePluginTest: XCTestCase {
             hubEventHandler: MockAuthHubEventBehavior())
     }
 
+    func configureCustomPluginWith(
+        authConfiguration: AuthConfiguration = Defaults.makeDefaultAuthConfigData(),
+        userPool: @escaping () throws -> CognitoUserPoolBehavior = Defaults.makeDefaultUserPool,
+        identityPool: @escaping () throws -> CognitoIdentityBehavior = Defaults.makeIdentity,
+        initialState: AuthState) -> AWSCognitoAuthPlugin {
+            let plugin = AWSCognitoAuthPlugin()
+            let environment = Defaults.makeDefaultAuthEnvironment(
+                identityPoolFactory: identityPool,
+                userPoolFactory: userPool)
+            let statemachine = AuthStateMachine(resolver: AuthState.Resolver(),
+                                                environment: environment,
+                                                initialState: initialState)
+            plugin.configure(
+                authConfiguration: Defaults.makeDefaultAuthConfigData(),
+                authEnvironment: environment,
+                authStateMachine: statemachine,
+                credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
+                hubEventHandler: MockAuthHubEventBehavior())
+            return plugin
+    }
+
+
     override func tearDown() async throws {
         plugin = nil
         await Amplify.reset()
