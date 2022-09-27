@@ -39,9 +39,6 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "DataStoreConnectionScenario6Tests/testDeleteAll()">
-               </Test>
-               <Test
                   Identifier = "DataStoreConsecutiveUpdatesTests/testSaveThenMultipleUpdate()">
                </Test>
                <Test
