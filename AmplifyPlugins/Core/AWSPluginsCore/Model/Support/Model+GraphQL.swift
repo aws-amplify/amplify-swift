@@ -48,7 +48,7 @@ extension Model {
                     for fieldName in fieldNames {
                         // Only set to `nil` if it has not been set already. For hasOne relationships, where the
                         // target name of the associated model is explicitly on this model as a field property, we
-                        // cannot guardteed which field is processed first, thus if there is a value for the explicit
+                        // cannot guarantee which field is processed first, thus if there is a value for the explicit
                         // field and was already set, don't overwrite it.
                         if input[fieldName] == nil {
                             // Always setting the value to `nil` is not necessary for create mutations, since leaving it
