@@ -9,8 +9,9 @@ You can also quickly get started by using our [Photo Sharing Sample App](https:/
 
 We deeply appreciate your feedback on this Developer Preview as we work towards our General Availability launch: [GitHub Discussion](https://github.com/aws-amplify/amplify-ios/discussions/categories/developer-preview) or [File a Bug Report](https://github.com/aws-amplify/amplify-ios/issues/new/choose).
 
-- **API Documentation**
-  https://docs.amplify.aws/start/q/integration/ios
+[**API Documentation**](https://aws-amplify.github.io/amplify-ios/docs/)
+
+[**Getting Started Guide**](https://docs.amplify.aws/start/q/integration/ios)
 
 [![CircleCI](https://circleci.com/gh/aws-amplify/amplify-ios.svg?style=shield)](https://circleci.com/gh/aws-amplify/amplify-ios)
 [![Discord](https://img.shields.io/discord/308323056592486420?logo=discord)](https://discord.gg/jWVbPfC)
@@ -122,8 +123,8 @@ Amplify requires Xcode 13.4 or higher to build.
 ## Reporting Bugs/Feature Requests
 
 [![Open Bugs](https://img.shields.io/github/issues/aws-amplify/amplify-ios/bug?color=d73a4a&label=bugs)](https://github.com/aws-amplify/amplify-ios/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
-[![Open Questions](https://img.shields.io/github/issues/aws-amplify/amplify-ios/usage%20question?color=558dfd&label=questions)](https://github.com/aws-amplify/amplify-ios/issues?q=is%3Aissue+label%3A%22usage+question%22+is%3Aopen)
-[![Feature Requests](https://img.shields.io/github/issues/aws-amplify/amplify-ios/feature%20request?color=ff9001&label=feature%20requests)](https://github.com/aws-amplify/amplify-ios/issues?q=is%3Aissue+label%3A%22feature+request%22+is%3Aopen+)
+[![Open Questions](https://img.shields.io/github/issues/aws-amplify/amplify-ios/usage%20question?color=558dfd&label=questions)](https://github.com/aws-amplify/amplify-ios/issues?q=is%3Aissue+label%3A%22question%22+is%3Aopen+)
+[![Feature Requests](https://img.shields.io/github/issues/aws-amplify/amplify-ios/feature%20request?color=ff9001&label=feature%20requests)](https://github.com/aws-amplify/amplify-ios/issues?q=is%3Aissue+label%3A%22feature-request%22+is%3Aopen+)
 [![Closed Issues](https://img.shields.io/github/issues-closed/aws-amplify/amplify-ios?color=%2325CC00)](https://github.com/aws-amplify/amplify-ios/issues?q=is%3Aissue+is%3Aclosed+)
 
 We welcome you to use the GitHub issue tracker to report bugs or suggest features.
