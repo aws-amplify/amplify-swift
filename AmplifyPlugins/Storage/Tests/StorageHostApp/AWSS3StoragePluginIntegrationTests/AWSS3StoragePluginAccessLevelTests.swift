@@ -166,6 +166,8 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         await remove(key: key, accessLevel: accessLevel)
     }
 
+    // TODO: review this failing test
+
     /// Given: `user1` user uploads some data with private access level
     /// When: `user2` lists and gets the data for `user1`
     /// Then: The list and get operations fail with validation errors
@@ -196,8 +198,6 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let listError = await waitError(with: listFailedExpectation) {
             return try await Amplify.Storage.list(options: listOptions)
         }
-
-
 
         guard case .validation  = (listError as? StorageError) else {
             XCTFail("Expected validation error, got \(listError ?? "nil")")

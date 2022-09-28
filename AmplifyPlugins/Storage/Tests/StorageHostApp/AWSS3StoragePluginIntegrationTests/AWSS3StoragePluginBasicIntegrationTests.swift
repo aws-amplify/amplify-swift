@@ -95,6 +95,8 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         await remove(key: key)
     }
 
+    // TODO: review this failing test
+    
     /// Given: A large file
     /// When: Upload the file
     /// Then: The operation completes successfully
@@ -354,41 +356,41 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         XCTAssertNotNil(result)
     }
 
-//    /// Given: Object with key `key` in storage
-//    /// When: Using the escape hatch and calling headObject API  using the key "public/`key`"
-//    /// Then: The request completes successful
-//    func testEscapeHatchAndGetHeadObject() {
-//        let key = UUID().uuidString
-//        uploadData(key: key, dataString: key)
-//
-//        do {
-//            let pluginOptional = try Amplify.Storage.getPlugin(for: "awsS3StoragePlugin")
-//
-//            guard let plugin = pluginOptional as? AWSS3StoragePlugin else {
-//                XCTFail("Could not cast as AWSS3StoragePlugin")
-//                return
-//            }
-//
-//            let awsS3 = plugin.getEscapeHatch()
-//            let request: AWSS3HeadObjectRequest = AWSS3HeadObjectRequest()
-//
-//            request.bucket = try AWSS3StoragePluginTestBase.getBucketFromConfig(
-//                forResource: AWSS3StoragePluginTestBase.amplifyConfiguration)
-//            request.key = "public/" + key
-//
-//            let task = awsS3.headObject(request)
-//            task.waitUntilFinished()
-//
-//            if let error = task.error {
-//                XCTFail("Failed to get headObject \(error)")
-//            } else if let result = task.result {
-//                print("headObject \(result)")
-//                XCTAssertNotNil(result)
-//            }
-//        } catch {
-//            XCTFail("Failed to get AWSS3StoragePlugin")
-//        }
-//    }
+    //    /// Given: Object with key `key` in storage
+    //    /// When: Using the escape hatch and calling headObject API  using the key "public/`key`"
+    //    /// Then: The request completes successful
+    //    func testEscapeHatchAndGetHeadObject() {
+    //        let key = UUID().uuidString
+    //        uploadData(key: key, dataString: key)
+    //
+    //        do {
+    //            let pluginOptional = try Amplify.Storage.getPlugin(for: "awsS3StoragePlugin")
+    //
+    //            guard let plugin = pluginOptional as? AWSS3StoragePlugin else {
+    //                XCTFail("Could not cast as AWSS3StoragePlugin")
+    //                return
+    //            }
+    //
+    //            let awsS3 = plugin.getEscapeHatch()
+    //            let request: AWSS3HeadObjectRequest = AWSS3HeadObjectRequest()
+    //
+    //            request.bucket = try AWSS3StoragePluginTestBase.getBucketFromConfig(
+    //                forResource: AWSS3StoragePluginTestBase.amplifyConfiguration)
+    //            request.key = "public/" + key
+    //
+    //            let task = awsS3.headObject(request)
+    //            task.waitUntilFinished()
+    //
+    //            if let error = task.error {
+    //                XCTFail("Failed to get headObject \(error)")
+    //            } else if let result = task.result {
+    //                print("headObject \(result)")
+    //                XCTAssertNotNil(result)
+    //            }
+    //        } catch {
+    //            XCTFail("Failed to get AWSS3StoragePlugin")
+    //        }
+    //    }
 
     // MARK: Helper functions
 
@@ -413,7 +415,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         _ = digestData.withUnsafeMutableBytes { digestBytes -> UInt8 in
             messageData.withUnsafeBytes { messageBytes -> UInt8 in
                 if let messageBytesBaseAddress = messageBytes.baseAddress,
-                    let digestBytesBlindMemory = digestBytes.bindMemory(to: UInt8.self).baseAddress {
+                   let digestBytesBlindMemory = digestBytes.bindMemory(to: UInt8.self).baseAddress {
                     let messageLength = CC_LONG(messageData.count)
                     CC_MD5(messageBytesBaseAddress, messageLength, digestBytesBlindMemory)
                 }
