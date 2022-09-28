@@ -32,7 +32,7 @@ class UserBehaviorResendCodeTests: BasePluginTest {
                     destination: "destination"))
         })
 
-        let attribute = try await plugin.resendConfirmationCode(for: .email)
+        let attribute = try await plugin.resendConfirmationCode(forUserAttributeKey: .email)
         guard case .email = attribute.destination else {
             XCTFail("Result should be .email for attributeKey")
             return
@@ -53,7 +53,7 @@ class UserBehaviorResendCodeTests: BasePluginTest {
             GetUserAttributeVerificationCodeOutputResponse()
         })
         do {
-            _ = try await plugin.resendConfirmationCode(for: .email)
+            _ = try await plugin.resendConfirmationCode(forUserAttributeKey: .email)
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.unknown = error else {
@@ -78,7 +78,7 @@ class UserBehaviorResendCodeTests: BasePluginTest {
             throw GetUserAttributeVerificationCodeOutputError.codeDeliveryFailureException(.init())
         })
         do {
-            _ = try await plugin.resendConfirmationCode(for: .email)
+            _ = try await plugin.resendConfirmationCode(forUserAttributeKey: .email)
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error else {
@@ -106,7 +106,7 @@ class UserBehaviorResendCodeTests: BasePluginTest {
             throw GetUserAttributeVerificationCodeOutputError.internalErrorException(.init())
         })
         do {
-            _ = try await plugin.resendConfirmationCode(for: .email)
+            _ = try await plugin.resendConfirmationCode(forUserAttributeKey: .email)
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.unknown = error else {
@@ -132,7 +132,7 @@ class UserBehaviorResendCodeTests: BasePluginTest {
             throw GetUserAttributeVerificationCodeOutputError.invalidParameterException(.init())
         })
         do {
-            _ = try await plugin.resendConfirmationCode(for: .email)
+            _ = try await plugin.resendConfirmationCode(forUserAttributeKey: .email)
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error else {
@@ -163,7 +163,7 @@ class UserBehaviorResendCodeTests: BasePluginTest {
         })
 
         do {
-            _ = try await plugin.resendConfirmationCode(for: .email)
+            _ = try await plugin.resendConfirmationCode(forUserAttributeKey: .email)
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error else {
@@ -193,7 +193,7 @@ class UserBehaviorResendCodeTests: BasePluginTest {
             throw GetUserAttributeVerificationCodeOutputError.notAuthorizedException(.init())
         })
         do {
-            _ = try await plugin.resendConfirmationCode(for: .email)
+            _ = try await plugin.resendConfirmationCode(forUserAttributeKey: .email)
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.notAuthorized = error else {
@@ -219,7 +219,7 @@ class UserBehaviorResendCodeTests: BasePluginTest {
             throw GetUserAttributeVerificationCodeOutputError.passwordResetRequiredException(.init())
         })
         do {
-            _ = try await plugin.resendConfirmationCode(for: .email)
+            _ = try await plugin.resendConfirmationCode(forUserAttributeKey: .email)
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error else {
@@ -249,7 +249,7 @@ class UserBehaviorResendCodeTests: BasePluginTest {
             throw GetUserAttributeVerificationCodeOutputError.resourceNotFoundException(.init())
         })
         do {
-            _ = try await plugin.resendConfirmationCode(for: .email)
+            _ = try await plugin.resendConfirmationCode(forUserAttributeKey: .email)
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error else {
@@ -279,7 +279,7 @@ class UserBehaviorResendCodeTests: BasePluginTest {
             throw GetUserAttributeVerificationCodeOutputError.tooManyRequestsException(.init())
         })
         do {
-            _ = try await plugin.resendConfirmationCode(for: .email)
+            _ = try await plugin.resendConfirmationCode(forUserAttributeKey: .email)
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error else {
@@ -309,7 +309,7 @@ class UserBehaviorResendCodeTests: BasePluginTest {
             throw GetUserAttributeVerificationCodeOutputError.userNotConfirmedException(.init())
         })
         do {
-            _ = try await plugin.resendConfirmationCode(for: .email)
+            _ = try await plugin.resendConfirmationCode(forUserAttributeKey: .email)
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error else {
@@ -339,7 +339,7 @@ class UserBehaviorResendCodeTests: BasePluginTest {
             throw GetUserAttributeVerificationCodeOutputError.userNotFoundException(.init())
         })
         do {
-            _ = try await plugin.resendConfirmationCode(for: .email)
+            _ = try await plugin.resendConfirmationCode(forUserAttributeKey: .email)
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error else {

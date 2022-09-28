@@ -27,9 +27,9 @@ extension AuthCategory: AuthCategoryUserBehavior {
             return try await plugin.update(userAttributes: userAttributes, options: options)
     }
 
-    public func resendConfirmationCode(for attributeKey: AuthUserAttributeKey,
+    public func resendConfirmationCode(forUserAttributeKey userAttributeKey: AuthUserAttributeKey,
                                        options: AuthAttributeResendConfirmationCodeRequest.Options? = nil) async throws -> AuthCodeDeliveryDetails {
-        return try await plugin.resendConfirmationCode(for: attributeKey, options: options)
+        return try await plugin.resendConfirmationCode(forUserAttributeKey: userAttributeKey, options: options)
 
     }
 

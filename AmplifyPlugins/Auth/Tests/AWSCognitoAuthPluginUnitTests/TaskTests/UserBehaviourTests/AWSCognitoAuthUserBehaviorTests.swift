@@ -154,7 +154,7 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
         })
         let pluginOptions = AWSAttributeResendConfirmationCodeOptions(metadata: ["key": "value"])
         let options = AuthAttributeResendConfirmationCodeRequest.Options(pluginOptions: pluginOptions)
-        _ = try await plugin.resendConfirmationCode(for: .email, options: options)
+        _ = try await plugin.resendConfirmationCode(forUserAttributeKey: .email, options: options)
     }
 
     /// Test resendConfirmationCode(for:) operation can be invoked with plugin options
@@ -178,7 +178,7 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
         })
         let pluginOptions = AWSAttributeResendConfirmationCodeOptions(metadata: ["key": "value"])
         let options = AuthAttributeResendConfirmationCodeRequest.Options(pluginOptions: pluginOptions)
-        _ = try await plugin.resendConfirmationCode(for: .email, options: options)
+        _ = try await plugin.resendConfirmationCode(forUserAttributeKey: .email, options: options)
     }
 
     /// Test resendConfirmationCode(for:)  operation can be invoked without options
@@ -197,7 +197,7 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
                     deliveryMedium: .email,
                     destination: "destination"))
         })
-        _ = try await plugin.resendConfirmationCode(for: .email)
+        _ = try await plugin.resendConfirmationCode(forUserAttributeKey: .email)
     }
 
     /// Test confirm(userAttribute: ) operation can be invoked

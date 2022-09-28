@@ -93,7 +93,7 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
             fatalError()
     }
 
-    public func resendConfirmationCode(for attributeKey: AuthUserAttributeKey, options: AuthAttributeResendConfirmationCodeRequest.Options? = nil)
+    public func resendConfirmationCode(forUserAttributeKey userAttributeKey: AuthUserAttributeKey, options: AuthAttributeResendConfirmationCodeRequest.Options? = nil)
         async throws -> AuthCodeDeliveryDetails {
             fatalError()
 
