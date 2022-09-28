@@ -35,6 +35,7 @@ struct VerifySignInChallenge: Action {
                 session: session,
                 responseKey: responseKey,
                 answer: confirmSignEventData.answer,
+                clientMetadata: confirmSignEventData.metadata,
                 attributes: confirmSignEventData.attributes,
                 environment: userpoolEnv)
 

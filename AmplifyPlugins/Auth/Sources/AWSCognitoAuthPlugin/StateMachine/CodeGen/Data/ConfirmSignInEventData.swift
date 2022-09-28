@@ -11,6 +11,7 @@ struct ConfirmSignInEventData {
 
     let answer: String
     let attributes: [String: String]
+    let metadata: [String: String]?
 
 }
 
@@ -20,7 +21,8 @@ extension ConfirmSignInEventData: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
             "answer": answer.masked(),
-            "attributes": attributes
+            "attributes": attributes,
+            "metadata": metadata ?? [:]
         ]
     }
 }

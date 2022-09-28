@@ -80,6 +80,7 @@ extension RespondToAuthChallengeInput {
         session: String?,
         responseKey: String,
         answer: String,
+        clientMetadata: [String: String]?,
         attributes: [String: String],
         environment: UserPoolEnvironment) -> RespondToAuthChallengeInput {
 
@@ -97,7 +98,7 @@ extension RespondToAuthChallengeInput {
                 challengeType: challengeType,
                 challengeResponses: challengeResponses,
                 session: session,
-                clientMetadata: [:],
+                clientMetadata: clientMetadata ?? [:],
                 deviceMetadata: .noData,
                 environment: environment)
         }
