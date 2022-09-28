@@ -77,7 +77,7 @@ class AWSAuthSignUpAPITests: BasePluginTest {
                         deliveryMedium: .email,
                         destination: "random@random.com"),
                     userConfirmed: false,
-                    userSub: nil)
+                    userSub: "userId")
             }
         )
 
@@ -86,14 +86,15 @@ class AWSAuthSignUpAPITests: BasePluginTest {
             password: "Valid&99",
             options: options)
 
-        guard case .confirmUser(let deliveryDetails, let additionalInfo) = result.nextStep else {
+        guard case .confirmUser(let deliveryDetails, let additionalInfo, let userId) = result.nextStep else {
             XCTFail("Result should be .done for next step")
             return
         }
 
         XCTAssertNotNil(deliveryDetails?.destination)
         XCTAssertEqual(deliveryDetails?.attributeKey, .unknown("some attribute"))
-        XCTAssertEqual(additionalInfo, ["usersub": ""])
+        XCTAssertEqual(additionalInfo, nil)
+        XCTAssertEqual(userId, "userId")
         XCTAssertFalse(result.isSignUpComplete, "Signin result should be complete")
     }
 
@@ -113,14 +114,15 @@ class AWSAuthSignUpAPITests: BasePluginTest {
             password: "Valid&99",
             options: options)
 
-        guard case .confirmUser(let deliveryDetails, let additionalInfo) = result.nextStep else {
+        guard case .confirmUser(let deliveryDetails, let additionalInfo, let userId) = result.nextStep else {
             XCTFail("Result should be .done for next step")
             return
         }
 
         XCTAssertNil(deliveryDetails?.destination)
         XCTAssertNil(deliveryDetails?.attributeKey)
-        XCTAssertEqual(additionalInfo, ["usersub": ""])
+        XCTAssertEqual(additionalInfo, nil)
+        XCTAssertEqual(userId, nil)
         XCTAssertFalse(result.isSignUpComplete, "Signin result should be complete")
     }
 
