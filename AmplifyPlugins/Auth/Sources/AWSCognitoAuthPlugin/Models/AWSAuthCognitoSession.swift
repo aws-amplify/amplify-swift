@@ -23,13 +23,13 @@ public struct AWSAuthCognitoSession: AuthSession,
 
     public let identityIdResult: Result<String, AuthError>
 
-    public let awsCredentialsResult: Result<AuthAWSCredentials, AuthError>
+    public let awsCredentialsResult: Result<AWSCredentials, AuthError>
 
     public let userPoolTokensResult: Result<AuthCognitoTokens, AuthError>
 
     init(isSignedIn: Bool,
          identityIdResult: Result<String, AuthError>,
-         awsCredentialsResult: Result<AuthAWSCredentials, AuthError>,
+         awsCredentialsResult: Result<AWSCredentials, AuthError>,
          cognitoTokensResult: Result<AuthCognitoTokens, AuthError>) {
         self.isSignedIn = isSignedIn
         self.identityIdResult = identityIdResult
@@ -37,7 +37,7 @@ public struct AWSAuthCognitoSession: AuthSession,
         self.userPoolTokensResult = cognitoTokensResult
     }
 
-    public func getAWSCredentials() -> Result<AuthAWSCredentials, AuthError> {
+    public func getAWSCredentials() -> Result<AWSCredentials, AuthError> {
         return awsCredentialsResult
     }
 

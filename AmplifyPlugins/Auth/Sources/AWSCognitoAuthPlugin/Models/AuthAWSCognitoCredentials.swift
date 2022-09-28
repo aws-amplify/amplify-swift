@@ -8,7 +8,7 @@
 import Foundation
 import AWSPluginsCore
 
-public struct AuthAWSCognitoCredentials: AuthAWSTemporaryCredentials {
+public struct AuthAWSCognitoCredentials: AWSTemporaryCredentials {
 
     public let  accessKey: String
 

@@ -10,7 +10,7 @@ import Foundation
 
 public struct FederateToIdentityPoolResult {
 
-    public let credentials: AuthAWSTemporaryCredentials
+    public let credentials: AWSTemporaryCredentials
 
     public let identityId: String
 

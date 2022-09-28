@@ -9,17 +9,17 @@ import Amplify
 import Foundation
 
 public protocol AuthAWSCredentialsProvider {
-    func getAWSCredentials() -> Result<AuthAWSCredentials, AuthError>
+    func getAWSCredentials() -> Result<AWSCredentials, AuthError>
 }
 
-public protocol AuthAWSTemporaryCredentials: AuthAWSCredentials {
+public protocol AWSTemporaryCredentials: AWSCredentials {
 
     var sessionKey: String { get }
 
     var expiration: Date { get }
 }
 
-public protocol AuthAWSCredentials {
+public protocol AWSCredentials {
 
     var accessKey: String { get }
 
