@@ -10,7 +10,7 @@ import AWSPluginsCore
 
 public struct AuthAWSCognitoCredentials: AWSTemporaryCredentials {
 
-    public let  accessKey: String
+    public let  accessKeyId: String
 
     public let  secretKey: String
 
@@ -26,7 +26,7 @@ extension AuthAWSCognitoCredentials: Equatable { }
 extension AuthAWSCognitoCredentials: CustomDebugDictionaryConvertible {
     var debugDictionary: [String: Any] {
         [
-            "accessKey": accessKey.masked(interiorCount: 5),
+            "accessKey": accessKeyId.masked(interiorCount: 5),
             "secretKey": secretKey.masked(interiorCount: 5),
             "sessionKey": sessionKey.masked(interiorCount: 5),
             "expiration": expiration

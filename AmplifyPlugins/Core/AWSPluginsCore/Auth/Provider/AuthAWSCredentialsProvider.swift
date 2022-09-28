@@ -21,7 +21,7 @@ public protocol AWSTemporaryCredentials: AWSCredentials {
 
 public protocol AWSCredentials {
 
-    var accessKey: String { get }
+    var accessKeyId: String { get }
 
     var secretKey: String { get }
 }

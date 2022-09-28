@@ -28,13 +28,13 @@ extension AWSCredentials {
     func toAWSSDKCredentials() -> AWSClientRuntime.AWSCredentials {
         if let tempCredentials = self as? AWSTemporaryCredentials {
             return AWSClientRuntime.AWSCredentials(
-                accessKey: tempCredentials.accessKey,
+                accessKey: tempCredentials.accessKeyId,
                 secret: tempCredentials.secretKey,
                 expirationTimeout: UInt64(tempCredentials.expiration.timeIntervalSinceNow),
                 sessionToken: tempCredentials.sessionKey)
         } else {
             return AWSClientRuntime.AWSCredentials(
-                accessKey: accessKey,
+                accessKey: accessKeyId,
                 secret: secretKey,
                 expirationTimeout: 0)
         }

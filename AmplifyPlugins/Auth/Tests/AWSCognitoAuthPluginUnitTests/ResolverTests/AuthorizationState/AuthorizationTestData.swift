@@ -21,14 +21,14 @@ extension AWSAuthCognitoSession {
 
 extension AuthAWSCognitoCredentials {
     static var testData: AuthAWSCognitoCredentials {
-        AuthAWSCognitoCredentials(accessKey: "accessKey",
+        AuthAWSCognitoCredentials(accessKeyId: "accessKey",
                                   secretKey: "secretKey",
                                   sessionKey: "sessionKey",
                                   expiration: Date() + 121)
     }
 
     static var expiredTestData: AuthAWSCognitoCredentials {
-        AuthAWSCognitoCredentials(accessKey: "accessKey",
+        AuthAWSCognitoCredentials(accessKeyId: "accessKey",
                                   secretKey: "secretKey",
                                   sessionKey: "sessionKey",
                                   expiration: Date() - 10000)

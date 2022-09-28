@@ -54,7 +54,7 @@ struct FetchAuthAWSCredentials: Action {
                 logVerbose("\(#fileID) Sending event \(event.type)", environment: environment)
                 return
             }
-            let awsCognitoCredentials = AuthAWSCognitoCredentials(accessKey: accessKey,
+            let awsCognitoCredentials = AuthAWSCognitoCredentials(accessKeyId: accessKey,
                                                                   secretKey: secretKey,
                                                                   sessionKey: sessionKey,
                                                                   expiration: expiration)

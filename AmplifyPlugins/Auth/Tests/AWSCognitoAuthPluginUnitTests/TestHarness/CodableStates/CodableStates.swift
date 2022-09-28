@@ -231,7 +231,11 @@ extension FetchAuthSessionState: Codable {
         } else if let fetchingAWSCredentials = try values.decodeIfPresent(Dictionary<String, String>.self, forKey: .fetchingAWSCredentials) {
             self = .fetchingAWSCredentials("someIdentityId", UnAuthLoginsMapProvider())
         } else if let fetched = try values.decodeIfPresent(Dictionary<String, String>.self, forKey: .fetched) {
-            self = .fetched("someCredentials", AuthAWSCognitoCredentials(accessKey: "", secretKey: "", sessionKey: "", expiration: Date()))
+            self = .fetched("someCredentials", AuthAWSCognitoCredentials(
+                accessKeyId: "",
+                secretKey: "",
+                sessionKey: "",
+                expiration: Date()))
         } else {
             fatalError()
         }
