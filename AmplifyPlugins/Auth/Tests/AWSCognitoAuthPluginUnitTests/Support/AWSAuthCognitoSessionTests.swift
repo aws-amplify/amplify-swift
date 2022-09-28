@@ -33,7 +33,7 @@ class AWSAuthCognitoSessionTests: XCTestCase {
                                             identityIdResult: .failure(error),
                                             awsCredentialsResult: .failure(error),
                                             cognitoTokensResult: .success(tokens))
-        let cognitoTokens = try! session.getCognitoTokens().get()
+        let cognitoTokens = try! session.getCognitoTokens().get() as! AWSCognitoUserPoolTokens
         XCTAssertFalse(cognitoTokens.doesExpire(in: 120))
         XCTAssertTrue(cognitoTokens.doesExpire(in: 122))
         XCTAssertFalse(cognitoTokens.doesExpire())
@@ -61,7 +61,7 @@ class AWSAuthCognitoSessionTests: XCTestCase {
                                             awsCredentialsResult: .failure(error),
                                             cognitoTokensResult: .success(tokens))
 
-        let cognitoTokens = try! session.getCognitoTokens().get()
+        let cognitoTokens = try! session.getCognitoTokens().get() as! AWSCognitoUserPoolTokens
         XCTAssertFalse(cognitoTokens.doesExpire())
     }
 
