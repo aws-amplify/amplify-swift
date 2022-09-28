@@ -18,7 +18,7 @@ extension AuthCognitoTokens {
               let accessTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: accessToken).get(),
               let idTokenExpiration = idTokenClaims["exp"]?.doubleValue,
               let accessTokenExpiration = accessTokenClaims["exp"]?.doubleValue else {
-            return currentTime > expiration
+            return true
         }
 
         let idTokenExpiry = Date(timeIntervalSince1970: idTokenExpiration)
