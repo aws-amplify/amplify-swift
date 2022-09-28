@@ -186,8 +186,8 @@ class SessionClientTests: XCTestCase {
         XCTAssertEqual(recordCount, 2)
         let events = await analyticsClient.recordedEvents
         XCTAssertEqual(events.count, 2)
-        XCTAssertEqual(events.first?.eventType, SessionClient.Constants.Events.stop)
-        XCTAssertEqual(events.last?.eventType, SessionClient.Constants.Events.start)
+        XCTAssertNotNil(events.first(where: { $0.eventType == SessionClient.Constants.Events.stop }))
+        XCTAssertNotNil(events.first(where: { $0.eventType == SessionClient.Constants.Events.start }))
     }
 
 #if !os(macOS)
@@ -309,8 +309,8 @@ class SessionClientTests: XCTestCase {
         XCTAssertEqual(recordCount, 2)
         let events = await analyticsClient.recordedEvents
         XCTAssertEqual(events.count, 2)
-        XCTAssertEqual(events.first?.eventType, SessionClient.Constants.Events.stop)
-        XCTAssertEqual(events.last?.eventType, SessionClient.Constants.Events.start)
+        XCTAssertNotNil(events.first(where: { $0.eventType == SessionClient.Constants.Events.stop }))
+        XCTAssertNotNil(events.first(where: { $0.eventType == SessionClient.Constants.Events.start }))
     }
 #endif
     func testApplicationTerminated_shouldRecordStopEvent() async {
