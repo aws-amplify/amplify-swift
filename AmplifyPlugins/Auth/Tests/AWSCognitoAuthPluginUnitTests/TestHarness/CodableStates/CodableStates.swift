@@ -234,7 +234,7 @@ extension FetchAuthSessionState: Codable {
             self = .fetched("someCredentials", AuthAWSCognitoCredentials(
                 accessKeyId: "",
                 secretAccessKey: "",
-                sessionKey: "",
+                sessionToken: "",
                 expiration: Date()))
         } else {
             fatalError()

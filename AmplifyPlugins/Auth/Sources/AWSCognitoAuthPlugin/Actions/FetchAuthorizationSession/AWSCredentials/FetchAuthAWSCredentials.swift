@@ -56,7 +56,7 @@ struct FetchAuthAWSCredentials: Action {
             }
             let awsCognitoCredentials = AuthAWSCognitoCredentials(accessKeyId: accessKey,
                                                                   secretAccessKey: secretKey,
-                                                                  sessionKey: sessionKey,
+                                                                  sessionToken: sessionKey,
                                                                   expiration: expiration)
             let event = FetchAuthSessionEvent(
                 eventType: .fetchedAWSCredentials(identityId, awsCognitoCredentials))

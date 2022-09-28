@@ -31,7 +31,7 @@ extension AWSCredentials {
                 accessKey: tempCredentials.accessKeyId,
                 secret: tempCredentials.secretAccessKey,
                 expirationTimeout: UInt64(tempCredentials.expiration.timeIntervalSinceNow),
-                sessionToken: tempCredentials.sessionKey)
+                sessionToken: tempCredentials.sessionToken)
         } else {
             return AWSClientRuntime.AWSCredentials(
                 accessKey: accessKeyId,

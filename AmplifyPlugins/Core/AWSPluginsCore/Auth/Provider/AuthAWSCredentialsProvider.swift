@@ -14,7 +14,7 @@ public protocol AuthAWSCredentialsProvider {
 
 public protocol AWSTemporaryCredentials: AWSCredentials {
 
-    var sessionKey: String { get }
+    var sessionToken: String { get }
 
     var expiration: Date { get }
 }

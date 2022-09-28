@@ -99,7 +99,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             do {
                 let federatedResult = try await plugin.federateToIdentityPool(withProviderToken: authenticationToken, for: provider)
                 XCTAssertNotNil(federatedResult)
-                XCTAssertEqual(federatedResult.credentials.sessionKey, credentials.sessionToken)
+                XCTAssertEqual(federatedResult.credentials.sessionToken, credentials.sessionToken)
                 XCTAssertEqual(federatedResult.credentials.accessKeyId, credentials.accessKeyId)
                 XCTAssertEqual(federatedResult.credentials.secretAccessKey, credentials.secretKey)
                 XCTAssertEqual(federatedResult.identityId, mockIdentityId)
@@ -171,7 +171,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
         do {
             let federatedResult = try await plugin.federateToIdentityPool(withProviderToken: authenticationToken, for: provider)
             XCTAssertNotNil(federatedResult)
-            XCTAssertEqual(federatedResult.credentials.sessionKey, credentials.sessionToken)
+            XCTAssertEqual(federatedResult.credentials.sessionToken, credentials.sessionToken)
             XCTAssertEqual(federatedResult.credentials.accessKeyId, credentials.accessKeyId)
             XCTAssertEqual(federatedResult.credentials.secretAccessKey, credentials.secretKey)
             XCTAssertEqual(federatedResult.credentials.expiration, credentials.expiration)
@@ -183,7 +183,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
         do {
             let secondFederatedResult = try await plugin.federateToIdentityPool(withProviderToken: authenticationToken, for: provider)
             XCTAssertNotNil(secondFederatedResult)
-            XCTAssertEqual(secondFederatedResult.credentials.sessionKey, credentials.sessionToken)
+            XCTAssertEqual(secondFederatedResult.credentials.sessionToken, credentials.sessionToken)
             XCTAssertEqual(secondFederatedResult.credentials.accessKeyId, credentials.accessKeyId)
             XCTAssertEqual(secondFederatedResult.credentials.secretAccessKey, credentials.secretKey)
             XCTAssertEqual(secondFederatedResult.credentials.expiration, credentials.expiration)
@@ -650,7 +650,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                     for: provider,
                     options: .init(developerProvidedIdentityID: mockIdentityId))
                 XCTAssertNotNil(federatedResult)
-                XCTAssertEqual(federatedResult.credentials.sessionKey, credentials.sessionToken)
+                XCTAssertEqual(federatedResult.credentials.sessionToken, credentials.sessionToken)
                 XCTAssertEqual(federatedResult.credentials.accessKeyId, credentials.accessKeyId)
                 XCTAssertEqual(federatedResult.credentials.secretAccessKey, credentials.secretKey)
                 XCTAssertEqual(federatedResult.identityId, mockIdentityId)
