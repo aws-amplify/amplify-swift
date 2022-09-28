@@ -25,7 +25,7 @@ public struct AWSAuthCognitoSession: AuthSession,
 
     public let awsCredentialsResult: Result<AuthAWSCredentials, AuthError>
 
-    public let cognitoTokensResult: Result<AuthCognitoTokens, AuthError>
+    public let userPoolTokensResult: Result<AuthCognitoTokens, AuthError>
 
     init(isSignedIn: Bool,
          identityIdResult: Result<String, AuthError>,
@@ -34,7 +34,7 @@ public struct AWSAuthCognitoSession: AuthSession,
         self.isSignedIn = isSignedIn
         self.identityIdResult = identityIdResult
         self.awsCredentialsResult = awsCredentialsResult
-        self.cognitoTokensResult = cognitoTokensResult
+        self.userPoolTokensResult = cognitoTokensResult
     }
 
     public func getAWSCredentials() -> Result<AuthAWSCredentials, AuthError> {
@@ -42,7 +42,7 @@ public struct AWSAuthCognitoSession: AuthSession,
     }
 
     public func getCognitoTokens() -> Result<AuthCognitoTokens, AuthError> {
-        return cognitoTokensResult
+        return userPoolTokensResult
     }
 
     public func getIdentityId() -> Result<String, AuthError> {
@@ -51,7 +51,7 @@ public struct AWSAuthCognitoSession: AuthSession,
 
     public func getUserSub() -> Result<String, AuthError> {
         do {
-            let tokens = try cognitoTokensResult.get()
+            let tokens = try userPoolTokensResult.get()
             let claims = try AWSAuthService().getTokenClaims(tokenString: tokens.idToken).get()
             guard let userSub = claims["sub"] as? String else {
                 let error = AuthError.unknown("""
@@ -80,7 +80,7 @@ public struct AWSAuthCognitoSession: AuthSession,
 internal extension AWSAuthCognitoSession {
     func areTokensExpiring(in seconds: TimeInterval? = nil) -> Bool {
 
-        guard let tokens = try? cognitoTokensResult.get(),
+        guard let tokens = try? userPoolTokensResult.get(),
               let idTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: tokens.idToken).get(),
               let accessTokenClaims = try? AWSAuthService().getTokenClaims(tokenString: tokens.idToken).get(),
               let idTokenExpiration = idTokenClaims["exp"]?.doubleValue,
@@ -161,7 +161,7 @@ extension AWSAuthCognitoSession: CustomDebugDictionaryConvertible {
             dict["userSubError"] = error.debugDescription
         }
 
-        switch cognitoTokensResult {
+        switch userPoolTokensResult {
         case .success(let result):
             if let result = result as? AWSCognitoUserPoolTokens {
                 dict["cognitoTokens"] = result.debugDescription
