@@ -45,7 +45,7 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
                 XCTAssertEqual(tokens.idToken, mockedData)
                 XCTAssertEqual(tokens.expiration, Date.init(timeIntervalSince1970: 0))
                 XCTAssertEqual(awsCredentials.sessionKey, mockedData)
-                XCTAssertEqual(awsCredentials.secretKey, mockedData)
+                XCTAssertEqual(awsCredentials.secretAccessKey, mockedData)
                 XCTAssertEqual(awsCredentials.accessKeyId, mockedData)
                 XCTAssertEqual(awsCredentials.expiration, Date.init(timeIntervalSince1970: 0))
 

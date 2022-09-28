@@ -36,7 +36,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
         let credentials = CognitoIdentityClientTypes.Credentials(
             accessKeyId: "accessKey",
             expiration: Date(),
-            secretKey: "secretKey",
+            secretKey: "secretAccessKey",
             sessionToken: "sessionKey")
 
         let getId: MockIdentity.MockGetIdResponse = { input in
@@ -101,7 +101,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                 XCTAssertNotNil(federatedResult)
                 XCTAssertEqual(federatedResult.credentials.sessionKey, credentials.sessionToken)
                 XCTAssertEqual(federatedResult.credentials.accessKeyId, credentials.accessKeyId)
-                XCTAssertEqual(federatedResult.credentials.secretKey, credentials.secretKey)
+                XCTAssertEqual(federatedResult.credentials.secretAccessKey, credentials.secretKey)
                 XCTAssertEqual(federatedResult.identityId, mockIdentityId)
             } catch {
                 XCTFail("Received failure with error \(error)")
@@ -173,7 +173,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             XCTAssertNotNil(federatedResult)
             XCTAssertEqual(federatedResult.credentials.sessionKey, credentials.sessionToken)
             XCTAssertEqual(federatedResult.credentials.accessKeyId, credentials.accessKeyId)
-            XCTAssertEqual(federatedResult.credentials.secretKey, credentials.secretKey)
+            XCTAssertEqual(federatedResult.credentials.secretAccessKey, credentials.secretKey)
             XCTAssertEqual(federatedResult.credentials.expiration, credentials.expiration)
             XCTAssertEqual(federatedResult.identityId, mockIdentityId)
         } catch {
@@ -185,7 +185,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             XCTAssertNotNil(secondFederatedResult)
             XCTAssertEqual(secondFederatedResult.credentials.sessionKey, credentials.sessionToken)
             XCTAssertEqual(secondFederatedResult.credentials.accessKeyId, credentials.accessKeyId)
-            XCTAssertEqual(secondFederatedResult.credentials.secretKey, credentials.secretKey)
+            XCTAssertEqual(secondFederatedResult.credentials.secretAccessKey, credentials.secretKey)
             XCTAssertEqual(secondFederatedResult.credentials.expiration, credentials.expiration)
             XCTAssertEqual(secondFederatedResult.identityId, mockIdentityId)
         } catch {
@@ -363,7 +363,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
         let credentials = CognitoIdentityClientTypes.Credentials(
             accessKeyId: "accessKey",
             expiration: Date(),
-            secretKey: "secretKey",
+            secretKey: "secretAccessKey",
             sessionToken: "sessionKey")
 
         let cognitoAPIExpectation = expectation(description: "Cognito API gets called")
@@ -410,8 +410,8 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
 
             let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
             XCTAssertNotNil(creds?.accessKeyId)
-            XCTAssertNotNil(creds?.secretKey)
-            XCTAssertEqual(creds?.secretKey, credentials.secretKey)
+            XCTAssertNotNil(creds?.secretAccessKey)
+            XCTAssertEqual(creds?.secretAccessKey, credentials.secretKey)
             XCTAssertEqual(creds?.accessKeyId, credentials.accessKeyId)
 
             let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
@@ -446,7 +446,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
         let credentials = CognitoIdentityClientTypes.Credentials(
             accessKeyId: "accessKey",
             expiration: Date(),
-            secretKey: "secretKey",
+            secretKey: "secretAccessKey",
             sessionToken: "sessionKey")
 
         let getId: MockIdentity.MockGetIdResponse = { _ in
@@ -479,8 +479,8 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             XCTAssertTrue(session.isSignedIn)
             let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
             XCTAssertNotNil(creds?.accessKeyId)
-            XCTAssertNotNil(creds?.secretKey)
-            XCTAssertEqual(creds?.secretKey, credentials.secretKey)
+            XCTAssertNotNil(creds?.secretAccessKey)
+            XCTAssertEqual(creds?.secretAccessKey, credentials.secretKey)
             XCTAssertEqual(creds?.accessKeyId, credentials.accessKeyId)
 
             let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
@@ -562,8 +562,8 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             XCTAssertTrue(session.isSignedIn)
             let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
             XCTAssertNotNil(creds?.accessKeyId)
-            XCTAssertNotNil(creds?.secretKey)
-            XCTAssertEqual(creds?.secretKey, credentials.secretKey)
+            XCTAssertNotNil(creds?.secretAccessKey)
+            XCTAssertEqual(creds?.secretAccessKey, credentials.secretKey)
             XCTAssertEqual(creds?.accessKeyId, credentials.accessKeyId)
 
             let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
@@ -652,7 +652,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                 XCTAssertNotNil(federatedResult)
                 XCTAssertEqual(federatedResult.credentials.sessionKey, credentials.sessionToken)
                 XCTAssertEqual(federatedResult.credentials.accessKeyId, credentials.accessKeyId)
-                XCTAssertEqual(federatedResult.credentials.secretKey, credentials.secretKey)
+                XCTAssertEqual(federatedResult.credentials.secretAccessKey, credentials.secretKey)
                 XCTAssertEqual(federatedResult.identityId, mockIdentityId)
             } catch {
                 XCTFail("Received failure with error \(error)")

@@ -233,7 +233,7 @@ extension FetchAuthSessionState: Codable {
         } else if let fetched = try values.decodeIfPresent(Dictionary<String, String>.self, forKey: .fetched) {
             self = .fetched("someCredentials", AuthAWSCognitoCredentials(
                 accessKeyId: "",
-                secretKey: "",
+                secretAccessKey: "",
                 sessionKey: "",
                 expiration: Date()))
         } else {

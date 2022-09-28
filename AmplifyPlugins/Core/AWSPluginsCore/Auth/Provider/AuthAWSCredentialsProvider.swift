@@ -23,5 +23,5 @@ public protocol AWSCredentials {
 
     var accessKeyId: String { get }
 
-    var secretKey: String { get }
+    var secretAccessKey: String { get }
 }

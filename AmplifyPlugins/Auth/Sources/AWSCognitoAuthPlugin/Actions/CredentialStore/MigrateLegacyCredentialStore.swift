@@ -17,7 +17,7 @@ struct MigrateLegacyCredentialStore: Action {
     private let AWSCredentialsProviderClassKey = "AWSCognitoCredentialsProvider"
     private let UserPoolClassKey = "AWSCognitoIdentityUserPool"
     private let AWSCredentialsProviderKeychainAccessKeyId = "accessKey"
-    private let AWSCredentialsProviderKeychainSecretAccessKey = "secretKey"
+    private let AWSCredentialsProviderKeychainSecretAccessKey = "secretAccessKey"
     private let AWSCredentialsProviderKeychainSessionToken = "sessionKey"
     private let AWSCredentialsProviderKeychainExpiration = "expiration"
     private let AWSCredentialsProviderKeychainIdentityId = "identityId"
@@ -343,7 +343,7 @@ struct MigrateLegacyCredentialStore: Action {
 
         let awsCredentials = AuthAWSCognitoCredentials(
             accessKeyId: accessKey,
-            secretKey: secretKey,
+            secretAccessKey: secretKey,
             sessionKey: sessionKey,
             expiration: Date(timeIntervalSince1970: Double(expirationString) ?? 0)
         )
