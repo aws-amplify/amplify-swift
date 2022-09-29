@@ -68,7 +68,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
                                                email: defaultTestEmail)
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
-        let pluginOptions = AWSAuthUpdateUserAttributeOptions(metadata: ["mydata": "myvalue"])
+        let pluginOptions = AWSAuthUpdateUserAttributesOptions(metadata: ["mydata": "myvalue"])
         let options = AuthUpdateUserAttributeRequest.Options(pluginOptions: pluginOptions)
         _ = try await Amplify.Auth.update(userAttribute: AuthUserAttribute(.email, value: updatedEmail), options: options)
 
