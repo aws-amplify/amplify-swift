@@ -122,13 +122,14 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             }
             var result: DataStoreResult<Void>
             do {
-                defer { isStorageEngineInitialized = true }
                 if self.dataStorePublisher == nil {
                     self.dataStorePublisher = DataStorePublisher()
                 }
                 try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
                 try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
                 try storageEngine.applyModelMigrations(modelSchemas: ModelRegistry.modelSchemas)
+                self.isStorageEngineInitialized = true
+
                 result = .successfulVoid
             } catch {
                 result = .failure(causedBy: error)
