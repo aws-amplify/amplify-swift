@@ -33,6 +33,6 @@ extension RemoteSyncEngine: AuthModeStrategyDelegate {
             return false
         }
 
-        return try? await auth.getCurrentUser() != nil
+        return (try? await auth.getCurrentUser()) != nil
     }
 }
