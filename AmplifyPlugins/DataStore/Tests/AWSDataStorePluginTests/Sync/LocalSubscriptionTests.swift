@@ -211,7 +211,18 @@ class LocalSubscriptionTests: XCTestCase {
     /// - Then:
     ///    - I am notified of `delete` mutations
     func testDelete() async throws {
+        let model = Post(id: UUID().uuidString,
+                         title: "Test Post",
+                         content: "originalContent",
+                         createdAt: .now(),
+                         updatedAt: nil,
+                         draft: false,
+                         rating: nil,
+                         comments: [])
+
+        _ = try await Amplify.DataStore.save(model)
         let receivedMutationEvent = asyncExpectation(description: "Received mutation event")
+        
 
         let subscription = Task {
             let mutationEvents = Amplify.DataStore.observe(Post.self)
@@ -226,11 +237,6 @@ class LocalSubscriptionTests: XCTestCase {
             }
         }
 
-        let model = Post(title: "Test Post",
-                         content: "Test Post Content",
-                         createdAt: .now())
-
-        _ = try await Amplify.DataStore.save(model)
         _ = try await Amplify.DataStore.delete(model)
         await waitForExpectations([receivedMutationEvent], timeout: 1.0)
 
