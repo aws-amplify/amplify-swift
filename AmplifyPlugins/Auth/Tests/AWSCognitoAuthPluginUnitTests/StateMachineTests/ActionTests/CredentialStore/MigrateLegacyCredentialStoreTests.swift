@@ -20,10 +20,40 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
     /// - Then:
     ///    - the new credential store should get the correct identityId, userPoolTokens and awsCredentials
     func testSaveLegacyCredentials() async {
-        let mockedData = "mock"
-        let saveCredentialHandlerInvoked = expectation(description: "saveCredentialHandlerInvoked")
 
-        let mockLegacyKeychainStoreBehavior = MockKeychainStoreBehavior(data: mockedData)
+        // First mock the legacy credential store
+        let saveCredentialHandlerInvoked = expectation(description: "saveCredentialHandlerInvoked")
+        let userPoolConfig = Defaults.makeDefaultUserPoolConfigData()
+        let clientID = userPoolConfig.clientId
+
+        let mockLegacyKeychainStoreBehavior = MockKeychainStoreBehavior()
+        let mockUser = "mockcurrentuser"
+        let mockAccessKeyId = "mockaccess"
+        let mocksecretAccessKey = "mocksecret"
+        let mockSessionToken = "mockSessionToken"
+
+        let mockIdentityId = "mockIdentityId"
+
+        let mockAccessToken = "mockaccessToken"
+        let mockIdToken = "idToken"
+        let mockRefreshToken = "refreshToken"
+
+        try? mockLegacyKeychainStoreBehavior._set(mockUser, key: "\(clientID).currentUser")
+        try? mockLegacyKeychainStoreBehavior._set(mockAccessKeyId, key: "accessKey")
+        try? mockLegacyKeychainStoreBehavior._set(mocksecretAccessKey, key: "secretKey")
+        try? mockLegacyKeychainStoreBehavior._set(mockSessionToken, key: "sessionKey")
+        try? mockLegacyKeychainStoreBehavior._set(mockIdentityId, key: "identityId")
+
+        try? mockLegacyKeychainStoreBehavior._set(
+            mockAccessToken,
+            key: "\(clientID).\(mockUser).accessToken")
+        try? mockLegacyKeychainStoreBehavior._set(
+            mockIdToken,
+            key: "\(clientID).\(mockUser).idToken")
+        try? mockLegacyKeychainStoreBehavior._set(
+            mockRefreshToken,
+            key: "\(clientID).\(mockUser).refreshToken")
+
         let legacyKeychainStoreFactory: BasicCredentialStoreEnvironment.KeychainStoreFactory = { _ in
             return mockLegacyKeychainStoreBehavior
         }
@@ -39,14 +69,14 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
                 }
                 let tokens = signedInData.cognitoUserPoolTokens
                 // Validate the data returned is correct and matches the mocked data.
-                XCTAssertEqual(identityID, mockedData)
-                XCTAssertEqual(tokens.refreshToken, mockedData)
-                XCTAssertEqual(tokens.accessToken, mockedData)
-                XCTAssertEqual(tokens.idToken, mockedData)
+                XCTAssertEqual(identityID, mockIdentityId)
+                XCTAssertEqual(tokens.refreshToken, mockRefreshToken)
+                XCTAssertEqual(tokens.accessToken, mockAccessToken)
+                XCTAssertEqual(tokens.idToken, mockIdToken)
                 XCTAssertEqual(tokens.expiration, Date.init(timeIntervalSince1970: 0))
-                XCTAssertEqual(awsCredentials.sessionToken, mockedData)
-                XCTAssertEqual(awsCredentials.secretAccessKey, mockedData)
-                XCTAssertEqual(awsCredentials.accessKeyId, mockedData)
+                XCTAssertEqual(awsCredentials.sessionToken, mockSessionToken)
+                XCTAssertEqual(awsCredentials.secretAccessKey, mocksecretAccessKey)
+                XCTAssertEqual(awsCredentials.accessKeyId, mockAccessKeyId)
                 XCTAssertEqual(awsCredentials.expiration, Date.init(timeIntervalSince1970: 0))
 
                 saveCredentialHandlerInvoked.fulfill()
@@ -86,7 +116,6 @@ class MigrateLegacyCredentialStoreTests: XCTestCase {
         migrationCompletionInvoked.expectedFulfillmentCount = 3
 
         let mockLegacyKeychainStoreBehavior = MockKeychainStoreBehavior(
-            data: "mock",
             removeAllHandler: {
                 migrationCompletionInvoked.fulfill()
             }

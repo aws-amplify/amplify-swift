@@ -6,31 +6,28 @@
 //
 
 import XCTest
-
-@testable import AWSCognitoAuthPlugin
 import AWSPluginsCore
 import Amplify
+@testable import AWSCognitoAuthPlugin
 
-class LoadCredentialsTests: XCTestCase {
+class ClearCredentialsTests: XCTestCase {
 
-    /// Test is responsible to check the happy path of retrieving credentials from the store
+    /// Test is responsible to check if the clear credentials action invokes the store correctly
     ///
-    /// - Given: A credential store
-    /// - When: The load credential action  is executed
+    /// - Given: A set of credentials
+    /// - When: The clear credential action  is executed
     /// - Then:
-    ///    - the credentials should be retrieved from the credential store
-    func testLoadCredentials() async {
-        let mockedData = "mock"
-        let testData = AmplifyCredentials.testData
-        let loadCredentialHandlerInvoked = expectation(description: "loadCredentialHandlerInvoked")
+    ///    - the credentials should be cleared
+    func testClearCredentials() async {
+        let expectation = expectation(description: "clearCredentialHandlerInvoked")
 
-        let mockLegacyKeychainStoreBehavior = MockKeychainStoreBehavior(data: mockedData)
+        let mockLegacyKeychainStoreBehavior = MockKeychainStoreBehavior()
         let legacyKeychainStoreFactory: BasicCredentialStoreEnvironment.KeychainStoreFactory = { _ in
             return mockLegacyKeychainStoreBehavior
         }
         let mockAmplifyCredentialStoreBehavior = MockAmplifyCredentialStoreBehavior(
-            getCredentialHandler: {
-                return testData
+            clearCredentialHandler: {
+                expectation.fulfill()
             }
         )
 
@@ -48,43 +45,28 @@ class LoadCredentialsTests: XCTestCase {
             credentialStoreEnvironment: credentialStoreEnv,
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest"))
 
-        let action = LoadCredentialStore(credentialStoreType: .amplifyCredentials)
-        await action.execute(withDispatcher: MockDispatcher { event in
-
-            guard let event = event as? CredentialStoreEvent else {
-                XCTFail("Expected event to be CredentialStoreEvent")
-                return
-            }
-
-            if case let .completedOperation(credentials)  = event.eventType {
-                XCTAssertNotNil(credentials)
-                if case .amplifyCredentials(let fetchedCredentials) = credentials {
-                    XCTAssertEqual(fetchedCredentials, testData)
-                } else {
-                    XCTFail("Fetched incorrect credentials")
-                }
-                loadCredentialHandlerInvoked.fulfill()
-            }
-        }, environment: environment)
+        let action = ClearCredentialStore(dataStoreType: .amplifyCredentials)
+        await action.execute(withDispatcher: MockDispatcher { _ in },
+                        environment: environment)
 
         await waitForExpectations(timeout: 0.1)
     }
 
     /// Test is responsible to check if configuration error is correctly caught by the action
     ///
-    /// - Given: An invalid environment
-    /// - When: The load credential action  is executed
+    /// - Given: A set of credentials and an invalid environment
+    /// - When: The clear credential action  is executed
     /// - Then:
     ///    - The action should throw an error
-    func testLoadCredentialsInvalidEnvironment() async {
-        let expectation = expectation(description: "throwLoadCredentialConfigurationError")
+    func testClearCredentialsInvalidEnvironment() async {
+        let expectation = expectation(description: "throwClearCredentialConfigurationError")
 
         let expectedError = KeychainStoreError.configuration(
             message: AuthPluginErrorConstants.configurationError)
 
         let environment = MockInvalidEnvironment()
 
-        let action = LoadCredentialStore(credentialStoreType: .amplifyCredentials)
+        let action = ClearCredentialStore(dataStoreType: .amplifyCredentials)
         await action.execute(withDispatcher: MockDispatcher { event in
 
             guard let event = event as? CredentialStoreEvent else {
@@ -102,24 +84,24 @@ class LoadCredentialsTests: XCTestCase {
         await waitForExpectations(timeout: 0.1)
     }
 
-    /// Test is responsible to check if the load credentials handle a known error
+    /// Test is responsible to check if the clear credentials handle a known error
     ///
-    /// - Given: A credential store and an expected error from the Mock
-    /// - When: The load credential action is executed
+    /// - Given: A set of credentials and an expected error from the Mock
+    /// - When: The clear credential action is executed
     /// - Then:
     ///    - the action should throw a known error
-    func testLoadCredentialsKnownException() async {
-        let mockedData = "mock"
-        let expectation = expectation(description: "loadCredentialErrorInvoked")
+    func testClearCredentialsKnownException() async {
+    
+        let expectation = expectation(description: "clearCredentialErrorInvoked")
 
         let expectedError = KeychainStoreError.securityError(30_534)
 
-        let mockLegacyKeychainStoreBehavior = MockKeychainStoreBehavior(data: mockedData)
+        let mockLegacyKeychainStoreBehavior = MockKeychainStoreBehavior()
         let legacyKeychainStoreFactory: BasicCredentialStoreEnvironment.KeychainStoreFactory = { _ in
             return mockLegacyKeychainStoreBehavior
         }
         let mockAmplifyCredentialStoreBehavior = MockAmplifyCredentialStoreBehavior(
-            getCredentialHandler: {
+            clearCredentialHandler: {
                 throw expectedError
             }
         )
@@ -138,7 +120,7 @@ class LoadCredentialsTests: XCTestCase {
             credentialStoreEnvironment: credentialStoreEnv,
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest"))
 
-        let action = LoadCredentialStore(credentialStoreType: .amplifyCredentials)
+        let action = ClearCredentialStore(dataStoreType: .amplifyCredentials)
         await action.execute(withDispatcher: MockDispatcher { event in
 
             guard let event = event as? CredentialStoreEvent else {
@@ -156,25 +138,25 @@ class LoadCredentialsTests: XCTestCase {
         await waitForExpectations(timeout: 0.1)
     }
 
-    /// Test is responsible to check if the load credentials handle an unknown error
+    /// Test is responsible to check if the clear credentials handle an unknown error
     ///
-    /// - Given: A expected unknown error from the Mock
-    /// - When: The load credential action is executed
+    /// - Given: A set of credentials and an expected unknown error from the Mock
+    /// - When: The clear credential action is executed
     /// - Then:
     ///    - the action should throw an  unknown error
-    func testLoadCredentialsUnknownKnownException() async {
+    func testClearCredentialsUnknownKnownException() async {
         let mockedData = "mock"
-        let expectation = expectation(description: "loadCredentialErrorInvoked")
+        let expectation = expectation(description: "clearCredentialErrorInvoked")
 
         let unknownError = AuthorizationError.invalidState(message: "")
         let expectedError = KeychainStoreError.unknown("An unknown error occurred", unknownError)
 
-        let mockLegacyKeychainStoreBehavior = MockKeychainStoreBehavior(data: mockedData)
+        let mockLegacyKeychainStoreBehavior = MockKeychainStoreBehavior()
         let legacyKeychainStoreFactory: BasicCredentialStoreEnvironment.KeychainStoreFactory = { _ in
             return mockLegacyKeychainStoreBehavior
         }
         let mockAmplifyCredentialStoreBehavior = MockAmplifyCredentialStoreBehavior(
-            getCredentialHandler: {
+            clearCredentialHandler: {
                 throw unknownError
             }
         )
@@ -182,12 +164,10 @@ class LoadCredentialsTests: XCTestCase {
         let amplifyCredentialStoreFactory: BasicCredentialStoreEnvironment.AmplifyAuthCredentialStoreFactory = {
             return mockAmplifyCredentialStoreBehavior
         }
-        let authConfig = AuthConfiguration.userPoolsAndIdentityPools(
-            Defaults.makeDefaultUserPoolConfigData(),
+        let authConfig = AuthConfiguration.userPoolsAndIdentityPools(Defaults.makeDefaultUserPoolConfigData(),
                                                                      Defaults.makeIdentityConfigData())
 
-        let credentialStoreEnv = BasicCredentialStoreEnvironment(
-            amplifyCredentialStoreFactory: amplifyCredentialStoreFactory,
+        let credentialStoreEnv = BasicCredentialStoreEnvironment(amplifyCredentialStoreFactory: amplifyCredentialStoreFactory,
                                                                  legacyKeychainStoreFactory: legacyKeychainStoreFactory)
 
         let environment = CredentialEnvironment(
@@ -195,7 +175,7 @@ class LoadCredentialsTests: XCTestCase {
             credentialStoreEnvironment: credentialStoreEnv,
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest"))
 
-        let action = LoadCredentialStore(credentialStoreType: .amplifyCredentials)
+        let action = ClearCredentialStore(dataStoreType: .amplifyCredentials)
         await action.execute(withDispatcher: MockDispatcher { event in
 
             guard let event = event as? CredentialStoreEvent else {

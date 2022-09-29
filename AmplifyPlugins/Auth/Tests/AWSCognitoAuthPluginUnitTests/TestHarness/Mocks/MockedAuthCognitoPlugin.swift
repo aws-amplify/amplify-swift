@@ -100,7 +100,7 @@ struct MockedAuthCognitoPluginHelper {
     }
 
     private func makeLegacyKeychainStore(service: String) -> KeychainStoreBehavior {
-        MockKeychainStoreBehavior(data: "mockedData")
+        MockKeychainStoreBehavior()
     }
 
     private func makeCredentialStoreClient() -> CredentialStoreStateBehaviour {
