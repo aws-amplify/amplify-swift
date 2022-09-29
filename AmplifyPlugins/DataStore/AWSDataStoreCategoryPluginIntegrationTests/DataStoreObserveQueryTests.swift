@@ -257,7 +257,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///     - Delete a model that does NOT match the predicate. No snapshot is emitted
     func testPredicateWithCreateUpdateDelete() throws {
         setUp(withModels: TestModelRegistration(), logLevel: .info)
-        try startAmplify()
+        try startAmplifyAndWaitForReady()
 
         let testId = UUID().uuidString
         let postMatchPredicate = Post(title: "xyz 1", content: testId, createdAt: .now())
@@ -351,7 +351,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///
     func testSortWithCreateUpdateDelete() throws {
         setUp(withModels: TestModelRegistration(), logLevel: .info)
-        try startAmplify()
+        try startAmplifyAndWaitForReady()
 
         let testId = UUID().uuidString
         var snapshotCount = 0
