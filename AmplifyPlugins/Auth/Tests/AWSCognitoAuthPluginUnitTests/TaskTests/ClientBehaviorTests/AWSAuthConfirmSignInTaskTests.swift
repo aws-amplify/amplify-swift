@@ -460,7 +460,8 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             authEnvironment: environment,
             authStateMachine: stateMachine,
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
-            hubEventHandler: MockAuthHubEventBehavior())
+            hubEventHandler: MockAuthHubEventBehavior(),
+            analyticsHandler: MockAnalyticsHandler())
 
 
         do {

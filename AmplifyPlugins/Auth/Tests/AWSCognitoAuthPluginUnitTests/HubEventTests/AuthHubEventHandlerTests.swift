@@ -478,7 +478,8 @@ class AuthHubEventHandlerTests: XCTestCase {
             authEnvironment: environment,
             authStateMachine: statemachine,
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
-            hubEventHandler: authHandler)
+            hubEventHandler: authHandler,
+            analyticsHandler: MockAnalyticsHandler())
     }
 
     override func tearDown() async throws {

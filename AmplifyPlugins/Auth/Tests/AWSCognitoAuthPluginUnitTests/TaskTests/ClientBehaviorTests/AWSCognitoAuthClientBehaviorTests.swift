@@ -60,7 +60,8 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
             authEnvironment: environment,
             authStateMachine: statemachine,
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
-            hubEventHandler: MockAuthHubEventBehavior())
+            hubEventHandler: MockAuthHubEventBehavior(),
+            analyticsHandler: MockAnalyticsHandler())
     }
 
     override func tearDown() async throws {

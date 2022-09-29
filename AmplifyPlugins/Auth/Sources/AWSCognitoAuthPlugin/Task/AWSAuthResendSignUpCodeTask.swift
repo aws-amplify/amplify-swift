@@ -70,7 +70,11 @@ class AWSAuthResendSignUpCodeTask: AuthResendSignUpCodeTask {
             userPoolConfiguration: userPoolConfigurationData)
         let userContextData = CognitoIdentityProviderClientTypes.UserContextDataType(
             encodedData: encodedData)
+        let analyticsMetadata = userPoolEnvironment
+            .cognitoUserPoolAnalyticsHandlerFactory()
+            .analyticsMetadata()
         let input = ResendConfirmationCodeInput(
+            analyticsMetadata: analyticsMetadata,
             clientId: userPoolConfigurationData.clientId,
             clientMetadata: clientMetaData,
             userContextData: userContextData,

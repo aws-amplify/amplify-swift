@@ -35,7 +35,11 @@ extension SignUpInput {
             userPoolConfiguration: environment.userPoolConfiguration) {
             userContextData = .init(encodedData: encodedData)
         }
-        self.init(clientId: configuration.clientId,
+        let analyticsMetadata = environment
+            .cognitoUserPoolAnalyticsHandlerFactory()
+            .analyticsMetadata()
+        self.init(analyticsMetadata: analyticsMetadata,
+                  clientId: configuration.clientId,
                   clientMetadata: clientMetadata,
                   password: password,
                   secretHash: secretHash,

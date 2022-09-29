@@ -25,6 +25,8 @@ public final class AWSCognitoAuthPlugin: AWSCognitoAuthPluginBehavior {
     /// Handles different auth event send through hub
     var hubEventHandler: AuthHubEventBehavior!
 
+    var analyticsHandler: UserPoolAnalyticsBehavior!
+
     /// The unique key of the plugin within the auth category.
     public var key: PluginKey {
         return "awsCognitoAuthPlugin"

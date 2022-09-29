@@ -24,7 +24,8 @@ class SignUpInputTests: XCTestCase {
         let environment = BasicUserPoolEnvironment(
             userPoolConfiguration: userPoolConfiguration,
             cognitoUserPoolFactory: Defaults.makeDefaultUserPool,
-            cognitoUserPoolASFFactory: Defaults.makeDefaultASF)
+            cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
+            cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics)
         let input = SignUpInput(username: username,
                                 password: password,
                                 clientMetadata: [:],
@@ -46,7 +47,8 @@ class SignUpInputTests: XCTestCase {
         let environment = BasicUserPoolEnvironment(
             userPoolConfiguration: userPoolConfiguration,
             cognitoUserPoolFactory: Defaults.makeDefaultUserPool,
-            cognitoUserPoolASFFactory: Defaults.makeDefaultASF)
+            cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
+            cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics)
         let input = SignUpInput(username: username,
                                 password: password,
                                 clientMetadata: [:],

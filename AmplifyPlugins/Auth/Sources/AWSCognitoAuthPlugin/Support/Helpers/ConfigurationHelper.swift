@@ -23,6 +23,11 @@ struct ConfigurationHelper {
             return nil
         }
 
+        var pinpointId: String?
+        if case .string(let pinpointIdFromConfig) = cognitoUserPoolJSON.value(at: "PinpointAppId") {
+            pinpointId = pinpointIdFromConfig
+        }
+
         // If there's a value for the key `Endpoint` let's validate
         // that input here. This allows us to validate once instead
         // of repeatedly whenever `AWSCongnitoAuthPlugin().makeUserPool()`
@@ -66,6 +71,7 @@ struct ConfigurationHelper {
                                          region: region,
                                          endpoint: endpoint,
                                          clientSecret: clientSecret,
+                                         pinpointAppId: pinpointId,
                                          authFlowType: authFlowType,
                                          hostedUIConfig: hostedUIConfig)
     }

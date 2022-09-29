@@ -26,7 +26,8 @@ class SignOutGloballyTests: XCTestCase {
         let environment = BasicUserPoolEnvironment(
             userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
             cognitoUserPoolFactory: identityProviderFactory,
-            cognitoUserPoolASFFactory: Defaults.makeDefaultASF
+            cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
+            cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics
         )
         let action = SignOutGlobally(signedInData: .testData, hostedUIError: nil)
 
@@ -50,7 +51,8 @@ class SignOutGloballyTests: XCTestCase {
         let environment = BasicUserPoolEnvironment(
             userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
             cognitoUserPoolFactory: identityProviderFactory,
-            cognitoUserPoolASFFactory: Defaults.makeDefaultASF
+            cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
+            cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics
         )
 
         let action = SignOutGlobally(signedInData: .testData, hostedUIError: nil)
@@ -88,7 +90,8 @@ class SignOutGloballyTests: XCTestCase {
         let environment = BasicUserPoolEnvironment(
             userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
             cognitoUserPoolFactory: identityProviderFactory,
-            cognitoUserPoolASFFactory: Defaults.makeDefaultASF
+            cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
+            cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics
         )
 
         let action = SignOutGlobally(signedInData: .testData, hostedUIError: nil)

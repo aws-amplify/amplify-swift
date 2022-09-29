@@ -46,7 +46,8 @@ struct MockedAuthCognitoPluginHelper {
             authEnvironment: authEnvironment,
             authStateMachine: authStateMachine,
             credentialStoreStateMachine: credentialStoreMachine,
-            hubEventHandler: MockAuthHubEventBehavior())
+            hubEventHandler: MockAuthHubEventBehavior(),
+            analyticsHandler: MockAnalyticsHandler())
 
         return plugin
     }
@@ -88,6 +89,10 @@ struct MockedAuthCognitoPluginHelper {
 
     private func makeCognitoASF() -> AdvancedSecurityBehavior {
         MockASF()
+    }
+
+    private func makeUserPoolAnalytics() -> UserPoolAnalyticsBehavior {
+        MockAnalyticsHandler()
     }
 
     private func makeCredentialStore() -> AmplifyAuthCredentialStoreBehavior {
@@ -155,9 +160,11 @@ struct MockedAuthCognitoPluginHelper {
         let srpAuthEnvironment = BasicSRPAuthEnvironment(userPoolConfiguration: userPoolConfigData,
                                                          cognitoUserPoolFactory: makeUserPool)
         let srpSignInEnvironment = BasicSRPSignInEnvironment(srpAuthEnvironment: srpAuthEnvironment)
-        let userPoolEnvironment = BasicUserPoolEnvironment(userPoolConfiguration: userPoolConfigData,
-                                                           cognitoUserPoolFactory: makeUserPool,
-                                                           cognitoUserPoolASFFactory: makeCognitoASF)
+        let userPoolEnvironment = BasicUserPoolEnvironment(
+            userPoolConfiguration: userPoolConfigData,
+            cognitoUserPoolFactory: makeUserPool,
+            cognitoUserPoolASFFactory: makeCognitoASF,
+            cognitoUserPoolAnalyticsHandlerFactory: makeUserPoolAnalytics)
         let hostedUIEnvironment = hostedUIEnvironment(userPoolConfigData)
         return BasicAuthenticationEnvironment(srpSignInEnvironment: srpSignInEnvironment,
                                               userPoolEnvironment: userPoolEnvironment,
@@ -177,8 +184,8 @@ struct MockedAuthCognitoPluginHelper {
     private func authorizationEnvironment(
         identityPoolConfigData: IdentityPoolConfigurationData) -> BasicAuthorizationEnvironment {
             BasicAuthorizationEnvironment(identityPoolConfiguration: identityPoolConfigData,
-                                      cognitoIdentityFactory: makeIdentityClient)
-    }
+                                          cognitoIdentityFactory: makeIdentityClient)
+        }
 
     private func credentialStoreEnvironment(authConfiguration: AuthConfiguration) -> CredentialEnvironment {
         let log = Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")

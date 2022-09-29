@@ -30,7 +30,8 @@ class BaseAuthorizationTests: XCTestCase {
             authEnvironment: environment,
             authStateMachine: statemachine,
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
-            hubEventHandler: MockAuthHubEventBehavior())
+            hubEventHandler: MockAuthHubEventBehavior(),
+            analyticsHandler: MockAnalyticsHandler())
         return plugin
 
     }

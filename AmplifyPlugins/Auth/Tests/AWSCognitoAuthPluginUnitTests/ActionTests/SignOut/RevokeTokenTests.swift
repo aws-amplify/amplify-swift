@@ -26,7 +26,8 @@ class RevokeTokenTests: XCTestCase {
         let environment = BasicUserPoolEnvironment(
             userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
             cognitoUserPoolFactory: identityProviderFactory,
-            cognitoUserPoolASFFactory: Defaults.makeDefaultASF
+            cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
+            cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics
         )
         let action = RevokeToken(signedInData: .testData,
                                  hostedUIError: nil,
@@ -52,7 +53,8 @@ class RevokeTokenTests: XCTestCase {
         let environment = BasicUserPoolEnvironment(
             userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
             cognitoUserPoolFactory: identityProviderFactory,
-            cognitoUserPoolASFFactory: Defaults.makeDefaultASF
+            cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
+            cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics
         )
 
         let action = RevokeToken(signedInData: .testData,
@@ -92,7 +94,8 @@ class RevokeTokenTests: XCTestCase {
         let environment = BasicUserPoolEnvironment(
             userPoolConfiguration: Defaults.makeDefaultUserPoolConfigData(),
             cognitoUserPoolFactory: identityProviderFactory,
-            cognitoUserPoolASFFactory: Defaults.makeDefaultASF
+            cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
+            cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics
         )
 
         let action = RevokeToken(signedInData: .testData,

@@ -113,7 +113,8 @@ class RefreshUserPoolTokensTests: XCTestCase {
         let environment = BasicUserPoolEnvironment(
             userPoolConfiguration: UserPoolConfigurationData.testData,
             cognitoUserPoolFactory: identityProviderFactory,
-            cognitoUserPoolASFFactory: Defaults.makeDefaultASF)
+            cognitoUserPoolASFFactory: Defaults.makeDefaultASF,
+            cognitoUserPoolAnalyticsHandlerFactory: Defaults.makeUserPoolAnalytics)
 
         let action = RefreshUserPoolTokens(existingSignedIndata: .testData)
 
