@@ -66,6 +66,50 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         sink.cancel()
     }
 
+    /// ObserveQuery API will eventually return a snapshot when sync state is toggled  from false to true.
+    ///  A `.modelSynced` event from the hub is internally received
+    ///
+    /// - Given: DataStore is cleared
+    /// - When:
+    ///    - ObserveQuery API is called to start the sync engine
+    ///    - A model is saved but not yet synced
+    /// - Then:
+    ///    - A query snapshot is received on `.modelSynced`
+    ///
+    func testObserveQueryWhenModelSyncedEvent() throws {
+        setUp(withModels: TestModelRegistration())
+        try startAmplify()
+        clearDataStore()
+        var snapshots = [DataStoreQuerySnapshot<Post>]()
+        var isObserveQueryReadyForTest = false
+        let observeQueryReadyForTest = expectation(description: "received query snapshot with .isSynced true")
+        let snapshotWithPost = expectation(description: "received first snapshot")
+        let post = Post(title: "title", content: "content", createdAt: .now())
+        let sink = Amplify.DataStore.observeQuery(for: Post.self).sink { completed in
+            switch completed {
+            case .finished:
+                break
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        } receiveValue: { querySnapshot in
+            snapshots.append(querySnapshot)
+            if !isObserveQueryReadyForTest && querySnapshot.isSynced {
+                isObserveQueryReadyForTest = true
+                observeQueryReadyForTest.fulfill()
+            }
+            if querySnapshot.items.contains(where: { $0.id == post.id }) {
+                snapshotWithPost.fulfill()
+            }
+        }
+
+        wait(for: [observeQueryReadyForTest], timeout: 100)
+
+        _ = Amplify.DataStore.save(post)
+        wait(for: [snapshotWithPost], timeout: 100)
+        sink.cancel()
+    }
+
     /// Apply a query predicate "title begins with 'xyz'"
     ///
     /// - Given: DataStore is set up with an empty local store
