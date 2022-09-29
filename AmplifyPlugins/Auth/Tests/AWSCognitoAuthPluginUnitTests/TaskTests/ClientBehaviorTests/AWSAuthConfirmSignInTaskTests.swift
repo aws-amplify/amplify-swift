@@ -109,6 +109,42 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             }
         }
     }
+
+    /// Test a confirmSignIn call with client metadata and user attributes
+    ///
+    /// - Given: an auth plugin with mocked service. Mocked service should mock a successul response
+    /// - When:
+    ///    - I invoke confirmSignIn with an  confirmation code and plugin options
+    /// - Then:
+    ///    - The mocked service should receive metadata and user attributes
+    ///
+    func testSuccessfullyConfirmSignInWithMetadataAndUserAttributes() async {
+
+        let confirmSignInOptions = AWSAuthConfirmSignInOptions(
+            userAttributes: [.init(.email, value: "some@some.com")],
+            metadata: ["metadata": "test"])
+
+
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { input in
+                XCTAssertEqual(confirmSignInOptions.metadata, input.clientMetadata)
+                XCTAssertEqual(input.challengeResponses?["userAttributes.email"], "some@some.com")
+                return .testData()
+            })
+
+        do {
+            let confirmSignInResult = try await plugin.confirmSignIn(
+                challengeResponse: "code",
+                options: .init(pluginOptions: confirmSignInOptions))
+            guard case .done = confirmSignInResult.nextStep else {
+                XCTFail("Result should be .done for next step")
+                return
+            }
+            XCTAssertTrue(confirmSignInResult.isSignedIn, "Signin result should be complete")
+        } catch {
+            XCTFail("Received failure with error \(error)")
+        }
+    }
     
     // MARK: Service error handling test
     

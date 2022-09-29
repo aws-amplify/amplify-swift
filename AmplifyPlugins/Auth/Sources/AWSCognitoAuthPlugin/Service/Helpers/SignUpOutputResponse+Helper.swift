@@ -15,9 +15,13 @@ extension SignUpOutputResponse {
         if self.userConfirmed {
             return .init(.done)
         }
-        return AuthSignUpResult(.confirmUser(
-            codeDeliveryDetails?.toAuthCodeDeliveryDetails(),
-            ["usersub": userSub ?? ""]))
+        return AuthSignUpResult(
+            .confirmUser(
+                codeDeliveryDetails?.toAuthCodeDeliveryDetails(),
+                nil,
+                userSub
+            )
+        )
     }
 }
 

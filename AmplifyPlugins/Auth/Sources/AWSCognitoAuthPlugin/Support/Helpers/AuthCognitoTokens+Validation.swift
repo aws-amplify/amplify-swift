@@ -9,7 +9,7 @@ import Foundation
 import AWSPluginsCore
 
 /// Internal Helpers for managing session tokens
-extension AuthCognitoTokens {
+extension AWSCognitoUserPoolTokens {
 
     func doesExpire(in seconds: TimeInterval = 0) -> Bool {
 

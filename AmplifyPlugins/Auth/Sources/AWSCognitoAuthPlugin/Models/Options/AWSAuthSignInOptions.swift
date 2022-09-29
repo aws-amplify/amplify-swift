@@ -11,6 +11,7 @@ public struct AWSAuthSignInOptions {
 
     public let authFlowType: AuthFlowType
 
+    /// You can pass data to your Lambda function using validation data during sign in
     public let validationData: [String: String]?
 
     public let metadata: [String: String]?

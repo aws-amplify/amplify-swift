@@ -59,8 +59,8 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         XCTAssertTrue(session.isSignedIn)
 
         let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
-        XCTAssertNotNil(creds?.accessKey)
-        XCTAssertNotNil(creds?.secretKey)
+        XCTAssertNotNil(creds?.accessKeyId)
+        XCTAssertNotNil(creds?.secretAccessKey)
 
         let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
         XCTAssertNotNil(identityId)
@@ -120,8 +120,8 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         XCTAssertTrue(session.isSignedIn)
 
         let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
-        XCTAssertNotNil(creds?.accessKey)
-        XCTAssertNotNil(creds?.secretKey)
+        XCTAssertNotNil(creds?.accessKeyId)
+        XCTAssertNotNil(creds?.secretAccessKey)
 
         let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
         XCTAssertNotNil(identityId)
@@ -174,8 +174,8 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         XCTAssertFalse(session.isSignedIn)
 
         let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
-        XCTAssertNotNil(creds?.accessKey)
-        XCTAssertNotNil(creds?.secretKey)
+        XCTAssertNotNil(creds?.accessKeyId)
+        XCTAssertNotNil(creds?.secretAccessKey)
 
         let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
         XCTAssertNotNil(identityId)

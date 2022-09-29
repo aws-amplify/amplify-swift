@@ -35,11 +35,12 @@ public extension AWSCognitoAuthPlugin {
         return try await task.value
     }
 
-    func resendConfirmationCode(for attributeKey: AuthUserAttributeKey,
+    func resendConfirmationCode(forUserAttributeKey userAttributeKey: AuthUserAttributeKey,
                                 options: AuthAttributeResendConfirmationCodeRequest.Options? = nil) async throws -> AuthCodeDeliveryDetails {
 
         let options = options ?? AuthAttributeResendConfirmationCodeRequest.Options()
-        let request = AuthAttributeResendConfirmationCodeRequest(attributeKey: attributeKey, options: options)
+        let request = AuthAttributeResendConfirmationCodeRequest(
+            attributeKey: userAttributeKey, options: options)
         let task = AWSAuthAttributeResendConfirmationCodeTask(request, authStateMachine: authStateMachine, userPoolFactory: authEnvironment.cognitoUserPoolFactory)
         return try await task.value
     }

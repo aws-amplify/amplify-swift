@@ -29,6 +29,8 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
             throw validationError
         }
 
+        let pluginOptions = (request.options.pluginOptions as? AWSAuthConfirmSignInOptions)
+
         await taskHelper.didStateMachineConfigured()
 
         let invalidStateError = AuthError.invalidState(
@@ -68,13 +70,14 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
                        case .waitingForAnswer:
                            // Convert the attributes to [String: String]
                            let attributePrefix = AuthPluginConstants.cognitoIdentityUserUserAttributePrefix
-                           let attributes = self.request.options.userAttributes?.reduce(
+                           let attributes = pluginOptions?.userAttributes?.reduce(
                                into: [String: String]()) {
                                    $0[attributePrefix + $1.key.rawValue] = $1.value
                                } ?? [:]
                            let confirmSignInData = ConfirmSignInEventData(
                                answer: self.request.challengeResponse,
-                               attributes: attributes)
+                               attributes: attributes,
+                               metadata: pluginOptions?.metadata)
                            let event = SignInChallengeEvent(
                                eventType: .verifyChallengeAnswer(confirmSignInData))
                            await authStateMachine.send(event)

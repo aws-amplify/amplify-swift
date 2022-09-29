@@ -36,7 +36,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
         let credentials = CognitoIdentityClientTypes.Credentials(
             accessKeyId: "accessKey",
             expiration: Date(),
-            secretKey: "secretKey",
+            secretKey: "secretAccessKey",
             sessionToken: "sessionKey")
 
         let getId: MockIdentity.MockGetIdResponse = { input in
@@ -99,9 +99,9 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             do {
                 let federatedResult = try await plugin.federateToIdentityPool(withProviderToken: authenticationToken, for: provider)
                 XCTAssertNotNil(federatedResult)
-                XCTAssertEqual(federatedResult.credentials.sessionKey, credentials.sessionToken)
-                XCTAssertEqual(federatedResult.credentials.accessKey, credentials.accessKeyId)
-                XCTAssertEqual(federatedResult.credentials.secretKey, credentials.secretKey)
+                XCTAssertEqual(federatedResult.credentials.sessionToken, credentials.sessionToken)
+                XCTAssertEqual(federatedResult.credentials.accessKeyId, credentials.accessKeyId)
+                XCTAssertEqual(federatedResult.credentials.secretAccessKey, credentials.secretKey)
                 XCTAssertEqual(federatedResult.identityId, mockIdentityId)
             } catch {
                 XCTFail("Received failure with error \(error)")
@@ -171,9 +171,9 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
         do {
             let federatedResult = try await plugin.federateToIdentityPool(withProviderToken: authenticationToken, for: provider)
             XCTAssertNotNil(federatedResult)
-            XCTAssertEqual(federatedResult.credentials.sessionKey, credentials.sessionToken)
-            XCTAssertEqual(federatedResult.credentials.accessKey, credentials.accessKeyId)
-            XCTAssertEqual(federatedResult.credentials.secretKey, credentials.secretKey)
+            XCTAssertEqual(federatedResult.credentials.sessionToken, credentials.sessionToken)
+            XCTAssertEqual(federatedResult.credentials.accessKeyId, credentials.accessKeyId)
+            XCTAssertEqual(federatedResult.credentials.secretAccessKey, credentials.secretKey)
             XCTAssertEqual(federatedResult.credentials.expiration, credentials.expiration)
             XCTAssertEqual(federatedResult.identityId, mockIdentityId)
         } catch {
@@ -183,9 +183,9 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
         do {
             let secondFederatedResult = try await plugin.federateToIdentityPool(withProviderToken: authenticationToken, for: provider)
             XCTAssertNotNil(secondFederatedResult)
-            XCTAssertEqual(secondFederatedResult.credentials.sessionKey, credentials.sessionToken)
-            XCTAssertEqual(secondFederatedResult.credentials.accessKey, credentials.accessKeyId)
-            XCTAssertEqual(secondFederatedResult.credentials.secretKey, credentials.secretKey)
+            XCTAssertEqual(secondFederatedResult.credentials.sessionToken, credentials.sessionToken)
+            XCTAssertEqual(secondFederatedResult.credentials.accessKeyId, credentials.accessKeyId)
+            XCTAssertEqual(secondFederatedResult.credentials.secretAccessKey, credentials.secretKey)
             XCTAssertEqual(secondFederatedResult.credentials.expiration, credentials.expiration)
             XCTAssertEqual(secondFederatedResult.identityId, mockIdentityId)
         } catch {
@@ -363,7 +363,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
         let credentials = CognitoIdentityClientTypes.Credentials(
             accessKeyId: "accessKey",
             expiration: Date(),
-            secretKey: "secretKey",
+            secretKey: "secretAccessKey",
             sessionToken: "sessionKey")
 
         let cognitoAPIExpectation = expectation(description: "Cognito API gets called")
@@ -409,10 +409,10 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             XCTAssertTrue(session.isSignedIn)
 
             let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
-            XCTAssertNotNil(creds?.accessKey)
-            XCTAssertNotNil(creds?.secretKey)
-            XCTAssertEqual(creds?.secretKey, credentials.secretKey)
-            XCTAssertEqual(creds?.accessKey, credentials.accessKeyId)
+            XCTAssertNotNil(creds?.accessKeyId)
+            XCTAssertNotNil(creds?.secretAccessKey)
+            XCTAssertEqual(creds?.secretAccessKey, credentials.secretKey)
+            XCTAssertEqual(creds?.accessKeyId, credentials.accessKeyId)
 
             let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
             XCTAssertNotNil(identityId)
@@ -446,7 +446,7 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
         let credentials = CognitoIdentityClientTypes.Credentials(
             accessKeyId: "accessKey",
             expiration: Date(),
-            secretKey: "secretKey",
+            secretKey: "secretAccessKey",
             sessionToken: "sessionKey")
 
         let getId: MockIdentity.MockGetIdResponse = { _ in
@@ -478,10 +478,10 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
             XCTAssertTrue(session.isSignedIn)
             let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
-            XCTAssertNotNil(creds?.accessKey)
-            XCTAssertNotNil(creds?.secretKey)
-            XCTAssertEqual(creds?.secretKey, credentials.secretKey)
-            XCTAssertEqual(creds?.accessKey, credentials.accessKeyId)
+            XCTAssertNotNil(creds?.accessKeyId)
+            XCTAssertNotNil(creds?.secretAccessKey)
+            XCTAssertEqual(creds?.secretAccessKey, credentials.secretKey)
+            XCTAssertEqual(creds?.accessKeyId, credentials.accessKeyId)
 
             let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
             XCTAssertNotNil(identityId)
@@ -561,10 +561,10 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
             let session = try await plugin.fetchAuthSession(options: .forceRefresh())
             XCTAssertTrue(session.isSignedIn)
             let creds = try? (session as? AuthAWSCredentialsProvider)?.getAWSCredentials().get()
-            XCTAssertNotNil(creds?.accessKey)
-            XCTAssertNotNil(creds?.secretKey)
-            XCTAssertEqual(creds?.secretKey, credentials.secretKey)
-            XCTAssertEqual(creds?.accessKey, credentials.accessKeyId)
+            XCTAssertNotNil(creds?.accessKeyId)
+            XCTAssertNotNil(creds?.secretAccessKey)
+            XCTAssertEqual(creds?.secretAccessKey, credentials.secretKey)
+            XCTAssertEqual(creds?.accessKeyId, credentials.accessKeyId)
 
             let identityId = try? (session as? AuthCognitoIdentityProvider)?.getIdentityId().get()
             XCTAssertNotNil(identityId)
@@ -650,9 +650,9 @@ class AWSAuthFederationToIdentityPoolTests: BaseAuthorizationTests {
                     for: provider,
                     options: .init(developerProvidedIdentityID: mockIdentityId))
                 XCTAssertNotNil(federatedResult)
-                XCTAssertEqual(federatedResult.credentials.sessionKey, credentials.sessionToken)
-                XCTAssertEqual(federatedResult.credentials.accessKey, credentials.accessKeyId)
-                XCTAssertEqual(federatedResult.credentials.secretKey, credentials.secretKey)
+                XCTAssertEqual(federatedResult.credentials.sessionToken, credentials.sessionToken)
+                XCTAssertEqual(federatedResult.credentials.accessKeyId, credentials.accessKeyId)
+                XCTAssertEqual(federatedResult.credentials.secretAccessKey, credentials.secretKey)
                 XCTAssertEqual(federatedResult.identityId, mockIdentityId)
             } catch {
                 XCTFail("Received failure with error \(error)")

@@ -16,7 +16,7 @@ struct AuthCognitoSignedOutSessionHelper {
     ///   - awsCredentials: Valid AWS Credentials for the current signedOut session
     /// - Returns: Returns a valid signedOut session
     static func makeSignedOutSession(identityId: String,
-                                     awsCredentials: AuthAWSCredentials) -> AWSAuthCognitoSession {
+                                     awsCredentials: AWSCredentials) -> AWSAuthCognitoSession {
         let tokensError = makeCognitoTokensSignedOutError()
         let authSession = AWSAuthCognitoSession(isSignedIn: false,
                                                 identityIdResult: .success(identityId),

@@ -99,6 +99,15 @@ class AWSAuthSignInTask: AuthSignInTask {
     }
 
     private func clientMetadata() -> [String: String] {
-        (request.options.pluginOptions as? AWSAuthSignInOptions)?.metadata ?? [:]
+
+        let pluginOptions = request.options.pluginOptions as? AWSAuthSignInOptions
+
+        // Since InitiateAuth API explicitly doesn't accept validationData,
+        // we can pass this data to the Lambda function by using the ClientMetadata parameter
+        var clientMetadata = pluginOptions?.metadata ?? [:]
+        for (key, value) in pluginOptions?.validationData ?? [:] {
+            clientMetadata[key] = value
+        }
+        return clientMetadata
     }
 }

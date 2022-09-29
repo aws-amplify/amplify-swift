@@ -28,17 +28,12 @@ public extension AuthConfirmSignInRequest {
 
     struct Options {
 
-        /// User attributes to be passed in when confirming a sign with NEW_PASSWORD_REQUIRED challenge
-        public let userAttributes: [AuthUserAttribute]?
-
         /// Extra plugin specific options, only used in special circumstances when the existing options do not provide
         /// a way to utilize the underlying auth plugin functionality. See plugin documentation for expected
         /// key/values
         public let pluginOptions: Any?
 
-        public init(userAttributes: [AuthUserAttribute]? = nil,
-                    pluginOptions: Any? = nil) {
-            self.userAttributes = userAttributes
+        public init(pluginOptions: Any? = nil) {
             self.pluginOptions = pluginOptions
         }
     }
