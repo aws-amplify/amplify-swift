@@ -11,8 +11,8 @@ import AWSCognitoIdentityProvider
 
 struct UserPoolAnalytics: UserPoolAnalyticsBehavior {
 
-    static let AWSPinpointContextKeychainService = "com.amazonaws.AWSPinpointContex"
-    static  let AWSPinpointContextKeychainUniqueIdKey = "com.amazonaws.AWSPinpointContextKeychainUniqueIdKey"
+    static let AWSPinpointContextKeychainService = "com.amazonaws.AWSPinpointContext"
+    static let AWSPinpointContextKeychainUniqueIdKey = "com.amazonaws.AWSPinpointContextKeychainUniqueIdKey"
     let pinpointEndpoint: String?
 
     init(_ configuration: UserPoolConfigurationData?,
