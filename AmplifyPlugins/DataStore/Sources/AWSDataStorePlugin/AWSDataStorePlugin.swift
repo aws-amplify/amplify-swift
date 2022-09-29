@@ -20,6 +20,8 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     public var key: PluginKey = "awsDataStorePlugin"
 
+    private var isStorageEngineInitialized = false
+
     /// `true` if any models are syncable. Resolved during configuration phase
     var isSyncEnabled: Bool
 
@@ -115,11 +117,12 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     ///            a failure with a DataStoreError
     func initStorageEngine() -> DataStoreResult<Void> {
         storageEngineInitQueue.sync {
-            if storageEngine != nil {
+            if isStorageEngineInitialized && storageEngine != nil {
                 return .successfulVoid
             }
             var result: DataStoreResult<Void>
             do {
+                defer { isStorageEngineInitialized = true }
                 if self.dataStorePublisher == nil {
                     self.dataStorePublisher = DataStorePublisher()
                 }
@@ -139,7 +142,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// - Parameter completion: completion handler called with a success if the sync process started
     ///                         or with a DataStoreError in case of failure
     func initStorageEngineAndStartSync(completion: @escaping DataStoreCallback<Void> = { _ in }) {
-        if storageEngine != nil {
+        if isStorageEngineInitialized && storageEngine != nil {
             completion(.successfulVoid)
             return
         }
