@@ -38,14 +38,15 @@ public extension InternalTaskAsyncThrowingSequence where Self: InternalTaskRunne
 
     var sequence: AmplifyAsyncThrowingSequence<InProcess> {
         guard let sequence = context.sequence else {
+            let sequence = AmplifyAsyncThrowingSequence<InProcess>(parent: self, bufferingPolicy: context.bufferingPolicy)
+            context.sequence = sequence
+
             let task = Task { [weak self] in
                 guard let self = self else { return }
                 try await self.run()
             }
-
-            let sequence = AmplifyAsyncThrowingSequence<InProcess>(parent: self, bufferingPolicy: context.bufferingPolicy)
             self.context.task = task
-            context.sequence = sequence
+
             return sequence
         }
 
