@@ -113,7 +113,8 @@ class AWSGraphQLSubscriptionTaskRunnerCancelTests: XCTestCase {
         }
         await waitForExpectations([receivedValueConnecting])
         subscriptionEvents.cancel()
-        await waitForExpectations([receivedValueDisconnected, receivedCompletion, receivedFailure])
+        await waitForExpectations([receivedFailure], timeout: 0.1)
+        await waitForExpectations([receivedValueDisconnected, receivedCompletion])
     }
     
     func testFailureOnConnection() async {
@@ -143,8 +144,9 @@ class AWSGraphQLSubscriptionTaskRunnerCancelTests: XCTestCase {
                 await receivedFailure.fulfill()
             }
         }
-        
-        await waitForExpectations([receivedValue, receivedFailure, receivedCompletion], timeout: 0.3)
+
+        await waitForExpectations([receivedValue, receivedCompletion], timeout: 0.1)
+        await waitForExpectations([receivedFailure])
     }
 
     func testCallingCancelWhileCreatingConnectionShouldCallCompletionListener() async {
@@ -182,8 +184,9 @@ class AWSGraphQLSubscriptionTaskRunnerCancelTests: XCTestCase {
                 await receivedFailure.fulfill()
             }
         }
-        await waitForExpectations([receivedValue, connectionCreation], timeout: 5)
+        await waitForExpectations([receivedValue, connectionCreation])
         subscriptionEvents.cancel()
-        await waitForExpectations([receivedFailure, receivedCompletion], timeout: 5)
+        await waitForExpectations([receivedFailure], timeout: 0.1)
+        await waitForExpectations([receivedCompletion])
     }
 }
