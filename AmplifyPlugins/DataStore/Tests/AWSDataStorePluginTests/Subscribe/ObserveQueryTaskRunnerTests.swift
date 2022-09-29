@@ -25,6 +25,14 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
         dataStorePublisher = DataStorePublisher()
     }
     
+    ///  An item changed observed will be returned in a single snapshot
+    ///
+    /// - Given:  The operation has started and the first query has completed.
+    /// - When:
+    ///    -  Observe an item change.
+    /// - Then:
+    ///    - The item observed will be returned in the second snapshot
+    ///
     func testItemChangedWillGenerateSnapshot() async throws {
         let firstSnapshot = asyncExpectation(description: "first query snapshots")
         let secondSnapshot = asyncExpectation(description: "second query snapshots")
@@ -62,6 +70,117 @@ class ObserveQueryTaskRunnerTests: XCTestCase {
         let post = try createPost(id: "1")
         dataStorePublisher.send(input: post)
         await waitForExpectations([secondSnapshot], timeout: 10)
+    }
+    
+    ///  ObserveQuery will send a single snapshot when the sync state toggles
+    ///  from false to true. The operation internally listens to `.modelSynced` event from
+    ///  the Hub.
+    ///
+    /// - Given: ObserveQuery has started and the first snapshot has been received.
+    /// - When:
+    ///    - modelSyncedEvent is sent to the Hub
+    /// - Then:
+    ///    - ObserveQuery will send a second snapshot
+    ///
+    func testGenerateSnapshotOnObserveQueryWhenModelSynced() async throws {
+        let firstSnapshot = asyncExpectation(description: "first query snapshots")
+        let secondSnapshot = asyncExpectation(description: "second query snapshots")
+        let thirdSnapshot = asyncExpectation(description: "third query snapshot", isInverted: true)
+        let dispatchedModelSyncedEvent = AtomicValue(initialValue: false)
+        let taskRunner = ObserveQueryTaskRunner(
+            modelType: Post.self,
+            modelSchema: Post.schema,
+            predicate: nil,
+            sortInput: nil,
+            storageEngine: storageEngine,
+            dataStorePublisher: dataStorePublisher,
+            dataStoreConfiguration: .default,
+            dispatchedModelSyncedEvent: dispatchedModelSyncedEvent,
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
+        let snapshots = taskRunner.sequence
+        Task {
+            var querySnapshots = [DataStoreQuerySnapshot<Post>]()
+            do {
+                for try await querySnapshot in snapshots {
+                    querySnapshots.append(querySnapshot)
+                    if querySnapshots.count == 1 {
+                        XCTAssertEqual(querySnapshot.items.count, 0)
+                        XCTAssertEqual(querySnapshot.isSynced, false)
+                        await firstSnapshot.fulfill()
+                    } else if querySnapshots.count == 2 {
+                        XCTAssertEqual(querySnapshot.items.count, 0)
+                        XCTAssertEqual(querySnapshot.isSynced, true)
+                        await secondSnapshot.fulfill()
+                    } else if querySnapshots.count == 3 {
+                        XCTFail("Should not receive third snapshot for a Model change")
+                        await thirdSnapshot.fulfill()
+                    }
+                }
+            } catch {
+                XCTFail("Failed with error \(error)")
+            }
+        }
+        
+        await waitForExpectations([firstSnapshot], timeout: 5)
+        
+        dispatchedModelSyncedEvent.set(true)
+        let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
+                                                 data: ModelSyncedEvent(modelName: Post.modelName, isFullSync: true,
+                                                                        isDeltaSync: false, added: 0, updated: 0,
+                                                                        deleted: 0))
+        Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
+        await waitForExpectations([secondSnapshot], timeout: 10)
+        
+        let modelSyncedEventNotMatch = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
+                                                  data: ModelSyncedEvent.Builder().modelName)
+        Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventNotMatch)
+        await waitForExpectations([thirdSnapshot], timeout: 10)
+    }
+    
+    /// ObserveQuery will send the first snapshot with 2 items when storage engine
+    /// is mocked to return 2 items.
+    ///
+    /// - Given: ObserveQuery starts
+    /// - When:
+    ///    -  ObserveQuery performs the initial query, two posts are queried through StorageEngine
+    /// - Then:
+    ///    - The items queried will return two posts in the first snapshot
+    ///
+    func testFirstSnapshotFromStorageQueryReturnsTwoPosts() async {
+        let firstSnapshot = asyncExpectation(description: "firstSnapshot received")
+        let taskRunner = ObserveQueryTaskRunner(
+            modelType: Post.self,
+            modelSchema: Post.schema,
+            predicate: nil,
+            sortInput: nil,
+            storageEngine: storageEngine,
+            dataStorePublisher: dataStorePublisher,
+            dataStoreConfiguration: .default,
+            dispatchedModelSyncedEvent: AtomicValue(initialValue: false),
+            dataStoreStatePublisher: dataStoreStateSubject.eraseToAnyPublisher())
+        let post = Post(title: "model1",
+                        content: "content1",
+                        createdAt: .now())
+        storageEngine.responders[.query] = QueryResponder<Post>(callback: { _ in
+            return .success([post, Post(title: "model1", content: "content1", createdAt: .now())])
+        })
+        let snapshots = taskRunner.sequence
+        Task {
+            var querySnapshots = [DataStoreQuerySnapshot<Post>]()
+            do {
+                for try await querySnapshot in snapshots {
+                    querySnapshots.append(querySnapshot)
+                    if querySnapshots.count == 1 {
+                        XCTAssertEqual(querySnapshot.items.count, 2)
+                        await firstSnapshot.fulfill()
+                    }
+                }
+                
+            } catch {
+                XCTFail("Failed with error \(error)")
+            }
+        }
+        await waitForExpectations([firstSnapshot], timeout: 10)
     }
     
     /// Multiple item changed observed will be returned in a single snapshot
