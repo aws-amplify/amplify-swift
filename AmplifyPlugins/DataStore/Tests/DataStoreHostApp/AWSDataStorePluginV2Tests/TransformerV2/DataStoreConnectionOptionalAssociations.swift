@@ -10,7 +10,6 @@ import XCTest
 @testable import Amplify
 @testable import AWSDataStorePlugin
 @testable import DataStoreHostApp
-import AmplifyAsyncTesting
 
 /*
 
@@ -256,7 +255,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
             commentToSave = Comment8(content: "content", post: post)
         }
 
-        let waitForSync = asyncExpectation(description: "synced")
+        let waitForSync = expectation(description: "synced")
         token = Amplify.Hub.listen(to: .dataStore) { payload in
             let event = DataStoreHubEvent(payload: payload)
             switch event {
@@ -272,7 +271,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
             }
         }
         let savedComment = try await Amplify.DataStore.save(commentToSave)
-        await waitForExpectations([waitForSync], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [waitForSync], timeout: TestCommonConstants.networkTimeout)
         return savedComment
     }
 
@@ -284,7 +283,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
             postToSave = Post8(name: "name", randomId: "randomId", blog: blog)
         }
 
-        let waitForSync = asyncExpectation(description: "synced")
+        let waitForSync = expectation(description: "synced")
         token = Amplify.Hub.listen(to: .dataStore) { payload in
             let event = DataStoreHubEvent(payload: payload)
             switch event {
@@ -300,7 +299,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
             }
         }
         let savedPost = try await Amplify.DataStore.save(postToSave)
-        await waitForExpectations([waitForSync], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [waitForSync], timeout: TestCommonConstants.networkTimeout)
         return savedPost
     }
 
@@ -319,7 +318,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
             blogToSave = Blog8(name: "name", customs: [customModel], notes: ["notes1", "notes2"])
         }
 
-        let waitForSync = asyncExpectation(description: "synced")
+        let waitForSync = expectation(description: "synced")
         token = Amplify.Hub.listen(to: .dataStore) { payload in
             let event = DataStoreHubEvent(payload: payload)
             switch event {
@@ -336,7 +335,7 @@ class DataStoreConnectionOptionalAssociations: SyncEngineIntegrationV2TestBase {
             }
         }
         let savedBlog = try await Amplify.DataStore.save(blogToSave)
-        await waitForExpectations([waitForSync], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [waitForSync], timeout: TestCommonConstants.networkTimeout)
         return savedBlog
     }
 

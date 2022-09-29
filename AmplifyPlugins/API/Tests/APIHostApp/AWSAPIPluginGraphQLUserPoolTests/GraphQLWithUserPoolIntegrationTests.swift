@@ -9,7 +9,6 @@ import XCTest
 import Foundation
 import AWSAPIPlugin
 import AWSCognitoAuthPlugin
-@_implementationOnly import AmplifyAsyncTesting
 
 @testable import Amplify
 @testable import APIHostApp
@@ -357,9 +356,9 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     /// The user is not signed in so establishing the subscription will fail with an unauthorized error.
     func testOnCreateSubscriptionUnauthorized() async throws {
         Amplify.Logging.logLevel = .verbose
-        let connectingInvoked = asyncExpectation(description: "Connecting invoked")
-        let connectedInvoked = asyncExpectation(description: "Connection established", isInverted: true)
-        let completedInvoked = asyncExpectation(description: "Completed invoked")
+        let connectingInvoked = expectation(description: "Connecting invoked")
+        let connectedInvoked = expectation(description: "Connection established", isInverted: true)
+        let completedInvoked = expectation(description: "Completed invoked")
         let request = GraphQLRequest(document: OnCreateTodoSubscription.document,
                                      variables: nil,
                                      responseType: OnCreateTodoSubscription.Data.self)
@@ -390,7 +389,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
             }
         })
         XCTAssertNotNil(operation)
-        await waitForExpectations([connectingInvoked, connectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [connectingInvoked, connectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: A successful subscription is created for CreateTodo's
@@ -398,10 +397,10 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     /// Then: The subscription handler is called and Todo object is returned
     func testOnCreateTodoSubscription() async throws {
         await createAuthenticatedUser()
-        let connectedInvoked = asyncExpectation(description: "Connection established")
-        let disconnectedInvoked = asyncExpectation(description: "Connection disconnected")
-        let completedInvoked = asyncExpectation(description: "Completed invoked")
-        let progressInvoked = asyncExpectation(description: "progress invoked", expectedFulfillmentCount: 2)
+        let connectedInvoked = expectation(description: "Connection established")
+        let disconnectedInvoked = expectation(description: "Connection disconnected")
+        let completedInvoked = expectation(description: "Completed invoked")
+        let progressInvoked = expectation(description: "progress invoked", expectedFulfillmentCount: 2)
         let request = GraphQLRequest(document: OnCreateTodoSubscription.document,
                                      variables: nil,
                                      responseType: OnCreateTodoSubscription.Data.self)
@@ -430,7 +429,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
             }
         })
         XCTAssertNotNil(operation)
-        await waitForExpectations([connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let name = testMethodName + "Name"
@@ -447,10 +446,10 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
             return
         }
 
-        await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
         // TODO: Test this with the new async APIs
 //        operation.cancel()
-//        await waitForExpectations([disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
+//        wait(for: [disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
 //        XCTAssertTrue(operation.isFinished)
     }
 
@@ -459,10 +458,10 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     /// Then: The subscription handler is called and Todo object is returned
     func testOnUpdateTodoSubscription() async throws {
         await createAuthenticatedUser()
-        let connectedInvoked = asyncExpectation(description: "Connection established")
-        let disconnectedInvoked = asyncExpectation(description: "Connection disconnected")
-        let completedInvoked = asyncExpectation(description: "Completed invoked")
-        let progressInvoked = asyncExpectation(description: "progress invoked", expectedFulfillmentCount: 2)
+        let connectedInvoked = expectation(description: "Connection established")
+        let disconnectedInvoked = expectation(description: "Connection disconnected")
+        let completedInvoked = expectation(description: "Completed invoked")
+        let progressInvoked = expectation(description: "progress invoked", expectedFulfillmentCount: 2)
         let request = GraphQLRequest(document: OnUpdateTodoSubscription.document,
                                      variables: nil,
                                      responseType: OnUpdateTodoSubscription.Data.self)
@@ -492,7 +491,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         })
 
         XCTAssertNotNil(operation)
-        await waitForExpectations([connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let name = testMethodName + "Name"
@@ -513,10 +512,10 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
             return
         }
 
-        await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
         // TODO: Test this with the new async APIs
 //        operation.cancel()
-//        await waitForExpectations([disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
+//        wait(for: [disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
 //        XCTAssertTrue(operation.isFinished)
     }
 
@@ -525,10 +524,10 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
     /// Then: The subscription handler is called and Todo object is returned
     func testOnDeleteTodoSubscription() async throws {
         await createAuthenticatedUser()
-        let connectedInvoked = asyncExpectation(description: "Connection established")
-        let disconnectedInvoked = asyncExpectation(description: "Connection disconnected")
-        let completedInvoked = asyncExpectation(description: "Completed invoked")
-        let progressInvoked = asyncExpectation(description: "progress invoked")
+        let connectedInvoked = expectation(description: "Connection established")
+        let disconnectedInvoked = expectation(description: "Connection disconnected")
+        let completedInvoked = expectation(description: "Completed invoked")
+        let progressInvoked = expectation(description: "progress invoked")
         let request = GraphQLRequest(document: OnDeleteTodoSubscription.document,
                                      variables: nil,
                                      responseType: OnDeleteTodoSubscription.Data.self)
@@ -558,7 +557,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
         })
 
         XCTAssertNotNil(operation)
-        await waitForExpectations([connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
         let name = testMethodName + "Name"
@@ -574,10 +573,10 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
             return
         }
 
-        await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
         // TODO: Test this with the new async APIs
 //        operation.cancel()
-//        await waitForExpectations([disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
+//        wait(for: [disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
 //        XCTAssertTrue(operation.isFinished)
     }
 
@@ -590,7 +589,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
                           createTodoSubscription(),
                           createTodoSubscription(),
                           createTodoSubscription()]
-        let completedInvoked = asyncExpectation(description: "Completed invoked",
+        let completedInvoked = expectation(description: "Completed invoked",
                                                 expectedFulfillmentCount: operations.count)
         for operation in operations {
             _ = operation.subscribe { event in
@@ -604,7 +603,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
             XCTAssertTrue(operation.isExecuting)
             operation.cancel()
         }
-        await waitForExpectations([completedInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [completedInvoked], timeout: TestCommonConstants.networkTimeout)
         for operation in operations {
             XCTAssertTrue(operation.isFinished)
         }

@@ -122,64 +122,52 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
         // parent task is canceled while reducing values from sequence
         // before a value is sent which should result in a sum of zero
         let input = 2006
-        let reduced = asyncExpectation(description: "reduced")
-        let done = asyncExpectation(description: "done")
+        let reduced = expectation(description: "reduced")
         let channel = AmplifyAsyncSequence<Int>()
 
         let task = Task<Int, Never> {
             let sum = await channel.reduce(0, +)
-            await reduced.fulfill()
+            reduced.fulfill()
             return sum
         }
 
         // cancel before value is sent
         task.cancel()
 
-        await waitForExpectations([reduced])
+        await waitForExpectations(timeout: 0.1)
         channel.send(input)
 
-        Task {
-            let output = await task.value
-            XCTAssertNotEqual(input, output)
-            XCTAssertEqual(0, output)
-            await done.fulfill()
-        }
-
-        await waitForExpectations([done])
+        let output = await task.value
+        XCTAssertNotEqual(input, output)
+        XCTAssertEqual(0, output)
     }
 
     func testThrowingChannelCancelled() async throws {
         // parent task is canceled while reducing values from sequence
         // before a value is sent which should result in a sum of zero
         let input = 2006
-        let reduced = asyncExpectation(description: "reduced")
-        let done = asyncExpectation(description: "done")
+        let reduced = expectation(description: "reduced")
         let channel = AmplifyAsyncThrowingSequence<Int>()
 
         let task = Task<Int, Error> {
             let sum = try await channel.reduce(0, +)
-            await reduced.fulfill()
+            reduced.fulfill()
             return sum
         }
 
         // cancel before any value is sent
         task.cancel()
-        await waitForExpectations([reduced])
+        await waitForExpectations(timeout: 0.1)
         channel.send(input)
 
-        Task {
-            let output = try await task.value
-            XCTAssertNotEqual(input, output)
-            XCTAssertEqual(0, output)
-            await done.fulfill()
-        }
-
-        await waitForExpectations([done])
+        let output = try await task.value
+        XCTAssertNotEqual(input, output)
+        XCTAssertEqual(0, output)
     }
 
     func testValueProducingParentOperation() async throws {
-        let sent = asyncExpectation(description: "sent")
-        let received = asyncExpectation(description: "received")
+        let sent = expectation(description: "sent")
+        let received = expectation(description: "received")
         let steps = 10
         let delay = 0.01
         let request = LongOperationRequest(steps: steps, delay: delay)
@@ -191,9 +179,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
             channel.send(value)
             if value.totalUnitCount == value.completedUnitCount {
                 channel.finish()
-                Task {
-                    await sent.fulfill()
-                }
+                sent.fulfill()
             }
         }
         queue.addOperation(operation)
@@ -204,10 +190,10 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
             }
             let count = await values.elements.count
             XCTAssertGreaterThanOrEqual(count, steps)
-            await received.fulfill()
+            received.fulfill()
         }
 
-        await waitForExpectations([sent, received])
+        await waitForExpectations(timeout: 1)
 
         XCTAssertFalse(operation.isCancelled)
         XCTAssertGreaterThanOrEqual(count, steps)
@@ -216,8 +202,8 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
     }
 
     func testCancellingWithParentOperation() async throws {
-        let sent = asyncExpectation(description: "sent")
-        let received = asyncExpectation(description: "received")
+        let sent = expectation(description: "sent")
+        let received = expectation(description: "received")
         let steps = 10
         let delay = 0.01
         let request = LongOperationRequest(steps: steps, delay: delay)
@@ -230,7 +216,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
             if value.completedUnitCount >= steps/2 {
                 channel.cancel()
                 Task {
-                    await sent.fulfill()
+                    sent.fulfill()
                 }
             }
         }
@@ -242,10 +228,10 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
             }
             let count = await values.elements.count
             XCTAssertLessThan(count, steps)
-            await received.fulfill()
+            received.fulfill()
         }
 
-        await waitForExpectations([sent, received])
+        await waitForExpectations(timeout: 1)
 
         XCTAssertTrue(operation.isCancelled)
         XCTAssertLessThan(count, steps)
@@ -254,8 +240,8 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
     }
 
     func testThrowingValueProducingParentOperation() async throws {
-        let sent = asyncExpectation(description: "sent")
-        let received = asyncExpectation(description: "received")
+        let sent = expectation(description: "sent")
+        let received = expectation(description: "received")
         let steps = 10
         let delay = 0.01
         let request = LongOperationRequest(steps: steps, delay: delay)
@@ -268,7 +254,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
             if value.totalUnitCount == value.completedUnitCount {
                 channel.finish()
                 Task {
-                    await sent.fulfill()
+                    sent.fulfill()
                 }
             }
         }
@@ -280,10 +266,10 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
             }
             let count = await values.elements.count
             XCTAssertGreaterThanOrEqual(count, steps)
-            await received.fulfill()
+            received.fulfill()
         }
 
-        await waitForExpectations([sent, received])
+        await waitForExpectations(timeout: 1)
 
         XCTAssertFalse(operation.isCancelled)
         XCTAssertGreaterThanOrEqual(count, steps)
@@ -292,8 +278,8 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
     }
 
     func testThrowingCancellingWithParentOperation() async throws {
-        let sent = asyncExpectation(description: "sent")
-        let received = asyncExpectation(description: "received")
+        let sent = expectation(description: "sent")
+        let received = expectation(description: "received")
         let steps = 10
         let delay = 0.01
         let request = LongOperationRequest(steps: steps, delay: delay)
@@ -306,7 +292,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
             if value.completedUnitCount >= steps/2 {
                 channel.cancel()
                 Task {
-                    await sent.fulfill()
+                    sent.fulfill()
                 }
             }
         }
@@ -318,10 +304,10 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
             }
             let count = await values.elements.count
             XCTAssertLessThan(count, steps)
-            await received.fulfill()
+            received.fulfill()
         }
 
-        await waitForExpectations([sent, received])
+        await waitForExpectations(timeout: 1)
 
         XCTAssertTrue(operation.isCancelled)
         XCTAssertLessThan(count, steps)

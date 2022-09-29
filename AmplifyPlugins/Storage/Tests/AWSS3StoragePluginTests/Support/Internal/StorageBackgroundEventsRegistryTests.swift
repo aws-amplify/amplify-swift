@@ -18,13 +18,14 @@ class StorageBackgroundEventsRegistryTests: XCTestCase {
         let otherIdentifier = UUID().uuidString
         StorageBackgroundEventsRegistry.register(identifier: identifier)
 
-        let done = asyncExpectation(description: "done", expectedFulfillmentCount: 2)
+        let done = expectation(description: "done")
+        done.expectedFulfillmentCount = 2
 
         Task {
             let handled = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
                 StorageBackgroundEventsRegistry.handleBackgroundEvents(identifier: identifier, continuation: continuation)
                 Task {
-                    await done.fulfill()
+                    done.fulfill()
                 }
             }
             XCTAssertTrue(handled)
@@ -34,7 +35,7 @@ class StorageBackgroundEventsRegistryTests: XCTestCase {
             let otherHandled = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
                 StorageBackgroundEventsRegistry.handleBackgroundEvents(identifier: otherIdentifier, continuation: continuation)
                 Task {
-                    await done.fulfill()
+                    done.fulfill()
                 }
             }
             XCTAssertFalse(otherHandled)
@@ -45,7 +46,7 @@ class StorageBackgroundEventsRegistryTests: XCTestCase {
             handleEvents(for: otherIdentifier)
         }
 
-        await waitForExpectations([done])
+        await waitForExpectations(timeout: 5)
     }
 
     func testHandlingUnregisteredIdentifier() async throws {
@@ -53,19 +54,19 @@ class StorageBackgroundEventsRegistryTests: XCTestCase {
         let otherIdentifier = UUID().uuidString
         StorageBackgroundEventsRegistry.register(identifier: otherIdentifier)
 
-        let done = asyncExpectation(description: "done")
+        let done = expectation(description: "done")
 
         Task {
             let handled = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
                 StorageBackgroundEventsRegistry.handleBackgroundEvents(identifier: identifier, continuation: continuation)
                 Task {
-                    await done.fulfill()
+                    done.fulfill()
                 }
             }
             XCTAssertFalse(handled)
         }
 
-        await waitForExpectations([done])
+        await waitForExpectations(timeout: 5)
     }
 
     // Simulates URLSessionDelegate behavior

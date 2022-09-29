@@ -11,24 +11,23 @@ import XCTest
 import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
-@_implementationOnly import AmplifyAsyncTesting
 import AppSyncRealTimeClient
 
 class GraphQLSubscribeTasksTests: OperationTestBase {
 
     // Setup expectations
-    var onSubscribeInvoked: AsyncExpectation!
-    var receivedCompletionSuccess: AsyncExpectation!
-    var receivedCompletionFailure: AsyncExpectation!
+    var onSubscribeInvoked: XCTestExpectation!
+    var receivedCompletionSuccess: XCTestExpectation!
+    var receivedCompletionFailure: XCTestExpectation!
     
     // Subscription state expectations
-    var receivedStateValueConnecting: AsyncExpectation!
-    var receivedStateValueConnected: AsyncExpectation!
-    var receivedStateValueDisconnected: AsyncExpectation!
+    var receivedStateValueConnecting: XCTestExpectation!
+    var receivedStateValueConnected: XCTestExpectation!
+    var receivedStateValueDisconnected: XCTestExpectation!
 
     // Subscription item expectations
-    var receivedDataValueSuccess: AsyncExpectation!
-    var receivedDataValueError: AsyncExpectation!
+    var receivedDataValueSuccess: XCTestExpectation!
+    var receivedDataValueError: XCTestExpectation!
 
     // Handles to the subscription item and event handler used to make mock calls into the
     // subscription system
@@ -40,131 +39,132 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
 
     override func setUp() async throws {
         try await super.setUp()
-
-        onSubscribeInvoked = asyncExpectation(description: "onSubscribeInvoked")
-
-        receivedCompletionSuccess = asyncExpectation(description: "receivedStateCompletionSuccess")
-        receivedCompletionFailure = asyncExpectation(description: "receivedStateCompletionFailure")
-        receivedStateValueConnecting = asyncExpectation(description: "receivedStateValueConnecting")
-        receivedStateValueConnected = asyncExpectation(description: "receivedStateValueConnected")
-        receivedStateValueDisconnected = asyncExpectation(description: "receivedStateValueDisconnected")
-
-        receivedDataValueSuccess = asyncExpectation(description: "receivedDataValueSuccess")
-        receivedDataValueError = asyncExpectation(description: "receivedDataValueError")
-
+        onSubscribeInvoked = expectation(description: "onSubscribeInvoked")
         try setUpMocksAndSubscriptionItems()
     }
 
-    func waitForSubscriptionExpectations() async {
-        await waitForExpectations([receivedCompletionSuccess,
-                                   receivedCompletionFailure,
-                                   receivedStateValueConnecting,
-                                   receivedStateValueConnected,
-                                   receivedStateValueDisconnected,
-                                   receivedDataValueSuccess,
-                                   receivedDataValueError], timeout: 0.05)
-    }
-    
-    func testHappyPath() async throws {
-        await receivedCompletionSuccess.setShouldTrigger(true)
-        await receivedCompletionFailure.setShouldTrigger(false)
-        await receivedStateValueConnecting.setShouldTrigger(true)
-        await receivedStateValueConnected.setShouldTrigger(true)
-        await receivedStateValueDisconnected.setShouldTrigger(true)
 
-        await receivedDataValueSuccess.setShouldTrigger(true)
-        await receivedDataValueError.setShouldTrigger(false)
+    func setupExpectations() {
+        receivedCompletionSuccess = expectation(description: "receivedStateCompletionSuccess")
+        receivedCompletionFailure = expectation(description: "receivedStateCompletionFailure")
+        receivedStateValueConnecting = expectation(description: "receivedStateValueConnecting")
+        receivedStateValueConnected = expectation(description: "receivedStateValueConnected")
+        receivedStateValueDisconnected = expectation(description: "receivedStateValueDisconnected")
+
+        receivedDataValueSuccess = expectation(description: "receivedDataValueSuccess")
+        receivedDataValueError = expectation(description: "receivedDataValueError")
+    }
+
+    func testHappyPath() async throws {
 
         let testJSON: JSONValue = ["foo": true]
         let testData = #"{"data": {"foo": true}}"# .data(using: .utf8)!
 
         try await subscribe(expecting: testJSON)
-        await waitForExpectations([onSubscribeInvoked], timeout: 0.05)
+        await waitForExpectations(timeout: 0.05)
+
+        setupExpectations()
+        receivedCompletionSuccess.isInverted = false
+        receivedCompletionFailure.isInverted = true
+        receivedStateValueConnecting.isInverted = false
+        receivedStateValueConnected.isInverted = false
+        receivedStateValueDisconnected.isInverted = false
+
+        receivedDataValueSuccess.isInverted = false
+        receivedDataValueError.isInverted = true
 
         subscriptionEventHandler(.connection(.connecting), subscriptionItem)
         subscriptionEventHandler(.connection(.connected), subscriptionItem)
         subscriptionEventHandler(.data(testData), subscriptionItem)
         subscriptionEventHandler(.connection(.disconnected), subscriptionItem)
 
-        await waitForSubscriptionExpectations()
+        await waitForExpectations(timeout: 0.05)
     }
 
     func testConnectionWithNoData() async throws {
-        await receivedCompletionSuccess.setShouldTrigger(true)
-        await receivedCompletionFailure.setShouldTrigger(false)
-        await receivedStateValueConnecting.setShouldTrigger(true)
-        await receivedStateValueConnected.setShouldTrigger(true)
-        await receivedStateValueDisconnected.setShouldTrigger(true)
-
-        await receivedDataValueSuccess.setShouldTrigger(false)
-        await receivedDataValueError.setShouldTrigger(false)
 
         try await subscribe()
-        await waitForExpectations([onSubscribeInvoked], timeout: 0.05)
+        await waitForExpectations(timeout: 0.05)
+        setupExpectations()
+
+        receivedCompletionSuccess.isInverted = false
+        receivedCompletionFailure.isInverted = true
+        receivedStateValueConnecting.isInverted = false
+        receivedStateValueConnected.isInverted = false
+        receivedStateValueDisconnected.isInverted = false
+
+        receivedDataValueSuccess.isInverted = true
+        receivedDataValueError.isInverted = true
 
         subscriptionEventHandler(.connection(.connecting), subscriptionItem)
         subscriptionEventHandler(.connection(.connected), subscriptionItem)
         subscriptionEventHandler(.connection(.disconnected), subscriptionItem)
 
-        await waitForSubscriptionExpectations()
+        await waitForExpectations(timeout: 0.05)
     }
 
     func testConnectionError() async throws {
-        await receivedCompletionSuccess.setShouldTrigger(false)
-        await receivedCompletionFailure.setShouldTrigger(true)
-        await receivedStateValueConnecting.setShouldTrigger(true)
-        await receivedStateValueConnected.setShouldTrigger(false)
-        await receivedStateValueDisconnected.setShouldTrigger(false)
-
-        await receivedDataValueSuccess.setShouldTrigger(false)
-        await receivedDataValueError.setShouldTrigger(false)
 
         try await subscribe()
-        await waitForExpectations([onSubscribeInvoked], timeout: 0.05)
+        await waitForExpectations(timeout: 0.05)
+        setupExpectations()
+
+        receivedCompletionSuccess.isInverted = true
+        receivedCompletionFailure.isInverted = false
+        receivedStateValueConnecting.isInverted = false
+        receivedStateValueConnected.isInverted = true
+        receivedStateValueDisconnected.isInverted = true
+
+        receivedDataValueSuccess.isInverted = true
+        receivedDataValueError.isInverted = true
 
         subscriptionEventHandler(.connection(.connecting), subscriptionItem)
         subscriptionEventHandler(.failed("Error"), subscriptionItem)
 
-        await waitForSubscriptionExpectations()
+        await waitForExpectations(timeout: 0.05)
     }
 
     func testDecodingError() async throws {
         let testData = #"{"data": {"foo": true}, "errors": []}"# .data(using: .utf8)!
-        await receivedCompletionSuccess.setShouldTrigger(true)
-        await receivedCompletionFailure.setShouldTrigger(false)
-        await receivedStateValueConnecting.setShouldTrigger(true)
-        await receivedStateValueConnected.setShouldTrigger(true)
-        await receivedStateValueDisconnected.setShouldTrigger(true)
-
-        await receivedDataValueSuccess.setShouldTrigger(false)
-        await receivedDataValueError.setShouldTrigger(true)
 
         try await subscribe()
-        await waitForExpectations([onSubscribeInvoked], timeout: 0.05)
+        await waitForExpectations(timeout: 0.05)
+        setupExpectations()
+
+        receivedCompletionSuccess.isInverted = false
+        receivedCompletionFailure.isInverted = true
+        receivedStateValueConnecting.isInverted = false
+        receivedStateValueConnected.isInverted = false
+        receivedStateValueDisconnected.isInverted = false
+
+        receivedDataValueSuccess.isInverted = true
+        receivedDataValueError.isInverted = false
 
         subscriptionEventHandler(.connection(.connecting), subscriptionItem)
         subscriptionEventHandler(.connection(.connected), subscriptionItem)
         subscriptionEventHandler(.data(testData), subscriptionItem)
         subscriptionEventHandler(.connection(.disconnected), subscriptionItem)
 
-        await waitForSubscriptionExpectations()
+        await waitForExpectations(timeout: 0.05)
     }
 
     func testMultipleSuccessValues() async throws {
         let testJSON: JSONValue = ["foo": true]
         let testData = #"{"data": {"foo": true}}"# .data(using: .utf8)!
-        await receivedCompletionSuccess.setShouldTrigger(true)
-        await receivedCompletionFailure.setShouldTrigger(false)
-        await receivedStateValueConnecting.setShouldTrigger(true)
-        await receivedStateValueConnected.setShouldTrigger(true)
-        await receivedStateValueDisconnected.setShouldTrigger(true)
-
-        await receivedDataValueSuccess.setShouldTrigger(true)
-        await receivedDataValueSuccess.setExpectedFulfillmentCount(2)
-        await receivedDataValueError.setShouldTrigger(false)
 
         try await subscribe(expecting: testJSON)
-        await waitForExpectations([onSubscribeInvoked], timeout: 0.05)
+        await waitForExpectations(timeout: 0.05)
+        setupExpectations()
+
+        receivedCompletionSuccess.isInverted = false
+        receivedCompletionFailure.isInverted = true
+        receivedStateValueConnecting.isInverted = false
+        receivedStateValueConnected.isInverted = false
+        receivedStateValueDisconnected.isInverted = false
+
+        receivedDataValueSuccess.isInverted = false
+        receivedDataValueSuccess.expectedFulfillmentCount = 2
+        receivedDataValueError.isInverted = true
 
         subscriptionEventHandler(.connection(.connecting), subscriptionItem)
         subscriptionEventHandler(.connection(.connected), subscriptionItem)
@@ -172,24 +172,26 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         subscriptionEventHandler(.data(testData), subscriptionItem)
         subscriptionEventHandler(.connection(.disconnected), subscriptionItem)
 
-        await waitForSubscriptionExpectations()
+        await waitForExpectations(timeout: 0.05)
     }
 
     func testMixedSuccessAndErrorValues() async throws {
         let successfulTestData = #"{"data": {"foo": true}}"# .data(using: .utf8)!
         let invalidTestData = #"{"data": {"foo": true}, "errors": []}"# .data(using: .utf8)!
-        await receivedCompletionSuccess.setShouldTrigger(true)
-        await receivedCompletionFailure.setShouldTrigger(false)
-        await receivedStateValueConnecting.setShouldTrigger(true)
-        await receivedStateValueConnected.setShouldTrigger(true)
-        await receivedStateValueDisconnected.setShouldTrigger(true)
-
-        await receivedDataValueSuccess.setShouldTrigger(true)
-        await receivedDataValueSuccess.setExpectedFulfillmentCount(2)
-        await receivedDataValueError.setShouldTrigger(true)
 
         try await subscribe()
-        await waitForExpectations([onSubscribeInvoked], timeout: 0.05)
+        await waitForExpectations(timeout: 0.05)
+        setupExpectations()
+
+        receivedCompletionSuccess.isInverted = false
+        receivedCompletionFailure.isInverted = true
+        receivedStateValueConnecting.isInverted = false
+        receivedStateValueConnected.isInverted = false
+        receivedStateValueDisconnected.isInverted = false
+
+        receivedDataValueSuccess.isInverted = false
+        receivedDataValueSuccess.expectedFulfillmentCount = 2
+        receivedDataValueError.isInverted = false
 
         subscriptionEventHandler(.connection(.connecting), subscriptionItem)
         subscriptionEventHandler(.connection(.connected), subscriptionItem)
@@ -198,7 +200,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         subscriptionEventHandler(.data(successfulTestData), subscriptionItem)
         subscriptionEventHandler(.connection(.disconnected), subscriptionItem)
 
-        await waitForSubscriptionExpectations()
+        await waitForExpectations(timeout: 0.05)
     }
 
     // MARK: - Utilities

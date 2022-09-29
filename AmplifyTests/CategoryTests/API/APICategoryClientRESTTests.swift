@@ -34,13 +34,7 @@ class APICategoryClientRESTTests: XCTestCase {
             }
         }
 
-        let getCompleted = asyncExpectation(description: "get completed")
-        Task {
-            _ = try await Amplify.API.get(request: RESTRequest())
-            await getCompleted.fulfill()
-        }
-        await waitForExpectations([getCompleted], timeout: 0.5)
-        
+        _ = try await Amplify.API.get(request: RESTRequest())
         await waitForExpectations(timeout: 0.5)
     }
 

@@ -7,7 +7,6 @@
 
 import XCTest
 import AmplifyTestCommon
-@_implementationOnly import AmplifyAsyncTesting
 
 @testable import Amplify
 @testable import AWSDataStorePlugin
@@ -79,12 +78,12 @@ class AWSDataStorePluginTests: XCTestCase {
                                         validAuthPluginKey: "MockAuthCategoryPlugin")
         do {
             try plugin.configure(using: nil)
-            let queryCompleted = asyncExpectation(description: "query completed")
+            let queryCompleted = expectation(description: "query completed")
             Task {
                 _ = try await plugin.query(ExampleWithEveryType.self)
-                await queryCompleted.fulfill()
+                queryCompleted.fulfill()
             }
-            await waitForExpectations([queryCompleted], timeout: 1.0)
+            wait(for: [queryCompleted], timeout: 1.0)
         } catch {
             XCTFail("DataStore configuration should not fail with nil configuration. \(error)")
         }

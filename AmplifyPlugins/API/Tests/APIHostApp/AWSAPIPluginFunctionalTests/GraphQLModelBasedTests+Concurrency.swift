@@ -14,10 +14,10 @@ extension GraphQLModelBasedTests {
     
     func testConcurrentSubscriptions() async throws {
         let count = 50
-        let connectedInvoked = asyncExpectation(description: "Connection established", expectedFulfillmentCount: count)
-        let disconnectedInvoked = asyncExpectation(description: "Connection disconnected", expectedFulfillmentCount: count)
-        let completedInvoked = asyncExpectation(description: "Completed invoked", expectedFulfillmentCount: count)
-        let progressInvoked = asyncExpectation(description: "progress invoked", expectedFulfillmentCount: count)
+        let connectedInvoked = expectation(description: "Connection established", expectedFulfillmentCount: count)
+        let disconnectedInvoked = expectation(description: "Connection disconnected", expectedFulfillmentCount: count)
+        let completedInvoked = expectation(description: "Completed invoked", expectedFulfillmentCount: count)
+        let progressInvoked = expectation(description: "progress invoked", expectedFulfillmentCount: count)
 
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
@@ -64,7 +64,7 @@ extension GraphQLModelBasedTests {
             
         }
     
-        await waitForExpectations([connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         XCTAssertEqual(sequences.count, count)
         
         guard try await createPost(id: uuid, title: title) != nil else {
@@ -72,10 +72,10 @@ extension GraphQLModelBasedTests {
             return
         }
 
-        await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
         sequences.forEach { sequence in
             sequence.cancel()
         }
-        await waitForExpectations([disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 }

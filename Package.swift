@@ -7,10 +7,8 @@ let dependencies: [Package.Dependency] = [
     .package(url: "https://github.com/awslabs/aws-sdk-swift.git", exact: "0.2.6"),
     .package(url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git", from: "2.1.1"),
     .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.12.2"),
-    .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0"),
-    .package(name: "AmplifyAsyncTesting", path: "AmplifyAsyncTesting")
+    .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0")
 ]
-let swiftSettings: [SwiftSetting]? = [.define("DEV_PREVIEW_BUILD")]
 
 let amplifyTargets: [Target] = [
     .target(
@@ -49,14 +47,14 @@ let amplifyTargets: [Target] = [
             "Models/Collection/connection-schema.graphql",
             "Models/TransformerV2/schema.graphql",
             "Models/CustomPrimaryKey/primarykey_schema.graphql"
-        ]
+        ],
+        linkerSettings: [.linkedFramework("XCTest")]
     ),
     .testTarget(
         name: "AmplifyTests",
         dependencies: [
             "Amplify",
-            "AmplifyTestCommon",
-            "AmplifyAsyncTesting"
+            "AmplifyTestCommon"
         ],
         path: "AmplifyTests",
         exclude: [
@@ -101,16 +99,14 @@ let apiTargets: [Target] = [
         exclude: [
             "Info.plist",
             "AWSAPIPlugin.md"
-        ],
-        swiftSettings: swiftSettings
+        ]
     ),
     .testTarget(
         name: "AWSAPIPluginTests",
         dependencies: [
             "AWSAPIPlugin",
             "AmplifyTestCommon",
-            "AWSPluginsTestCommon",
-            "AmplifyAsyncTesting"
+            "AWSPluginsTestCommon"
         ],
         path: "AmplifyPlugins/API/Tests/AWSAPIPluginTests",
         exclude: [
@@ -143,8 +139,7 @@ let authTargets: [Target] = [
             .product(name: "AWSCognitoIdentityProvider", package: "aws-sdk-swift"),
             .product(name: "AWSCognitoIdentity", package: "aws-sdk-swift")
         ],
-        path: "AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin",
-        swiftSettings: swiftSettings
+        path: "AmplifyPlugins/Auth/Sources/AWSCognitoAuthPlugin"
     ),
     .target(
         name: "libtommathAmplify",
@@ -188,15 +183,13 @@ let dataStoreTargets: [Target] = [
         exclude: [
             "Info.plist",
             "Sync/MutationSync/OutgoingMutationQueue/SyncMutationToCloudOperation.mmd"
-        ],
-        swiftSettings: swiftSettings
+        ]
     ),
     .testTarget(
         name: "AWSDataStoreCategoryPluginTests",
         dependencies: [
             "AWSDataStorePlugin",
-            "AmplifyTestCommon",
-            "AmplifyAsyncTesting"
+            "AmplifyTestCommon"
         ],
         path: "AmplifyPlugins/DataStore/Tests/AWSDataStorePluginTests",
         exclude: [
@@ -215,16 +208,14 @@ let storageTargets: [Target] = [
         path: "AmplifyPlugins/Storage/Sources/AWSS3StoragePlugin",
         exclude: [
             "Resources/Info.plist"
-        ],
-        swiftSettings: swiftSettings
+        ]
     ),
     .testTarget(
         name: "AWSS3StoragePluginTests",
         dependencies: [
             "AWSS3StoragePlugin",
             "AmplifyTestCommon",
-            "AWSPluginsTestCommon",
-            "AmplifyAsyncTesting"
+            "AWSPluginsTestCommon"
         ],
         path: "AmplifyPlugins/Storage/Tests/AWSS3StoragePluginTests",
         exclude: [

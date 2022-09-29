@@ -110,7 +110,7 @@ extension XCTestCase {
     /// Use this method to create ``AsyncExpectation`` instances that can be
     /// fulfilled when asynchronous tasks in your tests complete.
     ///
-    /// To fulfill an expectation that was created with `asyncExpectation(description:)`,
+    /// To fulfill an expectation that was created with `expectation(description:)`,
     /// call the expectation's `fulfill()` method when the asynchronous task in your
     /// test has completed.
     ///
@@ -118,10 +118,10 @@ extension XCTestCase {
     ///   - description: A string to display in the test log for this expectation, to help diagnose failures.
     ///   - isInverted: Indicates that the expectation is not intended to happen.
     ///   - expectedFulfillmentCount: The number of times fulfill() must be called before the expectation is completely fulfilled. (default = 1)
-    public func asyncExpectation(description: String,
+    public func expectation(description: String,
                                  isInverted: Bool = false,
                                  expectedFulfillmentCount: Int = 1) -> AsyncExpectation {
-        AsyncExpectation(description: description,
+        expectation(description: description,
                          isInverted: isInverted,
                          expectedFulfillmentCount: expectedFulfillmentCount)
     }
@@ -148,7 +148,7 @@ public enum AsyncTesting {
     public static func expectation(description: String,
                                    isInverted: Bool = false,
                                    expectedFulfillmentCount: Int = 1) -> AsyncExpectation {
-        AsyncExpectation(description: description,
+        expectation(description: description,
                          isInverted: isInverted,
                          expectedFulfillmentCount: expectedFulfillmentCount)
     }

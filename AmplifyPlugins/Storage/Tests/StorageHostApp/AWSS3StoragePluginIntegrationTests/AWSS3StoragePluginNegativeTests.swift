@@ -18,7 +18,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
     func testGetNonexistentKey() async {
         let key = UUID().uuidString
         let expectedKey = "public/" + key
-        let failInvoked = asyncExpectation(description: "Failed is invoked")
+        let failInvoked = expectation(description: "Failed is invoked")
         let getError = await waitError(with: failInvoked) {
             return try await Amplify.Storage.downloadData(key: key, options: .init()).value
         }
@@ -45,7 +45,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         let expectedKey = "public/" + key
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
-        let failInvoked = asyncExpectation(description: "Failed is invoked")
+        let failInvoked = expectation(description: "Failed is invoked")
         let getError = await waitError(with: failInvoked) {
             return try await Amplify.Storage.downloadFile(key: key, local: fileURL, options: nil).value
         }
@@ -74,7 +74,7 @@ class AWSS3StoragePluginNegativeTests: AWSS3StoragePluginTestBase {
         let key = UUID().uuidString
         let filePath = NSTemporaryDirectory() + key + ".tmp"
         let fileURL = URL(fileURLWithPath: filePath)
-        let failedInvoked = asyncExpectation(description: "Failed is invoked")
+        let failedInvoked = expectation(description: "Failed is invoked")
         let uploadError = await waitError(with: failedInvoked) {
             return try await Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil).value
         }

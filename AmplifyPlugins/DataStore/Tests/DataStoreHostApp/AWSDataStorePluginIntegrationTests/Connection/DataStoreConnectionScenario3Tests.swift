@@ -46,8 +46,8 @@ class DataStoreConnectionScenario3Tests: SyncEngineIntegrationTestBase {
         try await startAmplifyAndWaitForSync()
         let post = Post3(title: "title")
         let comment = Comment3(postID: post.id, content: "content")
-        let syncedPostReceived = asyncExpectation(description: "received post from sync event")
-        let syncCommentReceived = asyncExpectation(description: "received comment from sync event")
+        let syncedPostReceived = expectation(description: "received post from sync event")
+        let syncCommentReceived = expectation(description: "received comment from sync event")
         let hubListener = Amplify.Hub.listen(to: .dataStore,
                                              eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
             guard let mutationEvent = payload.data as? MutationEvent else {
@@ -68,9 +68,9 @@ class DataStoreConnectionScenario3Tests: SyncEngineIntegrationTestBase {
             return
         }
         _ = try await Amplify.DataStore.save(post)
-        await waitForExpectations([syncedPostReceived], timeout: networkTimeout)
+        wait(for: [syncedPostReceived], timeout: networkTimeout)
         _ = try await Amplify.DataStore.save(comment)
-        await waitForExpectations([syncCommentReceived], timeout: networkTimeout)
+        wait(for: [syncCommentReceived], timeout: networkTimeout)
         
         let queriedComment = try await Amplify.DataStore.query(Comment3.self, byId: comment.id)
         XCTAssertEqual(queriedComment, comment)

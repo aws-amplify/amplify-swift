@@ -101,7 +101,7 @@ class AWSDataStoreMultiAuthSingleRuleTests: AWSDataStoreAuthBaseTest {
 
         assertUsedAuthTypes([.amazonCognitoUserPools])
 
-        await waitForExpectations([
+        wait(for: [
                 expectations.query,
                 expectations.mutationSave,
                 expectations.mutationSaveProcessed,

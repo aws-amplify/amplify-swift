@@ -72,7 +72,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
     }
 
     func uploadData(key: String, data: Data) async {
-        let completeInvoked = asyncExpectation(description: "Completed is invoked")
+        let completeInvoked = expectation(description: "Completed is invoked")
         let result = await wait(with: completeInvoked, timeout: 60) {
             return try await Amplify.Storage.uploadData(key: key, data: data, options: nil).value
         }
@@ -110,7 +110,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
             return
         }
 
-        let registerFirstUserComplete = asyncExpectation(description: "register firt user completed")
+        let registerFirstUserComplete = expectation(description: "register firt user completed")
         Task {
             do {
                 try await AuthSignInHelper.signUpUser(username: AWSS3StoragePluginTestBase.user1,
@@ -124,7 +124,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
             }
         }
 
-        let registerSecondUserComplete = asyncExpectation(description: "register second user completed")
+        let registerSecondUserComplete = expectation(description: "register second user completed")
         Task {
             do {
                 try await AuthSignInHelper.signUpUser(username: AWSS3StoragePluginTestBase.user2,
@@ -138,7 +138,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
             }
         }
 
-        await waitForExpectations([registerFirstUserComplete, registerSecondUserComplete],
+        wait(for: [registerFirstUserComplete, registerSecondUserComplete],
                                   timeout: TestCommonConstants.networkTimeout)
     }
 

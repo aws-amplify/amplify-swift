@@ -47,7 +47,7 @@ class AWSS3StoragePluginAsyncBehaviorTests: AWSS3StoragePluginTests {
     }
 
     func testPluginGetURLAsync() async throws {
-        let done = asyncExpectation(description: "done")
+        let done = expectation(description: "done")
         let input = URL(string: "https://bucket.aws.amazon.com/\(testKey)")!
 
         Task {
@@ -55,10 +55,10 @@ class AWSS3StoragePluginAsyncBehaviorTests: AWSS3StoragePluginTests {
             let output = try await storagePlugin.getURL(key: testKey, options: nil)
             XCTAssertEqual(input, output)
             XCTAssertEqual(1, storageService.getPreSignedURLCalled)
-            await done.fulfill()
+            done.fulfill()
         }
 
-        await waitForExpectations([done], timeout: 3.0)
+        await waitForExpectations(timeout: 3)
     }
 
     func testPluginDownloadDataListener() {
@@ -85,7 +85,7 @@ class AWSS3StoragePluginAsyncBehaviorTests: AWSS3StoragePluginTests {
     }
 
     func testPluginDownloadDataAsync() async throws {
-        let done = asyncExpectation(description: "done")
+        let done = expectation(description: "done")
         let input = "AWS".data(using: .utf8)!
         storageService.storageServiceDownloadEvents = [.completed(input)]
 
@@ -94,10 +94,10 @@ class AWSS3StoragePluginAsyncBehaviorTests: AWSS3StoragePluginTests {
                                                             options: nil)
             let output = try await task.value
             XCTAssertEqual(input, output)
-            await done.fulfill()
+            done.fulfill()
         }
 
-        await waitForExpectations([done], timeout: 3.0)
+        await waitForExpectations(timeout: 3)
 
         XCTAssertEqual(1, storageService.downloadCalled)
     }
@@ -125,9 +125,9 @@ class AWSS3StoragePluginAsyncBehaviorTests: AWSS3StoragePluginTests {
     }
 
     func testPluginDownloadFileAsync() async throws {
-        let done = asyncExpectation(description: "done")
+        let done = expectation(description: "done")
         storageService.storageServiceDownloadEvents = [.completed(nil)]
-        
+
         Task {
             let task = try await storagePlugin.downloadFile(key: testKey,
                                                             local: testURL,
@@ -137,11 +137,10 @@ class AWSS3StoragePluginAsyncBehaviorTests: AWSS3StoragePluginTests {
             } catch {
                 XCTFail("Error: \(error)")
             }
-            await done.fulfill()
+            done.fulfill()
         }
 
-        await waitForExpectations([done], timeout: 3.0)
-
+        await waitForExpectations(timeout: 3)
         XCTAssertEqual(1, storageService.downloadCalled)
     }
 
@@ -170,7 +169,7 @@ class AWSS3StoragePluginAsyncBehaviorTests: AWSS3StoragePluginTests {
     }
 
     func testPluginUploadDataAsync() async throws {
-        let done = asyncExpectation(description: "done")
+        let done = expectation(description: "done")
         storageService.storageServiceUploadEvents = [.completedVoid]
         let input = testKey
 
@@ -184,11 +183,11 @@ class AWSS3StoragePluginAsyncBehaviorTests: AWSS3StoragePluginTests {
             } catch {
                 XCTFail("Error: \(error)")
             }
-            await done.fulfill()
+            done.fulfill()
 
         }
 
-        await waitForExpectations([done], timeout: 3.0)
+        await waitForExpectations(timeout: 3)
 
         XCTAssertEqual(1, storageService.uploadCalled)
     }
@@ -223,7 +222,7 @@ class AWSS3StoragePluginAsyncBehaviorTests: AWSS3StoragePluginTests {
     }
 
     func testPluginUploadFileAsync() async throws {
-        let done = asyncExpectation(description: "done")
+        let done = expectation(description: "done")
         storageService.storageServiceUploadEvents = [.completedVoid]
         let input = testKey
         let fileURL = try FileSystem.default.createTemporaryFile(data: "Amplify".data(using: .utf8)!)
@@ -241,11 +240,11 @@ class AWSS3StoragePluginAsyncBehaviorTests: AWSS3StoragePluginTests {
             } catch {
                 XCTFail("Error: \(error)")
             }
-            await done.fulfill()
+            done.fulfill()
 
         }
 
-        await waitForExpectations([done], timeout: 3.0)
+        await waitForExpectations(timeout: 3)
 
         XCTAssertEqual(1, storageService.uploadCalled)
     }
@@ -272,7 +271,7 @@ class AWSS3StoragePluginAsyncBehaviorTests: AWSS3StoragePluginTests {
     }
 
     func testPluginRemoveAsync() async throws {
-        let done = asyncExpectation(description: "done")
+        let done = expectation(description: "done")
         storageService.storageServiceDeleteEvents = [.completed(())]
         let input = testKey
 
@@ -280,10 +279,10 @@ class AWSS3StoragePluginAsyncBehaviorTests: AWSS3StoragePluginTests {
             let output = try await storagePlugin.remove(key: input, options: nil)
             XCTAssertEqual(input, output)
             XCTAssertEqual(1, storageService.deleteCalled)
-            await done.fulfill()
+            done.fulfill()
         }
 
-        await waitForExpectations([done])
+        await waitForExpectations(timeout: 3)
     }
 
     func testPluginListListener() {
@@ -310,7 +309,7 @@ class AWSS3StoragePluginAsyncBehaviorTests: AWSS3StoragePluginTests {
     }
 
     func testPluginListAsync() async throws  {
-        let done = asyncExpectation(description: "done")
+        let done = expectation(description: "done")
         let item = StorageListResult.Item(key: testKey)
         let input = StorageListResult(items: [item])
 
@@ -319,10 +318,10 @@ class AWSS3StoragePluginAsyncBehaviorTests: AWSS3StoragePluginTests {
             let output = try await storagePlugin.list(options: nil)
             XCTAssertEqual(input.items.first?.key, output.items.first?.key)
             XCTAssertEqual(1, storageService.listCalled)
-            await done.fulfill()
+            done.fulfill()
         }
 
-        await waitForExpectations([done], timeout: 3.0)
+        await waitForExpectations(timeout: 3)
     }
 
 }

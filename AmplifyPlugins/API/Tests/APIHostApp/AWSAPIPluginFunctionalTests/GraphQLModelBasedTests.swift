@@ -9,7 +9,6 @@ import XCTest
 @testable import AWSAPIPlugin
 @testable import Amplify
 @testable import APIHostApp
-import AmplifyAsyncTesting
 
 // swiftlint:disable type_body_length
 class GraphQLModelBasedTests: XCTestCase {
@@ -266,8 +265,8 @@ class GraphQLModelBasedTests: XCTestCase {
     }
     
     func testOnCreatePostSubscriptionWithModel() async throws {
-        let connectedInvoked = AsyncExpectation(description: "Connection established")
-        let progressInvoked = AsyncExpectation(description: "progress invoked", expectedFulfillmentCount: 2)
+        let connectedInvoked = expectation(description: "Connection established")
+        let progressInvoked = expectation(description: "progress invoked", expectedFulfillmentCount: 2)
         let uuid = UUID().uuidString
         let uuid2 = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
@@ -302,19 +301,19 @@ class GraphQLModelBasedTests: XCTestCase {
             }
         }
         
-        await waitForExpectations([connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         
         let post = Post(id: uuid, title: title, content: "content", createdAt: .now())
         _ = try await Amplify.API.mutate(request: .create(post))
         let post2 = Post(id: uuid2, title: title, content: "content", createdAt: .now())
         _ = try await Amplify.API.mutate(request: .create(post2))
-        await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
     }
     
     func testOnUpdatePostSubscriptionWithModel() async throws {
-        let connectingInvoked = AsyncExpectation(description: "Connection connecting")
-        let connectedInvoked = AsyncExpectation(description: "Connection established")
-        let progressInvoked = AsyncExpectation(description: "progress invoked")
+        let connectingInvoked = expectation(description: "Connection connecting")
+        let connectedInvoked = expectation(description: "Connection established")
+        let progressInvoked = expectation(description: "progress invoked")
         
         let subscription = Amplify.API.subscribe(request: .subscription(of: Post.self, type: .onUpdate))
         Task {
@@ -339,7 +338,7 @@ class GraphQLModelBasedTests: XCTestCase {
             }
         }
         
-        await waitForExpectations([connectingInvoked, connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [connectingInvoked, connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
@@ -348,13 +347,13 @@ class GraphQLModelBasedTests: XCTestCase {
         _ = try await Amplify.API.mutate(request: .create(post))
         _ = try await Amplify.API.mutate(request: .update(post))
         
-        await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
     }
     
     func testOnDeletePostSubscriptionWithModel() async throws {
-        let connectingInvoked = AsyncExpectation(description: "Connection connecting")
-        let connectedInvoked = AsyncExpectation(description: "Connection established")
-        let progressInvoked = AsyncExpectation(description: "progress invoked")
+        let connectingInvoked = expectation(description: "Connection connecting")
+        let connectedInvoked = expectation(description: "Connection established")
+        let progressInvoked = expectation(description: "progress invoked")
         
         let subscription = Amplify.API.subscribe(request: .subscription(of: Post.self, type: .onDelete))
         Task {
@@ -379,7 +378,7 @@ class GraphQLModelBasedTests: XCTestCase {
             }
         }
         
-        await waitForExpectations([connectingInvoked, connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [connectingInvoked, connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
@@ -388,12 +387,12 @@ class GraphQLModelBasedTests: XCTestCase {
         _ = try await Amplify.API.mutate(request: .create(post))
         _ = try await Amplify.API.mutate(request: .delete(post))
         
-        await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
     }
     
     func testOnCreateCommentSubscriptionWithModel() async throws {
-        let connectedInvoked = AsyncExpectation(description: "Connection established")
-        let progressInvoked = AsyncExpectation(description: "progress invoked", expectedFulfillmentCount: 2)
+        let connectedInvoked = expectation(description: "Connection established")
+        let progressInvoked = expectation(description: "progress invoked", expectedFulfillmentCount: 2)
         let uuid = UUID().uuidString
         let uuid2 = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
@@ -428,14 +427,14 @@ class GraphQLModelBasedTests: XCTestCase {
             }
         }
         
-        await waitForExpectations([connectedInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [connectedInvoked], timeout: TestCommonConstants.networkTimeout)
         let post = Post(id: uuid, title: title, content: "content", createdAt: .now())
         _ = try await Amplify.API.mutate(request: .create(post))
         let comment = Comment(id: uuid, content: "content", createdAt: .now(), post: post)
         _ = try await Amplify.API.mutate(request: .create(comment))
         let comment2 = Comment(id: uuid2, content: "content", createdAt: .now(), post: post)
         _ = try await Amplify.API.mutate(request: .create(comment2))
-        await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
+        wait(for: [progressInvoked], timeout: TestCommonConstants.networkTimeout)
     }
 
     // MARK: Helpers

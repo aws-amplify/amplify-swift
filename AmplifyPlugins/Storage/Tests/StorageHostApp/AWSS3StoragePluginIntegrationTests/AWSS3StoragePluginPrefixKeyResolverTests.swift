@@ -51,12 +51,12 @@ class AWSS3StoragePluginKeyResolverTests: AWSS3StoragePluginTestBase {
     func testUploadListDownload() async {
         let key = UUID().uuidString
         let data = key.data(using: .utf8)!
-        let uploadCompleted = asyncExpectation(description: "upload completed")
+        let uploadCompleted = expectation(description: "upload completed")
         await wait(with: uploadCompleted) {
             _ = try await Amplify.Storage.uploadData(key: key, data: data).value
         }
 
-        let listCompleted = asyncExpectation(description: "list completed")
+        let listCompleted = expectation(description: "list completed")
         let listOptions = StorageListRequest.Options(path: key)
         let result = await wait(with: listCompleted) {
             return try await Amplify.Storage.list(options: listOptions)
@@ -74,7 +74,7 @@ class AWSS3StoragePluginKeyResolverTests: AWSS3StoragePluginTestBase {
         }
         XCTAssertEqual(item.key, key)
 
-        let downloadCompleted = asyncExpectation(description: "download completed")
+        let downloadCompleted = expectation(description: "download completed")
         let downloadedData = await wait(with: downloadCompleted) {
             return try await Amplify.Storage.downloadData(key: item.key).value
         }
@@ -96,19 +96,19 @@ class AWSS3StoragePluginKeyResolverTests: AWSS3StoragePluginTestBase {
     func testUploadRemoveDownload() async {
         let key = UUID().uuidString
         let data = key.data(using: .utf8)!
-        let uploadCompleted = asyncExpectation(description: "upload completed")
+        let uploadCompleted = expectation(description: "upload completed")
         let uploadResult = await wait(with: uploadCompleted) {
             try await Amplify.Storage.uploadData(key: key, data: data)
         }
         XCTAssertNotNil(uploadResult)
 
-        let removeCompleted = asyncExpectation(description: "remove completed")
+        let removeCompleted = expectation(description: "remove completed")
         let removeResult = await wait(with: removeCompleted) {
             try await Amplify.Storage.remove(key: key)
         }
         XCTAssertNotNil(removeResult)
 
-        let downloadCompleted = asyncExpectation(description: "download completed")
+        let downloadCompleted = expectation(description: "download completed")
         let downloadError = await waitError(with: downloadCompleted) {
             return try await Amplify.Storage.downloadData(key: key).value
         }

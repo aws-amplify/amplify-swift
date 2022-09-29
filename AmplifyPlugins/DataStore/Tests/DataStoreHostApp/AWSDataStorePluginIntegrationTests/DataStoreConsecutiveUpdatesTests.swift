@@ -211,9 +211,9 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         updatedPost.title = "MyUpdatedPost"
         updatedPost.content = "This is my updated post."
 
-        let saveSyncReceived = asyncExpectation(description: "Received create mutation event on subscription for Post")
-        let updateSyncReceived = asyncExpectation(description: "Received update mutation event on subscription for Post")
-        let deleteSyncReceived = asyncExpectation(description: "Received delete mutation event on subscription for Post")
+        let saveSyncReceived = expectation(description: "Received create mutation event on subscription for Post")
+        let updateSyncReceived = expectation(description: "Received update mutation event on subscription for Post")
+        let deleteSyncReceived = expectation(description: "Received delete mutation event on subscription for Post")
 
         let hubListener = Amplify.Hub.listen(
             to: .dataStore,
@@ -256,7 +256,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
 
         // save the post, update and delete immediately
         _ = try await Amplify.DataStore.save(newPost)
-        await waitForExpectations([saveSyncReceived], timeout: networkTimeout)
+        wait(for: [saveSyncReceived], timeout: networkTimeout)
 
         _ = try await Amplify.DataStore.save(updatedPost)
         try await Amplify.DataStore.delete(updatedPost)
@@ -265,7 +265,7 @@ class DataStoreConsecutiveUpdatesTests: SyncEngineIntegrationTestBase {
         let queryResult = try await queryPost(byId: newPost.id)
         XCTAssertNil(queryResult)
 
-        await waitForExpectations([updateSyncReceived, deleteSyncReceived], timeout: networkTimeout)
+        wait(for: [updateSyncReceived, deleteSyncReceived], timeout: networkTimeout)
 
         // query the deleted post
         let queryResultAfterSync = try await queryPost(byId: updatedPost.id)

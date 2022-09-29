@@ -134,14 +134,7 @@ class DataStoreCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(amplifyConfig)
 
-        let saveSuccess = asyncExpectation(description: "save successful")
-        Task {
-            _ = try await Amplify.DataStore.save(TestModel.make())
-            await saveSuccess.fulfill()
-        }
-        await waitForExpectations([saveSuccess], timeout: 1.0)
-        
-
+        _ = try await Amplify.DataStore.save(TestModel.make())
         await waitForExpectations(timeout: 1.0)
     }
 
@@ -203,15 +196,8 @@ class DataStoreCategoryConfigurationTests: XCTestCase {
         let amplifyConfig = AmplifyConfiguration(dataStore: dataStoreConfig)
 
         try Amplify.configure(amplifyConfig)
-        
-        let saveSuccess = asyncExpectation(description: "save success")
-        Task {
-            _ = try await Amplify.DataStore.getPlugin(for: "MockSecondDataStoreCategoryPlugin")
-                .save(TestModel.make(), where: nil)
-            await saveSuccess.fulfill()
-        }
-        await waitForExpectations([saveSuccess], timeout: 1.0)
-        
+        _ = try await Amplify.DataStore.getPlugin(for: "MockSecondDataStoreCategoryPlugin")
+            .save(TestModel.make(), where: nil)
         await waitForExpectations(timeout: 1.0)
     }
 

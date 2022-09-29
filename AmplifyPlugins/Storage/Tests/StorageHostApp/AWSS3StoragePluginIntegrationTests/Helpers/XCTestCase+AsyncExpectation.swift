@@ -28,7 +28,7 @@ extension XCTestCase {
                 return nil
             }
         }
-        await waitForExpectations([expectation], timeout: timeout)
+        wait(for: [expectation], timeout: timeout)
         task.cancel()
         return await task.value
 
@@ -38,7 +38,7 @@ extension XCTestCase {
     func wait<T>(name: String,
                  timeout: TimeInterval = TestCommonConstants.networkTimeout,
                  action: @escaping () async throws -> T) async -> T? {
-        let expectation = asyncExpectation(description: name)
+        let expectation = expectation(description: name)
         return await wait(with: expectation, timeout: timeout, action: action)
     }
 
@@ -61,7 +61,7 @@ extension XCTestCase {
                 return error
             }
         }
-        await waitForExpectations([expectation], timeout: timeout)
+        wait(for: [expectation], timeout: timeout)
         task.cancel()
         return await task.value
     }
@@ -70,7 +70,7 @@ extension XCTestCase {
     func waitError<T>(name: String,
                       timeout: TimeInterval = TestCommonConstants.networkTimeout,
                       action: @escaping () async throws -> T) async -> Error? {
-        let expectation = asyncExpectation(description: name)
+        let expectation = expectation(description: name)
         return await waitError(with: expectation, timeout: timeout, action: action)
     }
 }

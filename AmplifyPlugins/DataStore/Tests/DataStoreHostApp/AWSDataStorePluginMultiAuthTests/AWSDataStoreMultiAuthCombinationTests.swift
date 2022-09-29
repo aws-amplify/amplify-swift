@@ -22,7 +22,7 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
         await signIn(user: user1)
 
         let expectations = makeExpectations()
-        let startExpectation = asyncExpectation(description: "DataStore start success")
+        let startExpectation = expectation(description: "DataStore start success")
 
         await assertDataStoreReady(expectations)
 
@@ -43,7 +43,7 @@ class AWSDataStoreMultiAuthCombinationTests: AWSDataStoreAuthBaseTest {
         await expectations.mutationDelete.fulfill()
         await expectations.mutationDeleteProcessed.fulfill()
 
-        await waitForExpectations([
+        wait(for: [
                 startExpectation,
                 expectations.query,
                 expectations.mutationSave,

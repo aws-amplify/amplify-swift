@@ -108,14 +108,8 @@ class AppSyncListProviderTests: XCTestCase {
     func testLoadedStateLoadSuccess() async throws {
         let elements = [Post4(title: "title"), Post4(title: "title")]
         let listProvider = AppSyncListProvider(elements: elements)
-        let loadCompleted = asyncExpectation(description: "Load Completed")
-        
-        Task {
-            let posts = try await listProvider.load()
-            XCTAssertEqual(posts.count, 2)
-            await loadCompleted.fulfill()
-        }
-        await waitForExpectations([loadCompleted], timeout: 1)
+        let posts = try await listProvider.load()
+        XCTAssertEqual(posts.count, 2)
     }
 
     func testNotLoadedStateLoadSuccess() async throws {
@@ -144,13 +138,8 @@ class AppSyncListProviderTests: XCTestCase {
             XCTFail("Should not be loaded")
             return
         }
-        let loadCompleted = asyncExpectation(description: "Load Completed")
         
-        Task {
-            _ = try await provider.load()
-            await loadCompleted.fulfill()
-        }
-        await waitForExpectations([loadCompleted], timeout: 1)
+        _ = try await provider.load()
         
         guard case .loaded(let elements, let nextToken, let filterOptional) = provider.loadedState else {
             XCTFail("Should be loaded")
@@ -167,7 +156,7 @@ class AppSyncListProviderTests: XCTestCase {
         XCTAssertEqual(postId, "postId")
     }
 
-    func testNotLoadedStateSynchronousLoadFailure() async {
+    func testNotLoadedStateSynchronousLoadFailure() async throws {
         mockAPIPlugin.responders[.queryRequestResponse] =
         QueryRequestResponder<JSONValue> { _ in
             let event: GraphQLOperation<JSONValue>.OperationResult = .failure(APIError.unknown("", "", nil))
@@ -181,28 +170,24 @@ class AppSyncListProviderTests: XCTestCase {
             XCTFail("Should not be loaded")
             return
         }
-        let loadCompleted = asyncExpectation(description: "Load Completed")
-        Task {
-            do {
-                _ = try await provider.load()
-                XCTFail("Should have failed")
-            } catch let coreError as CoreError {
-                guard case .listOperation(_, _, let underlyingError) = coreError,
-                      (underlyingError as? APIError) != nil else {
-                    XCTFail("Unexpected error \(coreError)")
-                    return
-                }
-                guard case .notLoaded = provider.loadedState else {
-                    XCTFail("Should not be loaded")
-                    return
-                }
-                await loadCompleted.fulfill()
+        do {
+            _ = try await provider.load()
+            XCTFail("Should have failed")
+        } catch let coreError as CoreError {
+            guard case .listOperation(_, _, let underlyingError) = coreError,
+                  (underlyingError as? APIError) != nil else {
+                XCTFail("Unexpected error \(coreError)")
+                return
             }
+            guard case .notLoaded = provider.loadedState else {
+                XCTFail("Should not be loaded")
+                return
+            }
+
         }
-        await waitForExpectations([loadCompleted], timeout: 1)
     }
     
-    func testNotLoadedStateLoadWithCompletionSuccess() async {
+    func testNotLoadedStateLoadWithCompletionSuccess() async throws {
         mockAPIPlugin.responders[.queryRequestResponse] =
         QueryRequestResponder<JSONValue> { _ in
             let json: JSONValue = [
@@ -228,13 +213,7 @@ class AppSyncListProviderTests: XCTestCase {
             XCTFail("Should not be loaded")
             return
         }
-        let loadComplete = asyncExpectation(description: "Load completed")
-        Task {
-            _ = try await provider.load()
-            await loadComplete.fulfill()
-        }
-        
-        await waitForExpectations([loadComplete], timeout: 1)
+        _ = try await provider.load()
         
         guard case .loaded(let elements, let nextToken, let filterOptional) = provider.loadedState else {
             XCTFail("Should be loaded")
@@ -251,7 +230,7 @@ class AppSyncListProviderTests: XCTestCase {
         XCTAssertEqual(postId, "postId")
     }
 
-    func testNotLoadedStateLoadWithCompletionFailure_APIError() async {
+    func testNotLoadedStateLoadWithCompletionFailure_APIError() async throws {
         mockAPIPlugin.responders[.queryRequestResponse] =
         QueryRequestResponder<JSONValue> { _ in
             let event: GraphQLOperation<JSONValue>.OperationResult = .failure(APIError.unknown("", "", nil))
@@ -265,28 +244,23 @@ class AppSyncListProviderTests: XCTestCase {
             XCTFail("Should not be loaded")
             return
         }
-        let loadComplete = asyncExpectation(description: "Load completed")
-        Task {
-            do {
-                _ = try await provider.load()
-                XCTFail("Should have failed")
-            } catch let error as CoreError {
-                guard case .listOperation(_, _, let underlyingError) = error,
-                      (underlyingError as? APIError) != nil else {
-                    XCTFail("Unexpected error \(error)")
-                    return
-                }
-                await loadComplete.fulfill()
+        do {
+            _ = try await provider.load()
+            XCTFail("Should have failed")
+        } catch let error as CoreError {
+            guard case .listOperation(_, _, let underlyingError) = error,
+                  (underlyingError as? APIError) != nil else {
+                XCTFail("Unexpected error \(error)")
+                return
             }
         }
-        await waitForExpectations([loadComplete], timeout: 1)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
             return
         }
     }
 
-    func testNotLoadedStateLoadWithCompletionFailure_GraphQLErrorResponse() async {
+    func testNotLoadedStateLoadWithCompletionFailure_GraphQLErrorResponse() async throws {
         mockAPIPlugin.responders[.queryRequestResponse] =
         QueryRequestResponder<JSONValue> { _ in
             let event: GraphQLOperation<JSONValue>.OperationResult = .success(
@@ -301,30 +275,23 @@ class AppSyncListProviderTests: XCTestCase {
             XCTFail("Should not be loaded")
             return
         }
-        let loadComplete = asyncExpectation(description: "Load completed")
-        Task {
-            
-            do {
-                _ = try await provider.load()
-                XCTFail("Should have failed")
-            } catch let error as CoreError {
-                guard case .listOperation(_, _, let underlyingError) = error,
-                      (underlyingError as? GraphQLResponseError<JSONValue>) != nil else {
-                    XCTFail("Unexpected error \(error)")
-                    return
-                }
-                await loadComplete.fulfill()
+        do {
+            _ = try await provider.load()
+            XCTFail("Should have failed")
+        } catch let error as CoreError {
+            guard case .listOperation(_, _, let underlyingError) = error,
+                  (underlyingError as? GraphQLResponseError<JSONValue>) != nil else {
+                XCTFail("Unexpected error \(error)")
+                return
             }
-            
         }
-        await waitForExpectations([loadComplete], timeout: 1)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
             return
         }
     }
     
-    func testNotLoadedStateLoadWithCompletionFailure_AWSAppSyncListResponseFailure() async {
+    func testNotLoadedStateLoadWithCompletionFailure_AWSAppSyncListResponseFailure() async throws {
         mockAPIPlugin.responders[.queryRequestResponse] =
         QueryRequestResponder<JSONValue> { _ in
             let json: JSONValue = [
@@ -350,21 +317,16 @@ class AppSyncListProviderTests: XCTestCase {
             XCTFail("Should not be loaded")
             return
         }
-        let loadComplete = asyncExpectation(description: "Load completed")
-        Task {
-            do {
-                _ = try await provider.load()
-                XCTFail("Should have failed")
-            } catch let error as CoreError {
-                guard case .listOperation = error else {
-                    XCTFail("Unexpected error \(error)")
-                    return
-                }
-                await loadComplete.fulfill()
-                
+        do {
+            _ = try await provider.load()
+            XCTFail("Should have failed")
+        } catch let error as CoreError {
+            guard case .listOperation = error else {
+                XCTFail("Unexpected error \(error)")
+                return
             }
+
         }
-        await waitForExpectations([loadComplete], timeout: 1)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
             return

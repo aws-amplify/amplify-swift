@@ -12,7 +12,6 @@ import AWSDataStorePlugin
 import AWSPluginsCore
 import AWSAPIPlugin
 import AWSCognitoAuthPlugin
-import AmplifyAsyncTesting
 
 @testable import Amplify
 
@@ -85,18 +84,18 @@ class AWSDataStoreAuthBaseTest: XCTestCase {
     // MARK: - Test Helpers
     func makeExpectations() -> AuthTestExpectations {
         AuthTestExpectations(
-            subscriptionsEstablished: asyncExpectation(description: "Subscriptions established"),
-            modelsSynced: asyncExpectation(description: "Models synced"),
+            subscriptionsEstablished: expectation(description: "Subscriptions established"),
+            modelsSynced: expectation(description: "Models synced"),
 
-            query: asyncExpectation(description: "Query success"),
+            query: expectation(description: "Query success"),
 
-            mutationSave: asyncExpectation(description: "Mutation save success"),
-            mutationSaveProcessed: asyncExpectation(description: "Mutation save processed"),
+            mutationSave: expectation(description: "Mutation save success"),
+            mutationSaveProcessed: expectation(description: "Mutation save processed"),
 
-            mutationDelete: asyncExpectation(description: "Mutation delete success"),
-            mutationDeleteProcessed: asyncExpectation(description: "Mutation delete processed"),
+            mutationDelete: expectation(description: "Mutation delete success"),
+            mutationDeleteProcessed: expectation(description: "Mutation delete processed"),
 
-            ready: asyncExpectation(description: "Ready")
+            ready: expectation(description: "Ready")
         )
     }
 
@@ -295,7 +294,7 @@ extension AWSDataStoreAuthBaseTest {
                 onFailure(error as! DataStoreError)
             }
         }
-        await waitForExpectations([expectations.query], timeout: 60)
+        wait(for: [expectations.query], timeout: 60)
     }
     
     /// Asserts that DataStore is in a ready state and subscriptions are established
@@ -328,7 +327,7 @@ extension AWSDataStoreAuthBaseTest {
         
         try await Amplify.DataStore.start()
         
-        await waitForExpectations([expectations.subscriptionsEstablished,
+        wait(for: [expectations.subscriptionsEstablished,
                                    expectations.modelsSynced,
                                    expectations.ready],
                                   timeout: 60)
@@ -375,7 +374,7 @@ extension AWSDataStoreAuthBaseTest {
                 onFailure(error)
             }
         }
-        await waitForExpectations([expectations.mutationSave,
+        wait(for: [expectations.mutationSave,
                                    expectations.mutationSaveProcessed,
                                    expectations.mutationDelete, expectations.mutationDeleteProcessed], timeout: 60)
     }

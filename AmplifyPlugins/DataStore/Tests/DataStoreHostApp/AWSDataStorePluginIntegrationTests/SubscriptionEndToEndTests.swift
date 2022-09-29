@@ -40,9 +40,9 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
         let originalContent = "Original content from SubscriptionTests at \(Date())"
         let updatedContent = "UPDATED CONTENT from SubscriptionTests at \(Date())"
 
-        let createReceived = asyncExpectation(description: "createReceived")
-        let updateReceived = asyncExpectation(description: "updateReceived")
-        let deleteReceived = asyncExpectation(description: "deleteReceived")
+        let createReceived = expectation(description: "createReceived")
+        let updateReceived = expectation(description: "updateReceived")
+        let deleteReceived = expectation(description: "deleteReceived")
 
         var hubListener = Amplify.Hub.listen(to: .dataStore,
                                              eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
@@ -72,7 +72,7 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
 
         // Act: send create mutation
         try await sendCreateRequest(withId: id, content: originalContent)
-        await waitForExpectations([createReceived], timeout: networkTimeout)
+        wait(for: [createReceived], timeout: networkTimeout)
         // Assert
         let createSyncData = await getMutationSync(forPostWithId: id)
         XCTAssertNotNil(createSyncData)
@@ -84,7 +84,7 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
         
         // Act: send update mutation
         try await sendUpdateRequest(forId: id, content: updatedContent, version: 1)
-        await waitForExpectations([updateReceived], timeout: networkTimeout)
+        wait(for: [updateReceived], timeout: networkTimeout)
         // Assert
         let updateSyncData = await getMutationSync(forPostWithId: id)
         XCTAssertNotNil(updateSyncData)
@@ -96,7 +96,7 @@ class SubscriptionEndToEndTests: SyncEngineIntegrationTestBase {
         
         // Act: send delete mutation
         try await sendDeleteRequest(forId: id, version: 2)
-        await waitForExpectations([deleteReceived], timeout: networkTimeout)
+        wait(for: [deleteReceived], timeout: networkTimeout)
         // Assert
         let deleteSyncData = await getMutationSync(forPostWithId: id)
         XCTAssertNil(deleteSyncData)

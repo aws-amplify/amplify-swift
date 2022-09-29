@@ -21,7 +21,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     func testUploadData() async {
         let key = UUID().uuidString
         let data = key.data(using: .utf8)!
-        let completeInvoked = asyncExpectation(description: "Completed is invoked")
+        let completeInvoked = expectation(description: "Completed is invoked")
         await wait(with: completeInvoked) {
             return try await Amplify.Storage.uploadData(key: key, data: data, options: nil).value
         }
@@ -36,7 +36,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     func testUploadEmptyData() async {
         let key = UUID().uuidString
         let data = "".data(using: .utf8)!
-        let completeInvoked = asyncExpectation(description: "Completed is invoked")
+        let completeInvoked = expectation(description: "Completed is invoked")
         await wait(with: completeInvoked) {
             return try await Amplify.Storage.uploadData(key: key, data: data, options: nil).value
         }
@@ -55,7 +55,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: key.data(using: .utf8), attributes: nil)
 
-        let completeInvoked = asyncExpectation(description: "Completed is invoked")
+        let completeInvoked = expectation(description: "Completed is invoked")
         await wait(with: completeInvoked) {
             return try await Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil).value
         }
@@ -72,7 +72,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let fileURL = URL(fileURLWithPath: filePath)
         FileManager.default.createFile(atPath: filePath, contents: "".data(using: .utf8), attributes: nil)
 
-        let completeInvoked = asyncExpectation(description: "Completed is invoked")
+        let completeInvoked = expectation(description: "Completed is invoked")
         await wait(with: completeInvoked) {
             return try await Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil).value
         }
@@ -85,7 +85,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// Then: The operation completes successfully
     func testUploadLargeData() async {
         let key = UUID().uuidString
-        let completeInvoked = asyncExpectation(description: "Completed is invoked")
+        let completeInvoked = expectation(description: "Completed is invoked")
         await wait(with: completeInvoked) {
             return try await Amplify.Storage.uploadData(key: key,
                                                         data: AWSS3StoragePluginTestBase.largeDataObject,
@@ -107,7 +107,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
                                        contents: AWSS3StoragePluginTestBase.largeDataObject,
                                        attributes: nil)
 
-        let completeInvoked = asyncExpectation(description: "Completed is invoked")
+        let completeInvoked = expectation(description: "Completed is invoked")
         await wait(with: completeInvoked, timeout: 600) {
             return try await Amplify.Storage.uploadFile(key: key, local: fileURL, options: nil).value
         }
@@ -121,7 +121,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     func testDownloadDataToMemory() async {
         let key = UUID().uuidString
         await uploadData(key: key, data: key.data(using: .utf8)!)
-        let completeInvoked = asyncExpectation(description: "Completed is invoked")
+        let completeInvoked = expectation(description: "Completed is invoked")
         await wait(with: completeInvoked) {
             return try await Amplify.Storage.downloadData(key: key, options: .init()).value
         }
@@ -141,7 +141,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let fileURL = URL(fileURLWithPath: filePath)
         removeIfExists(fileURL)
 
-        let completeInvoked = asyncExpectation(description: "Completed is invoked")
+        let completeInvoked = expectation(description: "Completed is invoked")
         await wait(with: completeInvoked) {
             return try await Amplify.Storage.downloadFile(key: key, local: fileURL, options: .init()).value
         }
@@ -210,7 +210,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let key = UUID().uuidString
         let expectedMD5Hex = "\"\(MD5(string: key).map { String(format: "%02hhx", $0) }.joined())\""
         await uploadData(key: key, dataString: key)
-        let completeInvoked = asyncExpectation(description: "Completed is invoked")
+        let completeInvoked = expectation(description: "Completed is invoked")
         let options = StorageListRequest.Options(accessLevel: .guest,
                                                  targetIdentityId: nil,
                                                  path: key)
@@ -241,7 +241,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// Then: The operation completes successfully with empty list of keys returned
     func testListEmpty() async {
         let key = UUID().uuidString
-        let completeInvoked = asyncExpectation(description: "Completed is invoked")
+        let completeInvoked = expectation(description: "Completed is invoked")
         let options = StorageListRequest.Options(accessLevel: .guest,
                                                  targetIdentityId: nil,
                                                  path: key)
@@ -265,7 +265,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             keys.append(key)
             await uploadData(key: key, dataString: key)
         }
-        let completeInvoked = asyncExpectation(description: "Completed is invoked")
+        let completeInvoked = expectation(description: "Completed is invoked")
         let options = StorageListRequest.Options(accessLevel: .guest,
                                                  targetIdentityId: nil,
                                                  path: folder)
@@ -301,7 +301,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
             await uploadData(key: key, dataString: key)
         }
 
-        let completeInvoked = asyncExpectation(description: "Completed is invoked")
+        let completeInvoked = expectation(description: "Completed is invoked")
         let options = StorageListRequest.Options(accessLevel: .guest,
                                                  targetIdentityId: nil,
                                                  path: key1)
@@ -334,7 +334,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
         let key = UUID().uuidString
         await uploadData(key: key, dataString: key)
 
-        let completeInvoked = asyncExpectation(description: "Completed is invoked")
+        let completeInvoked = expectation(description: "Completed is invoked")
         let result = await wait(with: completeInvoked) {
             return try await Amplify.Storage.remove(key: key, options: nil)
         }
@@ -347,7 +347,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     func testRemoveNonExistentKey() async {
         let key = UUID().uuidString
 
-        let completeInvoked = asyncExpectation(description: "Completed is invoked")
+        let completeInvoked = expectation(description: "Completed is invoked")
         let result = await wait(with: completeInvoked) {
             return try await Amplify.Storage.remove(key: key, options: nil)
         }

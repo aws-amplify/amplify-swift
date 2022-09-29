@@ -10,7 +10,6 @@ import XCTest
 @testable import AWSS3StoragePlugin
 @testable import Amplify
 import AmplifyTestCommon
-@_implementationOnly import AmplifyAsyncTesting
 
 // swiftlint:disable line_length
 
@@ -219,7 +218,7 @@ class StorageTransferDatabaseTests: XCTestCase {
         XCTAssertEqual(database.tasksCount, 3)
         XCTAssertNotNil(originalTask.multipartUpload)
 
-        let exp = asyncExpectation(description: #function)
+        let exp = expectation(description: #function)
 
         var transferTaskPairs: StorageTransferTaskPairs?
         let urlSession = MockStorageURLSession(sessionTasks: sessionTasks)
@@ -235,12 +234,12 @@ class StorageTransferDatabaseTests: XCTestCase {
                     XCTFail("Error: \(error)")
                 }
                 Task {
-                    await exp.fulfill()
+                    exp.fulfill()
                 }
             }
         }
 
-        await waitForExpectations([exp], timeout: 10.0)
+        await waitForExpectations(timeout: 5)
 
         XCTAssertNotNil(transferTaskPairs)
         XCTAssertEqual(transferTaskPairs?.count, 3)

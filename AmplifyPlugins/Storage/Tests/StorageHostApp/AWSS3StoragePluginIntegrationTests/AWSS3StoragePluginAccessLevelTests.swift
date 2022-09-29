@@ -18,7 +18,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     /// Then: Operation completes successfully with no items since there are no keys at that location.
     func testListFromProtectedForUnauthenticatedUser() async {
         let key = UUID().uuidString
-        let completeInvoked = asyncExpectation(description: "Completed is invoked")
+        let completeInvoked = expectation(description: "Completed is invoked")
         let options = StorageListRequest.Options(accessLevel: .protected,
                                                  targetIdentityId: nil,
                                                  path: key)
@@ -34,7 +34,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     /// Then: Operation fails with access denied service error
     func testListFromPrivateForUnauthenticatedUserForReturnAccessDenied() async {
         let key = UUID().uuidString
-        let listFailedExpectation = asyncExpectation(description: "List Operation should fail")
+        let listFailedExpectation = expectation(description: "List Operation should fail")
         let options = StorageListRequest.Options(accessLevel: .private,
                                                  targetIdentityId: nil,
                                                  path: key)
@@ -112,7 +112,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         await remove(key: key, accessLevel: accessLevel)
 
         // get key after removal should return NotFound
-        let getFailedExpectation = asyncExpectation(description: "Download operation should fail")
+        let getFailedExpectation = expectation(description: "Download operation should fail")
         let getOptions = StorageDownloadDataRequest.Options(accessLevel: accessLevel,
                                                             targetIdentityId: nil)
         let getError = await waitError(with: getFailedExpectation) {
@@ -189,7 +189,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         XCTAssertNotEqual(user1IdentityId, user2IdentityId)
 
         // list keys for user1 as user2 - should fail with validation error
-        let listFailedExpectation = asyncExpectation(description: "List operation should fail")
+        let listFailedExpectation = expectation(description: "List operation should fail")
         let listOptions = StorageListRequest.Options(accessLevel: accessLevel,
                                                      targetIdentityId: user1IdentityId,
                                                      path: key)
@@ -205,7 +205,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         }
 
         // get key for user1 as user2 - should fail with validation error
-        let getFailedExpectation = asyncExpectation(description: "Download operation should fail")
+        let getFailedExpectation = expectation(description: "Download operation should fail")
         let getOptions = StorageDownloadDataRequest.Options(accessLevel: accessLevel,
                                                             targetIdentityId: user1IdentityId)
         let getError = await waitError(with: getFailedExpectation) {
@@ -249,7 +249,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         await remove(key: key, accessLevel: accessLevel)
 
         // Get key after removal should return NotFound
-        let getFailedExpectation = asyncExpectation(description: "Get Operation should fail")
+        let getFailedExpectation = expectation(description: "Get Operation should fail")
         let getOptions = StorageDownloadDataRequest.Options(accessLevel: accessLevel,
                                                             targetIdentityId: nil)
         let getError = await waitError(with: getFailedExpectation) {

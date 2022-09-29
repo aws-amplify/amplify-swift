@@ -58,14 +58,15 @@ class AWSS3PluginPrefixResolverTests: XCTestCase {
             .init(.private, "identityId", ""),
         ]
 
-        let done = asyncExpectation(description: "done", expectedFulfillmentCount: testData.count)
+        let done = expectation(description: "done")
+        done.expectedFulfillmentCount = testData.count
         Task {
             try await testData.async.forEach {
                 try await $0.assertEqual(prefixResolver: prefixResolver)
-                await done.fulfill()
+                done.fulfill()
             }
         }
-        await waitForExpectations([done])
+        await waitForExpectations(timeout: 5)
     }
 
     func testStorageAccessLevelAwarePrefixResolver() async throws {
@@ -82,14 +83,15 @@ class AWSS3PluginPrefixResolverTests: XCTestCase {
             .init(.private, "targetUserId", "private/targetUserId/"),
         ]
 
-        let done = asyncExpectation(description: "done", expectedFulfillmentCount: testData.count)
+        let done = expectation(description: "done")
+        done.expectedFulfillmentCount = testData.count
         Task {
             try await testData.async.forEach {
                 try await $0.assertEqual(prefixResolver: prefixResolver)
-                await done.fulfill()
+                done.fulfill()
             }
         }
-        await waitForExpectations([done])
+        await waitForExpectations(timeout: 5)
     }
 
 }
