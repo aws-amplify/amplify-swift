@@ -48,11 +48,11 @@ class AnalyticsEventStorageTests: XCTestCase {
             let attributesBlob = Blob(bytes: [UInt8](encodedAttributes))
             let encodedMetrics = try archiver.encode(metrics)
             let metricsBlob = Blob(bytes: [UInt8](encodedMetrics))
-            let basicEvent: [Binding] = [1, attributesBlob, "eventType", metricsBlob, DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2022-06-10T18:50:20.618Z")!.millisecondsSince1970, 1, "2022-06-10T17:00:20.618Z", "2022-06-10T17:10:20.618Z", 1654904585, 0, 0]
-            let failedWithMaxRetry: [Binding] = [2, attributesBlob, "eventType", metricsBlob, DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2022-06-9T18:50:20.618Z")!.millisecondsSince1970, 2, "2022-06-9T17:00:20.618Z", "2022-06-9T17:10:20.618Z", 1654818185, 0, 4]
-            let dirtyEvent: [Binding] = [3, attributesBlob, "eventType", metricsBlob, DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2022-06-8T18:50:20.618Z")!.millisecondsSince1970, 3, "2022-06-8T17:00:20.618Z", "2022-06-8T17:10:20.618Z", 1654731785, 1, 3]
-            let dirtyEvent2: [Binding] = [4, attributesBlob, "eventType", metricsBlob, DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2022-06-7T18:50:20.618Z")!.millisecondsSince1970, 4, "2022-06-7T17:00:20.618Z", "2022-06-7T17:10:20.618Z", 1654645385, 1, 3]
-            let eventWithDirtyFlag: [Binding] = [5, attributesBlob, "eventType", metricsBlob, DateFormatter.iso8601DateFormatterWithFractionalSeconds.date(from: "2022-06-6T18:50:20.618Z")!.millisecondsSince1970, 5, "2022-06-6T17:00:20.618Z", "2022-06-6T17:10:20.618Z", 1654558985, 1, 1]
+            let basicEvent: [Binding] = [1, attributesBlob, "eventType", metricsBlob, "2022-06-10T18:50:20.618Z", 1, "2022-06-10T17:00:20.618Z", "2022-06-10T17:10:20.618Z", 1654904585, 0, 0]
+            let failedWithMaxRetry: [Binding] = [2, attributesBlob, "eventType", metricsBlob, "2022-06-9T18:50:20.618Z", 2, "2022-06-9T17:00:20.618Z", "2022-06-9T17:10:20.618Z", 1654818185, 0, 4]
+            let dirtyEvent: [Binding] = [3, attributesBlob, "eventType", metricsBlob, "2022-06-8T18:50:20.618Z", 3, "2022-06-8T17:00:20.618Z", "2022-06-8T17:10:20.618Z", 1654731785, 1, 3]
+            let dirtyEvent2: [Binding] = [4, attributesBlob, "eventType", metricsBlob, "2022-06-7T18:50:20.618Z", 4, "2022-06-7T17:00:20.618Z", "2022-06-7T17:10:20.618Z", 1654645385, 1, 3]
+            let eventWithDirtyFlag: [Binding] = [5, attributesBlob, "eventType", metricsBlob, "2022-06-6T18:50:20.618Z", 5, "2022-06-6T17:00:20.618Z", "2022-06-6T17:10:20.618Z", 1654558985, 1, 1]
 
             _ = try adapter.executeQuery(insertEventStatement, basicEvent)
             _ = try adapter.executeQuery(insertEventStatement, failedWithMaxRetry)

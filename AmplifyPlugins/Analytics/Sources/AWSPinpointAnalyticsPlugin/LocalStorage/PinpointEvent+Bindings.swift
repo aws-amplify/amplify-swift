@@ -28,7 +28,7 @@ extension PinpointEvent {
             attributesBlob,
             eventType,
             metricsBlob,
-            eventDate.millisecondsSince1970,
+            eventDate.asISO8601String,
             session.sessionId,
             session.startTime.asISO8601String,
             session.stopTime?.asISO8601String ?? "",
@@ -68,7 +68,7 @@ extension PinpointEvent {
 
         guard let eventType = element[EventPropertyIndex.eventType] as? String,
               let eventTimestampValue = element[EventPropertyIndex.eventTimestamp] as? String,
-              let timestamp = Date.Millisecond(eventTimestampValue) else {
+              let timestamp = dateFormatter.date(from: eventTimestampValue) else {
             return nil
         }
 
@@ -76,7 +76,7 @@ extension PinpointEvent {
             return nil
         }
 
-        let pinpointEvent = PinpointEvent(id: eventId, eventType: eventType, eventDate: timestamp.asDate, session: session)
+        let pinpointEvent = PinpointEvent(id: eventId, eventType: eventType, eventDate: timestamp, session: session)
 
         if let attributes = element[EventPropertyIndex.attributes] as? Blob,
            let decodedAttributes = try? archiver.decode(AnalyticsClient.PinpointEventAttributes.self, from: Data(attributes.bytes)) {
