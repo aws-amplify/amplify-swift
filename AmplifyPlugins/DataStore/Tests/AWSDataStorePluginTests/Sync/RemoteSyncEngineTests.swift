@@ -46,7 +46,7 @@ class RemoteSyncEngineTests: XCTestCase {
     }
 
     func testErrorOnNilStorageAdapter() throws {
-        guard let remoteSyncEngine else {
+        guard let remoteSyncEngine = remoteSyncEngine else {
             XCTFail("Failed to initialize remoteSyncEngine")
             return
         }
