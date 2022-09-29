@@ -70,7 +70,7 @@ class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
             return
         }
 
-        guard let user = await Amplify.Auth.getCurrentUser() else {
+        guard let user = try? await Amplify.Auth.getCurrentUser() else {
             XCTFail("Couldn't get current user signed in user")
             return
         }

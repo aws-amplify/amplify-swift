@@ -9,27 +9,27 @@ import Foundation
 
 extension AuthCategory: AuthCategoryUserBehavior {
 
-    public func getCurrentUser() async -> AuthUser? {
-        return await plugin.getCurrentUser()
+    public func getCurrentUser() async throws -> AuthUser {
+        try await plugin.getCurrentUser()
     }
 
     public func fetchUserAttributes(options: AuthFetchUserAttributesRequest.Options? = nil) async throws -> [AuthUserAttribute] {
-        return try await plugin.fetchUserAttributes(options: options)
+        try await plugin.fetchUserAttributes(options: options)
     }
 
     public func update(userAttribute: AuthUserAttribute, options: AuthUpdateUserAttributeRequest.Options? = nil) async throws -> AuthUpdateAttributeResult {
-        return try await plugin.update(userAttribute: userAttribute, options: options)
+        try await plugin.update(userAttribute: userAttribute, options: options)
     }
 
     public func update(userAttributes: [AuthUserAttribute],
                        options: AuthUpdateUserAttributesRequest.Options? = nil)
         async throws -> [AuthUserAttributeKey: AuthUpdateAttributeResult] {
-            return try await plugin.update(userAttributes: userAttributes, options: options)
+            try await plugin.update(userAttributes: userAttributes, options: options)
     }
 
     public func resendConfirmationCode(forUserAttributeKey userAttributeKey: AuthUserAttributeKey,
                                        options: AuthAttributeResendConfirmationCodeRequest.Options? = nil) async throws -> AuthCodeDeliveryDetails {
-        return try await plugin.resendConfirmationCode(forUserAttributeKey: userAttributeKey, options: options)
+        try await plugin.resendConfirmationCode(forUserAttributeKey: userAttributeKey, options: options)
 
     }
 
