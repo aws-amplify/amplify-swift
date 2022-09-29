@@ -99,8 +99,8 @@ class LocalSubscriptionTests: XCTestCase {
     /// - Then:
     ///    - I receive notifications for updates to that model
     func testObserve() async throws {
+        try await Amplify.DataStore.start()
         let receivedMutationEvent = asyncExpectation(description: "Received mutation event")
-
         let subscription = Task {
             let mutationEvents = Amplify.DataStore.observe(Post.self)
             do {
