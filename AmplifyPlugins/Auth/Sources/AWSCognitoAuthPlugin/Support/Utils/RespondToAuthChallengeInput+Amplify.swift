@@ -138,8 +138,12 @@ extension RespondToAuthChallengeInput {
                 userContextData = .init(encodedData: encodedData)
             }
 
+            let analyticsMetadata = environment
+                .cognitoUserPoolAnalyticsHandlerFactory()
+                .analyticsMetadata()
+
             return RespondToAuthChallengeInput(
-                analyticsMetadata: nil,
+                analyticsMetadata: analyticsMetadata,
                 challengeName: challengeType,
                 challengeResponses: challengeResponses,
                 clientId: userPoolClientId,

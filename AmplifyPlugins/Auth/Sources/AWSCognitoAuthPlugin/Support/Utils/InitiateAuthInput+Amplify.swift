@@ -130,9 +130,12 @@ extension InitiateAuthInput {
             userPoolConfiguration: environment.userPoolConfiguration) {
             userContextData = .init(encodedData: encodedData)
         }
+        let analyticsMetadata = environment
+            .cognitoUserPoolAnalyticsHandlerFactory()
+            .analyticsMetadata()
 
         return InitiateAuthInput(
-            analyticsMetadata: nil,
+            analyticsMetadata: analyticsMetadata,
             authFlow: authFlowType,
             authParameters: authParameters,
             clientId: userPoolClientId,

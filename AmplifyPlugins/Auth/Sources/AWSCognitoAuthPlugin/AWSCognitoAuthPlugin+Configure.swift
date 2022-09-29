@@ -41,12 +41,16 @@ extension AWSCognitoAuthPlugin {
         let credentialStoreMachine = StateMachine(resolver: credentialStoreResolver,
                                                   environment: credentialEnvironment)
         let hubEventHandler = AuthHubEventHandler()
+        let analyticsHandler = try UserPoolAnalytics(
+            authConfiguration.getUserPoolConfiguration(),
+            credentialStoreEnvironment: credentialEnvironment.credentialStoreEnvironment)
 
         configure(authConfiguration: authConfiguration,
                   authEnvironment: authEnvironment,
                   authStateMachine: authStateMachine,
                   credentialStoreStateMachine: credentialStoreMachine,
-                  hubEventHandler: hubEventHandler)
+                  hubEventHandler: hubEventHandler,
+                  analyticsHandler: analyticsHandler)
     }
 
     func configure(authConfiguration: AuthConfiguration,
@@ -54,6 +58,7 @@ extension AWSCognitoAuthPlugin {
                    authStateMachine: AuthStateMachine,
                    credentialStoreStateMachine: CredentialStoreStateMachine,
                    hubEventHandler: AuthHubEventBehavior,
+                   analyticsHandler: UserPoolAnalyticsBehavior,
                    queue: OperationQueue = OperationQueue()) {
 
         self.authConfiguration = authConfiguration
@@ -65,6 +70,7 @@ extension AWSCognitoAuthPlugin {
         self.internalConfigure()
         self.listenToStateMachineChanges()
         self.hubEventHandler = hubEventHandler
+        self.analyticsHandler = analyticsHandler
     }
 
     // MARK: - Configure Helpers
@@ -116,6 +122,10 @@ extension AWSCognitoAuthPlugin {
 
     private func makeCognitoASF() -> AdvancedSecurityBehavior {
         CognitoUserPoolASF()
+    }
+
+    private func makeUserPoolAnalytics() -> UserPoolAnalyticsBehavior {
+        return analyticsHandler
     }
 
     private func makeCredentialStore() -> AmplifyAuthCredentialStoreBehavior {
@@ -181,9 +191,11 @@ extension AWSCognitoAuthPlugin {
         let srpAuthEnvironment = BasicSRPAuthEnvironment(userPoolConfiguration: userPoolConfigData,
                                                          cognitoUserPoolFactory: makeUserPool)
         let srpSignInEnvironment = BasicSRPSignInEnvironment(srpAuthEnvironment: srpAuthEnvironment)
-        let userPoolEnvironment = BasicUserPoolEnvironment(userPoolConfiguration: userPoolConfigData,
-                                                           cognitoUserPoolFactory: makeUserPool,
-                                                           cognitoUserPoolASFFactory: makeCognitoASF)
+        let userPoolEnvironment = BasicUserPoolEnvironment(
+            userPoolConfiguration: userPoolConfigData,
+            cognitoUserPoolFactory: makeUserPool,
+            cognitoUserPoolASFFactory: makeCognitoASF,
+            cognitoUserPoolAnalyticsHandlerFactory: makeUserPoolAnalytics)
         let hostedUIEnvironment = hostedUIEnvironment(userPoolConfigData)
         return BasicAuthenticationEnvironment(srpSignInEnvironment: srpSignInEnvironment,
                                               userPoolEnvironment: userPoolEnvironment,

@@ -66,7 +66,8 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             authEnvironment: authEnvironment,
             authStateMachine: stateMachine,
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
-            hubEventHandler: MockAuthHubEventBehavior())
+            hubEventHandler: MockAuthHubEventBehavior(),
+            analyticsHandler: MockAnalyticsHandler())
     }
 
     @MainActor

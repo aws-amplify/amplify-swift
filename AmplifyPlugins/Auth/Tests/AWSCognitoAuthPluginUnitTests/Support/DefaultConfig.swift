@@ -69,6 +69,10 @@ enum Defaults {
         return MockASF()
     }
 
+    static func makeUserPoolAnalytics() -> UserPoolAnalyticsBehavior {
+        MockAnalyticsHandler()
+    }
+    
     static func makeIdentity() throws -> CognitoIdentityBehavior {
         let getId: MockIdentity.MockGetIdResponse = { _ in
             return .init(identityId: "mockIdentityId")
@@ -140,9 +144,11 @@ enum Defaults {
             cognitoUserPoolFactory: userPoolFactory
         )
         let srpSignInEnvironment = BasicSRPSignInEnvironment(srpAuthEnvironment: srpAuthEnvironment)
-        let userPoolEnvironment = BasicUserPoolEnvironment(userPoolConfiguration: userPoolConfigData,
-                                                           cognitoUserPoolFactory: userPoolFactory,
-                                                           cognitoUserPoolASFFactory: makeDefaultASF)
+        let userPoolEnvironment = BasicUserPoolEnvironment(
+            userPoolConfiguration: userPoolConfigData,
+            cognitoUserPoolFactory: userPoolFactory,
+            cognitoUserPoolASFFactory: makeDefaultASF,
+            cognitoUserPoolAnalyticsHandlerFactory: makeUserPoolAnalytics)
         let authenticationEnvironment = BasicAuthenticationEnvironment(srpSignInEnvironment: srpSignInEnvironment,
                                                                        userPoolEnvironment: userPoolEnvironment,
                                                                        hostedUIEnvironment: hostedUIEnvironment)

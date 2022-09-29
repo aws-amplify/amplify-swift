@@ -44,7 +44,9 @@ class AWSAuthConfirmResetPasswordTask: AuthConfirmResetPasswordTask {
     }
 
     func confirmResetPassword() async throws {
-        let userPoolService = try environment.cognitoUserPoolFactory()
+        let userPoolEnvironment = try environment.userPoolEnvironment()
+        let userPoolService = try userPoolEnvironment.cognitoUserPoolFactory()
+        
         let clientMetaData = (request.options.pluginOptions
                               as? AWSAuthConfirmResetPasswordOptions)?.metadata ?? [:]
 
@@ -69,12 +71,16 @@ class AWSAuthConfirmResetPasswordTask: AuthConfirmResetPasswordTask {
             userPoolConfiguration: userPoolConfigurationData)
         let userContextData = CognitoIdentityProviderClientTypes.UserContextDataType(
             encodedData: encodedData)
-
-        let input = ConfirmForgotPasswordInput(clientId: userPoolConfigurationData.clientId,
-                                               clientMetadata: clientMetaData,
-                                               confirmationCode: request.confirmationCode,
-                                               password: request.newPassword, userContextData: userContextData,
-                                               username: request.username)
+        let analyticsMetadata = userPoolEnvironment
+            .cognitoUserPoolAnalyticsHandlerFactory()
+            .analyticsMetadata()
+        let input = ConfirmForgotPasswordInput(
+            analyticsMetadata: analyticsMetadata,
+            clientId: userPoolConfigurationData.clientId,
+            clientMetadata: clientMetaData,
+            confirmationCode: request.confirmationCode,
+            password: request.newPassword, userContextData: userContextData,
+            username: request.username)
 
         _ = try await userPoolService.confirmForgotPassword(input: input)
     }

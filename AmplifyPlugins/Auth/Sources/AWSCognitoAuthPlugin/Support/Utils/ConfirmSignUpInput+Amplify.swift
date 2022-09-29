@@ -29,7 +29,11 @@ extension ConfirmSignUpInput {
             userPoolConfiguration: environment.userPoolConfiguration) {
             userContextData = .init(encodedData: encodedData)
         }
+        let analyticsMetadata = environment
+            .cognitoUserPoolAnalyticsHandlerFactory()
+            .analyticsMetadata()
         self.init(
+            analyticsMetadata: analyticsMetadata,
             clientId: configuration.clientId,
             clientMetadata: clientMetadata,
             confirmationCode: confirmationCode,
