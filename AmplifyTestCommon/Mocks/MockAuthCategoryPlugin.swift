@@ -10,8 +10,8 @@ import Amplify
 
 class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
 
-    public func getCurrentUser() async -> AuthUser? {
-        return nil
+    public func getCurrentUser() async throws -> AuthUser {
+        fatalError()
     }
 
     func signIn(username: String,

@@ -253,12 +253,14 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
 
         let confirmOperationExpectation = expectation(description: "Confirm new password should succeed")
         do {
+            let pluginOptions = AWSAuthConfirmSignInOptions(
+                userAttributes: [
+                    AuthUserAttribute(.email, value: defaultTestEmail)
+                ],
+                metadata: nil)
             let result = try await Amplify.Auth.confirmSignIn(
                 challengeResponse: newPassword,
-                options: .init(
-                    userAttributes: [
-                        AuthUserAttribute(.email, value: defaultTestEmail)
-                    ]))
+                options: .init(pluginOptions: pluginOptions))
             if case .done = result.nextStep {
                 confirmOperationExpectation.fulfill()
             }

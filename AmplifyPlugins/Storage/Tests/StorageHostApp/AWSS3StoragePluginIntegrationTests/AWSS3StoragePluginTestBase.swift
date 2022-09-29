@@ -34,7 +34,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
             try Amplify.add(plugin: AWSS3StoragePlugin())
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfiguration)
             try Amplify.configure(amplifyConfig)
-            if await Amplify.Auth.getCurrentUser() != nil {
+            if (try? await Amplify.Auth.getCurrentUser()) != nil {
                 await signOut()
             }
             await signUp()

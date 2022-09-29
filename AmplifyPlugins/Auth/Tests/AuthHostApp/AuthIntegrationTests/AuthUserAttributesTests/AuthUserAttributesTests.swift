@@ -68,7 +68,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
                                                email: defaultTestEmail)
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
-        let pluginOptions = AWSUpdateUserAttributeOptions(metadata: ["mydata": "myvalue"])
+        let pluginOptions = AWSAuthUpdateUserAttributeOptions(metadata: ["mydata": "myvalue"])
         let options = AuthUpdateUserAttributeRequest.Options(pluginOptions: pluginOptions)
         _ = try await Amplify.Auth.update(userAttribute: AuthUserAttribute(.email, value: updatedEmail), options: options)
 
@@ -103,7 +103,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
                                                email: defaultTestEmail)
         XCTAssertTrue(didSucceed, "SignIn operation failed")
 
-        let pluginOptions = AWSUpdateUserAttributesOptions(metadata: ["mydata": "myvalue"])
+        let pluginOptions = AWSAuthUpdateUserAttributesOptions(metadata: ["mydata": "myvalue"])
         let options = AuthUpdateUserAttributesRequest.Options(pluginOptions: pluginOptions)
         let attributes = [
             AuthUserAttribute(.familyName, value: updatedFamilyName),
@@ -150,7 +150,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         _ = try await Amplify.Auth.update(userAttribute: AuthUserAttribute(.email, value: updatedEmail))
         let pluginOptions = AWSAttributeResendConfirmationCodeOptions(metadata: ["mydata": "myvalue"])
         let options = AuthAttributeResendConfirmationCodeRequest.Options(pluginOptions: pluginOptions)
-        _ = try await Amplify.Auth.resendConfirmationCode(for: .email, options: options)
+        _ = try await Amplify.Auth.resendConfirmationCode(forUserAttributeKey: .email, options: options)
     }
 
     /// Test resending code for the user's updated email attribute.
@@ -176,7 +176,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
 
         let pluginOptions = AWSAttributeResendConfirmationCodeOptions(metadata: ["mydata": "myvalue"])
         let options = AuthAttributeResendConfirmationCodeRequest.Options(pluginOptions: pluginOptions)
-        _ = try await Amplify.Auth.resendConfirmationCode(for: .email, options: options)
+        _ = try await Amplify.Auth.resendConfirmationCode(forUserAttributeKey: .email, options: options)
     }
 
     /// Test changing/updating users password.

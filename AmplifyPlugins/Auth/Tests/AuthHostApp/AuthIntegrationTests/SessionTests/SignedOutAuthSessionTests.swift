@@ -51,7 +51,7 @@ class SignedOutAuthSessionTests: AWSAuthBaseTest {
             XCTFail("Could not fetch aws credentials")
             return
         }
-        XCTAssertNotNil(awsCredentails.accessKey, "Access key should not be nil")
+        XCTAssertNotNil(awsCredentails.accessKeyId, "Access key should not be nil")
     }
 
     /// Test if we can retreive valid credentials for a signedOut session multiple times
@@ -70,7 +70,7 @@ class SignedOutAuthSessionTests: AWSAuthBaseTest {
             XCTFail("Could not fetch aws credentials")
             return
         }
-        XCTAssertNotNil(awsCredentails.accessKey, "Access key should not be nil")
+        XCTAssertNotNil(awsCredentails.accessKeyId, "Access key should not be nil")
 
         let secondResult = try await Amplify.Auth.fetchAuthSession()
         XCTAssertFalse(secondResult.isSignedIn, "Session state should be not signed In")
@@ -79,7 +79,7 @@ class SignedOutAuthSessionTests: AWSAuthBaseTest {
             XCTFail("Could not fetch aws credentials")
             return
         }
-        XCTAssertNotNil(awsSecondCredentails.accessKey, "Access key should not be nil")
+        XCTAssertNotNil(awsSecondCredentails.accessKeyId, "Access key should not be nil")
     }
 
     /// Test whether fetchAuth returns signedOut error

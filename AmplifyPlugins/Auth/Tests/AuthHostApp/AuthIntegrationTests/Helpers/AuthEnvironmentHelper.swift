@@ -34,7 +34,11 @@ enum Defaults {
 extension AuthAWSCognitoCredentials {
 
     static var testData: AuthAWSCognitoCredentials {
-        return AuthAWSCognitoCredentials(accessKey: "xx", secretKey: "xx", sessionKey: "xx", expiration: Date())
+        return AuthAWSCognitoCredentials(
+            accessKeyId: "xx",
+            secretAccessKey: "xx",
+            sessionToken: "xx",
+            expiration: Date())
     }
 }
 
