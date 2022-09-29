@@ -50,6 +50,7 @@ class AWSAuthSignOutTaskTests: BasePluginTest {
             XCTFail("Did not return partial signOut")
             return
         }
+        XCTAssertTrue(result.signedOutLocally)
         XCTAssertNotNil(revokeTokenError)
         XCTAssertNotNil(globalSignOutError)
         XCTAssertNil(hostedUIError)
@@ -89,6 +90,7 @@ class AWSAuthSignOutTaskTests: BasePluginTest {
             XCTFail("Sign out during federation should not succeed")
             return
         }
+        XCTAssertFalse(result.signedOutLocally)
 
     }
 }

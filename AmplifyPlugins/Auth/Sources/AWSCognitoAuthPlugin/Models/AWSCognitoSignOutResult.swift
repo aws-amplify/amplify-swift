@@ -10,6 +10,13 @@ import Foundation
 
 public enum AWSCognitoSignOutResult: AuthSignOutResult {
 
+    var signedOutLocally: Bool {
+        if case .failed = self {
+            return false
+        }
+        return true
+    }
+
     case complete
 
     case partial(revokeTokenError: AWSCognitoRevokeTokenError?,
