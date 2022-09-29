@@ -26,7 +26,7 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
     init(prefixPath: String = "",
          databaseName: String,
          fileManager: FileManagerBehaviour = FileManager.default) throws {
-        let dbDirectoryPath = try Self.getDocumentPath(using: fileManager)
+        let dbDirectoryPath = try Self.getTmpPath()
             .appendingPathComponent(prefixPath)
         var dbFilePath = dbDirectoryPath.appendingPathComponent(databaseName)
         if !fileManager.fileExists(atPath: dbDirectoryPath.path) {
@@ -67,11 +67,11 @@ final class SQLiteLocalStorageAdapter: SQLStorageProtocol {
     /// Get document path
     /// - Parameter fileManager: The FileManagerBehaviour instance used to interact with the disk
     /// - Returns: Optional URL to the Document path
-    private static func getDocumentPath(using fileManager: FileManagerBehaviour) throws -> URL {
-        guard let documentPath = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            throw LocalStorageError.fileSystemError(description: "Could not create the database. The `.documentDirectory` is invalid")
+    private static func getTmpPath() throws -> URL {
+        guard let tmpUrl = URL(string: NSTemporaryDirectory()) else {
+            throw LocalStorageError.fileSystemError(description: "Could not create the database at tmp directory")
         }
-        return documentPath
+        return tmpUrl
     }
 
     /// Create a SQL table
