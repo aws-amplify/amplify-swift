@@ -20,7 +20,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     public var key: PluginKey = "awsDataStorePlugin"
 
-    private var isStorageEngineInitialized = false
+    private var isStorageEngineInitialized = AtomicValue(initialValue: false)
 
     /// `true` if any models are syncable. Resolved during configuration phase
     var isSyncEnabled: Bool
@@ -117,7 +117,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     ///            a failure with a DataStoreError
     func initStorageEngine() -> DataStoreResult<Void> {
         storageEngineInitQueue.sync {
-            if isStorageEngineInitialized && storageEngine != nil {
+            if isStorageEngineInitialized.get() && storageEngine != nil {
                 return .successfulVoid
             }
             var result: DataStoreResult<Void>
@@ -128,7 +128,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
                 try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
                 try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
                 try storageEngine.applyModelMigrations(modelSchemas: ModelRegistry.modelSchemas)
-                self.isStorageEngineInitialized = true
+                self.isStorageEngineInitialized.set(true)
 
                 result = .successfulVoid
             } catch {
@@ -143,7 +143,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// - Parameter completion: completion handler called with a success if the sync process started
     ///                         or with a DataStoreError in case of failure
     func initStorageEngineAndStartSync(completion: @escaping DataStoreCallback<Void> = { _ in }) {
-        if isStorageEngineInitialized && storageEngine != nil {
+        if isStorageEngineInitialized.get() && storageEngine != nil {
             completion(.successfulVoid)
             return
         }
