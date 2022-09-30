@@ -43,6 +43,7 @@ enum StorageMultipartUpload {
         switch self {
         case .created(let uploadId, _),
                 .parts(let uploadId, _, _, _),
+                .paused(let uploadId, _, _, _),
                 .completed(let uploadId),
                 .aborting(let uploadId, _),
                 .aborted(let uploadId, _):
@@ -55,7 +56,8 @@ enum StorageMultipartUpload {
     var partSize: StorageUploadPartSize? {
         let result: StorageUploadPartSize?
         switch self {
-        case .parts(_, _, let partSize, _):
+        case .parts(_, _, let partSize, _),
+                .paused(_, _, let partSize, _):
             result = partSize
         default:
             result = nil
@@ -91,6 +93,8 @@ enum StorageMultipartUpload {
     var hasParts: Bool {
         if case .parts = self {
             return true
+        } else if case .paused = self {
+            return true
         } else {
             return false
         }
@@ -98,7 +102,7 @@ enum StorageMultipartUpload {
 
     var inProgress: Bool {
         switch self {
-        case .creating, .created, .parts, .completing:
+        case .creating, .created, .parts, .paused, .completing:
             return true
         default:
             return false
