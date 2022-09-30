@@ -1,0 +1,4 @@
+
+TEST_HOST[sdk=macosx*]           = $(BUILT_PRODUCTS_DIR)/StorageHostApp.app/Contents/MacOS/StorageHostApp
+TEST_HOST[sdk=iphoneos*]         = $(BUILT_PRODUCTS_DIR)/StorageHostApp.app/StorageHostApp
+TEST_HOST[sdk=iphonesimulator*]  = $(BUILT_PRODUCTS_DIR)/StorageHostApp.app/StorageHostApp
