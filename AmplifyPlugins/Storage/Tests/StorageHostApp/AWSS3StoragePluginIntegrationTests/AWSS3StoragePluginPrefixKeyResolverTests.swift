@@ -10,7 +10,6 @@ import AWSS3StoragePlugin
 
 @testable import Amplify
 import AWSCognitoAuthPlugin
-import AmplifyAsyncTesting
 
 class AWSS3StoragePluginKeyResolverTests: AWSS3StoragePluginTestBase {
 

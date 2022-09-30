@@ -8,7 +8,6 @@
 import XCTest
 @testable import Amplify
 import AWSCognitoAuthPlugin
-import AmplifyAsyncTesting
 
 class AuthEventIntegrationTests: AWSAuthBaseTest {
 

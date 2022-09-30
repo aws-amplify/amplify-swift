@@ -9,7 +9,6 @@ import XCTest
 import Amplify
 import AWSPluginsCore
 @testable import AWSS3StoragePlugin
-import AmplifyAsyncTesting
 
 class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
