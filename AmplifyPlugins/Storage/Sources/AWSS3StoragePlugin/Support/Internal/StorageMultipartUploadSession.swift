@@ -216,6 +216,7 @@ class StorageMultipartUploadSession {
         logger.debug("\(#function): \(multipartUploadEvent)")
 
         do {
+            let wasPaused = multipartUpload.isPaused
             try multipartUpload.transition(multipartUploadEvent: multipartUploadEvent)
 
             // update the transerTask with every state transition
@@ -227,7 +228,9 @@ class StorageMultipartUploadSession {
                 uploadParts(uploadFile: uploadFile, uploadId: uploadId, partSize: partSize, parts: parts)
             case .paused(_, _, _, let parts):
                 cancelInProgressParts(parts: parts)
-                transferTask.notify(progress: parts.progress)
+                if !wasPaused {
+                    transferTask.notify(progress: parts.progress)
+                }
             case .completed:
                 onEvent(.completed(()))
             case .aborting:
