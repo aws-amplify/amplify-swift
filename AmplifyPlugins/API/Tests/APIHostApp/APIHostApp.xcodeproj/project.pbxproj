@@ -83,7 +83,6 @@
 		21698CC72889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CC22889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift */; };
 		21698CC92889D75F004BD994 /* SocialNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CC42889D75F004BD994 /* SocialNote.swift */; };
 		21698CCB2889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CC62889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift */; };
-		219253C228BFEAD800820737 /* AmplifyAsyncTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 219253C128BFEAD800820737 /* AmplifyAsyncTesting */; };
 		219253C428BFEBE400820737 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 219253C328BFEBE200820737 /* XCTest.framework */; };
 		21E73E6F28898D7900D7DB7E /* APIHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E73E6E28898D7900D7DB7E /* APIHostAppApp.swift */; };
 		21E73E7128898D7900D7DB7E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E73E7028898D7900D7DB7E /* ContentView.swift */; };
@@ -99,6 +98,27 @@
 		39E0F2AA28A440A700939D9F /* GraphQLWithUserPoolIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BBD28899B6D004BD994 /* GraphQLWithUserPoolIntegrationTests.swift */; };
 		39E0F2AD28A441B100939D9F /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E0F2AC28A441B100939D9F /* TestConfigHelper.swift */; };
 		39E0F2AF28A4425C00939D9F /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E0F2AE28A4425C00939D9F /* Todo.swift */; };
+		681DFE7228E7451E0000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE6F28E7451D0000C36A /* AsyncTesting.swift */; };
+		681DFE7328E7451E0000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE6F28E7451D0000C36A /* AsyncTesting.swift */; };
+		681DFE7428E7451E0000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7028E7451D0000C36A /* AsyncExpectation.swift */; };
+		681DFE7528E7451E0000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7028E7451D0000C36A /* AsyncExpectation.swift */; };
+		681DFE7628E7451E0000C36A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7128E7451D0000C36A /* XCTestCase+AsyncTesting.swift */; };
+		681DFE7728E7451E0000C36A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7128E7451D0000C36A /* XCTestCase+AsyncTesting.swift */; };
+		681DFE9828E747430000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE6F28E7451D0000C36A /* AsyncTesting.swift */; };
+		681DFE9928E747430000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7028E7451D0000C36A /* AsyncExpectation.swift */; };
+		681DFE9A28E747430000C36A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7128E7451D0000C36A /* XCTestCase+AsyncTesting.swift */; };
+		681DFE9B28E747450000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE6F28E7451D0000C36A /* AsyncTesting.swift */; };
+		681DFE9C28E747450000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7028E7451D0000C36A /* AsyncExpectation.swift */; };
+		681DFE9D28E747450000C36A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7128E7451D0000C36A /* XCTestCase+AsyncTesting.swift */; };
+		681DFE9E28E747450000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE6F28E7451D0000C36A /* AsyncTesting.swift */; };
+		681DFE9F28E747450000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7028E7451D0000C36A /* AsyncExpectation.swift */; };
+		681DFEA028E747450000C36A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7128E7451D0000C36A /* XCTestCase+AsyncTesting.swift */; };
+		681DFEA128E747460000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE6F28E7451D0000C36A /* AsyncTesting.swift */; };
+		681DFEA228E747460000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7028E7451D0000C36A /* AsyncExpectation.swift */; };
+		681DFEA328E747460000C36A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7128E7451D0000C36A /* XCTestCase+AsyncTesting.swift */; };
+		681DFEA428E747470000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE6F28E7451D0000C36A /* AsyncTesting.swift */; };
+		681DFEA528E747470000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7028E7451D0000C36A /* AsyncExpectation.swift */; };
+		681DFEA628E747470000C36A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7128E7451D0000C36A /* XCTestCase+AsyncTesting.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -259,6 +279,9 @@
 		39E0F2A128A43FB100939D9F /* AWSAPIPluginGraphQLUserPoolTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginGraphQLUserPoolTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		39E0F2AC28A441B100939D9F /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
 		39E0F2AE28A4425C00939D9F /* Todo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Todo.swift; sourceTree = "<group>"; };
+		681DFE6F28E7451D0000C36A /* AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTesting.swift; sourceTree = "<group>"; };
+		681DFE7028E7451D0000C36A /* AsyncExpectation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncExpectation.swift; sourceTree = "<group>"; };
+		681DFE7128E7451D0000C36A /* XCTestCase+AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AsyncTesting.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -289,7 +312,6 @@
 			files = (
 				21698BDD28899ED5004BD994 /* AWSAPIPlugin in Frameworks */,
 				219253C428BFEBE400820737 /* XCTest.framework in Frameworks */,
-				219253C228BFEAD800820737 /* AmplifyAsyncTesting in Frameworks */,
 				21698BF02889A163004BD994 /* AWSCognitoAuthPlugin in Frameworks */,
 				21698CC02889D5A9004BD994 /* CwlPreconditionTesting in Frameworks */,
 				21698BDB28899ED5004BD994 /* Amplify in Frameworks */,
@@ -528,6 +550,7 @@
 		21E73E6D28898D7900D7DB7E /* APIHostApp */ = {
 			isa = PBXGroup;
 			children = (
+				681DFE6E28E7451D0000C36A /* AsyncTesting */,
 				213DBB6028A40DAE00B30280 /* Info.plist */,
 				21698C072889B173004BD994 /* TestCommonConstants.swift */,
 				21698C062889B173004BD994 /* TestExtensions.swift */,
@@ -618,9 +641,19 @@
 			isa = PBXGroup;
 			children = (
 				39E0F2AC28A441B100939D9F /* TestConfigHelper.swift */,
-				219253B928BEC25600820737 /* AsyncExpectation.swift */,
 			);
 			path = Base;
+			sourceTree = "<group>";
+		};
+		681DFE6E28E7451D0000C36A /* AsyncTesting */ = {
+			isa = PBXGroup;
+			children = (
+				681DFE6F28E7451D0000C36A /* AsyncTesting.swift */,
+				681DFE7028E7451D0000C36A /* AsyncExpectation.swift */,
+				681DFE7128E7451D0000C36A /* XCTestCase+AsyncTesting.swift */,
+			);
+			name = AsyncTesting;
+			path = ../../../../../AmplifyAsyncTesting/Sources/AsyncTesting;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -700,7 +733,6 @@
 				21698BDC28899ED5004BD994 /* AWSAPIPlugin */,
 				21698BEF2889A163004BD994 /* AWSCognitoAuthPlugin */,
 				21698CBF2889D5A9004BD994 /* CwlPreconditionTesting */,
-				219253C128BFEAD800820737 /* AmplifyAsyncTesting */,
 			);
 			productName = APIHostApp;
 			productReference = 21E73E6B28898D7900D7DB7E /* APIHostApp.app */;
@@ -1033,6 +1065,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				213DBC8128A6C4FB00B30280 /* TestConfigHelper.swift in Sources */,
+				681DFE9E28E747450000C36A /* AsyncTesting.swift in Sources */,
+				681DFEA028E747450000C36A /* XCTestCase+AsyncTesting.swift in Sources */,
+				681DFE9F28E747450000C36A /* AsyncExpectation.swift in Sources */,
 				213DBC8728A6CEDD00B30280 /* Todo.swift in Sources */,
 				213DBC8528A6CE9800B30280 /* GraphQLWithLambdaAuthIntegrationTests.swift in Sources */,
 			);
@@ -1051,6 +1086,7 @@
 				21262744289ABFEB003788E3 /* ListStringContainer.swift in Sources */,
 				21698ABC2889996A004BD994 /* GraphQLConnectionScenario3Tests+List.swift in Sources */,
 				21698ABF2889996A004BD994 /* GraphQLConnectionScenario3Tests+Helpers.swift in Sources */,
+				681DFE7228E7451E0000C36A /* AsyncTesting.swift in Sources */,
 				2126273B289ABFEB003788E3 /* ListIntContainer.swift in Sources */,
 				21262741289ABFEB003788E3 /* Team2.swift in Sources */,
 				21698AA328899921004BD994 /* Todo.swift in Sources */,
@@ -1061,6 +1097,7 @@
 				21262743289ABFEB003788E3 /* Post5+Schema.swift in Sources */,
 				2126275B289ABFEB003788E3 /* TestEnum.swift in Sources */,
 				21698AB92889996A004BD994 /* GraphQLConnectionScenario3Tests.swift in Sources */,
+				681DFE7628E7451E0000C36A /* XCTestCase+AsyncTesting.swift in Sources */,
 				21698ABE2889996A004BD994 /* GraphQLTestBase.swift in Sources */,
 				21698AC22889996A004BD994 /* GraphQLConnectionScenario4Tests.swift in Sources */,
 				21262750289ABFEB003788E3 /* PostEditor5+Schema.swift in Sources */,
@@ -1078,6 +1115,7 @@
 				21262746289ABFEB003788E3 /* Comment4.swift in Sources */,
 				21698AC32889996A004BD994 /* GraphQLModelBasedTests.swift in Sources */,
 				21262745289ABFEB003788E3 /* ListIntContainer+Schema.swift in Sources */,
+				681DFE7428E7451E0000C36A /* AsyncExpectation.swift in Sources */,
 				21262756289ABFEB003788E3 /* Post4+Schema.swift in Sources */,
 				21698AC12889996A004BD994 /* GraphQLConnectionScenario3Tests+Subscribe.swift in Sources */,
 				2126275D289ABFEB003788E3 /* Post+Schema.swift in Sources */,
@@ -1113,6 +1151,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				21698CCB2889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift in Sources */,
+				681DFE9828E747430000C36A /* AsyncTesting.swift in Sources */,
+				681DFE9A28E747430000C36A /* XCTestCase+AsyncTesting.swift in Sources */,
+				681DFE9928E747430000C36A /* AsyncExpectation.swift in Sources */,
 				21698CC72889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift in Sources */,
 				21698CC92889D75F004BD994 /* SocialNote.swift in Sources */,
 			);
@@ -1135,7 +1176,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				395906B628AC4AC8004B96B1 /* RESTWithIAMIntegrationTests.swift in Sources */,
+				681DFEA128E747460000C36A /* AsyncTesting.swift in Sources */,
 				395906B928AC4C3A004B96B1 /* TestConfigHelper.swift in Sources */,
+				681DFEA328E747460000C36A /* XCTestCase+AsyncTesting.swift in Sources */,
+				681DFEA228E747460000C36A /* AsyncExpectation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1144,7 +1188,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				395906CA28AC6468004B96B1 /* RESTWithUserPoolIntegrationTests.swift in Sources */,
+				681DFEA428E747470000C36A /* AsyncTesting.swift in Sources */,
 				395906CD28AC65AA004B96B1 /* TestConfigHelper.swift in Sources */,
+				681DFEA628E747470000C36A /* XCTestCase+AsyncTesting.swift in Sources */,
+				681DFEA528E747470000C36A /* AsyncExpectation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1153,6 +1200,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				39E0F14B289DD84E00939D9F /* TestConfigHelper.swift in Sources */,
+				681DFE7328E7451E0000C36A /* AsyncTesting.swift in Sources */,
+				681DFE7728E7451E0000C36A /* XCTestCase+AsyncTesting.swift in Sources */,
+				681DFE7528E7451E0000C36A /* AsyncExpectation.swift in Sources */,
 				39E0F146289DD60200939D9F /* GraphQLWithIAMIntegrationTests.swift in Sources */,
 				39E0F147289DD60C00939D9F /* Todo.swift in Sources */,
 			);
@@ -1163,9 +1213,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				39E0F2AA28A440A700939D9F /* GraphQLWithUserPoolIntegrationTests.swift in Sources */,
+				681DFE9B28E747450000C36A /* AsyncTesting.swift in Sources */,
+				681DFE9D28E747450000C36A /* XCTestCase+AsyncTesting.swift in Sources */,
+				681DFE9C28E747450000C36A /* AsyncExpectation.swift in Sources */,
 				39E0F2AF28A4425C00939D9F /* Todo.swift in Sources */,
 				39E0F2AD28A441B100939D9F /* TestConfigHelper.swift in Sources */,
-				219253BA28BEC25600820737 /* AsyncExpectation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1780,10 +1832,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 21698CBE2889D5A9004BD994 /* XCRemoteSwiftPackageReference "CwlPreconditionTesting" */;
 			productName = CwlPreconditionTesting;
-		};
-		219253C128BFEAD800820737 /* AmplifyAsyncTesting */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AmplifyAsyncTesting;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

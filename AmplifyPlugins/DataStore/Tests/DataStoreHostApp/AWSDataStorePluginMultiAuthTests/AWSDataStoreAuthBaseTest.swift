@@ -14,7 +14,6 @@ import AWSAPIPlugin
 import AWSCognitoAuthPlugin
 
 @testable import Amplify
-import AmplifyAsyncTesting
 
 struct TestUser {
     let username: String

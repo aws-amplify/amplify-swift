@@ -9,7 +9,6 @@ import XCTest
 
 @testable import Amplify
 @testable import AWSS3StoragePlugin
-import AmplifyAsyncTesting
 import AWSCognitoAuthPlugin
 
 class AWSS3StoragePluginTestBase: XCTestCase {

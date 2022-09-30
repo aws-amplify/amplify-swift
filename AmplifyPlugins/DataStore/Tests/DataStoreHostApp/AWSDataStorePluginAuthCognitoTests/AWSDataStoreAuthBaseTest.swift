@@ -12,7 +12,6 @@ import AWSDataStorePlugin
 import AWSPluginsCore
 import AWSAPIPlugin
 import AWSCognitoAuthPlugin
-import AmplifyAsyncTesting
 
 @testable import Amplify
 

@@ -7,8 +7,7 @@ let dependencies: [Package.Dependency] = [
     .package(url: "https://github.com/awslabs/aws-sdk-swift.git", exact: "0.2.6"),
     .package(url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git", from: "2.1.1"),
     .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.12.2"),
-    .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0"),
-    .package(name: "AmplifyAsyncTesting", path: "AmplifyAsyncTesting")
+    .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0")
 ]
 let swiftSettings: [SwiftSetting]? = [.define("DEV_PREVIEW_BUILD")]
 
@@ -63,6 +62,17 @@ let amplifyTargets: [Target] = [
             "Info.plist",
             "CoreTests/README.md"
         ]
+    ),
+    .target(
+        name: "AmplifyAsyncTesting",
+        dependencies: [],
+        path: "AmplifyAsyncTesting/Sources/AsyncTesting",
+        linkerSettings: [.linkedFramework("XCTest")]
+    ),
+    .testTarget(
+        name: "AmplifyAsyncTestingTests",
+        dependencies: ["AmplifyAsyncTesting"],
+        path: "AmplifyAsyncTesting/Tests/AsyncTestingTests"
     ),
     .target(
         name: "AWSPluginsTestCommon",

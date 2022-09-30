@@ -153,7 +153,6 @@
 		213DBC6128A5808400B30280 /* TodoIAMPrivate+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA8B289BFE4E00B32A39 /* TodoIAMPrivate+Schema.swift */; };
 		213DBC6228A5808400B30280 /* TodoIAMPublic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA8D289BFE4E00B32A39 /* TodoIAMPublic.swift */; };
 		213DBC6328A5841400B30280 /* HubListenerTestUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFE13289C073100B32A39 /* HubListenerTestUtilities.swift */; };
-		219253BC28BFE7D100820737 /* AmplifyAsyncTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 219253BB28BFE7D100820737 /* AmplifyAsyncTesting */; };
 		219253BE28BFE84100820737 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 219253BD28BFE84000820737 /* XCTest.framework */; };
 		21977DBF289C171A005B49D6 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977DBE289C1719005B49D6 /* TestConfigHelper.swift */; };
 		219B518528E3A4B00080EDCC /* DataStoreConnectionOptionalAssociations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA00289BFE3400B32A39 /* DataStoreConnectionOptionalAssociations.swift */; };
@@ -402,6 +401,27 @@
 		21BBFE10289C06E400B32A39 /* UserAccount+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD2A289C06E400B32A39 /* UserAccount+Schema.swift */; };
 		21BBFE11289C06E400B32A39 /* UserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD2B289C06E400B32A39 /* UserAccount.swift */; };
 		21BBFE12289C06E400B32A39 /* Author+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD2C289C06E400B32A39 /* Author+Schema.swift */; };
+		681DFE8328E746C10000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8028E746C10000C36A /* AsyncTesting.swift */; };
+		681DFE8428E746C10000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8128E746C10000C36A /* AsyncExpectation.swift */; };
+		681DFE8528E746C10000C36A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8228E746C10000C36A /* XCTestCase+AsyncTesting.swift */; };
+		681DFE8628E746FB0000C36A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8228E746C10000C36A /* XCTestCase+AsyncTesting.swift */; };
+		681DFE8728E746FB0000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8128E746C10000C36A /* AsyncExpectation.swift */; };
+		681DFE8828E746FB0000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8028E746C10000C36A /* AsyncTesting.swift */; };
+		681DFE8928E746FC0000C36A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8228E746C10000C36A /* XCTestCase+AsyncTesting.swift */; };
+		681DFE8A28E746FC0000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8128E746C10000C36A /* AsyncExpectation.swift */; };
+		681DFE8B28E746FC0000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8028E746C10000C36A /* AsyncTesting.swift */; };
+		681DFE8C28E746FC0000C36A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8228E746C10000C36A /* XCTestCase+AsyncTesting.swift */; };
+		681DFE8D28E746FC0000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8128E746C10000C36A /* AsyncExpectation.swift */; };
+		681DFE8E28E746FC0000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8028E746C10000C36A /* AsyncTesting.swift */; };
+		681DFE8F28E746FD0000C36A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8228E746C10000C36A /* XCTestCase+AsyncTesting.swift */; };
+		681DFE9028E746FD0000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8128E746C10000C36A /* AsyncExpectation.swift */; };
+		681DFE9128E746FD0000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8028E746C10000C36A /* AsyncTesting.swift */; };
+		681DFE9228E746FE0000C36A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8228E746C10000C36A /* XCTestCase+AsyncTesting.swift */; };
+		681DFE9328E746FE0000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8128E746C10000C36A /* AsyncExpectation.swift */; };
+		681DFE9428E746FE0000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8028E746C10000C36A /* AsyncTesting.swift */; };
+		681DFE9528E746FE0000C36A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8228E746C10000C36A /* XCTestCase+AsyncTesting.swift */; };
+		681DFE9628E746FE0000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8128E746C10000C36A /* AsyncExpectation.swift */; };
+		681DFE9728E746FE0000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8028E746C10000C36A /* AsyncTesting.swift */; };
 		97731D4B28B3BD19006F180B /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731D4A28B3BD19006F180B /* TestConfigHelper.swift */; };
 		97731D5728B3BD25006F180B /* DataStoreTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731D4F28B3BD25006F180B /* DataStoreTestBase.swift */; };
 		97731D5828B3BD25006F180B /* DataStoreInternal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731D5028B3BD25006F180B /* DataStoreInternal.swift */; };
@@ -982,6 +1002,9 @@
 		21BBFD2B289C06E400B32A39 /* UserAccount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserAccount.swift; sourceTree = "<group>"; };
 		21BBFD2C289C06E400B32A39 /* Author+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Author+Schema.swift"; sourceTree = "<group>"; };
 		21BBFE13289C073100B32A39 /* HubListenerTestUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HubListenerTestUtilities.swift; sourceTree = "<group>"; };
+		681DFE8028E746C10000C36A /* AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTesting.swift; sourceTree = "<group>"; };
+		681DFE8128E746C10000C36A /* AsyncExpectation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncExpectation.swift; sourceTree = "<group>"; };
+		681DFE8228E746C10000C36A /* XCTestCase+AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AsyncTesting.swift"; sourceTree = "<group>"; };
 		97731D4A28B3BD19006F180B /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
 		97731D4F28B3BD25006F180B /* DataStoreTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreTestBase.swift; sourceTree = "<group>"; };
 		97731D5028B3BD25006F180B /* DataStoreInternal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreInternal.swift; sourceTree = "<group>"; };
@@ -1074,7 +1097,6 @@
 			files = (
 				21182143289BFBC4001B5945 /* AWSAPIPlugin in Frameworks */,
 				219253BE28BFE84100820737 /* XCTest.framework in Frameworks */,
-				219253BC28BFE7D100820737 /* AmplifyAsyncTesting in Frameworks */,
 				21182141289BFBC4001B5945 /* Amplify in Frameworks */,
 				21182145289BFBC4001B5945 /* AWSCognitoAuthPlugin in Frameworks */,
 				21182147289BFBC4001B5945 /* AWSDataStorePlugin in Frameworks */,
@@ -1168,6 +1190,7 @@
 		2118212E289BFB4B001B5945 /* DataStoreHostApp */ = {
 			isa = PBXGroup;
 			children = (
+				681DFE7F28E746C10000C36A /* AsyncTesting */,
 				21BBF9EE289BFE3400B32A39 /* DataStoreHubEvent.swift */,
 				21BBFE13289C073100B32A39 /* HubListenerTestUtilities.swift */,
 				213DBB6128A4172000B30280 /* Info.plist */,
@@ -2022,6 +2045,17 @@
 			path = Associations;
 			sourceTree = "<group>";
 		};
+		681DFE7F28E746C10000C36A /* AsyncTesting */ = {
+			isa = PBXGroup;
+			children = (
+				681DFE8028E746C10000C36A /* AsyncTesting.swift */,
+				681DFE8128E746C10000C36A /* AsyncExpectation.swift */,
+				681DFE8228E746C10000C36A /* XCTestCase+AsyncTesting.swift */,
+			);
+			name = AsyncTesting;
+			path = ../../../../../AmplifyAsyncTesting/Sources/AsyncTesting;
+			sourceTree = "<group>";
+		};
 		97731D4928B3BD19006F180B /* Base */ = {
 			isa = PBXGroup;
 			children = (
@@ -2258,7 +2292,6 @@
 				21182142289BFBC4001B5945 /* AWSAPIPlugin */,
 				21182144289BFBC4001B5945 /* AWSCognitoAuthPlugin */,
 				21182146289BFBC4001B5945 /* AWSDataStorePlugin */,
-				219253BB28BFE7D100820737 /* AmplifyAsyncTesting */,
 			);
 			productName = DataStoreHostApp;
 			productReference = 2118212C289BFB4B001B5945 /* DataStoreHostApp.app */;
@@ -2662,11 +2695,14 @@
 				213DBC5928A57FFE00B30280 /* TestConfigHelper.swift in Sources */,
 				213DBC0328A577C300B30280 /* TodoExplicitOwnerField.swift in Sources */,
 				213DBC0928A577C900B30280 /* TodoExplicitOwnerField+Schema.swift in Sources */,
+				681DFE9028E746FD0000C36A /* AsyncExpectation.swift in Sources */,
+				681DFE8F28E746FD0000C36A /* XCTestCase+AsyncTesting.swift in Sources */,
 				213DBC0128A577BC00B30280 /* TodoCognitoPrivate.swift in Sources */,
 				213DBC0828A577C900B30280 /* TodoCustomOwnerExplicit.swift in Sources */,
 				213DBC0628A577C900B30280 /* TodoImplicitOwnerField.swift in Sources */,
 				213DBC5528A57CF100B30280 /* AWSDataStoreAuthBaseTest.swift in Sources */,
 				213DBC0028A577B700B30280 /* TodoImplicitOwnerField+Schema.swift in Sources */,
+				681DFE9128E746FD0000C36A /* AsyncTesting.swift in Sources */,
 				213DBC0228A577BF00B30280 /* TodoCognitoPrivate+Schema.swift in Sources */,
 				213DBBFE28A577AD00B30280 /* AWSDataStoreCategoryPluginAuthIntegrationTests.swift in Sources */,
 				213DBC0428A577C900B30280 /* TodoCustomOwnerImplicit.swift in Sources */,
@@ -2678,12 +2714,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				681DFE9328E746FE0000C36A /* AsyncExpectation.swift in Sources */,
+				681DFE9428E746FE0000C36A /* AsyncTesting.swift in Sources */,
 				213DBC6128A5808400B30280 /* TodoIAMPrivate+Schema.swift in Sources */,
 				213DBC5328A57CDE00B30280 /* AWSDataStoreAuthBaseTest.swift in Sources */,
 				213DBC5F28A5808400B30280 /* TodoIAMPublic+Schema.swift in Sources */,
 				213DBC6028A5808400B30280 /* TodoIAMPrivate.swift in Sources */,
 				213DBC5B28A5800F00B30280 /* TestConfigHelper.swift in Sources */,
 				213DBC5E28A5808000B30280 /* AWSDataStoreCategoryPluginIAMAuthIntegrationTests.swift in Sources */,
+				681DFE9228E746FE0000C36A /* XCTestCase+AsyncTesting.swift in Sources */,
 				213DBC6228A5808400B30280 /* TodoIAMPublic.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2701,6 +2740,7 @@
 				213DBC3528A5787400B30280 /* PrivatePublicComboAPIPost.swift in Sources */,
 				213DBC2228A5787400B30280 /* GroupPublicUPIAMPost+Schema.swift in Sources */,
 				213DBC2928A5787400B30280 /* PrivatePublicUPIAMPost+Schema.swift in Sources */,
+				681DFE9728E746FE0000C36A /* AsyncTesting.swift in Sources */,
 				213DBC2828A5787400B30280 /* GroupPublicUPAPIPost+Schema.swift in Sources */,
 				213DBC4028A5787400B30280 /* GroupPublicUPAPIPost.swift in Sources */,
 				213DBC4328A5787400B30280 /* PrivateIAMPost.swift in Sources */,
@@ -2710,6 +2750,7 @@
 				213DBC1C28A5787400B30280 /* GroupPrivatePublicUPIAMAPIPost.swift in Sources */,
 				213DBC2128A5787400B30280 /* OwnerPrivatePublicUPIAMAPIPost.swift in Sources */,
 				213DBC5D28A5801900B30280 /* TestConfigHelper.swift in Sources */,
+				681DFE9628E746FE0000C36A /* AsyncExpectation.swift in Sources */,
 				213DBC2A28A5787400B30280 /* PublicIAMPost.swift in Sources */,
 				213DBC1128A5787400B30280 /* PublicAPIPost+Schema.swift in Sources */,
 				213DBC5728A57CFA00B30280 /* AWSDataStoreAuthBaseTest.swift in Sources */,
@@ -2720,6 +2761,7 @@
 				213DBC2E28A5787400B30280 /* PrivatePublicComboUPPost.swift in Sources */,
 				213DBC3D28A5787400B30280 /* PrivatePublicUPAPIPost.swift in Sources */,
 				213DBC3B28A5787400B30280 /* PrivatePublicIAMAPIPost.swift in Sources */,
+				681DFE9528E746FE0000C36A /* XCTestCase+AsyncTesting.swift in Sources */,
 				213DBC1B28A5787400B30280 /* OwnerPublicUPIAMPost.swift in Sources */,
 				213DBC1228A5787400B30280 /* PublicAPIPost.swift in Sources */,
 				213DBC2628A5787400B30280 /* OwnerPublicUPAPIPost+Schema.swift in Sources */,
@@ -2791,7 +2833,9 @@
 				21BBFE0F289C06E400B32A39 /* BookAuthor+Schema.swift in Sources */,
 				21BBFDD3289C06E400B32A39 /* Comment3+Schema.swift in Sources */,
 				21BBFDCB289C06E400B32A39 /* Team1.swift in Sources */,
+				681DFE8428E746C10000C36A /* AsyncExpectation.swift in Sources */,
 				21BBFE10289C06E400B32A39 /* UserAccount+Schema.swift in Sources */,
+				681DFE8528E746C10000C36A /* XCTestCase+AsyncTesting.swift in Sources */,
 				21BBFDB2289C06E400B32A39 /* Post+Schema.swift in Sources */,
 				21BBFDBE289C06E400B32A39 /* User.swift in Sources */,
 				21BBFD55289C06E400B32A39 /* Blog8+Schema.swift in Sources */,
@@ -2941,6 +2985,7 @@
 				21BBFDA5289C06E400B32A39 /* M2MUser+Schema.swift in Sources */,
 				21BBFDB5289C06E400B32A39 /* RecordCover.swift in Sources */,
 				21BBFD80289C06E400B32A39 /* Post6V2+Schema.swift in Sources */,
+				681DFE8328E746C10000C36A /* AsyncTesting.swift in Sources */,
 				21BBFD57289C06E400B32A39 /* Post8+Schema.swift in Sources */,
 				21BBFC05289C036100B32A39 /* DataStoreTestBase.swift in Sources */,
 				21BBFD30289C06E400B32A39 /* Article+Schema.swift in Sources */,
@@ -2990,6 +3035,7 @@
 				97731EB528B3BD39006F180B /* CustomerSecondaryIndexV2+Schema.swift in Sources */,
 				97731ECA28B3BD39006F180B /* Post6V2+Schema.swift in Sources */,
 				97731E8D28B3BD39006F180B /* Post7V2.swift in Sources */,
+				681DFE8828E746FB0000C36A /* AsyncTesting.swift in Sources */,
 				97731E8F28B3BD39006F180B /* Blog7V2+Schema.swift in Sources */,
 				97731E9A28B3BD39006F180B /* Post4V2+Schema.swift in Sources */,
 				97731EC628B3BD39006F180B /* Project2V2+Schema.swift in Sources */,
@@ -3012,6 +3058,7 @@
 				97731E9528B3BD39006F180B /* Team4aV2+Schema.swift in Sources */,
 				97731E9C28B3BD39006F180B /* Comment4V2+Schema.swift in Sources */,
 				97731EBB28B3BD39006F180B /* CustomerMultipleSecondaryIndexV2.swift in Sources */,
+				681DFE8728E746FB0000C36A /* AsyncExpectation.swift in Sources */,
 				97731EC128B3BD39006F180B /* Registration8V2+Schema.swift in Sources */,
 				97731EC328B3BD39006F180B /* Registration8V2.swift in Sources */,
 				97731EC528B3BD39006F180B /* CustomerWithMultipleFieldsinPK+Schema.swift in Sources */,
@@ -3053,6 +3100,7 @@
 				97731D5A28B3BD25006F180B /* SyncEngineIntegrationV2TestBase.swift in Sources */,
 				97731EC828B3BD39006F180B /* Project2V2.swift in Sources */,
 				97731EAF28B3BD39006F180B /* Post5V2.swift in Sources */,
+				681DFE8628E746FB0000C36A /* XCTestCase+AsyncTesting.swift in Sources */,
 				21BBFC16289C03B900B32A39 /* DataStoreConnectionScenario1V2Tests.swift in Sources */,
 				97731EB428B3BD39006F180B /* CustomerWithMultipleFieldsinPK.swift in Sources */,
 				97731EBD28B3BD39006F180B /* EnumDrift.swift in Sources */,
@@ -3115,6 +3163,8 @@
 				213DBBC128A5743600B30280 /* ModelCompositePkWithAssociation.swift in Sources */,
 				213DBBC728A5743600B30280 /* Post8+Schema.swift in Sources */,
 				213DBBCB28A5743600B30280 /* Post7.swift in Sources */,
+				681DFE8928E746FC0000C36A /* XCTestCase+AsyncTesting.swift in Sources */,
+				681DFE8B28E746FC0000C36A /* AsyncTesting.swift in Sources */,
 				213DBBBD28A5743600B30280 /* ModelCompositePkWithAssociation+Schema.swift in Sources */,
 				213DBBBC28A5743600B30280 /* ModelCustomPKDefined.swift in Sources */,
 				213DBBB428A5743600B30280 /* ModelCompositeIntPk+Schema.swift in Sources */,
@@ -3122,6 +3172,7 @@
 				213DBBD528A5743600B30280 /* CommentWithCompositeKeyAndIndex.swift in Sources */,
 				213DBBB028A5743600B30280 /* ModelExplicitDefaultPk.swift in Sources */,
 				213DBBAD28A5743600B30280 /* ModelCompositeMultiplePk+Schema.swift in Sources */,
+				681DFE8A28E746FC0000C36A /* AsyncExpectation.swift in Sources */,
 				213DBBCA28A5743600B30280 /* ModelCompositePk.swift in Sources */,
 				213DBBB628A5743600B30280 /* CommentWithCompositeKeyUnidirectional+Schema.swift in Sources */,
 				213DBBA228A5743600B30280 /* Post4+Schema.swift in Sources */,
@@ -3151,6 +3202,7 @@
 				21BBFBAA289C021800B32A39 /* Comment6Wrapper.swift in Sources */,
 				21BBFB9B289C01D200B32A39 /* DataStoreConnectionScenario4FlutterTests.swift in Sources */,
 				21BBFB96289C01A200B32A39 /* DataStoreConnectionScenario3FlutterTests.swift in Sources */,
+				681DFE8E28E746FC0000C36A /* AsyncTesting.swift in Sources */,
 				21BBFBAC289C021E00B32A39 /* Blog6Wrapper.swift in Sources */,
 				21BBFBA9289C021600B32A39 /* TeamWrapper.swift in Sources */,
 				21BBFB99289C01BE00B32A39 /* DataStoreConnectionScenario5FlutterTests.swift in Sources */,
@@ -3159,6 +3211,7 @@
 				21BBFBAF289C022A00B32A39 /* FlutterDataStoreRequestUtils.swift in Sources */,
 				21BBFB9E289C01E600B32A39 /* SyncEngineFlutterIntegrationTestBase.swift in Sources */,
 				21BBFBA4289C020100B32A39 /* Post4Wrapper.swift in Sources */,
+				681DFE8C28E746FC0000C36A /* XCTestCase+AsyncTesting.swift in Sources */,
 				21BBFBA1289C01F600B32A39 /* Comment3Wrapper.swift in Sources */,
 				21BBFBA2289C01FA00B32A39 /* Post3Wrapper.swift in Sources */,
 				21BBFBB0289C022D00B32A39 /* FlutterTemporal.swift in Sources */,
@@ -3169,6 +3222,7 @@
 				21BBFB9C289C01D700B32A39 /* DataStoreFlutterConsecutiveUpdatesTests.swift in Sources */,
 				21BBFB9F289C01ED00B32A39 /* Post5Wrapper.swift in Sources */,
 				21BBFBA8289C021300B32A39 /* Project1Wrapper.swift in Sources */,
+				681DFE8D28E746FC0000C36A /* AsyncExpectation.swift in Sources */,
 				21BBFBA6289C020C00B32A39 /* PostEditor5Wrapper.swift in Sources */,
 				21BBFB98289C01A700B32A39 /* DataStoreConnectionScenario2FlutterTests.swift in Sources */,
 			);
@@ -3745,10 +3799,6 @@
 		21182146289BFBC4001B5945 /* AWSDataStorePlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AWSDataStorePlugin;
-		};
-		219253BB28BFE7D100820737 /* AmplifyAsyncTesting */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AmplifyAsyncTesting;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

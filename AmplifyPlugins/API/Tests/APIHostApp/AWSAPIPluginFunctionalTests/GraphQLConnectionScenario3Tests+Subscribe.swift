@@ -9,7 +9,6 @@ import XCTest
 @testable import AWSAPIPlugin
 @testable import Amplify
 @testable import APIHostApp
-import AmplifyAsyncTesting
 
 extension GraphQLConnectionScenario3Tests {
 
