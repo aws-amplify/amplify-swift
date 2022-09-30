@@ -20,8 +20,6 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     public var key: PluginKey = "awsDataStorePlugin"
 
-    private var isStorageEngineInitialized = AtomicValue(initialValue: false)
-
     /// `true` if any models are syncable. Resolved during configuration phase
     var isSyncEnabled: Bool
 
@@ -126,6 +124,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             if storageEngine != nil {
                 return .alreadyInitialized
             }
+
             do {
                 if self.dataStorePublisher == nil {
                     self.dataStorePublisher = DataStorePublisher()
@@ -133,7 +132,6 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
                 try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
                 try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
                 try storageEngine.applyModelMigrations(modelSchemas: ModelRegistry.modelSchemas)
-                self.isStorageEngineInitialized.set(true)
 
                 return .successfullyInitialized
             } catch {
