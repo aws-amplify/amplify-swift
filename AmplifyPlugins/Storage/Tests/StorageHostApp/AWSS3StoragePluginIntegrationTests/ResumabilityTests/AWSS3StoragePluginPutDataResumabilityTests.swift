@@ -17,7 +17,7 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
     /// Given: A large data object to upload
     /// When: Call the put API and pause the operation
     /// Then: The operation is stalled (no progress, completed, or failed event)
-    func testUploadLargeDataThenPause() async {
+    func testUploadLargeDataThenPause() async throws {
         let key = UUID().uuidString
         guard let task = await uploadTask(key: key, data: AWSS3StoragePluginTestBase.largeDataObject) else {
             XCTFail("Unable to create Upload task")
@@ -25,45 +25,51 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
         }
 
         var cancellables = Set<AnyCancellable>()
-        let progressInvoked = expectation(description: "Progress invoked")
-        progressInvoked.assertForOverFulfill = false
+        let progressInvoked = asyncExpectation(description: "Progress invoked")
+        var progressLevelReached = false
+        //progressInvoked.assertForOverFulfill = false
         task.inProcessPublisher.sink { progress in
             // To simulate a normal scenario, fulfill the progressInvoked expectation after some progress (30%)
-            if progress.fractionCompleted > 0.3 {
-                progressInvoked.fulfill()
+            if progress.fractionCompleted > 0.3, !progressLevelReached {
+                progressLevelReached = true
+                Task { await progressInvoked.fulfill() }
             }
         }.store(in: &cancellables)
 
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        // await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
         task.pause()
         cancellables.removeAll()
 
-        let noProgressAfterPause = expectation(description: "Progress after pause is invoked")
-        noProgressAfterPause.isInverted = true
-        noProgressAfterPause.assertForOverFulfill = false
+        let noProgressAfterPause = asyncExpectation(description: "Progress after pause is invoked", isInverted: true)
+        var progressAfterPauseReached = false
+        //noProgressAfterPause.isInverted = true
+        //noProgressAfterPause.assertForOverFulfill = false
         task.inProcessPublisher.sink { progress in
             // After pausing, progress events still trickle in, but should not exceed
-            if progress.fractionCompleted > 0.7 {
+            if progress.fractionCompleted > 0.7, !progressAfterPauseReached {
+                progressAfterPauseReached = true
                 XCTFail("Task should have been paused")
-                noProgressAfterPause.fulfill()
+                Task { await noProgressAfterPause.fulfill() }
             }
         }.store(in: &cancellables)
 
-        let completeInvoked = expectation(description: "Upload is completed")
-        completeInvoked.isInverted = true
+        let completeInvoked = asyncExpectation(description: "Upload is completed", isInverted: true)
+        //completeInvoked.isInverted = true
         task.resultPublisher.sink(receiveCompletion: { _ in }, receiveValue: { value in
             XCTFail("Task should have been paused")
-            completeInvoked.fulfill()
+            Task { await completeInvoked.fulfill() }
         })
         .store(in: &cancellables)
 
-        await waitForExpectations(timeout: 30)
+        await waitForExpectations([noProgressAfterPause, completeInvoked])
         task.cancel()
         // A 5 second sleep has been added because, the cancelling runs async task to cancel anything existing that is still running, 
         // This gives ample time for operation to cancel, and then await Amplify.reset(), Amplify.configure works as expected.
         // If the sleep is not added, await Amplify.reset() will be trigerred in the tear down method which will remove all the plugins, 
         // Removing all the plugins when operation is still cancelling, results in undesired behavior from the storage/auth plugin 
-        sleep(5)
+        // sleep(5)
+        try await Task.sleep(seconds: 5)
         // Remove the key
         await remove(key: key)
     }

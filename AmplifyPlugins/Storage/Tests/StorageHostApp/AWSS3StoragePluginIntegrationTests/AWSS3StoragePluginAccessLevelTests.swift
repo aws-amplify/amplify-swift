@@ -230,20 +230,23 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
 
     // MARK: - Common test functions
 
-    func putThenListThenGetThenRemoveForSingleUser(username: String, key: String, accessLevel: StorageAccessLevel) async {
+    func putThenListThenGetThenRemoveForSingleUser(username: String, key: String,
+                                                   accessLevel: StorageAccessLevel,
+                                                   file: StaticString = #file,
+                                                   line: UInt = #line) async {
         await signIn(username: username, password: AWSS3StoragePluginTestBase.password)
 
         // Upload
-        await upload(key: key, data: key, accessLevel: accessLevel)
+        await upload(key: key, data: key, accessLevel: accessLevel, file: file, line: line)
 
         // List
         let keys = await list(path: key, accessLevel: accessLevel)
-        XCTAssertNotNil(keys)
-        XCTAssertEqual(keys?.count, 1)
+        XCTAssertNotNil(keys, "Key undefined", file: file, line: line)
+        XCTAssertEqual(keys?.count, 1, "Keys count", file: file, line: line)
 
         // Get
-        let data = await get(key: key, accessLevel: accessLevel)
-        XCTAssertNotNil(data)
+        let data = await get(key: key, accessLevel: accessLevel, file: file, line: line)
+        XCTAssertNotNil(data, "Data undefined", file: file, line: line)
 
         // Remove
         await remove(key: key, accessLevel: accessLevel)
@@ -252,24 +255,26 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let getFailedExpectation = asyncExpectation(description: "Get Operation should fail")
         let getOptions = StorageDownloadDataRequest.Options(accessLevel: accessLevel,
                                                             targetIdentityId: nil)
-        let getError = await waitError(with: getFailedExpectation) {
-            return try await Amplify.Storage.downloadData(key: key, options: getOptions).value
+        let getError = await waitError(with: getFailedExpectation, file: file, line: line) {
+            try await Amplify.Storage.downloadData(key: key, options: getOptions).value
         }
 
         guard let getError = getError else {
-            XCTFail("Expected error from download operation")
+            XCTFail("Expected error from download operation", file: file, line: line)
             return
         }
 
         guard case .keyNotFound(_, _, _, _) = (getError as? StorageError) else {
-            XCTFail("Expected notFound error, got \(getError)")
+            XCTFail("Expected notFound error, got \(getError)", file: file, line: line)
             return
         }
     }
 
     // MARK: StoragePlugin Helper functions
 
-    private func list(path: String, accessLevel: StorageAccessLevel, targetIdentityId: String? = nil) async -> [StorageListResult.Item]? {
+    private func list(path: String, accessLevel: StorageAccessLevel, targetIdentityId: String? = nil,
+                      file: StaticString = #file,
+                      line: UInt = #line) async -> [StorageListResult.Item]? {
         return await wait(name: "List operation should be successful") {
             let listOptions = StorageListRequest.Options(accessLevel: accessLevel,
                                                          targetIdentityId: targetIdentityId,
@@ -278,35 +283,42 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         }
     }
 
-    private func get(key: String, accessLevel: StorageAccessLevel, targetIdentityId: String? = nil) async -> Data? {
-        return await wait(name: "Download operation should be successful") {
+    private func get(key: String, accessLevel: StorageAccessLevel, targetIdentityId: String? = nil,
+                     file: StaticString = #file,
+                     line: UInt = #line) async -> Data? {
+        return await wait(name: "Download operation should be successful", file: file, line: line) {
             let getOptions = StorageDownloadDataRequest.Options(accessLevel: accessLevel,
                                                                 targetIdentityId: targetIdentityId)
             return try await Amplify.Storage.downloadData(key: key, options: getOptions).value
         }
     }
 
-    private func upload(key: String, data: String, accessLevel: StorageAccessLevel) async {
+    private func upload(key: String, data: String,
+                        accessLevel: StorageAccessLevel,
+                        file: StaticString = #file,
+                        line: UInt = #line) async {
         let options = StorageUploadDataRequest.Options(accessLevel: accessLevel)
-        let result = await wait(name: "Upload operation should be successful") {
+        let result = await wait(name: "Upload operation should be successful", file: file, line: line) {
             return try await Amplify.Storage.uploadData(key: key, data: data.data(using: .utf8)!, options: options).value
         }
-        XCTAssertNotNil(result)
+        XCTAssertNotNil(result, "Result undefined", file: file, line: line)
     }
 
     // Auth Helpers
 
-    private func signIn(username: String, password: String) async {
+    private func signIn(username: String, password: String,
+                        file: StaticString = #file,
+                        line: UInt = #line) async {
         let result = await wait(name: "Sign in completed") {
             return try await Amplify.Auth.signIn(username: username, password: password)
         }
-        XCTAssertNotNil(result)
+        XCTAssertNotNil(result, "Result undefined", file: file, line: line)
     }
 
-    func getIdentityId() async -> String? {
+    func getIdentityId(file: StaticString = #file, line: UInt = #line) async -> String? {
         return await wait(name: "Fetch Auth Session completed") {
             guard let session = try await Amplify.Auth.fetchAuthSession() as? AuthCognitoIdentityProvider else {
-                XCTFail("Could not get auth session as AuthCognitoIdentityProvider")
+                XCTFail("Could not get auth session as AuthCognitoIdentityProvider", file: file, line: line)
                 throw AuthError.unknown("Could not get session", nil)
             }
             return try session.getIdentityId().get()
