@@ -63,7 +63,9 @@ extension XCTestCase {
     @discardableResult
     func wait<T>(with expectation: AsyncExpectation,
                  timeout: TimeInterval = defaultNetworkTimeoutForAsyncExpectations,
-                 action: @escaping () async throws -> T) async -> T? {
+                 action: @escaping () async throws -> T,
+                 file: StaticString = #file,
+                 line: UInt = #line) async -> T? {
         let task = Task { () -> T? in
             defer {
                 Task {
@@ -74,12 +76,12 @@ extension XCTestCase {
                 return try await action()
             } catch {
                 if !(error is CancellationError) {
-                    XCTFail("Failed with \(error)")
+                    XCTFail("Failed with \(error)", file: file, line: line)
                 }
                 return nil
             }
         }
-        await waitForExpectations([expectation], timeout: timeout)
+        await waitForExpectations([expectation], timeout: timeout, file: file, line: line)
         task.cancel()
         return await task.value
     }
@@ -95,9 +97,11 @@ extension XCTestCase {
     @discardableResult
     func wait<T>(name: String,
                  timeout: TimeInterval = defaultNetworkTimeoutForAsyncExpectations,
-                 action: @escaping () async throws -> T) async -> T? {
+                 action: @escaping () async throws -> T,
+                 file: StaticString = #file,
+                 line: UInt = #line) async -> T? {
         let expectation = asyncExpectation(description: name)
-        return await wait(with: expectation, timeout: timeout, action: action)
+        return await wait(with: expectation, timeout: timeout, action: action, file: file, line: line)
     }
 
     /// Waits for an error during the execution of a given async code, using a given async expectation,
@@ -115,14 +119,16 @@ extension XCTestCase {
     @discardableResult
     func waitError<T>(with expectation: AsyncExpectation,
                       timeout: TimeInterval = defaultNetworkTimeoutForAsyncExpectations,
-                      action: @escaping () async throws -> T) async -> Error? {
+                      action: @escaping () async throws -> T,
+                      file: StaticString = #file,
+                      line: UInt = #line) async -> Error? {
         let task = Task { () -> Error? in
             defer {
                 Task { await expectation.fulfill() }
             }
             do {
                 let result = try await action()
-                XCTFail("Should not have completed, got \(result)")
+                XCTFail("Should not have completed, got \(result)", file: file, line: line)
                 return nil
             } catch {
                 if error is CancellationError {
@@ -131,14 +137,13 @@ extension XCTestCase {
                 return error
             }
         }
-        await waitForExpectations([expectation], timeout: timeout)
+        await waitForExpectations([expectation], timeout: timeout, file: file, line: line)
         task.cancel()
         return await task.value
     }
 
     /// Waits for an error during the execution of a given async code and returns said error
     /// or `nil` if it run successfully.
-    ///
     ///
     /// - Parameters:
     ///   - expectation: The async expectation that will be fulfilled once the code in `action` completes.
@@ -149,9 +154,11 @@ extension XCTestCase {
     @discardableResult
     func waitError<T>(name: String,
                       timeout: TimeInterval = defaultNetworkTimeoutForAsyncExpectations,
-                      action: @escaping () async throws -> T) async -> Error? {
+                      action: @escaping () async throws -> T,
+                      file: StaticString = #file,
+                      line: UInt = #line) async -> Error? {
         let expectation = asyncExpectation(description: name)
-        return await waitError(with: expectation, timeout: timeout, action: action)
+        return await waitError(with: expectation, timeout: timeout, action: action, file: file, line: line)
     }
 
 }

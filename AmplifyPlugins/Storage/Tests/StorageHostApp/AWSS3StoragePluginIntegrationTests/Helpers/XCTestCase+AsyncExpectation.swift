@@ -12,6 +12,8 @@ extension XCTestCase {
     @discardableResult
     func wait<T>(with expectation: AsyncExpectation,
                  timeout: TimeInterval = TestCommonConstants.networkTimeout,
+                 file: StaticString = #file,
+                 line: UInt = #line,
                  action: @escaping () async throws -> T) async -> T? {
         let task = Task { () -> T? in
             defer {
@@ -23,28 +25,31 @@ extension XCTestCase {
                 return try await action()
             } catch {
                 if !(error is CancellationError) {
-                    XCTFail("Failed with \(error)")
+                    XCTFail("Failed with \(error)", file: file, line: line)
                 }
                 return nil
             }
         }
-        await waitForExpectations([expectation], timeout: timeout)
+        await waitForExpectations([expectation], timeout: timeout, file: file, line: line)
         task.cancel()
         return await task.value
-
     }
 
     @discardableResult
     func wait<T>(name: String,
                  timeout: TimeInterval = TestCommonConstants.networkTimeout,
+                 file: StaticString = #file,
+                 line: UInt = #line,
                  action: @escaping () async throws -> T) async -> T? {
         let expectation = asyncExpectation(description: name)
-        return await wait(with: expectation, timeout: timeout, action: action)
+        return await wait(with: expectation, timeout: timeout, file: file, line: line, action: action)
     }
 
     @discardableResult
     func waitError<T>(with expectation: AsyncExpectation,
                       timeout: TimeInterval = TestCommonConstants.networkTimeout,
+                      file: StaticString = #file,
+                      line: UInt = #line,
                       action: @escaping () async throws -> T) async -> Error? {
         let task = Task { () -> Error? in
             defer {
@@ -52,7 +57,7 @@ extension XCTestCase {
             }
             do {
                 let result = try await action()
-                XCTFail("Should not have completed, got \(result)")
+                XCTFail("Should not have completed, got \(result)", file: file, line: line)
                 return nil
             } catch {
                 if error is CancellationError {
@@ -61,7 +66,7 @@ extension XCTestCase {
                 return error
             }
         }
-        await waitForExpectations([expectation], timeout: timeout)
+        await waitForExpectations([expectation], timeout: timeout, file: file, line: line)
         task.cancel()
         return await task.value
     }
@@ -69,8 +74,10 @@ extension XCTestCase {
     @discardableResult
     func waitError<T>(name: String,
                       timeout: TimeInterval = TestCommonConstants.networkTimeout,
+                      file: StaticString = #file,
+                      line: UInt = #line,
                       action: @escaping () async throws -> T) async -> Error? {
         let expectation = asyncExpectation(description: name)
-        return await waitError(with: expectation, timeout: timeout, action: action)
+        return await waitError(with: expectation, timeout: timeout, file: file, line: line, action: action)
     }
 }

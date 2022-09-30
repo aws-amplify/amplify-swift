@@ -55,40 +55,50 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
     // MARK: Common Helper functions
 
-    func uploadData(key: String, dataString: String) async {
-        await uploadData(key: key, data: dataString.data(using: .utf8)!)
+    func uploadData(key: String, dataString: String,
+                    file: StaticString = #file,
+                    line: UInt = #line) async {
+        await uploadData(key: key, data: dataString.data(using: .utf8)!, file: file, line: line)
     }
 
-    func uploadTask(key: String, data: Data) async -> StorageUploadDataTask? {
-        return await wait(name: "Upload Task created") {
-            return try await Amplify.Storage.uploadData(key: key, data: data)
+    func uploadTask(key: String, data: Data,
+                    file: StaticString = #file,
+                    line: UInt = #line) async -> StorageUploadDataTask? {
+        await wait(name: "Upload Task created", file: file, line: line) {
+            try await Amplify.Storage.uploadData(key: key, data: data)
         }
     }
 
-    func downloadTask(key: String) async -> StorageDownloadDataTask? {
-        return await wait(name: "Upload Task created") {
-            return try await Amplify.Storage.downloadData(key: key)
+    func downloadTask(key: String,
+                      file: StaticString = #file,
+                      line: UInt = #line) async -> StorageDownloadDataTask? {
+        await wait(name: "Upload Task created", file: file, line: line) {
+            try await Amplify.Storage.downloadData(key: key)
         }
     }
 
-    func uploadData(key: String, data: Data) async {
+    func uploadData(key: String, data: Data,
+                    file: StaticString = #file,
+                    line: UInt = #line) async {
         let completeInvoked = asyncExpectation(description: "Completed is invoked")
-        let result = await wait(with: completeInvoked, timeout: 60) {
-            return try await Amplify.Storage.uploadData(key: key, data: data, options: nil).value
+        let result = await wait(with: completeInvoked, timeout: 60, file: file, line: line) {
+            try await Amplify.Storage.uploadData(key: key, data: data, options: nil).value
         }
-        XCTAssertNotNil(result)
+        XCTAssertNotNil(result, file: file, line: line)
     }
     
-    func remove(key: String, accessLevel: StorageAccessLevel? = nil) async {
+    func remove(key: String, accessLevel: StorageAccessLevel? = nil,
+                file: StaticString = #file,
+                line: UInt = #line) async {
         var removeOptions: StorageRemoveRequest.Options? = nil
         if let accessLevel = accessLevel {
             removeOptions = .init(accessLevel: accessLevel)
         }
 
-        let result = await wait(name: "Remove operation should be successful") {
+        let result = await wait(name: "Remove operation should be successful", file: file, line: line) {
             return try await Amplify.Storage.remove(key: key, options: removeOptions)
         }
-        XCTAssertNotNil(result)
+        XCTAssertNotNil(result, file: file, line: line)
     }
 
     static func getBucketFromConfig(forResource: String) throws -> String {
@@ -105,7 +115,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         return bucketValue
     }
 
-    func signUp() async {
+    func signUp(file: StaticString = #file, line: UInt = #line) async {
         guard !Self.isFirstUserSignedUp, !Self.isSecondUserSignedUp else {
             return
         }
@@ -119,7 +129,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
                 Self.isFirstUserSignedUp = true
                 await registerFirstUserComplete.fulfill()
             } catch {
-                XCTFail("Failed to Sign up user: \(error)")
+                XCTFail("Failed to Sign up user: \(error)", file: file, line: line)
                 await registerFirstUserComplete.fulfill()
             }
         }
@@ -133,24 +143,28 @@ class AWSS3StoragePluginTestBase: XCTestCase {
                 Self.isSecondUserSignedUp = true
                 await registerSecondUserComplete.fulfill()
             } catch {
-                XCTFail("Failed to Sign up user: \(error)")
+                XCTFail("Failed to Sign up user: \(error)", file: file, line: line)
                 await registerSecondUserComplete.fulfill()
             }
         }
 
         await waitForExpectations([registerFirstUserComplete, registerSecondUserComplete],
-                                  timeout: TestCommonConstants.networkTimeout)
+                                  timeout: TestCommonConstants.networkTimeout, file: file, line: line)
     }
 
-    func getURL(key: String, options: StorageGetURLRequest.Options? = nil) async -> URL? {
-        return await wait(name: "Get URL completed", timeout: TestCommonConstants.networkTimeout) {
-            return try await Amplify.Storage.getURL(key: key, options: options)
+    func getURL(key: String, options: StorageGetURLRequest.Options? = nil,
+                file: StaticString = #file,
+                line: UInt = #line) async -> URL? {
+        await wait(name: "Get URL completed",
+                   timeout: TestCommonConstants.networkTimeout,
+                   file: file, line: line) {
+            try await Amplify.Storage.getURL(key: key, options: options)
         }
     }
 
-    func signOut() async {
-        await wait(name: "Sign out completed") {
-            try await Amplify.Auth.signOut()
+    func signOut(file: StaticString = #file, line: UInt = #line) async {
+        await wait(name: "Sign out completed", file: file, line: line) {
+            await Amplify.Auth.signOut()
         }
     }
 
