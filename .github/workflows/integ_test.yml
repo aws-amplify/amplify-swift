@@ -158,7 +158,7 @@ jobs:
       - name: Make directory
         run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
 
-      - name: Copy integration test resouces
+      - name: Copy integration test resources
         uses: ./.github/composite_actions/download_test_configuration
         with:
           resource_subfolder: storage
