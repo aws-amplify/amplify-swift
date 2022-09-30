@@ -32,7 +32,7 @@ struct InitializeAuthConfiguration: Action {
             }
         }
         catch KeychainStoreError.itemNotFound {
-            logVerbose("No existing session found.", environment: environment)
+            logInfo("No existing session found.", environment: environment)
         }
         catch {
             logError("Error when loading amplify credentials: \(error)", environment: environment)

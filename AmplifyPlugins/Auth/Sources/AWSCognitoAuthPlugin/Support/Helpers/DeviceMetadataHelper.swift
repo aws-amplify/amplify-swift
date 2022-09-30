@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import AWSPluginsCore
+
 struct DeviceMetadataHelper {
 
     static func getDeviceMetadata(
@@ -16,14 +18,17 @@ struct DeviceMetadataHelper {
 
                 if case .deviceMetadata(let fetchedMetadata, _) = data {
                     return fetchedMetadata
-                } else {
-                    return .noData
                 }
-            } catch {
+            }
+            catch KeychainStoreError.itemNotFound {
+                let logger = (environment as? LoggerProvider)?.logger
+                logger?.info("No existing device metadata found. \(environment)")
+            }
+            catch {
                 let logger = (environment as? LoggerProvider)?.logger
                 logger?.error("Unable to fetch device metadata with error: \(error)")
-                return .noData
             }
+            return .noData
         }
 
 }
