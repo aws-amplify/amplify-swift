@@ -132,11 +132,7 @@ class AuthCustomSignInTests: AWSAuthBaseTest {
             XCTFail("Should successfully login")
         }
 
-        do {
-            _ = await Amplify.Auth.signOut()
-        } catch {
-            XCTFail("Should successfully logout")
-        }
+        _ = await Amplify.Auth.signOut()
 
         let srpOption = AWSAuthSignInOptions(authFlowType: .userSRP)
         do {

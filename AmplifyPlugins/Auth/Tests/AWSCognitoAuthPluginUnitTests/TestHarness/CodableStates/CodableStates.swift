@@ -222,27 +222,11 @@ extension FetchAuthSessionState: Codable {
     }
 
     public init(from decoder: Decoder) throws {
-
-        let values = try decoder.container(keyedBy: CodingKeys.self)
-        if let notStarted = try values.decodeIfPresent(Dictionary<String, String>.self, forKey: .notStarted) {
-            self = .notStarted
-        } else if let fetchingIdentityID = try values.decodeIfPresent(Dictionary<String, String>.self, forKey: .fetchingIdentityID) {
-            self = .fetchingIdentityID(UnAuthLoginsMapProvider())
-        } else if let fetchingAWSCredentials = try values.decodeIfPresent(Dictionary<String, String>.self, forKey: .fetchingAWSCredentials) {
-            self = .fetchingAWSCredentials("someIdentityId", UnAuthLoginsMapProvider())
-        } else if let fetched = try values.decodeIfPresent(Dictionary<String, String>.self, forKey: .fetched) {
-            self = .fetched("someCredentials", AuthAWSCognitoCredentials(
-                accessKeyId: "",
-                secretAccessKey: "",
-                sessionToken: "",
-                expiration: Date()))
-        } else {
-            fatalError()
-        }
+        fatalError()
     }
 
     public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
+
     }
 }
 
@@ -318,9 +302,9 @@ extension SignInError: Codable {
             try container.encode(message, forKey: .invalidServiceResponse)
         case .calculation(let error):
             try container.encode(error, forKey: .calculation)
-        case .hostedUI(let error):
+        case .hostedUI(_):
             fatalError("service error decoding not supported")
-        case .service(let error):
+        case .service(_):
             fatalError("service error decoding not supported")
         case .unknown(message: let message):
             try container.encode(message, forKey: .unknown)
@@ -370,7 +354,7 @@ extension SignUpError: Codable {
             try container.encode(message, forKey: .invalidPassword)
         case .invalidConfirmationCode(message: let message):
             try container.encode(message, forKey: .invalidConfirmationCode)
-        case .service(error: let error):
+        case .service(_):
             fatalError("service error decoding not supported")
         }
     }

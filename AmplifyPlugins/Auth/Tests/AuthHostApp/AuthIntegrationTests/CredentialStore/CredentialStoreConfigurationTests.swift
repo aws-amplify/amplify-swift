@@ -93,7 +93,7 @@ class CredentialStoreConfigurationTests: AWSAuthBaseTest {
         let newCredentialStore = AWSCognitoAuthCredentialStore(authConfiguration: initialAuthConfig)
 
         // Then
-        guard let credentials = try? newCredentialStore.retrieveCredential() as? AmplifyCredentials,
+        guard let credentials = try? newCredentialStore.retrieveCredential(),
               case .userPoolAndIdentityPool(let retrievedTokens,
                                             let retrievedIdentityID,
                                             let retrievedCredentials) = credentials else {

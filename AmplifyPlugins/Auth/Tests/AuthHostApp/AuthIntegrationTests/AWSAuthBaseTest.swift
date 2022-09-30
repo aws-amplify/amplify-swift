@@ -24,7 +24,7 @@ class AWSAuthBaseTest: XCTestCase {
     override func setUp() async throws {
         try await super.setUp()
         initializeAmplify()
-        await Amplify.Auth.signOut()
+        _ = await Amplify.Auth.signOut()
     }
     
     override func tearDown() async throws {
