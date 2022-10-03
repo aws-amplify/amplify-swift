@@ -127,6 +127,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
         clearDataStore()
         var snapshots = [DataStoreQuerySnapshot<Post>]()
         let snapshotWithIsSynced = expectation(description: "query snapshot with isSynced true")
+        let receivedPostFromObserveQuery = expectation(description: "received Post")
         snapshotWithIsSynced.assertForOverFulfill = false
         var snapshotWithIsSyncedFulfilled = false
         let predicate = Post.keys.title.beginsWith("xyz")
@@ -138,18 +139,21 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
                 XCTFail("\(error)")
             }
         } receiveValue: { querySnapshot in
-            if !snapshotWithIsSyncedFulfilled {
-                snapshots.append(querySnapshot)
-
-                if querySnapshot.isSynced {
-                    snapshotWithIsSyncedFulfilled = true
-                    snapshotWithIsSynced.fulfill()
+            snapshots.append(querySnapshot)
+            if !snapshotWithIsSyncedFulfilled && querySnapshot.isSynced {
+                snapshotWithIsSyncedFulfilled = true
+                snapshotWithIsSynced.fulfill()
+            } else if snapshotWithIsSyncedFulfilled {
+                if querySnapshot.items.count >= 4 && querySnapshot.items.contains(where: { post in
+                    post.title.contains("xyz")
+                }) {
+                    receivedPostFromObserveQuery.fulfill()
                 }
             }
         }
 
-        savePostAndWaitForSync(Post(title: "xyz", content: "content", createdAt: .now()))
-        wait(for: [snapshotWithIsSynced], timeout: 100)
+        savePostAndWaitForSync(Post(title: "xyz 4", content: "content", createdAt: .now()))
+        wait(for: [snapshotWithIsSynced, receivedPostFromObserveQuery], timeout: 200)
         XCTAssertTrue(snapshots.count >= 2)
         XCTAssertFalse(snapshots[0].isSynced)
         log.info("\(snapshots)")

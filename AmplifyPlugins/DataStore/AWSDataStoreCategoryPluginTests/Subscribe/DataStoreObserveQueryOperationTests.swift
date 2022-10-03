@@ -128,16 +128,19 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
         wait(for: [firstSnapshot], timeout: 5)
 
         dispatchedModelSyncedEvent.set(true)
+        var modelSyncedEventBuilder = ModelSyncedEvent.Builder()
+        modelSyncedEventBuilder.modelName = Post.modelName
+        let modelSyncedEvent = modelSyncedEventBuilder.build()
         let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
-                                                 data: ModelSyncedEvent(modelName: Post.modelName,
-                                                                        isFullSync: true, isDeltaSync: false,
-                                                                        added: 0, updated: 0, deleted: 0))
+                                                 data: modelSyncedEvent)
         Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
         wait(for: [secondSnapshot], timeout: 10)
 
-        let modelSyncedEventNotMatch = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
-                                                  data: ModelSyncedEvent.Builder().modelName)
-        Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventNotMatch)
+        modelSyncedEventBuilder.modelName = "modelNameNotMatch"
+        let modelSyncedEventNotMatch = modelSyncedEventBuilder.build()
+        let modelSyncedEventNotMatchPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
+                                                         data: modelSyncedEventNotMatch)
+        Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventNotMatchPayload)
         wait(for: [thirdSnapshot], timeout: 10)
 
         XCTAssertEqual(querySnapshots[0].items.count, 0)
@@ -157,7 +160,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
     ///
     func testFirstSnapshotFromStorageQueryReturnsTwoPosts() throws {
         let firstSnapshot = expectation(description: "firstSnapshot received")
-        
+
         var snapshots = [DataStoreQuerySnapshot<Post>]()
         let dispatchedModelSyncedEvent = AtomicValue(initialValue: false)
         let operation = AWSDataStoreObserveQueryOperation(
@@ -173,9 +176,9 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
                         content: "content1",
                         createdAt: .now())
         storageEngine.responders[.query] = QueryResponder<Post>(callback: { _ in
-            return .success([post, Post(title: "model1", content: "content1", createdAt: .now())])
+            return .success([post, post])
         })
-        
+
         let sink = operation.publisher.sink { completed in
             switch completed {
             case .finished:
@@ -195,7 +198,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
         wait(for: [firstSnapshot], timeout: 10)
         sink.cancel()
     }
-    
+
     /// Multiple item changed observed will be returned in a single snapshot
     ///
     /// - Given:  The operation has started and the first query has completed.
