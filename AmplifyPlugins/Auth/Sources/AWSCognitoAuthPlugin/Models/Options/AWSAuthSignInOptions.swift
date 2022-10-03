@@ -9,7 +9,7 @@ import AWSCognitoIdentityProvider
 
 public struct AWSAuthSignInOptions {
 
-    public let authFlowType: AuthFlowType
+    public let authFlowType: AuthFlowType?
 
     /// You can pass data to your Lambda function using validation data during sign in
     public let validationData: [String: String]?
@@ -18,7 +18,7 @@ public struct AWSAuthSignInOptions {
 
     public init(validationData: [String: String]? = nil,
                 metadata: [String: String]? = nil,
-                authFlowType: AuthFlowType = .unknown) {
+                authFlowType: AuthFlowType? = nil) {
         self.validationData = validationData
         self.metadata = metadata
         self.authFlowType = authFlowType

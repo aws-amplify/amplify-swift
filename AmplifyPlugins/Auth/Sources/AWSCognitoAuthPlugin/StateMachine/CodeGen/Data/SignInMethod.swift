@@ -12,8 +12,6 @@ enum SignInMethod {
     case apiBased(AuthFlowType)
 
     case hostedUI(HostedUIOptions)
-
-    case unknown
 }
 
 extension SignInMethod: Codable { }

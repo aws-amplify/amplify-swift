@@ -39,10 +39,10 @@ extension AuthenticationEvent {
         eventType: .signInRequested(.testData)
     )
 
-//    static let srpAuthInitiatedTest = AuthenticationEvent(
-//        id: "srpAuthInitiatedTest",
-//        eventType: .srpAuthInitiated(.testData)
-//    )
+    //    static let srpAuthInitiatedTest = AuthenticationEvent(
+    //        id: "srpAuthInitiatedTest",
+    //        eventType: .srpAuthInitiated(.testData)
+    //    )
 
     static let errorTest = AuthenticationEvent(
         id: "errorTest",
@@ -65,7 +65,9 @@ extension AuthenticationError {
 }
 
 extension SignInEventData {
-    static let testData = SignInEventData(username: "testUserName", password: "testPassword")
+    static let testData = SignInEventData(username: "testUserName",
+                                          password: "testPassword",
+                                          signInMethod: .apiBased(.userSRP))
 }
 
 extension SignOutEventData {
@@ -79,7 +81,10 @@ extension SignedOutData {
 }
 
 extension SignInState {
-    static let testData = SignInState.signingInWithSRP(.notStarted, SignInEventData(username: "", password: ""))
+    static let testData = SignInState.signingInWithSRP(.notStarted, SignInEventData(
+        username: "",
+        password: "",
+        signInMethod:.apiBased(.userSRP)))
 }
 
 extension UserPoolConfigurationData {

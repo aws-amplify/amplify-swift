@@ -199,7 +199,7 @@ enum Defaults {
 
     static func makeAuthState(tokens: AWSCognitoUserPoolTokens,
                               signedInDate: Date = Date(),
-                              signInMethod: SignInMethod = .unknown) -> AuthState {
+                              signInMethod: SignInMethod = .apiBased(.userSRP)) -> AuthState {
 
         let signedInData = SignedInData(signedInDate: signedInDate,
                                         signInMethod: signInMethod,
@@ -254,17 +254,24 @@ struct MockCredentialStoreOperationClient: CredentialStoreStateBehaviour {
     }
 }
 
-struct MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
-    func saveCredential(_ credential: AmplifyCredentials) throws {
+class MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
+    let credentialsKey = "amplifyCredentials"
+    static var dict: [String: Data] = [:]
 
+    func saveCredential(_ credential: AmplifyCredentials) throws {
+        Self.dict[credentialsKey] = try? JSONEncoder().encode(credential)
     }
 
     func retrieveCredential() throws -> AmplifyCredentials {
-        return AmplifyCredentials.noCredentials
+        guard let data = Self.dict[credentialsKey],
+              let cred = (try? JSONDecoder().decode(AmplifyCredentials.self, from: data)) else {
+            return AmplifyCredentials.noCredentials
+        }
+        return cred
     }
 
     func deleteCredential() throws {
-
+        Self.dict.removeValue(forKey: credentialsKey)
     }
 
     func getKeychainStore() -> KeychainStoreBehavior {
@@ -272,27 +279,36 @@ struct MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
     }
 
     func saveDevice(_ deviceMetadata: DeviceMetadata, for username: String) throws {
-
+        Self.dict[username] = try? JSONEncoder().encode(deviceMetadata)
     }
 
     func retrieveDevice(for username: String) throws -> DeviceMetadata {
-        return DeviceMetadata.noData
+        guard let data = Self.dict[username],
+              let device = (try? JSONDecoder().decode(DeviceMetadata.self, from: data)) else {
+            return .noData
+        }
+        return device
     }
 
     func removeDevice(for username: String) throws {
-
+        Self.dict.removeValue(forKey: username)
     }
 
     func saveASFDevice(_ deviceId: String, for username: String) throws {
+        Self.dict[username] = try? JSONEncoder().encode(deviceId)
 
     }
 
     func retrieveASFDevice(for username: String) throws -> String {
-        return ""
+        guard let data = Self.dict[username],
+              let device = (try? JSONDecoder().decode(String.self, from: data)) else {
+            return ""
+        }
+        return device
     }
 
     func removeASFDevice(for username: String) throws {
-
+        Self.dict.removeValue(forKey: username)
     }
 }
 

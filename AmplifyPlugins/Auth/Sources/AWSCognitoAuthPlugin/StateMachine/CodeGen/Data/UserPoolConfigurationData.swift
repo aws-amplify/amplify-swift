@@ -25,7 +25,7 @@ struct UserPoolConfigurationData: Equatable {
         endpoint: CustomEndpoint? = nil,
         clientSecret: String? = nil,
         pinpointAppId: String? = nil,
-        authFlowType: AuthFlowType = .unknown,
+        authFlowType: AuthFlowType = .userSRP,
         hostedUIConfig: HostedUIConfigurationData? = nil
     ) {
         self.poolId = poolId
