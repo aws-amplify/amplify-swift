@@ -13,21 +13,33 @@ class AWSAuthSignInTask: AuthSignInTask {
     private let request: AuthSignInRequest
     private let authStateMachine: AuthStateMachine
     private let taskHelper: AWSAuthTaskHelper
+    private let authConfiguration: AuthConfiguration
 
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.signInAPI
     }
 
-    init(_ request: AuthSignInRequest, authStateMachine: AuthStateMachine) {
+    init(_ request: AuthSignInRequest,
+         authStateMachine: AuthStateMachine,
+         configuration: AuthConfiguration) {
         self.request = request
         self.authStateMachine = authStateMachine
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
+        self.authConfiguration = configuration
     }
 
     func execute() async throws -> AuthSignInResult {
+        guard let userPoolConfiguration = authConfiguration.getUserPoolConfiguration() else {
+            let message = AuthPluginErrorConstants.configurationError
+            let authError = AuthenticationError.configuration(message: message)
+            throw authError
+        }
+
         await taskHelper.didStateMachineConfigured()
         try await validateCurrentState()
-        return try await doSignIn()
+
+        let authflowType = authFlowType(userPoolConfiguration: userPoolConfiguration)
+        return try await doSignIn(authflowType: authflowType)
     }
 
     private func validateCurrentState() async throws {
@@ -51,9 +63,9 @@ class AWSAuthSignInTask: AuthSignInTask {
         }
     }
 
-    private func doSignIn() async throws -> AuthSignInResult {
+    private func doSignIn(authflowType: AuthFlowType) async throws -> AuthSignInResult {
         let stateSequences = await authStateMachine.listen()
-        await sendSignInEvent()
+        await sendSignInEvent(authflowType: authflowType)
         for await state in stateSequences {
             guard case .configured(let authNState,
                                    let authZState) = state else { continue }
@@ -83,19 +95,23 @@ class AWSAuthSignInTask: AuthSignInTask {
         throw AuthError.unknown("Sign in reached an error state")
     }
 
-    private func sendSignInEvent() async {
+    private func sendSignInEvent(authflowType: AuthFlowType) async {
         let signInData = SignInEventData(
             username: request.username,
             password: request.password,
             clientMetadata: clientMetadata(),
-            signInMethod: .apiBased(authFlowType())
+            signInMethod: .apiBased(authflowType)
         )
         let event = AuthenticationEvent.init(eventType: .signInRequested(signInData))
         await authStateMachine.send(event)
     }
 
-    private func authFlowType() -> AuthFlowType {
-        (request.options.pluginOptions as? AWSAuthSignInOptions)?.authFlowType ?? .unknown
+    private func authFlowType(userPoolConfiguration: UserPoolConfigurationData) -> AuthFlowType {
+
+        if let flowType = (request.options.pluginOptions as? AWSAuthSignInOptions)?.authFlowType {
+            return flowType
+        }
+        return userPoolConfiguration.authFlowType
     }
 
     private func clientMetadata() -> [String: String] {

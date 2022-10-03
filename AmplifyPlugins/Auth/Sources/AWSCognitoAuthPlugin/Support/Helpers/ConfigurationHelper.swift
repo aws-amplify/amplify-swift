@@ -44,20 +44,16 @@ struct ConfigurationHelper {
             return nil
         }()
 
-        var authFlowType = AuthFlowType.unknown
+        var authFlowType: AuthFlowType
         if case .boolean(let isMigrationEnabled) = cognitoUserPoolJSON.value(at: "MigrationEnabled"),
            isMigrationEnabled == true {
             authFlowType = .userPassword
         } else if let authJson = config.value(at: "Auth.Default"),
-                  case .string(let authFlowTypeJSON) = authJson.value(at: "authenticationFlowType") {
-
-            switch authFlowTypeJSON {
-            // Using `custom` here to keep the legacy behaviour from V1 intact,
-            // which is custom flow type will start with SRP_A flow.
-            case "CUSTOM_AUTH": authFlowType = .custom
-            case "USER_SRP_AUTH": authFlowType = .userSRP
-            default: authFlowType = .unknown
-            }
+                  case .string(let authFlowTypeJSON) = authJson.value(at: "authenticationFlowType"),
+                  authFlowTypeJSON == "CUSTOM_AUTH" {
+            authFlowType = .customWithSRP
+        } else {
+            authFlowType = .userSRP
         }
 
         var clientSecret: String?

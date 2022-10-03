@@ -28,8 +28,6 @@ public enum AuthFlowType: String {
     /// If a user migration Lambda trigger is set, this flow will invoke the user migration
     /// Lambda if it doesn't find the user name in the user pool.
     case userPassword
-
-    case unknown
 }
 
 extension AuthFlowType: Codable { }
@@ -40,7 +38,7 @@ extension AuthFlowType {
         switch self {
         case .custom, .customWithSRP, .customWithoutSRP:
             return .customAuth
-        case .userSRP, .unknown:
+        case .userSRP:
             return .userSrpAuth
         case .userPassword:
             return .userPasswordAuth

@@ -24,15 +24,13 @@ struct InitializeSignInFlow: Action {
 
     func createSignInEvent(from environment: Environment) async -> SignInEvent {
 
-        guard let authEnvironment = environment as? AuthEnvironment else {
+        guard let authEnvironment = environment as? AuthEnvironment,
+              authEnvironment.configuration.getUserPoolConfiguration() != nil else {
             let message = AuthPluginErrorConstants.configurationError
             let event = SignInEvent(eventType: .throwAuthError(.configuration(message: message)))
             return event
         }
-
-        let userPoolConfiguration = authEnvironment.userPoolConfiguration
-        let authFlowFromConfig = userPoolConfiguration.authFlowType
-
+        
         var deviceMetadata = DeviceMetadata.noData
         if let username = signInEventData.username {
             deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
@@ -44,15 +42,9 @@ struct InitializeSignInFlow: Action {
         switch signInEventData.signInMethod {
 
         case .apiBased(let authflowType):
-            if authflowType != .unknown {
-                event = signInEvent(for: authflowType, with: deviceMetadata)
-            } else {
-                event = signInEvent(for: authFlowFromConfig, with: deviceMetadata)
-            }
+            event = signInEvent(for: authflowType, with: deviceMetadata)
         case .hostedUI(let hostedUIOptions):
             event = .init(eventType: .initiateHostedUISignIn(hostedUIOptions))
-        case .unknown:
-            event = signInEvent(for: authFlowFromConfig, with: deviceMetadata)
         }
 
         return event
@@ -73,12 +65,9 @@ struct InitializeSignInFlow: Action {
         // which is custom flow type will start with SRP_A flow.
         case .custom:
             return .init(eventType: .initiateCustomSignInWithSRP(signInEventData, deviceMetadata))
-        case .unknown:
-            // Default to SRP signIn if we could not figure out the authflow type
-            return .init(eventType: .initiateSignInWithSRP(signInEventData, deviceMetadata))
+
         }
     }
-
 }
 
 extension InitializeSignInFlow: CustomDebugDictionaryConvertible {

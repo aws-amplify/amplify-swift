@@ -123,7 +123,9 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         let request = AuthSignInRequest(username: username,
                                         password: password,
                                         options: options)
-        let task = AWSAuthSignInTask(request, authStateMachine: self.authStateMachine)
+        let task = AWSAuthSignInTask(request,
+                                     authStateMachine: self.authStateMachine,
+                                     configuration: authConfiguration)
         return try await task.value
     }
 

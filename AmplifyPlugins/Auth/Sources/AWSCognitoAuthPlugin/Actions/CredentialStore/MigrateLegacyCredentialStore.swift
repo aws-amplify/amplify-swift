@@ -71,7 +71,7 @@ struct MigrateLegacyCredentialStore: Action {
         }
         let loginsMap = getCachedLoginMaps(from: credentialStoreEnvironment)
         let signInMethod = (try? getSignInMethod(from: credentialStoreEnvironment,
-                                                 with: authConfiguration)) ?? .unknown
+                                                 with: authConfiguration)) ?? .apiBased(.userSRP)
         do {
             if let identityId = identityId,
                let awsCredentials = awsCredentials,
@@ -292,10 +292,8 @@ struct MigrateLegacyCredentialStore: Action {
                                        providerInfo: provider,
                                        presentationAnchor: nil,
                                        preferPrivateSession: false))
-            case "userPools":
-                return .apiBased(.userSRP)
             default:
-                return .unknown
+                return .apiBased(.userSRP)
             }
 
         }
