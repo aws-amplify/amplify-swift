@@ -46,6 +46,11 @@ class RemoteSyncEngineTests: XCTestCase {
     }
 
     func testErrorOnNilStorageAdapter() throws {
+        guard let remoteSyncEngine = remoteSyncEngine else {
+            XCTFail("Failed to initialize remoteSyncEngine")
+            return
+        }
+
         let failureOnStorageAdapter = expectation(description: "Expect receiveCompletion on storageAdapterFailure")
 
         storageAdapter = nil
@@ -53,9 +58,9 @@ class RemoteSyncEngineTests: XCTestCase {
             .publisher
             .sink(receiveCompletion: { _ in
                 failureOnStorageAdapter.fulfill()
-        }, receiveValue: { _ in
-            XCTFail("We should not expect the sync engine not to continue")
-        })
+            }, receiveValue: { _ in
+                XCTFail("We should not expect the sync engine not to continue")
+            })
 
         remoteSyncEngine.start(api: MockAPICategoryPlugin(), auth: nil)
 
