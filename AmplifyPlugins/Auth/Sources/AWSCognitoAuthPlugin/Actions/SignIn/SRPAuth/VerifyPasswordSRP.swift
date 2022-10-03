@@ -25,6 +25,7 @@ struct VerifyPasswordSRP: Action {
                  environment: Environment) async {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
+
         do {
             let srpEnv = try environment.srpEnvironment()
             let userPoolEnv = try environment.userPoolEnvironment()

@@ -199,7 +199,7 @@ enum Defaults {
 
     static func makeAuthState(tokens: AWSCognitoUserPoolTokens,
                               signedInDate: Date = Date(),
-                              signInMethod: SignInMethod = .unknown) -> AuthState {
+                              signInMethod: SignInMethod = .apiBased(.userSRP)) -> AuthState {
 
         let signedInData = SignedInData(signedInDate: signedInDate,
                                         signInMethod: signInMethod,
