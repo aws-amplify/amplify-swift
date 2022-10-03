@@ -96,11 +96,13 @@ struct InitiateAuthSRP: Action {
         let response = try await cognitoClient.initiateAuth(input: request)
         logVerbose("\(#fileID) InitiateAuth response success", environment: environment)
         if case .customChallenge = response.challengeName {
+            let parameters = response.challengeParameters
+            let username = parameters?["USERNAME"] ?? username
             let respondToAuthChallenge = RespondToAuthChallenge(
                 challenge: .customChallenge,
                 username: username,
                 session: response.session,
-                parameters: response.challengeParameters)
+                parameters: parameters)
             return SignInEvent(eventType: .receivedChallenge(respondToAuthChallenge))
         }
         return SignInEvent(eventType: .respondPasswordVerifier(srpStateData, response))
