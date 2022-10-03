@@ -33,7 +33,7 @@ class CredentialStoreOperationClientTests: XCTestCase {
             credentialStoreStateMachine: credentialStateMachine)
     }
 
-    func testSuccess() async throws {
+    func testDeviceDataSuccess() async throws {
         let deviceId = "someDeviceID"
         let username = "someUsername"
         try await credentialClient.storeData(data: .asfDeviceId(deviceId, username))
@@ -46,5 +46,40 @@ class CredentialStoreOperationClientTests: XCTestCase {
         default:
             XCTFail("Should return asfdevice")
         }
+    }
+    
+
+    func testMultipleSuccess() async throws {
+
+        let expectation = expectation(description: "Run multiple store")
+        expectation.expectedFulfillmentCount = 100
+        for i in 1...expectation.expectedFulfillmentCount {
+            Task {
+                do {
+                    let deviceId = "someDeviceID-\(UUID().uuidString)"
+                    let username = "someUsername-\(UUID().uuidString)"
+                    try await credentialClient.storeData(data: .asfDeviceId(deviceId, username))
+
+                    let fetchedId = try await credentialClient.fetchData(type: .asfDeviceId(username: username))
+                    switch fetchedId {
+                    case .asfDeviceId(let fetchedId, let fetchedUsername):
+                        print("here \(i)")
+                        XCTAssertEqual(deviceId, fetchedId)
+                        XCTAssertEqual(username, fetchedUsername)
+                        expectation.fulfill()
+                    default:
+                        XCTFail("Should return asfdevice")
+                    }
+                } catch {
+                    XCTFail("Should not return error \(error)")
+                }
+
+            }
+            Task  {
+                try await credentialClient.deleteData(type: .asfDeviceId(username: "unknownUser"))
+            }
+        }
+
+        await waitForExpectations(timeout: 355)
     }
 }
