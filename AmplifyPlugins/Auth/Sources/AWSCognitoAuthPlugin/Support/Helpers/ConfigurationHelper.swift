@@ -49,10 +49,12 @@ struct ConfigurationHelper {
            isMigrationEnabled == true {
             authFlowType = .userPassword
         } else if let authJson = config.value(at: "Auth.Default"),
-                   case .string(let authFlowTypeJSON) = authJson.value(at: "authenticationFlowType") {
+                  case .string(let authFlowTypeJSON) = authJson.value(at: "authenticationFlowType") {
 
             switch authFlowTypeJSON {
-            case "CUSTOM_AUTH": authFlowType = .customWithSRP
+            // Using `custom` here to keep the legacy behaviour from V1 intact,
+            // which is custom flow type will start with SRP_A flow.
+            case "CUSTOM_AUTH": authFlowType = .custom
             case "USER_SRP_AUTH": authFlowType = .userSRP
             default: authFlowType = .unknown
             }

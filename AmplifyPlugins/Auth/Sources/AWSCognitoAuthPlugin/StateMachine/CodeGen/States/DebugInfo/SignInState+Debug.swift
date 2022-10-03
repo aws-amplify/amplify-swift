@@ -25,7 +25,22 @@ extension SignInState {
             additionalMetadataDictionary = challengeState.debugDictionary
             additionalMetadataDictionary["challengeType"] = challengeType
             additionalMetadataDictionary["signInMethod"] = signInMethod
-        default:
+
+        case .notStarted:
+            additionalMetadataDictionary = [:]
+        case .signingInWithSRPCustom(let srpstate, _):
+            additionalMetadataDictionary = ["SRPSignInStaet": srpstate.debugDictionary]
+        case .signingInWithCustom(let customSignIn, _):
+            additionalMetadataDictionary = ["CustomSignInState": customSignIn.debugDictionary]
+        case .signingInViaMigrateAuth(let migrateSignInState, _):
+            additionalMetadataDictionary = ["MigrateSignInState": migrateSignInState.debugDictionary]
+        case .confirmingDevice:
+            additionalMetadataDictionary = [:]
+        case .resolvingDeviceSrpa(let deviceSRPState):
+            additionalMetadataDictionary = ["DeviceSRPState": deviceSRPState.debugDictionary]
+        case .signedIn(let data):
+            additionalMetadataDictionary = ["SignedInData": data.debugDictionary]
+        case .error:
             additionalMetadataDictionary = [:]
         }
         return [type: additionalMetadataDictionary]
