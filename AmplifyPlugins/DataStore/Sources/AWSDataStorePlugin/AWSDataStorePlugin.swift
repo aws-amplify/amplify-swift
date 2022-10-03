@@ -16,6 +16,12 @@ enum DataStoreState {
     case clear
 }
 
+enum InitStorageEngineResult {
+    case successfullyInitialized
+    case alreadyInitialized
+    case failure(DataStoreError)
+}
+
 final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     public var key: PluginKey = "awsDataStorePlugin"
@@ -108,12 +114,6 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         }
         resolveSyncEnabled()
         ModelListDecoderRegistry.registerDecoder(DataStoreListDecoder.self)
-    }
-
-    enum InitStorageEngineResult {
-        case successfullyInitialized
-        case alreadyInitialized
-        case failure(DataStoreError)
     }
     
     /// Initializes the underlying storage engine
