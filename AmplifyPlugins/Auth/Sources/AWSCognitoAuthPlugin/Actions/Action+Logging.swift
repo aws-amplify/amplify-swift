@@ -14,6 +14,11 @@ extension Action {
         logger?.error("\(message)")
     }
 
+    func logInfo(_ message: String, environment: Environment) {
+        let logger = (environment as? LoggerProvider)?.logger
+        logger?.info("\(message)")
+    }
+
     func logVerbose(_ message: String, environment: Environment) {
         let logger = (environment as? LoggerProvider)?.logger
         logger?.verbose("\(message)")

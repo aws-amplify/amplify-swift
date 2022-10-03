@@ -40,7 +40,7 @@ class GetCurrentUserTests: AWSAuthBaseTest {
 
         let authUser = try await Amplify.Auth.getCurrentUser()
 
-        XCTAssertEqual(authUser.username, username.lowercased())
+        XCTAssertEqual(authUser.username.lowercased(), username.lowercased())
         XCTAssertNotNil(authUser.userId)
     }
 
