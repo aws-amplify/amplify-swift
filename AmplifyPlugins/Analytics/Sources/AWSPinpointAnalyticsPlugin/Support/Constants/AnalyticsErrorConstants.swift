@@ -31,11 +31,6 @@ struct AnalyticsPluginErrorConstant {
         "Make sure the value for the `PinpointAnalytics` is a dictionary literal with `AppId` and `Region`"
     )
 
-    static let missingPinpointTargetingConfiguration: AnalyticsPluginErrorString = (
-        "Plugin is missing `PinpointTargeting` section.",
-        "Add the `PinpointTargeting` section to the plugin."
-    )
-
     static let pinpointTargetingConfigurationExpected: AnalyticsPluginErrorString = (
         "Configuration at `PinpointTargeting` is not a dictionary literal",
         "Make sure the value for the `PinpointTargeting` is a dictionary literal with `Region`"

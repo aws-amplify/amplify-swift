@@ -31,10 +31,11 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
 
     let appId: String
     let region: String
-    let targetingRegion: String
     let autoFlushEventsInterval: Int
     let trackAppSessions: Bool
     let autoSessionTrackingInterval: Int
+    
+    private static let logger = Amplify.Logging.logger(forCategory: String(describing: Self.self))
 
     init(_ configuration: JSONValue) throws {
         guard case let .object(configObject) = configuration else {
@@ -59,34 +60,24 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
             )
         }
 
-        guard let pinpointTargetingConfig = configObject[
-            AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey
-        ] else {
-            throw PluginError.pluginConfigurationError(
-                AnalyticsPluginErrorConstant.missingPinpointTargetingConfiguration.errorDescription,
-                AnalyticsPluginErrorConstant.missingPinpointTargetingConfiguration.recoverySuggestion
-            )
-        }
-
-        guard case let .object(pinpointTargetingConfigObject) = pinpointTargetingConfig else {
-            throw PluginError.pluginConfigurationError(
-                AnalyticsPluginErrorConstant.pinpointTargetingConfigurationExpected.errorDescription,
-                AnalyticsPluginErrorConstant.pinpointTargetingConfigurationExpected.recoverySuggestion
-            )
-        }
-
         let appId = try AWSPinpointAnalyticsPluginConfiguration.getAppId(pinpointAnalyticsConfigObject)
         let region = try AWSPinpointAnalyticsPluginConfiguration.getRegion(pinpointAnalyticsConfigObject)
-        let targetingRegion = try AWSPinpointAnalyticsPluginConfiguration.getRegion(pinpointTargetingConfigObject)
         let autoFlushEventsInterval =
             try AWSPinpointAnalyticsPluginConfiguration.getAutoFlushEventsInterval(configObject)
         let trackAppSessions = try AWSPinpointAnalyticsPluginConfiguration.getTrackAppSessions(configObject)
         let autoSessionTrackingInterval =
             try AWSPinpointAnalyticsPluginConfiguration.getAutoSessionTrackingInterval(configObject)
 
+        // Warn users in case they set different regions between pinpointTargeting and pinpointAnalytics
+        if let pinpointTargetingConfig = configObject[AWSPinpointAnalyticsPluginConfiguration.pinpointTargetingConfigKey],
+           case let .object(pinpointTargetingConfigObject) = pinpointTargetingConfig,
+           let targetingRegion = try? AWSPinpointAnalyticsPluginConfiguration.getRegion(pinpointTargetingConfigObject),
+           targetingRegion != region {
+            Self.logger.warn("Having different regions for Analytics and Targeting operations is not supported. The Analytics region will be used.")
+        }
+
         self.init(appId: appId,
                   region: region,
-                  targetingRegion: targetingRegion,
                   autoFlushEventsInterval: autoFlushEventsInterval,
                   trackAppSessions: trackAppSessions,
                   autoSessionTrackingInterval: autoSessionTrackingInterval)
@@ -94,13 +85,11 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
 
     init(appId: String,
          region: String,
-         targetingRegion: String,
          autoFlushEventsInterval: Int,
          trackAppSessions: Bool,
          autoSessionTrackingInterval: Int) {
         self.appId = appId
         self.region = region
-        self.targetingRegion = targetingRegion
         self.autoFlushEventsInterval = autoFlushEventsInterval
         self.trackAppSessions = trackAppSessions
         self.autoSessionTrackingInterval = autoSessionTrackingInterval
@@ -146,8 +135,7 @@ public struct AWSPinpointAnalyticsPluginConfiguration {
             )
         }
 
-        // TODO: Validate if Unknown is a valid type
-        if regionValue.isEmpty || regionValue == "Unknown" {
+        if regionValue.isEmpty {
             throw PluginError.pluginConfigurationError(
                 AnalyticsPluginErrorConstant.emptyRegion.errorDescription,
                 AnalyticsPluginErrorConstant.emptyRegion.recoverySuggestion
