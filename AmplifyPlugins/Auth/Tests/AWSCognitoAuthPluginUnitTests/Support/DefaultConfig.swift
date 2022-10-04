@@ -302,7 +302,7 @@ class MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
     func retrieveASFDevice(for username: String) throws -> String {
         guard let data = Self.dict[username],
               let device = (try? JSONDecoder().decode(String.self, from: data)) else {
-            return ""
+            throw KeychainStoreError.itemNotFound
         }
         return device
     }
