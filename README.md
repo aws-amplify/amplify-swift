@@ -1,4 +1,4 @@
-## Amplify for iOS (Developer Preview)
+## Amplify Library for Swift
 <img src="https://s3.amazonaws.com/aws-mobile-hub-images/aws-amplify-logo.png" alt="AWS Amplify" width="550" >
 
 AWS Amplify provides a declarative and easy-to-use interface across different categories of cloud operations. Our default implementation works with Amazon Web Services (AWS), but AWS Amplify is designed to be open and pluggable for any custom backend or service.
@@ -49,7 +49,7 @@ let task = awsS3.headBucket(input: input) { result in
 
 ## Platform Support
 
-Amplify supports iOS 13+ and macOS 10.15+. There are currently no plans to support Amplify on watchOS or tvOS.
+Amplify supports iOS 13+ and macOS 10.15+. Support for watchOS and tvOS is coming in future releases.
 
 ## License
 
