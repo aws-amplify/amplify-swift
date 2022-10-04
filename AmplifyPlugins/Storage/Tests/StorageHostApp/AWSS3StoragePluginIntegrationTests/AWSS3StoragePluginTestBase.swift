@@ -12,7 +12,7 @@ import XCTest
 import AWSCognitoAuthPlugin
 
 class AWSS3StoragePluginTestBase: XCTestCase {
-
+    static let logger = Amplify.Logging.logger(forCategory: "Storage", logLevel: .verbose)
     static let amplifyConfiguration = "testconfiguration/AWSS3StoragePluginTests-amplifyconfiguration"
 
     static let largeDataObject = Data(repeating: 0xff, count: 1_024 * 1_024 * 6) // 6MB
@@ -27,6 +27,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
     static var isSecondUserSignedUp = false
 
     override func setUp() async throws {
+        Self.logger.debug("setUp")
         do {
             await Amplify.reset()
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
@@ -43,6 +44,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
     }
 
     override func tearDown() async throws {
+        Self.logger.debug("tearDown")
         invalidateCurrentSession()
         await Amplify.reset()
         // `sleep` has been added here to get more consistent test runs.
@@ -150,11 +152,12 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
     func signOut() async {
         await wait(name: "Sign out completed") {
-            try await Amplify.Auth.signOut()
+            await Amplify.Auth.signOut()
         }
     }
 
     private func invalidateCurrentSession() {
+        Self.logger.debug("Invalidating URLSession")
         guard let plugin = try? Amplify.Storage.getPlugin(for: "awsS3StoragePlugin") as? AWSS3StoragePlugin,
               let service = plugin.storageService as? AWSS3StorageService else {
             print("Unable to to cast to AWSS3StorageService")
