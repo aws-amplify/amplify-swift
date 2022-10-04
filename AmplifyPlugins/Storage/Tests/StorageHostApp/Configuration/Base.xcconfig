@@ -1,2 +1,4 @@
 
+SUPPORTED_PLATFORMS = iphoneos iphonesimulator macosx
+
 DEVELOPMENT_TEAM = 94KV3E626L
