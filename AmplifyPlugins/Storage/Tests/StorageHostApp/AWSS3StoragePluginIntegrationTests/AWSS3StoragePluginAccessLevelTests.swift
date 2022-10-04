@@ -53,6 +53,152 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         XCTAssertEqual(description, StorageErrorConstants.accessDenied.errorDescription)
     }
 
+    func testUploadAndRemoveForGuestOnly() async throws {
+        let logger = Amplify.Logging.logger(forCategory: "Storage", logLevel: .verbose)
+
+        let username = AWSS3StoragePluginTestBase.user1.lowercased()
+        let password = AWSS3StoragePluginTestBase.password
+        let accessLevel: StorageAccessLevel = .guest
+
+        do {
+            logger.debug("Sign In")
+            let result = try await Amplify.Auth.signIn(username: username, password: password)
+            XCTAssertTrue(result.isSignedIn)
+            let currentUser = try await Amplify.Auth.getCurrentUser()
+            XCTAssertEqual(username, currentUser.username)
+        } catch {
+            logger.error(error: error)
+            XCTFail("Error: \(error)")
+            return
+        }
+
+        let done = asyncExpectation(description: "done with \(accessLevel)")
+
+        let key = UUID().uuidString
+        guard let dataInput = UUID().uuidString.data(using: .utf8) else {
+            XCTFail("Failed to create test data")
+            return
+        }
+
+        Task {
+            do {
+                logger.debug("Upload [\(accessLevel)]")
+                let uploadDataOptions = StorageUploadDataRequest.Options(accessLevel: accessLevel)
+                let uploadKey = try await Amplify.Storage.uploadData(key: key, data: dataInput, options: uploadDataOptions).value
+                XCTAssertEqual(key, uploadKey)
+
+                logger.debug("Remove [\(accessLevel)]")
+                let removeOptions = StorageRemoveRequest.Options(accessLevel: accessLevel)
+                let removeKey = try await Amplify.Storage.remove(key: key, options: removeOptions)
+                XCTAssertEqual(key, removeKey)
+            } catch {
+                logger.error(error: error)
+                XCTFail("Error: \(error) [\(accessLevel)]")
+            }
+
+            await done.fulfill()
+        }
+
+        await waitForExpectations([done], timeout: 10)
+    }
+
+    func testUploadAndListThenGetThenRemove() async throws {
+        /*
+         1. sign in
+         2. upload (create data to upload)
+         3. get list (confirm key is in list)
+         4. download (using original key)
+         5. remove (using key)
+         6. download and confirm not found error
+         */
+
+        let logger = Amplify.Logging.logger(forCategory: "Storage", logLevel: .verbose)
+
+        let levels: [StorageAccessLevel] = [
+            .private,
+            .protected,
+            .guest
+        ]
+
+        let username = AWSS3StoragePluginTestBase.user1.lowercased()
+        let password = AWSS3StoragePluginTestBase.password
+
+        do {
+            logger.debug("Sign In")
+            let result = try await Amplify.Auth.signIn(username: username, password: password)
+            XCTAssertTrue(result.isSignedIn)
+            let currentUser = try await Amplify.Auth.getCurrentUser()
+            XCTAssertEqual(username, currentUser.username)
+        } catch {
+            logger.error(error: error)
+            XCTFail("Error: \(error)")
+            return
+        }
+
+        for accessLevel in levels {
+            logger.debug("Testing storage access level: \(accessLevel)")
+
+            let done = asyncExpectation(description: "done with \(accessLevel)")
+
+            let key = UUID().uuidString
+            guard let dataInput = UUID().uuidString.data(using: .utf8) else {
+                XCTFail("Failed to create test data")
+                return
+            }
+
+            Task {
+                do {
+                    logger.debug("Upload [\(accessLevel)]")
+                    let uploadDataOptions = StorageUploadDataRequest.Options(accessLevel: accessLevel)
+                    let uploadKey = try await Amplify.Storage.uploadData(key: key, data: dataInput, options: uploadDataOptions).value
+                    XCTAssertEqual(key, uploadKey)
+
+                    logger.debug("List [\(accessLevel)]")
+                    let keys = await list(path: key, accessLevel: accessLevel)
+                    XCTAssertNotNil(keys, "Key undefined")
+                    XCTAssertEqual(keys?.count, 1, "Keys count")
+
+                    logger.debug("Download [\(accessLevel)]")
+                    let downloadDataOptions = StorageDownloadDataRequest.Options(accessLevel: accessLevel)
+                    let dataOutput = try await Amplify.Storage.downloadData(key: key, options: downloadDataOptions).value
+                    XCTAssertNotNil(dataOutput, "Data undefined")
+                    XCTAssertEqual(dataInput.count, dataOutput.count)
+                    XCTAssertEqual(dataInput, dataOutput)
+
+                    logger.debug("Remove [\(accessLevel)]")
+                    let removeOptions = StorageRemoveRequest.Options(accessLevel: accessLevel)
+                    let removeKey = try await Amplify.Storage.remove(key: key, options: removeOptions)
+                    XCTAssertEqual(key, removeKey)
+
+                    // try download after remove
+                    do {
+                        _ = try await Amplify.Storage.downloadData(key: key, options: downloadDataOptions).value
+                    } catch {
+                        // expect error to be Not Found
+                        if let storageError = error as? StorageError {
+                            var isNotFoundError = false
+                            if case .keyNotFound = storageError {
+                                isNotFoundError = true
+                            }
+                            XCTAssertTrue(isNotFoundError, "Expected Not Found error: \(storageError) [\(accessLevel)]")
+                        } else {
+                            XCTFail("Expected Not Found error: \(error) [\(accessLevel)]")
+                        }
+                    }
+                } catch {
+                    logger.error(error: error)
+                    XCTFail("Error: \(error) [\(accessLevel)]")
+                }
+
+                await done.fulfill()
+            }
+
+            await waitForExpectations([done], timeout: 10)
+            //await waitForExpectations([done], timeout: TestCommonConstants.networkTimeout)
+        }
+
+    }
+
     /// Given: `user1` user uploads some data with protected access level
     /// When: The user retrieves and removes the data
     /// Then: The operations complete successful
