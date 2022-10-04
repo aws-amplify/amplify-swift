@@ -94,7 +94,7 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
                     case NSURLErrorCancelledReasonInsufficientSystemResources:
                         logURLSessionActivity("Session task cancellation reason: insufficient system resources :\(task.taskIdentifier)")
                     case NSURLErrorCancelledReasonUserForceQuitApplication:
-                        logURLSessionActivity("Session task cancellation reason: user force quite app :\(task.taskIdentifier)")
+                        logURLSessionActivity("Session task cancellation reason: user force quit app :\(task.taskIdentifier)")
                     default:
                         logURLSessionActivity("Session task cancellation reason: unknown(\(reason.intValue) :\(task.taskIdentifier)")
                     }
