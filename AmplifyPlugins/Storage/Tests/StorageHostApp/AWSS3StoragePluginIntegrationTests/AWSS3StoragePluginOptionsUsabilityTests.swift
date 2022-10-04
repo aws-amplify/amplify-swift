@@ -15,7 +15,7 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
     /// Given: An object in storage
     /// When: Call the GetURL API with 10 second expiry time
     /// Then: Retrieve data successfully when the URL has not expired and fail to after the expiry time
-    func testGetRemoteURLWithExpires() async {
+    func testGetRemoteURLWithExpires() async throws {
         let key = UUID().uuidString
         await uploadData(key: key, dataString: key)
 
@@ -50,7 +50,8 @@ class AWSS3StoragePluginOptionsUsabilityTests: AWSS3StoragePluginTestBase {
         task.resume()
         await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
 
-        sleep(15)
+        // sleep(15)
+        try await Task.sleep(seconds: 15)
 
         let urlExpired = expectation(description: "Retrieving expired url should have bad response")
         let task2 = URLSession.shared.dataTask(with: remoteURL) { _, response, error in
