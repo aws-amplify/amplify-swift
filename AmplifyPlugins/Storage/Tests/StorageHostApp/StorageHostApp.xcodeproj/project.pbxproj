@@ -209,6 +209,9 @@
 			buildRules = (
 			);
 			dependencies = (
+				03257C1428EBF994005DF425 /* PBXTargetDependency */,
+				03257C1628EBF994005DF425 /* PBXTargetDependency */,
+				03257C1828EBF994005DF425 /* PBXTargetDependency */,
 			);
 			name = StorageHostApp;
 			packageProductDependencies = (
@@ -357,6 +360,18 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		03257C1428EBF994005DF425 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 03257C1328EBF994005DF425 /* AWSCognitoAuthPlugin */;
+		};
+		03257C1628EBF994005DF425 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 03257C1528EBF994005DF425 /* AWSS3StoragePlugin */;
+		};
+		03257C1828EBF994005DF425 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 03257C1728EBF994005DF425 /* Amplify */;
+		};
 		684FB0AE28BEB07200C8A6EB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 684FB06928BEAF1500C8A6EB /* StorageHostApp */;
@@ -610,6 +625,18 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		03257C1328EBF994005DF425 /* AWSCognitoAuthPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSCognitoAuthPlugin;
+		};
+		03257C1528EBF994005DF425 /* AWSS3StoragePlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSS3StoragePlugin;
+		};
+		03257C1728EBF994005DF425 /* Amplify */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Amplify;
+		};
 		684FB0A128BEB02E00C8A6EB /* Amplify */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Amplify;
