@@ -12,7 +12,6 @@ import Combine
 
 @testable import Amplify
 @testable import AWSDataStorePlugin
-import AmplifyAsyncTesting
 
 // swiftlint:disable type_body_length
 // swiftlint:disable file_length
