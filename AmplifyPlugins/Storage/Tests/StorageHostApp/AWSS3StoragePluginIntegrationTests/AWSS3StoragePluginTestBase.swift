@@ -49,7 +49,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
         // The plugin will always create a URLSession with the same key, so we need to invalidate it first.
         // However, it needs some time to properly clean up before creating and using a new session.
         // The `sleep` helps avoid the error: "Task created in a session that has been invalidated"
-        sleep(1)
+        try await Task.sleep(seconds: 1)
     }
 
     // MARK: Common Helper functions
