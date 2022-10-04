@@ -19,31 +19,45 @@ protocol CredentialStoreStateBehaviour {
 
 class CredentialStoreOperationClient: CredentialStoreStateBehaviour {
 
-    let credentialStoreStateMachine: CredentialStoreStateMachine
+    private let credentialStoreStateMachine: CredentialStoreStateMachine
+
+    // Task queue is being used to manage CRUD operations to the credential store synchronously
+    // This will help us keeping the CRUD methods atomic
+    private let taskQueue = TaskQueue<CredentialStoreData?>()
 
     init(credentialStoreStateMachine: CredentialStoreStateMachine) {
         self.credentialStoreStateMachine = credentialStoreStateMachine
     }
 
     func fetchData(type: CredentialStoreDataType) async throws -> CredentialStoreData {
-        await waitForValidState()
-        let credentialStoreEvent = CredentialStoreEvent(
-            eventType: .loadCredentialStore(type))
-        return try await sendEventAndListenToStateChanges(event: credentialStoreEvent)
+        guard let credentialStoreData = try await taskQueue.sync(block: {
+            await self.waitForValidState()
+            let credentialStoreEvent = CredentialStoreEvent(
+                eventType: .loadCredentialStore(type))
+            return try await self.sendEventAndListenToStateChanges(event: credentialStoreEvent)
+        }) else {
+            throw KeychainStoreError.itemNotFound
+        }
+        return credentialStoreData
     }
 
     func storeData(data: CredentialStoreData) async throws {
-        await waitForValidState()
-        let credentialStoreEvent = CredentialStoreEvent(
-            eventType: .storeCredentials(data))
-        _ = try await sendEventAndListenToStateChanges(event: credentialStoreEvent)
+        _ = try await taskQueue.sync {
+            await self.waitForValidState()
+            let credentialStoreEvent = CredentialStoreEvent(
+                eventType: .storeCredentials(data))
+            return try await self.sendEventAndListenToStateChanges(event: credentialStoreEvent)
+        }
     }
 
     func deleteData(type: CredentialStoreDataType) async throws {
-        await waitForValidState()
-        let credentialStoreEvent = CredentialStoreEvent(
-            eventType: .clearCredentialStore(type))
-        _ = try await sendDeleteEventAndListenToStateChanges(event: credentialStoreEvent)
+        _ = try await taskQueue.sync {
+            await self.waitForValidState()
+            let credentialStoreEvent = CredentialStoreEvent(
+                eventType: .clearCredentialStore(type))
+            try await self.sendDeleteEventAndListenToStateChanges(event: credentialStoreEvent)
+            return nil
+        }
     }
 
     func sendEventAndListenToStateChanges(event: CredentialStoreEvent) async throws -> CredentialStoreData {
