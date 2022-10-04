@@ -13,7 +13,7 @@ public actor TaskQueue<Success> {
     public init() {}
 
     public func sync(block: @Sendable @escaping () async throws -> Success) async throws -> Success {
-        let currentTask = Task { [previousTask] in
+        let currentTask: Task<Success, Error> = Task { [previousTask] in
             _ = await previousTask?.result
             return try await block()
         }
