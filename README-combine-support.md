@@ -11,7 +11,7 @@ let places = try await Amplify.Geo.search(for "coffee")
 Some APIs do not return a simple result, such as those that return subscriptions or provide progress updates. In cases where multiple values are expected over time, Amplify typically provides an `AmplifyAsyncSequence` or `AmplifyAsyncThrowingSequence`. These types conform to the `AsyncSequence` protocol and can be iterated over asynchronously. For example, the following subscribes to the creation of new Todos.
 
 ```swift
-let subscription = try await Amplify.API.subscribe(
+let subscription = Amplify.API.subscribe(
     request: .subscription(of: Todo.self, type: .onCreate)
 )
 ```
