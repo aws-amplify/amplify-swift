@@ -87,6 +87,18 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
             let nsError = error as NSError
             if nsError.domain == NSURLErrorDomain, nsError.code == NSURLErrorCancelled {
                 logURLSessionActivity("Session task cancelled: \(task.taskIdentifier)")
+                if let reason = nsError.userInfo[NSURLErrorBackgroundTaskCancelledReasonKey] as? NSNumber {
+                    switch reason.intValue {
+                    case NSURLErrorCancelledReasonBackgroundUpdatesDisabled:
+                        logURLSessionActivity("Session task cancellation reason: background updates disabled :\(task.taskIdentifier)")
+                    case NSURLErrorCancelledReasonInsufficientSystemResources:
+                        logURLSessionActivity("Session task cancellation reason: insufficient system resources :\(task.taskIdentifier)")
+                    case NSURLErrorCancelledReasonUserForceQuitApplication:
+                        logURLSessionActivity("Session task cancellation reason: user force quite app :\(task.taskIdentifier)")
+                    default:
+                        logURLSessionActivity("Session task cancellation reason: unknown(\(reason.intValue) :\(task.taskIdentifier)")
+                    }
+                }
                 return
             }
             logURLSessionActivity("Session task did complete with error: \(task.taskIdentifier) [\(error)]", warning: true)
