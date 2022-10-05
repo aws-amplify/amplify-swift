@@ -15,6 +15,8 @@
 
 *DataStore checkpoints (check when completed)*
 
+- PR title should reflect V1, ie. `fix(datastore-v1)`.
+- If applicable, apply the change in V2 and reference the PR here: 
 - [ ] Ran AWSDataStorePluginIntegrationTests (includes V2 and CPK)
 - [ ] Ran AWSDataStorePluginAuthIntegrationTests (includes MultiAuth, Cognito Auth, IAM Auth)
 
