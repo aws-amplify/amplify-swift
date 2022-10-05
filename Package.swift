@@ -7,7 +7,10 @@ let dependencies: [Package.Dependency] = [
     .package(url: "https://github.com/awslabs/aws-sdk-swift.git", exact: "0.2.6"),
     .package(url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git", from: "2.1.1"),
     .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.12.2"),
-    .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0")
+    .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0"),
+    .package(url: "https://github.com/awslabs/smithy-swift.git", exact: "0.2.5"),
+    .package(url: "https://github.com/awslabs/aws-crt-swift.git", exact: "0.2.2")
+
 ]
 let swiftSettings: [SwiftSetting]? = [.define("DEV_PREVIEW_BUILD")]
 
