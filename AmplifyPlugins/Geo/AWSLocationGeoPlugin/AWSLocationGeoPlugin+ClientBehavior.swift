@@ -225,14 +225,14 @@ extension AWSLocationGeoPlugin {
     ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
     ///     `Geo.Error.unknown` if error is unknown
     public func updateLocation(_ location: Geo.Location, for device: Geo.Device, with options: Geo.UpdateLocationOptions) async throws {
-        guard pluginConfig.tracker != nil else {
+        guard pluginConfig.defaultTracker != nil else {
             throw Geo.Error.invalidConfiguration(
                 GeoPluginErrorConstants.missingTracker.errorDescription,
                 GeoPluginErrorConstants.missingTracker.recoverySuggestion)
         }
         
         do {
-            var tracker = pluginConfig.tracker
+            var tracker = pluginConfig.defaultTracker
             if let optionalTracker = options.tracker {
                 tracker = optionalTracker
             }
@@ -266,14 +266,14 @@ extension AWSLocationGeoPlugin {
     ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
     ///     `Geo.Error.unknown` if error is unknown
     public func deleteLocationHistory(for device: Geo.Device, with options: Geo.DeleteLocationOptions) async throws {
-        guard pluginConfig.tracker != nil else {
+        guard pluginConfig.defaultTracker != nil else {
             throw Geo.Error.invalidConfiguration(
                 GeoPluginErrorConstants.missingTracker.errorDescription,
                 GeoPluginErrorConstants.missingTracker.recoverySuggestion)
         }
         
         do {
-            var tracker = pluginConfig.tracker
+            var tracker = pluginConfig.defaultTracker
             if let optionalTracker = options.tracker {
                 tracker = optionalTracker
             }

@@ -131,4 +131,12 @@ struct GeoPluginConfigError {
             "Ensure the default search index is included in searchIndices."
         )
     }
+    
+    // MARK: - Tracker
+    static func trackerhDefaultNotFound(trackerName: String?) -> PluginError {
+        PluginError.pluginConfigurationError(
+            "Configured default tracker \(trackerName ?? "nil") was not found in trakcer items",
+            "Ensure the default tracker is included in tracker items."
+        )
+    }
 }

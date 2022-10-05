@@ -14,7 +14,8 @@ public struct AWSLocationGeoPluginConfiguration {
     let maps: [String: Geo.MapStyle]
     let defaultSearchIndex: String?
     let searchIndices: [String]
-    let tracker: String?
+    let defaultTracker: String?
+    let trackers: [String]
     
     public let regionName: String
 
@@ -55,18 +56,29 @@ public struct AWSLocationGeoPluginConfiguration {
             }
         }
         
-        let trackerConfigJSON = configObject[Section.tracker.key]
-        let tracker = trackerConfigJSON.flatMap { config -> String? in
-            guard case let .string(tracker) = config else { return nil }
-            return tracker
+        var trackers = [String]()
+        var defaultTracker: String?
+        if let trackerConfigJSON = configObject[Section.trackers.key] {
+            let trackerConfigObject = try AWSLocationGeoPluginConfiguration.getConfigObject(section: .trackers,
+                                                                                            configJSON: trackerConfigJSON)
+            trackers = try AWSLocationGeoPluginConfiguration.getItemsStrings(section: .searchIndices,
+                                                                                 configObject: trackerConfigObject)
+            defaultTracker = try AWSLocationGeoPluginConfiguration.getDefault(section: .trackers,
+                                                                              configObject: trackerConfigObject)
+            
+            guard let tracker = defaultTracker, trackers.contains(tracker) else {
+                throw GeoPluginConfigError.trackerhDefaultNotFound(trackerName: defaultTracker)
+            }
         }
+        
 
         self.init(regionName: regionName,
                   defaultMap: defaultMap,
                   maps: maps,
                   defaultSearchIndex: defaultSearchIndex,
                   searchIndices: searchIndices,
-                  tracker: tracker)
+                  defaultTracker: defaultTracker,
+                  trackers: trackers)
     }
 
     init(regionName: String,
@@ -74,14 +86,16 @@ public struct AWSLocationGeoPluginConfiguration {
          maps: [String: Geo.MapStyle],
          defaultSearchIndex: String?,
          searchIndices: [String],
-         tracker: String?
+         defaultTracker: String?,
+         trackers: [String]
     ) {
         self.regionName = regionName
         self.defaultMap = defaultMap
         self.maps = maps
         self.defaultSearchIndex = defaultSearchIndex
         self.searchIndices = searchIndices
-        self.tracker = tracker
+        self.defaultTracker = defaultTracker
+        self.trackers = trackers
     }
 
     // MARK: - Private helper methods

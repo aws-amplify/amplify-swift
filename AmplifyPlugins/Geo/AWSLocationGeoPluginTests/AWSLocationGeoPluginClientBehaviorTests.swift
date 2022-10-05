@@ -282,7 +282,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
                 XCTFail("Error thrown should be Geo.Error")
                 return
             }
-            XCTAssertEqual(geoError.errorDescription, "No tracker available.")
+            XCTAssertEqual(geoError.errorDescription, GeoPluginErrorConstants.missingTracker.errorDescription)
         }
     }
     
@@ -325,7 +325,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
                 XCTFail("Error thrown should be Geo.Error")
                 return
             }
-            XCTAssertEqual(geoError.errorDescription, "No tracker available.")
+            XCTAssertEqual(geoError.errorDescription, GeoPluginErrorConstants.missingTracker.errorDescription)
         }
     }
 }

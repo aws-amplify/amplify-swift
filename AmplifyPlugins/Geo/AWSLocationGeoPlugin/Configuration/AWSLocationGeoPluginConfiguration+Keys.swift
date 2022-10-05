@@ -23,7 +23,7 @@ extension AWSLocationGeoPluginConfiguration {
         case plugin
         case maps
         case searchIndices
-        case tracker
+        case trackers
 
         var key: String {
             String(describing: self)
