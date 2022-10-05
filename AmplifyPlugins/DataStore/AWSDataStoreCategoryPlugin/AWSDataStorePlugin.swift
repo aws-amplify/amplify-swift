@@ -236,10 +236,10 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             dataStorePublisher.send(input: mutationEvent)
         case .modelSyncedEvent(let modelSyncedEvent):
             log.verbose("Emitting DataStore event: modelSyncedEvent \(modelSyncedEvent)")
+            dispatchedModelSyncedEvents[modelSyncedEvent.modelName]?.set(true)
             let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
                                                      data: modelSyncedEvent)
             Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
-            dispatchedModelSyncedEvents[modelSyncedEvent.modelName]?.set(true)
         case .syncQueriesReadyEvent:
             log.verbose("[Lifecycle event 4]: syncQueriesReady")
             let syncQueriesReadyEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesReady)
