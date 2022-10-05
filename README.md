@@ -3,9 +3,7 @@
 
 AWS Amplify provides a declarative and easy-to-use interface across different categories of cloud operations. Our default implementation works with Amazon Web Services (AWS), but AWS Amplify is designed to be open and pluggable for any custom backend or service.
 
-The Developer Preview of the Amplify iOS Library is now exclusively using Swift and provides developers the ability to add cloud-based Auth, Storage, Data, and APIs to their apps. With this version, Swift developers will be able to debug and contribute to the underlying open-source codebase completely in Swift. We plan to incrementally add more Amplify features including Swift-based language features like structured concurrency.
-
-This developer preview version of Amplify iOS is layered on the [AWS SDK for Swift](https://aws.amazon.com/sdk-for-swift/), which was released as Developer Preview last year. This allows for access to the AWS SDK for Swift for a breadth of service-centric APIs.
+The Amplify Library for Swift is layered on the [AWS SDK for Swift](https://aws.amazon.com/sdk-for-swift/), which was released as Developer Preview last year. This allows for access to the AWS SDK for Swift for a breadth of service-centric APIs.
 
 You can also quickly get started by using our [Photo Sharing Sample App](https://github.com/aws-amplify/amplify-ios-samples/tree/dev-preview).
 
@@ -68,9 +66,9 @@ Amplify requires Xcode 13.4 or higher to build.
 
     ![Add package dependency](readme-images/spm-setup-01-add-package.png)
 
-1. Enter the Amplify iOS GitHub repo URL (`https://github.com/aws-amplify/amplify-ios`) into the search bar.
+1. Enter the Amplify Library for Swift GitHub repo URL (`https://github.com/aws-amplify/amplify-ios`) into the search bar.
 
-1. You'll see the Amplify iOS repository rules for which version of Amplify you want Swift Package Manager to install. Choose **Branch** for the Dependency Rule and enter `dev-preview` as the branch name, then click **Add Package**.
+1. You'll see the Amplify Library for Swift repository rules for which version of Amplify you want Swift Package Manager to install. Choose **Up to Next Major Version** for the Dependency Rule, then click **Add Package**.
 
     ![Dependency version options](readme-images/spm-setup-02-amplify-repo-options.png)
 
