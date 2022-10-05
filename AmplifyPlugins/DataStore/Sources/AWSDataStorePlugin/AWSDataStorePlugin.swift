@@ -16,6 +16,12 @@ enum DataStoreState {
     case clear
 }
 
+enum InitStorageEngineResult {
+    case successfullyInitialized
+    case alreadyInitialized
+    case failure(DataStoreError)
+}
+
 final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     public var key: PluginKey = "awsDataStorePlugin"
@@ -109,16 +115,16 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         resolveSyncEnabled()
         ModelListDecoderRegistry.registerDecoder(DataStoreListDecoder.self)
     }
-
+    
     /// Initializes the underlying storage engine
     /// - Returns: success if the engine is successfully initialized or
     ///            a failure with a DataStoreError
-    func initStorageEngine() -> DataStoreResult<Void> {
+    func initStorageEngine() -> InitStorageEngineResult {
         storageEngineInitQueue.sync {
             if storageEngine != nil {
-                return .successfulVoid
+                return .alreadyInitialized
             }
-            var result: DataStoreResult<Void>
+
             do {
                 if self.dataStorePublisher == nil {
                     self.dataStorePublisher = DataStorePublisher()
@@ -126,12 +132,12 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
                 try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
                 try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
                 try storageEngine.applyModelMigrations(modelSchemas: ModelRegistry.modelSchemas)
-                result = .successfulVoid
+
+                return .successfullyInitialized
             } catch {
-                result = .failure(causedBy: error)
                 log.error(error: error)
+                return .failure(.invalidOperation(causedBy: error))
             }
-            return result
         }
     }
 
@@ -139,13 +145,11 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// - Parameter completion: completion handler called with a success if the sync process started
     ///                         or with a DataStoreError in case of failure
     func initStorageEngineAndStartSync(completion: @escaping DataStoreCallback<Void> = { _ in }) {
-        if storageEngine != nil {
-            completion(.successfulVoid)
-            return
-        }
 
         switch initStorageEngine() {
-        case .success:
+        case .alreadyInitialized:
+            completion(.successfulVoid)
+        case .successfullyInitialized:
             storageEngine.startSync { result in
                 self.dataStoreStateSubject.send(.start(storageEngine: self.storageEngine))
                 completion(result)
