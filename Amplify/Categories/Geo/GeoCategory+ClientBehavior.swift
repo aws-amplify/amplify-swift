@@ -75,4 +75,46 @@ extension GeoCategory: GeoCategoryBehavior {
     public func defaultMap() async throws -> Geo.MapStyle {
         return try await plugin.defaultMap()
     }
+    
+    /// Update the location for this device.
+    /// - Parameters:
+    ///   - device: The device that this location update will be applied to.
+    ///   - location: The location being updated for this device.
+    ///   - options: Additional tracker and metadata associated with the operation
+    /// - Throws:
+    ///     `Geo.Error.accessDenied` if request authorization issue
+    ///     `Geo.Error.serviceError` if service is down/resource not found/throttling/validation error
+    ///     `Geo.Error.invalidConfiguration` if invalid configuration
+    ///     `Geo.Error.networkError` if request failed or network unavailable
+    ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
+    ///     `Geo.Error.unknown` if error is unknown
+    public func updateLocation(
+       _ location: Geo.Location,
+       for device: Geo.Device,
+       with options: Geo.UpdateLocationOptions = .init()
+    ) async throws {
+        try await plugin.updateLocation(location, for: device, with: options)
+    }
+    
+    /// Delete the device location history for this device.
+    ///
+    /// - Important: This permanently deletes the location history for
+    ///   the device remotely and locally (if applicable). This makes a best effort to
+    ///   delete location history.
+    /// - Parameters:
+    ///   - device: The device that this delete request will be applied to.
+    ///   - options: Additional tracker associated with the operation.
+    /// - Throws:
+    ///     `Geo.Error.accessDenied` if request authorization issue
+    ///     `Geo.Error.serviceError` if service is down/resource not found/throttling/validation error
+    ///     `Geo.Error.invalidConfiguration` if invalid configuration
+    ///     `Geo.Error.networkError` if request failed or network unavailable
+    ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
+    ///     `Geo.Error.unknown` if error is unknown
+    public func deleteLocationHistory(
+       for device: Geo.Device,
+       with options: Geo.DeleteLocationOptions = .init()
+    ) async throws {
+        try await plugin.deleteLocationHistory(for: device, with: options)
+    }
 }

@@ -211,4 +211,79 @@ extension AWSLocationGeoPlugin {
         }
         return mapStyle
     }
+    
+    /// Update the location for this device
+    /// - Parameters:
+    ///   - device: The device that this location update will be applied to.
+    ///   - location: The location being updated for this device.
+    ///   - options: Additional tracker and metadata associated with the operation.
+    /// - Throws:
+    ///     `Geo.Error.accessDenied` if request authorization issue
+    ///     `Geo.Error.serviceError` if service is down/resource not found/throttling/validation error
+    ///     `Geo.Error.invalidConfiguration` if invalid configuration
+    ///     `Geo.Error.networkError` if request failed or network unavailable
+    ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
+    ///     `Geo.Error.unknown` if error is unknown
+    public func updateLocation(_ location: Geo.Location, for device: Geo.Device, with options: Geo.UpdateLocationOptions) async throws {
+        guard pluginConfig.defaultTracker != nil else {
+            throw Geo.Error.invalidConfiguration(
+                GeoPluginErrorConstants.missingTracker.errorDescription,
+                GeoPluginErrorConstants.missingTracker.recoverySuggestion)
+        }
+        
+        do {
+            var tracker = pluginConfig.defaultTracker
+            if let optionalTracker = options.tracker {
+                tracker = optionalTracker
+            }
+            // WGS 84 - [X or longitude, Y or latitude]
+            let position = [location.longitude, location.latitude]
+            let locationUpdates = [LocationClientTypes.DevicePositionUpdate(
+                accuracy: nil,
+                deviceId: device.id,
+                position: position,
+                positionProperties: options.metadata,
+                sampleTime: Date())]
+            let input = BatchUpdateDevicePositionInput(trackerName: tracker, updates: locationUpdates)
+            let response = try await locationService.updateLocation(forUpdateDevicePosition: input)
+            if let error = response.errors?.first as? Error {
+                throw GeoErrorHelper.mapAWSLocationError(error)
+            }
+        } catch {
+            throw GeoErrorHelper.mapAWSLocationError(error)
+        }
+    }
+    
+    /// Delete the device location history for this device.
+    /// - Parameters:
+    ///   - device: The device that this delete request will be applied to.
+    ///   - options: Additional tracker associated with the operation.
+    /// - Throws:
+    ///     `Geo.Error.accessDenied` if request authorization issue
+    ///     `Geo.Error.serviceError` if service is down/resource not found/throttling/validation error
+    ///     `Geo.Error.invalidConfiguration` if invalid configuration
+    ///     `Geo.Error.networkError` if request failed or network unavailable
+    ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
+    ///     `Geo.Error.unknown` if error is unknown
+    public func deleteLocationHistory(for device: Geo.Device, with options: Geo.DeleteLocationOptions) async throws {
+        guard pluginConfig.defaultTracker != nil else {
+            throw Geo.Error.invalidConfiguration(
+                GeoPluginErrorConstants.missingTracker.errorDescription,
+                GeoPluginErrorConstants.missingTracker.recoverySuggestion)
+        }
+        
+        do {
+            var tracker = pluginConfig.defaultTracker
+            if let optionalTracker = options.tracker {
+                tracker = optionalTracker
+            }
+            let input = BatchDeleteDevicePositionHistoryInput(deviceIds: [device.id], trackerName: tracker)
+            let response = try await locationService.deleteLocationHistory(forPositionHistory: input)
+            if let error = response.errors?.first as? Error {
+                throw GeoErrorHelper.mapAWSLocationError(error)
+            }
+        } catch {
+            throw GeoErrorHelper.mapAWSLocationError(error)
+        }
+    }
 }

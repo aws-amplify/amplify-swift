@@ -14,7 +14,9 @@ public struct AWSLocationGeoPluginConfiguration {
     let maps: [String: Geo.MapStyle]
     let defaultSearchIndex: String?
     let searchIndices: [String]
-
+    let defaultTracker: String?
+    let trackers: [String]
+    
     public let regionName: String
 
     init(config: Any?) throws {
@@ -53,24 +55,47 @@ public struct AWSLocationGeoPluginConfiguration {
                 throw GeoPluginConfigError.searchDefaultNotFound(indexName: defaultSearchIndex)
             }
         }
+        
+        var trackers = [String]()
+        var defaultTracker: String?
+        if let trackerConfigJSON = configObject[Section.trackers.key] {
+            let trackerConfigObject = try AWSLocationGeoPluginConfiguration.getConfigObject(section: .trackers,
+                                                                                            configJSON: trackerConfigJSON)
+            trackers = try AWSLocationGeoPluginConfiguration.getItemsStrings(section: .searchIndices,
+                                                                                 configObject: trackerConfigObject)
+            defaultTracker = try AWSLocationGeoPluginConfiguration.getDefault(section: .trackers,
+                                                                              configObject: trackerConfigObject)
+            
+            guard let tracker = defaultTracker, trackers.contains(tracker) else {
+                throw GeoPluginConfigError.trackerhDefaultNotFound(trackerName: defaultTracker)
+            }
+        }
+        
 
         self.init(regionName: regionName,
                   defaultMap: defaultMap,
                   maps: maps,
                   defaultSearchIndex: defaultSearchIndex,
-                  searchIndices: searchIndices)
+                  searchIndices: searchIndices,
+                  defaultTracker: defaultTracker,
+                  trackers: trackers)
     }
 
     init(regionName: String,
          defaultMap: String?,
          maps: [String: Geo.MapStyle],
          defaultSearchIndex: String?,
-         searchIndices: [String]) {
+         searchIndices: [String],
+         defaultTracker: String?,
+         trackers: [String]
+    ) {
         self.regionName = regionName
         self.defaultMap = defaultMap
         self.maps = maps
         self.defaultSearchIndex = defaultSearchIndex
         self.searchIndices = searchIndices
+        self.defaultTracker = defaultTracker
+        self.trackers = trackers
     }
 
     // MARK: - Private helper methods

@@ -20,6 +20,10 @@ struct GeoPluginErrorConstants {
     static let missingMaps: GeoPluginErrorString = (
         "No maps are available.",
         "Please ensure you have added maps to your project before calling map-related functions.")
+    
+    static let missingTracker: GeoPluginErrorString = (
+        "No tracker available.",
+        "Please ensure you have added tracker to your project before calling device position functions.")
 }
 
 // Recovery Messages

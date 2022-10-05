@@ -20,4 +20,8 @@ protocol AWSLocationBehavior {
 
     func searchPlaceIndex(forPosition: SearchPlaceIndexForPositionInput)
             async throws -> SearchPlaceIndexForPositionOutputResponse
+    
+    func updateLocation(forUpdateDevicePosition: BatchUpdateDevicePositionInput) async throws -> BatchUpdateDevicePositionOutputResponse
+    
+    func deleteLocationHistory(forPositionHistory: BatchDeleteDevicePositionHistoryInput) async throws -> BatchDeleteDevicePositionHistoryOutputResponse
 }
