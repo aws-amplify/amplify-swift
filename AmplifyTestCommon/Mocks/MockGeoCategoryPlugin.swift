@@ -9,6 +9,14 @@ import Amplify
 import Foundation
 
 class MockGeoCategoryPlugin: MessageReporter, GeoCategoryPlugin {
+    func updateLocation(_ location: Geo.Location, for device: Geo.Device, with options: Geo.UpdateLocationOptions) async throws {
+        notify("updateLocation")
+    }
+    
+    func deleteLocationHistory(for device: Geo.Device, with options: Geo.DeleteLocationOptions) async throws {
+        notify("deleteLocationHistory")
+    }
+    
     var key: String {
         return "MockGeoCategoryPlugin"
     }

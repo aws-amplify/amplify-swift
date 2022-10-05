@@ -40,4 +40,12 @@ class AWSLocationAdapter: AWSLocationBehavior {
     func searchPlaceIndex(forPosition: SearchPlaceIndexForPositionInput) async throws -> SearchPlaceIndexForPositionOutputResponse {
         return try await location.searchPlaceIndexForPosition(input: forPosition)
     }
+    
+    public func updateLocation(forUpdateDevicePosition: BatchUpdateDevicePositionInput) async throws -> BatchUpdateDevicePositionOutputResponse {
+        return try await location.batchUpdateDevicePosition(input: forUpdateDevicePosition)
+    }
+    
+    public func deleteLocationHistory(forPositionHistory: BatchDeleteDevicePositionHistoryInput) async throws -> BatchDeleteDevicePositionHistoryOutputResponse {
+        return try await location.batchDeleteDevicePositionHistory(input: forPositionHistory)
+    }
 }

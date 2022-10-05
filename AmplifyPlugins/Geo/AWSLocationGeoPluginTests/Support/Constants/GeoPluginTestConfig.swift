@@ -21,6 +21,7 @@ struct GeoPluginTestConfig {
     static let url = URL(string: "https://maps.geo.\(regionName).amazonaws.com/maps/v0/maps/\(map)/style-descriptor")!
     static let mapStyle = Geo.MapStyle(mapName: map, style: style, styleURL: url)
     static let maps = [map: mapStyle]
+    static let tracker = "testTracker"
 
     // Search Test Configuration
     static let searchIndex = "testSearchIndex"

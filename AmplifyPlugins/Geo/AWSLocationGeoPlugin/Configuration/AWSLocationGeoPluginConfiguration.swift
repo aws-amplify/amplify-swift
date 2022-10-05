@@ -14,7 +14,8 @@ public struct AWSLocationGeoPluginConfiguration {
     let maps: [String: Geo.MapStyle]
     let defaultSearchIndex: String?
     let searchIndices: [String]
-
+    let tracker: String?
+    
     public let regionName: String
 
     init(config: Any?) throws {
@@ -53,24 +54,34 @@ public struct AWSLocationGeoPluginConfiguration {
                 throw GeoPluginConfigError.searchDefaultNotFound(indexName: defaultSearchIndex)
             }
         }
+        
+        let trackerConfigJSON = configObject[Section.tracker.key]
+        let tracker = trackerConfigJSON.flatMap { config -> String? in
+            guard case let .string(tracker) = config else { return nil }
+            return tracker
+        }
 
         self.init(regionName: regionName,
                   defaultMap: defaultMap,
                   maps: maps,
                   defaultSearchIndex: defaultSearchIndex,
-                  searchIndices: searchIndices)
+                  searchIndices: searchIndices,
+                  tracker: tracker)
     }
 
     init(regionName: String,
          defaultMap: String?,
          maps: [String: Geo.MapStyle],
          defaultSearchIndex: String?,
-         searchIndices: [String]) {
+         searchIndices: [String],
+         tracker: String?
+    ) {
         self.regionName = regionName
         self.defaultMap = defaultMap
         self.maps = maps
         self.defaultSearchIndex = defaultSearchIndex
         self.searchIndices = searchIndices
+        self.tracker = tracker
     }
 
     // MARK: - Private helper methods

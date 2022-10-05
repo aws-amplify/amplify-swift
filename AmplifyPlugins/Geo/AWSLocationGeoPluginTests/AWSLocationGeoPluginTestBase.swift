@@ -22,13 +22,15 @@ class AWSLocationGeoPluginTestBase: XCTestCase {
                                                          defaultMap: GeoPluginTestConfig.map,
                                                          maps: GeoPluginTestConfig.maps,
                                                          defaultSearchIndex: GeoPluginTestConfig.searchIndex,
-                                                         searchIndices: GeoPluginTestConfig.searchIndices)
+                                                         searchIndices: GeoPluginTestConfig.searchIndices,
+                                                         tracker: GeoPluginTestConfig.tracker)
 
         emptyPluginConfig = AWSLocationGeoPluginConfiguration(regionName: GeoPluginTestConfig.regionName,
                                                               defaultMap: nil,
                                                               maps: [:],
                                                               defaultSearchIndex: nil,
-                                                              searchIndices: [])
+                                                              searchIndices: [],
+                                                              tracker: nil)
 
         do {
             mockLocation = try MockAWSLocation(pluginConfig: pluginConfig)

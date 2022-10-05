@@ -13,6 +13,7 @@ import XCTest
 
 public class MockAWSLocation: AWSLocationBehavior {
 
+    
     // MARK: - Location Client
     var locationClient: LocationClient
 
@@ -20,7 +21,9 @@ public class MockAWSLocation: AWSLocationBehavior {
     var getEscapeHatchCalled = 0
     var searchPlaceIndexForTextCalled = 0
     var searchPlaceIndexForPositionCalled = 0
-
+    var updateLocationCalled = 0
+    var deleteLocationHistoryCalled = 0
+    
     // MARK: - Method arguments for AWSLocation
     var searchPlaceIndexForTextRequest: SearchPlaceIndexForTextInput?
     var searchPlaceIndexForPositionRequest: SearchPlaceIndexForPositionInput?
@@ -32,6 +35,16 @@ public class MockAWSLocation: AWSLocationBehavior {
     public func getEscapeHatch() -> LocationClient {
         getEscapeHatchCalled += 1
         return self.locationClient
+    }
+    
+    public func updateLocation(forUpdateDevicePosition: AWSLocation.BatchUpdateDevicePositionInput) async throws -> AWSLocation.BatchUpdateDevicePositionOutputResponse {
+        updateLocationCalled += 1
+        return AWSLocation.BatchUpdateDevicePositionOutputResponse(errors: nil)
+    }
+    
+    public func deleteLocationHistory(forPositionHistory: AWSLocation.BatchDeleteDevicePositionHistoryInput) async throws -> AWSLocation.BatchDeleteDevicePositionHistoryOutputResponse {
+        deleteLocationHistoryCalled += 1
+        return AWSLocation.BatchDeleteDevicePositionHistoryOutputResponse(errors: nil)
     }
 }
 

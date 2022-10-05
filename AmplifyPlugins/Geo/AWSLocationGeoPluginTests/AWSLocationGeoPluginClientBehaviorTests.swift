@@ -241,4 +241,89 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
             XCTAssertEqual(geoError.errorDescription, "No default map was found.")
         }
     }
+    
+    /// Test if updateLocation
+    ///
+    /// - Given: Geo plugin with a missing configuration.
+    /// - When:
+    ///    - I invoke updateLocation.
+    /// - Then:
+    ///    - Expected operation succeeds.
+    ///
+    func testUpdateLocation() async {
+        do {
+            let device = Geo.Device.unchecked(id: "123-456-789")
+            let location = Geo.Location(latitude: 44.4, longitude: 45.5)
+            try await geoPlugin.updateLocation(location, for: device, with: Geo.UpdateLocationOptions())
+        } catch {
+            XCTFail("Failed with error: \(error)")
+        }
+    }
+    
+    /// Test if updateLocation fails when configuration is invalid.
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke updateLocation.
+    /// - Then:
+    ///    - Expected error is returned.
+    ///
+    func testUpdateLocationWithoutConfigFails() async {
+        geoPlugin.pluginConfig = emptyPluginConfig
+
+        do {
+            let device = Geo.Device.unchecked(id: "123-456-789")
+            let location = Geo.Location(latitude: 44.4, longitude: 45.5)
+            try await geoPlugin.updateLocation(location, for: device, with: Geo.UpdateLocationOptions())
+            XCTFail("This call returned success when a failure was expected.")
+        } catch {
+            guard let geoError = error as? Geo.Error else {
+                XCTFail("Error thrown should be Geo.Error")
+                return
+            }
+            XCTAssertEqual(geoError.errorDescription, "No tracker available.")
+        }
+    }
+    
+    /// Test if deleteLocationHistory
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke deleteLocationHistory.
+    /// - Then:
+    ///    - Expected operation completes.
+    ///
+    func testDeleteLocationHistory() async {
+
+        do {
+            let device = Geo.Device.unchecked(id: "123-456-789")
+            try await geoPlugin.deleteLocationHistory(for: device, with: Geo.DeleteLocationOptions())
+        } catch {
+            XCTFail("Failed with error: \(error)")
+        }
+    }
+    
+    /// Test if deleteLocationHistory fails when configuration is invalid.
+    ///
+    /// - Given: Geo plugin with a missing configuration.
+    /// - When:
+    ///    - I invoke deleteLocationHistory.
+    /// - Then:
+    ///    - Expected error is returned.
+    ///
+    func testDeleteLocationHistoryWithoutConfigFails() async {
+        geoPlugin.pluginConfig = emptyPluginConfig
+
+        do {
+            let device = Geo.Device.unchecked(id: "123-456-789")
+            try await geoPlugin.deleteLocationHistory(for: device, with: Geo.DeleteLocationOptions())
+            XCTFail("This call returned success when a failure was expected.")
+        } catch {
+            guard let geoError = error as? Geo.Error else {
+                XCTFail("Error thrown should be Geo.Error")
+                return
+            }
+            XCTAssertEqual(geoError.errorDescription, "No tracker available.")
+        }
+    }
 }

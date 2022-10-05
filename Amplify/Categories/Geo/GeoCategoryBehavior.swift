@@ -70,4 +70,15 @@ public protocol GeoCategoryBehavior {
     ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
     ///     `Geo.Error.unknown` if error is unknown
     func defaultMap() async throws -> Geo.MapStyle
+    
+    func updateLocation(
+       _ location: Geo.Location,
+       for device: Geo.Device,
+       with options: Geo.UpdateLocationOptions
+    ) async throws
+    
+    func deleteLocationHistory(
+       for device: Geo.Device,
+       with options: Geo.DeleteLocationOptions
+    ) async throws
 }
