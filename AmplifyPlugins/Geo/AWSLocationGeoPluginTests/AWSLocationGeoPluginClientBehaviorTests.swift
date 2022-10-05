@@ -255,6 +255,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
             let device = Geo.Device.unchecked(id: "123-456-789")
             let location = Geo.Location(latitude: 44.4, longitude: 45.5)
             try await geoPlugin.updateLocation(location, for: device, with: Geo.UpdateLocationOptions())
+            XCTAssertEqual(mockLocation.updateLocationCalled, 1)
         } catch {
             XCTFail("Failed with error: \(error)")
         }
@@ -298,6 +299,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
         do {
             let device = Geo.Device.unchecked(id: "123-456-789")
             try await geoPlugin.deleteLocationHistory(for: device, with: Geo.DeleteLocationOptions())
+            XCTAssertEqual(mockLocation.deleteLocationHistoryCalled, 1)
         } catch {
             XCTFail("Failed with error: \(error)")
         }
