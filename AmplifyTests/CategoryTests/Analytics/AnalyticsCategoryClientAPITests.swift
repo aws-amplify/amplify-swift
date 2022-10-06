@@ -107,6 +107,19 @@ class AnalyticsCategoryClientAPITests: XCTestCase {
         analytics.unregisterGlobalProperties("one", "two")
         waitForExpectations(timeout: 1.0)
     }
+    
+    func testUnregisterGlobalPropertiesWithArrayParameter() throws {
+        let expectedMessage = "unregisterGlobalProperties(_:)"
+        let methodInvoked = expectation(description: "Expected method was invoked on plugin")
+        plugin.listeners.append { message in
+            if message == expectedMessage {
+                methodInvoked.fulfill()
+            }
+        }
+        let properties: [String] = ["one", "two"]
+        analytics.unregisterGlobalProperties(properties)
+        waitForExpectations(timeout: 1.0)
+    }
 
     func testFlushEvents() {
         let expectedMessage = "flushEvents()"
