@@ -61,31 +61,43 @@ class ActivityTrackerTests: XCTestCase {
     }
 
     func testApplicationStateChanged_shouldReportProperEvent() {
+        stateMachine.processExpectation = expectation(description: "Application state changed")
+        stateMachine.processExpectation?.expectedFulfillmentCount = 3
+        
         NotificationCenter.default.post(Notification(name: Self.applicationDidMoveToBackgroundNotification))
-        XCTAssertEqual(stateMachine.processedEvent, .applicationDidMoveToBackground)
-
         NotificationCenter.default.post(Notification(name: Self.applicationWillMoveToForegoundNotification))
-        XCTAssertEqual(stateMachine.processedEvent, .applicationWillMoveToForeground)
-
         NotificationCenter.default.post(Notification(name: Self.applicationWillTerminateNotification))
-        XCTAssertEqual(stateMachine.processedEvent, .applicationWillTerminate)
+        
+        waitForExpectations(timeout: 1)
+        XCTAssertTrue(stateMachine.processedEvents.contains(.applicationDidMoveToBackground))
+        XCTAssertTrue(stateMachine.processedEvents.contains(.applicationWillMoveToForeground))
+        XCTAssertTrue(stateMachine.processedEvents.contains(.applicationWillTerminate))
     }
 
     func testBackgroundTracking_afterTimeout_shouldReportBackgroundTimeout() {
-        NotificationCenter.default.post(Notification(name: Self.applicationDidMoveToBackgroundNotification))
-        XCTAssertEqual(stateMachine.processedEvent, .applicationDidMoveToBackground)
         stateMachine.processExpectation = expectation(description: "Background tracking timeout")
-        waitForExpectations(timeout: 1)
-        XCTAssertEqual(stateMachine.processedEvent, .backgroundTrackingDidTimeout)
+        stateMachine.processExpectation?.expectedFulfillmentCount = 2
+        
+        NotificationCenter.default.post(Notification(name: Self.applicationDidMoveToBackgroundNotification))
+        
+        waitForExpectations(timeout: 2)
+        XCTAssertTrue(stateMachine.processedEvents.contains(.applicationDidMoveToBackground))
+        XCTAssertTrue(stateMachine.processedEvents.contains(.backgroundTrackingDidTimeout))
+    }
+}
+
+extension Array where Element == ActivityEvent {
+    func contains(_ element: Element) -> Bool {
+        return contains(where: { $0 == element })
     }
 }
 
 class MockStateMachine: StateMachine<ApplicationState, ActivityEvent> {
-    var processedEvent: ActivityEvent?
+    var processedEvents: [ActivityEvent] = []
     var processExpectation: XCTestExpectation?
 
     override func process(_ event: ActivityEvent) {
-        processedEvent = event
+        processedEvents.append(event)
         processExpectation?.fulfill()
     }
 }
