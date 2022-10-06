@@ -10,7 +10,7 @@ import AWSPluginsCore
 import Foundation
 import CoreLocation
 
-class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBehavior {
+class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, DeviceTrackingBehavior {
     let locationManager: Geo.LocationManager
     var wakeAppForSignificantLocationUpdates = true
     var trackUntil: Date = .distantFuture

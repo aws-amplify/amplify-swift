@@ -5,13 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-import Amplify
-import AWSPluginsCore
 import Foundation
 
-/// Behavior that `AWSDeviceTracker` will use.
+/// Behavior that a concrete implementation for device tracking will use.
 /// This protocol allows a way to create a Mock and ensure the plugin implementation is testable.
-protocol AWSDeviceTrackingBehavior {
+public protocol DeviceTrackingBehavior {
 
     func configure(with options: Geo.LocationManager.TrackingSessionOptions)
     

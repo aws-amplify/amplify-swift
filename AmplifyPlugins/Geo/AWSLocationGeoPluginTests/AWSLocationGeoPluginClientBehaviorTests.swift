@@ -331,7 +331,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
         }
     }
     
-    /// Test if startTracking succeeds with a valid configuration and tracker
+    /// Test if startTracking succeeds with a valid configuration and with a default tracker
     ///
     /// - Given: Geo plugin with a valid configuration.
     /// - When:
@@ -339,7 +339,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
     /// - Then:
     ///    - Expected operation completes.
     ///
-    func testStartTracking() async {
+    func testStartTrackingWithDefaultTracker() async {
         do {
             let device = Geo.Device.unchecked(id: "123-456-789")
             try await geoPlugin.startTracking(for: device, with: Geo.LocationManager.TrackingSessionOptions())
@@ -354,8 +354,33 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
         }
     }
     
+    /// Test if startTracking succeeds with a valid configuration and with custom tracker
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke startTracking.
+    /// - Then:
+    ///    - Expected operation completes.
+    ///
+    func testStartTrackingWithCustomTracker() async {
+        do {
+            let device = Geo.Device.unchecked(id: "123-456-789")
+            var options = Geo.LocationManager.TrackingSessionOptions()
+            options.tracker = "tracker"
+            try await geoPlugin.startTracking(for: device, with: options)
+            XCTAssertEqual(mockDeviceTracker.startDeviceTrackingCalled, 1)
+            XCTAssertEqual(mockDeviceTracker.configureCalled, 1)
+        } catch {
+            guard let geoError = error as? Geo.Error else {
+                XCTFail("Error thrown should be Geo.Error")
+                return
+            }
+            XCTAssertEqual(geoError.errorDescription, GeoPluginErrorConstants.missingTracker.errorDescription)
+        }
+    }
+    
     /// Test if startTracking fails when configuration is invalid and tracking session options
-    /// has `nil` tracker.
+    /// has empty tracker.
     ///
     /// - Given: Geo plugin with a missing configuration.
     /// - When:
@@ -363,7 +388,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
     /// - Then:
     ///    - Expected error is returned.
     ///
-    func testStartTrackingWithoutConfigFails() async {
+    func testStartTrackingWithoutConfigAndTrackerFails() async {
         geoPlugin.pluginConfig = emptyPluginConfig
 
         do {

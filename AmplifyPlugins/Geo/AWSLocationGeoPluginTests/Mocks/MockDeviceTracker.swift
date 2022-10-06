@@ -10,7 +10,7 @@ import XCTest
 import Amplify
 @testable import AWSLocationGeoPlugin
 
-public class MockAWSDeviceTracker: AWSDeviceTrackingBehavior {
+public class MockAWSDeviceTracker: DeviceTrackingBehavior {
     
     // MARK: - Method call counts for MockAWSDeviceTracker
     var configureCalled = 0
