@@ -21,6 +21,13 @@ protocol ModelStorageBehavior {
                         condition: QueryPredicate?,
                         completion: @escaping DataStoreCallback<M>)
 
+    @available(*, deprecated, message: "Use delete(:modelSchema:withIdentifier:predicate:completion")
+    func delete<M: Model>(_ modelType: M.Type,
+                          modelSchema: ModelSchema,
+                          withId id: Model.Identifier,
+                          condition: QueryPredicate?,
+                          completion: @escaping DataStoreCallback<M?>)
+    
     func delete<M: Model>(_ modelType: M.Type,
                           modelSchema: ModelSchema,
                           withIdentifier identifier: ModelIdentifierProtocol,

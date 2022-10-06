@@ -7,6 +7,7 @@
 
 extension DataStoreCategory: DataStoreBaseBehavior {
 
+    @discardableResult
     public func save<M: Model>(_ model: M,
                                where condition: QueryPredicate? = nil) async throws -> M {
         try await plugin.save(model, where: condition)
@@ -40,7 +41,13 @@ extension DataStoreCategory: DataStoreBaseBehavior {
                                  where predicate: QueryPredicate? = nil) async throws {
         try await plugin.delete(model, where: predicate)
     }
-
+    
+    public func delete<M: Model>(_ modelType: M.Type,
+                                 withId id: String,
+                                 where predicate: QueryPredicate? = nil) async throws {
+        try await plugin.delete(modelType, withId: id, where: predicate)
+    }
+    
     public func delete<M: Model>(_ modelType: M.Type,
                                  withIdentifier id: String,
                                  where predicate: QueryPredicate? = nil) async throws
