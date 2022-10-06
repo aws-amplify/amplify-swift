@@ -39,7 +39,7 @@ struct RefreshUserPoolTokens: Action {
 
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: existingSignedIndata.username,
-                credentialStoreClient: authEnv.credentialStoreClientFactory())
+                credentialStoreClient: authEnv.credentialsClient)
 
             let input = InitiateAuthInput.refreshAuthInput(
                 username: existingSignedIndata.username,

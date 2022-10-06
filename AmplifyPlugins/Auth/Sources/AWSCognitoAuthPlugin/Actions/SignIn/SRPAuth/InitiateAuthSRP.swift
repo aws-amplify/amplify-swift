@@ -55,7 +55,7 @@ struct InitiateAuthSRP: Action {
 
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: username,
-                credentialStoreClient: authEnv.credentialStoreClientFactory())
+                credentialStoreClient: authEnv.credentialsClient)
 
             let request = InitiateAuthInput.srpInput(
                 username: username,

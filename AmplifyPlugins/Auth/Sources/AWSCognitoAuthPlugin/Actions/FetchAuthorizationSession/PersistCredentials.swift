@@ -19,7 +19,7 @@ struct PersistCredentials: Action {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
-        let credentialStoreClient = (environment as? AuthEnvironment)?.credentialStoreClientFactory()
+        let credentialStoreClient = (environment as? AuthEnvironment)?.credentialsClient
 
         Task {
             let event: StateMachineEvent
