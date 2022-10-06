@@ -17,7 +17,9 @@ extension AWSCognitoAuthPlugin: AuthCategoryDeviceBehavior {
         let task = AWSAuthFetchDevicesTask(request,
                                            authStateMachine: authStateMachine,
                                            userPoolFactory: authEnvironment.cognitoUserPoolFactory)
-        return try await task.value
+        return try await taskQueue.sync {
+            return try await task.value
+        } as! [AuthDevice]
     }
 
     public func forgetDevice(_ device: AuthDevice? = nil,
@@ -27,8 +29,10 @@ extension AWSCognitoAuthPlugin: AuthCategoryDeviceBehavior {
         let task = AWSAuthForgetDeviceTask(request,
                                            authStateMachine: authStateMachine,
                                            environment: authEnvironment)
-        return try await task.value
+        _ = try await taskQueue.sync {
+            return try await task.value
         }
+    }
 
     public func rememberDevice( options: AuthRememberDeviceRequest.Options? = nil) async throws {
         let options = options ?? AuthRememberDeviceRequest.Options()
@@ -36,6 +40,8 @@ extension AWSCognitoAuthPlugin: AuthCategoryDeviceBehavior {
         let task = AWSAuthRememberDeviceTask(request,
                                              authStateMachine: authStateMachine,
                                              environment: authEnvironment)
-        return try await task.value
+        _ = try await taskQueue.sync {
+            return try await task.value
+        }
     }
 }

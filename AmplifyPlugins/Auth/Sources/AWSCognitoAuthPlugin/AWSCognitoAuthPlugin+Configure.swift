@@ -77,6 +77,7 @@ extension AWSCognitoAuthPlugin {
         self.listenToStateMachineChanges()
         self.hubEventHandler = hubEventHandler
         self.analyticsHandler = analyticsHandler
+        self.taskQueue = TaskQueue()
     }
 
     // MARK: - Configure Helpers
