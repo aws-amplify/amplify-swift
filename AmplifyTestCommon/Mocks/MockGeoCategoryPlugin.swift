@@ -9,14 +9,7 @@ import Amplify
 import Foundation
 
 class MockGeoCategoryPlugin: MessageReporter, GeoCategoryPlugin {
-    func updateLocation(_ location: Geo.Location, for device: Geo.Device, with options: Geo.UpdateLocationOptions) async throws {
-        notify("updateLocation")
-    }
-    
-    func deleteLocationHistory(for device: Geo.Device, with options: Geo.DeleteLocationOptions) async throws {
-        notify("deleteLocationHistory")
-    }
-    
+
     var key: String {
         return "MockGeoCategoryPlugin"
     }
@@ -47,6 +40,22 @@ class MockGeoCategoryPlugin: MessageReporter, GeoCategoryPlugin {
     func defaultMap() async throws -> Geo.MapStyle {
         notify("defaultMap")
         return createMapStyle()
+    }
+    
+    func updateLocation(_ location: Geo.Location, for device: Geo.Device, with options: Geo.UpdateLocationOptions) async throws {
+        notify("updateLocation")
+    }
+    
+    func deleteLocationHistory(for device: Geo.Device, with options: Geo.DeleteLocationOptions) async throws {
+        notify("deleteLocationHistory")
+    }
+    
+    func startTracking(for device: Geo.Device, with options: Geo.LocationManager.TrackingSessionOptions) async throws {
+        notify("startTracking")
+    }
+    
+    func stopTracking() {
+        notify("stopTracking")
     }
 
     private func createMapStyle() -> Geo.MapStyle {

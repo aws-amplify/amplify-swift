@@ -117,4 +117,31 @@ extension GeoCategory: GeoCategoryBehavior {
     ) async throws {
         try await plugin.deleteLocationHistory(for: device, with: options)
     }
+    
+    /// Start a new tracking session.
+    ///
+    ///
+    /// Location update failures can be listened to on the Hub with <event name>
+    ///
+    /// - Parameters:
+    ///   - device: The device that this location update will be applied to.
+    ///             If you choose to create your own `Device` with your own `Device.ID`,
+    ///             you are responsible for ensuring tracker scoped randomness and that the ID doesn't include PII
+    ///   - options: The `Geo.LocationManager.TrackingSessionOptions` struct that determines the tracking behavior
+    ///              of this tracking session.
+    public func startTracking(
+        for device: Geo.Device,
+        with options: Geo.LocationManager.TrackingSessionOptions
+    ) async throws {
+        try await plugin.startTracking(for: device, with: options)
+    }
+    
+    /// Stop tracking an existing tracking session.
+    /// Calling this without an existing tracking session does nothing.
+    ///
+    /// Important: This will save all batched location updates. Any failures
+    /// will be published to the Hub.
+    public func stopTracking() {
+        plugin.stopTracking()
+    }
 }

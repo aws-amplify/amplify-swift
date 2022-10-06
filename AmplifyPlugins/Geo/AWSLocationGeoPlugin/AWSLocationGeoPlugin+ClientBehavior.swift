@@ -6,6 +6,7 @@
 //
 
 import Amplify
+import AWSPluginsCore
 import Foundation
 
 import AWSLocation
@@ -285,5 +286,45 @@ extension AWSLocationGeoPlugin {
         } catch {
             throw GeoErrorHelper.mapAWSLocationError(error)
         }
+    }
+    
+    /// Start a new tracking session.
+    ///
+    ///
+    /// Location update failures can be listened to on the Hub with SAVE_LOCATIONS_FAILED
+    ///
+    /// - Parameters:
+    ///   - device: The device that this location update will be applied to.
+    ///             If you choose to create your own `Device` with your own `Device.ID`,
+    ///             you are responsible for ensuring tracker scoped randomness and that the ID doesn't include PII
+    ///   - options: The `Geo.LocationManager.TrackingSessionOptions` struct that determines the tracking behavior
+    ///              of this tracking session.
+    public func startTracking(for device: Geo.Device,
+                              with options: Geo.LocationManager.TrackingSessionOptions) async throws {
+        if options.tracker == nil, pluginConfig.defaultTracker == nil {
+            throw Geo.Error.invalidConfiguration(
+                GeoPluginErrorConstants.missingTracker.errorDescription,
+                GeoPluginErrorConstants.missingTracker.recoverySuggestion)
+        }
+        
+        var optionsWithTracker: Geo.LocationManager.TrackingSessionOptions = Geo.LocationManager.TrackingSessionOptions(options: options)
+        if optionsWithTracker.tracker == nil {
+            optionsWithTracker.tracker = pluginConfig.defaultTracker
+        }
+        
+        if Self.deviceTracker == nil {
+            Self.deviceTracker = AWSDeviceTracker(locationManager: Geo.LocationManager(options: optionsWithTracker))
+        }
+        Self.deviceTracker?.configure(with: optionsWithTracker)
+        Self.deviceTracker?.startTracking()
+    }
+    
+    /// Stop tracking an existing tracking session.
+    /// Calling this without an existing tracking session does nothing.
+    ///
+    /// Important: This will save all batched location updates. Any failures
+    /// will be published to the Hub.
+    public func stopTracking() {
+        Self.deviceTracker?.stopTracking()
     }
 }

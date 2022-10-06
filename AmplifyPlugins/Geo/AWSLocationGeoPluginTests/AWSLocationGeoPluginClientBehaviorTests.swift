@@ -242,9 +242,11 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
         }
     }
     
-    /// Test if updateLocation
+    // MARK: - Device Tracking
+    
+    /// Test if updateLocation calls the location service correctly
     ///
-    /// - Given: Geo plugin with a missing configuration.
+    /// - Given: Geo plugin with a valid configuration.
     /// - When:
     ///    - I invoke updateLocation.
     /// - Then:
@@ -263,7 +265,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
     
     /// Test if updateLocation fails when configuration is invalid.
     ///
-    /// - Given: Geo plugin with a valid configuration.
+    /// - Given: Geo plugin with a missing configuration.
     /// - When:
     ///    - I invoke updateLocation.
     /// - Then:
@@ -286,7 +288,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
         }
     }
     
-    /// Test if deleteLocationHistory
+    /// Test if deleteLocationHistory calls location service correctly
     ///
     /// - Given: Geo plugin with a valid configuration.
     /// - When:
@@ -327,5 +329,91 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
             }
             XCTAssertEqual(geoError.errorDescription, GeoPluginErrorConstants.missingTracker.errorDescription)
         }
+    }
+    
+    /// Test if startTracking succeeds with a valid configuration and with a default tracker
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke startTracking.
+    /// - Then:
+    ///    - Expected operation completes.
+    ///
+    func testStartTrackingWithDefaultTracker() async {
+        do {
+            let device = Geo.Device.unchecked(id: "123-456-789")
+            try await geoPlugin.startTracking(for: device, with: Geo.LocationManager.TrackingSessionOptions())
+            XCTAssertEqual(mockDeviceTracker.startDeviceTrackingCalled, 1)
+            XCTAssertEqual(mockDeviceTracker.configureCalled, 1)
+        } catch {
+            guard let geoError = error as? Geo.Error else {
+                XCTFail("Error thrown should be Geo.Error")
+                return
+            }
+            XCTAssertEqual(geoError.errorDescription, GeoPluginErrorConstants.missingTracker.errorDescription)
+        }
+    }
+    
+    /// Test if startTracking succeeds with a valid configuration and with custom tracker
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke startTracking.
+    /// - Then:
+    ///    - Expected operation completes.
+    ///
+    func testStartTrackingWithCustomTracker() async {
+        do {
+            let device = Geo.Device.unchecked(id: "123-456-789")
+            var options = Geo.LocationManager.TrackingSessionOptions()
+            options.tracker = "tracker"
+            try await geoPlugin.startTracking(for: device, with: options)
+            XCTAssertEqual(mockDeviceTracker.startDeviceTrackingCalled, 1)
+            XCTAssertEqual(mockDeviceTracker.configureCalled, 1)
+        } catch {
+            guard let geoError = error as? Geo.Error else {
+                XCTFail("Error thrown should be Geo.Error")
+                return
+            }
+            XCTAssertEqual(geoError.errorDescription, GeoPluginErrorConstants.missingTracker.errorDescription)
+        }
+    }
+    
+    /// Test if startTracking fails when configuration is invalid and tracking session options
+    /// has empty tracker.
+    ///
+    /// - Given: Geo plugin with a missing configuration.
+    /// - When:
+    ///    - I invoke startTracking.
+    /// - Then:
+    ///    - Expected error is returned.
+    ///
+    func testStartTrackingWithoutConfigAndTrackerFails() async {
+        geoPlugin.pluginConfig = emptyPluginConfig
+
+        do {
+            let device = Geo.Device.unchecked(id: "123-456-789")
+            try await geoPlugin.startTracking(for: device, with: Geo.LocationManager.TrackingSessionOptions())
+            XCTFail("This call returned success when a failure was expected.")
+        } catch {
+            guard let geoError = error as? Geo.Error else {
+                XCTFail("Error thrown should be Geo.Error")
+                return
+            }
+            XCTAssertEqual(geoError.errorDescription, GeoPluginErrorConstants.missingTracker.errorDescription)
+        }
+    }
+    
+    /// Test if stopTracking succeeds with a valid configuration
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke stopTracking.
+    /// - Then:
+    ///    - Expected operation completes.
+    ///
+    func testStopTracking() async {
+        geoPlugin.stopTracking()
+        XCTAssertEqual(mockDeviceTracker.stopDeviceTrackingCalled, 1)
     }
 }
