@@ -67,7 +67,7 @@ public struct AWSLocationGeoPluginConfiguration {
                                                                               configObject: trackerConfigObject)
             
             guard let tracker = defaultTracker, trackers.contains(tracker) else {
-                throw GeoPluginConfigError.trackerhDefaultNotFound(trackerName: defaultTracker)
+                throw GeoPluginConfigError.trackerDefaultNotFound(trackerName: defaultTracker)
             }
         }
         

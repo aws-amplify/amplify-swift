@@ -105,4 +105,76 @@ class GeoCategoryClientAPITests: XCTestCase {
             XCTFail("Error: \(error)")
         }
     }
+    
+    func testUpdateLocation() async {
+        let expectedMessage = "updateLocation"
+        var expectedFunctionCalled = false
+        plugin.listeners.append { message in
+            print(message)
+            if message == expectedMessage {
+                expectedFunctionCalled = true
+            }
+        }
+
+        do {
+            let device = Geo.Device.unchecked(id: "123-456-789")
+            let location = Geo.Location(latitude: 44.4, longitude: 45.5)
+            try await geo.updateLocation(location, for: device)
+            XCTAssertTrue(expectedFunctionCalled)
+        } catch {
+            XCTFail("Error: \(error)")
+        }
+    }
+    
+    func testDeleteLocationHistory() async {
+        let expectedMessage = "deleteLocationHistory"
+        var expectedFunctionCalled = false
+        plugin.listeners.append { message in
+            print(message)
+            if message == expectedMessage {
+                expectedFunctionCalled = true
+            }
+        }
+
+        do {
+            let device = Geo.Device.unchecked(id: "123-456-789")
+            try await geo.deleteLocationHistory(for: device, with: Geo.DeleteLocationOptions())
+            XCTAssertTrue(expectedFunctionCalled)
+        } catch {
+            XCTFail("Error: \(error)")
+        }
+    }
+    
+    func testStartTracking() async {
+        let expectedMessage = "startTracking"
+        var expectedFunctionCalled = false
+        plugin.listeners.append { message in
+            print(message)
+            if message == expectedMessage {
+                expectedFunctionCalled = true
+            }
+        }
+
+        do {
+            let device = Geo.Device.unchecked(id: "123-456-789")
+            try await geo.startTracking(for: device, with: Geo.LocationManager.TrackingSessionOptions())
+            XCTAssertTrue(expectedFunctionCalled)
+        } catch {
+            XCTFail("Error: \(error)")
+        }
+    }
+    
+    func testStopTracking() async {
+        let expectedMessage = "stopTracking"
+        var expectedFunctionCalled = false
+        plugin.listeners.append { message in
+            print(message)
+            if message == expectedMessage {
+                expectedFunctionCalled = true
+            }
+        }
+
+        geo.stopTracking()
+        XCTAssertTrue(expectedFunctionCalled)
+    }
 }

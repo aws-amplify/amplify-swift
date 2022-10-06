@@ -133,7 +133,7 @@ struct GeoPluginConfigError {
     }
     
     // MARK: - Tracker
-    static func trackerhDefaultNotFound(trackerName: String?) -> PluginError {
+    static func trackerDefaultNotFound(trackerName: String?) -> PluginError {
         PluginError.pluginConfigurationError(
             "Configured default tracker \(trackerName ?? "nil") was not found in trakcer items",
             "Ensure the default tracker is included in tracker items."

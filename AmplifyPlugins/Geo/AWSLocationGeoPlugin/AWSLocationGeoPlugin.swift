@@ -16,6 +16,9 @@ public final class AWSLocationGeoPlugin: GeoCategoryPlugin {
     /// An instance of the AWS Location service
     var locationService: AWSLocationBehavior!
 
+    /// An instance of `AWSDeviceTrackingBehavior` for device tracking
+    static var deviceTracker: AWSDeviceTrackingBehavior?
+    
     /// An instance of the authentication service
     public var authService: AWSAuthServiceBehavior!
 
