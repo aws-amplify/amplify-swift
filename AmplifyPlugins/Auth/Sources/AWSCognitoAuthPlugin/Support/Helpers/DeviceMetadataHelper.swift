@@ -12,7 +12,7 @@ struct DeviceMetadataHelper {
     static func getDeviceMetadata(
         for environment: Environment,
         with username: String) async -> DeviceMetadata {
-            let credentialStoreClient = (environment as? AuthEnvironment)?.credentialStoreClientFactory()
+            let credentialStoreClient = (environment as? AuthEnvironment)?.credentialsClient
             do {
                 let data = try await credentialStoreClient?.fetchData(type: .deviceMetadata(username: username))
 

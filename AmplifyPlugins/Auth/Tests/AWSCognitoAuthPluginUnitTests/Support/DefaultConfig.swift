@@ -57,7 +57,7 @@ enum Defaults {
         return authConfig
     }
 
-    static func makeCredentialStoreOperationBehaviour() -> CredentialStoreStateBehaviour {
+    static func makeCredentialStoreOperationBehavior() -> CredentialStoreStateBehavior {
         return MockCredentialStoreOperationClient()
     }
 
@@ -161,7 +161,7 @@ enum Defaults {
             identityPoolConfigData: identityPoolConfigData,
             authenticationEnvironment: authenticationEnvironment,
             authorizationEnvironment: authZEnvironment ?? authorizationEnvironment,
-            credentialStoreClientFactory: makeCredentialStoreOperationBehaviour,
+            credentialsClient: makeCredentialStoreOperationBehavior(),
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
         )
         Amplify.Logging.logLevel = .verbose
@@ -228,7 +228,7 @@ enum Defaults {
 
 }
 
-struct MockCredentialStoreOperationClient: CredentialStoreStateBehaviour {
+struct MockCredentialStoreOperationClient: CredentialStoreStateBehavior {
 
     func fetchData(type: CredentialStoreDataType) async throws -> CredentialStoreData {
         switch type {

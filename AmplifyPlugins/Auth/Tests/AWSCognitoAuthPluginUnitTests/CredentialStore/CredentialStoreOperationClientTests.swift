@@ -12,7 +12,7 @@ import Amplify
 
 class CredentialStoreOperationClientTests: XCTestCase {
 
-    var credentialClient: CredentialStoreStateBehaviour!
+    var credentialClient: CredentialStoreStateBehavior!
 
     override func setUp() async throws {
         let credentialEnvironment = CredentialEnvironment(

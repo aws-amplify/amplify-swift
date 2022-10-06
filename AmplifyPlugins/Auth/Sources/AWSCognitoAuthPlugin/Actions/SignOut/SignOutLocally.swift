@@ -17,7 +17,7 @@ struct SignOutLocally: Action {
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
-        let credentialStoreClient = (environment as? AuthEnvironment)?.credentialStoreClientFactory()
+        let credentialStoreClient = (environment as? AuthEnvironment)?.credentialsClient
 
         let event: StateMachineEvent
         do {

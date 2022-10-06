@@ -11,7 +11,7 @@ extension CognitoUserPoolASF {
 
     static func asfDeviceID(
         for username: String,
-        credentialStoreClient: CredentialStoreStateBehaviour) async throws -> String {
+        credentialStoreClient: CredentialStoreStateBehavior) async throws -> String {
             let deviceMetaDataType = CredentialStoreDataType.deviceMetadata(username: username)
             let data = try? await credentialStoreClient.fetchData(type: deviceMetaDataType)
             if case .deviceMetadata(let metadata, _) = data,

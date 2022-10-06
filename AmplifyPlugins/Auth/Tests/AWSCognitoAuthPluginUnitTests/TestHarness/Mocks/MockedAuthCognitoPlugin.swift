@@ -103,7 +103,7 @@ struct MockedAuthCognitoPluginHelper {
         MockKeychainStoreBehavior(data: "mockedData")
     }
 
-    private func makeCredentialStoreClient() -> CredentialStoreStateBehaviour {
+    private func makeCredentialStoreClient() -> CredentialStoreStateBehavior {
         MockCredentialStoreOperationClient()
     }
 
@@ -123,7 +123,7 @@ struct MockedAuthCognitoPluginHelper {
                 identityPoolConfigData: nil,
                 authenticationEnvironment: authenticationEnvironment,
                 authorizationEnvironment: nil,
-                credentialStoreClientFactory: makeCredentialStoreClient,
+                credentialsClient: makeCredentialStoreClient(),
                 logger: log)
 
         case .identityPools(let identityPoolConfigurationData):
@@ -135,7 +135,7 @@ struct MockedAuthCognitoPluginHelper {
                 identityPoolConfigData: identityPoolConfigurationData,
                 authenticationEnvironment: nil,
                 authorizationEnvironment: authorizationEnvironment,
-                credentialStoreClientFactory: makeCredentialStoreClient,
+                credentialsClient: makeCredentialStoreClient(),
                 logger: log)
 
         case .userPoolsAndIdentityPools(let userPoolConfigurationData,
@@ -150,7 +150,7 @@ struct MockedAuthCognitoPluginHelper {
                 identityPoolConfigData: identityPoolConfigurationData,
                 authenticationEnvironment: authenticationEnvironment,
                 authorizationEnvironment: authorizationEnvironment,
-                credentialStoreClientFactory: makeCredentialStoreClient,
+                credentialsClient: makeCredentialStoreClient(),
                 logger: log)
         }
     }

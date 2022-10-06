@@ -61,7 +61,7 @@ class AWSAuthResetPasswordTask: AuthResetPasswordTask {
         }
         let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
             for: request.username,
-            credentialStoreClient: environment.credentialStoreClientFactory())
+            credentialStoreClient: environment.credentialsClient)
         let encodedData = CognitoUserPoolASF.encodedContext(
             username: request.username,
             asfDeviceId: asfDeviceId,

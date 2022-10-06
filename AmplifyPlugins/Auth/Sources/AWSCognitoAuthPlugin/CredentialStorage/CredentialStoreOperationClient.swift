@@ -9,7 +9,7 @@ import Amplify
 import Foundation
 @_spi(KeychainStore) import AWSPluginsCore
 
-protocol CredentialStoreStateBehaviour {
+protocol CredentialStoreStateBehavior {
 
     func fetchData(type: CredentialStoreDataType) async throws -> CredentialStoreData
     func storeData(data: CredentialStoreData) async throws
@@ -17,7 +17,7 @@ protocol CredentialStoreStateBehaviour {
 
 }
 
-class CredentialStoreOperationClient: CredentialStoreStateBehaviour {
+class CredentialStoreOperationClient: CredentialStoreStateBehavior {
 
     private let credentialStoreStateMachine: CredentialStoreStateMachine
 
