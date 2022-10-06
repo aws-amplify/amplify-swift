@@ -153,6 +153,19 @@
 		213DBC6128A5808400B30280 /* TodoIAMPrivate+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA8B289BFE4E00B32A39 /* TodoIAMPrivate+Schema.swift */; };
 		213DBC6228A5808400B30280 /* TodoIAMPublic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA8D289BFE4E00B32A39 /* TodoIAMPublic.swift */; };
 		213DBC6328A5841400B30280 /* HubListenerTestUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFE13289C073100B32A39 /* HubListenerTestUtilities.swift */; };
+		216D508428EE36FF0085D35C /* DataStoreDocsAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D508328EE36FF0085D35C /* DataStoreDocsAppApp.swift */; };
+		216D508628EE36FF0085D35C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D508528EE36FF0085D35C /* ContentView.swift */; };
+		216D508828EE37000085D35C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 216D508728EE37000085D35C /* Assets.xcassets */; };
+		216D508B28EE37000085D35C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 216D508A28EE37000085D35C /* Preview Assets.xcassets */; };
+		216D509128EE37830085D35C /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 216D509028EE37830085D35C /* Amplify */; };
+		216D509328EE37830085D35C /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 216D509228EE37830085D35C /* AWSAPIPlugin */; };
+		216D509528EE37830085D35C /* AWSDataStorePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 216D509428EE37830085D35C /* AWSDataStorePlugin */; };
+		216D509828EE37E90085D35C /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D509728EE37E90085D35C /* TestConfigHelper.swift */; };
+		216D50BD28EE3C520085D35C /* GettingStarted.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D50BC28EE3C520085D35C /* GettingStarted.swift */; };
+		216D50BF28EE3C850085D35C /* ManipulatingData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D50BE28EE3C850085D35C /* ManipulatingData.swift */; };
+		216D50C128EE48100085D35C /* RelationalModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D50C028EE48100085D35C /* RelationalModels.swift */; };
+		216D50D028EE4E0F0085D35C /* ManyToMany.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D50CF28EE4E0F0085D35C /* ManyToMany.swift */; };
+		216D50D328EE50420085D35C /* SyncingDataToCloud.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D50D228EE50420085D35C /* SyncingDataToCloud.swift */; };
 		219253BE28BFE84100820737 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 219253BD28BFE84000820737 /* XCTest.framework */; };
 		21977DBF289C171A005B49D6 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977DBE289C1719005B49D6 /* TestConfigHelper.swift */; };
 		219B518528E3A4B00080EDCC /* DataStoreConnectionOptionalAssociations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA00289BFE3400B32A39 /* DataStoreConnectionOptionalAssociations.swift */; };
@@ -644,6 +657,18 @@
 		213DBC5828A57FFE00B30280 /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
 		213DBC5A28A5800F00B30280 /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
 		213DBC5C28A5801900B30280 /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
+		216D508128EE36FF0085D35C /* DataStoreDocsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DataStoreDocsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		216D508328EE36FF0085D35C /* DataStoreDocsAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreDocsAppApp.swift; sourceTree = "<group>"; };
+		216D508528EE36FF0085D35C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		216D508728EE37000085D35C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		216D508A28EE37000085D35C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		216D508F28EE372C0085D35C /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		216D509728EE37E90085D35C /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
+		216D50BC28EE3C520085D35C /* GettingStarted.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GettingStarted.swift; sourceTree = "<group>"; };
+		216D50BE28EE3C850085D35C /* ManipulatingData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManipulatingData.swift; sourceTree = "<group>"; };
+		216D50C028EE48100085D35C /* RelationalModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelationalModels.swift; sourceTree = "<group>"; };
+		216D50CF28EE4E0F0085D35C /* ManyToMany.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManyToMany.swift; sourceTree = "<group>"; };
+		216D50D228EE50420085D35C /* SyncingDataToCloud.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncingDataToCloud.swift; sourceTree = "<group>"; };
 		219253BD28BFE84000820737 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		21977D84289C1633005B49D6 /* primarykey_schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = primarykey_schema.graphql; sourceTree = "<group>"; };
 		21977DBE289C1719005B49D6 /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
@@ -1124,6 +1149,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		216D507E28EE36FF0085D35C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				216D509528EE37830085D35C /* AWSDataStorePlugin in Frameworks */,
+				216D509328EE37830085D35C /* AWSAPIPlugin in Frameworks */,
+				216D509128EE37830085D35C /* Amplify in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		21BBFB3E289BFF6A00B32A39 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1167,6 +1202,7 @@
 				213DBBDB28A5770000B30280 /* AWSDataStorePluginAuthCognitoTests */,
 				213DBBE828A5771400B30280 /* AWSDataStorePluginAuthIAMTests */,
 				213DBBF528A5772500B30280 /* AWSDataStorePluginMultiAuthTests */,
+				216D508228EE36FF0085D35C /* DataStoreDocsApp */,
 				2118212D289BFB4B001B5945 /* Products */,
 				2118213F289BFBC4001B5945 /* Frameworks */,
 			);
@@ -1183,6 +1219,7 @@
 				213DBBDA28A5770000B30280 /* AWSDataStorePluginAuthCognitoTests.xctest */,
 				213DBBE728A5771400B30280 /* AWSDataStorePluginAuthIAMTests.xctest */,
 				213DBBF428A5772500B30280 /* AWSDataStorePluginMultiAuthTests.xctest */,
+				216D508128EE36FF0085D35C /* DataStoreDocsApp.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1271,6 +1308,32 @@
 				213DBC5C28A5801900B30280 /* TestConfigHelper.swift */,
 			);
 			path = AWSDataStorePluginMultiAuthTests;
+			sourceTree = "<group>";
+		};
+		216D508228EE36FF0085D35C /* DataStoreDocsApp */ = {
+			isa = PBXGroup;
+			children = (
+				216D508F28EE372C0085D35C /* README.md */,
+				216D508328EE36FF0085D35C /* DataStoreDocsAppApp.swift */,
+				216D508528EE36FF0085D35C /* ContentView.swift */,
+				216D508728EE37000085D35C /* Assets.xcassets */,
+				216D508928EE37000085D35C /* Preview Content */,
+				216D509728EE37E90085D35C /* TestConfigHelper.swift */,
+				216D50BC28EE3C520085D35C /* GettingStarted.swift */,
+				216D50BE28EE3C850085D35C /* ManipulatingData.swift */,
+				216D50C028EE48100085D35C /* RelationalModels.swift */,
+				216D50CF28EE4E0F0085D35C /* ManyToMany.swift */,
+				216D50D228EE50420085D35C /* SyncingDataToCloud.swift */,
+			);
+			path = DataStoreDocsApp;
+			sourceTree = "<group>";
+		};
+		216D508928EE37000085D35C /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				216D508A28EE37000085D35C /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 		21977D75289C161D005B49D6 /* Models */ = {
@@ -2354,6 +2417,29 @@
 			productReference = 213DBBF428A5772500B30280 /* AWSDataStorePluginMultiAuthTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		216D508028EE36FF0085D35C /* DataStoreDocsApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 216D508E28EE37000085D35C /* Build configuration list for PBXNativeTarget "DataStoreDocsApp" */;
+			buildPhases = (
+				216D507D28EE36FF0085D35C /* Sources */,
+				216D507E28EE36FF0085D35C /* Frameworks */,
+				216D507F28EE36FF0085D35C /* Resources */,
+				216D509628EE37B40085D35C /* Copy Configuration Files */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DataStoreDocsApp;
+			packageProductDependencies = (
+				216D509028EE37830085D35C /* Amplify */,
+				216D509228EE37830085D35C /* AWSAPIPlugin */,
+				216D509428EE37830085D35C /* AWSDataStorePlugin */,
+			);
+			productName = DataStoreDocsApp;
+			productReference = 216D508128EE36FF0085D35C /* DataStoreDocsApp.app */;
+			productType = "com.apple.product-type.application";
+		};
 		21BBFB40289BFF6A00B32A39 /* AWSDataStorePluginIntegrationTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 21BBFB49289BFF6A00B32A39 /* Build configuration list for PBXNativeTarget "AWSDataStorePluginIntegrationTests" */;
@@ -2454,6 +2540,9 @@
 						CreatedOnToolsVersion = 14.0;
 						TestTargetID = 2118212B289BFB4B001B5945;
 					};
+					216D508028EE36FF0085D35C = {
+						CreatedOnToolsVersion = 14.0;
+					};
 					21BBFB40289BFF6A00B32A39 = {
 						CreatedOnToolsVersion = 13.4.1;
 						TestTargetID = 2118212B289BFB4B001B5945;
@@ -2493,6 +2582,7 @@
 				213DBBD928A5770000B30280 /* AWSDataStorePluginAuthCognitoTests */,
 				213DBBE628A5771400B30280 /* AWSDataStorePluginAuthIAMTests */,
 				213DBBF328A5772500B30280 /* AWSDataStorePluginMultiAuthTests */,
+				216D508028EE36FF0085D35C /* DataStoreDocsApp */,
 			);
 		};
 /* End PBXProject section */
@@ -2525,6 +2615,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		216D507F28EE36FF0085D35C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				216D508B28EE37000085D35C /* Preview Assets.xcassets in Resources */,
+				216D508828EE37000085D35C /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2600,6 +2699,24 @@
 			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
 		};
 		213DBC4E28A57B9500B30280 /* Copy Configuration Files */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration Files";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
+		216D509628EE37B40085D35C /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2795,6 +2912,21 @@
 				213DBC1628A5787400B30280 /* PrivatePrivateUPIAMPost+Schema.swift in Sources */,
 				213DBC3228A5787400B30280 /* GroupUPPost+Schema.swift in Sources */,
 				213DBC4928A5787B00B30280 /* AWSDataStoreMultiAuthSingleRuleTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		216D507D28EE36FF0085D35C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				216D50C128EE48100085D35C /* RelationalModels.swift in Sources */,
+				216D50BD28EE3C520085D35C /* GettingStarted.swift in Sources */,
+				216D50D328EE50420085D35C /* SyncingDataToCloud.swift in Sources */,
+				216D50D028EE4E0F0085D35C /* ManyToMany.swift in Sources */,
+				216D509828EE37E90085D35C /* TestConfigHelper.swift in Sources */,
+				216D50BF28EE3C850085D35C /* ManipulatingData.swift in Sources */,
+				216D508628EE36FF0085D35C /* ContentView.swift in Sources */,
+				216D508428EE36FF0085D35C /* DataStoreDocsAppApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3553,6 +3685,66 @@
 			};
 			name = Release;
 		};
+		216D508C28EE37000085D35C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"DataStoreDocsApp/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.DataStoreDocsApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		216D508D28EE37000085D35C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"DataStoreDocsApp/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.DataStoreDocsApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		21BBFB47289BFF6A00B32A39 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3745,6 +3937,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		216D508E28EE37000085D35C /* Build configuration list for PBXNativeTarget "DataStoreDocsApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				216D508C28EE37000085D35C /* Debug */,
+				216D508D28EE37000085D35C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		21BBFB49289BFF6A00B32A39 /* Build configuration list for PBXNativeTarget "AWSDataStorePluginIntegrationTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -3797,6 +3998,18 @@
 			productName = AWSCognitoAuthPlugin;
 		};
 		21182146289BFBC4001B5945 /* AWSDataStorePlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSDataStorePlugin;
+		};
+		216D509028EE37830085D35C /* Amplify */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Amplify;
+		};
+		216D509228EE37830085D35C /* AWSAPIPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSAPIPlugin;
+		};
+		216D509428EE37830085D35C /* AWSDataStorePlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AWSDataStorePlugin;
 		};
