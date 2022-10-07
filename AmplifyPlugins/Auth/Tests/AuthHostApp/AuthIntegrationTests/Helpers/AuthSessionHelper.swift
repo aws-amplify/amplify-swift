@@ -27,7 +27,7 @@ struct AuthSessionHelper {
         }
 
     static func clearSession() {
-        let store = KeychainStore(service: "com.amplify.credentialStore")
+        let store = KeychainStore(service: "com.amplify.awsCognitoAuthPlugin")
         try? store._removeAll()
     }
 
