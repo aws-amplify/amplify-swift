@@ -112,7 +112,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
             guard let self = self else { fatalError() }
             switch result {
             case .success(let pairs):
-                logger.info("Recovery completed: [pairs = '\(pairs.count)]")
+                logger.info("Recovery completed: [pairs = \(pairs.count)]")
                 self.processTransferTaskPairs(pairs: pairs)
             case .failure(let error):
                 logger.error(error: error)
@@ -174,6 +174,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
 
     func register(multipartUploadSession: StorageMultipartUploadSession) {
         dispatchPrecondition(condition: .notOnQueue(serviceDispatchQueue))
+        logger.debug("Registering multipart upload: \(multipartUploadSession.uploadId ?? "-")")
         serviceDispatchQueue.sync {
             multipartUploadSessions.append(multipartUploadSession)
         }
@@ -181,6 +182,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
 
     func unregister(multipartUploadSession: StorageMultipartUploadSession) {
         dispatchPrecondition(condition: .notOnQueue(serviceDispatchQueue))
+        logger.debug("Unregistering multipart upload: \(multipartUploadSession.uploadId ?? "-")")
         serviceDispatchQueue.sync {
             guard let index = multipartUploadSessions.firstIndex(of: multipartUploadSession) else { return }
             multipartUploadSessions.remove(at: index)
@@ -196,7 +198,8 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
         dispatchPrecondition(condition: .notOnQueue(serviceDispatchQueue))
         return serviceDispatchQueue.sync {
             let session = multipartUploadSessions.first { session in
-                session.uploadId == uploadId
+                logger.debug("uploadId: \(session.uploadId ?? "-")")
+                return session.uploadId == uploadId
             }
             return session
         }

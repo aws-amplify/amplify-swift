@@ -208,6 +208,8 @@ class StorageMultipartUploadSession {
     }
 
     func fail(error: Error) {
+        logger.debug("Multipart Upload Failure: \(error)")
+        logger.debug("Multipart Upload: \(multipartUpload)")
         multipartUpload.fail(error: error)
         onEvent(.failed(StorageError(error: error)))
     }
@@ -224,6 +226,9 @@ class StorageMultipartUploadSession {
 
             switch multipartUpload {
             case .parts(let uploadId, let uploadFile, let partSize, let parts):
+                if wasPaused {
+                    logger.debug("Resuming after being paused")
+                }
                 transferTask.uploadId = uploadId
                 uploadParts(uploadFile: uploadFile, uploadId: uploadId, partSize: partSize, parts: parts)
             case .paused(_, _, _, let parts):
@@ -242,9 +247,11 @@ class StorageMultipartUploadSession {
             default:
                 break
             }
+            logger.verbose("MultipartUpload State: \(multipartUpload)")
         } catch {
             fail(error: error)
         }
+
     }
 
     func handle(uploadPartEvent: StorageUploadPartEvent) {
@@ -378,6 +385,7 @@ class StorageMultipartUploadSession {
                     guard !isAborted else { return }
                     // the next call does async work
                     let subTask = createSubTask(partNumber: partNumber)
+                    logger.debug("Uploading part: \(partNumber)")
                     try client.uploadPart(partNumber: partNumber, multipartUpload: multipartUpload, subTask: subTask)
                 }
             }
