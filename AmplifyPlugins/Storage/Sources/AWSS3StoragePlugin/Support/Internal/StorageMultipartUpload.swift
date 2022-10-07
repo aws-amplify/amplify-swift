@@ -48,6 +48,8 @@ enum StorageMultipartUpload {
                 .aborting(let uploadId, _),
                 .aborted(let uploadId, _):
             return uploadId
+        case .failed(let uploadId, _, _):
+            return uploadId
         default:
             return nil
         }
