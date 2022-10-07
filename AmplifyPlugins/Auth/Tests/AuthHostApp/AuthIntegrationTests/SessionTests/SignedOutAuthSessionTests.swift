@@ -35,6 +35,36 @@ class SignedOutAuthSessionTests: AWSAuthBaseTest {
         XCTAssertFalse(result.isSignedIn, "Session state should be not signed In")
     }
 
+    /// Test if we can fetch auth session in signedOut state and refresh after a signOut
+    ///
+    /// - Given: Auth category with a signedOut state
+    /// - When:
+    ///    - I invoke fetchAuthSession
+    ///    - Then invoke signOut
+    ///    - Then call fetchAuthSession again
+    /// - Then:
+    ///    - Valid response with signedOut state = false and identity Id is different
+    ///
+    func testSuccessfulSessionFetchAfterSignOut() async throws {
+
+        let result = try await Amplify.Auth.fetchAuthSession()
+        guard let cognitoResult = result as? AWSAuthCognitoSession,
+              let identityID1 = try? cognitoResult.identityIdResult.get() else {
+            XCTFail("Should retreive identity ID")
+            return
+        }
+        _ = await Amplify.Auth.signOut()
+        XCTAssertFalse(result.isSignedIn, "Session state should be not signed In")
+
+        let result2 = try await Amplify.Auth.fetchAuthSession()
+        guard let cognitoResult = result2 as? AWSAuthCognitoSession,
+              let identityID2 = try? cognitoResult.identityIdResult.get() else {
+            XCTFail("Should retreive identity ID")
+            return
+        }
+        XCTAssertNotEqual(identityID1, identityID2)
+    }
+
     /// Test if we can retreive valid credentials for a signedOut session.
     ///
     /// - Given: Auth category with a signedOut state

@@ -48,6 +48,11 @@ extension AmplifyCredentials {
                                                    credentials: AuthAWSCognitoCredentials.testData)
     }
 
+    static var testDataIdentityPool: AmplifyCredentials {
+        AmplifyCredentials.identityPoolOnly(identityID: "someId",
+                                            credentials: .testData)
+    }
+
     static var testDataWithExpiredTokens: AmplifyCredentials {
         AmplifyCredentials.userPoolAndIdentityPool(signedInData: .expiredTestData,
                                                    identityID: "identityId",
