@@ -98,9 +98,13 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
         let options = options ?? AuthSignOutRequest.Options()
         let request = AuthSignOutRequest(options: options)
         let task = AWSAuthSignOutTask(request, authStateMachine: authStateMachine)
-        return (try? await taskQueue.sync {
-            return await task.value
-        } as! AuthSignOutResult?)!
+        do {
+            return try await taskQueue.sync {
+                return await task.value
+            } as! AuthSignOutResult
+        } catch {
+            fatalError("AWSAuthSignOutTask should not throw error: \(error)")
+        }
     }
 
     public func fetchAuthSession(options: AuthFetchSessionRequest.Options?) async throws -> AuthSession {
