@@ -258,6 +258,15 @@ class StorageMultipartUploadSession {
         logger.debug("\(#function): \(uploadPartEvent)")
 
         do {
+            if case .failed = multipartUpload {
+                logger.debug("Multipart Upload is failed and event cannot be handled: \(uploadPartEvent)")
+                return
+            }
+            else if case .paused = multipartUpload {
+                logger.debug("Multipart Upload is paused and event cannot be handled: \(uploadPartEvent)")
+                return
+            }
+
             try multipartUpload.transition(uploadPartEvent: uploadPartEvent)
 
             // update the transferTask with every state transition
@@ -333,29 +342,52 @@ class StorageMultipartUploadSession {
     }
 
     private func cancelInProgressParts(parts: StorageUploadParts) {
-        let taskIdentifiers: [TaskIdentifier] = parts.inProgress.compactMap {
-            if case .inProgress(_, _, let taskIdentifier) = $0 {
-                return taskIdentifier
-            } else {
-                return nil
-            }
-        }
-
-        client.cancelUploadTasks(taskIdentifiers: taskIdentifiers)
-
+        dispatchPrecondition(condition: .notOnQueue(queue))
         queue.sync {
-            if case .paused(let uploadId, let uploadFile, let partSize, let parts) = multipartUpload {
-                let pausedParts: StorageUploadParts = parts.map { part in
-                    if case .inProgress = part {
-                        return StorageUploadPart.pending(bytes: part.bytes)
-                    } else {
-                        return part
-                    }
-                }
-                multipartUpload = .paused(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: pausedParts)
+            guard let uploadId = multipartUpload.uploadId,
+                  let uploadFile = multipartUpload.uploadFile,
+                    let partSize = multipartUpload.partSize else {
+                logger.warn("Unable to get required values to cancel in progress parts: \(multipartUpload)")
+                return
             }
-        }
 
+            // collect TaskIdentifier from each part that is in progress
+            let cancellingParts: [TaskIdentifier?] = parts.reduce(into: [], { result, part in
+                if case .inProgress(_, _, let taskIdentifier) = part {
+                    result.append(taskIdentifier)
+                } else {
+                    result.append(nil)
+                }
+            })
+
+            for index in 0..<cancellingParts.count {
+                if cancellingParts[index] != nil {
+                    let partNumber = index + 1
+                    logger.debug("Pausing upload and cancelling URLSession upload task: partNumber = \(partNumber)")
+                }
+            }
+
+            // update parts to be paused
+            let pausedParts: StorageUploadParts = parts.map { part in
+                if case .inProgress = part {
+                    return StorageUploadPart.pending(bytes: part.bytes)
+                } else {
+                    return part
+                }
+            }
+            multipartUpload = .paused(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: pausedParts)
+
+            let taskIdentifiers = cancellingParts.compactMap { $0 }
+            logger.debug(("Cancelling upload tasks which are in process while paused: \(taskIdentifiers)"))
+
+            // block while cancelling upload tasks
+            let group = DispatchGroup()
+            group.enter()
+            client.cancelUploadTasks(taskIdentifiers: taskIdentifiers) {
+                group.leave()
+            }
+            group.wait()
+        }
     }
 
     private func uploadParts(uploadFile: UploadFile, uploadId: UploadID, partSize: StorageUploadPartSize, parts: StorageUploadParts) {
@@ -368,6 +400,8 @@ class StorageMultipartUploadSession {
 
         do {
             let pendingPartNumbers = getPendingPartNumbers()
+            logger.debug("Pending parts: \(pendingPartNumbers)")
+            logger.debug("Multipart Upload: \(multipartUpload)")
             if pendingPartNumbers.isEmpty {
                 return
             }
@@ -377,6 +411,7 @@ class StorageMultipartUploadSession {
                 let numbers = pendingPartNumbers[0..<end]
                 // queue upload part first
                 numbers.forEach { partNumber in
+                    logger.debug("Queuing part \(partNumber)")
                     handle(uploadPartEvent: .queued(partNumber: partNumber))
                 }
 
