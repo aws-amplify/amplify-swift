@@ -163,13 +163,25 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
     }
 
     func register(task: StorageTransferTask) {
-        guard let taskIdentifier = task.taskIdentifier else { return }
-        tasks[taskIdentifier] = task
+        serviceDispatchQueue.sync {
+            guard let taskIdentifier = task.taskIdentifier else { return }
+            tasks[taskIdentifier] = task
+        }
     }
 
     func unregister(task: StorageTransferTask) {
-        guard let taskIdentifier = task.taskIdentifier else { return }
-        tasks[taskIdentifier] = nil
+        serviceDispatchQueue.sync {
+            guard let taskIdentifier = task.taskIdentifier else { return }
+            tasks[taskIdentifier] = nil
+        }
+    }
+
+    func unregister(taskIdentifiers: [TaskIdentifier]) {
+        serviceDispatchQueue.sync {
+            for taskIdentifier in taskIdentifiers {
+                tasks[taskIdentifier] = nil
+            }
+        }
     }
 
     func register(multipartUploadSession: StorageMultipartUploadSession) {
@@ -198,8 +210,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
         dispatchPrecondition(condition: .notOnQueue(serviceDispatchQueue))
         return serviceDispatchQueue.sync {
             let session = multipartUploadSessions.first { session in
-                logger.debug("uploadId: \(session.uploadId ?? "-")")
-                return session.uploadId == uploadId
+                session.uploadId == uploadId
             }
             return session
         }
