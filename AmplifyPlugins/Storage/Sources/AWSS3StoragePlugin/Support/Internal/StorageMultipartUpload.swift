@@ -32,7 +32,8 @@ enum StorageMultipartUpload {
     var uploadFile: UploadFile? {
         switch self {
         case .created(_, let uploadFile),
-                .parts(_, let uploadFile, _, _):
+                .parts(_, let uploadFile, _, _),
+                .paused(_, let uploadFile, _, _):
             return uploadFile
         default:
             return nil
