@@ -50,6 +50,34 @@ public extension Amplify {
             .handleEvents(receiveCancel: { task.cancel() } )
             .eraseToAnyPublisher()
         }
+
+        /// Create a Combine Publisher for a given non-throwing Task.
+        ///
+        /// Example Usage
+        /// ```
+        /// let sink = Amplify.Publisher.create {
+        ///     try await Amplify.Auth.signOut()
+        /// }
+        ///     .sink(receiveValue: { value in
+        ///         // handle value
+        ///     })
+        /// ```
+        ///
+        /// - Parameter operation: The Task for which to create the Publisher.
+        /// - Returns: The Publisher for the given Task.
+        public static func create<Success>(
+            _ operation: @escaping @Sendable () async -> Success
+        ) -> AnyPublisher<Success, Never> {
+            let task = Task(operation: operation)
+            return Future() { promise in
+                Task {
+                    let value = await task.value
+                    promise(.success(value))
+                }
+            }
+            .handleEvents(receiveCancel: { task.cancel() } )
+            .eraseToAnyPublisher()
+        }
         
         /// Create a Combine Publisher for a given AsyncSequence.
         ///
