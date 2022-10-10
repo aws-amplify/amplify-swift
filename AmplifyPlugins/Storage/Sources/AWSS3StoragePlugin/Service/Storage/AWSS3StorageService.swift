@@ -60,7 +60,11 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
         if let sessionConfiguration = sessionConfiguration {
             _sessionConfiguration = sessionConfiguration
         } else {
+            #if os(macOS)
+            let sessionConfiguration = URLSessionConfiguration.default
+            #else
             let sessionConfiguration = URLSessionConfiguration.background(withIdentifier: storageConfiguration.sessionIdentifier)
+            #endif
             sessionConfiguration.allowsCellularAccess = storageConfiguration.allowsCellularAccess
             sessionConfiguration.timeoutIntervalForResource = TimeInterval(storageConfiguration.timeoutIntervalForResource)
             _sessionConfiguration = sessionConfiguration
