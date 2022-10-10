@@ -13,10 +13,10 @@
 		97AD223928230B9A001AFCC1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97AD223828230B9A001AFCC1 /* Preview Assets.xcassets */; };
 		97DB8245282339D200FC2228 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 97DB8244282339D200FC2228 /* README.md */; };
 		97DB824728233A1D00FC2228 /* AWSLocationGeoPluginIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DB824628233A1D00FC2228 /* AWSLocationGeoPluginIntegrationTests.swift */; };
-		97DB82502823417000FC2228 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 97DB824F2823417000FC2228 /* Amplify */; };
-		97DB82532823434500FC2228 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 97DB82522823434500FC2228 /* AWSCognitoAuthPlugin */; };
 		97DB82552823466800FC2228 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DB82542823466800FC2228 /* TestConfigHelper.swift */; };
-		97DB82572823475300FC2228 /* AWSLocationGeoPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 97DB82562823475300FC2228 /* AWSLocationGeoPlugin */; };
+		B44DCFA328F48EDD007FEC7C /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = B44DCFA228F48EDD007FEC7C /* Amplify */; };
+		B44DCFA528F48EDD007FEC7C /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = B44DCFA428F48EDD007FEC7C /* AWSCognitoAuthPlugin */; };
+		B44DCFA728F48EDD007FEC7C /* AWSLocationGeoPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = B44DCFA628F48EDD007FEC7C /* AWSLocationGeoPlugin */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,8 +38,8 @@
 		97DB823B282339B700FC2228 /* AWSLocationGeoPluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSLocationGeoPluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		97DB8244282339D200FC2228 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		97DB824628233A1D00FC2228 /* AWSLocationGeoPluginIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSLocationGeoPluginIntegrationTests.swift; sourceTree = "<group>"; };
-		97DB824D28233F2B00FC2228 /* amplify-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios"; path = ../../..; sourceTree = "<group>"; };
 		97DB82542823466800FC2228 /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
+		B44DCFA828F49E60007FEC7C /* amplify-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios"; path = ../../../..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,9 +47,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				97DB82572823475300FC2228 /* AWSLocationGeoPlugin in Frameworks */,
-				97DB82502823417000FC2228 /* Amplify in Frameworks */,
-				97DB82532823434500FC2228 /* AWSCognitoAuthPlugin in Frameworks */,
+				B44DCFA728F48EDD007FEC7C /* AWSLocationGeoPlugin in Frameworks */,
+				B44DCFA328F48EDD007FEC7C /* Amplify in Frameworks */,
+				B44DCFA528F48EDD007FEC7C /* AWSCognitoAuthPlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -115,7 +115,7 @@
 		97DB824C28233F2B00FC2228 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				97DB824D28233F2B00FC2228 /* amplify-ios */,
+				B44DCFA828F49E60007FEC7C /* amplify-ios */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -144,9 +144,9 @@
 			);
 			name = GeoHostApp;
 			packageProductDependencies = (
-				97DB824F2823417000FC2228 /* Amplify */,
-				97DB82522823434500FC2228 /* AWSCognitoAuthPlugin */,
-				97DB82562823475300FC2228 /* AWSLocationGeoPlugin */,
+				B44DCFA228F48EDD007FEC7C /* Amplify */,
+				B44DCFA428F48EDD007FEC7C /* AWSCognitoAuthPlugin */,
+				B44DCFA628F48EDD007FEC7C /* AWSLocationGeoPlugin */,
 			);
 			productName = GeoHostApp;
 			productReference = 97AD222E28230B98001AFCC1 /* GeoHostApp.app */;
@@ -533,15 +533,15 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		97DB824F2823417000FC2228 /* Amplify */ = {
+		B44DCFA228F48EDD007FEC7C /* Amplify */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Amplify;
 		};
-		97DB82522823434500FC2228 /* AWSCognitoAuthPlugin */ = {
+		B44DCFA428F48EDD007FEC7C /* AWSCognitoAuthPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AWSCognitoAuthPlugin;
 		};
-		97DB82562823475300FC2228 /* AWSLocationGeoPlugin */ = {
+		B44DCFA628F48EDD007FEC7C /* AWSLocationGeoPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AWSLocationGeoPlugin;
 		};

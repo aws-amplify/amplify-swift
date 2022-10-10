@@ -250,7 +250,7 @@ let geoTargets: [Target] = [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
             .product(name: "AWSLocation", package: "aws-sdk-swift")],
-        path: "AmplifyPlugins/Geo/AWSLocationGeoPlugin",
+        path: "AmplifyPlugins/Geo/Sources/AWSLocationGeoPlugin",
         exclude: [
             "Resources/Info.plist"
         ]
@@ -262,7 +262,7 @@ let geoTargets: [Target] = [
             "AmplifyTestCommon",
             "AWSPluginsTestCommon"
             ],
-        path: "AmplifyPlugins/Geo/AWSLocationGeoPluginTests",
+        path: "AmplifyPlugins/Geo/Tests/AWSLocationGeoPluginTests",
         exclude: [
             "Resources/Info.plist"
         ],
