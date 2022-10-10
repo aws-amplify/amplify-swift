@@ -35,11 +35,11 @@
 		97829201286B802E000DE190 /* AuthResetPasswordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97829200286B802E000DE190 /* AuthResetPasswordTests.swift */; };
 		97829203286E41FA000DE190 /* AuthConfirmResetPasswordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97829202286E41FA000DE190 /* AuthConfirmResetPasswordTests.swift */; };
 		97B370C52878DA5A00F1C088 /* AuthFetchDeviceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B370C42878DA5A00F1C088 /* AuthFetchDeviceTests.swift */; };
-		B40B5E9228D28A8E009C98D2 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = B40B5E9128D28A8E009C98D2 /* Amplify */; };
-		B40B5E9428D28A8E009C98D2 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = B40B5E9328D28A8E009C98D2 /* AWSCognitoAuthPlugin */; };
 		B43C26CA27BC9D54003F3BF7 /* AuthSignUpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43C26C727BC9D54003F3BF7 /* AuthSignUpTests.swift */; };
 		B43C26CB27BC9D54003F3BF7 /* AuthConfirmSignUpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43C26C827BC9D54003F3BF7 /* AuthConfirmSignUpTests.swift */; };
 		B43C26CC27BC9D54003F3BF7 /* AuthResendSignUpCodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43C26C927BC9D54003F3BF7 /* AuthResendSignUpCodeTests.swift */; };
+		B4B9F45828F47C0A004F346F /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = B4B9F45728F47C0A004F346F /* Amplify */; };
+		B4B9F45A28F47C0A004F346F /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = B4B9F45928F47C0A004F346F /* AWSCognitoAuthPlugin */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,10 +83,10 @@
 		97829200286B802E000DE190 /* AuthResetPasswordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthResetPasswordTests.swift; sourceTree = "<group>"; };
 		97829202286E41FA000DE190 /* AuthConfirmResetPasswordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfirmResetPasswordTests.swift; sourceTree = "<group>"; };
 		97B370C42878DA5A00F1C088 /* AuthFetchDeviceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFetchDeviceTests.swift; sourceTree = "<group>"; };
-		B40B5E9028D28A4F009C98D2 /* amplify-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios"; path = ../../../..; sourceTree = "<group>"; };
 		B43C26C727BC9D54003F3BF7 /* AuthSignUpTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthSignUpTests.swift; sourceTree = "<group>"; };
 		B43C26C827BC9D54003F3BF7 /* AuthConfirmSignUpTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthConfirmSignUpTests.swift; sourceTree = "<group>"; };
 		B43C26C927BC9D54003F3BF7 /* AuthResendSignUpCodeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthResendSignUpCodeTests.swift; sourceTree = "<group>"; };
+		B4B9F45628F47B7B004F346F /* amplify-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios"; path = ../../../..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,8 +94,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B40B5E9228D28A8E009C98D2 /* Amplify in Frameworks */,
-				B40B5E9428D28A8E009C98D2 /* AWSCognitoAuthPlugin in Frameworks */,
+				B4B9F45828F47C0A004F346F /* Amplify in Frameworks */,
+				B4B9F45A28F47C0A004F346F /* AWSCognitoAuthPlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -249,7 +249,7 @@
 		485CB5C627B62C5C006CCEC7 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				B40B5E9028D28A4F009C98D2 /* amplify-ios */,
+				B4B9F45628F47B7B004F346F /* amplify-ios */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -311,8 +311,8 @@
 			);
 			name = AuthHostApp;
 			packageProductDependencies = (
-				B40B5E9128D28A8E009C98D2 /* Amplify */,
-				B40B5E9328D28A8E009C98D2 /* AWSCognitoAuthPlugin */,
+				B4B9F45728F47C0A004F346F /* Amplify */,
+				B4B9F45928F47C0A004F346F /* AWSCognitoAuthPlugin */,
 			);
 			productName = AuthHostApp;
 			productReference = 485CB53A27B614CE006CCEC7 /* AuthHostApp.app */;
@@ -717,11 +717,11 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		B40B5E9128D28A8E009C98D2 /* Amplify */ = {
+		B4B9F45728F47C0A004F346F /* Amplify */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Amplify;
 		};
-		B40B5E9328D28A8E009C98D2 /* AWSCognitoAuthPlugin */ = {
+		B4B9F45928F47C0A004F346F /* AWSCognitoAuthPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AWSCognitoAuthPlugin;
 		};

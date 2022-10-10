@@ -183,4 +183,56 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
         let secondSession = try await Amplify.Auth.fetchAuthSession()
         XCTAssertTrue(secondSession.isSignedIn, "Session state should be signed In")
     }
+
+    /// Test if successful session is retreived with signOut operation happening in between
+    ///
+    /// - Given: A signedIn auth plugin
+    /// - When:
+    ///    - I start a parallel fetchAuthSession
+    ///    - I invoke a signOut
+    /// - Then:
+    ///    - I should receive a valid sessions
+    ///
+    func testMultipleParallelSuccessfulSessionFetch() async throws {
+        let username = "integTest\(UUID().uuidString)"
+        let password = "P123@\(UUID().uuidString)"
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
+        XCTAssertTrue(didSucceed, "SignIn operation failed")
+
+        let identityIDExpectation = expectation(description: "Identity id should be fetched")
+        identityIDExpectation.expectedFulfillmentCount = 100
+        for index in 1...100 {
+            Task {
+
+                // Randomly yield the task so that below execution of signOut happen
+                if index%6 == 0 {
+                    await Task.yield()
+                }
+                let firstSession = try await Amplify.Auth.fetchAuthSession()
+                guard let cognitoSession = firstSession as? AWSAuthCognitoSession,
+                     let _ = try? cognitoSession.identityIdResult.get() else {
+                    XCTFail("Could not fetch Identity ID")
+                    return
+                }
+                identityIDExpectation.fulfill()
+            }
+        }
+
+        await Task.yield()
+        _ = await Amplify.Auth.signOut()
+        let fetchSessionExptectation = expectation(description: "Session should be fetched")
+        fetchSessionExptectation.expectedFulfillmentCount = 50
+        for _ in 1...50 {
+            Task {
+                let firstSession = try await Amplify.Auth.fetchAuthSession()
+                XCTAssertFalse(firstSession.isSignedIn, "Session state should be signed out")
+                fetchSessionExptectation.fulfill()
+            }
+        }
+        await waitForExpectations(timeout: networkTimeout)
+    }
 }
