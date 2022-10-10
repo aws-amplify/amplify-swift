@@ -41,9 +41,11 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
         let noProgressAfterPause = expectation(description: "Progress after pause is invoked")
         noProgressAfterPause.isInverted = true
         noProgressAfterPause.assertForOverFulfill = false
+        var progressCount = 0
         task.inProcessPublisher.sink { progress in
-            // After pausing, progress events still trickle in, but should not exceed
-            if progress.fractionCompleted > 0.7 {
+            progressCount += 1
+            XCTAssertLessThanOrEqual(progressCount, 1)
+            if progressCount > 1 {
                 XCTFail("Task should have been paused")
                 noProgressAfterPause.fulfill()
             }
