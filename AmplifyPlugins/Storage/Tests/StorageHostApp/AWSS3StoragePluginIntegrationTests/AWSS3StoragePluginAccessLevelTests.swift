@@ -280,26 +280,31 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                     XCTAssertNotNil(user2IdentityId)
                     XCTAssertNotEqual(user1IdentityId, user2IdentityId)
 
+                    let targetIdentityId = testRun.accessLevel == .guest ? nil : user1IdentityId
+
                     if testRun.accessLevel == .private {
                         logger.debug("Testing private access as user2")
                         // check for Access Denied error
-                        let notDone = asyncExpectation(description: "not done", isInverted: true)
+                        let notDone = asyncExpectation(description: "not done for \(testRun.accessLevel)", isInverted: true)
                         do {
                             logger.debug("Getting list as user2")
                             let listOptions2 = StorageListRequest.Options(accessLevel: testRun.accessLevel,
-                                                                          path: testRun.key)
-                            _ = try await Amplify.Storage.list(options: listOptions2).items
+                                                                          targetIdentityId: user1IdentityId)
+                            let keys2 = try await Amplify.Storage.list(options: listOptions2).items.filter {
+                                $0.key == testRun.key
+                            }
                             // expects error to be thrown so notDone expectation is not reached
                             await notDone.fulfill()
+                            logger.debug("Keys: \(keys2)")
                         } catch {
                             // access denied error expected
-                            guard case let .accessDenied(description, _, _) = (error as? StorageError) else {
-                                XCTFail("Expected access denied error: \(error)")
+                            guard case let .validation(_, description, _, _) = (error as? StorageError) else {
+                                XCTFail("Expected validation error: \(error)")
                                 return
                             }
-                            XCTAssertEqual(description, StorageErrorConstants.accessDenied.errorDescription)
+                            XCTAssertEqual(description, StorageErrorConstants.invalidAccessLevelWithTarget.errorDescription)
                         }
-                        await waitForExpectations([notDone], timeout: 0.25)
+                        await waitForExpectations([notDone])
 
                         logger.debug("Signing out as user2")
                         await signOut()
@@ -311,37 +316,22 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                         logger.debug("Removing key as user1")
                         await remove(key: testRun.key, accessLevel: testRun.accessLevel)
                     } else {
-                        logger.debug("Getting list as user2")
+                        logger.debug("Getting list as user2: \(testRun.accessLevel)")
                         let listOptions2 = StorageListRequest.Options(accessLevel: testRun.accessLevel,
-                                                                     path: testRun.key)
-                        let keys2 = try await Amplify.Storage.list(options: listOptions2).items
+                                                                      targetIdentityId: targetIdentityId)
+                        let keys2 = try await Amplify.Storage.list(options: listOptions2).items.filter {
+                            $0.key == testRun.key
+                        }
                         XCTAssertEqual(keys2.count, 1)
 
                         logger.debug("Downloading as user2")
-                        let downloadDataOptions = StorageDownloadDataRequest.Options(accessLevel: testRun.accessLevel)
+                        let downloadDataOptions = StorageDownloadDataRequest.Options(accessLevel: testRun.accessLevel,
+                                                                                     targetIdentityId: targetIdentityId)
                         let data = try await Amplify.Storage.downloadData(key: testRun.key, options: downloadDataOptions).value
                         XCTAssertNotNil(data)
 
                         logger.debug("Removing key as user2")
                         await remove(key: testRun.key, accessLevel: testRun.accessLevel)
-
-                        logger.debug("Downloading as user2 after remove")
-                        let getFailedExpectation = asyncExpectation(description: "Download operation should fail: \(testRun.key)")
-                        let getOptions = StorageDownloadDataRequest.Options(accessLevel: testRun.accessLevel,
-                                                                            targetIdentityId: nil)
-                        let getError = await waitError(with: getFailedExpectation) {
-                            return try await Amplify.Storage.downloadData(key: testRun.key, options: getOptions).value
-                        }
-
-                        guard let getError = getError else {
-                            XCTFail("Expected error from Download operation")
-                            return
-                        }
-
-                        guard case .keyNotFound(_, _, _, _) = (getError as? StorageError) else {
-                            XCTFail("Expected notFound error, got \(getError)")
-                            return
-                        }
                     }
                 } catch {
                     logger.debug("Error: \(error)")
