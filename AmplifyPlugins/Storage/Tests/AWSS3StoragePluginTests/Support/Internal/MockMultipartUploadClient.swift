@@ -100,8 +100,9 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
         didAbortMultipartUpload?(session, uploadId)
     }
 
-    func cancelUploadTasks(taskIdentifiers: [TaskIdentifier]) {
+    func cancelUploadTasks(taskIdentifiers: [TaskIdentifier], done: @escaping () -> Void) {
         print("Canceling upload tasks")
+        done()
     }
 
 }
