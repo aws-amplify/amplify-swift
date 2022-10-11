@@ -17,7 +17,7 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
     /// Given: A large data object to upload
     /// When: Call the put API and pause the operation
     /// Then: The operation is stalled (no progress, completed, or failed event)
-    func testUploadLargeDataThenPause() async {
+    func testUploadLargeDataThenPause() async throws {
         let key = UUID().uuidString
         guard let task = await uploadTask(key: key, data: AWSS3StoragePluginTestBase.largeDataObject) else {
             XCTFail("Unable to create Upload task")
@@ -41,9 +41,11 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
         let noProgressAfterPause = expectation(description: "Progress after pause is invoked")
         noProgressAfterPause.isInverted = true
         noProgressAfterPause.assertForOverFulfill = false
+        var progressCount = 0
         task.inProcessPublisher.sink { progress in
-            // After pausing, progress events still trickle in, but should not exceed
-            if progress.fractionCompleted > 0.7 {
+            progressCount += 1
+            XCTAssertLessThanOrEqual(progressCount, 1)
+            if progressCount > 1 {
                 XCTFail("Task should have been paused")
                 noProgressAfterPause.fulfill()
             }
@@ -63,7 +65,7 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
         // This gives ample time for operation to cancel, and then await Amplify.reset(), Amplify.configure works as expected.
         // If the sleep is not added, await Amplify.reset() will be trigerred in the tear down method which will remove all the plugins, 
         // Removing all the plugins when operation is still cancelling, results in undesired behavior from the storage/auth plugin 
-        sleep(5)
+        try await Task.sleep(seconds: 5)
         // Remove the key
         await remove(key: key)
     }

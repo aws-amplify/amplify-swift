@@ -95,31 +95,36 @@ class AWSS3StoragePluginKeyResolverTests: AWSS3StoragePluginTestBase {
     func testUploadRemoveDownload() async {
         let key = UUID().uuidString
         let data = key.data(using: .utf8)!
-        let uploadCompleted = asyncExpectation(description: "upload completed")
-        let uploadResult = await wait(with: uploadCompleted) {
-            try await Amplify.Storage.uploadData(key: key, data: data)
-        }
-        XCTAssertNotNil(uploadResult)
 
-        let removeCompleted = asyncExpectation(description: "remove completed")
-        let removeResult = await wait(with: removeCompleted) {
-            try await Amplify.Storage.remove(key: key)
-        }
-        XCTAssertNotNil(removeResult)
+        let done = asyncExpectation(description: "done")
 
-        let downloadCompleted = asyncExpectation(description: "download completed")
-        let downloadError = await waitError(with: downloadCompleted) {
-            return try await Amplify.Storage.downloadData(key: key).value
+        Task {
+            do {
+                let uploadResult = try await Amplify.Storage.uploadData(key: key, data: data).value
+                XCTAssertEqual(uploadResult, key)
+                let removeResult = try await Amplify.Storage.remove(key: key)
+                XCTAssertEqual(removeResult, key)
+                let notDone = asyncExpectation(description: "not done", isInverted: true)
+                let caughtError = asyncExpectation(description: "caught error")
+                do {
+                    let data = try await Amplify.Storage.downloadData(key: key).value
+                    await notDone.fulfill()
+                } catch {
+                    guard case .keyNotFound = error as? StorageError else {
+                        XCTFail("Should have failed with .keyNotFound, got \(error)")
+                        return
+                    }
+                    await caughtError.fulfill()
+                }
+
+                await waitForExpectations([notDone], timeout: 0.25)
+                await waitForExpectations([caughtError])
+            } catch {
+                XCTFail("Error: \(error)")
+            }
+            await done.fulfill()
         }
 
-        guard let downloadError = downloadError else {
-            XCTFail("Download should have failed")
-            return
-        }
-
-        guard case .keyNotFound = downloadError as? StorageError else {
-            XCTFail("Should have failed with .keyNotFound, got \(downloadError)")
-            return
-        }
+        await waitForExpectations([done], timeout: TestCommonConstants.networkTimeout)
     }
 }
