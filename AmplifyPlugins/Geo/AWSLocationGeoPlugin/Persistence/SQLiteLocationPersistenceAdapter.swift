@@ -9,13 +9,12 @@ import Foundation
 import SQLite
 import Amplify
 
-/// This class provides a SQLite implementation of `AWSLocationStorageBehavior`
+/// This class provides a SQLite implementation of `LocationPersistenceBehavior`
 /// to locally persist device tracking locations for the cases when the device is
 /// offline or to enable batch sending of device tracking locations to `AWSLocation`
 /// service
-final class AWSLocationStore : AWSLocationStorageBehavior {
+final class SQLiteLocationPersistenceAdapter : LocationPersistenceBehavior {
     
-    let positionsDatabaseName = "geo_device_tracking_positions_store"
     let positionsTable = Table("positions")
     let id = Expression<String>(Position.keys.id.stringValue)
     let timeStamp = Expression<String>(Position.keys.timeStamp.stringValue)
@@ -24,14 +23,17 @@ final class AWSLocationStore : AWSLocationStorageBehavior {
     let tracker = Expression<String>(Position.keys.tracker.stringValue)
     let deviceID = Expression<String>(Position.keys.deviceID.stringValue)
     
-    let positionsDatabase: Connection
+    private let positionsDatabase: Connection
+    private let fileSystemBehavior: LocationFileSystemBehavior
     
-    init() throws {
-        guard let urlPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            Fatal.error("URL path to documents directory could not be found")
-        }
-        positionsDatabase = try Connection("\(urlPath)/\(positionsDatabaseName).db")
-        try positionsDatabase.run(positionsTable.create(ifNotExists: true) { t in
+    init(fileSystemBehavior: LocationFileSystemBehavior) throws {
+        self.fileSystemBehavior = fileSystemBehavior
+        self.positionsDatabase = try fileSystemBehavior.getLocationDBConnection()
+        try initialize(connection: positionsDatabase)
+    }
+    
+    private func initialize(connection: Connection) throws {
+        try connection.run(positionsTable.create(ifNotExists: true) { t in
             t.column(id, primaryKey: true)
             t.column(timeStamp)
             t.column(latitude)
@@ -41,24 +43,24 @@ final class AWSLocationStore : AWSLocationStorageBehavior {
         })
     }
     
-    func save(position: Position) throws {
+    func insert(position: Position) throws {
         try positionsDatabase.run(positionsTable.insert(position))
     }
     
-    func save(positions: [Position]) throws {
+    func insert(positions: [Position]) throws {
         try positionsDatabase.run(positionsTable.insertMany(positions))
     }
     
-    func delete(position: Position) throws {
+    func remove(position: Position) throws {
         let deleteQuery = positionsTable.filter(id == position.id)
         try positionsDatabase.run(deleteQuery.delete())
     }
     
-    func delete(positions: [Position]) throws {
+    func remove(positions: [Position]) throws {
         try positionsDatabase.run(positionsTable.filter(positions.map(\.id).contains(id)).delete())
     }
     
-    func queryAll() throws -> [Position] {
+    func getAll() throws -> [Position] {
         try positionsDatabase
             .prepare(positionsTable)
             .map {
@@ -73,7 +75,8 @@ final class AWSLocationStore : AWSLocationStorageBehavior {
             }
     }
     
-    func deleteAll() throws {
+    func removeAll() throws {
         try positionsDatabase.run(positionsTable.delete())
     }
+    
 }

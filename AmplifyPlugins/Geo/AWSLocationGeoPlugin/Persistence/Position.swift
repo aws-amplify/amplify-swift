@@ -7,21 +7,6 @@
 
 import Foundation
 
-protocol AWSLocationStorageBehavior {
-    
-    func save(position: Position) throws
-    
-    func save(positions: [Position]) throws
-    
-    func delete(position: Position) throws
-    
-    func delete(positions: [Position]) throws
-    
-    func queryAll() throws -> [Position]
-    
-    func deleteAll() throws
-}
-
 struct Position: Identifiable, Codable {
     
     let id: String
@@ -58,4 +43,10 @@ struct Position: Identifiable, Codable {
 
     public static let keys = CodingKeys.self
     
+}
+
+extension Position: Equatable {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        return (lhs.id == rhs.id)
+    }
 }
