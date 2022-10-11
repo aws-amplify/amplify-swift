@@ -103,7 +103,7 @@ jobs:
       - name: Run Integration test
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
-          project_path: ./AmplifyPlugins/Geo/
+          project_path: ./AmplifyPlugins/Geo/GeoHostApp
           workspace: GeoCategoryPlugin.xcworkspace
           scheme: AWSLocationGeoPluginIntegrationTests
 
