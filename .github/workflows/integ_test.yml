@@ -103,7 +103,7 @@ jobs:
       - name: Run Integration test
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
-          project_path: ./AmplifyPlugins/Geo/GeoHostApp
+          project_path: ./AmplifyPlugins/Geo/Tests/GeoHostApp/
           scheme: GeoHostApp
 
 

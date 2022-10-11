@@ -31,7 +31,7 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
         XCTAssertNotNil(Amplify.Geo.plugin)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         await Amplify.reset()
     }
 
