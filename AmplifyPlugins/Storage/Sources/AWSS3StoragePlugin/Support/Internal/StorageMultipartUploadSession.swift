@@ -36,7 +36,7 @@ class StorageMultipartUploadSession {
     private let fileSystem: FileSystem
     private let logger: Logger
 
-    private let queue = DispatchQueue(label: "com.amazon.aws.amplify.multipartupload-session", target: .global())
+    private let serialQueue = DispatchQueue(label: "com.amazon.aws.amplify.multipartupload-session", target: .global())
     private let id = UUID()
     private var multipartUpload: StorageMultipartUpload
     private let client: StorageMultipartUploadClient
@@ -134,13 +134,15 @@ class StorageMultipartUploadSession {
     }
 
     var completedParts: StorageUploadParts? {
-        queue.sync {
+        dispatchPrecondition(condition: .notOnQueue(serialQueue))
+        return serialQueue.sync {
             multipartUpload.parts?.completed
         }
     }
 
     var partsCount: Int {
-        queue.sync {
+        dispatchPrecondition(condition: .notOnQueue(serialQueue))
+        return serialQueue.sync {
             guard let parts = multipartUpload.parts else {
                 return 0
             }
@@ -151,19 +153,22 @@ class StorageMultipartUploadSession {
     }
 
     var partsCompleted: Bool {
-        queue.sync {
+        dispatchPrecondition(condition: .notOnQueue(serialQueue))
+        return serialQueue.sync {
             multipartUpload.partsCompleted
         }
     }
 
     var partsFailed: Bool {
-        queue.sync {
+        dispatchPrecondition(condition: .notOnQueue(serialQueue))
+        return serialQueue.sync {
             multipartUpload.partsFailed
         }
     }
 
     var inProgressCount: Int {
-        queue.sync {
+        dispatchPrecondition(condition: .notOnQueue(serialQueue))
+        return serialQueue.sync {
             guard let parts = multipartUpload.parts else {
                 return 0
             }
@@ -186,13 +191,15 @@ class StorageMultipartUploadSession {
     }
 
     func part(for number: PartNumber) -> StorageUploadPart? {
-        queue.sync {
+        dispatchPrecondition(condition: .notOnQueue(serialQueue))
+        return serialQueue.sync {
             multipartUpload.part(for: number)
         }
     }
 
     func getPendingPartNumbers() -> [Int] {
-        queue.sync {
+        dispatchPrecondition(condition: .notOnQueue(serialQueue))
+        return serialQueue.sync {
             multipartUpload.pendingPartNumbers
         }
     }
@@ -201,6 +208,7 @@ class StorageMultipartUploadSession {
         do {
             let reference = StorageTaskReference(transferTask)
             onEvent(.initiated(reference))
+            logger.debug("Creating Multipart Upload")
             try client.createMultipartUpload()
         } catch {
             fail(error: error)
@@ -342,8 +350,8 @@ class StorageMultipartUploadSession {
     }
 
     private func cancelInProgressParts(parts: StorageUploadParts) {
-        dispatchPrecondition(condition: .notOnQueue(queue))
-        queue.sync {
+        dispatchPrecondition(condition: .notOnQueue(serialQueue))
+        serialQueue.sync {
             guard let uploadId = multipartUpload.uploadId,
                   let uploadFile = multipartUpload.uploadFile,
                     let partSize = multipartUpload.partSize else {
