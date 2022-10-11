@@ -227,7 +227,10 @@ class StorageMultipartUploadSession {
 
         do {
             let wasPaused = multipartUpload.isPaused
-            try multipartUpload.transition(multipartUploadEvent: multipartUploadEvent)
+
+            try serialQueue.sync {
+                try multipartUpload.transition(multipartUploadEvent: multipartUploadEvent)
+            }
 
             // update the transerTask with every state transition
             transferTask.multipartUpload = multipartUpload
@@ -275,10 +278,11 @@ class StorageMultipartUploadSession {
                 return
             }
 
-            try multipartUpload.transition(uploadPartEvent: uploadPartEvent)
-
-            // update the transferTask with every state transition
-            transferTask.multipartUpload = multipartUpload
+            try serialQueue.sync {
+                try multipartUpload.transition(uploadPartEvent: uploadPartEvent)
+                // update the transferTask with every state transition
+                transferTask.multipartUpload = multipartUpload
+            }
 
             if uploadPartEvent.isCompleted {
                 // report progress
