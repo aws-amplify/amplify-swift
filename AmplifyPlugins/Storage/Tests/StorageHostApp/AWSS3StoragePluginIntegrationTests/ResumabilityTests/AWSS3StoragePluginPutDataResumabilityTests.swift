@@ -107,7 +107,7 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
         .store(in: &cancellables)
 
         task.resume()
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        await waitForExpectations(timeout: TestCommonConstants.networkTimeout * 2)
         // Remove the key
         await remove(key: key)
     }

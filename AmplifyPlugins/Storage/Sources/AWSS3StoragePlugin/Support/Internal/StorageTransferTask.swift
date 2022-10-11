@@ -10,6 +10,8 @@ import Amplify
 import AWSPluginsCore
 
 class StorageTransferTask {
+    typealias Action = () -> Void
+
     let transferID: String
     let transferType: StorageTransferType
     let bucket: String
@@ -204,48 +206,62 @@ class StorageTransferTask {
     }
 
     func cancel() {
-        taskQueue.sync {
+        let action: Action? = taskQueue.sync {
+            let action: Action?
             guard _status != .completed else {
                 logger.warn("Unable to cancel when already completed")
-                return
+                return nil
             }
 
             if let sessionTask = sessionTask {
-                logger.debug("Cancelling storage transfer task: \(taskIdentifier ?? 0)")
-                sessionTask.cancel()
+                logger.debug("Cancelling storage transfer task: \(sessionTask.taskIdentifier)")
+                action = {
+                    sessionTask.cancel()
+                }
                 _status = .cancelled
             } else if let proxyStorageTask = proxyStorageTask {
                 logger.debug("Cancelling multipart upload: \(uploadId ?? "-")")
-                proxyStorageTask.cancel()
+                action = {
+                    proxyStorageTask.cancel()
+                }
                 _status = .cancelled
             } else {
                 logger.warn("Session Task or Proxy Storage Task must be defined")
-                return
+                action = nil
+                return action
             }
 
             storageTransferDatabase.removeTransferRequest(task: self)
             proxyStorageTask = nil
+            return action
         }
+        action?()
     }
 
     func resume() {
-        taskQueue.sync {
+        let action: Action? = taskQueue.sync {
+            let action: Action?
             guard _status == .paused else {
                 logger.debug("Unable to resume unless paused")
-                return
+                return nil
             }
 
             if let sessionTask = sessionTask {
-                logger.debug("Resuming storage transfer task: \(taskIdentifier ?? 0)")
-                sessionTask.resume()
+                logger.debug("Resuming storage transfer task: \(sessionTask.taskIdentifier)")
+                action = {
+                    sessionTask.resume()
+                }
                 _status = .inProgress
             } else if let proxyStorageTask = proxyStorageTask {
                 logger.debug("Resuming multipart upload: \(uploadId ?? "-")")
-                proxyStorageTask.resume()
+                action = {
+                    proxyStorageTask.resume()
+                }
                 _status = .inProgress
             } else {
                 logger.warn("Session Task or Proxy Storage Task must be defined")
-                return
+                action = nil
+                return action
             }
 
             let reference = StorageTaskReference(self)
@@ -261,31 +277,41 @@ class StorageTransferTask {
             }
 
             storageTransferDatabase.updateTransferRequest(task: self)
+            return action
         }
+        action?()
     }
 
     func suspend() {
-        taskQueue.sync {
+        let action: Action? = taskQueue.sync {
+            let action: Action?
             guard _status == .inProgress else {
                 logger.debug("Unable to suspend unless in progress")
-                return
+                return nil
             }
 
             if let sessionTask = sessionTask {
-                logger.debug("Suspending storage transfer task: \(taskIdentifier ?? 0)")
-                sessionTask.suspend()
+                logger.debug("Suspending storage transfer task: \(sessionTask.taskIdentifier)")
+                action = {
+                    sessionTask.suspend()
+                }
                 _status = .paused
             } else if let proxyStorageTask = proxyStorageTask {
                 logger.debug("Resuming multipart upload: \(uploadId ?? "-")")
-                proxyStorageTask.pause()
+                action = {
+                    proxyStorageTask.pause()
+                }
                 _status = .paused
             } else {
                 logger.warn("Session Task or Proxy Storage Task must be defined")
-                return
+                action = nil
+                return action
             }
 
             storageTransferDatabase.updateTransferRequest(task: self)
+            return action
         }
+        action?()
     }
 
     func complete() {
@@ -299,7 +325,9 @@ class StorageTransferTask {
                 return
             }
 
-            logger.debug("Completing storage transfer task: \(taskIdentifier ?? 0)")
+            if let sessionTask = sessionTask {
+                logger.debug("Completing storage transfer task: \(sessionTask.taskIdentifier)")
+            }
 
             _status = .completed
             storageTransferDatabase.removeTransferRequest(task: self)
