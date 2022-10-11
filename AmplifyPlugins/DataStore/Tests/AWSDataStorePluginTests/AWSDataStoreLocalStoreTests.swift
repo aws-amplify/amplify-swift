@@ -287,9 +287,9 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
     func testObserveQuery() async throws {
         setUp(withModels: TestModelRegistration())
         try await Amplify.DataStore.clear()
-        _ = try await setUpLocalStore(numberOfPosts: 15)
         var snapshotCount = 0
-        let allSnapshotsReceived = expectation(description: "query snapshots received")
+        let initialQueryComplete = asyncExpectation(description: "initial snapshot received")
+        let allSnapshotsReceived = asyncExpectation(description: "query snapshots received")
 
         let subscription = Amplify.DataStore.observeQuery(for: Post.self)
         let sink = Amplify.Publisher.create(subscription).sink { completed in
@@ -301,13 +301,16 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
             }
         } receiveValue: { querySnapshot in
             snapshotCount += 1
-            XCTAssertFalse(querySnapshot.isSynced)
-            if querySnapshot.items.count == 30 {
-                allSnapshotsReceived.fulfill()
+            if snapshotCount == 1 {
+                Task { await initialQueryComplete.fulfill() }
+            }
+            if querySnapshot.items.count == 15 {
+                Task { await allSnapshotsReceived.fulfill() }
             }
         }
+        await waitForExpectations([initialQueryComplete], timeout: 10)
         _ = try await setUpLocalStore(numberOfPosts: 15)
-        await waitForExpectations(timeout: 100)
+        await waitForExpectations([allSnapshotsReceived], timeout: 10)
         XCTAssertTrue(snapshotCount >= 2)
         sink.cancel()
     }
@@ -331,19 +334,22 @@ class AWSDataStoreLocalStoreTests: LocalStoreIntegrationTestBase {
     }
 
     func setUpLocalStore(numberOfPosts: Int) async throws -> [Post] {
-        var savedPosts = [Post]()
-        for id in 0 ..< numberOfPosts {
-            let post = Post(title: "title\(Int.random(in: 0 ... 5))",
-                            content: "content",
-                            createdAt: .now(),
-                            rating: Double(Int.random(in: 0 ... 5)),
-                            status: .draft)
-            savedPosts.append(post)
-            print("\(id) \(post.id)")
-            _ = try await Amplify.DataStore.save(post)
+        let posts = (0..<numberOfPosts).map {
+            Post(
+                title: "title_\($0)",
+                content: "content",
+                createdAt: .now(),
+                rating: Double(Int.random(in: 0 ... 5)),
+                status: .draft
+            )
         }
 
-        return savedPosts
+        for (index, post) in posts.enumerated() {
+            print("\(index) \(post.id)")
+            try await Amplify.DataStore.save(post)
+        }
+
+        return posts
     }
 
     func setUpLocalStoreForGroupedPredicateTest() async throws {
