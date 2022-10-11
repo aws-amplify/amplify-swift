@@ -265,7 +265,9 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                     logger.debug("Getting list as user1")
                     let listOptions1 = StorageListRequest.Options(accessLevel: testRun.accessLevel,
                                                                  path: testRun.key)
-                    let keys1 = try await Amplify.Storage.list(options: listOptions1).items
+                    let keys1 = try await Amplify.Storage.list(options: listOptions1).items.filter {
+                        $0.key == testRun.key
+                    }
                     XCTAssertEqual(keys1.count, 1)
 
                     logger.debug("Signing out as user1")
@@ -289,7 +291,8 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                         do {
                             logger.debug("Getting list as user2")
                             let listOptions2 = StorageListRequest.Options(accessLevel: testRun.accessLevel,
-                                                                          targetIdentityId: user1IdentityId)
+                                                                          targetIdentityId: user1IdentityId,
+                                                                          path: testRun.key)
                             let keys2 = try await Amplify.Storage.list(options: listOptions2).items.filter {
                                 $0.key == testRun.key
                             }
@@ -318,7 +321,8 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                     } else {
                         logger.debug("Getting list as user2: \(testRun.accessLevel)")
                         let listOptions2 = StorageListRequest.Options(accessLevel: testRun.accessLevel,
-                                                                      targetIdentityId: targetIdentityId)
+                                                                      targetIdentityId: targetIdentityId,
+                                                                      path: testRun.key)
                         let keys2 = try await Amplify.Storage.list(options: listOptions2).items.filter {
                             $0.key == testRun.key
                         }
