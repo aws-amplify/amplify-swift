@@ -230,10 +230,10 @@ class StorageMultipartUploadSession {
 
             try serialQueue.sync {
                 try multipartUpload.transition(multipartUploadEvent: multipartUploadEvent)
-            }
 
-            // update the transerTask with every state transition
-            transferTask.multipartUpload = multipartUpload
+                // update the transerTask with every state transition
+                transferTask.multipartUpload = multipartUpload
+            }
 
             switch multipartUpload {
             case .parts(let uploadId, let uploadFile, let partSize, let parts):
@@ -296,6 +296,9 @@ class StorageMultipartUploadSession {
             let isCompletedEvent = uploadPartEvent.isCompleted
 
             if case .queued = uploadPartEvent {
+                return
+            } else if case .paused = multipartUpload {
+                logger.debug("Multipart Upload is paused and part cannot be completed")
                 return
             } else if isCompletedEvent && multipartUpload.hasPendingParts {
                 if case .parts(let uploadId, let uploadFile, let partSize, let parts) = multipartUpload {

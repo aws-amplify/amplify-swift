@@ -53,7 +53,9 @@ class StorageTransferTask {
         didSet {
             if let multipartUpload = multipartUpload {
                 if multipartUpload.inProgress {
-                    status = .inProgress
+                    if status != .paused {
+                        status = .inProgress
+                    }
                 } else if multipartUpload.isPaused {
                     status = .paused
                 } else if multipartUpload.isCompleted {
@@ -188,7 +190,9 @@ class StorageTransferTask {
     func notify(progress: Progress) {
         taskQueue.sync {
             transferType.notify(progress: progress)
-            _status = .inProgress
+            if _status != .paused {
+                _status = .inProgress
+            }
         }
     }
 
@@ -297,7 +301,7 @@ class StorageTransferTask {
                 }
                 _status = .paused
             } else if let proxyStorageTask = proxyStorageTask {
-                logger.debug("Resuming multipart upload: \(uploadId ?? "-")")
+                logger.debug("Pausing multipart upload: \(uploadId ?? "-")")
                 action = {
                     proxyStorageTask.pause()
                 }

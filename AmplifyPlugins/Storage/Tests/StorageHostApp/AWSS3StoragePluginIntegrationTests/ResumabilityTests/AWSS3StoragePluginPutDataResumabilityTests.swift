@@ -74,42 +74,70 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
     /// When: Call the put API, pause, and then resume the operation,
     /// Then: The operation should complete successfully
     func testUploadLargeDataAndPauseThenResume() async {
-        let key = UUID().uuidString
-        guard let task = await uploadTask(key: key, data: AWSS3StoragePluginTestBase.largeDataObject) else {
-            XCTFail("Unable to create Upload task")
-            return
+        let logger = Amplify.Logging.logger(forCategory: "Storage", logLevel: .verbose)
+        let done = asyncExpectation(description: "done")
+
+        Task {
+            do {
+                let key = UUID().uuidString
+                logger.debug("Uploading data")
+                let task = try await Amplify.Storage.uploadData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
+
+                var cancellables = Set<AnyCancellable>()
+                let progressInvoked = asyncExpectation(description: "Progress invoked")
+                var progressInvokedCount = 0
+                task.inProcessPublisher.sink { progress in
+                    // To simulate a normal scenario, fulfill the progressInvoked expectation after some progress (30%)
+                    if progress.fractionCompleted > 0.3 {
+                        progressInvokedCount += 1
+                        if progressInvokedCount == 1 {
+                            Task {
+                                await progressInvoked.fulfill()
+                            }
+                        }
+                    }
+                }.store(in: &cancellables)
+
+                await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
+                logger.debug("Pausing upload task")
+                task.pause()
+                logger.debug("Sleeping 2 seconds")
+                try await Task.sleep(seconds: 2.0)
+
+                let completeInvoked = asyncExpectation(description: "Upload is completed")
+                task.resultPublisher.sink(receiveCompletion: { result in
+                    switch result {
+                    case .finished:
+                        Task {
+                            await completeInvoked.fulfill()
+                        }
+                    case .failure(let error):
+                        XCTFail("Failed with \(error)")
+                        Task {
+                            await completeInvoked.fulfill()
+                        }
+                    }
+                }, receiveValue: { _ in })
+                .store(in: &cancellables)
+
+                logger.debug("Resuming upload task")
+                task.resume()
+                await waitForExpectations([completeInvoked], timeout: TestCommonConstants.networkTimeout)
+
+                logger.debug("Waiting to finish upload task")
+                let uploadKey = try await task.value
+                XCTAssertEqual(uploadKey, key)
+
+                // clean up
+                logger.debug("Cleaning up after upload task")
+                try await Amplify.Storage.remove(key: key)
+            } catch {
+                XCTFail("Error: \(error)")
+            }
+            await done.fulfill()
         }
 
-        var cancellables = Set<AnyCancellable>()
-        let progressInvoked = expectation(description: "Progress invoked")
-        progressInvoked.assertForOverFulfill = false
-        task.inProcessPublisher.sink { progress in
-            // To simulate a normal scenario, fulfill the progressInvoked expectation after some progress (30%)
-            if progress.fractionCompleted > 0.3 {
-                progressInvoked.fulfill()
-            }
-        }.store(in: &cancellables)
-
-        XCTAssertNotNil(task)
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
-        task.pause()
-
-        let completeInvoked = expectation(description: "Upload is completed")
-        task.resultPublisher.sink(receiveCompletion: { result in
-            switch result {
-            case .finished:
-                completeInvoked.fulfill()
-            case .failure(let error):
-                XCTFail("Failed with \(error)")
-                completeInvoked.fulfill()
-            }
-        }, receiveValue: { _ in })
-        .store(in: &cancellables)
-
-        task.resume()
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout * 2)
-        // Remove the key
-        await remove(key: key)
+        await waitForExpectations([done], timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: A large data object to upload
