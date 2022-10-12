@@ -29,7 +29,7 @@ For a brief history and our ethos/design philosophy around the Amplify project p
 
 ## Getting Started
 
-To get started with the Amplify Library for Swift, first make sure you have the latest version of Xcode installed.
+To get started with the Amplify Library for Swift, first make sure you have Xcode 13.4 or later installed.
 
 Then make sure you fork the project first and then clone it by running:
 
@@ -76,7 +76,7 @@ The GitHub issue is sufficient for such discussions, and can be sufficient to ge
 
 ### Step 3: Fork the Repo
 
-First, create a fork of amplify-ios. Clone it, and make changes to this fork.
+First, create a fork of amplify-swift. Clone it, and make changes to this fork.
 
 ```
 git clone git@github.com:GITHUBUSERNAME/amplify-swift.git 
@@ -104,7 +104,7 @@ Create a commit with the proposed change changes:
 ### Step 6: Pull Request
 
 - Push your changes to your GitHub fork
-- Submit a Pull Requests on the amplify-ios repo to the `main` branch and add the Amplify Native team using @aws-amplify/amplify-native so we can approve/provide feedback.
+- Submit a Pull Requests on the amplify-swift repo to the `main` branch and add the Amplify Native team using @aws-amplify/amplify-native so we can approve/provide feedback.
 - The title of your PR must be descriptive to the specific change. Remember to follow the [Conventional Commits](https://www.conventionalcommits.org) specification.
 - No period at the end of the title.
 - Pull Request message should indicate which issues are fixed: `fixes #<issue>` or `closes #<issue>`.
