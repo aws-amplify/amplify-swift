@@ -31,16 +31,16 @@ final public class HubCategory: Category {
         AWSHubPlugin.key: AWSHubPlugin()
     ]
 
-    var configurationState = ConfigurationState.default
+    var configurationState = AtomicValue<ConfigurationState>(initialValue: .default)
 
     var isConfigured: Bool {
-        configurationState != .pendingConfiguration
+        configurationState.get() != .pendingConfiguration
     }
 
     /// Returns the plugin added to the category, if only one plugin is added. Accessing this property if no plugins
     /// are added, or if more than one plugin is added, will cause a preconditionFailure.
     var plugin: HubCategoryPlugin {
-        guard configurationState != .pendingConfiguration else {
+        guard configurationState.get() != .pendingConfiguration else {
             return Fatal.preconditionFailure(
                 """
                 \(categoryType.displayName) category is not configured. Call Amplify.configure() before using \
@@ -79,8 +79,8 @@ final public class HubCategory: Category {
     ///
     /// - Parameter plugin: The Plugin to add
     public func add(plugin: HubCategoryPlugin) throws {
-        if configurationState == .default {
-            configurationState = .pendingConfiguration
+        if configurationState.get() == .default {
+            configurationState.set(.pendingConfiguration)
             plugins[AWSHubPlugin.key] = nil
         }
 

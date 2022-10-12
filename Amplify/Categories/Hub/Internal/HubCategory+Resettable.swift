@@ -20,6 +20,6 @@ extension HubCategory: Resettable {
             }
             await taskGroup.waitForAll()
         }
-        configurationState = .pendingConfiguration
+        configurationState.set(.pendingConfiguration)
     }
 }

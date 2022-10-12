@@ -10,7 +10,7 @@ extension HubCategory: CategoryConfigurable {
     /// Configures the HubCategory using the incoming CategoryConfiguration. If the incoming configuration does not
     /// specify a Hub plugin, then we will inject the AWSHubPlugin.
     func configure(using configuration: CategoryConfiguration?) throws {
-        guard configurationState != .configured else {
+        guard configurationState.get() != .configured else {
             let error = ConfigurationError.amplifyAlreadyConfigured(
                 "\(categoryType.displayName) has already been configured.",
                 "Remove the duplicate call to `Amplify.configure()`"
@@ -20,7 +20,7 @@ extension HubCategory: CategoryConfigurable {
 
         try Amplify.configure(plugins: Array(plugins.values), using: configuration)
 
-        configurationState = .configured
+        configurationState.set(.configured)
     }
 
     func configure(using amplifyConfiguration: AmplifyConfiguration) throws {
