@@ -1,4 +1,4 @@
-# Amplify iOS Contributing Guide
+# Amplify Library for Swift Contributing Guide
 
 Thank you for your interest in contributing to our project! <3 Whether it's a bug report, new feature, correction, or additional documentation, we greatly value feedback and contributions from our community. The following is our contribution guide, which we hope you will read through carefully prior to submitting a pull-request (PR) or issue. In the event that our guide is not up to date, feel free to let us know by opening an issue (or even better, submit a PR with your proposed corrections ;)).
 
@@ -29,92 +29,40 @@ For a brief history and our ethos/design philosophy around the Amplify project p
 
 ## Getting Started
 
-To get started with the Amplify Framework for iOS, first make sure you have the latest version of Xcode installed as well as cocoapods. You can install cocoapods by simply running:
-
-```
-sudo gem install cocoapods
-```
+To get started with the Amplify Library for Swift, first make sure you have the latest version of Xcode installed.
 
 Then make sure you fork the project first and then clone it by running:
 
 ```
-git clone git@github.com:YOURGITHUBUSERNAME/amplify-ios.git
+git clone git@github.com:YOURGITHUBUSERNAME/amplify-swift.git
 ```
 GitHub provides additional documentation on [forking a repository](https://help.github.com/articles/fork-a-repo/).
 
-The Amplify iOS framework has been divided into multiple Xcode projects. You can find any of the catgory specific ones under `AmplifyPlugins` in their specific category folder:
+The Amplify Library for Swift has been divided into multiple categories and plugins. You can find the Categories under `Amplify/Categories`, and the corresponding plugins under `AmplifyPlugins`. For example, if you wanted to add another API to the Storage category, you might start by modifying the category under `Amplify/Categories/Storage`. After you add the new API to the Storage category, you'll need to support the API in a plugin, either by extended the existing `AWSS3StoragePlugin` or creating a new plugin under `AmplifyPlugins\Storage\Sources`.
 
-- Core - Amplify.xcworkspace - Includes high level category interfaces and shared interfaces. Shared components including Hub.
-- API - Includes the plugin with implementations for the API category. 
-- Analytics - Includes the plugin with implementations for the analytics category.
-- DataStore - Includes the plugins with the implementations for the datastore category
-- Predictions - Includes 2 plugins (AWS and CoreML) with the implementations for the predictions category.
-- Storage - Includes the plugin with the implementation for the storage category.
-
-Prior to making changes, you will need to run `pod install` in the directory in which you intend to make changes. For example, if you wanted to add another API to the Storage category, you might start by running `pod install` at the root of the project. Then, open the Amplify Core workspace and enter the Storage folder, with the commands below:
-
-```
-cd amplify-ios
-pod install
-xed .
-```
-
-After you add the new API to the storage category, you'll want to support the API in a plugin. To do so:
-
-```
-cd amplify-ios/AmplifyPlugins/Storage
-pod install
-xed .
-```
 ## Testing
 
-Each plugin has its own set of unit and integration tests. Make sure to run the unit tests from the plugin and relevant integration tests from the other test targets in the workspace to ensure there is no regression and add new tests where needed, to cover the changes you are making. 
+Each plugin has its own set of unit and integration tests. Because Amplify requires keychain support, integration tests are in separate Xcode projects, located under `AmplifyPlugins/<Plugin>/Tests/<Plugin>HostApp`. Make sure to run the unit tests for the plugin and relevant integration tests from the host app projects to ensure there is no regression. Add new tests where needed to cover the changes you are making. 
 
-The test targets are under each workspace containing the plugin are named "'PluginName'E2ETests", "'PluginName'IntegrationTests", and "'PluginName'FunctionalTests". First install [Amplify CLI](https://github.com/aws-amplify/amplify-cli) and then follow the instructions in the README.md at the root of the test target to provision and set up the backend to run the integration tests.
+In order to run integration tests, first install [Amplify CLI](https://github.com/aws-amplify/amplify-cli), and then follow the instructions in the `README.md` under the relevant host app test directory to provision and set up the backend. For example, to provision the backend resources to run Storage integration tests, follow the instructions in `AmplifyPlugins/Storage/Tests/StorageHostApp/AWSS3StoragePluginIntegrationTests/README.md`
 
 ## Tools
 
-[Xcode](https://developer.apple.com/xcode/) and [Cocoapods](https://guides.cocoapods.org/using/getting-started.html) are used for all build and dependency management.
+[Xcode](https://developer.apple.com/xcode/) is used for all build and dependency management.
 
 ## Debugging
 
-### Running Cocoapods Locally
+### Running Amplify Locally
 
-Framework development is quite different from typical app development when it comes to debugging and being able to test your code. First you will want to create a new app that uses the pods you changed. For instance, if you changed something in the `Storage` category to test to see if it works, you will need to create a new app and run `pod init` and edit the `Podfile` to use the local version of Amplify that you are building on. This is done by editing the `Podfile` of the new application to take a path to the pod instead of a version number like below:
-
-```ruby
-
-target 'MySampleApp' do
-  # Comment the next line if you don't want to use dynamic frameworks
-  use_frameworks!
-  # with :path I can direct my project to use a local path for the pod
-  pod 'Amplify', :path => '~/Projects/amplify-ios'      # 
-  pod 'AmplifyPlugins/AWSS3StoragePlugin', :path => '~/Projects/amplify-ios'
-  pod 'AWSPluginsCore', :path => '~/Projects/amplify-ios'           
-  
-end
-```
-Then you want to run `pod update` at the root of your sample app to make sure it is using the local version of the pods. When you open the workspace, under the Pods project, the you'll see a section call Development Pods. This where those local pods were installed and if you want to change code here to debug, it will change in the other repo, just make sure you clean and re-build before testing your code again.
-
+Library development is quite different from typical app development when it comes to debugging and being able to test your code. First you will want to create a new app that uses the features you changed. For instance, if you changed something in the `Storage` category, to test to see if it works, you will need to create a new app and add the local version of Amplify that you are modifying via SPM. This is done by opening the Xcode project for your test app and selecting `File... Add Packages...` and then clicking `Add local...`.
 ## Pull Requests
 
 ### Pull Request Checklist
 - Testing
-    - Unit test added or updated
-    - Integration test added or updated
+    - Unit tests added or updated
+    - Integration tests added or updated
 - Changelog
-    - Update Changelog with your updates in accordance with our pattern under the new version. Example below:
-
-    ```markdown
-    ## Unreleased
-      - Please place a note with your updates HERE. :)
-    ## 2.xx.x
-
-    ### Bug Fixes
-
-    ### Misc. Updates
-
-    ```
+    - The Changelog is automatically generated from commit messages. Please ensure your PR title follows the [Conventional Commits](https://www.conventionalcommits.org) specification.
 
 ### Step 1: Open Issue
 
@@ -131,7 +79,7 @@ The GitHub issue is sufficient for such discussions, and can be sufficient to ge
 First, create a fork of amplify-ios. Clone it, and make changes to this fork.
 
 ```
-git clone git@github.com:GITHUBUSERNAME/aws-sdk-ios.git 
+git clone git@github.com:GITHUBUSERNAME/amplify-swift.git 
 # change your GITHUBUSERNAME to your Github username before running this command.
 ```
 
@@ -157,7 +105,7 @@ Create a commit with the proposed change changes:
 
 - Push your changes to your GitHub fork
 - Submit a Pull Requests on the amplify-ios repo to the `main` branch and add the Amplify Native team using @aws-amplify/amplify-native so we can approve/provide feedback.
-- The title of your PR must be descriptive to the specific change.
+- The title of your PR must be descriptive to the specific change. Remember to follow the [Conventional Commits](https://www.conventionalcommits.org) specification.
 - No period at the end of the title.
 - Pull Request message should indicate which issues are fixed: `fixes #<issue>` or `closes #<issue>`.
 - PR messaged should include shout out to collaborators.
@@ -169,7 +117,7 @@ Create a commit with the proposed change changes:
 - Rebase with the `main` branch if it has commits ahead of your fork.
 
 ### Step 7: Merge
-Once your PR has been approved and tested, we will merge it into `main` for you and barring any unforeseen circumstances, your changes will be released in our next version. Yay!! 
+Once your PR has been approved and tested, we will merge it into `main` for you and, barring any unforeseen circumstances, your changes will be released in our next version. Yay!! 
 
 ## Troubleshooting
 
@@ -177,21 +125,22 @@ Some build issues can be solved by [removing your derived data](https://iosdevce
 
 ## Related Repositories
 
-This project is part of the Amplify Framework, which runs on Android,
-iOS, and numerous JavaScript-based web platforms.
+This project is part of the Amplify Library, which is available for Android,
+Swift, and numerous JavaScript-based web platforms.
 
-1. [AWS Amplify for iOS](https://github.com/aws-amplify/amplify-ios)
-2. [AWS Amplify for JavaScript](https://github.com/aws-amplify/amplify-js)
+1. [Amplify Library for Android](https://github.com/aws-amplify/amplify-android)
+2. [Amplify Library for Swift](https://github.com/aws-amplify/amplify-swift)
+3. [Amplify Library for JavaScript](https://github.com/aws-amplify/amplify-js)
 
-AWS Amplify plugins are built on top of the AWS SDKs. AWS SDKs are a
+Amplify plugins are built on top of the AWS SDKs. AWS SDKs are a
 toolkit for interacting with AWS backend resources.
 
 1. [AWS SDK for Android](https://github.com/aws-amplify/aws-sdk-android)
-2. [AWS SDK for iOS](https://github.com/aws-amplify/aws-sdk-ios)
+2. [AWS SDK for Swift](https://github.com/aws-amplify/aws-sdk-swift)
 3. [AWS SDK for JavaScript](https://github.com/aws/aws-sdk-js)
 
 ## Finding contributions to work on
-Looking at the existing issues is a great way to find something to contribute on. As our projects, by default, use the default GitHub issue labels (enhancement/bug/duplicate/help wanted/invalid/question/wontfix), looking at any ['help wanted'](https://github.com/aws-amplify/amplify-ios/labels/help%20wanted) or ['good first'](https://github.com/aws-amplify/amplify-ios/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) issues is a great place to start.
+Looking at the existing issues is a great way to find something to contribute on. As our projects, by default, use the default GitHub issue labels (enhancement/bug/duplicate/help wanted/invalid/question/wontfix), looking at any ['help wanted'](https://github.com/aws-amplify/amplify-swift/labels/help%20wanted) or ['good first'](https://github.com/aws-amplify/amplify-swift/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) issues is a great place to start.
 
 
 ## Code of Conduct
@@ -203,9 +152,8 @@ opensource-codeofconduct@amazon.com with any additional questions or comments.
 ## Security issue notifications
 If you discover a potential security issue in this project we ask that you notify AWS/Amazon Security via our [vulnerability reporting page](http://aws.amazon.com/security/vulnerability-reporting/). Please do **not** create a public github issue.
 
-
 ## Licensing
 
-See the [LICENSE](https://github.com/aws-amplify/amplify-ios/blob/main/LICENSE) file for our project's licensing. We will ask you to confirm the licensing of your contribution.
+See the [LICENSE](https://github.com/aws-amplify/amplify-swift/blob/main/LICENSE) file for our project's licensing. We will ask you to confirm the licensing of your contribution.
 
 We may ask you to sign a [Contributor License Agreement (CLA)](http://en.wikipedia.org/wiki/Contributor_License_Agreement) for larger changes.
