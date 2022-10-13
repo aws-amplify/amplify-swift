@@ -76,14 +76,16 @@ final class HubChannelDispatcher {
     /// whether a given listener closure has completed. If your test encounters errors like "Hub is not configured"
     /// after you issue an `await Amplify.reset()`, you may wish to add additional sleep around your code
     /// that calls `await Amplify.reset()`.
-    func destroy() async {
-        listenersById.removeAll()
+    func destroy() {
+        destroyListeners()
         messageQueue.cancelAllOperations()
-        await withCheckedContinuation { continuation in
-            messageQueue.addBarrierBlock {
-                continuation.resume()
-            }
-        }
+        messageQueue.addBarrierBlock { }
+    }
+
+    private func destroyListeners() {
+        defer { os_unfair_lock_unlock(lock) }
+        os_unfair_lock_lock(lock)
+        listenersById.removeAll()
     }
 }
 
