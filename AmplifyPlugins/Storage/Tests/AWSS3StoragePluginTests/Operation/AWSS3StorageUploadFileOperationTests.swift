@@ -41,7 +41,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         waitForExpectations(timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
     }
 
     func testUploadFileOperationGetIdentityIdError() {
@@ -73,7 +73,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         waitForExpectations(timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
     }
 
     func testvOperationGetSizeForMissingFileError() {
@@ -102,7 +102,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         waitForExpectations(timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
     }
 
     func testUploadFileOperationUploadSuccess() {
@@ -147,7 +147,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         waitForExpectations(timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
         XCTAssertEqual(mockStorageService.uploadCalled, 1)
         mockStorageService.verifyUpload(serviceKey: expectedServiceKey,
                                         key: testKey,
@@ -194,7 +194,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         waitForExpectations(timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
         XCTAssertEqual(mockStorageService.uploadCalled, 1)
         mockStorageService.verifyUpload(serviceKey: expectedServiceKey,
                                         key: testKey,
@@ -248,7 +248,7 @@ class AWSS3StorageUploadFileOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         waitForExpectations(timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
         XCTAssertEqual(mockStorageService.multiPartUploadCalled, 1)
         mockStorageService.verifyMultiPartUpload(serviceKey: expectedServiceKey,
                                                  key: testKey,
