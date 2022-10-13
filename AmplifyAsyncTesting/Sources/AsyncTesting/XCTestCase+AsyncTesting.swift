@@ -9,8 +9,8 @@ import Foundation
 import XCTest
 
 extension XCTestCase {
-
-    static let defaultNetworkTimeoutForAsyncExpectations = TimeInterval(10)
+    public static let defaultTimeoutForAsyncExpectations = TimeInterval(60)
+    public static let defaultNetworkTimeoutForAsyncExpectations = TimeInterval(10)
 
     /// Creates a new async expectation with an associated description.
     ///
@@ -46,6 +46,29 @@ extension XCTestCase {
                                                timeout: timeout,
                                                file: file,
                                                line: line)
+    }
+
+    /// Run a task with a timeout using an `AsyncExpectation`.
+    /// - Parameters:
+    ///   - timeout: timeout
+    ///   - operation: operation to run
+    /// - Returns: result of closure
+    @discardableResult
+    public func testTask<Success>(timeout: Double = defaultTimeoutForAsyncExpectations,
+                                  file: StaticString = #filePath,
+                                  line: UInt = #line,
+                                  @_implicitSelfCapture operation: @escaping @Sendable () async throws -> Success) async throws -> Success {
+        let done = asyncExpectation(description: "done")
+
+        let task = Task {
+            let result = try await operation()
+            await done.fulfill()
+            return result
+        }
+
+        await waitForExpectations([done], timeout: timeout, file: file, line: line)
+
+        return try await task.value
     }
 
     /// Waits for the execution of a given async code, using a given async expectation,
