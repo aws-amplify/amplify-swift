@@ -21,33 +21,23 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     /// Given: An unauthenticated user
     /// When: List API with protected access level
     /// Then: Operation completes successfully with no items since there are no keys at that location.
-    func testListFromProtectedForUnauthenticatedUser() async {
-        let done = asyncExpectation(description: "done")
-
-        Task {
-            do {
-                let key = UUID().uuidString
-                let options = StorageListRequest.Options(accessLevel: .protected,
-                                                         path: key)
-                let items = try await Amplify.Storage.list(options: options).items
-                XCTAssertEqual(items.count, 0)
-            } catch {
-                XCTFail("Error: \(error)")
-            }
-            await done.fulfill()
+    func testListFromProtectedForUnauthenticatedUser() async throws {
+        try await testTask {
+            let key = UUID().uuidString
+            let options = StorageListRequest.Options(accessLevel: .protected,
+                                                     path: key)
+            let items = try await Amplify.Storage.list(options: options).items
+            XCTAssertEqual(items.count, 0)
         }
-
-        await waitForExpectations([done], timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: An unauthenticated user
     /// When: List API with private access level
     /// Then: Operation fails with access denied service error
-    func testListFromPrivateForUnauthenticatedUserForReturnAccessDenied() async {
-        let done = asyncExpectation(description: "done")
-        let notDone = asyncExpectation(description: "not done", isInverted: true)
+    func testListFromPrivateForUnauthenticatedUserForReturnAccessDenied() async throws {
+        try await testTask {
+            let notDone = asyncExpectation(description: "not done", isInverted: true)
 
-        Task {
             do {
                 let key = UUID().uuidString
                 let options = StorageListRequest.Options(accessLevel: .private,
@@ -62,11 +52,9 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                 }
                 XCTAssertEqual(description, StorageErrorConstants.accessDenied.errorDescription)
             }
-            await done.fulfill()
-        }
 
-        await waitForExpectations([notDone])
-        await waitForExpectations([done], timeout: TestCommonConstants.networkTimeout)
+            await waitForExpectations([notDone])
+        }
     }
 
     func testUploadAndRemoveForGuestOnly() async throws {
@@ -251,7 +239,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                     await signOut()
 
                     logger.debug("Signing in user1")
-                    let user1SignedIn = try await signIn(username: AWSS3StoragePluginTestBase.user1)
+                    let user1SignedIn = try await Amplify.Auth.signIn(username: AWSS3StoragePluginTestBase.user1, password: AWSS3StoragePluginTestBase.password).isSignedIn
                     XCTAssertTrue(user1SignedIn)
 
                     logger.debug("Getting identity for user1")
@@ -274,7 +262,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                     await signOut()
 
                     logger.debug("Signing in as user2")
-                    let user2SignedIn = try await signIn(username: AWSS3StoragePluginTestBase.user2)
+                    let user2SignedIn = try await Amplify.Auth.signIn(username: AWSS3StoragePluginTestBase.user2, password: AWSS3StoragePluginTestBase.password).isSignedIn
                     XCTAssertTrue(user2SignedIn)
 
                     logger.debug("Getting identity for user2")
@@ -313,7 +301,7 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                         await signOut()
 
                         logger.debug("Signing in user1")
-                        let user1SignedIn = try await signIn(username: AWSS3StoragePluginTestBase.user1)
+                        let user1SignedIn = try await Amplify.Auth.signIn(username: AWSS3StoragePluginTestBase.user1, password: AWSS3StoragePluginTestBase.password).isSignedIn
                         XCTAssertTrue(user1SignedIn)
 
                         logger.debug("Removing key as user1")
@@ -350,10 +338,6 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     }
 
     // MARK: - Auth Helpers -
-
-    func signIn(username: String) async throws -> Bool {
-        try await Amplify.Auth.signIn(username: username, password: AWSS3StoragePluginTestBase.password).isSignedIn
-    }
 
     func getIdentityId() async throws -> String? {
         guard let session = try await Amplify.Auth.fetchAuthSession() as? AuthCognitoIdentityProvider else {
