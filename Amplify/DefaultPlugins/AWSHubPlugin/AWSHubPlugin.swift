@@ -75,7 +75,7 @@ final public class AWSHubPlugin: HubCategoryPlugin {
     ///
     /// - Parameter token: The UnsubscribeToken of the listener to check
     /// - Returns: True if the dispatcher has a listener registered with `token`
-    public func hasListener(withToken token: UnsubscribeToken) async -> Bool {
+    public func hasListener(withToken token: UnsubscribeToken) -> Bool {
         dispatcher.hasListener(withId: token.id)
     }
 
