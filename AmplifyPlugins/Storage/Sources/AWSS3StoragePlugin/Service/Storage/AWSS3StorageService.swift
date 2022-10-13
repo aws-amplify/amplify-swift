@@ -130,11 +130,12 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
 
     func reset() {
         authService = nil
-        logger = nil
         preSignedURLBuilder = nil
         awsS3 = nil
         region = nil
         bucket = nil
+        tasks.removeAll()
+        multipartUploadSessions.removeAll()
     }
 
     func resetURLSession() {
@@ -167,6 +168,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
     }
 
     func register(task: StorageTransferTask) {
+        dispatchPrecondition(condition: .notOnQueue(serviceDispatchQueue))
         serviceDispatchQueue.sync {
             guard let taskIdentifier = task.taskIdentifier else { return }
             tasks[taskIdentifier] = task
@@ -174,6 +176,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
     }
 
     func unregister(task: StorageTransferTask) {
+        dispatchPrecondition(condition: .notOnQueue(serviceDispatchQueue))
         serviceDispatchQueue.sync {
             guard let taskIdentifier = task.taskIdentifier else { return }
             tasks[taskIdentifier] = nil
@@ -181,6 +184,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
     }
 
     func unregister(taskIdentifiers: [TaskIdentifier]) {
+        dispatchPrecondition(condition: .notOnQueue(serviceDispatchQueue))
         serviceDispatchQueue.sync {
             for taskIdentifier in taskIdentifiers {
                 tasks[taskIdentifier] = nil
@@ -206,8 +210,11 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
     }
 
     func findTask(taskIdentifier: TaskIdentifier) -> StorageTransferTask? {
-        let task = tasks[taskIdentifier]
-        return task
+        dispatchPrecondition(condition: .notOnQueue(serviceDispatchQueue))
+        return serviceDispatchQueue.sync {
+            let task = tasks[taskIdentifier]
+            return task
+        }
     }
 
     func findMultipartUploadSession(uploadId: UploadID) -> StorageMultipartUploadSession? {

@@ -130,7 +130,10 @@ class StorageMultipartUploadSession {
     }
 
     var uploadId: UploadID? {
-        multipartUpload.uploadId
+        dispatchPrecondition(condition: .notOnQueue(serialQueue))
+        return serialQueue.sync {
+            multipartUpload.uploadId
+        }
     }
 
     var completedParts: StorageUploadParts? {
