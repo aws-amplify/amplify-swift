@@ -175,7 +175,9 @@ class DefaultStorageTransferDatabase {
 
             let pairs = self.linkTasksWithSessions(persistableTransferTasks: persistableTransferTasks, sessionTasks: sessionTasks)
             completionHandler(.success(pairs))
-            self.recoveryState = .completed
+            self.queue.async {
+                self.recoveryState = .completed
+            }
         }
 
         urlSession.getActiveTasks(resultHandler: sessionTaskHandler)
