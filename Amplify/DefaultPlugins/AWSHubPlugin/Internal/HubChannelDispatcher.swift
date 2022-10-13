@@ -13,7 +13,15 @@ final class HubChannelDispatcher {
     private let messageQueue: OperationQueue
 
     /// A dictionary of listeners, keyed by their ID
-    private let listenersById = AtomicDictionary<UUID, FilteredListener>()
+    /// Reads and write should be protected by the lock.
+    private var listenersById = [UUID: FilteredListener]()
+
+    /// Lock to protect shared mutable state of `listenersById` dictionary.
+    private let lock: UnsafeMutablePointer<os_unfair_lock> = {
+        let pointer = UnsafeMutablePointer<os_unfair_lock>.allocate(capacity: 1)
+        pointer.initialize(to: os_unfair_lock())
+        return pointer
+    }()
 
     init() {
         self.messageQueue = OperationQueue()
@@ -25,22 +33,28 @@ final class HubChannelDispatcher {
     ///
     /// - Parameter id: The ID of the listener to check
     /// - Returns: True if the dispatcher has a listener registered with `id`
-    func hasListener(withId id: UUID) async -> Bool {
-        return await listenersById.getValue(forKey: id) != nil
+    func hasListener(withId id: UUID) -> Bool {
+        defer { os_unfair_lock_unlock(lock) }
+        os_unfair_lock_lock(lock)
+        return listenersById[id] != nil
     }
 
     /// Inserts `listener` into the `listenersById` dictionary by its ID
     ///
     /// - Parameter listener: The listener to add
-    func insert(_ listener: FilteredListener) async {
-        await listenersById.set(value: listener, forKey: listener.id)
+    func insert(_ listener: FilteredListener) {
+        defer { os_unfair_lock_unlock(lock) }
+        os_unfair_lock_lock(lock)
+        listenersById[listener.id] = listener
     }
 
     /// Removes the listener identified by `id` from the `listeners` dictionary
     ///
     /// - Parameter id: The ID of the listener to remove
-    func removeListener(withId id: UUID) async {
-        await listenersById.removeValue(forKey: id)
+    func removeListener(withId id: UUID) {
+        defer { os_unfair_lock_unlock(lock) }
+        os_unfair_lock_lock(lock)
+        listenersById[id] = nil
     }
 
     /// Dispatches `payload` to all listeners on `channel`
@@ -57,13 +71,13 @@ final class HubChannelDispatcher {
 
     /// Cancels all operation and removes listeners.
     ///
-    /// This method is only used during the `reset` flow, which is only invoked during tests. Although the method
+    /// This method is only used during the `reset` flow, which is only invoked during tests. Although the method
     /// cancels in-process operations and waits for them to complete, it does not attempt to assert anything about
     /// whether a given listener closure has completed. If your test encounters errors like "Hub is not configured"
     /// after you issue an `await Amplify.reset()`, you may wish to add additional sleep around your code
     /// that calls `await Amplify.reset()`.
     func destroy() async {
-        await listenersById.removeAll()
+        listenersById.removeAll()
         messageQueue.cancelAllOperations()
         await withCheckedContinuation { continuation in
             messageQueue.addBarrierBlock {
@@ -75,9 +89,10 @@ final class HubChannelDispatcher {
 
 extension HubChannelDispatcher: HubDispatchOperationDelegate {
     var listeners: [FilteredListener] {
-        get async {
-            return Array(await listenersById.values)
-        }
+        os_unfair_lock_lock(lock)
+        let listeners = listenersById.map(\.value)
+        os_unfair_lock_unlock(lock)
+        return listeners
     }
 }
 
