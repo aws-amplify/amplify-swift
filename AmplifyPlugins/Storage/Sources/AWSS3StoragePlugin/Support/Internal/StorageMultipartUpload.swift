@@ -128,6 +128,14 @@ enum StorageMultipartUpload {
         }
     }
 
+    var isAborting: Bool {
+        if case .aborting = self {
+            return true
+        } else {
+            return false
+        }
+    }
+
     var isAborted: Bool {
         if case .aborted = self {
             return true
@@ -221,14 +229,14 @@ enum StorageMultipartUpload {
             case .parts(let uploadId, let uploadFile, let partSize, let parts):
                 self = .paused(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: parts)
             default:
-                throw Failure.invalidStateTransition(reason: "Cannot abort from current state: \(self)")
+                throw Failure.invalidStateTransition(reason: "Cannot pause from current state: \(self)")
             }
         case .resuming:
             switch self {
             case .paused(let uploadId, let uploadFile, let partSize, let parts):
                 self = .parts(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: parts)
             default:
-                throw Failure.invalidStateTransition(reason: "Cannot abort from current state: \(self)")
+                throw Failure.invalidStateTransition(reason: "Cannot resume from current state: \(self)")
             }
             break
         case .completing(let taskIdentifier):
@@ -267,6 +275,7 @@ enum StorageMultipartUpload {
     // swiftlint:enable cyclomatic_complexity
 
     mutating func transition(uploadPartEvent: StorageUploadPartEvent) throws {
+        guard !isAborting, !isAborted else { return }
         guard case .parts(let uploadId, let uploadFile, let partSize, var parts) = self else {
             throw Failure.invalidStateTransition(reason: "Parts are required for this transition: \(uploadPartEvent)")
         }
