@@ -14,7 +14,7 @@ import AWSPluginsCore
 /// See: [Operations] for more details.
 ///
 /// [Operations]: https://github.com/aws-amplify/amplify-ios/blob/main/OPERATIONS.md
-public class AWSS3StorageUploadFileOperation: AmplifyInProcessReportingOperation<
+class AWSS3StorageUploadFileOperation: AmplifyInProcessReportingOperation<
     StorageUploadFileRequest,
     Progress,
     String,
