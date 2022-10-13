@@ -38,7 +38,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
         waitForExpectations(timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
     }
 
     func testDownloadDataOperationGetIdentityIdError() async throws {
@@ -65,7 +65,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         await waitForExpectations(timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
     }
 
     func testDownloadDataOperationDownloadData() async throws {
@@ -97,7 +97,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         await waitForExpectations(timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
         mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: nil)
     }
 
@@ -130,7 +130,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         await waitForExpectations(timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
         mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: nil)
     }
 
@@ -165,7 +165,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         await waitForExpectations(timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
         mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: nil)
     }
 

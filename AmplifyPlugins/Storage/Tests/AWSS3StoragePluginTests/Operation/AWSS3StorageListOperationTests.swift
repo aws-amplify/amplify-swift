@@ -40,7 +40,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         waitForExpectations(timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
     }
 
     func testListOperationGetIdentityIdError() {
@@ -69,7 +69,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         waitForExpectations(timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
     }
 
     func testListOperationListObjects() {
@@ -94,7 +94,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         waitForExpectations(timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
         mockStorageService.verifyList(prefix: expectedPrefix, path: testPath)
     }
 
@@ -120,7 +120,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         waitForExpectations(timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
         mockStorageService.verifyList(prefix: expectedPrefix, path: testPath)
     }
 
@@ -148,7 +148,7 @@ class AWSS3StorageListOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         waitForExpectations(timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
         mockStorageService.verifyList(prefix: expectedPrefix, path: testPath)
     }
 }
