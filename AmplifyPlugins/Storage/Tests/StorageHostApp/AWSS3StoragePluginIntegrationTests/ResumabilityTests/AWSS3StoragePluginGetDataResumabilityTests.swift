@@ -14,13 +14,13 @@ import Combine
 // swiftlint:disable:next type_name
 class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBase {
 
-    /// Given: A large data object in storage
+    /// Given: A data object in storage
     /// When: Call the get API then pause
     /// Then: The operation is stalled (no progress, completed, or failed event)
-    func testDownloadLargeDataAndPause() async throws {
+    func testDownloadDataAndPause() async throws {
         try await testTask {
             let key = UUID().uuidString
-            let data = AWSS3StoragePluginTestBase.largeDataObject
+            let data = AWSS3StoragePluginTestBase.smallDataObject
             let uploadKey = try await Amplify.Storage.uploadData(key: key, data: data).value
             XCTAssertEqual(uploadKey, key)
 
@@ -66,13 +66,13 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
         }
     }
 
-    /// Given: A large data object in storage
+    /// Given: A data object in storage
     /// When: Call the downloadData API, pause, and then resume the operation
     /// Then: The operation should complete successfully
-    func testDownloadLargeDataAndPauseThenResume() async throws {
+    func testDownloadDataAndPauseThenResume() async throws {
         try await testTask {
             let key = UUID().uuidString
-            let data = AWSS3StoragePluginTestBase.largeDataObject
+            let data = AWSS3StoragePluginTestBase.smallDataObject
             let uploadKey = try await Amplify.Storage.uploadData(key: key, data: data).value
             XCTAssertEqual(uploadKey, key)
 
@@ -80,19 +80,24 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
 
             let progressInvoked = asyncExpectation(description: "Progress invoked")
             Task {
+                var progressInvokedCalled = false
                 for await progress in await task.progress {
-                    if progress.fractionCompleted > 0.1 {
+                    Self.logger.debug("Download progress: \(progress.fractionCompleted)")
+                    if !progressInvokedCalled, progress.fractionCompleted > 0.1 {
+                        progressInvokedCalled = true
                         await progressInvoked.fulfill()
-                        break
                     }
                 }
             }
             await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
 
-            await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
+            Self.logger.debug("Pausing download task")
             task.pause()
 
-            let completeInvoked = asyncExpectation(description: "Upload is completed")
+            Self.logger.debug("Sleeping")
+            try await Task.sleep(seconds: 0.25)
+
+            let completeInvoked = asyncExpectation(description: "Download is completed")
             let downloadTask = Task {
                 let result = try await task.value
                 await completeInvoked.fulfill()
@@ -102,7 +107,7 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
             Self.logger.debug("Resuming download task")
             task.resume()
 
-            await waitForExpectations([completeInvoked], timeout: TestCommonConstants.networkTimeout * 2)
+            await waitForExpectations([completeInvoked], timeout: TestCommonConstants.networkTimeout)
 
             Self.logger.debug("Waiting to finish download task")
             let downloadData = try await downloadTask.value
@@ -114,13 +119,13 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
         }
     }
 
-    /// Given: A large data object in storage
+    /// Given: A data object in storage
     /// When: Call the get API then cancel the operation,
     /// Then: The operation should not complete or fail.
-    func testDownloadLargeDataAndCancel() async throws {
+    func testDownloadDataAndCancel() async throws {
         try await testTask {
             let key = UUID().uuidString
-            let data = AWSS3StoragePluginTestBase.largeDataObject
+            let data = AWSS3StoragePluginTestBase.smallDataObject
             let uploadKey = try await Amplify.Storage.uploadData(key: key, data: data).value
             XCTAssertEqual(uploadKey, key)
 

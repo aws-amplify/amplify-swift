@@ -15,6 +15,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
     static let logger = Amplify.Logging.logger(forCategory: "Storage", logLevel: .verbose)
     static let amplifyConfiguration = "testconfiguration/AWSS3StoragePluginTests-amplifyconfiguration"
 
+    static let smallDataObject = Data(repeating: 0xff, count: 1_024 * 1_024 * ProcessInfo.processInfo.activeProcessorCount)
     static let largeDataObject = Data(repeating: 0xff, count: 1_024 * 1_024 * ProcessInfo.processInfo.activeProcessorCount * 4)
 
     static var user1: String = "integTest\(UUID().uuidString)"
