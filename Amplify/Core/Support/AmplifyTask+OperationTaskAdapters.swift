@@ -69,11 +69,11 @@ public class AmplifyInProcessReportingOperationTaskAdapter<Request: AmplifyOpera
     public init(operation: AmplifyInProcessReportingOperation<Request, InProcess, Success, Failure>) {
         self.operation = operation
         self.childTask = ChildTask(parent: operation)
-        resultToken = operation.subscribe(resultListener: {[weak self] result in
+        resultToken = operation.subscribe(resultListener: { [weak self] result in
             guard let self = self else { return }
             self.resultListener(result)
         })
-        inProcessToken = operation.subscribe(inProcessListener: {[weak self] inProcess in
+        inProcessToken = operation.subscribe(inProcessListener: { [weak self] inProcess in
             guard let self = self else { return }
             self.inProcessListener(inProcess)
         })
