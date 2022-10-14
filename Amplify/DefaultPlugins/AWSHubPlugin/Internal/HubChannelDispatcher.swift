@@ -119,14 +119,12 @@ final class HubDispatchOperation: Operation {
             return
         }
 
-        Task {
-            guard let listeners = delegate?.listeners else {
-                return
-            }
-
-            let dispatcher = SerialDispatcher(channel: channel, payload: payload)
-            dispatcher.dispatch(to: listeners)
+        guard let listeners = delegate?.listeners else {
+            return
         }
+        
+        let dispatcher = SerialDispatcher(channel: channel, payload: payload)
+        dispatcher.dispatch(to: listeners)
     }
 
 }
