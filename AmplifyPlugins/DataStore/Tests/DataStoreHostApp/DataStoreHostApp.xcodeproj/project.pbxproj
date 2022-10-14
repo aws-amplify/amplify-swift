@@ -153,6 +153,61 @@
 		213DBC6128A5808400B30280 /* TodoIAMPrivate+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA8B289BFE4E00B32A39 /* TodoIAMPrivate+Schema.swift */; };
 		213DBC6228A5808400B30280 /* TodoIAMPublic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA8D289BFE4E00B32A39 /* TodoIAMPublic.swift */; };
 		213DBC6328A5841400B30280 /* HubListenerTestUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFE13289C073100B32A39 /* HubListenerTestUtilities.swift */; };
+		21801C7D28F9A22900FFA37E /* AWSDataStoreLazyLoadBaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801C7C28F9A22900FFA37E /* AWSDataStoreLazyLoadBaseTest.swift */; };
+		21801C8728F9A38000FFA37E /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801C8628F9A37F00FFA37E /* TestConfigHelper.swift */; };
+		21801CD428F9A86800FFA37E /* PostWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CA328F9A86600FFA37E /* PostWithCompositeKey.swift */; };
+		21801CD528F9A86800FFA37E /* CommentWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CA428F9A86600FFA37E /* CommentWithCompositeKey+Schema.swift */; };
+		21801CD628F9A86800FFA37E /* PostWithTagsCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CA528F9A86600FFA37E /* PostWithTagsCompositeKey+Schema.swift */; };
+		21801CD728F9A86800FFA37E /* CommentWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CA628F9A86600FFA37E /* CommentWithCompositeKey.swift */; };
+		21801CD828F9A86800FFA37E /* Comment7+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CA728F9A86600FFA37E /* Comment7+Schema.swift */; };
+		21801CD928F9A86800FFA37E /* Post8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CA828F9A86600FFA37E /* Post8.swift */; };
+		21801CDA28F9A86800FFA37E /* PostWithTagsCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CA928F9A86600FFA37E /* PostWithTagsCompositeKey.swift */; };
+		21801CDB28F9A86800FFA37E /* MyNestedModel8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CAA28F9A86600FFA37E /* MyNestedModel8+Schema.swift */; };
+		21801CDC28F9A86800FFA37E /* PostTagsWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CAB28F9A86600FFA37E /* PostTagsWithCompositeKey.swift */; };
+		21801CDD28F9A86800FFA37E /* Comment8V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CAC28F9A86600FFA37E /* Comment8V2+Schema.swift */; };
+		21801CDE28F9A86800FFA37E /* Post4+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CAD28F9A86600FFA37E /* Post4+Schema.swift */; };
+		21801CDF28F9A86800FFA37E /* MyCustomModel8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CAE28F9A86600FFA37E /* MyCustomModel8+Schema.swift */; };
+		21801CE028F9A86800FFA37E /* Post8V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CAF28F9A86600FFA37E /* Post8V2.swift */; };
+		21801CE128F9A86800FFA37E /* PostWithCompositeKeyAndIndex+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CB028F9A86600FFA37E /* PostWithCompositeKeyAndIndex+Schema.swift */; };
+		21801CE228F9A86800FFA37E /* PostWithCompositeKeyAndIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CB128F9A86600FFA37E /* PostWithCompositeKeyAndIndex.swift */; };
+		21801CE328F9A86800FFA37E /* Project6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CB228F9A86600FFA37E /* Project6.swift */; };
+		21801CE428F9A86800FFA37E /* Blog8V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CB328F9A86700FFA37E /* Blog8V2.swift */; };
+		21801CE528F9A86800FFA37E /* PostTagsWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CB428F9A86700FFA37E /* PostTagsWithCompositeKey+Schema.swift */; };
+		21801CE628F9A86800FFA37E /* TagWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CB528F9A86700FFA37E /* TagWithCompositeKey+Schema.swift */; };
+		21801CE728F9A86800FFA37E /* Project2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CB628F9A86700FFA37E /* Project2.swift */; };
+		21801CE828F9A86800FFA37E /* Comment4V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CB728F9A86700FFA37E /* Comment4V2.swift */; };
+		21801CE928F9A86800FFA37E /* Post8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CB828F9A86700FFA37E /* Post8+Schema.swift */; };
+		21801CEA28F9A86800FFA37E /* Comment8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CB928F9A86700FFA37E /* Comment8.swift */; };
+		21801CEB28F9A86800FFA37E /* Post4V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CBA28F9A86700FFA37E /* Post4V2.swift */; };
+		21801CEC28F9A86800FFA37E /* Team6+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CBB28F9A86700FFA37E /* Team6+Schema.swift */; };
+		21801CED28F9A86800FFA37E /* Post4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CBC28F9A86700FFA37E /* Post4.swift */; };
+		21801CEE28F9A86800FFA37E /* Comment4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CBD28F9A86700FFA37E /* Comment4.swift */; };
+		21801CEF28F9A86800FFA37E /* Blog8V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CBE28F9A86700FFA37E /* Blog8V2+Schema.swift */; };
+		21801CF028F9A86800FFA37E /* CommentWithCompositeKeyAndIndex+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CBF28F9A86700FFA37E /* CommentWithCompositeKeyAndIndex+Schema.swift */; };
+		21801CF128F9A86800FFA37E /* Project2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CC028F9A86700FFA37E /* Project2+Schema.swift */; };
+		21801CF228F9A86800FFA37E /* Post4V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CC128F9A86700FFA37E /* Post4V2+Schema.swift */; };
+		21801CF328F9A86800FFA37E /* Project6+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CC228F9A86700FFA37E /* Project6+Schema.swift */; };
+		21801CF428F9A86800FFA37E /* Post7.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CC328F9A86700FFA37E /* Post7.swift */; };
+		21801CF528F9A86800FFA37E /* Comment7.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CC428F9A86700FFA37E /* Comment7.swift */; };
+		21801CF628F9A86800FFA37E /* Comment4+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CC528F9A86700FFA37E /* Comment4+Schema.swift */; };
+		21801CF728F9A86800FFA37E /* Post8V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CC628F9A86700FFA37E /* Post8V2+Schema.swift */; };
+		21801CF828F9A86800FFA37E /* PostWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CC728F9A86800FFA37E /* PostWithCompositeKey+Schema.swift */; };
+		21801CF928F9A86800FFA37E /* Team6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CC828F9A86800FFA37E /* Team6.swift */; };
+		21801CFA28F9A86800FFA37E /* TagWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CC928F9A86800FFA37E /* TagWithCompositeKey.swift */; };
+		21801CFB28F9A86800FFA37E /* Team2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CCA28F9A86800FFA37E /* Team2+Schema.swift */; };
+		21801CFC28F9A86800FFA37E /* Comment4V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CCB28F9A86800FFA37E /* Comment4V2+Schema.swift */; };
+		21801CFD28F9A86800FFA37E /* MyCustomModel8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CCC28F9A86800FFA37E /* MyCustomModel8.swift */; };
+		21801CFE28F9A86800FFA37E /* Comment8V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CCD28F9A86800FFA37E /* Comment8V2.swift */; };
+		21801CFF28F9A86800FFA37E /* Team2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CCE28F9A86800FFA37E /* Team2.swift */; };
+		21801D0028F9A86800FFA37E /* CommentWithCompositeKeyAndIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CCF28F9A86800FFA37E /* CommentWithCompositeKeyAndIndex.swift */; };
+		21801D0128F9A86800FFA37E /* AmplifyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CD028F9A86800FFA37E /* AmplifyModels.swift */; };
+		21801D0228F9A86800FFA37E /* Comment8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CD128F9A86800FFA37E /* Comment8+Schema.swift */; };
+		21801D0328F9A86800FFA37E /* Post7+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CD228F9A86800FFA37E /* Post7+Schema.swift */; };
+		21801D0428F9A86800FFA37E /* MyNestedModel8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CD328F9A86800FFA37E /* MyNestedModel8.swift */; };
+		21801D0628F9AE9400FFA37E /* AWSDataStoreLazyLoadPostComment4V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D0528F9AE9400FFA37E /* AWSDataStoreLazyLoadPostComment4V2.swift */; };
+		21801D0728F9B11800FFA37E /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8028E746C10000C36A /* AsyncTesting.swift */; };
+		21801D0828F9B11B00FFA37E /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8128E746C10000C36A /* AsyncExpectation.swift */; };
+		21801D0928F9B11E00FFA37E /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8228E746C10000C36A /* XCTestCase+AsyncTesting.swift */; };
 		219253BE28BFE84100820737 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 219253BD28BFE84000820737 /* XCTest.framework */; };
 		21977DBF289C171A005B49D6 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977DBE289C1719005B49D6 /* TestConfigHelper.swift */; };
 		219B518528E3A4B00080EDCC /* DataStoreConnectionOptionalAssociations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA00289BFE3400B32A39 /* DataStoreConnectionOptionalAssociations.swift */; };
@@ -540,6 +595,13 @@
 			remoteGlobalIDString = 2118212B289BFB4B001B5945;
 			remoteInfo = DataStoreHostApp;
 		};
+		21801C7E28F9A22900FFA37E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 21182124289BFB4B001B5945 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2118212B289BFB4B001B5945;
+			remoteInfo = DataStoreHostApp;
+		};
 		21BBFB45289BFF6A00B32A39 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 21182124289BFB4B001B5945 /* Project object */;
@@ -644,6 +706,61 @@
 		213DBC5828A57FFE00B30280 /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
 		213DBC5A28A5800F00B30280 /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
 		213DBC5C28A5801900B30280 /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
+		21801C7A28F9A22900FFA37E /* AWSDataStorePluginLazyLoadTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSDataStorePluginLazyLoadTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		21801C7C28F9A22900FFA37E /* AWSDataStoreLazyLoadBaseTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreLazyLoadBaseTest.swift; sourceTree = "<group>"; };
+		21801C8428F9A2DC00FFA37E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		21801C8528F9A36D00FFA37E /* lazyload-schema.graphql */ = {isa = PBXFileReference; lastKnownFileType = text; path = "lazyload-schema.graphql"; sourceTree = "<group>"; };
+		21801C8628F9A37F00FFA37E /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
+		21801CA328F9A86600FFA37E /* PostWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithCompositeKey.swift; sourceTree = "<group>"; };
+		21801CA428F9A86600FFA37E /* CommentWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CommentWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		21801CA528F9A86600FFA37E /* PostWithTagsCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithTagsCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		21801CA628F9A86600FFA37E /* CommentWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentWithCompositeKey.swift; sourceTree = "<group>"; };
+		21801CA728F9A86600FFA37E /* Comment7+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment7+Schema.swift"; sourceTree = "<group>"; };
+		21801CA828F9A86600FFA37E /* Post8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post8.swift; sourceTree = "<group>"; };
+		21801CA928F9A86600FFA37E /* PostWithTagsCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithTagsCompositeKey.swift; sourceTree = "<group>"; };
+		21801CAA28F9A86600FFA37E /* MyNestedModel8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MyNestedModel8+Schema.swift"; sourceTree = "<group>"; };
+		21801CAB28F9A86600FFA37E /* PostTagsWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostTagsWithCompositeKey.swift; sourceTree = "<group>"; };
+		21801CAC28F9A86600FFA37E /* Comment8V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment8V2+Schema.swift"; sourceTree = "<group>"; };
+		21801CAD28F9A86600FFA37E /* Post4+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post4+Schema.swift"; sourceTree = "<group>"; };
+		21801CAE28F9A86600FFA37E /* MyCustomModel8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MyCustomModel8+Schema.swift"; sourceTree = "<group>"; };
+		21801CAF28F9A86600FFA37E /* Post8V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post8V2.swift; sourceTree = "<group>"; };
+		21801CB028F9A86600FFA37E /* PostWithCompositeKeyAndIndex+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithCompositeKeyAndIndex+Schema.swift"; sourceTree = "<group>"; };
+		21801CB128F9A86600FFA37E /* PostWithCompositeKeyAndIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithCompositeKeyAndIndex.swift; sourceTree = "<group>"; };
+		21801CB228F9A86600FFA37E /* Project6.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project6.swift; sourceTree = "<group>"; };
+		21801CB328F9A86700FFA37E /* Blog8V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blog8V2.swift; sourceTree = "<group>"; };
+		21801CB428F9A86700FFA37E /* PostTagsWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostTagsWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		21801CB528F9A86700FFA37E /* TagWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TagWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		21801CB628F9A86700FFA37E /* Project2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project2.swift; sourceTree = "<group>"; };
+		21801CB728F9A86700FFA37E /* Comment4V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment4V2.swift; sourceTree = "<group>"; };
+		21801CB828F9A86700FFA37E /* Post8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post8+Schema.swift"; sourceTree = "<group>"; };
+		21801CB928F9A86700FFA37E /* Comment8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment8.swift; sourceTree = "<group>"; };
+		21801CBA28F9A86700FFA37E /* Post4V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post4V2.swift; sourceTree = "<group>"; };
+		21801CBB28F9A86700FFA37E /* Team6+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Team6+Schema.swift"; sourceTree = "<group>"; };
+		21801CBC28F9A86700FFA37E /* Post4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post4.swift; sourceTree = "<group>"; };
+		21801CBD28F9A86700FFA37E /* Comment4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment4.swift; sourceTree = "<group>"; };
+		21801CBE28F9A86700FFA37E /* Blog8V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Blog8V2+Schema.swift"; sourceTree = "<group>"; };
+		21801CBF28F9A86700FFA37E /* CommentWithCompositeKeyAndIndex+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CommentWithCompositeKeyAndIndex+Schema.swift"; sourceTree = "<group>"; };
+		21801CC028F9A86700FFA37E /* Project2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project2+Schema.swift"; sourceTree = "<group>"; };
+		21801CC128F9A86700FFA37E /* Post4V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post4V2+Schema.swift"; sourceTree = "<group>"; };
+		21801CC228F9A86700FFA37E /* Project6+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project6+Schema.swift"; sourceTree = "<group>"; };
+		21801CC328F9A86700FFA37E /* Post7.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post7.swift; sourceTree = "<group>"; };
+		21801CC428F9A86700FFA37E /* Comment7.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment7.swift; sourceTree = "<group>"; };
+		21801CC528F9A86700FFA37E /* Comment4+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment4+Schema.swift"; sourceTree = "<group>"; };
+		21801CC628F9A86700FFA37E /* Post8V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post8V2+Schema.swift"; sourceTree = "<group>"; };
+		21801CC728F9A86800FFA37E /* PostWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		21801CC828F9A86800FFA37E /* Team6.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team6.swift; sourceTree = "<group>"; };
+		21801CC928F9A86800FFA37E /* TagWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagWithCompositeKey.swift; sourceTree = "<group>"; };
+		21801CCA28F9A86800FFA37E /* Team2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Team2+Schema.swift"; sourceTree = "<group>"; };
+		21801CCB28F9A86800FFA37E /* Comment4V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment4V2+Schema.swift"; sourceTree = "<group>"; };
+		21801CCC28F9A86800FFA37E /* MyCustomModel8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyCustomModel8.swift; sourceTree = "<group>"; };
+		21801CCD28F9A86800FFA37E /* Comment8V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment8V2.swift; sourceTree = "<group>"; };
+		21801CCE28F9A86800FFA37E /* Team2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team2.swift; sourceTree = "<group>"; };
+		21801CCF28F9A86800FFA37E /* CommentWithCompositeKeyAndIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentWithCompositeKeyAndIndex.swift; sourceTree = "<group>"; };
+		21801CD028F9A86800FFA37E /* AmplifyModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyModels.swift; sourceTree = "<group>"; };
+		21801CD128F9A86800FFA37E /* Comment8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment8+Schema.swift"; sourceTree = "<group>"; };
+		21801CD228F9A86800FFA37E /* Post7+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post7+Schema.swift"; sourceTree = "<group>"; };
+		21801CD328F9A86800FFA37E /* MyNestedModel8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyNestedModel8.swift; sourceTree = "<group>"; };
+		21801D0528F9AE9400FFA37E /* AWSDataStoreLazyLoadPostComment4V2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreLazyLoadPostComment4V2.swift; sourceTree = "<group>"; };
 		219253BD28BFE84000820737 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		21977D84289C1633005B49D6 /* primarykey_schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = primarykey_schema.graphql; sourceTree = "<group>"; };
 		21977DBE289C1719005B49D6 /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
@@ -1124,6 +1241,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		21801C7728F9A22900FFA37E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		21BBFB3E289BFF6A00B32A39 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1167,6 +1291,7 @@
 				213DBBDB28A5770000B30280 /* AWSDataStorePluginAuthCognitoTests */,
 				213DBBE828A5771400B30280 /* AWSDataStorePluginAuthIAMTests */,
 				213DBBF528A5772500B30280 /* AWSDataStorePluginMultiAuthTests */,
+				21801C7B28F9A22900FFA37E /* AWSDataStorePluginLazyLoadTests */,
 				2118212D289BFB4B001B5945 /* Products */,
 				2118213F289BFBC4001B5945 /* Frameworks */,
 			);
@@ -1183,6 +1308,7 @@
 				213DBBDA28A5770000B30280 /* AWSDataStorePluginAuthCognitoTests.xctest */,
 				213DBBE728A5771400B30280 /* AWSDataStorePluginAuthIAMTests.xctest */,
 				213DBBF428A5772500B30280 /* AWSDataStorePluginMultiAuthTests.xctest */,
+				21801C7A28F9A22900FFA37E /* AWSDataStorePluginLazyLoadTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1271,6 +1397,75 @@
 				213DBC5C28A5801900B30280 /* TestConfigHelper.swift */,
 			);
 			path = AWSDataStorePluginMultiAuthTests;
+			sourceTree = "<group>";
+		};
+		21801C7B28F9A22900FFA37E /* AWSDataStorePluginLazyLoadTests */ = {
+			isa = PBXGroup;
+			children = (
+				21801CA228F9A78F00FFA37E /* Models */,
+				21801C8628F9A37F00FFA37E /* TestConfigHelper.swift */,
+				21801C8528F9A36D00FFA37E /* lazyload-schema.graphql */,
+				21801C8428F9A2DC00FFA37E /* README.md */,
+				21801C7C28F9A22900FFA37E /* AWSDataStoreLazyLoadBaseTest.swift */,
+				21801D0528F9AE9400FFA37E /* AWSDataStoreLazyLoadPostComment4V2.swift */,
+			);
+			path = AWSDataStorePluginLazyLoadTests;
+			sourceTree = "<group>";
+		};
+		21801CA228F9A78F00FFA37E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				21801CD028F9A86800FFA37E /* AmplifyModels.swift */,
+				21801CB328F9A86700FFA37E /* Blog8V2.swift */,
+				21801CBE28F9A86700FFA37E /* Blog8V2+Schema.swift */,
+				21801CBD28F9A86700FFA37E /* Comment4.swift */,
+				21801CC528F9A86700FFA37E /* Comment4+Schema.swift */,
+				21801CB728F9A86700FFA37E /* Comment4V2.swift */,
+				21801CCB28F9A86800FFA37E /* Comment4V2+Schema.swift */,
+				21801CC428F9A86700FFA37E /* Comment7.swift */,
+				21801CA728F9A86600FFA37E /* Comment7+Schema.swift */,
+				21801CB928F9A86700FFA37E /* Comment8.swift */,
+				21801CD128F9A86800FFA37E /* Comment8+Schema.swift */,
+				21801CCD28F9A86800FFA37E /* Comment8V2.swift */,
+				21801CAC28F9A86600FFA37E /* Comment8V2+Schema.swift */,
+				21801CA628F9A86600FFA37E /* CommentWithCompositeKey.swift */,
+				21801CA428F9A86600FFA37E /* CommentWithCompositeKey+Schema.swift */,
+				21801CCF28F9A86800FFA37E /* CommentWithCompositeKeyAndIndex.swift */,
+				21801CBF28F9A86700FFA37E /* CommentWithCompositeKeyAndIndex+Schema.swift */,
+				21801CCC28F9A86800FFA37E /* MyCustomModel8.swift */,
+				21801CAE28F9A86600FFA37E /* MyCustomModel8+Schema.swift */,
+				21801CD328F9A86800FFA37E /* MyNestedModel8.swift */,
+				21801CAA28F9A86600FFA37E /* MyNestedModel8+Schema.swift */,
+				21801CBC28F9A86700FFA37E /* Post4.swift */,
+				21801CAD28F9A86600FFA37E /* Post4+Schema.swift */,
+				21801CBA28F9A86700FFA37E /* Post4V2.swift */,
+				21801CC128F9A86700FFA37E /* Post4V2+Schema.swift */,
+				21801CC328F9A86700FFA37E /* Post7.swift */,
+				21801CD228F9A86800FFA37E /* Post7+Schema.swift */,
+				21801CA828F9A86600FFA37E /* Post8.swift */,
+				21801CB828F9A86700FFA37E /* Post8+Schema.swift */,
+				21801CAF28F9A86600FFA37E /* Post8V2.swift */,
+				21801CC628F9A86700FFA37E /* Post8V2+Schema.swift */,
+				21801CAB28F9A86600FFA37E /* PostTagsWithCompositeKey.swift */,
+				21801CB428F9A86700FFA37E /* PostTagsWithCompositeKey+Schema.swift */,
+				21801CA328F9A86600FFA37E /* PostWithCompositeKey.swift */,
+				21801CC728F9A86800FFA37E /* PostWithCompositeKey+Schema.swift */,
+				21801CB128F9A86600FFA37E /* PostWithCompositeKeyAndIndex.swift */,
+				21801CB028F9A86600FFA37E /* PostWithCompositeKeyAndIndex+Schema.swift */,
+				21801CA928F9A86600FFA37E /* PostWithTagsCompositeKey.swift */,
+				21801CA528F9A86600FFA37E /* PostWithTagsCompositeKey+Schema.swift */,
+				21801CB628F9A86700FFA37E /* Project2.swift */,
+				21801CC028F9A86700FFA37E /* Project2+Schema.swift */,
+				21801CB228F9A86600FFA37E /* Project6.swift */,
+				21801CC228F9A86700FFA37E /* Project6+Schema.swift */,
+				21801CC928F9A86800FFA37E /* TagWithCompositeKey.swift */,
+				21801CB528F9A86700FFA37E /* TagWithCompositeKey+Schema.swift */,
+				21801CCE28F9A86800FFA37E /* Team2.swift */,
+				21801CCA28F9A86800FFA37E /* Team2+Schema.swift */,
+				21801CC828F9A86800FFA37E /* Team6.swift */,
+				21801CBB28F9A86700FFA37E /* Team6+Schema.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		21977D75289C161D005B49D6 /* Models */ = {
@@ -2354,6 +2549,25 @@
 			productReference = 213DBBF428A5772500B30280 /* AWSDataStorePluginMultiAuthTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		21801C7928F9A22900FFA37E /* AWSDataStorePluginLazyLoadTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 21801C8228F9A22900FFA37E /* Build configuration list for PBXNativeTarget "AWSDataStorePluginLazyLoadTests" */;
+			buildPhases = (
+				21801C7628F9A22900FFA37E /* Sources */,
+				21801C7728F9A22900FFA37E /* Frameworks */,
+				21801C7828F9A22900FFA37E /* Resources */,
+				21801C8328F9A23300FFA37E /* Copy Configuration Files */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				21801C7F28F9A22900FFA37E /* PBXTargetDependency */,
+			);
+			name = AWSDataStorePluginLazyLoadTests;
+			productName = AWSDataStorePluginLazyLoadTests;
+			productReference = 21801C7A28F9A22900FFA37E /* AWSDataStorePluginLazyLoadTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		21BBFB40289BFF6A00B32A39 /* AWSDataStorePluginIntegrationTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 21BBFB49289BFF6A00B32A39 /* Build configuration list for PBXNativeTarget "AWSDataStorePluginIntegrationTests" */;
@@ -2454,6 +2668,10 @@
 						CreatedOnToolsVersion = 14.0;
 						TestTargetID = 2118212B289BFB4B001B5945;
 					};
+					21801C7928F9A22900FFA37E = {
+						CreatedOnToolsVersion = 14.0;
+						TestTargetID = 2118212B289BFB4B001B5945;
+					};
 					21BBFB40289BFF6A00B32A39 = {
 						CreatedOnToolsVersion = 13.4.1;
 						TestTargetID = 2118212B289BFB4B001B5945;
@@ -2493,6 +2711,7 @@
 				213DBBD928A5770000B30280 /* AWSDataStorePluginAuthCognitoTests */,
 				213DBBE628A5771400B30280 /* AWSDataStorePluginAuthIAMTests */,
 				213DBBF328A5772500B30280 /* AWSDataStorePluginMultiAuthTests */,
+				21801C7928F9A22900FFA37E /* AWSDataStorePluginLazyLoadTests */,
 			);
 		};
 /* End PBXProject section */
@@ -2522,6 +2741,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		213DBBF228A5772500B30280 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		21801C7828F9A22900FFA37E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2600,6 +2826,24 @@
 			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
 		};
 		213DBC4E28A57B9500B30280 /* Copy Configuration Files */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration Files";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
+		21801C8328F9A23300FFA37E /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2795,6 +3039,68 @@
 				213DBC1628A5787400B30280 /* PrivatePrivateUPIAMPost+Schema.swift in Sources */,
 				213DBC3228A5787400B30280 /* GroupUPPost+Schema.swift in Sources */,
 				213DBC4928A5787B00B30280 /* AWSDataStoreMultiAuthSingleRuleTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		21801C7628F9A22900FFA37E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				21801CE328F9A86800FFA37E /* Project6.swift in Sources */,
+				21801CE628F9A86800FFA37E /* TagWithCompositeKey+Schema.swift in Sources */,
+				21801CE728F9A86800FFA37E /* Project2.swift in Sources */,
+				21801CF728F9A86800FFA37E /* Post8V2+Schema.swift in Sources */,
+				21801D0128F9A86800FFA37E /* AmplifyModels.swift in Sources */,
+				21801CFB28F9A86800FFA37E /* Team2+Schema.swift in Sources */,
+				21801D0328F9A86800FFA37E /* Post7+Schema.swift in Sources */,
+				21801CEF28F9A86800FFA37E /* Blog8V2+Schema.swift in Sources */,
+				21801CE428F9A86800FFA37E /* Blog8V2.swift in Sources */,
+				21801CE028F9A86800FFA37E /* Post8V2.swift in Sources */,
+				21801C7D28F9A22900FFA37E /* AWSDataStoreLazyLoadBaseTest.swift in Sources */,
+				21801CFF28F9A86800FFA37E /* Team2.swift in Sources */,
+				21801D0228F9A86800FFA37E /* Comment8+Schema.swift in Sources */,
+				21801CFC28F9A86800FFA37E /* Comment4V2+Schema.swift in Sources */,
+				21801CEC28F9A86800FFA37E /* Team6+Schema.swift in Sources */,
+				21801CEA28F9A86800FFA37E /* Comment8.swift in Sources */,
+				21801C8728F9A38000FFA37E /* TestConfigHelper.swift in Sources */,
+				21801CE928F9A86800FFA37E /* Post8+Schema.swift in Sources */,
+				21801CF528F9A86800FFA37E /* Comment7.swift in Sources */,
+				21801CE828F9A86800FFA37E /* Comment4V2.swift in Sources */,
+				21801CD528F9A86800FFA37E /* CommentWithCompositeKey+Schema.swift in Sources */,
+				21801CED28F9A86800FFA37E /* Post4.swift in Sources */,
+				21801CF228F9A86800FFA37E /* Post4V2+Schema.swift in Sources */,
+				21801CFA28F9A86800FFA37E /* TagWithCompositeKey.swift in Sources */,
+				21801CF828F9A86800FFA37E /* PostWithCompositeKey+Schema.swift in Sources */,
+				21801CF328F9A86800FFA37E /* Project6+Schema.swift in Sources */,
+				21801CE228F9A86800FFA37E /* PostWithCompositeKeyAndIndex.swift in Sources */,
+				21801CD728F9A86800FFA37E /* CommentWithCompositeKey.swift in Sources */,
+				21801CFE28F9A86800FFA37E /* Comment8V2.swift in Sources */,
+				21801CD928F9A86800FFA37E /* Post8.swift in Sources */,
+				21801CDD28F9A86800FFA37E /* Comment8V2+Schema.swift in Sources */,
+				21801CD428F9A86800FFA37E /* PostWithCompositeKey.swift in Sources */,
+				21801CD828F9A86800FFA37E /* Comment7+Schema.swift in Sources */,
+				21801D0028F9A86800FFA37E /* CommentWithCompositeKeyAndIndex.swift in Sources */,
+				21801CF028F9A86800FFA37E /* CommentWithCompositeKeyAndIndex+Schema.swift in Sources */,
+				21801D0728F9B11800FFA37E /* AsyncTesting.swift in Sources */,
+				21801CF128F9A86800FFA37E /* Project2+Schema.swift in Sources */,
+				21801D0428F9A86800FFA37E /* MyNestedModel8.swift in Sources */,
+				21801CF928F9A86800FFA37E /* Team6.swift in Sources */,
+				21801CE128F9A86800FFA37E /* PostWithCompositeKeyAndIndex+Schema.swift in Sources */,
+				21801CD628F9A86800FFA37E /* PostWithTagsCompositeKey+Schema.swift in Sources */,
+				21801CDC28F9A86800FFA37E /* PostTagsWithCompositeKey.swift in Sources */,
+				21801CF628F9A86800FFA37E /* Comment4+Schema.swift in Sources */,
+				21801CEB28F9A86800FFA37E /* Post4V2.swift in Sources */,
+				21801CDF28F9A86800FFA37E /* MyCustomModel8+Schema.swift in Sources */,
+				21801D0828F9B11B00FFA37E /* AsyncExpectation.swift in Sources */,
+				21801CFD28F9A86800FFA37E /* MyCustomModel8.swift in Sources */,
+				21801CEE28F9A86800FFA37E /* Comment4.swift in Sources */,
+				21801D0628F9AE9400FFA37E /* AWSDataStoreLazyLoadPostComment4V2.swift in Sources */,
+				21801CDB28F9A86800FFA37E /* MyNestedModel8+Schema.swift in Sources */,
+				21801CE528F9A86800FFA37E /* PostTagsWithCompositeKey+Schema.swift in Sources */,
+				21801CDE28F9A86800FFA37E /* Post4+Schema.swift in Sources */,
+				21801CDA28F9A86800FFA37E /* PostWithTagsCompositeKey.swift in Sources */,
+				21801D0928F9B11E00FFA37E /* XCTestCase+AsyncTesting.swift in Sources */,
+				21801CF428F9A86800FFA37E /* Post7.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3246,6 +3552,11 @@
 			target = 2118212B289BFB4B001B5945 /* DataStoreHostApp */;
 			targetProxy = 213DBBF828A5772500B30280 /* PBXContainerItemProxy */;
 		};
+		21801C7F28F9A22900FFA37E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2118212B289BFB4B001B5945 /* DataStoreHostApp */;
+			targetProxy = 21801C7E28F9A22900FFA37E /* PBXContainerItemProxy */;
+		};
 		21BBFB46289BFF6A00B32A39 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 2118212B289BFB4B001B5945 /* DataStoreHostApp */;
@@ -3553,6 +3864,44 @@
 			};
 			name = Release;
 		};
+		21801C8028F9A22900FFA37E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AWSDataStorePluginLazyLoadTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DataStoreHostApp.app/DataStoreHostApp";
+			};
+			name = Debug;
+		};
+		21801C8128F9A22900FFA37E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AWSDataStorePluginLazyLoadTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DataStoreHostApp.app/DataStoreHostApp";
+			};
+			name = Release;
+		};
 		21BBFB47289BFF6A00B32A39 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3741,6 +4090,15 @@
 			buildConfigurations = (
 				213DBBFB28A5772500B30280 /* Debug */,
 				213DBBFC28A5772500B30280 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		21801C8228F9A22900FFA37E /* Build configuration list for PBXNativeTarget "AWSDataStorePluginLazyLoadTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				21801C8028F9A22900FFA37E /* Debug */,
+				21801C8128F9A22900FFA37E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
