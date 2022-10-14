@@ -212,7 +212,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
         XCTAssertFalse(operation.isCancelled)
         XCTAssertGreaterThanOrEqual(count, steps)
 
-        operation.unsubscribe(token: token)
+        Amplify.Hub.removeListener(token)
     }
 
     func testCancellingWithParentOperation() async throws {
@@ -250,7 +250,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
         XCTAssertTrue(operation.isCancelled)
         XCTAssertLessThan(count, steps)
 
-        operation.unsubscribe(token: token)
+        Amplify.Hub.removeListener(token)
     }
 
     func testThrowingValueProducingParentOperation() async throws {
@@ -288,7 +288,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
         XCTAssertFalse(operation.isCancelled)
         XCTAssertGreaterThanOrEqual(count, steps)
 
-        operation.unsubscribe(token: token)
+        Amplify.Hub.removeListener(token)
     }
 
     func testThrowingCancellingWithParentOperation() async throws {
@@ -326,7 +326,7 @@ final class AmplifyAsyncSequenceTests: XCTestCase {
         XCTAssertTrue(operation.isCancelled)
         XCTAssertLessThan(count, steps)
 
-        operation.unsubscribe(token: token)
+        Amplify.Hub.removeListener(token)
     }
 
     private func send<Element>(elements: [Element], channel: AmplifyAsyncSequence<Element>, sleepSeconds: Double = 0.1) async throws {
