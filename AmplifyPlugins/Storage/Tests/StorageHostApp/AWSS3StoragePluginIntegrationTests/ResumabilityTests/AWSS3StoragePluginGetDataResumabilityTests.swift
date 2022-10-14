@@ -18,7 +18,7 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
     /// When: Call the get API then pause
     /// Then: The operation is stalled (no progress, completed, or failed event)
     func testDownloadDataAndPause() async throws {
-        try await testTask {
+        try await testTask(timeout: 300) {
             let key = UUID().uuidString
             let data = AWSS3StoragePluginTestBase.smallDataObject
             let uploadKey = try await Amplify.Storage.uploadData(key: key, data: data).value
@@ -44,7 +44,7 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
                 }
             }
             await waitForExpectations([didPause], timeout: TestCommonConstants.networkTimeout)
-            await waitForExpectations([didContinue])
+            await waitForExpectations([didContinue], timeout: 5)
 
             let completeInvoked = asyncExpectation(description: "Download is completed", isInverted: true)
             let downloadTask = Task {
@@ -70,7 +70,7 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
     /// When: Call the downloadData API, pause, and then resume the operation
     /// Then: The operation should complete successfully
     func testDownloadDataAndPauseThenResume() async throws {
-        try await testTask {
+        try await testTask(timeout: 300) {
             let key = UUID().uuidString
             let data = AWSS3StoragePluginTestBase.smallDataObject
             let uploadKey = try await Amplify.Storage.uploadData(key: key, data: data).value
@@ -123,7 +123,7 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
     /// When: Call the get API then cancel the operation,
     /// Then: The operation should not complete or fail.
     func testDownloadDataAndCancel() async throws {
-        try await testTask {
+        try await testTask(timeout: 300) {
             let key = UUID().uuidString
             let data = AWSS3StoragePluginTestBase.smallDataObject
             let uploadKey = try await Amplify.Storage.uploadData(key: key, data: data).value
@@ -149,7 +149,7 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
                 }
             }
             await waitForExpectations([didCancel], timeout: TestCommonConstants.networkTimeout)
-            await waitForExpectations([didContinue])
+            await waitForExpectations([didContinue], timeout: 5)
 
             let completeInvoked = asyncExpectation(description: "Download is completed", isInverted: true)
             let downloadTask = Task {
