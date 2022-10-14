@@ -7,41 +7,43 @@
 
 import Foundation
 
-actor AtomicDictionary<Key: Hashable, Value> {
+class AtomicDictionary<Key: Hashable, Value> {
+    private let lock: NSLocking
     private var value: [Key: Value]
 
     init(initialValue: [Key: Value] = [Key: Value]()) {
+        self.lock = NSLock()
         self.value = initialValue
     }
 
     var count: Int {
-        value.count
+        lock.execute { value.count }
     }
 
     var keys: [Key] {
-        Array(value.keys)
+        lock.execute { Array(value.keys) }
     }
 
     var values: [Value] {
-        Array(value.values)
+        lock.execute { Array(value.values) }
     }
 
     // MARK: - Functions
 
     func getValue(forKey key: Key) -> Value? {
-        value[key]
+        lock.execute { value[key] }
     }
 
     func removeAll() {
-        value = [:]
+        lock.execute { value = [:] }
     }
 
     @discardableResult
     func removeValue(forKey key: Key) -> Value? {
-        value.removeValue(forKey: key)
+        return lock.execute { value.removeValue(forKey: key) }
     }
 
     func set(value: Value, forKey key: Key) {
-        self.value[key] = value
+        lock.execute { self.value[key] = value }
     }
 }

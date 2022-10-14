@@ -60,18 +60,14 @@ final public class AWSHubPlugin: HubCategoryPlugin {
                        isIncluded filter: HubFilter? = nil,
                        listener: @escaping HubListener) -> UnsubscribeToken {
         let filteredListener = FilteredListener(for: channel, filter: filter, listener: listener)
-        Task {
-            await dispatcher.insert(filteredListener)
-        }
+        dispatcher.insert(filteredListener)
 
         let unsubscribeToken = UnsubscribeToken(channel: channel, id: filteredListener.id)
         return unsubscribeToken
     }
 
     public func removeListener(_ token: UnsubscribeToken) {
-        Task {
-            await dispatcher.removeListener(withId: token.id)
-        }
+        dispatcher.removeListener(withId: token.id)
     }
 
     // MARK: - Custom Plugin methods
@@ -80,8 +76,8 @@ final public class AWSHubPlugin: HubCategoryPlugin {
     ///
     /// - Parameter token: The UnsubscribeToken of the listener to check
     /// - Returns: True if the dispatcher has a listener registered with `token`
-    public func hasListener(withToken token: UnsubscribeToken) async -> Bool {
-        return await dispatcher.hasListener(withId: token.id)
+    public func hasListener(withToken token: UnsubscribeToken) -> Bool {
+        return dispatcher.hasListener(withId: token.id)
     }
 
 }
