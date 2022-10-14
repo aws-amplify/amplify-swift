@@ -65,7 +65,11 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
 
             completion(result)
         }
-        storageEngine.save(model, modelSchema: modelSchema, condition: condition, completion: publishingCompletion)
+        storageEngine.save(model,
+                           modelSchema: modelSchema,
+                           condition: condition,
+                           eagerLoad: true,
+                           completion: publishingCompletion)
     }
     
     public func save<M: Model>(_ model: M,

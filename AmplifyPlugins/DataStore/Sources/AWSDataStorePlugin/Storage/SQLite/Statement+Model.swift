@@ -89,16 +89,12 @@ extension Statement: StatementModelConvertible {
         let columnMapping = statement.metadata.columnMapping
         let modelDictionary = ([:] as ModelValues).mutableCopy()
         var skipColumns = Set<String>()
-        var lazyLoadColumnValues = [(String, Binding?)]()
-        print(row)
+        var foreignKeyValues = [(String, Binding?)]()
         for (index, value) in row.enumerated() {
             let column = columnNames[index]
             guard let (schema, field) = columnMapping[column] else {
-                logger.debug("""
-                A column named \(column) was found in the result set but no field on
-                \(modelSchema.name) could be found with that name and it will be ignored.
-                """)
-                lazyLoadColumnValues.append((column, value))
+                logger.debug("[LazyLoad] Foreign key `\(column)` was found in the SQL result set with value: \(value)")
+                foreignKeyValues.append((column, value))
                 continue
             }
             
@@ -172,24 +168,22 @@ extension Statement: StatementModelConvertible {
         // modelDictionary["post"]["blog"] = nil
         let sortedColumns = skipColumns.sorted(by: { $0.count > $1.count })
         for skipColumn in sortedColumns {
-            print("Skipping column: \(skipColumn)")
             modelDictionary.updateValue(nil, forKeyPath: skipColumn)
         }
         modelDictionary["__typename"] = modelSchema.name
 
-        // `lazyloadColumnValues` are all foreign keys that can be added to the object for lazy loading
-        // Once lazy loading is enabled, this `lazyloadColumnValues` will be populated.
+        // `foreignKeyValues` are all foreign keys and their values that can be added to the object for lazy loading
+        // belongs to associations. 
         if !eagerLoad {
-            for lazyLoadColumnValue in lazyLoadColumnValues {
-                let foreignColumnName = lazyLoadColumnValue.0
+            for foreignKeyValue in foreignKeyValues {
+                let foreignColumnName = foreignKeyValue.0
                 if let foreignModel = modelSchema.foreignKeys.first(where: { modelField in
                     modelField.sqlName == foreignColumnName
                 }) {
-                    modelDictionary[foreignModel.name] = lazyLoadColumnValue.1
+                    modelDictionary[foreignModel.name] = foreignKeyValue.1
                 }
             }
         }
-        
         
         // swiftlint:disable:next force_cast
         return modelDictionary as! ModelValues

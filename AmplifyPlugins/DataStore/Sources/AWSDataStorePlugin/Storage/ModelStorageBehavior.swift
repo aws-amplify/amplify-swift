@@ -15,10 +15,12 @@ protocol ModelStorageBehavior {
     func save<M: Model>(_ model: M,
                         modelSchema: ModelSchema,
                         condition: QueryPredicate?,
+                        eagerLoad: Bool,
                         completion: @escaping DataStoreCallback<M>)
 
     func save<M: Model>(_ model: M,
                         condition: QueryPredicate?,
+                        eagerLoad: Bool,
                         completion: @escaping DataStoreCallback<M>)
 
     @available(*, deprecated, message: "Use delete(:modelSchema:withIdentifier:predicate:completion")

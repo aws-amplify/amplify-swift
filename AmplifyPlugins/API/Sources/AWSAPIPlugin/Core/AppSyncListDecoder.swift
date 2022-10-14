@@ -56,7 +56,7 @@ public struct AppSyncListDecoder: ModelListDecoder {
 
 public struct AppSyncModelDecoder: ModelProviderDecoder {
     public static func shouldDecode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> Bool {
-        if (try? AppSyncPartialModelMetadata(from: decoder)) != nil {
+        if (try? AppSyncModelIdentifierMetadata(from: decoder)) != nil {
             return true
         }
         
@@ -80,7 +80,7 @@ public struct AppSyncModelDecoder: ModelProviderDecoder {
                                                            decoder: Decoder) throws -> AppSyncModelProvider<ModelType>? {
         if let model = try? ModelType.init(from: decoder) {
             return AppSyncModelProvider(model: model)
-        } else if let metadata = try? AppSyncPartialModelMetadata.init(from: decoder) {
+        } else if let metadata = try? AppSyncModelIdentifierMetadata.init(from: decoder) {
             return AppSyncModelProvider<ModelType>(metadata: metadata)
         }
         let json = try JSONValue(from: decoder)

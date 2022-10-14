@@ -41,6 +41,6 @@ public protocol ModelProvider {
 }
 
 public enum ModelProviderState<Element: Model> {
-    case notLoaded(identifier: String)
+    case notLoaded(identifiers: [String: String])
     case loaded(Element?)
 }

@@ -9,6 +9,10 @@ import Foundation
 import Amplify
 
 public struct DataStoreModelDecoder: ModelProviderDecoder {
+    
+    // TODO: have some sort of priority on the ModelProviderDecoder
+    // to indicate run 1 then run 2
+    
     public static func shouldDecode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> Bool {
         guard let json = try? JSONValue(from: decoder) else {
             return false

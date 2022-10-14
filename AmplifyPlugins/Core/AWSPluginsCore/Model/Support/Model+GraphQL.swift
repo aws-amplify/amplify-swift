@@ -39,7 +39,7 @@ extension Model {
 
         for (modelField, modelFieldValue) in fields {
             let name = modelField.name
-
+            
             guard let value = modelFieldValue else {
                 // Special case for associated models when the value is `nil`, by setting all of the associated
                 // model's primary key fields (targetNames) to `nil`.
@@ -185,9 +185,10 @@ extension Model {
         } else if let optionalModel = value as? Model?,
                   let modelValue = optionalModel {
             return modelValue.identifier(schema: modelSchema).values
-        } else if let lazyModelValue = value as? (any LazyModelMarker) {
-            print("FOUND A LAZY MODEL \(lazyModelValue)")
-            //return lazyModelValue.element?.identifier
+        } else if let lazyModel = value as? (any LazyModelMarker) {
+            if let modelValue = lazyModel.element {
+                return modelValue.identifier(schema: modelSchema).values
+            }
         } else if let value = value as? [String: JSONValue] {
             var primaryKeyValues = [Persistable]()
             for field in modelSchema.primaryKey.fields {
@@ -220,7 +221,7 @@ extension Model {
         if let jsonModel = self as? JSONValueHolder {
             return jsonModel.jsonValue(for: modelFieldName, modelSchema: modelSchema) ?? nil
         } else {
-            return self[modelFieldName] ?? nil
+            return self[modelFieldName] ?? self["_\(modelFieldName)"] ?? nil
         }
     }
 }

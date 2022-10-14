@@ -43,7 +43,7 @@ final class MutationEventClearState {
         for mutationEvent in mutationEvents {
             var inProcessEvent = mutationEvent
             inProcessEvent.inProcess = false
-            storageAdapter.save(inProcessEvent, condition: nil, completion: { result in
+            storageAdapter.save(inProcessEvent, condition: nil, eagerLoad: true, completion: { result in
                 switch result {
                 case .success:
                     numMutationEventsUpdated += 1

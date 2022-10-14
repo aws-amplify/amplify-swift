@@ -170,6 +170,7 @@ final class StorageEngine: StorageEngineBehavior {
     public func save<M: Model>(_ model: M,
                                modelSchema: ModelSchema,
                                condition: QueryPredicate? = nil,
+                               eagerLoad: Bool = true,
                                completion: @escaping DataStoreCallback<M>) {
 
         // TODO: Refactor this into a proper request/result where the result includes metadata like the derived
@@ -218,11 +219,19 @@ final class StorageEngine: StorageEngineBehavior {
         storageAdapter.save(model,
                             modelSchema: modelSchema,
                             condition: condition,
+                            eagerLoad: eagerLoad,
                             completion: wrappedCompletion)
     }
 
-    func save<M: Model>(_ model: M, condition: QueryPredicate? = nil, completion: @escaping DataStoreCallback<M>) {
-        save(model, modelSchema: model.schema, condition: condition, completion: completion)
+    func save<M: Model>(_ model: M,
+                        condition: QueryPredicate? = nil,
+                        eagerLoad: Bool = true,
+                        completion: @escaping DataStoreCallback<M>) {
+        save(model,
+             modelSchema: model.schema,
+             condition: condition,
+             eagerLoad: eagerLoad,
+             completion: completion)
     }
 
     @available(*, deprecated, message: "Use delete(:modelSchema:withIdentifier:predicate:completion")

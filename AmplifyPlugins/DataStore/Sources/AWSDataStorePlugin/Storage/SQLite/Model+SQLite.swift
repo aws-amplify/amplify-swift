@@ -62,7 +62,7 @@ extension Model {
         let modelFields = fields ?? modelSchema.sortedFields
         let values: [Binding?] = modelFields.map { field in
 
-            let existingFieldOptionalValue: Any??
+            var existingFieldOptionalValue: Any??
 
             // self[field.name] subscript accessor or jsonValue() returns an Any??, we need to do a few things:
             // - `guard` to make sure the field name exists on the model
@@ -75,8 +75,14 @@ extension Model {
                 existingFieldOptionalValue = jsonModel.jsonValue(for: field.name, modelSchema: modelSchema)
             } else {
                 existingFieldOptionalValue = self[field.name]
+                // Additional attempt to get the internal data, like "_post"
+                // TODO: alternatively, check if association or not
+                if existingFieldOptionalValue == nil {
+                    let internalFieldName = "_\(field.name)"
+                    existingFieldOptionalValue = self[internalFieldName]
+                }
             }
-
+            
             guard let existingFieldValue = existingFieldOptionalValue else {
                 return nil
             }
@@ -107,7 +113,6 @@ extension Model {
                 if let associatedModelValue = value as? Model {
                     return associatedModelValue.identifier
                 } else if let associatedLazyModel = value as? (any LazyModelMarker) {
-                    print("FOUND A LAZY MODEL \(associatedLazyModel) id: \(associatedLazyModel.element?.identifier)")
                     return associatedLazyModel.element?.identifier
                 } else if let associatedModelJSON = value as? [String: JSONValue] {
                     return associatedPrimaryKeyValue(fromJSON: associatedModelJSON,

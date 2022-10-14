@@ -40,7 +40,7 @@ extension GraphQLResponseDecoder {
         if request.responseType == AnyModel.self { // 2
             let anyModel = try AnyModel(modelJSON: graphQLData)
             serializedJSON = try encoder.encode(anyModel)
-        } else if request.responseType is ModelListMarker.Type, // 2
+        } else if request.responseType is ModelListMarker.Type, // 3
                   case .object(var graphQLDataObject) = graphQLData,
                   case .array(var graphQLDataArray) = graphQLDataObject["items"] {
             for (index, item) in graphQLDataArray.enumerated() {

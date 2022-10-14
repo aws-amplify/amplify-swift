@@ -14,15 +14,15 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
     let apiName: String?
     
     enum LoadedState {
-        case notLoaded(identifier: String)
+        case notLoaded(identifiers: [String: String])
         case loaded(model: ModelType?)
     }
     
     var loadedState: LoadedState
     
     // init(AppSyncModelMetadata) creates a notLoaded provider
-    convenience init(metadata: AppSyncPartialModelMetadata) {
-        self.init(identifier: metadata.identifier,
+    convenience init(metadata: AppSyncModelIdentifierMetadata) {
+        self.init(identifiers: metadata.identifiers,
                   apiName: metadata.apiName)
     }
     
@@ -33,8 +33,8 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
     }
     
     // Initializer for not loaded state
-    init(identifier: String, apiName: String? = nil) {
-        self.loadedState = .notLoaded(identifier: identifier)
+    init(identifiers: [String: String], apiName: String? = nil) {
+        self.loadedState = .notLoaded(identifiers: identifiers)
         self.apiName = apiName
     }
     
@@ -44,11 +44,15 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
     public func load() async throws -> ModelType? {
         
         switch loadedState {
-        case .notLoaded(let identifier):
+        case .notLoaded(let identifiers):
+            // TODO: account for more than one identifier
+            guard let identifier = identifiers.first else {
+                throw CoreError.operation("CPK not yet implemented", "", nil)
+            }
             let request = GraphQLRequest<ModelType?>.getQuery(responseType: ModelType.self,
-                                                            modelSchema: ModelType.schema,
-                                                            identifier: identifier,
-                                                            apiName: apiName)
+                                                              modelSchema: ModelType.schema,
+                                                              identifier: identifier.value,
+                                                              apiName: apiName)
             do {
                 let graphQLResponse = try await Amplify.API.query(request: request)
                 switch graphQLResponse {
@@ -76,8 +80,8 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
     
     public func getState() -> ModelProviderState<ModelType> {
         switch loadedState {
-        case .notLoaded(let identifier):
-            return .notLoaded(identifier: identifier)
+        case .notLoaded(let identifiers):
+            return .notLoaded(identifiers: identifiers)
         case .loaded(let model):
             return .loaded(model)
         }

@@ -54,9 +54,10 @@ class StorageEngineTestsBase: XCTestCase {
         return saveResult
     }
 
-    func saveAsync<M: Model>(_ model: M) async throws -> M {
+    @discardableResult
+    func saveAsync<M: Model>(_ model: M, eagerLoad: Bool = true) async throws -> M {
         try await withCheckedThrowingContinuation { continuation in
-            storageEngine.save(model) { sResult in
+            storageEngine.save(model, eagerLoad: eagerLoad) { sResult in
                 continuation.resume(with: sResult)
             }
         }
