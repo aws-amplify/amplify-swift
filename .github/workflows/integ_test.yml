@@ -56,7 +56,7 @@ jobs:
           scheme: AWSPinpointAnalyticsPluginIntegrationTests
 
   api-integration-test:
-    continue-on-error: true
+    if: ${{ false }}
     needs: prepare-for-test
     runs-on: macos-12
     environment: IntegrationTest
@@ -112,6 +112,7 @@ jobs:
           scheme: GraphQLWithIAMIntegrationTests
 
   api-graphqluserpool-integration-test:
+    if: ${{ false }}
     needs: [api-integration-test]
     runs-on: macos-12
     environment: IntegrationTest
@@ -251,7 +252,7 @@ jobs:
           scheme: AWSCognitoAuthPluginIntegrationTests
 
   datastore-integration-test:
-    continue-on-error: true
+    if: ${{ false }}
     needs: prepare-for-test
     runs-on: macos-12
     environment: IntegrationTest
@@ -306,7 +307,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationHubTests
   datastore-integration-local-test:
-    continue-on-error: true
+    if: ${{ false }}
     needs: [datastore-integration-test]
     runs-on: macos-12
     environment: IntegrationTest
@@ -334,7 +335,7 @@ jobs:
           scheme: AWSDataStoreIntegrationLocalTests
 
   datastore-integration-V1-S1-test:
-    continue-on-error: true
+    if: ${{ false }}
     needs: [datastore-integration-test]
     runs-on: macos-12
     environment: IntegrationTest
@@ -740,7 +741,7 @@ jobs:
           workspace: DataStoreCategoryPlugin.xcworkspace
           scheme: AWSDataStoreIntegrationV2Scenario8V2Tests
   datastore-integration-V2-test:
-    continue-on-error: true
+    if: ${{ false }}
     needs: [datastore-integration-test]
     runs-on: macos-12
     environment: IntegrationTest
