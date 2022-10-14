@@ -10,7 +10,7 @@ import XCTest
 
 extension XCTestCase {
     public static let defaultTimeoutForAsyncExpectations = TimeInterval(60)
-    public static let defaultNetworkTimeoutForAsyncExpectations = TimeInterval(10)
+    public static let defaultNetworkTimeoutForAsyncExpectations = TimeInterval(300)
 
     /// Creates a new async expectation with an associated description.
     ///
