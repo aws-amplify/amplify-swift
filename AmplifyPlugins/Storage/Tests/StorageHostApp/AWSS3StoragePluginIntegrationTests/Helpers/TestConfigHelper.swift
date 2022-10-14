@@ -39,5 +39,5 @@ class TestConfigHelper {
 }
 
 class TestCommonConstants {
-    static let networkTimeout = TimeInterval(300)
+    static let networkTimeout = TimeInterval(600)
 }

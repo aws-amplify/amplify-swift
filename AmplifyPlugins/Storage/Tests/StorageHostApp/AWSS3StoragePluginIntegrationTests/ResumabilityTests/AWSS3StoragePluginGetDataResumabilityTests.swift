@@ -18,7 +18,7 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
     /// When: Call the get API then pause
     /// Then: The operation is stalled (no progress, completed, or failed event)
     func testDownloadDataAndPause() async throws {
-        try await testTask(timeout: 300) {
+        try await testTask(timeout: 600) {
             let key = UUID().uuidString
             let data = AWSS3StoragePluginTestBase.smallDataObject
             let uploadKey = try await Amplify.Storage.uploadData(key: key, data: data).value
@@ -70,7 +70,7 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
     /// When: Call the downloadData API, pause, and then resume the operation
     /// Then: The operation should complete successfully
     func testDownloadDataAndPauseThenResume() async throws {
-        try await testTask(timeout: 300) {
+        try await testTask(timeout: 600) {
             let key = UUID().uuidString
             let data = AWSS3StoragePluginTestBase.smallDataObject
             let uploadKey = try await Amplify.Storage.uploadData(key: key, data: data).value
@@ -123,7 +123,7 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
     /// When: Call the get API then cancel the operation,
     /// Then: The operation should not complete or fail.
     func testDownloadDataAndCancel() async throws {
-        try await testTask(timeout: 300) {
+        try await testTask(timeout: 600) {
             let key = UUID().uuidString
             let data = AWSS3StoragePluginTestBase.smallDataObject
             let uploadKey = try await Amplify.Storage.uploadData(key: key, data: data).value

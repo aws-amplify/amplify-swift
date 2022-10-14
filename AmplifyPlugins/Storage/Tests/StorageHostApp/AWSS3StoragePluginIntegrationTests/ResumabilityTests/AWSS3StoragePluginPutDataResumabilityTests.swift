@@ -17,7 +17,7 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
     /// When: Call the put API and pause the operation
     /// Then: The operation is stalled (no progress, completed, or failed event)
     func testUploadLargeDataThenPause() async throws {
-        try await testTask(timeout: 300) {
+        try await testTask(timeout: 600) {
             let key = UUID().uuidString
             Self.logger.debug("Uploading data")
             let task = try await Amplify.Storage.uploadData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
@@ -65,7 +65,7 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
     /// When: Call the put API, pause, and then resume the operation,
     /// Then: The operation should complete successfully
     func testUploadLargeDataAndPauseThenResume() async throws {
-        try await testTask(timeout: 300) {
+        try await testTask(timeout: 600) {
             let key = UUID().uuidString
             Self.logger.debug("Uploading data")
             let task = try await Amplify.Storage.uploadData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
@@ -112,7 +112,7 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
     /// When: Call the put API, pause, and then resume tthe operation,
     /// Then: The operation should complete successfully
     func testUploadLargeDataAndCancel() async throws {
-        try await testTask(timeout: 300) {
+        try await testTask(timeout: 600) {
             let key = UUID().uuidString
             Self.logger.debug("Uploading data")
             let task = try await Amplify.Storage.uploadData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
