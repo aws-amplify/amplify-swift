@@ -7,7 +7,7 @@
 
 import Foundation
 
-class AtomicDictionary<Key: Hashable, Value> {
+final class AtomicDictionary<Key: Hashable, Value> {
     private let lock: NSLocking
     private var value: [Key: Value]
 

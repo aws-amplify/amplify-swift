@@ -75,16 +75,14 @@ final class HubChannelDispatcher {
 
 extension HubChannelDispatcher: HubDispatchOperationDelegate {
     var listeners: [FilteredListener] {
-        get {
-            return Array(listenersById.values)
-        }
+        return Array(listenersById.values)
     }
 }
 
 protocol HubDispatchOperationDelegate: AnyObject {
     /// Used to let a dispatch operation retrieve the list of listeners at the time of invocation, rather than the time
     /// of queuing.
-    var listeners: [FilteredListener] { get async }
+    var listeners: [FilteredListener] { get }
 }
 
 final class HubDispatchOperation: Operation {
@@ -122,7 +120,7 @@ final class HubDispatchOperation: Operation {
         }
 
         Task {
-            guard let listeners = await delegate?.listeners else {
+            guard let listeners = delegate?.listeners else {
                 return
             }
 
