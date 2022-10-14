@@ -123,22 +123,28 @@ class StateMachineListenerTests: XCTestCase {
         let task = Task {
             for try await _ in seq {
                 if Task.isCancelled {
-                    notified.fulfill()
-                    break
+                    print("Cancelled")
                 }
             }
-
+            notified.fulfill()
         }
 
-        Task {
-            for _ in 1...100 {
-                let event = Counter.Event(id: "test", eventType: .adjustBy(0))
+        let task2 = Task {
+
+            for index in 1...100 {
+
+                let event = Counter.Event(id: "test", eventType: .adjustBy(index))
                 await stateMachine.send(event)
+
+                if (index == 30) {
+                    task.cancel()
+                    await Task.yield()
+                }
             }
         }
 
-        task.cancel()
-        await waitForExpectations(timeout: 0.1)
+        await waitForExpectations(timeout: 1)
+        task2.cancel()
     }
 
 }
