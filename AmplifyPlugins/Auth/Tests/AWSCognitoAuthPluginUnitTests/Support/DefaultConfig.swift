@@ -256,14 +256,15 @@ struct MockCredentialStoreOperationClient: CredentialStoreStateBehavior {
 
 class MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
     let credentialsKey = "amplifyCredentials"
-    static var dict: [String: Data] = [:]
+    static var dict = AtomicDictionary<String, Data>()
 
     func saveCredential(_ credential: AmplifyCredentials) throws {
-        Self.dict[credentialsKey] = try? JSONEncoder().encode(credential)
+        let value = (try? JSONEncoder().encode(credential)) ?? Data()
+        Self.dict.set(value: value, forKey: credentialsKey)
     }
 
     func retrieveCredential() throws -> AmplifyCredentials {
-        guard let data = Self.dict[credentialsKey],
+        guard let data = Self.dict.getValue(forKey: credentialsKey),
               let cred = (try? JSONDecoder().decode(AmplifyCredentials.self, from: data)) else {
             return AmplifyCredentials.noCredentials
         }
@@ -279,11 +280,12 @@ class MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
     }
 
     func saveDevice(_ deviceMetadata: DeviceMetadata, for username: String) throws {
-        Self.dict[username] = try? JSONEncoder().encode(deviceMetadata)
+        let value = (try? JSONEncoder().encode(deviceMetadata)) ?? Data()
+        Self.dict.set(value: value, forKey: username)
     }
 
     func retrieveDevice(for username: String) throws -> DeviceMetadata {
-        guard let data = Self.dict[username],
+        guard let data = Self.dict.getValue(forKey: username),
               let device = (try? JSONDecoder().decode(DeviceMetadata.self, from: data)) else {
             return .noData
         }
@@ -295,12 +297,13 @@ class MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
     }
 
     func saveASFDevice(_ deviceId: String, for username: String) throws {
-        Self.dict[username] = try? JSONEncoder().encode(deviceId)
+        let value = (try? JSONEncoder().encode(deviceId)) ?? Data()
+        Self.dict.set(value: value, forKey: username)
 
     }
 
     func retrieveASFDevice(for username: String) throws -> String {
-        guard let data = Self.dict[username],
+        guard let data = Self.dict.getValue(forKey: username),
               let device = (try? JSONDecoder().decode(String.self, from: data)) else {
             throw KeychainStoreError.itemNotFound
         }
