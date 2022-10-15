@@ -26,15 +26,18 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
             let didContinue = asyncExpectation(description: "did continue", isInverted: true)
             Task {
                 var paused = false
-                var continued = false
+                var progressAfterPause = 0
                 for await progress in await task.progress {
-                    if !paused, progress.fractionCompleted > 0.1 {
+                    Self.logger.debug("progress: \(progress)")
+                    if !paused {
                         paused = true
                         task.pause()
                         await didPause.fulfill()
-                    } else if paused, !continued, progress.fractionCompleted > 0.5 {
-                        continued = true
-                        await didContinue.fulfill()
+                    } else {
+                        progressAfterPause += 1
+                        if progressAfterPause > 1 {
+                            await didContinue.fulfill()
+                        }
                     }
                 }
             }
