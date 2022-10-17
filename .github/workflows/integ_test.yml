@@ -1,7 +1,7 @@
 name: Integration Tests
 on:
   push:
-    branches: [main]
+    branches: [royjit.v2authinteg]
 
 permissions:
     id-token: write
@@ -72,7 +72,7 @@ jobs:
           resource_subfolder: auth
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
 
       - name: Run Integration test
         uses: ./.github/composite_actions/run_xcodebuild_test
