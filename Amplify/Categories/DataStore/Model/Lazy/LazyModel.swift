@@ -12,7 +12,7 @@ public class LazyModel<Element: Model>: Codable, LazyModelMarker {
     
     /// Represents the data state of the `LazyModel`.
     enum LoadedState {
-        case notLoaded
+        case notLoaded(identifiers: [String: String])
         case loaded(Element?)
     }
     var loadedState: LoadedState
@@ -46,8 +46,8 @@ public class LazyModel<Element: Model>: Codable, LazyModelMarker {
         switch self.modelProvider.getState() {
         case .loaded(let element):
             self.loadedState = .loaded(element)
-        case .notLoaded:
-            self.loadedState = .notLoaded
+        case .notLoaded(let identifiers):
+            self.loadedState = .notLoaded(identifiers: identifiers)
         }
     }
     
@@ -76,9 +76,9 @@ public class LazyModel<Element: Model>: Codable, LazyModelMarker {
     
     public func encode(to encoder: Encoder) throws {
         switch loadedState {
-        case .notLoaded:
-            break
-            // try Element.encode(to: encoder)
+        case .notLoaded(let identifiers):
+            var container = encoder.singleValueContainer()
+            try container.encode(identifiers)
         case .loaded(let element):
             try element.encode(to: encoder)
         }

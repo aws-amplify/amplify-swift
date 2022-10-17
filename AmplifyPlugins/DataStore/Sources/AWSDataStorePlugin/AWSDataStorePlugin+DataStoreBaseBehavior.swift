@@ -68,7 +68,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         storageEngine.save(model,
                            modelSchema: modelSchema,
                            condition: condition,
-                           eagerLoad: isEagerLoad,
+                           eagerLoad: true,
                            completion: publishingCompletion)
     }
     
