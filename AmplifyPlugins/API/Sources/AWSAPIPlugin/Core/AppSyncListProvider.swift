@@ -45,14 +45,9 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
         
         switch loadedState {
         case .notLoaded(let identifiers):
-            // TODO: account for more than one identifier
-            guard let identifier = identifiers.first else {
-                throw CoreError.operation("CPK not yet implemented", "", nil)
-            }
-            let request = GraphQLRequest<ModelType?>.getQuery(responseType: ModelType.self,
-                                                              modelSchema: ModelType.schema,
-                                                              identifier: identifier.value,
-                                                              apiName: apiName)
+            let request = AppSyncModelProvider.getRequest(ModelType.self,
+                                                          byIdentifiers: identifiers,
+                                                          apiName: apiName)
             do {
                 let graphQLResponse = try await Amplify.API.query(request: request)
                 switch graphQLResponse {
@@ -85,6 +80,23 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
         case .loaded(let model):
             return .loaded(model)
         }
+    }
+    
+    static func getRequest<M: Model>(_ modelType: M.Type,
+                                     byIdentifiers identifiers: [String: String],
+                                     apiName: String?) -> GraphQLRequest<M?> {
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
+                                                               operationType: .query)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
+        documentBuilder.add(decorator: ModelIdDecorator(identifiers: identifiers))
+        
+        let document = documentBuilder.build()
+        
+        return GraphQLRequest<M?>(apiName: apiName,
+                                  document: document.stringValue,
+                                  variables: document.variables,
+                                  responseType: M?.self,
+                                  decodePath: document.name)
     }
 }
 
