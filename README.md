@@ -7,7 +7,7 @@ The Amplify Library for Swift is layered on the [AWS SDK for Swift](https://aws.
 
 We deeply appreciate your feedback on this Developer Preview as we work towards our General Availability launch: [GitHub Discussion](https://github.com/aws-amplify/amplify-swift/discussions/categories/developer-preview) or [File a Bug Report](https://github.com/aws-amplify/amplify-swift/issues/new/choose).
 
-[**API Documentation**](https://aws-amplify.github.io/amplify-ios/docs/)
+[**API Documentation**](https://aws-amplify.github.io/amplify-swift/docs/)
 
 [**Getting Started Guide**](https://docs.amplify.aws/start/q/integration/ios)
 
