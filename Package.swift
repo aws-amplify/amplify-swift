@@ -160,9 +160,6 @@ let authTargets: [Target] = [
             "changes.txt",
             "LICENSE",
             "README.md"
-        ],
-        cSettings: [
-            .unsafeFlags(["-flto=thin"])  // for Dead Code Elimination
         ]
     ),
     .testTarget(
