@@ -7,6 +7,7 @@
 
 import Foundation
 import Amplify
+import SQLite
 
 public struct DataStoreModelDecoder: ModelProviderDecoder {
     
@@ -14,14 +15,15 @@ public struct DataStoreModelDecoder: ModelProviderDecoder {
     // to indicate run 1 then run 2
     
     public static func shouldDecode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> Bool {
-        guard let json = try? JSONValue(from: decoder) else {
-            return false
+        if (try? DataStoreModelIdentifierMetadata(from: decoder)) != nil {
+            return true
         }
-        // TODO: This needs to be more strict once we have more than one decoder running
-        // without any sort of priority
-        // check if it has the single field
-
-        return true
+        
+        if (try? ModelType(from: decoder)) != nil {
+            return true
+        }
+        
+        return false
     }
     
     public static func makeModelProvider<ModelType: Model>(modelType: ModelType.Type,
@@ -36,15 +38,21 @@ public struct DataStoreModelDecoder: ModelProviderDecoder {
     
     static func getDataStoreModelProvider<ModelType: Model>(modelType: ModelType.Type,
                                                             decoder: Decoder) throws -> DataStoreModelProvider<ModelType>? {
-        let json = try? JSONValue(from: decoder)
-        
-        // Attempt to decode to the entire model as a loaded model provider
         if let model = try? ModelType.init(from: decoder) {
             return DataStoreModelProvider(model: model)
-        } else if case .string(let identifier) = json { // A not loaded model provider
-            return DataStoreModelProvider<ModelType>(identifier: identifier)
+        } else if let metadata = try? DataStoreModelIdentifierMetadata.init(from: decoder) {
+            return DataStoreModelProvider<ModelType>(metadata: metadata)
         }
-        
+
+        let json = try? JSONValue(from: decoder)
+        let message = "DataStoreModelProvider could not be created from \(String(describing: json))"
+        Amplify.DataStore.log.error(message)
+        assertionFailure(message)
         return nil
     }
+}
+
+/// Metadata that contains the primary keys and values of a model
+public struct DataStoreModelIdentifierMetadata: Codable {
+    let identifier: String
 }

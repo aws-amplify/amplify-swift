@@ -16,7 +16,6 @@ public struct AppSyncModelMetadata: Codable {
 }
 
 /// Metadata that contains partial information of a model
-// TODO this should expand to more than just the identifier for composite keys.
 public struct AppSyncModelIdentifierMetadata: Codable {
     let identifiers: [String: String]
     let apiName: String?

@@ -190,10 +190,10 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
                                            withSchema: LazyChildComment4V2.schema,
                                            using: selectStatement2,
                                            eagerLoad: false)
-        let comments2 = try rows.convert(to: LazyChildComment4V2.self,
-                                         withSchema: LazyChildComment4V2.schema,
-                                         using: selectStatement2,
-                                         eagerLoad: false)
+        let comments2 = try rows2.convert(to: LazyChildComment4V2.self,
+                                          withSchema: LazyChildComment4V2.schema,
+                                          using: selectStatement2,
+                                          eagerLoad: false)
         XCTAssertEqual(comments.count, 1)
         guard let comment2 = comments2.first else {
             XCTFail("Should retrieve single comment")

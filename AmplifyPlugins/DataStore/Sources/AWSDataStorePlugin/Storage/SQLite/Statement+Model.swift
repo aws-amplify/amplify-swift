@@ -177,10 +177,10 @@ extension Statement: StatementModelConvertible {
         if !eagerLoad {
             for foreignKeyValue in foreignKeyValues {
                 let foreignColumnName = foreignKeyValue.0
-                if let foreignModel = modelSchema.foreignKeys.first(where: { modelField in
+                if let foreignModelField = modelSchema.foreignKeys.first(where: { modelField in
                     modelField.sqlName == foreignColumnName
                 }) {
-                    modelDictionary[foreignModel.name] = foreignKeyValue.1
+                    modelDictionary[foreignModelField.name] = ["identifier": foreignKeyValue.1]
                 }
             }
         }

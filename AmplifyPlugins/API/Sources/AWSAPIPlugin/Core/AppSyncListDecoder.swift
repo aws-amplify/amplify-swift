@@ -84,7 +84,7 @@ public struct AppSyncModelDecoder: ModelProviderDecoder {
             return AppSyncModelProvider<ModelType>(metadata: metadata)
         }
         let json = try JSONValue(from: decoder)
-        let message = "AppSyncListProvider could not be created from \(String(describing: json))"
+        let message = "AppSyncModelProvider could not be created from \(String(describing: json))"
         Amplify.DataStore.log.error(message)
         assertionFailure(message)
         return nil
