@@ -67,7 +67,7 @@ Amplify requires Xcode 13.4 or higher to build.
 
 1. Enter the Amplify Library for Swift GitHub repo URL (`https://github.com/aws-amplify/amplify-swift`) into the search bar.
 
-1. You'll see the Amplify Library for Swift repository rules for which version of Amplify you want Swift Package Manager to install. Choose **Up to Next Major Version** and enter *2.0.0* as the minimum version for the Dependency Rule, then click **Add Package**.
+1. You'll see the Amplify Library for Swift repository rules for which version of Amplify you want Swift Package Manager to install. Choose **Up to Next Major Version** and enter **2.0.0** as the minimum version for the Dependency Rule, then click **Add Package**.
 
     ![Dependency version options](readme-images/spm-setup-02-amplify-repo-options.png)
 
