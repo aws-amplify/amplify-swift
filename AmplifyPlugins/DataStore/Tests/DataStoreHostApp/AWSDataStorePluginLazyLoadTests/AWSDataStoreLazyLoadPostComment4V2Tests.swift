@@ -11,14 +11,14 @@ import XCTest
 
 @testable import Amplify
 
-class AWSDataStoreLazyLoadPostComment4V2: AWSDataStoreLazyLoadBaseTest {
+class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
 
     func testExample() async throws {
         await setup(withModels: PostComment4V2Models())
         let post = Post4V2(title: "title")
         let comment = Comment4V2(content: "content", post: post)
         
-        let commentSynced = asyncExpectation(description: "DataStore start success")
+        let commentSynced = asyncExpectation(description: "comment synced success")
         let mutationEvents = Amplify.DataStore.observe(Comment4V2.self)
         Task {
             do {
@@ -40,7 +40,7 @@ class AWSDataStoreLazyLoadPostComment4V2: AWSDataStoreLazyLoadBaseTest {
 }
 
 
-extension AWSDataStoreLazyLoadPostComment4V2 {
+extension AWSDataStoreLazyLoadPostComment4V2Tests {
     struct PostComment4V2Models: AmplifyModelRegistration {
         public let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {

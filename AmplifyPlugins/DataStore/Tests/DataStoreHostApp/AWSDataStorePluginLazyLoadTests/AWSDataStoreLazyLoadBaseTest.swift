@@ -51,11 +51,17 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
     
     /// Setup DataStore with given models
     /// - Parameter models: DataStore models
-    func setup(withModels models: AmplifyModelRegistration) async {
+    func setup(withModels models: AmplifyModelRegistration,
+               logLevel: LogLevel = .verbose,
+               eagerLoad: Bool = true) async {
         do {
             setupConfig()
-            Amplify.Logging.logLevel = .verbose
-            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models))
+            Amplify.Logging.logLevel = logLevel
+            
+            try Amplify.add(plugin: AWSDataStorePlugin(
+                modelRegistration: models,
+                configuration: .custom(
+                    loadingStrategy: eagerLoad ? .eagerLoad : .lazyLoad)))
             try Amplify.add(plugin: AWSAPIPlugin())
             try Amplify.configure(amplifyConfig)
         } catch {
