@@ -5,8 +5,6 @@ AWS Amplify provides a declarative and easy-to-use interface across different ca
 
 The Amplify Library for Swift is layered on the [AWS SDK for Swift](https://aws.amazon.com/sdk-for-swift/), which was released as Developer Preview last year. This allows for access to the AWS SDK for Swift for a breadth of service-centric APIs.
 
-You can also quickly get started by using our [Photo Sharing Sample App](https://github.com/aws-amplify/amplify-ios-samples/tree/dev-preview).
-
 We deeply appreciate your feedback on this Developer Preview as we work towards our General Availability launch: [GitHub Discussion](https://github.com/aws-amplify/amplify-ios/discussions/categories/developer-preview) or [File a Bug Report](https://github.com/aws-amplify/amplify-ios/issues/new/choose).
 
 [**API Documentation**](https://aws-amplify.github.io/amplify-ios/docs/)
