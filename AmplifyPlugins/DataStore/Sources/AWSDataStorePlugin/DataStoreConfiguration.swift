@@ -42,6 +42,11 @@ public enum DataStoreConflictHandlerResult {
     case retry(Model)
 }
 
+public enum DataStoreLoadingStrategy {
+    case eagerLoad
+    case lazyLoad
+}
+
 /// The `DataStore` plugin configuration object.
 public struct DataStoreConfiguration {
 
@@ -70,13 +75,17 @@ public struct DataStoreConfiguration {
     /// Authorization mode strategy
     public var authModeStrategyType: AuthModeStrategyType
 
+    /// Loading sttrategy
+    public var loadingStrategy: DataStoreLoadingStrategy
+    
     init(errorHandler: @escaping DataStoreErrorHandler,
          conflictHandler: @escaping DataStoreConflictHandler,
          syncInterval: TimeInterval,
          syncMaxRecords: UInt,
          syncPageSize: UInt,
          syncExpressions: [DataStoreSyncExpression],
-         authModeStrategy: AuthModeStrategyType = .default) {
+         authModeStrategy: AuthModeStrategyType = .default,
+         loadingStrategy: DataStoreLoadingStrategy = .eagerLoad) {
         self.errorHandler = errorHandler
         self.conflictHandler = conflictHandler
         self.syncInterval = syncInterval
@@ -84,6 +93,7 @@ public struct DataStoreConfiguration {
         self.syncPageSize = syncPageSize
         self.syncExpressions = syncExpressions
         self.authModeStrategyType = authModeStrategy
+        self.loadingStrategy = loadingStrategy
     }
 
 }
@@ -103,6 +113,7 @@ extension DataStoreConfiguration {
     ///   - syncMaxRecords: the number of records to sync per execution
     ///   - syncPageSize: the page size of each sync execution
     ///   - authModeStrategy: authorization strategy (.default | multiauth)
+    ///   - loadingStrategy: loading strategy (eagerLoad | lazyLoad)
     /// - Returns: an instance of `DataStoreConfiguration` with the passed parameters.
     public static func custom(
         errorHandler: @escaping DataStoreErrorHandler = { error in
@@ -115,7 +126,8 @@ extension DataStoreConfiguration {
         syncMaxRecords: UInt = DataStoreConfiguration.defaultSyncMaxRecords,
         syncPageSize: UInt = DataStoreConfiguration.defaultSyncPageSize,
         syncExpressions: [DataStoreSyncExpression] = [],
-        authModeStrategy: AuthModeStrategyType = .default
+        authModeStrategy: AuthModeStrategyType = .default,
+        loadingStrategy: DataStoreLoadingStrategy = .eagerLoad
     ) -> DataStoreConfiguration {
         return DataStoreConfiguration(errorHandler: errorHandler,
                                       conflictHandler: conflictHandler,
@@ -123,7 +135,8 @@ extension DataStoreConfiguration {
                                       syncMaxRecords: syncMaxRecords,
                                       syncPageSize: syncPageSize,
                                       syncExpressions: syncExpressions,
-                                      authModeStrategy: authModeStrategy)
+                                      authModeStrategy: authModeStrategy,
+                                      loadingStrategy: loadingStrategy)
     }
 
     /// The default configuration.

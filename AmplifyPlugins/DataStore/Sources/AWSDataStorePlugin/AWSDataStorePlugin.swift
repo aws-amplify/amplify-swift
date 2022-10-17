@@ -68,6 +68,13 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             iStorageEngineSink = newValue
         }
     }
+    
+    var isEagerLoad: Bool {
+        // TODO: We may want to remove the public config property all together and infer that data should be
+        // lazy loaded when the ModelRegistry contains models which uses the latest LazyModel
+        // or some sort of CLI version stored with the AmplifyModel class
+        dataStoreConfiguration.loadingStrategy == .eagerLoad ? true : false
+    }
 
     /// No-argument init that uses defaults for all providers
     public init(modelRegistration: AmplifyModelRegistration,
