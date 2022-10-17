@@ -1,0 +1,239 @@
+# This "input" configures a global authorization rule to enable public access to
+# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
+input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
+
+
+# 11 Explicit Bi-Directional Belongs to Relationship
+
+type Post4V2 @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String!
+  comments: [Comment4V2] @hasMany(indexName: "byPost4", fields: ["id"])
+}
+
+type Comment4V2 @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  postID: ID! @index(name: "byPost4", sortKeyFields: ["content"])
+  content: String!
+  post: Post4V2 @belongsTo(fields: ["postID"])
+}
+
+# 15
+# This is to address optional associations use case (Post can exist without a Blog)
+# See issue https://github.com/aws-amplify/amplify-ios/issues/1792 for more details
+
+type Blog8V2 @model {
+  id: ID!
+  name: String!
+  customs: [MyCustomModel8]
+  notes: [String]
+  posts: [Post8V2] @hasMany(indexName: "postByBlog", fields: ["id"])
+}
+
+type Post8V2 @model {
+  id: ID!
+  name: String!
+  blogId: ID @index(name: "postByBlog")
+  randomId: String @index(name: "byRandom")
+  blog: Blog8V2 @belongsTo(fields: ["blogId"])
+  comments: [Comment8V2] @hasMany(indexName: "commentByPost", fields: ["id"])
+}
+
+type Comment8V2 @model {
+  id: ID!
+  content: String
+  postId: ID @index(name: "commentByPost")
+  post: Post8V2 @belongsTo(fields: ["postId"])
+}
+
+type MyCustomModel8 {
+  id: ID!
+  name: String!
+  desc: String
+  children: [MyNestedModel8]
+}
+
+type MyNestedModel8 {
+  id: ID!
+  nestedName: String!
+  notes: [String]
+}
+
+# iOS.7. A Has-Many/Belongs-To relationship, each with a composite key
+# Post with `id` and `title`, Comment with `id` and `content`
+
+type PostWithCompositeKey @model {
+  id: ID! @primaryKey(sortKeyFields: ["title"])
+  title: String!
+  comments: [CommentWithCompositeKey] @hasMany
+}
+
+type CommentWithCompositeKey @model {
+  id: ID! @primaryKey(sortKeyFields: ["content"])
+  content: String!
+  post: PostWithCompositeKey @belongsTo
+}
+
+# iOS.8. A Many-To-Many relationship, each with a composite key
+# Post with `id` and `title`, Tag with `id` and `name`
+
+type PostWithTagsCompositeKey @model {
+  postId: ID! @primaryKey(sortKeyFields: ["title"])
+  title: String!
+  tags: [TagWithCompositeKey] @manyToMany(relationName: "PostTagsWithCompositeKey")
+}
+
+type TagWithCompositeKey @model {
+  id: ID! @primaryKey(sortKeyFields: ["name"])
+  name: String!
+  posts: [PostWithTagsCompositeKey] @manyToMany(relationName: "PostTagsWithCompositeKey")
+}
+
+# iOS.9. A Has-Many/Belongs-To relationship, with index
+# Post with `id` and `title`, Comment with `id`, `content`, and index on `postID` and `postTitle`
+
+type PostWithCompositeKeyAndIndex @model {
+  id: ID! @primaryKey(sortKeyFields: ["title"])
+  title: String!
+  comments: [CommentWithCompositeKeyAndIndex] @hasMany
+}
+
+type CommentWithCompositeKeyAndIndex @model {
+  id: ID! @primaryKey(sortKeyFields: ["content"])
+  content: String!
+  postID: ID @index(name: "byPost", sortKeyFields: ["postTitle"])
+  postTitle: String
+  post: PostWithCompositeKeyAndIndex @belongsTo(fields: ["postID", "postTitle"])
+}
+
+# CLI.1. Implicit Bi-directional Has One
+
+#type Project1 @model {
+#  projectId: ID! @primaryKey(sortKeyFields:["name"])
+#  name: String!
+#  team: Team1 @hasOne
+#}
+#type Team1 @model {
+#  teamId: ID! @primaryKey(sortKeyFields:["name"])
+#  name: String!
+#  project: Project1 @belongsTo
+#}
+
+# CLI.2. Implicit Uni-directional Has One
+
+type Project2 @model {
+  projectId: ID! @primaryKey(sortKeyFields:["name"])
+  name: String!
+  team: Team2 @hasOne
+}
+type Team2 @model {
+  teamId: ID! @primaryKey(sortKeyFields:["name"])
+  name: String!
+}
+
+# CLI.3. Implicit Bi-directional Has Many
+
+#type Post3 @model {
+#  postId: ID! @primaryKey(sortKeyFields:["title"])
+#  title: String!
+#  comments: [Comment3] @hasMany
+#}
+#type Comment3 @model {
+#  commentId: ID! @primaryKey(sortKeyFields:["content"])
+#  content: String!
+#  post: Post3 @belongsTo
+#}
+
+# CLI.4. Implicit Uni-directional Has Many
+
+type Post4 @model {
+  postId: ID! @primaryKey(sortKeyFields:["title"])
+  title: String!
+  comments: [Comment4] @hasMany
+}
+type Comment4 @model {
+  commentId: ID! @primaryKey(sortKeyFields:["content"])
+  content: String!
+}
+
+# CLI.5. Explicit Bi-directional Has One
+
+#type Project5 @model {
+#  projectId: ID! @primaryKey(sortKeyFields:["name"])
+#  name: String!
+#  team: Team5 @hasOne(fields:["teamId", "teamName"])
+#  teamId: ID # customized foreign key for child primary key
+#  teamName: String # customized foreign key for child sort key
+#}
+#type Team5 @model {
+#  teamId: ID! @primaryKey(sortKeyFields:["name"])
+#  name: String!
+#  project: Project5 @belongsTo(fields:["projectId", "projectName"])
+#  projectId: ID # customized foreign key for parent primary key
+#  projectName: String # customized foreign key for parent sort key
+#}
+
+# CLI.6. Explicit Uni-directional Has One
+
+type Project6 @model {
+  projectId: ID! @primaryKey(sortKeyFields:["name"])
+  name: String!
+  team: Team6 @hasOne(fields:["teamId", "teamName"])
+  teamId: ID # customized foreign key for child primary key
+  teamName: String # customized foreign key for child sort key
+}
+type Team6 @model {
+  teamId: ID! @primaryKey(sortKeyFields:["name"])
+  name: String!
+}
+
+# CLI.7. Explicit Bi-directional Has Many
+
+type Post7 @model {
+  postId: ID! @primaryKey(sortKeyFields:["title"])
+  title: String!
+  comments: [Comment7] @hasMany(indexName:"byPost", fields:["postId", "title"])
+}
+type Comment7 @model {
+  commentId: ID! @primaryKey(sortKeyFields:["content"])
+  content: String!
+  post: Post7 @belongsTo(fields:["postId", "postTitle"])
+  postId: ID @index(name: "byPost", sortKeyFields:["postTitle"]) # customized foreign key for parent primary key
+  postTitle: String # customized foreign key for parent sort key
+}
+
+# CLI.8. Explicit Uni-directional Has Many
+
+type Post8 @model {
+  postId: ID! @primaryKey(sortKeyFields:["title"])
+  title: String!
+  comments: [Comment8] @hasMany(indexName:"byPost", fields:["postId", "title"])
+}
+type Comment8 @model {
+  commentId: ID! @primaryKey(sortKeyFields:["content"])
+  content: String!
+  postId: ID @index(name: "byPost", sortKeyFields:["postTitle"]) # customized foreign key for parent primary key
+  postTitle: String # customized foreign key for parent sort key
+}
+
+# CLI.9. Many To Many
+
+#type Post9 @model {
+#    customPostId: ID! @primaryKey(sortKeyFields: ["title"])
+#    title: String!
+#    content: String
+#    tags: [Tag9] @manyToMany(relationName: "PostTags")
+#}
+#type Tag9 @model {
+#    customTagId: ID! @primaryKey(sortKeyFields: ["label"])
+#    label: String!
+#    posts: [Post9] @manyToMany(relationName: "PostTags")
+#}
+
+# CLI.10. Todo
+
+#type Book @model {
+#  isbn: ID! @primaryKey(sortKeyFields: ["title"])
+#  title: String!
+#  description: String
+#}
