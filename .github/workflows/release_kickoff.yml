@@ -1,5 +1,5 @@
 # Creates a PR to push main to release branch to kick-off the CircleCI release workflow
-name: Release Amplify iOS 
+name: Release Amplify iOS V1+
 
 on:
   workflow_dispatch:
@@ -18,4 +18,4 @@ jobs:
       - name: Create PR to push main to release branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: "gh pr create --title 'chore: kickoff release' --body 'kickoff release' --head main --base release"
+        run: "gh pr create --title 'chore: kickoff v1 release' --body 'kickoff v1 release' --head v1 --base release-v1"

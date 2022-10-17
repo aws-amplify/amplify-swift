@@ -1,6 +1,6 @@
 module: Amplify
 author: Amazon Web Services
-github_url: https://github.com/aws-amplify/amplify-ios
+github_url: https://github.com/aws-amplify/amplify-swift
 
 exclude:
   - Pods

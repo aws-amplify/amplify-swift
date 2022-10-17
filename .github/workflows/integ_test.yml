@@ -1,7 +1,7 @@
 name: Integration Tests
 on:
   push:
-    branches: [main]
+    branches: [v1]
 
 permissions:
     id-token: write
@@ -38,7 +38,7 @@ jobs:
           persist-credentials: false
 
       - name: Make directory
-        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+        run: mkdir -p ~/.aws-amplify/amplify-swift/testconfiguration/
 
       - name: Copy integration test resouces
         uses: ./.github/composite_actions/download_test_configuration
@@ -66,7 +66,7 @@ jobs:
           persist-credentials: false
 
       - name: Make directory
-        run: mkdir -p ~/.aws-amplify/amplify-ios/testconfiguration/
+        run: mkdir -p ~/.aws-amplify/amplify-swift/testconfiguration/
 
       - name: Copy integration test resouces
         uses: ./.github/composite_actions/download_test_configuration

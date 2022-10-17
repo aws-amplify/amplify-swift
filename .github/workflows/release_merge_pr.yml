@@ -1,5 +1,5 @@
 # Validates and merges release PRs after they have been approved. 
-name: Merge Release PR
+name: Merge V1 Release PR
 
 on:
   pull_request_review:
@@ -14,7 +14,7 @@ jobs:
   check:
     name: Validate and Merge PR
     runs-on: ubuntu-latest      
-    if: "${{ github.event.pull_request.base.ref == 'release' && github.event.pull_request.head.ref == 'main' && github.event.pull_request.title == 'chore: kickoff release' && github.event.review.state == 'approved' }}"
+    if: "${{ github.event.pull_request.base.ref == 'release-v1' && github.event.pull_request.head.ref == 'v1' && github.event.pull_request.title == 'chore: kickoff v1 release' && github.event.review.state == 'approved' }}"
     
     steps:
       - name: Merge PR
