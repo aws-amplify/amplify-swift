@@ -23,26 +23,21 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
             let task = try await Amplify.Storage.uploadData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
 
             let didPause = asyncExpectation(description: "did pause")
-            let didContinue = asyncExpectation(description: "did continue", isInverted: true)
+            let didFinish = asyncExpectation(description: "did finish", isInverted: true)
             Task {
                 var paused = false
-                var progressAfterPause = 0
                 for await progress in await task.progress {
-                    Self.logger.debug("progress: \(progress)")
-                    if !paused {
+                    if !paused, progress.fractionCompleted > 0.0 {
                         paused = true
                         task.pause()
                         await didPause.fulfill()
-                    } else {
-                        progressAfterPause += 1
-                        if progressAfterPause > 1 {
-                            await didContinue.fulfill()
-                        }
+                    } else if paused, progress.isFinished {
+                        await didFinish.fulfill()
                     }
                 }
             }
             await waitForExpectations([didPause], timeout: TestCommonConstants.networkTimeout)
-            await waitForExpectations([didContinue], timeout: 5)
+            await waitForExpectations([didFinish], timeout: 5)
 
             let completeInvoked = asyncExpectation(description: "Upload is completed", isInverted: true)
             let uploadTask = Task {
