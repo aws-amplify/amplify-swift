@@ -5,13 +5,13 @@ AWS Amplify provides a declarative and easy-to-use interface across different ca
 
 The Amplify Library for Swift is layered on the [AWS SDK for Swift](https://aws.amazon.com/sdk-for-swift/), which was released as Developer Preview last year. This allows for access to the AWS SDK for Swift for a breadth of service-centric APIs.
 
-We deeply appreciate your feedback on this Developer Preview as we work towards our General Availability launch: [GitHub Discussion](https://github.com/aws-amplify/amplify-ios/discussions/categories/developer-preview) or [File a Bug Report](https://github.com/aws-amplify/amplify-ios/issues/new/choose).
+We deeply appreciate your feedback on this Developer Preview as we work towards our General Availability launch: [GitHub Discussion](https://github.com/aws-amplify/amplify-swift/discussions/categories/developer-preview) or [File a Bug Report](https://github.com/aws-amplify/amplify-swift/issues/new/choose).
 
 [**API Documentation**](https://aws-amplify.github.io/amplify-ios/docs/)
 
 [**Getting Started Guide**](https://docs.amplify.aws/start/q/integration/ios)
 
-[![CircleCI](https://circleci.com/gh/aws-amplify/amplify-ios.svg?style=shield)](https://circleci.com/gh/aws-amplify/amplify-ios)
+[![CircleCI](https://circleci.com/gh/aws-amplify/amplify-swift.svg?style=shield)](https://circleci.com/gh/aws-amplify/amplify-swift)
 [![Discord](https://img.shields.io/discord/308323056592486420?logo=discord)](https://discord.gg/jWVbPfC)
 
 ## Features/APIs
@@ -65,7 +65,7 @@ Amplify requires Xcode 13.4 or higher to build.
 
     ![Add package dependency](readme-images/spm-setup-01-add-package.png)
 
-1. Enter the Amplify Library for Swift GitHub repo URL (`https://github.com/aws-amplify/amplify-ios`) into the search bar.
+1. Enter the Amplify Library for Swift GitHub repo URL (`https://github.com/aws-amplify/amplify-swift`) into the search bar.
 
 1. You'll see the Amplify Library for Swift repository rules for which version of Amplify you want Swift Package Manager to install. Choose **Up to Next Major Version** for the Dependency Rule, then click **Add Package**.
 
@@ -120,14 +120,14 @@ Amplify requires Xcode 13.4 or higher to build.
 
 ## Reporting Bugs/Feature Requests
 
-[![Open Bugs](https://img.shields.io/github/issues/aws-amplify/amplify-ios/bug?color=d73a4a&label=bugs)](https://github.com/aws-amplify/amplify-ios/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
-[![Open Questions](https://img.shields.io/github/issues/aws-amplify/amplify-ios/question?color=558dfd&label=questions)](https://github.com/aws-amplify/amplify-ios/issues?q=is%3Aissue+label%3A%22question%22+is%3Aopen+)
-[![Feature Requests](https://img.shields.io/github/issues/aws-amplify/amplify-ios/feature-request?color=ff9001&label=feature%20requests)](https://github.com/aws-amplify/amplify-ios/issues?q=is%3Aissue+label%3A%22feature-request%22+is%3Aopen+)
-[![Closed Issues](https://img.shields.io/github/issues-closed/aws-amplify/amplify-ios?color=%2325CC00)](https://github.com/aws-amplify/amplify-ios/issues?q=is%3Aissue+is%3Aclosed+)
+[![Open Bugs](https://img.shields.io/github/issues/aws-amplify/amplify-swift/bug?color=d73a4a&label=bugs)](https://github.com/aws-amplify/amplify-swift/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
+[![Open Questions](https://img.shields.io/github/issues/aws-amplify/amplify-swift/question?color=558dfd&label=questions)](https://github.com/aws-amplify/amplify-swift/issues?q=is%3Aissue+label%3A%22question%22+is%3Aopen+)
+[![Feature Requests](https://img.shields.io/github/issues/aws-amplify/amplify-swift/feature-request?color=ff9001&label=feature%20requests)](https://github.com/aws-amplify/amplify-swift/issues?q=is%3Aissue+label%3A%22feature-request%22+is%3Aopen+)
+[![Closed Issues](https://img.shields.io/github/issues-closed/aws-amplify/amplify-swift?color=%2325CC00)](https://github.com/aws-amplify/amplify-swift/issues?q=is%3Aissue+is%3Aclosed+)
 
 We welcome you to use the GitHub issue tracker to report bugs or suggest features.
 
-When filing an issue, please check [existing open](https://github.com/aws-amplify/amplify-ios/issues), or [recently closed](https://github.com/aws-amplify/amplify-ios/issues?utf8=%E2%9C%93&q=is%3Aissue%20is%3Aclosed%20), issues to make sure somebody else hasn't already
+When filing an issue, please check [existing open](https://github.com/aws-amplify/amplify-swift/issues), or [recently closed](https://github.com/aws-amplify/amplify-swift/issues?utf8=%E2%9C%93&q=is%3Aissue%20is%3Aclosed%20), issues to make sure somebody else hasn't already
 reported the issue. Please try to include as much information as you can. Details like these are incredibly useful:
 
 * Expected behavior and observed behavior
