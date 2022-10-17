@@ -438,7 +438,7 @@ workflows:
           filters:
             branches:
               only:
-                - release
+                - release-v1
       - generate_api_docs:
           name: Generate api documentation
           requires:
@@ -446,7 +446,7 @@ workflows:
           filters:
             branches:
               only:
-                - release
+                - release-v1
 
   # Scheduled smoke test workflow
   # Jobs are pulled from the getting-started-smoke-test inline orb defined below

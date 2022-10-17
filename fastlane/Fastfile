@@ -85,7 +85,7 @@ platform :ios do
     sh('git', 'commit', '-am', commit_message)
 
     # push to origin
-    sh('git', 'push', 'origin', 'release')
+    sh('git', 'push', 'origin', 'release-v1')
   end
   
   desc "Tag in git and push to GitHub"
@@ -149,8 +149,8 @@ platform :ios do
     push_git_tags(tag: tag, force: true)
 
     # push to origin
-    sh('git', 'push', 'origin', 'release')
-    sh('git', 'push', 'origin', 'release:main')
+    sh('git', 'push', 'origin', 'release-v1')
+    sh('git', 'push', 'origin', 'release-v1:v1')
   end
 end
 
