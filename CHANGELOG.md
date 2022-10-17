@@ -1,6 +1,34 @@
 # Changelog
 
 ## Unreleased
+
+## 2.0.0 (2022-10-17)
+
+### Breaking Changes
+- **Core**: 
+    - Updated all public apis to use the latest Swift concurrency features (Async/Await)
+    - Removed dependency from aws-sdk-ios from all plugins
+    - Cocoapods support is removed from v2.0.0
+
+- **Analytics**: 
+    - `identifyUser(:withProfile:)` has been renamed to `identifyUser(userId:userProfile:)`
+    - Removed support for different Analytics and Targeting regions
+    
+- **Predictions**:
+    - Predictions plugin is currently unavailable for this version
+    
+### Features
+- **Auth**: 
+    - Escape hatch apis for federation to Cognito Identity Pool
+    - Custom auth flow now support without SRP flow
+    - Supports user migration flow
+
+- **Analytics**: 
+    - Pinpoint APIs available through the escape hatch
+
+- **Storage**:
+    - Migrated storage plugin from TransferUtility
+
 ## 1.27.1 (2022-07-22)
 ### Bug Fixes
 - **Auth:** Mapping correct error when Device Operations fail due to user not signed in (#2023).
