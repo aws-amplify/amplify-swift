@@ -6,7 +6,7 @@ As part of the latest version of Amplify Library for Swift, we have re-written o
 
 All our APIs have been refactored to follow the async/await structured concurrency pattern. The following is an example of how you would implement Sign-In for your authentication flows:
 
-v1 - Callback api
+v1 - Callback API
 
 ```
 func signIn(username: String, password: String) {
