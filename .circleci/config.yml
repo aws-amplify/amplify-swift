@@ -243,7 +243,8 @@ jobs:
 
 deploy_requires: &deploy_requires
   requires:
-    - build_amplify_spm
+    - build_amplify_ios_spm
+    - build_amplify_macos_spm
     - ios_unit_test_amplify
     - ios_unit_test_awspluginscore
     - ios_unit_test_analytics
