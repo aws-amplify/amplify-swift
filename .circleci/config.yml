@@ -430,7 +430,7 @@ workflows:
           filters:
             branches:
               only:
-                - main
+                - v1
       - deploy:
           name: deploy stable
           lane: release
