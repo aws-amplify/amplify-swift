@@ -99,7 +99,7 @@ orbs:
 defaults: &defaults
   macos:
     xcode: '14.0.0'
-  working_directory: ~/amplify-ios
+  working_directory: ~/amplify-swift
   environment:
     BUNDLE_PATH: vendor/bundle
 
@@ -119,7 +119,7 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - v2-gems-{{ checksum "~/amplify-ios/Gemfile.lock" }}
+            - v2-gems-{{ checksum "~/amplify-swift/Gemfile.lock" }}
             - v2-gems-
 
   check_bundle:
@@ -148,7 +148,7 @@ jobs:
       - save_cache:
           key: *repo_cache_key
           paths:
-            - ~/amplify-ios
+            - ~/amplify-swift
 
   install_gems:
     <<: *defaults
@@ -162,7 +162,7 @@ jobs:
             BUNDLE_JOBS: 4
             BUNDLE_RETRY: 3
       - save_cache:
-          key: v2-gems-{{ checksum "~/amplify-ios/Gemfile.lock" }}
+          key: v2-gems-{{ checksum "~/amplify-swift/Gemfile.lock" }}
           paths:
             - vendor/bundle
 
@@ -207,7 +207,7 @@ jobs:
           command: xcodebuild test -scheme <<parameters.scheme>> -sdk << parameters.sdk >> -destination "<<parameters.destination>>"  | tee "artifacts/test-<< parameters.scheme >>-<< parameters.sdk >>.log" | xcpretty --simple --color --report junit
       - run:
           name: Upload << parameters.scheme >> coverage report to Codecov
-          command: bash ~/amplify-ios/build-support/codecov.sh -F << parameters.scheme >>_unit_test -J '^<< parameters.scheme >>$'
+          command: bash ~/amplify-swift/build-support/codecov.sh -F << parameters.scheme >>_unit_test -J '^<< parameters.scheme >>$'
       - store_test_results:
           path: build/reports
       - upload_artifacts
@@ -220,7 +220,7 @@ jobs:
       - check_bundle
       - run:
           name: Jazzy API doc generation
-          command: bash ~/amplify-ios/CircleciScripts/jazzy_doc_gen.sh
+          command: bash ~/amplify-swift/CircleciScripts/jazzy_doc_gen.sh
 
   deploy:
     <<: *defaults
