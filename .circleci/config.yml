@@ -306,16 +306,6 @@ jobs:
           path: build/reports
       - upload_artifacts
 
-  generate_api_docs:
-    <<: *defaults
-    steps:
-      - *restore_repo
-      - restore_gems
-      - check_bundle
-      - run:
-          name: Jazzy API doc generation
-          command: bash ~/amplify-swift/CircleciScripts/jazzy_doc_gen.sh
-
   deploy:
     <<: *defaults
     parameters:
@@ -435,14 +425,6 @@ workflows:
           name: deploy stable
           lane: release
           <<: *deploy_requires
-          filters:
-            branches:
-              only:
-                - release-v1
-      - generate_api_docs:
-          name: Generate api documentation
-          requires:
-            - deploy stable
           filters:
             branches:
               only:
