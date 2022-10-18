@@ -107,7 +107,7 @@ orbs:
 defaults: &defaults
   macos:
     xcode: '13.3.0'
-  working_directory: ~/amplify-ios
+  working_directory: ~/amplify-swift
   environment:
     BUNDLE_PATH: vendor/bundle
 
@@ -121,7 +121,7 @@ references:
         - v2-repo-{{ .Branch }}
         - v2-repo
 
-  pods_cache_key: &pods_cache_key v3-dependency-pods-{{ checksum "~/amplify-ios/Podfile" }}
+  pods_cache_key: &pods_cache_key v3-dependency-pods-{{ checksum "~/amplify-swift/Podfile" }}
 
   pods_backup_cache_key: &pods_backup_cache_key v3-dependency-pods
 
@@ -140,13 +140,13 @@ commands:
     steps:
       - run:
           name: Pre-start simulator
-          command: bash ~/amplify-ios/CircleciScripts/pre_start_simulator.sh
+          command: bash ~/amplify-swift/CircleciScripts/pre_start_simulator.sh
 
   restore_gems:
     steps:
       - restore_cache:
           keys:
-            - v2-gems-{{ checksum "~/amplify-ios/Gemfile.lock" }}
+            - v2-gems-{{ checksum "~/amplify-swift/Gemfile.lock" }}
             - v2-gems-
 
   check_bundle:
@@ -196,7 +196,7 @@ jobs:
       - save_cache:
           key: *repo_cache_key
           paths:
-            - ~/amplify-ios
+            - ~/amplify-swift
 
   install_gems:
     <<: *defaults
@@ -210,7 +210,7 @@ jobs:
             BUNDLE_JOBS: 4
             BUNDLE_RETRY: 3
       - save_cache:
-          key: v2-gems-{{ checksum "~/amplify-ios/Gemfile.lock" }}
+          key: v2-gems-{{ checksum "~/amplify-swift/Gemfile.lock" }}
           paths:
             - vendor/bundle
 
@@ -231,14 +231,14 @@ jobs:
           command: xcodebuild test -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}" | tee "artifacts/test-Amplify.log" | xcpretty --simple --color --report junit
       - run:
           name: Upload coverage report to Codecov
-          command: bash ~/amplify-ios/build-support/codecov.sh -F 'Amplify' -J '^Amplify$'
+          command: bash ~/amplify-swift/build-support/codecov.sh -F 'Amplify' -J '^Amplify$'
       - store_test_results:
           path: build/reports
       - upload_artifacts
 
   build_amplify_spm:
     <<: *defaults
-    working_directory: ~/amplify-ios/.swiftpm/xcode
+    working_directory: ~/amplify-swift/.swiftpm/xcode
     steps:
       - *restore_repo
       - pre_start_simulator
@@ -266,7 +266,7 @@ jobs:
           command: xcodebuild test -workspace Amplify.xcworkspace -scheme AWSPluginsCore -sdk iphonesimulator -destination "${destination}" | tee "artifacts/test-AWSPluginsCore.log" | xcpretty --simple --color --report junit
       - run:
           name: Upload coverage report to Codecov
-          command: bash ~/amplify-ios/build-support/codecov.sh -F 'AWSPluginsCore' -J '^AWSPluginsCore$'
+          command: bash ~/amplify-swift/build-support/codecov.sh -F 'AWSPluginsCore' -J '^AWSPluginsCore$'
       - store_test_results:
           path: build/reports
       - upload_artifacts
@@ -280,7 +280,7 @@ jobs:
         type: string
       scheme:
         type: string
-    working_directory: ~/amplify-ios/AmplifyPlugins/<< parameters.path >>
+    working_directory: ~/amplify-swift/AmplifyPlugins/<< parameters.path >>
     description: << parameters.path >> unit test
     steps:
       - *restore_repo
@@ -301,7 +301,7 @@ jobs:
           command: xcodebuild test -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}" | tee "artifacts/test-<< parameters.scheme >>.log" | xcpretty --simple --color --report junit
       - run:
           name: Upload << parameters.path >> coverage report to Codecov
-          command: bash ~/amplify-ios/build-support/codecov.sh -F << parameters.path >>_plugin_unit_test -J '^<< parameters.scheme >>$'
+          command: bash ~/amplify-swift/build-support/codecov.sh -F << parameters.path >>_plugin_unit_test -J '^<< parameters.scheme >>$'
       - store_test_results:
           path: build/reports
       - upload_artifacts
@@ -314,7 +314,7 @@ jobs:
       - check_bundle
       - run:
           name: Jazzy API doc generation
-          command: bash ~/amplify-ios/CircleciScripts/jazzy_doc_gen.sh
+          command: bash ~/amplify-swift/CircleciScripts/jazzy_doc_gen.sh
 
   deploy:
     <<: *defaults
