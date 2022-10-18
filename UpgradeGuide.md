@@ -51,7 +51,7 @@ Currently, we do not have an upgrade plan for predictions APIs. We will keep thi
 With Amplify Library for Swift, we have also changed the way you access the underlying SDK. You now have access to the AWS SDK for Swift and the following is an example on how you would SDK calls via Amplify.
 
 ```swift
-import AWSPinpointAnalyticsPlugin`
+import AWSPinpointAnalyticsPlugin
 
 do {
     // Retrieve the reference to AWSPinpointAnalyticsPlugin
