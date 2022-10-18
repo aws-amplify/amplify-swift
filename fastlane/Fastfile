@@ -1,8 +1,6 @@
 opt_out_usage
 default_platform(:ios)
 
-PLIST_KEY = "CFBundleShortVersionString"
-
 platform :ios do
   before_all do 
     # Perform a fetch before inferring the next version 
@@ -78,7 +76,6 @@ platform :ios do
     version = options[:version].to_s
     changelog = options[:changelog]
     tag = "v#{version}"
-    plugin_root = File.expand_path("#{ENV['CIRCLE_WORKING_DIRECTORY']}/AmplifyPlugins")
   
     sh('bundle', 'exec', 'swift', 'package', 'update')
 
@@ -93,17 +90,5 @@ platform :ios do
     # push to origin
     sh('git', 'push', 'origin', 'release')
     sh('git', 'push', 'origin', 'release:main')
-  end
-end
-
-def with_retry(retries=5, wait=60)
-  begin
-    yield
-  rescue StandardError => e
-    retries -= 1
-    raise e if retries.zero?
-      UI.error("Error occurred: #{e}; retrying...")
-      sleep(wait)
-    retry
   end
 end

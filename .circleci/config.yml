@@ -228,7 +228,7 @@ jobs:
       lane:
         type: string
         default: 'unstable'
-    description: deploy pods to trunk
+    description: deploy new release
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -237,7 +237,7 @@ jobs:
       - restore_gems
       - check_bundle
       - run:
-          name: Release pods
+          name: Release Amplify for Swift
           command: bundle exec fastlane << parameters.lane >>
           no_output_timeout: 60m
 
@@ -389,7 +389,13 @@ workflows:
           destination: << pipeline.parameters.macos-destination >>
           requires:
             - build_amplify_macos_spm
-      
+      - deploy:
+          name: deploy unstable
+          <<: *deploy_requires
+          filters:
+            branches:
+              only:
+                - main 
 
   # Scheduled smoke test workflow
   # Jobs are pulled from the getting-started-smoke-test inline orb defined below
