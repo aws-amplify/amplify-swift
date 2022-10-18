@@ -8,7 +8,7 @@ All our APIs have been refactored to follow the async/await structured concurren
 
 v1 - Callback API
 
-```
+```swift
 func signIn(username: String, password: String) {
     Amplify.Auth.signIn(username: username, password: password) { result in
         switch result {
@@ -23,7 +23,7 @@ func signIn(username: String, password: String) {
 
 v2 - Async/Await
 
-```
+```swift
 func signIn(username: String, password: String) async throws {
     let signInResult = try await Amplify.Auth.signIn(
         username: username, 
@@ -50,8 +50,8 @@ Currently, we do not have an upgrade plan for predictions APIs. We will keep thi
 
 With Amplify Library for Swift, we have also changed the way you access the underlying SDK. You now have access to the AWS SDK for Swift and the following is an example on how you would SDK calls via Amplify.
 
-```
-`import AWSPinpointAnalyticsPlugin`
+```swift
+import AWSPinpointAnalyticsPlugin`
 
 do {
     // Retrieve the reference to AWSPinpointAnalyticsPlugin
