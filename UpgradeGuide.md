@@ -40,7 +40,7 @@ func signIn(username: String, password: String) async throws {
 Support for combine apis was also changed in the v2. You can read more about the changes in the dedicated doc here - 
 https://github.com/aws-amplify/amplify-swift/blob/main/README-combine-support.md
 
-For detailed definitions of all the Amplify features available in this version, please refer to o[ur latest v2 documentation](https://docs.amplify.aws/lib/q/platform/ios/).
+For detailed definitions of all the Amplify features available in this version, please refer to [our latest v2 documentation](https://docs.amplify.aws/lib/q/platform/ios/).
 
 ### Predictions
 
