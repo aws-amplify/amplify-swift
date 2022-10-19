@@ -72,4 +72,20 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
     func clearDataStore() async throws {
         try await Amplify.DataStore.clear()
     }
+    
+    func saveAndWaitForSync<M: Model>(_ model: M) async throws -> M {
+        let modelSynced = asyncExpectation(description: "model was synced successfully")
+        let mutationEvents = Amplify.DataStore.observe(M.self)
+        Task {
+            for try await mutationEvent in mutationEvents {
+                if mutationEvent.version == 1 && mutationEvent.modelId == model.identifier {
+                    await modelSynced.fulfill()
+                }
+            }
+            
+        }
+        let savedModel = try await Amplify.DataStore.save(model)
+        await waitForExpectations([modelSynced], timeout: 10)
+        return savedModel
+    }
 }
