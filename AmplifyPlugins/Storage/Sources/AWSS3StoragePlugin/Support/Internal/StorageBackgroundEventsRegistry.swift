@@ -7,15 +7,22 @@
 
 import Foundation
 
+extension Notification.Name {
+    static let StorageBackgroundEventsRegistryWaiting = Notification.Name("StorageBackgroundEventsRegistryWaiting")
+}
+
 /// Background events registry.
 ///
 /// Discussion:
 ///    Multiple URLSession instances could be running background events with their own unique identifier. Those can be run
 ///    independently of the Amplify Storage plugin and this function will indiciate if it will handle the given identifier.
-class StorageBackgroundEventsRegistry {
+actor StorageBackgroundEventsRegistry {
     typealias StorageBackgroundEventsContinuation = CheckedContinuation<Bool, Never>
     static var identifier: String?
     static var continuation: StorageBackgroundEventsContinuation?
+
+    // override for use with unit tests
+    static var notificationCenter: NotificationCenter?
 
     /// Handles background events for URLSession on iOS.
     /// - Parameters:
@@ -27,10 +34,17 @@ class StorageBackgroundEventsRegistry {
 
         return await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
             self.continuation = continuation
+            notifyWaiting(for: identifier)
         }
     }
 
-    // MARK: - Internal -
+    /// Notifies observes when waiting for continuation to be resumed.
+    /// - Parameters:
+    ///   - identifier: session identifier
+    private static func notifyWaiting(for identifier: String) {
+        let notificationCenter = notificationCenter ?? NotificationCenter.default
+        notificationCenter.post(name: Notification.Name.StorageBackgroundEventsRegistryWaiting, object: identifier)
+    }
 
     // The storage plugin will register the session identifier when it is configured.
     static func register(identifier: String) {

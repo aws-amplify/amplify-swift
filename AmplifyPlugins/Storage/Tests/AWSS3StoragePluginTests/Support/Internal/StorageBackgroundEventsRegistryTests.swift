@@ -18,7 +18,25 @@ class StorageBackgroundEventsRegistryTests: XCTestCase {
         let otherIdentifier = UUID().uuidString
         StorageBackgroundEventsRegistry.register(identifier: identifier)
 
-        let done = asyncExpectation(description: "done", expectedFulfillmentCount: 2)
+        let notificationCenter = NotificationCenter()
+        StorageBackgroundEventsRegistry.notificationCenter = notificationCenter
+        defer {
+            StorageBackgroundEventsRegistry.notificationCenter = nil
+        }
+
+        let done = asyncExpectation(description: "done")
+        let waiting = asyncExpectation(description: "waiting")
+
+        notificationCenter.addObserver(forName: Notification.Name.StorageBackgroundEventsRegistryWaiting, object: nil, queue: nil) { notification in
+            guard let notificationIdentifier = notification.object as? String else {
+                XCTFail("Identifier not defined")
+                return
+            }
+            XCTAssertEqual(notificationIdentifier, identifier)
+            Task {
+                await waiting.fulfill()
+            }
+        }
 
         Task {
             let handled = await StorageBackgroundEventsRegistry.handleEventsForBackgroundURLSession(identifier: identifier)
@@ -26,16 +44,23 @@ class StorageBackgroundEventsRegistryTests: XCTestCase {
             XCTAssertTrue(handled)
         }
 
+        await waitForExpectations([waiting])
+
+        let didContinue = await handleEvents(for: identifier)
+        XCTAssertTrue(didContinue)
+        await waitForExpectations([done])
+
+        let otherDone = asyncExpectation(description: "other done")
+
         Task {
             let otherHandled = await StorageBackgroundEventsRegistry.handleEventsForBackgroundURLSession(identifier: otherIdentifier)
-            await done.fulfill()
+            await otherDone.fulfill()
             XCTAssertFalse(otherHandled)
         }
 
-        handleEvents(for: identifier)
-        handleEvents(for: otherIdentifier)
-
-        await waitForExpectations([done])
+        let didNotContinue = await handleEvents(for: otherIdentifier)
+        XCTAssertFalse(didNotContinue)
+        await waitForExpectations([otherDone])
     }
 
     func testHandlingUnregisteredIdentifier() async throws {
@@ -55,10 +80,16 @@ class StorageBackgroundEventsRegistryTests: XCTestCase {
     }
 
     // Simulates URLSessionDelegate behavior
-    func handleEvents(for identifier: String) {
+    func handleEvents(for identifier: String) async -> Bool {
+        await Task.yield()
+
         if let continuation = StorageBackgroundEventsRegistry.getContinuation(for: identifier) {
             continuation.resume(returning: true)
             StorageBackgroundEventsRegistry.removeContinuation(for: identifier)
+            return true
+        } else {
+            print("No continuation for identifier: \(identifier)")
+            return false
         }
     }
 
