@@ -34,9 +34,14 @@ extension AWSLocationGeoPlugin {
 
         let location = LocationClient(config: serviceConfiguration)
         let locationService = AWSLocationAdapter(location: location)
+        
+        let locationFileSystem = LocationFileSystem()
+        let sqliteAdapter = try SQLiteLocationPersistenceAdapter(fileSystemBehavior: locationFileSystem)
+        let locationStore = AWSLocationStoreAdapter(locationPersistenceBehavior: sqliteAdapter)
 
         configure(locationService: locationService,
                   authService: authService,
+                  locationStore: locationStore,
                   pluginConfig: configuration)
     }
 
@@ -52,9 +57,11 @@ extension AWSLocationGeoPlugin {
     ///   - pluginConfig: The configuration for the plugin.
     func configure(locationService: AWSLocationBehavior,
                    authService: AWSAuthServiceBehavior,
+                   locationStore: AWSLocationStoreBehavior,
                    pluginConfig: AWSLocationGeoPluginConfiguration) {
         self.locationService = locationService
         self.authService = authService
+        self.locationStore = locationStore
         self.pluginConfig = pluginConfig
     }
 }

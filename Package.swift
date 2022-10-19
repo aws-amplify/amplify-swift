@@ -6,7 +6,7 @@ let platforms: [SupportedPlatform] = [.iOS(.v13), .macOS(.v10_15)]
 let dependencies: [Package.Dependency] = [
     .package(url: "https://github.com/awslabs/aws-sdk-swift.git", exact: "0.2.6"),
     .package(url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git", from: "2.1.1"),
-    .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.12.2"),
+    .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.13.2"),
     .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0")
 ]
 let swiftSettings: [SwiftSetting]? = [.define("DEV_PREVIEW_BUILD")]
@@ -249,7 +249,8 @@ let geoTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
-            .product(name: "AWSLocation", package: "aws-sdk-swift")],
+            .product(name: "AWSLocation", package: "aws-sdk-swift"),
+            .product(name: "SQLite", package: "SQLite.swift")],
         path: "AmplifyPlugins/Geo/AWSLocationGeoPlugin",
         exclude: [
             "Resources/Info.plist"
