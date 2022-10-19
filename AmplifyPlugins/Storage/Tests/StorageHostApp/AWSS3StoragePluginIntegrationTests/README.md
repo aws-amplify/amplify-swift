@@ -32,8 +32,6 @@ How do you want users to be able to sign in?
 Do you want to add User Pool Groups? 
     No
 Do you want to add an admin queries API? 
-    Yes
-Do you want to restrict access to the admin queries API to a specific Group 
     No
 Multifactor authentication (MFA) user login options: 
     OFF
