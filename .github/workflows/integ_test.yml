@@ -1,7 +1,7 @@
 name: Integration Tests
 on:
   push:
-    branches: [royjit.v2authinteg]
+    branches: [main]
 
 permissions:
     id-token: write
