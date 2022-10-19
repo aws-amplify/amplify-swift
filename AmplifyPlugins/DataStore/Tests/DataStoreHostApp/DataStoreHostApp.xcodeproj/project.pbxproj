@@ -217,6 +217,7 @@
 		21801D3329006DB500FFA37E /* Team5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D3129006DB500FFA37E /* Team5.swift */; };
 		21801D3629006DC200FFA37E /* Project5+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D3429006DC000FFA37E /* Project5+Schema.swift */; };
 		21801D3729006DC200FFA37E /* Project5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D3529006DC200FFA37E /* Project5.swift */; };
+		21801D3E2900A10600FFA37E /* AWSDataStoreLazyLoadProjectTeam1Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D3D2900A10600FFA37E /* AWSDataStoreLazyLoadProjectTeam1Tests.swift */; };
 		219253BE28BFE84100820737 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 219253BD28BFE84000820737 /* XCTest.framework */; };
 		21977DBF289C171A005B49D6 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977DBE289C1719005B49D6 /* TestConfigHelper.swift */; };
 		219B518528E3A4B00080EDCC /* DataStoreConnectionOptionalAssociations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA00289BFE3400B32A39 /* DataStoreConnectionOptionalAssociations.swift */; };
@@ -779,6 +780,7 @@
 		21801D3129006DB500FFA37E /* Team5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team5.swift; sourceTree = "<group>"; };
 		21801D3429006DC000FFA37E /* Project5+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project5+Schema.swift"; sourceTree = "<group>"; };
 		21801D3529006DC200FFA37E /* Project5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project5.swift; sourceTree = "<group>"; };
+		21801D3D2900A10600FFA37E /* AWSDataStoreLazyLoadProjectTeam1Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreLazyLoadProjectTeam1Tests.swift; sourceTree = "<group>"; };
 		219253BD28BFE84000820737 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		21977D84289C1633005B49D6 /* primarykey_schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = primarykey_schema.graphql; sourceTree = "<group>"; };
 		21977DBE289C1719005B49D6 /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
@@ -1422,6 +1424,7 @@
 			children = (
 				21801D3C2900730B00FFA37E /* LL1 */,
 				21801D3A29006F8600FFA37E /* LL3 */,
+				21801D3829006F7500FFA37E /* LL5 */,
 				21801CA228F9A78F00FFA37E /* Models */,
 				21801C8628F9A37F00FFA37E /* TestConfigHelper.swift */,
 				21801C8528F9A36D00FFA37E /* lazyload-schema.graphql */,
@@ -1448,7 +1451,6 @@
 				21801CCF28F9A86800FFA37E /* CommentWithCompositeKeyAndIndex.swift */,
 				21801CBF28F9A86700FFA37E /* CommentWithCompositeKeyAndIndex+Schema.swift */,
 				21801D3929006F7E00FFA37E /* LL2 */,
-				21801D3829006F7500FFA37E /* LL5 */,
 				21801D3B2900709200FFA37E /* LL8 */,
 				21801CCC28F9A86800FFA37E /* MyCustomModel8.swift */,
 				21801CAE28F9A86600FFA37E /* MyCustomModel8+Schema.swift */,
@@ -1485,6 +1487,7 @@
 		21801D3829006F7500FFA37E /* LL5 */ = {
 			isa = PBXGroup;
 			children = (
+				21801D3D2900A10600FFA37E /* AWSDataStoreLazyLoadProjectTeam1Tests.swift */,
 				21801D2829006DA100FFA37E /* Project1.swift */,
 				21801D2929006DA300FFA37E /* Project1+Schema.swift */,
 				21801D2D29006DA800FFA37E /* Team1.swift */,
@@ -3126,6 +3129,7 @@
 				21801CE428F9A86800FFA37E /* Blog8V2.swift in Sources */,
 				21801D3629006DC200FFA37E /* Project5+Schema.swift in Sources */,
 				21801CE028F9A86800FFA37E /* Post8V2.swift in Sources */,
+				21801D3E2900A10600FFA37E /* AWSDataStoreLazyLoadProjectTeam1Tests.swift in Sources */,
 				21801C7D28F9A22900FFA37E /* AWSDataStoreLazyLoadBaseTest.swift in Sources */,
 				21801CFF28F9A86800FFA37E /* Team2.swift in Sources */,
 				21801D0228F9A86800FFA37E /* Comment8+Schema.swift in Sources */,

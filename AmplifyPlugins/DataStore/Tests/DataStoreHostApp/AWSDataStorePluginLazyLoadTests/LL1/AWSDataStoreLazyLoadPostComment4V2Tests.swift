@@ -168,7 +168,6 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
     }
 }
 
-
 extension AWSDataStoreLazyLoadPostComment4V2Tests {
     struct PostComment4V2Models: AmplifyModelRegistration {
         public let version: String = "version"
