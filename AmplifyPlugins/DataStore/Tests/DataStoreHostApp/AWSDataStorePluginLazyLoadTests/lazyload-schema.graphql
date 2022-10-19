@@ -3,6 +3,7 @@
 input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
 
 
+# LL.1. Explicit Bi-Directional Belongs-to Has-many PostComment4V2
 # 11 Explicit Bi-Directional Belongs to Relationship
 
 type Post4V2 @model @auth(rules: [{allow: public}]) {
@@ -18,6 +19,7 @@ type Comment4V2 @model @auth(rules: [{allow: public}]) {
   post: Post4V2 @belongsTo(fields: ["postID"])
 }
 
+# LL.2. BlogPostComment
 # 15
 # This is to address optional associations use case (Post can exist without a Blog)
 # See issue https://github.com/aws-amplify/amplify-ios/issues/1792 for more details
@@ -59,6 +61,7 @@ type MyNestedModel8 {
   notes: [String]
 }
 
+# LL.3. Has-Many/Belongs-To With Composite Key
 # iOS.7. A Has-Many/Belongs-To relationship, each with a composite key
 # Post with `id` and `title`, Comment with `id` and `content`
 
@@ -74,6 +77,7 @@ type CommentWithCompositeKey @model {
   post: PostWithCompositeKey @belongsTo
 }
 
+# LL.4. Many-To-Many relationship With Composite Key
 # iOS.8. A Many-To-Many relationship, each with a composite key
 # Post with `id` and `title`, Tag with `id` and `name`
 
@@ -89,36 +93,21 @@ type TagWithCompositeKey @model {
   posts: [PostWithTagsCompositeKey] @manyToMany(relationName: "PostTagsWithCompositeKey")
 }
 
-# iOS.9. A Has-Many/Belongs-To relationship, with index
-# Post with `id` and `title`, Comment with `id`, `content`, and index on `postID` and `postTitle`
-
-type PostWithCompositeKeyAndIndex @model {
-  id: ID! @primaryKey(sortKeyFields: ["title"])
-  title: String!
-  comments: [CommentWithCompositeKeyAndIndex] @hasMany
-}
-
-type CommentWithCompositeKeyAndIndex @model {
-  id: ID! @primaryKey(sortKeyFields: ["content"])
-  content: String!
-  postID: ID @index(name: "byPost", sortKeyFields: ["postTitle"])
-  postTitle: String
-  post: PostWithCompositeKeyAndIndex @belongsTo(fields: ["postID", "postTitle"])
-}
-
+# LL.5. Implicit Bi-directional Has One
 # CLI.1. Implicit Bi-directional Has One
 
-#type Project1 @model {
-#  projectId: ID! @primaryKey(sortKeyFields:["name"])
-#  name: String!
-#  team: Team1 @hasOne
-#}
-#type Team1 @model {
-#  teamId: ID! @primaryKey(sortKeyFields:["name"])
-#  name: String!
-#  project: Project1 @belongsTo
-#}
+type Project1 @model {
+  projectId: ID! @primaryKey(sortKeyFields:["name"])
+  name: String!
+  team: Team1 @hasOne
+}
+type Team1 @model {
+  teamId: ID! @primaryKey(sortKeyFields:["name"])
+  name: String!
+  project: Project1 @belongsTo
+}
 
+# LL.6. Implicit Uni-directional Has One
 # CLI.2. Implicit Uni-directional Has One
 
 type Project2 @model {
@@ -131,19 +120,7 @@ type Team2 @model {
   name: String!
 }
 
-# CLI.3. Implicit Bi-directional Has Many
-
-#type Post3 @model {
-#  postId: ID! @primaryKey(sortKeyFields:["title"])
-#  title: String!
-#  comments: [Comment3] @hasMany
-#}
-#type Comment3 @model {
-#  commentId: ID! @primaryKey(sortKeyFields:["content"])
-#  content: String!
-#  post: Post3 @belongsTo
-#}
-
+# LL.7. Implicit Uni-directional Has Many
 # CLI.4. Implicit Uni-directional Has Many
 
 type Post4 @model {
@@ -156,23 +133,25 @@ type Comment4 @model {
   content: String!
 }
 
+# LL.8. Explicit Bi-directional Has One
 # CLI.5. Explicit Bi-directional Has One
 
-#type Project5 @model {
-#  projectId: ID! @primaryKey(sortKeyFields:["name"])
-#  name: String!
-#  team: Team5 @hasOne(fields:["teamId", "teamName"])
-#  teamId: ID # customized foreign key for child primary key
-#  teamName: String # customized foreign key for child sort key
-#}
-#type Team5 @model {
-#  teamId: ID! @primaryKey(sortKeyFields:["name"])
-#  name: String!
-#  project: Project5 @belongsTo(fields:["projectId", "projectName"])
-#  projectId: ID # customized foreign key for parent primary key
-#  projectName: String # customized foreign key for parent sort key
-#}
+type Project5 @model {
+  projectId: ID! @primaryKey(sortKeyFields:["name"])
+  name: String!
+  team: Team5 @hasOne(fields:["teamId", "teamName"])
+  teamId: ID # customized foreign key for child primary key
+  teamName: String # customized foreign key for child sort key
+}
+type Team5 @model {
+  teamId: ID! @primaryKey(sortKeyFields:["name"])
+  name: String!
+  project: Project5 @belongsTo(fields:["projectId", "projectName"])
+  projectId: ID # customized foreign key for parent primary key
+  projectName: String # customized foreign key for parent sort key
+}
 
+# LL.9. Explicit Uni-directional Has One
 # CLI.6. Explicit Uni-directional Has One
 
 type Project6 @model {
@@ -187,6 +166,7 @@ type Team6 @model {
   name: String!
 }
 
+# LL.10. Explicit Bi-directional Has Many
 # CLI.7. Explicit Bi-directional Has Many
 
 type Post7 @model {
@@ -202,6 +182,7 @@ type Comment7 @model {
   postTitle: String # customized foreign key for parent sort key
 }
 
+# LL.11. Explicit Uni-directional Has Many
 # CLI.8. Explicit Uni-directional Has Many
 
 type Post8 @model {
@@ -215,25 +196,3 @@ type Comment8 @model {
   postId: ID @index(name: "byPost", sortKeyFields:["postTitle"]) # customized foreign key for parent primary key
   postTitle: String # customized foreign key for parent sort key
 }
-
-# CLI.9. Many To Many
-
-#type Post9 @model {
-#    customPostId: ID! @primaryKey(sortKeyFields: ["title"])
-#    title: String!
-#    content: String
-#    tags: [Tag9] @manyToMany(relationName: "PostTags")
-#}
-#type Tag9 @model {
-#    customTagId: ID! @primaryKey(sortKeyFields: ["label"])
-#    label: String!
-#    posts: [Post9] @manyToMany(relationName: "PostTags")
-#}
-
-# CLI.10. Todo
-
-#type Book @model {
-#  isbn: ID! @primaryKey(sortKeyFields: ["title"])
-#  title: String!
-#  description: String
-#}

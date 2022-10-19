@@ -44,6 +44,8 @@ public struct CommentWithCompositeKey: Model {
         id = try values.decode(String.self, forKey: .id)
         content = try values.decode(String.self, forKey: .content)
         _post = try values.decode(LazyModel<PostWithCompositeKey>.self, forKey: .post)
+        createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
+        updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -51,5 +53,7 @@ public struct CommentWithCompositeKey: Model {
         try container.encode(id, forKey: .id)
         try container.encode(content, forKey: .content)
         try container.encode(_post, forKey: .post)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encode(updatedAt, forKey: .updatedAt)
     }
 }

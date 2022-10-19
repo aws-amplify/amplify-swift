@@ -209,6 +209,14 @@
 		21801D0828F9B11B00FFA37E /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8128E746C10000C36A /* AsyncExpectation.swift */; };
 		21801D0928F9B11E00FFA37E /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8228E746C10000C36A /* XCTestCase+AsyncTesting.swift */; };
 		21801D2528FDA5E700FFA37E /* AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D2428FDA5E700FFA37E /* AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests.swift */; };
+		21801D2A29006DA300FFA37E /* Project1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D2829006DA100FFA37E /* Project1.swift */; };
+		21801D2B29006DA300FFA37E /* Project1+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D2929006DA300FFA37E /* Project1+Schema.swift */; };
+		21801D2E29006DA900FFA37E /* Team1+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D2C29006DA800FFA37E /* Team1+Schema.swift */; };
+		21801D2F29006DA900FFA37E /* Team1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D2D29006DA800FFA37E /* Team1.swift */; };
+		21801D3229006DB500FFA37E /* Team5+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D3029006DB400FFA37E /* Team5+Schema.swift */; };
+		21801D3329006DB500FFA37E /* Team5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D3129006DB500FFA37E /* Team5.swift */; };
+		21801D3629006DC200FFA37E /* Project5+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D3429006DC000FFA37E /* Project5+Schema.swift */; };
+		21801D3729006DC200FFA37E /* Project5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D3529006DC200FFA37E /* Project5.swift */; };
 		219253BE28BFE84100820737 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 219253BD28BFE84000820737 /* XCTest.framework */; };
 		21977DBF289C171A005B49D6 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977DBE289C1719005B49D6 /* TestConfigHelper.swift */; };
 		219B518528E3A4B00080EDCC /* DataStoreConnectionOptionalAssociations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA00289BFE3400B32A39 /* DataStoreConnectionOptionalAssociations.swift */; };
@@ -763,6 +771,14 @@
 		21801CD328F9A86800FFA37E /* MyNestedModel8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyNestedModel8.swift; sourceTree = "<group>"; };
 		21801D0528F9AE9400FFA37E /* AWSDataStoreLazyLoadPostComment4V2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreLazyLoadPostComment4V2Tests.swift; sourceTree = "<group>"; };
 		21801D2428FDA5E700FFA37E /* AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests.swift; sourceTree = "<group>"; };
+		21801D2829006DA100FFA37E /* Project1.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project1.swift; sourceTree = "<group>"; };
+		21801D2929006DA300FFA37E /* Project1+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project1+Schema.swift"; sourceTree = "<group>"; };
+		21801D2C29006DA800FFA37E /* Team1+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Team1+Schema.swift"; sourceTree = "<group>"; };
+		21801D2D29006DA800FFA37E /* Team1.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team1.swift; sourceTree = "<group>"; };
+		21801D3029006DB400FFA37E /* Team5+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Team5+Schema.swift"; sourceTree = "<group>"; };
+		21801D3129006DB500FFA37E /* Team5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team5.swift; sourceTree = "<group>"; };
+		21801D3429006DC000FFA37E /* Project5+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project5+Schema.swift"; sourceTree = "<group>"; };
+		21801D3529006DC200FFA37E /* Project5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project5.swift; sourceTree = "<group>"; };
 		219253BD28BFE84000820737 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		21977D84289C1633005B49D6 /* primarykey_schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = primarykey_schema.graphql; sourceTree = "<group>"; };
 		21977DBE289C1719005B49D6 /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
@@ -1431,10 +1447,12 @@
 				21801CD128F9A86800FFA37E /* Comment8+Schema.swift */,
 				21801CCD28F9A86800FFA37E /* Comment8V2.swift */,
 				21801CAC28F9A86600FFA37E /* Comment8V2+Schema.swift */,
-				21801CA628F9A86600FFA37E /* CommentWithCompositeKey.swift */,
-				21801CA428F9A86600FFA37E /* CommentWithCompositeKey+Schema.swift */,
 				21801CCF28F9A86800FFA37E /* CommentWithCompositeKeyAndIndex.swift */,
 				21801CBF28F9A86700FFA37E /* CommentWithCompositeKeyAndIndex+Schema.swift */,
+				21801D3929006F7E00FFA37E /* LL2 */,
+				21801D3A29006F8600FFA37E /* LL3 */,
+				21801D3829006F7500FFA37E /* LL5 */,
+				21801D3B2900709200FFA37E /* LL8 */,
 				21801CCC28F9A86800FFA37E /* MyCustomModel8.swift */,
 				21801CAE28F9A86600FFA37E /* MyCustomModel8+Schema.swift */,
 				21801CD328F9A86800FFA37E /* MyNestedModel8.swift */,
@@ -1451,8 +1469,6 @@
 				21801CC628F9A86700FFA37E /* Post8V2+Schema.swift */,
 				21801CAB28F9A86600FFA37E /* PostTagsWithCompositeKey.swift */,
 				21801CB428F9A86700FFA37E /* PostTagsWithCompositeKey+Schema.swift */,
-				21801CA328F9A86600FFA37E /* PostWithCompositeKey.swift */,
-				21801CC728F9A86800FFA37E /* PostWithCompositeKey+Schema.swift */,
 				21801CB128F9A86600FFA37E /* PostWithCompositeKeyAndIndex.swift */,
 				21801CB028F9A86600FFA37E /* PostWithCompositeKeyAndIndex+Schema.swift */,
 				21801CA928F9A86600FFA37E /* PostWithTagsCompositeKey.swift */,
@@ -1469,6 +1485,46 @@
 				21801CBB28F9A86700FFA37E /* Team6+Schema.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		21801D3829006F7500FFA37E /* LL5 */ = {
+			isa = PBXGroup;
+			children = (
+				21801D2829006DA100FFA37E /* Project1.swift */,
+				21801D2929006DA300FFA37E /* Project1+Schema.swift */,
+				21801D2D29006DA800FFA37E /* Team1.swift */,
+				21801D2C29006DA800FFA37E /* Team1+Schema.swift */,
+			);
+			path = LL5;
+			sourceTree = "<group>";
+		};
+		21801D3929006F7E00FFA37E /* LL2 */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = LL2;
+			sourceTree = "<group>";
+		};
+		21801D3A29006F8600FFA37E /* LL3 */ = {
+			isa = PBXGroup;
+			children = (
+				21801CA628F9A86600FFA37E /* CommentWithCompositeKey.swift */,
+				21801CA428F9A86600FFA37E /* CommentWithCompositeKey+Schema.swift */,
+				21801CA328F9A86600FFA37E /* PostWithCompositeKey.swift */,
+				21801CC728F9A86800FFA37E /* PostWithCompositeKey+Schema.swift */,
+			);
+			path = LL3;
+			sourceTree = "<group>";
+		};
+		21801D3B2900709200FFA37E /* LL8 */ = {
+			isa = PBXGroup;
+			children = (
+				21801D3529006DC200FFA37E /* Project5.swift */,
+				21801D3429006DC000FFA37E /* Project5+Schema.swift */,
+				21801D3129006DB500FFA37E /* Team5.swift */,
+				21801D3029006DB400FFA37E /* Team5+Schema.swift */,
+			);
+			path = LL8;
 			sourceTree = "<group>";
 		};
 		21977D75289C161D005B49D6 /* Models */ = {
@@ -3051,13 +3107,16 @@
 			files = (
 				21801CE328F9A86800FFA37E /* Project6.swift in Sources */,
 				21801CE628F9A86800FFA37E /* TagWithCompositeKey+Schema.swift in Sources */,
+				21801D2F29006DA900FFA37E /* Team1.swift in Sources */,
 				21801CE728F9A86800FFA37E /* Project2.swift in Sources */,
 				21801CF728F9A86800FFA37E /* Post8V2+Schema.swift in Sources */,
 				21801D0128F9A86800FFA37E /* AmplifyModels.swift in Sources */,
 				21801CFB28F9A86800FFA37E /* Team2+Schema.swift in Sources */,
 				21801D0328F9A86800FFA37E /* Post7+Schema.swift in Sources */,
+				21801D3329006DB500FFA37E /* Team5.swift in Sources */,
 				21801CEF28F9A86800FFA37E /* Blog8V2+Schema.swift in Sources */,
 				21801CE428F9A86800FFA37E /* Blog8V2.swift in Sources */,
+				21801D3629006DC200FFA37E /* Project5+Schema.swift in Sources */,
 				21801CE028F9A86800FFA37E /* Post8V2.swift in Sources */,
 				21801C7D28F9A22900FFA37E /* AWSDataStoreLazyLoadBaseTest.swift in Sources */,
 				21801CFF28F9A86800FFA37E /* Team2.swift in Sources */,
@@ -3074,6 +3133,7 @@
 				21801CF228F9A86800FFA37E /* Post4V2+Schema.swift in Sources */,
 				21801CFA28F9A86800FFA37E /* TagWithCompositeKey.swift in Sources */,
 				21801CF828F9A86800FFA37E /* PostWithCompositeKey+Schema.swift in Sources */,
+				21801D2E29006DA900FFA37E /* Team1+Schema.swift in Sources */,
 				21801CF328F9A86800FFA37E /* Project6+Schema.swift in Sources */,
 				21801CE228F9A86800FFA37E /* PostWithCompositeKeyAndIndex.swift in Sources */,
 				21801CD728F9A86800FFA37E /* CommentWithCompositeKey.swift in Sources */,
@@ -3083,8 +3143,11 @@
 				21801CD428F9A86800FFA37E /* PostWithCompositeKey.swift in Sources */,
 				21801CD828F9A86800FFA37E /* Comment7+Schema.swift in Sources */,
 				21801D0028F9A86800FFA37E /* CommentWithCompositeKeyAndIndex.swift in Sources */,
+				21801D3229006DB500FFA37E /* Team5+Schema.swift in Sources */,
+				21801D2B29006DA300FFA37E /* Project1+Schema.swift in Sources */,
 				21801CF028F9A86800FFA37E /* CommentWithCompositeKeyAndIndex+Schema.swift in Sources */,
 				21801D0728F9B11800FFA37E /* AsyncTesting.swift in Sources */,
+				21801D2A29006DA300FFA37E /* Project1.swift in Sources */,
 				21801CF128F9A86800FFA37E /* Project2+Schema.swift in Sources */,
 				21801D0428F9A86800FFA37E /* MyNestedModel8.swift in Sources */,
 				21801CF928F9A86800FFA37E /* Team6.swift in Sources */,
@@ -3095,6 +3158,7 @@
 				21801CEB28F9A86800FFA37E /* Post4V2.swift in Sources */,
 				21801CDF28F9A86800FFA37E /* MyCustomModel8+Schema.swift in Sources */,
 				21801D0828F9B11B00FFA37E /* AsyncExpectation.swift in Sources */,
+				21801D3729006DC200FFA37E /* Project5.swift in Sources */,
 				21801CFD28F9A86800FFA37E /* MyCustomModel8.swift in Sources */,
 				21801CEE28F9A86800FFA37E /* Comment4.swift in Sources */,
 				21801D0628F9AE9400FFA37E /* AWSDataStoreLazyLoadPostComment4V2Tests.swift in Sources */,
