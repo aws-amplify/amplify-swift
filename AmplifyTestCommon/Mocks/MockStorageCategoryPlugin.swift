@@ -176,7 +176,7 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
         return try await taskAdapter.value
     }
 
-    func handleBackgroundEvents(identifier: String) async -> Bool {
+    func handleEventsForBackgroundURLSession(identifier: String) async -> Bool {
         false
     }
 

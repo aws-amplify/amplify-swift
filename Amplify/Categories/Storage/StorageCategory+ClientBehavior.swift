@@ -53,8 +53,9 @@ extension StorageCategory: StorageCategoryBehavior {
         try await plugin.list(options: options)
     }
 
-    public func handleBackgroundEvents(identifier: String) async -> Bool {
-        await plugin.handleBackgroundEvents(identifier: identifier)
+    @discardableResult
+    public func handleEventsForBackgroundURLSession(identifier: String) async -> Bool {
+        await plugin.handleEventsForBackgroundURLSession(identifier: identifier)
     }
 
 }

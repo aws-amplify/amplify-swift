@@ -21,29 +21,21 @@ class StorageBackgroundEventsRegistryTests: XCTestCase {
         let done = asyncExpectation(description: "done", expectedFulfillmentCount: 2)
 
         Task {
-            let handled = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
-                StorageBackgroundEventsRegistry.handleBackgroundEvents(identifier: identifier, continuation: continuation)
-                Task {
-                    await done.fulfill()
-                }
-            }
+            let handled = await StorageBackgroundEventsRegistry.handleEventsForBackgroundURLSession(identifier: identifier)
+            await done.fulfill()
             XCTAssertTrue(handled)
         }
 
         Task {
-            let otherHandled = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
-                StorageBackgroundEventsRegistry.handleBackgroundEvents(identifier: otherIdentifier, continuation: continuation)
-                Task {
-                    await done.fulfill()
-                }
-            }
+            let otherHandled = await StorageBackgroundEventsRegistry.handleEventsForBackgroundURLSession(identifier: otherIdentifier)
+            await done.fulfill()
             XCTAssertFalse(otherHandled)
         }
 
-        await waitForExpectations([done])
-
         handleEvents(for: identifier)
         handleEvents(for: otherIdentifier)
+
+        await waitForExpectations([done])
     }
 
     func testHandlingUnregisteredIdentifier() async throws {
@@ -54,12 +46,8 @@ class StorageBackgroundEventsRegistryTests: XCTestCase {
         let done = asyncExpectation(description: "done")
 
         Task {
-            let handled = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
-                StorageBackgroundEventsRegistry.handleBackgroundEvents(identifier: identifier, continuation: continuation)
-                Task {
-                    await done.fulfill()
-                }
-            }
+            let handled = await StorageBackgroundEventsRegistry.handleEventsForBackgroundURLSession(identifier: identifier)
+            await done.fulfill()
             XCTAssertFalse(handled)
         }
 
@@ -70,6 +58,7 @@ class StorageBackgroundEventsRegistryTests: XCTestCase {
     func handleEvents(for identifier: String) {
         if let continuation = StorageBackgroundEventsRegistry.getContinuation(for: identifier) {
             continuation.resume(returning: true)
+            StorageBackgroundEventsRegistry.removeContinuation(for: identifier)
         }
     }
 

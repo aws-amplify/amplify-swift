@@ -22,11 +22,11 @@ class StorageBackgroundEventsRegistry {
     ///   - identifier: session identifier
     ///   - completionHandler: completion handler
     /// - Returns: indicates if the identifier was registered and will be handled
-    static func handleBackgroundEvents(identifier: String, continuation: StorageBackgroundEventsContinuation) {
-        if self.identifier == identifier {
+    static func handleEventsForBackgroundURLSession(identifier: String) async -> Bool {
+        guard self.identifier == identifier else { return false }
+
+        return await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
             self.continuation = continuation
-        } else {
-            continuation.resume(returning: false)
         }
     }
 
