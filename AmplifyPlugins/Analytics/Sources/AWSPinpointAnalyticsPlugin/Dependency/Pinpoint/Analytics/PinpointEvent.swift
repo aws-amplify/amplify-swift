@@ -85,8 +85,8 @@ extension PinpointEvent: DefaultLogger {}
 
 extension PinpointEvent {
     private struct Constants {
-        static let maxNumberOfAttributesAndMetrics = 40
+        static let maxNumberOfAttributesAndMetrics = 50
         static let maxKeyLength = 50
-        static let maxValueLenght = 200
+        static let maxValueLenght = 1000
     }
 }
