@@ -43,7 +43,7 @@ extension Model {
             guard let value = modelFieldValue else {
                 // Special case for associated models when the value is `nil`, by setting all of the associated
                 // model's primary key fields (targetNames) to `nil`.
-                if case .model = modelField.type {
+                if case .model = modelField.type { // add it for "belongs-to"
                     let fieldNames = getFieldNameForAssociatedModels(modelField: modelField)
                     for fieldName in fieldNames {
                         // Only set to `nil` if it has not been set already. For hasOne relationships, where the
@@ -59,6 +59,8 @@ extension Model {
                             input.updateValue(nil, forKey: fieldName)
                         }
                     }
+                } else if case .collection = modelField.type { // skip all "has-many"
+                    continue
                 } else {
                     input.updateValue(nil, forKey: name)
                 }

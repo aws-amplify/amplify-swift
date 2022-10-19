@@ -11,39 +11,35 @@ import XCTest
 
 @testable import Amplify
 
-final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLazyLoadBaseTest {
-
-    func testLazyLoadPostFromComment() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose, eagerLoad: false)
+class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
+    
+    func testLazyLoad() async throws {
+        await setup(withModels: PostComment4V2Models(), logLevel: .verbose, eagerLoad: false)
         
-        let post = PostWithCompositeKey(title: "title")
-        let comment = CommentWithCompositeKey(content: "content", post: post)
+        let post = Post4V2(title: "title")
+        let comment = Comment4V2(content: "content", post: post)
         let savedPost = try await saveAndWaitForSync(post)
         let savedComment = try await saveAndWaitForSync(comment)
         try await assertComment(savedComment, hasEagerLoaded: savedPost)
         try await assertPost(savedPost, canLazyLoad: savedComment)
-        
-        guard let queriedComment = try await Amplify.DataStore.query(CommentWithCompositeKey.self,
-                                                                     byIdentifier: .identifier(
-                                                                        id: savedComment.id,
-                                                                        content: savedComment.content)) else {
+
+        guard let queriedComment = try await Amplify.DataStore.query(Comment4V2.self,
+                                                                     byIdentifier: savedComment.id) else {
             XCTFail("Failed to query comment")
             return
         }
         try await assertComment(queriedComment, canLazyLoad: savedPost)
-                
-        guard let queriedPost = try await Amplify.DataStore.query(PostWithCompositeKey.self,
-                                                                  byIdentifier: .identifier(
-                                                                    id: savedPost.id,
-                                                                    title: savedPost.title)) else {
+
+        guard let queriedPost = try await Amplify.DataStore.query(Post4V2.self,
+                                                                  byIdentifier: savedPost.id) else {
             XCTFail("Failed to query post")
             return
         }
         try await assertPost(queriedPost, canLazyLoad: savedComment)
     }
     
-    func assertComment(_ comment: CommentWithCompositeKey,
-                       hasEagerLoaded post: PostWithCompositeKey) async throws {
+    func assertComment(_ comment: Comment4V2,
+                       hasEagerLoaded post: Post4V2) async throws {
         // assert that it is loaded
         switch comment._post.modelProvider.getState() {
         case .notLoaded:
@@ -59,7 +55,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         
         // retrieve loaded model
         guard let loadedPost = try await comment.post else {
-            XCTFail("Failed to retrieve the losfrf post from the comment")
+            XCTFail("Failed to retrieve the loaded post from the comment")
             return
         }
         XCTAssertEqual(loadedPost.id, post.id)
@@ -67,8 +63,8 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         try await assertPost(loadedPost, canLazyLoad: comment)
     }
     
-    func assertComment(_ comment: CommentWithCompositeKey,
-                       canLazyLoad post: PostWithCompositeKey) async throws {
+    func assertComment(_ comment: Comment4V2,
+                       canLazyLoad post: Post4V2) async throws {
         // assert that it is not loaded
         switch comment._post.modelProvider.getState() {
         case .notLoaded(let identifiers):
@@ -76,7 +72,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
                 XCTFail("missing identifiers")
                 return
             }
-            XCTAssertEqual(identifier.key, "@@primaryKey")
+            XCTAssertEqual(identifier.key, "id")
             XCTAssertEqual(identifier.value, post.identifier)
         case .loaded:
             XCTFail("Should not be loaded")
@@ -84,7 +80,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         
         // lazy load
         guard let loadedPost = try await comment.post else {
-            XCTFail("Failed to retrieve the losfrf post from the comment")
+            XCTFail("Failed to retrieve the loaded post from the comment")
             return
         }
         XCTAssertEqual(loadedPost.id, post.id)
@@ -92,8 +88,8 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         try await assertPost(loadedPost, canLazyLoad: comment)
     }
     
-    func assertPost(_ post: PostWithCompositeKey,
-                    canLazyLoad comment: CommentWithCompositeKey) async throws {
+    func assertPost(_ post: Post4V2,
+                    canLazyLoad comment: Comment4V2) async throws {
         guard let comments = post.comments else {
             XCTFail("Missing comments on post")
             return
@@ -129,7 +125,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
                 XCTFail("missing identifiers")
                 return
             }
-            XCTAssertEqual(identifier.key, "@@primaryKey")
+            XCTAssertEqual(identifier.key, "id")
             XCTAssertEqual(identifier.value, post.identifier)
         case .loaded:
             XCTFail("Should be not loaded")
@@ -137,12 +133,13 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
     }
 }
 
-extension AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests {
-    struct PostCommentWithCompositeKeyModels: AmplifyModelRegistration {
+
+extension AWSDataStoreLazyLoadPostComment4V2Tests {
+    struct PostComment4V2Models: AmplifyModelRegistration {
         public let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
-            ModelRegistry.register(modelType: PostWithCompositeKey.self)
-            ModelRegistry.register(modelType: CommentWithCompositeKey.self)
+            ModelRegistry.register(modelType: Post4V2.self)
+            ModelRegistry.register(modelType: Comment4V2.self)
         }
     }
 }

@@ -135,7 +135,10 @@ extension Statement: StatementModelConvertible {
             // For example, when the value is the `id` of the Blog, then the field.isPrimaryKey is satisfied.
             // Every association of the Blog, such as the has-many Post is populated with the List with
             // associatedId == blog's id. This way, the list of post can be lazily loaded later using the associated id.
-            if let id = modelValue as? String, field.isPrimaryKey {
+            if let id = modelValue as? String,
+                (field.name == ModelIdentifierFormat.Custom.sqlColumnName || // this is the `@@primaryKey` (CPK)
+                 (schema.primaryKey.fields.count == 1 // or there's only one primary key (not composite key)
+                  && schema.primaryKey.indexOfField(named: field.name) != nil)) { // and this field is the primary key
                 let associations = schema.fields.values.filter {
                     $0.isArray && $0.hasAssociation
                 }
