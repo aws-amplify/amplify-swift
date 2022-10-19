@@ -88,4 +88,24 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
         await waitForExpectations([modelSynced], timeout: 10)
         return savedModel
     }
+    
+    func deleteAndWaitForSync<M: Model>(_ model: M) async throws {
+        let modelSynced = asyncExpectation(description: "model was synced successfully")
+        let dataStoreEvents = HubPayload.EventName.DataStore.self
+        Amplify
+            .Hub
+            .publisher(for: .dataStore)
+            .sink { event in
+                if event.eventName == dataStoreEvents.outboxMutationProcessed,
+                   let outboxMutationEvent = event.data as? OutboxMutationEvent,
+                   outboxMutationEvent.modelName == model.modelName,
+                   outboxMutationEvent.element.deleted == true {
+                    Task { await modelSynced.fulfill() }
+                    
+                }
+            }
+            .store(in: &requests)
+        try await Amplify.DataStore.delete(model)
+        await waitForExpectations([modelSynced], timeout: 10)
+    }
 }

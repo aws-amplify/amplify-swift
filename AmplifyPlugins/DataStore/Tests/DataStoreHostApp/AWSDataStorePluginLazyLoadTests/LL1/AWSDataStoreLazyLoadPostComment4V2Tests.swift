@@ -10,6 +10,7 @@ import Combine
 import XCTest
 
 @testable import Amplify
+import AWSPluginsCore
 
 class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
     
@@ -130,6 +131,40 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
         case .loaded:
             XCTFail("Should be not loaded")
         }
+    }
+    
+    func testDelete() async throws {
+        await setup(withModels: PostComment4V2Models(), logLevel: .verbose, eagerLoad: false)
+        
+        let post = Post4V2(title: "title")
+        let comment = Comment4V2(content: "content", post: post)
+        let savedPost = try await saveAndWaitForSync(post)
+        let savedComment = try await saveAndWaitForSync(comment)
+        try await deleteAndWaitForSync(savedPost)
+        
+        let queriedComment = try await Amplify.DataStore.query(Comment4V2.self,
+                                                               byIdentifier: savedComment.id)
+        XCTAssertNil(queriedComment)
+        let commentMetadataIdentifier = MutationSyncMetadata.identifier(modelName: Comment4V2.modelName,
+                                                                        modelId: comment.identifier)
+        guard let commentMetadata = try await Amplify.DataStore.query(MutationSyncMetadata.self,
+                                                                      byId: commentMetadataIdentifier) else {
+            XCTFail("Could not retrieve metadata for comment")
+            return
+        }
+        XCTAssertTrue(commentMetadata.deleted)
+        
+        let queriedPost = try await Amplify.DataStore.query(Post4V2.self,
+                                                            byIdentifier: savedPost.id)
+        XCTAssertNil(queriedPost)
+        let postMetadataIdentifier = MutationSyncMetadata.identifier(modelName: Post4V2.modelName,
+                                                                     modelId: post.identifier)
+        guard let postMetadata = try await Amplify.DataStore.query(MutationSyncMetadata.self,
+                                                                   byId: postMetadataIdentifier) else {
+            XCTFail("Could not retrieve metadata for post")
+            return
+        }
+        XCTAssertTrue(postMetadata.deleted)
     }
 }
 

@@ -10,6 +10,7 @@ import Combine
 import XCTest
 
 @testable import Amplify
+import AWSPluginsCore
 
 final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLazyLoadBaseTest {
 
@@ -134,6 +135,44 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         case .loaded:
             XCTFail("Should be not loaded")
         }
+    }
+    
+    func testDelete() async throws {
+        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose, eagerLoad: false)
+        
+        let post = PostWithCompositeKey(title: "title")
+        let comment = CommentWithCompositeKey(content: "content", post: post)
+        let savedPost = try await saveAndWaitForSync(post)
+        let savedComment = try await saveAndWaitForSync(comment)
+        try await deleteAndWaitForSync(savedPost)
+        
+        let queriedComment = try await Amplify.DataStore.query(CommentWithCompositeKey.self,
+                                                               byIdentifier: .identifier(
+                                                                id: savedComment.id,
+                                                                content: savedComment.content))
+        XCTAssertNil(queriedComment)
+        let commentMetadataIdentifier = MutationSyncMetadata.identifier(modelName: CommentWithCompositeKey.modelName,
+                                                                        modelId: comment.identifier)
+        guard let commentMetadata = try await Amplify.DataStore.query(MutationSyncMetadata.self,
+                                                                      byId: commentMetadataIdentifier) else {
+            XCTFail("Could not retrieve metadata for comment")
+            return
+        }
+        XCTAssertTrue(commentMetadata.deleted)
+        
+        let queriedPost = try await Amplify.DataStore.query(PostWithCompositeKey.self,
+                                                            byIdentifier: .identifier(
+                                                                id: savedPost.id,
+                                                                title: savedPost.title))
+        XCTAssertNil(queriedPost)
+        let postMetadataIdentifier = MutationSyncMetadata.identifier(modelName: PostWithCompositeKey.modelName,
+                                                                        modelId: post.identifier)
+        guard let postMetadata = try await Amplify.DataStore.query(MutationSyncMetadata.self,
+                                                                      byId: postMetadataIdentifier) else {
+            XCTFail("Could not retrieve metadata for post")
+            return
+        }
+        XCTAssertTrue(postMetadata.deleted)
     }
 }
 
