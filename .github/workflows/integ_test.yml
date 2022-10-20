@@ -26,7 +26,7 @@ jobs:
           resource_subfolder: NA
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
 
   analytics-integration-test:
     needs: prepare-for-test
@@ -46,7 +46,7 @@ jobs:
           resource_subfolder: analytics
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
 
       - name: Run Integration test
         uses: ./.github/composite_actions/run_xcodebuild_test
@@ -98,7 +98,7 @@ jobs:
           resource_subfolder: geo
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
 
       - name: Run Integration test
         uses: ./.github/composite_actions/run_xcodebuild_test
@@ -126,7 +126,7 @@ jobs:
           resource_subfolder: storage
           aws_role_to_assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws_region: ${{ secrets.AWS_REGION }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
+          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG_V2 }}
 
       - name: Run Integration test
         uses: ./.github/composite_actions/run_xcodebuild_test
