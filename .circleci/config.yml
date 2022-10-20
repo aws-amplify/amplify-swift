@@ -212,17 +212,6 @@ jobs:
           path: build/reports
       - upload_artifacts
 
-  create_release_pr:
-    <<: *defaults
-    description: Generate PR to start the stable release
-    steps:
-    - *restore_repo
-    - restore_gems
-    - check_bundle
-    - run:
-        name: Creating PR
-        command: bundle exec fastlane release_pr
-
   generate_api_docs:
     <<: *defaults
     steps:
