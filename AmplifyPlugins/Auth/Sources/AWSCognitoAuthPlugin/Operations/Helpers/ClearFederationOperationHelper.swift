@@ -14,11 +14,18 @@ struct ClearFederationOperationHelper {
 
         let currentState = await authStateMachine.currentState
 
-        if case .configured(let authNState, let authZState) = currentState,
-           case .federatedToIdentityPool = authNState,
-           case .sessionEstablished = authZState {
+        guard case .configured(let authNState, let authZState) = currentState else {
+            let authError = AuthError.invalidState(
+                "Clearing of federation failed.",
+                AuthPluginErrorConstants.invalidStateError, nil)
+            throw authError
+        }
+
+        switch (authNState, authZState) {
+        case (.federatedToIdentityPool, .sessionEstablished),
+            (.error, .error):
             try await startClearingFederation(with: authStateMachine)
-        } else {
+        default:
             let authError = AuthError.invalidState(
                 "Clearing of federation failed.",
                 AuthPluginErrorConstants.invalidStateError, nil)
@@ -27,9 +34,9 @@ struct ClearFederationOperationHelper {
     }
 
     private func startClearingFederation(with authStateMachine: AuthStateMachine) async throws {
-        let stateSequences = await authStateMachine.listen()
         let event = AuthenticationEvent.init(eventType: .clearFederationToIdentityPool)
         await authStateMachine.send(event)
+        let stateSequences = await authStateMachine.listen()
         for await state in stateSequences {
             guard  case .configured(let authNState, _) = state else {
                 continue

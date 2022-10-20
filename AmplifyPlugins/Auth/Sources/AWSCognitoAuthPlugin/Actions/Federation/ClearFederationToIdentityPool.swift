@@ -18,8 +18,18 @@ struct ClearFederationToIdentityPool: Action {
 
         let event: StateMachineEvent
         do {
-            try await credentialStoreClient?.deleteData(type: .amplifyCredentials)
-            event = AuthenticationEvent.init(eventType: .clearedFederationToIdentityPool)
+            // Check if we have credentials are of type federation, otherwise throw an error
+            if case .amplifyCredentials(let credentials) = try await credentialStoreClient?.fetchData(
+                type: .amplifyCredentials),
+               case .identityPoolWithFederation = credentials {
+
+                try await credentialStoreClient?.deleteData(type: .amplifyCredentials)
+                event = AuthenticationEvent.init(eventType: .clearedFederationToIdentityPool)
+            } else {
+                let error = AuthenticationError.service(message: "Unable to find credentials to clear for federation.")
+                event = AuthenticationEvent.init(eventType: .error(error))
+                logError("\(#fileID) Sending event \(event.type) with error \(error)", environment: environment)
+            }
 
         } catch {
             let error = AuthenticationError.unknown(message: "Unable to clear credential store: \(error)")

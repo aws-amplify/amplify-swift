@@ -278,6 +278,7 @@ class AuthHubEventHandlerTests: XCTestCase {
             }
         }
 
+        _ = try await plugin.federateToIdentityPool(withProviderToken: "something", for: .facebook)
         try await plugin.clearFederationToIdentityPool()
 
         await waitForExpectations(timeout: networkTimeout)

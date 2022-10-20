@@ -122,6 +122,13 @@ extension AuthenticationState {
                 } else if let authZEvent = event.isAuthorizationEvent,
                          case .startFederationToIdentityPool = authZEvent {
                     return .init(newState: .federatingToIdentityPool)
+                } else if let authEvent = event as? AuthenticationEvent,
+                   case .clearFederationToIdentityPool = authEvent.eventType {
+                    return .init(
+                        newState: .clearingFederation,
+                        actions: [
+                            ClearFederationToIdentityPool()
+                        ])
                 } else {
                     return .from(oldState)
                 }

@@ -19,8 +19,10 @@ enum AuthorizationState: State {
 
     case clearingFederation
 
-    case federatingToIdentityPool(FetchAuthSessionState,
-                                  FederatedToken)
+    case federatingToIdentityPool(
+        FetchAuthSessionState,
+        FederatedToken,
+        existingCredentials: AmplifyCredentials)
 
     case fetchingUnAuthSession(FetchAuthSessionState)
 

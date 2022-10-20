@@ -31,8 +31,13 @@ extension AmplifyCredentials {
                 identityIdResult: .success(identityId),
                 awsCredentialsResult: .success(awsCredentials),
                 cognitoTokensResult: .failure(
-                    .signedOut("Cognito tokens unavailable when federated to identity pool",
-                               "Clear federation and sign to get user pool tokens.", nil)))
+                    .invalidState(
+                        "Users Federated to Identity Pool do not have User Pool access.",
+                        "To access User Pool data, you must use a Sign In method.",
+                        nil
+                    )
+                )
+            )
         case .userPoolAndIdentityPool(let signedInData, let identityID, let credentials):
             return AWSAuthCognitoSession(
                 isSignedIn: true,
