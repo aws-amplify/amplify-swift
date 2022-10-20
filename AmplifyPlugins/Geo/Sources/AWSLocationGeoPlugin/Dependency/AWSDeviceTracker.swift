@@ -15,6 +15,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, DeviceTrackingBehav
     var wakeAppForSignificantLocationUpdates = true
     var trackUntil: Date = .distantFuture
     var batchingOptions: Geo.LocationManager.BatchingOptions = .none
+    var proxyDelegate: ProxyDelegate?
     
     init(locationManager: Geo.LocationManager) {
         self.locationManager = locationManager
@@ -34,6 +35,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, DeviceTrackingBehav
         self.wakeAppForSignificantLocationUpdates = options.wakeAppForSignificantLocationChanges
         self.trackUntil = options.trackUntil
         self.batchingOptions = options.batchingOptions
+        self.proxyDelegate = options.proxyDelegate ?? AWSDeviceTrackerProxyDelegate(deviceTrackingBehavior: self)
     }
     
     func startTracking() {
@@ -51,6 +53,6 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, DeviceTrackingBehav
     
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         // TODO: Save position locally
-        // TODO: Call proxydelegate()
+        proxyDelegate?.didUpdateLocations(manager, locations)
     }
 }

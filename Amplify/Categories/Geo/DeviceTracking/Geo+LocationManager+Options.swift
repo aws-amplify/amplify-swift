@@ -91,6 +91,13 @@ public extension Geo.LocationManager {
         /// before sending the collected updates as a batch.
         public let batchingOptions: BatchingOptions
         
+        public var proxyDelegate : ProxyDelegate?
+        
+        public mutating func withProxyDelegate(_ proxyDelegate: ProxyDelegate) -> Self {
+            self.proxyDelegate = proxyDelegate
+            return self
+        }
+        
         public init(
             tracker: String? = nil,
             desiredAccuracy: LocationAccuracy = .fine,
