@@ -121,7 +121,7 @@ class AnalyticsEventSQLStorage: AnalyticsEventStorage {
     /// - Returns: A collection of PinpointEvent
     func getEventsWith(limit: Int) throws -> [PinpointEvent] {
         let queryStatement = """
-        SELECT id, attributes, eventType, metrics, eventTimestamp, sessionId, sessionStartTime, sessionStopTime, timestamp, retryCount
+        SELECT id, attributes, eventType, metrics, eventTimestamp, sessionId, sessionStartTime, sessionStopTime, timestamp, dirty, retryCount
         FROM Event
         ORDER BY timestamp ASC
         LIMIT ?
@@ -141,7 +141,7 @@ class AnalyticsEventSQLStorage: AnalyticsEventStorage {
     /// - Returns: A collection of PinpointEvent
     func getDirtyEventsWith(limit: Int) throws -> [PinpointEvent] {
         let queryStatement = """
-        SELECT id, attributes, eventType, metrics, eventTimestamp, sessionId, sessionStartTime, sessionStopTime, timestamp, retryCount
+        SELECT id, attributes, eventType, metrics, eventTimestamp, sessionId, sessionStartTime, sessionStopTime, timestamp, dirty, retryCount
         FROM DirtyEvent
         ORDER BY timestamp ASC
         LIMIT ?

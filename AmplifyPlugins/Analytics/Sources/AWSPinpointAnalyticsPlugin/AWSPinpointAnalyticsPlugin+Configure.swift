@@ -9,6 +9,7 @@ import Amplify
 import AWSPinpoint
 import AWSPluginsCore
 import Foundation
+import Network
 
 extension AWSPinpointAnalyticsPlugin {
     /// Configures AWSPinpointAnalyticsPlugin with the specified configuration.
@@ -83,5 +84,11 @@ extension AWSPinpointAnalyticsPlugin {
         isEnabled = true
         self.autoFlushEventsTimer = autoFlushEventsTimer
         self.autoFlushEventsTimer?.resume()
+        networkMonitor.start(
+            queue: DispatchQueue(
+                label: "com.amazonaws.Amplify.AWSPinpointAnalyticsPlugin.NetworkMonitor",
+                qos: .background
+            )
+        )
     }
 }

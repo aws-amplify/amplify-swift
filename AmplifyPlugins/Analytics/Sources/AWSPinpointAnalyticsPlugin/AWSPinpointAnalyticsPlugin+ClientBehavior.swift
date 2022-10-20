@@ -46,7 +46,7 @@ extension AWSPinpointAnalyticsPlugin {
         Task {
             do {
                 try await pinpoint.record(pinpointEvent)
-                Amplify.Hub.dispatchRecord(event)
+                Amplify.Hub.dispatchRecord(pinpointEvent.asAnalyticsEvent())
             } catch {
                 Amplify.Hub.dispatchRecord(AnalyticsErrorHelper.getDefaultError(error))
             }
@@ -96,6 +96,14 @@ extension AWSPinpointAnalyticsPlugin {
     public func flushEvents() {
         if !isEnabled {
             log.warn("Cannot flushEvents. Analytics is disabled. Call Amplify.Analytics.enable() to enable")
+            return
+        }
+
+        // Do not attempt to submit events if we detect the device is offline, as it's gonna fail anyway
+        guard networkMonitor.currentPath.status == .satisfied else {
+            let errorMessage = "Cannot flushEvents. \(AnalyticsPluginErrorConstant.deviceOffline.errorDescription)"
+            log.error(errorMessage)
+            Amplify.Hub.dispatchFlushEvents(.unknown(errorMessage))
             return
         }
 

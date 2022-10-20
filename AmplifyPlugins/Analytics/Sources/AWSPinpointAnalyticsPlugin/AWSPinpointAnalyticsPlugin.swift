@@ -9,6 +9,7 @@ import Amplify
 import AWSPinpoint
 import AWSPluginsCore
 import Foundation
+import Network
 
 /// The AWSPinpointAnalyticsPlugin implements the Analytics APIs for Pinpoint
 public final class AWSPinpointAnalyticsPlugin: AnalyticsCategoryPlugin {
@@ -27,6 +28,9 @@ public final class AWSPinpointAnalyticsPlugin: AnalyticsCategoryPlugin {
     /// Optional timer is nil when auto flush is disabled
     /// Otherwise automatically flushes the events that have been recorded on an interval
     var autoFlushEventsTimer: DispatchSourceTimer?
+    
+    /// An observer to monitor connectivity changes
+    let networkMonitor = NWPathMonitor()
 
     /// The unique key of the plugin within the analytics category
     public var key: PluginKey {
