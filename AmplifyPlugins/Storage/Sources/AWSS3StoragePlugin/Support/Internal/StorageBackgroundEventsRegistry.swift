@@ -42,8 +42,7 @@ actor StorageBackgroundEventsRegistry {
     /// - Parameters:
     ///   - identifier: session identifier
     private static func notifyWaiting(for identifier: String) {
-        let notificationCenter = notificationCenter ?? NotificationCenter.default
-        notificationCenter.post(name: Notification.Name.StorageBackgroundEventsRegistryWaiting, object: identifier)
+        notificationCenter?.post(name: Notification.Name.StorageBackgroundEventsRegistryWaiting, object: identifier)
     }
 
     // The storage plugin will register the session identifier when it is configured.
