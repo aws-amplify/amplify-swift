@@ -120,7 +120,7 @@ extension AWSS3StoragePlugin {
     }
 
     public func handleEventsForBackgroundURLSession(identifier: String) async -> Bool {
-        await StorageBackgroundEventsRegistry.handleEventsForBackgroundURLSession(identifier: identifier)
+        await StorageBackgroundEventsRegistry.shared.handleEventsForBackgroundURLSession(identifier: identifier)
     }
 
 }

@@ -18,18 +18,26 @@ extension Notification.Name {
 ///    independently of the Amplify Storage plugin and this function will indiciate if it will handle the given identifier.
 actor StorageBackgroundEventsRegistry {
     typealias StorageBackgroundEventsContinuation = CheckedContinuation<Bool, Never>
-    static var identifier: String?
-    static var continuation: StorageBackgroundEventsContinuation?
+
+    @MainActor
+    static let shared = StorageBackgroundEventsRegistry()
+
+    private var identifier: String?
+    private var continuation: StorageBackgroundEventsContinuation?
 
     // override for use with unit tests
-    static var notificationCenter: NotificationCenter?
+    internal private(set) var notificationCenter: NotificationCenter?
+
+    func change(notificationCenter: NotificationCenter?) {
+        self.notificationCenter = notificationCenter
+    }
 
     /// Handles background events for URLSession on iOS.
     /// - Parameters:
     ///   - identifier: session identifier
     ///   - completionHandler: completion handler
     /// - Returns: indicates if the identifier was registered and will be handled
-    static func handleEventsForBackgroundURLSession(identifier: String) async -> Bool {
+    func handleEventsForBackgroundURLSession(identifier: String) async -> Bool {
         guard self.identifier == identifier else { return false }
 
         return await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
@@ -41,29 +49,29 @@ actor StorageBackgroundEventsRegistry {
     /// Notifies observes when waiting for continuation to be resumed.
     /// - Parameters:
     ///   - identifier: session identifier
-    private static func notifyWaiting(for identifier: String) {
+    private func notifyWaiting(for identifier: String) {
         notificationCenter?.post(name: Notification.Name.StorageBackgroundEventsRegistryWaiting, object: identifier)
     }
 
     // The storage plugin will register the session identifier when it is configured.
-    static func register(identifier: String) {
+    func register(identifier: String) {
         self.identifier = identifier
     }
 
     // When the storage function is deinitialized it will unregister the session identifier.
-    static func unregister(identifier: String) {
+    func unregister(identifier: String) {
         if self.identifier == identifier {
             self.identifier = nil
         }
     }
 
     // When URLSession is done processing background events it will use this function to get the completion handler.
-    static func getContinuation(for identifier: String) -> StorageBackgroundEventsContinuation? {
+    func getContinuation(for identifier: String) -> StorageBackgroundEventsContinuation? {
         self.identifier == identifier ? continuation : nil
     }
 
     // Once the background event completion handler is used it can be cleared.
-    static func removeContinuation(for identifier: String) {
+    func removeContinuation(for identifier: String) {
         if self.identifier == identifier {
             self.continuation = nil
         }

@@ -108,7 +108,9 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
         self.awsS3 = awsS3
         self.bucket = bucket
 
-        StorageBackgroundEventsRegistry.register(identifier: identifier)
+        Task {
+            await StorageBackgroundEventsRegistry.shared.register(identifier: identifier)
+        }
 
         delegate.storageService = self
 
@@ -125,7 +127,9 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
     }
 
     deinit {
-        StorageBackgroundEventsRegistry.unregister(identifier: identifier)
+        Task {
+            await StorageBackgroundEventsRegistry.shared.unregister(identifier: identifier)
+        }
     }
 
     func reset() {

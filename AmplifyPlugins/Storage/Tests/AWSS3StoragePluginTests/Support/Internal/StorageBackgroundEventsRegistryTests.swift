@@ -16,12 +16,14 @@ class StorageBackgroundEventsRegistryTests: XCTestCase {
     func testRegisteringAndUnregister() async throws {
         let identifier = UUID().uuidString
         let otherIdentifier = UUID().uuidString
-        StorageBackgroundEventsRegistry.register(identifier: identifier)
+        await StorageBackgroundEventsRegistry.shared.register(identifier: identifier)
 
         let notificationCenter = NotificationCenter()
-        StorageBackgroundEventsRegistry.notificationCenter = notificationCenter
+        await StorageBackgroundEventsRegistry.shared.change(notificationCenter: notificationCenter)
         defer {
-            StorageBackgroundEventsRegistry.notificationCenter = nil
+            Task {
+                await StorageBackgroundEventsRegistry.shared.change(notificationCenter: nil)
+            }
         }
 
         let done = asyncExpectation(description: "done")
@@ -39,7 +41,7 @@ class StorageBackgroundEventsRegistryTests: XCTestCase {
         }
 
         Task {
-            let handled = await StorageBackgroundEventsRegistry.handleEventsForBackgroundURLSession(identifier: identifier)
+            let handled = await StorageBackgroundEventsRegistry.shared.handleEventsForBackgroundURLSession(identifier: identifier)
             await done.fulfill()
             XCTAssertTrue(handled)
         }
@@ -53,7 +55,7 @@ class StorageBackgroundEventsRegistryTests: XCTestCase {
         let otherDone = asyncExpectation(description: "other done")
 
         Task {
-            let otherHandled = await StorageBackgroundEventsRegistry.handleEventsForBackgroundURLSession(identifier: otherIdentifier)
+            let otherHandled = await StorageBackgroundEventsRegistry.shared.handleEventsForBackgroundURLSession(identifier: otherIdentifier)
             await otherDone.fulfill()
             XCTAssertFalse(otherHandled)
         }
@@ -66,12 +68,12 @@ class StorageBackgroundEventsRegistryTests: XCTestCase {
     func testHandlingUnregisteredIdentifier() async throws {
         let identifier = UUID().uuidString
         let otherIdentifier = UUID().uuidString
-        StorageBackgroundEventsRegistry.register(identifier: otherIdentifier)
+        await StorageBackgroundEventsRegistry.shared.register(identifier: otherIdentifier)
 
         let done = asyncExpectation(description: "done")
 
         Task {
-            let handled = await StorageBackgroundEventsRegistry.handleEventsForBackgroundURLSession(identifier: identifier)
+            let handled = await StorageBackgroundEventsRegistry.shared.handleEventsForBackgroundURLSession(identifier: identifier)
             await done.fulfill()
             XCTAssertFalse(handled)
         }
@@ -83,9 +85,9 @@ class StorageBackgroundEventsRegistryTests: XCTestCase {
     func handleEvents(for identifier: String) async -> Bool {
         await Task.yield()
 
-        if let continuation = StorageBackgroundEventsRegistry.getContinuation(for: identifier) {
+        if let continuation = await StorageBackgroundEventsRegistry.shared.getContinuation(for: identifier) {
             continuation.resume(returning: true)
-            StorageBackgroundEventsRegistry.removeContinuation(for: identifier)
+            await StorageBackgroundEventsRegistry.shared.removeContinuation(for: identifier)
             return true
         } else {
             print("No continuation for identifier: \(identifier)")
