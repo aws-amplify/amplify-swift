@@ -85,7 +85,7 @@ class StorageTransferDatabaseTests: XCTestCase {
             return
         }
 
-        let loadedTask = StorageTransferTask(persistableTransferTask: persistableTransferTask,
+        let loadedTask = InternalStorageTransferTask(persistableTransferTask: persistableTransferTask,
                                              transferType: transferType,
                                              sessionTask: sessionTask)
 
@@ -109,7 +109,7 @@ class StorageTransferDatabaseTests: XCTestCase {
             return
         }
 
-        let loadedTask = StorageTransferTask(persistableTransferTask: persistableTransferTask,
+        let loadedTask = InternalStorageTransferTask(persistableTransferTask: persistableTransferTask,
                                              transferType: transferType,
                                              sessionTask: sessionTask)
 
@@ -149,7 +149,7 @@ class StorageTransferDatabaseTests: XCTestCase {
             return
         }
 
-        let loadedTask = StorageTransferTask(persistableTransferTask: persistableTransferTask,
+        let loadedTask = InternalStorageTransferTask(persistableTransferTask: persistableTransferTask,
                                              transferType: transferType)
 
         XCTAssertNil(originalTask.taskIdentifier)
@@ -181,7 +181,7 @@ class StorageTransferDatabaseTests: XCTestCase {
         let taskIdentifier = 42
         var sessionTasks: [StorageSessionTask] = []
 
-        // a StorageTransferTask must be created for each part which is inProgress
+        // a InternalStorageTransferTask must be created for each part which is inProgress
         for index in 0 ..< parts.count {
             let part = parts[index]
 
@@ -272,19 +272,19 @@ class StorageTransferDatabaseTests: XCTestCase {
 
     // MARK: - Private -
 
-    private func createTask(transferType: StorageTransferType) -> StorageTransferTask {
-        StorageTransferTask(transferType: transferType,
+    private func createTask(transferType: StorageTransferType) -> InternalStorageTransferTask {
+        InternalStorageTransferTask(transferType: transferType,
                             bucket: bucket,
                             key: generatedKey(),
                             storageTransferDatabase: database,
                             logger: logger)
     }
 
-    private func createSubTask(createMultipartUploadTask: StorageTransferTask,
+    private func createSubTask(createMultipartUploadTask: InternalStorageTransferTask,
                                uploadId: UploadID,
-                               partNumber: PartNumber) -> StorageTransferTask {
+                               partNumber: PartNumber) -> InternalStorageTransferTask {
         let transferType: StorageTransferType = .multiPartUploadPart(uploadId: uploadId, partNumber: partNumber)
-        let subTask = StorageTransferTask(transferType: transferType,
+        let subTask = InternalStorageTransferTask(transferType: transferType,
                                           bucket: createMultipartUploadTask.bucket,
                                           key: createMultipartUploadTask.key,
                                           storageTransferDatabase: database,

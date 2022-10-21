@@ -36,7 +36,7 @@ extension AWSS3StorageService {
     }
 
     private func startDownload(preSignedURL: URL,
-                               transferTask: StorageTransferTask,
+                               transferTask: StorageActiveTransferTask,
                                startTransfer: Bool = true) {
         guard case .download = transferTask.transferType else {
             fatalError("Transfer type must be download")

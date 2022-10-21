@@ -10,7 +10,7 @@ import Foundation
 class StorageTaskReference {
     let task: StorageTask
 
-    init(_ task: StorageTransferTask) {
+    init(_ task: StorageActiveTransferTask) {
         self.task = task
     }
 

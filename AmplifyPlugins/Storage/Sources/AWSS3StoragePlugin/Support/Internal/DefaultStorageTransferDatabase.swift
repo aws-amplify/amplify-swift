@@ -28,7 +28,7 @@ class DefaultStorageTransferDatabase {
     private let logger: Logger
 
     private let databaseDirectoryURL: URL
-    private var tasks: [TransferID: StorageTransferTask] = [:]
+    private var tasks: [TransferID: StorageActiveTransferTask] = [:]
     private var recoveryState: RecoveryState = .notStarted
 
     var tasksCount: Int {
@@ -69,13 +69,13 @@ class DefaultStorageTransferDatabase {
 
     func linkTasksWithSessions(persistableTransferTasks: [TransferID: StoragePersistableTransferTask],
                                sessionTasks: StorageSessionTasks) -> StorageTransferTaskPairs {
-        let transferTasks: [StorageTransferTask] = persistableTransferTasks.reduce(into: []) { tasks, pair in
+        let transferTasks: [StorageActiveTransferTask] = persistableTransferTasks.reduce(into: []) { tasks, pair in
             // match sessionTask to persistableTransferTask with taskIdentifier
             let persistableTransferTask = pair.value
             if let taskIdentifier = persistableTransferTask.taskIdentifier,
                let transferType = defaultTransferType(persistableTransferTask: persistableTransferTask),
                let sessionTask = sessionTasks.first(where: { $0.taskIdentifier == taskIdentifier}) {
-                let transferTask = StorageTransferTask(persistableTransferTask: persistableTransferTask,
+                let transferTask = StorageActiveTransferTask(persistableTransferTask: persistableTransferTask,
                                                        transferType: transferType,
                                                        sessionTask: sessionTask,
                                                        storageTransferDatabase: self,
@@ -83,7 +83,7 @@ class DefaultStorageTransferDatabase {
                 tasks.append(transferTask)
             } else if persistableTransferTask.transferTypeRawValue == StorageTransferType.RawValues.multiPartUpload.rawValue,
                       let transferType = defaultTransferType(persistableTransferTask: persistableTransferTask) {
-                let transferTask = StorageTransferTask(persistableTransferTask: persistableTransferTask,
+                let transferTask = StorageActiveTransferTask(persistableTransferTask: persistableTransferTask,
                                                        transferType: transferType,
                                                        storageTransferDatabase: self,
                                                        logger: logger)
@@ -160,7 +160,7 @@ class DefaultStorageTransferDatabase {
 
         let persistableTransferTasks = loadTasks()
 
-        // A StorageTransferTask has a computed property for taskIdentifier which comes from the underlying sessionTask
+        // A StorageActiveTransferTask has a computed property for taskIdentifier which comes from the underlying sessionTask
         // which is not persisted and must be linked with the instance from URLSession to access that value again.
         // This value is used to associate delegate method calls with StorageTransferTask which holds onto the onEvent
         // closure to send events back to the app.
@@ -216,7 +216,7 @@ class DefaultStorageTransferDatabase {
     }
 
     @discardableResult
-    func storeTask(task: StorageTransferTask) throws -> URL {
+    func storeTask(task: StorageActiveTransferTask) throws -> URL {
         let fileURL = getFileURL(for: task.transferID)
         let value = StoragePersistableTransferTask(task: task)
         try store(fileURL: fileURL, value: value)
@@ -276,21 +276,21 @@ class DefaultStorageTransferDatabase {
 
 extension DefaultStorageTransferDatabase: StorageTransferDatabase {
 
-    func insertTransferRequest(task: StorageTransferTask) {
+    func insertTransferRequest(task: StorageActiveTransferTask) {
         dispatchPrecondition(condition: .notOnQueue(queue))
         queue.sync {
             tasks[task.transferID] = task
         }
     }
 
-    func updateTransferRequest(task: StorageTransferTask) {
+    func updateTransferRequest(task: StorageActiveTransferTask) {
         dispatchPrecondition(condition: .notOnQueue(queue))
         queue.sync {
             tasks[task.transferID] = task
         }
     }
 
-    func removeTransferRequest(task: StorageTransferTask) {
+    func removeTransferRequest(task: StorageActiveTransferTask) {
         dispatchPrecondition(condition: .notOnQueue(queue))
         queue.sync {
             tasks[task.transferID] = nil

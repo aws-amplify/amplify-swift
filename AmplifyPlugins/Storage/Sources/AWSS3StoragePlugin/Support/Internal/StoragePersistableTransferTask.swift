@@ -19,7 +19,7 @@ Note: Multipart Uploads will have a request for the creation request, each part 
  not started. If it has been persisted then there should be parts which will be subTasks which are loaded and each
  one may be completed already and have an eTag set, otherwise the sessionTask from URLSession will be able to
  provide the taskIdentifier which is necessary when the URLSession delegate methods are called which provide the
- taskIdentifier. This value is used to find the StorageTransferTask so that updates can be reported with the
+ taskIdentifier. This value is used to find the StorageActiveTransferTask so that updates can be reported with the
  onEvent closure which is given when the Storage operation is started.
  */
 
@@ -57,7 +57,7 @@ struct StoragePersistableTransferTask: Codable {
         return uploadFile
     }
 
-    init(task: StorageTransferTask) {
+    init(task: StorageActiveTransferTask) {
         self.transferID = task.transferID
         self.taskIdentifier = task.taskIdentifier
         self.transferTypeRawValue = task.transferType.rawValue

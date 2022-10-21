@@ -9,7 +9,7 @@ import Foundation
 import Amplify
 import AWSPluginsCore
 
-class StorageTransferTask {
+class StorageActiveTransferTask {
     typealias Action = () -> Void
 
     let transferID: String
@@ -158,7 +158,7 @@ class StorageTransferTask {
     }
 
     // Task Identifier is unique to each task in this instance of URLSession
-    // and is used in the delegate functions to access the StorageTransferTask
+    // and is used in the delegate functions to access the StorageActiveTransferTask
     // which holds onto the URLSessionTask which is used here as well as the
     // onEvent handler to pass events back to the app.
     var taskIdentifier: TaskIdentifier? {
@@ -340,14 +340,14 @@ class StorageTransferTask {
     }
 }
 
-extension StorageTransferTask: StorageTask {
+extension StorageActiveTransferTask: StorageTask {
     func pause() {
         suspend()
     }
 }
 
 extension URLRequest {
-    mutating func setHTTPRequestHeaders(transferTask: StorageTransferTask) {
+    mutating func setHTTPRequestHeaders(transferTask: StorageActiveTransferTask) {
         guard let requestHeaders = transferTask.requestHeaders else {
             return
         }

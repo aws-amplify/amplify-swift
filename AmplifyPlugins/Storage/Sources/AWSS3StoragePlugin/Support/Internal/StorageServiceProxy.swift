@@ -13,8 +13,8 @@ protocol StorageServiceProxy: AnyObject {
     var awsS3: AWSS3Behavior! { get }
     var urlSession: URLSession { get }
 
-    func register(task: StorageTransferTask)
-    func unregister(task: StorageTransferTask)
+    func register(task: StorageActiveTransferTask)
+    func unregister(task: StorageActiveTransferTask)
     func unregister(taskIdentifiers: [TaskIdentifier])
 
     func register(multipartUploadSession: StorageMultipartUploadSession)

@@ -10,10 +10,10 @@ import Foundation
 typealias StorageTransferTaskPairs = [StorageTransferTaskPair]
 
 struct StorageTransferTaskPair {
-    let transferTask: StorageTransferTask
+    let transferTask: StorageActiveTransferTask
     let multipartUpload: StorageMultipartUpload?
 
-    init(transferTask: StorageTransferTask,
+    init(transferTask: StorageActiveTransferTask,
          multipartUploads: [StorageMultipartUpload]) {
         self.transferTask = transferTask
 

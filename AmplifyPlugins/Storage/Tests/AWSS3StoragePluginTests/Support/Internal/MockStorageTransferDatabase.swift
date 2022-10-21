@@ -14,27 +14,27 @@ class MockStorageTransferDatabase: StorageTransferDatabase {
     private let queue = DispatchQueue(label: "com.amazon.aws.amplify.storage-tests",
                                       qos: .background,
                                       target: .global())
-    private var tasks: [TransferID: StorageTransferTask] = [:]
+    private var tasks: [TransferID: InternalStorageTransferTask] = [:]
 
     private var uploadEventHandler: AWSS3StorageServiceBehaviour.StorageServiceUploadEventHandler?
     private var downloadEventHandler: AWSS3StorageServiceBehaviour.StorageServiceDownloadEventHandler?
     private var multipartUploadEventHandler: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler?
 
-    func insertTransferRequest(task: StorageTransferTask) {
+    func insertTransferRequest(task: InternalStorageTransferTask) {
         dispatchPrecondition(condition: .notOnQueue(queue))
         queue.sync {
             tasks[task.transferID] = task
         }
     }
 
-    func updateTransferRequest(task: StorageTransferTask) {
+    func updateTransferRequest(task: InternalStorageTransferTask) {
         dispatchPrecondition(condition: .notOnQueue(queue))
         queue.sync {
             tasks[task.transferID] = task
         }
     }
 
-    func removeTransferRequest(task: StorageTransferTask) {
+    func removeTransferRequest(task: InternalStorageTransferTask) {
         dispatchPrecondition(condition: .notOnQueue(queue))
         queue.sync {
             tasks[task.transferID] = nil

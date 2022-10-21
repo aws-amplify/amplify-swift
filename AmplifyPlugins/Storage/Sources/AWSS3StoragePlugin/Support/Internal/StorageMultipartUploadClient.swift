@@ -14,7 +14,7 @@ protocol StorageMultipartUploadClient {
     func integrate(session: StorageMultipartUploadSession)
 
     func createMultipartUpload() throws
-    func uploadPart(partNumber: PartNumber, multipartUpload: StorageMultipartUpload, subTask: StorageTransferTask) throws
+    func uploadPart(partNumber: PartNumber, multipartUpload: StorageMultipartUpload, subTask: StorageActiveTransferTask) throws
     func completeMultipartUpload(uploadId: UploadID) throws
     func abortMultipartUpload(uploadId: UploadID, error: Error?) throws
 
@@ -85,7 +85,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
     }
 
     // https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPart.html
-    func uploadPart(partNumber: PartNumber, multipartUpload: StorageMultipartUpload, subTask: StorageTransferTask) throws {
+    func uploadPart(partNumber: PartNumber, multipartUpload: StorageMultipartUpload, subTask: StorageActiveTransferTask) throws {
         guard let serviceProxy = serviceProxy else { fatalError("Service Proxy is required") }
 
         guard let uploadId = multipartUpload.uploadId,

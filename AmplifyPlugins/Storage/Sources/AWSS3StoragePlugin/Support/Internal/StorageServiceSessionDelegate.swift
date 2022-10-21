@@ -31,7 +31,7 @@ class StorageServiceSessionDelegate: NSObject {
         }
     }
 
-    private func findTransferTask(for taskIdentifier: TaskIdentifier) -> StorageTransferTask? {
+    private func findTransferTask(for taskIdentifier: TaskIdentifier) -> StorageActiveTransferTask? {
         guard let storageService = storageService,
               let transferTask = storageService.findTask(taskIdentifier: taskIdentifier) else {
                   logger.debug("Did not find transfer task: \(taskIdentifier)")

@@ -17,11 +17,11 @@ import AWSPluginsCore
 
 /// Database protocol which supports the recovery process.
 protocol StorageTransferDatabase {
-    func insertTransferRequest(task: StorageTransferTask)
+    func insertTransferRequest(task: StorageActiveTransferTask)
 
-    func updateTransferRequest(task: StorageTransferTask)
+    func updateTransferRequest(task: StorageActiveTransferTask)
 
-    func removeTransferRequest(task: StorageTransferTask)
+    func removeTransferRequest(task: StorageActiveTransferTask)
 
     func prepareForBackground(completion: (() -> Void)?)
 

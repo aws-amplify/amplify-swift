@@ -12,7 +12,7 @@ class StorageTransferResponse {
     let task: URLSessionTask
     let httpResponse: HTTPURLResponse?
     let error: Error?
-    let transferTask: StorageTransferTask
+    let transferTask: StorageActiveTransferTask
 
     var userInfo: [AnyHashable: Any]? {
         guard let httpResponse = httpResponse else {
@@ -85,7 +85,7 @@ class StorageTransferResponse {
         return result
     }
 
-    init(task: URLSessionTask, error: Error?, transferTask: StorageTransferTask) {
+    init(task: URLSessionTask, error: Error?, transferTask: StorageActiveTransferTask) {
         self.httpResponse = task.response as? HTTPURLResponse
         self.task = task
         self.error = error

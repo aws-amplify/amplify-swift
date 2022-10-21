@@ -42,7 +42,7 @@ class StorageMultipartUploadSession {
     private let client: StorageMultipartUploadClient
     private let onEvent: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler
 
-    private let transferTask: StorageTransferTask
+    private let transferTask: StorageActiveTransferTask
 
     private var contentType: String? {
         transferTask.contentType
@@ -64,7 +64,7 @@ class StorageMultipartUploadSession {
         self.client = client
 
         let transferType: StorageTransferType = .multiPartUpload(onEvent: onEvent)
-        let transferTask = StorageTransferTask(transferType: transferType,
+        let transferTask = StorageActiveTransferTask(transferType: transferType,
                                                bucket: bucket,
                                                key: key,
                                                contentType: contentType,
@@ -86,7 +86,7 @@ class StorageMultipartUploadSession {
     }
 
     init?(client: StorageMultipartUploadClient,
-          transferTask: StorageTransferTask,
+          transferTask: StorageActiveTransferTask,
           multipartUpload: StorageMultipartUpload,
           behavior: StorageMultipartUploadBehavior = .progressive,
           fileSystem: FileSystem = .default,
@@ -115,12 +115,12 @@ class StorageMultipartUploadSession {
         uploadParts(uploadFile: uploadFile, uploadId: uploadId, partSize: partSize, parts: parts)
     }
 
-    func createSubTask(partNumber: PartNumber) -> StorageTransferTask {
+    func createSubTask(partNumber: PartNumber) -> StorageActiveTransferTask {
         guard let uploadId = multipartUpload.uploadId else {
             fatalError()
         }
         let transferType: StorageTransferType = .multiPartUploadPart(uploadId: uploadId, partNumber: partNumber)
-        let subTask = StorageTransferTask(transferType: transferType, bucket: transferTask.bucket, key: transferTask.key)
+        let subTask = StorageActiveTransferTask(transferType: transferType, bucket: transferTask.bucket, key: transferTask.key)
         return subTask
     }
 

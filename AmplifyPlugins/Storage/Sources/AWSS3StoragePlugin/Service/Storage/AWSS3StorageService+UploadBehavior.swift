@@ -48,7 +48,7 @@ extension AWSS3StorageService {
     func startUpload(preSignedURL: URL,
                      fileURL: URL,
                      contentType: String,
-                     transferTask: StorageTransferTask,
+                     transferTask: StorageActiveTransferTask,
                      startTransfer: Bool = true) {
         guard case .upload = transferTask.transferType else {
             fatalError("Transfer type must be upload")

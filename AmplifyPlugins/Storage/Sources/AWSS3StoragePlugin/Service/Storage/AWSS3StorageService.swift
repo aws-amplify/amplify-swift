@@ -30,7 +30,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
     let storageTransferDatabase: StorageTransferDatabase
     let fileSystem: FileSystem
 
-    var tasks: [Int: StorageTransferTask] = [:]
+    var tasks: [Int: StorageActiveTransferTask] = [:]
     var multipartUploadSessions: [StorageMultipartUploadSession] = []
 
     private let serviceDispatchQueue = DispatchQueue(label: "com.amazon.aws.amplify.storage.service", target: .global())
@@ -167,7 +167,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
         }
     }
 
-    func register(task: StorageTransferTask) {
+    func register(task: StorageActiveTransferTask) {
         dispatchPrecondition(condition: .notOnQueue(serviceDispatchQueue))
         serviceDispatchQueue.sync {
             guard let taskIdentifier = task.taskIdentifier else { return }
@@ -175,7 +175,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
         }
     }
 
-    func unregister(task: StorageTransferTask) {
+    func unregister(task: StorageActiveTransferTask) {
         dispatchPrecondition(condition: .notOnQueue(serviceDispatchQueue))
         serviceDispatchQueue.sync {
             guard let taskIdentifier = task.taskIdentifier else { return }
@@ -209,7 +209,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
         }
     }
 
-    func findTask(taskIdentifier: TaskIdentifier) -> StorageTransferTask? {
+    func findTask(taskIdentifier: TaskIdentifier) -> StorageActiveTransferTask? {
         dispatchPrecondition(condition: .notOnQueue(serviceDispatchQueue))
         return serviceDispatchQueue.sync {
             let task = tasks[taskIdentifier]
@@ -231,8 +231,8 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
                             bucket: String,
                             key: String,
                             location: URL? = nil,
-                            requestHeaders: [String: String]? = nil) -> StorageTransferTask {
-        let transferTask = StorageTransferTask(transferType: transferType,
+                            requestHeaders: [String: String]? = nil) -> StorageActiveTransferTask {
+        let transferTask = StorageActiveTransferTask(transferType: transferType,
                                                bucket: bucket,
                                                key: key,
                                                location: location,

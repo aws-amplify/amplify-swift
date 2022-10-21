@@ -47,7 +47,7 @@ class StoragePersistableTransferTaskTests: XCTestCase {
             return
         }
 
-        let loadedTask1 = StorageTransferTask(persistableTransferTask: persistableTask1,
+        let loadedTask1 = InternalStorageTransferTask(persistableTransferTask: persistableTask1,
                                               transferType: loadedTranferType1,
                                               sessionTask: sessionTask1,
                                               storageTransferDatabase: database,
@@ -78,7 +78,7 @@ class StoragePersistableTransferTaskTests: XCTestCase {
             return
         }
 
-        let loadedTask1 = StorageTransferTask(persistableTransferTask: persistableTask1,
+        let loadedTask1 = InternalStorageTransferTask(persistableTransferTask: persistableTask1,
                                               transferType: loadedTranferType1,
                                               sessionTask: sessionTask1,
                                               storageTransferDatabase: database,
@@ -170,7 +170,7 @@ class StoragePersistableTransferTaskTests: XCTestCase {
             return
         }
 
-        let loadedTask1 = StorageTransferTask(persistableTransferTask: persistableTask1,
+        let loadedTask1 = InternalStorageTransferTask(persistableTransferTask: persistableTask1,
                                               transferType: loadedTranferType1,
                                               storageTransferDatabase: database,
                                               logger: logger)
@@ -186,7 +186,7 @@ class StoragePersistableTransferTaskTests: XCTestCase {
             return
         }
 
-        let loadedTask2 = StorageTransferTask(persistableTransferTask: persistableTask2,
+        let loadedTask2 = InternalStorageTransferTask(persistableTransferTask: persistableTask2,
                                               transferType: loadedTranferType2,
                                               sessionTask: sessionTask2,
                                               storageTransferDatabase: database,
@@ -202,7 +202,7 @@ class StoragePersistableTransferTaskTests: XCTestCase {
             return
         }
 
-        let loadedTask3 = StorageTransferTask(persistableTransferTask: persistableTask3,
+        let loadedTask3 = InternalStorageTransferTask(persistableTransferTask: persistableTask3,
                                               transferType: loadedTranferType3,
                                               sessionTask: sessionTask3,
                                               storageTransferDatabase: database,
@@ -224,12 +224,12 @@ class StoragePersistableTransferTaskTests: XCTestCase {
     // MARK: - Private -
 
     private func createTask(transferType: StorageTransferType,
-                            sessionTask: StorageSessionTask? = nil) -> StorageTransferTask {
+                            sessionTask: StorageSessionTask? = nil) -> InternalStorageTransferTask {
         let transferID = UUID().uuidString
         let bucket = "BUCKET"
         let key = UUID().uuidString
 
-        let task = StorageTransferTask(transferID: transferID,
+        let task = InternalStorageTransferTask(transferID: transferID,
                                        transferType: transferType,
                                        bucket: bucket,
                                        key: key,
