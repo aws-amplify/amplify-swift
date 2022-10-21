@@ -41,6 +41,7 @@ public class LazyModel<Element: Model>: Codable, LazyModelMarker {
             }
         }
     }
+    
     public init(modelProvider: AnyModelProvider<Element>) {
         self.modelProvider = modelProvider
         switch self.modelProvider.getState() {
@@ -93,6 +94,22 @@ public class LazyModel<Element: Model>: Codable, LazyModelMarker {
             self.loadedState = .loaded(element)
             return element
         case .loaded(let element):
+            return element
+        }
+    }
+    
+    public func require() async throws -> Element {
+        switch loadedState {
+        case .notLoaded:
+            guard let element = try await modelProvider.load() else {
+                throw CoreError.operation("Expected required element not found", "", nil)
+            }
+            self.loadedState = .loaded(element)
+            return element
+        case .loaded(let element):
+            guard let element = element else {
+                throw CoreError.operation("Expected required element not found", "", nil)
+            }
             return element
         }
     }
