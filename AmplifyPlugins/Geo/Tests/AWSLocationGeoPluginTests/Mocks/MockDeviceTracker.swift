@@ -9,24 +9,32 @@ import Foundation
 import XCTest
 import Amplify
 @testable import AWSLocationGeoPlugin
+import CoreLocation
 
-public class MockAWSDeviceTracker: DeviceTrackingBehavior {
+public class MockAWSDeviceTracker: AWSDeviceTracker {
     
     // MARK: - Method call counts for MockAWSDeviceTracker
     var configureCalled = 0
     var startDeviceTrackingCalled = 0
     var stopDeviceTrackingCalled = 0
     
-    public func configure(with options: Geo.LocationManager.TrackingSessionOptions) {
+    public override func configure(with options: Geo.LocationManager.TrackingSessionOptions) {
         configureCalled += 1
+        super.configure(with: options)
     }
     
-    public func startTracking() {
+    public override func configureLocationManager(with options: Geo.LocationManager.TrackingSessionOptions) {
+        // do nothing
+    }
+    
+    public override func startTracking() {
         startDeviceTrackingCalled += 1
+        super.startTracking()
     }
     
-    public func stopTracking() {
+    public override func stopTracking() {
         stopDeviceTrackingCalled += 1
+        super.stopTracking()
     }
    
 }

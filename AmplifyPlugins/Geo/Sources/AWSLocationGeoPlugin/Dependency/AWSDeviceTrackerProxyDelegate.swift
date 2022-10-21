@@ -17,12 +17,9 @@ class AWSDeviceTrackerProxyDelegate: ProxyDelegate {
         self.deviceTrackingBehavior = deviceTrackingBehavior
     }
     
-    var didUpdateLocations: (CLLocationManager, [CLLocation]) -> Void = {
-        manager, locations in
-        
-        // Batching / Persistence
-        // Call deviceTrackingBehavior.updateLocation()
+    var didUpdateLocations: (CLLocationManager, [CLLocation]) -> Void = { manager, locations in
+        // TODO: Batching / Persistence
+        // TODO: Call deviceTrackingBehavior.updateLocation()
     }
-    
-    
+
 }

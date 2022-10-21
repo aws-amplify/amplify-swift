@@ -11,17 +11,29 @@ import Foundation
 import CoreLocation
 
 class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, DeviceTrackingBehavior {
-    let locationManager: Geo.LocationManager
+    let locationManager: CLLocationManager
     var wakeAppForSignificantLocationUpdates = true
     var trackUntil: Date = .distantFuture
     var batchingOptions: Geo.LocationManager.BatchingOptions = .none
     var proxyDelegate: ProxyDelegate?
     
-    init(locationManager: Geo.LocationManager) {
+    init(locationManager: CLLocationManager) {
         self.locationManager = locationManager
     }
     
     func configure(with options: Geo.LocationManager.TrackingSessionOptions) {
+        self.wakeAppForSignificantLocationUpdates = options.wakeAppForSignificantLocationChanges
+        self.trackUntil = options.trackUntil
+        self.batchingOptions = options.batchingOptions
+        self.proxyDelegate = options.proxyDelegate ?? AWSDeviceTrackerProxyDelegate(deviceTrackingBehavior: self)
+        locationManager.delegate = self
+        configureLocationManager(with: options)
+    }
+    
+    // setting `CLLocationManager` properties requires a UITest or running test in App mode
+    // with appropriate location permissions. Moved out to separate method to facilitate
+    // unit testing
+    func configureLocationManager(with options: Geo.LocationManager.TrackingSessionOptions) {
         locationManager.desiredAccuracy = options.desiredAccuracy.clLocationAccuracy
         if options.requestAlwaysAuthorization {
             locationManager.requestAlwaysAuthorization()
@@ -31,11 +43,6 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, DeviceTrackingBehav
         locationManager.activityType = options.activityType
         locationManager.showsBackgroundLocationIndicator = options.showsBackgroundLocationIndicator
         locationManager.distanceFilter = options.distanceFilter
-        locationManager.delegate = self
-        self.wakeAppForSignificantLocationUpdates = options.wakeAppForSignificantLocationChanges
-        self.trackUntil = options.trackUntil
-        self.batchingOptions = options.batchingOptions
-        self.proxyDelegate = options.proxyDelegate ?? AWSDeviceTrackerProxyDelegate(deviceTrackingBehavior: self)
     }
     
     func startTracking() {
