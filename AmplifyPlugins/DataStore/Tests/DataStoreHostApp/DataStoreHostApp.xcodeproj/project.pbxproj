@@ -168,8 +168,6 @@
 		21801CDE28F9A86800FFA37E /* Post4+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CAD28F9A86600FFA37E /* Post4+Schema.swift */; };
 		21801CDF28F9A86800FFA37E /* MyCustomModel8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CAE28F9A86600FFA37E /* MyCustomModel8+Schema.swift */; };
 		21801CE028F9A86800FFA37E /* Post8V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CAF28F9A86600FFA37E /* Post8V2.swift */; };
-		21801CE128F9A86800FFA37E /* PostWithCompositeKeyAndIndex+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CB028F9A86600FFA37E /* PostWithCompositeKeyAndIndex+Schema.swift */; };
-		21801CE228F9A86800FFA37E /* PostWithCompositeKeyAndIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CB128F9A86600FFA37E /* PostWithCompositeKeyAndIndex.swift */; };
 		21801CE328F9A86800FFA37E /* Project6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CB228F9A86600FFA37E /* Project6.swift */; };
 		21801CE428F9A86800FFA37E /* Blog8V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CB328F9A86700FFA37E /* Blog8V2.swift */; };
 		21801CE528F9A86800FFA37E /* PostTagsWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CB428F9A86700FFA37E /* PostTagsWithCompositeKey+Schema.swift */; };
@@ -183,7 +181,6 @@
 		21801CED28F9A86800FFA37E /* Post4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CBC28F9A86700FFA37E /* Post4.swift */; };
 		21801CEE28F9A86800FFA37E /* Comment4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CBD28F9A86700FFA37E /* Comment4.swift */; };
 		21801CEF28F9A86800FFA37E /* Blog8V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CBE28F9A86700FFA37E /* Blog8V2+Schema.swift */; };
-		21801CF028F9A86800FFA37E /* CommentWithCompositeKeyAndIndex+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CBF28F9A86700FFA37E /* CommentWithCompositeKeyAndIndex+Schema.swift */; };
 		21801CF128F9A86800FFA37E /* Project2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CC028F9A86700FFA37E /* Project2+Schema.swift */; };
 		21801CF228F9A86800FFA37E /* Post4V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CC128F9A86700FFA37E /* Post4V2+Schema.swift */; };
 		21801CF328F9A86800FFA37E /* Project6+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CC228F9A86700FFA37E /* Project6+Schema.swift */; };
@@ -199,7 +196,6 @@
 		21801CFD28F9A86800FFA37E /* MyCustomModel8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CCC28F9A86800FFA37E /* MyCustomModel8.swift */; };
 		21801CFE28F9A86800FFA37E /* Comment8V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CCD28F9A86800FFA37E /* Comment8V2.swift */; };
 		21801CFF28F9A86800FFA37E /* Team2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CCE28F9A86800FFA37E /* Team2.swift */; };
-		21801D0028F9A86800FFA37E /* CommentWithCompositeKeyAndIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CCF28F9A86800FFA37E /* CommentWithCompositeKeyAndIndex.swift */; };
 		21801D0128F9A86800FFA37E /* AmplifyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CD028F9A86800FFA37E /* AmplifyModels.swift */; };
 		21801D0228F9A86800FFA37E /* Comment8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CD128F9A86800FFA37E /* Comment8+Schema.swift */; };
 		21801D0328F9A86800FFA37E /* Post7+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801CD228F9A86800FFA37E /* Post7+Schema.swift */; };
@@ -734,8 +730,6 @@
 		21801CAD28F9A86600FFA37E /* Post4+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post4+Schema.swift"; sourceTree = "<group>"; };
 		21801CAE28F9A86600FFA37E /* MyCustomModel8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MyCustomModel8+Schema.swift"; sourceTree = "<group>"; };
 		21801CAF28F9A86600FFA37E /* Post8V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post8V2.swift; sourceTree = "<group>"; };
-		21801CB028F9A86600FFA37E /* PostWithCompositeKeyAndIndex+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithCompositeKeyAndIndex+Schema.swift"; sourceTree = "<group>"; };
-		21801CB128F9A86600FFA37E /* PostWithCompositeKeyAndIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithCompositeKeyAndIndex.swift; sourceTree = "<group>"; };
 		21801CB228F9A86600FFA37E /* Project6.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project6.swift; sourceTree = "<group>"; };
 		21801CB328F9A86700FFA37E /* Blog8V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blog8V2.swift; sourceTree = "<group>"; };
 		21801CB428F9A86700FFA37E /* PostTagsWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostTagsWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
@@ -749,7 +743,6 @@
 		21801CBC28F9A86700FFA37E /* Post4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post4.swift; sourceTree = "<group>"; };
 		21801CBD28F9A86700FFA37E /* Comment4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment4.swift; sourceTree = "<group>"; };
 		21801CBE28F9A86700FFA37E /* Blog8V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Blog8V2+Schema.swift"; sourceTree = "<group>"; };
-		21801CBF28F9A86700FFA37E /* CommentWithCompositeKeyAndIndex+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CommentWithCompositeKeyAndIndex+Schema.swift"; sourceTree = "<group>"; };
 		21801CC028F9A86700FFA37E /* Project2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project2+Schema.swift"; sourceTree = "<group>"; };
 		21801CC128F9A86700FFA37E /* Post4V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post4V2+Schema.swift"; sourceTree = "<group>"; };
 		21801CC228F9A86700FFA37E /* Project6+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project6+Schema.swift"; sourceTree = "<group>"; };
@@ -765,7 +758,6 @@
 		21801CCC28F9A86800FFA37E /* MyCustomModel8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyCustomModel8.swift; sourceTree = "<group>"; };
 		21801CCD28F9A86800FFA37E /* Comment8V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment8V2.swift; sourceTree = "<group>"; };
 		21801CCE28F9A86800FFA37E /* Team2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team2.swift; sourceTree = "<group>"; };
-		21801CCF28F9A86800FFA37E /* CommentWithCompositeKeyAndIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentWithCompositeKeyAndIndex.swift; sourceTree = "<group>"; };
 		21801CD028F9A86800FFA37E /* AmplifyModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyModels.swift; sourceTree = "<group>"; };
 		21801CD128F9A86800FFA37E /* Comment8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment8+Schema.swift"; sourceTree = "<group>"; };
 		21801CD228F9A86800FFA37E /* Post7+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post7+Schema.swift"; sourceTree = "<group>"; };
@@ -1422,66 +1414,20 @@
 		21801C7B28F9A22900FFA37E /* AWSDataStorePluginLazyLoadTests */ = {
 			isa = PBXGroup;
 			children = (
+				21801D482902E25A00FFA37E /* LazyLoadBase */,
 				21801D3C2900730B00FFA37E /* LL1 */,
+				21801D412902DD4900FFA37E /* LL2 */,
 				21801D3A29006F8600FFA37E /* LL3 */,
+				21801D422902E0CD00FFA37E /* LL4 */,
 				21801D3829006F7500FFA37E /* LL5 */,
-				21801CA228F9A78F00FFA37E /* Models */,
-				21801C8628F9A37F00FFA37E /* TestConfigHelper.swift */,
-				21801C8528F9A36D00FFA37E /* lazyload-schema.graphql */,
-				21801C8428F9A2DC00FFA37E /* README.md */,
-				21801C7C28F9A22900FFA37E /* AWSDataStoreLazyLoadBaseTest.swift */,
+				21801D432902E0D400FFA37E /* LL6 */,
+				21801D442902E0DB00FFA37E /* LL7 */,
+				21801D3B2900709200FFA37E /* LL8 */,
+				21801D452902E0E100FFA37E /* LL9 */,
+				21801D462902E0F600FFA37E /* LL10 */,
+				21801D472902E0FD00FFA37E /* LL11 */,
 			);
 			path = AWSDataStorePluginLazyLoadTests;
-			sourceTree = "<group>";
-		};
-		21801CA228F9A78F00FFA37E /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				21801CD028F9A86800FFA37E /* AmplifyModels.swift */,
-				21801CB328F9A86700FFA37E /* Blog8V2.swift */,
-				21801CBE28F9A86700FFA37E /* Blog8V2+Schema.swift */,
-				21801CBD28F9A86700FFA37E /* Comment4.swift */,
-				21801CC528F9A86700FFA37E /* Comment4+Schema.swift */,
-				21801CC428F9A86700FFA37E /* Comment7.swift */,
-				21801CA728F9A86600FFA37E /* Comment7+Schema.swift */,
-				21801CB928F9A86700FFA37E /* Comment8.swift */,
-				21801CD128F9A86800FFA37E /* Comment8+Schema.swift */,
-				21801CCD28F9A86800FFA37E /* Comment8V2.swift */,
-				21801CAC28F9A86600FFA37E /* Comment8V2+Schema.swift */,
-				21801CCF28F9A86800FFA37E /* CommentWithCompositeKeyAndIndex.swift */,
-				21801CBF28F9A86700FFA37E /* CommentWithCompositeKeyAndIndex+Schema.swift */,
-				21801D3929006F7E00FFA37E /* LL2 */,
-				21801D3B2900709200FFA37E /* LL8 */,
-				21801CCC28F9A86800FFA37E /* MyCustomModel8.swift */,
-				21801CAE28F9A86600FFA37E /* MyCustomModel8+Schema.swift */,
-				21801CD328F9A86800FFA37E /* MyNestedModel8.swift */,
-				21801CAA28F9A86600FFA37E /* MyNestedModel8+Schema.swift */,
-				21801CBC28F9A86700FFA37E /* Post4.swift */,
-				21801CAD28F9A86600FFA37E /* Post4+Schema.swift */,
-				21801CC328F9A86700FFA37E /* Post7.swift */,
-				21801CD228F9A86800FFA37E /* Post7+Schema.swift */,
-				21801CA828F9A86600FFA37E /* Post8.swift */,
-				21801CB828F9A86700FFA37E /* Post8+Schema.swift */,
-				21801CAF28F9A86600FFA37E /* Post8V2.swift */,
-				21801CC628F9A86700FFA37E /* Post8V2+Schema.swift */,
-				21801CAB28F9A86600FFA37E /* PostTagsWithCompositeKey.swift */,
-				21801CB428F9A86700FFA37E /* PostTagsWithCompositeKey+Schema.swift */,
-				21801CB128F9A86600FFA37E /* PostWithCompositeKeyAndIndex.swift */,
-				21801CB028F9A86600FFA37E /* PostWithCompositeKeyAndIndex+Schema.swift */,
-				21801CA928F9A86600FFA37E /* PostWithTagsCompositeKey.swift */,
-				21801CA528F9A86600FFA37E /* PostWithTagsCompositeKey+Schema.swift */,
-				21801CB628F9A86700FFA37E /* Project2.swift */,
-				21801CC028F9A86700FFA37E /* Project2+Schema.swift */,
-				21801CB228F9A86600FFA37E /* Project6.swift */,
-				21801CC228F9A86700FFA37E /* Project6+Schema.swift */,
-				21801CC928F9A86800FFA37E /* TagWithCompositeKey.swift */,
-				21801CB528F9A86700FFA37E /* TagWithCompositeKey+Schema.swift */,
-				21801CCE28F9A86800FFA37E /* Team2.swift */,
-				21801CCA28F9A86800FFA37E /* Team2+Schema.swift */,
-				21801CC828F9A86800FFA37E /* Team6.swift */,
-				21801CBB28F9A86700FFA37E /* Team6+Schema.swift */,
-			);
-			path = Models;
 			sourceTree = "<group>";
 		};
 		21801D3829006F7500FFA37E /* LL5 */ = {
@@ -1494,13 +1440,6 @@
 				21801D2C29006DA800FFA37E /* Team1+Schema.swift */,
 			);
 			path = LL5;
-			sourceTree = "<group>";
-		};
-		21801D3929006F7E00FFA37E /* LL2 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = LL2;
 			sourceTree = "<group>";
 		};
 		21801D3A29006F8600FFA37E /* LL3 */ = {
@@ -1536,6 +1475,103 @@
 				21801CC128F9A86700FFA37E /* Post4V2+Schema.swift */,
 			);
 			path = LL1;
+			sourceTree = "<group>";
+		};
+		21801D412902DD4900FFA37E /* LL2 */ = {
+			isa = PBXGroup;
+			children = (
+				21801CB328F9A86700FFA37E /* Blog8V2.swift */,
+				21801CBE28F9A86700FFA37E /* Blog8V2+Schema.swift */,
+				21801CCD28F9A86800FFA37E /* Comment8V2.swift */,
+				21801CAC28F9A86600FFA37E /* Comment8V2+Schema.swift */,
+				21801CCC28F9A86800FFA37E /* MyCustomModel8.swift */,
+				21801CAE28F9A86600FFA37E /* MyCustomModel8+Schema.swift */,
+				21801CD328F9A86800FFA37E /* MyNestedModel8.swift */,
+				21801CAA28F9A86600FFA37E /* MyNestedModel8+Schema.swift */,
+				21801CAF28F9A86600FFA37E /* Post8V2.swift */,
+				21801CC628F9A86700FFA37E /* Post8V2+Schema.swift */,
+			);
+			path = LL2;
+			sourceTree = "<group>";
+		};
+		21801D422902E0CD00FFA37E /* LL4 */ = {
+			isa = PBXGroup;
+			children = (
+				21801CAB28F9A86600FFA37E /* PostTagsWithCompositeKey.swift */,
+				21801CB428F9A86700FFA37E /* PostTagsWithCompositeKey+Schema.swift */,
+				21801CA928F9A86600FFA37E /* PostWithTagsCompositeKey.swift */,
+				21801CA528F9A86600FFA37E /* PostWithTagsCompositeKey+Schema.swift */,
+				21801CC928F9A86800FFA37E /* TagWithCompositeKey.swift */,
+				21801CB528F9A86700FFA37E /* TagWithCompositeKey+Schema.swift */,
+			);
+			path = LL4;
+			sourceTree = "<group>";
+		};
+		21801D432902E0D400FFA37E /* LL6 */ = {
+			isa = PBXGroup;
+			children = (
+				21801CB628F9A86700FFA37E /* Project2.swift */,
+				21801CC028F9A86700FFA37E /* Project2+Schema.swift */,
+				21801CCE28F9A86800FFA37E /* Team2.swift */,
+				21801CCA28F9A86800FFA37E /* Team2+Schema.swift */,
+			);
+			path = LL6;
+			sourceTree = "<group>";
+		};
+		21801D442902E0DB00FFA37E /* LL7 */ = {
+			isa = PBXGroup;
+			children = (
+				21801CBD28F9A86700FFA37E /* Comment4.swift */,
+				21801CC528F9A86700FFA37E /* Comment4+Schema.swift */,
+				21801CBC28F9A86700FFA37E /* Post4.swift */,
+				21801CAD28F9A86600FFA37E /* Post4+Schema.swift */,
+			);
+			path = LL7;
+			sourceTree = "<group>";
+		};
+		21801D452902E0E100FFA37E /* LL9 */ = {
+			isa = PBXGroup;
+			children = (
+				21801CB228F9A86600FFA37E /* Project6.swift */,
+				21801CC228F9A86700FFA37E /* Project6+Schema.swift */,
+				21801CC828F9A86800FFA37E /* Team6.swift */,
+				21801CBB28F9A86700FFA37E /* Team6+Schema.swift */,
+			);
+			path = LL9;
+			sourceTree = "<group>";
+		};
+		21801D462902E0F600FFA37E /* LL10 */ = {
+			isa = PBXGroup;
+			children = (
+				21801CC328F9A86700FFA37E /* Post7.swift */,
+				21801CD228F9A86800FFA37E /* Post7+Schema.swift */,
+				21801CC428F9A86700FFA37E /* Comment7.swift */,
+				21801CA728F9A86600FFA37E /* Comment7+Schema.swift */,
+			);
+			path = LL10;
+			sourceTree = "<group>";
+		};
+		21801D472902E0FD00FFA37E /* LL11 */ = {
+			isa = PBXGroup;
+			children = (
+				21801CA828F9A86600FFA37E /* Post8.swift */,
+				21801CB828F9A86700FFA37E /* Post8+Schema.swift */,
+				21801CB928F9A86700FFA37E /* Comment8.swift */,
+				21801CD128F9A86800FFA37E /* Comment8+Schema.swift */,
+			);
+			path = LL11;
+			sourceTree = "<group>";
+		};
+		21801D482902E25A00FFA37E /* LazyLoadBase */ = {
+			isa = PBXGroup;
+			children = (
+				21801C8528F9A36D00FFA37E /* lazyload-schema.graphql */,
+				21801C7C28F9A22900FFA37E /* AWSDataStoreLazyLoadBaseTest.swift */,
+				21801C8428F9A2DC00FFA37E /* README.md */,
+				21801C8628F9A37F00FFA37E /* TestConfigHelper.swift */,
+				21801CD028F9A86800FFA37E /* AmplifyModels.swift */,
+			);
+			path = LazyLoadBase;
 			sourceTree = "<group>";
 		};
 		21977D75289C161D005B49D6 /* Models */ = {
@@ -3147,23 +3183,19 @@
 				21801CF828F9A86800FFA37E /* PostWithCompositeKey+Schema.swift in Sources */,
 				21801D2E29006DA900FFA37E /* Team1+Schema.swift in Sources */,
 				21801CF328F9A86800FFA37E /* Project6+Schema.swift in Sources */,
-				21801CE228F9A86800FFA37E /* PostWithCompositeKeyAndIndex.swift in Sources */,
 				21801CD728F9A86800FFA37E /* CommentWithCompositeKey.swift in Sources */,
 				21801CFE28F9A86800FFA37E /* Comment8V2.swift in Sources */,
 				21801CD928F9A86800FFA37E /* Post8.swift in Sources */,
 				21801CDD28F9A86800FFA37E /* Comment8V2+Schema.swift in Sources */,
 				21801CD428F9A86800FFA37E /* PostWithCompositeKey.swift in Sources */,
 				21801CD828F9A86800FFA37E /* Comment7+Schema.swift in Sources */,
-				21801D0028F9A86800FFA37E /* CommentWithCompositeKeyAndIndex.swift in Sources */,
 				21801D3229006DB500FFA37E /* Team5+Schema.swift in Sources */,
 				21801D2B29006DA300FFA37E /* Project1+Schema.swift in Sources */,
-				21801CF028F9A86800FFA37E /* CommentWithCompositeKeyAndIndex+Schema.swift in Sources */,
 				21801D0728F9B11800FFA37E /* AsyncTesting.swift in Sources */,
 				21801D2A29006DA300FFA37E /* Project1.swift in Sources */,
 				21801CF128F9A86800FFA37E /* Project2+Schema.swift in Sources */,
 				21801D0428F9A86800FFA37E /* MyNestedModel8.swift in Sources */,
 				21801CF928F9A86800FFA37E /* Team6.swift in Sources */,
-				21801CE128F9A86800FFA37E /* PostWithCompositeKeyAndIndex+Schema.swift in Sources */,
 				21801CD628F9A86800FFA37E /* PostWithTagsCompositeKey+Schema.swift in Sources */,
 				21801CDC28F9A86800FFA37E /* PostTagsWithCompositeKey.swift in Sources */,
 				21801CF628F9A86800FFA37E /* Comment4+Schema.swift in Sources */,

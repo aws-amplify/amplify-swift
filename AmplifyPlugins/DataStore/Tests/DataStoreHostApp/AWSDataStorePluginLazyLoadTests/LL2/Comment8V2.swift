@@ -2,11 +2,11 @@
 import Amplify
 import Foundation
 
-public struct Comment4V2: Model {
+public struct Comment8V2: Model {
     public let id: String
-    public var content: String
-    internal var _post: LazyModel<Post4V2>
-    public var post: Post4V2? {
+    public var content: String?
+    internal var _post: LazyModel<Post8V2>
+    public var post: Post8V2? {
         get async throws {
             try await _post.get()
         }
@@ -15,8 +15,8 @@ public struct Comment4V2: Model {
     public var updatedAt: Temporal.DateTime?
     
     public init(id: String = UUID().uuidString,
-                content: String,
-                post: Post4V2? = nil) {
+                content: String? = nil,
+                post: Post8V2? = nil) {
         self.init(id: id,
                   content: content,
                   post: post,
@@ -24,8 +24,8 @@ public struct Comment4V2: Model {
                   updatedAt: nil)
     }
     internal init(id: String = UUID().uuidString,
-                  content: String,
-                  post: Post4V2? = nil,
+                  content: String? = nil,
+                  post: Post8V2? = nil,
                   createdAt: Temporal.DateTime? = nil,
                   updatedAt: Temporal.DateTime? = nil) {
         self.id = id
@@ -35,7 +35,7 @@ public struct Comment4V2: Model {
         self.updatedAt = updatedAt
     }
     
-    public mutating func setPost(_ post: Post4V2) {
+    public mutating func setPost(_ post: Post8V2) {
         self._post = LazyModel(element: post)
     }
     
@@ -43,7 +43,7 @@ public struct Comment4V2: Model {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         id = try values.decode(String.self, forKey: .id)
         content = try values.decode(String.self, forKey: .content)
-        _post = try values.decode(LazyModel<Post4V2>.self, forKey: .post)
+        _post = try values.decode(LazyModel<Post8V2>.self, forKey: .post)
         createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
         updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
     }
