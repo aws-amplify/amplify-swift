@@ -89,10 +89,6 @@ orbs:
               version: <<parameters.simulator-os-version>>
           - ruby/install-deps
           - run-with-retry:
-              label: Run pod install
-              command: pod install
-              no_output_timeout: 20m
-          - run-with-retry:
               label: Run tests
               command: bundle exec fastlane scan
 
