@@ -158,11 +158,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3A136F332806029F006292EF /* Build configuration list for PBXNativeTarget "MyAmplifyAppUITests" */;
 			buildPhases = (
-				59E39CF7EDD977A135C7AED9 /* [CP] Check Pods Manifest.lock */,
 				3A136F202806029F006292EF /* Sources */,
 				3A136F212806029F006292EF /* Frameworks */,
 				3A136F222806029F006292EF /* Resources */,
-				65F1D72FBDB50027A3F4CE43 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -234,48 +232,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		59E39CF7EDD977A135C7AED9 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-MyAmplifyApp-MyAmplifyAppUITests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		65F1D72FBDB50027A3F4CE43 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MyAmplifyApp-MyAmplifyAppUITests/Pods-MyAmplifyApp-MyAmplifyAppUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MyAmplifyApp-MyAmplifyAppUITests/Pods-MyAmplifyApp-MyAmplifyAppUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MyAmplifyApp-MyAmplifyAppUITests/Pods-MyAmplifyApp-MyAmplifyAppUITests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		3A136F0428060295006292EF /* Sources */ = {
