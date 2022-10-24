@@ -46,7 +46,10 @@ extension AuthorizationState {
                         federatedToken: federatedToken,
                         developerProvidedIdentityId: identityId)
                     return .init(
-                        newState: .federatingToIdentityPool(.notStarted, federatedToken),
+                        newState: .federatingToIdentityPool(
+                            .notStarted,
+                            federatedToken,
+                            existingCredentials: .noCredentials),
                         actions: [action])
                 }
 
@@ -69,7 +72,10 @@ extension AuthorizationState {
                         federatedToken: federatedToken,
                         developerProvidedIdentityId: identityId)
                     return .init(
-                        newState: .federatingToIdentityPool(.notStarted, federatedToken),
+                        newState: .federatingToIdentityPool(
+                            .notStarted,
+                            federatedToken,
+                            existingCredentials: credentials),
                         actions: [action])
                 }
 
@@ -89,7 +95,8 @@ extension AuthorizationState {
 
                 return .from(oldState)
 
-            case .federatingToIdentityPool(let fetchSessionState, let federatedToken):
+            case .federatingToIdentityPool(
+                let fetchSessionState, let federatedToken, let credentials):
 
                 if case .fetched(let identityID,
                                  let credentials) = event.isAuthorizationEvent {
@@ -103,7 +110,7 @@ extension AuthorizationState {
                 }
 
                 if case .receivedSessionError(let error) = event.isAuthorizationEvent {
-                    return .init(newState: .error(.sessionError(error, .noCredentials)))
+                    return .init(newState: .error(.sessionError(error, credentials)))
                 }
 
                 if case .throwError(let error) = event.isAuthorizationEvent {
@@ -112,8 +119,12 @@ extension AuthorizationState {
 
                 let resolver = FetchAuthSessionState.Resolver()
                 let resolution = resolver.resolve(oldState: fetchSessionState, byApplying: event)
-                return .init(newState: .federatingToIdentityPool(resolution.newState, federatedToken),
-                             actions: resolution.actions)
+                return .init(
+                    newState: .federatingToIdentityPool(
+                        resolution.newState,
+                        federatedToken,
+                        existingCredentials: credentials),
+                    actions: resolution.actions)
 
             case .signingIn:
                 if let authEvent = event.isAuthenticationEvent {
@@ -247,13 +258,24 @@ extension AuthorizationState {
                 return .from(oldState)
 
             case .error(let error):
+                var existingCredentials: AmplifyCredentials = .noCredentials
+                if case .sessionError(_, let credentials) = error {
+                    existingCredentials = credentials
+                }
+
                 if let authNEvent = event.isAuthenticationEvent {
-                    if case .signInRequested = authNEvent {
+
+                    switch authNEvent {
+                    case .signInRequested:
                         return .from(.signingIn)
-                    } else if case .signOutRequested = authNEvent {
+                    case .signOutRequested:
                         return .from(.signingOut(nil))
-                    } else if case .cancelSignIn = authNEvent {
+                    case .cancelSignIn:
                         return .from(.configured)
+                    case .clearFederationToIdentityPool:
+                        return .from(.clearingFederation)
+                    default: break
+
                     }
                 }
                 if case .fetchUnAuthSession = event.isAuthorizationEvent {
@@ -269,7 +291,10 @@ extension AuthorizationState {
                         federatedToken: federatedToken,
                         developerProvidedIdentityId: identityId)
                     return .init(
-                        newState: .federatingToIdentityPool(.notStarted, federatedToken),
+                        newState: .federatingToIdentityPool(
+                            .notStarted,
+                            federatedToken,
+                            existingCredentials: existingCredentials),
                         actions: [action])
                 }
 

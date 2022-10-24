@@ -77,7 +77,7 @@ extension FetchSessionError: AuthErrorConvertible {
                 AmplifyErrorMessages.reportBugToAWS())
         case .federationNotSupportedDuringRefresh:
             return .unknown(
-                "Federation triggered during refresh session that is not supported. \(AmplifyErrorMessages.reportBugToAWS())")
+                "Refreshing credentials from federationToIdentityPool is not supported \(AmplifyErrorMessages.reportBugToAWS())")
         case .service(let error):
             return .service(
                 "Service error occurred",
