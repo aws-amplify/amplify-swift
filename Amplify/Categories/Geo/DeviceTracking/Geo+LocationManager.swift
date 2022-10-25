@@ -17,7 +17,7 @@ public extension Geo {
         ///   - options: A `Geo.LocationManager.TrackingSessionOptions` object that configures
         ///     the `Geo.LocationManager`.
         ///     Default argument is `defaultOptions`.
-        public init(options: TrackingSessionOptions = .defaultOptions) {
+        public init(options: TrackingSessionOptions = .init()) {
             super.init()
             desiredAccuracy = options.desiredAccuracy.clLocationAccuracy
             if options.requestAlwaysAuthorization {
