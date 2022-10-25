@@ -60,7 +60,7 @@ extension XCTestCase {
                                   @_implicitSelfCapture operation: @escaping @Sendable () async throws -> Success) async throws -> Success {
         let done = asyncExpectation(description: "done")
 
-        let task = Task {
+        let task = Task { () -> Success in
             let result = try await operation()
             await done.fulfill()
             return result
