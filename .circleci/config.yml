@@ -257,8 +257,6 @@ deploy_requires: &deploy_requires
     - macos_unit_test_datastore
     - macos_unit_test_geo
     - macos_unit_test_storage
-    - smoke-test-latest-supported-version
-    - smoke-test-minimum-supported-version
 
 workflows:
   build_test_deploy:
@@ -388,16 +386,6 @@ workflows:
           destination: << pipeline.parameters.macos-destination >>
           requires:
             - build_amplify_macos_spm
-      - getting-started-smoke-test/ios:
-          name: smoke-test-latest-supported-version
-          xcode-version: "14.1.0"
-          simulator-os-version: "16.1"
-          simulator-device: "iPhone 14 Pro"
-      - getting-started-smoke-test/ios:
-          name: smoke-test-minimum-supported-version
-          xcode-version: "13.4.1"
-          simulator-os-version: "15.5"
-          simulator-device: "iPhone 13 Pro"
       - deploy:
           name: deploy unstable
           <<: *deploy_requires
@@ -425,6 +413,10 @@ workflows:
   # Scheduled smoke test workflow
   # Jobs are pulled from the getting-started-smoke-test inline orb defined above
   canaries:
+    when:
+      and:
+        - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+        - equal: [ "Canaries", << pipeline.schedule.name >> ]
     jobs:
       - getting-started-smoke-test/ios:
           xcode-version: "14.1.0"
