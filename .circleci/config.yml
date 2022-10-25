@@ -388,11 +388,11 @@ workflows:
           destination: << pipeline.parameters.macos-destination >>
           requires:
             - build_amplify_macos_spm
-      - getting-started-smoke-test/latest-supported-version:
+      - getting-started-smoke-test/ios:
           xcode-version: "14.1.0"
           simulator-os-version: "16.1"
           simulator-device: "iPhone 14 Pro"
-      - getting-started-smoke-test/minimum-supported-version:
+      - getting-started-smoke-test/ios:
           xcode-version: "13.4.1"
           simulator-os-version: "15.5"
           simulator-device: "iPhone 13 Pro"
