@@ -15,6 +15,7 @@ protocol StorageServiceProxy: AnyObject {
 
     func register(task: StorageTransferTask)
     func unregister(task: StorageTransferTask)
+    func unregister(taskIdentifiers: [TaskIdentifier])
 
     func register(multipartUploadSession: StorageMultipartUploadSession)
     func unregister(multipartUploadSession: StorageMultipartUploadSession)

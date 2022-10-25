@@ -99,7 +99,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
     }
 
     @MainActor
-    func testRestartAfterError() async {
+    func testRestartAfterError() async throws {
         mockHostedUIResult = .failure(.cancelled)
         let errorExpectation  = expectation(description: "SignIn operation should complete")
         do {
@@ -114,7 +114,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             errorExpectation.fulfill()
         }
 
-        wait(for: [errorExpectation], timeout: networkTimeout)
+        waitForExpectations(timeout: networkTimeout)
         mockHostedUIResult = .success([
             .init(name: "state", value: mockState),
             .init(name: "code", value: mockProof)
@@ -127,7 +127,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         } catch {
             XCTFail("Should not fail with error = \(error)")
         }
-        wait(for: [signInExpectation], timeout: networkTimeout)
+        waitForExpectations(timeout: networkTimeout)
     }
 
     @MainActor

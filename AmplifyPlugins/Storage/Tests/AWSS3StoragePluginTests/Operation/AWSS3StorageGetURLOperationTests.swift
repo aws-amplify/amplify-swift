@@ -39,7 +39,7 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
         waitForExpectations(timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
     }
 
     func testGetURLOperationGetIdentityIdError() async throws {
@@ -68,7 +68,7 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         await waitForExpectations(timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
     }
 
     func testGetOperationGetPresignedURL() async throws {
@@ -96,7 +96,7 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
         await waitForExpectations(timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
         XCTAssertEqual(mockStorageService.getPreSignedURLCalled, 1)
         mockStorageService.verifyGetPreSignedURL(serviceKey: expectedServiceKey, expires: expectedExpires)
     }
@@ -126,7 +126,7 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
         await waitForExpectations(timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
         XCTAssertEqual(mockStorageService.getPreSignedURLCalled, 1)
         mockStorageService.verifyGetPreSignedURL(serviceKey: expectedServiceKey, expires: expectedExpires)
     }
@@ -154,7 +154,7 @@ class AWSS3StorageGetURLOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
         await waitForExpectations(timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
         XCTAssertEqual(mockStorageService.getPreSignedURLCalled, 1)
         mockStorageService.verifyGetPreSignedURL(serviceKey: expectedServiceKey,
                                                  expires: StorageGetURLRequest.Options.defaultExpireInSeconds)

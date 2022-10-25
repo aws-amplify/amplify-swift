@@ -37,6 +37,8 @@ class StateMachineTests: XCTestCase {
         let increment = Counter.Event(id: "increment", eventType: .increment)
         let decrement = Counter.Event(id: "decrement", eventType: .decrement)
 
+        let taskCompletion = expectation(description: "Completed sending event")
+        taskCompletion.expectedFulfillmentCount = 1_000
         Task {
             for i in 1...1_000 {
                 if i.isMultiple(of: 2) {
@@ -44,8 +46,10 @@ class StateMachineTests: XCTestCase {
                 } else {
                     await testMachine.send(decrement)
                 }
+                taskCompletion.fulfill()
             }
         }
+        await waitForExpectations(timeout: 1)
         let state = await testMachine.currentState
         XCTAssertEqual(state.value, 0)
     }

@@ -84,14 +84,27 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
     /// Then: The operation completes successfully
     func testUploadLargeData() async {
         let key = UUID().uuidString
-        let completeInvoked = asyncExpectation(description: "Completed is invoked")
-        await wait(with: completeInvoked) {
-            return try await Amplify.Storage.uploadData(key: key,
-                                                        data: AWSS3StoragePluginTestBase.largeDataObject,
-                                                        options: nil).value
+
+        let done = asyncExpectation(description: "done")
+        Task {
+            do {
+                let uploadKey = try await Amplify.Storage.uploadData(key: key,
+                                                            data: AWSS3StoragePluginTestBase.largeDataObject,
+                                                            options: nil).value
+                XCTAssertEqual(uploadKey, key)
+            } catch {
+                XCTFail("Error: \(error)")
+            }
+            await done.fulfill()
         }
-        // Remove the key
-        await remove(key: key)
+        await waitForExpectations([done], timeout: TestCommonConstants.networkTimeout)
+
+        let removeDone = asyncExpectation(description: "remove done")
+        Task {
+            try await Amplify.Storage.remove(key: key)
+            await removeDone.fulfill()
+        }
+        await waitForExpectations([removeDone], timeout: TestCommonConstants.networkTimeout)
     }
 
     /// Given: A large file

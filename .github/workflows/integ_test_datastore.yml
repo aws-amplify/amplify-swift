@@ -1,7 +1,7 @@
 name: DataStore Integration Tests
 on:
   push:
-    branches: [dev-preview]
+    branches: [main]
 
 permissions:
     id-token: write
@@ -30,6 +30,7 @@ jobs:
 
   datastore-integration-test:
     continue-on-error: true
+    timeout-minutes: 15
     needs: prepare-for-test
     runs-on: macos-12
     environment: IntegrationTest

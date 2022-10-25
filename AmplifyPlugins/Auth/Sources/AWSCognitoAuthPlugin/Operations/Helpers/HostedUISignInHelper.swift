@@ -37,6 +37,8 @@ struct HostedUISignInHelper {
                 continue
             }
             switch authenticationState {
+            case .signingIn:
+                continue
             case .signedIn:
                 throw AuthError.invalidState(
                     "There is already a user in signedIn state. SignOut the user first before calling signIn",

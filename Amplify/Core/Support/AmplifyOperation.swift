@@ -143,12 +143,6 @@ open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: 
         return token!
     }
 
-    func unsubscribe(token: UnsubscribeToken) {
-        guard let token = resultListenerUnsubscribeToken else { return }
-        Amplify.Hub.removeListener(token)
-        resultListenerUnsubscribeToken = nil
-    }
-
     /// Classes that override this method must emit a completion to the `resultPublisher` upon cancellation
     open override func cancel() {
         super.cancel()
@@ -160,10 +154,7 @@ open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: 
         )
         publish(result: .failure(cancellationError))
 #endif
-        if let token = resultListenerUnsubscribeToken {
-            unsubscribe(token: token)
-            resultListenerUnsubscribeToken = nil
-        }
+        removeResultListener()
     }
 
     /// Dispatches an event to the hub. Internally, creates an
@@ -188,7 +179,9 @@ open class AmplifyOperation<Request: AmplifyOperationRequest, Success, Failure: 
         guard let unsubscribeToken = resultListenerUnsubscribeToken else {
             return
         }
+
         Amplify.Hub.removeListener(unsubscribeToken)
+        resultListenerUnsubscribeToken = nil
     }
 
 }

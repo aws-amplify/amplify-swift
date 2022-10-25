@@ -10,7 +10,7 @@ import Foundation
 
 public enum AWSCognitoSignOutResult: AuthSignOutResult {
 
-    var signedOutLocally: Bool {
+    public var signedOutLocally: Bool {
         if case .failed = self {
             return false
         }
@@ -27,15 +27,15 @@ public enum AWSCognitoSignOutResult: AuthSignOutResult {
 }
 
 public struct AWSCognitoRevokeTokenError {
-    let refreshToken: String
-    let error: AuthError
+    public let refreshToken: String
+    public let error: AuthError
 }
 
 public struct AWSCognitoGlobalSignOutError {
-    let accessToken: String
-    let error: AuthError
+    public let accessToken: String
+    public let error: AuthError
 }
 
 public struct AWSCognitoHostedUIError {
-    let error: AuthError
+    public let error: AuthError
 }

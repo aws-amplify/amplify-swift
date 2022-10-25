@@ -31,15 +31,21 @@ extension AWSCognitoAuthPlugin {
 
         let authConfiguration = try ConfigurationHelper.authConfiguration(jsonValueConfiguration)
 
-        let authResolver = AuthState.Resolver().eraseToAnyResolver()
-        let authEnvironment = makeAuthEnvironment(authConfiguration: authConfiguration)
-
         let credentialStoreResolver = CredentialStoreState.Resolver().eraseToAnyResolver()
         let credentialEnvironment = credentialStoreEnvironment(authConfiguration: authConfiguration)
-
-        let authStateMachine = StateMachine(resolver: authResolver, environment: authEnvironment)
         let credentialStoreMachine = StateMachine(resolver: credentialStoreResolver,
                                                   environment: credentialEnvironment)
+        let credentialsClient = CredentialStoreOperationClient(
+            credentialStoreStateMachine: credentialStoreMachine)
+
+        let authResolver = AuthState.Resolver().eraseToAnyResolver()
+        let authEnvironment = makeAuthEnvironment(
+            authConfiguration: authConfiguration,
+            credentialsClient: credentialsClient
+        )
+
+        let authStateMachine = StateMachine(resolver: authResolver, environment: authEnvironment)
+
         let hubEventHandler = AuthHubEventHandler()
         let analyticsHandler = try UserPoolAnalytics(
             authConfiguration.getUserPoolConfiguration(),
@@ -71,6 +77,7 @@ extension AWSCognitoAuthPlugin {
         self.listenToStateMachineChanges()
         self.hubEventHandler = hubEventHandler
         self.analyticsHandler = analyticsHandler
+        self.taskQueue = TaskQueue()
     }
 
     // MARK: - Configure Helpers
@@ -136,12 +143,10 @@ extension AWSCognitoAuthPlugin {
         KeychainStore(service: service)
     }
 
-    private func makeCredentialStoreClient() -> CredentialStoreStateBehaviour {
-        CredentialStoreOperationClient(
-            credentialStoreStateMachine: self.credentialStoreStateMachine)
-    }
-
-    private func makeAuthEnvironment(authConfiguration: AuthConfiguration) -> AuthEnvironment {
+    private func makeAuthEnvironment(
+        authConfiguration: AuthConfiguration,
+        credentialsClient: CredentialStoreStateBehavior
+    ) -> AuthEnvironment {
 
         switch authConfiguration {
         case .userPools(let userPoolConfigurationData):
@@ -154,7 +159,7 @@ extension AWSCognitoAuthPlugin {
                 identityPoolConfigData: nil,
                 authenticationEnvironment: authenticationEnvironment,
                 authorizationEnvironment: nil,
-                credentialStoreClientFactory: makeCredentialStoreClient,
+                credentialsClient: credentialsClient,
                 logger: log)
 
         case .identityPools(let identityPoolConfigurationData):
@@ -166,7 +171,7 @@ extension AWSCognitoAuthPlugin {
                 identityPoolConfigData: identityPoolConfigurationData,
                 authenticationEnvironment: nil,
                 authorizationEnvironment: authorizationEnvironment,
-                credentialStoreClientFactory: makeCredentialStoreClient,
+                credentialsClient: credentialsClient,
                 logger: log)
 
         case .userPoolsAndIdentityPools(let userPoolConfigurationData,
@@ -181,7 +186,7 @@ extension AWSCognitoAuthPlugin {
                 identityPoolConfigData: identityPoolConfigurationData,
                 authenticationEnvironment: authenticationEnvironment,
                 authorizationEnvironment: authorizationEnvironment,
-                credentialStoreClientFactory: makeCredentialStoreClient,
+                credentialsClient: credentialsClient,
                 logger: log)
         }
     }

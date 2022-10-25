@@ -1,7 +1,7 @@
 name: API Integration Tests
 on:
   push:
-    branches: [dev-preview-api]
+    branches: [main]
 
 permissions:
     id-token: write

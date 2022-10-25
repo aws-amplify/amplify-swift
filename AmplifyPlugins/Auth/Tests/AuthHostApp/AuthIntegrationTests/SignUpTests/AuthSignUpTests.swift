@@ -31,6 +31,32 @@ class AuthSignUpTests: AWSAuthBaseTest {
 
     }
 
+    func testMultipleSignUps() async throws {
+
+        let signUpExpectation = expectation(description: "Sign up completed")
+        signUpExpectation.expectedFulfillmentCount = 2
+
+        for _ in 0..<signUpExpectation.expectedFulfillmentCount {
+
+            Task {
+                let username = "integTest\(UUID().uuidString)"
+                let password = "P123@\(UUID().uuidString)"
+
+                do {
+                    let result = try await AuthSignInHelper.signUpUser(
+                        username: username,
+                        password: password,
+                        email: defaultTestEmail)
+                    XCTAssertTrue(result, "Signup should be complete")
+                } catch {
+                    XCTFail("Failed to Sign up user \(username): \(error)")
+                }
+                signUpExpectation.fulfill()
+            }
+        }
+        await waitForExpectations(timeout: 2)
+    }
+
     //    /// Test if user registration is successful.
     //    /// Internally, Cognito's `SignUp` API will be called, and will trigger the Pre sign-up, Custom message, and Post
     //    /// confirmation lambdas with clientMetadata from the passed in metadata.

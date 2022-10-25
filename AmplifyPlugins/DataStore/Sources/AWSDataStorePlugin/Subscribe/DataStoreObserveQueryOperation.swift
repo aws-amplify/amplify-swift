@@ -63,6 +63,7 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
     var currentItems: SortedList<M>
     var batchItemsChangedSink: AnyCancellable?
     var itemsChangedSink: AnyCancellable?
+    var modelSyncedEventSink: AnyCancellable?
     
     var currentSnapshot: DataStoreQuerySnapshot<M> {
         DataStoreQuerySnapshot<M>(items: currentItems.sortedModels, isSynced: dispatchedModelSyncedEvent.get())
@@ -142,6 +143,10 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
             if let batchItemsChangedSink = batchItemsChangedSink {
                 batchItemsChangedSink.cancel()
             }
+            
+            if let modelSyncedEventSink = modelSyncedEventSink {
+                modelSyncedEventSink.cancel()
+            }
         }
     }
 
@@ -156,6 +161,7 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
             self.currentItems.reset()
             self.itemsChangedSink = nil
             self.batchItemsChangedSink = nil
+            self.modelSyncedEventSink = nil
         }
     }
 
@@ -195,6 +201,7 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
                 switch queryResult {
                 case .success(let queriedModels):
                     currentItems.set(sortedModels: queriedModels)
+                    subscribeToModelSyncedEvent()
                     sendSnapshot()
                 case .failure(let error):
                     fail(error)
@@ -228,6 +235,18 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
                 .receive(on: self.serialQueue)
                 .sink(receiveCompletion: self.onReceiveCompletion(completed:),
                       receiveValue: self.onItemChangeAfterSync(mutationEvent:))
+        }
+    }
+    
+    func subscribeToModelSyncedEvent() {
+        modelSyncedEventSink = Amplify.Hub.publisher(for: .dataStore).sink { event in
+            if event.eventName == HubPayload.EventName.DataStore.modelSynced,
+               let modelSyncedEvent = event.data as? ModelSyncedEvent,
+               modelSyncedEvent.modelName == self.modelSchema.name {
+                self.serialQueue.async {
+                    self.sendSnapshot()
+                }
+            }
         }
     }
 

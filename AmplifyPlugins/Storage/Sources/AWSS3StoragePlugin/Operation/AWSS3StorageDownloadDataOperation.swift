@@ -14,7 +14,7 @@ import AWSPluginsCore
 /// See: [Operations] for more details.
 ///
 /// [Operations]: https://github.com/aws-amplify/amplify-ios/blob/main/OPERATIONS.md
-public class AWSS3StorageDownloadDataOperation: AmplifyInProcessReportingOperation<
+class AWSS3StorageDownloadDataOperation: AmplifyInProcessReportingOperation<
     StorageDownloadDataRequest,
     Progress,
     Data,

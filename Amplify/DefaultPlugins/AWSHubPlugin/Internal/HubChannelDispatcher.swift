@@ -25,22 +25,22 @@ final class HubChannelDispatcher {
     ///
     /// - Parameter id: The ID of the listener to check
     /// - Returns: True if the dispatcher has a listener registered with `id`
-    func hasListener(withId id: UUID) async -> Bool {
-        return await listenersById.getValue(forKey: id) != nil
+    func hasListener(withId id: UUID) -> Bool {
+        return listenersById.getValue(forKey: id) != nil
     }
 
     /// Inserts `listener` into the `listenersById` dictionary by its ID
     ///
     /// - Parameter listener: The listener to add
-    func insert(_ listener: FilteredListener) async {
-        await listenersById.set(value: listener, forKey: listener.id)
+    func insert(_ listener: FilteredListener) {
+        listenersById.set(value: listener, forKey: listener.id)
     }
 
     /// Removes the listener identified by `id` from the `listeners` dictionary
     ///
     /// - Parameter id: The ID of the listener to remove
-    func removeListener(withId id: UUID) async {
-        await listenersById.removeValue(forKey: id)
+    func removeListener(withId id: UUID) {
+        listenersById.removeValue(forKey: id)
     }
 
     /// Dispatches `payload` to all listeners on `channel`
@@ -63,7 +63,7 @@ final class HubChannelDispatcher {
     /// after you issue an `await Amplify.reset()`, you may wish to add additional sleep around your code
     /// that calls `await Amplify.reset()`.
     func destroy() async {
-        await listenersById.removeAll()
+        listenersById.removeAll()
         messageQueue.cancelAllOperations()
         await withCheckedContinuation { continuation in
             messageQueue.addBarrierBlock {
@@ -75,16 +75,14 @@ final class HubChannelDispatcher {
 
 extension HubChannelDispatcher: HubDispatchOperationDelegate {
     var listeners: [FilteredListener] {
-        get async {
-            return Array(await listenersById.values)
-        }
+        return Array(listenersById.values)
     }
 }
 
 protocol HubDispatchOperationDelegate: AnyObject {
     /// Used to let a dispatch operation retrieve the list of listeners at the time of invocation, rather than the time
     /// of queuing.
-    var listeners: [FilteredListener] { get async }
+    var listeners: [FilteredListener] { get }
 }
 
 final class HubDispatchOperation: Operation {
@@ -121,14 +119,12 @@ final class HubDispatchOperation: Operation {
             return
         }
 
-        Task {
-            guard let listeners = await delegate?.listeners else {
-                return
-            }
-
-            let dispatcher = SerialDispatcher(channel: channel, payload: payload)
-            dispatcher.dispatch(to: listeners)
+        guard let listeners = delegate?.listeners else {
+            return
         }
+        
+        let dispatcher = SerialDispatcher(channel: channel, payload: payload)
+        dispatcher.dispatch(to: listeners)
     }
 
 }

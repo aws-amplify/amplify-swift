@@ -12,6 +12,7 @@ public typealias DataStoreCategoryBehavior = DataStoreBaseBehavior & DataStoreSu
 public protocol DataStoreBaseBehavior {
 
     /// Saves the model to storage. If sync is enabled, also initiates a sync of the mutation to the remote API
+    @discardableResult
     func save<M: Model>(_ model: M,
                         where condition: QueryPredicate?) async throws -> M
 
@@ -35,6 +36,10 @@ public protocol DataStoreBaseBehavior {
     func delete<M: Model>(_ model: M,
                           where predicate: QueryPredicate?) async throws
 
+    func delete<M: Model>(_ modelType: M.Type,
+                          withId id: String,
+                          where predicate: QueryPredicate?) async throws
+    
     func delete<M: Model>(_ modelType: M.Type,
                           withIdentifier id: String,
                           where predicate: QueryPredicate?) async throws where M: ModelIdentifiable,

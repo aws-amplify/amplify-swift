@@ -89,17 +89,13 @@ orbs:
               version: <<parameters.simulator-os-version>>
           - ruby/install-deps
           - run-with-retry:
-              label: Run pod install
-              command: pod install
-              no_output_timeout: 20m
-          - run-with-retry:
               label: Run tests
               command: bundle exec fastlane scan
 
 defaults: &defaults
   macos:
     xcode: '14.0.0'
-  working_directory: ~/amplify-ios
+  working_directory: ~/amplify-swift
   environment:
     BUNDLE_PATH: vendor/bundle
 
@@ -119,7 +115,7 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - v2-gems-{{ checksum "~/amplify-ios/Gemfile.lock" }}
+            - v2-gems-{{ checksum "~/amplify-swift/Gemfile.lock" }}
             - v2-gems-
 
   check_bundle:
@@ -148,7 +144,7 @@ jobs:
       - save_cache:
           key: *repo_cache_key
           paths:
-            - ~/amplify-ios
+            - ~/amplify-swift
 
   install_gems:
     <<: *defaults
@@ -162,7 +158,7 @@ jobs:
             BUNDLE_JOBS: 4
             BUNDLE_RETRY: 3
       - save_cache:
-          key: v2-gems-{{ checksum "~/amplify-ios/Gemfile.lock" }}
+          key: v2-gems-{{ checksum "~/amplify-swift/Gemfile.lock" }}
           paths:
             - vendor/bundle
 
@@ -207,7 +203,7 @@ jobs:
           command: xcodebuild test -scheme <<parameters.scheme>> -sdk << parameters.sdk >> -destination "<<parameters.destination>>"  | tee "artifacts/test-<< parameters.scheme >>-<< parameters.sdk >>.log" | xcpretty --simple --color --report junit
       - run:
           name: Upload << parameters.scheme >> coverage report to Codecov
-          command: bash ~/amplify-ios/build-support/codecov.sh -F << parameters.scheme >>_unit_test -J '^<< parameters.scheme >>$'
+          command: bash ~/amplify-swift/build-support/codecov.sh -F << parameters.scheme >>_unit_test -J '^<< parameters.scheme >>$'
       - store_test_results:
           path: build/reports
       - upload_artifacts
@@ -220,7 +216,7 @@ jobs:
       - check_bundle
       - run:
           name: Jazzy API doc generation
-          command: bash ~/amplify-ios/CircleciScripts/jazzy_doc_gen.sh
+          command: bash ~/amplify-swift/CircleciScripts/jazzy_doc_gen.sh
 
   deploy:
     <<: *defaults
@@ -228,7 +224,7 @@ jobs:
       lane:
         type: string
         default: 'unstable'
-    description: deploy pods to trunk
+    description: deploy new release
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -237,13 +233,14 @@ jobs:
       - restore_gems
       - check_bundle
       - run:
-          name: Release pods
+          name: Release Amplify for Swift
           command: bundle exec fastlane << parameters.lane >>
           no_output_timeout: 60m
 
 deploy_requires: &deploy_requires
   requires:
-    - build_amplify_spm
+    - build_amplify_ios_spm
+    - build_amplify_macos_spm
     - ios_unit_test_amplify
     - ios_unit_test_awspluginscore
     - ios_unit_test_analytics
@@ -389,7 +386,29 @@ workflows:
           destination: << pipeline.parameters.macos-destination >>
           requires:
             - build_amplify_macos_spm
-      
+      - deploy:
+          name: deploy unstable
+          <<: *deploy_requires
+          filters:
+            branches:
+              only:
+                - main 
+      - deploy:
+          name: deploy stable
+          lane: release
+          <<: *deploy_requires
+          filters:
+            branches:
+              only:
+                - release
+      - generate_api_docs:
+          name: Generate api documentation
+          requires:
+            - deploy stable
+          filters:
+            branches:
+              only:
+                - release
 
   # Scheduled smoke test workflow
   # Jobs are pulled from the getting-started-smoke-test inline orb defined below

@@ -12,7 +12,7 @@ import Amplify
 
 class CredentialStoreOperationClientTests: XCTestCase {
 
-    var credentialClient: CredentialStoreStateBehaviour!
+    var credentialClient: CredentialStoreStateBehavior!
 
     override func setUp() async throws {
         let credentialEnvironment = CredentialEnvironment(
@@ -66,7 +66,6 @@ class CredentialStoreOperationClientTests: XCTestCase {
                 case .asfDeviceId(let fetchedId, let fetchedUsername):
                     XCTAssertEqual(deviceId, fetchedId)
                     XCTAssertEqual(username, fetchedUsername)
-                    expectation.fulfill()
                 default:
                     XCTFail("Should return asfdevice")
                 }
@@ -77,6 +76,7 @@ class CredentialStoreOperationClientTests: XCTestCase {
                 // Fetch
                 let asfDeviceId: CredentialStoreData? = try? await credentialClient.fetchData(type: .asfDeviceId(username: username))
                 XCTAssertNil(asfDeviceId)
+                expectation.fulfill()
             }
 
         }

@@ -36,7 +36,7 @@ class StorageMultipartUploadSession {
     private let fileSystem: FileSystem
     private let logger: Logger
 
-    private let queue = DispatchQueue(label: "com.amazon.aws.amplify.multipartupload-session", target: .global())
+    private let serialQueue = DispatchQueue(label: "com.amazon.aws.amplify.multipartupload-session", target: .global())
     private let id = UUID()
     private var multipartUpload: StorageMultipartUpload
     private let client: StorageMultipartUploadClient
@@ -130,17 +130,22 @@ class StorageMultipartUploadSession {
     }
 
     var uploadId: UploadID? {
-        multipartUpload.uploadId
+        dispatchPrecondition(condition: .notOnQueue(serialQueue))
+        return serialQueue.sync {
+            multipartUpload.uploadId
+        }
     }
 
     var completedParts: StorageUploadParts? {
-        queue.sync {
+        dispatchPrecondition(condition: .notOnQueue(serialQueue))
+        return serialQueue.sync {
             multipartUpload.parts?.completed
         }
     }
 
     var partsCount: Int {
-        queue.sync {
+        dispatchPrecondition(condition: .notOnQueue(serialQueue))
+        return serialQueue.sync {
             guard let parts = multipartUpload.parts else {
                 return 0
             }
@@ -151,19 +156,22 @@ class StorageMultipartUploadSession {
     }
 
     var partsCompleted: Bool {
-        queue.sync {
+        dispatchPrecondition(condition: .notOnQueue(serialQueue))
+        return serialQueue.sync {
             multipartUpload.partsCompleted
         }
     }
 
     var partsFailed: Bool {
-        queue.sync {
+        dispatchPrecondition(condition: .notOnQueue(serialQueue))
+        return serialQueue.sync {
             multipartUpload.partsFailed
         }
     }
 
     var inProgressCount: Int {
-        queue.sync {
+        dispatchPrecondition(condition: .notOnQueue(serialQueue))
+        return serialQueue.sync {
             guard let parts = multipartUpload.parts else {
                 return 0
             }
@@ -186,13 +194,15 @@ class StorageMultipartUploadSession {
     }
 
     func part(for number: PartNumber) -> StorageUploadPart? {
-        queue.sync {
+        dispatchPrecondition(condition: .notOnQueue(serialQueue))
+        return serialQueue.sync {
             multipartUpload.part(for: number)
         }
     }
 
     func getPendingPartNumbers() -> [Int] {
-        queue.sync {
+        dispatchPrecondition(condition: .notOnQueue(serialQueue))
+        return serialQueue.sync {
             multipartUpload.pendingPartNumbers
         }
     }
@@ -201,6 +211,7 @@ class StorageMultipartUploadSession {
         do {
             let reference = StorageTaskReference(transferTask)
             onEvent(.initiated(reference))
+            logger.debug("Creating Multipart Upload")
             try client.createMultipartUpload()
         } catch {
             fail(error: error)
@@ -208,6 +219,8 @@ class StorageMultipartUploadSession {
     }
 
     func fail(error: Error) {
+        logger.debug("Multipart Upload Failure: \(error)")
+        logger.debug("Multipart Upload: \(multipartUpload)")
         multipartUpload.fail(error: error)
         onEvent(.failed(StorageError(error: error)))
     }
@@ -217,13 +230,19 @@ class StorageMultipartUploadSession {
 
         do {
             let wasPaused = multipartUpload.isPaused
-            try multipartUpload.transition(multipartUploadEvent: multipartUploadEvent)
 
-            // update the transerTask with every state transition
-            transferTask.multipartUpload = multipartUpload
+            try serialQueue.sync {
+                try multipartUpload.transition(multipartUploadEvent: multipartUploadEvent)
+
+                // update the transerTask with every state transition
+                transferTask.multipartUpload = multipartUpload
+            }
 
             switch multipartUpload {
             case .parts(let uploadId, let uploadFile, let partSize, let parts):
+                if wasPaused {
+                    logger.debug("Resuming after being paused")
+                }
                 transferTask.uploadId = uploadId
                 uploadParts(uploadFile: uploadFile, uploadId: uploadId, partSize: partSize, parts: parts)
             case .paused(_, _, _, let parts):
@@ -242,19 +261,31 @@ class StorageMultipartUploadSession {
             default:
                 break
             }
+            logger.verbose("MultipartUpload State: \(multipartUpload)")
         } catch {
             fail(error: error)
         }
+
     }
 
     func handle(uploadPartEvent: StorageUploadPartEvent) {
         logger.debug("\(#function): \(uploadPartEvent)")
 
         do {
-            try multipartUpload.transition(uploadPartEvent: uploadPartEvent)
+            if case .failed = multipartUpload {
+                logger.debug("Multipart Upload is failed and event cannot be handled: \(uploadPartEvent)")
+                return
+            }
+            else if case .paused = multipartUpload {
+                logger.debug("Multipart Upload is paused and event cannot be handled: \(uploadPartEvent)")
+                return
+            }
 
-            // update the transferTask with every state transition
-            transferTask.multipartUpload = multipartUpload
+            try serialQueue.sync {
+                try multipartUpload.transition(uploadPartEvent: uploadPartEvent)
+                // update the transferTask with every state transition
+                transferTask.multipartUpload = multipartUpload
+            }
 
             if uploadPartEvent.isCompleted {
                 // report progress
@@ -268,6 +299,9 @@ class StorageMultipartUploadSession {
             let isCompletedEvent = uploadPartEvent.isCompleted
 
             if case .queued = uploadPartEvent {
+                return
+            } else if case .paused = multipartUpload {
+                logger.debug("Multipart Upload is paused and part cannot be completed")
                 return
             } else if isCompletedEvent && multipartUpload.hasPendingParts {
                 if case .parts(let uploadId, let uploadFile, let partSize, let parts) = multipartUpload {
@@ -326,29 +360,52 @@ class StorageMultipartUploadSession {
     }
 
     private func cancelInProgressParts(parts: StorageUploadParts) {
-        let taskIdentifiers: [TaskIdentifier] = parts.inProgress.compactMap {
-            if case .inProgress(_, _, let taskIdentifier) = $0 {
-                return taskIdentifier
-            } else {
-                return nil
+        dispatchPrecondition(condition: .notOnQueue(serialQueue))
+        serialQueue.sync {
+            guard let uploadId = multipartUpload.uploadId,
+                  let uploadFile = multipartUpload.uploadFile,
+                    let partSize = multipartUpload.partSize else {
+                logger.warn("Unable to get required values to cancel in progress parts: \(multipartUpload)")
+                return
             }
-        }
 
-        client.cancelUploadTasks(taskIdentifiers: taskIdentifiers)
-
-        queue.sync {
-            if case .paused(let uploadId, let uploadFile, let partSize, let parts) = multipartUpload {
-                let pausedParts: StorageUploadParts = parts.map { part in
-                    if case .inProgress = part {
-                        return StorageUploadPart.pending(bytes: part.bytes)
-                    } else {
-                        return part
-                    }
+            // collect TaskIdentifier from each part that is in progress
+            let cancellingParts: [TaskIdentifier?] = parts.reduce(into: [], { result, part in
+                if case .inProgress(_, _, let taskIdentifier) = part {
+                    result.append(taskIdentifier)
+                } else {
+                    result.append(nil)
                 }
-                multipartUpload = .paused(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: pausedParts)
-            }
-        }
+            })
 
+            for index in 0..<cancellingParts.count {
+                if cancellingParts[index] != nil {
+                    let partNumber = index + 1
+                    logger.debug("Pausing upload and cancelling URLSession upload task: partNumber = \(partNumber)")
+                }
+            }
+
+            // update parts to be paused
+            let pausedParts: StorageUploadParts = parts.map { part in
+                if case .inProgress = part {
+                    return StorageUploadPart.pending(bytes: part.bytes)
+                } else {
+                    return part
+                }
+            }
+            multipartUpload = .paused(uploadId: uploadId, uploadFile: uploadFile, partSize: partSize, parts: pausedParts)
+
+            let taskIdentifiers = cancellingParts.compactMap { $0 }
+            logger.debug(("Cancelling upload tasks which are in process while paused: \(taskIdentifiers)"))
+
+            // block while cancelling upload tasks
+            let group = DispatchGroup()
+            group.enter()
+            client.cancelUploadTasks(taskIdentifiers: taskIdentifiers) {
+                group.leave()
+            }
+            group.wait()
+        }
     }
 
     private func uploadParts(uploadFile: UploadFile, uploadId: UploadID, partSize: StorageUploadPartSize, parts: StorageUploadParts) {
@@ -361,6 +418,8 @@ class StorageMultipartUploadSession {
 
         do {
             let pendingPartNumbers = getPendingPartNumbers()
+            logger.debug("Pending parts: \(pendingPartNumbers)")
+            logger.debug("Multipart Upload: \(multipartUpload)")
             if pendingPartNumbers.isEmpty {
                 return
             }
@@ -370,6 +429,7 @@ class StorageMultipartUploadSession {
                 let numbers = pendingPartNumbers[0..<end]
                 // queue upload part first
                 numbers.forEach { partNumber in
+                    logger.debug("Queuing part \(partNumber)")
                     handle(uploadPartEvent: .queued(partNumber: partNumber))
                 }
 
@@ -378,6 +438,7 @@ class StorageMultipartUploadSession {
                     guard !isAborted else { return }
                     // the next call does async work
                     let subTask = createSubTask(partNumber: partNumber)
+                    logger.debug("Uploading part: \(partNumber)")
                     try client.uploadPart(partNumber: partNumber, multipartUpload: multipartUpload, subTask: subTask)
                 }
             }

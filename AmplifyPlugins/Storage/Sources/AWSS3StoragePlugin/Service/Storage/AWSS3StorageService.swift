@@ -60,7 +60,11 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
         if let sessionConfiguration = sessionConfiguration {
             _sessionConfiguration = sessionConfiguration
         } else {
+            #if os(macOS)
+            let sessionConfiguration = URLSessionConfiguration.default
+            #else
             let sessionConfiguration = URLSessionConfiguration.background(withIdentifier: storageConfiguration.sessionIdentifier)
+            #endif
             sessionConfiguration.allowsCellularAccess = storageConfiguration.allowsCellularAccess
             sessionConfiguration.timeoutIntervalForResource = TimeInterval(storageConfiguration.timeoutIntervalForResource)
             _sessionConfiguration = sessionConfiguration
@@ -112,7 +116,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
             guard let self = self else { fatalError() }
             switch result {
             case .success(let pairs):
-                logger.info("Recovery completed: [pairs = '\(pairs.count)]")
+                logger.info("Recovery completed: [pairs = \(pairs.count)]")
                 self.processTransferTaskPairs(pairs: pairs)
             case .failure(let error):
                 logger.error(error: error)
@@ -126,11 +130,12 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
 
     func reset() {
         authService = nil
-        logger = nil
         preSignedURLBuilder = nil
         awsS3 = nil
         region = nil
         bucket = nil
+        tasks.removeAll()
+        multipartUploadSessions.removeAll()
     }
 
     func resetURLSession() {
@@ -163,17 +168,33 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
     }
 
     func register(task: StorageTransferTask) {
-        guard let taskIdentifier = task.taskIdentifier else { return }
-        tasks[taskIdentifier] = task
+        dispatchPrecondition(condition: .notOnQueue(serviceDispatchQueue))
+        serviceDispatchQueue.sync {
+            guard let taskIdentifier = task.taskIdentifier else { return }
+            tasks[taskIdentifier] = task
+        }
     }
 
     func unregister(task: StorageTransferTask) {
-        guard let taskIdentifier = task.taskIdentifier else { return }
-        tasks[taskIdentifier] = nil
+        dispatchPrecondition(condition: .notOnQueue(serviceDispatchQueue))
+        serviceDispatchQueue.sync {
+            guard let taskIdentifier = task.taskIdentifier else { return }
+            tasks[taskIdentifier] = nil
+        }
+    }
+
+    func unregister(taskIdentifiers: [TaskIdentifier]) {
+        dispatchPrecondition(condition: .notOnQueue(serviceDispatchQueue))
+        serviceDispatchQueue.sync {
+            for taskIdentifier in taskIdentifiers {
+                tasks[taskIdentifier] = nil
+            }
+        }
     }
 
     func register(multipartUploadSession: StorageMultipartUploadSession) {
         dispatchPrecondition(condition: .notOnQueue(serviceDispatchQueue))
+        logger.debug("Registering multipart upload: \(multipartUploadSession.uploadId ?? "-")")
         serviceDispatchQueue.sync {
             multipartUploadSessions.append(multipartUploadSession)
         }
@@ -181,6 +202,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
 
     func unregister(multipartUploadSession: StorageMultipartUploadSession) {
         dispatchPrecondition(condition: .notOnQueue(serviceDispatchQueue))
+        logger.debug("Unregistering multipart upload: \(multipartUploadSession.uploadId ?? "-")")
         serviceDispatchQueue.sync {
             guard let index = multipartUploadSessions.firstIndex(of: multipartUploadSession) else { return }
             multipartUploadSessions.remove(at: index)
@@ -188,8 +210,11 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
     }
 
     func findTask(taskIdentifier: TaskIdentifier) -> StorageTransferTask? {
-        let task = tasks[taskIdentifier]
-        return task
+        dispatchPrecondition(condition: .notOnQueue(serviceDispatchQueue))
+        return serviceDispatchQueue.sync {
+            let task = tasks[taskIdentifier]
+            return task
+        }
     }
 
     func findMultipartUploadSession(uploadId: UploadID) -> StorageMultipartUploadSession? {

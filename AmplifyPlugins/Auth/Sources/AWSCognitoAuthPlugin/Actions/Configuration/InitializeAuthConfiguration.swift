@@ -20,7 +20,7 @@ struct InitializeAuthConfiguration: Action {
 
         let authEnvironment = environment as? AuthEnvironment
 
-        let credentialStoreClient = authEnvironment?.credentialStoreClientFactory()
+        let credentialStoreClient = authEnvironment?.credentialsClient
 
         var credentials = AmplifyCredentials.noCredentials
 

@@ -35,7 +35,7 @@ class AWSAuthSignUpTask: AuthSignUpTask {
             let client = try userPoolEnvironment.cognitoUserPoolFactory()
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: request.username,
-                credentialStoreClient: authEnvironment.credentialStoreClientFactory())
+                credentialStoreClient: authEnvironment.credentialsClient)
             let attributes = request.options.userAttributes?.reduce(
                 into: [String: String]()) {
                     $0[$1.key.rawValue] = $1.value

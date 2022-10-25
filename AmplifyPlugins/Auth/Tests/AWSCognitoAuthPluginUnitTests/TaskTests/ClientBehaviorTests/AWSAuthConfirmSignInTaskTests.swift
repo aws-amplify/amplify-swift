@@ -449,7 +449,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             identityPoolConfigData: identityPoolConfigData,
             authenticationEnvironment: nil,
             authorizationEnvironment: authorizationEnvironment,
-            credentialStoreClientFactory: Defaults.makeCredentialStoreOperationBehaviour,
+            credentialsClient: Defaults.makeCredentialStoreOperationBehavior(),
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
         )
         let stateMachine = Defaults.authStateMachineWith(environment: environment,
@@ -462,7 +462,6 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             credentialStoreStateMachine: Defaults.makeDefaultCredentialStateMachine(),
             hubEventHandler: MockAuthHubEventBehavior(),
             analyticsHandler: MockAnalyticsHandler())
-
 
         do {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")

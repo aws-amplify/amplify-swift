@@ -8,6 +8,7 @@
 import XCTest
 @testable import Amplify
 import AWSCognitoAuthPlugin
+import AWSPluginsCore
 
 class AuthSRPSignInTests: AWSAuthBaseTest {
 
@@ -270,6 +271,54 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
 
         wait(for: [confirmOperationExpectation], timeout: networkTimeout)
 
+    }
+
+    /// Test if signIn and fetchAuthSession (with guest session not allowed) work in parallel
+    ///
+    /// - Given: A fetchAuthSession and signIn happening simulatneously should succeed
+    /// - When:
+    ///    - I invoke signIn and fetchAuthSession, both the tasks should succeed without affecting each other
+    /// - Then:
+    ///    - I should get success for both the API's
+    ///
+    func testSignInWithFetchAuthSession() {
+
+        let fetchAuthSessionExpectation = expectation(description: "Fetch Auth Session completed")
+        let signInExpectation = expectation(description: "Sign in completed")
+
+        Task {
+            var didNotSucceed = true
+            while didNotSucceed {
+                let result = try await Amplify.Auth.fetchAuthSession()
+                let credentialsResult = (result as? AuthAWSCredentialsProvider)?.getAWSCredentials()
+                guard let awsCredentials = try? credentialsResult?.get() else {
+                    continue
+                }
+                XCTAssertNotNil(awsCredentials.accessKeyId, "Access key should not be nil")
+                didNotSucceed = false
+            }
+            fetchAuthSessionExpectation.fulfill()
+        }
+
+        Task {
+            let username = "integTest\(UUID().uuidString)"
+            let password = "P123@\(UUID().uuidString)"
+
+            let didSucceed = try await AuthSignInHelper.signUpUser(
+                username: username,
+                password: password,
+                email: defaultTestEmail)
+            XCTAssertTrue(didSucceed, "Signup operation failed")
+            do {
+                let signInResult = try await Amplify.Auth.signIn(username: username, password: password)
+                XCTAssertTrue(signInResult.isSignedIn, "SignIn should be complete")
+            } catch {
+                XCTFail("SignIn with a valid username/password should not fail \(error)")
+            }
+            signInExpectation.fulfill()
+        }
+
+        wait(for: [signInExpectation, fetchAuthSessionExpectation], timeout: networkTimeout)
     }
 
 }

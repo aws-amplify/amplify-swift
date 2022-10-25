@@ -13,11 +13,11 @@ import XCTest
 import AWSS3
 
 class AWSS3StorageOperationTestBase: XCTestCase {
-
+    
     var hubPlugin: MockHubCategoryPlugin!
     var mockStorageService: MockAWSS3StorageService!
     var mockAuthService: MockAWSAuthService!
-
+    
     let testKey = "TestKey"
     let testTargetIdentityId = "TestTargetIdentityId"
     let testIdentityId = "TestIdentityId"
@@ -27,10 +27,10 @@ class AWSS3StorageOperationTestBase: XCTestCase {
     let testExpires = 10
     let testURL = URL(fileURLWithPath: "path")
     let testStorageConfiguration = AWSS3StoragePluginConfiguration()
-
+    
     override func setUp() {
         let mockAmplifyConfig = AmplifyConfiguration()
-
+        
         do {
             try Amplify.configure(mockAmplifyConfig)
         } catch let error as AmplifyError {
@@ -38,13 +38,18 @@ class AWSS3StorageOperationTestBase: XCTestCase {
         } catch {
             XCTFail("setup failed with unknown error")
         }
-
+        
         mockStorageService = MockAWSS3StorageService()
         mockAuthService = MockAWSAuthService()
     }
-
+    
     override func tearDown() async throws {
         await Amplify.reset()
     }
-
+    
+    func waitForOperationToFinish(_ operation: AsynchronousOperation) {
+        while !operation.isFinished {
+            Thread.sleep(forTimeInterval: 0.2)
+        }
+    }
 }

@@ -12,10 +12,11 @@ import XCTest
 import AWSCognitoAuthPlugin
 
 class AWSS3StoragePluginTestBase: XCTestCase {
-
+    static let logger = Amplify.Logging.logger(forCategory: "Storage", logLevel: .verbose)
     static let amplifyConfiguration = "testconfiguration/AWSS3StoragePluginTests-amplifyconfiguration"
 
-    static let largeDataObject = Data(repeating: 0xff, count: 1_024 * 1_024 * 6) // 6MB
+    static let smallDataObject = Data(repeating: 0xff, count: 1_024 * 1_024 * ProcessInfo.processInfo.activeProcessorCount)
+    static let largeDataObject = Data(repeating: 0xff, count: 1_024 * 1_024 * ProcessInfo.processInfo.activeProcessorCount * 4)
 
     static var user1: String = "integTest\(UUID().uuidString)"
     static var user2: String = "integTest\(UUID().uuidString)"
@@ -27,6 +28,7 @@ class AWSS3StoragePluginTestBase: XCTestCase {
     static var isSecondUserSignedUp = false
 
     override func setUp() async throws {
+        Self.logger.debug("setUp")
         do {
             await Amplify.reset()
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
@@ -43,13 +45,14 @@ class AWSS3StoragePluginTestBase: XCTestCase {
     }
 
     override func tearDown() async throws {
+        Self.logger.debug("tearDown")
         invalidateCurrentSession()
         await Amplify.reset()
         // `sleep` has been added here to get more consistent test runs.
         // The plugin will always create a URLSession with the same key, so we need to invalidate it first.
         // However, it needs some time to properly clean up before creating and using a new session.
         // The `sleep` helps avoid the error: "Task created in a session that has been invalidated"
-        sleep(1)
+        try await Task.sleep(seconds: 1)
     }
 
     // MARK: Common Helper functions
@@ -149,11 +152,12 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
     func signOut() async {
         await wait(name: "Sign out completed") {
-            try await Amplify.Auth.signOut()
+            await Amplify.Auth.signOut()
         }
     }
 
     private func invalidateCurrentSession() {
+        Self.logger.debug("Invalidating URLSession")
         guard let plugin = try? Amplify.Storage.getPlugin(for: "awsS3StoragePlugin") as? AWSS3StoragePlugin,
               let service = plugin.storageService as? AWSS3StorageService else {
             print("Unable to to cast to AWSS3StorageService")

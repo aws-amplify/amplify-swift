@@ -37,7 +37,7 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
 
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
         waitForExpectations(timeout: 1)
     }
 
@@ -65,7 +65,7 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
 
         operation.start()
         await waitForExpectations(timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
     }
 
     func testRemoveOperationDeleteSuccess() async throws {
@@ -90,7 +90,7 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         await waitForExpectations(timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
         mockStorageService.verifyDelete(serviceKey: expectedServiceKey)
     }
 
@@ -116,7 +116,7 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         await waitForExpectations(timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
         mockStorageService.verifyDelete(serviceKey: expectedServiceKey)
     }
 
@@ -143,7 +143,7 @@ class AWSS3StorageRemoveOperationTests: AWSS3StorageOperationTestBase {
         operation.start()
 
         waitForExpectations(timeout: 1)
-        XCTAssertTrue(operation.isFinished)
+        waitForOperationToFinish(operation)
         mockStorageService.verifyDelete(serviceKey: expectedServiceKey)
     }
 }

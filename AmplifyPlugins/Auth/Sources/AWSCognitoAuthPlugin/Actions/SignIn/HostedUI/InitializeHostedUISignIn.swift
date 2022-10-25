@@ -58,7 +58,7 @@ struct InitializeHostedUISignIn: Action {
         do {
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: username,
-                credentialStoreClient: environment.credentialStoreClientFactory())
+                credentialStoreClient: environment.credentialsClient)
             let encodedData = CognitoUserPoolASF.encodedContext(
                 username: username,
                 asfDeviceId: asfDeviceId,

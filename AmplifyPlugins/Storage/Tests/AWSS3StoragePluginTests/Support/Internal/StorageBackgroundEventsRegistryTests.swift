@@ -40,12 +40,10 @@ class StorageBackgroundEventsRegistryTests: XCTestCase {
             XCTAssertFalse(otherHandled)
         }
 
-        Task {
-            handleEvents(for: identifier)
-            handleEvents(for: otherIdentifier)
-        }
-
         await waitForExpectations([done])
+
+        handleEvents(for: identifier)
+        handleEvents(for: otherIdentifier)
     }
 
     func testHandlingUnregisteredIdentifier() async throws {

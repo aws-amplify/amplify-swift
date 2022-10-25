@@ -93,4 +93,22 @@ class AWSAuthSignOutTaskTests: BasePluginTest {
         XCTAssertFalse(result.signedOutLocally)
 
     }
+
+    func testGuestSignOut() async {
+
+        let initialState = AuthState.configured(
+            AuthenticationState.signedOut(.init()),
+            AuthorizationState.sessionEstablished(.testDataIdentityPool))
+
+        let authPlugin = configureCustomPluginWith(initialState: initialState)
+
+        guard let result = await authPlugin.signOut() as? AWSCognitoSignOutResult,
+              case .complete = result else {
+
+            XCTFail("Sign out during guest should succeed")
+            return
+        }
+        XCTAssertTrue(result.signedOutLocally)
+
+    }
 }

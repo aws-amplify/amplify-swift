@@ -211,6 +211,25 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
         }
     }
 
+    func delete<M: Model>(_ modelType: M.Type,
+                          modelSchema: ModelSchema,
+                          withId id: Model.Identifier,
+                          condition: QueryPredicate? = nil,
+                          completion: (DataStoreResult<M?>) -> Void) {
+        delete(untypedModelType: modelType,
+               modelSchema: modelSchema,
+               withId: id,
+               condition: condition) { result in
+            switch result {
+            case .success:
+                completion(.success(nil))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    
     func delete<M>(_ modelType: M.Type,
                    modelSchema: ModelSchema,
                    withIdentifier identifier: ModelIdentifierProtocol,
@@ -228,7 +247,19 @@ final class SQLiteStorageEngineAdapter: StorageEngineAdapter {
             }
         }
     }
-
+    
+    func delete(untypedModelType modelType: Model.Type,
+                modelSchema: ModelSchema,
+                withId id: Model.Identifier,
+                condition: QueryPredicate? = nil,
+                completion: DataStoreCallback<Void>) {
+        delete(untypedModelType: modelType,
+               modelSchema: modelSchema,
+               withIdentifier: DefaultModelIdentifier<AnyModel>.makeDefault(id: id),
+               condition: condition,
+               completion: completion)
+    }
+    
     func delete(untypedModelType modelType: Model.Type,
                 modelSchema: ModelSchema,
                 withIdentifier id: ModelIdentifierProtocol,

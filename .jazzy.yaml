@@ -1,10 +1,8 @@
 module: Amplify
 author: Amazon Web Services
-github_url: https://github.com/aws-amplify/amplify-ios
+github_url: https://github.com/aws-amplify/amplify-swift
 
-exclude:
-  - Pods
-
+swift-build-tool: spm
 clean: true
 skip_undocumented: false
 undocumented_text: ""
@@ -12,10 +10,9 @@ hide_documentation_coverage: true
 sdk: iphone
 theme: apple
 build_tool_arguments:
-  - -workspace
-  - Amplify.xcworkspace
-  - -scheme
-  - Amplify
+  - -Xswiftc
+  - -swift-version
+  - -Xswiftc
+  - "5"
 
 docset_icon: readme-images/amplify-icon.png
-

@@ -5,7 +5,7 @@
 
 set -e
 
-REPO="aws-amplify/amplify-ios.git"
+REPO="aws-amplify/amplify-swift.git"
 
 git clone git@github.com:$REPO $(mktemp -d -t amplify-release)
 TEMP_DIR=$_

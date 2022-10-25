@@ -57,7 +57,7 @@ enum Defaults {
         return authConfig
     }
 
-    static func makeCredentialStoreOperationBehaviour() -> CredentialStoreStateBehaviour {
+    static func makeCredentialStoreOperationBehavior() -> CredentialStoreStateBehavior {
         return MockCredentialStoreOperationClient()
     }
 
@@ -161,7 +161,7 @@ enum Defaults {
             identityPoolConfigData: identityPoolConfigData,
             authenticationEnvironment: authenticationEnvironment,
             authorizationEnvironment: authZEnvironment ?? authorizationEnvironment,
-            credentialStoreClientFactory: makeCredentialStoreOperationBehaviour,
+            credentialsClient: makeCredentialStoreOperationBehavior(),
             logger: Amplify.Logging.logger(forCategory: "awsCognitoAuthPluginTest")
         )
         Amplify.Logging.logLevel = .verbose
@@ -228,25 +228,52 @@ enum Defaults {
 
 }
 
-struct MockCredentialStoreOperationClient: CredentialStoreStateBehaviour {
+struct MockCredentialStoreOperationClient: CredentialStoreStateBehavior {
+
+    let mockAmplifyStore = MockAmplifyStore()
 
     func fetchData(type: CredentialStoreDataType) async throws -> CredentialStoreData {
-        switch type {
-        case .amplifyCredentials:
-            return .amplifyCredentials(.testData)
-        case .deviceMetadata(username: let username):
-            return .deviceMetadata(.metadata(.init(
-                deviceKey: "key",
-                deviceGroupKey: "key",
-                deviceSecret: "secret")), username)
-        case .asfDeviceId(username: let username):
-            return .asfDeviceId("id", username)
-        }
 
+        do {
+            switch type {
+            case .amplifyCredentials:
+                let amplifyCredentials = try mockAmplifyStore.retrieveCredential()
+                return .amplifyCredentials(amplifyCredentials)
+            case .deviceMetadata(username: let username):
+                let deviceMetadata = try mockAmplifyStore.retrieveDevice(for: username)
+                return .deviceMetadata(deviceMetadata, username)
+            case .asfDeviceId(username: let username):
+                let device = try mockAmplifyStore.retrieveASFDevice(for: username)
+                return .asfDeviceId(device, username)
+            }
+        }
+        catch KeychainStoreError.itemNotFound {
+            switch type {
+            case .amplifyCredentials:
+                return .amplifyCredentials(.testData)
+            case .deviceMetadata(username: let username):
+                return .deviceMetadata(.metadata(.init(
+                    deviceKey: "key",
+                    deviceGroupKey: "key",
+                    deviceSecret: "secret")), username)
+            case .asfDeviceId(username: let username):
+                return .asfDeviceId("id", username)
+            }
+        }
+        catch {
+            fatalError()
+        }
     }
 
     func storeData(data: CredentialStoreData) async throws {
-
+        switch data {
+        case .amplifyCredentials(let amplifyCredentials):
+            try mockAmplifyStore.saveCredential(amplifyCredentials)
+        case .deviceMetadata(let deviceMetadata, let username):
+            try mockAmplifyStore.saveDevice(deviceMetadata, for: username)
+        case .asfDeviceId(let string, let username):
+            try mockAmplifyStore.saveASFDevice(string, for: username)
+        }
     }
 
     func deleteData(type: CredentialStoreDataType) async throws {
@@ -256,16 +283,17 @@ struct MockCredentialStoreOperationClient: CredentialStoreStateBehaviour {
 
 class MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
     let credentialsKey = "amplifyCredentials"
-    static var dict: [String: Data] = [:]
+    static var dict = AtomicDictionary<String, Data>()
 
     func saveCredential(_ credential: AmplifyCredentials) throws {
-        Self.dict[credentialsKey] = try? JSONEncoder().encode(credential)
+        let value = (try? JSONEncoder().encode(credential)) ?? Data()
+        Self.dict.set(value: value, forKey: credentialsKey)
     }
 
     func retrieveCredential() throws -> AmplifyCredentials {
-        guard let data = Self.dict[credentialsKey],
+        guard let data = Self.dict.getValue(forKey: credentialsKey),
               let cred = (try? JSONDecoder().decode(AmplifyCredentials.self, from: data)) else {
-            return AmplifyCredentials.noCredentials
+            throw KeychainStoreError.itemNotFound
         }
         return cred
     }
@@ -279,13 +307,14 @@ class MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
     }
 
     func saveDevice(_ deviceMetadata: DeviceMetadata, for username: String) throws {
-        Self.dict[username] = try? JSONEncoder().encode(deviceMetadata)
+        let value = (try? JSONEncoder().encode(deviceMetadata)) ?? Data()
+        Self.dict.set(value: value, forKey: username)
     }
 
     func retrieveDevice(for username: String) throws -> DeviceMetadata {
-        guard let data = Self.dict[username],
+        guard let data = Self.dict.getValue(forKey: username),
               let device = (try? JSONDecoder().decode(DeviceMetadata.self, from: data)) else {
-            return .noData
+            throw KeychainStoreError.itemNotFound
         }
         return device
     }
@@ -295,12 +324,13 @@ class MockAmplifyStore: AmplifyAuthCredentialStoreBehavior {
     }
 
     func saveASFDevice(_ deviceId: String, for username: String) throws {
-        Self.dict[username] = try? JSONEncoder().encode(deviceId)
+        let value = (try? JSONEncoder().encode(deviceId)) ?? Data()
+        Self.dict.set(value: value, forKey: username)
 
     }
 
     func retrieveASFDevice(for username: String) throws -> String {
-        guard let data = Self.dict[username],
+        guard let data = Self.dict.getValue(forKey: username),
               let device = (try? JSONDecoder().decode(String.self, from: data)) else {
             throw KeychainStoreError.itemNotFound
         }
