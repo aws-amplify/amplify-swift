@@ -241,7 +241,8 @@ let geoTargets: [Target] = [
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSPluginsCore"),
-            .product(name: "AWSLocation", package: "aws-sdk-swift")],
+            .product(name: "AWSLocation", package: "aws-sdk-swift"),
+            .product(name: "SQLite", package: "SQLite.swift")],
         path: "AmplifyPlugins/Geo/Sources/AWSLocationGeoPlugin",
         exclude: [
             "Resources/Info.plist"
