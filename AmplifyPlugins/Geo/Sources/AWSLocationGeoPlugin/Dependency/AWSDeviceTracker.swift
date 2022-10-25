@@ -15,7 +15,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, DeviceTrackingBehav
     var wakeAppForSignificantLocationUpdates = true
     var trackUntil: Date = .distantFuture
     var batchingOptions: Geo.LocationManager.BatchingOptions = .none
-    var proxyDelegate: ProxyDelegate?
+    var proxyDelegate: LocationProxyDelegate?
     
     init(locationManager: CLLocationManager) {
         self.locationManager = locationManager
@@ -25,7 +25,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, DeviceTrackingBehav
         self.wakeAppForSignificantLocationUpdates = options.wakeAppForSignificantLocationChanges
         self.trackUntil = options.trackUntil
         self.batchingOptions = options.batchingOptions
-        self.proxyDelegate = options.proxyDelegate ?? AWSDeviceTrackerProxyDelegate(deviceTrackingBehavior: self)
+        self.proxyDelegate = options.proxyDelegate
         locationManager.delegate = self
         configureLocationManager(with: options)
     }

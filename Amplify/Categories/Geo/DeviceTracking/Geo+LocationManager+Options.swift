@@ -91,9 +91,9 @@ public extension Geo.LocationManager {
         /// before sending the collected updates as a batch.
         public let batchingOptions: BatchingOptions
         
-        public var proxyDelegate : ProxyDelegate?
+        public var proxyDelegate : LocationProxyDelegate?
         
-        public func withProxyDelegate(_ proxyDelegate: ProxyDelegate) -> Self {
+        public func withProxyDelegate(_ proxyDelegate: LocationProxyDelegate) -> Self {
             self.proxyDelegate = proxyDelegate
             return self
         }

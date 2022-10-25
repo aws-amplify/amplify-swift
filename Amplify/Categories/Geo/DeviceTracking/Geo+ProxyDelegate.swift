@@ -9,7 +9,7 @@ import Foundation
 import CoreLocation
 
 
-public protocol ProxyDelegate {
+public protocol LocationProxyDelegate {
     var didUpdateLocations : (CLLocationManager, [CLLocation]) -> Void { get set }
 }
 

@@ -9,7 +9,7 @@ import Foundation
 import Amplify
 import CoreLocation
 
-class MockProxyDelegate: ProxyDelegate {
+class MockProxyDelegate: LocationProxyDelegate {
     
     // MARK: - Method call counts for MockProxyDelegate
     static var didUpdateLocationsCalled = 0
