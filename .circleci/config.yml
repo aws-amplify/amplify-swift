@@ -9,7 +9,18 @@ orbs:
       macos: circleci/macos@2
       node: circleci/node@5.0.2
       ruby: circleci/ruby@1.6.0
+      aws-cli: circleci/aws-cli@3.1.1
     commands:
+      send-metric-on-fail:
+        description: Send failure datapoint to cloudwatch
+        steps:
+          - run:
+              name: Send failure datapoint to cloudwatch
+              command: |
+                payload="{\"jobName\": \"${CIRCLE_JOB}\", \"projectRepoName\": \"${CIRCLE_PROJECT_REPONAME}\"}"
+                echo $payload
+                aws lambda invoke --function-name CircleCIWorkflowFailureHandler --payload "$payload" --cli-binary-format raw-in-base64-out response.json
+              when: on_fail
       run-with-retry:
         description: Run command with retry
         parameters:
@@ -73,6 +84,10 @@ orbs:
         steps:
           - checkout:
               path: ~/ios-canaries
+          - aws-cli/setup:
+              role-session-name: ${CIRCLE_WORKFLOW_JOB_ID}
+              role-arn: ${AWS_ROLE_ARN}
+              session-duration: '2000'
           - node/install
           - run: npm install -g @aws-amplify/cli
           - run: amplify init --quickstart --frontend ios
@@ -87,11 +102,12 @@ orbs:
           - run-with-retry:
               label: Run tests
               command: bundle exec fastlane scan
+          - send-metric-on-fail
 
 defaults: &defaults
   macos:
     xcode: '13.3.0'
-  working_directory: ~/amplify-ios
+  working_directory: ~/amplify-swift
   environment:
     BUNDLE_PATH: vendor/bundle
 
@@ -105,7 +121,7 @@ references:
         - v2-repo-{{ .Branch }}
         - v2-repo
 
-  pods_cache_key: &pods_cache_key v3-dependency-pods-{{ checksum "~/amplify-ios/Podfile" }}
+  pods_cache_key: &pods_cache_key v3-dependency-pods-{{ checksum "~/amplify-swift/Podfile" }}
 
   pods_backup_cache_key: &pods_backup_cache_key v3-dependency-pods
 
@@ -124,13 +140,13 @@ commands:
     steps:
       - run:
           name: Pre-start simulator
-          command: bash ~/amplify-ios/CircleciScripts/pre_start_simulator.sh
+          command: bash ~/amplify-swift/CircleciScripts/pre_start_simulator.sh
 
   restore_gems:
     steps:
       - restore_cache:
           keys:
-            - v2-gems-{{ checksum "~/amplify-ios/Gemfile.lock" }}
+            - v2-gems-{{ checksum "~/amplify-swift/Gemfile.lock" }}
             - v2-gems-
 
   check_bundle:
@@ -180,7 +196,7 @@ jobs:
       - save_cache:
           key: *repo_cache_key
           paths:
-            - ~/amplify-ios
+            - ~/amplify-swift
 
   install_gems:
     <<: *defaults
@@ -194,7 +210,7 @@ jobs:
             BUNDLE_JOBS: 4
             BUNDLE_RETRY: 3
       - save_cache:
-          key: v2-gems-{{ checksum "~/amplify-ios/Gemfile.lock" }}
+          key: v2-gems-{{ checksum "~/amplify-swift/Gemfile.lock" }}
           paths:
             - vendor/bundle
 
@@ -215,14 +231,14 @@ jobs:
           command: xcodebuild test -workspace Amplify.xcworkspace -scheme Amplify -sdk iphonesimulator -destination "${destination}" | tee "artifacts/test-Amplify.log" | xcpretty --simple --color --report junit
       - run:
           name: Upload coverage report to Codecov
-          command: bash ~/amplify-ios/build-support/codecov.sh -F 'Amplify' -J '^Amplify$'
+          command: bash ~/amplify-swift/build-support/codecov.sh -F 'Amplify' -J '^Amplify$'
       - store_test_results:
           path: build/reports
       - upload_artifacts
 
   build_amplify_spm:
     <<: *defaults
-    working_directory: ~/amplify-ios/.swiftpm/xcode
+    working_directory: ~/amplify-swift/.swiftpm/xcode
     steps:
       - *restore_repo
       - pre_start_simulator
@@ -250,7 +266,7 @@ jobs:
           command: xcodebuild test -workspace Amplify.xcworkspace -scheme AWSPluginsCore -sdk iphonesimulator -destination "${destination}" | tee "artifacts/test-AWSPluginsCore.log" | xcpretty --simple --color --report junit
       - run:
           name: Upload coverage report to Codecov
-          command: bash ~/amplify-ios/build-support/codecov.sh -F 'AWSPluginsCore' -J '^AWSPluginsCore$'
+          command: bash ~/amplify-swift/build-support/codecov.sh -F 'AWSPluginsCore' -J '^AWSPluginsCore$'
       - store_test_results:
           path: build/reports
       - upload_artifacts
@@ -264,7 +280,7 @@ jobs:
         type: string
       scheme:
         type: string
-    working_directory: ~/amplify-ios/AmplifyPlugins/<< parameters.path >>
+    working_directory: ~/amplify-swift/AmplifyPlugins/<< parameters.path >>
     description: << parameters.path >> unit test
     steps:
       - *restore_repo
@@ -285,20 +301,10 @@ jobs:
           command: xcodebuild test -workspace << parameters.workspace >>.xcworkspace -scheme << parameters.scheme >> -sdk iphonesimulator -destination "${destination}" | tee "artifacts/test-<< parameters.scheme >>.log" | xcpretty --simple --color --report junit
       - run:
           name: Upload << parameters.path >> coverage report to Codecov
-          command: bash ~/amplify-ios/build-support/codecov.sh -F << parameters.path >>_plugin_unit_test -J '^<< parameters.scheme >>$'
+          command: bash ~/amplify-swift/build-support/codecov.sh -F << parameters.path >>_plugin_unit_test -J '^<< parameters.scheme >>$'
       - store_test_results:
           path: build/reports
       - upload_artifacts
-
-  generate_api_docs:
-    <<: *defaults
-    steps:
-      - *restore_repo
-      - restore_gems
-      - check_bundle
-      - run:
-          name: Jazzy API doc generation
-          command: bash ~/amplify-ios/CircleciScripts/jazzy_doc_gen.sh
 
   deploy:
     <<: *defaults
@@ -414,7 +420,7 @@ workflows:
           filters:
             branches:
               only:
-                - main
+                - v1
       - deploy:
           name: deploy stable
           lane: release
@@ -422,15 +428,7 @@ workflows:
           filters:
             branches:
               only:
-                - release
-      - generate_api_docs:
-          name: Generate api documentation
-          requires:
-            - deploy stable
-          filters:
-            branches:
-              only:
-                - release
+                - release-v1
 
   # Scheduled smoke test workflow
   # Jobs are pulled from the getting-started-smoke-test inline orb defined below
@@ -441,10 +439,14 @@ workflows:
         - equal: [ "Canaries", << pipeline.schedule.name >> ]
     jobs:
       - getting-started-smoke-test/ios:
+          context:
+            - cloudwatch-monitoring
           xcode-version: "13.3.0"
           simulator-os-version: "15.4"
           simulator-device: "iPhone 13"
       - getting-started-smoke-test/ios:
+          context:
+            - cloudwatch-monitoring
           xcode-version: "12.5.1"
           simulator-os-version: "14.5"
           simulator-device: "iPhone 12"

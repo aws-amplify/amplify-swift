@@ -131,6 +131,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
     var currentItems: SortedList<M>
     var batchItemsChangedSink: AnyCancellable?
     var itemsChangedSink: AnyCancellable?
+    var modelSyncedEventSink: AnyCancellable?
 
     /// Internal publisher for `ObserveQueryPublisher` to pass events back to subscribers
     let passthroughPublisher: PassthroughSubject<DataStoreQuerySnapshot<M>, DataStoreError>
@@ -182,6 +183,10 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
         if let batchItemsChangedSink = batchItemsChangedSink {
             batchItemsChangedSink.cancel()
         }
+
+        if let modelSyncedEventSink = modelSyncedEventSink {
+            modelSyncedEventSink.cancel()
+        }
         passthroughPublisher.send(completion: .finished)
         super.cancel()
         finish()
@@ -198,6 +203,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
             self.currentItems.reset()
             self.itemsChangedSink = nil
             self.batchItemsChangedSink = nil
+            self.modelSyncedEventSink = nil
         }
     }
 
@@ -250,6 +256,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
                 switch queryResult {
                 case .success(let queriedModels):
                     currentItems.set(sortedModels: queriedModels)
+                    subscribeToModelSyncedEvent()
                     sendSnapshot()
                 case .failure(let error):
                     self.passthroughPublisher.send(completion: .failure(error))
@@ -282,6 +289,18 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
             .receive(on: serialQueue)
             .sink(receiveCompletion: onReceiveCompletion(completed:),
                   receiveValue: onItemChangeAfterSync(mutationEvent:))
+    }
+
+    func subscribeToModelSyncedEvent() {
+        modelSyncedEventSink = Amplify.Hub.publisher(for: .dataStore).sink { event in
+            if event.eventName == HubPayload.EventName.DataStore.modelSynced,
+               let modelSyncedEvent = event.data as? ModelSyncedEvent,
+               modelSyncedEvent.modelName == self.modelSchema.name {
+                self.serialQueue.async {
+                    self.sendSnapshot()
+                }
+            }
+        }
     }
 
     func filterByModelName(mutationEvent: MutationEvent) -> Bool {

@@ -134,6 +134,7 @@
 		B41D10082475AB7E0049D08D /* AWSCognitoAuthPlugin+ClientBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41D10012475AB7E0049D08D /* AWSCognitoAuthPlugin+ClientBehavior.swift */; };
 		B41D10092475AB7E0049D08D /* AWSCognitoAuthPlugin+DeviceBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41D10022475AB7E0049D08D /* AWSCognitoAuthPlugin+DeviceBehavior.swift */; };
 		B41D100A2475AB7E0049D08D /* AWSCognitoAuthPlugin+UserBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41D10032475AB7E0049D08D /* AWSCognitoAuthPlugin+UserBehavior.swift */; };
+		B4304E2C28E227DF00A6AA43 /* AWSCognitoNetworkPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4304E2B28E227DF00A6AA43 /* AWSCognitoNetworkPreferences.swift */; };
 		B43B4DD92565E820008F345D /* MockAuthenticationProviderBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43B4DD82565E820008F345D /* MockAuthenticationProviderBehavior.swift */; };
 		B43B4DE32565E8D7008F345D /* MockAuthorizationProviderBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43B4DE22565E8D7008F345D /* MockAuthorizationProviderBehavior.swift */; };
 		B43B4DFD2565E941008F345D /* MockAuthUserServiceBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43B4DFC2565E941008F345D /* MockAuthUserServiceBehavior.swift */; };
@@ -321,6 +322,7 @@
 		B41D10012475AB7E0049D08D /* AWSCognitoAuthPlugin+ClientBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSCognitoAuthPlugin+ClientBehavior.swift"; sourceTree = "<group>"; };
 		B41D10022475AB7E0049D08D /* AWSCognitoAuthPlugin+DeviceBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSCognitoAuthPlugin+DeviceBehavior.swift"; sourceTree = "<group>"; };
 		B41D10032475AB7E0049D08D /* AWSCognitoAuthPlugin+UserBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AWSCognitoAuthPlugin+UserBehavior.swift"; sourceTree = "<group>"; };
+		B4304E2B28E227DF00A6AA43 /* AWSCognitoNetworkPreferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSCognitoNetworkPreferences.swift; sourceTree = "<group>"; };
 		B43B4DD82565E820008F345D /* MockAuthenticationProviderBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAuthenticationProviderBehavior.swift; sourceTree = "<group>"; };
 		B43B4DE22565E8D7008F345D /* MockAuthorizationProviderBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAuthorizationProviderBehavior.swift; sourceTree = "<group>"; };
 		B43B4DFC2565E941008F345D /* MockAuthUserServiceBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAuthUserServiceBehavior.swift; sourceTree = "<group>"; };
@@ -621,8 +623,9 @@
 			children = (
 				B41D0F4F2475A3960049D08D /* AWSAuthCognitoSession.swift */,
 				B41D0F4B2475A3960049D08D /* AWSAuthDevice.swift */,
-				B41D0F4E2475A3960049D08D /* AWSCognitoAuthService.swift */,
 				B41D0F4C2475A3960049D08D /* AWSAuthUser.swift */,
+				B41D0F4E2475A3960049D08D /* AWSCognitoAuthService.swift */,
+				B4304E2B28E227DF00A6AA43 /* AWSCognitoNetworkPreferences.swift */,
 				B41D0F4A2475A3960049D08D /* AWSCognitoUserPoolTokens.swift */,
 				B41D0F502475A3960049D08D /* Error */,
 				B41D0F422475A3960049D08D /* Options */,
@@ -1492,6 +1495,7 @@
 				B41D0F8E2475A3960049D08D /* AuthenticationProviderAdapter+SignOut.swift in Sources */,
 				B41D0F972475A3960049D08D /* AuthorizationProviderAdapter+SignedInSession.swift in Sources */,
 				B41D0FB12475A3960049D08D /* AWSAuthChangePasswordOperation.swift in Sources */,
+				B4304E2C28E227DF00A6AA43 /* AWSCognitoNetworkPreferences.swift in Sources */,
 				B41D0FC52475A3960049D08D /* AuthUserAttributeKey+Extension.swift in Sources */,
 				5C33248D27723D0800F2C47B /* AuthenticationProviderAdapter+DeleteUser.swift in Sources */,
 				B41D10042475AB7E0049D08D /* AWSCognitoAuthPlugin+Reset.swift in Sources */,

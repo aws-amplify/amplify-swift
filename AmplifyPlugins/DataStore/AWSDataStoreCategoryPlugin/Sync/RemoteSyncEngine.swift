@@ -181,7 +181,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
             notifySyncStarted()
 
         case .syncEngineActive:
-            break
+            log.debug("RemoteSyncEngine SyncEngineActive")
 
         case .cleaningUp(let error):
             cleanup(error: error)
@@ -276,7 +276,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
     private func initializeSubscriptions(api: APICategoryGraphQLBehavior,
                                          storageAdapter: StorageEngineAdapter) {
-        log.debug(#function)
+        log.debug("[InitializeSubscription] \(#function)")
         let syncableModelSchemas = ModelRegistry.modelSchemas.filter { $0.isSyncable }
         reconciliationQueue = reconciliationQueueFactory(syncableModelSchemas,
                                                          api,
@@ -294,6 +294,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
     }
 
     private func performInitialSync() {
+        log.debug("[InitializeSubscription.6] performInitialSync")
         log.debug(#function)
 
         let initialSyncOrchestrator = initialSyncOrchestratorFactory(dataStoreConfiguration,

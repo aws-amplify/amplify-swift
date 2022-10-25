@@ -7,7 +7,7 @@
 
 import XCTest
 @testable import Amplify
-import AWSCognitoAuthPlugin
+@testable import AWSCognitoAuthPlugin
 
 class AWSCognitoAuthPluginConfigTests: XCTestCase {
 
@@ -55,9 +55,9 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
         let categoryConfig = AuthCategoryConfiguration(plugins: [
             "awsCognitoAuthPlugin": [
                 "CredentialsProvider": ["CognitoIdentity": ["Default":
-                    ["PoolId": "xx",
-                     "Region": "us-east-1"]
-                    ]],
+                                                                ["PoolId": "xx",
+                                                                 "Region": "us-east-1"]
+                                                           ]],
                 "CognitoUserPool": ["Default": [
                     "PoolId": "xx",
                     "Region": "us-east-1",
@@ -89,9 +89,9 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
         let categoryConfig = AuthCategoryConfiguration(plugins: [
             "awsCognitoAuthPlugin": [
                 "CredentialsProvider": ["CognitoIdentity": ["Default":
-                    ["PoolId": "cc",
-                     "Region": "us-east-1"]
-                    ]]
+                                                                ["PoolId": "cc",
+                                                                 "Region": "us-east-1"]
+                                                           ]]
             ]
         ])
         let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
@@ -147,13 +147,13 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
         let categoryConfig = AuthCategoryConfiguration(plugins: [
             "awsCognitoAuthPlugin": [
                 "CredentialsProvider": ["CognitoIdentity": ["Default":
-                    ["xx": "xx",
-                     "xx2": "us-east-1"]
-                    ]],
+                                                                ["xx": "xx",
+                                                                 "xx2": "us-east-1"]
+                                                           ]],
                 "CognitoUserPool": ["Default": [
                     "xx": "xx",
                     "xx2": "us-east-1"
-                    ]]
+                ]]
             ]
         ])
         let amplifyConfig = AmplifyConfiguration(auth: categoryConfig)
@@ -253,9 +253,9 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
             XCTFail("Auth configuration should not succeed")
         } catch {
             guard let pluginError = error as? PluginError,
-                case .pluginConfigurationError = pluginError else {
-                    XCTFail("Should throw invalidConfiguration exception. But received \(error) ")
-                    return
+                  case .pluginConfigurationError = pluginError else {
+                XCTFail("Should throw invalidConfiguration exception. But received \(error) ")
+                return
             }
         }
     }
@@ -274,10 +274,11 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
 
         let categoryConfig = AuthCategoryConfiguration(plugins: [
             "awsCognitoAuthPlugin": [
-                "CredentialsProvider": ["CognitoIdentity": ["Default":
-                    ["PoolId": "xx",
-                     "Region": "us-east-1"]
-                    ]],
+                "CredentialsProvider": ["CognitoIdentity":
+                                            ["Default":
+                                                ["PoolId": "xx",
+                                                 "Region": "us-east-1"]
+                                            ]],
                 "CognitoUserPool": ["Default": [
                     "PoolId": "xx",
                     "Region": "us-east-1",
@@ -293,22 +294,23 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
             XCTFail("Should not throw error. \(error)")
         }
 
-        let signUpExpectation = expectation(description: "Should receive a result")
+        let signUpExpectation = expectation(description: "Should receive a signUp result")
         _ = plugin.signUp(username: "mockUsername", password: "", options: nil) { _ in
             signUpExpectation.fulfill()
         }
 
         var expectationList = [signUpExpectation]
 
-        for _ in 1 ... 50 {
-            let fetchSessionExpectation = expectation(description: "Should receive a result")
+        for index in 1 ... 50 {
+            let fetchSessionExpectation = expectation(
+                description: "Should receive fetch Authsession result for \(index)")
             _ = plugin.fetchAuthSession(options: nil) { _ in
                 fetchSessionExpectation.fulfill()
             }
             expectationList.append(fetchSessionExpectation)
         }
 
-        let signUpExpectation2 = expectation(description: "Should receive a result")
+        let signUpExpectation2 = expectation(description: "Should receive a second signUp result")
         DispatchQueue.global().async {
 
             _ = plugin.signUp(username: "mockUsername", password: "", options: nil) { _ in
@@ -316,6 +318,47 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
             }
         }
         expectationList.append(signUpExpectation2)
-        wait(for: expectationList, timeout: 10, enforceOrder: true)
+        wait(for: expectationList, timeout: 20, enforceOrder: true)
+    }
+
+    func testUserNetworkPreferencesForIdentityPoolService() throws {
+        let networkPreferences = AWSCognitoNetworkPreferences(maxRetryCount: 0,
+                                                              timeoutIntervalForRequest: 30,
+                                                              timeoutIntervalForResource: 30)
+        let plugin = AWSCognitoAuthPlugin(networkPreferences: networkPreferences)
+
+        let json: JSONValue = ["CredentialsProvider":
+                                ["CognitoIdentity":
+                                    ["Default":
+                                        ["Region": "us-east1"]
+                                    ]
+                                ]]
+        let identityPoolConfig = plugin.identityPoolServiceConfiguration(from: json)
+
+        XCTAssertEqual(identityPoolConfig?.maxRetryCount, networkPreferences.maxRetryCount)
+        XCTAssertEqual(identityPoolConfig?.timeoutIntervalForResource, networkPreferences.timeoutIntervalForResource)
+        XCTAssertEqual(identityPoolConfig?.timeoutIntervalForRequest, networkPreferences.timeoutIntervalForRequest)
+    }
+
+    func testUserNetworkPreferencesForUserPoolService() throws {
+        let networkPreferences = AWSCognitoNetworkPreferences(maxRetryCount: 0,
+                                                              timeoutIntervalForRequest: 30,
+                                                              timeoutIntervalForResource: 30)
+        let plugin = AWSCognitoAuthPlugin(networkPreferences: networkPreferences)
+        let json: JSONValue = ["CognitoUserPool":
+                                ["Default":
+                                    ["Region": "us-east1"]
+                                ]
+        ]
+        let identityPoolConfig = try plugin.userPoolServiceConfiguration(from: json)
+
+        XCTAssertEqual(identityPoolConfig?.maxRetryCount, networkPreferences.maxRetryCount)
+        XCTAssertEqual(identityPoolConfig?.timeoutIntervalForResource, networkPreferences.timeoutIntervalForResource)
+        XCTAssertEqual(identityPoolConfig?.timeoutIntervalForRequest, networkPreferences.timeoutIntervalForRequest)
+    }
+
+    func testNoUserPreferences() throws {
+        let plugin = AWSCognitoAuthPlugin()
+        XCTAssertNil(plugin.networkPreferences)
     }
 }

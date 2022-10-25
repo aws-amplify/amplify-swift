@@ -188,7 +188,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         case .success:
             incomingSubscriptionEvents.send(completion: .finished)
         case .failure(let apiError):
-            log.verbose("API Subscription failed for model `\(modelName)` with error: \(apiError.errorDescription)")
+            log.verbose("[InitializeSubscription.1] API.subscribe failed for `\(modelName)` error: \(apiError.errorDescription)")
             let dataStoreError = DataStoreError(error: apiError)
             incomingSubscriptionEvents.send(completion: .failure(dataStoreError))
         }

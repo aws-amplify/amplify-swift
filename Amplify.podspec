@@ -17,10 +17,10 @@ Pod::Spec.new do |s|
 
   s.description  = 'AWS Amplify for iOS provides a declarative library for application development using cloud services'
 
-  s.homepage     = 'https://github.com/aws-amplify/amplify-ios'
+  s.homepage     = 'https://github.com/aws-amplify/amplify-swift'
   s.license      = 'Apache License, Version 2.0'
   s.author       = { 'Amazon Web Services' => 'amazonwebservices' }
-  s.source       = { :git => 'https://github.com/aws-amplify/amplify-ios.git', :tag => $AMPLIFY_RELEASE_TAG }
+  s.source       = { :git => 'https://github.com/aws-amplify/amplify-swift.git', :tag => $AMPLIFY_RELEASE_TAG }
 
   s.platform     = :ios, '11.0'
   s.swift_version = '5.0'
@@ -31,7 +31,7 @@ Pod::Spec.new do |s|
   # There appears to be a bug in Xcode < 12 where SwiftUI isn't properly
   # weak-linked even though system frameworks should be weak-linked by default.
   # Explicitly weak link it here until we upgrade Amplify's platform support
-  # version to >= 13.0. https://github.com/aws-amplify/amplify-ios/issues/878
+  # version to >= 13.0. https://github.com/aws-amplify/amplify-swift/issues/878
   s.weak_frameworks = 'SwiftUI'
 
   s.subspec 'Default' do |default|

@@ -48,6 +48,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
     // This test case attempts to hit a race condition, and may be required to execute multiple times
     // in order to demonstrate the bug
     func testTwoConnectionStatusUpdatesAtSameTime() {
+        let expectStarted = expectation(description: "eventQueue expected to send out started state")
         let expectInitialized = expectation(description: "eventQueue expected to send out initialized state")
 
         let eventQueue = initEventQueue(modelSchemas: [Post.schema, Comment.schema])
@@ -58,6 +59,10 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             XCTFail("Not expecting this to call")
         }, receiveValue: { event  in
             switch event {
+            case .idle:
+                break
+            case .started:
+                expectStarted.fulfill()
             case .initialized:
                 expectInitialized.fulfill()
             default:
@@ -80,6 +85,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
     }
 
     func testSubscriptionFailedWithSingleModelUnauthorizedError() {
+        let expectStarted = expectation(description: "eventQueue expected to send out started state")
         let expectInitialized = expectation(description: "eventQueue expected to send out initialized state")
         let eventQueue = initEventQueue(modelSchemas: [Post.schema])
         eventQueue.start()
@@ -88,6 +94,10 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             XCTFail("Not expecting this to call")
         }, receiveValue: { event  in
             switch event {
+            case .idle:
+                break
+            case .started:
+                expectStarted.fulfill()
             case .initialized:
                 expectInitialized.fulfill()
             default:
@@ -111,6 +121,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
     // This test case tests that initialized event is received even if only one
     // model subscriptions out of two failed - Post subscription will fail but Comment will succeed
     func testSubscriptionFailedWithMultipleModels() {
+        let expectStarted = expectation(description: "eventQueue expected to send out started state")
         let expectInitialized = expectation(description: "eventQueue expected to send out initialized state")
         let eventQueue = initEventQueue(modelSchemas: [Post.schema, Comment.schema])
         eventQueue.start()
@@ -119,6 +130,10 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             XCTFail("Not expecting this to call")
         }, receiveValue: { event  in
             switch event {
+            case .idle:
+                break
+            case .started:
+                expectStarted.fulfill()
             case .initialized:
                 expectInitialized.fulfill()
             default:
@@ -143,6 +158,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
     }
 
     func testSubscriptionFailedWithSingleModelOperationDisabled() {
+        let expectStarted = expectation(description: "eventQueue expected to send out started state")
         let expectInitialized = expectation(description: "eventQueue expected to send out initialized state")
         let eventQueue = initEventQueue(modelSchemas: [Post.schema])
         eventQueue.start()
@@ -151,6 +167,10 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             XCTFail("Not expecting this to call")
         }, receiveValue: { event  in
             switch event {
+            case .idle:
+                break
+            case .started:
+                expectStarted.fulfill()
             case .initialized:
                 expectInitialized.fulfill()
             default:
@@ -177,6 +197,7 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
     // Post subscription will fail with a "OperationDisabled",
     // but Comment subscription will succeed
     func testSubscriptionFailedBecauseOfOperationDisabledWithMultipleModels() {
+        let expectStarted = expectation(description: "eventQueue expected to send out started state")
         let expectInitialized = expectation(description: "eventQueue expected to send out initialized state")
         let eventQueue = initEventQueue(modelSchemas: [Post.schema])
         eventQueue.start()
@@ -185,6 +206,8 @@ class AWSIncomingEventReconciliationQueueTests: XCTestCase {
             XCTFail("Not expecting this to call")
         }, receiveValue: { event  in
             switch event {
+            case .started:
+                expectStarted.fulfill()
             case .initialized:
                 expectInitialized.fulfill()
             default:

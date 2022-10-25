@@ -10,6 +10,12 @@ import Combine
 import AWSPluginsCore
 import Foundation
 
+enum InitStorageEngineResult {
+    case successfullyInitialized
+    case alreadyInitialized
+    case failure(DataStoreError)
+}
+
 final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     public var key: PluginKey = "awsDataStorePlugin"
@@ -110,12 +116,12 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// Initializes the underlying storage engine
     /// - Returns: success if the engine is successfully initialized or
     ///            a failure with a DataStoreError
-    func initStorageEngine() -> DataStoreResult<Void> {
+    func initStorageEngine() -> InitStorageEngineResult {
         storageEngineInitQueue.sync {
             if storageEngine != nil {
-                return .successfulVoid
+                return .alreadyInitialized
             }
-            var result: DataStoreResult<Void>
+
             do {
                 if #available(iOS 13.0, *) {
                     if self.dataStorePublisher == nil {
@@ -125,12 +131,13 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
                 try resolveStorageEngine(dataStoreConfiguration: dataStoreConfiguration)
                 try storageEngine.setUp(modelSchemas: ModelRegistry.modelSchemas)
                 try storageEngine.applyModelMigrations(modelSchemas: ModelRegistry.modelSchemas)
-                result = .successfulVoid
+
+                return .successfullyInitialized
             } catch {
-                result = .failure(causedBy: error)
                 log.error(error: error)
+                return .failure(.invalidOperation(causedBy: error))
             }
-            return result
+
         }
     }
 
@@ -144,7 +151,9 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         }
 
         switch initStorageEngine() {
-        case .success:
+        case .alreadyInitialized:
+            completion(.successfulVoid)
+        case .successfullyInitialized:
             storageEngine.startSync { result in
 
                 self.operationQueue.operations.forEach { operation in
@@ -227,10 +236,10 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
             dataStorePublisher.send(input: mutationEvent)
         case .modelSyncedEvent(let modelSyncedEvent):
             log.verbose("Emitting DataStore event: modelSyncedEvent \(modelSyncedEvent)")
+            dispatchedModelSyncedEvents[modelSyncedEvent.modelName]?.set(true)
             let modelSyncedEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.modelSynced,
                                                      data: modelSyncedEvent)
             Amplify.Hub.dispatch(to: .dataStore, payload: modelSyncedEventPayload)
-            dispatchedModelSyncedEvents[modelSyncedEvent.modelName]?.set(true)
         case .syncQueriesReadyEvent:
             log.verbose("[Lifecycle event 4]: syncQueriesReady")
             let syncQueriesReadyEventPayload = HubPayload(eventName: HubPayload.EventName.DataStore.syncQueriesReady)

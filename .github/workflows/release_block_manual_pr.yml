@@ -5,12 +5,12 @@
 #
 # https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
 
-name: Block Manual PR to Release
+name: Block Manual PR to Release V1+
 
 on:
   pull_request:
     branches:
-      - release
+      - release-v1
 
 permissions:
   pull-requests: write

@@ -98,7 +98,18 @@ extension AWSCognitoAuthPlugin {
         }
         let region = (regionString as NSString).aws_regionTypeValue()
         let anonymousCredentialProvider = AWSAnonymousCredentialsProvider()
-        return AmplifyAWSServiceConfiguration(region: region, credentialsProvider: anonymousCredentialProvider)
+        let service = AmplifyAWSServiceConfiguration(region: region, credentialsProvider: anonymousCredentialProvider)
+        setUserPreferencesForService(service: service)
+        return service
+    }
+
+    func setUserPreferencesForService(service: AmplifyAWSServiceConfiguration) {
+        guard let networkPreferences = networkPreferences else {
+            return
+        }
+        service.maxRetryCount = networkPreferences.maxRetryCount
+        service.timeoutIntervalForRequest = networkPreferences.timeoutIntervalForRequest
+        service.timeoutIntervalForResource = networkPreferences.timeoutIntervalForResource
     }
 
     func userPoolServiceConfiguration(from authConfiguration: JSONValue) throws -> AmplifyAWSServiceConfiguration? {
@@ -109,11 +120,14 @@ extension AWSCognitoAuthPlugin {
         }
         let region = (regionString as NSString).aws_regionTypeValue()
 
+        let service: AmplifyAWSServiceConfiguration
         if  let endpoint = try resolveCognitoOverrideEndpoint(using: authConfiguration, region: region) {
-            return AmplifyAWSServiceConfiguration(region: region, endpoint: endpoint)
+            service = AmplifyAWSServiceConfiguration(region: region, endpoint: endpoint)
         } else {
-            return AmplifyAWSServiceConfiguration(region: region)
+            service = AmplifyAWSServiceConfiguration(region: region)
         }
+        setUserPreferencesForService(service: service)
+        return service
     }
 
     func resolveCognitoOverrideEndpoint(

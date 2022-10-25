@@ -217,12 +217,17 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
         }
     }
 
+    /// Ensure that the delete with `.all` predicate works as expected.
+    /// There may be additional blogs/post/comments from other tests that are being deleted as part of this test
+    /// We ignore those and only assert that that 6 models created in this test were deleted successfully.
     func testDeleteAll() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForReady()
         var cancellables = Set<AnyCancellable>()
         let remoteEventReceived = expectation(description: "received mutation event with version 1")
-        let commentId = UUID().uuidString
+        remoteEventReceived.expectedFulfillmentCount = 2
+        let commentId1 = UUID().uuidString
+        let commentId2 = UUID().uuidString
         Amplify.DataStore.publisher(for: Comment6.self).sink { completion in
             switch completion {
             case .finished:
@@ -231,59 +236,26 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
                 XCTFail("Failed \(error)")
             }
         } receiveValue: { mutationEvent in
-            if mutationEvent.modelId == commentId && mutationEvent.version == 1 {
+            if mutationEvent.modelId == commentId1 && mutationEvent.version == 1 {
+                remoteEventReceived.fulfill()
+            }
+            if mutationEvent.modelId == commentId2 && mutationEvent.version == 1 {
                 remoteEventReceived.fulfill()
             }
         }.store(in: &cancellables)
         guard let blog = saveBlog(name: "name"),
               let post = savePost(title: "title", blog: blog),
-              saveComment(id: commentId, post: post, content: "content") != nil else {
-            XCTFail("Could not create blog, post, and comment")
+              saveComment(id: commentId1, post: post, content: "content") != nil else {
+            XCTFail("Could not create first set of blog, post, and comment")
             return
         }
-        wait(for: [remoteEventReceived], timeout: 5)
-
-        var blogCount = 0
-        let retrievedBlogCount = expectation(description: "retrieved blog count")
-        Amplify.DataStore.query(Blog6.self) { result in
-            switch result {
-            case .success(let blogs):
-                blogCount = blogs.count
-                retrievedBlogCount.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
+        guard let blog2 = saveBlog(name: "name"),
+              let post2 = savePost(title: "title", blog: blog2),
+              saveComment(id: commentId2, post: post2, content: "content") != nil else {
+            XCTFail("Could not create second set of blog, post, and comment")
+            return
         }
-        wait(for: [retrievedBlogCount], timeout: 10)
-        var postCount = 0
-        let retrievedPostCount = expectation(description: "retrieved post count")
-        Amplify.DataStore.query(Post6.self) { result in
-            switch result {
-            case .success(let posts):
-                postCount = posts.count
-                retrievedPostCount.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
-        wait(for: [retrievedPostCount], timeout: 10)
-
-        var commentCount = 0
-        let retrievedCommentCount = expectation(description: "retrieved comment count")
-        Amplify.DataStore.query(Comment6.self) { result in
-            switch result {
-            case .success(let comments):
-                commentCount = comments.count
-                retrievedCommentCount.fulfill()
-            case .failure(let error):
-                XCTFail("\(error)")
-            }
-        }
-
-        wait(for: [retrievedCommentCount], timeout: 10)
-
-        let totalCount = blogCount + postCount + commentCount
-        Amplify.Logging.verbose("Retrieved blog \(blogCount) post \(postCount) comment \(commentCount)")
+        wait(for: [remoteEventReceived], timeout: 10)
 
         let outboxMutationProcessed = expectation(description: "received outboxMutationProcessed")
         var processedSoFar = 0
@@ -291,10 +263,23 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
             .sink { payload in
                 let event = DataStoreHubEvent(payload: payload)
                 switch event {
-                case .outboxMutationProcessed:
-                    processedSoFar += 1
-                    print("Processed so far \(processedSoFar)")
-                    if processedSoFar == totalCount {
+                case .outboxMutationProcessed(let mutationEvent):
+                    if mutationEvent.modelName == Blog6.modelName,
+                       let model = mutationEvent.element.model as? Blog6,
+                       model.id == blog.id || model.id == blog2.id {
+                        processedSoFar += 1
+                    } else if mutationEvent.modelName == Post6.modelName,
+                              let model = mutationEvent.element.model as? Post6,
+                              model.id == post.id || model.id == post2.id {
+                        processedSoFar += 1
+                    } else if mutationEvent.modelName == Comment6.modelName,
+                              let model = mutationEvent.element.model as? Comment6,
+                              model.id == commentId1 || model.id == commentId2 {
+                        processedSoFar += 1
+                    }
+
+                    Amplify.Logging.verbose("Processed so far \(processedSoFar)/6")
+                    if processedSoFar == 6 {
                         outboxMutationProcessed.fulfill()
                     }
                 default:
