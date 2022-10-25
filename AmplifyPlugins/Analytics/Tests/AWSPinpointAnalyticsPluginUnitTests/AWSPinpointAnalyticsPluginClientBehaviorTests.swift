@@ -326,12 +326,14 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
 
     // MARK: FlushEvents API
 
+    /// Given: The device has internet access
     /// When: AnalyticsPlugin.flushEvents is invoked
     /// Then: AWSPinpoint.submitEvents is invoked
     ///     and Hub Analytics.flushEvents event is dispatched with submitted events
-    func testFlushEvents() {
+    func testFlushEvents_isOnline() {
         let result = [PinpointEvent(eventType: "1", session: PinpointSession(appId: "", uniqueId: "")),
                       PinpointEvent(eventType: "2", session: PinpointSession(appId: "", uniqueId: ""))]
+        mockNetworkMonitor.isOnline = true
         mockPinpoint.submitEventsResult = .success(result)
         let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
 
@@ -343,13 +345,38 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
                     return
                 }
 
-                XCTAssertNotNil(analyticsEvents)
+                XCTAssertEqual(analyticsEvents.count, 2)
             }
         }
 
         analyticsPlugin.flushEvents()
         waitForExpectations(timeout: 1)
         mockPinpoint.verifySubmitEvents()
+    }
+    
+    /// Given: The device does not have internet access
+    /// When: AnalyticsPlugin.flushEvents is invoked
+    /// Then: AWSPinpoint.submitEvents is invoked
+    ///     and Hub Analytics.flushEvents event is dispatched with submitted events
+    func testFlushEvents_isOffline() {
+        let result = [PinpointEvent(eventType: "1", session: PinpointSession(appId: "", uniqueId: ""))]
+        mockNetworkMonitor.isOnline = false
+        mockPinpoint.submitEventsResult = .success(result)
+        let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
+
+        _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in
+            if payload.eventName == HubPayload.EventName.Analytics.flushEvents {
+                methodWasInvokedOnPlugin.fulfill()
+                guard payload.data is AnalyticsError else {
+                    XCTFail("Expected error")
+                    return
+                }
+            }
+        }
+
+        analyticsPlugin.flushEvents()
+        waitForExpectations(timeout: 1)
+        XCTAssertEqual(mockPinpoint.submitEventsCalled, 0)
     }
 
     /// Given: AnalyticsPlugin is disabled

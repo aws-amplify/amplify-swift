@@ -6,10 +6,20 @@
 //
 
 import Amplify
+import AWSPinpoint
+import ClientRuntime
 import Foundation
 
 class AnalyticsErrorHelper {
     static func getDefaultError(_ error: Error) -> AnalyticsError {
+        if let sdkError = error as? SdkError<PutEventsOutputError>{
+            return sdkError.analyticsError
+        }
+
+        if let analyticsError = error as? AnalyticsError {
+            return analyticsError
+        }
+
         return getDefaultError(error as NSError)
     }
 
@@ -22,6 +32,6 @@ class AnalyticsErrorHelper {
         LocalizedRecoverySuggestion: [\(error.localizedRecoverySuggestion ?? "")
         """
 
-        return AnalyticsError.unknown(errorMessage)
+        return AnalyticsError.unknown(errorMessage, error)
     }
 }

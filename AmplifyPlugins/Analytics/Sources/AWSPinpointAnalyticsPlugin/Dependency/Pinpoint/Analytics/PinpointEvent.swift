@@ -8,36 +8,40 @@
 import Amplify
 import Foundation
 
+private typealias Constants = AWSPinpointAnalytics.Constants.Event
 class PinpointEvent: AnalyticsPropertiesModel {
     let id: String
     let eventType: String
     let eventDate: Date
     let session: PinpointSession
+    let retryCount: Int
     private(set) lazy var attributes: [String: String] = [:]
     private(set) lazy var metrics: [String: Double] = [:]
 
     init(id: String = UUID().uuidString,
          eventType: String,
          eventDate: Date = Date(),
-         session: PinpointSession) {
+         session: PinpointSession,
+         retryCount: Int = 0) {
         self.id = id
         self.eventType = eventType
         self.eventDate = eventDate
         self.session = session
+        self.retryCount = retryCount
     }
 
     func addAttribute(_ attribute: String, forKey key: String) {
-        guard numberOfAttributesAndMetrics < Constants.maxNumberOfAttributesAndMetrics  else {
-            log.warn("Max number of attributes/metrics reached, dropping attribute with key \(key)")
+        guard attributes.count < Constants.maximumNumberOfAttributes  else {
+            log.warn("Max number of attributes reached, dropping attribute with key \(key)")
             return
         }
 
-        attributes[trimmedKey(key)] = trimmedValue(attribute)
+        attributes[trimmedKey(key)] = trimmedValue(attribute, forKey: key)
     }
 
     func addMetric(_ metric: Double, forKey key: String) {
-        guard numberOfAttributesAndMetrics < Constants.maxNumberOfAttributesAndMetrics  else {
-            log.warn("Max number of attributes/metrics reached, dropping attribute with key \(key)")
+        guard metrics.count < Constants.maximumNumberOfMetrics  else {
+            log.warn("Max number of metrics reached, dropping metric with key \(key)")
             return
         }
 
@@ -56,16 +60,18 @@ class PinpointEvent: AnalyticsPropertiesModel {
         return metrics[key]
     }
 
-    private var numberOfAttributesAndMetrics: Int {
-        return attributes.count + metrics.count
-    }
-
     private func trimmedKey(_ string: String) -> String {
-        return String(string.prefix(Constants.maxKeyLength))
+        if string.count > Constants.maximumKeyLength {
+            log.warn("The \(string) key has been trimmed to a length of \(Constants.maximumKeyLength) characters")
+        }
+        return String(string.prefix(Constants.maximumKeyLength))
     }
 
-    private func trimmedValue(_ string: String) -> String {
-        return String(string.prefix(Constants.maxValueLenght))
+    private func trimmedValue(_ string: String, forKey key: String) -> String {
+        if string.count > Constants.maximumValueLength {
+            log.warn("The value for key \(key) has been trimmed to a length of \(Constants.maximumValueLength) characters")
+        }
+        return String(string.prefix(Constants.maximumValueLength))
     }
 }
 
@@ -83,10 +89,34 @@ extension PinpointEvent: Equatable {
 // MARK: - DefaultLogger
 extension PinpointEvent: DefaultLogger {}
 
-extension PinpointEvent {
-    private struct Constants {
-        static let maxNumberOfAttributesAndMetrics = 50
-        static let maxKeyLength = 50
-        static let maxValueLenght = 1000
+// MARK: - CustomStringConvertible
+extension PinpointEvent: CustomStringConvertible {
+    var description: String {
+        let string = """
+        {
+            "id": "\(id)",
+            "eventType": "\(eventType)",
+            "session": {
+                "sessionId": "\(session.sessionId)"
+                "startTime:" "\(session.startTime)"
+                "stopTime": "\(String(describing: session.stopTime))"
+            },
+            attributes: \(string(from: attributes)),
+            metrics: \(string(from: metrics))
+        }
+        """
+        return string
+    }
+    
+    private func string(from dictionary: AnalyticsProperties) -> String {
+        if dictionary.isEmpty {
+            return "[:]"
+        }
+        
+        var string = ""
+        for (key, value) in dictionary.sorted(by: { $0.key < $1.key}) {
+            string += "\n\t\t\"\(key)\": \"\(value)\""
+        }
+        return "[\(string)\n\t]"
     }
 }

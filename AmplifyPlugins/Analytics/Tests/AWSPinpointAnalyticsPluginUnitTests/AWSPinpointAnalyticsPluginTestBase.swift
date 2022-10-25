@@ -14,6 +14,7 @@ class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
     var analyticsPlugin: AWSPinpointAnalyticsPlugin!
     var mockPinpoint: MockAWSPinpoint!
     var authService: MockAWSAuthService!
+    var mockNetworkMonitor: MockNetworkMonitor!
 
     let testAppId = "56e6f06fd4f244c6b202bc1234567890"
     let testRegion = "us-east-1"
@@ -34,10 +35,12 @@ class AWSPinpointAnalyticsPluginTestBase: XCTestCase {
 
         mockPinpoint = MockAWSPinpoint()
         authService = MockAWSAuthService()
+        mockNetworkMonitor = MockNetworkMonitor()
 
         analyticsPlugin.configure(pinpoint: mockPinpoint,
                                   authService: authService,
-                                  autoFlushEventsTimer: nil)
+                                  autoFlushEventsTimer: nil,
+                                  networkMonitor: mockNetworkMonitor)
 
         await Amplify.reset()
         let config = AmplifyConfiguration()

@@ -31,8 +31,8 @@ extension HubCategory {
         dispatch(to: .analytics, payload: payload)
     }
 
-    func dispatchFlushEvents(_ pinpointEventss: [AnalyticsEvent]) {
-        let payload = HubPayload(eventName: HubPayload.EventName.Analytics.flushEvents, data: pinpointEventss)
+    func dispatchFlushEvents(_ pinpointEvents: [AnalyticsEvent]) {
+        let payload = HubPayload(eventName: HubPayload.EventName.Analytics.flushEvents, data: pinpointEvents)
         dispatch(to: .analytics, payload: payload)
     }
 
