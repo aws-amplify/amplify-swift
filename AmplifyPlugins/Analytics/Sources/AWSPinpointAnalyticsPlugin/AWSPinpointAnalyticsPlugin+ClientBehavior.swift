@@ -100,7 +100,7 @@ extension AWSPinpointAnalyticsPlugin {
         }
 
         // Do not attempt to submit events if we detect the device is offline, as it's gonna fail anyway
-        guard networkMonitor.currentPath.status == .satisfied else {
+        guard networkMonitor.isOnline else {
             let errorMessage = "Cannot flushEvents. \(AnalyticsPluginErrorConstant.deviceOffline.errorDescription)"
             log.error(errorMessage)
             Amplify.Hub.dispatchFlushEvents(.unknown(errorMessage))

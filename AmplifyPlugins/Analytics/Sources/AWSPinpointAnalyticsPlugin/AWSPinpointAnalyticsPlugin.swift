@@ -30,7 +30,7 @@ public final class AWSPinpointAnalyticsPlugin: AnalyticsCategoryPlugin {
     var autoFlushEventsTimer: DispatchSourceTimer?
     
     /// An observer to monitor connectivity changes
-    let networkMonitor = NWPathMonitor()
+    var networkMonitor: NetworkMonitor!
 
     /// The unique key of the plugin within the analytics category
     public var key: PluginKey {

@@ -31,5 +31,10 @@ extension AWSPinpointAnalyticsPlugin {
         if isEnabled != nil {
             isEnabled = nil
         }
+        
+        if networkMonitor != nil {
+            networkMonitor.stopMonitoring()
+            networkMonitor = nil
+        }
     }
 }

@@ -11,6 +11,7 @@ import AWSPinpoint
 @testable import Amplify
 @testable import AWSPinpointAnalyticsPlugin
 import AWSCognitoAuthPlugin
+import Network
 
 // swiftlint:disable:next type_name
 class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
@@ -92,16 +93,24 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
     }
 
     func testRecordEventsAreFlushed() {
+        let onlineExpectation = expectation(description: "Device is online")
+        let networkMonitor = NWPathMonitor()
+        networkMonitor.pathUpdateHandler = { newPath in
+            if newPath.status == .satisfied {
+                onlineExpectation.fulfill()
+            }
+        }
+        networkMonitor.start(queue: DispatchQueue(label: "AWSPinpointAnalyticsPluginIntergrationTests.NetworkMonitor"))
+        
         let flushEventsInvoked = expectation(description: "Flush events invoked")
         _ = Amplify.Hub.listen(to: .analytics, isIncluded: nil) { payload in
             if payload.eventName == HubPayload.EventName.Analytics.flushEvents {
-                // TODO: Remove exposing AWSPinpointEvent
                 guard let pinpointEvents = payload.data as? [AnalyticsEvent] else {
                     XCTFail("Missing data")
                     flushEventsInvoked.fulfill()
                     return
                 }
-                XCTAssertNotNil(pinpointEvents)
+                XCTAssertFalse(pinpointEvents.isEmpty)
                 flushEventsInvoked.fulfill()
             }
         }
@@ -117,6 +126,9 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
                           "eventPropertyBoolKey": true] as [String: AnalyticsPropertyValue]
         let event = BasicAnalyticsEvent(name: "eventName", properties: properties)
         Amplify.Analytics.record(event: event)
+       
+        wait(for: [onlineExpectation], timeout: TestCommonConstants.networkTimeout)
+
         Amplify.Analytics.flushEvents()
 
         wait(for: [flushEventsInvoked], timeout: TestCommonConstants.networkTimeout)
