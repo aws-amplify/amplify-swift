@@ -89,6 +89,22 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
         return savedModel
     }
     
+    func updateAndWaitForSync<M: Model>(_ model: M) async throws -> M {
+        let modelSynced = asyncExpectation(description: "model was synced successfully")
+        let mutationEvents = Amplify.DataStore.observe(M.self)
+        Task {
+            for try await mutationEvent in mutationEvents {
+                if mutationEvent.version == 2 && mutationEvent.modelId == model.identifier {
+                    await modelSynced.fulfill()
+                }
+            }
+            
+        }
+        let savedModel = try await Amplify.DataStore.save(model)
+        await waitForExpectations([modelSynced], timeout: 10)
+        return savedModel
+    }
+    
     func deleteAndWaitForSync<M: Model>(_ model: M) async throws {
         let modelSynced = asyncExpectation(description: "model was synced successfully")
         let dataStoreEvents = HubPayload.EventName.DataStore.self
@@ -107,5 +123,55 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
             .store(in: &requests)
         try await Amplify.DataStore.delete(model)
         await waitForExpectations([modelSynced], timeout: 10)
+    }
+    
+    enum AssertListState {
+        case isNotLoaded(associatedId: String, associatedField: String)
+        case isLoaded(count: Int)
+    }
+    
+    func assertList<M: Model>(_ list: List<M>, state: AssertListState) {
+        switch state {
+        case .isNotLoaded(let expectedAssociatedId, let expectedAssociatedField):
+            if case .notLoaded(let associatedId, let associatedField) = list.listProvider.getState() {
+                XCTAssertEqual(associatedId, expectedAssociatedId)
+                XCTAssertEqual(associatedField, expectedAssociatedField)
+            } else {
+                XCTFail("It should be not loaded with expected associatedId \(expectedAssociatedId) associatedField \(expectedAssociatedField)")
+            }
+        case .isLoaded(let count):
+            if case .loaded(let loadedList) = list.listProvider.getState() {
+                XCTAssertEqual(loadedList.count, count)
+            } else {
+                XCTFail("It should be loaded with expected count \(count)")
+            }
+        }
+    }
+    
+    enum AssertLazyModelState<M: Model> {
+        case notLoaded(identifiers: [String: String]?)
+        case loaded(model: M?)
+    }
+    
+    func assertLazyModel<M: Model>(_ lazyModel: LazyModel<M>,
+                                   state: AssertLazyModelState<M>) {
+        switch state {
+        case .notLoaded(let expectedIdentifiers):
+            if case .notLoaded(let identifiers) = lazyModel.modelProvider.getState() {
+                XCTAssertEqual(identifiers, expectedIdentifiers)
+            } else {
+                XCTFail("Should be not loaded with identifiers \(expectedIdentifiers)")
+            }
+        case .loaded(let expectedModel):
+            if case .loaded(let model) = lazyModel.modelProvider.getState() {
+                guard let expectedModel = expectedModel, let model = model else {
+                    XCTAssertNil(model)
+                    return
+                }
+                XCTAssertEqual(model.identifier, expectedModel.identifier)
+            } else {
+                XCTFail("Should be loaded with model \(String(describing: expectedModel))")
+            }
+        }
     }
 }

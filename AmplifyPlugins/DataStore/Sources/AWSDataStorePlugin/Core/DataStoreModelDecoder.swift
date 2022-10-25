@@ -54,5 +54,5 @@ public struct DataStoreModelDecoder: ModelProviderDecoder {
 
 /// Metadata that contains the primary keys and values of a model
 public struct DataStoreModelIdentifierMetadata: Codable {
-    let identifier: String
+    let identifier: String?
 }

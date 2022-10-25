@@ -35,7 +35,7 @@ public struct Comment4V2: Model {
         self.updatedAt = updatedAt
     }
     
-    public mutating func setPost(_ post: Post4V2) {
+    public mutating func setPost(_ post: Post4V2?) {
         self._post = LazyModel(element: post)
     }
     

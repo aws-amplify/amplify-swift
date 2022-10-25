@@ -14,7 +14,7 @@ type Post4V2 @model @auth(rules: [{allow: public}]) {
 
 type Comment4V2 @model @auth(rules: [{allow: public}]) {
   id: ID!
-  postID: ID! @index(name: "byPost4", sortKeyFields: ["content"])
+  postID: ID @index(name: "byPost4", sortKeyFields: ["content"])
   content: String!
   post: Post4V2 @belongsTo(fields: ["postID"])
 }
@@ -195,4 +195,66 @@ type Comment8 @model {
   content: String!
   postId: ID @index(name: "byPost", sortKeyFields:["postTitle"]) # customized foreign key for parent primary key
   postTitle: String # customized foreign key for parent sort key
+}
+
+# LL.12. JS Schema
+
+type HasOneParent @model {
+  id: ID! @primaryKey
+  child: HasOneChild @hasOne
+}
+
+type HasOneChild @model {
+  id: ID! @primaryKey
+  content: String
+}
+
+type DefaultPKParent @model {
+  id: ID! @primaryKey
+  content: String
+  children: [DefaultPKChild] @hasMany
+}
+
+type DefaultPKChild @model {
+  id: ID! @primaryKey
+  content: String
+  parent: DefaultPKParent @belongsTo
+}
+
+type CompositePKParent @model {
+  customId: ID! @primaryKey(sortKeyFields:["content"])
+  content: String!
+  children: [CompositePKChild] @hasMany(indexName:"byParent", fields:["customId", "content"])
+  implicitChildren: [ImplicitChild] @hasMany
+  strangeChildren: [StrangeExplicitChild] @hasMany(indexName: "byCompositePKParentX", fields: ["customId", "content"])
+  childrenSansBelongsTo: [ChildSansBelongsTo] @hasMany
+}
+
+type CompositePKChild @model {
+  childId: ID! @primaryKey(sortKeyFields:["content"])
+  content: String!
+  parent: CompositePKParent @belongsTo(fields:["parentId", "parentTitle"])
+  parentId: ID @index(name: "byParent", sortKeyFields:["parentTitle"])
+  parentTitle: String
+}
+
+type ImplicitChild @model {
+  childId: ID! @primaryKey(sortKeyFields:["content"])
+  content: String!
+  parent: CompositePKParent! @belongsTo
+}
+
+type StrangeExplicitChild @model {
+  strangeId: ID! @primaryKey(sortKeyFields:["content"])
+  content: String!
+  parent: CompositePKParent! @belongsTo(fields:["strangeParentId", "strangeParentTitle"])
+  strangeParentId: ID @index(name: "byCompositePKParentX", sortKeyFields:["strangeParentTitle"])
+  strangeParentTitle: String # customized foreign key for parent sort key
+}
+
+type ChildSansBelongsTo @model {
+  childId: ID! @primaryKey(sortKeyFields:["content"])
+  content: String!
+  compositePKParentChildrenSansBelongsToCustomId: ID! @index(name: "byParent", sortKeyFields: ["compositePKParentChildrenSansBelongsToContent"])
+  compositePKParentChildrenSansBelongsToContent: String
 }

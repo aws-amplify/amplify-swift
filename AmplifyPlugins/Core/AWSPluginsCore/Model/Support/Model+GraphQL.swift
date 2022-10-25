@@ -31,7 +31,7 @@ extension Model {
     /// Returns the input used for mutations
     /// - Parameter modelSchema: model's schema
     /// - Returns: A key-value map of the GraphQL mutation input
-    func graphQLInputForMutation(_ modelSchema: ModelSchema) -> GraphQLInput {
+    func graphQLInputForMutation(_ modelSchema: ModelSchema, mutationType: GraphQLMutationType) -> GraphQLInput {
         var input: GraphQLInput = [:]
 
         // filter existing non-readonly fields
@@ -84,9 +84,10 @@ extension Model {
                 // get the associated model target names and their values
                 let associatedModelIds = associatedModelIdentifierFields(fromModelValue: value,
                                                                          field: modelField,
-                                                                         associatedModelName: associateModelName)
+                                                                         associatedModelName: associateModelName,
+                                                                         mutationType: mutationType)
                 for (fieldName, fieldValue) in associatedModelIds {
-                    input[fieldName] = fieldValue
+                    input.updateValue(fieldValue, forKey: fieldName)
                 }
             case .embedded, .embeddedCollection:
                 if let encodable = value as? Encodable {
@@ -154,22 +155,28 @@ extension Model {
     ///            and `value` its value in the associated model
     private func associatedModelIdentifierFields(fromModelValue value: Any,
                                                  field: ModelField,
-                                                 associatedModelName: String) -> [(String, Persistable)] {
+                                                 associatedModelName: String,
+                                                 mutationType: GraphQLMutationType) -> [(String, Persistable?)] {
         guard let associateModelSchema = ModelRegistry.modelSchema(from: associatedModelName) else {
             preconditionFailure("Associated model \(associatedModelName) not found.")
         }
 
         let fieldNames = getFieldNameForAssociatedModels(modelField: field)
-        let values = getModelIdentifierValues(from: value, modelSchema: associateModelSchema)
+        var values = getModelIdentifierValues(from: value, modelSchema: associateModelSchema)
 
-        // if the field is required, the associated field keys and values should match
-        if fieldNames.count != values.count, field.isRequired {
-            preconditionFailure(
+        if fieldNames.count != values.count {
+            // if the field is required, the associated field keys and values should match
+            if field.isRequired {
+                preconditionFailure(
                 """
                 Associated model target names and values for field \(field.name) of model \(modelName) mismatch.
                 There is a possibility that is an issue with the generated models.
                 """
-            )
+                )
+            } else if mutationType == .update {
+                // otherwise, pad the values with `nil` to account for removals of associations on updates.
+                values = [Persistable?](repeating: nil, count: fieldNames.count)
+            }
         }
 
         return Array(zip(fieldNames, values))
@@ -181,7 +188,7 @@ extension Model {
     ///   - value: model value
     ///   - modelSchema: model's schema
     /// - Returns: array of values of its primary key
-    private func getModelIdentifierValues(from value: Any, modelSchema: ModelSchema) -> [Persistable] {
+    private func getModelIdentifierValues(from value: Any, modelSchema: ModelSchema) -> [Persistable?] {
         if let modelValue = value as? Model {
             return modelValue.identifier(schema: modelSchema).values
         } else if let optionalModel = value as? Model?,

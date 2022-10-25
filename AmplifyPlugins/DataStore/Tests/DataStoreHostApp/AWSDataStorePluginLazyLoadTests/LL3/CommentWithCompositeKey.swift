@@ -35,7 +35,7 @@ public struct CommentWithCompositeKey: Model {
         self.updatedAt = updatedAt
     }
     
-    public mutating func setPost(_ post: PostWithCompositeKey) {
+    public mutating func setPost(_ post: PostWithCompositeKey?) {
         self._post = LazyModel(element: post)
     }
     

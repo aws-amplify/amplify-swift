@@ -165,7 +165,7 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
 
         switch type {
         case .create:
-            documentBuilder.add(decorator: ModelDecorator(model: model))
+            documentBuilder.add(decorator: ModelDecorator(model: model, mutationType: type))
         case .delete:
             documentBuilder.add(decorator: ModelIdDecorator(model: model,
                                                             schema: modelSchema))
@@ -173,7 +173,7 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
                 documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter(for: modelSchema)))
             }
         case .update:
-            documentBuilder.add(decorator: ModelDecorator(model: model))
+            documentBuilder.add(decorator: ModelDecorator(model: model, mutationType: type))
             if let predicate = predicate {
                 documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter(for: modelSchema)))
             }

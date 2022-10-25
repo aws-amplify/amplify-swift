@@ -17,41 +17,23 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
     func testLazyLoad() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose, eagerLoad: false)
         
-        let post = PostWithCompositeKey(title: "title")
-        let comment = CommentWithCompositeKey(content: "content", post: post)
+        let post = Post(title: "title")
+        let comment = Comment(content: "content", post: post)
         let savedPost = try await saveAndWaitForSync(post)
         let savedComment = try await saveAndWaitForSync(comment)
         try await assertComment(savedComment, hasEagerLoaded: savedPost)
         try await assertPost(savedPost, canLazyLoad: savedComment)
-
-        guard let queriedComment = try await Amplify.DataStore.query(CommentWithCompositeKey.self,
-                                                                     byIdentifier: .identifier(
-                                                                        id: savedComment.id,
-                                                                        content: savedComment.content)) else {
-            XCTFail("Failed to query comment")
-            return
-        }
+        let queriedComment = try await queryComment(savedComment)
         try await assertComment(queriedComment, canLazyLoad: savedPost)
-
-        guard let queriedPost = try await Amplify.DataStore.query(PostWithCompositeKey.self,
-                                                                  byIdentifier: .identifier(
-                                                                    id: savedPost.id,
-                                                                    title: savedPost.title)) else {
-            XCTFail("Failed to query post")
-            return
-        }
+        let queriedPost = try await queryPost(savedPost)
         try await assertPost(queriedPost, canLazyLoad: savedComment)
     }
     
-    func assertComment(_ comment: CommentWithCompositeKey,
-                       hasEagerLoaded post: PostWithCompositeKey) async throws {
-        // assert that it is loaded
-        switch comment._post.modelProvider.getState() {
-        case .notLoaded:
-            XCTFail("Saving a comment should eager load the post")
-        case .loaded(let loadedPost):
-            XCTAssertEqual(loadedPost?.id, post.id)
-        }
+    func assertComment(_ comment: Comment,
+                       hasEagerLoaded post: Post) async throws {
+        assertLazyModel(comment._post,
+                        state: .loaded(model: post))
+        
         guard let loadedPost = try await comment.post else {
             XCTFail("Failed to retrieve the post from the comment")
             return
@@ -68,90 +50,119 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         try await assertPost(loadedPost, canLazyLoad: comment)
     }
     
-    func assertComment(_ comment: CommentWithCompositeKey,
-                       canLazyLoad post: PostWithCompositeKey) async throws {
-        // assert that it is not loaded
-        switch comment._post.modelProvider.getState() {
-        case .notLoaded(let identifiers):
-            guard let identifier = identifiers.first else {
-                XCTFail("missing identifiers")
-                return
-            }
-            XCTAssertEqual(identifier.key, "@@primaryKey")
-            XCTAssertEqual(identifier.value, post.identifier)
-        case .loaded:
-            XCTFail("Should not be loaded")
-        }
-        
-        // lazy load
+    func assertComment(_ comment: Comment,
+                       canLazyLoad post: Post) async throws {
+        assertLazyModel(comment._post,
+                        state: .notLoaded(identifiers: ["@@primaryKey": post.identifier]))
         guard let loadedPost = try await comment.post else {
-            XCTFail("Failed to retrieve the loaded post from the comment")
+            XCTFail("Failed to load the post from the comment")
             return
         }
         XCTAssertEqual(loadedPost.id, post.id)
-        
+        assertLazyModel(comment._post,
+                        state: .loaded(model: post))
         try await assertPost(loadedPost, canLazyLoad: comment)
     }
     
-    func assertPost(_ post: PostWithCompositeKey,
-                    canLazyLoad comment: CommentWithCompositeKey) async throws {
+    func assertPost(_ post: Post,
+                    canLazyLoad comment: Comment) async throws {
         guard let comments = post.comments else {
             XCTFail("Missing comments on post")
             return
         }
-        
-        // assert that it is not loaded
-        switch comments.listProvider.getState() {
-        case .notLoaded(let associatedId, let associatedField):
-            XCTAssertEqual(associatedId, post.identifier)
-            XCTAssertEqual(associatedField, "post")
-        case .loaded:
-            XCTFail("It should not be loaded")
-        }
-        
-        // lazy load
+        assertList(comments, state: .isNotLoaded(associatedId: post.identifier,
+                                                 associatedField: "post"))
         try await comments.fetch()
-        switch comments.listProvider.getState() {
-        case .notLoaded:
-            XCTFail("It should be loaded after calling `fetch`")
-        case .loaded(let loadedComments):
-            XCTAssertEqual(loadedComments.count, 1)
-        }
-        
+        assertList(comments, state: .isLoaded(count: 1))
         guard let comment = comments.first else {
             XCTFail("Missing lazy loaded comment from post")
             return
         }
+        assertLazyModel(comment._post,
+                        state: .notLoaded(identifiers: ["@@primaryKey": post.identifier]))
+    }
+    
+    func testSaveWithoutPost() async throws {
+        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose, eagerLoad: false)
+        let comment = Comment(content: "content")
+        let savedComment = try await saveAndWaitForSync(comment)
+        var queriedComment = try await queryComment(savedComment)
+        assertLazyModel(queriedComment._post,
+                        state: .notLoaded(identifiers: nil))
+        let post = Post(title: "title")
+        let savedPost = try await saveAndWaitForSync(post)
+        queriedComment.setPost(savedPost)
+        let saveCommentWithPost = try await updateAndWaitForSync(queriedComment)
+        let queriedComment2 = try await queryComment(saveCommentWithPost)
+        try await assertComment(queriedComment2, canLazyLoad: post)
+    }
+    
+    func testUpdateFromQueriedComment() async throws {
+        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose, eagerLoad: false)
+        let post = Post(title: "title")
+        let comment = Comment(content: "content", post: post)
+        let savedPost = try await saveAndWaitForSync(post)
+        let savedComment = try await saveAndWaitForSync(comment)
+        let queriedComment = try await queryComment(savedComment)
+        assertLazyModel(queriedComment._post,
+                        state: .notLoaded(identifiers: ["@@primaryKey": post.identifier]))
+        let savedQueriedComment = try await updateAndWaitForSync(queriedComment)
+        let queriedComment2 = try await queryComment(savedQueriedComment)
+        try await assertComment(queriedComment2, canLazyLoad: savedPost)
+    }
+    
+    func testUpdateToNewPost() async throws {
+        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose, eagerLoad: false)
         
-        // further nested models should not be loaded
-        switch comment._post.modelProvider.getState() {
-        case .notLoaded(let identifiers):
-            guard let identifier = identifiers.first else {
-                XCTFail("missing identifiers")
-                return
-            }
-            XCTAssertEqual(identifier.key, "@@primaryKey")
-            XCTAssertEqual(identifier.value, post.identifier)
-        case .loaded:
-            XCTFail("Should be not loaded")
-        }
+        let post = Post(title: "title")
+        let comment = Comment(content: "content", post: post)
+        _ = try await saveAndWaitForSync(post)
+        let savedComment = try await saveAndWaitForSync(comment)
+        var queriedComment = try await queryComment(savedComment)
+        assertLazyModel(queriedComment._post,
+                        state: .notLoaded(identifiers: ["@@primaryKey": post.identifier]))
+        
+        let newPost = Post(title: "title")
+        _ = try await saveAndWaitForSync(newPost)
+        queriedComment.setPost(newPost)
+        let saveCommentWithNewPost = try await updateAndWaitForSync(queriedComment)
+        let queriedComment2 = try await queryComment(saveCommentWithNewPost)
+        try await assertComment(queriedComment2, canLazyLoad: newPost)
+    }
+    
+    func testUpdateRemovePost() async throws {
+        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose, eagerLoad: false)
+        
+        let post = Post(title: "title")
+        let comment = Comment(content: "content", post: post)
+        _ = try await saveAndWaitForSync(post)
+        let savedComment = try await saveAndWaitForSync(comment)
+        var queriedComment = try await queryComment(savedComment)
+        assertLazyModel(queriedComment._post,
+                        state: .notLoaded(identifiers: ["@@primaryKey": post.identifier]))
+        
+        queriedComment.setPost(nil)
+        let saveCommentRemovePost = try await updateAndWaitForSync(queriedComment)
+        let queriedCommentNoPost = try await queryComment(saveCommentRemovePost)
+        assertLazyModel(queriedCommentNoPost._post,
+                        state: .notLoaded(identifiers: nil))
     }
     
     func testDelete() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose, eagerLoad: false)
         
-        let post = PostWithCompositeKey(title: "title")
-        let comment = CommentWithCompositeKey(content: "content", post: post)
+        let post = Post(title: "title")
+        let comment = Comment(content: "content", post: post)
         let savedPost = try await saveAndWaitForSync(post)
         let savedComment = try await saveAndWaitForSync(comment)
         try await deleteAndWaitForSync(savedPost)
         
-        let queriedComment = try await Amplify.DataStore.query(CommentWithCompositeKey.self,
+        let queriedComment = try await Amplify.DataStore.query(Comment.self,
                                                                byIdentifier: .identifier(
                                                                 id: savedComment.id,
                                                                 content: savedComment.content))
         XCTAssertNil(queriedComment)
-        let commentMetadataIdentifier = MutationSyncMetadata.identifier(modelName: CommentWithCompositeKey.modelName,
+        let commentMetadataIdentifier = MutationSyncMetadata.identifier(modelName: Comment.modelName,
                                                                         modelId: comment.identifier)
         guard let commentMetadata = try await Amplify.DataStore.query(MutationSyncMetadata.self,
                                                                       byId: commentMetadataIdentifier) else {
@@ -160,15 +171,15 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         }
         XCTAssertTrue(commentMetadata.deleted)
         
-        let queriedPost = try await Amplify.DataStore.query(PostWithCompositeKey.self,
+        let queriedPost = try await Amplify.DataStore.query(Post.self,
                                                             byIdentifier: .identifier(
                                                                 id: savedPost.id,
                                                                 title: savedPost.title))
         XCTAssertNil(queriedPost)
         let postMetadataIdentifier = MutationSyncMetadata.identifier(modelName: PostWithCompositeKey.modelName,
-                                                                        modelId: post.identifier)
+                                                                     modelId: post.identifier)
         guard let postMetadata = try await Amplify.DataStore.query(MutationSyncMetadata.self,
-                                                                      byId: postMetadataIdentifier) else {
+                                                                   byId: postMetadataIdentifier) else {
             XCTFail("Could not retrieve metadata for post")
             return
         }
@@ -177,11 +188,36 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
 }
 
 extension AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests {
+    typealias Post = PostWithCompositeKey
+    typealias Comment = CommentWithCompositeKey
+    
     struct PostCommentWithCompositeKeyModels: AmplifyModelRegistration {
         public let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: PostWithCompositeKey.self)
             ModelRegistry.register(modelType: CommentWithCompositeKey.self)
         }
+    }
+    
+    func queryComment(_ comment: Comment) async throws -> Comment {
+        guard let queriedComment = try await Amplify.DataStore.query(Comment.self,
+                                                                     byIdentifier: .identifier(
+                                                                        id: comment.id,
+                                                                        content: comment.content)) else {
+            XCTFail("Failed to query comment")
+            throw "Failed to query comment"
+        }
+        return queriedComment
+    }
+    
+    func queryPost(_ post: Post) async throws -> Post {
+        guard let queriedPost = try await Amplify.DataStore.query(Post.self,
+                                                                  byIdentifier: .identifier(
+                                                                    id: post.id,
+                                                                    title: post.title)) else {
+            XCTFail("Failed to query post")
+            throw "Failed to query post"
+        }
+        return queriedPost
     }
 }

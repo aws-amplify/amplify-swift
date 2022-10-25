@@ -11,6 +11,8 @@ public protocol LazyModelMarker {
     associatedtype Element: Model
     
     var element: Element? { get }
+    
+    var identifiers: [String: String]? { get }
 }
 
 public struct AnyModelProvider<Element: Model>: ModelProvider {
@@ -41,6 +43,6 @@ public protocol ModelProvider {
 }
 
 public enum ModelProviderState<Element: Model> {
-    case notLoaded(identifiers: [String: String])
+    case notLoaded(identifiers: [String: String]?)
     case loaded(Element?)
 }

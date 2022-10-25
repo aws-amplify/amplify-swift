@@ -12,22 +12,26 @@ import Combine
 public class DataStoreModelProvider<ModelType: Model>: ModelProvider {
     
     enum LoadedState {
-        case notLoaded(identifiers: [String: String])
+        case notLoaded(identifiers: [String: String]?)
         case loaded(model: ModelType?)
     }
     
     var loadedState: LoadedState
     
     convenience init(metadata: DataStoreModelIdentifierMetadata) {
+        if let identifier = metadata.identifier {
+            self.init(identifiers: [ModelType.schema.primaryKey.sqlName: identifier])
+        } else {
+            self.init(identifiers: nil)
+        }
         
-        self.init(identifiers: [ModelType.schema.primaryKey.sqlName: metadata.identifier])
     }
     
     init(model: ModelType?) {
         self.loadedState = .loaded(model: model)
     }
     
-    init(identifiers: [String: String]) {
+    init(identifiers: [String: String]?) {
         self.loadedState = .notLoaded(identifiers: identifiers)
     }
     
@@ -36,7 +40,7 @@ public class DataStoreModelProvider<ModelType: Model>: ModelProvider {
     public func load() async throws -> ModelType? {
         switch loadedState {
         case .notLoaded(let identifiers):
-            guard let identifier = identifiers.first else {
+            guard let identifiers = identifiers, let identifier = identifiers.first else {
                 return nil
             }
             let queryPredicate: QueryPredicate = field(identifier.key).eq(identifier.value)

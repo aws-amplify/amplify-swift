@@ -12,7 +12,7 @@ public class LazyModel<Element: Model>: Codable, LazyModelMarker {
     
     /// Represents the data state of the `LazyModel`.
     enum LoadedState {
-        case notLoaded(identifiers: [String: String])
+        case notLoaded(identifiers: [String: String]?)
         case loaded(Element?)
     }
     var loadedState: LoadedState
@@ -38,6 +38,17 @@ public class LazyModel<Element: Model>: Codable, LazyModelMarker {
                 return
             case .notLoaded:
                 loadedState = .loaded(newValue)
+            }
+        }
+    }
+    
+    public var identifiers: [String: String]? {
+        get {
+            switch loadedState {
+            case .notLoaded(let identifiers):
+                return identifiers
+            case .loaded:
+                return nil
             }
         }
     }
