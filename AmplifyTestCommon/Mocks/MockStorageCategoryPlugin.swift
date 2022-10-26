@@ -10,6 +10,12 @@ import Foundation
 
 class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
 
+    var allTransfers: AmplifyAsyncSequence<StorageTransfer> {
+        get async throws {
+            Fatal.notImplemented()
+        }
+    }
+
     func getURL(key: String,
                 options: StorageGetURLRequest.Options?,
                 resultListener: StorageGetURLOperation.ResultListener?) -> StorageGetURLOperation {

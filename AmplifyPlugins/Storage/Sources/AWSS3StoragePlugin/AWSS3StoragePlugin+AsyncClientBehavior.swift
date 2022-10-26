@@ -13,6 +13,12 @@ import AWSPluginsCore
 
 extension AWSS3StoragePlugin {
 
+    public var allTransfers: AmplifyAsyncSequence<StorageTransfer> {
+        get async throws {
+            Fatal.notImplemented()
+        }
+    }
+
     @discardableResult
     public func getURL(key: String,
                        options: StorageGetURLOperation.Request.Options?) async throws -> URL {

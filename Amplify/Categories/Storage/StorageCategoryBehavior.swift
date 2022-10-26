@@ -10,6 +10,8 @@ import Foundation
 /// Behavior of the Storage category that clients will use
 public protocol StorageCategoryBehavior {
 
+    var allTransfers: AmplifyAsyncSequence<StorageTransfer> { get async throws }
+
     /// Retrieve the remote URL for the object from storage.
     ///
     /// - Parameters:
