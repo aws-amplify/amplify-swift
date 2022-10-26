@@ -22,13 +22,13 @@ platform :ios do
     end
     UI.message("Releasing unstable version: #{next_version}")
 
-    Increment all specs and plists
+    # Increment all specs and plists
     increment_versions(version: next_version)
 
-    Create tag and push to origin
+    # Create tag and push to origin
     add_tag(version: next_version)
 
-    Push to CocoaPods
+    # Push to CocoaPods
     release_pods()
   end
 
