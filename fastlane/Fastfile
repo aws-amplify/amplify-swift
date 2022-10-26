@@ -11,11 +11,15 @@ platform :ios do
     # to reduce race conditions with simultaneous pipelines attempting to create the same tag
     sh('git', 'fetch', '--tags')
     sh('git', 'fetch')
+    sh('git', 'status')
   end
   desc "Create a pre-release version by pushing a tag to GitHub, and pushing pods to CocoaPods"
   lane :unstable do 
     next_version = calculate_next_canary_version
-
+    if next_version >= '2.0.0'
+      UI.message("Received version: #{next_version}, exiting lane because version is larger than 2.0.0")
+      next
+    end
     UI.message("Releasing unstable version: #{next_version}")
 
     # Increment all specs and plists
@@ -30,8 +34,11 @@ platform :ios do
 
   desc "Create a release version by building and committing a changelog, pushing a tag to GitHub, and pushing pods to CocoaPods"  
   lane :release do
-    next_version, commits = calculate_next_release_version(version_limit:"v2.0.0")
-
+    next_version, commits = calculate_next_release_version(version_limit:'v2.0.0')
+    if next_version >= '2.0.0'
+      UI.message("Received version: #{next_version}, exiting lane because version is larger than 2.0.0")
+      next
+    end
     UI.message("Releasing version: #{next_version}")
 
     # Increment all specs and plists
