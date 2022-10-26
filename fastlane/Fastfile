@@ -42,20 +42,20 @@ platform :ios do
     UI.message("Releasing version: #{next_version}")
 
     # Increment all specs and plists
-    #increment_versions(version: next_version)
+    increment_versions(version: next_version)
 
-    #changelog = build_changelog(version: next_version, commits: commits)
+    changelog = build_changelog(version: next_version, commits: commits)
 
     # Commit and push 
-    #release_commit(version: next_version)
+    release_commit(version: next_version)
 
     # Create tag and push to origin
-    #add_tag(version: next_version)
+    add_tag(version: next_version)
 
     # Push pods
-    #release_pods()
+    release_pods()
 
-    #post_release(version: next_version, changelog: changelog)
+    post_release(version: next_version, changelog: changelog)
   end
 
   desc "Increment versions"
