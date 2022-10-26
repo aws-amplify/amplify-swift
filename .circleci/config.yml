@@ -423,6 +423,6 @@ workflows:
           simulator-os-version: "15.4"
           simulator-device: "iPhone 13"
       - getting-started-smoke-test/ios:
-          xcode-version: "12.5.1"
-          simulator-os-version: "14.5"
+          xcode-version: "14.0.0"
+          simulator-os-version: "15.4"
           simulator-device: "iPhone 12"
