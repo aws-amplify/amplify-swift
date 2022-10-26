@@ -349,87 +349,12 @@ workflows:
       - install_gems:
           requires:
             - checkout_code
-      - build_test_amplify:
-          requires:
-            - install_gems
-      - build_test_aws_plugins_core:
-          requires:
-            - install_gems
-      - build_amplify_spm:
-          requires:
-            - install_gems
-      - plugin_unit_test:
-          name: unit_test_analytics
-          path: Analytics
-          workspace: AnalyticsCategoryPlugin
-          scheme: AWSPinpointAnalyticsPlugin
-          requires:
-            - install_gems
-      - plugin_unit_test:
-          name: unit_test_api
-          path: API
-          workspace: APICategoryPlugin
-          scheme: AWSAPICategoryPlugin
-          requires:
-            - install_gems
-      - plugin_unit_test:
-          name: unit_test_auth
-          path: Auth
-          workspace: AWSCognitoAuthPlugin
-          scheme: AWSCognitoAuthPlugin
-          requires:
-            - install_gems
-      - plugin_unit_test:
-          name: unit_test_datastore
-          path: DataStore
-          workspace: DataStoreCategoryPlugin
-          scheme: AWSDataStoreCategoryPlugin
-          requires:
-            - install_gems
-      - plugin_unit_test:
-          name: unit_test_geo
-          path: Geo
-          workspace: GeoCategoryPlugin
-          scheme: AWSLocationGeoPlugin
-          requires:
-            - install_gems
-      - plugin_unit_test:
-          name: unit_test_core_ml
-          path: Predictions
-          workspace: PredictionsCategoryPlugin
-          scheme: CoreMLPredictionsPlugin
-          requires:
-            - install_gems
-      - plugin_unit_test:
-          name: unit_test_predictions
-          path: Predictions
-          workspace: PredictionsCategoryPlugin
-          scheme: AWSPredictionsPlugin
-          requires:
-            - install_gems
-      - plugin_unit_test:
-          name: unit_test_storage
-          path: Storage
-          workspace: StoragePlugin
-          scheme: AWSS3StoragePlugin
-          requires:
-            - install_gems
-      - deploy:
-          name: deploy unstable
-          <<: *deploy_requires
-          filters:
-            branches:
-              only:
-                - v1
       - deploy:
           name: deploy stable
           lane: release
-          <<: *deploy_requires
-          filters:
-            branches:
-              only:
-                - release-v1
-
+          requires:
+            - install_gems
+          
   # Scheduled smoke test workflow
   # Jobs are pulled from the getting-started-smoke-test inline orb defined below
   canaries:
