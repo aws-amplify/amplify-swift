@@ -13,6 +13,7 @@ import Combine
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
+// swiftlint:disable all
 class RemoteSyncEngineTests: XCTestCase {
     var apiPlugin: MockAPICategoryPlugin!
 
@@ -137,7 +138,7 @@ class RemoteSyncEngineTests: XCTestCase {
         remoteSyncEngineSink.cancel()
         Amplify.Hub.removeListener(hubListener)
     }
-
+    /* tslint:disable */
     func testRemoteSyncEngineHappyPath() throws {
         let storageAdapterAvailable = expectation(description: "storageAdapterAvailable")
         let subscriptionsPaused = expectation(description: "subscriptionsPaused")
@@ -346,6 +347,175 @@ class RemoteSyncEngineTests: XCTestCase {
                    completionBlockCalled,
                    forceFailToNotRestartSyncEngine], timeout: defaultAsyncWaitTimeout)
         remoteSyncEngineSink.cancel()
+    }
+
+    func testStartAndStopStartRemoteSyncEngine() throws {
+        let storageAdapterAvailable = expectation(description: "storageAdapterAvailable")
+        let subscriptionsPaused = expectation(description: "subscriptionsPaused")
+        let mutationsPaused = expectation(description: "mutationsPaused")
+        let stateMutationsCleared = expectation(description: "stateMutationsCleared")
+        let subscriptionsInitialized = expectation(description: "subscriptionsInitialized")
+        let performedInitialSync = expectation(description: "performedInitialSync")
+        let subscriptionActivation = expectation(description: "failureOnSubscriptionActivation")
+        let mutationQueueStarted = expectation(description: "mutationQueueStarted")
+        let syncStarted = expectation(description: "syncStarted")
+        let cleanedUpForTermination = expectation(description: "cleanedUpForTermination")
+        let forceStopToStopSyncEngine = expectation(description: "forceStopToStopSyncEngine")
+        let completionBlockCalled = expectation(description: "Completion block is called")
+        let forceStartToRestartSyncEngine = expectation(description: "forceStartToRestartSyncEngine")
+        var currCount = 1
+
+        let advice = RequestRetryAdvice.init(shouldRetry: false)
+        mockRequestRetryablePolicy.pushOnRetryRequestAdvice(response: advice)
+
+        let remoteSyncEngineSink = remoteSyncEngine
+            .publisher
+            .sink(receiveCompletion: { _ in
+                currCount = self.checkAndFulfill(currCount, 11, expectation: forceStopToStopSyncEngine)
+            }, receiveValue: { event in
+                switch event {
+                case .storageAdapterAvailable:
+                    currCount = self.checkAndFulfill(currCount, 1, expectation: storageAdapterAvailable)
+                case .subscriptionsPaused:
+                    currCount = self.checkAndFulfill(currCount, 2, expectation: subscriptionsPaused)
+                case .mutationsPaused:
+                    currCount = self.checkAndFulfill(currCount, 3, expectation: mutationsPaused)
+                    DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
+                        MockAWSIncomingEventReconciliationQueue.mockSend(event: .initialized)
+                    }
+                case .clearedStateOutgoingMutations:
+                    currCount = self.checkAndFulfill(currCount, 4, expectation: stateMutationsCleared)
+                case .subscriptionsInitialized:
+                    currCount = self.checkAndFulfill(currCount, 5, expectation: subscriptionsInitialized)
+                case .performedInitialSync:
+                    currCount = self.checkAndFulfill(currCount, 6, expectation: performedInitialSync)
+                case .subscriptionsActivated:
+                    currCount = self.checkAndFulfill(currCount, 7, expectation: subscriptionActivation)
+                case .mutationQueueStarted:
+                    currCount = self.checkAndFulfill(currCount, 8, expectation: mutationQueueStarted)
+                case .syncStarted:
+                    currCount = self.checkAndFulfill(currCount, 9, expectation: syncStarted)
+                    DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
+                        self.remoteSyncEngine.stop(completion: { result in
+                            if case .success = result {
+                                currCount = self.checkAndFulfill(currCount, 12, expectation: completionBlockCalled)
+                            }
+                        })
+                    }
+                case .cleanedUpForTermination:
+                    currCount = self.checkAndFulfill(currCount, 10, expectation: cleanedUpForTermination)
+                    DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
+                        self.remoteSyncEngine.start()
+                        currCount = self.checkAndFulfill(currCount, 13, expectation: forceStartToRestartSyncEngine)
+                    }
+
+                default:
+                    XCTFail("unexpected call")
+                }
+            })
+
+        remoteSyncEngine.start(api: apiPlugin)
+
+        wait(for: [storageAdapterAvailable,
+                   subscriptionsPaused,
+                   mutationsPaused,
+                   stateMutationsCleared,
+                   subscriptionsInitialized,
+                   performedInitialSync,
+                   subscriptionActivation,
+                   mutationQueueStarted,
+                   syncStarted,
+                   cleanedUpForTermination,
+                   forceStopToStopSyncEngine,
+                   completionBlockCalled,
+                   forceStartToRestartSyncEngine
+                  ], timeout: defaultAsyncWaitTimeout)
+
+        remoteSyncEngineSink.cancel()
+    }
+
+    func testStopAndStartRemoteSync() throws {
+        let stopSuccessful = expectation(description: "Stop Successful")
+        let stopCompletionBlockCalled = expectation(description: "Completion block is called")
+        let startCalledToRestartSyncEngine = expectation(description: "Start after Stop is Called now")
+
+        var currCount = 1
+
+        let advice = RequestRetryAdvice.init(shouldRetry: false)
+        mockRequestRetryablePolicy.pushOnRetryRequestAdvice(response: advice)
+
+        let stopRemoteSyncEngineSink = remoteSyncEngine
+            .publisher
+            .sink(receiveCompletion: { _ in
+                print("Stop successful")
+                currCount = self.checkAndFulfill(currCount, 1, expectation: stopSuccessful)
+            }, receiveValue: { result in
+                if case .cleanedUpForTermination = result {
+                    DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
+                        print("calling start..")
+                        self.remoteSyncEngine.start(api: self.apiPlugin)
+                        // [placeholder] check the State of RemoteSync Engine here to verify if it started
+                        currCount = self.checkAndFulfill(currCount, 3, expectation: startCalledToRestartSyncEngine)
+                    }
+                }
+            })
+        remoteSyncEngine.stop(completion: { result in
+            if case .success = result {
+                print("Stop Completion block called")
+                currCount = self.checkAndFulfill(currCount, 2, expectation: stopCompletionBlockCalled)
+            }
+
+        })
+
+        wait(for: [stopSuccessful, stopCompletionBlockCalled, startCalledToRestartSyncEngine], timeout: defaultAsyncWaitTimeout)
+
+        //stopped again to avoid flakyness
+        remoteSyncEngine.stop(completion: { _ in
+            print("Stopped again after - Stop - Start" )
+        })
+
+        stopRemoteSyncEngineSink.cancel()
+    }
+
+    func testStopStopAndStartRemoteSyncEngine() {
+        let stopSuccessful = expectation(description: "Stop Successful")
+        let stopCompletionBlockCalled = expectation(description: "Completion block is called")
+        let secondStopcalledToStopSyncEngine = expectation(description: "Stop after Stop is Called now")
+
+        var currStopCount = 1
+
+        let advice = RequestRetryAdvice.init(shouldRetry: false)
+        mockRequestRetryablePolicy.pushOnRetryRequestAdvice(response: advice)
+
+        let stopRemoteSyncEngineSink = remoteSyncEngine
+            .publisher
+            .sink(receiveCompletion: { _ in
+                print("Stop successful")
+                currStopCount = self.checkAndFulfill(currStopCount, 1, expectation: stopSuccessful)
+            }, receiveValue: { result in
+                if case .cleanedUpForTermination = result {
+                    DispatchQueue.global().asyncAfter(deadline: DispatchTime.now() + .milliseconds(500)) {
+                        self.remoteSyncEngine.stop(completion: { result in
+                            if case .success = result {
+                                currStopCount = self.checkAndFulfill(currStopCount, 3, expectation: secondStopcalledToStopSyncEngine)
+                            }
+                        })
+                    }
+                }
+            })
+        remoteSyncEngine.stop(completion: { result in
+            if case .success = result {
+                print("Stop Completion block called")
+                currStopCount = self.checkAndFulfill(currStopCount, 2, expectation: stopCompletionBlockCalled)
+            }
+
+        })
+
+        wait(for: [stopSuccessful, stopCompletionBlockCalled, secondStopcalledToStopSyncEngine], timeout: defaultAsyncWaitTimeout)
+        stopRemoteSyncEngineSink.cancel()
+
+        remoteSyncEngine.start(api: apiPlugin)
+        //[placeholder] check the State of RemoteSync Engine here to verify if it started
     }
 
     private func checkAndFulfill(_ currCount: Int, _ expectedCount: Int, expectation: XCTestExpectation) -> Int {
