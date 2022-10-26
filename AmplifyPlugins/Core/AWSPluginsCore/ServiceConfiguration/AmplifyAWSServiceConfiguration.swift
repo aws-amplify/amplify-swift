@@ -9,7 +9,7 @@ import Foundation
 import AWSCore
 
 public class AmplifyAWSServiceConfiguration: AWSServiceConfiguration {
-    static let version = "2.1.0"
+    static let version = "1.28.1"
 
     override public class func baseUserAgent() -> String! {
         let platformInfo = AmplifyAWSServiceConfiguration.platformInformation()
