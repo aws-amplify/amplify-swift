@@ -92,7 +92,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         let post = Post(title: "title")
         let savedPost = try await saveAndWaitForSync(post)
         queriedComment.setPost(savedPost)
-        let saveCommentWithPost = try await updateAndWaitForSync(queriedComment)
+        let saveCommentWithPost = try await saveAndWaitForSync(queriedComment, assertVersion: 2)
         let queriedComment2 = try await queryComment(saveCommentWithPost)
         try await assertComment(queriedComment2, canLazyLoad: post)
     }
@@ -106,7 +106,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         let queriedComment = try await queryComment(savedComment)
         assertLazyModel(queriedComment._post,
                         state: .notLoaded(identifiers: ["@@primaryKey": post.identifier]))
-        let savedQueriedComment = try await updateAndWaitForSync(queriedComment)
+        let savedQueriedComment = try await saveAndWaitForSync(queriedComment, assertVersion: 2)
         let queriedComment2 = try await queryComment(savedQueriedComment)
         try await assertComment(queriedComment2, canLazyLoad: savedPost)
     }
@@ -125,7 +125,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         let newPost = Post(title: "title")
         _ = try await saveAndWaitForSync(newPost)
         queriedComment.setPost(newPost)
-        let saveCommentWithNewPost = try await updateAndWaitForSync(queriedComment)
+        let saveCommentWithNewPost = try await saveAndWaitForSync(queriedComment, assertVersion: 2)
         let queriedComment2 = try await queryComment(saveCommentWithNewPost)
         try await assertComment(queriedComment2, canLazyLoad: newPost)
     }
@@ -142,7 +142,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
                         state: .notLoaded(identifiers: ["@@primaryKey": post.identifier]))
         
         queriedComment.setPost(nil)
-        let saveCommentRemovePost = try await updateAndWaitForSync(queriedComment)
+        let saveCommentRemovePost = try await saveAndWaitForSync(queriedComment, assertVersion: 2)
         let queriedCommentNoPost = try await queryComment(saveCommentRemovePost)
         assertLazyModel(queriedCommentNoPost._post,
                         state: .notLoaded(identifiers: nil))
@@ -156,34 +156,8 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         let savedPost = try await saveAndWaitForSync(post)
         let savedComment = try await saveAndWaitForSync(comment)
         try await deleteAndWaitForSync(savedPost)
-        
-        let queriedComment = try await Amplify.DataStore.query(Comment.self,
-                                                               byIdentifier: .identifier(
-                                                                id: savedComment.id,
-                                                                content: savedComment.content))
-        XCTAssertNil(queriedComment)
-        let commentMetadataIdentifier = MutationSyncMetadata.identifier(modelName: Comment.modelName,
-                                                                        modelId: comment.identifier)
-        guard let commentMetadata = try await Amplify.DataStore.query(MutationSyncMetadata.self,
-                                                                      byId: commentMetadataIdentifier) else {
-            XCTFail("Could not retrieve metadata for comment")
-            return
-        }
-        XCTAssertTrue(commentMetadata.deleted)
-        
-        let queriedPost = try await Amplify.DataStore.query(Post.self,
-                                                            byIdentifier: .identifier(
-                                                                id: savedPost.id,
-                                                                title: savedPost.title))
-        XCTAssertNil(queriedPost)
-        let postMetadataIdentifier = MutationSyncMetadata.identifier(modelName: PostWithCompositeKey.modelName,
-                                                                     modelId: post.identifier)
-        guard let postMetadata = try await Amplify.DataStore.query(MutationSyncMetadata.self,
-                                                                   byId: postMetadataIdentifier) else {
-            XCTFail("Could not retrieve metadata for post")
-            return
-        }
-        XCTAssertTrue(postMetadata.deleted)
+        try await assertModelDoesNotExist(savedComment)
+        try await assertModelDoesNotExist(savedPost)
     }
 }
 

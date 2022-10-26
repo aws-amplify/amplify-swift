@@ -73,28 +73,12 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
         try await Amplify.DataStore.clear()
     }
     
-    func saveAndWaitForSync<M: Model>(_ model: M) async throws -> M {
+    func saveAndWaitForSync<M: Model>(_ model: M, assertVersion: Int = 1) async throws -> M {
         let modelSynced = asyncExpectation(description: "model was synced successfully")
         let mutationEvents = Amplify.DataStore.observe(M.self)
         Task {
             for try await mutationEvent in mutationEvents {
-                if mutationEvent.version == 1 && mutationEvent.modelId == model.identifier {
-                    await modelSynced.fulfill()
-                }
-            }
-            
-        }
-        let savedModel = try await Amplify.DataStore.save(model)
-        await waitForExpectations([modelSynced], timeout: 10)
-        return savedModel
-    }
-    
-    func updateAndWaitForSync<M: Model>(_ model: M) async throws -> M {
-        let modelSynced = asyncExpectation(description: "model was synced successfully")
-        let mutationEvents = Amplify.DataStore.observe(M.self)
-        Task {
-            for try await mutationEvent in mutationEvents {
-                if mutationEvent.version == 2 && mutationEvent.modelId == model.identifier {
+                if mutationEvent.version == assertVersion && mutationEvent.modelId == model.identifier {
                     await modelSynced.fulfill()
                 }
             }
@@ -173,5 +157,32 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
                 XCTFail("Should be loaded with model \(String(describing: expectedModel))")
             }
         }
+    }
+    
+    func assertModelExists<M: Model>(_ model: M) async throws {
+        let modelExists = try await modelExists(model)
+        XCTAssertTrue(modelExists)
+    }
+    
+    func assertModelDoesNotExist<M: Model>(_ model: M) async throws {
+        let modelExists = try await modelExists(model)
+        XCTAssertFalse(modelExists)
+    }
+    
+    func modelExists<M: Model>(_ model: M) async throws -> Bool {
+        let identifierName = model.schema.primaryKey.sqlName
+        let queryPredicate: QueryPredicate = field(identifierName).eq(model.identifier)
+        
+        let queriedModels = try await Amplify.DataStore.query(M.self,
+                                                              where: queryPredicate)
+        let metadataId = MutationSyncMetadata.identifier(modelName: model.modelName,
+                                                         modelId: model.identifier)
+        guard let metadata = try await Amplify.DataStore.query(MutationSyncMetadata.self,
+                                                               byId: metadataId) else {
+            XCTFail("Could not retrieve metadata for model \(model)")
+            throw "Could not retrieve metadata for model \(model)"
+        }
+        
+        return !(metadata.deleted && queriedModels.isEmpty)
     }
 }
