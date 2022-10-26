@@ -215,6 +215,24 @@
 		21801D3729006DC200FFA37E /* Project5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D3529006DC200FFA37E /* Project5.swift */; };
 		21801D3E2900A10600FFA37E /* AWSDataStoreLazyLoadProjectTeam1Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D3D2900A10600FFA37E /* AWSDataStoreLazyLoadProjectTeam1Tests.swift */; };
 		21801D4A2906CF3B00FFA37E /* AWSDataStoreLazyLoadPostTagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D492906CF3B00FFA37E /* AWSDataStoreLazyLoadPostTagTests.swift */; };
+		21801D5E29097D5800FFA37E /* StrangeExplicitChild.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D4C29097D5400FFA37E /* StrangeExplicitChild.swift */; };
+		21801D5F29097D5800FFA37E /* HasOneChild+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D4D29097D5600FFA37E /* HasOneChild+Schema.swift */; };
+		21801D6029097D5800FFA37E /* ImplicitChild.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D4E29097D5600FFA37E /* ImplicitChild.swift */; };
+		21801D6129097D5800FFA37E /* HasOneParent+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D4F29097D5600FFA37E /* HasOneParent+Schema.swift */; };
+		21801D6229097D5800FFA37E /* CompositePKChild.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D5029097D5600FFA37E /* CompositePKChild.swift */; };
+		21801D6329097D5800FFA37E /* StrangeExplicitChild+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D5129097D5600FFA37E /* StrangeExplicitChild+Schema.swift */; };
+		21801D6429097D5800FFA37E /* CompositePKChild+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D5229097D5600FFA37E /* CompositePKChild+Schema.swift */; };
+		21801D6529097D5800FFA37E /* DefaultPKParent+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D5329097D5600FFA37E /* DefaultPKParent+Schema.swift */; };
+		21801D6629097D5800FFA37E /* DefaultPKChild+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D5429097D5600FFA37E /* DefaultPKChild+Schema.swift */; };
+		21801D6729097D5800FFA37E /* CompositePKParent+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D5529097D5600FFA37E /* CompositePKParent+Schema.swift */; };
+		21801D6829097D5800FFA37E /* DefaultPKChild.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D5629097D5600FFA37E /* DefaultPKChild.swift */; };
+		21801D6929097D5800FFA37E /* CompositePKParent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D5729097D5600FFA37E /* CompositePKParent.swift */; };
+		21801D6A29097D5800FFA37E /* ChildSansBelongsTo+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D5829097D5700FFA37E /* ChildSansBelongsTo+Schema.swift */; };
+		21801D6B29097D5800FFA37E /* HasOneParent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D5929097D5700FFA37E /* HasOneParent.swift */; };
+		21801D6C29097D5800FFA37E /* DefaultPKParent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D5A29097D5700FFA37E /* DefaultPKParent.swift */; };
+		21801D6D29097D5800FFA37E /* ImplicitChild+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D5B29097D5700FFA37E /* ImplicitChild+Schema.swift */; };
+		21801D6E29097D5800FFA37E /* HasOneChild.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D5C29097D5700FFA37E /* HasOneChild.swift */; };
+		21801D6F29097D5800FFA37E /* ChildSansBelongsTo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21801D5D29097D5700FFA37E /* ChildSansBelongsTo.swift */; };
 		219253BE28BFE84100820737 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 219253BD28BFE84000820737 /* XCTest.framework */; };
 		21977DBF289C171A005B49D6 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21977DBE289C1719005B49D6 /* TestConfigHelper.swift */; };
 		219B518528E3A4B00080EDCC /* DataStoreConnectionOptionalAssociations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA00289BFE3400B32A39 /* DataStoreConnectionOptionalAssociations.swift */; };
@@ -775,6 +793,24 @@
 		21801D3529006DC200FFA37E /* Project5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project5.swift; sourceTree = "<group>"; };
 		21801D3D2900A10600FFA37E /* AWSDataStoreLazyLoadProjectTeam1Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreLazyLoadProjectTeam1Tests.swift; sourceTree = "<group>"; };
 		21801D492906CF3B00FFA37E /* AWSDataStoreLazyLoadPostTagTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreLazyLoadPostTagTests.swift; sourceTree = "<group>"; };
+		21801D4C29097D5400FFA37E /* StrangeExplicitChild.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StrangeExplicitChild.swift; sourceTree = "<group>"; };
+		21801D4D29097D5600FFA37E /* HasOneChild+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "HasOneChild+Schema.swift"; sourceTree = "<group>"; };
+		21801D4E29097D5600FFA37E /* ImplicitChild.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImplicitChild.swift; sourceTree = "<group>"; };
+		21801D4F29097D5600FFA37E /* HasOneParent+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "HasOneParent+Schema.swift"; sourceTree = "<group>"; };
+		21801D5029097D5600FFA37E /* CompositePKChild.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompositePKChild.swift; sourceTree = "<group>"; };
+		21801D5129097D5600FFA37E /* StrangeExplicitChild+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StrangeExplicitChild+Schema.swift"; sourceTree = "<group>"; };
+		21801D5229097D5600FFA37E /* CompositePKChild+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CompositePKChild+Schema.swift"; sourceTree = "<group>"; };
+		21801D5329097D5600FFA37E /* DefaultPKParent+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DefaultPKParent+Schema.swift"; sourceTree = "<group>"; };
+		21801D5429097D5600FFA37E /* DefaultPKChild+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DefaultPKChild+Schema.swift"; sourceTree = "<group>"; };
+		21801D5529097D5600FFA37E /* CompositePKParent+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CompositePKParent+Schema.swift"; sourceTree = "<group>"; };
+		21801D5629097D5600FFA37E /* DefaultPKChild.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultPKChild.swift; sourceTree = "<group>"; };
+		21801D5729097D5600FFA37E /* CompositePKParent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompositePKParent.swift; sourceTree = "<group>"; };
+		21801D5829097D5700FFA37E /* ChildSansBelongsTo+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ChildSansBelongsTo+Schema.swift"; sourceTree = "<group>"; };
+		21801D5929097D5700FFA37E /* HasOneParent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HasOneParent.swift; sourceTree = "<group>"; };
+		21801D5A29097D5700FFA37E /* DefaultPKParent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultPKParent.swift; sourceTree = "<group>"; };
+		21801D5B29097D5700FFA37E /* ImplicitChild+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ImplicitChild+Schema.swift"; sourceTree = "<group>"; };
+		21801D5C29097D5700FFA37E /* HasOneChild.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HasOneChild.swift; sourceTree = "<group>"; };
+		21801D5D29097D5700FFA37E /* ChildSansBelongsTo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChildSansBelongsTo.swift; sourceTree = "<group>"; };
 		219253BD28BFE84000820737 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		21977D84289C1633005B49D6 /* primarykey_schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = primarykey_schema.graphql; sourceTree = "<group>"; };
 		21977DBE289C1719005B49D6 /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
@@ -1428,6 +1464,7 @@
 				21801D452902E0E100FFA37E /* LL9 */,
 				21801D462902E0F600FFA37E /* LL10 */,
 				21801D472902E0FD00FFA37E /* LL11 */,
+				21801D4B29097CAB00FFA37E /* LL12 */,
 			);
 			path = AWSDataStorePluginLazyLoadTests;
 			sourceTree = "<group>";
@@ -1575,6 +1612,31 @@
 				21801CD028F9A86800FFA37E /* AmplifyModels.swift */,
 			);
 			path = LazyLoadBase;
+			sourceTree = "<group>";
+		};
+		21801D4B29097CAB00FFA37E /* LL12 */ = {
+			isa = PBXGroup;
+			children = (
+				21801D5D29097D5700FFA37E /* ChildSansBelongsTo.swift */,
+				21801D5829097D5700FFA37E /* ChildSansBelongsTo+Schema.swift */,
+				21801D5029097D5600FFA37E /* CompositePKChild.swift */,
+				21801D5229097D5600FFA37E /* CompositePKChild+Schema.swift */,
+				21801D5729097D5600FFA37E /* CompositePKParent.swift */,
+				21801D5529097D5600FFA37E /* CompositePKParent+Schema.swift */,
+				21801D5629097D5600FFA37E /* DefaultPKChild.swift */,
+				21801D5429097D5600FFA37E /* DefaultPKChild+Schema.swift */,
+				21801D5A29097D5700FFA37E /* DefaultPKParent.swift */,
+				21801D5329097D5600FFA37E /* DefaultPKParent+Schema.swift */,
+				21801D5C29097D5700FFA37E /* HasOneChild.swift */,
+				21801D4D29097D5600FFA37E /* HasOneChild+Schema.swift */,
+				21801D5929097D5700FFA37E /* HasOneParent.swift */,
+				21801D4F29097D5600FFA37E /* HasOneParent+Schema.swift */,
+				21801D4E29097D5600FFA37E /* ImplicitChild.swift */,
+				21801D5B29097D5700FFA37E /* ImplicitChild+Schema.swift */,
+				21801D4C29097D5400FFA37E /* StrangeExplicitChild.swift */,
+				21801D5129097D5600FFA37E /* StrangeExplicitChild+Schema.swift */,
+			);
+			path = LL12;
 			sourceTree = "<group>";
 		};
 		21977D75289C161D005B49D6 /* Models */ = {
@@ -3158,26 +3220,35 @@
 				21801CE328F9A86800FFA37E /* Project6.swift in Sources */,
 				21801CE628F9A86800FFA37E /* TagWithCompositeKey+Schema.swift in Sources */,
 				21801D2F29006DA900FFA37E /* Team1.swift in Sources */,
+				21801D6529097D5800FFA37E /* DefaultPKParent+Schema.swift in Sources */,
 				21801CE728F9A86800FFA37E /* Project2.swift in Sources */,
+				21801D6A29097D5800FFA37E /* ChildSansBelongsTo+Schema.swift in Sources */,
 				21801CF728F9A86800FFA37E /* Post8V2+Schema.swift in Sources */,
 				21801D0128F9A86800FFA37E /* AmplifyModels.swift in Sources */,
 				21801CFB28F9A86800FFA37E /* Team2+Schema.swift in Sources */,
+				21801D6F29097D5800FFA37E /* ChildSansBelongsTo.swift in Sources */,
+				21801D6B29097D5800FFA37E /* HasOneParent.swift in Sources */,
 				21801D0328F9A86800FFA37E /* Post7+Schema.swift in Sources */,
 				21801D3329006DB500FFA37E /* Team5.swift in Sources */,
 				21801CEF28F9A86800FFA37E /* Blog8V2+Schema.swift in Sources */,
 				21801CE428F9A86800FFA37E /* Blog8V2.swift in Sources */,
 				21801D3629006DC200FFA37E /* Project5+Schema.swift in Sources */,
+				21801D6229097D5800FFA37E /* CompositePKChild.swift in Sources */,
 				21801CE028F9A86800FFA37E /* Post8V2.swift in Sources */,
 				21801D3E2900A10600FFA37E /* AWSDataStoreLazyLoadProjectTeam1Tests.swift in Sources */,
 				21801C7D28F9A22900FFA37E /* AWSDataStoreLazyLoadBaseTest.swift in Sources */,
 				21801CFF28F9A86800FFA37E /* Team2.swift in Sources */,
 				21801D0228F9A86800FFA37E /* Comment8+Schema.swift in Sources */,
+				21801D5F29097D5800FFA37E /* HasOneChild+Schema.swift in Sources */,
 				21801CFC28F9A86800FFA37E /* Comment4V2+Schema.swift in Sources */,
 				21801CEC28F9A86800FFA37E /* Team6+Schema.swift in Sources */,
 				21801CEA28F9A86800FFA37E /* Comment8.swift in Sources */,
+				21801D6329097D5800FFA37E /* StrangeExplicitChild+Schema.swift in Sources */,
 				21801C8728F9A38000FFA37E /* TestConfigHelper.swift in Sources */,
 				21801CE928F9A86800FFA37E /* Post8+Schema.swift in Sources */,
+				21801D6C29097D5800FFA37E /* DefaultPKParent.swift in Sources */,
 				21801CF528F9A86800FFA37E /* Comment7.swift in Sources */,
+				21801D5E29097D5800FFA37E /* StrangeExplicitChild.swift in Sources */,
 				21801CE828F9A86800FFA37E /* Comment4V2.swift in Sources */,
 				21801CD528F9A86800FFA37E /* CommentWithCompositeKey+Schema.swift in Sources */,
 				21801CED28F9A86800FFA37E /* Post4.swift in Sources */,
@@ -3191,9 +3262,12 @@
 				21801CD928F9A86800FFA37E /* Post8.swift in Sources */,
 				21801CDD28F9A86800FFA37E /* Comment8V2+Schema.swift in Sources */,
 				21801CD428F9A86800FFA37E /* PostWithCompositeKey.swift in Sources */,
+				21801D6D29097D5800FFA37E /* ImplicitChild+Schema.swift in Sources */,
+				21801D6E29097D5800FFA37E /* HasOneChild.swift in Sources */,
 				21801CD828F9A86800FFA37E /* Comment7+Schema.swift in Sources */,
 				21801D3229006DB500FFA37E /* Team5+Schema.swift in Sources */,
 				21801D2B29006DA300FFA37E /* Project1+Schema.swift in Sources */,
+				21801D6629097D5800FFA37E /* DefaultPKChild+Schema.swift in Sources */,
 				21801D0728F9B11800FFA37E /* AsyncTesting.swift in Sources */,
 				21801D2A29006DA300FFA37E /* Project1.swift in Sources */,
 				21801CF128F9A86800FFA37E /* Project2+Schema.swift in Sources */,
@@ -3201,19 +3275,25 @@
 				21801CF928F9A86800FFA37E /* Team6.swift in Sources */,
 				21801CD628F9A86800FFA37E /* PostWithTagsCompositeKey+Schema.swift in Sources */,
 				21801CDC28F9A86800FFA37E /* PostTagsWithCompositeKey.swift in Sources */,
+				21801D6129097D5800FFA37E /* HasOneParent+Schema.swift in Sources */,
 				21801CF628F9A86800FFA37E /* Comment4+Schema.swift in Sources */,
 				21801CEB28F9A86800FFA37E /* Post4V2.swift in Sources */,
 				21801CDF28F9A86800FFA37E /* MyCustomModel8+Schema.swift in Sources */,
 				21801D0828F9B11B00FFA37E /* AsyncExpectation.swift in Sources */,
+				21801D6429097D5800FFA37E /* CompositePKChild+Schema.swift in Sources */,
 				21801D3729006DC200FFA37E /* Project5.swift in Sources */,
+				21801D6029097D5800FFA37E /* ImplicitChild.swift in Sources */,
 				21801CFD28F9A86800FFA37E /* MyCustomModel8.swift in Sources */,
+				21801D6729097D5800FFA37E /* CompositePKParent+Schema.swift in Sources */,
 				21801CEE28F9A86800FFA37E /* Comment4.swift in Sources */,
 				21801D0628F9AE9400FFA37E /* AWSDataStoreLazyLoadPostComment4V2Tests.swift in Sources */,
 				21801CDB28F9A86800FFA37E /* MyNestedModel8+Schema.swift in Sources */,
 				21801CE528F9A86800FFA37E /* PostTagsWithCompositeKey+Schema.swift in Sources */,
+				21801D6929097D5800FFA37E /* CompositePKParent.swift in Sources */,
 				21801D2528FDA5E700FFA37E /* AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests.swift in Sources */,
 				21801CDE28F9A86800FFA37E /* Post4+Schema.swift in Sources */,
 				21801D4A2906CF3B00FFA37E /* AWSDataStoreLazyLoadPostTagTests.swift in Sources */,
+				21801D6829097D5800FFA37E /* DefaultPKChild.swift in Sources */,
 				21801CDA28F9A86800FFA37E /* PostWithTagsCompositeKey.swift in Sources */,
 				21801D0928F9B11E00FFA37E /* XCTestCase+AsyncTesting.swift in Sources */,
 				21801CF428F9A86800FFA37E /* Post7.swift in Sources */,
