@@ -144,6 +144,49 @@ class AWSDataStoreLazyLoadProjectTeam1Tests: AWSDataStoreLazyLoadBaseTest {
         assertProject(queriedProject3, hasTeam: savedTeam)
     }
     
+    func testSaveProjectWithTeamThenAccessProjectFromTeam() async throws {
+        await setup(withModels: ProjectTeam1Models(), eagerLoad: false, clearOnTearDown: false)
+        
+        let team = Team(teamId: UUID().uuidString, name: "name")
+        let savedTeam = try await saveAndWaitForSync(team)
+        let project = initializeProjectWithTeam(savedTeam)
+        let savedProject = try await saveAndWaitForSync(project)
+        let queriedProject = try await query(for: savedProject)
+        assertProject(queriedProject, hasTeam: savedTeam)
+        var queriedTeam = try await query(for: savedTeam)
+        
+        // The team has a FK referencing the Project. Updating the project with team
+        // does not reflect the team, which is why the queried team does not have the project
+        // to load.
+        // Project (Parent) hasOne Team
+        // Team (Child) belongsTo Project
+        // Team has the FK of Project.
+        switch queriedTeam._project.modelProvider.getState() {
+        case .notLoaded(let identifiers):
+            print("NOT LOADED \(identifiers)")
+        case .loaded(let model):
+            print("LOADED \(model)")
+        }
+
+        queriedTeam.setProject(queriedProject)
+        let savedTeamWithProject = try await saveAndWaitForSync(queriedTeam, assertVersion: 2)
+        // Now the FK in the Team should be populated with Project's PK
+        switch savedTeamWithProject._project.modelProvider.getState() {
+        case .notLoaded(let identifiers):
+            print("NOT LOADED \(identifiers)")
+        case .loaded(let model):
+            print("LOADED \(model)")
+        }
+        var queriedTeamWithProject = try await query(for: savedTeamWithProject)
+        switch savedTeamWithProject._project.modelProvider.getState() {
+        case .notLoaded(let identifiers):
+            print("NOT LOADED \(identifiers)")
+        case .loaded(let model):
+            print("LOADED \(model)")
+        }
+        printDBPath()
+    }
+    
     // One-to-One relationships do not create a foreign key for the Team or Project table
     // So the LazyModel does not have the FK value to be instantiated as metadata for lazy loading.
     // We only assert the FK fields on the Project exist and are equal to the Team's PK.

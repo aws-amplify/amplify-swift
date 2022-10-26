@@ -35,6 +35,10 @@ public struct Team1: Model {
         self.updatedAt = updatedAt
     }
     
+    public mutating func setProject(_ project: Project1?) {
+        self._project = LazyModel(element: project)
+    }
+    
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         teamId = try values.decode(String.self, forKey: .teamId)
