@@ -72,6 +72,10 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
                     loadingStrategy: eagerLoad ? .eagerLoad : .lazyLoad)))
             try Amplify.add(plugin: AWSAPIPlugin())
             try Amplify.configure(amplifyConfig)
+            
+            if clearOnTearDown {
+                try await clearDataStore()
+            }
         } catch {
             XCTFail("Error during setup: \(error)")
         }

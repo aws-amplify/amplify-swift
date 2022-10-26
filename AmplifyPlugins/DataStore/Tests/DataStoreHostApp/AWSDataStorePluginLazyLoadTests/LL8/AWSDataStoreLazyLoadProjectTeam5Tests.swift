@@ -12,28 +12,28 @@ import XCTest
 @testable import Amplify
 import AWSPluginsCore
 
-class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
+class AWSDataStoreLazyLoadProjectTeam5Tests: AWSDataStoreLazyLoadBaseTest {
     
     func testStart() async throws {
-        await setup(withModels: ProjectTeam2Models(), eagerLoad: false, clearOnTearDown: false)
+        await setup(withModels: ProjectTeam5Models(), eagerLoad: false, clearOnTearDown: false)
         try await startAndWaitForReady()
         printDBPath()
     }
     
     func testAPISyncQuery() async throws {
-        await setupAPIOnly(withModels: ProjectTeam2Models())
+        await setupAPIOnly(withModels: ProjectTeam5Models())
     
         // The selection set of project should include "hasOne" team, and no further
         let projectRequest = GraphQLRequest<SyncQueryResult>.syncQuery(modelType: Project.self)
         let projectDocument = """
-        query SyncProject2s($limit: Int) {
-          syncProject2s(limit: $limit) {
+        query SyncProject5s($limit: Int) {
+          syncProject5s(limit: $limit) {
             items {
               projectId
               name
               createdAt
-              project2TeamName
-              project2TeamTeamId
+              teamId
+              teamName
               updatedAt
               team {
                 teamId
@@ -57,17 +57,28 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
         """
         XCTAssertEqual(projectRequest.document, projectDocument)
         
-        // In this "Implicit Uni-directional Has One", only project hasOne team, team does not reference the project
-        // So, the selection set of team does not include project
+        // In this "Explicit bi-directional Has One", team "belongsTo" so it should include the project.
         let teamRequest = GraphQLRequest<SyncQueryResult>.syncQuery(modelType: Team.self)
         let teamDocument = """
-        query SyncTeam2s($limit: Int) {
-          syncTeam2s(limit: $limit) {
+        query SyncTeam5s($limit: Int) {
+          syncTeam5s(limit: $limit) {
             items {
               teamId
               name
               createdAt
               updatedAt
+              project {
+                projectId
+                name
+                createdAt
+                teamId
+                teamName
+                updatedAt
+                __typename
+                _version
+                _deleted
+                _lastChangedAt
+              }
               __typename
               _version
               _deleted
@@ -85,14 +96,14 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testSaveTeam() async throws {
-        await setup(withModels: ProjectTeam2Models(), eagerLoad: false)
+        await setup(withModels: ProjectTeam5Models(), eagerLoad: false)
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await saveAndWaitForSync(team)
         try await assertModelExists(savedTeam)
     }
     
     func testSaveProject() async throws {
-        await setup(withModels: ProjectTeam2Models(), eagerLoad: false)
+        await setup(withModels: ProjectTeam5Models(), eagerLoad: false)
         let project = Project(projectId: UUID().uuidString,
                               name: "name")
         let savedProject = try await saveAndWaitForSync(project)
@@ -101,7 +112,7 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testSaveProjectWithTeam() async throws {
-        await setup(withModels: ProjectTeam2Models(), eagerLoad: false)
+        await setup(withModels: ProjectTeam5Models(), eagerLoad: false)
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await saveAndWaitForSync(team)
         
@@ -109,8 +120,8 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
         let project = Project(projectId: UUID().uuidString,
                               name: "name",
                               team: team,
-                              project2TeamTeamId: team.teamId,
-                              project2TeamName: team.name)
+                              teamId: team.teamId,
+                              teamName: team.name)
         let savedProject = try await saveAndWaitForSync(project)
         let queriedProject = try await query(for: savedProject)
         assertProject(queriedProject, hasTeam: savedTeam)
@@ -126,8 +137,8 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
         // Project initializer variation #3 (pass fields in)
         let project3 = Project(projectId: UUID().uuidString,
                                name: "name",
-                               project2TeamTeamId: team.teamId,
-                               project2TeamName: team.name)
+                               teamId: team.teamId,
+                               teamName: team.name)
         let savedProject3 = try await saveAndWaitForSync(project3)
         let queriedProject3 = try await query(for: savedProject3)
         assertProject(queriedProject3, hasTeam: savedTeam)
@@ -137,17 +148,17 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
     // So the LazyModel does not have the FK value to be instantiated as metadata for lazy loading.
     // We only assert the FK fields on the Project exist and are equal to the Team's PK.
     func assertProject(_ project: Project, hasTeam team: Team) {
-        XCTAssertEqual(project.project2TeamTeamId, team.teamId)
-        XCTAssertEqual(project.project2TeamName, team.name)
+        XCTAssertEqual(project.teamId, team.teamId)
+        XCTAssertEqual(project.teamName, team.name)
     }
     
     func assertProjectDoesNotContainTeam(_ project: Project) {
-        XCTAssertNil(project.project2TeamTeamId)
-        XCTAssertNil(project.project2TeamName)
+        XCTAssertNil(project.teamId)
+        XCTAssertNil(project.teamName)
     }
     
     func testSaveProjectWithTeamThenUpdate() async throws {
-        await setup(withModels: ProjectTeam2Models(), eagerLoad: false)
+        await setup(withModels: ProjectTeam5Models(), eagerLoad: false)
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await saveAndWaitForSync(team)
     
@@ -161,7 +172,7 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testSaveProjectWithoutTeamUpdateProjectWithTeam() async throws {
-        await setup(withModels: ProjectTeam2Models(), eagerLoad: false)
+        await setup(withModels: ProjectTeam5Models(), eagerLoad: false)
         let project = Project(projectId: UUID().uuidString, name: "name")
         let savedProject = try await saveAndWaitForSync(project)
         assertProjectDoesNotContainTeam(savedProject)
@@ -169,28 +180,28 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await saveAndWaitForSync(team)
         var queriedProject = try await query(for: savedProject)
-        queriedProject.project2TeamTeamId = team.teamId
-        queriedProject.project2TeamName = team.name
+        queriedProject.teamId = team.teamId
+        queriedProject.teamName = team.name
         let savedProjectWithNewTeam = try await saveAndWaitForSync(queriedProject, assertVersion: 2)
         assertProject(savedProjectWithNewTeam, hasTeam: savedTeam)
     }
     
     func testSaveTeamSaveProjectWithTeamUpdateProjectToNoTeam() async throws {
-        await setup(withModels: ProjectTeam2Models(), eagerLoad: false)
+        await setup(withModels: ProjectTeam5Models(), eagerLoad: false)
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await saveAndWaitForSync(team)
         let project = initializeProjectWithTeam(team)
         let savedProject = try await saveAndWaitForSync(project)
         var queriedProject = try await query(for: savedProject)
         assertProject(queriedProject, hasTeam: savedTeam)
-        queriedProject.project2TeamTeamId = nil
-        queriedProject.project2TeamName = nil
+        queriedProject.teamId = nil
+        queriedProject.teamName = nil
         let savedProjectWithNoTeam = try await saveAndWaitForSync(queriedProject, assertVersion: 2)
         assertProjectDoesNotContainTeam(savedProjectWithNoTeam)
     }
     
     func testSaveProjectWithTeamUpdateProjectToNewTeam() async throws {
-        await setup(withModels: ProjectTeam2Models(), eagerLoad: false)
+        await setup(withModels: ProjectTeam5Models(), eagerLoad: false)
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await saveAndWaitForSync(team)
         let project = initializeProjectWithTeam(team)
@@ -199,14 +210,14 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
         let savedNewTeam = try await saveAndWaitForSync(newTeam)
         var queriedProject = try await query(for: savedProject)
         assertProject(queriedProject, hasTeam: savedTeam)
-        queriedProject.project2TeamTeamId = newTeam.teamId
-        queriedProject.project2TeamName = newTeam.name
+        queriedProject.teamId = newTeam.teamId
+        queriedProject.teamName = newTeam.name
         let savedProjectWithNewTeam = try await saveAndWaitForSync(queriedProject, assertVersion: 2)
         assertProject(queriedProject, hasTeam: savedNewTeam)
     }
     
     func testDeleteTeam() async throws {
-        await setup(withModels: ProjectTeam2Models(), eagerLoad: false)
+        await setup(withModels: ProjectTeam5Models(), eagerLoad: false)
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await saveAndWaitForSync(team)
         try await assertModelExists(savedTeam)
@@ -215,7 +226,7 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testDeleteProject() async throws {
-        await setup(withModels: ProjectTeam2Models(), eagerLoad: false)
+        await setup(withModels: ProjectTeam5Models(), eagerLoad: false)
         let project = Project(projectId: UUID().uuidString, name: "name")
         let savedProject = try await saveAndWaitForSync(project)
         try await assertModelExists(savedProject)
@@ -224,10 +235,14 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testDeleteProjectWithTeam() async throws {
-        await setup(withModels: ProjectTeam2Models(), eagerLoad: false)
+        await setup(withModels: ProjectTeam5Models(), eagerLoad: false)
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await saveAndWaitForSync(team)
-        let project = initializeProjectWithTeam(team)
+        let project = Project(projectId: UUID().uuidString,
+                              name: "name",
+                              team: team,
+                              teamId: team.teamId,
+                              teamName: team.name)
         let savedProject = try await saveAndWaitForSync(project)
         
         try await assertModelExists(savedProject)
@@ -243,16 +258,16 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
     }
 }
 
-extension AWSDataStoreLazyLoadProjectTeam2Tests {
+extension AWSDataStoreLazyLoadProjectTeam5Tests {
     
-    typealias Project = Project2
-    typealias Team = Team2
+    typealias Project = Project5
+    typealias Team = Team5
     
-    struct ProjectTeam2Models: AmplifyModelRegistration {
+    struct ProjectTeam5Models: AmplifyModelRegistration {
         public let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
-            ModelRegistry.register(modelType: Project2.self)
-            ModelRegistry.register(modelType: Team2.self)
+            ModelRegistry.register(modelType: Project5.self)
+            ModelRegistry.register(modelType: Team5.self)
         }
     }
     
@@ -260,7 +275,7 @@ extension AWSDataStoreLazyLoadProjectTeam2Tests {
         return Project(projectId: UUID().uuidString,
                        name: "name",
                        team: team,
-                       project2TeamTeamId: team.teamId,
-                       project2TeamName: team.name)
+                       teamId: team.teamId,
+                       teamName: team.name)
     }
 }
