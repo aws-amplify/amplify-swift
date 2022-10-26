@@ -30,7 +30,7 @@ platform :ios do
 
   desc "Create a release version by building and committing a changelog, pushing a tag to GitHub, and pushing pods to CocoaPods"  
   lane :release do
-    next_version, commits = calculate_next_release_version
+    next_version, commits = calculate_next_release_version(version_limit:"v2.0.0")
 
     UI.message("Releasing version: #{next_version}")
 
