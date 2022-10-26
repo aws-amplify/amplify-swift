@@ -39,7 +39,11 @@ public struct Team1: Model {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         teamId = try values.decode(String.self, forKey: .teamId)
         name = try values.decode(String.self, forKey: .name)
-        _project = try values.decode(LazyModel<Project1>.self, forKey: .project)
+        do {
+            _project = try values.decode(LazyModel<Project1>.self, forKey: .project)
+        } catch {
+            _project = LazyModel(identifiers: nil)
+        }
         createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
         updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
     }

@@ -45,7 +45,7 @@ public struct Project1: Model {
         self.project1TeamName = project1TeamName
     }
     
-    public mutating func setTeam(_ team: Team1) {
+    public mutating func setTeam(_ team: Team1?) {
         self._team = LazyModel(element: team)
     }
     
@@ -53,7 +53,11 @@ public struct Project1: Model {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         projectId = try values.decode(String.self, forKey: .projectId)
         name = try values.decode(String.self, forKey: .name)
-        _team = try values.decode(LazyModel<Team1>.self, forKey: .team)
+        do {
+            _team = try values.decode(LazyModel<Team1>.self, forKey: .team)
+        } catch {
+            _team = LazyModel(identifiers: nil)
+        }
         createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
         updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
         project1TeamTeamId = try values.decode(String?.self, forKey: .project1TeamTeamId)

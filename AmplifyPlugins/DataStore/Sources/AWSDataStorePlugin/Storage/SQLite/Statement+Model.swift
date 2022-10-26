@@ -90,6 +90,7 @@ extension Statement: StatementModelConvertible {
         let modelDictionary = ([:] as ModelValues).mutableCopy()
         var skipColumns = Set<String>()
         var foreignKeyValues = [(String, Binding?)]()
+        print("============= lawmicha convert \(modelSchema.name)=======================")
         for (index, value) in row.enumerated() {
             let column = columnNames[index]
             guard let (schema, field) = columnMapping[column] else {
@@ -102,7 +103,7 @@ extension Statement: StatementModelConvertible {
                 from: value,
                 fieldType: field.type
             )
-
+            print("lawmicha \(field.name) \(modelValue)")
             // Check if the value for the primary key is `nil`. This is when an associated model does not exist.
             // To create a decodable `modelDictionary` that can be decoded to the Model types, the entire
             // object at this particular key should be set to `nil`. The following code does that by dropping the last

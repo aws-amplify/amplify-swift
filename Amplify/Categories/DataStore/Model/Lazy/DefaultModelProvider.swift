@@ -10,18 +10,31 @@ import Foundation
 // MARK: - DefaultModelProvider
 
 public struct DefaultModelProvider<Element: Model>: ModelProvider {
-   
-    let element: Element?
+    enum LoadedState {
+        case notLoaded(identifiers: [String: String]?)
+        case loaded(model: Element?)
+    }
+    
+    var loadedState: LoadedState
+    
     public init(element: Element? = nil) {
-        self.element = element
+        self.loadedState = .loaded(model: element)
+    }
+    
+    public init(identifiers: [String: String]?) {
+        self.loadedState = .notLoaded(identifiers: identifiers)
     }
     
     public func load() async throws -> Element? {
-        return element
+        return Fatal.preconditionFailure("DefaultModelProvider does not provide loading capabilities")
     }
     
     public func getState() -> ModelProviderState<Element> {
-        return .loaded(element)
+        switch loadedState {
+        case .notLoaded(let identifiers):
+            return .notLoaded(identifiers: identifiers)
+        case .loaded(let model):
+            return .loaded(model)
+        }
     }
-    
 }

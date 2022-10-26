@@ -23,10 +23,11 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         let savedComment = try await saveAndWaitForSync(comment)
         try await assertComment(savedComment, hasEagerLoaded: savedPost)
         try await assertPost(savedPost, canLazyLoad: savedComment)
-        let queriedComment = try await queryComment(savedComment)
+        let queriedComment = try await query(for: savedComment)
         try await assertComment(queriedComment, canLazyLoad: savedPost)
-        let queriedPost = try await queryPost(savedPost)
+        let queriedPost = try await query(for: savedPost)
         try await assertPost(queriedPost, canLazyLoad: savedComment)
+        printDBPath()
     }
     
     func assertComment(_ comment: Comment,
@@ -86,14 +87,14 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose, eagerLoad: false)
         let comment = Comment(content: "content")
         let savedComment = try await saveAndWaitForSync(comment)
-        var queriedComment = try await queryComment(savedComment)
+        var queriedComment = try await query(for: savedComment)
         assertLazyModel(queriedComment._post,
                         state: .notLoaded(identifiers: nil))
         let post = Post(title: "title")
         let savedPost = try await saveAndWaitForSync(post)
         queriedComment.setPost(savedPost)
         let saveCommentWithPost = try await saveAndWaitForSync(queriedComment, assertVersion: 2)
-        let queriedComment2 = try await queryComment(saveCommentWithPost)
+        let queriedComment2 = try await query(for: saveCommentWithPost)
         try await assertComment(queriedComment2, canLazyLoad: post)
     }
     
@@ -103,11 +104,11 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         let comment = Comment(content: "content", post: post)
         let savedPost = try await saveAndWaitForSync(post)
         let savedComment = try await saveAndWaitForSync(comment)
-        let queriedComment = try await queryComment(savedComment)
+        let queriedComment = try await query(for: savedComment)
         assertLazyModel(queriedComment._post,
                         state: .notLoaded(identifiers: ["@@primaryKey": post.identifier]))
         let savedQueriedComment = try await saveAndWaitForSync(queriedComment, assertVersion: 2)
-        let queriedComment2 = try await queryComment(savedQueriedComment)
+        let queriedComment2 = try await query(for: savedQueriedComment)
         try await assertComment(queriedComment2, canLazyLoad: savedPost)
     }
     
@@ -118,7 +119,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         let comment = Comment(content: "content", post: post)
         _ = try await saveAndWaitForSync(post)
         let savedComment = try await saveAndWaitForSync(comment)
-        var queriedComment = try await queryComment(savedComment)
+        var queriedComment = try await query(for: savedComment)
         assertLazyModel(queriedComment._post,
                         state: .notLoaded(identifiers: ["@@primaryKey": post.identifier]))
         
@@ -126,7 +127,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         _ = try await saveAndWaitForSync(newPost)
         queriedComment.setPost(newPost)
         let saveCommentWithNewPost = try await saveAndWaitForSync(queriedComment, assertVersion: 2)
-        let queriedComment2 = try await queryComment(saveCommentWithNewPost)
+        let queriedComment2 = try await query(for: saveCommentWithNewPost)
         try await assertComment(queriedComment2, canLazyLoad: newPost)
     }
     
@@ -137,13 +138,13 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         let comment = Comment(content: "content", post: post)
         _ = try await saveAndWaitForSync(post)
         let savedComment = try await saveAndWaitForSync(comment)
-        var queriedComment = try await queryComment(savedComment)
+        var queriedComment = try await query(for: savedComment)
         assertLazyModel(queriedComment._post,
                         state: .notLoaded(identifiers: ["@@primaryKey": post.identifier]))
         
         queriedComment.setPost(nil)
         let saveCommentRemovePost = try await saveAndWaitForSync(queriedComment, assertVersion: 2)
-        let queriedCommentNoPost = try await queryComment(saveCommentRemovePost)
+        let queriedCommentNoPost = try await query(for: saveCommentRemovePost)
         assertLazyModel(queriedCommentNoPost._post,
                         state: .notLoaded(identifiers: nil))
     }
@@ -171,27 +172,5 @@ extension AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests {
             ModelRegistry.register(modelType: PostWithCompositeKey.self)
             ModelRegistry.register(modelType: CommentWithCompositeKey.self)
         }
-    }
-    
-    func queryComment(_ comment: Comment) async throws -> Comment {
-        guard let queriedComment = try await Amplify.DataStore.query(Comment.self,
-                                                                     byIdentifier: .identifier(
-                                                                        id: comment.id,
-                                                                        content: comment.content)) else {
-            XCTFail("Failed to query comment")
-            throw "Failed to query comment"
-        }
-        return queriedComment
-    }
-    
-    func queryPost(_ post: Post) async throws -> Post {
-        guard let queriedPost = try await Amplify.DataStore.query(Post.self,
-                                                                  byIdentifier: .identifier(
-                                                                    id: post.id,
-                                                                    title: post.title)) else {
-            XCTFail("Failed to query post")
-            throw "Failed to query post"
-        }
-        return queriedPost
     }
 }

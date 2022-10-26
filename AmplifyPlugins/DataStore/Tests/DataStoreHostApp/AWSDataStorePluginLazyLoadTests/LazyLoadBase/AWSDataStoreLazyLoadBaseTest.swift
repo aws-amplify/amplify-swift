@@ -8,7 +8,7 @@
 import Foundation
 import XCTest
 import Combine
-import AWSDataStorePlugin
+@testable import AWSDataStorePlugin
 import AWSPluginsCore
 import AWSAPIPlugin
 
@@ -19,12 +19,18 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
     
     var amplifyConfig: AmplifyConfiguration!
     
+    var apiOnly: Bool = false
+    var clearOnTearDown: Bool = false
+    
     override func setUp() {
         continueAfterFailure = false
     }
     
     override func tearDown() async throws {
-        try await clearDataStore()
+        if !apiOnly && clearOnTearDown {
+            try await clearDataStore()
+        }
+        
         requests = []
         await Amplify.reset()
     }
@@ -53,7 +59,9 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
     /// - Parameter models: DataStore models
     func setup(withModels models: AmplifyModelRegistration,
                logLevel: LogLevel = .verbose,
-               eagerLoad: Bool = true) async {
+               eagerLoad: Bool = true,
+               clearOnTearDown: Bool = true) async {
+        self.clearOnTearDown = clearOnTearDown
         do {
             setupConfig()
             Amplify.Logging.logLevel = logLevel
@@ -69,8 +77,47 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
         }
     }
     
+    func setupAPIOnly(withModels models: AmplifyModelRegistration, logLevel: LogLevel = .verbose) async {
+        apiOnly = true
+        do {
+            setupConfig()
+            Amplify.Logging.logLevel = logLevel
+            try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: models))
+            try Amplify.configure(amplifyConfig)
+        } catch {
+            XCTFail("Error during setup: \(error)")
+        }
+    }
+    
     func clearDataStore() async throws {
         try await Amplify.DataStore.clear()
+    }
+    
+    func startAndWaitForReady() async throws {
+        let dataStoreReady = asyncExpectation(description: "DataStore `ready` event received")
+        let dataStoreEvents = HubPayload.EventName.DataStore.self
+        Amplify
+            .Hub
+            .publisher(for: .dataStore)
+            .sink { event in
+                if event.eventName == dataStoreEvents.ready {
+                    Task {
+                        await dataStoreReady.fulfill()
+                    }
+                }
+            }
+            .store(in: &requests)
+        try await startDataStore()
+        await waitForExpectations([dataStoreReady], timeout: 60)
+    }
+    
+    func startDataStore() async throws {
+        try await Amplify.DataStore.start()
+    }
+    
+    func printDBPath() {
+        let dbPath = DataStoreDebugger.dbFilePath
+        print("DBPath: \(dbPath)")
     }
     
     func saveAndWaitForSync<M: Model>(_ model: M, assertVersion: Int = 1) async throws -> M {
@@ -82,7 +129,6 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
                     await modelSynced.fulfill()
                 }
             }
-            
         }
         let savedModel = try await Amplify.DataStore.save(model)
         await waitForExpectations([modelSynced], timeout: 10)
@@ -184,5 +230,46 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
         }
         
         return !(metadata.deleted && queriedModels.isEmpty)
+    }
+    
+    func query<M: Model>(for model: M) async throws -> M {
+        let identifierName = model.schema.primaryKey.sqlName
+        let queryPredicate: QueryPredicate = field(identifierName).eq(model.identifier)
+        
+        let queriedModels = try await Amplify.DataStore.query(M.self,
+                                                              where: queryPredicate)
+        if queriedModels.count > 1 {
+            XCTFail("Expected to find one model, found \(queriedModels.count). \(queriedModels)")
+            throw "Expected to find one model, found \(queriedModels.count). \(queriedModels)"
+        }
+        if let queriedModel = queriedModels.first {
+            return queriedModel
+        } else {
+            throw "Expected to find one model, found none"
+        }
+    }
+}
+
+struct DataStoreDebugger {
+    
+    static var dbFilePath: URL? { getAdapter()?.dbFilePath }
+    
+    static func getAdapter() -> SQLiteStorageEngineAdapter? {
+        if let dataStorePlugin = tryGetPlugin(),
+           let storageEngine = dataStorePlugin.storageEngine as? StorageEngine,
+           let adapter = storageEngine.storageAdapter as? SQLiteStorageEngineAdapter {
+            return adapter
+        }
+        
+        print("Could not get `SQLiteStorageEngineAdapter` from DataStore")
+        return nil
+    }
+    
+    static func tryGetPlugin() -> AWSDataStorePlugin? {
+        do {
+            return try Amplify.DataStore.getPlugin(for: "awsDataStorePlugin") as? AWSDataStorePlugin
+        } catch {
+            return nil
+        }
     }
 }

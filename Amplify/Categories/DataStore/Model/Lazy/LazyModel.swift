@@ -63,8 +63,13 @@ public class LazyModel<Element: Model>: Codable, LazyModelMarker {
         }
     }
     
-    public convenience init(element: Element? = nil) {
+    public convenience init(element: Element?) {
         let modelProvider = DefaultModelProvider(element: element).eraseToAnyModelProvider()
+        self.init(modelProvider: modelProvider)
+    }
+    
+    public convenience init(identifiers: [String: String]?) {
+        let modelProvider = DefaultModelProvider<Element>(identifiers: identifiers).eraseToAnyModelProvider()
         self.init(modelProvider: modelProvider)
     }
     
@@ -81,7 +86,7 @@ public class LazyModel<Element: Model>: Codable, LazyModelMarker {
             let element = try Element(from: decoder)
             self.init(element: element)
         } else {
-            self.init()
+            self.init(identifiers: nil)
         }
     }
     

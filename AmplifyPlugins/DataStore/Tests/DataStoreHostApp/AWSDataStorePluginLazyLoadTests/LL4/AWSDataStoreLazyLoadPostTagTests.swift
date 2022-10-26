@@ -27,11 +27,11 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         try await assertTag(savedTag, canLazyLoad: savedPostTag)
         assertLazyModel(savedPostTag._postWithTagsCompositeKey, state: .loaded(model: savedPost))
         assertLazyModel(savedPostTag._tagWithCompositeKey, state: .loaded(model: savedTag))
-        let queriedPost = try await queryPost(savedPost)
+        let queriedPost = try await query(for: savedPost)
         try await assertPost(queriedPost, canLazyLoad: savedPostTag)
-        let queriedTag = try await queryTag(savedTag)
+        let queriedTag = try await query(for: savedTag)
         try await assertTag(queriedTag, canLazyLoad: savedPostTag)
-        let queriedPostTag = try await queryPostTag(savedPostTag)
+        let queriedPostTag = try await query(for: savedPostTag)
         try await assertPostTag(queriedPostTag, canLazyLoadTag: savedTag, canLazyLoadPost: savedPost)
     }
     
@@ -80,23 +80,23 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         let savedPostTag = try await saveAndWaitForSync(postTag)
         
         // update the post tag with a new post
-        var queriedPostTag = try await queryPostTag(savedPostTag)
+        var queriedPostTag = try await query(for: savedPostTag)
         let newPost = Post(postId: UUID().uuidString, title: "title")
         _ = try await saveAndWaitForSync(newPost)
         queriedPostTag.setPostWithTagsCompositeKey(newPost)
         let savedPostTagWithNewPost = try await saveAndWaitForSync(queriedPostTag, assertVersion: 2)
         assertLazyModel(savedPostTagWithNewPost._postWithTagsCompositeKey, state: .loaded(model: newPost))
-        let queriedPreviousPost = try await queryPost(savedPost)
+        let queriedPreviousPost = try await query(for: savedPost)
         try await assertPostWithNoPostTag(queriedPreviousPost)
         
         // update the post tag with a new tag
-        var queriedPostTagWithNewPost = try await queryPostTag(savedPostTagWithNewPost)
+        var queriedPostTagWithNewPost = try await query(for: savedPostTagWithNewPost)
         let newTag = Tag(name: "name")
         _ = try await saveAndWaitForSync(newTag)
         queriedPostTagWithNewPost.setTagWithCompositeKey(newTag)
         let savedPostTagWithNewTag = try await saveAndWaitForSync(queriedPostTagWithNewPost, assertVersion: 3)
         assertLazyModel(savedPostTagWithNewTag._tagWithCompositeKey, state: .loaded(model: newTag))
-        let queriedPreviousTag = try await queryTag(savedTag)
+        let queriedPreviousTag = try await query(for: savedTag)
         try await assertTagWithNoPostTag(queriedPreviousTag)
     }
     
@@ -183,36 +183,4 @@ extension AWSDataStoreLazyLoadPostTagTests {
             ModelRegistry.register(modelType: TagWithCompositeKey.self)
         }
     }
-    
-    func queryPost(_ post: Post) async throws -> Post {
-        guard let queriedPost = try await Amplify.DataStore.query(Post.self,
-                                                                  byIdentifier: .identifier(
-                                                                    postId: post.postId,
-                                                                    title: post.title)) else {
-            XCTFail("Failed to query post")
-            throw "Failed to query post"
-        }
-        return queriedPost
-    }
-    
-    func queryTag(_ tag: Tag) async throws -> Tag {
-        guard let queriedTag = try await Amplify.DataStore.query(Tag.self,
-                                                                 byIdentifier: .identifier(
-                                                                    id: tag.id,
-                                                                    name: tag.name)) else {
-            XCTFail("Failed to query tag")
-            throw "Failed to query tag"
-        }
-        return queriedTag
-    }
-    
-    func queryPostTag(_ postTag: PostTag) async throws -> PostTag {
-        guard let queriedPostTag = try await Amplify.DataStore.query(PostTag.self,
-                                                                     byIdentifier: postTag.id) else {
-            XCTFail("Failed to query postTag")
-            throw "Failed to query postTag"
-        }
-        return queriedPostTag
-    }
-    
 }
