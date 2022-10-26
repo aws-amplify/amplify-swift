@@ -1,5 +1,18 @@
 # Changelog
 ## Unreleased
+## 1.28.2 (2022-10-26)
+
+### Bug Fixes
+
+- **datastore-v1**: observeQuery snapshot on .modelSynced event (#2367)
+- **datastore-v1**: synchronize multiple storageEngine initializations (#2389)
+- **datastore**: Setting nil values for empty associated models (#2358)
+- **datastore**: InitializeSubscription race condition disconnected event (#2319)
+- **storage**: update expectation timeout in integration test (#2342)
+- **Storage**: getUrl to use function parameter 'options'
+- **datastore**: refactor to use TimeInterval.milliseconds (#2034)
+- fix issue that causes SwiftUI previews to crash in certain scenarios (#2317)
+
 ## 1.28.1 (2022-09-15)
 
 ## 1.28.0 (2022-08-08)
