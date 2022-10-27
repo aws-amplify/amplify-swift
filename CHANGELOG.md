@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.0.1 (2022-10-27)
+
+### Bug Fixes
+
+- **Analytics**: Making connectivity errors to be retried indefinitely (#2497)
+- Build failure in xcode 13.4 (#2498)
+- **Auth**: Making improvements to federation flow (#2488)
+- **analytics**: revert previous analytics limit commit (#2484)
+- **analytics**: update pinpoint event attribute limits to match docum (#2474)
+- Make AWSPluginsCore public (#2472)
+
 ## Unreleased
 
 ## 2.0.0 (2022-10-17)
