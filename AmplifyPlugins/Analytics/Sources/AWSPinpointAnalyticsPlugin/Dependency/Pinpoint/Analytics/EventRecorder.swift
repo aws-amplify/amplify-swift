@@ -62,6 +62,7 @@ class EventRecorder: AnalyticsEventRecording {
     /// Saves a pinpoint event to storage
     /// - Parameter event: A PinpointEvent
     func save(_ event: PinpointEvent) throws {
+        log.verbose("saveEvent: \(event)")
         try storage.saveEvent(event)
         try self.storage.checkDiskSize(limit: Constants.pinpointClientByteLimitDefault)
     }
@@ -84,6 +85,8 @@ class EventRecorder: AnalyticsEventRecording {
         if eventsBatch.count > 0 {
             let endpointProfile = await endpointClient.currentEndpointProfile()
             try await processBatch(eventsBatch, endpointProfile: endpointProfile)
+        } else {
+            log.verbose("No events to submit")
         }
         return submittedEvents
     }
@@ -93,7 +96,14 @@ class EventRecorder: AnalyticsEventRecording {
     }
 
     private func processBatch(_ eventBatch: [PinpointEvent], endpointProfile: PinpointEndpointProfile) async throws {
-        try await submit(pinpointEvents: eventBatch, endpointProfile: endpointProfile)
+        log.verbose("Submitting batch with \(eventBatch.count) events ")
+        do {
+            try await submit(pinpointEvents: eventBatch, endpointProfile: endpointProfile)
+        } catch {
+            // If the submit operation fails, attempt to update the database regardless and rethrow the error
+            try storage.removeFailedEvents()
+            throw error
+        }
         try storage.removeFailedEvents()
         let nextEventsBatch = try getBatchRecords()
         if nextEventsBatch.count > 0 {
@@ -118,15 +128,18 @@ class EventRecorder: AnalyticsEventRecording {
                                             eventsRequest: .init(batchItem: batchItem))
 
         do {
+            log.verbose("PutEventsInput: \(putEventsInput)")
             let response = try await pinpointClient.putEvents(input: putEventsInput)
+            log.verbose("PutEventsOutputResponse received: \(response)")
             guard let results = response.eventsResponse?.results else {
-                log.error("Unexpected response from server when attempting to submit events.")
-                return
+                let errorMessage = "Unexpected response from server when attempting to submit events."
+                log.error(errorMessage)
+                throw AnalyticsError.unknown(errorMessage)
             }
 
             let endpointResponseMap = results.compactMap { $0.value.endpointItemResponse }
             for endpointResponse in endpointResponseMap {
-                if Constants.StatusCode.ok == endpointResponse.statusCode {
+                if HttpStatusCode.accepted.rawValue == endpointResponse.statusCode {
                     log.verbose("EndpointProfile updated successfully.")
                 } else {
                     log.error("Unable to update EndpointProfile. Error: \(endpointResponse.message ?? "Unknown")")
@@ -136,32 +149,56 @@ class EventRecorder: AnalyticsEventRecording {
             let eventsResponseMap = results.compactMap { $0.value.eventsItemResponse }
             for (eventId, eventResponse) in eventsResponseMap.flatMap({ $0 }) {
                 guard let event = pinpointEventsById[eventId] else { continue }
-                if Constants.StatusCode.ok == eventResponse.statusCode,
-                   Constants.acceptedResponseMessage == eventResponse.message {
+                let responseMessage = eventResponse.message ?? "Unknown"
+                if HttpStatusCode.accepted.rawValue == eventResponse.statusCode,
+                   Constants.acceptedResponseMessage == responseMessage {
                     // On successful submission, add the event to the list of submitted events and delete it from the local storage
                     log.verbose("Successful submit for event with id \(eventId)")
                     submittedEvents.append(event)
                     deleteEvent(eventId: eventId)
-                } else if Constants.StatusCode.badRequest == eventResponse.statusCode {
-                    // Mark event as dirty
-                    log.error("Server rejected submission of event. Event with id \(eventId) will be marked dirty.")
+                } else if HttpStatusCode.badRequest.rawValue == eventResponse.statusCode {
+                    // On bad request responses, mark the event as dirty
+                    log.error("Server rejected submission of event. Event with id \(eventId) will be discarded. Error: \(responseMessage)")
                     setDirtyEvent(eventId: eventId)
                 } else {
-                    // Mark event as retryable
-                    log.warn("Unable to successfully deliver event with id \(eventId) to the server. It will be updated with retry count += 1.")
+                    // On other failures, increment the event retry counter
                     incrementEventRetry(eventId: eventId)
+                    let retryMessage: String
+                    if event.retryCount < Constants.maxNumberOfRetries {
+                        retryMessage = "Event will be retried"
+                    } else {
+                        retryMessage = "Event will be discarded because it exceeded its max retry attempts"
+                    }
+                    log.verbose("Submit attempt #\(event.retryCount + 1) for event with id \(eventId) failed.")
+                    log.error("Unable to successfully deliver event with id \(eventId) to the server. \(retryMessage). Error: \(responseMessage)")
                 }
             }
+
+            // If no event was submitted successfuly, consider the operation a failure
+            // and throw an error so that consumers can be notified
+            if submittedEvents.isEmpty, !pinpointEvents.isEmpty {
+                let errorMessage = "Unable to submit \(pinpointEvents.count) events"
+                log.error(errorMessage)
+                throw AnalyticsError.unknown(errorMessage)
+            }
+        } catch let analyticsError as AnalyticsError {
+            // This is a known error explicitly thrown inside the do/catch block, so just rethrow it so it can be handled by the consumer
+            throw analyticsError
         } catch {
-            // This means all events were rejected, so we will attempt to update them all in the local storage accodingly
-            let isRetryable = isErrorRetryable(error)
-            for event in pinpointEvents {
-                if isRetryable {
-                    incrementEventRetry(eventId: event.id)
-                } else {
-                    setDirtyEvent(eventId: event.id)
-                }
+            // This means all events were rejected
+            if isConnectivityError(error) {
+                // Connectivity errors should be retried indefinitely, so we won't update the database
+                log.error("Unable to submit \(pinpointEvents.count) events. Error: \(AnalyticsPluginErrorConstant.deviceOffline.errorDescription)")
+            } else if isErrorRetryable(error) {
+                // For retryable errors, increment the events retry count
+                log.error("Unable to submit \(pinpointEvents.count) events. Error: \(errorDescription(error)).")
+                incrementRetryCounter(for: pinpointEvents)
+            } else {
+                // For remaining errors, mark events as dirty
+                log.error("Server rejected the submission of \(pinpointEvents.count) events. Error: \(errorDescription(error)).")
+                markEventsAsDirty(pinpointEvents)
             }
+
             // Rethrow the original error so it can be handled by the consumer
             throw error
         }
@@ -181,7 +218,43 @@ class EventRecorder: AnalyticsEventRecording {
             return false
         }
     }
-
+    
+    private func errorDescription(_ error: Error) -> String {
+        switch error {
+        case let sdkPutEventsOutputError as SdkError<PutEventsOutputError>:
+            return sdkPutEventsOutputError.errorDescription
+        case let sdkError as SdkError<Error>:
+            return sdkError.errorDescription
+        default:
+            return error.localizedDescription
+        }
+    }
+    
+    private func isConnectivityError(_ error: Error) -> Bool {
+        switch error {
+        case let clientError as ClientError:
+            if case .networkError(_) = clientError {
+                return true
+            }
+            return false
+        case let sdkPutEventsOutputError as SdkError<PutEventsOutputError>:
+            return sdkPutEventsOutputError.isConnectivityError
+        case let sdkError as SdkError<Error>:
+            return sdkError.isConnectivityError
+        case let error as NSError:
+            let networkErrorCodes = [
+                NSURLErrorCannotFindHost,
+                NSURLErrorCannotConnectToHost,
+                NSURLErrorNetworkConnectionLost,
+                NSURLErrorDNSLookupFailed,
+                NSURLErrorNotConnectedToInternet
+            ]
+            return networkErrorCodes.contains(where: { $0 == error.code })
+        default:
+            return false
+        }
+    }
+    
     private func deleteEvent(eventId: String) {
         retry(onErrorMessage: "Unable to delete event with id \(eventId).") {
             try storage.deleteEvent(eventId: eventId)
@@ -193,11 +266,20 @@ class EventRecorder: AnalyticsEventRecording {
             try storage.setDirtyEvent(eventId: eventId)
         }
     }
+    
+    private func markEventsAsDirty(_ events: [PinpointEvent]) {
+        events.forEach { setDirtyEvent(eventId: $0.id) }
+    }
+
 
     private func incrementEventRetry(eventId: String) {
         retry(onErrorMessage: "Unable to update retry count for event with id \(eventId).") {
             try storage.incrementEventRetry(eventId: eventId)
         }
+    }
+    
+    private func incrementRetryCounter(for events: [PinpointEvent]) {
+        events.forEach { incrementEventRetry(eventId: $0.id) }
     }
 
     private func retry(times: Int = Constants.defaultNumberOfRetriesForStorageOperations,
@@ -221,16 +303,12 @@ extension EventRecorder: DefaultLogger {}
 
 extension EventRecorder {
     private struct Constants {
-        struct StatusCode {
-            static let ok = 202
-            static let badRequest = 400
-        }
-
         static let maxEventsSubmittedPerBatch = 100
         static let pinpointClientByteLimitDefault = 5 * 1024 * 1024 // 5MB
         static let pinpointClientBatchRecordByteLimitDefault = 512 * 1024 // 0.5MB
         static let pinpointClientBatchRecordByteLimitMax = 4 * 1024 * 1024 // 4MB
         static let acceptedResponseMessage = "Accepted"
         static let defaultNumberOfRetriesForStorageOperations = 1
+        static let maxNumberOfRetries = 3
     }
 }

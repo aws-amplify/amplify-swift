@@ -211,7 +211,7 @@ class SyncEngineTestBase: XCTestCase {
     /// Starts amplify by invoking `Amplify.configure(amplifyConfig)`, and waits to receive a `syncStarted` Hub message
     /// before returning.
     func startAmplifyAndWaitForSync() async throws {
-        return try await withCheckedThrowingContinuation { continuation in
+        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             startAmplifyAndWaitForSync { result in
                 continuation.resume(with: result)
             }

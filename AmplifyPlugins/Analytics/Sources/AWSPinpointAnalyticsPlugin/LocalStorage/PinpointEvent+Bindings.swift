@@ -34,7 +34,7 @@ extension PinpointEvent {
             session.stopTime?.asISO8601String ?? "",
             Date().timeIntervalSince1970, // timestamp
             0, // isDirty
-            0 // RetryCount
+            retryCount // RetryCount
         ]
     }
 
@@ -75,8 +75,13 @@ extension PinpointEvent {
         guard let eventId = element[EventPropertyIndex.id] as? String else {
             return nil
         }
+       
+        var retryCount = 0
+        if let retryCountInt = element[EventPropertyIndex.retryCount] as? Int64 {
+            retryCount = Int(retryCountInt)
+        }
 
-        let pinpointEvent = PinpointEvent(id: eventId, eventType: eventType, eventDate: timestamp, session: session)
+        let pinpointEvent = PinpointEvent(id: eventId, eventType: eventType, eventDate: timestamp, session: session, retryCount: retryCount)
 
         if let attributes = element[EventPropertyIndex.attributes] as? Blob,
            let decodedAttributes = try? archiver.decode(AnalyticsClient.PinpointEventAttributes.self, from: Data(attributes.bytes)) {

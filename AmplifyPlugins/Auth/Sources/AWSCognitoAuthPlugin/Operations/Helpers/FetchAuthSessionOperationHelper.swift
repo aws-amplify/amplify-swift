@@ -31,7 +31,34 @@ class FetchAuthSessionOperationHelper {
             await authStateMachine.send(event)
             return try await listenForSession(authStateMachine: authStateMachine)
         case .sessionEstablished(let credentials):
+            return try await postAuthSessionEvent(
+                forCredential: credentials,
+                authStateMachine: authStateMachine,
+                forceRefresh: forceRefresh)
+        case .error(let error):
+            if case .sessionExpired = error {
+                let session = AuthCognitoSignedInSessionHelper.makeExpiredSignedInSession()
+                return session
+            } else if case .sessionError(_, let credentials) = error {
+                return try await postAuthSessionEvent(
+                    forCredential: credentials,
+                    authStateMachine: authStateMachine,
+                    forceRefresh: forceRefresh)
+            } else {
+                let event = AuthorizationEvent(eventType: .fetchUnAuthSession)
+                await authStateMachine.send(event)
+                return try await listenForSession(authStateMachine: authStateMachine)
+            }
 
+        default:
+            return try await listenForSession(authStateMachine: authStateMachine)
+        }
+    }
+
+    func postAuthSessionEvent(
+        forCredential credentials: AmplifyCredentials,
+        authStateMachine: AuthStateMachine,
+        forceRefresh: Bool) async throws -> AuthSession {
             switch credentials {
 
             case .userPoolOnly(signedInData: let data):
@@ -82,34 +109,9 @@ class FetchAuthSessionOperationHelper {
                 await authStateMachine.send(event)
                 return try await listenForSession(authStateMachine: authStateMachine)
             }
-
-        case .error(let error):
-            if case .sessionExpired = error {
-                let session = AuthCognitoSignedInSessionHelper.makeExpiredSignedInSession()
-                return session
-            } else if case .sessionError(_, let amplifyCredentials) = error {
-                var event: AuthorizationEvent
-                // If there was no credentials before, we try to get the unauth session
-                // else, we try to refresh the credentials.
-                if case .noCredentials = amplifyCredentials {
-                    event = AuthorizationEvent(eventType: .fetchUnAuthSession)
-                } else {
-                    event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
-                }
-                await authStateMachine.send(event)
-                return try await listenForSession(authStateMachine: authStateMachine)
-            } else {
-                let event = AuthorizationEvent(eventType: .fetchUnAuthSession)
-                await authStateMachine.send(event)
-                return try await listenForSession(authStateMachine: authStateMachine)
-            }
-
-        default:
-            return try await listenForSession(authStateMachine: authStateMachine)
         }
-    }
 
-    func listenForSession(authStateMachine: AuthStateMachine) async throws ->AuthSession {
+    func listenForSession(authStateMachine: AuthStateMachine) async throws -> AuthSession {
 
         let stateSequences = await authStateMachine.listen()
         for await state in stateSequences {

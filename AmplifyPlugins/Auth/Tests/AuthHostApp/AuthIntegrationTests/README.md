@@ -29,8 +29,6 @@ amplify add auth
  Do you want to add User Pool Groups? 
     No
  Do you want to add an admin queries API? 
-    Yes
-? Do you want to restrict access to the admin queries API to a specific Group 
     No
  Multifactor authentication (MFA) user login options: 
     OFF
@@ -57,16 +55,14 @@ amplify add auth
 ? Do you want to configure Lambda Triggers for Cognito? 
     Yes
 ? Which triggers do you want to enable for Cognito
-    Custom Message
     Pre Sign-up
     [Choose as many that you would like to manually verify later]
-? What functionality do you want to use for Custom Message
-    Create your own module
 ? What functionality do you want to use for Pre Sign-up 
     Create your own module
 Succesfully added the Lambda function locally
 ? Do you want to edit your custom function now? Yes
 Please edit the file in your editor: 
+
 ```
 
 For Pre Sign-up lambda
@@ -74,15 +70,6 @@ For Pre Sign-up lambda
 ```
 exports.handler = (event) => {
     event.response.autoConfirmUser = true;
-};
-```
-
-For Custom Message and any other lambdas
-
-```
-// you can simply set them to log the input so you can verify valid and correct validationData/clientMetadata
-exports.handler = (event) => {
-    console.log("Reached custom message lambda"); 
 };
 ```
 
@@ -96,19 +83,6 @@ amplify push
 ```
 
 This will create a amplifyconfiguration.json file in your local, copy that file to `~/.aws-amplify/amplify-ios/testconfiguration/` and rename as `AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration.json`.
-
-Next create `AWSCognitoAuthPluginIntegrationTests-credentials.json` and add it to the same folder path, with the following values:
-
-```
-{
-    "test_email_1": [YOUR_EMAIL],
-    "test_email_2": [ANOTHER_EMAIL]
-}
-```
-
-The email should be a valid email you can use for testing, for example for making sure you receive a confirmation code when updating user's attributes with an email.
-
-After running tests pass that in `metadata`, you can verify the corresponding lambdas have been trigger with payloads containing this data.
 
 For Auth Device tests:
 Follow steps here (https://docs.amplify.aws/lib/auth/device_features/q/platform/ios/#configure-auth-category)[https://docs.amplify.aws/lib/auth/device_features/q/platform/ios/#configure-auth-category] and select "Always" for "Do you want to remember your user's devices?"
