@@ -12,13 +12,13 @@ import XCTest
 @testable import Amplify
 import AWSPluginsCore
 
-final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLazyLoadBaseTest {
+final class AWSDataStoreLazyLoadPostComment7Tests: AWSDataStoreLazyLoadBaseTest {
 
     func testLazyLoad() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose, eagerLoad: false)
+        await setup(withModels: PostComment7Models(), logLevel: .verbose, eagerLoad: false)
         
-        let post = Post(title: "title")
-        let comment = Comment(content: "content", post: post)
+        let post = Post(postId: UUID().uuidString, title: "title")
+        let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
         let savedPost = try await saveAndWaitForSync(post)
         let savedComment = try await saveAndWaitForSync(comment)
         try await assertComment(savedComment, hasEagerLoaded: savedPost)
@@ -38,14 +38,14 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
             XCTFail("Failed to retrieve the post from the comment")
             return
         }
-        XCTAssertEqual(loadedPost.id, post.id)
+        XCTAssertEqual(loadedPost.postId, post.postId)
         
         // retrieve loaded model
         guard let loadedPost = try await comment.post else {
             XCTFail("Failed to retrieve the loaded post from the comment")
             return
         }
-        XCTAssertEqual(loadedPost.id, post.id)
+        XCTAssertEqual(loadedPost.postId, post.postId)
         
         try await assertPost(loadedPost, canLazyLoad: comment)
     }
@@ -58,7 +58,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
             XCTFail("Failed to load the post from the comment")
             return
         }
-        XCTAssertEqual(loadedPost.id, post.id)
+        XCTAssertEqual(loadedPost.postId, post.postId)
         assertLazyModel(comment._post,
                         state: .loaded(model: post))
         try await assertPost(loadedPost, canLazyLoad: comment)
@@ -83,13 +83,13 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
     }
     
     func testSaveWithoutPost() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose, eagerLoad: false)
-        let comment = Comment(content: "content")
+        await setup(withModels: PostComment7Models(), logLevel: .verbose, eagerLoad: false)
+        let comment = Comment(commentId: UUID().uuidString, content: "content")
         let savedComment = try await saveAndWaitForSync(comment)
         var queriedComment = try await query(for: savedComment)
         assertLazyModel(queriedComment._post,
                         state: .notLoaded(identifiers: nil))
-        let post = Post(title: "title")
+        let post = Post(postId: UUID().uuidString, title: "title")
         let savedPost = try await saveAndWaitForSync(post)
         queriedComment.setPost(savedPost)
         let saveCommentWithPost = try await saveAndWaitForSync(queriedComment, assertVersion: 2)
@@ -98,9 +98,9 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
     }
     
     func testUpdateFromQueriedComment() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose, eagerLoad: false)
-        let post = Post(title: "title")
-        let comment = Comment(content: "content", post: post)
+        await setup(withModels: PostComment7Models(), logLevel: .verbose, eagerLoad: false)
+        let post = Post(postId: UUID().uuidString, title: "title")
+        let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
         let savedPost = try await saveAndWaitForSync(post)
         let savedComment = try await saveAndWaitForSync(comment)
         let queriedComment = try await query(for: savedComment)
@@ -112,17 +112,17 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
     }
     
     func testUpdateToNewPost() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose, eagerLoad: false)
+        await setup(withModels: PostComment7Models(), logLevel: .verbose, eagerLoad: false)
         
-        let post = Post(title: "title")
-        let comment = Comment(content: "content", post: post)
+        let post = Post(postId: UUID().uuidString, title: "title")
+        let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
         _ = try await saveAndWaitForSync(post)
         let savedComment = try await saveAndWaitForSync(comment)
         var queriedComment = try await query(for: savedComment)
         assertLazyModel(queriedComment._post,
                         state: .notLoaded(identifiers: ["@@primaryKey": post.identifier]))
         
-        let newPost = Post(title: "title")
+        let newPost = Post(postId: UUID().uuidString, title: "title")
         _ = try await saveAndWaitForSync(newPost)
         queriedComment.setPost(newPost)
         let saveCommentWithNewPost = try await saveAndWaitForSync(queriedComment, assertVersion: 2)
@@ -131,10 +131,10 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
     }
     
     func testUpdateRemovePost() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose, eagerLoad: false)
+        await setup(withModels: PostComment7Models(), logLevel: .verbose, eagerLoad: false)
         
-        let post = Post(title: "title")
-        let comment = Comment(content: "content", post: post)
+        let post = Post(postId: UUID().uuidString, title: "title")
+        let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
         _ = try await saveAndWaitForSync(post)
         let savedComment = try await saveAndWaitForSync(comment)
         var queriedComment = try await query(for: savedComment)
@@ -149,10 +149,10 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
     }
     
     func testDelete() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose, eagerLoad: false)
+        await setup(withModels: PostComment7Models(), logLevel: .verbose, eagerLoad: false)
         
-        let post = Post(title: "title")
-        let comment = Comment(content: "content", post: post)
+        let post = Post(postId: UUID().uuidString, title: "title")
+        let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
         let savedPost = try await saveAndWaitForSync(post)
         let savedComment = try await saveAndWaitForSync(comment)
         try await deleteAndWaitForSync(savedPost)
@@ -161,15 +161,15 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
     }
 }
 
-extension AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests {
-    typealias Post = PostWithCompositeKey
-    typealias Comment = CommentWithCompositeKey
+extension AWSDataStoreLazyLoadPostComment7Tests {
+    typealias Post = Post7
+    typealias Comment = Comment7
     
-    struct PostCommentWithCompositeKeyModels: AmplifyModelRegistration {
+    struct PostComment7Models: AmplifyModelRegistration {
         public let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
-            ModelRegistry.register(modelType: PostWithCompositeKey.self)
-            ModelRegistry.register(modelType: CommentWithCompositeKey.self)
+            ModelRegistry.register(modelType: Post7.self)
+            ModelRegistry.register(modelType: Comment7.self)
         }
     }
 }

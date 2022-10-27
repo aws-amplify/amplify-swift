@@ -73,9 +73,7 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
             try Amplify.add(plugin: AWSAPIPlugin())
             try Amplify.configure(amplifyConfig)
             
-            if clearOnTearDown {
-                try await clearDataStore()
-            }
+            try await deleteMutationEvents()
         } catch {
             XCTFail("Error during setup: \(error)")
         }
@@ -91,6 +89,10 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
         } catch {
             XCTFail("Error during setup: \(error)")
         }
+    }
+    
+    func deleteMutationEvents() async throws {
+        try await Amplify.DataStore.delete(MutationEvent.self, where: QueryPredicateConstant.all)
     }
     
     func clearDataStore() async throws {
