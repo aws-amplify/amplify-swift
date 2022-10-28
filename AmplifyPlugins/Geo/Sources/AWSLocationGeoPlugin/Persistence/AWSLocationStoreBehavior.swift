@@ -9,16 +9,16 @@ import Foundation
 
 protocol AWSLocationStoreBehavior {
     
-    func save(position: Position) throws
+    func save(position: Position) async throws
     
-    func save(positions: [Position]) throws
+    func save(positions: [Position]) async throws
     
-    func delete(position: Position) throws
+    func delete(position: Position) async throws
     
-    func delete(positions: [Position]) throws
+    func delete(positions: [Position]) async throws
     
-    func queryAll() throws -> [Position]
+    func queryAll() async throws -> [Position]
     
-    func deleteAll() throws
+    func deleteAll() async throws
     
 }
