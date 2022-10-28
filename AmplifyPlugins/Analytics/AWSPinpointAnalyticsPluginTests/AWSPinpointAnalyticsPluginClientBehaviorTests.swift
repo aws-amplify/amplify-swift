@@ -350,6 +350,34 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
         waitForExpectations(timeout: 1)
     }
 
+    /// Given: AWSPinpoint.submitEvents returns a "No events to submit." error
+    /// When: AnalyticsPlugin.flushEvents is invoked
+    /// Then: AWSPinpoint.submitEvents is invoked
+    ///     and Hub Analytics.flushEvents event is dispatched with an empty array of events
+    func testFlushEvents_noEvents() {
+        let error = NSError(domain: AWSPinpointAnalyticsErrorDomain,
+                            code: AWSPinpointAnalyticsErrorType.unknown.rawValue,
+                            userInfo: [NSLocalizedDescriptionKey: "No events to submit."])
+        mockPinpoint.submitEventsResult = AWSTask<AnyObject>.init(error: error)
+        let methodWasInvokedOnPlugin = expectation(description: "method was invoked on plugin")
+
+        _ = plugin.listen(to: .analytics, isIncluded: nil) { payload in
+            if payload.eventName == HubPayload.EventName.Analytics.flushEvents {
+                methodWasInvokedOnPlugin.fulfill()
+                guard let pinpointEvents = payload.data as? [AWSPinpointEvent] else {
+                    XCTFail("Missing data")
+                    return
+                }
+
+                XCTAssertTrue(pinpointEvents.isEmpty)
+            }
+        }
+
+        analyticsPlugin.flushEvents()
+        mockPinpoint.verifySubmitEvents()
+        waitForExpectations(timeout: 1)
+    }
+
     /// Given: AnalyticsPlugin is disabled
     /// When: AnalyticsPlugin.flushEvents is invoked
     /// Then: AWSPinpoint.submitEvents is not called
