@@ -45,7 +45,7 @@ platform :ios do
   desc "Increment versions"
   private_lane :increment_versions do |options|
     version = options[:version].to_s
-    set_key_value(file: "AmplifyPlugins/Core/AWSPluginsCore/ServiceConfiguration/AmplifyAWSServiceConfiguration.swift", key: "version", value: version)
+    set_key_value(file: "AmplifyPlugins/Core/AWSPluginsCore/ServiceConfiguration/AmplifyAWSServiceConfiguration.swift", key: "amplifyVersion", value: version)
   end
   
   desc "Commit and push"
