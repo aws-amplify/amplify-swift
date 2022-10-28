@@ -15,6 +15,7 @@ import Combine
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
+// swiftlint:disable all
 @available(iOS 13.0, *)
 class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 
@@ -363,6 +364,175 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         }
         wait(for: [stopStartSuccess], timeout: networkTimeout)
         try validateSavePost()
+
+    }
+
+    /// Ensure DataStore.stop followed by DataStore.start is successful
+    ///
+    /// - Given:  DataStore has just configured, but not started
+    /// - When:
+    ///    - DataStore.stop
+    ///    - Followed by DataStore.start in the completion of the stop
+    /// - Then:
+    ///    - Datastore should be started successfully
+    ///
+    func testConfigureAmplifyThenStopStart() throws {
+        setUp(withModels: TestModelRegistration())
+        try startAmplify()
+        let stopStartSuccess = expectation(description: "stop then start successful")
+        Amplify.DataStore.stop { result in
+            switch result {
+            case .success:
+                Amplify.DataStore.start { result in
+                    switch result {
+                    case .success:
+                        stopStartSuccess.fulfill()
+                    case .failure(let error):
+                        XCTFail("\(error)")
+                    }
+                }
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [stopStartSuccess], timeout: networkTimeout)
+
+    }
+
+    /// Ensure DataStore.clear followed by DataStore.start is successful
+    ///
+    /// - Given:  DataStore has just configured, but not started
+    /// - When:
+    ///    - DataStore.clear
+    ///    - Followed by DataStore.start in the completion of the stop
+    /// - Then:
+    ///    - Datastore should be started successfully
+    ///
+    func testConfigureAmplifyThenClearStart() throws {
+        setUp(withModels: TestModelRegistration())
+        try startAmplify()
+        let clearStartSuccess = expectation(description: "clear then start successful")
+        Amplify.DataStore.clear { result in
+            switch result {
+            case .success:
+                Amplify.DataStore.start { result in
+                    switch result {
+                    case .success:
+                        clearStartSuccess.fulfill()
+                    case .failure(let error):
+                        XCTFail("\(error)")
+                    }
+                }
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [clearStartSuccess], timeout: networkTimeout)
+
+    }
+
+    /// Ensure DataStore.stop followed by DataStore.start is successful on
+    ///  a DispatchQueue
+    ///
+    /// - Given:  DataStore has just configured, but not started
+    /// - When:
+    ///    - DataStore.stop
+    ///    - Followed by DataStore.start in the completion of the stop
+    /// - Then:
+    ///    - Datastore should be started successfully
+    ///
+    func testConfigureAmplifyThenStopStartonDispatch() throws {
+        setUp(withModels: TestModelRegistration())
+        try startAmplify()
+        let stopStartSuccess = expectation(description: "stop then start successful")
+        DispatchQueue.global(qos: .background).async {
+            Amplify.DataStore.stop { result in
+                switch result {
+                case .success:
+                    Amplify.DataStore.start { result in
+                        switch result {
+                        case .success:
+                            stopStartSuccess.fulfill()
+                        case .failure(let error):
+                            XCTFail("\(error)")
+                        }
+                    }
+                case .failure(let error):
+                    XCTFail("\(error)")
+                }
+            }
+        }
+        wait(for: [stopStartSuccess], timeout: networkTimeout)
+
+    }
+
+    /// Ensure DataStore.clear followed by DataStore.start is successful on
+    ///  a DispatchQueue
+    ///
+    /// - Given:  DataStore has just configured, but not started
+    /// - When:
+    ///    - DataStore.clear
+    ///    - Followed by DataStore.start in the completion of the stop
+    /// - Then:
+    ///    - Datastore should be started successfully
+    ///
+    func testConfigureAmplifyThenClearStartOnDispatch() throws {
+        setUp(withModels: TestModelRegistration())
+        try startAmplify()
+        let clearStartSuccess = expectation(description: "clear then start successful on DispatchQueue")
+        DispatchQueue.global(qos: .background).async {
+            Amplify.DataStore.clear { result in
+                switch result {
+                case .success:
+                    Amplify.DataStore.start { result in
+                        switch result {
+                        case .success:
+                            clearStartSuccess.fulfill()
+                        case .failure(let error):
+                            XCTFail("\(error)")
+                        }
+                    }
+                case .failure(let error):
+                    XCTFail("\(error)")
+                }
+            }
+        }
+        wait(for: [clearStartSuccess], timeout: networkTimeout)
+
+    }
+
+    /// Ensure DataStore.start followed by DataStore.stop & restarting with
+    /// DataStore.start is successful
+    ///
+    /// - Given:  DataStore has has just configured, but not started
+    /// - When:
+    ///    - DataStore.start
+    ///    - DataStore.stop
+    ///    - Followed by DataStore.start
+    /// - Then:
+    ///    - Datastore should be started successfully
+    ///
+    func testConfigureAmplifyThenStartStopStart() throws {
+        setUp(withModels: TestModelRegistration())
+        try startAmplify()
+        let startStopSuccess = expectation(description: "start then stop successful")
+        Amplify.DataStore.start { result in
+            switch result {
+            case .success:
+                Amplify.DataStore.stop { result in
+                    switch result {
+                    case .success:
+                        self.startDataStore()
+                        startStopSuccess.fulfill()
+                    case .failure(let error):
+                        XCTFail("\(error)")
+                    }
+                }
+            case .failure(let error):
+                XCTFail("\(error)")
+            }
+        }
+        wait(for: [startStopSuccess], timeout: networkTimeout)
 
     }
 

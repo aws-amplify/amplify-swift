@@ -61,6 +61,92 @@ class AWSDataStorePluginTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
     }
 
+    func testStorageEngineStartsOnPluginStopStart() throws {
+        let stopExpectation = expectation(description: "Stop Sync should be called")
+        let startExpectation = expectation(description: "Start Sync should be called")
+        var currCount = 0
+
+        let storageEngine = MockStorageEngineBehavior()
+        storageEngine.responders[.stopSync] = StopSyncResponder { _ in
+            currCount = self.expect(stopExpectation, currCount, 1)
+        }
+
+        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
+            return storageEngine
+        }
+        let dataStorePublisher = DataStorePublisher()
+        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
+                                        storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+                                        dataStorePublisher: dataStorePublisher,
+                                        validAPIPluginKey: "MockAPICategoryPlugin",
+                                        validAuthPluginKey: "MockAuthCategoryPlugin")
+        let finishNotReceived = expectation(
+            description: "publisher should not receive .finished completion event after stop() is called")
+        finishNotReceived.isInverted = true
+
+        do {
+            try plugin.configure(using: nil)
+            XCTAssertNil(plugin.storageEngine)
+
+            let sink = plugin.publisher.sink { completion in
+                switch completion {
+                case .finished:
+                    finishNotReceived.fulfill()
+                case .failure(let error):
+                    XCTFail("Error \(error)")
+                }
+            } receiveValue: { _ in }
+
+            storageEngine.responders[.startSync] = StartSyncResponder { _ in
+                currCount = self.expect(startExpectation, currCount, 2)
+            }
+
+            plugin.stop(completion: { _ in
+                plugin.start(completion: {_ in})
+            })
+        } catch {
+            XCTFail("DataStore configuration should not fail with nil configuration. \(error)")
+        }
+        waitForExpectations(timeout: 1.0)
+    }
+
+    func testStorageEngineStartsOnPluginClearStart() throws {
+        let clearExpectation = expectation(description: "Clear should be called")
+        let startExpectation = expectation(description: "Start Sync should be called")
+        var currCount = 0
+
+        let storageEngine = MockStorageEngineBehavior()
+        storageEngine.responders[.clear] = ClearResponder { _ in
+            currCount = self.expect(clearExpectation, currCount, 1)
+        }
+
+        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
+            return storageEngine
+        }
+        let dataStorePublisher = DataStorePublisher()
+        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
+                                        storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+                                        dataStorePublisher: dataStorePublisher,
+                                        validAPIPluginKey: "MockAPICategoryPlugin",
+                                        validAuthPluginKey: "MockAuthCategoryPlugin")
+
+        do {
+            try plugin.configure(using: nil)
+            XCTAssertNil(plugin.storageEngine)
+
+            storageEngine.responders[.startSync] = StartSyncResponder { _ in
+                currCount = self.expect(startExpectation, currCount, 2)
+            }
+
+            plugin.clear(completion: { _ in
+                plugin.start(completion: {_ in})
+            })
+        } catch {
+            XCTFail("DataStore configuration should not fail with nil configuration. \(error)")
+        }
+        waitForExpectations(timeout: 1.0)
+    }
+
     func testStorageEngineStartsOnQuery() throws {
         let startExpectation = expectation(description: "Start Sync should be called with Query")
         let storageEngine = MockStorageEngineBehavior()
