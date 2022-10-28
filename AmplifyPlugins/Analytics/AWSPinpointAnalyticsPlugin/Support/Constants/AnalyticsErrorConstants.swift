@@ -97,4 +97,9 @@ struct AnalyticsPluginErrorConstant {
         "Could not instantiate service configuration from pinpoint targeting region",
         "Make sure the pinpoint targeting region and cognito credentials provider are correct"
     )
+
+    static let deviceOffline: AnalyticsPluginErrorString = (
+        "The device does not have internet access. Please ensure the device is online and try again.",
+        ""
+    )
 }
