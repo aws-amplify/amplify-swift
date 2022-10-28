@@ -15,7 +15,7 @@ import Combine
 @testable import AmplifyTestCommon
 @testable import AWSDataStoreCategoryPlugin
 
-// swiftlint:disable all
+// swiftlint:disable type_body_length
 @available(iOS 13.0, *)
 class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 

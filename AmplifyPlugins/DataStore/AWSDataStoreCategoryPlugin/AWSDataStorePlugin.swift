@@ -46,8 +46,7 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
 
     var storageEngine: StorageEngineBehavior!
     var storageEngineInitQueue = DispatchQueue(label: "AWSDataStorePlugin.storageEngineInitQueue")
-    let workQueue = DispatchQueue(label: "AWSDataStorePlugin.storageEngineInitQueue",
-                                  target: DispatchQueue.global())
+    let queue = DispatchQueue(label: "AWSDataStorePlugin.queue", target: DispatchQueue.global())
     var storageEngineBehaviorFactory: StorageEngineBehaviorFactory
 
     var iStorageEngineSink: Any?

@@ -62,13 +62,17 @@ class AWSDataStorePluginTests: XCTestCase {
     }
 
     func testStorageEngineStartsOnPluginStopStart() throws {
-        let stopExpectation = expectation(description: "Stop Sync should be called")
+        let stopExpectation = expectation(description: "Stop Sync should not be called")
+        stopExpectation.isInverted = true
         let startExpectation = expectation(description: "Start Sync should be called")
-        var currCount = 0
 
         let storageEngine = MockStorageEngineBehavior()
         storageEngine.responders[.stopSync] = StopSyncResponder { _ in
-            currCount = self.expect(stopExpectation, currCount, 1)
+            stopExpectation.fulfill()
+        }
+
+        storageEngine.responders[.startSync] = StartSyncResponder { _ in
+            startExpectation.fulfill()
         }
 
         let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
@@ -80,26 +84,10 @@ class AWSDataStorePluginTests: XCTestCase {
                                         dataStorePublisher: dataStorePublisher,
                                         validAPIPluginKey: "MockAPICategoryPlugin",
                                         validAuthPluginKey: "MockAuthCategoryPlugin")
-        let finishNotReceived = expectation(
-            description: "publisher should not receive .finished completion event after stop() is called")
-        finishNotReceived.isInverted = true
 
         do {
             try plugin.configure(using: nil)
             XCTAssertNil(plugin.storageEngine)
-
-            let sink = plugin.publisher.sink { completion in
-                switch completion {
-                case .finished:
-                    finishNotReceived.fulfill()
-                case .failure(let error):
-                    XCTFail("Error \(error)")
-                }
-            } receiveValue: { _ in }
-
-            storageEngine.responders[.startSync] = StartSyncResponder { _ in
-                currCount = self.expect(startExpectation, currCount, 2)
-            }
 
             plugin.stop(completion: { _ in
                 plugin.start(completion: {_ in})
@@ -120,6 +108,10 @@ class AWSDataStorePluginTests: XCTestCase {
             currCount = self.expect(clearExpectation, currCount, 1)
         }
 
+        storageEngine.responders[.startSync] = StartSyncResponder { _ in
+            currCount = self.expect(startExpectation, currCount, 2)
+        }
+
         let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
             return storageEngine
         }
@@ -133,10 +125,6 @@ class AWSDataStorePluginTests: XCTestCase {
         do {
             try plugin.configure(using: nil)
             XCTAssertNil(plugin.storageEngine)
-
-            storageEngine.responders[.startSync] = StartSyncResponder { _ in
-                currCount = self.expect(startExpectation, currCount, 2)
-            }
 
             plugin.clear(completion: { _ in
                 plugin.start(completion: {_ in})
