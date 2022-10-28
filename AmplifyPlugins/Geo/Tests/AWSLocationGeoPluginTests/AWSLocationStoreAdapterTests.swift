@@ -35,7 +35,7 @@ class AWSLocationStoreAdapterTests: XCTestCase {
     /// - When: A `Position` is saved
     /// - Then: The position is successfully saved
     func testInsert() {
-        let position = Position(timeStamp: "123", latitude: 25.0, longitude: 50.0, tracker: "tracker", deviceID: "deviceID")
+        let position = Position(timeStamp: "123", latitude: 25.0, longitude: 50.0, tracker: "tracker")
         do {
             try adapter.save(position: position)
             let result = try adapter.queryAll()
@@ -50,8 +50,8 @@ class AWSLocationStoreAdapterTests: XCTestCase {
     /// - When: Multiple `Position` are saved
     /// - Then: All the positions are successfully saved
     func testInsertMany() {
-        let position1 = Position(timeStamp: "123", latitude: 25.0, longitude: 50.0, tracker: "tracker1", deviceID: "deviceID1")
-        let position2 = Position(timeStamp: "234", latitude: 30.0, longitude: 40.0, tracker: "tracker2", deviceID: "deviceID2")
+        let position1 = Position(timeStamp: "123", latitude: 25.0, longitude: 50.0, tracker: "tracker1")
+        let position2 = Position(timeStamp: "234", latitude: 30.0, longitude: 40.0, tracker: "tracker2")
         do {
             try adapter.save(positions: [position1, position2])
             let result = try adapter.queryAll()
@@ -67,7 +67,7 @@ class AWSLocationStoreAdapterTests: XCTestCase {
     /// - When: A given `Position` is deleted
     /// - Then: The position is successfully deleted
     func testRemove() {
-        let position = Position(timeStamp: "123", latitude: 25.0, longitude: 50.0, tracker: "tracker", deviceID: "deviceID")
+        let position = Position(timeStamp: "123", latitude: 25.0, longitude: 50.0, tracker: "tracker")
         do {
             try adapter.save(position: position)
             var result = try adapter.queryAll()
@@ -86,8 +86,8 @@ class AWSLocationStoreAdapterTests: XCTestCase {
     /// - When: Given multiple `Position` are deleted
     /// - Then: All the given positions are successfully deleted
     func testRemoveMany() {
-        let position1 = Position(timeStamp: "123", latitude: 25.0, longitude: 50.0, tracker: "tracker1", deviceID: "deviceID1")
-        let position2 = Position(timeStamp: "234", latitude: 30.0, longitude: 40.0, tracker: "tracker2", deviceID: "deviceID2")
+        let position1 = Position(timeStamp: "123", latitude: 25.0, longitude: 50.0, tracker: "tracker1")
+        let position2 = Position(timeStamp: "234", latitude: 30.0, longitude: 40.0, tracker: "tracker2")
         do {
             try adapter.save(positions: [position1, position2])
             var result = try adapter.queryAll()
@@ -107,9 +107,9 @@ class AWSLocationStoreAdapterTests: XCTestCase {
     /// - When: `deleteAll()` is called
     /// - Then: All locations are deleted
     func testDeleteAll() {
-        let position1 = Position(timeStamp: "123", latitude: 25.0, longitude: 50.0, tracker: "tracker1", deviceID: "deviceID1")
-        let position2 = Position(timeStamp: "234", latitude: 30.0, longitude: 40.0, tracker: "tracker2", deviceID: "deviceID2")
-        let position3 = Position(timeStamp: "456", latitude: 55.0, longitude: 60.0, tracker: "tracker3", deviceID: "deviceID3")
+        let position1 = Position(timeStamp: "123", latitude: 25.0, longitude: 50.0, tracker: "tracker1")
+        let position2 = Position(timeStamp: "234", latitude: 30.0, longitude: 40.0, tracker: "tracker2")
+        let position3 = Position(timeStamp: "456", latitude: 55.0, longitude: 60.0, tracker: "tracker3")
         do {
             try adapter.save(positions: [position1, position2, position3])
             var result = try adapter.queryAll()
@@ -130,9 +130,9 @@ class AWSLocationStoreAdapterTests: XCTestCase {
     /// - When: `queryAll()` is called
     /// - Then: All saved locations are fetched
     func testGetAll() {
-        let position1 = Position(timeStamp: "123", latitude: 25.0, longitude: 50.0, tracker: "tracker1", deviceID: "deviceID1")
-        let position2 = Position(timeStamp: "234", latitude: 30.0, longitude: 40.0, tracker: "tracker2", deviceID: "deviceID2")
-        let position3 = Position(timeStamp: "456", latitude: 55.0, longitude: 60.0, tracker: "tracker3", deviceID: "deviceID3")
+        let position1 = Position(timeStamp: "123", latitude: 25.0, longitude: 50.0, tracker: "tracker1")
+        let position2 = Position(timeStamp: "234", latitude: 30.0, longitude: 40.0, tracker: "tracker2")
+        let position3 = Position(timeStamp: "456", latitude: 55.0, longitude: 60.0, tracker: "tracker3")
         do {
             try adapter.save(positions: [position1, position2, position3])
             let result = try adapter.queryAll()

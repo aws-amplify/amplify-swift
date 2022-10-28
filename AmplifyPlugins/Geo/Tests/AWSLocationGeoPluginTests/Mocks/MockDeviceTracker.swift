@@ -20,21 +20,18 @@ public class MockAWSDeviceTracker: AWSDeviceTracker {
     
     public override func configure(with options: Geo.LocationManager.TrackingSessionOptions) {
         configureCalled += 1
-        super.configure(with: options)
     }
     
     public override func configureLocationManager(with options: Geo.LocationManager.TrackingSessionOptions) {
         // do nothing
     }
     
-    public override func startTracking() {
+    public override func startTracking(for device: Geo.Device) {
         startDeviceTrackingCalled += 1
-        super.startTracking()
     }
     
     public override func stopTracking() {
         stopDeviceTrackingCalled += 1
-        super.stopTracking()
     }
    
 }

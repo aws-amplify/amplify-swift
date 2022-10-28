@@ -18,11 +18,11 @@ class AWSDeviceTrackerTests : XCTestCase {
     /// - Given: `AWSDeviceTracker` is configured with a valid `Geo.TrackingSession`
     /// - When: Location update from OS is received
     /// - Then: Custom proxydelegate is called
-    func testProxyDelegateCalled() {
+    func testProxyDelegateCalled() throws {
         let trackingSessionOptions = Geo.LocationManager.TrackingSessionOptions().withProxyDelegate(MockProxyDelegate())
-        let deviceTracker = MockAWSDeviceTracker(locationManager: MockLocationManager())
+        let deviceTracker = try MockAWSDeviceTracker(options: trackingSessionOptions, locationManager: MockLocationManager())
         deviceTracker.configure(with: trackingSessionOptions)
-        deviceTracker.startTracking()
+        deviceTracker.startTracking(for: .tiedToDevice())
         XCTAssertEqual(MockProxyDelegate.didUpdateLocationsCalled, 1)
     }
 }

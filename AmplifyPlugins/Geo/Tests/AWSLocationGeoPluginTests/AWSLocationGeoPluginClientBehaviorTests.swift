@@ -365,7 +365,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
     func testStartTrackingWithCustomTracker() async {
         do {
             let device = Geo.Device.unchecked(id: "123-456-789")
-            var options = Geo.LocationManager.TrackingSessionOptions()
+            let options = Geo.LocationManager.TrackingSessionOptions()
             options.tracker = "tracker"
             try await geoPlugin.startTracking(for: device, with: options)
             XCTAssertEqual(mockDeviceTracker.startDeviceTrackingCalled, 1)

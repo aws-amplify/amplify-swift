@@ -430,6 +430,11 @@
                BlueprintName = "AWSLocationGeoPluginTests"
                ReferencedContainer = "container:">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "AWSDeviceTrackerTests">
+               </Test>
+            </SkippedTests>
          </TestableReference>
          <TestableReference
             skipped = "NO">

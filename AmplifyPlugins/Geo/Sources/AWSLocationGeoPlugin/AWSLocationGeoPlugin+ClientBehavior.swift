@@ -307,16 +307,16 @@ extension AWSLocationGeoPlugin {
                 GeoPluginErrorConstants.missingTracker.recoverySuggestion)
         }
         
-        var optionsWithTracker: Geo.LocationManager.TrackingSessionOptions = Geo.LocationManager.TrackingSessionOptions(options: options)
+        let optionsWithTracker: Geo.LocationManager.TrackingSessionOptions = Geo.LocationManager.TrackingSessionOptions(options: options)
         if optionsWithTracker.tracker == nil {
             optionsWithTracker.tracker = pluginConfig.defaultTracker
         }
         
         if Self.deviceTracker == nil {
-            Self.deviceTracker = AWSDeviceTracker(locationManager: Geo.LocationManager(options: optionsWithTracker))
+            Self.deviceTracker = try AWSDeviceTracker(options: optionsWithTracker, locationManager: Geo.LocationManager(options: optionsWithTracker))
         }
         Self.deviceTracker?.configure(with: optionsWithTracker)
-        Self.deviceTracker?.startTracking()
+        Self.deviceTracker?.startTracking(for: device)
     }
     
     /// Stop tracking an existing tracking session.

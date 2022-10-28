@@ -34,7 +34,7 @@ class AWSLocationGeoPluginTestBase: XCTestCase {
                                                               searchIndices: [],
                                                               defaultTracker: nil,
                                                               trackers: [])
-        mockDeviceTracker = MockAWSDeviceTracker(locationManager: MockLocationManager())
+        mockDeviceTracker = try MockAWSDeviceTracker(options: .init(), locationManager: MockLocationManager())
         do {
             mockLocation = try MockAWSLocation(pluginConfig: pluginConfig)
         } catch {

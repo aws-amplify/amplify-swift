@@ -26,7 +26,7 @@ extension Geo {
     public struct Device {
         public let id: String
         
-        init(id: String) {
+        public init(id: String) {
             self.id = id
         }
         

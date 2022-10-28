@@ -12,8 +12,8 @@ import Foundation
 public protocol DeviceTrackingBehavior {
 
     func configure(with options: Geo.LocationManager.TrackingSessionOptions)
-    
-    func startTracking()
+
+    func startTracking(for device: Geo.Device)
     
     func stopTracking()
 }

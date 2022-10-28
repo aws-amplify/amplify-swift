@@ -21,19 +21,10 @@ public extension Geo.LocationManager {
         public static let fine = Self(clLocationAccuracy: kCLLocationAccuracyBest)
     }
     
-    struct BatchingOptions {
-        public let threshold: Int
-        public let thresholdReached: (Int) -> Bool
-        
-        public static let `none` = BatchingOptions(threshold: 0, thresholdReached: { _ in true })
-        
-        public static func secondsElapsed(_ threshold: Int) -> BatchingOptions {
-            BatchingOptions(threshold: threshold) { $0 >= threshold }
-        }
-        
-        public static func distanceTravelledInMeters(_ threshold: Int) -> BatchingOptions {
-            BatchingOptions(threshold: threshold) { $0 >= threshold }
-        }
+    enum BatchingOptions {
+        case none
+        case secondsElapsed(value: Int)
+        case distanceTravelledInMeters(value: Int)
     }
     
     class TrackingSessionOptions {
