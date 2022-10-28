@@ -15,10 +15,10 @@ public class AmplifyAWSServiceConfiguration {
     public static func frameworkMetaData() -> FrameworkMetadata {
 
         guard let flutterVersion = platformMapping[Platform.flutter] else {
-            return FrameworkMetadata(name: platformName, version: 2.0.1)
+            return FrameworkMetadata(name: platformName, version: version)
         }
         return FrameworkMetadata(name: Platform.flutter.rawValue,
-                                 version: 2.0.1,
+                                 version: flutterVersion,
                                  extras: [platformName: version])
     }
 }
