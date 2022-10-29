@@ -27,7 +27,7 @@ public extension Geo.LocationManager {
         case distanceTravelledInMeters(value: Int)
     }
     
-    class TrackingSessionOptions {
+    struct TrackingSessionOptions {
         
         /// Name of tracker resource. Set to the default tracker if no tracker is passed in.
         public var tracker: String?
@@ -82,10 +82,10 @@ public extension Geo.LocationManager {
         /// before sending the collected updates as a batch.
         public let batchingOptions: BatchingOptions
         
-        public var proxyDelegate : LocationProxyDelegate?
+        public let proxyDelegate = LocationProxyDelegate()
         
         public func withProxyDelegate(_ proxyDelegate: LocationProxyDelegate) -> Self {
-            self.proxyDelegate = proxyDelegate
+            self.proxyDelegate.didUpdateLocations = proxyDelegate.didUpdateLocations
             return self
         }
         
@@ -117,7 +117,7 @@ public extension Geo.LocationManager {
             self.batchingOptions = batchingOptions
         }
         
-        public convenience init(options: TrackingSessionOptions) {
+        public init(options: TrackingSessionOptions) {
             self.init(tracker: options.tracker,
                       desiredAccuracy: options.desiredAccuracy,
                       requestAlwaysAuthorization: options.requestAlwaysAuthorization,

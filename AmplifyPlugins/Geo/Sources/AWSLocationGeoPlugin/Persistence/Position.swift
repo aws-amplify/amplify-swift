@@ -14,19 +14,22 @@ struct Position: Identifiable, Codable {
     let latitude: Double
     let longitude: Double
     let tracker: String
+    let deviceID: String
     
     init(
         id: String = UUID().uuidString,
         timeStamp: String,
         latitude: Double,
         longitude: Double,
-        tracker: String
+        tracker: String,
+        deviceID: String
     ) {
         self.id = id
         self.timeStamp = timeStamp
         self.latitude = latitude
         self.longitude = longitude
         self.tracker = tracker
+        self.deviceID = deviceID
     }
     
     public enum CodingKeys: String, CodingKey {
@@ -35,6 +38,7 @@ struct Position: Identifiable, Codable {
         case latitude
         case longitude
         case tracker
+        case deviceID
     }
 
     public static let keys = CodingKeys.self

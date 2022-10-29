@@ -21,6 +21,7 @@ final class SQLiteLocationPersistenceAdapter : LocationPersistenceBehavior {
     let latitude = Expression<Double>(Position.keys.latitude.stringValue)
     let longitude = Expression<Double>(Position.keys.longitude.stringValue)
     let tracker = Expression<String>(Position.keys.tracker.stringValue)
+    let deviceID = Expression<String>(Position.keys.deviceID.stringValue)
     
     private let positionsDatabase: Connection
     private let fileSystemBehavior: LocationFileSystemBehavior
@@ -38,6 +39,7 @@ final class SQLiteLocationPersistenceAdapter : LocationPersistenceBehavior {
             t.column(latitude)
             t.column(longitude)
             t.column(tracker)
+            t.column(deviceID)
         })
     }
     
@@ -67,7 +69,8 @@ final class SQLiteLocationPersistenceAdapter : LocationPersistenceBehavior {
                     timeStamp: $0[timeStamp],
                     latitude: $0[latitude],
                     longitude: $0[longitude],
-                    tracker: $0[tracker]
+                    tracker: $0[tracker],
+                    deviceID: $0[deviceID]
                 )
             }
     }

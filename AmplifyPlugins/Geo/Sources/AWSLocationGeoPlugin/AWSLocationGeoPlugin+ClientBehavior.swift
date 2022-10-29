@@ -307,7 +307,7 @@ extension AWSLocationGeoPlugin {
                 GeoPluginErrorConstants.missingTracker.recoverySuggestion)
         }
         
-        let optionsWithTracker: Geo.LocationManager.TrackingSessionOptions = Geo.LocationManager.TrackingSessionOptions(options: options)
+        var optionsWithTracker: Geo.LocationManager.TrackingSessionOptions = Geo.LocationManager.TrackingSessionOptions(options: options)
         if optionsWithTracker.tracker == nil {
             optionsWithTracker.tracker = pluginConfig.defaultTracker
         }

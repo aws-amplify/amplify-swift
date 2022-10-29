@@ -9,8 +9,14 @@ import Foundation
 import CoreLocation
 
 
-public protocol LocationProxyDelegate {
-    var didUpdateLocations : (CLLocationManager, [CLLocation]) -> Void { get set }
+public class LocationProxyDelegate {
+    public var didUpdateLocations: (([Geo.Location]) -> Void)?
+    
+    public init() { }
+    
+    public init(didUpdateLocations: @escaping ([Geo.Location]) -> Void) {
+        self.didUpdateLocations = didUpdateLocations
+    }
 }
 
 public enum UploadResponse {
