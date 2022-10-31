@@ -64,7 +64,7 @@ public extension Geo.LocationManager {
         
         /// Only applicable when `requestAlwaysAuthorization` is `true`.
         /// This determines whether a user sees the background location indicator.
-        /// Default value is `false`.  This option is not available for macOS.
+        /// Default value is `false`.  This option is not supported for MacOS.
         public let showsBackgroundLocationIndicator: Bool
         
         /// By default the Geo.LocationManager will persist location updates if the service
