@@ -431,13 +431,13 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 
     }
 
-    /// Ensure DataStore.stop followed by DataStore.start is successful on
-    ///  a DispatchQueue
+    /// Ensure DataStore.stop followed by DataStore.start on a DispatchQueue
+    ///  of a background thread is successful
     ///
     /// - Given:  DataStore has just configured, but not started
     /// - When:
     ///    - DataStore.stop
-    ///    - Followed by DataStore.start in the completion of the stop
+    ///    - Followed by DataStore.start on a background thread in the completion of the stop
     /// - Then:
     ///    - Datastore should be started successfully
     ///
@@ -445,34 +445,34 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         setUp(withModels: TestModelRegistration())
         try startAmplify()
         let stopStartSuccess = expectation(description: "stop then start successful")
-        DispatchQueue.global(qos: .background).async {
             Amplify.DataStore.stop { result in
                 switch result {
                 case .success:
-                    Amplify.DataStore.start { result in
-                        switch result {
-                        case .success:
-                            stopStartSuccess.fulfill()
-                        case .failure(let error):
-                            XCTFail("\(error)")
+                    DispatchQueue.global(qos: .background).async {
+                        Amplify.DataStore.start { result in
+                            switch result {
+                            case .success:
+                                stopStartSuccess.fulfill()
+                            case .failure(let error):
+                                XCTFail("\(error)")
+                            }
                         }
                     }
                 case .failure(let error):
                     XCTFail("\(error)")
                 }
             }
-        }
         wait(for: [stopStartSuccess], timeout: networkTimeout)
 
     }
 
-    /// Ensure DataStore.clear followed by DataStore.start is successful on
-    ///  a DispatchQueue
+    /// Ensure DataStore.clear followed by DataStore.start on a DispatchQueue
+    /// of a background thread is successful
     ///
     /// - Given:  DataStore has just configured, but not started
     /// - When:
     ///    - DataStore.clear
-    ///    - Followed by DataStore.start in the completion of the stop
+    ///    - Followed by DataStore.start on a background thread in the completion of the stop
     /// - Then:
     ///    - Datastore should be started successfully
     ///
@@ -484,12 +484,14 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             Amplify.DataStore.clear { result in
                 switch result {
                 case .success:
-                    Amplify.DataStore.start { result in
-                        switch result {
-                        case .success:
-                            clearStartSuccess.fulfill()
-                        case .failure(let error):
-                            XCTFail("\(error)")
+                    DispatchQueue.global(qos: .background).async {
+                        Amplify.DataStore.start { result in
+                            switch result {
+                            case .success:
+                                clearStartSuccess.fulfill()
+                            case .failure(let error):
+                                XCTFail("\(error)")
+                            }
                         }
                     }
                 case .failure(let error):
