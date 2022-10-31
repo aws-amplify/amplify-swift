@@ -225,7 +225,7 @@ extension AWSLocationGeoPlugin {
     ///     `Geo.Error.networkError` if request failed or network unavailable
     ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
     ///     `Geo.Error.unknown` if error is unknown
-    public func updateLocation(_ location: Geo.Location, for device: Geo.Device, with options: Geo.UpdateLocationOptions) async throws {
+    public func updateLocation(_ location: Geo.Location, for device: @autoclosure () async throws -> Geo.Device, with options: Geo.UpdateLocationOptions) async throws {
         guard pluginConfig.defaultTracker != nil else {
             throw Geo.Error.invalidConfiguration(
                 GeoPluginErrorConstants.missingTracker.errorDescription,
@@ -233,6 +233,7 @@ extension AWSLocationGeoPlugin {
         }
         
         do {
+            let geoDevice = try await device()
             var tracker = pluginConfig.defaultTracker
             if let optionalTracker = options.tracker {
                 tracker = optionalTracker
@@ -241,7 +242,7 @@ extension AWSLocationGeoPlugin {
             let position = [location.longitude, location.latitude]
             let locationUpdates = [LocationClientTypes.DevicePositionUpdate(
                 accuracy: nil,
-                deviceId: device.id,
+                deviceId: geoDevice.id,
                 position: position,
                 positionProperties: options.metadata,
                 sampleTime: Date())]
@@ -266,7 +267,7 @@ extension AWSLocationGeoPlugin {
     ///     `Geo.Error.networkError` if request failed or network unavailable
     ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
     ///     `Geo.Error.unknown` if error is unknown
-    public func deleteLocationHistory(for device: Geo.Device, with options: Geo.DeleteLocationOptions) async throws {
+    public func deleteLocationHistory(for device: @autoclosure () async throws -> Geo.Device, with options: Geo.DeleteLocationOptions) async throws {
         guard pluginConfig.defaultTracker != nil else {
             throw Geo.Error.invalidConfiguration(
                 GeoPluginErrorConstants.missingTracker.errorDescription,
@@ -274,11 +275,12 @@ extension AWSLocationGeoPlugin {
         }
         
         do {
+            let geoDevice = try await device()
             var tracker = pluginConfig.defaultTracker
             if let optionalTracker = options.tracker {
                 tracker = optionalTracker
             }
-            let input = BatchDeleteDevicePositionHistoryInput(deviceIds: [device.id], trackerName: tracker)
+            let input = BatchDeleteDevicePositionHistoryInput(deviceIds: [geoDevice.id], trackerName: tracker)
             let response = try await locationService.deleteLocationHistory(forPositionHistory: input)
             if let error = response.errors?.first as? Error {
                 throw GeoErrorHelper.mapAWSLocationError(error)
@@ -299,7 +301,7 @@ extension AWSLocationGeoPlugin {
     ///             you are responsible for ensuring tracker scoped randomness and that the ID doesn't include PII
     ///   - options: The `Geo.LocationManager.TrackingSessionOptions` struct that determines the tracking behavior
     ///              of this tracking session.
-    public func startTracking(for device: Geo.Device,
+    public func startTracking(for device: @autoclosure () async throws -> Geo.Device,
                               with options: Geo.LocationManager.TrackingSessionOptions) async throws {
         if options.tracker == nil, pluginConfig.defaultTracker == nil {
             throw Geo.Error.invalidConfiguration(
@@ -307,7 +309,7 @@ extension AWSLocationGeoPlugin {
                 GeoPluginErrorConstants.missingTracker.recoverySuggestion)
         }
         
-        var optionsWithTracker: Geo.LocationManager.TrackingSessionOptions = Geo.LocationManager.TrackingSessionOptions(options: options)
+        let optionsWithTracker: Geo.LocationManager.TrackingSessionOptions = Geo.LocationManager.TrackingSessionOptions(options: options)
         if optionsWithTracker.tracker == nil {
             optionsWithTracker.tracker = pluginConfig.defaultTracker
         }

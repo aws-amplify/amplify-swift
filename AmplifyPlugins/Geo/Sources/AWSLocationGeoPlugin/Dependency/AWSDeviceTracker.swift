@@ -41,7 +41,9 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, DeviceTrackingBehav
         locationManager.allowsBackgroundLocationUpdates = options.allowsBackgroundLocationUpdates
         locationManager.pausesLocationUpdatesAutomatically = options.pausesLocationUpdatesAutomatically
         locationManager.activityType = options.activityType
+        #if !os(macOS)
         locationManager.showsBackgroundLocationIndicator = options.showsBackgroundLocationIndicator
+        #endif
         locationManager.distanceFilter = options.distanceFilter
     }
     
