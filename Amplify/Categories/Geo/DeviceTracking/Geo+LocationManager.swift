@@ -20,9 +20,6 @@ public extension Geo {
         public init(options: TrackingSessionOptions = .init()) {
             super.init()
             desiredAccuracy = options.desiredAccuracy.clLocationAccuracy
-            if options.requestAlwaysAuthorization {
-                requestAlwaysAuthorization()
-            }
             allowsBackgroundLocationUpdates = options.allowsBackgroundLocationUpdates
             pausesLocationUpdatesAutomatically = options.pausesLocationUpdatesAutomatically
             activityType = options.activityType

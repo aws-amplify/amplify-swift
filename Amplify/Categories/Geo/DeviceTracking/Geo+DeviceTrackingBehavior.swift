@@ -13,7 +13,7 @@ public protocol DeviceTrackingBehavior {
 
     func configure(with options: Geo.LocationManager.TrackingSessionOptions)
 
-    func startTracking(for device: Geo.Device)
+    func startTracking(for device: Geo.Device) throws
     
     func stopTracking()
 }

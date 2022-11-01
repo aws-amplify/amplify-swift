@@ -43,6 +43,9 @@ public extension Geo.LocationManager {
         
         /// Whether background location updates should be allowed.
         /// If `true`, location updates will be received from the OS while the app is backgrounded.
+        /// You must include the UIBackgroundModes key (with the location value) in your app’s Info.plist file
+        /// if you want to set this value to `true`. Not doing so can result in a fatal error that terminates the app.
+        ///
         /// If `false`, location updates will only be received while the app is in the foreground.
         public let allowsBackgroundLocationUpdates: Bool
         
@@ -93,7 +96,7 @@ public extension Geo.LocationManager {
             tracker: String? = nil,
             desiredAccuracy: LocationAccuracy = .fine,
             requestAlwaysAuthorization: Bool = true,
-            allowsBackgroundLocationUpdates: Bool = true,
+            allowsBackgroundLocationUpdates: Bool = false,
             pausesLocationUpdatesAutomatically: Bool = true,
             activityType: CLActivityType = .automotiveNavigation,
             showsBackgroundLocationIndicator: Bool = false,
