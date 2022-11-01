@@ -72,10 +72,15 @@ class AWSAuthResetPasswordTask: AuthResetPasswordTask {
         let analyticsMetadata = userPoolEnvironment
             .cognitoUserPoolAnalyticsHandlerFactory()
             .analyticsMetadata()
+        let secretHash = ClientSecretHelper.calculateSecretHash(
+            username: request.username,
+            userPoolConfiguration: userPoolConfigurationData
+        )
         let input = ForgotPasswordInput(
             analyticsMetadata: analyticsMetadata,
             clientId: userPoolConfigurationData.clientId,
             clientMetadata: clientMetaData,
+            secretHash: secretHash,
             userContextData: userContextData,
             username: request.username)
 

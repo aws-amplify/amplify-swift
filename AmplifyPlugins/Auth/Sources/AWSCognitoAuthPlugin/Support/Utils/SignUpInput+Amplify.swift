@@ -22,7 +22,7 @@ extension SignUpInput {
          environment: UserPoolEnvironment) {
 
         let configuration = environment.userPoolConfiguration
-        let secretHash = Self.calculateSecretHash(username: username,
+        let secretHash = ClientSecretHelper.calculateSecretHash(username: username,
                                                   userPoolConfiguration: configuration)
         let validationData = Self.getValidationData(with: validationData)
         let convertedAttributes = Self.convertAttributes(attributes)
@@ -48,21 +48,6 @@ extension SignUpInput {
                   username: username,
                   validationData: validationData)
     }
-
-    private static func calculateSecretHash(
-        username: String,
-        userPoolConfiguration: UserPoolConfigurationData) -> String? {
-            let userPoolClientId = userPoolConfiguration.clientId
-            if let clientSecret = userPoolConfiguration.clientSecret {
-
-                return SRPSignInHelper.clientSecretHash(
-                    username: username,
-                    userPoolClientId: userPoolClientId,
-                    clientSecret: clientSecret
-                )
-            }
-            return nil
-        }
 
     private static func getValidationData(with devProvidedData: [String: String]?)
     -> [CognitoIdentityProviderClientTypes.AttributeType]? {

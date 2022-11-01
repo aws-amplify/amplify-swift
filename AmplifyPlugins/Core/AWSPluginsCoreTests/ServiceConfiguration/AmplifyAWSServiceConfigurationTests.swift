@@ -27,7 +27,7 @@ class AmplifyAWSServiceConfigurationTests: XCTestCase {
         let frameworkMetaData = AmplifyAWSServiceConfiguration.frameworkMetaData()
         XCTAssertNotNil(frameworkMetaData)
         XCTAssertEqual(frameworkMetaData.sanitizedName, "amplify-ios")
-        XCTAssertEqual(frameworkMetaData.sanitizedVersion, AmplifyAWSServiceConfiguration.version)
+        XCTAssertEqual(frameworkMetaData.sanitizedVersion, AmplifyAWSServiceConfiguration.amplifyVersion)
     }
 
     /// Test adding a new platform to AmplifyAWSServiceConfiguration
@@ -46,6 +46,6 @@ class AmplifyAWSServiceConfigurationTests: XCTestCase {
         XCTAssertEqual(frameworkMetaData.sanitizedVersion, "1.1")
 
         XCTAssertNotNil(frameworkMetaData.extras)
-        XCTAssertEqual(frameworkMetaData.extras["amplify-ios"], AmplifyAWSServiceConfiguration.version)
+        XCTAssertEqual(frameworkMetaData.extras["amplify-ios"], AmplifyAWSServiceConfiguration.amplifyVersion)
     }
 }
