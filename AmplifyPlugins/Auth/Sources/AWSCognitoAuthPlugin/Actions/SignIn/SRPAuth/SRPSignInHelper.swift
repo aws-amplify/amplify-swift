@@ -27,20 +27,4 @@ struct SRPSignInHelper {
             throw error
         }
     }
-
-    static func clientSecretHash(
-        username: String,
-        userPoolClientId: String,
-        clientSecret: String
-    ) -> String {
-        let clientSecretData = clientSecret.data(using: .utf8)!
-        let clientSecretByteArray = [UInt8](clientSecretData)
-        let key = SymmetricKey(data: clientSecretByteArray)
-
-        let clientData = (username + userPoolClientId).data(using: .utf8)!
-
-        let mac = HMAC<SHA256>.authenticationCode(for: clientData, using: key)
-        let macBase64 = Data(mac).base64EncodedString()
-        return macBase64
-    }
 }

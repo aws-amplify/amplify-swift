@@ -87,7 +87,7 @@ class AWSAuthSignUpAPITests: BasePluginTest {
             options: options)
 
         guard case .confirmUser(let deliveryDetails, let additionalInfo, let userId) = result.nextStep else {
-            XCTFail("Result should be .done for next step")
+            XCTFail("Result should be .confirmUser for next step")
             return
         }
 

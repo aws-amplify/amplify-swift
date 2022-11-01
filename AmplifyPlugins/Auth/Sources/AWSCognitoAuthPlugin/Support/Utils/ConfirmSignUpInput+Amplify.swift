@@ -17,7 +17,7 @@ extension ConfirmSignUpInput {
     ) {
 
         let configuration = environment.userPoolConfiguration
-        let secretHash = Self.calculateSecretHash(
+        let secretHash = ClientSecretHelper.calculateSecretHash(
             username: username,
             userPoolConfiguration: configuration)
         var userContextData: CognitoIdentityProviderClientTypes.UserContextDataType?
@@ -40,19 +40,4 @@ extension ConfirmSignUpInput {
             secretHash: secretHash,
             userContextData: userContextData, username: username)
     }
-
-    private static func calculateSecretHash(
-        username: String,
-        userPoolConfiguration: UserPoolConfigurationData) -> String? {
-            let userPoolClientId = userPoolConfiguration.clientId
-            if let clientSecret = userPoolConfiguration.clientSecret {
-
-                return SRPSignInHelper.clientSecretHash(
-                    username: username,
-                    userPoolClientId: userPoolClientId,
-                    clientSecret: clientSecret
-                )
-            }
-            return nil
-        }
 }
