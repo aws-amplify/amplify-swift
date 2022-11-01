@@ -21,23 +21,23 @@ final class AWSLocationStoreAdapter : AWSLocationStoreBehavior {
         self.locationPersistenceBehavior = locationPersistenceBehavior
     }
     
-    func save(position: Position) throws {
+    func save(position: PositionInternal) throws {
         try self.locationPersistenceBehavior.insert(position: position)
     }
     
-    func save(positions: [Position]) throws {
+    func save(positions: [PositionInternal]) throws {
         try self.locationPersistenceBehavior.insert(positions: positions)
     }
     
-    func delete(position: Position) throws {
+    func delete(position: PositionInternal) throws {
         try self.locationPersistenceBehavior.remove(position: position)
     }
     
-    func delete(positions: [Position]) throws {
+    func delete(positions: [PositionInternal]) throws {
         try self.locationPersistenceBehavior.remove(positions: positions)
     }
     
-    func queryAll() throws -> [Position] {
+    func queryAll() throws -> [PositionInternal] {
         try self.locationPersistenceBehavior.getAll()
     }
     

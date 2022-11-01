@@ -8,30 +8,28 @@
 import Foundation
 import CoreLocation
 
-
 public class LocationProxyDelegate {
-    public var didUpdateLocations: (([Geo.Location]) -> Void)?
+    public var didUpdateLocations: (([Position]) -> Void)?
     
     public init() { }
     
-    public init(didUpdateLocations: @escaping ([Geo.Location]) -> Void) {
+    public init(didUpdateLocations: @escaping ([Position]) -> Void) {
         self.didUpdateLocations = didUpdateLocations
     }
 }
 
-public enum UploadResponse {
-    case success
-    case failure(Failure)
+public struct Position {
+    public let timeStamp: Date
+    public let latitude: Double
+    public let longitude: Double
+    public let tracker: String
+    public let deviceID: String
     
-    public struct Failure: Error {
-        
-        public let shouldRetry: Bool
-        public let locations: [Geo.Location]
-        
-        public init(shouldRetry: Bool, locations: [Geo.Location]) {
-            self.shouldRetry = shouldRetry
-            self.locations = locations
-        }
+    public init(timeStamp: Date, latitude: Double, longitude: Double, tracker: String, deviceID: String) {
+        self.timeStamp = timeStamp
+        self.latitude = latitude
+        self.longitude = longitude
+        self.tracker = tracker
+        self.deviceID = deviceID
     }
 }
-

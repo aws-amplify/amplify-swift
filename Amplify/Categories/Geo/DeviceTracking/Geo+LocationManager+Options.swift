@@ -21,10 +21,25 @@ public extension Geo.LocationManager {
         public static let fine = Self(clLocationAccuracy: kCLLocationAccuracyBest)
     }
     
-    enum BatchingOptions {
-        case none
-        case secondsElapsed(value: Int)
-        case distanceTravelledInMeters(value: Int)
+    struct BatchingOption {
+        let threshold: Int
+        public let _thresholdReached: (_ old: Position, _ new: Position) -> Bool
+        
+        public static let `none` = BatchingOption(threshold: 0, _thresholdReached: { _, _ in true })
+
+        public static func secondsElapsed(_ threshold: Int) -> BatchingOption {
+            BatchingOption(threshold: threshold) { old, new in
+                return Int(new.timeStamp.timeIntervalSince(old.timeStamp)) >= threshold
+            }
+        }
+
+        public static func distanceTravelledInMeters(_ threshold: Int) -> BatchingOption {
+            BatchingOption(threshold: threshold) { old, new in
+                let newPosition = CLLocation(latitude: new.latitude, longitude: new.longitude)
+                let oldPosition = CLLocation(latitude: old.latitude, longitude: old.longitude)
+                return Int(newPosition.distance(from: oldPosition)) >= threshold
+            }
+        }
     }
     
     struct TrackingSessionOptions {
@@ -83,7 +98,7 @@ public extension Geo.LocationManager {
         
         /// Custom defined behavior that allows for location updates to be batched up to a certain threshold
         /// before sending the collected updates as a batch.
-        public let batchingOptions: BatchingOptions
+        public let batchingOption: BatchingOption
         
         public let proxyDelegate = LocationProxyDelegate()
         
@@ -103,7 +118,7 @@ public extension Geo.LocationManager {
             disregardLocationUpdatesWhenOffline: Bool = false,
             wakeAppForSignificantLocationChanges: Bool = false,
             distanceFilter: CLLocationDistance = 0,
-            batchingOptions: BatchingOptions = .none,
+            batchingOption: BatchingOption = .none,
             trackUntil: Date = .distantFuture
         ) {
             self.tracker = tracker
@@ -117,7 +132,7 @@ public extension Geo.LocationManager {
             self.wakeAppForSignificantLocationChanges = wakeAppForSignificantLocationChanges
             self.distanceFilter = distanceFilter
             self.trackUntil = trackUntil
-            self.batchingOptions = batchingOptions
+            self.batchingOption = batchingOption
         }
         
         public init(options: TrackingSessionOptions) {
@@ -131,7 +146,7 @@ public extension Geo.LocationManager {
                       disregardLocationUpdatesWhenOffline: options.disregardLocationUpdatesWhenOffline,
                       wakeAppForSignificantLocationChanges: options.wakeAppForSignificantLocationChanges,
                       distanceFilter: options.distanceFilter,
-                      batchingOptions: options.batchingOptions,
+                      batchingOption: options.batchingOption,
                       trackUntil: options.trackUntil)
         }
     }

@@ -20,7 +20,7 @@ class AWSDeviceTrackerTests : XCTestCase {
     /// - Then: Custom proxydelegate is called
     func testProxyDelegateCalled() throws {
         var count = 0
-        let didUpdateLocations: ([Geo.Location]) -> Void  = { locations in
+        let didUpdateLocations: ([Position]) -> Void  = { locations in
             count += 1
         }
         let locationProxyDelegate = LocationProxyDelegate(didUpdateLocations: didUpdateLocations)
