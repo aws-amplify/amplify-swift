@@ -405,6 +405,21 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         try await Amplify.DataStore.start()
         try await validateSavePost()
     }
+    
+    /// Ensure DataStore.stop followed by DataStore.start is successful
+    ///
+    /// - Given:  DataStore has just configured, but not yet started
+    /// - When:
+    ///    - DataStore.stop
+    ///    - Followed by DataStore.start in the completion of the stop
+    /// - Then:
+    ///    - DataStore should be successfully started
+    func testConfigureAmplifyThenStopStart() async throws {
+        await setUp(withModels: TestModelRegistration())
+        try startAmplify()
+        try await Amplify.DataStore.stop()
+        try await Amplify.DataStore.start()
+    }
 
     /// Ensure the DataStore is automatically started when querying for the first time
     ///
@@ -447,6 +462,21 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         try await Amplify.DataStore.start()
         try await validateSavePost()
         try await validateSavePost()
+    }
+
+    /// Ensure DataStore.clear followed by DataStore.start is successful
+    ///
+    /// - Given:  DataStore has just configured, but not yet started
+    /// - When:
+    ///    - DataStore.clear
+    ///    - Followed by DataStore.start in the completion of the clear
+    /// - Then:
+    ///    - DataStore should be successfully started
+    func testConfigureAmplifyThenClearStart() async throws {
+        await setUp(withModels: TestModelRegistration())
+        try startAmplify()
+        try await Amplify.DataStore.clear()
+        try await Amplify.DataStore.start()
     }
 
     /// Perform concurrent saves and observe the data successfuly synced from cloud. Then delete the items afterwards
@@ -508,7 +538,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             }
         }
 
-        await waitForExpectations(timeout: 100)
+        wait(for: [postsSyncedToCloud], timeout: 10.0)
 
         let postsDeletedLocally = expectation(description: "All posts deleted locally")
         postsDeletedLocally.expectedFulfillmentCount = count
@@ -548,7 +578,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 try await Amplify.DataStore.delete(capturedPosts[index])
             }
         }
-        await waitForExpectations(timeout: 100)
+        wait(for: [postsDeletedLocally, postsDeletedFromCloud], timeout: 10.0)
     }
 
     // MARK: - Helpers

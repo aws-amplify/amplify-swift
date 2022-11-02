@@ -90,6 +90,75 @@ class AWSDataStorePluginTests: XCTestCase {
         }
         await waitForExpectations(timeout: 1.0)
     }
+    
+    func testStorageEngineStartsOnPluginStopStart() async throws {
+        let stopExpectation = asyncExpectation(description: "Stop plugin should be called")
+        let startExpectation = expectation(description: "Start Sync should be called")
+        var currCount = 0
+        let storageEngine = MockStorageEngineBehavior()
+        
+        storageEngine.responders[.startSync] = StartSyncResponder { _ in
+            currCount = self.expect(startExpectation, currCount, 1)
+        }
+        
+        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
+            return storageEngine
+        }
+        let dataStorePublisher = DataStorePublisher()
+        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
+                                        storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+                                        dataStorePublisher: dataStorePublisher,
+                                        validAPIPluginKey: "MockAPICategoryPlugin",
+                                        validAuthPluginKey: "MockAuthCategoryPlugin")
+        
+        do {
+            try plugin.configure(using: nil)
+            XCTAssertNil(plugin.storageEngine)
+            try await plugin.stop()
+            await stopExpectation.fulfill()
+            
+            plugin.start(completion: { _ in })
+        } catch {
+            XCTFail("DataStore configuration should not fail with nil configuration. \(error)")
+        }
+        await waitForExpectations(timeout: 1.0)
+    }
+    
+    func testStorageEngineStartsOnPluginClearStart() async throws {
+        let clearExpectation = expectation(description: "Clear should be called")
+        let startExpectation = expectation(description: "Start Sync should be called")
+        var currCount = 0
+        
+        let storageEngine = MockStorageEngineBehavior()
+        storageEngine.responders[.clear] = ClearResponder { _ in
+            currCount = self.expect(clearExpectation, currCount, 1)
+        }
+        
+        storageEngine.responders[.startSync] = StartSyncResponder { _ in
+            currCount = self.expect(startExpectation, currCount, 2)
+        }
+        
+        let storageEngineBehaviorFactory: StorageEngineBehaviorFactory = {_, _, _, _, _, _  throws in
+            return storageEngine
+        }
+        let dataStorePublisher = DataStorePublisher()
+        let plugin = AWSDataStorePlugin(modelRegistration: TestModelRegistration(),
+                                        storageEngineBehaviorFactory: storageEngineBehaviorFactory,
+                                        dataStorePublisher: dataStorePublisher,
+                                        validAPIPluginKey: "MockAPICategoryPlugin",
+                                        validAuthPluginKey: "MockAuthCategoryPlugin")
+        
+        do {
+            try plugin.configure(using: nil)
+            XCTAssertNil(plugin.storageEngine)
+            
+            try await plugin.clear()
+            try await plugin.start()
+        } catch {
+            XCTFail("DataStore configuration should not fail with nil configuration. \(error)")
+        }
+        await waitForExpectations(timeout: 1.0)
+    }
 
     func testStorageEngineStartStopStart() throws {
         let startExpectation = expectation(description: "Start Sync should be called with start")
