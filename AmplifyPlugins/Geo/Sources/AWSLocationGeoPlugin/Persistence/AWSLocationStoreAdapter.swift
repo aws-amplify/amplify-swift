@@ -13,35 +13,35 @@ import Amplify
 /// to locally persist device tracking locations for the cases when the device is
 /// offline or to enable batch sending of device tracking locations to `AWSLocation`
 /// service
-final class AWSLocationStoreAdapter : AWSLocationStoreBehavior {
-    
+final actor AWSLocationStoreAdapter : AWSLocationStoreBehavior {    
     private let locationPersistenceBehavior : LocationPersistenceBehavior
 
     init(locationPersistenceBehavior: LocationPersistenceBehavior) {
         self.locationPersistenceBehavior = locationPersistenceBehavior
     }
     
-    func save(position: PositionInternal) throws {
+
+    func save(position: PositionInternal) async throws {
         try self.locationPersistenceBehavior.insert(position: position)
     }
     
-    func save(positions: [PositionInternal]) throws {
+    func save(positions: [PositionInternal]) async throws {
         try self.locationPersistenceBehavior.insert(positions: positions)
     }
     
-    func delete(position: PositionInternal) throws {
+    func delete(position: PositionInternal) async throws {
         try self.locationPersistenceBehavior.remove(position: position)
     }
     
-    func delete(positions: [PositionInternal]) throws {
+    func delete(positions: [PositionInternal]) async throws {
         try self.locationPersistenceBehavior.remove(positions: positions)
     }
     
-    func queryAll() throws -> [PositionInternal] {
+    func queryAll() async throws -> [PositionInternal] {
         try self.locationPersistenceBehavior.getAll()
     }
     
-    func deleteAll() throws {
+    func deleteAll() async throws {
         try self.locationPersistenceBehavior.removeAll()
     }
     

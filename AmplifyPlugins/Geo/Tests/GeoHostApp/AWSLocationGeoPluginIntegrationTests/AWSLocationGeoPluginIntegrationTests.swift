@@ -124,4 +124,39 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
             XCTFail("Failed with error: \(error)")
         }
     }
+    
+    /// Test if updateLocation() successfully completes without errors
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke updateLocation().
+    /// - Then:
+    ///    - executes without errors.
+    ///
+    func testDeviceTrackingUpdateLocation() async {
+        do {
+            let location = Geo.Location(latitude: 44.5, longitude: 45.4)
+            let device = Geo.Device.unchecked(id: "123-456-789")
+            try await Amplify.Geo.updateLocation(location, for: device)
+        } catch {
+            XCTFail("Failed with error: \(error)")
+        }
+    }
+    
+    /// Test if deleteLocationHistory() successfully executes.
+    ///
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke deleteLocationHistory().
+    /// - Then:
+    ///    - executes without errors.
+    ///
+    func testDeviceTrackingDeleteLocationHistory() async {
+        do {
+            let device = Geo.Device.unchecked(id: "123-456-789")
+            try await Amplify.Geo.deleteLocationHistory(for: device)
+        } catch {
+            XCTFail("Failed with error: \(error)")
+        }
+    }
 }
