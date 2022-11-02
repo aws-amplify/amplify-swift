@@ -100,10 +100,10 @@ public extension Geo.LocationManager {
         /// before sending the collected updates as a batch.
         public let batchingOption: BatchingOption
         
-        public let proxyDelegate = LocationProxyDelegate()
+        public let locationProxyDelegate: LocationProxyDelegate
         
         public func withProxyDelegate(_ proxyDelegate: LocationProxyDelegate) -> Self {
-            self.proxyDelegate.didUpdateLocations = proxyDelegate.didUpdateLocations
+            self.locationProxyDelegate.didUpdateLocations = proxyDelegate.didUpdateLocations
             return self
         }
         
@@ -118,8 +118,9 @@ public extension Geo.LocationManager {
             disregardLocationUpdatesWhenOffline: Bool = false,
             wakeAppForSignificantLocationChanges: Bool = false,
             distanceFilter: CLLocationDistance = 0,
+            trackUntil: Date = .distantFuture,
             batchingOption: BatchingOption = .none,
-            trackUntil: Date = .distantFuture
+            locationProxyDelegate: LocationProxyDelegate = LocationProxyDelegate()
         ) {
             self.tracker = tracker
             self.desiredAccuracy = desiredAccuracy
@@ -133,6 +134,7 @@ public extension Geo.LocationManager {
             self.distanceFilter = distanceFilter
             self.trackUntil = trackUntil
             self.batchingOption = batchingOption
+            self.locationProxyDelegate = locationProxyDelegate
         }
         
         public init(options: TrackingSessionOptions) {
@@ -146,8 +148,9 @@ public extension Geo.LocationManager {
                       disregardLocationUpdatesWhenOffline: options.disregardLocationUpdatesWhenOffline,
                       wakeAppForSignificantLocationChanges: options.wakeAppForSignificantLocationChanges,
                       distanceFilter: options.distanceFilter,
+                      trackUntil: options.trackUntil,
                       batchingOption: options.batchingOption,
-                      trackUntil: options.trackUntil)
+                      locationProxyDelegate: options.locationProxyDelegate)
         }
     }
 }

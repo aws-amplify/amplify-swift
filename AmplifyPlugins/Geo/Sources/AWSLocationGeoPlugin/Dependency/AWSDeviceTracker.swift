@@ -102,8 +102,9 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, DeviceTrackingBehav
             return
         }
         
+        let currentTime = Date()
         // check if trackUntil time has elapsed
-        if(options.trackUntil < Date()) {
+        if(options.trackUntil < currentTime) {
             // flush out all stored locations in local database
             Task {
                 do {
@@ -117,41 +118,42 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, DeviceTrackingBehav
             return
         }
         
-        var lastUpdatedLocation : CLLocation?
+        // fetch last saved location and update time
+        var lastLocation : CLLocation?
         if let loadedLocation = UserDefaults.standard.data(forKey: AWSDeviceTracker.lastUpdatedLocationKey),
            let decodedLocation = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(loadedLocation) as? CLLocation {
-            lastUpdatedLocation = decodedLocation
+            lastLocation = decodedLocation
         }
-        let lastLocationUpdateTime = UserDefaults.standard.object(forKey: AWSDeviceTracker.lastLocationUpdateTimeKey) as? Date
-        let deviceId = UserDefaults.standard.object(forKey: AWSDeviceTracker.deviceIDKey) as? String
-        var criteriaReached = false
+        let lastUpdateTime = UserDefaults.standard.object(forKey: AWSDeviceTracker.lastLocationUpdateTimeKey) as? Date
+        guard let deviceId = UserDefaults.standard.object(forKey: AWSDeviceTracker.deviceIDKey) as? String else {
+            Amplify.log.error("Not able to fetch deviceId from UserDefaults")
+            return
+        }
         
-        if let lastLocationUpdateTime = lastLocationUpdateTime,
-            let lastUpdatedLocation = lastUpdatedLocation,
-            let deviceId = deviceId,
-           let lastReceivedLocation = locations.last {
-            criteriaReached = options.batchingOption._thresholdReached(
-                Position(timeStamp: lastLocationUpdateTime,
-                         latitude: lastUpdatedLocation.coordinate.latitude,
-                         longitude: lastUpdatedLocation.coordinate.latitude,
-                         tracker: options.tracker!,
-                         deviceID: deviceId),
-                Position(timeStamp: Date(),
-                         latitude: lastReceivedLocation.coordinate.latitude,
-                         longitude: lastReceivedLocation.coordinate.longitude,
-                         tracker: options.tracker!,
-                         deviceID: deviceId))
-        }
+        let lastLocationUpdateTime = lastUpdateTime ?? currentTime
+        let lastUpdatedLocation = lastLocation ?? locations.last!
+        let lastReceivedLocation = locations.last!
+        let thresholdReached = options.batchingOption._thresholdReached(
+            Position(timeStamp: lastLocationUpdateTime,
+                     latitude: lastUpdatedLocation.coordinate.latitude,
+                     longitude: lastUpdatedLocation.coordinate.longitude,
+                     tracker: options.tracker!,
+                     deviceID: deviceId),
+            Position(timeStamp: currentTime,
+                     latitude: lastReceivedLocation.coordinate.latitude,
+                     longitude: lastReceivedLocation.coordinate.longitude,
+                     tracker: options.tracker!,
+                     deviceID: deviceId))
 
-        if criteriaReached {
-            if let didUpdateLocations = options.proxyDelegate.didUpdateLocations {
+        if thresholdReached {
+            if let didUpdateLocations = options.locationProxyDelegate.didUpdateLocations {
                 do {
                     guard let deviceId = UserDefaults.standard.object(forKey: AWSDeviceTracker.deviceIDKey) as? String else {
                         Amplify.log.error("Not able to fetch deviceId from UserDefaults")
                         return
                     }
                     let locationsReceived = locations.map( {
-                        Position(timeStamp: Date(),
+                        Position(timeStamp: currentTime,
                                  latitude: $0.coordinate.latitude,
                                  longitude: $0.coordinate.longitude,
                                  tracker: options.tracker!,
@@ -189,7 +191,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, DeviceTrackingBehav
                 return
             }
 
-            let positions = locations.map({ PositionInternal(timeStamp: Date(),
+            let positions = locations.map({ PositionInternal(timeStamp: currentTime,
                                                              latitude: $0.coordinate.latitude,
                                                              longitude: $0.coordinate.longitude,
                                                              tracker: options.tracker!,
@@ -202,21 +204,20 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, DeviceTrackingBehav
         }
         
         // save lastLocation and last time a location update is received
-        UserDefaults.standard.set(Date(), forKey: AWSDeviceTracker.lastLocationUpdateTimeKey)
+        UserDefaults.standard.set(currentTime, forKey: AWSDeviceTracker.lastLocationUpdateTimeKey)
         if let lastReceivedLocation = locations.last,
             let encodedLocation = try? NSKeyedArchiver.archivedData(withRootObject: lastReceivedLocation, requiringSecureCoding: false) {
             UserDefaults.standard.set(encodedLocation, forKey: AWSDeviceTracker.lastUpdatedLocationKey)
         }
     }
     
-    private func getLocationsFromLocalStore() throws -> [PositionInternal] {
+    func getLocationsFromLocalStore() throws -> [PositionInternal] {
         let storedLocations = try locationStore.getAll()
         try locationStore.removeAll()
         return storedLocations
     }
     
-    private func sendReceivedLocationsToService(locations: [CLLocation], options: Geo.UpdateLocationOptions) async throws {
-        // TODO: decide on sending concurrently or serially
+    func sendReceivedLocationsToService(locations: [CLLocation], options: Geo.UpdateLocationOptions) async throws {
         guard let deviceId = UserDefaults.standard.object(forKey: AWSDeviceTracker.deviceIDKey) as? String else {
             Amplify.log.error("Not able to fetch deviceId from UserDefaults")
             return
@@ -229,8 +230,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, DeviceTrackingBehav
         }
     }
     
-    private func sendStoredLocationsToService() async throws {
-        // TODO: decide on sending concurrently or serially
+    func sendStoredLocationsToService() async throws {
         let positions = try getLocationsFromLocalStore()
         for position in positions {
             try await Amplify.Geo.updateLocation(
@@ -240,7 +240,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, DeviceTrackingBehav
         }
     }
     
-    private func checkPermissionsAndStartTracking() throws {
+    func checkPermissionsAndStartTracking() throws {
         let authorizationStatus: CLAuthorizationStatus
 
         if #available(iOS 14, *) {

@@ -14,6 +14,10 @@ class MockLocationManager : CLLocationManager {
     
     let locations : [CLLocation] = [CLLocation(latitude: 20, longitude: 30)]
     
+    override var authorizationStatus: CLAuthorizationStatus {
+        .authorizedAlways
+    }
+    
     override func startUpdatingLocation() {
         delegate?.locationManager?(self, didUpdateLocations: locations)
     }
