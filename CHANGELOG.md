@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.2 (2022-11-02)
+
+### Bug Fixes
+
+- **auth**: Add secrethash to the resetPassword/resendSignUpCode (#2528)
+
 ## 2.0.1 (2022-10-27)
 
 ### Bug Fixes
