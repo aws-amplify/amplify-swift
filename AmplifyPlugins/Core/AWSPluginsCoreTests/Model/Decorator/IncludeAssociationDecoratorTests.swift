@@ -33,7 +33,7 @@ class IncludeAssociationDecoratorTests: XCTestCase {
 
     // MARK: Utilities
 
-    private func createQuery<M: Model>(
+    private func createSelectionSet<M: Model>(
         for modelType: M.Type,
         includes includedAssociations: IncludedAssociations<M> = { _ in [] }
     ) -> String {
@@ -45,7 +45,11 @@ class IncludeAssociationDecoratorTests: XCTestCase {
         }
         let included = includedAssociations(modelPath)
         documentBuilder.add(decorator: IncludeAssociationDecorator(included))
-        return documentBuilder.build().stringValue
+        guard let selectionSet = documentBuilder.build().selectionSet else {
+            XCTFail("Selection set for \(modelType.modelName) is empty")
+            return ""
+        }
+        return selectionSet.stringValue(indentSize: 0)
     }
 
     // MARK: Tests
@@ -59,23 +63,19 @@ class IncludeAssociationDecoratorTests: XCTestCase {
     ///   - check if the generated selection set includes only the
     ///   `post` primary keys (i.e. the foreign key needed to associate both models)
     func testModelWithBelongsToWithoutIncludes() {
-        let expectedQuery =
+        let expectedSelectionSet =
             """
-            query ListComments {
-              listComments {
-                id
-                content
-                createdAt
-                post {
-                  id
-                  __typename
-                }
-                __typename
-              }
+            id
+            content
+            createdAt
+            post {
+              id
+              __typename
             }
+            __typename
             """
-        let query = createQuery(for: Comment.self)
-        XCTAssertEqual(query, expectedQuery)
+        let selectionSet = createSelectionSet(for: Comment.self)
+        XCTAssertEqual(selectionSet, expectedSelectionSet)
     }
 
     /// - Given: a `Model` schema
@@ -86,30 +86,26 @@ class IncludeAssociationDecoratorTests: XCTestCase {
     /// - Then:
     ///   - check if the generated selection set includes the entire `post` selection set
     func testModelWithIncludedBelongsTo() {
-        let expectedQuery =
+        let expectedSelectionSet =
             """
-            query ListComments {
-              listComments {
-                id
-                content
-                createdAt
-                post {
-                  id
-                  __typename
-                  content
-                  createdAt
-                  draft
-                  rating
-                  status
-                  title
-                  updatedAt
-                }
-                __typename
-              }
+            id
+            content
+            createdAt
+            post {
+              id
+              __typename
+              content
+              createdAt
+              draft
+              rating
+              status
+              title
+              updatedAt
             }
+            __typename
             """
-        let query = createQuery(for: Comment.self, includes: { comment in [comment.post] })
-        XCTAssertEqual(query, expectedQuery)
+        let selectionSet = createSelectionSet(for: Comment.self, includes: { comment in [comment.post] })
+        XCTAssertEqual(selectionSet, expectedSelectionSet)
     }
 
     /// - Given: a `Model` schema
@@ -120,24 +116,20 @@ class IncludeAssociationDecoratorTests: XCTestCase {
     /// - Then:
     ///   - check if the generated selection does not contain the `comments` field
     func testModelWithHasManyWithoutIncludes() {
-        let expectedQuery =
+        let expectedSelectionSet =
             """
-            query ListPosts {
-              listPosts {
-                id
-                content
-                createdAt
-                draft
-                rating
-                status
-                title
-                updatedAt
-                __typename
-              }
-            }
+            id
+            content
+            createdAt
+            draft
+            rating
+            status
+            title
+            updatedAt
+            __typename
             """
-        let query = createQuery(for: Post.self)
-        XCTAssertEqual(query, expectedQuery)
+        let selectionSet = createSelectionSet(for: Post.self)
+        XCTAssertEqual(selectionSet, expectedSelectionSet)
     }
 
     /// - Given: a `Model` schema
@@ -149,36 +141,32 @@ class IncludeAssociationDecoratorTests: XCTestCase {
     ///   - check if the generated selection set contains the `comments` field
     ///   - check if the generated selection set contains the `comments.post` keys
     func testModelWithIncludedHasMany() {
-        let expectedQuery =
+        let expectedSelectionSet =
             """
-            query ListPosts {
-              listPosts {
+            id
+            content
+            createdAt
+            draft
+            rating
+            status
+            title
+            updatedAt
+            __typename
+            comments {
+              items {
                 id
                 content
                 createdAt
-                draft
-                rating
-                status
-                title
-                updatedAt
-                __typename
-                comments {
-                  items {
-                    id
-                    content
-                    createdAt
-                    post {
-                      id
-                      __typename
-                    }
-                    __typename
-                  }
+                post {
+                  id
+                  __typename
                 }
+                __typename
               }
             }
             """
-        let query = createQuery(for: Post.self, includes: { post in [post.comments] })
-        XCTAssertEqual(query, expectedQuery)
+        let selectionSet = createSelectionSet(for: Post.self, includes: { post in [post.comments] })
+        XCTAssertEqual(selectionSet, expectedSelectionSet)
     }
 
     /// - Given: a `Model` schema
@@ -188,18 +176,14 @@ class IncludeAssociationDecoratorTests: XCTestCase {
     /// - Then:
     ///   - check if the generated selection set doesn't include the `authors`
     func testBookModelWithNotIncludedManyToMany() {
-        let expectedQuery =
+        let expectedSelectionSet =
             """
-            query ListBooks {
-              listBooks {
-                id
-                title
-                __typename
-              }
-            }
+            id
+            title
+            __typename
             """
-        let query = createQuery(for: Book.self)
-        XCTAssertEqual(query, expectedQuery)
+        let selectionSet = createSelectionSet(for: Book.self)
+        XCTAssertEqual(selectionSet, expectedSelectionSet)
     }
 
     /// - Given: a `Model` schema
@@ -212,35 +196,31 @@ class IncludeAssociationDecoratorTests: XCTestCase {
     ///   - check if the generated selection set includes the `authors.author` selection set
     ///   - check if the generated selection set includes the `authors.book` keys only
     func testBookModelAndIncludeAuthorAssociationTwoLevelsDeep() {
-        let expectedQuery =
+        let expectedSelectionSet =
             """
-            query ListBooks {
-              listBooks {
+            id
+            title
+            __typename
+            authors {
+              items {
                 id
-                title
-                __typename
-                authors {
-                  items {
-                    id
-                    author {
-                      id
-                      name
-                      __typename
-                    }
-                    book {
-                      id
-                      __typename
-                    }
-                    __typename
-                  }
+                author {
+                  id
+                  name
+                  __typename
                 }
+                book {
+                  id
+                  __typename
+                }
+                __typename
               }
             }
             """
-        let query = createQuery(for: Book.self, includes: { book in
+        let selectionSet = createSelectionSet(for: Book.self, includes: { book in
             [book.authors.author]
         })
-        XCTAssertEqual(query, expectedQuery)
+        XCTAssertEqual(selectionSet, expectedSelectionSet)
     }
 
     /// - Given: a `Model` schema
@@ -250,18 +230,14 @@ class IncludeAssociationDecoratorTests: XCTestCase {
     /// - Then:
     ///   - check if the generated selection set doesn't include the `books` selection set
     func testAuthorModelWithNotIncludedManyToMany() {
-        let expectedQuery =
+        let expectedSelectionSet =
             """
-            query ListAuthors {
-              listAuthors {
-                id
-                name
-                __typename
-              }
-            }
+            id
+            name
+            __typename
             """
-        let query = createQuery(for: Author.self)
-        XCTAssertEqual(query, expectedQuery)
+        let selectionSet = createSelectionSet(for: Author.self)
+        XCTAssertEqual(selectionSet, expectedSelectionSet)
     }
 
     /// - Given: a `Model` schema
@@ -274,35 +250,31 @@ class IncludeAssociationDecoratorTests: XCTestCase {
     ///   - check if the generated selection set includes the `books.book` selection set
     ///   - check if the generated selection set includes the `books.author` keys only
     func testAuthorModelAndIncludeBookAssociationTwoLevelsDeep() {
-        let expectedQuery =
+        let expectedSelectionSet =
             """
-            query ListAuthors {
-              listAuthors {
+            id
+            name
+            __typename
+            books {
+              items {
                 id
-                name
-                __typename
-                books {
-                  items {
-                    id
-                    author {
-                      id
-                      __typename
-                    }
-                    book {
-                      id
-                      title
-                      __typename
-                    }
-                    __typename
-                  }
+                author {
+                  id
+                  __typename
                 }
+                book {
+                  id
+                  title
+                  __typename
+                }
+                __typename
               }
             }
             """
-        let query = createQuery(for: Author.self, includes: { author in
+        let selectionSet = createSelectionSet(for: Author.self, includes: { author in
             [author.books.book]
         })
-        XCTAssertEqual(query, expectedQuery)
+        XCTAssertEqual(selectionSet, expectedSelectionSet)
     }
 
     /// - Given: a `Model` schema
@@ -316,36 +288,32 @@ class IncludeAssociationDecoratorTests: XCTestCase {
     ///   - check if the generated selection set includes the `books.author` selection set
     ///   - check if the generated selection set includes the `books.book` selection set
     func testAuthorModelAndIncludeBothAssociationsTwoLevelsDeep() {
-        let expectedQuery =
+        let expectedSelectionSet =
             """
-            query ListAuthors {
-              listAuthors {
+            id
+            name
+            __typename
+            books {
+              items {
                 id
-                name
-                __typename
-                books {
-                  items {
-                    id
-                    author {
-                      id
-                      __typename
-                      name
-                    }
-                    book {
-                      id
-                      title
-                      __typename
-                    }
-                    __typename
-                  }
+                author {
+                  id
+                  __typename
+                  name
                 }
+                book {
+                  id
+                  title
+                  __typename
+                }
+                __typename
               }
             }
             """
-        let query = createQuery(for: Author.self, includes: { author in
+        let selectionSet = createSelectionSet(for: Author.self, includes: { author in
             [author.books.book, author.books.author]
         })
-        XCTAssertEqual(query, expectedQuery)
+        XCTAssertEqual(selectionSet, expectedSelectionSet)
     }
 
 }

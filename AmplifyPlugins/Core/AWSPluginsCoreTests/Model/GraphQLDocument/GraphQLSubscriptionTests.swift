@@ -104,13 +104,6 @@ class GraphQLSubscriptionTests: XCTestCase {
             createdAt
             post {
               id
-              content
-              createdAt
-              draft
-              rating
-              status
-              title
-              updatedAt
               __typename
             }
             __typename
@@ -135,13 +128,6 @@ class GraphQLSubscriptionTests: XCTestCase {
             createdAt
             post {
               id
-              content
-              createdAt
-              draft
-              rating
-              status
-              title
-              updatedAt
               __typename
               _version
               _deleted
