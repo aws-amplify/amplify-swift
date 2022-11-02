@@ -9,7 +9,7 @@ platform :ios do
   before_all do 
     # Perform a fetch before inferring the next version 
     # to reduce race conditions with simultaneous pipelines attempting to create the same tag
-    sh('git', 'fetch', '--tags')
+    sh('git', 'fetch', '--tags', '-f')
     sh('git', 'fetch')
     sh('git', 'status')
   end
