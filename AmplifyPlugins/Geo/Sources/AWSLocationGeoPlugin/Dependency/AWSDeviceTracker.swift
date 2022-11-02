@@ -119,31 +119,19 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, DeviceTrackingBehav
         }
         
         // fetch last saved location and update time
-        var lastLocation : CLLocation?
+        var lastUpdatedLocation : CLLocation?
         if let loadedLocation = UserDefaults.standard.data(forKey: AWSDeviceTracker.lastUpdatedLocationKey),
            let decodedLocation = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(loadedLocation) as? CLLocation {
-            lastLocation = decodedLocation
+            lastUpdatedLocation = decodedLocation
         }
-        let lastUpdateTime = UserDefaults.standard.object(forKey: AWSDeviceTracker.lastLocationUpdateTimeKey) as? Date
-        guard let deviceId = UserDefaults.standard.object(forKey: AWSDeviceTracker.deviceIDKey) as? String else {
-            Amplify.log.error("Not able to fetch deviceId from UserDefaults")
-            return
-        }
+        let lastLocationUpdateTime = UserDefaults.standard.object(forKey: AWSDeviceTracker.lastLocationUpdateTimeKey) as? Date
         
-        let lastLocationUpdateTime = lastUpdateTime ?? currentTime
-        let lastUpdatedLocation = lastLocation ?? locations.last!
-        let lastReceivedLocation = locations.last!
         let thresholdReached = options.batchingOption._thresholdReached(
-            Position(timeStamp: lastLocationUpdateTime,
-                     latitude: lastUpdatedLocation.coordinate.latitude,
-                     longitude: lastUpdatedLocation.coordinate.longitude,
-                     tracker: options.tracker!,
-                     deviceID: deviceId),
-            Position(timeStamp: currentTime,
-                     latitude: lastReceivedLocation.coordinate.latitude,
-                     longitude: lastReceivedLocation.coordinate.longitude,
-                     tracker: options.tracker!,
-                     deviceID: deviceId))
+            Geo.LocationManager.BatchingOption.LocationUpdate(timeStamp: lastLocationUpdateTime,
+                                                              position: lastUpdatedLocation),
+            Geo.LocationManager.BatchingOption.LocationUpdate(timeStamp: currentTime,
+                                                              position: locations.last)
+        )
 
         if thresholdReached {
             if let didUpdateLocations = options.locationProxyDelegate.didUpdateLocations {

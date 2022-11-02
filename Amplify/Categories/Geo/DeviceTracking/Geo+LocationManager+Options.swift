@@ -23,20 +23,24 @@ public extension Geo.LocationManager {
     
     struct BatchingOption {
         let threshold: Int
-        public let _thresholdReached: (_ old: Position, _ new: Position) -> Bool
+        public let _thresholdReached: (_ old: LocationUpdate, _ new: LocationUpdate) -> Bool
         
         public static let `none` = BatchingOption(threshold: 0, _thresholdReached: { _, _ in true })
-
+        
         public static func secondsElapsed(_ threshold: Int) -> BatchingOption {
             BatchingOption(threshold: threshold) { old, new in
-                return Int(new.timeStamp.timeIntervalSince(old.timeStamp)) >= threshold
+                guard let newTimeStamp = new.timeStamp, let oldTimeStamp = old.timeStamp else {
+                    return false
+                }
+                return Int(newTimeStamp.timeIntervalSince(oldTimeStamp)) >= threshold
             }
         }
-
+        
         public static func distanceTravelledInMeters(_ threshold: Int) -> BatchingOption {
             BatchingOption(threshold: threshold) { old, new in
-                let newPosition = CLLocation(latitude: new.latitude, longitude: new.longitude)
-                let oldPosition = CLLocation(latitude: old.latitude, longitude: old.longitude)
+                guard let newPosition = new.position, let oldPosition = old.position else {
+                    return false
+                }
                 return Int(newPosition.distance(from: oldPosition)) >= threshold
             }
         }
@@ -151,6 +155,20 @@ public extension Geo.LocationManager {
                       trackUntil: options.trackUntil,
                       batchingOption: options.batchingOption,
                       locationProxyDelegate: options.locationProxyDelegate)
+        }
+    }
+}
+
+public extension Geo.LocationManager.BatchingOption {
+    
+    struct LocationUpdate {
+        var timeStamp: Date?
+        var position: CLLocation?
+        
+        public init(timeStamp: Date? = nil,
+                    position: CLLocation? = nil) {
+            self.timeStamp = timeStamp
+            self.position = position
         }
     }
 }
