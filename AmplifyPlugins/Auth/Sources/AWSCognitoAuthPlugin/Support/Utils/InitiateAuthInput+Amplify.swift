@@ -109,7 +109,7 @@ extension InitiateAuthInput {
         let userPoolClientId = configuration.clientId
 
         if let clientSecret = configuration.clientSecret {
-            let clientSecretHash = SRPSignInHelper.clientSecretHash(
+            let clientSecretHash = ClientSecretHelper.clientSecretHash(
                 username: username,
                 userPoolClientId: userPoolClientId,
                 clientSecret: clientSecret
