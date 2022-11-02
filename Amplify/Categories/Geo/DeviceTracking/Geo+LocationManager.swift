@@ -26,7 +26,9 @@ public extension Geo {
             allowsBackgroundLocationUpdates = options.allowsBackgroundLocationUpdates
             pausesLocationUpdatesAutomatically = options.pausesLocationUpdatesAutomatically
             activityType = options.activityType
+            #if !os(macOS)
             showsBackgroundLocationIndicator = options.showsBackgroundLocationIndicator
+            #endif
         }
     }
 
