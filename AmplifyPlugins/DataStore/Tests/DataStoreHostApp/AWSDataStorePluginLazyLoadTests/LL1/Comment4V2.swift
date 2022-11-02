@@ -43,7 +43,12 @@ public struct Comment4V2: Model {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         id = try values.decode(String.self, forKey: .id)
         content = try values.decode(String.self, forKey: .content)
-        _post = try values.decode(LazyModel<Post4V2>.self, forKey: .post)
+        do {
+            _post = try values.decode(LazyModel<Post4V2>.self, forKey: .post)
+        } catch {
+            _post = LazyModel(identifiers: nil)
+        }
+        
         createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
         updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
     }
