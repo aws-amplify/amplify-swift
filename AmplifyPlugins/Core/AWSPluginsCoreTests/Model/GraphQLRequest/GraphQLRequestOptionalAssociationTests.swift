@@ -58,12 +58,10 @@ class GraphQLRequestOptionalAssociationTests: XCTestCase {
             id
             followingUser {
               id
-              name
               __typename
             }
             user {
               id
-              name
               __typename
             }
             __typename
@@ -92,12 +90,10 @@ class GraphQLRequestOptionalAssociationTests: XCTestCase {
             id
             followingUser {
               id
-              name
               __typename
             }
             user {
               id
-              name
               __typename
             }
             __typename
@@ -140,12 +136,10 @@ class GraphQLRequestOptionalAssociationTests: XCTestCase {
               id
               followingUser {
                 id
-                name
                 __typename
               }
               user {
                 id
-                name
                 __typename
               }
               __typename
@@ -170,12 +164,10 @@ class GraphQLRequestOptionalAssociationTests: XCTestCase {
             id
             followingUser {
               id
-              name
               __typename
             }
             user {
               id
-              name
               __typename
             }
             __typename

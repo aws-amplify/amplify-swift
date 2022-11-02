@@ -110,7 +110,6 @@ extension SelectionSet {
                 }
             }
         case .collection:
-            // TODO: fix optional unwrap
             let doubleIndent = String(repeating: indentValue, count: indentSize + 1)
             result.append(indent + (value.name ?? "") + " {")
             result.append(doubleIndent + "items {")
@@ -126,7 +125,7 @@ extension SelectionSet {
             result.append(indent + name)
         }
 
-        return result.joined(separator: "\n    ")
+        return result.joined(separator: "\n")
     }
 
     /// Find a child in the tree matching its `value.name`.
