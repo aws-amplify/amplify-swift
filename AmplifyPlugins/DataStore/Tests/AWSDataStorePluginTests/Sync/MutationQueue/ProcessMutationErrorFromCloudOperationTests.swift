@@ -22,6 +22,8 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     let defaultAsyncWaitTimeout = 10.0
     var mockAPIPlugin: MockAPICategoryPlugin!
     var storageAdapter: StorageEngineAdapter!
+    var localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
+    let queue = OperationQueue()
 
     override func setUp() async throws {
         await tryOrFail {
@@ -38,18 +40,13 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     ///    - APIError contains AuthError indicating user is not authenticated
     /// - Then:
     ///    - `DataStoreErrorHandler` is called
-    func testProcessMutationErrorFromCloudOperationSuccessForAuthErroor() throws {
-        let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
+    func testProcessMutationErrorFromCloudOperationSuccessForAuthError() throws {
         let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .update)
         let authError = AuthError.signedOut("User is not authenticated", "Authenticate user", nil)
         let apiError = APIError.operationError("not signed in", "Sign In User", authError)
         let expectCompletion = expectation(description: "Expect to complete error processing")
         let completion: (Result<MutationEvent?, Error>) -> Void = { result in
-            guard case .success(let mutationEventOptional) = result else {
-                XCTFail("Should have been successful")
-                return
-            }
-            XCTAssertNil(mutationEventOptional)
+            self.assertSuccessfulNil(result)
             expectCompletion.fulfill()
         }
         let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
@@ -81,107 +78,353 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                storageAdapter: storageAdapter,
                                                                apiError: apiError,
                                                                completion: completion)
-
-        let queue = OperationQueue()
         queue.addOperation(operation)
-
-        wait(for: [expectErrorHandlerCalled], timeout: defaultAsyncWaitTimeout)
-        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        wait(for: [expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
-    func testProcessMutationErrorFromCloudOperationSuccessForUnknownError() throws {
-        let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
-        let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: .now())
-        let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .delete)
-        guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
-                                                                     deleted: true,
-                                                                     version: 1,
-                                                                     errorType: .unknown("unknownErrorType")) else {
-            XCTFail("Couldn't get GraphQL response with remote post")
-            return
-        }
+    /// - Given: APIError
+    /// - When:
+    ///    - APIError unrelated to AuthError
+    /// - Then:
+    ///    - `DataStoreErrorHandler` is called
+    func testProcessMutationErrorFromCloudOperationSuccessForAPIError() throws {
+        let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .update)
+        let apiError = APIError.operationError("Operation failed", "", nil)
         let expectCompletion = expectation(description: "Expect to complete error processing")
         let completion: (Result<MutationEvent?, Error>) -> Void = { result in
-            guard case .success = result else {
-                XCTFail("Should have been successful")
-                return
-            }
+            self.assertSuccessfulNil(result)
             expectCompletion.fulfill()
         }
-        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: .default,
+        let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
+        let configuration = DataStoreConfiguration.custom(errorHandler: { error in
+            guard let dataStoreError = error as? DataStoreError,
+                  case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
+                XCTFail("Expected API error with mutationEvent")
+                return
+            }
+            guard let actualAPIError = amplifyError as? APIError,
+                  case .operationError = actualAPIError else {
+                XCTFail("Missing APIError.operationError")
+                return
+            }
+            guard let actualMutationEvent = mutationEventOptional else {
+                XCTFail("Missing mutationEvent for api error")
+                return
+            }
+            XCTAssertEqual(actualMutationEvent.id, mutationEvent.id)
+            expectErrorHandlerCalled.fulfill()
+        })
+
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: configuration,
+                                                               mutationEvent: mutationEvent,
+                                                               api: mockAPIPlugin,
+                                                               storageAdapter: storageAdapter,
+                                                               apiError: apiError,
+                                                               completion: completion)
+        queue.addOperation(operation)
+        wait(for: [expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
+    }
+
+    /// - Given: GraphQLError with no errors
+    /// - When:
+    ///    - GraphQLError with no errors
+    /// - Then:
+    ///    - `DataStoreErrorHandler` is called
+    func testProcessMutationErrorFromCloudOperationSuccessForGraphQLResponseWithNoErrors() throws {
+        let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .delete)
+        let graphQLResponseError = GraphQLResponseError<MutationSync<AnyModel>>.unknown("", "", nil)
+        let expectCompletion = expectation(description: "Expect to complete error processing")
+        let completion: (Result<MutationEvent?, Error>) -> Void = { result in
+            self.assertSuccessfulNil(result)
+            expectCompletion.fulfill()
+        }
+        let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
+        let configuration = DataStoreConfiguration.custom(errorHandler: { error in
+            guard let dataStoreError = error as? DataStoreError,
+                  case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
+                XCTFail("Expected API error with mutationEvent")
+                return
+            }
+            guard let graphQLResponseError = amplifyError as?  GraphQLResponseError<MutationSync<AnyModel>>,
+                  case .unknown = graphQLResponseError else {
+                XCTFail("Missing GraphQLResponseError.unknown")
+                return
+            }
+            guard let actualMutationEvent = mutationEventOptional else {
+                XCTFail("Missing mutationEvent for api error")
+                return
+            }
+            XCTAssertEqual(actualMutationEvent.id, mutationEvent.id)
+            expectErrorHandlerCalled.fulfill()
+        })
+
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: configuration,
                                                                mutationEvent: mutationEvent,
                                                                api: mockAPIPlugin,
                                                                storageAdapter: storageAdapter,
                                                                graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
-        let queue = OperationQueue()
         queue.addOperation(operation)
-        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        wait(for: [expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
-    func testProcessMutationErrorFromCloudOperationSuccessForMissingErrorType() throws {
-        let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
-        let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: .now())
+    /// - Given: GraphQLError with no error
+    /// - When:
+    ///    - GraphQLError with no error
+    /// - Then:
+    ///    - `DataStoreErrorHandler` is called
+    func testProcessMutationErrorFromCloudOperationSuccessForGraphQLResponseWithNoErrorsArray() throws {
         let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .delete)
-        guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
-                                                                     deleted: true,
-                                                                     version: 1,
-                                                                     errorType: nil) else {
-            XCTFail("Couldn't get GraphQL response with remote post")
-            return
-        }
+        let graphQLResponseError = GraphQLResponseError<MutationSync<AnyModel>>.error([])
         let expectCompletion = expectation(description: "Expect to complete error processing")
         let completion: (Result<MutationEvent?, Error>) -> Void = { result in
-            guard case .success = result else {
-                XCTFail("Should have been successful")
-                return
-            }
+            self.assertSuccessfulNil(result)
             expectCompletion.fulfill()
         }
-        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: .default,
+        let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
+        let configuration = DataStoreConfiguration.custom(errorHandler: { error in
+            guard let dataStoreError = error as? DataStoreError,
+                  case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
+                XCTFail("Expected API error with mutationEvent")
+                return
+            }
+            guard let graphQLResponseError = amplifyError as?  GraphQLResponseError<MutationSync<AnyModel>>,
+                  case .error(let errors) = graphQLResponseError else {
+                XCTFail("Missing GraphQLResponseError.unknown")
+                return
+            }
+            XCTAssertEqual(errors.count, 0)
+            guard let actualMutationEvent = mutationEventOptional else {
+                XCTFail("Missing mutationEvent for api error")
+                return
+            }
+            XCTAssertEqual(actualMutationEvent.id, mutationEvent.id)
+            expectErrorHandlerCalled.fulfill()
+        })
+
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: configuration,
                                                                mutationEvent: mutationEvent,
                                                                api: mockAPIPlugin,
                                                                storageAdapter: storageAdapter,
                                                                graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
-        let queue = OperationQueue()
         queue.addOperation(operation)
-        wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
+        wait(for: [expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
+    /// - Given: GraphQLError more than one error to handle
+    /// - When:
+    ///    - GraphQLError with multiple errors
+    /// - Then:
+    ///    - `DataStoreErrorHandler` is called
+    func testProcessMutationErrorFromCloudOperationSuccessForGraphQLResponseWithMultipleErrors() throws {
+        let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .delete)
+        let error = GraphQLError(message: "error message")
+        let graphQLResponseError = GraphQLResponseError<MutationSync<AnyModel>>.error([error, error])
+        let expectCompletion = expectation(description: "Expect to complete error processing")
+        let completion: (Result<MutationEvent?, Error>) -> Void = { result in
+            self.assertSuccessfulNil(result)
+            expectCompletion.fulfill()
+        }
+        let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
+        let configuration = DataStoreConfiguration.custom(errorHandler: { error in
+            guard let dataStoreError = error as? DataStoreError,
+                  case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
+                XCTFail("Expected API error with mutationEvent")
+                return
+            }
+            guard let graphQLResponseError = amplifyError as?  GraphQLResponseError<MutationSync<AnyModel>>,
+                  case .error(let errors) = graphQLResponseError else {
+                XCTFail("Missing GraphQLResponseError.unknown")
+                return
+            }
+            XCTAssertEqual(errors.count, 2)
+            guard let actualMutationEvent = mutationEventOptional else {
+                XCTFail("Missing mutationEvent for api error")
+                return
+            }
+            XCTAssertEqual(actualMutationEvent.id, mutationEvent.id)
+            expectErrorHandlerCalled.fulfill()
+        })
+
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: configuration,
+                                                               mutationEvent: mutationEvent,
+                                                               api: mockAPIPlugin,
+                                                               storageAdapter: storageAdapter,
+                                                               graphQLResponseError: graphQLResponseError,
+                                                               completion: completion)
+        queue.addOperation(operation)
+        wait(for: [expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
+    }
+
+    /// - Given: GraphQLError ConditionalCheck
+    /// - When:
+    ///    - GraphQLError with errors containing type ConditionalCheck
+    /// - Then:
+    ///    - `DataStoreErrorHandler` is called
     func testProcessMutationErrorFromCloudOperationSuccessForConditionalCheck() throws {
-        let expectCompletion = expectation(description: "Expect to complete error processing")
-        let expectHubEvent = expectation(description: "Hub is notified")
+        let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .delete)
+        let graphQLResponseError = GraphQLResponseError<MutationSync<AnyModel>>.error([graphQLError(.conditionalCheck)])
 
+        let expectHubEvent = expectation(description: "Hub is notified")
+        let expectCompletion = expectation(description: "Expect to complete error processing")
+        let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
         let hubListener = Amplify.Hub.listen(to: .dataStore) { payload in
             if payload.eventName == "DataStore.conditionalSaveFailed" {
                 expectHubEvent.fulfill()
             }
         }
-
-        let completion: (Result<MutationEvent?, Error>) -> Void = { _ in
+        let completion: (Result<MutationEvent?, Error>) -> Void = { result in
+            self.assertSuccessfulNil(result)
             expectCompletion.fulfill()
         }
-        let post1 = Post(title: "post1", content: "content1", createdAt: .now())
-        let mutationEvent = try MutationEvent(model: post1, modelSchema: post1.schema, mutationType: .create)
-        let graphQLError = GraphQLError(message: "conditional request failed",
-                                        locations: nil,
-                                        path: nil,
-                                        extensions: ["errorType": .string(AppSyncErrorType.conditionalCheck.rawValue)])
-        let graphQLResponseError = GraphQLResponseError<MutationSync<AnyModel>>.error([graphQLError])
+        let configuration = DataStoreConfiguration.custom(errorHandler: { error in
+            guard let dataStoreError = error as? DataStoreError,
+                  case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
+                XCTFail("Expected API error with mutationEvent")
+                return
+            }
+            guard let graphQLResponseError = amplifyError as?  GraphQLResponseError<MutationSync<AnyModel>>,
+                  case .error(let errors) = graphQLResponseError else {
+                XCTFail("Missing GraphQLResponseError.unknown")
+                return
+            }
+            XCTAssertEqual(errors.count, 1)
+            guard let actualMutationEvent = mutationEventOptional else {
+                XCTFail("Missing mutationEvent for api error")
+                return
+            }
+            XCTAssertEqual(actualMutationEvent.id, mutationEvent.id)
+            expectErrorHandlerCalled.fulfill()
+        })
 
-        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: .default,
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: configuration,
                                                                mutationEvent: mutationEvent,
                                                                api: mockAPIPlugin,
                                                                storageAdapter: storageAdapter,
                                                                graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
-
-        let queue = OperationQueue()
         queue.addOperation(operation)
-
-        wait(for: [expectHubEvent, expectCompletion], timeout: defaultAsyncWaitTimeout)
+        wait(for: [expectHubEvent, expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
         Amplify.Hub.removeListener(hubListener)
+    }
+
+    func testProcessMutationErrorFromCloudOperationSuccessForUnauthorized() throws {
+        let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: .now())
+        let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .delete)
+        let graphQLResponseError = GraphQLResponseError<MutationSync<AnyModel>>.error([graphQLError(.unauthorized)])
+        let expectCompletion = expectation(description: "Expect to complete error processing")
+        let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
+        let completion: (Result<MutationEvent?, Error>) -> Void = { result in
+            self.assertSuccessfulNil(result)
+            expectCompletion.fulfill()
+        }
+        let configuration = DataStoreConfiguration.custom(errorHandler: { error in
+            guard let dataStoreError = error as? DataStoreError,
+                  case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
+                XCTFail("Expected API error with mutationEvent")
+                return
+            }
+            guard let graphQLResponseError = amplifyError as?  GraphQLResponseError<MutationSync<AnyModel>>,
+                  case .error(let errors) = graphQLResponseError else {
+                XCTFail("Missing GraphQLResponseError.unknown")
+                return
+            }
+            XCTAssertEqual(errors.count, 1)
+            guard let actualMutationEvent = mutationEventOptional else {
+                XCTFail("Missing mutationEvent for api error")
+                return
+            }
+            XCTAssertEqual(actualMutationEvent.id, mutationEvent.id)
+            expectErrorHandlerCalled.fulfill()
+        })
+
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: configuration,
+                                                               mutationEvent: mutationEvent,
+                                                               api: mockAPIPlugin,
+                                                               storageAdapter: storageAdapter,
+                                                               graphQLResponseError: graphQLResponseError,
+                                                               completion: completion)
+        queue.addOperation(operation)
+        wait(for: [expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
+    }
+
+    func testProcessMutationErrorFromCloudOperationSuccessForOperationDisabled() throws {
+        let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .delete)
+        let graphQLResponseError = GraphQLResponseError<MutationSync<AnyModel>>.error([graphQLError(.operationDisabled)])
+        let expectCompletion = expectation(description: "Expect to complete error processing")
+        let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
+        let completion: (Result<MutationEvent?, Error>) -> Void = { result in
+            self.assertSuccessfulNil(result)
+            expectCompletion.fulfill()
+        }
+        let configuration = DataStoreConfiguration.custom(errorHandler: { error in
+            guard let dataStoreError = error as? DataStoreError,
+                  case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
+                XCTFail("Expected API error with mutationEvent")
+                return
+            }
+            guard let graphQLResponseError = amplifyError as?  GraphQLResponseError<MutationSync<AnyModel>>,
+                  case .error(let errors) = graphQLResponseError else {
+                XCTFail("Missing GraphQLResponseError")
+                return
+            }
+            XCTAssertEqual(errors.count, 1)
+            guard let actualMutationEvent = mutationEventOptional else {
+                XCTFail("Missing mutationEvent for api error")
+                return
+            }
+            XCTAssertEqual(actualMutationEvent.id, mutationEvent.id)
+            expectErrorHandlerCalled.fulfill()
+        })
+
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: configuration,
+                                                               mutationEvent: mutationEvent,
+                                                               api: mockAPIPlugin,
+                                                               storageAdapter: storageAdapter,
+                                                               graphQLResponseError: graphQLResponseError,
+                                                               completion: completion)
+        queue.addOperation(operation)
+        wait(for: [expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
+    }
+
+    func testProcessMutationErrorFromCloudOperationSuccessForUnknownError() throws {
+        let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .delete)
+        let graphQLResponseError = GraphQLResponseError<MutationSync<AnyModel>>.error([graphQLError(.unknown("unknownErrorType"))])
+        let expectCompletion = expectation(description: "Expect to complete error processing")
+        let expectErrorHandlerCalled = expectation(description: "Expect error handler called")
+        let completion: (Result<MutationEvent?, Error>) -> Void = { result in
+            self.assertSuccessfulNil(result)
+            expectCompletion.fulfill()
+        }
+        let configuration = DataStoreConfiguration.custom(errorHandler: { error in
+            guard let dataStoreError = error as? DataStoreError,
+                  case let .api(amplifyError, mutationEventOptional) = dataStoreError else {
+                XCTFail("Expected API error with mutationEvent")
+                return
+            }
+            guard let graphQLResponseError = amplifyError as?  GraphQLResponseError<MutationSync<AnyModel>>,
+                  case .error(let errors) = graphQLResponseError else {
+                XCTFail("Missing GraphQLResponseError.unknown")
+                return
+            }
+            XCTAssertEqual(errors.count, 1)
+            guard let actualMutationEvent = mutationEventOptional else {
+                XCTFail("Missing mutationEvent for api error")
+                return
+            }
+            XCTAssertEqual(actualMutationEvent.id, mutationEvent.id)
+            expectErrorHandlerCalled.fulfill()
+        })
+
+        let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: configuration,
+                                                               mutationEvent: mutationEvent,
+                                                               api: mockAPIPlugin,
+                                                               storageAdapter: storageAdapter,
+                                                               graphQLResponseError: graphQLResponseError,
+                                                               completion: completion)
+        queue.addOperation(operation)
+        wait(for: [expectErrorHandlerCalled, expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
 
     /// - Given: Conflict Unhandled error
@@ -190,7 +433,6 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     /// - Then:
     ///    - Unexpected scenario, there should never be an conflict unhandled error without error.data
     func testConflictUnhandledReturnsErrorForMissingRemoteModel() throws {
-        let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
         let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .create)
         let graphQLError = GraphQLError(message: "conflict unhandled",
                                         extensions: ["errorType": .string(AppSyncErrorType.conflictUnhandled.rawValue)])
@@ -213,7 +455,6 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                storageAdapter: storageAdapter,
                                                                graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
-        let queue = OperationQueue()
         queue.addOperation(operation)
         wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
@@ -224,7 +465,6 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     /// - Then:
     ///    - Unexpected scenario, there should never get a conflict for create mutations
     func testConflictUnhandledReturnsErrorForCreateMutation() throws {
-        let localPost = Post(title: "localTitle", content: "localContent", createdAt: .now())
         let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .create)
         let remotePost = Post(title: "remoteTitle", content: "remoteContent", createdAt: .now())
         guard let graphQLResponseError = try getGraphQLResponseError(withRemote: remotePost,
@@ -251,7 +491,6 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                storageAdapter: storageAdapter,
                                                                graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
-        let queue = OperationQueue()
         queue.addOperation(operation)
         wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
@@ -273,10 +512,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         }
         let expectCompletion = expectation(description: "Expect to complete error processing")
         let completion: (Result<MutationEvent?, Error>) -> Void = { result in
-            guard case .success = result else {
-                XCTFail("Should have been successful")
-                return
-            }
+            self.assertSuccessfulNil(result)
             expectCompletion.fulfill()
         }
         let operation = ProcessMutationErrorFromCloudOperation(dataStoreConfiguration: .default,
@@ -285,7 +521,6 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                storageAdapter: storageAdapter,
                                                                graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
-        let queue = OperationQueue()
         queue.addOperation(operation)
         wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
@@ -307,11 +542,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         }
         let expectCompletion = expectation(description: "Expect to complete error processing")
         let completion: (Result<MutationEvent?, Error>) -> Void = { result in
-            guard case .success(let mutationEventOptional) = result else {
-                XCTFail("Should have been successful")
-                return
-            }
-            XCTAssertNil(mutationEventOptional)
+            self.assertSuccessfulNil(result)
             expectCompletion.fulfill()
         }
 
@@ -351,7 +582,6 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
 
-        let queue = OperationQueue()
         queue.addOperation(operation)
 
         wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
@@ -388,11 +618,7 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
         }
         let expectCompletion = expectation(description: "Expect to complete error processing")
         let completion: (Result<MutationEvent?, Error>) -> Void = { result in
-            guard case .success(let mutationEventOptional) = result else {
-                XCTFail("Should have been successful")
-                return
-            }
-            XCTAssertNil(mutationEventOptional)
+            self.assertSuccessfulNil(result)
             expectCompletion.fulfill()
         }
 
@@ -433,7 +659,6 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
 
-        let queue = OperationQueue()
         queue.addOperation(operation)
 
         wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
@@ -513,8 +738,6 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                storageAdapter: storageAdapter,
                                                                graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
-
-        let queue = OperationQueue()
         queue.addOperation(operation)
 
         wait(for: [modelSavedEvent], timeout: defaultAsyncWaitTimeout)
@@ -579,7 +802,6 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
 
-        let queue = OperationQueue()
         queue.addOperation(operation)
 
         wait(for: [modelDeletedEvent], timeout: defaultAsyncWaitTimeout)
@@ -661,8 +883,6 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                storageAdapter: storageAdapter,
                                                                graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
-
-        let queue = OperationQueue()
         queue.addOperation(operation)
 
         wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
@@ -733,7 +953,6 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
 
-        let queue = OperationQueue()
         queue.addOperation(operation)
 
         wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
@@ -812,8 +1031,6 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                storageAdapter: storageAdapter,
                                                                graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
-
-        let queue = OperationQueue()
         queue.addOperation(operation)
 
         wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
@@ -895,8 +1112,6 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
                                                                storageAdapter: storageAdapter,
                                                                graphQLResponseError: graphQLResponseError,
                                                                completion: completion)
-
-        let queue = OperationQueue()
         queue.addOperation(operation)
 
         wait(for: [expectConflicthandlerCalled], timeout: defaultAsyncWaitTimeout)
@@ -944,7 +1159,6 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
             graphQLResponseError: graphQLError,
             completion: completion)
 
-        let queue = OperationQueue()
         queue.addOperation(operation)
         wait(for: [expectCompletion], timeout: defaultAsyncWaitTimeout)
     }
@@ -987,9 +1201,19 @@ extension ProcessMutationErrorFromCloudOperationTests {
         try Amplify.configure(configWithAPI)
     }
 
-    private func getGraphQLResponseError(withRemote post: Post,
-                                         deleted: Bool,
-                                         version: Int,
+    private func assertSuccessfulNil(_ result: Result<MutationEvent?, Error>) {
+        guard case .success(let mutationEventOptional) = result else {
+            XCTFail("Should have been successful")
+            return
+        }
+        XCTAssertNil(mutationEventOptional)
+    }
+
+    private func getGraphQLResponseError(withRemote post: Post = Post(title: "remoteTitle",
+                                                                      content: "remoteContent",
+                                                                      createdAt: .now()),
+                                         deleted: Bool = false,
+                                         version: Int = 1,
                                          errorType: AppSyncErrorType? = .conflictUnhandled)
         throws -> GraphQLResponseError<MutationSync<AnyModel>>? {
         guard let data = try post.toJSON().data(using: .utf8) else {
@@ -1011,8 +1235,15 @@ extension ProcessMutationErrorFromCloudOperationTests {
                                                          "data": .object(remoteDataObject)])
             return GraphQLResponseError<MutationSync<AnyModel>>.error([graphQLError])
         } else {
-            let graphQLError = GraphQLError(message: "error messageb")
+            let graphQLError = GraphQLError(message: "error message")
             return GraphQLResponseError<MutationSync<AnyModel>>.error([graphQLError])
         }
+    }
+
+    private func graphQLError(_ errorType: AppSyncErrorType) -> GraphQLError {
+        GraphQLError(message: "message",
+                     locations: nil,
+                     path: nil,
+                     extensions: ["errorType": .string(errorType.rawValue)])
     }
 }
