@@ -95,13 +95,6 @@ class GraphQLSyncQueryTests: XCTestCase {
               createdAt
               post {
                 id
-                content
-                createdAt
-                draft
-                rating
-                status
-                title
-                updatedAt
                 __typename
                 _version
                 _deleted
