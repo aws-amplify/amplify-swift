@@ -7,6 +7,7 @@
 
 import Foundation
 import Amplify
+import AuthenticationServices
 
 extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
 
@@ -47,7 +48,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     }
 
 #if canImport(AuthenticationServices)
-    public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor,
+    public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor? = nil,
                                 options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult {
         let options = options ?? AuthWebUISignInRequest.Options()
         let request = AuthWebUISignInRequest(presentationAnchor: presentationAnchor,
@@ -64,7 +65,7 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     }
 
     public func signInWithWebUI(for authProvider: AuthProvider,
-                                presentationAnchor: AuthUIPresentationAnchor,
+                                presentationAnchor: AuthUIPresentationAnchor? = nil,
                                 options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult {
         let options = options ?? AuthWebUISignInRequest.Options()
         let request = AuthWebUISignInRequest(presentationAnchor: presentationAnchor,
