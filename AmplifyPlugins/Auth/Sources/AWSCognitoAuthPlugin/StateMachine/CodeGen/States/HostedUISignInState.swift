@@ -37,7 +37,7 @@ struct HostedUISigningInState: Equatable {
 
     let codeChallenge: String
 
-    let presentationAnchor: AuthUIPresentationAnchor
+    let presentationAnchor: AuthUIPresentationAnchor?
 
     let options: HostedUIOptions
 }

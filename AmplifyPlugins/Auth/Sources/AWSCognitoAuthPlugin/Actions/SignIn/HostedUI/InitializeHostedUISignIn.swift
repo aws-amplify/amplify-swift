@@ -28,19 +28,14 @@ struct InitializeHostedUISignIn: Action {
             return
         }
 
-        guard let presentationAnchor = options.presentationAnchor else {
-            fatalError("""
-        Should not happen, initialize hostedUISignIn should always start with presentationanchor
-        """)
-        }
         await initializeHostedUI(
-            presentationAnchor: presentationAnchor,
+            presentationAnchor: options.presentationAnchor,
             environment: environment,
             hostedUIEnvironment: hostedUIEnvironment,
             dispatcher: dispatcher)
     }
 
-    func initializeHostedUI(presentationAnchor: AuthUIPresentationAnchor,
+    func initializeHostedUI(presentationAnchor: AuthUIPresentationAnchor?,
                             environment: AuthEnvironment,
                             hostedUIEnvironment: HostedUIEnvironment,
                             dispatcher: EventDispatcher) async {
