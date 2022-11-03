@@ -91,11 +91,16 @@ class AWSDataStorePluginTests: XCTestCase {
         await waitForExpectations(timeout: 1.0)
     }
     
-    func testStorageEngineStartsOnPluginStopStart() async throws {
-        let stopExpectation = asyncExpectation(description: "Stop plugin should be called")
+    func testStorageEngineStartsOnPluginStopStart() throws {
+        let stopExpectation = expectation(description: "Stop plugin should be called")
+        stopExpectation.isInverted = true
         let startExpectation = expectation(description: "Start Sync should be called")
         var currCount = 0
         let storageEngine = MockStorageEngineBehavior()
+        
+        storageEngine.responders[.stopSync] = StopSyncResponder { _ in
+            stopExpectation.fulfill()
+        }
         
         storageEngine.responders[.startSync] = StartSyncResponder { _ in
             currCount = self.expect(startExpectation, currCount, 1)
@@ -114,17 +119,17 @@ class AWSDataStorePluginTests: XCTestCase {
         do {
             try plugin.configure(using: nil)
             XCTAssertNil(plugin.storageEngine)
-            try await plugin.stop()
-            await stopExpectation.fulfill()
             
-            plugin.start(completion: { _ in })
+            plugin.stop(completion: { _ in
+                plugin.start(completion: { _ in })
+            })
         } catch {
             XCTFail("DataStore configuration should not fail with nil configuration. \(error)")
         }
-        await waitForExpectations(timeout: 1.0)
+        waitForExpectations(timeout: 1.0)
     }
     
-    func testStorageEngineStartsOnPluginClearStart() async throws {
+    func testStorageEngineStartsOnPluginClearStart() throws {
         let clearExpectation = expectation(description: "Clear should be called")
         let startExpectation = expectation(description: "Start Sync should be called")
         var currCount = 0
@@ -152,12 +157,13 @@ class AWSDataStorePluginTests: XCTestCase {
             try plugin.configure(using: nil)
             XCTAssertNil(plugin.storageEngine)
             
-            try await plugin.clear()
-            try await plugin.start()
+            plugin.clear(completion: { _ in
+                plugin.start(completion: { _ in })
+            })
         } catch {
             XCTFail("DataStore configuration should not fail with nil configuration. \(error)")
         }
-        await waitForExpectations(timeout: 1.0)
+        waitForExpectations(timeout: 1.0)
     }
 
     func testStorageEngineStartStopStart() throws {
