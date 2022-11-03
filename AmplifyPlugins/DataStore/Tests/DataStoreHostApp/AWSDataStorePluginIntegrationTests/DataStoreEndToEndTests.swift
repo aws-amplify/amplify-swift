@@ -491,7 +491,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
     ///    - Ensure the expected mutation event with version 2 (synced from cloud) is received
     ///
     func testConcurrentSave() async throws {
-        await setUp(withModels: TestModelRegistration())
+        await setUp(withModels: TestModelRegistration(), logLevel: .verbose)
         try await startAmplifyAndWaitForSync()
 
         var posts = [Post]()
@@ -504,8 +504,6 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         }
         let postsSyncedToCloud = expectation(description: "All posts saved and synced to cloud")
         postsSyncedToCloud.expectedFulfillmentCount = count
-        
-
         log.debug("Created posts: [\(posts.map { $0.identifier })]")
 
         let postsCopy = posts
@@ -537,8 +535,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 _ = try await Amplify.DataStore.save(capturedPosts[index])
             }
         }
-
-        wait(for: [postsSyncedToCloud], timeout: 10.0)
+        await waitForExpectations(timeout: 100)
 
         let postsDeletedLocally = expectation(description: "All posts deleted locally")
         postsDeletedLocally.expectedFulfillmentCount = count
@@ -578,7 +575,8 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                 try await Amplify.DataStore.delete(capturedPosts[index])
             }
         }
-        wait(for: [postsDeletedLocally, postsDeletedFromCloud], timeout: 10.0)
+        
+        await waitForExpectations(timeout: 100)
     }
 
     // MARK: - Helpers
