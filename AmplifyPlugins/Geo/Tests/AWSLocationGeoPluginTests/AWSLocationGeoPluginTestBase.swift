@@ -34,13 +34,14 @@ class AWSLocationGeoPluginTestBase: XCTestCase {
                                                               searchIndices: [],
                                                               defaultTracker: nil,
                                                               trackers: [])
-        mockDeviceTracker = MockAWSDeviceTracker(locationManager: MockLocationManager())
         do {
             mockLocation = try MockAWSLocation(pluginConfig: pluginConfig)
         } catch {
             XCTFail("Error initializing mockLocation: \(error)")
         }
-
+        mockDeviceTracker = try MockAWSDeviceTracker(options: .init(),
+                                                     locationManager: MockLocationManager(),
+                                                     locationService: mockLocation)
         geoPlugin = AWSLocationGeoPlugin()
         geoPlugin.locationService = mockLocation
         AWSLocationGeoPlugin.deviceTracker = mockDeviceTracker

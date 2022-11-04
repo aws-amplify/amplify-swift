@@ -20,23 +20,24 @@ final actor AWSLocationStoreAdapter : AWSLocationStoreBehavior {
         self.locationPersistenceBehavior = locationPersistenceBehavior
     }
     
-    func save(position: Position) async throws {
+
+    func save(position: PositionInternal) async throws {
         try self.locationPersistenceBehavior.insert(position: position)
     }
     
-    func save(positions: [Position]) async throws {
+    func save(positions: [PositionInternal]) async throws {
         try self.locationPersistenceBehavior.insert(positions: positions)
     }
     
-    func delete(position: Position) async throws {
+    func delete(position: PositionInternal) async throws {
         try self.locationPersistenceBehavior.remove(position: position)
     }
     
-    func delete(positions: [Position]) async throws {
+    func delete(positions: [PositionInternal]) async throws {
         try self.locationPersistenceBehavior.remove(positions: positions)
     }
     
-    func queryAll() async throws -> [Position] {
+    func queryAll() async throws -> [PositionInternal] {
         try self.locationPersistenceBehavior.getAll()
     }
     

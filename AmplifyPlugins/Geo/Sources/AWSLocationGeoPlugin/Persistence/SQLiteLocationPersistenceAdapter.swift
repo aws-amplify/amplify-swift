@@ -15,13 +15,14 @@ import Amplify
 /// service
 final class SQLiteLocationPersistenceAdapter : LocationPersistenceBehavior {
     
-    let positionsTable = Table("positions")
-    let id = Expression<String>(Position.keys.id.stringValue)
-    let timeStamp = Expression<String>(Position.keys.timeStamp.stringValue)
-    let latitude = Expression<Double>(Position.keys.latitude.stringValue)
-    let longitude = Expression<Double>(Position.keys.longitude.stringValue)
-    let tracker = Expression<String>(Position.keys.tracker.stringValue)
-    let deviceID = Expression<String>(Position.keys.deviceID.stringValue)
+    static let tableName = "positions"
+    let positionsTable = Table(tableName)
+    let id = Expression<String>(PositionInternal.keys.id.stringValue)
+    let timeStamp = Expression<Date>(PositionInternal.keys.timeStamp.stringValue)
+    let latitude = Expression<Double>(PositionInternal.keys.latitude.stringValue)
+    let longitude = Expression<Double>(PositionInternal.keys.longitude.stringValue)
+    let tracker = Expression<String>(PositionInternal.keys.tracker.stringValue)
+    let deviceID = Expression<String>(PositionInternal.keys.deviceID.stringValue)
     
     private let positionsDatabase: Connection
     private let fileSystemBehavior: LocationFileSystemBehavior
@@ -43,28 +44,28 @@ final class SQLiteLocationPersistenceAdapter : LocationPersistenceBehavior {
         })
     }
     
-    func insert(position: Position) throws {
+    func insert(position: PositionInternal) throws {
         try positionsDatabase.run(positionsTable.insert(position))
     }
     
-    func insert(positions: [Position]) throws {
+    func insert(positions: [PositionInternal]) throws {
         try positionsDatabase.run(positionsTable.insertMany(positions))
     }
     
-    func remove(position: Position) throws {
+    func remove(position: PositionInternal) throws {
         let deleteQuery = positionsTable.filter(id == position.id)
         try positionsDatabase.run(deleteQuery.delete())
     }
     
-    func remove(positions: [Position]) throws {
+    func remove(positions: [PositionInternal]) throws {
         try positionsDatabase.run(positionsTable.filter(positions.map(\.id).contains(id)).delete())
     }
     
-    func getAll() throws -> [Position] {
+    func getAll() throws -> [PositionInternal] {
         try positionsDatabase
             .prepare(positionsTable)
             .map {
-                Position(
+                PositionInternal(
                     id: $0[id],
                     timeStamp: $0[timeStamp],
                     latitude: $0[latitude],

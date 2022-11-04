@@ -301,6 +301,7 @@ extension AWSLocationGeoPlugin {
     ///             you are responsible for ensuring tracker scoped randomness and that the ID doesn't include PII
     ///   - options: The `Geo.LocationManager.TrackingSessionOptions` struct that determines the tracking behavior
     ///              of this tracking session.
+    @MainActor
     public func startTracking(for device: @autoclosure () async throws -> Geo.Device,
                               with options: Geo.LocationManager.TrackingSessionOptions) async throws {
         if options.tracker == nil, pluginConfig.defaultTracker == nil {
@@ -309,16 +310,18 @@ extension AWSLocationGeoPlugin {
                 GeoPluginErrorConstants.missingTracker.recoverySuggestion)
         }
         
-        let optionsWithTracker: Geo.LocationManager.TrackingSessionOptions = Geo.LocationManager.TrackingSessionOptions(options: options)
+        var optionsWithTracker: Geo.LocationManager.TrackingSessionOptions = Geo.LocationManager.TrackingSessionOptions(options: options)
         if optionsWithTracker.tracker == nil {
             optionsWithTracker.tracker = pluginConfig.defaultTracker
         }
         
         if Self.deviceTracker == nil {
-            Self.deviceTracker = AWSDeviceTracker(locationManager: Geo.LocationManager(options: optionsWithTracker))
+            Self.deviceTracker = try AWSDeviceTracker(options: optionsWithTracker,
+                                                      locationManager: Geo.LocationManager(options: optionsWithTracker),
+                                                      locationService: locationService)
         }
         Self.deviceTracker?.configure(with: optionsWithTracker)
-        Self.deviceTracker?.startTracking()
+        try await Self.deviceTracker?.startTracking(for: device())
     }
     
     /// Stop tracking an existing tracking session.

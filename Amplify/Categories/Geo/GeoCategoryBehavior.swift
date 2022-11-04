@@ -121,6 +121,7 @@ public protocol GeoCategoryBehavior {
     ///             you are responsible for ensuring tracker scoped randomness and that the ID doesn't include PII
     ///   - options: The `Geo.LocationManager.TrackingSessionOptions` struct that determines the tracking behavior
     ///              of this tracking session.
+    @MainActor
     func startTracking(
         for device: @autoclosure () async throws -> Geo.Device,
         with options: Geo.LocationManager.TrackingSessionOptions

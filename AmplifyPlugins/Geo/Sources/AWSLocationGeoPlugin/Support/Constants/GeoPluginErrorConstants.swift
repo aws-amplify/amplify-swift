@@ -24,6 +24,14 @@ struct GeoPluginErrorConstants {
     static let missingTracker: GeoPluginErrorString = (
         "No tracker available.",
         "Please ensure you have added tracker to your project before calling device position functions.")
+    
+    static let missingPermissions: GeoPluginErrorString = (
+        "Location permissions not granted.",
+        "Please ensure you have given approriate location permissions before starting device tracking.")
+    
+    static let errorInitializingLocalStore: GeoPluginErrorString = (
+        "Unable to create local database for storing locations.",
+        "This seems like a bug. Please report an issue on Amplify Swift repo.")
 }
 
 // Recovery Messages

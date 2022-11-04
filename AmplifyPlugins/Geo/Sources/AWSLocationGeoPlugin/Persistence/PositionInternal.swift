@@ -7,10 +7,10 @@
 
 import Foundation
 
-struct Position: Identifiable, Codable {
+struct PositionInternal: Identifiable, Codable {
     
     let id: String
-    let timeStamp: String
+    let timeStamp: Date
     let latitude: Double
     let longitude: Double
     let tracker: String
@@ -18,7 +18,7 @@ struct Position: Identifiable, Codable {
     
     init(
         id: String = UUID().uuidString,
-        timeStamp: String,
+        timeStamp: Date,
         latitude: Double,
         longitude: Double,
         tracker: String,
@@ -45,7 +45,7 @@ struct Position: Identifiable, Codable {
     
 }
 
-extension Position: Equatable {
+extension PositionInternal: Equatable {
     public static func == (lhs: Self, rhs: Self) -> Bool {
         return (lhs.id == rhs.id)
     }

@@ -21,22 +21,32 @@ public extension Geo.LocationManager {
         public static let fine = Self(clLocationAccuracy: kCLLocationAccuracyBest)
     }
     
-    struct BatchingOptions {
-        public let threshold: Int
-        public let thresholdReached: (Int) -> Bool
+    struct BatchingOption {
+        let threshold: Int
+        public let _thresholdReached: (_ old: LocationUpdate, _ new: LocationUpdate) -> Bool
         
-        public static let `none` = BatchingOptions(threshold: 0, thresholdReached: { _ in true })
+        public static let `none` = BatchingOption(threshold: 0, _thresholdReached: { _, _ in true })
         
-        public static func secondsElapsed(_ threshold: Int) -> BatchingOptions {
-            BatchingOptions(threshold: threshold) { $0 >= threshold }
+        public static func secondsElapsed(_ threshold: Int) -> BatchingOption {
+            BatchingOption(threshold: threshold) { old, new in
+                guard let newTimeStamp = new.timeStamp, let oldTimeStamp = old.timeStamp else {
+                    return false
+                }
+                return Int(newTimeStamp.timeIntervalSince(oldTimeStamp)) >= threshold
+            }
         }
         
-        public static func distanceTravelledInMeters(_ threshold: Int) -> BatchingOptions {
-            BatchingOptions(threshold: threshold) { $0 >= threshold }
+        public static func distanceTravelledInMeters(_ threshold: Int) -> BatchingOption {
+            BatchingOption(threshold: threshold) { old, new in
+                guard let newPosition = new.position, let oldPosition = old.position else {
+                    return false
+                }
+                return Int(newPosition.distance(from: oldPosition)) >= threshold
+            }
         }
     }
     
-    class TrackingSessionOptions {
+    struct TrackingSessionOptions {
         
         /// Name of tracker resource. Set to the default tracker if no tracker is passed in.
         public var tracker: String?
@@ -52,6 +62,9 @@ public extension Geo.LocationManager {
         
         /// Whether background location updates should be allowed.
         /// If `true`, location updates will be received from the OS while the app is backgrounded.
+        /// You must include the UIBackgroundModes key (with the location value) in your app’s Info.plist file
+        /// if you want to set this value to `true`. Not doing so can result in a fatal error that terminates the app.
+        ///
         /// If `false`, location updates will only be received while the app is in the foreground.
         public let allowsBackgroundLocationUpdates: Bool
         
@@ -89,12 +102,12 @@ public extension Geo.LocationManager {
         
         /// Custom defined behavior that allows for location updates to be batched up to a certain threshold
         /// before sending the collected updates as a batch.
-        public let batchingOptions: BatchingOptions
+        public let batchingOption: BatchingOption
         
-        public var proxyDelegate : LocationProxyDelegate?
+        public let locationProxyDelegate: LocationProxyDelegate
         
         public func withProxyDelegate(_ proxyDelegate: LocationProxyDelegate) -> Self {
-            self.proxyDelegate = proxyDelegate
+            self.locationProxyDelegate.didUpdateLocations = proxyDelegate.didUpdateLocations
             return self
         }
         
@@ -102,15 +115,16 @@ public extension Geo.LocationManager {
             tracker: String? = nil,
             desiredAccuracy: LocationAccuracy = .fine,
             requestAlwaysAuthorization: Bool = true,
-            allowsBackgroundLocationUpdates: Bool = true,
+            allowsBackgroundLocationUpdates: Bool = false,
             pausesLocationUpdatesAutomatically: Bool = true,
             activityType: CLActivityType = .automotiveNavigation,
             showsBackgroundLocationIndicator: Bool = false,
             disregardLocationUpdatesWhenOffline: Bool = false,
             wakeAppForSignificantLocationChanges: Bool = false,
             distanceFilter: CLLocationDistance = 0,
-            batchingOptions: BatchingOptions = .none,
-            trackUntil: Date = .distantFuture
+            trackUntil: Date = .distantFuture,
+            batchingOption: BatchingOption = .none,
+            locationProxyDelegate: LocationProxyDelegate = LocationProxyDelegate()
         ) {
             self.tracker = tracker
             self.desiredAccuracy = desiredAccuracy
@@ -123,10 +137,11 @@ public extension Geo.LocationManager {
             self.wakeAppForSignificantLocationChanges = wakeAppForSignificantLocationChanges
             self.distanceFilter = distanceFilter
             self.trackUntil = trackUntil
-            self.batchingOptions = batchingOptions
+            self.batchingOption = batchingOption
+            self.locationProxyDelegate = locationProxyDelegate
         }
         
-        public convenience init(options: TrackingSessionOptions) {
+        public init(options: TrackingSessionOptions) {
             self.init(tracker: options.tracker,
                       desiredAccuracy: options.desiredAccuracy,
                       requestAlwaysAuthorization: options.requestAlwaysAuthorization,
@@ -137,8 +152,23 @@ public extension Geo.LocationManager {
                       disregardLocationUpdatesWhenOffline: options.disregardLocationUpdatesWhenOffline,
                       wakeAppForSignificantLocationChanges: options.wakeAppForSignificantLocationChanges,
                       distanceFilter: options.distanceFilter,
-                      batchingOptions: options.batchingOptions,
-                      trackUntil: options.trackUntil)
+                      trackUntil: options.trackUntil,
+                      batchingOption: options.batchingOption,
+                      locationProxyDelegate: options.locationProxyDelegate)
+        }
+    }
+}
+
+public extension Geo.LocationManager.BatchingOption {
+    
+    struct LocationUpdate {
+        var timeStamp: Date?
+        var position: CLLocation?
+        
+        public init(timeStamp: Date? = nil,
+                    position: CLLocation? = nil) {
+            self.timeStamp = timeStamp
+            self.position = position
         }
     }
 }
