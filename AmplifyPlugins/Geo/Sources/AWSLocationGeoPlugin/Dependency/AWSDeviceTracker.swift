@@ -17,11 +17,11 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
     static let deviceIDKey = "com.amazonaws.Amplify.AWSLocationGeoPlugin.deviceID"
     static let batchSizeForLocationInput = 10
     
+    var options: Geo.LocationManager.TrackingSessionOptions
     let locationManager: CLLocationManager
-    let locationStore: LocationPersistenceBehavior
     let locationService: AWSLocationBehavior
     let networkMonitor: GeoNetworkMonitor
-    var options: Geo.LocationManager.TrackingSessionOptions
+    let locationStore: LocationPersistenceBehavior
     
     init(options: Geo.LocationManager.TrackingSessionOptions,
          locationManager: CLLocationManager,
@@ -29,6 +29,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
         self.options = options
         self.locationManager = locationManager
         self.locationService = locationService
+        self.networkMonitor = GeoNetworkMonitor()
         do {
             self.locationStore = try SQLiteLocationPersistenceAdapter(fileSystemBehavior: LocationFileSystem())
         } catch {
@@ -36,7 +37,6 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
                                     GeoPluginErrorConstants.errorInitializingLocalStore.recoverySuggestion,
                                     error)
         }
-        self.networkMonitor = GeoNetworkMonitor()
     }
     
     func configure(with options: Geo.LocationManager.TrackingSessionOptions) {
@@ -125,12 +125,11 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
         }
         let lastLocationUpdateTime = UserDefaults.standard.object(forKey: AWSDeviceTracker.lastLocationUpdateTimeKey) as? Date
         
-        let thresholdReached = options.batchingOption._thresholdReached(
-            Geo.LocationManager.BatchingOption.LocationUpdate(timeStamp: lastLocationUpdateTime,
-                                                              position: lastUpdatedLocation),
-            Geo.LocationManager.BatchingOption.LocationUpdate(timeStamp: currentTime,
-                                                              position: locations.last)
-        )
+        let thresholdReached = DeviceTrackingHelper.batchingThresholdReached(
+            old: LocationUpdate(timeStamp: lastLocationUpdateTime, location: lastUpdatedLocation),
+            new: LocationUpdate(timeStamp: currentTime, location: locations.last),
+            batchingOption: options.batchingOption)
+        
         
         if thresholdReached && networkMonitor.networkConnected() {
             let receivedPositions = mapReceivedLocationsToPositions(receivedLocations: locations, currentTime: currentTime)
@@ -338,5 +337,33 @@ extension Array {
         return stride(from: 0, to: count, by: size).map {
             Array(self[$0 ..< Swift.min($0 + size, count)])
         }
+    }
+}
+
+extension Geo.LocationManager.BatchingOption {
+    enum BatchingOptionType {
+        case none
+        case distanceTravelledInMetres(value:Int)
+        case secondsElapsed(value:Int)
+    }
+    
+    var batchingOptionType: BatchingOptionType {
+        if let dist = distanceTravelledInMetres {
+            return BatchingOptionType.distanceTravelledInMetres(value: dist)
+        } else if let sec = secondsElapsed {
+            return BatchingOptionType.secondsElapsed(value:sec)
+        } else {
+            return BatchingOptionType.none
+        }
+    }
+}
+
+struct LocationUpdate {
+    let timeStamp: Date?
+    let location: CLLocation?
+    
+    init(timeStamp: Date?, location: CLLocation?) {
+        self.timeStamp = timeStamp
+        self.location = location
     }
 }

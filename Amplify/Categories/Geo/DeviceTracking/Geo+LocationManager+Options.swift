@@ -22,29 +22,25 @@ public extension Geo.LocationManager {
     }
     
     struct BatchingOption {
-        let threshold: Int
-        public let _thresholdReached: (_ old: LocationUpdate, _ new: LocationUpdate) -> Bool
+        public let distanceTravelledInMetres : Int?
+        public let secondsElapsed : Int?
         
-        public static let `none` = BatchingOption(threshold: 0, _thresholdReached: { _, _ in true })
-        
-        public static func secondsElapsed(_ threshold: Int) -> BatchingOption {
-            BatchingOption(threshold: threshold) { old, new in
-                guard let newTimeStamp = new.timeStamp, let oldTimeStamp = old.timeStamp else {
-                    return false
-                }
-                return Int(newTimeStamp.timeIntervalSince(oldTimeStamp)) >= threshold
-            }
+        init(distanceTravelledInMetres: Int? = nil, secondsElapsed: Int? = nil) {
+            self.distanceTravelledInMetres = distanceTravelledInMetres
+            self.secondsElapsed = secondsElapsed
         }
         
-        public static func distanceTravelledInMeters(_ threshold: Int) -> BatchingOption {
-            BatchingOption(threshold: threshold) { old, new in
-                guard let newPosition = new.position, let oldPosition = old.position else {
-                    return false
-                }
-                return Int(newPosition.distance(from: oldPosition)) >= threshold
-            }
+        public static let none = BatchingOption()
+           
+        public static func distanceTravelledInMetres(_ threshold: Int = 100) -> BatchingOption {
+            .init(distanceTravelledInMetres: threshold)
+        }
+           
+        public static func secondsElapsed(_ threshold: Int = 300) -> BatchingOption {
+            .init(secondsElapsed: threshold)
         }
     }
+    
     
     struct TrackingSessionOptions {
         
