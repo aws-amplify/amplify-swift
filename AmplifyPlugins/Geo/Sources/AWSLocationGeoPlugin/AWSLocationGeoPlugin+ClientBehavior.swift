@@ -314,7 +314,9 @@ extension AWSLocationGeoPlugin {
         }
         
         if Self.deviceTracker == nil {
-            Self.deviceTracker = try AWSDeviceTracker(options: optionsWithTracker, locationManager: Geo.LocationManager(options: optionsWithTracker))
+            Self.deviceTracker = try AWSDeviceTracker(options: optionsWithTracker,
+                                                      locationManager: Geo.LocationManager(options: optionsWithTracker),
+                                                      locationService: locationService)
         }
         Self.deviceTracker?.configure(with: optionsWithTracker)
         try Self.deviceTracker?.startTracking(for: device)

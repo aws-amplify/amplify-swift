@@ -36,6 +36,7 @@ class GeoNetworkMonitor {
     }
     
     func networkConnected() -> Bool {
+        Amplify.log.verbose("[GeoNetworkMonitor] networkConnected:\(self.pathStatus)")
         return self.pathStatus == .satisfied
     }
 }

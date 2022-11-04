@@ -36,12 +36,8 @@ public class MockAWSDeviceTracker: AWSDeviceTracker {
         stopDeviceTrackingCalled += 1
         super.stopTracking()
     }
-   
-    public override func sendStoredLocationsToService() async throws {
-        // do nothing
-    }
     
-    public override func sendReceivedLocationsToService(locations: [CLLocation], options: Geo.UpdateLocationOptions) async throws {
+    public override func batchSendLocationsToService(positions: [Position]) {
         // do nothing
     }
     
