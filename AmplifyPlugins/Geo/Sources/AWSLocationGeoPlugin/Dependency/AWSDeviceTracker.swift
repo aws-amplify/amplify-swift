@@ -139,17 +139,35 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
             } else {
                 batchSendStoredLocationsToService(with: receivedPositions)
             }
+            
+            // save last update time
+            UserDefaults.standard.set(currentTime, forKey: AWSDeviceTracker.lastLocationUpdateTimeKey)
+            
+            // save the last element from `locations` received
+            if let lastReceivedLocation = locations.last,
+                let encodedLocation = try? NSKeyedArchiver.archivedData(withRootObject: lastReceivedLocation, requiringSecureCoding: false) {
+                UserDefaults.standard.set(encodedLocation, forKey: AWSDeviceTracker.lastUpdatedLocationKey)
+            } else {
+                Amplify.log.error("Error storing last received location in UserDefaults")
+            }
         } else {
             batchSaveLocationsToLocalStore(receivedLocations: locations, currentTime: currentTime)
         }
         
-        // save lastLocation and last time a location update is received
-        UserDefaults.standard.set(currentTime, forKey: AWSDeviceTracker.lastLocationUpdateTimeKey)
-        if let lastReceivedLocation = locations.last,
-            let encodedLocation = try? NSKeyedArchiver.archivedData(withRootObject: lastReceivedLocation, requiringSecureCoding: false) {
-            UserDefaults.standard.set(encodedLocation, forKey: AWSDeviceTracker.lastUpdatedLocationKey)
-        } else {
-            Amplify.log.error("Error storing last received location in UserDefaults")
+        // first time a location update is received, set it as the first locationUpdateTime for
+        // future comparisons to API/delegate update time
+        if lastLocationUpdateTime == nil {
+            UserDefaults.standard.set(currentTime, forKey: AWSDeviceTracker.lastLocationUpdateTimeKey)
+        }
+        
+        // first time a location update is received, save the first element from `locations` received
+        if lastUpdatedLocation == nil {
+            if let lastReceivedLocation = locations.first,
+                let encodedLocation = try? NSKeyedArchiver.archivedData(withRootObject: lastReceivedLocation, requiringSecureCoding: false) {
+                UserDefaults.standard.set(encodedLocation, forKey: AWSDeviceTracker.lastUpdatedLocationKey)
+            } else {
+                Amplify.log.error("Error storing last received location in UserDefaults")
+            }
         }
     }
     
