@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import UIKit
 
 extension Geo.Device {
     public struct Error: Swift.Error, CustomDebugStringConvertible {
