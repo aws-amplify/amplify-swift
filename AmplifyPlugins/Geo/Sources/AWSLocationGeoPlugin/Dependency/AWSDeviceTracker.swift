@@ -244,7 +244,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
     func checkPermissionsAndStartTracking() throws {
         let authorizationStatus: CLAuthorizationStatus
 
-        if #available(iOS 14, *) {
+        if #available(iOS 14, macOS 11.0, *) {
             authorizationStatus = locationManager.authorizationStatus
         } else {
             authorizationStatus = CLLocationManager.authorizationStatus()
