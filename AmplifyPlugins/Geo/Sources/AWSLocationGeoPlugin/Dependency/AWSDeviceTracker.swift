@@ -69,7 +69,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
     
     func stopTracking() {
         // flush out stored events
-        batchSendLocationsToService(positions: mapStoredLocationsToPositions())
+        batchSendStoredLocationsToService(with: [])
         networkMonitor.cancel()
         locationManager.stopUpdatingLocation()
         locationManager.stopMonitoringSignificantLocationChanges()
@@ -111,9 +111,8 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
         let currentTime = Date()
         // check if trackUntil time has elapsed
         if(options.trackUntil < currentTime) {
-            var allPositions = mapReceivedLocationsToPositions(receivedLocations: locations, currentTime: currentTime)
-            allPositions.append(contentsOf: mapStoredLocationsToPositions())
-            batchSendLocationsToService(positions: allPositions)
+            batchSendStoredLocationsToService(with: mapReceivedLocationsToPositions(receivedLocations: locations,
+                                                                                    currentTime: currentTime))
             stopTracking()
             return
         }
@@ -134,13 +133,11 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
         )
         
         if thresholdReached {
-            var allPositions = mapReceivedLocationsToPositions(receivedLocations: locations, currentTime: currentTime)
-            allPositions.append(contentsOf: mapStoredLocationsToPositions())
-            
+            let receivedPositions = mapReceivedLocationsToPositions(receivedLocations: locations, currentTime: currentTime)
             if let didUpdateLocations = options.locationProxyDelegate.didUpdateLocations {
-                didUpdateLocations(allPositions)
+                batchSendStoredLocationsToProxyDelegate(with: receivedPositions, didUpdateLocations: didUpdateLocations)
             } else {
-                batchSendLocationsToService(positions: allPositions)
+                batchSendStoredLocationsToService(with: receivedPositions)
             }
         } else {
             batchSaveLocationsToLocalStore(receivedLocations: locations, currentTime: currentTime)
@@ -156,28 +153,30 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
         }
     }
     
-    func getLocationsFromLocalStore() throws -> [PositionInternal] {
-        let storedLocations = try locationStore.getAll()
-        try locationStore.removeAll()
+    func getLocationsFromLocalStore() async throws -> [PositionInternal] {
+        let storedLocations = try await locationStore.getAll()
+        try await locationStore.removeAll()
         return storedLocations
     }
     
     func batchSaveLocationsToLocalStore(receivedLocations: [CLLocation], currentTime: Date) {
-        do {
-            guard let deviceID = UserDefaults.standard.object(forKey: AWSDeviceTracker.deviceIDKey) as? String else {
-                Amplify.log.error("Not able to fetch deviceId from UserDefaults")
-                // TODO: send error on hub
-                return
+        Task {
+            do {
+                guard let deviceID = UserDefaults.standard.object(forKey: AWSDeviceTracker.deviceIDKey) as? String else {
+                    Amplify.log.error("Not able to fetch deviceId from UserDefaults")
+                    // TODO: send error on hub
+                    return
+                }
+                
+                let positionsToStore = receivedLocations.map({ PositionInternal(timeStamp: currentTime,
+                                                                                latitude: $0.coordinate.latitude,
+                                                                                longitude: $0.coordinate.longitude,
+                                                                                tracker: options.tracker!,
+                                                                                deviceID: deviceID) })
+                try await self.locationStore.insert(positions: positionsToStore)
+            } catch {
+                // TODO: send error on Hub
             }
-            
-            let positionsToStore = receivedLocations.map({ PositionInternal(timeStamp: currentTime,
-                                                                            latitude: $0.coordinate.latitude,
-                                                                            longitude: $0.coordinate.longitude,
-                                                                            tracker: options.tracker!,
-                                                                            deviceID: deviceID) })
-            try self.locationStore.insert(positions: positionsToStore)
-        } catch {
-            // TODO: send error on Hub
         }
     }
 
@@ -197,9 +196,9 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
         })
     }
     
-    private func mapStoredLocationsToPositions() -> [Position] {
+    private func mapStoredLocationsToPositions() async -> [Position] {
         do {
-            let storedLocations = try getLocationsFromLocalStore()
+            let storedLocations = try await getLocationsFromLocalStore()
             return storedLocations.map( {
                 Position(timeStamp: $0.timeStamp,
                          latitude: $0.latitude,
@@ -213,29 +212,42 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
         return []
     }
     
-    func batchSendLocationsToService(positions: [Position]) {
-        // send stored locations to service
-        let positionChunks = positions.chunked(into: AWSDeviceTracker.batchSizeForLocationInput)
-        for chunk in positionChunks {
-            // start a new task for each chunk
-            Task {
-                do {
-                    let locationUpdates = chunk.map ( {
-                        LocationClientTypes.DevicePositionUpdate(
-                            accuracy: nil,
-                            deviceId: $0.deviceID,
-                            position: [$0.longitude, $0.latitude],
-                            positionProperties: nil,
-                            sampleTime: Date())
-                    } )
-                    let input = BatchUpdateDevicePositionInput(trackerName: options.tracker!, updates: locationUpdates)
-                    let _ = try await locationService.updateLocation(forUpdateDevicePosition: input)
-                    // TODO: send error on hub
-                    // if let error = response.errors?.first as? Error {
-                    //    throw GeoErrorHelper.mapAWSLocationError(error)
-                    // }
-                } catch {
-                    // TODO: send error on hub
+    func batchSendStoredLocationsToProxyDelegate(with receivedPositions: [Position],
+                                                 didUpdateLocations: @escaping (([Position]) -> Void)) {
+        Task {
+            var allPositions = await mapStoredLocationsToPositions()
+            allPositions.append(contentsOf: receivedPositions)
+            didUpdateLocations(allPositions)
+        }
+    }
+    
+    func batchSendStoredLocationsToService(with receivedPositions: [Position]) {
+        Task {
+            var storedPositions = await mapStoredLocationsToPositions()
+            storedPositions.append(contentsOf: receivedPositions)
+            // send all locations to service
+            let positionChunks = storedPositions.chunked(into: AWSDeviceTracker.batchSizeForLocationInput)
+            for chunk in positionChunks {
+                // start a new task for each chunk
+                Task {
+                    do {
+                        let locationUpdates = chunk.map ( {
+                            LocationClientTypes.DevicePositionUpdate(
+                                accuracy: nil,
+                                deviceId: $0.deviceID,
+                                position: [$0.longitude, $0.latitude],
+                                positionProperties: nil,
+                                sampleTime: Date())
+                        } )
+                        let input = BatchUpdateDevicePositionInput(trackerName: options.tracker!, updates: locationUpdates)
+                        let _ = try await locationService.updateLocation(forUpdateDevicePosition: input)
+                        // TODO: send error on hub
+                        // if let error = response.errors?.first as? Error {
+                        //    throw GeoErrorHelper.mapAWSLocationError(error)
+                        // }
+                    } catch {
+                        // TODO: send error on hub
+                    }
                 }
             }
         }
