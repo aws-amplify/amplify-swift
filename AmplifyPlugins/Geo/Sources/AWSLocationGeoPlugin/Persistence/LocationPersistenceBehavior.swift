@@ -9,16 +9,16 @@ import Foundation
 
 protocol LocationPersistenceBehavior {
     
-    func insert(position: PositionInternal) throws
+    func insert(position: PositionInternal) async throws
     
-    func insert(positions: [PositionInternal]) throws
+    func insert(positions: [PositionInternal]) async throws
     
-    func remove(position: PositionInternal) throws
+    func remove(position: PositionInternal) async throws
     
-    func remove(positions: [PositionInternal]) throws
+    func remove(positions: [PositionInternal]) async throws
     
-    func getAll() throws -> [PositionInternal]
+    func getAll() async throws -> [PositionInternal]
     
-    func removeAll() throws
+    func removeAll() async throws
     
 }
