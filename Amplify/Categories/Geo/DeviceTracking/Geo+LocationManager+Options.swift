@@ -103,7 +103,7 @@ public extension Geo.LocationManager {
         public let locationProxyDelegate: LocationProxyDelegate
         
         public func withProxyDelegate(_ proxyDelegate: LocationProxyDelegate) -> Self {
-            self.locationProxyDelegate.didUpdateLocations = proxyDelegate.didUpdateLocations
+            self.locationProxyDelegate.didUpdatePositions = proxyDelegate.didUpdatePositions
             return self
         }
         

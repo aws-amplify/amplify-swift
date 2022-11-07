@@ -20,10 +20,10 @@ class AWSDeviceTrackerTests : AWSLocationGeoPluginTestBase {
     /// - Then: Custom proxydelegate is called
     func testProxyDelegateCalled() async {
         var count = 0
-        let didUpdateLocations: ([Position]) -> Void  = { locations in
+        let didUpdatePositions: ([Position]) -> Void  = { locations in
             count += 1
         }
-        let locationProxyDelegate = LocationProxyDelegate(didUpdateLocations: didUpdateLocations)
+        let locationProxyDelegate = LocationProxyDelegate(didUpdatePositions: didUpdatePositions)
         let trackingSessionOptions = Geo.LocationManager.TrackingSessionOptions().withProxyDelegate(locationProxyDelegate)
         do {
             try await geoPlugin.startTracking(for: .tiedToDevice(), with: trackingSessionOptions)

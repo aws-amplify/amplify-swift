@@ -9,12 +9,12 @@ import Foundation
 import CoreLocation
 
 public class LocationProxyDelegate {
-    public var didUpdateLocations: (([Position]) -> Void)?
+    public var didUpdatePositions: (([Position]) -> Void)?
     
     public init() { }
     
-    public init(didUpdateLocations: @escaping ([Position]) -> Void) {
-        self.didUpdateLocations = didUpdateLocations
+    public init(didUpdatePositions: @escaping ([Position]) -> Void) {
+        self.didUpdatePositions = didUpdatePositions
     }
 }
 
