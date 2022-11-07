@@ -20,6 +20,8 @@ public extension Geo {
         case serviceError(ErrorDescription, RecoverySuggestion, Swift.Error? = nil)
         /// Encapsulated error received by a dependent plugin
         case pluginError(AmplifyError)
+        /// Internal error within plugin
+        case internalPluginError(ErrorDescription, RecoverySuggestion, Swift.Error? = nil)
         /// Unknown Error
         case unknown(ErrorDescription, RecoverySuggestion, Swift.Error? = nil)
     }
@@ -46,7 +48,8 @@ extension Geo.Error: AmplifyError {
              .networkError(let errorDescription, _, _),
              .accessDenied(let errorDescription, _, _),
              .serviceError(let errorDescription, _, _),
-             .unknown(let errorDescription, _, _):
+             .unknown(let errorDescription, _, _),
+             .internalPluginError(let errorDescription, _, _):
             return errorDescription
         case .pluginError(let error):
             return error.errorDescription
@@ -60,7 +63,8 @@ extension Geo.Error: AmplifyError {
              .networkError(_, let recoverySuggestion, _),
              .accessDenied(_, let recoverySuggestion, _),
              .serviceError(_, let recoverySuggestion, _),
-             .unknown(_, let recoverySuggestion, _):
+             .unknown(_, let recoverySuggestion, _),
+             .internalPluginError(_ , let recoverySuggestion, _):
             return recoverySuggestion
         case .pluginError(let error):
             return error.recoverySuggestion
@@ -74,7 +78,8 @@ extension Geo.Error: AmplifyError {
              .networkError(_, _, let underlyingError),
              .accessDenied(_, _, let underlyingError),
              .serviceError(_, _, let underlyingError),
-             .unknown(_, _, let underlyingError):
+             .unknown(_, _, let underlyingError),
+             .internalPluginError(_, _, let underlyingError):
             return underlyingError
         case .pluginError(let error):
             return error.underlyingError

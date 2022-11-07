@@ -9,3 +9,7 @@ public extension HubPayload.EventName {
     /// Geo hub events
     struct Geo { }
 }
+
+public extension HubPayload.EventName.Geo {
+    static let saveLocationsFailed = "Geo.saveLocationsFailed"
+}
