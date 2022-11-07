@@ -182,8 +182,6 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
             do {
                 guard let deviceID = UserDefaults.standard.object(forKey: AWSDeviceTracker.deviceIDKey) as? String else {
                     Amplify.log.error("Not able to fetch deviceId from UserDefaults")
-                    let locations = receivedLocations.map({
-                        Geo.Location(latitude: $0.coordinate.latitude, longitude: $0.coordinate.longitude) })
                     sendHubErrorEvent(locations: receivedLocations)
                     return
                 }
@@ -251,7 +249,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
     
     func batchSendStoredLocationsToService(with receivedPositions: [Position]) {
         Task {
-            var storedPositions = await mapStoredLocationsToPositions()
+            var storedPositions = await self.mapStoredLocationsToPositions()
             storedPositions.append(contentsOf: receivedPositions)
             // send all locations to service
             let positionChunks = storedPositions.chunked(into: AWSDeviceTracker.batchSizeForLocationInput)
@@ -267,19 +265,21 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
                                 positionProperties: nil,
                                 sampleTime: Date())
                         } )
-                        let input = BatchUpdateDevicePositionInput(trackerName: options.tracker!, updates: locationUpdates)
-                        let _ = try await locationService.updateLocation(forUpdateDevicePosition: input)
-                        Amplify.log.error("Unable to send locations to service.")
-                        let geoError = Geo.Error.serviceError(
-                             GeoPluginErrorConstants.errorSaveLocationsFailed.errorDescription, GeoPluginErrorConstants.errorSaveLocationsFailed.recoverySuggestion, error)
-                        sendHubErrorEvent(error: geoError, locations: positions)
-                        throw GeoErrorHelper.mapAWSLocationError(error)
+                        let input = BatchUpdateDevicePositionInput(trackerName: self.options.tracker!, updates: locationUpdates)
+                        let response = try await locationService.updateLocation(forUpdateDevicePosition: input)
+                        if let error = response.errors?.first as? Error {
+                            Amplify.log.error("Unable to send locations to service.")
+                            let geoError = Geo.Error.serviceError(
+                                 GeoPluginErrorConstants.errorSaveLocationsFailed.errorDescription, GeoPluginErrorConstants.errorSaveLocationsFailed.recoverySuggestion, error)
+                            sendHubErrorEvent(error: geoError, locations: chunk)
+                            throw GeoErrorHelper.mapAWSLocationError(error)
+                        }
                     } catch {
                       Amplify.log.error("Unable to send locations to service.")
                       let geoError = Geo.Error.serviceError(
                           GeoPluginErrorConstants.errorSaveLocationsFailed.errorDescription, GeoPluginErrorConstants.errorSaveLocationsFailed.recoverySuggestion,
                           error)
-                      sendHubErrorEvent(error: geoError, locations: positions)
+                      sendHubErrorEvent(error: geoError, locations: chunk)
                     }
                 }
             }
