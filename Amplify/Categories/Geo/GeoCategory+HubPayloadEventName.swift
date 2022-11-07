@@ -11,5 +11,5 @@ public extension HubPayload.EventName {
 }
 
 public extension HubPayload.EventName.Geo {
-    static let saveLocationFailed = "Geo.saveLocationFailed"
+    static let saveLocationsFailed = "Geo.saveLocationsFailed"
 }

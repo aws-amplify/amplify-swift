@@ -32,7 +32,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
         do {
             self.locationStore = try SQLiteLocationPersistenceAdapter(fileSystemBehavior: LocationFileSystem())
         } catch {
-            throw Geo.Error.unknown(GeoPluginErrorConstants.errorInitializingLocalStore.errorDescription,
+            throw Geo.Error.internalPluginError(GeoPluginErrorConstants.errorInitializingLocalStore.errorDescription,
                                     GeoPluginErrorConstants.errorInitializingLocalStore.recoverySuggestion,
                                     error)
         }
@@ -179,7 +179,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
                                                                             deviceID: deviceID) })
             try self.locationStore.insert(positions: positionsToStore)
         } catch {
-            let geoError = Geo.Error.unknown(
+            let geoError = Geo.Error.internalPluginError(
                 GeoPluginErrorConstants.errorSavingLocationsToLocalStore.errorDescription, GeoPluginErrorConstants.errorSavingLocationsToLocalStore.recoverySuggestion,
                 error)
             sendHubErrorEvent(error: geoError, locations: receivedLocations)
@@ -189,7 +189,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
     func mapReceivedLocationsToPositions(receivedLocations: [CLLocation], currentTime: Date) -> [Position] {
         guard let deviceId = UserDefaults.standard.object(forKey: AWSDeviceTracker.deviceIDKey) as? String else {
             Amplify.log.error("Not able to fetch deviceId from UserDefaults")
-            let error = Geo.Error.unknown(
+            let error = Geo.Error.internalPluginError(
                 GeoPluginErrorConstants.errorSaveLocationsFailed.errorDescription, GeoPluginErrorConstants.errorSaveLocationsFailed.recoverySuggestion)
             sendHubErrorEvent(error: error, locations: receivedLocations)
             return []
@@ -216,7 +216,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
             } )
         } catch {
             Amplify.log.error("Unable to convert stored locations to positions.")
-            let geoError = Geo.Error.unknown(
+            let geoError = Geo.Error.internalPluginError(
                 GeoPluginErrorConstants.errorSaveLocationsFailed.errorDescription, GeoPluginErrorConstants.errorSaveLocationsFailed.recoverySuggestion,
                 error)
             sendHubErrorEvent(error: geoError, locations: [Position]())
@@ -242,16 +242,16 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
                     let input = BatchUpdateDevicePositionInput(trackerName: options.tracker!, updates: locationUpdates)
                     let response = try await locationService.updateLocation(forUpdateDevicePosition: input)
                      if let error = response.errors?.first as? Error {
-                         Amplify.log.error("Unable to convert stored locations to positions.")
-                         let geoError = Geo.Error.unknown(
+                         Amplify.log.error("Unable to send locations to service.")
+                         let geoError = Geo.Error.serviceError(
                              GeoPluginErrorConstants.errorSaveLocationsFailed.errorDescription, GeoPluginErrorConstants.errorSaveLocationsFailed.recoverySuggestion,
                              error)
                          sendHubErrorEvent(error: geoError, locations: positions)
                         throw GeoErrorHelper.mapAWSLocationError(error)
                      }
                 } catch {
-                    Amplify.log.error("Unable to convert stored locations to positions.")
-                    let geoError = Geo.Error.unknown(
+                    Amplify.log.error("Unable to send locations to service.")
+                    let geoError = Geo.Error.serviceError(
                         GeoPluginErrorConstants.errorSaveLocationsFailed.errorDescription, GeoPluginErrorConstants.errorSaveLocationsFailed.recoverySuggestion,
                         error)
                     sendHubErrorEvent(error: geoError, locations: positions)
@@ -282,10 +282,10 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
             }
         case .restricted, .denied:
             stopTracking()
-            throw Geo.Error.unknown(GeoPluginErrorConstants.missingPermissions.errorDescription,
+            throw Geo.Error.internalPluginError(GeoPluginErrorConstants.missingPermissions.errorDescription,
                                     GeoPluginErrorConstants.missingPermissions.recoverySuggestion)
         @unknown default:
-            throw Geo.Error.unknown(GeoPluginErrorConstants.missingPermissions.errorDescription,
+            throw Geo.Error.internalPluginError(GeoPluginErrorConstants.missingPermissions.errorDescription,
                                     GeoPluginErrorConstants.missingPermissions.recoverySuggestion)
         }
     }
@@ -294,7 +294,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
         let geoLocations = locations.map({
             Geo.Location(latitude: $0.coordinate.latitude, longitude: $0.coordinate.longitude) })
         let data = AWSGeoHubPayloadData(error: error, locations: geoLocations)
-        let payload = HubPayload(eventName: HubPayload.EventName.Geo.saveLocationFailed, data: data)
+        let payload = HubPayload(eventName: HubPayload.EventName.Geo.saveLocationsFailed, data: data)
         Amplify.Hub.dispatch(to: .geo, payload: payload)
     }
     
@@ -302,7 +302,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
         let geoLocations = locations.map({
             Geo.Location(latitude: $0.latitude, longitude: $0.longitude) })
         let data = AWSGeoHubPayloadData(error: error, locations: geoLocations)
-        let payload = HubPayload(eventName: HubPayload.EventName.Geo.saveLocationFailed, data: data)
+        let payload = HubPayload(eventName: HubPayload.EventName.Geo.saveLocationsFailed, data: data)
         Amplify.Hub.dispatch(to: .geo, payload: payload)
     }
 }
