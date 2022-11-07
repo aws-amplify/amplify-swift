@@ -53,7 +53,7 @@ jobs:
       - name: Run Integration test
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
-          project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp/AWSDataStorePluginV2Tests
+          project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
           scheme: AWSDataStorePluginV2Tests
 
  
