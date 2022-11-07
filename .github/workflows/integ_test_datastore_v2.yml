@@ -30,7 +30,7 @@ jobs:
 
   datastore-integration-v2-test:
     continue-on-error: true
-    timeout-minutes: 17
+    timeout-minutes: 20
     needs: prepare-for-test
     runs-on: macos-12
     environment: IntegrationTest
