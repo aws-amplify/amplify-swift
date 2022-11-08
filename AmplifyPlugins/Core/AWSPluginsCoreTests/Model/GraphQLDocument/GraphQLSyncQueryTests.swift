@@ -81,7 +81,9 @@ class GraphQLSyncQueryTests: XCTestCase {
     }
 
     func testSyncGraphQLQueryForComment() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema,
+                                                               operationType: .query,
+                                                               primaryKeysOnly: true)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: PaginationDecorator(limit: 100, nextToken: "token"))
         documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: 123))

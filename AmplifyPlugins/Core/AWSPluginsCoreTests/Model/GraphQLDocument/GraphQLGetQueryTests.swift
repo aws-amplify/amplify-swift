@@ -96,13 +96,14 @@ class GraphQLGetQueryTests: XCTestCase {
     ///   - the model is of type `Comment`
     ///   - the model has eager loaded associations
     ///   - the query is of type `.get`
+    ///   - primaryKeysOnly true in selection set
     /// - Then:
     ///   - check if the generated GraphQL document is valid query:
     ///     - it contains an `id` argument of type `ID!`
     ///     - it is named `getComment`
     ///     - it has a list of fields with a nested `post`
-    func testGetGraphQLQueryFromModelWithAssociation() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .query)
+    func testGetGraphQLQueryFromModelWithAssociationPrimaryKeysOnly() {
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .query, primaryKeysOnly: true)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
         let document = documentBuilder.build()
@@ -128,9 +129,55 @@ class GraphQLGetQueryTests: XCTestCase {
         }
         XCTAssertEqual(variables["id"] as? String, "id")
     }
+    
+    /// - Given: a `Model` type
+    /// - When:
+    ///   - the model is of type `Comment`
+    ///   - the model has eager loaded associations
+    ///   - the query is of type `.get`
+    ///   - primaryKeysOnly false in selection set
+    /// - Then:
+    ///   - check if the generated GraphQL document is valid query:
+    ///     - it contains an `id` argument of type `ID!`
+    ///     - it is named `getComment`
+    ///     - it has a list of fields with a nested `post`
+    func testGetGraphQLQueryFromModelWithAssociation() {
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .query, primaryKeysOnly: false)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
+        documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
+        let document = documentBuilder.build()
+        let expectedQueryDocument = """
+        query GetComment($id: ID!) {
+          getComment(id: $id) {
+            id
+            content
+            createdAt
+            post {
+              id
+              content
+              createdAt
+              draft
+              rating
+              status
+              title
+              updatedAt
+              __typename
+            }
+            __typename
+          }
+        }
+        """
+        XCTAssertEqual(document.name, "getComment")
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssertEqual(variables["id"] as? String, "id")
+    }
 
-    func testGetGraphQLQueryFromModelWithAssociationAndSyncEnabled() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .query)
+    func testGetGraphQLQueryFromModelWithAssociationAndSyncEnabledPrimaryKeysOnly() {
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .query, primaryKeysOnly: true)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
@@ -143,6 +190,48 @@ class GraphQLGetQueryTests: XCTestCase {
             createdAt
             post {
               id
+              __typename
+              _version
+              _deleted
+              _lastChangedAt
+            }
+            __typename
+            _version
+            _deleted
+            _lastChangedAt
+          }
+        }
+        """
+        XCTAssertEqual(document.name, "getComment")
+        XCTAssertEqual(document.stringValue, expectedQueryDocument)
+        guard let variables = document.variables else {
+            XCTFail("The document doesn't contain variables")
+            return
+        }
+        XCTAssertEqual(variables["id"] as? String, "id")
+    }
+    
+    func testGetGraphQLQueryFromModelWithAssociationAndSyncEnabled() {
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .query, primaryKeysOnly: false)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
+        documentBuilder.add(decorator: ModelIdDecorator(id: "id"))
+        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        let document = documentBuilder.build()
+        let expectedQueryDocument = """
+        query GetComment($id: ID!) {
+          getComment(id: $id) {
+            id
+            content
+            createdAt
+            post {
+              id
+              content
+              createdAt
+              draft
+              rating
+              status
+              title
+              updatedAt
               __typename
               _version
               _deleted
@@ -184,6 +273,7 @@ class GraphQLGetQueryTests: XCTestCase {
             description
             name
             updatedAt
+            cover
             __typename
           }
         }

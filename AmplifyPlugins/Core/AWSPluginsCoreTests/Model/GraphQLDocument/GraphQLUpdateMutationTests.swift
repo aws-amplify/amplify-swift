@@ -36,7 +36,7 @@ class GraphQLUpdateMutationTests: XCTestCase {
         let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
-        documentBuilder.add(decorator: ModelDecorator(model: post))
+        documentBuilder.add(decorator: ModelDecorator(model: post, mutationType: .update))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         mutation UpdatePost($input: UpdatePostInput!) {
@@ -84,7 +84,7 @@ class GraphQLUpdateMutationTests: XCTestCase {
         let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
-        documentBuilder.add(decorator: ModelDecorator(model: post))
+        documentBuilder.add(decorator: ModelDecorator(model: post, mutationType: .update))
         documentBuilder.add(decorator: ConflictResolutionDecorator(version: 5))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
@@ -129,7 +129,7 @@ class GraphQLUpdateMutationTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Record.schema,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
-        documentBuilder.add(decorator: ModelDecorator(model: record))
+        documentBuilder.add(decorator: ModelDecorator(model: record, mutationType: .update))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let expectedQueryDocument = """
@@ -141,6 +141,7 @@ class GraphQLUpdateMutationTests: XCTestCase {
             description
             name
             updatedAt
+            cover
             __typename
             _version
             _deleted

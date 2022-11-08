@@ -108,10 +108,10 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
         XCTAssertEqual(savedComment.id, "id")
         XCTAssertEqual(savedComment.content, "content")
         switch savedComment._post.modelProvider.getState() {
-        case .notLoaded:
-            XCTFail("should be loaded, with `nil` element")
-        case .loaded(let element):
-            XCTAssertNil(element)
+        case .notLoaded(let identifiers):
+            XCTAssertNil(identifiers)
+        case .loaded:
+            XCTFail("should be not loaded, with `nil` identifiers")
         }
     }
     
@@ -376,6 +376,10 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
         XCTAssertEqual(commentWithLazyLoadPost.content, "content")
         switch commentWithLazyLoadPost._post.modelProvider.getState() {
         case .notLoaded(let identifiers):
+            guard let identifiers = identifiers else {
+                XCTFail("Missing identifiers")
+                return
+            }
             XCTAssertEqual(identifiers["id"], post.id)
         case .loaded:
             XCTFail("should be in not loaded state when post data is partial")
@@ -449,6 +453,10 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
         }
         switch comment._post.modelProvider.getState() {
         case .notLoaded(let identifiers):
+            guard let identifiers = identifiers else {
+                XCTFail("Missing identifiers")
+                return
+            }
             XCTAssertEqual(identifiers["id"], post.id)
         case .loaded:
             XCTFail("Should be in not loaded state")

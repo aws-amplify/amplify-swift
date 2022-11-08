@@ -125,7 +125,7 @@ class GraphQLDeleteMutationTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Record.schema,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
-        documentBuilder.add(decorator: ModelDecorator(model: record))
+        documentBuilder.add(decorator: ModelDecorator(model: record, mutationType: .create))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let expectedQueryDocument = """
@@ -137,6 +137,7 @@ class GraphQLDeleteMutationTests: XCTestCase {
             description
             name
             updatedAt
+            cover
             __typename
             _version
             _deleted

@@ -48,6 +48,7 @@ class GraphQLRequestOptionalAssociationTests: XCTestCase {
         XCTAssertEqual(input["name"] as? String, user.name)
     }
 
+    
     func testCreateUserFollowingGraphQLRequest() {
         let user1 = User(name: "user1")
         let user2 = User(name: "user2")

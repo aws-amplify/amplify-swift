@@ -37,12 +37,12 @@ public class SelectionSetField {
 extension SelectionSet {
 
     /// Construct a `SelectionSet` with model fields
-    convenience init(fields: [ModelField]) {
+    convenience init(fields: [ModelField], primaryKeysOnly: Bool = false) {
         self.init(value: SelectionSetField(fieldType: .model))
-        withModelFields(fields)
+        withModelFields(fields, primaryKeysOnly: primaryKeysOnly)
     }
 
-    func withModelFields(_ fields: [ModelField], recursive: Bool = true) {
+    func withModelFields(_ fields: [ModelField], recursive: Bool = true, primaryKeysOnly: Bool) {
         fields.forEach { field in
             if field.isEmbeddedType, let embeddedTypeSchema = field.embeddedTypeSchema {
                 let child = SelectionSet(value: .init(name: field.name, fieldType: .embedded))
@@ -58,7 +58,12 @@ extension SelectionSet {
                     }
                     
                     let child = SelectionSet(value: .init(name: field.name, fieldType: .model))
-                    child.withModelFields(schema.primaryKey.fields, recursive: recursive)
+                    if primaryKeysOnly {
+                        child.withModelFields(schema.primaryKey.fields, recursive: recursive, primaryKeysOnly: primaryKeysOnly)
+                    } else {
+                        child.withModelFields(schema.graphQLFields, recursive: recursive, primaryKeysOnly: primaryKeysOnly)
+                    }
+                    
                     self.addChild(settingParentOf: child)
                 }
             } else {

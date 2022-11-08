@@ -55,7 +55,7 @@ extension PropertyContainerPath {
         let fieldType: SelectionSetFieldType = metadata.isCollection ? .collection : .model
         
         var selectionSet = SelectionSet(value: .init(name: metadata.name, fieldType: fieldType))
-        selectionSet.withModelFields(schema.graphQLFields)
+        selectionSet.withModelFields(schema.graphQLFields, primaryKeysOnly: true)
         if let parent = metadata.parent as? PropertyContainerPath,
            parent.getMetadata().parent != nil || includeRoot {
             let parentSelectionSet = parent.asSelectionSet(includeRoot: includeRoot)

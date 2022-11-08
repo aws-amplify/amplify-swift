@@ -56,10 +56,11 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         let savedComment = try await saveAsync(comment)
         XCTAssertEqual(savedComment.id, comment.id)
         switch savedComment._post.modelProvider.getState() {
-        case .notLoaded:
+        case .notLoaded(let identifiers):
+            XCTAssertNil(identifiers)
+            
+        case .loaded:
             XCTFail("should be loaded, with `nil` element")
-        case .loaded(let element):
-            XCTAssertNil(element)
         }
         guard let queriedComment = try await queryAsync(LazyChildComment4V2.self,
                                                         byIdentifier: comment.id,
@@ -69,10 +70,10 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         }
         XCTAssertEqual(queriedComment.id, queriedComment.id)
         switch queriedComment._post.modelProvider.getState() {
-        case .notLoaded:
-            XCTFail("should be loaded, with `nil` element")
-        case .loaded(let element):
-            XCTAssertNil(element)
+        case .notLoaded(let identifiers):
+            XCTAssertNil(identifiers)
+        case .loaded:
+            XCTFail("should be not loaded, with `nil` identifiers")
         }
     }
     
@@ -203,6 +204,10 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         XCTAssertEqual(comment2.content, "updatedContent")
         switch comment2._post.modelProvider.getState() {
         case .notLoaded(let identifiers):
+            guard let identifiers = identifiers else {
+                XCTFail("Missing identifiers")
+                return
+            }
             XCTAssertEqual(identifiers["id"], "postId")
         case .loaded:
             XCTFail("Should be not loaded")
@@ -254,6 +259,10 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         }
         switch queriedCommentLazyLoadedPost._post.modelProvider.getState() {
         case .notLoaded(let identifiers):
+            guard let identifiers = identifiers else {
+                XCTFail("Missing identifiers")
+                return
+            }
             XCTAssertEqual(identifiers["id"], post.id)
         case .loaded:
             XCTFail("lazy loaded post should be not loaded")
@@ -341,12 +350,20 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         }
         switch comment1._post.modelProvider.getState() {
         case .notLoaded(let identifiers):
+            guard let identifiers = identifiers else {
+                XCTFail("Missing identifiers")
+                return
+            }
             XCTAssertEqual(identifiers["id"], "postId1")
         case .loaded:
             XCTFail("Should be not loaded")
         }
         switch comment2._post.modelProvider.getState() {
         case .notLoaded(let identifiers):
+            guard let identifiers = identifiers else {
+                XCTFail("Missing identifiers")
+                return
+            }
             XCTAssertEqual(identifiers["id"], "postId2")
         case .loaded:
             XCTFail("Should be not loaded")

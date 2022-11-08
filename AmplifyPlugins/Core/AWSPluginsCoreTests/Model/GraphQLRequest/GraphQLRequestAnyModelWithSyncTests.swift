@@ -66,7 +66,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: post.modelName,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
-        documentBuilder.add(decorator: ModelDecorator(model: post))
+        documentBuilder.add(decorator: ModelDecorator(model: post, mutationType: .create))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let documentStringValue = """
@@ -109,7 +109,7 @@ class GraphQLRequestAnyModelWithSyncTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: post.modelName,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
-        documentBuilder.add(decorator: ModelDecorator(model: post))
+        documentBuilder.add(decorator: ModelDecorator(model: post, mutationType: .update))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()
         let documentStringValue = """

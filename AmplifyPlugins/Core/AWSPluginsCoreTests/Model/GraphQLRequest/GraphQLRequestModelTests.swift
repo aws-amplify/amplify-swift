@@ -26,7 +26,7 @@ class GraphQLRequestModelTest: XCTestCase {
         let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .create))
-        documentBuilder.add(decorator: ModelDecorator(model: post))
+        documentBuilder.add(decorator: ModelDecorator(model: post, mutationType: .create))
         let document = documentBuilder.build()
 
         let request = GraphQLRequest<Post>.create(post)
@@ -40,7 +40,7 @@ class GraphQLRequestModelTest: XCTestCase {
         let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .update))
-        documentBuilder.add(decorator: ModelDecorator(model: post))
+        documentBuilder.add(decorator: ModelDecorator(model: post, mutationType: .update))
         let document = documentBuilder.build()
 
         let request = GraphQLRequest<Post>.update(post)
@@ -54,7 +54,7 @@ class GraphQLRequestModelTest: XCTestCase {
         let post = Post(title: "title", content: "content", createdAt: .now())
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
-        documentBuilder.add(decorator: ModelDecorator(model: post))
+        documentBuilder.add(decorator: ModelDecorator(model: post, mutationType: .delete))
         let document = documentBuilder.build()
 
         let request = GraphQLRequest<Post>.delete(post)

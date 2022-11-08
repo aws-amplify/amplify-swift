@@ -37,7 +37,9 @@ class IncludeAssociationDecoratorTests: XCTestCase {
         for modelType: M.Type,
         includes includedAssociations: IncludedAssociations<M> = { _ in [] }
     ) -> String {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema, operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
+                                                               operationType: .query,
+                                                               primaryKeysOnly: true)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
         guard let modelPath = modelType.rootPath as? ModelPath<M> else {
             XCTFail("Model path for \(modelType.modelName) not found. Make sure it was defined for the model")
