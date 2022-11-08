@@ -16,7 +16,7 @@ extension AWSS3StoragePlugin {
     @discardableResult
     public func getURL(
         key: String,
-        options: StorageGetURLOperation.Request.Options?
+        options: StorageGetURLOperation.Request.Options? = nil
     ) async throws -> URL {
         let options = options ?? StorageGetURLRequest.Options()
         let request = StorageGetURLRequest(key: key, options: options)
@@ -51,7 +51,7 @@ extension AWSS3StoragePlugin {
     public func downloadFile(
         key: String,
         local: URL,
-        options: StorageDownloadFileOperation.Request.Options?
+        options: StorageDownloadFileOperation.Request.Options? = nil
     ) -> StorageDownloadFileTask {
         let options = options ?? StorageDownloadFileRequest.Options()
         let request = StorageDownloadFileRequest(key: key, local: local, options: options)
@@ -69,7 +69,7 @@ extension AWSS3StoragePlugin {
     public func uploadData(
         key: String,
         data: Data,
-        options: StorageUploadDataOperation.Request.Options?
+        options: StorageUploadDataOperation.Request.Options? = nil
     ) -> StorageUploadDataTask {
         let options = options ?? StorageUploadDataRequest.Options()
         let request = StorageUploadDataRequest(key: key, data: data, options: options)
@@ -87,7 +87,7 @@ extension AWSS3StoragePlugin {
     public func uploadFile(
         key: String,
         local: URL,
-        options: StorageUploadFileOperation.Request.Options?
+        options: StorageUploadFileOperation.Request.Options? = nil
     ) -> StorageUploadFileTask {
         let options = options ?? StorageUploadFileRequest.Options()
         let request = StorageUploadFileRequest(key: key, local: local, options: options)
@@ -104,7 +104,7 @@ extension AWSS3StoragePlugin {
     @discardableResult
     public func remove(
         key: String,
-        options: StorageRemoveOperation.Request.Options?
+        options: StorageRemoveOperation.Request.Options? = nil
     ) async throws -> String {
         let options = options ?? StorageRemoveRequest.Options()
         let request = StorageRemoveRequest(key: key, options: options)

@@ -29,7 +29,7 @@ extension StorageCategory: StorageCategoryBehavior {
     public func downloadFile(
         key: String,
         local: URL,
-        options: StorageDownloadFileOperation.Request.Options?
+        options: StorageDownloadFileOperation.Request.Options? = nil
     ) -> StorageDownloadFileTask {
         plugin.downloadFile(key: key, local: local, options: options)
     }
