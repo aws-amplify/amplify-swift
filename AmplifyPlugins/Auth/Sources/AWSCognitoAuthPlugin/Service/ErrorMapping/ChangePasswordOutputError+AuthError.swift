@@ -55,6 +55,8 @@ extension ChangePasswordOutputError: AuthErrorConvertible {
             return .service(limitExceededException.message ?? "Limit exceeded error",
                             AuthPluginErrorConstants.limitExceededError,
                             AWSCognitoAuthError.limitExceeded)
+        default:
+            return .unknown("")
         }
     }
 }
