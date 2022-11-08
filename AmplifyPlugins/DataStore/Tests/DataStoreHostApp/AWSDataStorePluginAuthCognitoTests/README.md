@@ -1,4 +1,4 @@
-## DataStore with Auth Integration Tests
+## DataStore with Auth Cognito Integration Tests
 
 The following steps demonstrate how to setup a GraphQL endpoint with AppSync and Cognito User Pools.
 This configuration is used to run the tests in `AWSDataStoreCategoryPluginAuthIntegrationTests.swift`.

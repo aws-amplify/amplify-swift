@@ -23,6 +23,10 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
             return (name: fieldName, value: value)
         }
     }
+    
+    public init(identifiers: [String: String]) {
+        self.identifierFields = identifiers.map { (name: $0.0, value: $0.1) }
+    }
 
     @available(*, deprecated, message: "Use init(model:schema:)")
     public init(model: Model) {

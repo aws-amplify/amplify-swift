@@ -137,7 +137,7 @@ class StorageEngineTestsHasMany: StorageEngineTestsBase {
      *  make two queries: One query with 950 expressions, and one query with 1 expression.
      *
      */
-    func testStressDeleteTopLevelMultiLevelHasManyRelationship() {
+    func testStressDeleteTopLeveleagerLoadHasManyRelationship() {
         let iterations = 500
         let numberOfMenus = iterations * 2
         let numberOfDishes = iterations * 4

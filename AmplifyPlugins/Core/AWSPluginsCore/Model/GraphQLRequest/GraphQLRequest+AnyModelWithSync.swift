@@ -245,7 +245,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelSchema.name,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: type))
-        documentBuilder.add(decorator: ModelDecorator(model: model))
+        documentBuilder.add(decorator: ModelDecorator(model: model, mutationType: type))
         if let filter = filter {
             documentBuilder.add(decorator: FilterDecorator(filter: filter))
         }

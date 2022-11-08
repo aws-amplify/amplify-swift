@@ -87,6 +87,60 @@
 		21E73E7128898D7900D7DB7E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E73E7028898D7900D7DB7E /* ContentView.swift */; };
 		21E73E7328898D7A00D7DB7E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21E73E7228898D7A00D7DB7E /* Assets.xcassets */; };
 		21E73E7628898D7A00D7DB7E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21E73E7528898D7A00D7DB7E /* Preview Assets.xcassets */; };
+		21EA887628F9BC610000BA75 /* GraphQLLazyLoadBaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA887528F9BC610000BA75 /* GraphQLLazyLoadBaseTest.swift */; };
+		21EA887E28F9BCC10000BA75 /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE6F28E7451D0000C36A /* AsyncTesting.swift */; };
+		21EA887F28F9BCC30000BA75 /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7028E7451D0000C36A /* AsyncExpectation.swift */; };
+		21EA888028F9BCC50000BA75 /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7128E7451D0000C36A /* XCTestCase+AsyncTesting.swift */; };
+		21EA888228F9BCD90000BA75 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA888128F9BCD90000BA75 /* TestConfigHelper.swift */; };
+		21EA88B628F9BD790000BA75 /* Comment8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA888528F9BD780000BA75 /* Comment8+Schema.swift */; };
+		21EA88B728F9BD790000BA75 /* Comment4+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA888628F9BD780000BA75 /* Comment4+Schema.swift */; };
+		21EA88B828F9BD7A0000BA75 /* Comment8V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA888728F9BD780000BA75 /* Comment8V2.swift */; };
+		21EA88B928F9BD7A0000BA75 /* Comment4V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA888828F9BD780000BA75 /* Comment4V2.swift */; };
+		21EA88BA28F9BD7A0000BA75 /* Post8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA888928F9BD780000BA75 /* Post8+Schema.swift */; };
+		21EA88BB28F9BD7A0000BA75 /* Comment4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA888A28F9BD780000BA75 /* Comment4.swift */; };
+		21EA88BC28F9BD7A0000BA75 /* CommentWithCompositeKeyAndIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA888B28F9BD780000BA75 /* CommentWithCompositeKeyAndIndex.swift */; };
+		21EA88BD28F9BD7A0000BA75 /* Post8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA888C28F9BD780000BA75 /* Post8.swift */; };
+		21EA88BE28F9BD7A0000BA75 /* Team2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA888D28F9BD780000BA75 /* Team2+Schema.swift */; };
+		21EA88BF28F9BD7A0000BA75 /* Comment8V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA888E28F9BD780000BA75 /* Comment8V2+Schema.swift */; };
+		21EA88C028F9BD7A0000BA75 /* PostWithTagsCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA888F28F9BD780000BA75 /* PostWithTagsCompositeKey.swift */; };
+		21EA88C128F9BD7A0000BA75 /* Post4+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA889028F9BD780000BA75 /* Post4+Schema.swift */; };
+		21EA88C228F9BD7A0000BA75 /* Comment4V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA889128F9BD780000BA75 /* Comment4V2+Schema.swift */; };
+		21EA88C328F9BD7A0000BA75 /* CommentWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA889228F9BD790000BA75 /* CommentWithCompositeKey+Schema.swift */; };
+		21EA88C428F9BD7A0000BA75 /* Post4V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA889328F9BD790000BA75 /* Post4V2+Schema.swift */; };
+		21EA88C528F9BD7A0000BA75 /* TagWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA889428F9BD790000BA75 /* TagWithCompositeKey.swift */; };
+		21EA88C628F9BD7A0000BA75 /* Comment7+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA889528F9BD790000BA75 /* Comment7+Schema.swift */; };
+		21EA88C728F9BD7A0000BA75 /* Team2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA889628F9BD790000BA75 /* Team2.swift */; };
+		21EA88C828F9BD7A0000BA75 /* Post8V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA889728F9BD790000BA75 /* Post8V2.swift */; };
+		21EA88C928F9BD7A0000BA75 /* Post7+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA889828F9BD790000BA75 /* Post7+Schema.swift */; };
+		21EA88CA28F9BD7A0000BA75 /* PostWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA889928F9BD790000BA75 /* PostWithCompositeKey+Schema.swift */; };
+		21EA88CB28F9BD7A0000BA75 /* Project2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA889A28F9BD790000BA75 /* Project2+Schema.swift */; };
+		21EA88CC28F9BD7A0000BA75 /* PostTagsWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA889B28F9BD790000BA75 /* PostTagsWithCompositeKey+Schema.swift */; };
+		21EA88CD28F9BD7A0000BA75 /* CommentWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA889C28F9BD790000BA75 /* CommentWithCompositeKey.swift */; };
+		21EA88CE28F9BD7A0000BA75 /* PostWithCompositeKeyAndIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA889D28F9BD790000BA75 /* PostWithCompositeKeyAndIndex.swift */; };
+		21EA88CF28F9BD7A0000BA75 /* CommentWithCompositeKeyAndIndex+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA889E28F9BD790000BA75 /* CommentWithCompositeKeyAndIndex+Schema.swift */; };
+		21EA88D028F9BD7A0000BA75 /* Comment7.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA889F28F9BD790000BA75 /* Comment7.swift */; };
+		21EA88D128F9BD7A0000BA75 /* Comment8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88A028F9BD790000BA75 /* Comment8.swift */; };
+		21EA88D228F9BD7A0000BA75 /* Post8V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88A128F9BD790000BA75 /* Post8V2+Schema.swift */; };
+		21EA88D328F9BD7A0000BA75 /* MyCustomModel8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88A228F9BD790000BA75 /* MyCustomModel8.swift */; };
+		21EA88D428F9BD7A0000BA75 /* Team6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88A328F9BD790000BA75 /* Team6.swift */; };
+		21EA88D528F9BD7A0000BA75 /* Post7.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88A428F9BD790000BA75 /* Post7.swift */; };
+		21EA88D628F9BD7A0000BA75 /* TagWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88A528F9BD790000BA75 /* TagWithCompositeKey+Schema.swift */; };
+		21EA88D728F9BD7A0000BA75 /* MyCustomModel8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88A628F9BD790000BA75 /* MyCustomModel8+Schema.swift */; };
+		21EA88D828F9BD7A0000BA75 /* Project6+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88A728F9BD790000BA75 /* Project6+Schema.swift */; };
+		21EA88D928F9BD7A0000BA75 /* Post4V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88A828F9BD790000BA75 /* Post4V2.swift */; };
+		21EA88DA28F9BD7A0000BA75 /* AmplifyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88A928F9BD790000BA75 /* AmplifyModels.swift */; };
+		21EA88DB28F9BD7A0000BA75 /* Post4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88AA28F9BD790000BA75 /* Post4.swift */; };
+		21EA88DC28F9BD7A0000BA75 /* Team6+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88AB28F9BD790000BA75 /* Team6+Schema.swift */; };
+		21EA88DD28F9BD7A0000BA75 /* PostWithCompositeKeyAndIndex+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88AC28F9BD790000BA75 /* PostWithCompositeKeyAndIndex+Schema.swift */; };
+		21EA88DE28F9BD7A0000BA75 /* MyNestedModel8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88AD28F9BD790000BA75 /* MyNestedModel8+Schema.swift */; };
+		21EA88DF28F9BD7A0000BA75 /* PostTagsWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88AE28F9BD790000BA75 /* PostTagsWithCompositeKey.swift */; };
+		21EA88E028F9BD7A0000BA75 /* Project6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88AF28F9BD790000BA75 /* Project6.swift */; };
+		21EA88E128F9BD7A0000BA75 /* Blog8V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88B028F9BD790000BA75 /* Blog8V2+Schema.swift */; };
+		21EA88E228F9BD7A0000BA75 /* Blog8V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88B128F9BD790000BA75 /* Blog8V2.swift */; };
+		21EA88E328F9BD7A0000BA75 /* PostWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88B228F9BD790000BA75 /* PostWithCompositeKey.swift */; };
+		21EA88E428F9BD7A0000BA75 /* MyNestedModel8.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88B328F9BD790000BA75 /* MyNestedModel8.swift */; };
+		21EA88E528F9BD7A0000BA75 /* Project2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88B428F9BD790000BA75 /* Project2.swift */; };
+		21EA88E628F9BD7A0000BA75 /* PostWithTagsCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88B528F9BD790000BA75 /* PostWithTagsCompositeKey+Schema.swift */; };
 		395906B628AC4AC8004B96B1 /* RESTWithIAMIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BC728899BC8004BD994 /* RESTWithIAMIntegrationTests.swift */; };
 		395906B928AC4C3A004B96B1 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 395906B828AC4C3A004B96B1 /* TestConfigHelper.swift */; };
 		395906CA28AC6468004B96B1 /* RESTWithUserPoolIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BCE28899BCF004BD994 /* RESTWithUserPoolIntegrationTests.swift */; };
@@ -146,6 +200,13 @@
 			remoteInfo = APIHostApp;
 		};
 		21698A9928899818004BD994 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 21E73E6328898D7800D7DB7E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 21E73E6A28898D7800D7DB7E;
+			remoteInfo = APIHostApp;
+		};
+		21EA887728F9BC610000BA75 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 21E73E6328898D7800D7DB7E /* Project object */;
 			proxyType = 1;
@@ -285,6 +346,60 @@
 		21E73E7028898D7900D7DB7E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		21E73E7228898D7A00D7DB7E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		21E73E7528898D7A00D7DB7E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		21EA887328F9BC600000BA75 /* AWSAPIPluginLazyLoadTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginLazyLoadTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		21EA887528F9BC610000BA75 /* GraphQLLazyLoadBaseTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLLazyLoadBaseTest.swift; sourceTree = "<group>"; };
+		21EA887D28F9BCBB0000BA75 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		21EA888128F9BCD90000BA75 /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
+		21EA888328F9BD2D0000BA75 /* lazyload-schema.graphql */ = {isa = PBXFileReference; lastKnownFileType = text; path = "lazyload-schema.graphql"; sourceTree = "<group>"; };
+		21EA888528F9BD780000BA75 /* Comment8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment8+Schema.swift"; sourceTree = "<group>"; };
+		21EA888628F9BD780000BA75 /* Comment4+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment4+Schema.swift"; sourceTree = "<group>"; };
+		21EA888728F9BD780000BA75 /* Comment8V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment8V2.swift; sourceTree = "<group>"; };
+		21EA888828F9BD780000BA75 /* Comment4V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment4V2.swift; sourceTree = "<group>"; };
+		21EA888928F9BD780000BA75 /* Post8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post8+Schema.swift"; sourceTree = "<group>"; };
+		21EA888A28F9BD780000BA75 /* Comment4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment4.swift; sourceTree = "<group>"; };
+		21EA888B28F9BD780000BA75 /* CommentWithCompositeKeyAndIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentWithCompositeKeyAndIndex.swift; sourceTree = "<group>"; };
+		21EA888C28F9BD780000BA75 /* Post8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post8.swift; sourceTree = "<group>"; };
+		21EA888D28F9BD780000BA75 /* Team2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Team2+Schema.swift"; sourceTree = "<group>"; };
+		21EA888E28F9BD780000BA75 /* Comment8V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment8V2+Schema.swift"; sourceTree = "<group>"; };
+		21EA888F28F9BD780000BA75 /* PostWithTagsCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithTagsCompositeKey.swift; sourceTree = "<group>"; };
+		21EA889028F9BD780000BA75 /* Post4+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post4+Schema.swift"; sourceTree = "<group>"; };
+		21EA889128F9BD780000BA75 /* Comment4V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment4V2+Schema.swift"; sourceTree = "<group>"; };
+		21EA889228F9BD790000BA75 /* CommentWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CommentWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		21EA889328F9BD790000BA75 /* Post4V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post4V2+Schema.swift"; sourceTree = "<group>"; };
+		21EA889428F9BD790000BA75 /* TagWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagWithCompositeKey.swift; sourceTree = "<group>"; };
+		21EA889528F9BD790000BA75 /* Comment7+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment7+Schema.swift"; sourceTree = "<group>"; };
+		21EA889628F9BD790000BA75 /* Team2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team2.swift; sourceTree = "<group>"; };
+		21EA889728F9BD790000BA75 /* Post8V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post8V2.swift; sourceTree = "<group>"; };
+		21EA889828F9BD790000BA75 /* Post7+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post7+Schema.swift"; sourceTree = "<group>"; };
+		21EA889928F9BD790000BA75 /* PostWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		21EA889A28F9BD790000BA75 /* Project2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project2+Schema.swift"; sourceTree = "<group>"; };
+		21EA889B28F9BD790000BA75 /* PostTagsWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostTagsWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		21EA889C28F9BD790000BA75 /* CommentWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentWithCompositeKey.swift; sourceTree = "<group>"; };
+		21EA889D28F9BD790000BA75 /* PostWithCompositeKeyAndIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithCompositeKeyAndIndex.swift; sourceTree = "<group>"; };
+		21EA889E28F9BD790000BA75 /* CommentWithCompositeKeyAndIndex+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CommentWithCompositeKeyAndIndex+Schema.swift"; sourceTree = "<group>"; };
+		21EA889F28F9BD790000BA75 /* Comment7.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment7.swift; sourceTree = "<group>"; };
+		21EA88A028F9BD790000BA75 /* Comment8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment8.swift; sourceTree = "<group>"; };
+		21EA88A128F9BD790000BA75 /* Post8V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post8V2+Schema.swift"; sourceTree = "<group>"; };
+		21EA88A228F9BD790000BA75 /* MyCustomModel8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyCustomModel8.swift; sourceTree = "<group>"; };
+		21EA88A328F9BD790000BA75 /* Team6.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team6.swift; sourceTree = "<group>"; };
+		21EA88A428F9BD790000BA75 /* Post7.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post7.swift; sourceTree = "<group>"; };
+		21EA88A528F9BD790000BA75 /* TagWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TagWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
+		21EA88A628F9BD790000BA75 /* MyCustomModel8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MyCustomModel8+Schema.swift"; sourceTree = "<group>"; };
+		21EA88A728F9BD790000BA75 /* Project6+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project6+Schema.swift"; sourceTree = "<group>"; };
+		21EA88A828F9BD790000BA75 /* Post4V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post4V2.swift; sourceTree = "<group>"; };
+		21EA88A928F9BD790000BA75 /* AmplifyModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyModels.swift; sourceTree = "<group>"; };
+		21EA88AA28F9BD790000BA75 /* Post4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post4.swift; sourceTree = "<group>"; };
+		21EA88AB28F9BD790000BA75 /* Team6+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Team6+Schema.swift"; sourceTree = "<group>"; };
+		21EA88AC28F9BD790000BA75 /* PostWithCompositeKeyAndIndex+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithCompositeKeyAndIndex+Schema.swift"; sourceTree = "<group>"; };
+		21EA88AD28F9BD790000BA75 /* MyNestedModel8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MyNestedModel8+Schema.swift"; sourceTree = "<group>"; };
+		21EA88AE28F9BD790000BA75 /* PostTagsWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostTagsWithCompositeKey.swift; sourceTree = "<group>"; };
+		21EA88AF28F9BD790000BA75 /* Project6.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project6.swift; sourceTree = "<group>"; };
+		21EA88B028F9BD790000BA75 /* Blog8V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Blog8V2+Schema.swift"; sourceTree = "<group>"; };
+		21EA88B128F9BD790000BA75 /* Blog8V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blog8V2.swift; sourceTree = "<group>"; };
+		21EA88B228F9BD790000BA75 /* PostWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithCompositeKey.swift; sourceTree = "<group>"; };
+		21EA88B328F9BD790000BA75 /* MyNestedModel8.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyNestedModel8.swift; sourceTree = "<group>"; };
+		21EA88B428F9BD790000BA75 /* Project2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project2.swift; sourceTree = "<group>"; };
+		21EA88B528F9BD790000BA75 /* PostWithTagsCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithTagsCompositeKey+Schema.swift"; sourceTree = "<group>"; };
 		395906AC28AC4A16004B96B1 /* AWSAPIPluginRESTIAMTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginRESTIAMTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		395906B828AC4C3A004B96B1 /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
 		395906C028AC63A9004B96B1 /* AWSAPIPluginRESTUserPoolTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginRESTUserPoolTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -337,6 +452,13 @@
 				21698BF02889A163004BD994 /* AWSCognitoAuthPlugin in Frameworks */,
 				21698CC02889D5A9004BD994 /* CwlPreconditionTesting in Frameworks */,
 				21698BDB28899ED5004BD994 /* Amplify in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		21EA887028F9BC600000BA75 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -556,6 +678,7 @@
 				395906AD28AC4A16004B96B1 /* AWSAPIPluginRESTIAMTests */,
 				395906C128AC63A9004B96B1 /* AWSAPIPluginRESTUserPoolTests */,
 				97914BC429558714002000EA /* GraphQLAPIStressTests */,
+				21EA887428F9BC600000BA75 /* AWSAPIPluginLazyLoadTests */,
 				21E73E6C28898D7900D7DB7E /* Products */,
 				21698BD728899EBB004BD994 /* Frameworks */,
 			);
@@ -573,6 +696,7 @@
 				395906AC28AC4A16004B96B1 /* AWSAPIPluginRESTIAMTests.xctest */,
 				395906C028AC63A9004B96B1 /* AWSAPIPluginRESTUserPoolTests.xctest */,
 				97914C182955872A002000EA /* GraphQLAPIStressTests.xctest */,
+				21EA887328F9BC600000BA75 /* AWSAPIPluginLazyLoadTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -599,6 +723,74 @@
 				21E73E7528898D7A00D7DB7E /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		21EA887428F9BC600000BA75 /* AWSAPIPluginLazyLoadTests */ = {
+			isa = PBXGroup;
+			children = (
+				21EA888428F9BD600000BA75 /* Models */,
+				21EA888328F9BD2D0000BA75 /* lazyload-schema.graphql */,
+				21EA888128F9BCD90000BA75 /* TestConfigHelper.swift */,
+				21EA887D28F9BCBB0000BA75 /* README.md */,
+				21EA887528F9BC610000BA75 /* GraphQLLazyLoadBaseTest.swift */,
+			);
+			path = AWSAPIPluginLazyLoadTests;
+			sourceTree = "<group>";
+		};
+		21EA888428F9BD600000BA75 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				21EA88A928F9BD790000BA75 /* AmplifyModels.swift */,
+				21EA88B128F9BD790000BA75 /* Blog8V2.swift */,
+				21EA88B028F9BD790000BA75 /* Blog8V2+Schema.swift */,
+				21EA888A28F9BD780000BA75 /* Comment4.swift */,
+				21EA888628F9BD780000BA75 /* Comment4+Schema.swift */,
+				21EA888828F9BD780000BA75 /* Comment4V2.swift */,
+				21EA889128F9BD780000BA75 /* Comment4V2+Schema.swift */,
+				21EA889F28F9BD790000BA75 /* Comment7.swift */,
+				21EA889528F9BD790000BA75 /* Comment7+Schema.swift */,
+				21EA88A028F9BD790000BA75 /* Comment8.swift */,
+				21EA888528F9BD780000BA75 /* Comment8+Schema.swift */,
+				21EA888728F9BD780000BA75 /* Comment8V2.swift */,
+				21EA888E28F9BD780000BA75 /* Comment8V2+Schema.swift */,
+				21EA889C28F9BD790000BA75 /* CommentWithCompositeKey.swift */,
+				21EA889228F9BD790000BA75 /* CommentWithCompositeKey+Schema.swift */,
+				21EA888B28F9BD780000BA75 /* CommentWithCompositeKeyAndIndex.swift */,
+				21EA889E28F9BD790000BA75 /* CommentWithCompositeKeyAndIndex+Schema.swift */,
+				21EA88A228F9BD790000BA75 /* MyCustomModel8.swift */,
+				21EA88A628F9BD790000BA75 /* MyCustomModel8+Schema.swift */,
+				21EA88B328F9BD790000BA75 /* MyNestedModel8.swift */,
+				21EA88AD28F9BD790000BA75 /* MyNestedModel8+Schema.swift */,
+				21EA88AA28F9BD790000BA75 /* Post4.swift */,
+				21EA889028F9BD780000BA75 /* Post4+Schema.swift */,
+				21EA88A828F9BD790000BA75 /* Post4V2.swift */,
+				21EA889328F9BD790000BA75 /* Post4V2+Schema.swift */,
+				21EA88A428F9BD790000BA75 /* Post7.swift */,
+				21EA889828F9BD790000BA75 /* Post7+Schema.swift */,
+				21EA888C28F9BD780000BA75 /* Post8.swift */,
+				21EA888928F9BD780000BA75 /* Post8+Schema.swift */,
+				21EA889728F9BD790000BA75 /* Post8V2.swift */,
+				21EA88A128F9BD790000BA75 /* Post8V2+Schema.swift */,
+				21EA88AE28F9BD790000BA75 /* PostTagsWithCompositeKey.swift */,
+				21EA889B28F9BD790000BA75 /* PostTagsWithCompositeKey+Schema.swift */,
+				21EA88B228F9BD790000BA75 /* PostWithCompositeKey.swift */,
+				21EA889928F9BD790000BA75 /* PostWithCompositeKey+Schema.swift */,
+				21EA889D28F9BD790000BA75 /* PostWithCompositeKeyAndIndex.swift */,
+				21EA88AC28F9BD790000BA75 /* PostWithCompositeKeyAndIndex+Schema.swift */,
+				21EA888F28F9BD780000BA75 /* PostWithTagsCompositeKey.swift */,
+				21EA88B528F9BD790000BA75 /* PostWithTagsCompositeKey+Schema.swift */,
+				21EA88B428F9BD790000BA75 /* Project2.swift */,
+				21EA889A28F9BD790000BA75 /* Project2+Schema.swift */,
+				21EA88AF28F9BD790000BA75 /* Project6.swift */,
+				21EA88A728F9BD790000BA75 /* Project6+Schema.swift */,
+				21EA889428F9BD790000BA75 /* TagWithCompositeKey.swift */,
+				21EA88A528F9BD790000BA75 /* TagWithCompositeKey+Schema.swift */,
+				21EA889628F9BD790000BA75 /* Team2.swift */,
+				21EA888D28F9BD780000BA75 /* Team2+Schema.swift */,
+				21EA88A328F9BD790000BA75 /* Team6.swift */,
+				21EA88AB28F9BD790000BA75 /* Team6+Schema.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		395906AD28AC4A16004B96B1 /* AWSAPIPluginRESTIAMTests */ = {
@@ -789,6 +981,25 @@
 			productReference = 21E73E6B28898D7900D7DB7E /* APIHostApp.app */;
 			productType = "com.apple.product-type.application";
 		};
+		21EA887228F9BC600000BA75 /* AWSAPIPluginLazyLoadTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 21EA887B28F9BC610000BA75 /* Build configuration list for PBXNativeTarget "AWSAPIPluginLazyLoadTests" */;
+			buildPhases = (
+				21EA886F28F9BC600000BA75 /* Sources */,
+				21EA887028F9BC600000BA75 /* Frameworks */,
+				21EA887128F9BC600000BA75 /* Resources */,
+				21EA887C28F9BC720000BA75 /* Copy Configuration Files */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				21EA887828F9BC610000BA75 /* PBXTargetDependency */,
+			);
+			name = AWSAPIPluginLazyLoadTests;
+			productName = AWSAPIPluginLazyLoadTests;
+			productReference = 21EA887328F9BC600000BA75 /* AWSAPIPluginLazyLoadTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		395906AB28AC4A16004B96B1 /* AWSAPIPluginRESTIAMTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 395906B428AC4A16004B96B1 /* Build configuration list for PBXNativeTarget "AWSAPIPluginRESTIAMTests" */;
@@ -911,6 +1122,10 @@
 					21E73E6A28898D7800D7DB7E = {
 						CreatedOnToolsVersion = 13.4.1;
 					};
+					21EA887228F9BC600000BA75 = {
+						CreatedOnToolsVersion = 13.4.1;
+						TestTargetID = 21E73E6A28898D7800D7DB7E;
+					};
 					395906AB28AC4A16004B96B1 = {
 						CreatedOnToolsVersion = 13.4.1;
 						TestTargetID = 21E73E6A28898D7800D7DB7E;
@@ -954,6 +1169,7 @@
 				395906AB28AC4A16004B96B1 /* AWSAPIPluginRESTIAMTests */,
 				395906BF28AC63A9004B96B1 /* AWSAPIPluginRESTUserPoolTests */,
 				97914BCC2955872A002000EA /* GraphQLAPIStressTests */,
+				21EA887228F9BC600000BA75 /* AWSAPIPluginLazyLoadTests */,
 			);
 		};
 /* End PBXProject section */
@@ -986,6 +1202,13 @@
 			files = (
 				21E73E7628898D7A00D7DB7E /* Preview Assets.xcassets in Resources */,
 				21E73E7328898D7A00D7DB7E /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		21EA887128F9BC600000BA75 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1063,6 +1286,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
+		21EA887C28F9BC720000BA75 /* Copy Configuration Files */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration Files";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nTEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
 		};
 		395906B528AC4A22004B96B1 /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1267,6 +1508,67 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		21EA886F28F9BC600000BA75 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				21EA88D328F9BD7A0000BA75 /* MyCustomModel8.swift in Sources */,
+				21EA88C128F9BD7A0000BA75 /* Post4+Schema.swift in Sources */,
+				21EA88CB28F9BD7A0000BA75 /* Project2+Schema.swift in Sources */,
+				21EA887F28F9BCC30000BA75 /* AsyncExpectation.swift in Sources */,
+				21EA88D728F9BD7A0000BA75 /* MyCustomModel8+Schema.swift in Sources */,
+				21EA887628F9BC610000BA75 /* GraphQLLazyLoadBaseTest.swift in Sources */,
+				21EA88E028F9BD7A0000BA75 /* Project6.swift in Sources */,
+				21EA88C228F9BD7A0000BA75 /* Comment4V2+Schema.swift in Sources */,
+				21EA88CC28F9BD7A0000BA75 /* PostTagsWithCompositeKey+Schema.swift in Sources */,
+				21EA88CA28F9BD7A0000BA75 /* PostWithCompositeKey+Schema.swift in Sources */,
+				21EA88E128F9BD7A0000BA75 /* Blog8V2+Schema.swift in Sources */,
+				21EA88BB28F9BD7A0000BA75 /* Comment4.swift in Sources */,
+				21EA88B928F9BD7A0000BA75 /* Comment4V2.swift in Sources */,
+				21EA88C928F9BD7A0000BA75 /* Post7+Schema.swift in Sources */,
+				21EA88E228F9BD7A0000BA75 /* Blog8V2.swift in Sources */,
+				21EA88C828F9BD7A0000BA75 /* Post8V2.swift in Sources */,
+				21EA88D228F9BD7A0000BA75 /* Post8V2+Schema.swift in Sources */,
+				21EA88DE28F9BD7A0000BA75 /* MyNestedModel8+Schema.swift in Sources */,
+				21EA88D528F9BD7A0000BA75 /* Post7.swift in Sources */,
+				21EA88BE28F9BD7A0000BA75 /* Team2+Schema.swift in Sources */,
+				21EA888028F9BCC50000BA75 /* XCTestCase+AsyncTesting.swift in Sources */,
+				21EA88D828F9BD7A0000BA75 /* Project6+Schema.swift in Sources */,
+				21EA88C628F9BD7A0000BA75 /* Comment7+Schema.swift in Sources */,
+				21EA88DB28F9BD7A0000BA75 /* Post4.swift in Sources */,
+				21EA88D128F9BD7A0000BA75 /* Comment8.swift in Sources */,
+				21EA88E428F9BD7A0000BA75 /* MyNestedModel8.swift in Sources */,
+				21EA88C728F9BD7A0000BA75 /* Team2.swift in Sources */,
+				21EA88DC28F9BD7A0000BA75 /* Team6+Schema.swift in Sources */,
+				21EA88C028F9BD7A0000BA75 /* PostWithTagsCompositeKey.swift in Sources */,
+				21EA88B628F9BD790000BA75 /* Comment8+Schema.swift in Sources */,
+				21EA88BC28F9BD7A0000BA75 /* CommentWithCompositeKeyAndIndex.swift in Sources */,
+				21EA88D928F9BD7A0000BA75 /* Post4V2.swift in Sources */,
+				21EA88BF28F9BD7A0000BA75 /* Comment8V2+Schema.swift in Sources */,
+				21EA88D028F9BD7A0000BA75 /* Comment7.swift in Sources */,
+				21EA88D628F9BD7A0000BA75 /* TagWithCompositeKey+Schema.swift in Sources */,
+				21EA88C328F9BD7A0000BA75 /* CommentWithCompositeKey+Schema.swift in Sources */,
+				21EA88CF28F9BD7A0000BA75 /* CommentWithCompositeKeyAndIndex+Schema.swift in Sources */,
+				21EA88E628F9BD7A0000BA75 /* PostWithTagsCompositeKey+Schema.swift in Sources */,
+				21EA88C428F9BD7A0000BA75 /* Post4V2+Schema.swift in Sources */,
+				21EA88BD28F9BD7A0000BA75 /* Post8.swift in Sources */,
+				21EA888228F9BCD90000BA75 /* TestConfigHelper.swift in Sources */,
+				21EA88CD28F9BD7A0000BA75 /* CommentWithCompositeKey.swift in Sources */,
+				21EA88DA28F9BD7A0000BA75 /* AmplifyModels.swift in Sources */,
+				21EA88CE28F9BD7A0000BA75 /* PostWithCompositeKeyAndIndex.swift in Sources */,
+				21EA88B728F9BD790000BA75 /* Comment4+Schema.swift in Sources */,
+				21EA88BA28F9BD7A0000BA75 /* Post8+Schema.swift in Sources */,
+				21EA88B828F9BD7A0000BA75 /* Comment8V2.swift in Sources */,
+				21EA88E528F9BD7A0000BA75 /* Project2.swift in Sources */,
+				21EA88DD28F9BD7A0000BA75 /* PostWithCompositeKeyAndIndex+Schema.swift in Sources */,
+				21EA88C528F9BD7A0000BA75 /* TagWithCompositeKey.swift in Sources */,
+				21EA88E328F9BD7A0000BA75 /* PostWithCompositeKey.swift in Sources */,
+				21EA887E28F9BCC10000BA75 /* AsyncTesting.swift in Sources */,
+				21EA88DF28F9BD7A0000BA75 /* PostTagsWithCompositeKey.swift in Sources */,
+				21EA88D428F9BD7A0000BA75 /* Team6.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		395906A828AC4A16004B96B1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1350,6 +1652,11 @@
 			isa = PBXTargetDependency;
 			target = 21E73E6A28898D7800D7DB7E /* APIHostApp */;
 			targetProxy = 21698A9928899818004BD994 /* PBXContainerItemProxy */;
+		};
+		21EA887828F9BC610000BA75 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 21E73E6A28898D7800D7DB7E /* APIHostApp */;
+			targetProxy = 21EA887728F9BC610000BA75 /* PBXContainerItemProxy */;
 		};
 		395906B128AC4A16004B96B1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1693,6 +2000,42 @@
 			};
 			name = Release;
 		};
+		21EA887928F9BC610000BA75 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AWSAPIPluginLazyLoadTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
+			};
+			name = Debug;
+		};
+		21EA887A28F9BC610000BA75 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AWSAPIPluginLazyLoadTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/APIHostApp.app/APIHostApp";
+			};
+			name = Release;
+		};
 		395906B228AC4A16004B96B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1928,6 +2271,15 @@
 			buildConfigurations = (
 				21E73E7A28898D7A00D7DB7E /* Debug */,
 				21E73E7B28898D7A00D7DB7E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		21EA887B28F9BC610000BA75 /* Build configuration list for PBXNativeTarget "AWSAPIPluginLazyLoadTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				21EA887928F9BC610000BA75 /* Debug */,
+				21EA887A28F9BC610000BA75 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

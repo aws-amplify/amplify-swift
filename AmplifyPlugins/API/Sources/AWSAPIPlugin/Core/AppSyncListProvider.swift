@@ -9,6 +9,97 @@ import Foundation
 import Amplify
 import AWSPluginsCore
 
+public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
+   
+    let apiName: String?
+    
+    enum LoadedState {
+        case notLoaded(identifiers: [String: String])
+        case loaded(model: ModelType?)
+    }
+    
+    var loadedState: LoadedState
+    
+    // init(AppSyncModelMetadata) creates a notLoaded provider
+    convenience init(metadata: AppSyncModelIdentifierMetadata) {
+        self.init(identifiers: metadata.identifiers,
+                  apiName: metadata.apiName)
+    }
+    
+    // Initializer for a loaded state
+    init(model: ModelType?) {
+        self.loadedState = .loaded(model: model)
+        self.apiName = nil
+    }
+    
+    // Initializer for not loaded state
+    init(identifiers: [String: String], apiName: String? = nil) {
+        self.loadedState = .notLoaded(identifiers: identifiers)
+        self.apiName = apiName
+    }
+    
+    
+    // MARK: - APIs
+    
+    public func load() async throws -> ModelType? {
+        
+        switch loadedState {
+        case .notLoaded(let identifiers):
+            let request = AppSyncModelProvider.getRequest(ModelType.self,
+                                                          byIdentifiers: identifiers,
+                                                          apiName: apiName)
+            do {
+                let graphQLResponse = try await Amplify.API.query(request: request)
+                switch graphQLResponse {
+                case .success(let model):
+                    return model
+                case .failure(let graphQLError):
+                    Amplify.API.log.error(error: graphQLError)
+                    throw CoreError.operation(
+                        "The AppSync response returned successfully with GraphQL errors.",
+                        "Check the underlying error for the failed GraphQL response.",
+                        graphQLError)
+                }
+            } catch let apiError as APIError {
+                Amplify.API.log.error(error: apiError)
+                throw CoreError.operation("The AppSync request failed",
+                                          "See underlying `APIError` for more details.",
+                                          apiError)
+            } catch {
+                throw error
+            }
+        case .loaded(let element):
+            return element
+        }
+    }
+    
+    public func getState() -> ModelProviderState<ModelType> {
+        switch loadedState {
+        case .notLoaded(let identifiers):
+            return .notLoaded(identifiers: identifiers)
+        case .loaded(let model):
+            return .loaded(model)
+        }
+    }
+    
+    static func getRequest<M: Model>(_ modelType: M.Type,
+                                     byIdentifiers identifiers: [String: String],
+                                     apiName: String?) -> GraphQLRequest<M?> {
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
+                                                               operationType: .query)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
+        documentBuilder.add(decorator: ModelIdDecorator(identifiers: identifiers))
+        
+        let document = documentBuilder.build()
+        
+        return GraphQLRequest<M?>(apiName: apiName,
+                                  document: document.stringValue,
+                                  variables: document.variables,
+                                  responseType: M?.self,
+                                  decodePath: document.name)
+    }
+}
+
 public class AppSyncListProvider<Element: Model>: ModelListProvider {
 
     /// The API friendly name used to reference the API to call
@@ -84,8 +175,8 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
 
     public func getState() -> ModelListProviderState<Element> {
         switch loadedState {
-        case .notLoaded:
-            return .notLoaded
+        case .notLoaded(let associatedId, let associatedField):
+            return .notLoaded(associatedId: associatedId, associatedField: associatedField)
         case .loaded(let elements, _, _):
             return .loaded(elements)
         }

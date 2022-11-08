@@ -10,6 +10,8 @@ public enum CoreError {
 
     /// A related operation performed on `List` resulted in an error.
     case listOperation(ErrorDescription, RecoverySuggestion, Error? = nil)
+    
+    case operation(ErrorDescription, RecoverySuggestion, Error? = nil)
 
     /// A client side validation error occured.
     case clientValidation(ErrorDescription, RecoverySuggestion, Error? = nil)
@@ -19,6 +21,7 @@ extension CoreError: AmplifyError {
     public var errorDescription: ErrorDescription {
         switch self {
         case .listOperation(let errorDescription, _, _),
+                .operation(let errorDescription, _, _),
              .clientValidation(let errorDescription, _, _):
             return errorDescription
         }
@@ -27,6 +30,7 @@ extension CoreError: AmplifyError {
     public var recoverySuggestion: RecoverySuggestion {
         switch self {
         case .listOperation(_, let recoverySuggestion, _),
+                .operation(_, let recoverySuggestion, _),
              .clientValidation(_, let recoverySuggestion, _):
             return recoverySuggestion
         }
@@ -35,6 +39,7 @@ extension CoreError: AmplifyError {
     public var underlyingError: Error? {
         switch self {
         case .listOperation(_, _, let underlyingError),
+                .operation(_, _, let underlyingError),
              .clientValidation(_, _, let underlyingError):
             return underlyingError
         }

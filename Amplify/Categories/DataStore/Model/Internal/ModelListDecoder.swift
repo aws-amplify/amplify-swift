@@ -40,3 +40,4 @@ public protocol ModelListDecoder {
     static func makeListProvider<ModelType: Model>(
         modelType: ModelType.Type, decoder: Decoder) throws -> AnyModelListProvider<ModelType>
 }
+

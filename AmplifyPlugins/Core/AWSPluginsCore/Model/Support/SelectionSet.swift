@@ -42,18 +42,25 @@ extension SelectionSet {
         withModelFields(fields)
     }
 
-    func withModelFields(_ fields: [ModelField]) {
+    func withModelFields(_ fields: [ModelField], recursive: Bool = true) {
         fields.forEach { field in
             if field.isEmbeddedType, let embeddedTypeSchema = field.embeddedTypeSchema {
                 let child = SelectionSet(value: .init(name: field.name, fieldType: .embedded))
                 child.withEmbeddableFields(embeddedTypeSchema.sortedFields)
                 self.addChild(settingParentOf: child)
-            } else if field.isAssociationOwner,
-                let associatedModelName = field.associatedModelName,
-                let schema = ModelRegistry.modelSchema(from: associatedModelName) {
-                let child = SelectionSet(value: .init(name: field.name, fieldType: .model))
-                child.withModelFields(schema.primaryKey.fields)
-                self.addChild(settingParentOf: child)
+            } else if field.isBelongsToOrHasOne,
+                      let associatedModelName = field.associatedModelName,
+                      let schema = ModelRegistry.modelSchema(from: associatedModelName) {
+                if recursive {
+                    var recursive = recursive
+                    if field.isBelongsToOrHasOne {
+                        recursive = false
+                    }
+                    
+                    let child = SelectionSet(value: .init(name: field.name, fieldType: .model))
+                    child.withModelFields(schema.primaryKey.fields, recursive: recursive)
+                    self.addChild(settingParentOf: child)
+                }
             } else {
                 self.addChild(settingParentOf: .init(value: .init(name: field.graphQLName, fieldType: .value)))
             }

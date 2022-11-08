@@ -64,3 +64,20 @@ public struct AppSyncListPayload: Codable {
         return nil
     }
 }
+
+// MARK - AppSyncModelPayload
+
+
+public struct AppSyncModelPayload: Codable {
+    
+    let graphQLData: JSONValue
+    let apiName: String?
+    
+    public init(graphQLData: JSONValue,
+                apiName: String?) {
+        self.apiName = apiName
+        self.graphQLData = graphQLData
+    }
+    
+    
+}

@@ -10,7 +10,18 @@ import AWSPluginsCore
 import Foundation
 
 extension GraphQLResponseDecoder {
-
+    
+    /*
+     The sequence of `responseType` checking attempts to decode to specific types before falling back to (5)
+     serializing the data and letting the default decode run its course (6).
+     
+     1. String, special case where the object is serialized as a JSON string.
+     2. AnyModel, used by DataStore's sync engine
+     3. ModelListMarker, checks if it is a List type, inject additional information to create a loaded list.
+     4. AppSyncModelMetadataUtils.shouldAddMetadata/addMetadata injects metadata for hasMany associations to
+        decode to nested notloaded Lists.
+     5. Default encode/decode path (6)
+     */
     func decodeToResponseType(_ graphQLData: [String: JSONValue]) throws -> R {
         let graphQLData = try valueAtDecodePath(from: JSONValue.object(graphQLData))
         if request.responseType == String.self {
@@ -25,23 +36,34 @@ extension GraphQLResponseDecoder {
         }
 
         let serializedJSON: Data
-        if request.responseType == AnyModel.self {
+        
+        if request.responseType == AnyModel.self { // 2
             let anyModel = try AnyModel(modelJSON: graphQLData)
             serializedJSON = try encoder.encode(anyModel)
-        } else if request.responseType is ModelListMarker.Type {
-            let payload = AppSyncListPayload(graphQLData: graphQLData,
+        } else if request.responseType is ModelListMarker.Type, // 3
+                  case .object(var graphQLDataObject) = graphQLData,
+                  case .array(var graphQLDataArray) = graphQLDataObject["items"] {
+            for (index, item) in graphQLDataArray.enumerated() {
+                if AppSyncModelMetadataUtils.shouldAddMetadata(toModel: item) { // 4
+                    let modelJSON = AppSyncModelMetadataUtils.addMetadata(toModel: item,
+                                                                          apiName: request.apiName)
+                    graphQLDataArray[index] = modelJSON
+                }
+            }
+            graphQLDataObject["items"] = JSONValue.array(graphQLDataArray)
+            let payload = AppSyncListPayload(graphQLData: JSONValue.object(graphQLDataObject),
                                              apiName: request.apiName,
                                              variables: try getVariablesJSON())
             serializedJSON = try encoder.encode(payload)
-        } else if AppSyncModelMetadataUtils.shouldAddMetadata(toModel: graphQLData) {
+        } else if AppSyncModelMetadataUtils.shouldAddMetadata(toModel: graphQLData) { // 4
             let modelJSON = AppSyncModelMetadataUtils.addMetadata(toModel: graphQLData,
                                                                   apiName: request.apiName)
             serializedJSON = try encoder.encode(modelJSON)
-        } else {
+        } else { // 5
             serializedJSON = try encoder.encode(graphQLData)
         }
 
-        return try decoder.decode(request.responseType, from: serializedJSON)
+        return try decoder.decode(request.responseType, from: serializedJSON) // 6
     }
 
     // MARK: - Helper methods

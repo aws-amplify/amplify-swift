@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Combine
 
 /// Empty protocol used as a marker to detect when the type is a `List`
 ///
@@ -23,7 +22,7 @@ public protocol ModelListMarker { }
 /// application making any change to these `public` types should be backward compatible, otherwise it will be a breaking
 /// change.
 public enum ModelListProviderState<Element: Model> {
-    case notLoaded
+    case notLoaded(associatedId: String, associatedField: String)
     case loaded([Element])
 }
 
@@ -92,5 +91,14 @@ public struct AnyModelListProvider<Element: Model>: ModelListProvider {
 public extension ModelListProvider {
     func eraseToAnyModelListProvider() -> AnyModelListProvider<Element> {
         AnyModelListProvider(provider: self)
+    }
+}
+
+// MARK - AnyModelProvider
+
+
+public extension ModelProvider {
+    func eraseToAnyModelProvider() -> AnyModelProvider<Element> {
+        AnyModelProvider(provider: self)
     }
 }
