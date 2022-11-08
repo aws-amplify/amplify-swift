@@ -133,8 +133,8 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
         
         if thresholdReached && networkMonitor.networkConnected() {
             let receivedPositions = mapReceivedLocationsToPositions(receivedLocations: locations, currentTime: currentTime)
-            if let didUpdateLocations = options.locationProxyDelegate.didUpdateLocations {
-                batchSendStoredLocationsToProxyDelegate(with: receivedPositions, didUpdateLocations: didUpdateLocations)
+            if let didUpdatePositions = options.locationProxyDelegate.didUpdatePositions {
+                batchSendStoredLocationsToProxyDelegate(with: receivedPositions, didUpdatePositions: didUpdatePositions)
             } else {
                 batchSendStoredLocationsToService(with: receivedPositions)
             }
@@ -237,11 +237,11 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
     }
     
     func batchSendStoredLocationsToProxyDelegate(with receivedPositions: [Position],
-                                                 didUpdateLocations: @escaping (([Position]) -> Void)) {
+                                                 didUpdatePositions: @escaping (([Position]) -> Void)) {
         Task {
             var allPositions = await mapStoredLocationsToPositions()
             allPositions.append(contentsOf: receivedPositions)
-            didUpdateLocations(allPositions)
+            didUpdatePositions(allPositions)
         }
     }
     
@@ -324,7 +324,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
     
     func sendHubErrorEvent(error: Geo.Error? = nil, locations: [Position]) {
         let geoLocations = locations.map({
-            Geo.Location(latitude: $0.latitude, longitude: $0.longitude) })
+            Geo.Location(latitude: $0.location.latitude, longitude: $0.location.longitude) })
         let data = AWSGeoHubPayloadData(error: error, locations: geoLocations)
         let payload = HubPayload(eventName: HubPayload.EventName.Geo.saveLocationsFailed, data: data)
         Amplify.Hub.dispatch(to: .geo, payload: payload)
