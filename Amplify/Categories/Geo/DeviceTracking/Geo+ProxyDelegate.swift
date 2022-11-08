@@ -20,15 +20,13 @@ public class LocationProxyDelegate {
 
 public struct Position {
     public let timeStamp: Date
-    public let latitude: Double
-    public let longitude: Double
+    public let location: Geo.Location
     public let tracker: String
     public let deviceID: String
     
-    public init(timeStamp: Date, latitude: Double, longitude: Double, tracker: String, deviceID: String) {
+    public init(timeStamp: Date, location: Geo.Location, tracker: String, deviceID: String) {
         self.timeStamp = timeStamp
-        self.latitude = latitude
-        self.longitude = longitude
+        self.location = location
         self.tracker = tracker
         self.deviceID = deviceID
     }

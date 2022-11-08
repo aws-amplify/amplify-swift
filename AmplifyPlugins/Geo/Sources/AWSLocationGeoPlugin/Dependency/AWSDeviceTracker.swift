@@ -210,8 +210,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
         
         return receivedLocations.map( {
             Position(timeStamp: currentTime,
-                     latitude: $0.coordinate.latitude,
-                     longitude: $0.coordinate.longitude,
+                     location: Geo.Location(clLocation: $0.coordinate),
                      tracker: options.tracker!,
                      deviceID: deviceId)
         })
@@ -222,8 +221,8 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
             let storedLocations = try await getLocationsFromLocalStore()
             return storedLocations.map( {
                 Position(timeStamp: $0.timeStamp,
-                         latitude: $0.latitude,
-                         longitude: $0.longitude,
+                         location: Geo.Location(latitude: $0.latitude,
+                                                longitude: $0.longitude),
                          tracker: $0.tracker,
                          deviceID: $0.deviceID)
             } )
@@ -260,7 +259,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
                             LocationClientTypes.DevicePositionUpdate(
                                 accuracy: nil,
                                 deviceId: $0.deviceID,
-                                position: [$0.longitude, $0.latitude],
+                                position: [$0.location.longitude, $0.location.latitude],
                                 positionProperties: nil,
                                 sampleTime: Date())
                         } )
@@ -348,9 +347,9 @@ extension Geo.LocationManager.BatchingOption {
     }
     
     var batchingOptionType: BatchingOptionType {
-        if let dist = distanceTravelledInMetres {
+        if let dist = _metersTravelled {
             return BatchingOptionType.distanceTravelledInMetres(value: dist)
-        } else if let sec = secondsElapsed {
+        } else if let sec = _secondsElapsed {
             return BatchingOptionType.secondsElapsed(value:sec)
         } else {
             return BatchingOptionType.none

@@ -22,21 +22,26 @@ public extension Geo.LocationManager {
     }
     
     struct BatchingOption {
-        public let distanceTravelledInMetres : Int?
-        public let secondsElapsed : Int?
+        /// Note: Although this has `public` access, it is intended for internal use
+        /// and should not be used directly by host applications.
+        public let _metersTravelled : Int?
+      
+        /// Note: Although this has `public` access, it is intended for internal use
+        /// and should not be used directly by host applications.
+        public let _secondsElapsed : Int?
         
-        init(distanceTravelledInMetres: Int? = nil, secondsElapsed: Int? = nil) {
-            self.distanceTravelledInMetres = distanceTravelledInMetres
-            self.secondsElapsed = secondsElapsed
+        init(metersTravelled: Int? = nil, secondsElapsed: Int? = nil) {
+            self._metersTravelled = metersTravelled
+            self._secondsElapsed = secondsElapsed
         }
         
         public static let none = BatchingOption()
            
-        public static func distanceTravelledInMetres(_ threshold: Int = 100) -> BatchingOption {
-            .init(distanceTravelledInMetres: threshold)
+        public static func distanceTravelled(meters threshold: Int) -> BatchingOption {
+            .init(metersTravelled: threshold)
         }
            
-        public static func secondsElapsed(_ threshold: Int = 300) -> BatchingOption {
+        public static func timeElapsed(seconds threshold: Int) -> BatchingOption {
             .init(secondsElapsed: threshold)
         }
     }
