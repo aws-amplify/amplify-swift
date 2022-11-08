@@ -24,10 +24,18 @@ public extension Geo.LocationManager {
     struct BatchingOption {
         /// Note: Although this has `public` access, it is intended for internal use
         /// and should not be used directly by host applications.
+        ///
+        /// Send batch of location updates to Amazon Location Service (or `LocationProxyDelegate` if set)
+        /// after at least this distance has been travelled. The computation of
+        /// distance travelled is defined as straight-line distance between the last saved
+        /// location and the most recent location in the batch
         public let _metersTravelled : Int?
       
         /// Note: Although this has `public` access, it is intended for internal use
         /// and should not be used directly by host applications.
+        ///
+        /// Number of seconds elapsed since sending location update(s) to Amazon
+        /// Location Service (or `LocationProxyDelegate` if set) before location updates are sent again.
         public let _secondsElapsed : Int?
         
         init(metersTravelled: Int? = nil, secondsElapsed: Int? = nil) {
@@ -105,8 +113,12 @@ public extension Geo.LocationManager {
         /// before sending the collected updates as a batch.
         public let batchingOption: BatchingOption
         
+        /// Receives location updates. Default implementation is to send location
+        /// updates to Amazon Location service.
         public let locationProxyDelegate: LocationProxyDelegate
         
+        /// Setting a proxy delegate will notify the delegate of location updates instead of
+        /// sending location updates to Amazon Location service
         public func withProxyDelegate(_ proxyDelegate: LocationProxyDelegate) -> Self {
             self.locationProxyDelegate.didUpdatePositions = proxyDelegate.didUpdatePositions
             return self
