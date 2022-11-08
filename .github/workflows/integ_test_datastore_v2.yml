@@ -1,7 +1,7 @@
-name: DataStore Integration V2 Tests
+name: DataStore TransformerV2 Tests
 on:
   push:
-    branches: [chore/test-run-V2]
+    branches: [main]
 
 permissions:
     id-token: write
