@@ -96,6 +96,8 @@ extension VerifyUserAttributeOutputError: AuthErrorConvertible {
                 exception.message ?? "An account with this email or phone already exists.",
                 AuthPluginErrorConstants.aliasExistsError,
                 AWSCognitoAuthError.aliasExists)
+        default: return .unknown("")
+
         }
     }
 }

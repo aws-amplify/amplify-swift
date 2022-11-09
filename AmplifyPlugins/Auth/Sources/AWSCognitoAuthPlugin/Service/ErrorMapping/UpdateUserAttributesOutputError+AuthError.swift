@@ -86,6 +86,8 @@ extension UpdateUserAttributesOutputError: AuthErrorConvertible {
             return .service(exception.message ?? "Invalid email role access policy error",
                             AuthPluginErrorConstants.invalidEmailRoleError,
                             AWSCognitoAuthError.emailRole)
+        default: return .unknown("")
+
         }
     }
 
