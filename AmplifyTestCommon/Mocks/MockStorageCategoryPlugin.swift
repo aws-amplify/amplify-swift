@@ -121,7 +121,7 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
 
     @discardableResult
     func downloadData(key: String,
-                      options: StorageDownloadDataOperation.Request.Options? = nil) async throws -> StorageDownloadDataTask {
+                      options: StorageDownloadDataOperation.Request.Options? = nil) -> StorageDownloadDataTask {
         notify("downloadData")
         let options = options ?? StorageDownloadDataRequest.Options()
         let request = StorageDownloadDataRequest(key: key, options: options)
@@ -133,7 +133,7 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
     @discardableResult
     func downloadFile(key: String,
                       local: URL,
-                      options: StorageDownloadFileOperation.Request.Options?) async throws -> StorageDownloadFileTask {
+                      options: StorageDownloadFileOperation.Request.Options?) -> StorageDownloadFileTask {
         notify("downloadFile")
         let options = options ?? StorageDownloadFileRequest.Options()
         let request = StorageDownloadFileRequest(key: key, local: local, options: options)
@@ -145,7 +145,7 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
     @discardableResult
     func uploadData(key: String,
                     data: Data,
-                    options: StorageUploadDataOperation.Request.Options?) async throws -> StorageUploadDataTask {
+                    options: StorageUploadDataOperation.Request.Options?) -> StorageUploadDataTask {
         notify("uploadData")
         let options = options ?? StorageUploadDataRequest.Options()
         let request = StorageUploadDataRequest(key: key, data: data, options: options)
@@ -157,7 +157,7 @@ class MockStorageCategoryPlugin: MessageReporter, StorageCategoryPlugin {
     @discardableResult
     func uploadFile(key: String,
                     local: URL,
-                    options: StorageUploadFileOperation.Request.Options?) async throws -> StorageUploadFileTask {
+                    options: StorageUploadFileOperation.Request.Options?) -> StorageUploadFileTask {
         notify("uploadFile")
         let options = options ?? StorageUploadFileRequest.Options()
         let request = StorageUploadFileRequest(key: key, local: local, options: options)

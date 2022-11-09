@@ -20,7 +20,7 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
         try await testTask(timeout: 600) {
             let key = UUID().uuidString
             Self.logger.debug("Uploading data")
-            let task = try await Amplify.Storage.uploadData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
+            let task = Amplify.Storage.uploadData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
 
             let didPause = asyncExpectation(description: "did pause")
             let didContinue = asyncExpectation(description: "did continue", isInverted: true)
@@ -71,7 +71,7 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
         try await testTask(timeout: 600) {
             let key = UUID().uuidString
             Self.logger.debug("Uploading data")
-            let task = try await Amplify.Storage.uploadData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
+            let task = Amplify.Storage.uploadData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
 
             let progressInvoked = asyncExpectation(description: "Progress invoked")
             Task {
@@ -118,7 +118,7 @@ class AWSS3StoragePluginUploadDataResumabilityTests: AWSS3StoragePluginTestBase 
         try await testTask(timeout: 600) {
             let key = UUID().uuidString
             Self.logger.debug("Uploading data")
-            let task = try await Amplify.Storage.uploadData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
+            let task = Amplify.Storage.uploadData(key: key, data: AWSS3StoragePluginTestBase.largeDataObject)
 
             let didCancel = asyncExpectation(description: "did cancel")
             let didContinue = asyncExpectation(description: "did continue", isInverted: true)
