@@ -33,7 +33,7 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
         let completionReceived = expectation(description: "resultReceived")
         let progressReceived = expectation(description: "progressReceived")
         progressReceived.assertForOverFulfill = false
-        let uploadOperation = try await Amplify.Storage.uploadData(
+        let uploadOperation = Amplify.Storage.uploadData(
             key: key,
             data: .testDataOfSize(.bytes(100)))
 
@@ -63,7 +63,7 @@ class AWSS3StoragePluginProgressTests: AWSS3StoragePluginTestBase {
         let key = "testUploadProgressDeliveryAfterCompletion-\(timestamp)"
 
         // Wait for the upload to complete
-        let uploadOperation = try await Amplify.Storage.uploadData(
+        let uploadOperation = Amplify.Storage.uploadData(
             key: key,
             data: .testDataOfSize(.bytes(100))
         )

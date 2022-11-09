@@ -63,13 +63,13 @@ class AWSS3StoragePluginTestBase: XCTestCase {
 
     func uploadTask(key: String, data: Data) async -> StorageUploadDataTask? {
         return await wait(name: "Upload Task created") {
-            return try await Amplify.Storage.uploadData(key: key, data: data)
+            return Amplify.Storage.uploadData(key: key, data: data)
         }
     }
 
     func downloadTask(key: String) async -> StorageDownloadDataTask? {
         return await wait(name: "Upload Task created") {
-            return try await Amplify.Storage.downloadData(key: key)
+            return Amplify.Storage.downloadData(key: key)
         }
     }
 

@@ -28,7 +28,7 @@ public protocol StorageCategoryBehavior {
     /// - Returns: A task that provides progress updates and the key which was used to download
     @discardableResult
     func downloadData(key: String,
-                      options: StorageDownloadDataOperation.Request.Options?) async throws -> StorageDownloadDataTask
+                      options: StorageDownloadDataOperation.Request.Options?) -> StorageDownloadDataTask
 
     /// Download to file the object from storage.
     ///
@@ -40,7 +40,7 @@ public protocol StorageCategoryBehavior {
     @discardableResult
     func downloadFile(key: String,
                       local: URL,
-                      options: StorageDownloadFileOperation.Request.Options?) async throws -> StorageDownloadFileTask
+                      options: StorageDownloadFileOperation.Request.Options?) -> StorageDownloadFileTask
 
     /// Upload data to storage
     ///
@@ -52,7 +52,7 @@ public protocol StorageCategoryBehavior {
     @discardableResult
     func uploadData(key: String,
                     data: Data,
-                    options: StorageUploadDataOperation.Request.Options?) async throws -> StorageUploadDataTask
+                    options: StorageUploadDataOperation.Request.Options?) -> StorageUploadDataTask
 
     /// Upload local file to storage
     ///
@@ -64,7 +64,7 @@ public protocol StorageCategoryBehavior {
     @discardableResult
     func uploadFile(key: String,
                     local: URL,
-                    options: StorageUploadFileOperation.Request.Options?) async throws -> StorageUploadFileTask
+                    options: StorageUploadFileOperation.Request.Options?) -> StorageUploadFileTask
 
     /// Delete object from storage
     ///

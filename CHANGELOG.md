@@ -1,5 +1,10 @@
 # Changelog
 
+### Features
+
+- **storage**: Remove `async throws` from public apis that returns a task (#2543). The change avoids checking for error at two places and the api will become sync. 
+              **Note:** This change would break customer who use storage api and have Xcode setting to treat warnings as error. 
+
 ## 2.0.2 (2022-11-02)
 
 ### Bug Fixes
