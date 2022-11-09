@@ -131,7 +131,7 @@ extension GeoCategory: GeoCategoryBehavior {
     ///              of this tracking session.
     public func startTracking(
         for device: @autoclosure () async throws -> Geo.Device = try await .tiedToUser(),
-        with options: Geo.LocationManager.TrackingSessionOptions
+        with options: Geo.LocationManager.TrackingSessionOptions = .init()
     ) async throws {
         try await plugin.startTracking(for: await device(), with: options)
     }
