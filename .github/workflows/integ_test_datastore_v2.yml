@@ -1,5 +1,6 @@
 name: DataStore TransformerV2 Tests
 on:
+  workflow_dispatch:
   push:
     branches: [main]
 
