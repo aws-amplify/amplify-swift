@@ -84,23 +84,13 @@ extension AWSCognitoAuthPlugin {
     private func makeUserPool() throws -> CognitoUserPoolBehavior {
         switch authConfiguration {
         case .userPools(let userPoolConfig), .userPoolsAndIdentityPools(let userPoolConfig, _):
-
-            let configuration: CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration
-            if let customEndpoint = userPoolConfig.endpoint {
-                configuration = try .init(
-                    endpointResolver: customEndpoint.resolver,
-                    frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
-                    region: userPoolConfig.region
-                )
-            } else {
-                configuration = try CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration(
-                    frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
-                    region: userPoolConfig.region
-                )
-            }
+            let configuration = try CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration(
+                endpointResolver: userPoolConfig.endpoint?.resolver,
+                frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
+                region: userPoolConfig.region
+            )
 
             return CognitoIdentityProviderClient(config: configuration)
-
         default:
             fatalError()
         }
