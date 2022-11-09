@@ -46,7 +46,7 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
     func testFetchUserAttributesRequest() async throws {
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
             GetUserOutputResponse(
-                mFAOptions: [],
+                mfaOptions: [],
                 preferredMfaSetting: "",
                 userAttributes: [.init(name: "email", value: "Amplify@amazon.com")],
                 userMFASettingList: [],
@@ -68,7 +68,7 @@ class AWSCognitoAuthUserBehaviorTests: BasePluginTest {
     func testFetchUserAttributesRequestWithoutOptions() async throws {
         mockIdentityProvider = MockIdentityProvider(mockGetUserAttributeResponse: { _ in
             GetUserOutputResponse(
-                mFAOptions: [],
+                mfaOptions: [],
                 preferredMfaSetting: "",
                 userAttributes: [.init(name: "email", value: "Amplify@amazon.com")],
                 userMFASettingList: [],

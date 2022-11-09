@@ -19,7 +19,7 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
     let defaultExpiration: Int64 = 50 * 60 // 50 minutes
 
     let bucket: String
-    let config: AWSClientConfiguration
+    let config: S3ClientConfigurationProtocol
     let logger: Logger
 
     /// Creates a pre-signed URL builder.
@@ -41,10 +41,14 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
         switch signingOperation {
         case .getObject:
             let input = GetObjectInput(bucket: bucket, key: key)
-            preSignedUrl = try await input.presignURL(config: config, expiration: expiration)
+            preSignedUrl = try await input.presignURL(
+                config: config,
+                expiration: expiration)
         case .putObject:
             let input = PutObjectInput(bucket: bucket, key: key)
-            preSignedUrl = try await input.presignURL(config: config, expiration: expiration)
+            preSignedUrl = try await input.presignURL(
+                config: config,
+                expiration: expiration)
         case .uploadPart(let partNumber, let uploadId):
             let input = UploadPartInput(bucket: bucket, key: key, partNumber: partNumber, uploadId: uploadId)
             preSignedUrl = try await input.presignURL(config: config, expiration: expiration)
