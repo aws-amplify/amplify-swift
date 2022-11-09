@@ -14,7 +14,13 @@ import XCTest
 @testable import AWSLocationGeoPlugin
 @testable import AWSPluginsTestCommon
 
-class MockAWSClientConfiguration: AWSClientRuntime.AWSClientConfiguration {
+class MockAWSClientConfiguration: LocationClientConfigurationProtocol {
+    var useFIPS: Bool?
+
+    var useDualStack: Bool?
+
+    var endpoint: String?
+
     var credentialsProvider: CredentialsProvider
 
     var region: String?
@@ -42,9 +48,13 @@ class MockAWSClientConfiguration: AWSClientRuntime.AWSClientConfiguration {
 }
 
 class MockEndPointResolver: EndpointResolver {
-    func resolve(serviceId: String, region: String) throws -> AWSEndpoint {
-        return AWSEndpoint(endpoint: Endpoint(host: "MockHost"))
+    func resolve(params: AWSLocation.EndpointParams) throws -> ClientRuntime.Endpoint {
+        return Endpoint(host: "MockHost")
     }
+//
+//    func resolve(serviceId: String, region: String) throws -> AWSEndpoint {
+//        return AWSEndpoint(endpoint: Endpoint(host: "MockHost"))
+//    }
 }
 
 class MockLogAgent: LogAgent {
