@@ -9,26 +9,24 @@ import Foundation
 import CoreLocation
 
 public class LocationProxyDelegate {
-    public var didUpdateLocations: (([Position]) -> Void)?
+    public var didUpdatePositions: (([Position]) -> Void)?
     
     public init() { }
     
-    public init(didUpdateLocations: @escaping ([Position]) -> Void) {
-        self.didUpdateLocations = didUpdateLocations
+    public init(didUpdatePositions: @escaping ([Position]) -> Void) {
+        self.didUpdatePositions = didUpdatePositions
     }
 }
 
 public struct Position {
     public let timeStamp: Date
-    public let latitude: Double
-    public let longitude: Double
+    public let location: Geo.Location
     public let tracker: String
     public let deviceID: String
     
-    public init(timeStamp: Date, latitude: Double, longitude: Double, tracker: String, deviceID: String) {
+    public init(timeStamp: Date, location: Geo.Location, tracker: String, deviceID: String) {
         self.timeStamp = timeStamp
-        self.latitude = latitude
-        self.longitude = longitude
+        self.location = location
         self.tracker = tracker
         self.deviceID = deviceID
     }

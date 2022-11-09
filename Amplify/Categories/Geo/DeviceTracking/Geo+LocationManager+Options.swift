@@ -22,29 +22,38 @@ public extension Geo.LocationManager {
     }
     
     struct BatchingOption {
-        let threshold: Int
-        public let _thresholdReached: (_ old: LocationUpdate, _ new: LocationUpdate) -> Bool
+        /// Note: Although this has `public` access, it is intended for internal use
+        /// and should not be used directly by host applications.
+        ///
+        /// Send batch of location updates to Amazon Location Service (or `LocationProxyDelegate` if set)
+        /// after at least this distance has been travelled. The computation of
+        /// distance travelled is defined as straight-line distance between the last saved
+        /// location and the most recent location in the batch
+        public let _metersTravelled : Int?
+      
+        /// Note: Although this has `public` access, it is intended for internal use
+        /// and should not be used directly by host applications.
+        ///
+        /// Number of seconds elapsed since sending location update(s) to Amazon
+        /// Location Service (or `LocationProxyDelegate` if set) before location updates are sent again.
+        public let _secondsElapsed : Int?
         
-        public static let `none` = BatchingOption(threshold: 0, _thresholdReached: { _, _ in true })
-        
-        public static func secondsElapsed(_ threshold: Int) -> BatchingOption {
-            BatchingOption(threshold: threshold) { old, new in
-                guard let newTimeStamp = new.timeStamp, let oldTimeStamp = old.timeStamp else {
-                    return false
-                }
-                return Int(newTimeStamp.timeIntervalSince(oldTimeStamp)) >= threshold
-            }
+        init(metersTravelled: Int? = nil, secondsElapsed: Int? = nil) {
+            self._metersTravelled = metersTravelled
+            self._secondsElapsed = secondsElapsed
         }
         
-        public static func distanceTravelledInMeters(_ threshold: Int) -> BatchingOption {
-            BatchingOption(threshold: threshold) { old, new in
-                guard let newPosition = new.position, let oldPosition = old.position else {
-                    return false
-                }
-                return Int(newPosition.distance(from: oldPosition)) >= threshold
-            }
+        public static let none = BatchingOption()
+           
+        public static func distanceTravelled(meters threshold: Int) -> BatchingOption {
+            .init(metersTravelled: threshold)
+        }
+           
+        public static func timeElapsed(seconds threshold: Int) -> BatchingOption {
+            .init(secondsElapsed: threshold)
         }
     }
+    
     
     struct TrackingSessionOptions {
         
@@ -104,10 +113,14 @@ public extension Geo.LocationManager {
         /// before sending the collected updates as a batch.
         public let batchingOption: BatchingOption
         
+        /// Receives location updates. Default implementation is to send location
+        /// updates to Amazon Location service.
         public let locationProxyDelegate: LocationProxyDelegate
         
+        /// Setting a proxy delegate will notify the delegate of location updates instead of
+        /// sending location updates to Amazon Location service
         public func withProxyDelegate(_ proxyDelegate: LocationProxyDelegate) -> Self {
-            self.locationProxyDelegate.didUpdateLocations = proxyDelegate.didUpdateLocations
+            self.locationProxyDelegate.didUpdatePositions = proxyDelegate.didUpdatePositions
             return self
         }
         
