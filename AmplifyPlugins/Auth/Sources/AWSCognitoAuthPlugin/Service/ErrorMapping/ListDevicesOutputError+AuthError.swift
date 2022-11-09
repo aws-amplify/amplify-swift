@@ -49,6 +49,8 @@ extension ListDevicesOutputError: AuthErrorConvertible {
             let statusCode = serviceError._statusCode?.rawValue ?? -1
             let message = serviceError._message ?? ""
             return .unknown("Unknown service error occurred with status \(statusCode) \(message)")
+        default: return .unknown("")
+
         }
     }
 }
