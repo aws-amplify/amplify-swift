@@ -13,7 +13,7 @@ type Post4V2 @model @auth(rules: [{allow: public}]) {
 
 type Comment4V2 @model @auth(rules: [{allow: public}]) {
   id: ID!
-  postID: ID! @index(name: "byPost4", sortKeyFields: ["content"])
+  postID: ID @index(name: "byPost4", sortKeyFields: ["content"])
   content: String!
   post: Post4V2 @belongsTo(fields: ["postID"])
 }

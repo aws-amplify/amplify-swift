@@ -36,9 +36,21 @@ extension Post4V2 {
       .field(post4V2.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
+    
+    public class Path: ModelPath<Post4V2> { }
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension Post4V2: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
   public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
+}
+
+extension ModelPath where ModelType == Post4V2 {
+    var id: FieldPath<String> { id() }
+    var title: FieldPath<String> { string("title") }
+    var comments: ModelPath<Comment4V2> { Comment4V2.Path(name: "comments", isCollection: true, parent: self) }
+    var createdAt: FieldPath<Temporal.DateTime> { datetime("createdAt") }
+    var updatedAt: FieldPath<Temporal.DateTime> { datetime("updatedAt") }
 }

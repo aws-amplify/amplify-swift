@@ -49,19 +49,20 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
                                                           byIdentifiers: identifiers,
                                                           apiName: apiName)
             do {
+                log.verbose("Loading \(ModelType.modelName) with \(identifiers)")
                 let graphQLResponse = try await Amplify.API.query(request: request)
                 switch graphQLResponse {
                 case .success(let model):
                     return model
                 case .failure(let graphQLError):
-                    Amplify.API.log.error(error: graphQLError)
+                    self.log.error(error: graphQLError)
                     throw CoreError.operation(
                         "The AppSync response returned successfully with GraphQL errors.",
                         "Check the underlying error for the failed GraphQL response.",
                         graphQLError)
                 }
             } catch let apiError as APIError {
-                Amplify.API.log.error(error: apiError)
+                self.log.error(error: apiError)
                 throw CoreError.operation("The AppSync request failed",
                                           "See underlying `APIError` for more details.",
                                           apiError)
@@ -100,6 +101,7 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
     }
 }
 
+extension AppSyncModelProvider: DefaultLogger { }
 public class AppSyncListProvider<Element: Model>: ModelListProvider {
 
     /// The API friendly name used to reference the API to call

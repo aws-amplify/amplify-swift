@@ -38,21 +38,25 @@ public struct AppSyncListDecoder: ModelListDecoder {
     static func makeAppSyncListProvider<ModelType: Model>(modelType: ModelType.Type,
                                                    decoder: Decoder) throws -> AppSyncListProvider<ModelType>? {
         if let listPayload = try? AppSyncListPayload.init(from: decoder) {
+            log.verbose("Creating loaded list of \(modelType.modelName)")
             return try AppSyncListProvider(payload: listPayload)
         } else if let metadata = try? AppSyncModelMetadata.init(from: decoder) {
+            log.verbose("Creating not loaded list of \(modelType.modelName) with \(metadata)")
             return AppSyncListProvider<ModelType>(metadata: metadata)
         } else if let listResponse = try? AppSyncListResponse<ModelType>.init(from: decoder) {
+            log.verbose("Creating list response for \(modelType.modelName)")
             return try AppSyncListProvider<ModelType>(listResponse: listResponse)
         }
 
         let json = try JSONValue(from: decoder)
         let message = "AppSyncListProvider could not be created from \(String(describing: json))"
-        Amplify.DataStore.log.error(message)
+        log.error(message)
         assertionFailure(message)
         return nil
     }
 }
 
+extension AppSyncListDecoder: DefaultLogger { }
 
 public struct AppSyncModelDecoder: ModelProviderDecoder {
     public static func shouldDecode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> Bool {
@@ -79,14 +83,18 @@ public struct AppSyncModelDecoder: ModelProviderDecoder {
     static func makeAppSyncModelProvider<ModelType: Model>(modelType: ModelType.Type,
                                                            decoder: Decoder) throws -> AppSyncModelProvider<ModelType>? {
         if let model = try? ModelType.init(from: decoder) {
+            log.verbose("Creating loaded model \(model)")
             return AppSyncModelProvider(model: model)
         } else if let metadata = try? AppSyncModelIdentifierMetadata.init(from: decoder) {
+            log.verbose("Creating not loaded model \(modelType.modelName) with metadata \(metadata)")
             return AppSyncModelProvider<ModelType>(metadata: metadata)
         }
         let json = try JSONValue(from: decoder)
         let message = "AppSyncModelProvider could not be created from \(String(describing: json))"
-        Amplify.DataStore.log.error(message)
+        log.error(message)
         assertionFailure(message)
         return nil
     }
 }
+
+extension AppSyncModelDecoder: DefaultLogger { }

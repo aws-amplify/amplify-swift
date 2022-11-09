@@ -82,6 +82,11 @@
 		21698CC72889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CC22889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Auth.swift */; };
 		21698CC92889D75F004BD994 /* SocialNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CC42889D75F004BD994 /* SocialNote.swift */; };
 		21698CCB2889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698CC62889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift */; };
+		218D0193291AE3750068D133 /* Post4V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218D018F291AE3750068D133 /* Post4V2.swift */; };
+		218D0194291AE3750068D133 /* Comment4V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218D0190291AE3750068D133 /* Comment4V2.swift */; };
+		218D0195291AE3750068D133 /* Comment4V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218D0191291AE3750068D133 /* Comment4V2+Schema.swift */; };
+		218D0196291AE3750068D133 /* Post4V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218D0192291AE3750068D133 /* Post4V2+Schema.swift */; };
+		218D0198291AE3C00068D133 /* GraphQLLazyLoadPostComment4V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218D0197291AE3C00068D133 /* GraphQLLazyLoadPostComment4V2Tests.swift */; };
 		219253C428BFEBE400820737 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 219253C328BFEBE200820737 /* XCTest.framework */; };
 		21E73E6F28898D7900D7DB7E /* APIHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E73E6E28898D7900D7DB7E /* APIHostAppApp.swift */; };
 		21E73E7128898D7900D7DB7E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E73E7028898D7900D7DB7E /* ContentView.swift */; };
@@ -95,7 +100,6 @@
 		21EA88B628F9BD790000BA75 /* Comment8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA888528F9BD780000BA75 /* Comment8+Schema.swift */; };
 		21EA88B728F9BD790000BA75 /* Comment4+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA888628F9BD780000BA75 /* Comment4+Schema.swift */; };
 		21EA88B828F9BD7A0000BA75 /* Comment8V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA888728F9BD780000BA75 /* Comment8V2.swift */; };
-		21EA88B928F9BD7A0000BA75 /* Comment4V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA888828F9BD780000BA75 /* Comment4V2.swift */; };
 		21EA88BA28F9BD7A0000BA75 /* Post8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA888928F9BD780000BA75 /* Post8+Schema.swift */; };
 		21EA88BB28F9BD7A0000BA75 /* Comment4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA888A28F9BD780000BA75 /* Comment4.swift */; };
 		21EA88BC28F9BD7A0000BA75 /* CommentWithCompositeKeyAndIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA888B28F9BD780000BA75 /* CommentWithCompositeKeyAndIndex.swift */; };
@@ -104,9 +108,7 @@
 		21EA88BF28F9BD7A0000BA75 /* Comment8V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA888E28F9BD780000BA75 /* Comment8V2+Schema.swift */; };
 		21EA88C028F9BD7A0000BA75 /* PostWithTagsCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA888F28F9BD780000BA75 /* PostWithTagsCompositeKey.swift */; };
 		21EA88C128F9BD7A0000BA75 /* Post4+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA889028F9BD780000BA75 /* Post4+Schema.swift */; };
-		21EA88C228F9BD7A0000BA75 /* Comment4V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA889128F9BD780000BA75 /* Comment4V2+Schema.swift */; };
 		21EA88C328F9BD7A0000BA75 /* CommentWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA889228F9BD790000BA75 /* CommentWithCompositeKey+Schema.swift */; };
-		21EA88C428F9BD7A0000BA75 /* Post4V2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA889328F9BD790000BA75 /* Post4V2+Schema.swift */; };
 		21EA88C528F9BD7A0000BA75 /* TagWithCompositeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA889428F9BD790000BA75 /* TagWithCompositeKey.swift */; };
 		21EA88C628F9BD7A0000BA75 /* Comment7+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA889528F9BD790000BA75 /* Comment7+Schema.swift */; };
 		21EA88C728F9BD7A0000BA75 /* Team2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA889628F9BD790000BA75 /* Team2.swift */; };
@@ -127,7 +129,6 @@
 		21EA88D628F9BD7A0000BA75 /* TagWithCompositeKey+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88A528F9BD790000BA75 /* TagWithCompositeKey+Schema.swift */; };
 		21EA88D728F9BD7A0000BA75 /* MyCustomModel8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88A628F9BD790000BA75 /* MyCustomModel8+Schema.swift */; };
 		21EA88D828F9BD7A0000BA75 /* Project6+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88A728F9BD790000BA75 /* Project6+Schema.swift */; };
-		21EA88D928F9BD7A0000BA75 /* Post4V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88A828F9BD790000BA75 /* Post4V2.swift */; };
 		21EA88DA28F9BD7A0000BA75 /* AmplifyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88A928F9BD790000BA75 /* AmplifyModels.swift */; };
 		21EA88DB28F9BD7A0000BA75 /* Post4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88AA28F9BD790000BA75 /* Post4.swift */; };
 		21EA88DC28F9BD7A0000BA75 /* Team6+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21EA88AB28F9BD790000BA75 /* Team6+Schema.swift */; };
@@ -339,6 +340,11 @@
 		21698CC42889D75F004BD994 /* SocialNote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocialNote.swift; sourceTree = "<group>"; };
 		21698CC52889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests+Support.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GraphQLAuthDirectiveIntegrationTests+Support.swift"; sourceTree = "<group>"; };
 		21698CC62889D75F004BD994 /* GraphQLAuthDirectiveIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphQLAuthDirectiveIntegrationTests.swift; sourceTree = "<group>"; };
+		218D018F291AE3750068D133 /* Post4V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post4V2.swift; sourceTree = "<group>"; };
+		218D0190291AE3750068D133 /* Comment4V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment4V2.swift; sourceTree = "<group>"; };
+		218D0191291AE3750068D133 /* Comment4V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment4V2+Schema.swift"; sourceTree = "<group>"; };
+		218D0192291AE3750068D133 /* Post4V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post4V2+Schema.swift"; sourceTree = "<group>"; };
+		218D0197291AE3C00068D133 /* GraphQLLazyLoadPostComment4V2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLLazyLoadPostComment4V2Tests.swift; sourceTree = "<group>"; };
 		219253C328BFEBE200820737 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		21D335B7289867FC00657B12 /* amplify-ios-staging */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios-staging"; path = ../../../..; sourceTree = "<group>"; };
 		21E73E6B28898D7900D7DB7E /* APIHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = APIHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -354,7 +360,6 @@
 		21EA888528F9BD780000BA75 /* Comment8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment8+Schema.swift"; sourceTree = "<group>"; };
 		21EA888628F9BD780000BA75 /* Comment4+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment4+Schema.swift"; sourceTree = "<group>"; };
 		21EA888728F9BD780000BA75 /* Comment8V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment8V2.swift; sourceTree = "<group>"; };
-		21EA888828F9BD780000BA75 /* Comment4V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment4V2.swift; sourceTree = "<group>"; };
 		21EA888928F9BD780000BA75 /* Post8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post8+Schema.swift"; sourceTree = "<group>"; };
 		21EA888A28F9BD780000BA75 /* Comment4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment4.swift; sourceTree = "<group>"; };
 		21EA888B28F9BD780000BA75 /* CommentWithCompositeKeyAndIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentWithCompositeKeyAndIndex.swift; sourceTree = "<group>"; };
@@ -363,9 +368,7 @@
 		21EA888E28F9BD780000BA75 /* Comment8V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment8V2+Schema.swift"; sourceTree = "<group>"; };
 		21EA888F28F9BD780000BA75 /* PostWithTagsCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithTagsCompositeKey.swift; sourceTree = "<group>"; };
 		21EA889028F9BD780000BA75 /* Post4+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post4+Schema.swift"; sourceTree = "<group>"; };
-		21EA889128F9BD780000BA75 /* Comment4V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment4V2+Schema.swift"; sourceTree = "<group>"; };
 		21EA889228F9BD790000BA75 /* CommentWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CommentWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
-		21EA889328F9BD790000BA75 /* Post4V2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post4V2+Schema.swift"; sourceTree = "<group>"; };
 		21EA889428F9BD790000BA75 /* TagWithCompositeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagWithCompositeKey.swift; sourceTree = "<group>"; };
 		21EA889528F9BD790000BA75 /* Comment7+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment7+Schema.swift"; sourceTree = "<group>"; };
 		21EA889628F9BD790000BA75 /* Team2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Team2.swift; sourceTree = "<group>"; };
@@ -386,7 +389,6 @@
 		21EA88A528F9BD790000BA75 /* TagWithCompositeKey+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TagWithCompositeKey+Schema.swift"; sourceTree = "<group>"; };
 		21EA88A628F9BD790000BA75 /* MyCustomModel8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MyCustomModel8+Schema.swift"; sourceTree = "<group>"; };
 		21EA88A728F9BD790000BA75 /* Project6+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project6+Schema.swift"; sourceTree = "<group>"; };
-		21EA88A828F9BD790000BA75 /* Post4V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post4V2.swift; sourceTree = "<group>"; };
 		21EA88A928F9BD790000BA75 /* AmplifyModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyModels.swift; sourceTree = "<group>"; };
 		21EA88AA28F9BD790000BA75 /* Post4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post4.swift; sourceTree = "<group>"; };
 		21EA88AB28F9BD790000BA75 /* Team6+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Team6+Schema.swift"; sourceTree = "<group>"; };
@@ -657,6 +659,18 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		218D018E291AE34C0068D133 /* LL1 */ = {
+			isa = PBXGroup;
+			children = (
+				218D0190291AE3750068D133 /* Comment4V2.swift */,
+				218D0191291AE3750068D133 /* Comment4V2+Schema.swift */,
+				218D018F291AE3750068D133 /* Post4V2.swift */,
+				218D0192291AE3750068D133 /* Post4V2+Schema.swift */,
+				218D0197291AE3C00068D133 /* GraphQLLazyLoadPostComment4V2Tests.swift */,
+			);
+			path = LL1;
+			sourceTree = "<group>";
+		};
 		21D335B6289867FC00657B12 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
@@ -728,6 +742,7 @@
 		21EA887428F9BC600000BA75 /* AWSAPIPluginLazyLoadTests */ = {
 			isa = PBXGroup;
 			children = (
+				218D018E291AE34C0068D133 /* LL1 */,
 				21EA888428F9BD600000BA75 /* Models */,
 				21EA888328F9BD2D0000BA75 /* lazyload-schema.graphql */,
 				21EA888128F9BCD90000BA75 /* TestConfigHelper.swift */,
@@ -745,8 +760,6 @@
 				21EA88B028F9BD790000BA75 /* Blog8V2+Schema.swift */,
 				21EA888A28F9BD780000BA75 /* Comment4.swift */,
 				21EA888628F9BD780000BA75 /* Comment4+Schema.swift */,
-				21EA888828F9BD780000BA75 /* Comment4V2.swift */,
-				21EA889128F9BD780000BA75 /* Comment4V2+Schema.swift */,
 				21EA889F28F9BD790000BA75 /* Comment7.swift */,
 				21EA889528F9BD790000BA75 /* Comment7+Schema.swift */,
 				21EA88A028F9BD790000BA75 /* Comment8.swift */,
@@ -763,8 +776,6 @@
 				21EA88AD28F9BD790000BA75 /* MyNestedModel8+Schema.swift */,
 				21EA88AA28F9BD790000BA75 /* Post4.swift */,
 				21EA889028F9BD780000BA75 /* Post4+Schema.swift */,
-				21EA88A828F9BD790000BA75 /* Post4V2.swift */,
-				21EA889328F9BD790000BA75 /* Post4V2+Schema.swift */,
 				21EA88A428F9BD790000BA75 /* Post7.swift */,
 				21EA889828F9BD790000BA75 /* Post7+Schema.swift */,
 				21EA888C28F9BD780000BA75 /* Post8.swift */,
@@ -1518,18 +1529,20 @@
 				21EA887F28F9BCC30000BA75 /* AsyncExpectation.swift in Sources */,
 				21EA88D728F9BD7A0000BA75 /* MyCustomModel8+Schema.swift in Sources */,
 				21EA887628F9BC610000BA75 /* GraphQLLazyLoadBaseTest.swift in Sources */,
+				218D0195291AE3750068D133 /* Comment4V2+Schema.swift in Sources */,
 				21EA88E028F9BD7A0000BA75 /* Project6.swift in Sources */,
-				21EA88C228F9BD7A0000BA75 /* Comment4V2+Schema.swift in Sources */,
 				21EA88CC28F9BD7A0000BA75 /* PostTagsWithCompositeKey+Schema.swift in Sources */,
 				21EA88CA28F9BD7A0000BA75 /* PostWithCompositeKey+Schema.swift in Sources */,
+				218D0194291AE3750068D133 /* Comment4V2.swift in Sources */,
+				218D0198291AE3C00068D133 /* GraphQLLazyLoadPostComment4V2Tests.swift in Sources */,
 				21EA88E128F9BD7A0000BA75 /* Blog8V2+Schema.swift in Sources */,
 				21EA88BB28F9BD7A0000BA75 /* Comment4.swift in Sources */,
-				21EA88B928F9BD7A0000BA75 /* Comment4V2.swift in Sources */,
 				21EA88C928F9BD7A0000BA75 /* Post7+Schema.swift in Sources */,
 				21EA88E228F9BD7A0000BA75 /* Blog8V2.swift in Sources */,
 				21EA88C828F9BD7A0000BA75 /* Post8V2.swift in Sources */,
 				21EA88D228F9BD7A0000BA75 /* Post8V2+Schema.swift in Sources */,
 				21EA88DE28F9BD7A0000BA75 /* MyNestedModel8+Schema.swift in Sources */,
+				218D0193291AE3750068D133 /* Post4V2.swift in Sources */,
 				21EA88D528F9BD7A0000BA75 /* Post7.swift in Sources */,
 				21EA88BE28F9BD7A0000BA75 /* Team2+Schema.swift in Sources */,
 				21EA888028F9BCC50000BA75 /* XCTestCase+AsyncTesting.swift in Sources */,
@@ -1543,14 +1556,12 @@
 				21EA88C028F9BD7A0000BA75 /* PostWithTagsCompositeKey.swift in Sources */,
 				21EA88B628F9BD790000BA75 /* Comment8+Schema.swift in Sources */,
 				21EA88BC28F9BD7A0000BA75 /* CommentWithCompositeKeyAndIndex.swift in Sources */,
-				21EA88D928F9BD7A0000BA75 /* Post4V2.swift in Sources */,
 				21EA88BF28F9BD7A0000BA75 /* Comment8V2+Schema.swift in Sources */,
 				21EA88D028F9BD7A0000BA75 /* Comment7.swift in Sources */,
 				21EA88D628F9BD7A0000BA75 /* TagWithCompositeKey+Schema.swift in Sources */,
 				21EA88C328F9BD7A0000BA75 /* CommentWithCompositeKey+Schema.swift in Sources */,
 				21EA88CF28F9BD7A0000BA75 /* CommentWithCompositeKeyAndIndex+Schema.swift in Sources */,
 				21EA88E628F9BD7A0000BA75 /* PostWithTagsCompositeKey+Schema.swift in Sources */,
-				21EA88C428F9BD7A0000BA75 /* Post4V2+Schema.swift in Sources */,
 				21EA88BD28F9BD7A0000BA75 /* Post8.swift in Sources */,
 				21EA888228F9BCD90000BA75 /* TestConfigHelper.swift in Sources */,
 				21EA88CD28F9BD7A0000BA75 /* CommentWithCompositeKey.swift in Sources */,
@@ -1566,6 +1577,7 @@
 				21EA887E28F9BCC10000BA75 /* AsyncTesting.swift in Sources */,
 				21EA88DF28F9BD7A0000BA75 /* PostTagsWithCompositeKey.swift in Sources */,
 				21EA88D428F9BD7A0000BA75 /* Team6.swift in Sources */,
+				218D0196291AE3750068D133 /* Post4V2+Schema.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

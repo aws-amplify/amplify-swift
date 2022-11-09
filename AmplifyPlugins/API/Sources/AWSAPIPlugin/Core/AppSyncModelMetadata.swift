@@ -27,8 +27,9 @@ public struct AppSyncModelMetadataUtils {
     // It needs to have the `id` of the model so it can be injected into lazy lists as the "associatedId"
     // It needs to have the Model type from `__typename` so it can populate it as "associatedField"
     //
-    // This check is currently broken for CPK use cases since the identifier may not be named `id` anymore
-    // and can be a composite key made up of multiple fields.
+    // This check is currently broken for some of the CPK use cases since the identifier may not be named `id` anymore
+    // and can be a composite key made up of multiple fields. Some CPK use cases like having `id` and another key
+    // still works since part of the composite key is still named `id`.
     static func shouldAddMetadata(toModel graphQLData: JSONValue) -> Bool {
         guard case let .object(modelJSON) = graphQLData,
               case let .string(modelName) = modelJSON["__typename"],
@@ -87,6 +88,20 @@ public struct AppSyncModelMetadataUtils {
         // The metadata gets decoded to the LazyModel and List implementations respectively.
         for modelField in modelSchema.fields.values {
             
+            if !modelField.isArray && modelField.hasAssociation, // is belongs-to
+               var nestedModelJSON = modelJSON[modelField.name], // get the data object at this associated model
+               case .object(let modelObject) = nestedModelJSON,
+               let associatedModelName = modelField.associatedModelName,
+               let associatedModelType = ModelRegistry.modelType(from: associatedModelName), // get the associated model
+               let serializedModelObject = try? encoder.encode(modelObject), // turn the associated model into data
+               let decodedModel = try? decoder.decode(associatedModelType.self, from: serializedModelObject) { // can decode into a model
+                // if it can be decoded into the associated model, that means the data has been eager loaded.
+                // the fields on the eager loaded associated model is not passed back to `addMetadata` to recursively
+                // add the metadata for the associated model's fields.
+                let nestedModelWithMetadata = addMetadata(toModel: nestedModelJSON, apiName: apiName)
+                modelJSON.updateValue(nestedModelWithMetadata, forKey: modelField.name)
+            }
+            
             // Handle Belongs-to associations. For the current `modelField` that is a belongs-to association,
             // retrieve the data and attempt to decode to the association's modelType. If it can be decoded,
             // this means it is eager loaded and does not need to be lazy loaded. If it cannot, extract the
@@ -105,6 +120,7 @@ public struct AppSyncModelMetadataUtils {
                 
                 if let serializedMetadata = try? encoder.encode(modelIdentifierMetadata),
                    let metadataJSON = try? decoder.decode(JSONValue.self, from: serializedMetadata) {
+                    Amplify.API.log.verbose("Adding [\(modelField.name): \(metadataJSON)]")
                     modelJSON.updateValue(metadataJSON, forKey: modelField.name)
                 } else {
                     Amplify.API.log.error("""
@@ -126,6 +142,7 @@ public struct AppSyncModelMetadataUtils {
                                                                 apiName: apiName)
                 if let serializedMetadata = try? encoder.encode(appSyncModelMetadata),
                    let metadataJSON = try? decoder.decode(JSONValue.self, from: serializedMetadata) {
+                    Amplify.API.log.verbose("Adding [\(modelField.name): \(metadataJSON)]")
                     modelJSON.updateValue(metadataJSON, forKey: modelField.name)
                 } else {
                     Amplify.API.log.error("""

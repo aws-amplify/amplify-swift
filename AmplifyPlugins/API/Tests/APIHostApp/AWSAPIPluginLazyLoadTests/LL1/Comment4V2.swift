@@ -35,7 +35,7 @@ public struct Comment4V2: Model {
         self.updatedAt = updatedAt
     }
     
-    public mutating func setPost(_ post: Post4V2) {
+    public mutating func setPost(_ post: Post4V2?) {
         self._post = LazyModel(element: post)
     }
     
@@ -43,7 +43,14 @@ public struct Comment4V2: Model {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         id = try values.decode(String.self, forKey: .id)
         content = try values.decode(String.self, forKey: .content)
-        _post = try values.decode(LazyModel<Post4V2>.self, forKey: .post)
+        do {
+            _post = try values.decode(LazyModel<Post4V2>.self, forKey: .post)
+        } catch {
+            _post = LazyModel(identifiers: nil)
+        }
+        
+        createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
+        updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -51,5 +58,7 @@ public struct Comment4V2: Model {
         try container.encode(id, forKey: .id)
         try container.encode(content, forKey: .content)
         try container.encode(_post, forKey: .post)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encode(updatedAt, forKey: .updatedAt)
     }
 }

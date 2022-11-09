@@ -17,7 +17,9 @@ extension GraphQLRequest {
                                                    limit: Int? = nil,
                                                    nextToken: String? = nil,
                                                    apiName: String? = nil) -> GraphQLRequest<ResponseType> {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema, operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema,
+                                                               operationType: .query,
+                                                               primaryKeysOnly: true)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
         if let filter = filter {
             documentBuilder.add(decorator: FilterDecorator(filter: filter))
