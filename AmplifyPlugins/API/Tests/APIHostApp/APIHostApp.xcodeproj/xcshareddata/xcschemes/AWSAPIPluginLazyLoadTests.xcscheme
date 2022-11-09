@@ -37,6 +37,11 @@
                BlueprintName = "AWSAPIPluginLazyLoadTests"
                ReferencedContainer = "container:APIHostApp.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "GraphQLLazyLoadPostComment4V2Tests/testCommentWithEagerLoadPostAndPostCommentsAndPostCommentsPost()">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

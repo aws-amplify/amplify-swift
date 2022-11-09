@@ -129,6 +129,36 @@ public struct AppSyncModelMetadataUtils {
                 }
             }
             
+            // Has-Many eager loaded, with lazy loading
+            if modelField.isArray && modelField.hasAssociation,
+               let associatedField = modelField.associatedField,
+               var nestedModelJSON = modelJSON[modelField.name],
+               case .object(var graphQLDataObject) = nestedModelJSON,
+               case .array(var graphQLDataArray) = graphQLDataObject["items"] {
+                
+                for (index, item) in graphQLDataArray.enumerated() {
+                    if AppSyncModelMetadataUtils.shouldAddMetadata(toModel: item) { // 4
+                        let modelJSON = AppSyncModelMetadataUtils.addMetadata(toModel: item,
+                                                                              apiName: apiName)
+                        graphQLDataArray[index] = modelJSON
+                    }
+                }
+                graphQLDataObject["items"] = JSONValue.array(graphQLDataArray)
+                let payload = AppSyncListPayload(graphQLData: JSONValue.object(graphQLDataObject),
+                                                 apiName: apiName,
+                                                 variables: nil)
+                if let serializedPayload = try? encoder.encode(payload),
+                   let payloadJSON = try? decoder.decode(JSONValue.self, from: serializedPayload) {
+                    log.verbose("Adding [\(modelField.name): \(payloadJSON)]")
+                    modelJSON.updateValue(payloadJSON, forKey: modelField.name)
+                } else {
+                    log.error("""
+                        Found eager loaded assocation but failed to add payload to: \(modelJSON)
+                        """)
+                }
+                
+            }
+            
             // Handle Has-many. Store the association data (parent's identifier and field name) only when the model
             // at the association is empty. If it's not empty, that means the has-many has been eager loaded.
             // For example, when traversing the Post's fields and encounters the has-many association Comment, store
@@ -142,10 +172,10 @@ public struct AppSyncModelMetadataUtils {
                                                                 apiName: apiName)
                 if let serializedMetadata = try? encoder.encode(appSyncModelMetadata),
                    let metadataJSON = try? decoder.decode(JSONValue.self, from: serializedMetadata) {
-                    Amplify.API.log.verbose("Adding [\(modelField.name): \(metadataJSON)]")
+                    log.verbose("Adding [\(modelField.name): \(metadataJSON)]")
                     modelJSON.updateValue(metadataJSON, forKey: modelField.name)
                 } else {
-                    Amplify.API.log.error("""
+                    log.error("""
                         Found assocation but failed to add metadata to existing model: \(modelJSON)
                         """)
                 }
@@ -177,3 +207,5 @@ public struct AppSyncModelMetadataUtils {
         }
     }
 }
+
+extension AppSyncModelMetadataUtils: DefaultLogger { }

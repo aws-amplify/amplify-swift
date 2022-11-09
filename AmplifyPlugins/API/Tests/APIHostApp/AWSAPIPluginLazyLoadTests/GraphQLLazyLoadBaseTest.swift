@@ -74,7 +74,7 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
         throw "See XCTFail message"
     }
     
-    func getQuery<M: Model>(_ request: GraphQLRequest<M?>) async throws -> M? {
+    func query<M: Model>(_ request: GraphQLRequest<M?>) async throws -> M? {
         do {
             let graphQLResponse = try await Amplify.API.query(request: request)
             switch graphQLResponse {
