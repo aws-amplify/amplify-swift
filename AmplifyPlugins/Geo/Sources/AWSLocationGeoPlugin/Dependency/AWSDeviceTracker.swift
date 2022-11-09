@@ -17,13 +17,13 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
     static let deviceIDKey = "com.amazonaws.Amplify.AWSLocationGeoPlugin.deviceID"
     static let batchSizeForLocationInput = 10
     
-    var options: Geo.LocationManager.TrackingSessionOptions
+    var options: Geo.TrackingSessionOptions
     let locationManager: CLLocationManager
     let locationService: AWSLocationBehavior
     let networkMonitor: GeoNetworkMonitor
     let locationStore: LocationPersistenceBehavior
     
-    init(options: Geo.LocationManager.TrackingSessionOptions,
+    init(options: Geo.TrackingSessionOptions,
          locationManager: CLLocationManager,
          locationService: AWSLocationBehavior) throws {
         self.options = options
@@ -39,7 +39,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
         }
     }
     
-    func configure(with options: Geo.LocationManager.TrackingSessionOptions) {
+    func configure(with options: Geo.TrackingSessionOptions) {
         self.options = options
         locationManager.delegate = self
         configureLocationManager(with: options)
@@ -48,7 +48,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
     // setting `CLLocationManager` properties requires a UITest or running test in App mode
     // with appropriate location permissions. Moved out to separate method to facilitate
     // unit testing
-    func configureLocationManager(with options: Geo.LocationManager.TrackingSessionOptions) {
+    func configureLocationManager(with options: Geo.TrackingSessionOptions) {
         locationManager.desiredAccuracy = options.desiredAccuracy.clLocationAccuracy
         locationManager.allowsBackgroundLocationUpdates = options.allowsBackgroundLocationUpdates
         locationManager.pausesLocationUpdatesAutomatically = options.pausesLocationUpdatesAutomatically
@@ -293,7 +293,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
             authorizationStatus = CLLocationManager.authorizationStatus()
         }
         switch authorizationStatus {
-        case .authorized, .authorizedAlways, .authorizedWhenInUse:
+        case .authorizedAlways, .authorizedWhenInUse:
             locationManager.startUpdatingLocation()
             if options.wakeAppForSignificantLocationChanges {
                 locationManager.startMonitoringSignificantLocationChanges()
@@ -339,7 +339,7 @@ extension Array {
     }
 }
 
-extension Geo.LocationManager.BatchingOption {
+extension Geo.BatchingOption {
     enum BatchingOptionType {
         case none
         case distanceTravelledInMetres(value:Int)

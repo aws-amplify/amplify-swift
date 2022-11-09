@@ -13,9 +13,10 @@ import CoreLocation
 class MockLocationManager : CLLocationManager {
     
     let locations : [CLLocation] = [CLLocation(latitude: 20, longitude: 30)]
+    var mockAuthorizationStatus: CLAuthorizationStatus = .authorizedAlways
     
     override var authorizationStatus: CLAuthorizationStatus {
-        .authorizedAlways
+        return mockAuthorizationStatus
     }
     
     override func startUpdatingLocation() {

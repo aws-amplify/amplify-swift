@@ -127,11 +127,11 @@ extension GeoCategory: GeoCategoryBehavior {
     ///   - device: The device that this location update will be applied to.
     ///             If you choose to create your own `Device` with your own `Device.ID`,
     ///             you are responsible for ensuring tracker scoped randomness and that the ID doesn't include PII
-    ///   - options: The `Geo.LocationManager.TrackingSessionOptions` struct that determines the tracking behavior
+    ///   - options: The `Geo.TrackingSessionOptions` struct that determines the tracking behavior
     ///              of this tracking session.
     public func startTracking(
         for device: @autoclosure () async throws -> Geo.Device = try await .tiedToUser(),
-        with options: Geo.LocationManager.TrackingSessionOptions = .init()
+        with options: Geo.TrackingSessionOptions = .init()
     ) async throws {
         try await plugin.startTracking(for: await device(), with: options)
     }

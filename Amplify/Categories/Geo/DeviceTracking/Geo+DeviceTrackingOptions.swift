@@ -8,7 +8,7 @@
 import Foundation
 import CoreLocation
 
-public extension Geo.LocationManager {
+public extension Geo {
     
     struct LocationAccuracy {
         public let clLocationAccuracy: CLLocationAccuracy
@@ -65,7 +65,7 @@ public extension Geo.LocationManager {
         /// - no guarantees are made that the `desiredAccuracy` level will be acheived.
         public let desiredAccuracy: LocationAccuracy
         
-        /// If `true`, the Geo.LocationManager will call `requestAlwaysAuthorization()`,
+        /// If `true`, this will call `requestAlwaysAuthorization()`,
         /// which triggers the OS dialog requesting always permission to always receive device location updates.
         public let requestAlwaysAuthorization: Bool
         
@@ -89,7 +89,7 @@ public extension Geo.LocationManager {
         /// Default value is `false`.  This option is not supported for MacOS.
         public let showsBackgroundLocationIndicator: Bool
         
-        /// By default the Geo.LocationManager will persist location updates if the service
+        /// By default this will persist location updates if the service
         /// cannot be reached due to loss of network connectivity, and send the updates once
         /// an update is possible.
         /// Setting this value to `true` will disable this behavior.
@@ -172,7 +172,7 @@ public extension Geo.LocationManager {
     }
 }
 
-public extension Geo.LocationManager.BatchingOption {
+public extension Geo.BatchingOption {
     
     struct LocationUpdate {
         var timeStamp: Date?

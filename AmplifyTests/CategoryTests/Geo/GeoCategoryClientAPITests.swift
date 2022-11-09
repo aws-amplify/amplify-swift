@@ -157,7 +157,7 @@ class GeoCategoryClientAPITests: XCTestCase {
 
         do {
             let device = Geo.Device.unchecked(id: "123-456-789")
-            try await geo.startTracking(for: device, with: Geo.LocationManager.TrackingSessionOptions())
+            try await geo.startTracking(for: device, with: Geo.TrackingSessionOptions())
             XCTAssertTrue(expectedFunctionCalled)
         } catch {
             XCTFail("Error: \(error)")
