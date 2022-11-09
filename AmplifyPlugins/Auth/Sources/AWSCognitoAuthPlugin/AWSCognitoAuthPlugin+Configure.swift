@@ -89,7 +89,6 @@ extension AWSCognitoAuthPlugin {
                 frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
                 region: userPoolConfig.region
             )
-
             return CognitoIdentityProviderClient(config: configuration)
         default:
             fatalError()
