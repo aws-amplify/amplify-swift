@@ -116,7 +116,7 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
         await setup(withModels: PostComment4V2Models(), logLevel: .verbose)
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
-        let createdPost = try await mutate(.create(post))
+        try await mutate(.create(post))
         let request = GraphQLRequest<Comment>.create(comment, includes: { comment in [comment.post.comments.post]})
         let expectedDocument = """
         mutation CreateComment4V2($input: CreateComment4V2Input!) {
@@ -200,7 +200,230 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
         assertList(comments, state: .isLoaded(count: 1))
         assertLazyModel(comments.first!._post, state: .loaded(model: createdPost))
     }
+    
+    func testCreateWithoutPost() async throws {
+        await setup(withModels: PostComment4V2Models(), logLevel: .verbose)
+        let comment = Comment(content: "content")
+        try await mutate(.create(comment))
+        var queriedComment = try await query(.get(Comment.self, byId: comment.id))!
+        assertLazyModel(queriedComment._post, state: .notLoaded(identifiers: nil))
+        let post = Post(title: "title")
+        let createdPost = try await mutate(.create(post))
+        queriedComment.setPost(createdPost)
+        let updateCommentWithPost = try await mutate(.update(queriedComment))
+        let queriedCommentAfterUpdate = try await query(.get(Comment.self, byId: updateCommentWithPost.id))!
+        assertLazyModel(queriedCommentAfterUpdate._post, state: .notLoaded(identifiers: ["id": post.id]))
+        let queriedCommentWithPost = try await query(.get(Comment.self, byId: queriedCommentAfterUpdate.id, includes: { comment in [comment.post]}))!
+        assertLazyModel(queriedCommentWithPost._post, state: .loaded(model: createdPost))
+    }
+    
+    func testUpdateToNewPost() async throws {
+        await setup(withModels: PostComment4V2Models(), logLevel: .verbose)
+        let post = Post(title: "title")
+        let comment = Comment(content: "content", post: post)
+        try await mutate(.create(post))
+        try await mutate(.create(comment))
+        var queriedComment = try await query(.get(Comment.self, byId: comment.id))!
+        assertLazyModel(queriedComment._post, state: .notLoaded(identifiers: ["id": post.id]))
+        
+        let newPost = Post(title: "title")
+        let createdNewPost = try await mutate(.create(newPost))
+        queriedComment.setPost(newPost)
+        let updateCommentWithPost = try await mutate(.update(queriedComment))
+        let queriedCommentAfterUpdate = try await query(.get(Comment.self, byId: updateCommentWithPost.id))!
+        assertLazyModel(queriedCommentAfterUpdate._post, state: .notLoaded(identifiers: ["id": newPost.id]))
+        let queriedCommentWithPost = try await query(.get(Comment.self, byId: queriedCommentAfterUpdate.id, includes: { comment in [comment.post]}))!
+        assertLazyModel(queriedCommentWithPost._post, state: .loaded(model: createdNewPost))
+    }
+    
+    func testUpdateRemovePost() async throws {
+        await setup(withModels: PostComment4V2Models(), logLevel: .verbose)
+        let post = Post(title: "title")
+        let comment = Comment(content: "content", post: post)
+        try await mutate(.create(post))
+        try await mutate(.create(comment))
+        var queriedComment = try await query(.get(Comment.self, byId: comment.id))!
+        assertLazyModel(queriedComment._post, state: .notLoaded(identifiers: ["id": post.id]))
+        
+        queriedComment.setPost(nil)
+        let updateCommentRemovePost = try await mutate(.update(queriedComment))
+        let queriedCommentAfterUpdate = try await query(.get(Comment.self, byId: updateCommentRemovePost.id))!
+        assertLazyModel(queriedCommentAfterUpdate._post, state: .notLoaded(identifiers: nil))
+    }
+    
+    func testDelete() async throws {
+        await setup(withModels: PostComment4V2Models(), logLevel: .verbose)
+        let post = Post(title: "title")
+        let comment = Comment(content: "content", post: post)
+        let createdPost = try await mutate(.create(post))
+        try await mutate(.create(comment))
+            
+        try await mutate(.delete(createdPost))
+        let queriedPost = try await query(.get(Post.self, byId: post.id))
+        XCTAssertNil(queriedPost)
+        let queriedComment = try await query(.get(Comment.self, byId: comment.id))!
+        assertLazyModel(queriedComment._post, state: .notLoaded(identifiers: nil))
+        try await mutate(.delete(queriedComment))
+        let queryDeletedComment = try await query(.get(Comment.self, byId: comment.id))
+        XCTAssertNil(queryDeletedComment)
+    }
+    
+    func testSubscribeToComments() async throws {
+        await setup(withModels: PostComment4V2Models(), logLevel: .verbose)
+        let post = Post(title: "title")
+        try await mutate(.create(post))
+        let connected = asyncExpectation(description: "subscription connected")
+        let onCreatedComment = asyncExpectation(description: "onCreatedComment received")
+        let subscription = Amplify.API.subscribe(request: .subscription(of: Comment.self, type: .onCreate))
+        Task {
+            do {
+                for try await subscriptionEvent in subscription {
+                    switch subscriptionEvent {
+                    case .connection(let subscriptionConnectionState):
+                        log.verbose("Subscription connect state is \(subscriptionConnectionState)")
+                        if case .connected = subscriptionConnectionState {
+                            await connected.fulfill()
+                        }
+                    case .data(let result):
+                        switch result {
+                        case .success(let createdComment):
+                            log.verbose("Successfully got createdComment from subscription: \(createdComment)")
+                            assertLazyModel(createdComment._post, state: .notLoaded(identifiers: ["id": post.id]))
+                            await onCreatedComment.fulfill()
+                        case .failure(let error):
+                            XCTFail("Got failed result with \(error.errorDescription)")
+                        }
+                    }
+                }
+            } catch {
+                XCTFail("Subscription has terminated with \(error)")
+            }
+        }
+        
+        await waitForExpectations([connected], timeout: 10)
+        let comment = Comment(content: "content", post: post)
+        try await mutate(.create(comment))
+        await waitForExpectations([onCreatedComment], timeout: 10)
+    }
+    
+    // The identical `includes` parameter should be used because the selection set of the mutation
+    // has to match the selection set of the subscription.
+    func testSubscribeToCommentsIncludesPost() async throws {
+        await setup(withModels: PostComment4V2Models(), logLevel: .verbose)
+        let post = Post(title: "title")
+        try await mutate(.create(post))
+        let connected = asyncExpectation(description: "subscription connected")
+        let onCreatedComment = asyncExpectation(description: "onCreatedComment received")
+        let subscriptionIncludes = Amplify.API.subscribe(request: .subscription(of: Comment.self,
+                                                                                type: .onCreate,
+                                                                                includes: { comment in [comment.post]}))
+        Task {
+            do {
+                for try await subscriptionEvent in subscriptionIncludes {
+                    switch subscriptionEvent {
+                    case .connection(let subscriptionConnectionState):
+                        log.verbose("Subscription connect state is \(subscriptionConnectionState)")
+                        if case .connected = subscriptionConnectionState {
+                            await connected.fulfill()
+                        }
+                    case .data(let result):
+                        switch result {
+                        case .success(let createdComment):
+                            log.verbose("Successfully got createdComment from subscription: \(createdComment)")
+                            assertLazyModel(createdComment._post, state: .loaded(model: post))
+                            await onCreatedComment.fulfill()
+                        case .failure(let error):
+                            XCTFail("Got failed result with \(error.errorDescription)")
+                        }
+                    }
+                }
+            } catch {
+                XCTFail("Subscription has terminated with \(error)")
+            }
+        }
+        
+        await waitForExpectations([connected], timeout: 20)
+        let comment = Comment(content: "content", post: post)
+        try await mutate(.create(comment, includes: { comment in [comment.post] }))
+        await waitForExpectations([onCreatedComment], timeout: 20)
+    }
+    
+    func testSubscribeToPosts() async throws {
+        await setup(withModels: PostComment4V2Models(), logLevel: .verbose)
+        let post = Post(title: "title")
+        
+        let connected = asyncExpectation(description: "subscription connected")
+        let onCreatedPost = asyncExpectation(description: "onCreatedPost received")
+        let subscription = Amplify.API.subscribe(request: .subscription(of: Post.self, type: .onCreate))
+        Task {
+            do {
+                for try await subscriptionEvent in subscription {
+                    switch subscriptionEvent {
+                    case .connection(let subscriptionConnectionState):
+                        log.verbose("Subscription connect state is \(subscriptionConnectionState)")
+                        if case .connected = subscriptionConnectionState {
+                            await connected.fulfill()
+                        }
+                    case .data(let result):
+                        switch result {
+                        case .success(let createdPost):
+                            log.verbose("Successfully got createdPost from subscription: \(createdPost)")
+                            assertList(createdPost.comments!, state: .isNotLoaded(associatedId: post.identifier, associatedField: "post"))
+                            await onCreatedPost.fulfill()
+                        case .failure(let error):
+                            XCTFail("Got failed result with \(error.errorDescription)")
+                        }
+                    }
+                }
+            } catch {
+                XCTFail("Subscription has terminated with \(error)")
+            }
+        }
+        
+        await waitForExpectations([connected], timeout: 10)
+        try await mutate(.create(post))
+        await waitForExpectations([onCreatedPost], timeout: 10)
+    }
+    
+    func testSubscribeToPostsIncludes() async throws {
+        await setup(withModels: PostComment4V2Models(), logLevel: .verbose)
+        let post = Post(title: "title")
+        
+        let connected = asyncExpectation(description: "subscription connected")
+        let onCreatedPost = asyncExpectation(description: "onCreatedPost received")
+        let subscription = Amplify.API.subscribe(request: .subscription(of: Post.self, type: .onCreate, includes: { post in [post.comments]}))
+        Task {
+            do {
+                for try await subscriptionEvent in subscription {
+                    switch subscriptionEvent {
+                    case .connection(let subscriptionConnectionState):
+                        log.verbose("Subscription connect state is \(subscriptionConnectionState)")
+                        if case .connected = subscriptionConnectionState {
+                            await connected.fulfill()
+                        }
+                    case .data(let result):
+                        switch result {
+                        case .success(let createdPost):
+                            log.verbose("Successfully got createdPost from subscription: \(createdPost)")
+                            assertList(createdPost.comments!, state: .isLoaded(count: 0))
+                            await onCreatedPost.fulfill()
+                        case .failure(let error):
+                            XCTFail("Got failed result with \(error.errorDescription)")
+                        }
+                    }
+                }
+            } catch {
+                XCTFail("Subscription has terminated with \(error)")
+            }
+        }
+        
+        await waitForExpectations([connected], timeout: 10)
+        try await mutate(.create(post, includes: { post in [post.comments]}))
+        await waitForExpectations([onCreatedPost], timeout: 10)
+    }
 }
+
+extension GraphQLLazyLoadPostComment4V2Tests: DefaultLogger { }
 
 extension GraphQLLazyLoadBaseTest {
     typealias Post = Post4V2

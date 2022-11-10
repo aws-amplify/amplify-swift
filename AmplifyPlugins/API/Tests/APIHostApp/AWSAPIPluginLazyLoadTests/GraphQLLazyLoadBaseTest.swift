@@ -58,6 +58,7 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
         }
     }
     
+    @discardableResult
     func mutate<M: Model>(_ request: GraphQLRequest<M>) async throws -> M {
         do {
             let graphQLResponse = try await Amplify.API.mutate(request: request)
