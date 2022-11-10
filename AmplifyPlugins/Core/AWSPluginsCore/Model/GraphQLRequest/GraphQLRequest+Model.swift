@@ -52,6 +52,16 @@ protocol ModelGraphQLRequestFactory {
                               byId id: String,
                               includes: IncludedAssociations<M>) -> GraphQLRequest<M?>
 
+    static func get<M: Model>(_ modelType: M.Type,
+                              byIdentifier id: String,
+                              includes: IncludedAssociations<M>) -> GraphQLRequest<M?>
+        where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default
+    
+    static func get<M: Model>(_ modelType: M.Type,
+                              byIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
+                              includes: IncludedAssociations<M>) -> GraphQLRequest<M?>
+        where M: ModelIdentifiable
+    
     // MARK: Mutation
 
     /// Creates a `GraphQLRequest` that represents a mutation of a given `type` for a `model` instance.
@@ -238,6 +248,39 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
                                   variables: document.variables,
                                   responseType: M?.self,
                                   decodePath: document.name)
+    }
+    
+    public static func get<M: Model>(_ modelType: M.Type,
+                                     byIdentifier id: String,
+                                     includes: IncludedAssociations<M> = { _ in [] }) -> GraphQLRequest<M?>
+    where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default {
+        return .get(modelType, byId: id, includes: includes)
+    }
+    
+    public static func get<M: Model>(_ modelType: M.Type,
+                                     byIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
+                                     includes: IncludedAssociations<M> = { _ in [] }) -> GraphQLRequest<M?>
+        where M: ModelIdentifiable {
+            var primaryKeysOnly = false
+            if let modelPath = M.rootPath as? ModelPath<M> {
+                primaryKeysOnly = true
+            }
+            var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
+                                                                   operationType: .query,
+                                                                   primaryKeysOnly: primaryKeysOnly)
+            documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
+            
+            if let modelPath = modelType.rootPath as? ModelPath<M> {
+                let associations = includes(modelPath)
+                documentBuilder.add(decorator: IncludeAssociationDecorator(associations))
+            }
+            documentBuilder.add(decorator: ModelIdDecorator(identifierFields: id.fields))
+            let document = documentBuilder.build()
+            
+            return GraphQLRequest<M?>(document: document.stringValue,
+                                      variables: document.variables,
+                                      responseType: M?.self,
+                                      decodePath: document.name)
     }
     
     public static func list<M: Model>(_ modelType: M.Type,

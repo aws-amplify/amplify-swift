@@ -24,6 +24,10 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
         }
     }
     
+    public init(identifierFields: [(name: String, value: Persistable)]) {
+        
+        self.identifierFields = identifierFields.map { return ($0.name, "\($0.value)")}
+    }
     public init(identifiers: [String: String]) {
         self.identifierFields = identifiers.map { (name: $0.0, value: $0.1) }
     }

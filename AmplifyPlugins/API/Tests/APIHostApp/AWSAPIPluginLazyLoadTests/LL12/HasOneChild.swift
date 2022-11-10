@@ -2,30 +2,25 @@
 import Amplify
 import Foundation
 
-public struct Comment7: Model {
-  public let commentId: String
-  public let content: String
-  public var post: Post7?
+public struct HasOneChild: Model {
+  public let id: String
+  public var content: String?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   
-  public init(commentId: String,
-      content: String,
-      post: Post7? = nil) {
-    self.init(commentId: commentId,
+  public init(id: String = UUID().uuidString,
+      content: String? = nil) {
+    self.init(id: id,
       content: content,
-      post: post,
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(commentId: String,
-      content: String,
-      post: Post7? = nil,
+  internal init(id: String = UUID().uuidString,
+      content: String? = nil,
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil) {
-      self.commentId = commentId
+      self.id = id
       self.content = content
-      self.post = post
       self.createdAt = createdAt
       self.updatedAt = updatedAt
   }

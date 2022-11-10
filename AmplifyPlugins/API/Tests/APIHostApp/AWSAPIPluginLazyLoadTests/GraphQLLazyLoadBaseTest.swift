@@ -12,7 +12,7 @@ import XCTest
 @testable import AWSPluginsCore
 
 class GraphQLLazyLoadBaseTest: XCTestCase {
-
+    
     var amplifyConfig: AmplifyConfiguration!
     
     override func setUp() {
@@ -50,7 +50,7 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
         do {
             setupConfig()
             Amplify.Logging.logLevel = logLevel
-            try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: AmplifyModels()))
+            try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: models))
             try Amplify.configure(amplifyConfig)
             
         } catch {
@@ -138,5 +138,43 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
                 XCTFail("It should be loaded with expected count \(count)")
             }
         }
+    }
+    
+    func assertModelExists<M: Model>(_ model: M) async throws {
+        let modelExists = try await query(for: model) != nil
+        XCTAssertTrue(modelExists)
+    }
+    
+    func assertModelDoesNotExist<M: Model>(_ model: M) async throws {
+        let modelExists = try await query(for: model) != nil
+        XCTAssertFalse(modelExists)
+    }
+    
+    func query<M: Model>(for model: M, includes: IncludedAssociations<M> = { _ in [] }) async throws -> M? {
+        let id = M.identifier(model)(schema: model.schema)
+        
+        let modelType = model
+        
+        var primaryKeysOnly = false
+        if let modelPath = M.rootPath as? ModelPath<M> {
+            primaryKeysOnly = true
+        }
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
+                                                               operationType: .query,
+                                                               primaryKeysOnly: primaryKeysOnly)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
+        
+        if let modelPath = M.rootPath as? ModelPath<M> {
+            let associations = includes(modelPath)
+            documentBuilder.add(decorator: IncludeAssociationDecorator(associations))
+        }
+        documentBuilder.add(decorator: ModelIdDecorator(identifierFields: id.fields))
+        let document = documentBuilder.build()
+        
+        let request = GraphQLRequest<M?>(document: document.stringValue,
+                                         variables: document.variables,
+                                         responseType: M?.self,
+                                         decodePath: document.name)
+        return try await query(request)
     }
 }

@@ -2,30 +2,30 @@
 import Amplify
 import Foundation
 
-public struct CommentWithCompositeKeyAndIndex: Model {
-  public let id: String
+public struct StrangeExplicitChild: Model {
+  public let strangeId: String
   public let content: String
-  public var post: PostWithCompositeKeyAndIndex?
+  public var parent: CompositePKParent
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   
-  public init(id: String = UUID().uuidString,
+  public init(strangeId: String,
       content: String,
-      post: PostWithCompositeKeyAndIndex? = nil) {
-    self.init(id: id,
+      parent: CompositePKParent) {
+    self.init(strangeId: strangeId,
       content: content,
-      post: post,
+      parent: parent,
       createdAt: nil,
       updatedAt: nil)
   }
-  internal init(id: String = UUID().uuidString,
+  internal init(strangeId: String,
       content: String,
-      post: PostWithCompositeKeyAndIndex? = nil,
+      parent: CompositePKParent,
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil) {
-      self.id = id
+      self.strangeId = strangeId
       self.content = content
-      self.post = post
+      self.parent = parent
       self.createdAt = createdAt
       self.updatedAt = updatedAt
   }

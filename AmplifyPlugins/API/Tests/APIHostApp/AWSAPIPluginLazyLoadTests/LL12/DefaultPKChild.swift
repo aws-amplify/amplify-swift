@@ -2,30 +2,30 @@
 import Amplify
 import Foundation
 
-public struct Comment8V2: Model {
+public struct DefaultPKChild: Model {
   public let id: String
   public var content: String?
-  public var post: Post8V2?
+  public var parent: DefaultPKParent?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   
   public init(id: String = UUID().uuidString,
       content: String? = nil,
-      post: Post8V2? = nil) {
+      parent: DefaultPKParent? = nil) {
     self.init(id: id,
       content: content,
-      post: post,
+      parent: parent,
       createdAt: nil,
       updatedAt: nil)
   }
   internal init(id: String = UUID().uuidString,
       content: String? = nil,
-      post: Post8V2? = nil,
+      parent: DefaultPKParent? = nil,
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil) {
       self.id = id
       self.content = content
-      self.post = post
+      self.parent = parent
       self.createdAt = createdAt
       self.updatedAt = updatedAt
   }
