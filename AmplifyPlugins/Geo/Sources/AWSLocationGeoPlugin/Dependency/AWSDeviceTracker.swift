@@ -111,7 +111,16 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
             if let didUpdatePositions = options.locationProxyDelegate.didUpdatePositions {
                 batchSendStoredLocationsToProxyDelegate(with: receivedPositions, didUpdatePositions: didUpdatePositions)
             } else {
-                batchSendStoredLocationsToService(with: receivedPositions)
+                if networkMonitor.networkConnected() {
+                    batchSendStoredLocationsToService(with: receivedPositions)
+                    UserDefaults.standard.set(currentTime, forKey: AWSDeviceTracker.lastLocationUpdateTimeKey)
+                } else {
+                    // if network is unreachable and `disregardLocationUpdatesWhenOffline` is set,
+                    // don't store locations in local database
+                    if !options.disregardLocationUpdatesWhenOffline {
+                        batchSaveLocationsToLocalStore(receivedLocations: locations, currentTime: currentTime)
+                    }
+                }
             }
             stopTracking()
             return
@@ -305,7 +314,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
             authorizationStatus = CLLocationManager.authorizationStatus()
         }
         switch authorizationStatus {
-        case .authorizedAlways, .authorizedWhenInUse:
+        case .authorized, .authorizedAlways, .authorizedWhenInUse:
             locationManager.startUpdatingLocation()
             if options.wakeAppForSignificantLocationChanges {
                 locationManager.startMonitoringSignificantLocationChanges()
