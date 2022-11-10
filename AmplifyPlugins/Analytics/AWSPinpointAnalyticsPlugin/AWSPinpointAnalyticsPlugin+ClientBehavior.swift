@@ -107,9 +107,14 @@ extension AWSPinpointAnalyticsPlugin {
         }
 
         pinpoint.submitEvents().continueWith { (task) -> Any? in
-            guard task.error == nil else {
-                // TODO: some error mapping
-                let error = task.error! as NSError
+            if let error = task.error as? NSError{
+                // For "No events to submit" errors, dispatch and empty array instead
+                if error.domain == AWSPinpointAnalyticsErrorDomain,
+                   error.localizedDescription == "No events to submit." {
+                    Amplify.Hub.dispatchFlushEvents([])
+                    return nil
+                }
+
                 Amplify.Hub.dispatchFlushEvents(AnalyticsErrorHelper.getDefaultError(error))
                 return nil
             }

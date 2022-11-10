@@ -10,6 +10,13 @@ import Foundation
 
 class AnalyticsErrorHelper {
     static func getDefaultError(_ error: NSError) -> AnalyticsError {
+        if error.isConnectivityError {
+            return .unknown(
+                AnalyticsPluginErrorConstant.deviceOffline.errorDescription,
+                error
+            )
+        }
+
         let errorMessage = """
         Domain: [\(error.domain)
         Code: [\(error.code)
@@ -18,6 +25,20 @@ class AnalyticsErrorHelper {
         LocalizedRecoverySuggestion: [\(error.localizedRecoverySuggestion ?? "")
         """
 
-        return AnalyticsError.unknown(errorMessage)
+        return AnalyticsError.unknown(errorMessage, error)
+    }
+}
+
+private extension NSError {
+    private static let networkErrorCodes = [
+        NSURLErrorCannotFindHost,
+        NSURLErrorCannotConnectToHost,
+        NSURLErrorNetworkConnectionLost,
+        NSURLErrorDNSLookupFailed,
+        NSURLErrorNotConnectedToInternet
+    ]
+
+    var isConnectivityError: Bool {
+        return Self.networkErrorCodes.contains(where: { $0 == code })
     }
 }
