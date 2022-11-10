@@ -22,6 +22,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
     let locationService: AWSLocationBehavior
     let networkMonitor: GeoNetworkMonitorBehavior
     let locationStore: LocationPersistenceBehavior
+    var unsubscribeToken: UnsubscribeToken?
     
     init(options: Geo.TrackingSessionOptions,
          locationManager: CLLocationManager,
@@ -60,6 +61,9 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
         UserDefaults.standard.removeObject(forKey: AWSDeviceTracker.lastLocationUpdateTimeKey)
         UserDefaults.standard.removeObject(forKey: AWSDeviceTracker.lastUpdatedLocationKey)
         UserDefaults.standard.set(device.id, forKey: AWSDeviceTracker.deviceIDKey)
+        unsubscribeToken = Amplify.Hub.listen(to: .auth, eventName: HubPayload.EventName.Auth.signedOut) { payload in
+            self.stopTracking()
+        }
         locationManager.delegate = self
         try checkPermissionsAndStartTracking()
     }
@@ -78,6 +82,9 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
         UserDefaults.standard.removeObject(forKey: AWSDeviceTracker.deviceIDKey)
         UserDefaults.standard.removeObject(forKey: AWSDeviceTracker.lastLocationUpdateTimeKey)
         UserDefaults.standard.removeObject(forKey: AWSDeviceTracker.lastUpdatedLocationKey)
+        if let unsubscribeToken = unsubscribeToken {
+            Amplify.Hub.removeListener(unsubscribeToken)
+        }
     }
     
     public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
