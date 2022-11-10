@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.1.0 (2022-11-10)
+
+### Features
+
+- **storage**: Remove the async throws from the apis that return task (#2543)
+
+### Bug Fixes
+
+- **datastore**: improve sync event error handling - cannotParseResponse (#2536)
+- **datastore**: fix stop then start API call pattern (#2529)
+
 ### Features
 
 - **storage**: Remove `async throws` from public apis that returns a task (#2543). The change avoids checking for error at two places and the api will become sync. 
