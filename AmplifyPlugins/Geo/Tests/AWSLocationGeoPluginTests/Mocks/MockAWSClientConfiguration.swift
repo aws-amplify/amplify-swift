@@ -51,10 +51,6 @@ class MockEndPointResolver: EndpointResolver {
     func resolve(params: AWSLocation.EndpointParams) throws -> ClientRuntime.Endpoint {
         return Endpoint(host: "MockHost")
     }
-//
-//    func resolve(serviceId: String, region: String) throws -> AWSEndpoint {
-//        return AWSEndpoint(endpoint: Endpoint(host: "MockHost"))
-//    }
 }
 
 class MockLogAgent: LogAgent {
