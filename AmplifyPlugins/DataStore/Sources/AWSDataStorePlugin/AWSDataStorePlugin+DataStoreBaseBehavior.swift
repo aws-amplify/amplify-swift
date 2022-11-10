@@ -419,14 +419,17 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                 dispatchedModelSynced.set(false)
             }
             if storageEngine == nil {
-
-                completion(.successfulVoid)
+                queue.async {
+                    completion(.successfulVoid)
+                }
                 return
             }
 
             storageEngine.stopSync { result in
                 self.storageEngine = nil
-                completion(result)
+                self.queue.async {
+                    completion(result)
+                }
             }
         }
     }
@@ -451,12 +454,16 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                 dispatchedModelSynced.set(false)
             }
             if storageEngine == nil {
-                completion(.successfulVoid)
+                queue.async {
+                    completion(.successfulVoid)
+                }
                 return
             }
             storageEngine.clear { result in
                 self.storageEngine = nil
-                completion(result)
+                self.queue.async {
+                    completion(result)
+                }
             }
         }
     }
