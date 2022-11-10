@@ -29,7 +29,8 @@ public class MockAWSLocation: AWSLocationBehavior {
     var searchPlaceIndexForPositionRequest: SearchPlaceIndexForPositionInput?
 
     public init(pluginConfig: AWSLocationGeoPluginConfiguration) throws {
-        self.locationClient = try LocationClient(config: MockAWSClientConfiguration(config: pluginConfig))
+        self.locationClient = try LocationClient(
+            config: MockAWSClientConfiguration(config: pluginConfig))
     }
 
     public func getEscapeHatch() -> LocationClient {

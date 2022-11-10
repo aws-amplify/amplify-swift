@@ -12,9 +12,9 @@ import AWSPinpoint
 extension PinpointClient {
     convenience init(region: String, credentialsProvider: CredentialsProvider) throws {
         let configuration = try PinpointClientConfiguration(
-            region: region,
             credentialsProvider: credentialsProvider,
-            frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData()
+            frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
+            region: region
         )
 
         self.init(config: configuration)

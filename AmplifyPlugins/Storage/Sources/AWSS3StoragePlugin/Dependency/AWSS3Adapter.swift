@@ -19,9 +19,9 @@ import AWSClientRuntime
 /// same method using the AWSS3 instance.
 class AWSS3Adapter: AWSS3Behavior {
     let awsS3: S3Client
-    let config: AWSClientRuntime.AWSClientConfiguration
+    let config: S3ClientConfigurationProtocol
 
-    init(_ awsS3: S3Client, config: AWSClientRuntime.AWSClientConfiguration) {
+    init(_ awsS3: S3Client, config: S3ClientConfigurationProtocol) {
         self.awsS3 = awsS3
         self.config = config
     }

@@ -25,7 +25,7 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
             XCTAssertEqual(uploadKey, key)
 
             Self.logger.debug("Downloading data")
-            let task = try await Amplify.Storage.downloadData(key: key)
+            let task = Amplify.Storage.downloadData(key: key)
 
             let didPause = asyncExpectation(description: "did pause")
             let didContinue = asyncExpectation(description: "did continue", isInverted: true)
@@ -79,7 +79,7 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
             let uploadKey = try await Amplify.Storage.uploadData(key: key, data: data).value
             XCTAssertEqual(uploadKey, key)
 
-            let task = try await Amplify.Storage.downloadData(key: key)
+            let task = Amplify.Storage.downloadData(key: key)
 
             let progressInvoked = asyncExpectation(description: "Progress invoked")
             Task {
@@ -133,7 +133,7 @@ class AWSS3StoragePluginDownloadDataResumabilityTests: AWSS3StoragePluginTestBas
             XCTAssertEqual(uploadKey, key)
 
             Self.logger.debug("Downloading data")
-            let task = try await Amplify.Storage.downloadData(key: key)
+            let task = Amplify.Storage.downloadData(key: key)
 
             let didCancel = asyncExpectation(description: "did cancel")
             let didContinue = asyncExpectation(description: "did continue", isInverted: true)

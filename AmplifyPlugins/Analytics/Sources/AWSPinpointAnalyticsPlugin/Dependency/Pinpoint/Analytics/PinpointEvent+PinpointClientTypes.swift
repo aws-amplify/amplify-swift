@@ -22,7 +22,7 @@ extension PinpointEvent {
                                          appTitle: Bundle.main.appName,
                                          appVersionCode: Bundle.main.appVersion,
                                          attributes: attributes,
-                                         clientSdkVersion: AmplifyAWSServiceConfiguration.version,
+                                         clientSdkVersion: AmplifyAWSServiceConfiguration.amplifyVersion,
                                          eventType: eventType,
                                          metrics: metrics,
                                          sdkName: AmplifyAWSServiceConfiguration.platformName,

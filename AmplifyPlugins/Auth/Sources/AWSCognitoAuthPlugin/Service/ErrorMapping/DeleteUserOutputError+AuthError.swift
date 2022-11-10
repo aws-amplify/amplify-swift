@@ -46,6 +46,10 @@ extension DeleteUserOutputError: AuthErrorConvertible {
             let statusCode = serviceError._statusCode?.rawValue ?? -1
             let message = serviceError._message ?? ""
             return .unknown("Unknown service error occurred with status \(statusCode) \(message)")
+            
+        case .forbiddenException(let forbiddenException):
+            return .service(forbiddenException.message ?? "Access to the requested resource is forbidden",
+                            AuthPluginErrorConstants.forbiddenError)
         }
     }
 }

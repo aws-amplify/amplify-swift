@@ -9,6 +9,7 @@ import Amplify
 import AWSPinpoint
 import AWSPluginsCore
 import Foundation
+import Network
 
 extension AWSPinpointAnalyticsPlugin {
     /// Configures AWSPinpointAnalyticsPlugin with the specified configuration.
@@ -68,7 +69,8 @@ extension AWSPinpointAnalyticsPlugin {
 
         configure(pinpoint: pinpoint,
                   authService: authService,
-                  autoFlushEventsTimer: autoFlushEventsTimer)
+                  autoFlushEventsTimer: autoFlushEventsTimer,
+                  networkMonitor: NWPathMonitor())
     }
 
     // MARK: Internal
@@ -76,12 +78,19 @@ extension AWSPinpointAnalyticsPlugin {
     /// Internal configure method to set the properties of the plugin
     func configure(pinpoint: AWSPinpointBehavior,
                    authService: AWSAuthServiceBehavior,
-                   autoFlushEventsTimer: DispatchSourceTimer?) {
+                   autoFlushEventsTimer: DispatchSourceTimer?,
+                   networkMonitor: NetworkMonitor) {
         self.pinpoint = pinpoint
         self.authService = authService
         globalProperties = [:]
         isEnabled = true
         self.autoFlushEventsTimer = autoFlushEventsTimer
         self.autoFlushEventsTimer?.resume()
+        self.networkMonitor = networkMonitor
+        self.networkMonitor.startMonitoring(
+            using: DispatchQueue(
+                label: "com.amazonaws.Amplify.AWSPinpointAnalyticsPlugin.NetworkMonitor"
+            )
+        )
     }
 }

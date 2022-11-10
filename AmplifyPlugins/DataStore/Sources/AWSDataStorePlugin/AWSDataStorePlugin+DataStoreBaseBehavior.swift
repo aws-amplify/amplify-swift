@@ -71,7 +71,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     public func save<M: Model>(_ model: M,
                                modelSchema: ModelSchema,
                                where condition: QueryPredicate? = nil) async throws -> M {
-        try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<M, Error>) in
             save(model, modelSchema: model.schema, where: condition) { result in
                 continuation.resume(with: result)
             }
@@ -103,7 +103,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     @available(*, deprecated, renamed: "query(byIdentifier:)")
     public func query<M: Model>(_ modelType: M.Type,
                                 byId id: String) async throws -> M? {
-        try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<M?, Error>)  in
             query(modelType, byId: id) { result in
                 continuation.resume(with: result)
             }
@@ -171,7 +171,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     private func queryByIdentifier<M: Model>(_ modelType: M.Type,
                                              modelSchema: ModelSchema,
                                              identifier: ModelIdentifierProtocol) async throws -> M? {
-        try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<M?, Error>)  in
             queryByIdentifier(modelType, modelSchema: modelSchema, identifier: identifier) { result in
                 continuation.resume(with: result)
             }
@@ -222,7 +222,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                 where predicate: QueryPredicate? = nil,
                                 sort sortInput: [QuerySortDescriptor]? = nil,
                                 paginate paginationInput: QueryPaginationInput? = nil) async throws -> [M] {
-        try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<[M], Error>)  in
             query(modelType, modelSchema: modelSchema, where: predicate, sort: sortInput, paginate: paginationInput) { result in
                 continuation.resume(with: result)
             }
@@ -243,7 +243,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                  modelSchema: ModelSchema,
                                  withId id: String,
                                  where predicate: QueryPredicate? = nil) async throws {
-        try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             initStorageEngineAndStartSync()
             storageEngine.delete(modelType, modelSchema: modelSchema, withId: id, condition: predicate) { result in
                 self.onDeleteCompletion(result: result, modelSchema: modelSchema) { result in
@@ -314,7 +314,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                                               modelSchema: ModelSchema,
                                               identifier: ModelIdentifierProtocol,
                                               where predicate: QueryPredicate?) async throws where M: ModelIdentifiable {
-        try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>)  in
             deleteByIdentifier(modelType, modelSchema: modelSchema, identifier: identifier, where: predicate) { result in
                 continuation.resume(with: result)
             }
@@ -348,7 +348,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     public func delete<M: Model>(_ model: M,
                                  modelSchema: ModelSchema,
                                  where predicate: QueryPredicate? = nil) async throws {
-        try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             delete(model, modelSchema: modelSchema, where: predicate) { result in
                 continuation.resume(with: result)
             }
@@ -391,7 +391,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     public func delete<M: Model>(_ modelType: M.Type,
                                  modelSchema: ModelSchema,
                                  where predicate: QueryPredicate) async throws {
-        try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             delete(modelType, modelSchema: modelSchema, where: predicate) { result in
                 continuation.resume(with: result)
             }
@@ -405,7 +405,7 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
     }
     
     public func start() async throws {
-        _ = try await withCheckedThrowingContinuation { continuation in
+        _ = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<DataStoreResult<Void>, Error>) in
             start { result in
                 continuation.resume(returning: result)
             }
@@ -419,20 +419,23 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                 dispatchedModelSynced.set(false)
             }
             if storageEngine == nil {
-
-                completion(.successfulVoid)
+                queue.async {
+                    completion(.successfulVoid)
+                }
                 return
             }
 
             storageEngine.stopSync { result in
                 self.storageEngine = nil
-                completion(result)
+                self.queue.async {
+                    completion(result)
+                }
             }
         }
     }
     
     public func stop() async throws {
-        try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             stop { result in
                 continuation.resume(with: result)
             }
@@ -451,18 +454,22 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
                 dispatchedModelSynced.set(false)
             }
             if storageEngine == nil {
-                completion(.successfulVoid)
+                queue.async {
+                    completion(.successfulVoid)
+                }
                 return
             }
             storageEngine.clear { result in
                 self.storageEngine = nil
-                completion(result)
+                self.queue.async {
+                    completion(result)
+                }
             }
         }
     }
     
     public func clear() async throws {
-        try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             clear { result in
                 continuation.resume(with: result)
             }

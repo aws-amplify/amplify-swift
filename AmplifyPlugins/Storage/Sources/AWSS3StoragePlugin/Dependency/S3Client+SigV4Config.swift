@@ -11,12 +11,12 @@ import ClientRuntime
 
 extension S3Client {
     func completeMultipartUpload(input: CompleteMultipartUploadInput,
-                                 config: AWSClientRuntime.AWSClientConfiguration) async throws -> CompleteMultipartUploadOutputResponse
+                                 config: S3ClientConfigurationProtocol) async throws -> CompleteMultipartUploadOutputResponse
     {
         var operation = ClientRuntime.OperationStack<CompleteMultipartUploadInput, CompleteMultipartUploadOutputResponse, CompleteMultipartUploadOutputError>(id: "completeMultipartUpload")
         operation.initializeStep.intercept(position: .after, middleware: ClientRuntime.URLPathMiddleware<CompleteMultipartUploadInput, CompleteMultipartUploadOutputResponse, CompleteMultipartUploadOutputError>())
         operation.initializeStep.intercept(position: .after, middleware: ClientRuntime.URLHostMiddleware<CompleteMultipartUploadInput, CompleteMultipartUploadOutputResponse>())
-        operation.buildStep.intercept(position: .before, middleware: AWSClientRuntime.EndpointResolverMiddleware<CompleteMultipartUploadOutputResponse, CompleteMultipartUploadOutputError>(endpointResolver: config.endpointResolver, serviceId: "S3"))
+        operation.buildStep.intercept(position: .before, middleware: EndpointResolverMiddleware<CompleteMultipartUploadOutputResponse, CompleteMultipartUploadOutputError>(endpointResolver: config.endpointResolver, endpointParams: config.endpointParams(withBucket: input.bucket)))
         operation.buildStep.intercept(position: .before, middleware: AWSClientRuntime.UserAgentMiddleware(metadata: AWSClientRuntime.AWSUserAgentMetadata.fromEnv(apiMetadata: apiMetadata, frameworkMetadata: config.frameworkMetadata)))
         operation.serializeStep.intercept(position: .after, middleware: ClientRuntime.HeaderMiddleware<CompleteMultipartUploadInput, CompleteMultipartUploadOutputResponse>())
         operation.serializeStep.intercept(position: .after, middleware: ClientRuntime.QueryItemMiddleware<CompleteMultipartUploadInput, CompleteMultipartUploadOutputResponse>())
@@ -36,12 +36,12 @@ extension S3Client {
     }
 
     func createMultipartUpload(input: CreateMultipartUploadInput,
-                               config: AWSClientRuntime.AWSClientConfiguration) async throws -> CreateMultipartUploadOutputResponse
+                               config: S3ClientConfigurationProtocol) async throws -> CreateMultipartUploadOutputResponse
     {
         var operation = ClientRuntime.OperationStack<CreateMultipartUploadInput, CreateMultipartUploadOutputResponse, CreateMultipartUploadOutputError>(id: "createMultipartUpload")
         operation.initializeStep.intercept(position: .after, middleware: ClientRuntime.URLPathMiddleware<CreateMultipartUploadInput, CreateMultipartUploadOutputResponse, CreateMultipartUploadOutputError>())
         operation.initializeStep.intercept(position: .after, middleware: ClientRuntime.URLHostMiddleware<CreateMultipartUploadInput, CreateMultipartUploadOutputResponse>())
-        operation.buildStep.intercept(position: .before, middleware: AWSClientRuntime.EndpointResolverMiddleware<CreateMultipartUploadOutputResponse, CreateMultipartUploadOutputError>(endpointResolver: config.endpointResolver, serviceId: "S3"))
+        operation.buildStep.intercept(position: .before, middleware: EndpointResolverMiddleware<CreateMultipartUploadOutputResponse, CreateMultipartUploadOutputError>(endpointResolver: config.endpointResolver, endpointParams: config.endpointParams(withBucket: input.bucket)))
         operation.buildStep.intercept(position: .before, middleware: AWSClientRuntime.UserAgentMiddleware(metadata: AWSClientRuntime.AWSUserAgentMetadata.fromEnv(apiMetadata: apiMetadata, frameworkMetadata: config.frameworkMetadata)))
         operation.serializeStep.intercept(position: .after, middleware: ClientRuntime.HeaderMiddleware<CreateMultipartUploadInput, CreateMultipartUploadOutputResponse>())
         operation.serializeStep.intercept(position: .after, middleware: ClientRuntime.QueryItemMiddleware<CreateMultipartUploadInput, CreateMultipartUploadOutputResponse>())
@@ -58,12 +58,12 @@ extension S3Client {
     }
 
     func deleteObject(input: DeleteObjectInput,
-                      config: AWSClientRuntime.AWSClientConfiguration) async throws -> DeleteObjectOutputResponse
+                      config: S3ClientConfigurationProtocol) async throws -> DeleteObjectOutputResponse
     {
         var operation = ClientRuntime.OperationStack<DeleteObjectInput, DeleteObjectOutputResponse, DeleteObjectOutputError>(id: "deleteObject")
         operation.initializeStep.intercept(position: .after, middleware: ClientRuntime.URLPathMiddleware<DeleteObjectInput, DeleteObjectOutputResponse, DeleteObjectOutputError>())
         operation.initializeStep.intercept(position: .after, middleware: ClientRuntime.URLHostMiddleware<DeleteObjectInput, DeleteObjectOutputResponse>())
-        operation.buildStep.intercept(position: .before, middleware: AWSClientRuntime.EndpointResolverMiddleware<DeleteObjectOutputResponse, DeleteObjectOutputError>(endpointResolver: config.endpointResolver, serviceId: "S3"))
+        operation.buildStep.intercept(position: .before, middleware: EndpointResolverMiddleware<DeleteObjectOutputResponse, DeleteObjectOutputError>(endpointResolver: config.endpointResolver, endpointParams: config.endpointParams(withBucket: input.bucket)))
         operation.buildStep.intercept(position: .before, middleware: AWSClientRuntime.UserAgentMiddleware(metadata: AWSClientRuntime.AWSUserAgentMetadata.fromEnv(apiMetadata: apiMetadata, frameworkMetadata: config.frameworkMetadata)))
         operation.serializeStep.intercept(position: .after, middleware: ClientRuntime.HeaderMiddleware<DeleteObjectInput, DeleteObjectOutputResponse>())
         operation.serializeStep.intercept(position: .after, middleware: ClientRuntime.QueryItemMiddleware<DeleteObjectInput, DeleteObjectOutputResponse>())

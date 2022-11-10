@@ -96,6 +96,10 @@ extension VerifyUserAttributeOutputError: AuthErrorConvertible {
                 exception.message ?? "An account with this email or phone already exists.",
                 AuthPluginErrorConstants.aliasExistsError,
                 AWSCognitoAuthError.aliasExists)
+            
+        case .forbiddenException(let forbiddenException):
+            return .service(forbiddenException.message ?? "Access to the requested resource is forbidden",
+                            AuthPluginErrorConstants.forbiddenError)
         }
     }
 }
