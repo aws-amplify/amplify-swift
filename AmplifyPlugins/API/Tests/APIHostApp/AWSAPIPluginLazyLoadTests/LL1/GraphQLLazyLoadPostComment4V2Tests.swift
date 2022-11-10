@@ -304,6 +304,7 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
         let comment = Comment(content: "content", post: post)
         try await mutate(.create(comment))
         await waitForExpectations([onCreatedComment], timeout: 10)
+        subscription.cancel()
     }
     
     // The identical `includes` parameter should be used because the selection set of the mutation
@@ -346,6 +347,7 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
         let comment = Comment(content: "content", post: post)
         try await mutate(.create(comment, includes: { comment in [comment.post] }))
         await waitForExpectations([onCreatedComment], timeout: 20)
+        subscriptionIncludes.cancel()
     }
     
     func testSubscribeToPosts() async throws {
@@ -383,6 +385,7 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
         await waitForExpectations([connected], timeout: 10)
         try await mutate(.create(post))
         await waitForExpectations([onCreatedPost], timeout: 10)
+        subscription.cancel()
     }
     
     func testSubscribeToPostsIncludes() async throws {
@@ -391,10 +394,12 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
         
         let connected = asyncExpectation(description: "subscription connected")
         let onCreatedPost = asyncExpectation(description: "onCreatedPost received")
-        let subscription = Amplify.API.subscribe(request: .subscription(of: Post.self, type: .onCreate, includes: { post in [post.comments]}))
+        let subscriptionIncludes = Amplify.API.subscribe(request: .subscription(of: Post.self,
+                                                                                type: .onCreate,
+                                                                                includes: { post in [post.comments]}))
         Task {
             do {
-                for try await subscriptionEvent in subscription {
+                for try await subscriptionEvent in subscriptionIncludes {
                     switch subscriptionEvent {
                     case .connection(let subscriptionConnectionState):
                         log.verbose("Subscription connect state is \(subscriptionConnectionState)")
@@ -420,6 +425,7 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
         await waitForExpectations([connected], timeout: 10)
         try await mutate(.create(post, includes: { post in [post.comments]}))
         await waitForExpectations([onCreatedPost], timeout: 10)
+        subscriptionIncludes.cancel()
     }
 }
 
