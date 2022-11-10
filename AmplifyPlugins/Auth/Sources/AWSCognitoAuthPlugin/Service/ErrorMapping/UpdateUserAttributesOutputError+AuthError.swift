@@ -86,8 +86,10 @@ extension UpdateUserAttributesOutputError: AuthErrorConvertible {
             return .service(exception.message ?? "Invalid email role access policy error",
                             AuthPluginErrorConstants.invalidEmailRoleError,
                             AWSCognitoAuthError.emailRole)
-        default: return .unknown("")
-
+            
+        case .forbiddenException(let forbiddenException):
+            return .service(forbiddenException.message ?? "Access to the requested resource is forbidden",
+                            AuthPluginErrorConstants.forbiddenError)
         }
     }
 
