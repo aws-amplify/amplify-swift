@@ -8,6 +8,8 @@
 import Foundation
 import CoreLocation
 
+// A proxy delegate class to receive location updates
+// for custom use cases
 public class LocationProxyDelegate {
     public var didUpdatePositions: (([Position]) -> Void)?
     
@@ -19,9 +21,16 @@ public class LocationProxyDelegate {
 }
 
 public struct Position {
+    // timestamp of when position was received
     public let timeStamp: Date
+    
+    // coordinates of the position
     public let location: Geo.Location
+    
+    // tracker resource associated with the position
     public let tracker: String
+    
+    // device ID associated with the position
     public let deviceID: String
     
     public init(timeStamp: Date, location: Geo.Location, tracker: String, deviceID: String) {

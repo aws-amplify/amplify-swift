@@ -111,8 +111,7 @@ public protocol GeoCategoryBehavior {
 
     /// Start a new tracking session.
     ///
-    ///
-    /// Location update failures can be listened to on the Hub with SAVE_LOCATIONS_FAILED
+    /// Location update failures can be listened to on the Hub with EventName `Geo.saveLocationsFailed`
     ///
     /// - Parameters:
     ///   - device: The device that this location update will be applied to.
@@ -130,7 +129,7 @@ public protocol GeoCategoryBehavior {
     /// Stop tracking an existing tracking session.
     /// Calling this without an existing tracking session does nothing.
     ///
-    /// Important: This will save all batched location updates. Any failures
+    /// Important: This will save all batched location updates(e.g., to Amazon Location Service). Any failures
     /// will be published to the Hub.
     func stopTracking()
 }
