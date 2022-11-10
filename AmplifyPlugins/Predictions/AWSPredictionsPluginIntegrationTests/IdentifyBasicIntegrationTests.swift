@@ -239,6 +239,33 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
             XCTFail("Unable to find image")
             return
         }
+        // These are all the words that should be recognized on the image.
+        let expectedWords = [
+            "Personal",
+            "information",
+            "First",
+            "name",
+            "AWS",
+            "Middle",
+            "Last",
+            "Amazon",
+            "Address",
+            "410",
+            "Terry",
+            "Ave",
+            "N",
+            "City",
+            "or",
+            "Town",
+            "Seattle",
+            "State",
+            "Choose",
+            "a",
+            "State",
+            "Zip",
+            "code",
+            "98109"
+        ]
         let completeInvoked = expectation(description: "Completed is invoked")
 
         let operation = Amplify.Predictions.identify(type: .detectText(.form),
@@ -252,7 +279,9 @@ class IdentifyBasicIntegrationTests: AWSPredictionsPluginTestBase {
                 }
                 XCTAssertFalse(data.fullText.isEmpty)
                 XCTAssertFalse(data.words.isEmpty)
-                XCTAssertEqual(data.words.count, 33)
+                for word in expectedWords {
+                    XCTAssertTrue(data.words.contains(where: { $0.text.contains(word) }))
+                }
                 XCTAssertFalse(data.rawLineText.isEmpty)
                 XCTAssertEqual(data.rawLineText.count, 17)
                 XCTAssertFalse(data.identifiedLines.isEmpty)
