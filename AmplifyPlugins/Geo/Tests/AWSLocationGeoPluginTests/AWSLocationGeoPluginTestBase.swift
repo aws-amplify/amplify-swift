@@ -16,6 +16,8 @@ class AWSLocationGeoPluginTestBase: XCTestCase {
     var mockLocation: MockAWSLocation!
     var mockLocationManager: MockLocationManager!
     var mockDeviceTracker: MockAWSDeviceTracker!
+    var mockNetworkMonitor: MockGeoNetworkMonitor!
+    var mockLocationStore: SQLiteLocationPersistenceAdapter!
     var pluginConfig: AWSLocationGeoPluginConfiguration!
     var emptyPluginConfig: AWSLocationGeoPluginConfiguration!
 
@@ -40,10 +42,14 @@ class AWSLocationGeoPluginTestBase: XCTestCase {
         } catch {
             XCTFail("Error initializing mockLocation: \(error)")
         }
+        mockNetworkMonitor = MockGeoNetworkMonitor()
+        mockLocationStore = try SQLiteLocationPersistenceAdapter(fileSystemBehavior: MockLocationFileSystem())
         mockLocationManager = MockLocationManager()
         mockDeviceTracker = try MockAWSDeviceTracker(options: .init(),
                                                      locationManager: mockLocationManager,
-                                                     locationService: mockLocation)
+                                                     locationService: mockLocation,
+                                                     networkMonitor: mockNetworkMonitor,
+                                                     locationStore: mockLocationStore)
         geoPlugin = AWSLocationGeoPlugin()
         geoPlugin.locationService = mockLocation
         AWSLocationGeoPlugin.deviceTracker = mockDeviceTracker

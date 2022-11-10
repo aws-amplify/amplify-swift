@@ -20,28 +20,23 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
     var options: Geo.TrackingSessionOptions
     let locationManager: CLLocationManager
     let locationService: AWSLocationBehavior
-    let networkMonitor: GeoNetworkMonitor
+    let networkMonitor: GeoNetworkMonitorBehavior
     let locationStore: LocationPersistenceBehavior
     
     init(options: Geo.TrackingSessionOptions,
          locationManager: CLLocationManager,
-         locationService: AWSLocationBehavior) throws {
+         locationService: AWSLocationBehavior,
+         networkMonitor: GeoNetworkMonitorBehavior,
+         locationStore: LocationPersistenceBehavior) throws {
         self.options = options
         self.locationManager = locationManager
         self.locationService = locationService
-        self.networkMonitor = GeoNetworkMonitor()
-        do {
-            self.locationStore = try SQLiteLocationPersistenceAdapter(fileSystemBehavior: LocationFileSystem())
-        } catch {
-            throw Geo.Error.internalPluginError(GeoPluginErrorConstants.errorInitializingLocalStore.errorDescription,
-                                    GeoPluginErrorConstants.errorInitializingLocalStore.recoverySuggestion,
-                                    error)
-        }
+        self.networkMonitor = networkMonitor
+        self.locationStore = locationStore
     }
     
     func configure(with options: Geo.TrackingSessionOptions) {
         self.options = options
-        locationManager.delegate = self
         configureLocationManager(with: options)
     }
     
@@ -62,6 +57,8 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
     func startTracking(for device: Geo.Device) throws {
         networkMonitor.start()
         UserDefaults.standard.removeObject(forKey: AWSDeviceTracker.deviceIDKey)
+        UserDefaults.standard.removeObject(forKey: AWSDeviceTracker.lastLocationUpdateTimeKey)
+        UserDefaults.standard.removeObject(forKey: AWSDeviceTracker.lastUpdatedLocationKey)
         UserDefaults.standard.set(device.id, forKey: AWSDeviceTracker.deviceIDKey)
         locationManager.delegate = self
         try checkPermissionsAndStartTracking()
@@ -69,7 +66,11 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
     
     func stopTracking() {
         // flush out stored events
-        batchSendStoredLocationsToService(with: [])
+        if let didUpdatePositions = options.locationProxyDelegate.didUpdatePositions {
+            batchSendStoredLocationsToProxyDelegate(with: [], didUpdatePositions: didUpdatePositions)
+        } else {
+            batchSendStoredLocationsToService(with: [])
+        }
         networkMonitor.cancel()
         locationManager.stopUpdatingLocation()
         locationManager.stopMonitoringSignificantLocationChanges()
@@ -102,17 +103,16 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
     }
     
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        // if network is unreachable and `disregardLocationUpdatesWhenOffline` is set,
-        // don't store locations in local database
-        if options.disregardLocationUpdatesWhenOffline && !networkMonitor.networkConnected() {
-            return
-        }
         
         let currentTime = Date()
         // check if trackUntil time has elapsed
         if(options.trackUntil < currentTime) {
-            batchSendStoredLocationsToService(with: mapReceivedLocationsToPositions(receivedLocations: locations,
-                                                                                    currentTime: currentTime))
+            let receivedPositions = mapReceivedLocationsToPositions(receivedLocations: locations, currentTime: currentTime)
+            if let didUpdatePositions = options.locationProxyDelegate.didUpdatePositions {
+                batchSendStoredLocationsToProxyDelegate(with: receivedPositions, didUpdatePositions: didUpdatePositions)
+            } else {
+                batchSendStoredLocationsToService(with: receivedPositions)
+            }
             stopTracking()
             return
         }
@@ -131,23 +131,22 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
             batchingOption: options.batchingOption)
         
         
-        if thresholdReached && networkMonitor.networkConnected() {
+        if thresholdReached {
             let receivedPositions = mapReceivedLocationsToPositions(receivedLocations: locations, currentTime: currentTime)
             if let didUpdatePositions = options.locationProxyDelegate.didUpdatePositions {
                 batchSendStoredLocationsToProxyDelegate(with: receivedPositions, didUpdatePositions: didUpdatePositions)
+                UserDefaults.standard.set(currentTime, forKey: AWSDeviceTracker.lastLocationUpdateTimeKey)
             } else {
-                batchSendStoredLocationsToService(with: receivedPositions)
-            }
-            
-            // save last update time
-            UserDefaults.standard.set(currentTime, forKey: AWSDeviceTracker.lastLocationUpdateTimeKey)
-            
-            // save the last element from `locations` received
-            if let lastReceivedLocation = locations.last,
-                let encodedLocation = try? NSKeyedArchiver.archivedData(withRootObject: lastReceivedLocation, requiringSecureCoding: false) {
-                UserDefaults.standard.set(encodedLocation, forKey: AWSDeviceTracker.lastUpdatedLocationKey)
-            } else {
-                Amplify.log.error("Error storing last received location in UserDefaults")
+                if networkMonitor.networkConnected() {
+                    batchSendStoredLocationsToService(with: receivedPositions)
+                    UserDefaults.standard.set(currentTime, forKey: AWSDeviceTracker.lastLocationUpdateTimeKey)
+                } else {
+                    // if network is unreachable and `disregardLocationUpdatesWhenOffline` is set,
+                    // don't store locations in local database
+                    if !options.disregardLocationUpdatesWhenOffline {
+                        batchSaveLocationsToLocalStore(receivedLocations: locations, currentTime: currentTime)
+                    }
+                }
             }
         } else {
             batchSaveLocationsToLocalStore(receivedLocations: locations, currentTime: currentTime)
@@ -162,6 +161,14 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
         // first time a location update is received, save the first element from `locations` received
         if lastUpdatedLocation == nil {
             if let lastReceivedLocation = locations.first,
+                let encodedLocation = try? NSKeyedArchiver.archivedData(withRootObject: lastReceivedLocation, requiringSecureCoding: false) {
+                UserDefaults.standard.set(encodedLocation, forKey: AWSDeviceTracker.lastUpdatedLocationKey)
+            } else {
+                Amplify.log.error("Error storing last received location in UserDefaults")
+            }
+        } else {
+            // save the last element from `locations` received
+            if let lastReceivedLocation = locations.last,
                 let encodedLocation = try? NSKeyedArchiver.archivedData(withRootObject: lastReceivedLocation, requiringSecureCoding: false) {
                 UserDefaults.standard.set(encodedLocation, forKey: AWSDeviceTracker.lastUpdatedLocationKey)
             } else {
@@ -241,16 +248,21 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
         Task {
             var allPositions = await mapStoredLocationsToPositions()
             allPositions.append(contentsOf: receivedPositions)
-            didUpdatePositions(allPositions)
+            if allPositions.count > 0  {
+                didUpdatePositions(allPositions)
+            }
         }
     }
     
     func batchSendStoredLocationsToService(with receivedPositions: [Position]) {
         Task {
-            var storedPositions = await self.mapStoredLocationsToPositions()
-            storedPositions.append(contentsOf: receivedPositions)
+            var allPositions = await self.mapStoredLocationsToPositions()
+            allPositions.append(contentsOf: receivedPositions)
+            if allPositions.count == 0 {
+                return
+            }
             // send all locations to service
-            let positionChunks = storedPositions.chunked(into: AWSDeviceTracker.batchSizeForLocationInput)
+            let positionChunks = allPositions.chunked(into: AWSDeviceTracker.batchSizeForLocationInput)
             for chunk in positionChunks {
                 // start a new task for each chunk
                 Task {

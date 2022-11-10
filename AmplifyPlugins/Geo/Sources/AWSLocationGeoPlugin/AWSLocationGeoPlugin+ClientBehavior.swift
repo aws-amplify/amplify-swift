@@ -316,10 +316,21 @@ extension AWSLocationGeoPlugin {
             optionsWithTracker.tracker = pluginConfig.defaultTracker
         }
         
+        let locationStore: LocationPersistenceBehavior
+        do {
+            locationStore = try SQLiteLocationPersistenceAdapter(fileSystemBehavior: LocationFileSystem())
+        } catch {
+            throw Geo.Error.internalPluginError(GeoPluginErrorConstants.errorInitializingLocalStore.errorDescription,
+                                    GeoPluginErrorConstants.errorInitializingLocalStore.recoverySuggestion,
+                                    error)
+        }
+        
         if Self.deviceTracker == nil {
             Self.deviceTracker = try AWSDeviceTracker(options: optionsWithTracker,
                                                       locationManager: CLLocationManager(),
-                                                      locationService: locationService)
+                                                      locationService: locationService,
+                                                      networkMonitor: GeoNetworkMonitor(),
+                                                      locationStore: locationStore)
         }
         Self.deviceTracker?.configure(with: optionsWithTracker)
         try await Self.deviceTracker?.startTracking(for: device())

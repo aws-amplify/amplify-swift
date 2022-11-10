@@ -41,9 +41,4 @@ public class MockAWSDeviceTracker: AWSDeviceTracker {
         // do nothing
     }
     
-    public override func getLocationsFromLocalStore() async throws -> [PositionInternal] {
-        // do nothing
-        return []
-    }
-    
 }
