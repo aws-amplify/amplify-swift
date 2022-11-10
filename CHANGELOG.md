@@ -1,5 +1,13 @@
 # Changelog
 ## Unreleased
+## 1.28.3 (2022-11-10)
+
+### Bug Fixes
+
+- **datastore**: improve sync event error handling - cannotParseResponse (#2532)
+- **datastore**: fix stop then start API call pattern (#2517)
+- **Analytics**: Fixing issues when calling flushEvents (#2518)
+
 ## 1.28.2 (2022-10-26)
 
 ### Bug Fixes
