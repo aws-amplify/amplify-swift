@@ -39,7 +39,7 @@ extension Geo {
         // Device ID consistent across sessions, tied to specific user but not device:
         // - <cognito-identity.amazonaws.com:sub>
         public static func tiedToUser() async throws -> Device {
-            guard let id = try? await Amplify.Auth.getCurrentUser().userId else { throw Error.missingUserID }
+            guard let id = try? await Amplify.Auth.getCurrentUser().username else { throw Error.missingUserID }
             return Device(id: id)
         }
         
