@@ -34,6 +34,10 @@ extension Comment7 {
       .field(comment7.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
+    
+    public class Path: ModelPath<Comment7> { }
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension Comment7: ModelIdentifiable {
@@ -46,4 +50,12 @@ extension Comment7.IdentifierProtocol {
       content: String) -> Self {
     .make(fields:[(name: "commentId", value: commentId), (name: "content", value: content)])
   }
+}
+
+extension ModelPath where ModelType == Comment7 {
+    var commentId: FieldPath<String> { string("commentId") }
+    var content: FieldPath<String> { string("content") }
+    var post: ModelPath<Post7> { Post7.Path(name: "post", parent: self) }
+    var createdAt: FieldPath<Temporal.DateTime> { datetime("createdAt") }
+    var updatedAt: FieldPath<Temporal.DateTime> { datetime("updatedAt") }
 }

@@ -33,6 +33,10 @@ extension Post4 {
       .field(post4.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
+    
+    public class Path: ModelPath<Post4> { }
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension Post4: ModelIdentifiable {
@@ -45,4 +49,12 @@ extension Post4.IdentifierProtocol {
       title: String) -> Self {
     .make(fields:[(name: "postId", value: postId), (name: "title", value: title)])
   }
+}
+
+extension ModelPath where ModelType == Post4 {
+    var postId: FieldPath<String> { string("postId") }
+    var title: FieldPath<String> { string("title") }
+    var comments: ModelPath<Comment4> { Comment4.Path(name: "comments", isCollection: true, parent: self) }
+    var createdAt: FieldPath<Temporal.DateTime> { datetime("createdAt") }
+    var updatedAt: FieldPath<Temporal.DateTime> { datetime("updatedAt") }
 }

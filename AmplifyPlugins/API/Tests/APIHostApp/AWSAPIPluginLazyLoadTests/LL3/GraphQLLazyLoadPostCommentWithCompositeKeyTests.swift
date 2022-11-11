@@ -14,6 +14,15 @@ import AWSPluginsCore
 
 final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBaseTest {
 
+    func testSave() async throws {
+        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose)
+        
+        let post = Post(title: "title")
+        let comment = Comment(content: "content", post: post)
+        let savedPost = try await mutate(.create(post))
+        let savedComment = try await mutate(.create(comment))
+    }
+    
     func testLazyLoad() async throws {
         await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose)
         
@@ -36,13 +45,6 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBase
         
         guard let loadedPost = try await comment.post else {
             XCTFail("Failed to retrieve the post from the comment")
-            return
-        }
-        XCTAssertEqual(loadedPost.id, post.id)
-        
-        // retrieve loaded model
-        guard let loadedPost = try await comment.post else {
-            XCTFail("Failed to retrieve the loaded post from the comment")
             return
         }
         XCTAssertEqual(loadedPost.id, post.id)

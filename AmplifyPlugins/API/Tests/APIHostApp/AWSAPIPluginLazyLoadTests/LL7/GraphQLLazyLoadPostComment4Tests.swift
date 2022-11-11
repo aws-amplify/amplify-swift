@@ -14,6 +14,18 @@ import AWSPluginsCore
 
 final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
 
+    func testSave() async throws {
+        await setup(withModels: PostComment4Models(), logLevel: .verbose)
+        
+        let post = Post(postId: UUID().uuidString, title: "title")
+        let comment = Comment(commentId: UUID().uuidString,
+                              content: "content",
+                              post4CommentsPostId: post.postId,
+                              post4CommentsTitle: post.title)
+        let savedPost = try await mutate(.create(post))
+        let savedComment = try await mutate(.create(comment))
+    }
+    
     func testLazyLoad() async throws {
         await setup(withModels: PostComment4Models(), logLevel: .verbose)
         

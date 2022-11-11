@@ -38,9 +38,23 @@ extension Post8V2 {
       .field(post8V2.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
+    
+    public class Path: ModelPath<Post8V2> { }
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension Post8V2: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
   public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
+}
+
+extension ModelPath where ModelType == Post8V2 {
+    var id: FieldPath<String> { id() }
+    var name: FieldPath<String> { string("name") }
+    var randomId: FieldPath<String> { string("randomId") }
+    var blog: ModelPath<Blog8V2> { Blog8V2.Path(name: "blog", parent: self) }
+    var comments: ModelPath<Comment8V2> { Comment8V2.Path(name: "comments", isCollection: true, parent: self) }
+    var createdAt: FieldPath<Temporal.DateTime> { datetime("createdAt") }
+    var updatedAt: FieldPath<Temporal.DateTime> { datetime("updatedAt") }
 }

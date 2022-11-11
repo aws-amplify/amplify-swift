@@ -36,9 +36,21 @@ extension Blog8V2 {
       .field(blog8V2.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
+    
+    public class Path: ModelPath<Blog8V2> { }
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension Blog8V2: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
   public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
+}
+
+extension ModelPath where ModelType == Blog8V2 {
+    var id: FieldPath<String> { id() }
+    var name: FieldPath<String> { string("name") }
+    var posts: ModelPath<Post8V2> { Post8V2.Path(name: "posts", isCollection: true, parent: self) }
+    var createdAt: FieldPath<Temporal.DateTime> { datetime("createdAt") }
+    var updatedAt: FieldPath<Temporal.DateTime> { datetime("updatedAt") }
 }

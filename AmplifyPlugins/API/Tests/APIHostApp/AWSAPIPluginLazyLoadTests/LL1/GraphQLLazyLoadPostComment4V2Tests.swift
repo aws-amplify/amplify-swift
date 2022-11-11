@@ -15,8 +15,12 @@ import AWSPluginsCore
 
 final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
 
-    func testSetup() async throws {
+    func testSave() async throws {
         await setup(withModels: PostComment4V2Models())
+        let post = Post(title: "title")
+        let comment = Comment(content: "content", post: post)
+        let createdPost = try await mutate(.create(post))
+        let createdComment = try await mutate(.create(comment))
     }
     
     // Without `includes` and latest codegenerated types with the model path, the post should be lazy loaded

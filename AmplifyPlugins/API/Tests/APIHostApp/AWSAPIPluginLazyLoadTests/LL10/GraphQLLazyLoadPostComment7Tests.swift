@@ -14,13 +14,40 @@ import AWSPluginsCore
 
 final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
 
-    func testLazyLoad() async throws {
+    func testSave() async throws {
         await setup(withModels: PostComment7Models(), logLevel: .verbose)
         
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
         let savedPost = try await mutate(.create(post))
         let savedComment = try await mutate(.create(comment))
+    }
+    
+    func testCommentHasEagerLoadedPost() async throws {
+        await setup(withModels: PostComment7Models(), logLevel: .verbose)
+        
+        let post = Post(postId: UUID().uuidString, title: "title")
+        let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
+        let savedPost = try await mutate(.create(post))
+        let savedComment = try await mutate(.create(comment, includes: { comment in [comment.post]}))
+        
+        assertLazyModel(savedComment._post,
+                        state: .loaded(model: savedPost))
+        
+        guard let loadedPost = try await savedComment.post else {
+            XCTFail("Failed to retrieve the post from the comment")
+            return
+        }
+        XCTAssertEqual(loadedPost.postId, post.postId)
+    }
+    
+    func testLazyLoad() async throws {
+        await setup(withModels: PostComment7Models(), logLevel: .verbose)
+        
+        let post = Post(postId: UUID().uuidString, title: "title")
+        let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
+        let savedPost = try await mutate(.create(post))
+        let savedComment = try await mutate(.create(comment, includes: { comment in [comment.post]}))
         try await assertComment(savedComment, hasEagerLoaded: savedPost)
         try await assertPost(savedPost, canLazyLoad: savedComment)
         let queriedComment = try await query(.get(Comment.self, byId: comment.commentId))!
@@ -36,13 +63,6 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
         
         guard let loadedPost = try await comment.post else {
             XCTFail("Failed to retrieve the post from the comment")
-            return
-        }
-        XCTAssertEqual(loadedPost.postId, post.postId)
-        
-        // retrieve loaded model
-        guard let loadedPost = try await comment.post else {
-            XCTFail("Failed to retrieve the loaded post from the comment")
             return
         }
         XCTAssertEqual(loadedPost.postId, post.postId)
