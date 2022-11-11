@@ -29,6 +29,8 @@ protocol StorageTransferDatabase {
 
     func recover(urlSession: StorageURLSession, completionHandler: @escaping (Result<StorageTransferTaskPairs, Error>) -> Void)
 
+    func recover(urlSession: StorageURLSession) -> AmplifyAsyncThrowingSequence<StorageTransferTaskPair>
+
     func attachEventHandlers(onUpload: AWSS3StorageServiceBehaviour.StorageServiceUploadEventHandler?,
                              onDownload: AWSS3StorageServiceBehaviour.StorageServiceDownloadEventHandler?,
                              onMultipartUpload: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler?)

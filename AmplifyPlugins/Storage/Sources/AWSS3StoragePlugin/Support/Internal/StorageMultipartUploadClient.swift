@@ -101,6 +101,9 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
             request.cachePolicy = .reloadIgnoringLocalCacheData
             request.httpMethod = "PUT"
 
+            // TODO: add Content-Length header
+            // TODO: add Content-MD5 header
+
             /*
             let userAgent = AWSServiceConfiguration.baseUserAgent().appending(" MultiPart")
             request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
@@ -180,7 +183,8 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
     func cancelUploadTasks(taskIdentifiers: [TaskIdentifier], done: @escaping () -> Void) {
         guard let service = serviceProxy else { return }
         service.unregister(taskIdentifiers: taskIdentifiers)
-        service.urlSession.getActiveTasks { tasks in
+        Task {
+            let tasks = await service.urlSession.allTasks
             for task in tasks {
                 if taskIdentifiers.contains(task.taskIdentifier) {
                     task.cancel()

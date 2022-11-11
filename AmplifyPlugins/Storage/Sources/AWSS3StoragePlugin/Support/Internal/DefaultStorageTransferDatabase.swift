@@ -67,6 +67,10 @@ class DefaultStorageTransferDatabase {
         }
     }
 
+    @StorageActor func recover(urlSession: StorageURLSession) -> AmplifyAsyncThrowingSequence<StorageTransferTaskPair> {
+        loadTasksAndLinkSessions()
+    }
+
     func linkTasksWithSessions(persistableTransferTasks: [TransferID: StoragePersistableTransferTask],
                                sessionTasks: StorageSessionTasks) -> StorageTransferTaskPairs {
         let transferTasks: [StorageActiveTransferTask] = persistableTransferTasks.reduce(into: []) { tasks, pair in
@@ -149,38 +153,43 @@ class DefaultStorageTransferDatabase {
         return persistableTransferTasks
     }
 
+    @StorageActor private func loadTasksAndLinkSessions(urlSession: StorageURLSession = URLSession.shared) -> AmplifyAsyncThrowingSequence<StorageTransferTaskPair> {
+        Fatal.notImplemented()
+    }
+
     private func loadTasksAndLinkSessions(urlSession: StorageURLSession = URLSession.shared,
                                           completionHandler: @escaping (Result<StorageTransferTaskPairs, Error>) -> Void) {
-        dispatchPrecondition(condition: .notOnQueue(.main))
-        dispatchPrecondition(condition: .onQueue(queue))
-
-        guard recoveryState == .notStarted else { return }
-
-        recoveryState = .inProgress
-
-        let persistableTransferTasks = loadTasks()
-
-        // A StorageActiveTransferTask has a computed property for taskIdentifier which comes from the underlying sessionTask
-        // which is not persisted and must be linked with the instance from URLSession to access that value again.
-        // This value is used to associate delegate method calls with StorageTransferTask which holds onto the onEvent
-        // closure to send events back to the app.
-
-        // A MultipartUpload is different because it starts with a create request to get the uploadId which is used by
-        // a series of sub tasks which are uploads which will have a sessionTask and a taskIdentifier. It is necessary
-        // to also link these task so that delegate methods send events into StorageMultipartUploadSession to update
-        // the lifecycle so that the process can be completed.
-
-        let sessionTaskHandler: (StorageSessionTasks) -> Void = { [weak self] sessionTasks in
-            guard let self = self else { fatalError("self cannot be weak") }
-
-            let pairs = self.linkTasksWithSessions(persistableTransferTasks: persistableTransferTasks, sessionTasks: sessionTasks)
-            completionHandler(.success(pairs))
-            self.queue.async {
-                self.recoveryState = .completed
-            }
-        }
-
-        urlSession.getActiveTasks(resultHandler: sessionTaskHandler)
+        Fatal.notImplemented()
+//        dispatchPrecondition(condition: .notOnQueue(.main))
+//        dispatchPrecondition(condition: .onQueue(queue))
+//
+//        guard recoveryState == .notStarted else { return }
+//
+//        recoveryState = .inProgress
+//
+//        let persistableTransferTasks = loadTasks()
+//
+//        // A StorageActiveTransferTask has a computed property for taskIdentifier which comes from the underlying sessionTask
+//        // which is not persisted and must be linked with the instance from URLSession to access that value again.
+//        // This value is used to associate delegate method calls with StorageTransferTask which holds onto the onEvent
+//        // closure to send events back to the app.
+//
+//        // A MultipartUpload is different because it starts with a create request to get the uploadId which is used by
+//        // a series of sub tasks which are uploads which will have a sessionTask and a taskIdentifier. It is necessary
+//        // to also link these task so that delegate methods send events into StorageMultipartUploadSession to update
+//        // the lifecycle so that the process can be completed.
+//
+//        let sessionTaskHandler: (StorageSessionTasks) -> Void = { [weak self] sessionTasks in
+//            guard let self = self else { fatalError("self cannot be weak") }
+//
+//            let pairs = self.linkTasksWithSessions(persistableTransferTasks: persistableTransferTasks, sessionTasks: sessionTasks)
+//            completionHandler(.success(pairs))
+//            self.queue.async {
+//                self.recoveryState = .completed
+//            }
+//        }
+//
+//        urlSession.getActiveTasks(resultHandler: sessionTaskHandler)
     }
 
     func storeTasks() throws {

@@ -15,7 +15,7 @@ extension AWSS3StoragePlugin {
 
     public var allTransfers: AmplifyAsyncSequence<StorageTransfer> {
         get async throws {
-            Fatal.notImplemented()
+            try await storageService.allTransfers
         }
     }
 

@@ -11,7 +11,7 @@ extension StorageCategory: StorageCategoryBehavior {
 
     public var allTransfers: AmplifyAsyncSequence<StorageTransfer> {
         get async throws {
-            Fatal.notImplemented()
+            try await plugin.allTransfers
         }
     }
 

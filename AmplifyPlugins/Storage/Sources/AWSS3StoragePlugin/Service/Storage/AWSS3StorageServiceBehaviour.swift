@@ -37,6 +37,8 @@ protocol AWSS3StorageServiceBehaviour {
 
     func getEscapeHatch() -> S3Client
 
+    var allTransfers: AmplifyAsyncSequence<StorageTransfer> { get async throws }
+
     func download(serviceKey: String,
                   fileURL: URL?,
                   onEvent: @escaping StorageServiceDownloadEventHandler)

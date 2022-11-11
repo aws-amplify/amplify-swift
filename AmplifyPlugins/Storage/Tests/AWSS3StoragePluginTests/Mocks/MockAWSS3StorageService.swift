@@ -68,6 +68,12 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
     public func reset() {
     }
 
+    public var allTransfers: AmplifyAsyncSequence<StorageTransfer> {
+        get async throws {
+            Fatal.notImplemented()
+        }
+    }
+
     public func download(serviceKey: String, fileURL: URL?, onEvent: @escaping StorageServiceDownloadEventHandler) {
         downloadCalled += 1
 
