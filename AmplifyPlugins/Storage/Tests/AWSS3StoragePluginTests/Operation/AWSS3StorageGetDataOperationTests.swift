@@ -69,7 +69,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testDownloadDataOperationDownloadData() async throws {
-        let task = InternalStorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
+        let task = StorageActiveTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceDownloadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),
@@ -102,7 +102,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testDownloadDataOperationDownloadDataFailed() async throws {
-        let task = InternalStorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
+        let task = StorageActiveTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceDownloadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),
@@ -135,7 +135,7 @@ class AWSS3StorageDownloadDataOperationTests: AWSS3StorageOperationTestBase {
     }
 
     func testGetOperationDownloadDataFromTargetIdentityId() async throws {
-        let task = InternalStorageTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
+        let task = StorageActiveTransferTask(transferType: .download(onEvent: { _ in }), bucket: "bucket", key: "key")
         mockStorageService.storageServiceDownloadEvents = [
             StorageEvent.initiated(StorageTaskReference(task)),
             StorageEvent.inProcess(Progress()),

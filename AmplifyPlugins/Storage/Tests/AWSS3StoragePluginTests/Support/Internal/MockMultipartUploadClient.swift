@@ -44,7 +44,7 @@ class MockMultipartUploadClient: StorageMultipartUploadClient {
         didCreate?(session)
     }
 
-    func uploadPart(partNumber: PartNumber, multipartUpload: StorageMultipartUpload, subTask: InternalStorageTransferTask) throws {
+    func uploadPart(partNumber: PartNumber, multipartUpload: StorageMultipartUpload, subTask: StorageActiveTransferTask) throws {
         guard let _ = multipartUpload.uploadFile,
               let _ = multipartUpload.uploadId,
               let _ = multipartUpload.partSize,

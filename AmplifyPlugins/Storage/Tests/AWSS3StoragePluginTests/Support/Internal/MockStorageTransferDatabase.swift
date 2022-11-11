@@ -14,27 +14,27 @@ class MockStorageTransferDatabase: StorageTransferDatabase {
     private let queue = DispatchQueue(label: "com.amazon.aws.amplify.storage-tests",
                                       qos: .background,
                                       target: .global())
-    private var tasks: [TransferID: InternalStorageTransferTask] = [:]
+    private var tasks: [TransferID: StorageActiveTransferTask] = [:]
 
     private var uploadEventHandler: AWSS3StorageServiceBehaviour.StorageServiceUploadEventHandler?
     private var downloadEventHandler: AWSS3StorageServiceBehaviour.StorageServiceDownloadEventHandler?
     private var multipartUploadEventHandler: AWSS3StorageServiceBehaviour.StorageServiceMultiPartUploadEventHandler?
 
-    func insertTransferRequest(task: InternalStorageTransferTask) {
+    func insertTransferRequest(task: StorageActiveTransferTask) {
         dispatchPrecondition(condition: .notOnQueue(queue))
         queue.sync {
             tasks[task.transferID] = task
         }
     }
 
-    func updateTransferRequest(task: InternalStorageTransferTask) {
+    func updateTransferRequest(task: StorageActiveTransferTask) {
         dispatchPrecondition(condition: .notOnQueue(queue))
         queue.sync {
             tasks[task.transferID] = task
         }
     }
 
-    func removeTransferRequest(task: InternalStorageTransferTask) {
+    func removeTransferRequest(task: StorageActiveTransferTask) {
         dispatchPrecondition(condition: .notOnQueue(queue))
         queue.sync {
             tasks[task.transferID] = nil
@@ -44,6 +44,10 @@ class MockStorageTransferDatabase: StorageTransferDatabase {
     func prepareForBackground(completion: (() -> Void)? = nil) {
         // do nothing
         completion?()
+    }
+
+    func recover(urlSession: StorageURLSession) -> AmplifyAsyncThrowingSequence<StorageTransferTaskPair> {
+        Fatal.notImplemented()
     }
 
     func recover(urlSession: StorageURLSession,
