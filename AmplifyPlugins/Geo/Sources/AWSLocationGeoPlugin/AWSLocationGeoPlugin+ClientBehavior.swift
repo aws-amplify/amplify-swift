@@ -214,6 +214,8 @@ extension AWSLocationGeoPlugin {
         return mapStyle
     }
     
+    // MARK: - Device Tracking
+    
     /// Update the location for this device
     /// - Parameters:
     ///   - device: The device that this location update will be applied to.

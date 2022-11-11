@@ -17,6 +17,7 @@ public class MockAWSDeviceTracker: AWSDeviceTracker {
     var configureCalled = 0
     var startDeviceTrackingCalled = 0
     var stopDeviceTrackingCalled = 0
+    var batchSendStoredLocationsToServiceCalled = 0
     
     public override func configure(with options: Geo.TrackingSessionOptions) {
         configureCalled += 1
@@ -38,7 +39,7 @@ public class MockAWSDeviceTracker: AWSDeviceTracker {
     }
     
     public override func batchSendStoredLocationsToService(with receivedPositions: [Position]) {
-        // do nothing
+        batchSendStoredLocationsToServiceCalled += 1
     }
     
 }

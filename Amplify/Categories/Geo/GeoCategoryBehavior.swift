@@ -71,6 +71,8 @@ public protocol GeoCategoryBehavior {
     ///     `Geo.Error.unknown` if error is unknown
     func defaultMap() async throws -> Geo.MapStyle
     
+    // MARK: - Device Tracking
+    
     /// Update the location for this device.
     /// - Parameters:
     ///   - device: The device that this location update will be applied to.
