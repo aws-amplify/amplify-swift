@@ -14,6 +14,18 @@ import AWSPluginsCore
 
 class GraphQLLazyLoadProjectTeam2Tests: GraphQLLazyLoadBaseTest {
 
+    /*
+     {
+       "variables" : {
+         "teamId" : "3F38C5D8-471D-4F2A-9099-E06CAECAB75A",
+         "name" : "name"
+       },
+       "query" : "query GetTeam2($name: String!, $teamId: String!) {\n  getTeam2(name: $name, teamId: $teamId) {\n    teamId\n    name\n    createdAt\n    updatedAt\n    __typename\n  }\n}"
+     }
+     
+      error: -[AWSAPIPluginLazyLoadTests.GraphQLLazyLoadProjectTeam2Tests testSaveTeam] : failed - Failed with error GraphQLResponseError<Optional<Team2>>: GraphQL service returned a successful response containing errors: [Amplify.GraphQLError(message: "Validation error of type VariableTypeMismatch: Variable type \'String!\' doesn\'t match expected type \'ID!\' @ \'getTeam2\'", locations: Optional([Amplify.GraphQLError.Location(line: 2, column: 33)]), path: nil, extensions: nil)]
+
+     */
     func testSaveTeam() async throws {
         await setup(withModels: ProjectTeam2Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
