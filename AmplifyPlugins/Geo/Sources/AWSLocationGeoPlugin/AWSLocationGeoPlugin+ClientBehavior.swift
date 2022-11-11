@@ -225,7 +225,7 @@ extension AWSLocationGeoPlugin {
     ///     `Geo.Error.networkError` if request failed or network unavailable
     ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
     ///     `Geo.Error.unknown` if error is unknown
-    public func updateLocation(_ location: Geo.Location, for device: @autoclosure () async throws -> Geo.Device, with options: Geo.UpdateLocationOptions) async throws {
+    public func updateLocation(_ location: Geo.Location, for device: Geo.Device, with options: Geo.UpdateLocationOptions) async throws {
         guard pluginConfig.defaultTracker != nil else {
             throw Geo.Error.invalidConfiguration(
                 GeoPluginErrorConstants.missingTracker.errorDescription,
@@ -233,7 +233,8 @@ extension AWSLocationGeoPlugin {
         }
         
         do {
-            let geoDevice = try await device()
+            
+            let identifier = try await device.getFullyQualifiedIdentifier(authService: authService)
             var tracker = pluginConfig.defaultTracker
             if let optionalTracker = options.tracker {
                 tracker = optionalTracker
@@ -242,7 +243,7 @@ extension AWSLocationGeoPlugin {
             let position = [location.longitude, location.latitude]
             let locationUpdates = [LocationClientTypes.DevicePositionUpdate(
                 accuracy: nil,
-                deviceId: geoDevice.id,
+                deviceId: identifier,
                 position: position,
                 positionProperties: options.metadata,
                 sampleTime: Date())]
@@ -267,7 +268,7 @@ extension AWSLocationGeoPlugin {
     ///     `Geo.Error.networkError` if request failed or network unavailable
     ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
     ///     `Geo.Error.unknown` if error is unknown
-    public func deleteLocationHistory(for device: @autoclosure () async throws -> Geo.Device, with options: Geo.DeleteLocationOptions) async throws {
+    public func deleteLocationHistory(for device: Geo.Device, with options: Geo.DeleteLocationOptions) async throws {
         guard pluginConfig.defaultTracker != nil else {
             throw Geo.Error.invalidConfiguration(
                 GeoPluginErrorConstants.missingTracker.errorDescription,
@@ -275,7 +276,7 @@ extension AWSLocationGeoPlugin {
         }
         
         do {
-            let geoDevice = try await device()
+            let geoDevice = device
             var tracker = pluginConfig.defaultTracker
             if let optionalTracker = options.tracker {
                 tracker = optionalTracker
@@ -302,7 +303,7 @@ extension AWSLocationGeoPlugin {
     ///   - options: The `Geo.LocationManager.TrackingSessionOptions` struct that determines the tracking behavior
     ///              of this tracking session.
     @MainActor
-    public func startTracking(for device: @autoclosure () async throws -> Geo.Device,
+    public func startTracking(for device: Geo.Device,
                               with options: Geo.LocationManager.TrackingSessionOptions) async throws {
         if options.tracker == nil, pluginConfig.defaultTracker == nil {
             throw Geo.Error.invalidConfiguration(
@@ -321,7 +322,7 @@ extension AWSLocationGeoPlugin {
                                                       locationService: locationService)
         }
         Self.deviceTracker?.configure(with: optionsWithTracker)
-        try await Self.deviceTracker?.startTracking(for: device())
+        try Self.deviceTracker?.startTracking(for: device)
     }
     
     /// Stop tracking an existing tracking session.
@@ -331,5 +332,18 @@ extension AWSLocationGeoPlugin {
     /// will be published to the Hub.
     public func stopTracking() {
         Self.deviceTracker?.stopTracking()
+    }
+}
+
+extension Geo.Device {
+    func getFullyQualifiedIdentifier(authService: AWSAuthServiceBehavior) async throws -> String {
+        if tiedToUserId {
+            return try await authService.getIdentityID()
+        } else if tiedToUserAndDevice {
+            let cognitoId = try await authService.getIdentityID()
+            return "\(cognitoId) - \(id)"
+        } else {
+            return id
+        }
     }
 }

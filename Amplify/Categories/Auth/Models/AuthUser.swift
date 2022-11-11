@@ -13,5 +13,4 @@ public protocol AuthUser {
 
     /// Unique id of the auth user
     var userId: String { get }
-
 }

@@ -85,7 +85,7 @@ public protocol GeoCategoryBehavior {
     ///     `Geo.Error.unknown` if error is unknown
     func updateLocation(
        _ location: Geo.Location,
-       for device: @autoclosure () async throws -> Geo.Device,
+       for device: Geo.Device,
        with options: Geo.UpdateLocationOptions
     ) async throws
     
@@ -105,7 +105,7 @@ public protocol GeoCategoryBehavior {
     ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
     ///     `Geo.Error.unknown` if error is unknown
     func deleteLocationHistory(
-       for device: @autoclosure () async throws -> Geo.Device,
+       for device: Geo.Device,
        with options: Geo.DeleteLocationOptions
     ) async throws
 
@@ -123,7 +123,7 @@ public protocol GeoCategoryBehavior {
     ///              of this tracking session.
     @MainActor
     func startTracking(
-        for device: @autoclosure () async throws -> Geo.Device,
+        for device: Geo.Device,
         with options: Geo.LocationManager.TrackingSessionOptions
      ) async throws
     

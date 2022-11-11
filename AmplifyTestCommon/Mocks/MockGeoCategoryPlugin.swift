@@ -42,15 +42,15 @@ class MockGeoCategoryPlugin: MessageReporter, GeoCategoryPlugin {
         return createMapStyle()
     }
     
-    func updateLocation(_ location: Geo.Location, for device: @autoclosure () async throws -> Geo.Device, with options: Geo.UpdateLocationOptions) async throws {
+    func updateLocation(_ location: Geo.Location, for device: Geo.Device, with options: Geo.UpdateLocationOptions) async throws {
         notify("updateLocation")
     }
     
-    func deleteLocationHistory(for device: @autoclosure () async throws -> Geo.Device, with options: Geo.DeleteLocationOptions) async throws {
+    func deleteLocationHistory(for device: Geo.Device, with options: Geo.DeleteLocationOptions) async throws {
         notify("deleteLocationHistory")
     }
     
-    func startTracking(for device: @autoclosure () async throws -> Geo.Device, with options: Geo.LocationManager.TrackingSessionOptions) async throws {
+    func startTracking(for device: Geo.Device, with options: Geo.LocationManager.TrackingSessionOptions) async throws {
         notify("startTracking")
     }
     
