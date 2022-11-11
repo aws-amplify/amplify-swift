@@ -10,6 +10,7 @@ import AWSPluginsCore
 import Foundation
 
 import AWSLocation
+import CoreLocation
 
 extension AWSLocationGeoPlugin {
 
@@ -213,6 +214,8 @@ extension AWSLocationGeoPlugin {
         return mapStyle
     }
     
+    // MARK: - Device Tracking
+    
     /// Update the location for this device
     /// - Parameters:
     ///   - device: The device that this location update will be applied to.
@@ -293,32 +296,43 @@ extension AWSLocationGeoPlugin {
     /// Start a new tracking session.
     ///
     ///
-    /// Location update failures can be listened to on the Hub with SAVE_LOCATIONS_FAILED
+    /// Location update failures can be listened to on the Hub with EventName `Geo.saveLocationsFailed`
     ///
     /// - Parameters:
     ///   - device: The device that this location update will be applied to.
     ///             If you choose to create your own `Device` with your own `Device.ID`,
     ///             you are responsible for ensuring tracker scoped randomness and that the ID doesn't include PII
-    ///   - options: The `Geo.LocationManager.TrackingSessionOptions` struct that determines the tracking behavior
+    ///   - options: The `Geo.TrackingSessionOptions` struct that determines the tracking behavior
     ///              of this tracking session.
     @MainActor
     public func startTracking(for device: @autoclosure () async throws -> Geo.Device,
-                              with options: Geo.LocationManager.TrackingSessionOptions) async throws {
+                              with options: Geo.TrackingSessionOptions) async throws {
         if options.tracker == nil, pluginConfig.defaultTracker == nil {
             throw Geo.Error.invalidConfiguration(
                 GeoPluginErrorConstants.missingTracker.errorDescription,
                 GeoPluginErrorConstants.missingTracker.recoverySuggestion)
         }
         
-        var optionsWithTracker: Geo.LocationManager.TrackingSessionOptions = Geo.LocationManager.TrackingSessionOptions(options: options)
+        var optionsWithTracker: Geo.TrackingSessionOptions = Geo.TrackingSessionOptions(options: options)
         if optionsWithTracker.tracker == nil {
             optionsWithTracker.tracker = pluginConfig.defaultTracker
         }
         
+        let locationStore: LocationPersistenceBehavior
+        do {
+            locationStore = try SQLiteLocationPersistenceAdapter(fileSystemBehavior: LocationFileSystem())
+        } catch {
+            throw Geo.Error.internalPluginError(GeoPluginErrorConstants.errorInitializingLocalStore.errorDescription,
+                                    GeoPluginErrorConstants.errorInitializingLocalStore.recoverySuggestion,
+                                    error)
+        }
+        
         if Self.deviceTracker == nil {
             Self.deviceTracker = try AWSDeviceTracker(options: optionsWithTracker,
-                                                      locationManager: Geo.LocationManager(options: optionsWithTracker),
-                                                      locationService: locationService)
+                                                      locationManager: CLLocationManager(),
+                                                      locationService: locationService,
+                                                      networkMonitor: GeoNetworkMonitor(),
+                                                      locationStore: locationStore)
         }
         Self.deviceTracker?.configure(with: optionsWithTracker)
         try await Self.deviceTracker?.startTracking(for: device())
@@ -327,7 +341,7 @@ extension AWSLocationGeoPlugin {
     /// Stop tracking an existing tracking session.
     /// Calling this without an existing tracking session does nothing.
     ///
-    /// Important: This will save all batched location updates. Any failures
+    /// Important: This will save all batched location updates(e.g., to Amazon Location Service). Any failures
     /// will be published to the Hub.
     public func stopTracking() {
         Self.deviceTracker?.stopTracking()

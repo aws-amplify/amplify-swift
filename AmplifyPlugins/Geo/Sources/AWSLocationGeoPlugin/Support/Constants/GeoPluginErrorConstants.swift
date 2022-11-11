@@ -37,6 +37,10 @@ struct GeoPluginErrorConstants {
         "Unable to save locations to local database.",
         "This seems like a bug. Please report an issue on Amplify Swift repo.")
     
+    static let errorFetchingLocationsFromLocalStore: GeoPluginErrorString = (
+        "Unable to fetch locations to local database.",
+        "This seems like a bug. Please report an issue on Amplify Swift repo.")
+    
     static let errorSaveLocationsFailed: GeoPluginErrorString = (
         "Unable to send locations to service.",
         "Please ensure that AWS Geo Device Tracking is configured.")

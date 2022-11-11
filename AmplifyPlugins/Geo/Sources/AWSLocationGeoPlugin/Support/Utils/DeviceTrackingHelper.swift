@@ -12,7 +12,7 @@ class DeviceTrackingHelper {
     
     static func batchingThresholdReached(old: LocationUpdate,
                                          new: LocationUpdate,
-                                         batchingOption: Geo.LocationManager.BatchingOption) -> Bool {
+                                         batchingOption: Geo.BatchingOption) -> Bool {
         switch batchingOption.batchingOptionType {
         case .none:
             return true
