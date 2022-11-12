@@ -59,10 +59,10 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
         locationManager.distanceFilter = options.distanceFilter
     }
     
-    func startTracking(for device: Geo.Device) throws {
+    func startTracking(for identifier: String) throws {
         networkMonitor.start()
         UserDefaults.standard.removeObject(forKey: AWSDeviceTracker.deviceIDKey)
-        UserDefaults.standard.set(device.id, forKey: AWSDeviceTracker.deviceIDKey)
+        UserDefaults.standard.set(identifier, forKey: AWSDeviceTracker.deviceIDKey)
         locationManager.delegate = self
         try checkPermissionsAndStartTracking()
     }

@@ -27,9 +27,9 @@ public class MockAWSDeviceTracker: AWSDeviceTracker {
         // do nothing
     }
     
-    public override func startTracking(for device: Geo.Device) throws {
+    public override func startTracking(for identifier: String) throws {
         startDeviceTrackingCalled += 1
-        try super.startTracking(for: device)
+        try super.startTracking(for: identifier)
     }
     
     public override func stopTracking() {

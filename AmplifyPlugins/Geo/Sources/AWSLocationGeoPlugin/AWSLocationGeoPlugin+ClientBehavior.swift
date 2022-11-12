@@ -276,12 +276,12 @@ extension AWSLocationGeoPlugin {
         }
         
         do {
-            let geoDevice = device
+            let identifier = try await device.getFullyQualifiedIdentifier(authService: authService)
             var tracker = pluginConfig.defaultTracker
             if let optionalTracker = options.tracker {
                 tracker = optionalTracker
             }
-            let input = BatchDeleteDevicePositionHistoryInput(deviceIds: [geoDevice.id], trackerName: tracker)
+            let input = BatchDeleteDevicePositionHistoryInput(deviceIds: [identifier], trackerName: tracker)
             let response = try await locationService.deleteLocationHistory(forPositionHistory: input)
             if let error = response.errors?.first as? Error {
                 throw GeoErrorHelper.mapAWSLocationError(error)
@@ -322,7 +322,8 @@ extension AWSLocationGeoPlugin {
                                                       locationService: locationService)
         }
         Self.deviceTracker?.configure(with: optionsWithTracker)
-        try Self.deviceTracker?.startTracking(for: device)
+        let identifier = try await device.getFullyQualifiedIdentifier(authService: authService)
+        try Self.deviceTracker?.startTracking(for: identifier)
     }
     
     /// Stop tracking an existing tracking session.
@@ -337,13 +338,14 @@ extension AWSLocationGeoPlugin {
 
 extension Geo.Device {
     func getFullyQualifiedIdentifier(authService: AWSAuthServiceBehavior) async throws -> String {
-        if tiedToUserId {
-            return try await authService.getIdentityID()
-        } else if tiedToUserAndDevice {
-            let cognitoId = try await authService.getIdentityID()
-            return "\(cognitoId) - \(id)"
-        } else {
-            return id
+        switch self._deviceCharacteristic {
+            case .tiedToUser:
+                return try await authService.getIdentityID()
+            case .tiedToUserAndDevice:
+                let cognitoId = try await authService.getIdentityID()
+                return "\(cognitoId) - \(id)"
+            default:
+                return id
         }
     }
 }
