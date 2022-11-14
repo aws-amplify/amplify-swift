@@ -10,7 +10,7 @@ import Foundation
 import Network
 
 @available(iOS 12.0, macOS 10.14, tvOS 12.0, watchOS 6.0, *)
-class GeoNetworkMonitor {
+class GeoNetworkMonitor: GeoNetworkMonitorBehavior {
     
     private var monitor: NWPathMonitor?
     private let queue = DispatchQueue(label: "com.amazonaws.GeoNetworkMonitor.queue", qos: .background)

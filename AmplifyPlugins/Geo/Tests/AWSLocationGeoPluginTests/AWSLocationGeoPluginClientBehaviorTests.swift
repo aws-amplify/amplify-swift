@@ -342,7 +342,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
     func testStartTrackingWithDefaultTracker() async {
         do {
             let device = Geo.Device.unchecked(id: "123-456-789")
-            try await geoPlugin.startTracking(for: device, with: Geo.LocationManager.TrackingSessionOptions())
+            try await geoPlugin.startTracking(for: device, with: Geo.TrackingSessionOptions())
             XCTAssertEqual(mockDeviceTracker.startDeviceTrackingCalled, 1)
             XCTAssertEqual(mockDeviceTracker.configureCalled, 1)
         } catch {
@@ -365,7 +365,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
     func testStartTrackingWithCustomTracker() async {
         do {
             let device = Geo.Device.unchecked(id: "123-456-789")
-            var options = Geo.LocationManager.TrackingSessionOptions()
+            var options = Geo.TrackingSessionOptions()
             options.tracker = "tracker"
             try await geoPlugin.startTracking(for: device, with: options)
             XCTAssertEqual(mockDeviceTracker.startDeviceTrackingCalled, 1)
@@ -393,7 +393,7 @@ class AWSLocationGeoPluginClientBehaviorTests: AWSLocationGeoPluginTestBase {
 
         do {
             let device = Geo.Device.unchecked(id: "123-456-789")
-            try await geoPlugin.startTracking(for: device, with: Geo.LocationManager.TrackingSessionOptions())
+            try await geoPlugin.startTracking(for: device, with: Geo.TrackingSessionOptions())
             XCTFail("This call returned success when a failure was expected.")
         } catch {
             guard let geoError = error as? Geo.Error else {

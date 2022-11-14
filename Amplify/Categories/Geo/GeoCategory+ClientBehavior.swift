@@ -90,7 +90,7 @@ extension GeoCategory: GeoCategoryBehavior {
     ///     `Geo.Error.unknown` if error is unknown
     public func updateLocation(
        _ location: Geo.Location,
-       for device: Geo.Device = .tiedToDevice(),
+       for device: Geo.Device = .tiedToUser(),
        with options: Geo.UpdateLocationOptions = .init()
     ) async throws {
         try await plugin.updateLocation(location, for: device, with: options)
@@ -112,7 +112,7 @@ extension GeoCategory: GeoCategoryBehavior {
     ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
     ///     `Geo.Error.unknown` if error is unknown
     public func deleteLocationHistory(
-       for device: Geo.Device = .tiedToDevice(),
+       for device: Geo.Device = .tiedToUser(),
        with options: Geo.DeleteLocationOptions = .init()
     ) async throws {
         try await plugin.deleteLocationHistory(for: device, with: options)
@@ -121,17 +121,17 @@ extension GeoCategory: GeoCategoryBehavior {
     /// Start a new tracking session.
     ///
     ///
-    /// Location update failures can be listened to on the Hub with <event name>
+    /// Location update failures can be listened to on the Hub with EventName `Geo.saveLocationsFailed`
     ///
     /// - Parameters:
     ///   - device: The device that this location update will be applied to.
     ///             If you choose to create your own `Device` with your own `Device.ID`,
     ///             you are responsible for ensuring tracker scoped randomness and that the ID doesn't include PII
-    ///   - options: The `Geo.LocationManager.TrackingSessionOptions` struct that determines the tracking behavior
+    ///   - options: The `Geo.TrackingSessionOptions` struct that determines the tracking behavior
     ///              of this tracking session.
     public func startTracking(
-        for device: Geo.Device = .tiedToDevice(),
-        with options: Geo.LocationManager.TrackingSessionOptions = .init()
+        for device: Geo.Device = .tiedToUser(),
+        with options: Geo.TrackingSessionOptions = .init()
     ) async throws {
         try await plugin.startTracking(for: device, with: options)
     }
@@ -139,7 +139,7 @@ extension GeoCategory: GeoCategoryBehavior {
     /// Stop tracking an existing tracking session.
     /// Calling this without an existing tracking session does nothing.
     ///
-    /// Important: This will save all batched location updates. Any failures
+    /// Important: This will save all batched location updates(e.g., to Amazon Location Service). Any failures
     /// will be published to the Hub.
     public func stopTracking() {
         plugin.stopTracking()

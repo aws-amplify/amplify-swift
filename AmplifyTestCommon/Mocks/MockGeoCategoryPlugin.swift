@@ -50,7 +50,7 @@ class MockGeoCategoryPlugin: MessageReporter, GeoCategoryPlugin {
         notify("deleteLocationHistory")
     }
     
-    func startTracking(for device: Geo.Device, with options: Geo.LocationManager.TrackingSessionOptions) async throws {
+    func startTracking(for device: Geo.Device, with options: Geo.TrackingSessionOptions) async throws {
         notify("startTracking")
     }
     

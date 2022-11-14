@@ -12,9 +12,9 @@ import Foundation
 /// This protocol allows a way to create a Mock and ensure the plugin implementation is testable.
 protocol AWSDeviceTrackingBehavior {
 
-    func configure(with options: Geo.LocationManager.TrackingSessionOptions)
+    func configure(with options: Geo.TrackingSessionOptions)
 
-    func startTracking(for identifier: String) throws
+    func startTracking(for deviceId: String) throws
     
     func stopTracking()
 }
