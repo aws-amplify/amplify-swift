@@ -33,6 +33,14 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
 
     private var modelName: ModelName
 
+    private let systemModelNames: Set = [MutationEvent.modelName,
+                                         ModelSyncMetadata.modelName,
+                                         MutationSyncMetadata.modelName]
+    
+    private var shouldLogDeveloperDefinedModel: Bool {
+        return self.log.logLevel >= .debug && !systemModelNames.contains(modelName)
+    }
+    
     init(storageAdapter: StorageEngineAdapter,
          syncEngine: RemoteSyncEngineBehavior?,
          modelType: M.Type,
@@ -147,7 +155,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         
         let modelIds = queriedModels.map { $0.identifier(schema: self.modelSchema).stringValue }
         
-        if self.log.logLevel >= .debug && modelName != MutationEvent.modelName {
+        if shouldLogDeveloperDefinedModel {
             self.log.debug("[CascadeDelete.1] Deleting \(modelName) with identifiers: \(modelIds)")
         }
         
@@ -167,6 +175,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
 
     func recurseQueryAssociatedModels(modelSchema: ModelSchema, ids: [String]) async -> [(ModelName, Model)] {
         var associatedModels: [(ModelName, Model)] = []
+        var associatedModelNames: [String] = []
         for (_, modelField) in modelSchema.fields {
             guard modelField.hasAssociation,
                   modelField.isOneToOne || modelField.isOneToMany,
@@ -175,21 +184,22 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                   let associatedModelSchema = ModelRegistry.modelSchema(from: associatedModelName) else {
                 continue
             }
-            
-            guard let modelSchema = ModelRegistry.modelSchema(from: associatedModelName) else {
-                log.error("Failed to lookup associate model \(associatedModelName)")
-                return []
+            if shouldLogDeveloperDefinedModel {
+                self.log.debug("[CascadeDelete.2] Querying for \(modelName)'s associated model \(associatedModelSchema.name).")
             }
-            
-            let queriedModels = await queryAssociatedModels(associatedModelSchema: modelSchema,
+            let queriedModels = await queryAssociatedModels(associatedModelSchema: associatedModelSchema,
                                                             associatedField: associatedField,
                                                             ids: ids)
                 
             let associatedModelIds = queriedModels.map { $0.1.identifier(schema: modelSchema).stringValue }
+            if shouldLogDeveloperDefinedModel {
+                self.log.debug("[CascadeDelete.2] Queried for \(associatedModelSchema.name), retrieved ids for deletion: \(associatedModelIds)")
+            }
             associatedModels.append(contentsOf: queriedModels)
             associatedModels.append(contentsOf: await recurseQueryAssociatedModels(modelSchema: associatedModelSchema,
                                                                                    ids: associatedModelIds))
         }
+        
         return associatedModels
     }
 
@@ -228,15 +238,10 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         if let queryResult = queryResult {
             switch queryResult {
             case .success(let models):
-                if self.log.logLevel >= .debug && modelName != isDeveloperDefined.MutationEvent.rawValue {
-                    self.log.debug("[CascadeDelete.2] Queried for \(modelName) associated models, found \(associatedModels.compactMap { $1.modelName })")
-                    
-                    self.log.debug("[CascadeDelete.2] Queried for \(associatedModels.compactMap({$1.modelName})), retrieved ids for deletion: \(associatedModels.map { $0.1.identifier(schema: modelSchema).stringValue })")
-                }
                 if let deleteResult = deleteResult {
                     switch deleteResult {
                     case .success:
-                        if modelName != isDeveloperDefined.MutationEvent.rawValue {
+                        if shouldLogDeveloperDefinedModel {
                             self.log.debug("[CascadeDelete.3] Local cascade delete of \(modelName) successful!")
                         }
                         return .success(QueryAndDeleteResult(deletedModels: models,
@@ -258,7 +263,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
     func syncIfNeededAndFinish(_ transactionResult: DataStoreResult<QueryAndDeleteResult<M>>) {
         switch transactionResult {
         case .success(let queryAndDeleteResult):
-            if self.log.logLevel >= .debug && modelName != isDeveloperDefined.MutationEvent.rawValue {
+            if shouldLogDeveloperDefinedModel {
                 let syncDeletionsCount = (queryAndDeleteResult.associatedModels.count + queryAndDeleteResult.deletedModels.count)
                 self.log.debug("[CascadeDelete.4] sending a total of \(syncDeletionsCount) delete mutations")
             }
@@ -371,7 +376,6 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         var savedDataStoreError: DataStoreError?
 
         guard !associatedModels.isEmpty else {
-            self.log.debug("[CascadeDelete.4] Begin syncing  \(models.count) \(modelName) model for deletion")
             syncDeletions(withModels: models,
                           predicate: predicate,
                           syncEngine: syncEngine,
@@ -428,6 +432,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                                syncEngine: RemoteSyncEngineBehavior,
                                dataStoreError: DataStoreError?,
                                completion: @escaping DataStoreCallback<Void>) {
+        self.log.debug("[CascadeDelete.4] Begin syncing \(models.count) \(modelName) model for deletion")
         var graphQLFilterJSON: String?
         if let predicate = predicate {
             do {
