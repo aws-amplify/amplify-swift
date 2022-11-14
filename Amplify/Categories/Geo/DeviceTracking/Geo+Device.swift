@@ -21,7 +21,7 @@ extension Geo {
         }
         
         /// Create your own device id. Use this at your own risk
-        /// - Warning: Ensure provided identifier excludes discernable pattern or personally identifier information and
+        /// - Warning: Ensure provided identifier excludes discernable pattern or personally identifiable information and
         /// follows security best practices.  Recommendation is to use Geo.Device.tiedToUser()
         /// - Parameter id: The device ID
         /// - Returns: A `Device` with your provided `id`.
