@@ -515,12 +515,6 @@ extension CascadeDeleteOperation {
             }
         }
     }
-    
-    enum isDeveloperDefined: ModelName {
-        case ModelSyncMetadata = "ModelSyncMetadata"
-        case MutationEvent = "MutationEvent"
-        case MutationSyncMetadata = "MutationSyncMetadata"
-    }
 }
 
 extension CascadeDeleteOperation: DefaultLogger { }
