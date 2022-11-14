@@ -22,8 +22,8 @@ public extension Geo {
     }
     
     struct BatchingOption {
-        /// Note: Although this has `public` access, it is intended for internal use
-        /// and should not be used directly by host applications.
+        /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+        ///   by host applications. The behavior of this may change without warning.
         ///
         /// Send batch of location updates to Amazon Location Service (or `LocationProxyDelegate` if set)
         /// after at least this distance has been travelled. The computation of
@@ -31,8 +31,8 @@ public extension Geo {
         /// location and the most recent location in the batch
         public let _metersTravelled : Int?
       
-        /// Note: Although this has `public` access, it is intended for internal use
-        /// and should not be used directly by host applications.
+        /// - Warning: Although this has `public` access, it is intended for internal use and should not be used directly
+        ///   by host applications. The behavior of this may change without warning.
         ///
         /// Number of seconds elapsed since sending location update(s) to Amazon
         /// Location Service (or `LocationProxyDelegate` if set) before location updates are sent again.

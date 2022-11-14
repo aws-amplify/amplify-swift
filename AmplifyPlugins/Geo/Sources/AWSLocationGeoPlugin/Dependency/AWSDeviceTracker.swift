@@ -55,12 +55,12 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
         locationManager.distanceFilter = options.distanceFilter
     }
     
-    func startTracking(for device: Geo.Device) throws {
+    func startTracking(for deviceId: String) throws {
         networkMonitor.start()
         UserDefaults.standard.removeObject(forKey: AWSDeviceTracker.deviceIDKey)
         UserDefaults.standard.removeObject(forKey: AWSDeviceTracker.lastLocationUpdateTimeKey)
         UserDefaults.standard.removeObject(forKey: AWSDeviceTracker.lastUpdatedLocationKey)
-        UserDefaults.standard.set(device.id, forKey: AWSDeviceTracker.deviceIDKey)
+        UserDefaults.standard.set(deviceId, forKey: AWSDeviceTracker.deviceIDKey)
         unsubscribeToken = Amplify.Hub.listen(to: .auth, eventName: HubPayload.EventName.Auth.signedOut) { payload in
             self.stopTracking()
         }
