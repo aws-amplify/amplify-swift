@@ -191,7 +191,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                                                             associatedField: associatedField,
                                                             ids: ids)
                 
-            let associatedModelIds = queriedModels.map { $0.1.identifier(schema: modelSchema).stringValue }
+            let associatedModelIds = queriedModels.map { $0.1.identifier(schema: associatedModelSchema).stringValue }
             if shouldLogDeveloperDefinedModel {
                 self.log.debug("[CascadeDelete.2] Queried for \(associatedModelSchema.name), retrieved ids for deletion: \(associatedModelIds)")
             }
