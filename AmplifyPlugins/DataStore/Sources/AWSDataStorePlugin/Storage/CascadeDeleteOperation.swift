@@ -147,18 +147,11 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         
         let modelIds = queriedModels.map { $0.identifier(schema: self.modelSchema).stringValue }
         
-        if modelName != "MutationEvent" {
+        if self.log.logLevel >= .debug && modelName != MutationEvent.modelName {
             self.log.debug("[CascadeDelete.1] Deleting \(modelName) with identifiers: \(modelIds)")
         }
         
         associatedModels = await self.recurseQueryAssociatedModels(modelSchema: self.modelSchema, ids: modelIds)
-        if self.log.logLevel >= .debug {
-            if modelName != "MutationEvent" {
-                self.log.debug("[CascadeDelete.2] Queried for \(modelName) associated models, found \(associatedModels.compactMap { $1.modelName })")
-                
-                self.log.debug("[CascadeDelete.2] [Query ids of associated Models] Queried for \(associatedModels.compactMap({$1.modelName})), retrieved ids for deletion: \(associatedModels.map { $0.1.identifier(schema: modelSchema).stringValue })")
-            }
-        }
 
         deletedResult = await withCheckedContinuation { continuation in
             self.storageAdapter.delete(self.modelType,
@@ -235,11 +228,16 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         if let queryResult = queryResult {
             switch queryResult {
             case .success(let models):
+                if self.log.logLevel >= .debug && modelName != isDeveloperDefined.MutationEvent.rawValue {
+                    self.log.debug("[CascadeDelete.2] Queried for \(modelName) associated models, found \(associatedModels.compactMap { $1.modelName })")
+                    
+                    self.log.debug("[CascadeDelete.2] Queried for \(associatedModels.compactMap({$1.modelName})), retrieved ids for deletion: \(associatedModels.map { $0.1.identifier(schema: modelSchema).stringValue })")
+                }
                 if let deleteResult = deleteResult {
                     switch deleteResult {
                     case .success:
-                        if modelName != "MutationEvent" {
-                            self.log.debug("[CascadeDelete.3] [Delete from Local Store] Local cascade delete of \(modelName) successful!")
+                        if modelName != isDeveloperDefined.MutationEvent.rawValue {
+                            self.log.debug("[CascadeDelete.3] Local cascade delete of \(modelName) successful!")
                         }
                         return .success(QueryAndDeleteResult(deletedModels: models,
                                                              associatedModels: associatedModels))
@@ -260,6 +258,10 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
     func syncIfNeededAndFinish(_ transactionResult: DataStoreResult<QueryAndDeleteResult<M>>) {
         switch transactionResult {
         case .success(let queryAndDeleteResult):
+            if self.log.logLevel >= .debug && modelName != isDeveloperDefined.MutationEvent.rawValue {
+                let syncDeletionsCount = (queryAndDeleteResult.associatedModels.count + queryAndDeleteResult.deletedModels.count)
+                self.log.debug("[CascadeDelete.4] sending a total of \(syncDeletionsCount) delete mutations")
+            }
             switch deleteInput {
             case .withIdentifier, .withIdentifierAndCondition:
                 guard queryAndDeleteResult.deletedModels.count <= 1 else {
@@ -315,8 +317,6 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
             // mutation?
             switch deleteInput {
             case .withIdentifier, .withIdentifierAndCondition:
-                let syncDeletionsCount = (queryAndDeleteResult.associatedModels.count + queryAndDeleteResult.deletedModels.count)
-                self.log.debug("[CascadeDelete.4] sending a total of \(syncDeletionsCount) delete mutations")
                 syncDeletions(withModels: queryAndDeleteResult.deletedModels,
                               associatedModels: queryAndDeleteResult.associatedModels,
                               syncEngine: syncEngine) {
@@ -329,8 +329,6 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                     self.finish()
                 }
             case .withFilter(let filter):
-                let syncDeletionsCount = (queryAndDeleteResult.associatedModels.count + queryAndDeleteResult.deletedModels.count)
-                self.log.debug("[CascadeDelete.4] sending a total of \(syncDeletionsCount) delete mutations")
                 syncDeletions(withModels: queryAndDeleteResult.deletedModels,
                               predicate: filter,
                               associatedModels: queryAndDeleteResult.associatedModels,
@@ -370,10 +368,10 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                                associatedModels: [(ModelName, Model)],
                                syncEngine: RemoteSyncEngineBehavior,
                                completion: @escaping DataStoreCallback<Void>) {
-        self.log.debug("[CascadeDelete.4] Begin syncing  \(models.count) \(modelName) model for deletion")
         var savedDataStoreError: DataStoreError?
 
         guard !associatedModels.isEmpty else {
+            self.log.debug("[CascadeDelete.4] Begin syncing  \(models.count) \(modelName) model for deletion")
             syncDeletions(withModels: models,
                           predicate: predicate,
                           syncEngine: syncEngine,
@@ -511,6 +509,12 @@ extension CascadeDeleteOperation {
                 return predicate
             }
         }
+    }
+    
+    enum isDeveloperDefined: ModelName {
+        case ModelSyncMetadata = "ModelSyncMetadata"
+        case MutationEvent = "MutationEvent"
+        case MutationSyncMetadata = "MutationSyncMetadata"
     }
 }
 
