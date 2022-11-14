@@ -64,13 +64,13 @@ orbs:
         parameters:
           xcode-version:
             type: string
-            default: 13.3.0
+            default: 13.4.1
           simulator-device:
             type: string
             default: iPhone 13
           simulator-os-version:
             type: string
-            default: "15.4"
+            default: "15.5"
         working_directory: ~/ios-canaries/canaries/example
         macos:
           xcode: <<parameters.xcode-version>>
@@ -90,7 +90,7 @@ orbs:
           - ruby/install-deps
           - run-with-retry:
               label: Run tests
-              command: bundle exec fastlane scan
+              command: bundle exec fastlane scan --device "<<parameters.simulator-device>>" --deployment_target_version "<<parameters.simulator-os-version>>"
 
 defaults: &defaults
   macos:
@@ -411,7 +411,7 @@ workflows:
                 - release
 
   # Scheduled smoke test workflow
-  # Jobs are pulled from the getting-started-smoke-test inline orb defined below
+  # Jobs are pulled from the getting-started-smoke-test inline orb defined above
   canaries:
     when:
       and:
@@ -419,10 +419,10 @@ workflows:
         - equal: [ "Canaries", << pipeline.schedule.name >> ]
     jobs:
       - getting-started-smoke-test/ios:
-          xcode-version: "13.3.0"
-          simulator-os-version: "15.4"
-          simulator-device: "iPhone 13"
+          xcode-version: "14.1.0"
+          simulator-os-version: "16.1"
+          simulator-device: "iPhone 14 Pro"
       - getting-started-smoke-test/ios:
-          xcode-version: "12.5.1"
-          simulator-os-version: "14.5"
-          simulator-device: "iPhone 12"
+          xcode-version: "13.4.1"
+          simulator-os-version: "15.5"
+          simulator-device: "iPhone 13 Pro"

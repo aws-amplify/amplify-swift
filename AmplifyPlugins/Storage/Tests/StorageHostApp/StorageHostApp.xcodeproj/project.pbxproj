@@ -14,12 +14,9 @@
 		681DFEB428E748270000C36A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEB128E748270000C36A /* XCTestCase+AsyncTesting.swift */; };
 		684FB06E28BEAF1500C8A6EB /* StorageHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB06D28BEAF1500C8A6EB /* StorageHostAppApp.swift */; };
 		684FB07028BEAF1500C8A6EB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB06F28BEAF1500C8A6EB /* ContentView.swift */; };
-		684FB0A228BEB02E00C8A6EB /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 684FB0A128BEB02E00C8A6EB /* Amplify */; };
-		684FB0A428BEB02E00C8A6EB /* AWSS3StoragePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 684FB0A328BEB02E00C8A6EB /* AWSS3StoragePlugin */; };
 		684FB0B328BEB08900C8A6EB /* AWSS3StoragePluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB07E28BEAF8E00C8A6EB /* AWSS3StoragePluginTestBase.swift */; };
 		684FB0B528BEB08900C8A6EB /* AWSS3StoragePluginAccessLevelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB08628BEAF8E00C8A6EB /* AWSS3StoragePluginAccessLevelTests.swift */; };
 		684FB0BE28BEB08F00C8A6EB /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB09D28BEAFE700C8A6EB /* TestConfigHelper.swift */; };
-		684FB0C028BEB1AB00C8A6EB /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 684FB0BF28BEB1AB00C8A6EB /* AWSCognitoAuthPlugin */; };
 		684FB0C328BEB45600C8A6EB /* AuthSignInHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB0C228BEB45600C8A6EB /* AuthSignInHelper.swift */; };
 		68828E3D28C136EB006E7C0A /* AWSS3StoragePluginBasicIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB08428BEAF8E00C8A6EB /* AWSS3StoragePluginBasicIntegrationTests.swift */; };
 		68828E3E28C1546F006E7C0A /* AWSS3StoragePluginConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB08028BEAF8E00C8A6EB /* AWSS3StoragePluginConfigurationTests.swift */; };
@@ -31,6 +28,9 @@
 		68828E4628C2736C006E7C0A /* AWSS3StoragePluginProgressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB08C28BEAF8E00C8A6EB /* AWSS3StoragePluginProgressTests.swift */; };
 		68828E4728C27745006E7C0A /* AWSS3StoragePluginPutDataResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB08828BEAF8E00C8A6EB /* AWSS3StoragePluginPutDataResumabilityTests.swift */; };
 		68828E4828C2AAA6006E7C0A /* AWSS3StoragePluginGetDataResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB08B28BEAF8E00C8A6EB /* AWSS3StoragePluginGetDataResumabilityTests.swift */; };
+		B4A5B59B2919730700D873D2 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = B4A5B59A2919730700D873D2 /* Amplify */; };
+		B4A5B59D2919730700D873D2 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = B4A5B59C2919730700D873D2 /* AWSCognitoAuthPlugin */; };
+		B4A5B59F2919730700D873D2 /* AWSS3StoragePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = B4A5B59E2919730700D873D2 /* AWSS3StoragePlugin */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,7 +53,6 @@
 		684FB06A28BEAF1500C8A6EB /* StorageHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StorageHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		684FB06D28BEAF1500C8A6EB /* StorageHostAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageHostAppApp.swift; sourceTree = "<group>"; };
 		684FB06F28BEAF1500C8A6EB /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		684FB07C28BEAF6300C8A6EB /* amplify-ios */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios"; path = ../../../..; sourceTree = "<group>"; };
 		684FB07E28BEAF8E00C8A6EB /* AWSS3StoragePluginTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginTestBase.swift; sourceTree = "<group>"; };
 		684FB07F28BEAF8E00C8A6EB /* AWSS3StoragePluginPrefixKeyResolverTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginPrefixKeyResolverTests.swift; sourceTree = "<group>"; };
 		684FB08028BEAF8E00C8A6EB /* AWSS3StoragePluginConfigurationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSS3StoragePluginConfigurationTests.swift; sourceTree = "<group>"; };
@@ -70,6 +69,8 @@
 		684FB0A928BEB07200C8A6EB /* AWSS3StoragePluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSS3StoragePluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		684FB0C228BEB45600C8A6EB /* AuthSignInHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignInHelper.swift; sourceTree = "<group>"; };
 		684FB0C528BEB84800C8A6EB /* StorageHostApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = StorageHostApp.entitlements; sourceTree = "<group>"; };
+		B4A5B5982919725100D873D2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		B4A5B5992919727700D873D2 /* amplify-swift */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-swift"; path = ../../../..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,9 +78,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				684FB0A228BEB02E00C8A6EB /* Amplify in Frameworks */,
-				684FB0A428BEB02E00C8A6EB /* AWSS3StoragePlugin in Frameworks */,
-				684FB0C028BEB1AB00C8A6EB /* AWSCognitoAuthPlugin in Frameworks */,
+				B4A5B59B2919730700D873D2 /* Amplify in Frameworks */,
+				B4A5B59D2919730700D873D2 /* AWSCognitoAuthPlugin in Frameworks */,
+				B4A5B59F2919730700D873D2 /* AWSS3StoragePlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,6 +138,7 @@
 		684FB06C28BEAF1500C8A6EB /* StorageHostApp */ = {
 			isa = PBXGroup;
 			children = (
+				B4A5B5982919725100D873D2 /* Info.plist */,
 				681DFEAE28E748270000C36A /* AsyncTesting */,
 				684FB0C528BEB84800C8A6EB /* StorageHostApp.entitlements */,
 				684FB06D28BEAF1500C8A6EB /* StorageHostAppApp.swift */,
@@ -149,7 +151,7 @@
 		684FB07B28BEAF5500C8A6EB /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				684FB07C28BEAF6300C8A6EB /* amplify-ios */,
+				B4A5B5992919727700D873D2 /* amplify-swift */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -218,9 +220,9 @@
 			);
 			name = StorageHostApp;
 			packageProductDependencies = (
-				684FB0A128BEB02E00C8A6EB /* Amplify */,
-				684FB0A328BEB02E00C8A6EB /* AWSS3StoragePlugin */,
-				684FB0BF28BEB1AB00C8A6EB /* AWSCognitoAuthPlugin */,
+				B4A5B59A2919730700D873D2 /* Amplify */,
+				B4A5B59C2919730700D873D2 /* AWSCognitoAuthPlugin */,
+				B4A5B59E2919730700D873D2 /* AWSS3StoragePlugin */,
 			);
 			productName = StorageHostApp;
 			productReference = 684FB06A28BEAF1500C8A6EB /* StorageHostApp.app */;
@@ -509,7 +511,8 @@
 				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
+				INFOPLIST_FILE = StorageHostApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = IntegTests;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -538,7 +541,8 @@
 				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
+				INFOPLIST_FILE = StorageHostApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = IntegTests;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -631,17 +635,17 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = Amplify;
 		};
-		684FB0A128BEB02E00C8A6EB /* Amplify */ = {
+		B4A5B59A2919730700D873D2 /* Amplify */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Amplify;
 		};
-		684FB0A328BEB02E00C8A6EB /* AWSS3StoragePlugin */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AWSS3StoragePlugin;
-		};
-		684FB0BF28BEB1AB00C8A6EB /* AWSCognitoAuthPlugin */ = {
+		B4A5B59C2919730700D873D2 /* AWSCognitoAuthPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AWSCognitoAuthPlugin;
+		};
+		B4A5B59E2919730700D873D2 /* AWSS3StoragePlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSS3StoragePlugin;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

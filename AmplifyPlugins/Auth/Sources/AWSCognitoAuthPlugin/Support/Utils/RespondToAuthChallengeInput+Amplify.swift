@@ -116,7 +116,7 @@ extension RespondToAuthChallengeInput {
             let userPoolClientId = environment.userPoolConfiguration.clientId
             if let clientSecret = environment.userPoolConfiguration.clientSecret {
 
-                let clientSecretHash = SRPSignInHelper.clientSecretHash(
+                let clientSecretHash = ClientSecretHelper.clientSecretHash(
                     username: username,
                     userPoolClientId: userPoolClientId,
                     clientSecret: clientSecret

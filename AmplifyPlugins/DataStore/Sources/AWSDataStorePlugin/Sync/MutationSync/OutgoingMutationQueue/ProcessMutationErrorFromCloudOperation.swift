@@ -54,25 +54,42 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
             return
         }
 
-        if let apiError = apiError, isAuthSignedOutError(apiError: apiError) {
+        if let apiError = apiError {
+            if isAuthSignedOutError(apiError: apiError) {
+                log.verbose("User is signed out, passing error back to the error handler, and removing mutation event.")
+            } else if let underlyingError = apiError.underlyingError {
+                log.debug("Received APIError: \(apiError.localizedDescription) with underlying error: \(underlyingError.localizedDescription)")
+            } else {
+                log.debug("Received APIError: \(apiError.localizedDescription)")
+            }
             dataStoreConfiguration.errorHandler(DataStoreError.api(apiError, mutationEvent))
             finish(result: .success(nil))
             return
         }
 
-        guard let graphQLResponseError = graphQLResponseError,
-            case let .error(graphQLErrors) = graphQLResponseError else {
-                finish(result: .success(nil))
-                return
+        guard let graphQLResponseError = graphQLResponseError else {
+            dataStoreConfiguration.errorHandler(
+                DataStoreError.api(APIError.unknown("This is unexpected. Missing APIError and GraphQLError.", ""),
+                                   mutationEvent))
+            finish(result: .success(nil))
+            return
+        }
+
+        guard case let .error(graphQLErrors) = graphQLResponseError else {
+            dataStoreConfiguration.errorHandler(DataStoreError.api(graphQLResponseError, mutationEvent))
+            finish(result: .success(nil))
+            return
         }
 
         guard graphQLErrors.count == 1 else {
             log.error("Received more than one error response: \(String(describing: graphQLResponseError))")
+            dataStoreConfiguration.errorHandler(DataStoreError.api(graphQLResponseError, mutationEvent))
             finish(result: .success(nil))
             return
         }
 
         guard let graphQLError = graphQLErrors.first else {
+            dataStoreConfiguration.errorHandler(DataStoreError.api(graphQLResponseError, mutationEvent))
             finish(result: .success(nil))
             return
         }
@@ -84,22 +101,26 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
                 let payload = HubPayload(eventName: HubPayload.EventName.DataStore.conditionalSaveFailed,
                                          data: mutationEvent)
                 Amplify.Hub.dispatch(to: .dataStore, payload: payload)
+                dataStoreConfiguration.errorHandler(DataStoreError.api(graphQLResponseError, mutationEvent))
                 finish(result: .success(nil))
             case .conflictUnhandled:
                 processConflictUnhandled(extensions)
             case .unauthorized:
-                // TODO: dispatch Hub event
                 log.debug("Unauthorized mutation \(errorType)")
+                dataStoreConfiguration.errorHandler(DataStoreError.api(graphQLResponseError, mutationEvent))
                 finish(result: .success(nil))
             case .operationDisabled:
                 log.debug("Operation disabled \(errorType)")
+                dataStoreConfiguration.errorHandler(DataStoreError.api(graphQLResponseError, mutationEvent))
                 finish(result: .success(nil))
             case .unknown(let errorType):
                 log.debug("Unhandled error with errorType \(errorType)")
+                dataStoreConfiguration.errorHandler(DataStoreError.api(graphQLResponseError, mutationEvent))
                 finish(result: .success(nil))
             }
         } else {
             log.debug("GraphQLError missing extensions and errorType \(graphQLError)")
+            dataStoreConfiguration.errorHandler(DataStoreError.api(graphQLResponseError, mutationEvent))
             finish(result: .success(nil))
         }
     }

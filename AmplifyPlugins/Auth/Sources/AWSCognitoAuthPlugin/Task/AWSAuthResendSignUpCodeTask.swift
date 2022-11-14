@@ -73,10 +73,15 @@ class AWSAuthResendSignUpCodeTask: AuthResendSignUpCodeTask {
         let analyticsMetadata = userPoolEnvironment
             .cognitoUserPoolAnalyticsHandlerFactory()
             .analyticsMetadata()
+        let secretHash = ClientSecretHelper.calculateSecretHash(
+            username: request.username,
+            userPoolConfiguration: userPoolConfigurationData
+        )
         let input = ResendConfirmationCodeInput(
             analyticsMetadata: analyticsMetadata,
             clientId: userPoolConfigurationData.clientId,
             clientMetadata: clientMetaData,
+            secretHash: secretHash,
             userContextData: userContextData,
             username: request.username)
 

@@ -1,5 +1,38 @@
 # Changelog
 
+## 2.1.0 (2022-11-10)
+
+### Features
+
+- **storage**: Remove the async throws from the apis that return task (#2543)
+
+### Bug Fixes
+
+- **datastore**: improve sync event error handling - cannotParseResponse (#2536)
+- **datastore**: fix stop then start API call pattern (#2529)
+
+### Features
+
+- **storage**: Remove `async throws` from public apis that returns a task (#2543). The change avoids checking for error at two places and the api will become sync. 
+              **Note:** This change would break customer who use storage api and have Xcode setting to treat warnings as error. 
+
+## 2.0.2 (2022-11-02)
+
+### Bug Fixes
+
+- **auth**: Add secrethash to the resetPassword/resendSignUpCode (#2528)
+
+## 2.0.1 (2022-10-27)
+
+### Bug Fixes
+
+- **Analytics**: Making connectivity errors to be retried indefinitely (#2497)
+- Build failure in xcode 13.4 (#2498)
+- **Auth**: Making improvements to federation flow (#2488)
+- **analytics**: revert previous analytics limit commit (#2484)
+- **analytics**: update pinpoint event attribute limits to match docum (#2474)
+- Make AWSPluginsCore public (#2472)
+
 ## Unreleased
 
 ## 2.0.0 (2022-10-17)
