@@ -228,7 +228,7 @@ extension AWSLocationGeoPlugin {
     ///     `Geo.Error.networkError` if request failed or network unavailable
     ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
     ///     `Geo.Error.unknown` if error is unknown
-    public func updateLocation(_ location: Geo.Location, for device: @autoclosure () async throws -> Geo.Device, with options: Geo.UpdateLocationOptions) async throws {
+    public func updateLocation(_ location: Geo.Location, for device: Geo.Device, with options: Geo.UpdateLocationOptions) async throws {
         guard pluginConfig.defaultTracker != nil else {
             throw Geo.Error.invalidConfiguration(
                 GeoPluginErrorConstants.missingTracker.errorDescription,
@@ -236,7 +236,7 @@ extension AWSLocationGeoPlugin {
         }
         
         do {
-            let geoDevice = try await device()
+            let identifier = try await device.getFullyQualifiedIdentifier(authService: authService)
             var tracker = pluginConfig.defaultTracker
             if let optionalTracker = options.tracker {
                 tracker = optionalTracker
@@ -245,7 +245,7 @@ extension AWSLocationGeoPlugin {
             let position = [location.longitude, location.latitude]
             let locationUpdates = [LocationClientTypes.DevicePositionUpdate(
                 accuracy: nil,
-                deviceId: geoDevice.id,
+                deviceId: identifier,
                 position: position,
                 positionProperties: options.metadata,
                 sampleTime: Date())]
@@ -270,7 +270,7 @@ extension AWSLocationGeoPlugin {
     ///     `Geo.Error.networkError` if request failed or network unavailable
     ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
     ///     `Geo.Error.unknown` if error is unknown
-    public func deleteLocationHistory(for device: @autoclosure () async throws -> Geo.Device, with options: Geo.DeleteLocationOptions) async throws {
+    public func deleteLocationHistory(for device: Geo.Device, with options: Geo.DeleteLocationOptions) async throws {
         guard pluginConfig.defaultTracker != nil else {
             throw Geo.Error.invalidConfiguration(
                 GeoPluginErrorConstants.missingTracker.errorDescription,
@@ -278,12 +278,12 @@ extension AWSLocationGeoPlugin {
         }
         
         do {
-            let geoDevice = try await device()
+            let identifier = try await device.getFullyQualifiedIdentifier(authService: authService)
             var tracker = pluginConfig.defaultTracker
             if let optionalTracker = options.tracker {
                 tracker = optionalTracker
             }
-            let input = BatchDeleteDevicePositionHistoryInput(deviceIds: [geoDevice.id], trackerName: tracker)
+            let input = BatchDeleteDevicePositionHistoryInput(deviceIds: [identifier], trackerName: tracker)
             let response = try await locationService.deleteLocationHistory(forPositionHistory: input)
             if let error = response.errors?.first as? Error {
                 throw GeoErrorHelper.mapAWSLocationError(error)
@@ -305,7 +305,7 @@ extension AWSLocationGeoPlugin {
     ///   - options: The `Geo.TrackingSessionOptions` struct that determines the tracking behavior
     ///              of this tracking session.
     @MainActor
-    public func startTracking(for device: @autoclosure () async throws -> Geo.Device,
+    public func startTracking(for device: Geo.Device,
                               with options: Geo.TrackingSessionOptions) async throws {
         if options.tracker == nil, pluginConfig.defaultTracker == nil {
             throw Geo.Error.invalidConfiguration(
@@ -335,7 +335,8 @@ extension AWSLocationGeoPlugin {
                                                       locationStore: locationStore)
         }
         Self.deviceTracker?.configure(with: optionsWithTracker)
-        try await Self.deviceTracker?.startTracking(for: device())
+        let identifier = try await device.getFullyQualifiedIdentifier(authService: authService)
+        try Self.deviceTracker?.startTracking(for: identifier)
     }
     
     /// Stop tracking an existing tracking session.
@@ -345,5 +346,35 @@ extension AWSLocationGeoPlugin {
     /// will be published to the Hub.
     public func stopTracking() {
         Self.deviceTracker?.stopTracking()
+    }
+}
+
+extension Geo.Device {
+    func getFullyQualifiedIdentifier(authService: AWSAuthServiceBehavior) async throws -> String {
+        do {
+            switch self._deviceCharacteristic {
+                case .tiedToUser:
+                    return try await authService.getIdentityID()
+                case .tiedToUserAndDevice:
+                    let cognitoId = try await authService.getIdentityID()
+                    return "\(cognitoId) - \(id)"
+                default:
+                    return id
+            }
+        } catch {
+            throw Error.missingUserID
+        }
+    }
+    
+    public struct Error: Swift.Error, CustomDebugStringConvertible {
+        public let debugDescription: String
+        
+        public static let missingUserID = Self(
+            debugDescription: """
+            This device option requires a user id that is not available.
+            Please ensure that the user id is accessible or use a device
+            option that isn't tied to a specific user.
+            """
+        )
     }
 }

@@ -14,7 +14,7 @@ protocol AWSDeviceTrackingBehavior {
 
     func configure(with options: Geo.TrackingSessionOptions)
 
-    func startTracking(for device: Geo.Device) throws
+    func startTracking(for deviceId: String) throws
     
     func stopTracking()
 }

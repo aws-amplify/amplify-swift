@@ -90,10 +90,10 @@ extension GeoCategory: GeoCategoryBehavior {
     ///     `Geo.Error.unknown` if error is unknown
     public func updateLocation(
        _ location: Geo.Location,
-       for device: @autoclosure () async throws -> Geo.Device = try await .tiedToUser(),
+       for device: Geo.Device = .tiedToUser(),
        with options: Geo.UpdateLocationOptions = .init()
     ) async throws {
-        try await plugin.updateLocation(location, for: await device(), with: options)
+        try await plugin.updateLocation(location, for: device, with: options)
     }
     
     /// Delete the device location history for this device.
@@ -112,10 +112,10 @@ extension GeoCategory: GeoCategoryBehavior {
     ///     `Geo.Error.pluginError` if encapsulated error received by a dependent plugin
     ///     `Geo.Error.unknown` if error is unknown
     public func deleteLocationHistory(
-       for device: @autoclosure () async throws -> Geo.Device = try await .tiedToUser(),
+       for device: Geo.Device = .tiedToUser(),
        with options: Geo.DeleteLocationOptions = .init()
     ) async throws {
-        try await plugin.deleteLocationHistory(for: await device(), with: options)
+        try await plugin.deleteLocationHistory(for: device, with: options)
     }
     
     /// Start a new tracking session.
@@ -130,10 +130,10 @@ extension GeoCategory: GeoCategoryBehavior {
     ///   - options: The `Geo.TrackingSessionOptions` struct that determines the tracking behavior
     ///              of this tracking session.
     public func startTracking(
-        for device: @autoclosure () async throws -> Geo.Device = try await .tiedToUser(),
+        for device: Geo.Device = .tiedToUser(),
         with options: Geo.TrackingSessionOptions = .init()
     ) async throws {
-        try await plugin.startTracking(for: await device(), with: options)
+        try await plugin.startTracking(for: device, with: options)
     }
     
     /// Stop tracking an existing tracking session.
