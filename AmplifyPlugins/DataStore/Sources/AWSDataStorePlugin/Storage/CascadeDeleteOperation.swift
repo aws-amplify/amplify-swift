@@ -175,7 +175,6 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
 
     func recurseQueryAssociatedModels(modelSchema: ModelSchema, ids: [String]) async -> [(ModelName, Model)] {
         var associatedModels: [(ModelName, Model)] = []
-        var associatedModelNames: [String] = []
         for (_, modelField) in modelSchema.fields {
             guard modelField.hasAssociation,
                   modelField.isOneToOne || modelField.isOneToMany,
