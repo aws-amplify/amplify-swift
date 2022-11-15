@@ -16,6 +16,7 @@ class AWSDeviceTrackerTests : AWSLocationGeoPluginTestBase {
     
     override func tearDown() async throws {
         geoPlugin.stopTracking()
+        mockKeychainStore.resetCounters()
         try await super.tearDown()
     }
     
@@ -125,6 +126,62 @@ class AWSDeviceTrackerTests : AWSLocationGeoPluginTestBase {
         }
 
         await waitForExpectations([secondExpectation])
+    }
+    
+    // MARK: Keychain Tests
+    
+    /// Test if device id is successfully stored in keychain after startTracking() is called for first time
+    ///
+    /// - Given: `AWSDeviceTracker` is configured with a valid `Geo.TrackingSession` and `MockLocationManager`
+    /// - When: startTracking() is called
+    /// - Then: Device ID is stored successfully in keychain
+    func testDeviceIDStoredInKeychainSuccess() async {
+        let device: Geo.Device = .tiedToDevice()
+        
+        let expectation = asyncExpectation(description: "Device ID is stored successfully in keychain")
+        do {
+            try await geoPlugin.startTracking(for: device, with: .init())
+            await expectation.fulfill()
+        } catch {
+            XCTFail("Failed with error: \(error)")
+        }
+
+        await waitForExpectations([expectation])
+        
+        if let savedDeviceId = try? mockKeychainStore._getString(AWSDeviceTracker.Constants.deviceIDKey) {
+            XCTAssertEqual(device.id, savedDeviceId)
+        } else {
+            XCTFail("Device ID not stored in keychain")
+        }
+    }
+    
+    /// Test if device id is successfully cleared from keychain after stopTracking() is called
+    ///
+    /// - Given: `AWSDeviceTracker` is configured with a valid `Geo.TrackingSession` and `MockLocationManager`
+    /// - When: startTracking() is called, then stopTracking() is called
+    /// - Then: Device ID is cleared successfully from keychain
+    func testDeviceIDClearedFromKeychainSuccess() async {
+        let device: Geo.Device = .tiedToDevice()
+        
+        let saveExpectation = asyncExpectation(description: "Device ID is stored successfully in keychain")
+        do {
+            try await geoPlugin.startTracking(for: device, with: .init())
+            await saveExpectation.fulfill()
+        } catch {
+            XCTFail("Failed with error: \(error)")
+        }
+
+        await waitForExpectations([saveExpectation])
+        geoPlugin.stopTracking()
+        
+        let clearExpectation = asyncExpectation(description: "Device ID is cleared successfully from keychain")
+        if let _ = try? mockKeychainStore._getString(AWSDeviceTracker.Constants.deviceIDKey) {
+            XCTFail("Device ID not cleared from keychain")
+        } else {
+            await clearExpectation.fulfill()
+        }
+        
+        await waitForExpectations([clearExpectation])
     }
     
     // MARK: Proxy Delegate Tests

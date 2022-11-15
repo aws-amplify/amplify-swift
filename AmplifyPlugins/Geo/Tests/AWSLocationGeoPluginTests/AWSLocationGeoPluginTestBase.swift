@@ -10,6 +10,7 @@
 @testable import AWSLocationGeoPlugin
 @testable import AWSPluginsTestCommon
 import XCTest
+@_spi(KeychainStore) import AWSPluginsCore
 
 class AWSLocationGeoPluginTestBase: XCTestCase {
     var geoPlugin: AWSLocationGeoPlugin!
@@ -17,6 +18,7 @@ class AWSLocationGeoPluginTestBase: XCTestCase {
     var mockLocationManager: MockLocationManager!
     var mockDeviceTracker: MockAWSDeviceTracker!
     var mockNetworkMonitor: MockGeoNetworkMonitor!
+    var mockKeychainStore: MockGeoKeychainStore!
     var mockLocationStore: SQLiteLocationPersistenceAdapter!
     var pluginConfig: AWSLocationGeoPluginConfiguration!
     var emptyPluginConfig: AWSLocationGeoPluginConfiguration!
@@ -45,11 +47,13 @@ class AWSLocationGeoPluginTestBase: XCTestCase {
         mockNetworkMonitor = MockGeoNetworkMonitor()
         mockLocationStore = try SQLiteLocationPersistenceAdapter(fileSystemBehavior: MockLocationFileSystem())
         mockLocationManager = MockLocationManager()
+        mockKeychainStore = MockGeoKeychainStore()
         mockDeviceTracker = try MockAWSDeviceTracker(options: .init(),
                                                      locationManager: mockLocationManager,
                                                      locationService: mockLocation,
                                                      networkMonitor: mockNetworkMonitor,
-                                                     locationStore: mockLocationStore)
+                                                     locationStore: mockLocationStore,
+                                                     keychainStore: mockKeychainStore)
         geoPlugin = AWSLocationGeoPlugin()
         geoPlugin.locationService = mockLocation
         AWSLocationGeoPlugin.deviceTracker = mockDeviceTracker
