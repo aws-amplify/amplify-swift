@@ -1,0 +1,598 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B41080E1291ACF7E00297354 /* AuthHostedUIAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41080E0291ACF7E00297354 /* AuthHostedUIAppUITests.swift */; };
+		B41080E3291ACF7E00297354 /* AuthHostedUIAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41080E2291ACF7E00297354 /* AuthHostedUIAppUITestsLaunchTests.swift */; };
+		B41080ED291AD02500297354 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = B41080EC291AD02500297354 /* Amplify */; };
+		B41080EF291AD02500297354 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = B41080EE291AD02500297354 /* AWSCognitoAuthPlugin */; };
+		B41080F5291AD10700297354 /* ConfigurationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41080F4291AD10700297354 /* ConfigurationHelper.swift */; };
+		B41080F8291AD4D600297354 /* HostedUISignInTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B41080F7291AD4D600297354 /* HostedUISignInTests.swift */; };
+		B4B978C4291C93AD005B465D /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B978C3291C93AD005B465D /* SignUpView.swift */; };
+		B4B978C7291C9A4B005B465D /* SignedInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B978C6291C9A4B005B465D /* SignedInView.swift */; };
+		B4B978C9291C9AA2005B465D /* SignedOutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B978C8291C9AA2005B465D /* SignedOutView.swift */; };
+		B4B978CC291C9C07005B465D /* UITestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B978CB291C9C07005B465D /* UITestCase.swift */; };
+		B4B978CE291C9C35005B465D /* SignInScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B978CD291C9C35005B465D /* SignInScreen.swift */; };
+		B4B978D0291CA085005B465D /* SignUpScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B978CF291CA085005B465D /* SignUpScreen.swift */; };
+		B4B978D2291D7110005B465D /* AuthError+Info.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B978D1291D7110005B465D /* AuthError+Info.swift */; };
+		B4B978D4291DB1D1005B465D /* AuthenticatedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B978D3291DB1D1005B465D /* AuthenticatedScreen.swift */; };
+		B4EB96AC291ACF4400B73755 /* AuthHostedUIAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EB96AB291ACF4400B73755 /* AuthHostedUIAppApp.swift */; };
+		B4EB96AE291ACF4400B73755 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EB96AD291ACF4400B73755 /* ContentView.swift */; };
+		B4EB96B0291ACF4600B73755 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B4EB96AF291ACF4600B73755 /* Assets.xcassets */; };
+		B4EB96B3291ACF4600B73755 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B4EB96B2291ACF4600B73755 /* Preview Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B41080E4291ACF7E00297354 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B4EB96A0291ACF4400B73755 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B4EB96A7291ACF4400B73755;
+			remoteInfo = AuthHostedUIApp;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		B41080DE291ACF7E00297354 /* AuthHostedUIAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AuthHostedUIAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B41080E0291ACF7E00297354 /* AuthHostedUIAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthHostedUIAppUITests.swift; sourceTree = "<group>"; };
+		B41080E2291ACF7E00297354 /* AuthHostedUIAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthHostedUIAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		B41080EA291ACFDB00297354 /* amplify-swift */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-swift"; path = ../../../..; sourceTree = "<group>"; };
+		B41080F4291AD10700297354 /* ConfigurationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationHelper.swift; sourceTree = "<group>"; };
+		B41080F7291AD4D600297354 /* HostedUISignInTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostedUISignInTests.swift; sourceTree = "<group>"; };
+		B4B978C2291C8F76005B465D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		B4B978C3291C93AD005B465D /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		B4B978C6291C9A4B005B465D /* SignedInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignedInView.swift; sourceTree = "<group>"; };
+		B4B978C8291C9AA2005B465D /* SignedOutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignedOutView.swift; sourceTree = "<group>"; };
+		B4B978CB291C9C07005B465D /* UITestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestCase.swift; sourceTree = "<group>"; };
+		B4B978CD291C9C35005B465D /* SignInScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInScreen.swift; sourceTree = "<group>"; };
+		B4B978CF291CA085005B465D /* SignUpScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpScreen.swift; sourceTree = "<group>"; };
+		B4B978D1291D7110005B465D /* AuthError+Info.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthError+Info.swift"; sourceTree = "<group>"; };
+		B4B978D3291DB1D1005B465D /* AuthenticatedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedScreen.swift; sourceTree = "<group>"; };
+		B4EB96A8291ACF4400B73755 /* AuthHostedUIApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AuthHostedUIApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B4EB96AB291ACF4400B73755 /* AuthHostedUIAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthHostedUIAppApp.swift; sourceTree = "<group>"; };
+		B4EB96AD291ACF4400B73755 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		B4EB96AF291ACF4600B73755 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B4EB96B2291ACF4600B73755 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B41080DB291ACF7E00297354 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B4EB96A5291ACF4400B73755 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B41080ED291AD02500297354 /* Amplify in Frameworks */,
+				B41080EF291AD02500297354 /* AWSCognitoAuthPlugin in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		B41080DF291ACF7E00297354 /* AuthHostedUIAppUITests */ = {
+			isa = PBXGroup;
+			children = (
+				B4B978CB291C9C07005B465D /* UITestCase.swift */,
+				B4B978CA291C9BE5005B465D /* Screen */,
+				B41080F6291AD4C200297354 /* AuthenticationTest */,
+				B41080E0291ACF7E00297354 /* AuthHostedUIAppUITests.swift */,
+				B41080E2291ACF7E00297354 /* AuthHostedUIAppUITestsLaunchTests.swift */,
+			);
+			path = AuthHostedUIAppUITests;
+			sourceTree = "<group>";
+		};
+		B41080E9291ACFDB00297354 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				B41080EA291ACFDB00297354 /* amplify-swift */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		B41080EB291AD02500297354 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B41080F3291AD0F100297354 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				B41080F4291AD10700297354 /* ConfigurationHelper.swift */,
+				B4B978D1291D7110005B465D /* AuthError+Info.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		B41080F6291AD4C200297354 /* AuthenticationTest */ = {
+			isa = PBXGroup;
+			children = (
+				B41080F7291AD4D600297354 /* HostedUISignInTests.swift */,
+			);
+			path = AuthenticationTest;
+			sourceTree = "<group>";
+		};
+		B4B978C5291C9A3B005B465D /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B4B978C3291C93AD005B465D /* SignUpView.swift */,
+				B4B978C6291C9A4B005B465D /* SignedInView.swift */,
+				B4B978C8291C9AA2005B465D /* SignedOutView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		B4B978CA291C9BE5005B465D /* Screen */ = {
+			isa = PBXGroup;
+			children = (
+				B4B978CD291C9C35005B465D /* SignInScreen.swift */,
+				B4B978CF291CA085005B465D /* SignUpScreen.swift */,
+				B4B978D3291DB1D1005B465D /* AuthenticatedScreen.swift */,
+			);
+			path = Screen;
+			sourceTree = "<group>";
+		};
+		B4EB969F291ACF4400B73755 = {
+			isa = PBXGroup;
+			children = (
+				B41080E9291ACFDB00297354 /* Packages */,
+				B4EB96AA291ACF4400B73755 /* AuthHostedUIApp */,
+				B41080DF291ACF7E00297354 /* AuthHostedUIAppUITests */,
+				B4EB96A9291ACF4400B73755 /* Products */,
+				B41080EB291AD02500297354 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		B4EB96A9291ACF4400B73755 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B4EB96A8291ACF4400B73755 /* AuthHostedUIApp.app */,
+				B41080DE291ACF7E00297354 /* AuthHostedUIAppUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B4EB96AA291ACF4400B73755 /* AuthHostedUIApp */ = {
+			isa = PBXGroup;
+			children = (
+				B4B978C5291C9A3B005B465D /* Views */,
+				B4B978C2291C8F76005B465D /* Info.plist */,
+				B41080F3291AD0F100297354 /* Utils */,
+				B4EB96AB291ACF4400B73755 /* AuthHostedUIAppApp.swift */,
+				B4EB96AD291ACF4400B73755 /* ContentView.swift */,
+				B4EB96AF291ACF4600B73755 /* Assets.xcassets */,
+				B4EB96B1291ACF4600B73755 /* Preview Content */,
+			);
+			path = AuthHostedUIApp;
+			sourceTree = "<group>";
+		};
+		B4EB96B1291ACF4600B73755 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				B4EB96B2291ACF4600B73755 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B41080DD291ACF7E00297354 /* AuthHostedUIAppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B41080E8291ACF7E00297354 /* Build configuration list for PBXNativeTarget "AuthHostedUIAppUITests" */;
+			buildPhases = (
+				B41080DA291ACF7E00297354 /* Sources */,
+				B41080DB291ACF7E00297354 /* Frameworks */,
+				B41080DC291ACF7E00297354 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B41080E5291ACF7E00297354 /* PBXTargetDependency */,
+			);
+			name = AuthHostedUIAppUITests;
+			productName = AuthHostedUIAppUITests;
+			productReference = B41080DE291ACF7E00297354 /* AuthHostedUIAppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		B4EB96A7291ACF4400B73755 /* AuthHostedUIApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B4EB96B6291ACF4600B73755 /* Build configuration list for PBXNativeTarget "AuthHostedUIApp" */;
+			buildPhases = (
+				B4EB96A4291ACF4400B73755 /* Sources */,
+				B4EB96A5291ACF4400B73755 /* Frameworks */,
+				B4EB96A6291ACF4400B73755 /* Resources */,
+				B41080F0291AD05600297354 /* Copy Integ test configuration folder */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AuthHostedUIApp;
+			packageProductDependencies = (
+				B41080EC291AD02500297354 /* Amplify */,
+				B41080EE291AD02500297354 /* AWSCognitoAuthPlugin */,
+			);
+			productName = AuthHostedUIApp;
+			productReference = B4EB96A8291ACF4400B73755 /* AuthHostedUIApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B4EB96A0291ACF4400B73755 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1400;
+				LastUpgradeCheck = 1400;
+				TargetAttributes = {
+					B41080DD291ACF7E00297354 = {
+						CreatedOnToolsVersion = 14.0.1;
+						TestTargetID = B4EB96A7291ACF4400B73755;
+					};
+					B4EB96A7291ACF4400B73755 = {
+						CreatedOnToolsVersion = 14.0.1;
+					};
+				};
+			};
+			buildConfigurationList = B4EB96A3291ACF4400B73755 /* Build configuration list for PBXProject "AuthHostedUIApp" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = B4EB969F291ACF4400B73755;
+			productRefGroup = B4EB96A9291ACF4400B73755 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B4EB96A7291ACF4400B73755 /* AuthHostedUIApp */,
+				B41080DD291ACF7E00297354 /* AuthHostedUIAppUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B41080DC291ACF7E00297354 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B4EB96A6291ACF4400B73755 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B4EB96B3291ACF4600B73755 /* Preview Assets.xcassets in Resources */,
+				B4EB96B0291ACF4600B73755 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		B41080F0291AD05600297354 /* Copy Integ test configuration folder */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Integ test configuration folder";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nTEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n      \nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n      \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B41080DA291ACF7E00297354 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B41080E1291ACF7E00297354 /* AuthHostedUIAppUITests.swift in Sources */,
+				B4B978CE291C9C35005B465D /* SignInScreen.swift in Sources */,
+				B4B978CC291C9C07005B465D /* UITestCase.swift in Sources */,
+				B41080F8291AD4D600297354 /* HostedUISignInTests.swift in Sources */,
+				B41080E3291ACF7E00297354 /* AuthHostedUIAppUITestsLaunchTests.swift in Sources */,
+				B4B978D0291CA085005B465D /* SignUpScreen.swift in Sources */,
+				B4B978D4291DB1D1005B465D /* AuthenticatedScreen.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B4EB96A4291ACF4400B73755 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B4B978C4291C93AD005B465D /* SignUpView.swift in Sources */,
+				B4B978C9291C9AA2005B465D /* SignedOutView.swift in Sources */,
+				B41080F5291AD10700297354 /* ConfigurationHelper.swift in Sources */,
+				B4EB96AE291ACF4400B73755 /* ContentView.swift in Sources */,
+				B4B978D2291D7110005B465D /* AuthError+Info.swift in Sources */,
+				B4EB96AC291ACF4400B73755 /* AuthHostedUIAppApp.swift in Sources */,
+				B4B978C7291C9A4B005B465D /* SignedInView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B41080E5291ACF7E00297354 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B4EB96A7291ACF4400B73755 /* AuthHostedUIApp */;
+			targetProxy = B41080E4291ACF7E00297354 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		B41080E6291ACF7E00297354 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazon.AuthHostedUIAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = AuthHostedUIApp;
+			};
+			name = Debug;
+		};
+		B41080E7291ACF7E00297354 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazon.AuthHostedUIAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = AuthHostedUIApp;
+			};
+			name = Release;
+		};
+		B4EB96B4291ACF4600B73755 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		B4EB96B5291ACF4600B73755 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		B4EB96B7291ACF4600B73755 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"AuthHostedUIApp/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AuthHostedUIApp/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazon.AuthHostedUIApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B4EB96B8291ACF4600B73755 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"AuthHostedUIApp/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AuthHostedUIApp/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazon.AuthHostedUIApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B41080E8291ACF7E00297354 /* Build configuration list for PBXNativeTarget "AuthHostedUIAppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B41080E6291ACF7E00297354 /* Debug */,
+				B41080E7291ACF7E00297354 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B4EB96A3291ACF4400B73755 /* Build configuration list for PBXProject "AuthHostedUIApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B4EB96B4291ACF4600B73755 /* Debug */,
+				B4EB96B5291ACF4600B73755 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B4EB96B6291ACF4600B73755 /* Build configuration list for PBXNativeTarget "AuthHostedUIApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B4EB96B7291ACF4600B73755 /* Debug */,
+				B4EB96B8291ACF4600B73755 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B41080EC291AD02500297354 /* Amplify */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Amplify;
+		};
+		B41080EE291AD02500297354 /* AWSCognitoAuthPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AWSCognitoAuthPlugin;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = B4EB96A0291ACF4400B73755 /* Project object */;
+}

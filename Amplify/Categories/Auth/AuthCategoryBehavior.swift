@@ -68,7 +68,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     /// - Parameters:
     ///   - presentationAnchor: Anchor on which the UI is presented.
     ///   - options: Parameters specific to plugin behavior.
-    func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor,
+    func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor?,
                          options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult
 
     /// SignIn using an auth provider on a web UI
@@ -82,7 +82,7 @@ public protocol AuthCategoryBehavior: AuthCategoryUserBehavior, AuthCategoryDevi
     ///   - presentationAnchor: Anchor on which the UI is presented.
     ///   - options: Parameters specific to plugin behavior.
     func signInWithWebUI(for authProvider: AuthProvider,
-                         presentationAnchor: AuthUIPresentationAnchor,
+                         presentationAnchor: AuthUIPresentationAnchor?,
                          options: AuthWebUISignInRequest.Options?) async throws -> AuthSignInResult
 #endif
 

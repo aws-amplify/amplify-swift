@@ -14,7 +14,7 @@ import Foundation
 public struct AuthWebUISignInRequest: AmplifyOperationRequest {
 
     /// Presentation anchor on which the webUI is displayed
-    public let presentationAnchor: AuthUIPresentationAnchor
+    public let presentationAnchor: AuthUIPresentationAnchor?
 
     /// Optional auth provider to directly sign in with the provider
     public let authProvider: AuthProvider?
@@ -22,7 +22,7 @@ public struct AuthWebUISignInRequest: AmplifyOperationRequest {
     /// Extra request options defined in `AuthWebUISignInRequest.Options`
     public var options: Options
 
-    public init(presentationAnchor: AuthUIPresentationAnchor,
+    public init(presentationAnchor: AuthUIPresentationAnchor?,
                 authProvider: AuthProvider? = nil,
                 options: Options) {
         self.presentationAnchor = presentationAnchor

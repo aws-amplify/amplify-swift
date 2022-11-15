@@ -31,14 +31,14 @@ extension AuthCategory: AuthCategoryBehavior {
 
 #if canImport(AuthenticationServices)
     public func signInWithWebUI(
-        presentationAnchor: AuthUIPresentationAnchor,
+        presentationAnchor: AuthUIPresentationAnchor? = nil,
         options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
             return try await plugin.signInWithWebUI(presentationAnchor: presentationAnchor, options: options)
         }
 
     public func signInWithWebUI(
         for authProvider: AuthProvider,
-        presentationAnchor: AuthUIPresentationAnchor,
+        presentationAnchor: AuthUIPresentationAnchor? = nil,
         options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
         return try await plugin.signInWithWebUI(for: authProvider,
                                       presentationAnchor: presentationAnchor,
