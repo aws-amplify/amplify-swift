@@ -37,6 +37,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
 
     var connectionStateSink: AnyCancellable?
     var subscriptionDataSink: AnyCancellable?
+    var expectedCompletionFailureError: APIError?
 
     override func setUp() async throws {
         try await super.setUp()
@@ -109,7 +110,7 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         await waitForSubscriptionExpectations()
     }
 
-    func testConnectionError() async throws {
+    func testConnectionErrorWithLimitExceeded() async throws {
         await receivedCompletionSuccess.setShouldTrigger(false)
         await receivedCompletionFailure.setShouldTrigger(true)
         await receivedStateValueConnecting.setShouldTrigger(true)
@@ -123,8 +124,65 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
         await waitForExpectations([onSubscribeInvoked], timeout: 0.05)
 
         subscriptionEventHandler(.connection(.connecting), subscriptionItem)
-        subscriptionEventHandler(.failed("Error"), subscriptionItem)
+        subscriptionEventHandler(.failed(ConnectionProviderError.limitExceeded(nil)), subscriptionItem)
+        expectedCompletionFailureError = APIError.operationError("", "", ConnectionProviderError.limitExceeded(nil))
+        await waitForSubscriptionExpectations()
+    }
+    
+    func testConnectionErrorWithSubscriptionError() async throws {
+        await receivedCompletionSuccess.setShouldTrigger(false)
+        await receivedCompletionFailure.setShouldTrigger(true)
+        await receivedStateValueConnecting.setShouldTrigger(true)
+        await receivedStateValueConnected.setShouldTrigger(false)
+        await receivedStateValueDisconnected.setShouldTrigger(false)
 
+        await receivedDataValueSuccess.setShouldTrigger(false)
+        await receivedDataValueError.setShouldTrigger(false)
+
+        try await subscribe()
+        await waitForExpectations([onSubscribeInvoked], timeout: 0.05)
+
+        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
+        subscriptionEventHandler(.failed(ConnectionProviderError.subscription("", nil)), subscriptionItem)
+        expectedCompletionFailureError = APIError.operationError("", "", ConnectionProviderError.subscription("", nil))
+        await waitForSubscriptionExpectations()
+    }
+    
+    func testConnectionErrorWithConnectionUnauthorizedError() async throws {
+        await receivedCompletionSuccess.setShouldTrigger(false)
+        await receivedCompletionFailure.setShouldTrigger(true)
+        await receivedStateValueConnecting.setShouldTrigger(true)
+        await receivedStateValueConnected.setShouldTrigger(false)
+        await receivedStateValueDisconnected.setShouldTrigger(false)
+
+        await receivedDataValueSuccess.setShouldTrigger(false)
+        await receivedDataValueError.setShouldTrigger(false)
+
+        try await subscribe()
+        await waitForExpectations([onSubscribeInvoked], timeout: 0.05)
+
+        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
+        subscriptionEventHandler(.failed(ConnectionProviderError.unauthorized), subscriptionItem)
+        expectedCompletionFailureError = APIError.operationError("", "", ConnectionProviderError.unauthorized)
+        await waitForSubscriptionExpectations()
+    }
+    
+    func testConnectionErrorWithConnectionProviderConnectionError() async throws {
+        await receivedCompletionSuccess.setShouldTrigger(false)
+        await receivedCompletionFailure.setShouldTrigger(true)
+        await receivedStateValueConnecting.setShouldTrigger(true)
+        await receivedStateValueConnected.setShouldTrigger(false)
+        await receivedStateValueDisconnected.setShouldTrigger(false)
+
+        await receivedDataValueSuccess.setShouldTrigger(false)
+        await receivedDataValueError.setShouldTrigger(false)
+
+        try await subscribe()
+        await waitForExpectations([onSubscribeInvoked], timeout: 0.05)
+
+        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
+        subscriptionEventHandler(.failed(ConnectionProviderError.connection), subscriptionItem)
+        expectedCompletionFailureError = APIError.networkError("", nil, URLError(.networkConnectionLost))
         await waitForSubscriptionExpectations()
     }
 
@@ -270,8 +328,53 @@ class GraphQLSubscribeTasksTests: OperationTestBase {
                 
                 await self.receivedCompletionSuccess.fulfill()
             } catch {
+                if let apiError = error as? APIError,
+                   let expectedError = expectedCompletionFailureError {
+                    XCTAssertEqual(apiError, expectedError)
+                }
+                
                 await self.receivedCompletionFailure.fulfill()
             }
+        }
+    }
+}
+ 
+extension APIError: Equatable {
+    public static func == (lhs: APIError, rhs: APIError) -> Bool {
+        switch (lhs, rhs) {
+        case (.unknown, .unknown),
+            (.invalidConfiguration, .invalidConfiguration),
+            (.httpStatusError, .httpStatusError),
+            (.pluginError, .pluginError):
+            return true
+        case (.operationError(_, _, let lhs), .operationError(_, _, let rhs)):
+            if let lhs = lhs as? ConnectionProviderError, let rhs = rhs as? ConnectionProviderError {
+                switch (lhs, rhs) {
+                case (.connection, .connection),
+                    (.jsonParse, .jsonParse),
+                    (.limitExceeded, .limitExceeded),
+                    (.subscription, .subscription),
+                    (.unauthorized, .unauthorized),
+                    (.unknown, .unknown):
+                    return true
+                default:
+                    return false
+                }
+            } else if lhs == nil && rhs == nil {
+                return true
+            } else {
+                return false
+            }
+        case (.networkError(_, _, let lhs), .networkError(_, _, let rhs)):
+            if let lhs = lhs as? URLError, let rhs = rhs as? URLError {
+                return lhs.code == rhs.code
+            } else if lhs == nil && rhs == nil {
+                return true
+            } else {
+                return false
+            }
+        default:
+            return false
         }
     }
 }

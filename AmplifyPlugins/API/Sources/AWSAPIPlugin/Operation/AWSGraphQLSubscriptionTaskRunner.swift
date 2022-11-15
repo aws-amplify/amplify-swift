@@ -174,6 +174,11 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
             return
         } else if case ConnectionProviderError.unauthorized = error {
             errorDescription += ": \(APIError.UnauthorizedMessageString)"
+        } else if case ConnectionProviderError.connection = error {
+            errorDescription += ": connection"
+            let error = URLError(.networkConnectionLost)
+            fail(APIError.networkError(errorDescription, nil, error))
+            return
         }
 
         fail(APIError.operationError(errorDescription, "", error))
