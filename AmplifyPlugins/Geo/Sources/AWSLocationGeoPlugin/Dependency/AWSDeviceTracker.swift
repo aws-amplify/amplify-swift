@@ -56,24 +56,38 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
     }
     
     func startTracking(for deviceId: String) throws {
-        networkMonitor.start()
-        UserDefaults.standard.removeObject(forKey: AWSDeviceTracker.deviceIDKey)
-        UserDefaults.standard.removeObject(forKey: AWSDeviceTracker.lastLocationUpdateTimeKey)
-        UserDefaults.standard.removeObject(forKey: AWSDeviceTracker.lastUpdatedLocationKey)
-        UserDefaults.standard.set(deviceId, forKey: AWSDeviceTracker.deviceIDKey)
-        unsubscribeToken = Amplify.Hub.listen(to: .auth, eventName: HubPayload.EventName.Auth.signedOut) { payload in
-            self.stopTracking()
+        // check if there is an existing tracking session
+        if let savedDeviceID = UserDefaults.standard.string(forKey: AWSDeviceTracker.deviceIDKey) {
+            // if there is an existing session with a different device id, throw an error
+            if savedDeviceID != deviceId {
+                throw Geo.Error.internalPluginError(
+                    GeoPluginErrorConstants.errorStartTrackingCalledBeforeStopTracking.errorDescription,
+                    GeoPluginErrorConstants.errorStartTrackingCalledBeforeStopTracking.recoverySuggestion
+                )
+            }
+        } else {
+            // start a new session
+            networkMonitor.start()
+            UserDefaults.standard.set(deviceId, forKey: AWSDeviceTracker.deviceIDKey)
+            unsubscribeToken = Amplify.Hub.listen(to: .auth, eventName: HubPayload.EventName.Auth.signedOut) { payload in
+                self.stopTracking()
+            }
+            locationManager.delegate = self
+            try checkPermissionsAndStartTracking()
         }
-        locationManager.delegate = self
-        try checkPermissionsAndStartTracking()
     }
     
     func stopTracking() {
+        stopTracking(with: [])
+    }
+    
+    private func stopTracking(with receivedPositions: [Position]) {
         // flush out stored events
         if let didUpdatePositions = options.locationProxyDelegate.didUpdatePositions {
-            batchSendStoredLocationsToProxyDelegate(with: [], didUpdatePositions: didUpdatePositions)
+            batchSendStoredLocationsToProxyDelegate(with: receivedPositions, didUpdatePositions: didUpdatePositions)
         } else {
-            batchSendStoredLocationsToService(with: [])
+            // if network is unreachable, send errors on Hub
+            batchSendStoredLocationsToService(with: receivedPositions)
         }
         networkMonitor.cancel()
         locationManager.stopUpdatingLocation()
@@ -114,21 +128,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
         // check if trackUntil time has elapsed
         if(options.trackUntil < currentTime) {
             let receivedPositions = mapReceivedLocationsToPositions(receivedLocations: locations, currentTime: currentTime)
-            if let didUpdatePositions = options.locationProxyDelegate.didUpdatePositions {
-                batchSendStoredLocationsToProxyDelegate(with: receivedPositions, didUpdatePositions: didUpdatePositions)
-            } else {
-                if networkMonitor.networkConnected() {
-                    batchSendStoredLocationsToService(with: receivedPositions)
-                    UserDefaults.standard.set(currentTime, forKey: AWSDeviceTracker.lastLocationUpdateTimeKey)
-                } else {
-                    // if network is unreachable and `disregardLocationUpdatesWhenOffline` is set,
-                    // don't store locations in local database
-                    if !options.disregardLocationUpdatesWhenOffline {
-                        batchSaveLocationsToLocalStore(receivedLocations: locations, currentTime: currentTime)
-                    }
-                }
-            }
-            stopTracking()
+            stopTracking(with: receivedPositions)
             return
         }
         
@@ -180,7 +180,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
                                                                         requiringSecureCoding: false) {
                 UserDefaults.standard.set(encodedLocation, forKey: AWSDeviceTracker.lastUpdatedLocationKey)
             } else {
-                Amplify.log.error("Error storing last received location in UserDefaults")
+                Amplify.log.error("Error storing first received location in UserDefaults")
             }
         } else {
             // save the last element from `locations` received
@@ -203,8 +203,8 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
     func batchSaveLocationsToLocalStore(receivedLocations: [CLLocation], currentTime: Date) {
         Task {
             do {
-                guard let deviceID = UserDefaults.standard.object(forKey: AWSDeviceTracker.deviceIDKey) as? String else {
-                    Amplify.log.error("Not able to fetch deviceId from UserDefaults")
+                guard let deviceID = UserDefaults.standard.string(forKey: AWSDeviceTracker.deviceIDKey) else {
+                    Amplify.log.error("batchSaveLocationsToLocalStore: Not able to fetch deviceId from UserDefaults")
                     sendHubErrorEvent(locations: receivedLocations)
                     return
                 }
@@ -225,8 +225,8 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
     }
 
     func mapReceivedLocationsToPositions(receivedLocations: [CLLocation], currentTime: Date) -> [Position] {
-        guard let deviceId = UserDefaults.standard.object(forKey: AWSDeviceTracker.deviceIDKey) as? String else {
-            Amplify.log.error("Not able to fetch deviceId from UserDefaults")
+        guard let deviceId = UserDefaults.standard.string(forKey: AWSDeviceTracker.deviceIDKey) else {
+            Amplify.log.error("mapReceivedLocationsToPositions: Not able to fetch deviceId from UserDefaults")
             let error = Geo.Error.internalPluginError(
                 GeoPluginErrorConstants.errorSaveLocationsFailed.errorDescription,
                 GeoPluginErrorConstants.errorSaveLocationsFailed.recoverySuggestion)

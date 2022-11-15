@@ -253,7 +253,8 @@ let geoTargets: [Target] = [
         dependencies: [
             "AWSLocationGeoPlugin",
             "AmplifyTestCommon",
-            "AWSPluginsTestCommon"
+            "AWSPluginsTestCommon",
+            "AmplifyAsyncTesting"
             ],
         path: "AmplifyPlugins/Geo/Tests/AWSLocationGeoPluginTests",
         exclude: [

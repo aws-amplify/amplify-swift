@@ -12,7 +12,7 @@ import CoreLocation
 // Mock `CLLocationManager` class for simulating location update events from OS
 class MockLocationManager : CLLocationManager {
     
-    var locations : [CLLocation] = []
+    var locations : [CLLocation] = [CLLocation(latitude: 20, longitude: 30)]
     var mockAuthorizationStatus: CLAuthorizationStatus = .authorizedAlways
     
     override var authorizationStatus: CLAuthorizationStatus {

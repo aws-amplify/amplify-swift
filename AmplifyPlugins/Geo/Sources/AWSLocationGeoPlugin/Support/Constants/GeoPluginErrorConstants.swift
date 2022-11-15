@@ -44,6 +44,10 @@ struct GeoPluginErrorConstants {
     static let errorSaveLocationsFailed: GeoPluginErrorString = (
         "Unable to send locations to service.",
         "Please ensure that AWS Geo Device Tracking is configured.")
+    
+    static let errorStartTrackingCalledBeforeStopTracking: GeoPluginErrorString = (
+        "startTracking() called when there is an existing device tracking session.",
+        "Please call stopTracking() before calling startTracking() again.")
 }
 
 // Recovery Messages
