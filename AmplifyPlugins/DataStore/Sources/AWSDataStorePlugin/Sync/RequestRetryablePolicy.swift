@@ -39,7 +39,8 @@ class RequestRetryablePolicy: RequestRetryable {
              .cannotFindHost,
              .timedOut,
              .dataNotAllowed,
-             .cannotParseResponse:
+             .cannotParseResponse,
+             .networkConnectionLost:
             let waitMillis = retryDelayInMillseconds(for: attemptNumber)
             return RequestRetryAdvice(shouldRetry: true, retryInterval: .milliseconds(waitMillis))
         default:
