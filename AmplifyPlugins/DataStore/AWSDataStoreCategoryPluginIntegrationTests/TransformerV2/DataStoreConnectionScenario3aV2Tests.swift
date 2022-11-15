@@ -374,7 +374,7 @@ class DataStoreConnectionScenario3aV2Tests: SyncEngineIntegrationV2TestBase {
     }
 
     func testDeletePostCascadeToComments() throws {
-        setUp(withModels: TestModelRegistration())
+        setUp(withModels: TestModelRegistration(), logLevel: .verbose)
         try startAmplifyAndWaitForSync()
 
         guard let post = savePost(title: "title") else {

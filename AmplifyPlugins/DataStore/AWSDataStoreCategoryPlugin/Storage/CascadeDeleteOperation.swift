@@ -31,6 +31,16 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
 
     private let serialQueueSyncDeletions: DispatchQueue
 
+    private var modelName: ModelName
+
+    private let systemModelNames: Set = [MutationEvent.modelName,
+                                             ModelSyncMetadata.modelName,
+                                             MutationSyncMetadata.modelName]
+
+    private var shouldLogDeveloperDefinedModel: Bool {
+        return log.logLevel >= .debug && !systemModelNames.contains(modelName)
+    }
+
     init(storageAdapter: StorageEngineAdapter,
          syncEngine: RemoteSyncEngineBehavior?,
          modelType: M.Type,
@@ -51,6 +61,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         self.completionForWithId = completion
         self.completionForWithFilter = nil
         self.serialQueueSyncDeletions = DispatchQueue(label: "com.amazoncom.Storage.CascadeDeleteOperation.concurrency")
+        self.modelName = self.modelSchema.name
         super.init()
     }
 
@@ -68,6 +79,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         self.completionForWithId = nil
         self.completionForWithFilter = completion
         self.serialQueueSyncDeletions = DispatchQueue(label: "com.amazoncom.Storage.CascadeDeleteOperation.concurrency")
+        self.modelName = self.modelSchema.name
         super.init()
     }
 
@@ -117,6 +129,9 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
             }
 
             let modelIds = queriedModels.map { $0.identifier(schema: self.modelSchema).stringValue }
+            if self.shouldLogDeveloperDefinedModel {
+                self.log.debug("[CascadeDelete.1] Deleting \(self.modelName) with identifiers: \(modelIds)")
+            }
             associatedModels = self.recurseQueryAssociatedModels(modelSchema: self.modelSchema, ids: modelIds)
             let deleteCompletionWrapper: DataStoreCallback<[M]> = { deleteResult in
                 deletedResult = deleteResult
@@ -156,15 +171,17 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                     continue
             }
 
-            guard let modelSchema = ModelRegistry.modelSchema(from: associatedModelName) else {
-                log.error("Failed to lookup associate model \(associatedModelName)")
-                return []
+            if shouldLogDeveloperDefinedModel {
+                log.debug("[CascadeDelete.2] Querying for \(modelName)'s associated model \(associatedModelSchema.name).")
             }
 
-            let queriedModels = queryAssociatedModels(associatedModelSchema: modelSchema,
+            let queriedModels = queryAssociatedModels(associatedModelSchema: associatedModelSchema,
                                                       associatedField: associatedField,
                                                       ids: ids)
-            let associatedModelIds = queriedModels.map { $0.1.identifier(schema: modelSchema).stringValue }
+            let associatedModelIds = queriedModels.map { $0.1.identifier(schema: associatedModelSchema).stringValue }
+            if shouldLogDeveloperDefinedModel {
+                log.debug("[CascadeDelete.2] Queried for \(associatedModelSchema.name), retrieved ids for deletion: \(associatedModelIds)")
+            }
             associatedModels.append(contentsOf: queriedModels)
             associatedModels.append(contentsOf: recurseQueryAssociatedModels(modelSchema: associatedModelSchema,
                                                                             ids: associatedModelIds))
@@ -213,6 +230,9 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                 if let deleteResult = deleteResult {
                     switch deleteResult {
                     case .success:
+                        if shouldLogDeveloperDefinedModel {
+                            log.debug("[CascadeDelete.3] Local cascade delete of \(modelName) successful!")
+                        }
                         return .success(QueryAndDeleteResult(deletedModels: models,
                                                              associatedModels: associatedModels))
                     case .failure(let error):
@@ -232,6 +252,10 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
     func syncIfNeededAndFinish(_ transactionResult: DataStoreResult<QueryAndDeleteResult<M>>) {
         switch transactionResult {
         case .success(let queryAndDeleteResult):
+            if shouldLogDeveloperDefinedModel {
+                let syncDeletionsCount = (queryAndDeleteResult.associatedModels.count + queryAndDeleteResult.deletedModels.count)
+                log.debug("[CascadeDelete.4] sending a total of \(syncDeletionsCount) delete mutations")
+            }
             switch deleteInput {
             case .withIdentifier, .withIdentifierAndCondition:
                 guard queryAndDeleteResult.deletedModels.count <= 1 else {
@@ -321,7 +345,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
     }
 
     // `syncDeletions` will first sync all associated models in reversed order so the lowest level of children models
-    // are synced first, before the its parent models. See `recurseQueryAssociatedModels()` for more details on the
+    // are synced first, before its parent models. See `recurseQueryAssociatedModels()` for more details on the
     // ordering of the results in `associatedModels`. Once all the associated models are synced, sync the `models`,
     // finishing the sequence of deletions from children to parent.
     //
@@ -348,6 +372,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                           completion: completion)
             return
         }
+        log.debug("[CascadeDelete.4] Begin syncing \(associatedModels.count) associated models for deletion. ")
 
         var mutationEventsSubmitCompleted = 0
         for (modelName, associatedModel) in associatedModels.reversed() {
@@ -372,7 +397,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                             savedDataStoreError = dataStoreError
                         }
                     case .success(let mutationEvent):
-                        self.log.verbose("\(#function) successfully submitted to sync engine \(mutationEvent)")
+                        self.log.verbose("\(#function) successfully submitted \(mutationEvent.modelName) to sync engine \(mutationEvent)")
                     }
 
                     if mutationEventsSubmitCompleted == associatedModels.count {
@@ -396,6 +421,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                                syncEngine: RemoteSyncEngineBehavior,
                                dataStoreError: DataStoreError?,
                                completion: @escaping DataStoreCallback<Void>) {
+        log.debug("[CascadeDelete.4] Begin syncing \(models.count) \(modelName) model for deletion")
         var graphQLFilterJSON: String?
         if let predicate = predicate {
             do {
