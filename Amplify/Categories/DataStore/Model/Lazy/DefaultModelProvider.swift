@@ -11,7 +11,7 @@ import Foundation
 
 public struct DefaultModelProvider<Element: Model>: ModelProvider {
     enum LoadedState {
-        case notLoaded(identifiers: [String: String]?)
+        case notLoaded(identifiers: [LazyModelIdentifier]?)
         case loaded(model: Element?)
     }
     
@@ -21,7 +21,7 @@ public struct DefaultModelProvider<Element: Model>: ModelProvider {
         self.loadedState = .loaded(model: element)
     }
     
-    public init(identifiers: [String: String]?) {
+    public init(identifiers: [LazyModelIdentifier]?) {
         self.loadedState = .notLoaded(identifiers: identifiers)
     }
     

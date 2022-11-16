@@ -17,9 +17,14 @@ extension GraphQLRequest {
                                                    limit: Int? = nil,
                                                    nextToken: String? = nil,
                                                    apiName: String? = nil) -> GraphQLRequest<ResponseType> {
+        
+        var primaryKeysOnly = false
+        if let modelType = ModelRegistry.modelType(from: modelSchema.name), modelType.rootPath != nil {
+            primaryKeysOnly = true
+        }
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema,
                                                                operationType: .query,
-                                                               primaryKeysOnly: true)
+                                                               primaryKeysOnly: primaryKeysOnly)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
         if let filter = filter {
             documentBuilder.add(decorator: FilterDecorator(filter: filter))

@@ -12,7 +12,7 @@ import Combine
 public class DataStoreModelProvider<ModelType: Model>: ModelProvider {
     
     enum LoadedState {
-        case notLoaded(identifiers: [String: String]?)
+        case notLoaded(identifiers: [LazyModelIdentifier]?)
         case loaded(model: ModelType?)
     }
     
@@ -20,7 +20,7 @@ public class DataStoreModelProvider<ModelType: Model>: ModelProvider {
     
     convenience init(metadata: DataStoreModelIdentifierMetadata) {
         if let identifier = metadata.identifier {
-            self.init(identifiers: [ModelType.schema.primaryKey.sqlName: identifier])
+            self.init(identifiers: [.init(name: ModelType.schema.primaryKey.sqlName, value: identifier)])
         } else {
             self.init(identifiers: nil)
         }
@@ -31,7 +31,7 @@ public class DataStoreModelProvider<ModelType: Model>: ModelProvider {
         self.loadedState = .loaded(model: model)
     }
     
-    init(identifiers: [String: String]?) {
+    init(identifiers: [LazyModelIdentifier]?) {
         self.loadedState = .notLoaded(identifiers: identifiers)
     }
     
@@ -43,7 +43,7 @@ public class DataStoreModelProvider<ModelType: Model>: ModelProvider {
             guard let identifiers = identifiers, let identifier = identifiers.first else {
                 return nil
             }
-            let queryPredicate: QueryPredicate = field(identifier.key).eq(identifier.value)
+            let queryPredicate: QueryPredicate = field(identifier.name).eq(identifier.value)
             let models = try await Amplify.DataStore.query(ModelType.self, where: queryPredicate)
             guard let model = models.first else {
                 return nil

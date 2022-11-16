@@ -169,8 +169,8 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
     func assertList<M: Model>(_ list: List<M>, state: AssertListState) {
         switch state {
         case .isNotLoaded(let expectedAssociatedId, let expectedAssociatedField):
-            if case .notLoaded(let associatedId, let associatedField) = list.listProvider.getState() {
-                XCTAssertEqual(associatedId, expectedAssociatedId)
+            if case .notLoaded(let associatedIdentifiers, let associatedField) = list.listProvider.getState() {
+                XCTAssertEqual(associatedIdentifiers.first, expectedAssociatedId)
                 XCTAssertEqual(associatedField, expectedAssociatedField)
             } else {
                 XCTFail("It should be not loaded with expected associatedId \(expectedAssociatedId) associatedField \(expectedAssociatedField)")
@@ -185,7 +185,7 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
     }
     
     enum AssertLazyModelState<M: Model> {
-        case notLoaded(identifiers: [String: String]?)
+        case notLoaded(identifiers: [LazyModelIdentifier]?)
         case loaded(model: M?)
     }
     
@@ -277,5 +277,11 @@ struct DataStoreDebugger {
         } catch {
             return nil
         }
+    }
+}
+
+extension LazyModelIdentifier: Equatable {
+    public static func == (lhs: LazyModelIdentifier, rhs: LazyModelIdentifier) -> Bool {
+        lhs.name == rhs.name && lhs.value == rhs.value
     }
 }

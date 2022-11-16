@@ -197,6 +197,10 @@ extension Model {
         } else if let lazyModel = value as? (any LazyModelMarker) {
             if let modelValue = lazyModel.element {
                 return modelValue.identifier(schema: modelSchema).values
+            } else if let identifiers = lazyModel.identifiers {
+                return identifiers.map { identifier in
+                    return identifier.value
+                }
             }
         } else if let value = value as? [String: JSONValue] {
             var primaryKeyValues = [Persistable]()

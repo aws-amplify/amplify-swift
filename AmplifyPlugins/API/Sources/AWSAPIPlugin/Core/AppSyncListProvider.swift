@@ -14,7 +14,7 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
     let apiName: String?
     
     enum LoadedState {
-        case notLoaded(identifiers: [String: String])
+        case notLoaded(identifiers: [LazyModelIdentifier])
         case loaded(model: ModelType?)
     }
     
@@ -33,7 +33,7 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
     }
     
     // Initializer for not loaded state
-    init(identifiers: [String: String], apiName: String? = nil) {
+    init(identifiers: [LazyModelIdentifier], apiName: String? = nil) {
         self.loadedState = .notLoaded(identifiers: identifiers)
         self.apiName = apiName
     }
@@ -45,6 +45,9 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
         
         switch loadedState {
         case .notLoaded(let identifiers):
+            let identifiers = identifiers.map { identifier in
+                return (name: identifier.name, value: identifier.value)
+            }
             let request = AppSyncModelProvider.getRequest(ModelType.self,
                                                           byIdentifiers: identifiers,
                                                           apiName: apiName)
@@ -53,6 +56,7 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
                 let graphQLResponse = try await Amplify.API.query(request: request)
                 switch graphQLResponse {
                 case .success(let model):
+                    self.loadedState = .loaded(model: model)
                     return model
                 case .failure(let graphQLError):
                     self.log.error(error: graphQLError)
@@ -84,7 +88,7 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
     }
     
     static func getRequest<M: Model>(_ modelType: M.Type,
-                                     byIdentifiers identifiers: [String: String],
+                                     byIdentifiers identifiers: [(name: String, value: String)],
                                      apiName: String?) -> GraphQLRequest<M?> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
                                                                operationType: .query)
@@ -118,7 +122,7 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
         /// The associatedField represents the field to which the owner of the `List` is linked to.
         /// For example, if `Post.comments` is associated with `Comment.post` the `List<Comment>`
         /// of `Post` will have a reference to the `post` field in `Comment`.
-        case notLoaded(associatedId: String,
+        case notLoaded(associatedIdentifiers: [String],
                        associatedField: String)
 
         /// If the list is retrieved directly, this state holds the underlying data, nextToken used to create
@@ -134,8 +138,8 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
 
     convenience init(payload: AppSyncListPayload) throws {
         let listResponse = try AppSyncListResponse.initWithMetadata(type: Element.self,
-                                                                       graphQLData: payload.graphQLData,
-                                                                       apiName: payload.apiName)
+                                                                    graphQLData: payload.graphQLData,
+                                                                    apiName: payload.apiName)
 
         self.init(elements: listResponse.items,
                   nextToken: listResponse.nextToken,
@@ -150,7 +154,7 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
     }
 
     convenience init(metadata: AppSyncModelMetadata) {
-        self.init(associatedId: metadata.appSyncAssociatedId,
+        self.init(associatedIdentifiers: metadata.appSyncAssociatedIdentifiers,
                   associatedField: metadata.appSyncAssociatedField,
                   apiName: metadata.apiName)
     }
@@ -167,8 +171,8 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
     }
 
     // Internal initializer for testing
-    init(associatedId: String, associatedField: String, apiName: String? = nil) {
-        self.loadedState = .notLoaded(associatedId: associatedId,
+    init(associatedIdentifiers: [String], associatedField: String, apiName: String? = nil) {
+        self.loadedState = .notLoaded(associatedIdentifiers: associatedIdentifiers,
                                       associatedField: associatedField)
         self.apiName = apiName
     }
@@ -177,8 +181,8 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
 
     public func getState() -> ModelListProviderState<Element> {
         switch loadedState {
-        case .notLoaded(let associatedId, let associatedField):
-            return .notLoaded(associatedId: associatedId, associatedField: associatedField)
+        case .notLoaded(let associatedIdentifiers, let associatedField):
+            return .notLoaded(associatedIdentifiers: associatedIdentifiers, associatedField: associatedField)
         case .loaded(let elements, _, _):
             return .loaded(elements)
         }
@@ -188,16 +192,34 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
         switch loadedState {
         case .loaded(let elements, _, _):
             return elements
-        case .notLoaded(let associatedId, let associatedField):
-            return try await load(associatedId: associatedId, associatedField: associatedField)
+        case .notLoaded(let associatedIdentifiers, let associatedField):
+            return try await load(associatedIdentifiers: associatedIdentifiers, associatedField: associatedField)
         }
     }
-
+    
+    
+    
     //// Internal `load` to perform the retrieval of the first page and storing it in memory
-    func load(associatedId: String,
+    func load(associatedIdentifiers: [String],
               associatedField: String) async throws -> [Element] {
-        let predicate: QueryPredicate = field(associatedField) == associatedId
-        let filter = predicate.graphQLFilter(for: Element.schema)
+        let filter: GraphQLFilter
+        if associatedIdentifiers.count == 1, let associatedId = associatedIdentifiers.first {
+            let predicate: QueryPredicate = field(associatedField) == associatedId
+            filter = predicate.graphQLFilter(for: Element.schema)
+        } else {
+            var queryPredicates: [QueryPredicateOperation] = []
+            let columnNames = columnNames(field: associatedField, Element.schema)
+            
+            let predicateValues = zip(columnNames, associatedIdentifiers)
+            for (identifierName, identifierValue) in predicateValues {
+                queryPredicates.append(QueryPredicateOperation(field: identifierName,
+                                                               operator: .equals(identifierValue)))
+            }
+            let groupedQueryPredicates = QueryPredicateGroup(type: .and, predicates: queryPredicates)
+            filter = groupedQueryPredicates.graphQLFilter(for: Element.schema)
+        }
+        
+        
         let request = GraphQLRequest<JSONValue>.listQuery(responseType: JSONValue.self,
                                                           modelSchema: Element.schema,
                                                           filter: filter,
@@ -292,4 +314,32 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
             throw error
         }
     }
+    
+    // MARK: - Helpers
+    
+    func columnNames(field: String, _ modelSchema: ModelSchema) -> [String] {
+        guard let modelField = modelSchema.field(withName: field) else {
+            return [field]
+        }
+        let defaultFieldName = modelSchema.name.camelCased() + field.pascalCased() + "Id"
+        switch modelField.association {
+        case .belongsTo(_, let targetNames):
+            if targetNames.count > 1 {
+                return targetNames
+            } else {
+                let targetName = targetNames.first ?? defaultFieldName
+                return [targetName]
+            }
+        case .hasOne(_, let targetNames):
+            if targetNames.count > 1 {
+                return targetNames
+            } else {
+                let targetName = targetNames.first ?? defaultFieldName
+                return [targetName]
+            }
+        default:
+            return [field]
+        }
+    }
+    
 }

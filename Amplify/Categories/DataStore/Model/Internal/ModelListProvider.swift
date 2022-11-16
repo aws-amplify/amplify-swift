@@ -22,7 +22,7 @@ public protocol ModelListMarker { }
 /// application making any change to these `public` types should be backward compatible, otherwise it will be a breaking
 /// change.
 public enum ModelListProviderState<Element: Model> {
-    case notLoaded(associatedId: String, associatedField: String)
+    case notLoaded(associatedIdentifiers: [String], associatedField: String)
     case loaded([Element])
 }
 

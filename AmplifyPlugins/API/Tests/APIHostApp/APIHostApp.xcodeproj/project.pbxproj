@@ -722,11 +722,11 @@
 		218D018E291AE34C0068D133 /* LL1 */ = {
 			isa = PBXGroup;
 			children = (
+				218D0197291AE3C00068D133 /* GraphQLLazyLoadPostComment4V2Tests.swift */,
 				218D0190291AE3750068D133 /* Comment4V2.swift */,
 				218D0191291AE3750068D133 /* Comment4V2+Schema.swift */,
 				218D018F291AE3750068D133 /* Post4V2.swift */,
 				218D0192291AE3750068D133 /* Post4V2+Schema.swift */,
-				218D0197291AE3C00068D133 /* GraphQLLazyLoadPostComment4V2Tests.swift */,
 			);
 			path = LL1;
 			sourceTree = "<group>";

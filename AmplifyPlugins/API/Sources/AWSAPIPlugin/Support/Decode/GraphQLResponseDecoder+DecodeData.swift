@@ -44,11 +44,9 @@ extension GraphQLResponseDecoder {
                   case .object(var graphQLDataObject) = graphQLData,
                   case .array(var graphQLDataArray) = graphQLDataObject["items"] {
             for (index, item) in graphQLDataArray.enumerated() {
-                if AppSyncModelMetadataUtils.shouldAddMetadata(toModel: item) { // 4
-                    let modelJSON = AppSyncModelMetadataUtils.addMetadata(toModel: item,
-                                                                          apiName: request.apiName)
-                    graphQLDataArray[index] = modelJSON
-                }
+                let modelJSON = AppSyncModelMetadataUtils.addMetadata(toModel: item,
+                                                                      apiName: request.apiName)
+                graphQLDataArray[index] = modelJSON
             }
             graphQLDataObject["items"] = JSONValue.array(graphQLDataArray)
             let payload = AppSyncListPayload(graphQLData: JSONValue.object(graphQLDataObject),

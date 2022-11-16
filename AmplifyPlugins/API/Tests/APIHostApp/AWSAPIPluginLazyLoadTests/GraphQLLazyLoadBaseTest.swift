@@ -91,7 +91,7 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
     }
     
     enum AssertLazyModelState<M: Model> {
-        case notLoaded(identifiers: [String: String]?)
+        case notLoaded(identifiers: [LazyModelIdentifier]?)
         case loaded(model: M?)
     }
     
@@ -118,18 +118,18 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
     }
     
     enum AssertListState {
-        case isNotLoaded(associatedId: String, associatedField: String)
+        case isNotLoaded(associatedIdentifiers: [String], associatedField: String)
         case isLoaded(count: Int)
     }
     
     func assertList<M: Model>(_ list: List<M>, state: AssertListState) {
         switch state {
-        case .isNotLoaded(let expectedAssociatedId, let expectedAssociatedField):
-            if case .notLoaded(let associatedId, let associatedField) = list.listProvider.getState() {
-                XCTAssertEqual(associatedId, expectedAssociatedId)
+        case .isNotLoaded(let expectedAssociatedIdentifiers, let expectedAssociatedField):
+            if case .notLoaded(let associatedIdentifiers, let associatedField) = list.listProvider.getState() {
+                XCTAssertEqual(associatedIdentifiers, expectedAssociatedIdentifiers)
                 XCTAssertEqual(associatedField, expectedAssociatedField)
             } else {
-                XCTFail("It should be not loaded with expected associatedId \(expectedAssociatedId) associatedField \(expectedAssociatedField)")
+                XCTFail("It should be not loaded with expected associatedId \(expectedAssociatedIdentifiers) associatedField \(expectedAssociatedField)")
             }
         case .isLoaded(let count):
             if case .loaded(let loadedList) = list.listProvider.getState() {
@@ -156,7 +156,7 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
         let modelType = model
         
         var primaryKeysOnly = false
-        if let modelPath = M.rootPath as? ModelPath<M> {
+        if M.rootPath != nil {
             primaryKeysOnly = true
         }
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
@@ -176,5 +176,11 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
                                          responseType: M?.self,
                                          decodePath: document.name)
         return try await query(request)
+    }
+}
+
+extension LazyModelIdentifier: Equatable {
+    public static func == (lhs: LazyModelIdentifier, rhs: LazyModelIdentifier) -> Bool {
+        return lhs.name == rhs.name && lhs.value == rhs.value
     }
 }

@@ -26,16 +26,16 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
         /// The associatedField represents the field to which the owner of the `List` is linked to.
         /// For example, if `Post.comments` is associated with `Comment.post` the `List<Comment>`
         /// of `Post` will have a reference to the `post` field in `Comment`.
-        case notLoaded(associatedId: String, associatedField: String)
+        case notLoaded(associatedIdentifiers: [String], associatedField: String)
 
         case loaded([Element])
     }
 
     var loadedState: LoadedState
 
-    init(associatedId: String,
+    init(associatedIdentifiers: [String],
          associatedField: String) {
-        self.loadedState = .notLoaded(associatedId: associatedId,
+        self.loadedState = .notLoaded(associatedIdentifiers: associatedIdentifiers,
                                       associatedField: associatedField)
     }
 
@@ -45,8 +45,8 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
     
     public func getState() -> ModelListProviderState<Element> {
         switch loadedState {
-        case .notLoaded(let associatedId, let associatedField):
-            return .notLoaded(associatedId: associatedId, associatedField: associatedField)
+        case .notLoaded(let associatedIdentifiers, let associatedField):
+            return .notLoaded(associatedIdentifiers: associatedIdentifiers, associatedField: associatedField)
         case .loaded(let elements):
             return .loaded(elements)
         }
@@ -56,7 +56,11 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
         switch loadedState {
         case .loaded(let elements):
             return elements
-        case .notLoaded(let associatedId, let associatedField):
+        case .notLoaded(let associatedIdentifiers, let associatedField):
+            guard let associatedId = associatedIdentifiers.first else {
+                throw CoreError.listOperation("Unexpected identifiers.",
+                                              "See underlying DataStoreError for more details.", nil)
+            }
             let predicate: QueryPredicate = field(associatedField) == associatedId
             do {
                 let elements = try await Amplify.DataStore.query(Element.self, where: predicate)

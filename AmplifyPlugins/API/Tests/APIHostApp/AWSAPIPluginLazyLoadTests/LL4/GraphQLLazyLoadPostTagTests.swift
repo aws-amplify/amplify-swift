@@ -13,7 +13,7 @@ import XCTest
 import AWSPluginsCore
 
 final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
-
+    
     func testLazyLoad() async throws {
         await setup(withModels: PostTagModels(), logLevel: .verbose)
         let post = Post(postId: UUID().uuidString, title: "title")
@@ -25,13 +25,36 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
         
         try await assertPost(savedPost, canLazyLoad: savedPostTag)
         try await assertTag(savedTag, canLazyLoad: savedPostTag)
-        assertLazyModel(savedPostTag._postWithTagsCompositeKey, state: .loaded(model: savedPost))
-        assertLazyModel(savedPostTag._tagWithCompositeKey, state: .loaded(model: savedTag))
-        let queriedPost = try await query(.get(Post.self, byId: post.postId))!
+        try await assertPostTag(savedPostTag, canLazyLoadTag: savedTag, canLazyLoadPost: savedPost)
+        
+        let queriedPost = try await query(.get(Post.self, byIdentifier: .identifier(postId: post.postId, title: post.title)))!
         try await assertPost(queriedPost, canLazyLoad: savedPostTag)
         let queriedTag = try await query(for: savedTag)!
         try await assertTag(queriedTag, canLazyLoad: savedPostTag)
-        let queriedPostTag = try await query(for: savedPostTag)!
+        let request = GraphQLRequest<PostTag?>.get(PostTag.self, byIdentifier: savedPostTag.id)
+        let expectedDocument = """
+        query GetPostTagsWithCompositeKey($id: ID!) {
+          getPostTagsWithCompositeKey(id: $id) {
+            id
+            createdAt
+            updatedAt
+            postWithTagsCompositeKey {
+              postId
+              title
+              __typename
+            }
+            tagWithCompositeKey {
+              id
+              name
+              __typename
+            }
+            __typename
+          }
+        }
+        """
+        XCTAssertEqual(request.document, expectedDocument)
+        let queriedPostTag = try await query(request)!
+        
         try await assertPostTag(queriedPostTag, canLazyLoadTag: savedTag, canLazyLoadPost: savedPost)
     }
     
@@ -41,7 +64,7 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
             XCTFail("Missing postTags on post")
             return
         }
-        assertList(postTags, state: .isNotLoaded(associatedId: post.identifier,
+        assertList(postTags, state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title],
                                                  associatedField: "postWithTagsCompositeKey"))
         try await postTags.fetch()
         assertList(postTags, state: .isLoaded(count: 1))
@@ -53,15 +76,17 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
             XCTFail("Missing postTags on post")
             return
         }
-        assertList(postTags, state: .isNotLoaded(associatedId: tag.identifier,
+        assertList(postTags, state: .isNotLoaded(associatedIdentifiers: [tag.id, tag.name],
                                                  associatedField: "tagWithCompositeKey"))
         try await postTags.fetch()
         assertList(postTags, state: .isLoaded(count: 1))
     }
     
     func assertPostTag(_ postTag: PostTag, canLazyLoadTag tag: Tag, canLazyLoadPost post: Post) async throws {
-        assertLazyModel(postTag._tagWithCompositeKey, state: .notLoaded(identifiers: ["@@primaryKey": tag.identifier]))
-        assertLazyModel(postTag._postWithTagsCompositeKey, state: .notLoaded(identifiers: ["@@primaryKey": post.identifier]))
+        assertLazyModel(postTag._tagWithCompositeKey, state: .notLoaded(identifiers: [.init(name: "id", value: tag.id),
+                                                                                      .init(name: "name", value: tag.name)]))
+        assertLazyModel(postTag._postWithTagsCompositeKey, state: .notLoaded(identifiers: [.init(name: "postId", value: post.postId),
+                                                                                           .init(name: "title", value: post.title)]))
         let loadedTag = try await postTag.tagWithCompositeKey
         assertLazyModel(postTag._tagWithCompositeKey, state: .loaded(model: loadedTag))
         try await assertTag(loadedTag, canLazyLoad: postTag)
@@ -84,9 +109,9 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
         let newPost = Post(postId: UUID().uuidString, title: "title")
         _ = try await mutate(.create(newPost))
         queriedPostTag.setPostWithTagsCompositeKey(newPost)
-        let savedPostTagWithNewPost = try await mutate(.update(queriedPostTag))
+        let savedPostTagWithNewPost = try await mutate(.update(queriedPostTag, includes: { postTag in [postTag.postWithTagsCompositeKey] }))
         assertLazyModel(savedPostTagWithNewPost._postWithTagsCompositeKey, state: .loaded(model: newPost))
-        let queriedPreviousPost = try await query(.get(Post.self, byId: post.postId))!
+        let queriedPreviousPost = try await query(for: post)!
         try await assertPostWithNoPostTag(queriedPreviousPost)
         
         // update the post tag with a new tag
@@ -94,7 +119,7 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
         let newTag = Tag(name: "name")
         _ = try await mutate(.create(newTag))
         queriedPostTagWithNewPost.setTagWithCompositeKey(newTag)
-        let savedPostTagWithNewTag = try await mutate(.update(queriedPostTagWithNewPost))
+        let savedPostTagWithNewTag = try await mutate(.update(queriedPostTagWithNewPost, includes: { postTag in [postTag.tagWithCompositeKey]}))
         assertLazyModel(savedPostTagWithNewTag._tagWithCompositeKey, state: .loaded(model: newTag))
         let queriedPreviousTag = try await query(for: savedTag)!
         try await assertTagWithNoPostTag(queriedPreviousTag)
@@ -105,7 +130,7 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
             XCTFail("Missing postTags on post")
             return
         }
-        assertList(postTags, state: .isNotLoaded(associatedId: post.identifier,
+        assertList(postTags, state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title],
                                                  associatedField: "postWithTagsCompositeKey"))
         try await postTags.fetch()
         assertList(postTags, state: .isLoaded(count: 0))
@@ -116,7 +141,7 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
             XCTFail("Missing postTags on post")
             return
         }
-        assertList(postTags, state: .isNotLoaded(associatedId: tag.identifier,
+        assertList(postTags, state: .isNotLoaded(associatedIdentifiers: [tag.id, tag.name],
                                                  associatedField: "tagWithCompositeKey"))
         try await postTags.fetch()
         assertList(postTags, state: .isLoaded(count: 0))
@@ -125,33 +150,19 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
     func testDeletePost() async throws {
         await setup(withModels: PostTagModels(), logLevel: .verbose)
         let post = Post(postId: UUID().uuidString, title: "title")
-        let tag = Tag(name: "name")
-        let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)
         let savedPost = try await mutate(.create(post))
-        let savedTag = try await mutate(.create(tag))
-        let savedPostTag = try await mutate(.create(postTag))
         
         try await mutate(.delete(savedPost))
-        
         try await assertModelDoesNotExist(savedPost)
-        try await assertModelExists(savedTag)
-        try await assertModelDoesNotExist(savedPostTag)
     }
     
     func testDeleteTag() async throws {
         await setup(withModels: PostTagModels(), logLevel: .verbose)
-        let post = Post(postId: UUID().uuidString, title: "title")
         let tag = Tag(name: "name")
-        let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)
-        let savedPost = try await mutate(.create(post))
         let savedTag = try await mutate(.create(tag))
-        let savedPostTag = try await mutate(.create(postTag))
         
         try await mutate(.delete(savedTag))
-        
-        try await assertModelExists(savedPost)
         try await assertModelDoesNotExist(savedTag)
-        try await assertModelDoesNotExist(savedPostTag)
     }
     
     func testDeletePostTag() async throws {

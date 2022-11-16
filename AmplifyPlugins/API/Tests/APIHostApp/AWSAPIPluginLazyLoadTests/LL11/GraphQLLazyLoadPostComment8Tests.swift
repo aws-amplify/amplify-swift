@@ -65,7 +65,7 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
         // Loading the comments by the post identifier should be
         // "query all comments where the predicate is field("@@postForeignKey") == "[postId]#[title]"
         // List fetching is broken for this use case "uni directional has-many"
-        assertList(comments, state: .isNotLoaded(associatedId: post.identifier,
+        assertList(comments, state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title],
                                                  associatedField: "postId"))
         try await comments.fetch()
         assertList(comments, state: .isLoaded(count: 1))

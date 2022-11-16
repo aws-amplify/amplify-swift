@@ -8,11 +8,21 @@
 import Foundation
 import Combine
 
+public struct LazyModelIdentifier: Codable {
+    public let name: String
+    public let value: String
+    
+    public init(name: String, value: String) {
+        self.name = name
+        self.value = value
+    }
+}
+
 public class LazyModel<Element: Model>: Codable, LazyModelMarker {
     
     /// Represents the data state of the `LazyModel`.
     enum LoadedState {
-        case notLoaded(identifiers: [String: String]?)
+        case notLoaded(identifiers: [LazyModelIdentifier]?)
         case loaded(Element?)
     }
     var loadedState: LoadedState
@@ -42,7 +52,7 @@ public class LazyModel<Element: Model>: Codable, LazyModelMarker {
         }
     }
     
-    public var identifiers: [String: String]? {
+    public var identifiers: [LazyModelIdentifier]? {
         get {
             switch loadedState {
             case .notLoaded(let identifiers):
@@ -68,7 +78,7 @@ public class LazyModel<Element: Model>: Codable, LazyModelMarker {
         self.init(modelProvider: modelProvider)
     }
     
-    public convenience init(identifiers: [String: String]?) {
+    public convenience init(identifiers: [LazyModelIdentifier]?) {
         let modelProvider = DefaultModelProvider<Element>(identifiers: identifiers).eraseToAnyModelProvider()
         self.init(modelProvider: modelProvider)
     }

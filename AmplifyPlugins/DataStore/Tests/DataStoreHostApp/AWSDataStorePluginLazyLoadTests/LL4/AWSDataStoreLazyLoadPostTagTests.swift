@@ -60,8 +60,8 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func assertPostTag(_ postTag: PostTag, canLazyLoadTag tag: Tag, canLazyLoadPost post: Post) async throws {
-        assertLazyModel(postTag._tagWithCompositeKey, state: .notLoaded(identifiers: ["@@primaryKey": tag.identifier]))
-        assertLazyModel(postTag._postWithTagsCompositeKey, state: .notLoaded(identifiers: ["@@primaryKey": post.identifier]))
+        assertLazyModel(postTag._tagWithCompositeKey, state: .notLoaded(identifiers: [.init(name: "@@primaryKey", value: tag.identifier)]))
+        assertLazyModel(postTag._postWithTagsCompositeKey, state: .notLoaded(identifiers: [.init(name: "@@primaryKey", value: post.identifier)]))
         let loadedTag = try await postTag.tagWithCompositeKey
         assertLazyModel(postTag._tagWithCompositeKey, state: .loaded(model: loadedTag))
         try await assertTag(loadedTag, canLazyLoad: postTag)
