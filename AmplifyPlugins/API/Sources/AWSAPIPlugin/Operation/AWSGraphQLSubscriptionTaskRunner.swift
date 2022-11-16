@@ -373,7 +373,6 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             finish()
             return
         }
-        
         dispatch(result: .failure(APIError.operationError(errorDescription, "", error)))
         finish()
     }
