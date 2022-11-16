@@ -14,10 +14,19 @@ import AmplifyAsyncTesting
 
 class AWSDeviceTrackerTests : AWSLocationGeoPluginTestBase {
     
+    var callStopTracking = true
+    
     override func tearDown() async throws {
-        geoPlugin.stopTracking()
+        if callStopTracking {
+            geoPlugin.stopTracking()
+        }
         mockKeychainStore.resetCounters()
         try await super.tearDown()
+    }
+    
+    override func setUp() async throws {
+        callStopTracking = true
+        try await super.setUp()
     }
     
     // MARK: Start Tracking Tests
@@ -184,6 +193,35 @@ class AWSDeviceTrackerTests : AWSLocationGeoPluginTestBase {
         await waitForExpectations([clearExpectation])
     }
     
+    /// Test if stopTracking() is called when signedOut Hub event is fired
+    ///
+    /// - Given: `AWSDeviceTracker` is configured with a valid `Geo.TrackingSession` and `MockLocationManager`
+    /// - When: startTracking() is called, then signedOut Hub event is fired
+    /// - Then: stopTracking() should be called
+    func testStopTrackingCalledAfterSignOut() async {
+        let device: Geo.Device = .tiedToDevice()
+        
+        let saveExpectation = asyncExpectation(description: "Device ID is stored successfully in keychain")
+        do {
+            try await geoPlugin.startTracking(for: device, with: .init())
+            await saveExpectation.fulfill()
+        } catch {
+            XCTFail("Failed with error: \(error)")
+        }
+
+        await waitForExpectations([saveExpectation])
+        
+        Amplify.Hub.dispatch(to: .auth, payload: HubPayload(eventName: HubPayload.EventName.Auth.signedOut))
+        let stopTrackingExpectation = asyncExpectation(description: "Stop tracking is called")
+        Task {
+            try await Task.sleep(seconds: 2)
+            XCTAssertEqual(mockDeviceTracker.stopDeviceTrackingCalled, 1)
+            await stopTrackingExpectation.fulfill()
+        }
+        await waitForExpectations([stopTrackingExpectation], timeout: 5)
+        callStopTracking = false
+    }
+    
     // MARK: Proxy Delegate Tests
     
     /// Test if custom proxydelegate is called when `AWSDeviceTracker`
@@ -196,18 +234,21 @@ class AWSDeviceTrackerTests : AWSLocationGeoPluginTestBase {
     func testProxyDelegateCalled() async {
         let currentLocation = CLLocation(latitude: 20, longitude: 30)
         mockLocationManager.locations = [currentLocation]
+        let device: Geo.Device = .tiedToDevice()
         let successExpectation = expectation(description: "proxydelegate is called")
         let didUpdatePositions: ([Position]) -> Void  = { locations in
             XCTAssertEqual(locations.count, 1)
             XCTAssertEqual(locations[0].location.latitude, currentLocation.coordinate.latitude)
             XCTAssertEqual(locations[0].location.longitude, currentLocation.coordinate.longitude)
+            XCTAssertEqual(locations[0].tracker, GeoPluginTestConfig.defaultTracker)
+            XCTAssertEqual(locations[0].deviceID, device.id)
             successExpectation.fulfill()
         }
         
         let locationProxyDelegate = LocationProxyDelegate(didUpdatePositions: didUpdatePositions)
         let trackingSessionOptions = Geo.TrackingSessionOptions().withProxyDelegate(locationProxyDelegate)
         do {
-            try await geoPlugin.startTracking(for: .tiedToDevice(), with: trackingSessionOptions)
+            try await geoPlugin.startTracking(for: device, with: trackingSessionOptions)
         } catch {
             XCTFail("Failed with error: \(error)")
         }
@@ -255,7 +296,6 @@ class AWSDeviceTrackerTests : AWSLocationGeoPluginTestBase {
                 XCTAssertEqual(savedLocations.count, 1)
                 XCTAssertEqual(savedLocations[0].latitude, currentLocation.coordinate.latitude)
                 XCTAssertEqual(savedLocations[0].longitude, currentLocation.coordinate.longitude)
-                XCTAssertEqual(savedLocations[0].deviceID, device.id)
                 XCTAssertEqual(savedLocations[0].tracker, GeoPluginTestConfig.defaultTracker)
                 await locationSaveExpectation.fulfill()
             } catch {
@@ -307,7 +347,6 @@ class AWSDeviceTrackerTests : AWSLocationGeoPluginTestBase {
                 XCTAssertEqual(savedLocations.count, 1)
                 XCTAssertEqual(savedLocations[0].latitude, currentLocation.coordinate.latitude)
                 XCTAssertEqual(savedLocations[0].longitude, currentLocation.coordinate.longitude)
-                XCTAssertEqual(savedLocations[0].deviceID, device.id)
                 XCTAssertEqual(savedLocations[0].tracker, GeoPluginTestConfig.defaultTracker)
                 await locationSaveExpectation.fulfill()
             } catch {
@@ -331,16 +370,18 @@ class AWSDeviceTrackerTests : AWSLocationGeoPluginTestBase {
         let currentLocation = CLLocation(latitude: 20, longitude: 30)
         mockLocationManager.locations = [currentLocation]
         let proxyDelegateSuccessExpectation = expectation(description: "proxydelegate is called")
+        let device = Geo.Device.tiedToDevice()
         let didUpdatePositions: ([Position]) -> Void  = { locations in
             XCTAssertEqual(locations.count, 1)
             XCTAssertEqual(locations[0].location.latitude, currentLocation.coordinate.latitude)
             XCTAssertEqual(locations[0].location.longitude, currentLocation.coordinate.longitude)
+            XCTAssertEqual(locations[0].tracker, GeoPluginTestConfig.defaultTracker)
+            XCTAssertEqual(locations[0].deviceID, device.id)
             proxyDelegateSuccessExpectation.fulfill()
         }
         
         let locationProxyDelegate = LocationProxyDelegate(didUpdatePositions: didUpdatePositions)
         let trackingSessionOptions = Geo.TrackingSessionOptions(batchingOption: .timeElapsed(seconds: 60)).withProxyDelegate(locationProxyDelegate)
-        let device = Geo.Device.tiedToDevice()
         
         let startTrackingSuccessExpectation = asyncExpectation(description: "Operation was successful")
         Task {
@@ -361,9 +402,7 @@ class AWSDeviceTrackerTests : AWSLocationGeoPluginTestBase {
                 XCTAssertEqual(savedLocations.count, 1)
                 XCTAssertEqual(savedLocations[0].latitude, currentLocation.coordinate.latitude)
                 XCTAssertEqual(savedLocations[0].longitude, currentLocation.coordinate.longitude)
-                XCTAssertEqual(savedLocations[0].deviceID, device.id)
                 XCTAssertEqual(savedLocations[0].tracker, GeoPluginTestConfig.defaultTracker)
-                geoPlugin.stopTracking()
                 await locationSaveExpectation.fulfill()
             } catch {
                 XCTFail("Failed with error: \(error)")
@@ -371,6 +410,8 @@ class AWSDeviceTrackerTests : AWSLocationGeoPluginTestBase {
         }
         
         await waitForExpectations([locationSaveExpectation], timeout: 5)
+        
+        geoPlugin.stopTracking()
         await waitForExpectations(timeout: 5)
     }
     
@@ -386,16 +427,19 @@ class AWSDeviceTrackerTests : AWSLocationGeoPluginTestBase {
         let currentLocation = CLLocation(latitude: 20, longitude: 30)
         mockLocationManager.locations = [currentLocation]
         let proxyDelegateSuccessExpectation = expectation(description: "proxydelegate is called")
+        let device = Geo.Device.tiedToDevice()
         let didUpdatePositions: ([Position]) -> Void  = { locations in
             XCTAssertEqual(locations.count, 1)
             XCTAssertEqual(locations[0].location.latitude, currentLocation.coordinate.latitude)
             XCTAssertEqual(locations[0].location.longitude, currentLocation.coordinate.longitude)
+            XCTAssertEqual(locations[0].tracker, GeoPluginTestConfig.defaultTracker)
+            XCTAssertEqual(locations[0].deviceID, device.id)
             proxyDelegateSuccessExpectation.fulfill()
         }
         
         let locationProxyDelegate = LocationProxyDelegate(didUpdatePositions: didUpdatePositions)
         let trackingSessionOptions = Geo.TrackingSessionOptions(batchingOption: .distanceTravelled(meters: 100)).withProxyDelegate(locationProxyDelegate)
-        let device = Geo.Device.tiedToDevice()
+        
         
         let startTrackingSuccessExpectation = asyncExpectation(description: "Operation was successful")
         Task {
@@ -416,9 +460,7 @@ class AWSDeviceTrackerTests : AWSLocationGeoPluginTestBase {
                 XCTAssertEqual(savedLocations.count, 1)
                 XCTAssertEqual(savedLocations[0].latitude, currentLocation.coordinate.latitude)
                 XCTAssertEqual(savedLocations[0].longitude, currentLocation.coordinate.longitude)
-                XCTAssertEqual(savedLocations[0].deviceID, device.id)
                 XCTAssertEqual(savedLocations[0].tracker, GeoPluginTestConfig.defaultTracker)
-                geoPlugin.stopTracking()
                 await locationSaveExpectation.fulfill()
             } catch {
                 XCTFail("Failed with error: \(error)")
@@ -426,6 +468,8 @@ class AWSDeviceTrackerTests : AWSLocationGeoPluginTestBase {
         }
         
         await waitForExpectations([locationSaveExpectation], timeout: 5)
+        
+        geoPlugin.stopTracking()
         await waitForExpectations(timeout: 5)
     }
     
@@ -441,10 +485,13 @@ class AWSDeviceTrackerTests : AWSLocationGeoPluginTestBase {
         let currentLocation = CLLocation(latitude: 20, longitude: 30)
         mockLocationManager.locations = [currentLocation]
         let successExpectation = expectation(description: "proxydelegate is called")
+        let device = Geo.Device.tiedToDevice()
         let didUpdatePositions: ([Position]) -> Void  = { locations in
             XCTAssertEqual(locations.count, 1)
             XCTAssertEqual(locations[0].location.latitude, currentLocation.coordinate.latitude)
             XCTAssertEqual(locations[0].location.longitude, currentLocation.coordinate.longitude)
+            XCTAssertEqual(locations[0].tracker, GeoPluginTestConfig.defaultTracker)
+            XCTAssertEqual(locations[0].deviceID, device.id)
             successExpectation.fulfill()
         }
         
@@ -452,7 +499,6 @@ class AWSDeviceTrackerTests : AWSLocationGeoPluginTestBase {
         let locationProxyDelegate = LocationProxyDelegate(didUpdatePositions: didUpdatePositions)
         let trackingSessionOptions = Geo.TrackingSessionOptions(trackUntil: dateBeforeOneHour).withProxyDelegate(locationProxyDelegate)
         do {
-            let device = Geo.Device.tiedToDevice()
             try await geoPlugin.startTracking(for: device, with: trackingSessionOptions)
         } catch {
             XCTFail("Failed with error: \(error)")
@@ -517,7 +563,6 @@ class AWSDeviceTrackerTests : AWSLocationGeoPluginTestBase {
                 XCTAssertEqual(savedLocations.count, 1)
                 XCTAssertEqual(savedLocations[0].latitude, currentLocation.coordinate.latitude)
                 XCTAssertEqual(savedLocations[0].longitude, currentLocation.coordinate.longitude)
-                XCTAssertEqual(savedLocations[0].deviceID, device.id)
                 XCTAssertEqual(savedLocations[0].tracker, GeoPluginTestConfig.defaultTracker)
                 await locationSaveExpectation.fulfill()
             } catch {
@@ -560,7 +605,6 @@ class AWSDeviceTrackerTests : AWSLocationGeoPluginTestBase {
                 XCTAssertEqual(savedLocations.count, 1)
                 XCTAssertEqual(savedLocations[0].latitude, currentLocation.coordinate.latitude)
                 XCTAssertEqual(savedLocations[0].longitude, currentLocation.coordinate.longitude)
-                XCTAssertEqual(savedLocations[0].deviceID, device.id)
                 XCTAssertEqual(savedLocations[0].tracker, GeoPluginTestConfig.defaultTracker)
                 await locationSaveExpectation.fulfill()
             } catch {
@@ -604,7 +648,6 @@ class AWSDeviceTrackerTests : AWSLocationGeoPluginTestBase {
                 XCTAssertEqual(savedLocations.count, 1)
                 XCTAssertEqual(savedLocations[0].latitude, currentLocation.coordinate.latitude)
                 XCTAssertEqual(savedLocations[0].longitude, currentLocation.coordinate.longitude)
-                XCTAssertEqual(savedLocations[0].deviceID, device.id)
                 XCTAssertEqual(savedLocations[0].tracker, GeoPluginTestConfig.defaultTracker)
                 await locationSaveExpectation.fulfill()
             } catch {

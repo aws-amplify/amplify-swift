@@ -52,6 +52,10 @@ struct GeoPluginErrorConstants {
     static let errorSavingDeviceIDToKeychain: GeoPluginErrorString = (
         "Unable to save deviceID in keychain.",
         "This seems like a bug. Please report an issue on Amplify Swift repo.")
+    
+    static let errorFetchingDeviceIDFromKeychain: GeoPluginErrorString = (
+        "Unable to fetch deviceID from keychain.",
+        "This seems like a bug. Please report an issue on Amplify Swift repo.")
 }
 
 // Recovery Messages

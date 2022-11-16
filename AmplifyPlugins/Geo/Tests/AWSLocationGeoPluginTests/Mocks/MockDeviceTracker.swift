@@ -38,7 +38,7 @@ public class MockAWSDeviceTracker: AWSDeviceTracker {
         super.stopTracking()
     }
     
-    public override func batchSendStoredLocationsToService(with receivedPositions: [Position]) {
+    public override func batchSendStoredLocationsToService(with receivedPositions: [Position], deviceID: String) {
         batchSendStoredLocationsToServiceCalled += 1
     }
     
