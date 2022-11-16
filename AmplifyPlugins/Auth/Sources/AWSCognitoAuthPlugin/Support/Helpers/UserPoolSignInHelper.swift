@@ -40,7 +40,8 @@ struct UserPoolSignInHelper {
                                        with challenge: RespondToAuthChallenge)
     throws -> AuthSignInResult {
         switch challengeType {
-        case .smsMfa:
+        // TODO: FIX sending signInResult next step as `confirmSignInWithSMSMFACode` during `softwareTokenMfa` challenge. Potentially create a new nextStep case
+        case .smsMfa, .softwareTokenMfa:
             let delivery = challenge.codeDeliveryDetails
             return .init(nextStep: .confirmSignInWithSMSMFACode(delivery, challenge.parameters))
         case .customChallenge:
@@ -116,12 +117,12 @@ struct UserPoolSignInHelper {
                     parameters: parameters)
 
                 switch challengeName {
-                case .smsMfa, .customChallenge, .newPasswordRequired:
+                case .smsMfa, .customChallenge, .newPasswordRequired, .softwareTokenMfa:
                     return SignInEvent(eventType: .receivedChallenge(respondToAuthChallenge))
                 case .deviceSrpAuth:
                     return SignInEvent(eventType: .initiateDeviceSRP(response))
                 default:
-                    let message = "UnSupported challenge response \(challengeName)"
+                    let message = "Unsupported challenge response \(challengeName)"
                     let error = SignInError.unknown(message: message)
                     return SignInEvent(eventType: .throwAuthError(error))
                 }

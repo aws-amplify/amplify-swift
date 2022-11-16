@@ -16,6 +16,8 @@ enum AuthChallengeType {
 
     case newPasswordRequired
 
+    case softwareTokenMfa
+
     case unknown
 
 }
@@ -29,6 +31,8 @@ extension CognitoIdentityProviderClientTypes.ChallengeNameType {
             return .newPasswordRequired
         case .smsMfa:
             return .smsMfa
+        case .softwareTokenMfa:
+            return .softwareTokenMfa
         default:
             return .unknown
         }
