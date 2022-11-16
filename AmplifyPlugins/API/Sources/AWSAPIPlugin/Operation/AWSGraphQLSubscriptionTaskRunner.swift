@@ -151,9 +151,10 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
         } catch let error as APIError {
             fail(error)
         } catch {
-            // TODO: Verify with the team that terminating a subscription after failing to decode/cast one
+            // Verify with the team that terminating a subscription after failing to decode/cast one
             // payload is the right thing to do. Another option would be to propagate a GraphQL error, but
             // leave the subscription alive.
+            // see https://github.com/aws-amplify/amplify-swift/issues/2577
             
             fail(APIError.operationError("Failed to deserialize", "", error))
         }
@@ -180,7 +181,7 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
     }
 }
 
-// TODO: Remove this code, it has replaced been with AWSGraphQLSubscriptionTaskRunner above.
+// Class is still necessary. See https://github.com/aws-amplify/amplify-swift/issues/2252
 final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscriptionOperation<R> {
 
     let pluginConfig: AWSAPICategoryPluginConfiguration
@@ -337,9 +338,11 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             dispatch(result: .failure(error))
             finish()
         } catch {
-            // TODO: Verify with the team that terminating a subscription after failing to decode/cast one
+            // Verify with the team that terminating a subscription after failing to decode/cast one
             // payload is the right thing to do. Another option would be to propagate a GraphQL error, but
             // leave the subscription alive.
+            // see https://github.com/aws-amplify/amplify-swift/issues/2577
+
             dispatch(result: .failure(APIError.operationError("Failed to deserialize", "", error)))
             finish()
         }
