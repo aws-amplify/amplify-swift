@@ -262,16 +262,31 @@ let geoTargets: [Target] = [
     )
 ]
 
-let analyticsTargets: [Target] = [
+let pinpointTargets: [Target] = [
     .target(
-        name: "AWSPinpointAnalyticsPlugin",
+        name: "InternalAWSPinpoint",
         dependencies: [
             .target(name: "Amplify"),
             .target(name: "AWSCognitoAuthPlugin"),
             .target(name: "AWSPluginsCore"),
             .product(name: "SQLite", package: "SQLite.swift"),
             .product(name: "AWSPinpoint", package: "aws-sdk-swift")],
-        path: "AmplifyPlugins/Analytics/Sources/AWSPinpointAnalyticsPlugin"
+        path: "AmplifyPlugins/Pinpoint/Internal/Sources/InternalAWSPinpoint"
+    ),
+    .testTarget(
+        name: "InternalAWSPinpointUnitTests",
+        dependencies: [
+            "InternalAWSPinpoint",
+            "AmplifyTestCommon"
+        ],
+        path: "AmplifyPlugins/Pinpoint/Internal/Tests/InternalAWSPinpointUnitTests"
+    ),
+    .target(
+        name: "AWSPinpointAnalyticsPlugin",
+        dependencies: [
+            .target(name: "InternalAWSPinpoint")
+        ],
+        path: "AmplifyPlugins/Pinpoint/Analytics/Sources/AWSPinpointAnalyticsPlugin"
     ),
     .testTarget(
         name: "AWSPinpointAnalyticsPluginUnitTests",
@@ -279,12 +294,12 @@ let analyticsTargets: [Target] = [
             "AWSPinpointAnalyticsPlugin",
             "AmplifyTestCommon"
         ],
-        path: "AmplifyPlugins/Analytics/Tests/AWSPinpointAnalyticsPluginUnitTests"
+        path: "AmplifyPlugins/Pinpoint/Analytics/Tests/AWSPinpointAnalyticsPluginUnitTests"
     )
 ]
 
 let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTargets + storageTargets +
-                        geoTargets + analyticsTargets
+                        geoTargets + pinpointTargets
 
 let package = Package(
     name: "Amplify",
