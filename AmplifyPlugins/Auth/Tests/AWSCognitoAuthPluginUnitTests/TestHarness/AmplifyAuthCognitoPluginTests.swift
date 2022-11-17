@@ -18,15 +18,24 @@ class AmplifyAuthCognitoPluginTests: XCTestCase {
 
         // Load the json configs
         let bundle = Bundle.authCognitoTestBundle()
-        let testInputFiles = try! FileManager.default.contentsOfDirectory(
-            atPath: bundle.resourcePath! + "/" + AuthTestHarnessConstants.testSuitesPath)
+        let testSuiteDirectories = try! FileManager.default.contentsOfDirectory(
+            atPath: "\(bundle.resourcePath!)/\(AuthTestHarnessConstants.testSuitesPath)")
 
-        for testInputFile in testInputFiles {
-            XCTContext.runActivity(named: testInputFile) { activity in
-                let specification = FeatureSpecification.init(fileName: testInputFile)
-                let authTestHarness = AuthTestHarness(featureSpecification: specification)
-                beginTest(for: authTestHarness.plugin,
-                          with: authTestHarness)
+        for directory in testSuiteDirectories {
+
+            let testSuiteSubdirectoryPath = "\(bundle.resourcePath!)/\(AuthTestHarnessConstants.testSuitesPath)/\(directory)"
+            let testSuiteFiles = try! FileManager.default.contentsOfDirectory(
+                atPath: testSuiteSubdirectoryPath)
+
+            for testSuiteFile in testSuiteFiles {
+                XCTContext.runActivity(named: testSuiteFile) { activity in
+                    let specification = FeatureSpecification(
+                        fileName: testSuiteFile,
+                        subdirectory: "\(AuthTestHarnessConstants.testSuitesPath)/\(directory)")
+                    let authTestHarness = AuthTestHarness(featureSpecification: specification)
+                    beginTest(for: authTestHarness.plugin,
+                              with: authTestHarness)
+                }
             }
         }
     }
@@ -43,7 +52,39 @@ class AmplifyAuthCognitoPluginTests: XCTestCase {
                         for: resetPasswordRequest.username,
                         options: .init())
                 }
+            case .signUp(let signUpRequest,
+                         let expectedOutput):
+                validateAPI(expectedOutput: expectedOutput) {
+                    return try await plugin.signUp(
+                        username: signUpRequest.username,
+                        password: signUpRequest.password, options: .init())
+                }
+            case .deleteUser(_, let expectedOutput):
+                let expectation = expectation(description: "expectation")
+                Task {
+                    do {
+                        try await plugin.deleteUser()
+                        expectation.fulfill()
+                    } catch let error as AuthError {
+                        if case .failure(let expectedError) = expectedOutput {
+                            XCTAssertEqual(error, expectedError)
+                        } else {
+                            XCTFail("API should not throw AuthError")
+                        }
+                        expectation.fulfill()
+                    } catch {
+                        XCTFail("API should not throw AuthError")
+                        expectation.fulfill()
+                    }
+                }
+                wait(for: [expectation], timeout: apiTimeout)
+            case .confirmSignIn(let request, expectedOutput: let expectedOutput):
+                validateAPI(expectedOutput: expectedOutput) {
+                    return try await plugin.confirmSignIn(
+                        challengeResponse: request.challengeResponse)
+                }
             }
+
         }
 
     
@@ -52,7 +93,7 @@ class AmplifyAuthCognitoPluginTests: XCTestCase {
         expectedOutput: Result<T, AuthError>?,
         apiCall: @escaping () async throws -> T) {
 
-            let expectation = expectation(description: "Reset password expectation")
+            let expectation = expectation(description: "expectation")
             Task {
                 do {
                     let result = try await apiCall()
@@ -62,7 +103,7 @@ class AmplifyAuthCognitoPluginTests: XCTestCase {
                     XCTAssertEqual(expectedOutput, Result.failure(error))
                     expectation.fulfill()
                 } catch {
-                    XCTFail("Reset password API should throw AuthError")
+                    XCTFail("API should not throw AuthError")
                     expectation.fulfill()
                 }
             }

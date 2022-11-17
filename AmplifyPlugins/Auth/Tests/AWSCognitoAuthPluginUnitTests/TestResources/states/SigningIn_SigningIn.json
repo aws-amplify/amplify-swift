@@ -1,0 +1,24 @@
+{
+    "type": "AuthState.Configured",
+    "AuthenticationState": {
+        "type": "AuthenticationState.SigningIn",
+        "SignInState": {
+            "type": "SignInState.ResolvingChallenge",
+            "SignInChallengeState": {
+                "type": "SignInChallengeState.WaitingForAnswer",
+                "authChallenge": {
+                    "challengeName": "SMS_MFA",
+                    "username": "username",
+                    "session": "someSession",
+                    "parameters": {
+                        "CODE_DELIVERY_DELIVERY_MEDIUM": "SMS",
+                        "CODE_DELIVERY_DESTINATION": "+12345678900"
+                    }
+                }
+            }
+        }
+    },
+    "AuthorizationState": {
+        "type": "AuthorizationState.SigningIn"
+    }
+}

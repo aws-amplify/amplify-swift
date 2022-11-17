@@ -24,7 +24,7 @@ extension AuthError: Codable {
         let recoverySuggestion = try values.decode(String.self, forKey: .recoverySuggestion)
 
         // TODO: Use cause in the error
-        let cause = try values.decode([String: String].self, forKey: .cause)
+        _ = try values.decodeIfPresent([String: String?].self, forKey: .cause)
 
         switch errorType {
         case "NotAuthorizedException":

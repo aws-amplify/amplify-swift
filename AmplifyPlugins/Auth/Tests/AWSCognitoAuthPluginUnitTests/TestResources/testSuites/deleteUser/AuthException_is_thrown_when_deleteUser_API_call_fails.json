@@ -1,0 +1,41 @@
+{
+    "description": "AuthException is thrown when deleteUser API call fails",
+    "preConditions": {
+        "amplify-configuration": "authconfiguration.json",
+        "state": "SignedIn_SessionEstablished.json",
+        "mockedResponses": [
+            {
+                "type": "cognitoIdentityProvider",
+                "apiName": "deleteUser",
+                "responseType": "failure",
+                "response": {
+                    "errorType": "NotAuthorizedException",
+                    "errorMessage": null
+                }
+            }
+        ]
+    },
+    "api": {
+        "name": "deleteUser",
+        "params": {
+        },
+        "options": {
+        }
+    },
+    "validations": [
+        {
+            "type": "amplify",
+            "apiName": "deleteUser",
+            "responseType": "failure",
+            "response": {
+                "errorType": "NotAuthorizedException",
+                "errorMessage": "Failed since user is not authorized.",
+                "recoverySuggestion": "Check whether the given values are correct and the user is authorized to perform the operation.",
+                "cause": {
+                    "errorType": "NotAuthorizedException",
+                    "errorMessage": null
+                }
+            }
+        }
+    ]
+}

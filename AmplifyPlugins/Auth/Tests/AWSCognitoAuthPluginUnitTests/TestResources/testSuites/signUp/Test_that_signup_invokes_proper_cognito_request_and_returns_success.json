@@ -1,0 +1,70 @@
+{
+    "description": "Test that signup invokes proper cognito request and returns success",
+    "preConditions": {
+        "amplify-configuration": "authconfiguration.json",
+        "state": "SignedOut_Configured.json",
+        "mockedResponses": [
+            {
+                "type": "cognitoIdentityProvider",
+                "apiName": "signUp",
+                "responseType": "success",
+                "response": {
+                    "CodeDeliveryDetails": {
+                        "Destination": "user@domain.com",
+                        "DeliveryMedium": "EMAIL",
+                        "AttributeName": "attributeName"
+                    },
+                    "UserConfirmed": false,
+                    "UserSub": "xyz"
+                }
+            }
+        ]
+    },
+    "api": {
+        "name": "signUp",
+        "params": {
+            "username": "user",
+            "password": "password"
+        },
+        "options": {
+            "userAttributes": {
+                "email": "user@domain.com"
+            }
+        }
+    },
+    "validations": [
+        {
+            "type": "cognitoIdentityProvider",
+            "apiName": "signUp",
+            "request": {
+                "clientId": "testAppClientId",
+                "username": "user",
+                "password": "password",
+                "userAttributes": [
+                    {
+                        "name": "email",
+                        "value": "user@domain.com"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "amplify",
+            "apiName": "signUp",
+            "responseType": "success",
+            "response": {
+                "isSignUpComplete": false,
+                "nextStep": {
+                    "signUpStep": "CONFIRM_SIGN_UP_STEP",
+                    "additionalInfo": {
+                    },
+                    "codeDeliveryDetails": {
+                        "destination": "user@domain.com",
+                        "deliveryMedium": "EMAIL",
+                        "attributeName": "attributeName"
+                    }
+                }
+            }
+        }
+    ]
+}

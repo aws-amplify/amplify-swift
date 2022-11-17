@@ -23,12 +23,13 @@ struct FeatureSpecification: Codable {
     var validations: [JSONValue]
 
     init(fileName: String,
-         fileExtension: String = "") {
+         fileExtension: String = "",
+         subdirectory: String) {
         let bundle = Bundle.authCognitoTestBundle()
         let url = bundle.url(
             forResource: fileName,
             withExtension: fileExtension,
-            subdirectory: AuthTestHarnessConstants.testSuitesPath)!
+            subdirectory: subdirectory)!
         let fileData: Data = try! Data(contentsOf: url)
         self = try! JSONDecoder().decode(
             FeatureSpecification.self, from: fileData)
@@ -87,6 +88,9 @@ struct API: Codable {
     enum APIName: String, Codable {
         case resetPassword
         case forgotPassword
+        case signUp
+        case deleteUser
+        case confirmSignIn
     }
 
     public init(from decoder: Decoder) throws {

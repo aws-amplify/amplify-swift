@@ -1,0 +1,32 @@
+{
+    "description": "Test that Cognito is called with given payload and returns successful data",
+    "preConditions": {
+        "amplify-configuration": "authconfiguration.json",
+        "state": "SignedIn_SessionEstablished.json",
+        "mockedResponses": [
+            {
+                "type": "cognitoIdentityProvider",
+                "apiName": "deleteUser",
+                "responseType": "success",
+                "response": {
+                }
+            }
+        ]
+    },
+    "api": {
+        "name": "deleteUser",
+        "params": {
+        },
+        "options": {
+        }
+    },
+    "validations": [
+        {
+            "type": "amplify",
+            "apiName": "deleteUser",
+            "responseType": "success",
+            "response": {
+            }
+        }
+    ]
+}

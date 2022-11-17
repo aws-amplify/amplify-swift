@@ -60,10 +60,28 @@ enum AmplifyAPI {
     case resetPassword(
         input: AuthResetPasswordRequest,
         expectedOutput: Result<AuthResetPasswordResult, AuthError>?)
+    case signUp(
+        input: AuthSignUpRequest,
+        expectedOutput: Result<AuthSignUpResult, AuthError>?)
+    case deleteUser(
+        input: Void,
+        expectedOutput: Result<Void, AuthError>?)
+    case confirmSignIn(
+        input: AuthConfirmSignInRequest,
+        expectedOutput: Result<AuthSignInResult, AuthError>?)
 }
 
 enum CognitoAPI {
     case forgotPassword(
         expectedInput: ForgotPasswordInput?,
         output: Result<ForgotPasswordOutputResponse, ForgotPasswordOutputError>)
+    case signUp(
+        expectedInput: SignUpInput?,
+        output: Result<SignUpOutputResponse, SignUpOutputError>)
+    case deleteUser(
+        expectedInput: DeleteUserInput?,
+        output: Result<DeleteUserOutputResponse, DeleteUserOutputError>)
+    case confirmSignIn(
+        expectedInput: RespondToAuthChallengeInput?,
+        output: Result<RespondToAuthChallengeOutputResponse, RespondToAuthChallengeOutputError>)
 }
