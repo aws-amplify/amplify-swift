@@ -53,6 +53,8 @@ extension ListDevicesOutputError: AuthErrorConvertible {
         case .forbiddenException(let forbiddenException):
             return .service(forbiddenException.message ?? "Access to the requested resource is forbidden",
                             AuthPluginErrorConstants.forbiddenError)
+        @unknown default:
+            return .unknown("Unknown service error occurred")
         }
     }
 }
