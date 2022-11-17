@@ -14,7 +14,7 @@ extension AuthTestHarnessInput {
         MockIdentityProvider(
             mockSignUpResponse: { input in
 
-                guard case .signUp(let request, let result) = cognitoAPI else {
+                guard case .signUp(let request, let result) = cognitoAPI[.signUp] else {
                     fatalError("Missing input")
                 }
                 if let request = request {
@@ -37,7 +37,7 @@ extension AuthTestHarnessInput {
                 return GlobalSignOutOutputResponse()
             },
             mockRespondToAuthChallengeResponse: { input in
-                guard case .confirmSignIn(let request, let result) = cognitoAPI else {
+                guard case .confirmSignIn(let request, let result) = cognitoAPI[.confirmSignIn] else {
                     fatalError("Missing input")
                 }
                 if let request = request {
@@ -57,7 +57,7 @@ extension AuthTestHarnessInput {
                 //                    return self.featureSpecification.cognitoService.changePassword.response
             },
             mockDeleteUserOutputResponse: { input in
-                guard case .deleteUser(_, let result) = cognitoAPI else {
+                guard case .deleteUser(_, let result) = cognitoAPI[.deleteUser] else {
                     fatalError("Missing input")
                 }
                 switch result {
@@ -68,7 +68,7 @@ extension AuthTestHarnessInput {
                 }
             },
             mockForgotPasswordOutputResponse: { input in
-                guard case .forgotPassword(let request, let result) = cognitoAPI else {
+                guard case .forgotPassword(let request, let result) = cognitoAPI[.forgotPassword] else {
                     fatalError("Missing input")
                 }
                 if let request = request {

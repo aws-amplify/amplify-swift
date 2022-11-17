@@ -16,64 +16,72 @@ import Foundation
 
 struct CognitoAPIDecodingHelper {
 
-    static func decode(with specification: FeatureSpecification) -> CognitoAPI {
+    static func decode(with specification: FeatureSpecification) -> [API.APIName: CognitoAPI] {
 
-        // Response
-        guard let expectedCognitoPrecondition = specification.preConditions.mockedResponses.first(
-            where: { response in
-                response["type"] == .string("cognitoIdentityProvider")
-            }) else {
-            fatalError("Expected Cognito response not found")
+        var decodedAPIs: [API.APIName: CognitoAPI] = [:]
+
+        for mockedResponse in specification.preConditions.mockedResponses {
+
+            // Response
+            guard mockedResponse["type"] == .string("cognitoIdentityProvider") else {
+                continue
+            }
+
+            guard case .string(let responseType) = mockedResponse["responseType"] else {
+                fatalError("Expected Cognito response not found")
+            }
+
+            guard case .string(let apiName) = mockedResponse["apiName"] else {
+                fatalError("Expected Cognito response not found")
+            }
+
+            guard case .object(let response) = mockedResponse["response"] else {
+                fatalError("Expected Cognito response not found")
+            }
+
+            let requestData = requestData(
+                for: specification,
+                with: apiName)
+
+            switch apiName {
+            case "forgotPassword":
+                decodedAPIs[.forgotPassword] = forgotPasswordAPI(
+                    request: requestData,
+                    response: response,
+                    responseType: responseType
+                )
+            case "signUp":
+                decodedAPIs[.signUp] = signUpApi(
+                    request: requestData,
+                    response: response,
+                    responseType: responseType
+                )
+            case "deleteUser":
+                decodedAPIs[.deleteUser] = deleteUserApi(
+                    request: requestData,
+                    response: response,
+                    responseType: responseType
+                )
+            case "respondToAuthChallenge":
+                decodedAPIs[.confirmSignIn] = confirmSignInApi(
+                    request: requestData,
+                    response: response,
+                    responseType: responseType)
+            default:
+                fatalError()
+            }
         }
 
-        guard case .string(let responseType) = expectedCognitoPrecondition["responseType"] else {
-            fatalError("Expected Cognito response not found")
-        }
-
-        guard case .string(let apiName) = expectedCognitoPrecondition["apiName"] else {
-            fatalError("Expected Cognito response not found")
-        }
-
-        guard case .object(let response) = expectedCognitoPrecondition["response"] else {
-            fatalError("Expected Cognito response not found")
-        }
-
-        let requestData = requestData(for: specification)
-
-        switch apiName {
-        case "forgotPassword":
-            return forgotPasswordAPI(
-                request: requestData,
-                response: response,
-                responseType: responseType
-            )
-        case "signUp":
-            return signUpApi(
-                request: requestData,
-                response: response,
-                responseType: responseType
-            )
-        case "deleteUser":
-            return deleteUserApi(
-                request: requestData,
-                response: response,
-                responseType: responseType
-            )
-        case "respondToAuthChallenge":
-            return confirmSignInApi(
-                request: requestData,
-                response: response,
-                responseType: responseType)
-        default:
-            fatalError()
-        }
+        return decodedAPIs
     }
 
-    private static func requestData(for specification: FeatureSpecification) -> Data? {
+    private static func requestData(for specification: FeatureSpecification,
+                                    with apiName: String) -> Data? {
         var requestData: Data? = nil
         // Request
         if let cognitoResponseValidation = specification.validations.first(where: { validation in
-            validation.value(at: "type") == .string("cognitoIdentityProvider")
+            validation.value(at: "type") == .string("cognitoIdentityProvider") &&
+            validation.value(at: "apiName") == .string(apiName)
         }) {
 
             guard case .object(let request) = cognitoResponseValidation["request"] else {
@@ -206,44 +214,44 @@ struct CognitoAPIDecodingHelper {
             output: result)
     }
 
-                private static func confirmSignInApi(
-                    request: Data?,
-                    response: [String: JSONValue],
-                    responseType: String
-                ) -> CognitoAPI {
-                    var input: RespondToAuthChallengeInput? = nil
+    private static func confirmSignInApi(
+        request: Data?,
+        response: [String: JSONValue],
+        responseType: String
+    ) -> CognitoAPI {
+        var input: RespondToAuthChallengeInput? = nil
 
-                    if let request = request {
-                        input = try! JSONDecoder().decode(RespondToAuthChallengeInput.self, from: request)
-                    }
+        if let request = request {
+            input = try! JSONDecoder().decode(RespondToAuthChallengeInput.self, from: request)
+        }
 
-                    let result: Result<RespondToAuthChallengeOutputResponse, RespondToAuthChallengeOutputError>
+        let result: Result<RespondToAuthChallengeOutputResponse, RespondToAuthChallengeOutputError>
 
-                    switch responseType {
-                    case "failure":
-                        guard case .string(let errorType) = response["errorType"],
-                              case .string(let errorMessage) = response["errorType"] else {
-                            fatalError()
-                        }
+        switch responseType {
+        case "failure":
+            guard case .string(let errorType) = response["errorType"],
+                  case .string(let errorMessage) = response["errorType"] else {
+                fatalError()
+            }
 
-                        let error = try! RespondToAuthChallengeOutputError(
-                            errorType: errorType,
-                            //TODO: Figure out a way to pass status code if needed
-                            httpResponse: .init(body: .empty, statusCode: .ok),
-                            message: errorMessage)
-                        result = .failure(error)
-                    case "success":
-                        let responseData = try! JSONEncoder().encode(response)
-                        let output = try! JSONDecoder().decode(
-                            RespondToAuthChallengeOutputResponse.self, from: responseData)
-                        result = .success(output)
-                    default:
-                        fatalError("invalid response type")
-                    }
+            let error = try! RespondToAuthChallengeOutputError(
+                errorType: errorType,
+                //TODO: Figure out a way to pass status code if needed
+                httpResponse: .init(body: .empty, statusCode: .ok),
+                message: errorMessage)
+            result = .failure(error)
+        case "success":
+            let responseData = try! JSONEncoder().encode(response)
+            let output = try! JSONDecoder().decode(
+                RespondToAuthChallengeOutputResponse.self, from: responseData)
+            result = .success(output)
+        default:
+            fatalError("invalid response type")
+        }
 
-                    return .confirmSignIn(
-                        expectedInput: input,
-                        output: result)
-                }
+        return .confirmSignIn(
+            expectedInput: input,
+            output: result)
+    }
 
 }

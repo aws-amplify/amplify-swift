@@ -18,7 +18,7 @@ struct AuthTestHarnessInput {
     let initialAuthState: AuthState
     let expectedAuthState: AuthState?
     let amplifyAPI: AmplifyAPI
-    let cognitoAPI: CognitoAPI
+    let cognitoAPI: [API.APIName: CognitoAPI]
 }
 
 extension AuthTestHarnessInput {
@@ -39,7 +39,7 @@ extension AuthTestHarnessInput {
     }
 
     private static func getCognitoAPI(
-        from specification: FeatureSpecification) -> CognitoAPI {
+        from specification: FeatureSpecification) -> [API.APIName: CognitoAPI] {
             return CognitoAPIDecodingHelper.decode(with: specification)
     }
 
