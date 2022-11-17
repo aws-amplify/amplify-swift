@@ -34,7 +34,7 @@ class AWSS3Adapter: AWSS3Behavior {
         Task {
             let input = DeleteObjectInput(bucket: request.bucket, key: request.key)
             do {
-                _ = try await awsS3.deleteObject(input: input, config: config)
+                _ = try await awsS3.deleteObject(input: input)
                 completion(.success(()))
             } catch {
                 completion(.failure(StorageError(error: error)))
@@ -91,7 +91,7 @@ class AWSS3Adapter: AWSS3Behavior {
                                                    metadata: request.metadata)
 
             do {
-                let response = try await awsS3.createMultipartUpload(input: input, config: config)
+                let response = try await awsS3.createMultipartUpload(input: input)
                 guard let bucket = response.bucket, let key = response.key, let uploadId = response.uploadId else {
                     completion(.failure(StorageError.unknown("Invalid response for creating multipart upload", nil)))
                     return
@@ -131,7 +131,7 @@ class AWSS3Adapter: AWSS3Behavior {
             let completedMultipartUpload = S3ClientTypes.CompletedMultipartUpload(parts: parts)
             let input = CompleteMultipartUploadInput(bucket: request.bucket, key: request.key, multipartUpload: completedMultipartUpload, uploadId: request.uploadId)
             do {
-                let response = try await awsS3.completeMultipartUpload(input: input, config: config)
+                let response = try await awsS3.completeMultipartUpload(input: input)
                 guard let eTag = response.eTag else {
                     completion(.failure(StorageError.unknown("Invalid response for completing multipart upload", nil)))
                     return
