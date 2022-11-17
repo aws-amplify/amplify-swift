@@ -50,7 +50,7 @@ extension Team2.IdentifierProtocol {
 }
 
 extension ModelPath where ModelType == Team2 {
-    var teamId: FieldPath<String> { string("projectId") }
+    var teamId: FieldPath<String> { string("teamId") }
     var name: FieldPath<String> { string("name") }
     var createdAt: FieldPath<Temporal.DateTime> { datetime("createdAt") }
     var updatedAt: FieldPath<Temporal.DateTime> { datetime("updatedAt") }

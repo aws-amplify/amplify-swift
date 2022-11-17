@@ -52,7 +52,7 @@ extension Team1.IdentifierProtocol {
 }
 
 extension ModelPath where ModelType == Team1 {
-    var teamId: FieldPath<String> { string("projectId") }
+    var teamId: FieldPath<String> { string("teamId") }
     var name: FieldPath<String> { string("name") }
     var project: ModelPath<Project1> { Project1.Path(name: "project", parent: self) }
     var createdAt: FieldPath<Temporal.DateTime> { datetime("createdAt") }
