@@ -10,9 +10,10 @@ import XCTest
 @testable import Amplify
 @testable import AWSAPICategoryPlugin
 
-class AWSAPICategoryPluginConfigureTests: AWSAPICategoryPluginTestBase {
+class AWSAPICategoryPluginConfigureTests {
 
     func testPluginKey() {
+        let apiPlugin = AWSAPIPlugin()
         XCTAssertEqual(apiPlugin.key, "awsAPIPlugin")
     }
 
