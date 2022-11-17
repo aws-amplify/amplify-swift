@@ -193,12 +193,12 @@ class AWSDeviceTrackerTests : AWSLocationGeoPluginTestBase {
         await waitForExpectations([clearExpectation])
     }
     
-    /// Test if stopTracking() is called when signedOut Hub event is fired
+    /// Test if if device id is successfully cleared from keychain when signedOut Hub event is fired
     ///
     /// - Given: `AWSDeviceTracker` is configured with a valid `Geo.TrackingSession` and `MockLocationManager`
     /// - When: startTracking() is called, then signedOut Hub event is fired
-    /// - Then: stopTracking() should be called
-    func testStopTrackingCalledAfterSignOut() async {
+    /// - Then: Device ID is cleared successfully from keychain
+    func testDeviceIDClearedAfterSignOut() async {
         let device: Geo.Device = .tiedToDevice()
         
         let saveExpectation = asyncExpectation(description: "Device ID is stored successfully in keychain")
@@ -212,13 +212,16 @@ class AWSDeviceTrackerTests : AWSLocationGeoPluginTestBase {
         await waitForExpectations([saveExpectation])
         
         Amplify.Hub.dispatch(to: .auth, payload: HubPayload(eventName: HubPayload.EventName.Auth.signedOut))
-        let stopTrackingExpectation = asyncExpectation(description: "Stop tracking is called")
+        let clearExpectation = asyncExpectation(description: "Device ID is cleared successfully from keychain")
         Task {
             try await Task.sleep(seconds: 2)
-            XCTAssertEqual(mockDeviceTracker.stopDeviceTrackingCalled, 1)
-            await stopTrackingExpectation.fulfill()
+            if let _ = try? mockKeychainStore._getString(AWSDeviceTracker.Constants.deviceIDKey) {
+                XCTFail("Device ID not cleared from keychain")
+            } else {
+                await clearExpectation.fulfill()
+            }
         }
-        await waitForExpectations([stopTrackingExpectation], timeout: 5)
+        await waitForExpectations([clearExpectation], timeout: 5)
         callStopTracking = false
     }
     
@@ -417,6 +420,63 @@ class AWSDeviceTrackerTests : AWSLocationGeoPluginTestBase {
     
     /// Test if custom proxydelegate is called when `AWSDeviceTracker`
     /// is configured with `Geo.TrackingSession` with a proxy delegate
+    /// and signedOut Hub event is fired after startTracking() with batching options set to `.timeElapsed`
+    ///
+    /// - Given: `AWSDeviceTracker` is configured with a valid `Geo.TrackingSession` with batching options set to
+    ///          `.distanceTravelled` and `MockLocationManager`
+    /// - When: startTracking() is called and first location update from OS is received and then signedOut Hub event is fired
+    /// - Then: Firstly local store successfully saves the location and secondly proxydelegate is called
+    func testProxyDelegateCalledWhenSignedOutAfterFirstLocationUpdate1() async {
+        let currentLocation = CLLocation(latitude: 20, longitude: 30)
+        mockLocationManager.locations = [currentLocation]
+        let proxyDelegateSuccessExpectation = expectation(description: "proxydelegate is called")
+        let device = Geo.Device.tiedToDevice()
+        let didUpdatePositions: ([Position]) -> Void  = { locations in
+            XCTAssertEqual(locations.count, 1)
+            XCTAssertEqual(locations[0].location.latitude, currentLocation.coordinate.latitude)
+            XCTAssertEqual(locations[0].location.longitude, currentLocation.coordinate.longitude)
+            XCTAssertEqual(locations[0].tracker, GeoPluginTestConfig.defaultTracker)
+            XCTAssertEqual(locations[0].deviceID, device.id)
+            proxyDelegateSuccessExpectation.fulfill()
+        }
+        
+        let locationProxyDelegate = LocationProxyDelegate(didUpdatePositions: didUpdatePositions)
+        let trackingSessionOptions = Geo.TrackingSessionOptions(batchingOption: .timeElapsed(seconds: 60)).withProxyDelegate(locationProxyDelegate)
+        
+        let startTrackingSuccessExpectation = asyncExpectation(description: "Operation was successful")
+        Task {
+            do {
+                try await geoPlugin.startTracking(for: device, with: trackingSessionOptions)
+                await startTrackingSuccessExpectation.fulfill()
+            } catch {
+                XCTFail("Failed with error: \(error)")
+            }
+        }
+        
+        await waitForExpectations([startTrackingSuccessExpectation])
+        
+        let locationSaveExpectation = asyncExpectation(description: "Save was successful")
+        Task {
+            do {
+                let savedLocations = try await mockLocationStore.getAll()
+                XCTAssertEqual(savedLocations.count, 1)
+                XCTAssertEqual(savedLocations[0].latitude, currentLocation.coordinate.latitude)
+                XCTAssertEqual(savedLocations[0].longitude, currentLocation.coordinate.longitude)
+                XCTAssertEqual(savedLocations[0].tracker, GeoPluginTestConfig.defaultTracker)
+                await locationSaveExpectation.fulfill()
+            } catch {
+                XCTFail("Failed with error: \(error)")
+            }
+        }
+        
+        await waitForExpectations([locationSaveExpectation], timeout: 5)
+        
+        Amplify.Hub.dispatch(to: .auth, payload: HubPayload(eventName: HubPayload.EventName.Auth.signedOut))
+        await waitForExpectations(timeout: 5)
+    }
+    
+    /// Test if custom proxydelegate is called when `AWSDeviceTracker`
+    /// is configured with `Geo.TrackingSession` with a proxy delegate
     /// and stopTracking() is called after startTracking() with batching options set to `.distanceTravelled`
     ///
     /// - Given: `AWSDeviceTracker` is configured with a valid `Geo.TrackingSession` with batching options set to
@@ -470,6 +530,64 @@ class AWSDeviceTrackerTests : AWSLocationGeoPluginTestBase {
         await waitForExpectations([locationSaveExpectation], timeout: 5)
         
         geoPlugin.stopTracking()
+        await waitForExpectations(timeout: 5)
+    }
+    
+    /// Test if custom proxydelegate is called when `AWSDeviceTracker`
+    /// is configured with `Geo.TrackingSession` with a proxy delegate
+    /// and signedOut Hub event is fired after startTracking() with batching options set to `.distanceTravelled`
+    ///
+    /// - Given: `AWSDeviceTracker` is configured with a valid `Geo.TrackingSession` with batching options set to
+    ///          `.distanceTravelled` and `MockLocationManager`
+    /// - When: startTracking() is called and first location update from OS is received and then signedOut Hub event is fired
+    /// - Then: Firstly local store successfully saves the location and secondly proxydelegate is called
+    func testProxyDelegateCalledWhenSignedOutAfterFirstLocationUpdate2() async {
+        let currentLocation = CLLocation(latitude: 20, longitude: 30)
+        mockLocationManager.locations = [currentLocation]
+        let proxyDelegateSuccessExpectation = expectation(description: "proxydelegate is called")
+        let device = Geo.Device.tiedToDevice()
+        let didUpdatePositions: ([Position]) -> Void  = { locations in
+            XCTAssertEqual(locations.count, 1)
+            XCTAssertEqual(locations[0].location.latitude, currentLocation.coordinate.latitude)
+            XCTAssertEqual(locations[0].location.longitude, currentLocation.coordinate.longitude)
+            XCTAssertEqual(locations[0].tracker, GeoPluginTestConfig.defaultTracker)
+            XCTAssertEqual(locations[0].deviceID, device.id)
+            proxyDelegateSuccessExpectation.fulfill()
+        }
+        
+        let locationProxyDelegate = LocationProxyDelegate(didUpdatePositions: didUpdatePositions)
+        let trackingSessionOptions = Geo.TrackingSessionOptions(batchingOption: .distanceTravelled(meters: 100)).withProxyDelegate(locationProxyDelegate)
+        
+        
+        let startTrackingSuccessExpectation = asyncExpectation(description: "Operation was successful")
+        Task {
+            do {
+                try await geoPlugin.startTracking(for: device, with: trackingSessionOptions)
+                await startTrackingSuccessExpectation.fulfill()
+            } catch {
+                XCTFail("Failed with error: \(error)")
+            }
+        }
+        
+        await waitForExpectations([startTrackingSuccessExpectation])
+        
+        let locationSaveExpectation = asyncExpectation(description: "Save was successful")
+        Task {
+            do {
+                let savedLocations = try await mockLocationStore.getAll()
+                XCTAssertEqual(savedLocations.count, 1)
+                XCTAssertEqual(savedLocations[0].latitude, currentLocation.coordinate.latitude)
+                XCTAssertEqual(savedLocations[0].longitude, currentLocation.coordinate.longitude)
+                XCTAssertEqual(savedLocations[0].tracker, GeoPluginTestConfig.defaultTracker)
+                await locationSaveExpectation.fulfill()
+            } catch {
+                XCTFail("Failed with error: \(error)")
+            }
+        }
+        
+        await waitForExpectations([locationSaveExpectation], timeout: 5)
+        
+        Amplify.Hub.dispatch(to: .auth, payload: HubPayload(eventName: HubPayload.EventName.Auth.signedOut))
         await waitForExpectations(timeout: 5)
     }
     
