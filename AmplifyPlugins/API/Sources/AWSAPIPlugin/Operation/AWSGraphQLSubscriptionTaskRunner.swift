@@ -174,6 +174,11 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
             return
         } else if case ConnectionProviderError.unauthorized = error {
             errorDescription += ": \(APIError.UnauthorizedMessageString)"
+        } else if case ConnectionProviderError.connection = error {
+            errorDescription += ": connection"
+            let error = URLError(.networkConnectionLost)
+            fail(APIError.networkError(errorDescription, nil, error))
+            return
         }
 
         fail(APIError.operationError(errorDescription, "", error))
@@ -361,8 +366,13 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             return
         } else if case ConnectionProviderError.unauthorized = error {
             errorDescription += ": \(APIError.UnauthorizedMessageString)"
+        } else if case ConnectionProviderError.connection = error {
+            errorDescription += ": connection"
+            let error = URLError(.networkConnectionLost)
+            dispatch(result: .failure(APIError.networkError(errorDescription, nil, error)))
+            finish()
+            return
         }
-
         dispatch(result: .failure(APIError.operationError(errorDescription, "", error)))
         finish()
     }
