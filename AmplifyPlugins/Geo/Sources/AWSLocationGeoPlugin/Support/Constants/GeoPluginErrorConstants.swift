@@ -44,6 +44,18 @@ struct GeoPluginErrorConstants {
     static let errorSaveLocationsFailed: GeoPluginErrorString = (
         "Unable to send locations to service.",
         "Please ensure that AWS Geo Device Tracking is configured.")
+    
+    static let errorStartTrackingCalledBeforeStopTracking: GeoPluginErrorString = (
+        "startTracking() called when there is an existing device tracking session.",
+        "Please call stopTracking() before calling startTracking() again.")
+    
+    static let errorSavingDeviceIDToKeychain: GeoPluginErrorString = (
+        "Unable to save deviceID in keychain.",
+        "This seems like a bug. Please report an issue on Amplify Swift repo.")
+    
+    static let errorFetchingDeviceIDFromKeychain: GeoPluginErrorString = (
+        "Unable to fetch deviceID from keychain.",
+        "This seems like a bug. Please report an issue on Amplify Swift repo.")
 }
 
 // Recovery Messages

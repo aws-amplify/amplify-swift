@@ -22,7 +22,6 @@ final actor SQLiteLocationPersistenceAdapter : LocationPersistenceBehavior {
     let latitude = Expression<Double>(PositionInternal.keys.latitude.stringValue)
     let longitude = Expression<Double>(PositionInternal.keys.longitude.stringValue)
     let tracker = Expression<String>(PositionInternal.keys.tracker.stringValue)
-    let deviceID = Expression<String>(PositionInternal.keys.deviceID.stringValue)
     
     private let positionsDatabase: Connection
     private let fileSystemBehavior: LocationFileSystemBehavior
@@ -36,7 +35,6 @@ final actor SQLiteLocationPersistenceAdapter : LocationPersistenceBehavior {
             t.column(Expression<Double>(PositionInternal.keys.latitude.stringValue))
             t.column(Expression<Double>(PositionInternal.keys.longitude.stringValue))
             t.column(Expression<String>(PositionInternal.keys.tracker.stringValue))
-            t.column(Expression<String>(PositionInternal.keys.deviceID.stringValue))
         })
     }
     
@@ -66,8 +64,7 @@ final actor SQLiteLocationPersistenceAdapter : LocationPersistenceBehavior {
                     timeStamp: $0[timeStamp],
                     latitude: $0[latitude],
                     longitude: $0[longitude],
-                    tracker: $0[tracker],
-                    deviceID: $0[deviceID]
+                    tracker: $0[tracker]
                 )
             }
     }
