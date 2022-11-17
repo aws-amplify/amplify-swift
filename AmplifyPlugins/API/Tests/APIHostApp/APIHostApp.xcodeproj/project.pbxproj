@@ -55,6 +55,7 @@
 		2126275D289ABFEB003788E3 /* Post+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126272E289ABFEB003788E3 /* Post+Schema.swift */; };
 		2126275E289ABFEB003788E3 /* NestedTypeTestModel+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126272F289ABFEB003788E3 /* NestedTypeTestModel+Schema.swift */; };
 		2126275F289ABFEB003788E3 /* Post3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262730289ABFEB003788E3 /* Post3.swift */; };
+		2136C8B32926A509002CC005 /* GraphQLLazyLoadBlogPostComment8V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2136C8B22926A509002CC005 /* GraphQLLazyLoadBlogPostComment8V2Tests.swift */; };
 		213DBC8128A6C4FB00B30280 /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBC8028A6C4FB00B30280 /* TestConfigHelper.swift */; };
 		213DBC8528A6CE9800B30280 /* GraphQLWithLambdaAuthIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21698BA328899B3F004BD994 /* GraphQLWithLambdaAuthIntegrationTests.swift */; };
 		213DBC8728A6CEDD00B30280 /* Todo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBC8628A6CEDD00B30280 /* Todo.swift */; };
@@ -330,6 +331,7 @@
 		2126272E289ABFEB003788E3 /* Post+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post+Schema.swift"; sourceTree = "<group>"; };
 		2126272F289ABFEB003788E3 /* NestedTypeTestModel+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NestedTypeTestModel+Schema.swift"; sourceTree = "<group>"; };
 		21262730289ABFEB003788E3 /* Post3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post3.swift; sourceTree = "<group>"; };
+		2136C8B22926A509002CC005 /* GraphQLLazyLoadBlogPostComment8V2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLLazyLoadBlogPostComment8V2Tests.swift; sourceTree = "<group>"; };
 		213DBB6028A40DAE00B30280 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		213DBC7528A6C47000B30280 /* AWSAPIPluginGraphQLLambdaAuthTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSAPIPluginGraphQLLambdaAuthTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		213DBC8028A6C4FB00B30280 /* TestConfigHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
@@ -734,6 +736,7 @@
 		219089DA291D6349005021F7 /* LL2 */ = {
 			isa = PBXGroup;
 			children = (
+				2136C8B22926A509002CC005 /* GraphQLLazyLoadBlogPostComment8V2Tests.swift */,
 				219089E9291D75C3005021F7 /* Blog8V2.swift */,
 				219089E6291D75C3005021F7 /* Blog8V2+Schema.swift */,
 				219089EA291D75C3005021F7 /* Comment8V2.swift */,
@@ -1705,6 +1708,7 @@
 				21EA887628F9BC610000BA75 /* GraphQLLazyLoadBaseTest.swift in Sources */,
 				218D0195291AE3750068D133 /* Comment4V2+Schema.swift in Sources */,
 				21908A79291D7631005021F7 /* Post8+Schema.swift in Sources */,
+				2136C8B32926A509002CC005 /* GraphQLLazyLoadBlogPostComment8V2Tests.swift in Sources */,
 				21908A6D291D762B005021F7 /* CompositePKChild.swift in Sources */,
 				21908A41291D75FE005021F7 /* GraphQLLazyLoadProjectTeam6Tests.swift in Sources */,
 				21908A4B291D7608005021F7 /* Post7+Schema.swift in Sources */,

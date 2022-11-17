@@ -90,8 +90,13 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
     static func getRequest<M: Model>(_ modelType: M.Type,
                                      byIdentifiers identifiers: [(name: String, value: String)],
                                      apiName: String?) -> GraphQLRequest<M?> {
+        var primaryKeysOnly = false
+        if modelType.rootPath != nil {
+            primaryKeysOnly = true
+        }
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
-                                                               operationType: .query)
+                                                               operationType: .query,
+                                                               primaryKeysOnly: primaryKeysOnly)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(identifiers: identifiers))
         
