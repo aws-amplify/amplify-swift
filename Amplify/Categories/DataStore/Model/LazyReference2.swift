@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+// TODO: This class can be removed completely now.
 
 /// This class represents a lazy reference to a `Model`, meaning that the reference
 /// may or may not exist at instantiation time.

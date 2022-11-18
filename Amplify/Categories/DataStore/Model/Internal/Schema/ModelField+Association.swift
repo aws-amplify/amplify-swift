@@ -226,6 +226,10 @@ extension ModelField {
         return true
     }
     
+    /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
+    ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
+    ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
+    ///   breaking change.
     public var isBelongsToOrHasOne: Bool {
         switch association {
         case .belongsTo, .hasOne:
