@@ -93,6 +93,8 @@ struct API: Codable {
         case confirmSignIn
         case getId
         case getCredentialsForIdentity
+        case confirmDevice
+        case initiateAuth
     }
 
     public init(from decoder: Decoder) throws {

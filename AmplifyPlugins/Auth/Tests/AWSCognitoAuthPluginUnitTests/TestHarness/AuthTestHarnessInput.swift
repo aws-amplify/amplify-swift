@@ -72,22 +72,19 @@ enum AmplifyAPI {
 }
 
 enum CognitoAPI {
-    case forgotPassword(
-        expectedInput: ForgotPasswordInput?,
-        output: Result<ForgotPasswordOutputResponse, ForgotPasswordOutputError>)
-    case signUp(
-        expectedInput: SignUpInput?,
-        output: Result<SignUpOutputResponse, SignUpOutputError>)
-    case deleteUser(
-        expectedInput: DeleteUserInput?,
-        output: Result<DeleteUserOutputResponse, DeleteUserOutputError>)
-    case confirmSignIn(
-        expectedInput: RespondToAuthChallengeInput?,
-        output: Result<RespondToAuthChallengeOutputResponse, RespondToAuthChallengeOutputError>)
-    case getId(
-        expectedInput: GetIdInput?,
-        output: Result<GetIdOutputResponse, GetIdOutputError>)
-    case getCredentialsForIdentity(
-        expectedInput: GetCredentialsForIdentityInput?,
-        output: Result<GetCredentialsForIdentityOutputResponse, GetCredentialsForIdentityOutputError>)
+    case forgotPassword(CognitoAPIData<ForgotPasswordInput, ForgotPasswordOutputResponse, ForgotPasswordOutputError>)
+    case signUp(CognitoAPIData<SignUpInput, SignUpOutputResponse, SignUpOutputError>)
+    case deleteUser(CognitoAPIData<DeleteUserInput, DeleteUserOutputResponse, DeleteUserOutputError>)
+    case respondToAuthChallenge(CognitoAPIData<RespondToAuthChallengeInput, RespondToAuthChallengeOutputResponse, RespondToAuthChallengeOutputError>)
+    case getId(CognitoAPIData<GetIdInput, GetIdOutputResponse, GetIdOutputError>)
+    case getCredentialsForIdentity(CognitoAPIData<GetCredentialsForIdentityInput, GetCredentialsForIdentityOutputResponse, GetCredentialsForIdentityOutputError>)
+    case confirmDevice(CognitoAPIData<ConfirmDeviceInput, ConfirmDeviceOutputResponse, ConfirmDeviceOutputError>)
+    case initiateAuth(CognitoAPIData<InitiateAuthInput, InitiateAuthOutputResponse, InitiateAuthOutputError>)
+}
+
+struct CognitoAPIData<Input: Decodable, Output: Decodable, E: Swift.Error & ClientRuntime.HttpResponseBinding> {
+
+    let expectedInput: Input?
+    let output: Result<Output, E>
+
 }

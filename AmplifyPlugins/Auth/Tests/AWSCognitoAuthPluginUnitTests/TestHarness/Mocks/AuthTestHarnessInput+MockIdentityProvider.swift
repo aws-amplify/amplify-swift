@@ -14,16 +14,16 @@ extension AuthTestHarnessInput {
         MockIdentityProvider(
             mockSignUpResponse: { input in
 
-                guard case .signUp(let request, let result) = cognitoAPI[.signUp] else {
+                guard case .signUp(let apiData) = cognitoAPI[.signUp] else {
                     fatalError("Missing input")
                 }
-                if let request = request {
+                if let request = apiData.expectedInput {
                     XCTAssertEqual(input.clientId, request.clientId)
                     XCTAssertEqual(input.username, request.username)
                     XCTAssertEqual(input.password, request.password)
                 }
 
-                switch result {
+                switch apiData.output {
                 case .success(let response):
                     return response
                 case .failure(let error):
@@ -37,14 +37,14 @@ extension AuthTestHarnessInput {
                 return GlobalSignOutOutputResponse()
             },
             mockRespondToAuthChallengeResponse: { input in
-                guard case .confirmSignIn(let request, let result) = cognitoAPI[.confirmSignIn] else {
+                guard case .respondToAuthChallenge(let apiData) = cognitoAPI[.confirmSignIn] else {
                     fatalError("Missing input")
                 }
-                if let request = request {
+                if let request = apiData.expectedInput {
                     XCTAssertEqual(request, input)
                 }
 
-                switch result {
+                switch apiData.output {
                 case .success(let response):
                     return response
                 case .failure(let error):
@@ -57,10 +57,10 @@ extension AuthTestHarnessInput {
                 //                    return self.featureSpecification.cognitoService.changePassword.response
             },
             mockDeleteUserOutputResponse: { input in
-                guard case .deleteUser(_, let result) = cognitoAPI[.deleteUser] else {
+                guard case .deleteUser(let apiData) = cognitoAPI[.deleteUser] else {
                     fatalError("Missing input")
                 }
-                switch result {
+                switch apiData.output {
                 case .success(let response):
                     return response
                 case .failure(let error):
@@ -68,16 +68,16 @@ extension AuthTestHarnessInput {
                 }
             },
             mockForgotPasswordOutputResponse: { input in
-                guard case .forgotPassword(let request, let result) = cognitoAPI[.forgotPassword] else {
+                guard case .forgotPassword(let apiData) = cognitoAPI[.forgotPassword] else {
                     fatalError("Missing input")
                 }
-                if let request = request {
+                if let request = apiData.expectedInput {
                     XCTAssertEqual(input.clientMetadata, request.clientMetadata)
                     XCTAssertEqual(input.clientId, request.clientId)
                     XCTAssertEqual(input.username, request.username)
                 }
 
-                switch result {
+                switch apiData.output {
                 case .success(let response):
                     return response
                 case .failure(let error):

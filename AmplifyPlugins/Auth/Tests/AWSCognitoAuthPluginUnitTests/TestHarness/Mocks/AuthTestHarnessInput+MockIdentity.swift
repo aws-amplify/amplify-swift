@@ -15,14 +15,14 @@ extension AuthTestHarnessInput {
 
         let getId: MockIdentity.MockGetIdResponse = { input in
 
-            guard case .getId(let request, let result) = cognitoAPI[.getId] else {
+            guard case .getId(let apiData) = cognitoAPI[.getId] else {
                 fatalError("Missing input")
             }
-            if let request = request {
+            if let request = apiData.expectedInput {
                 XCTAssertEqual(request.logins, input.logins)
             }
 
-            switch result {
+            switch apiData.output {
             case .success(let response):
                 return response
             case .failure(let error):
@@ -31,15 +31,15 @@ extension AuthTestHarnessInput {
         }
         let getCredentials: MockIdentity.MockGetCredentialsResponse = { input in
 
-            guard case .getCredentialsForIdentity(let request, let result) = cognitoAPI[.getCredentialsForIdentity] else {
+            guard case .getCredentialsForIdentity(let apiData) = cognitoAPI[.getCredentialsForIdentity] else {
                 fatalError("Missing input")
             }
-            if let request = request {
+            if let request = apiData.expectedInput {
                 XCTAssertEqual(request.logins, input.logins)
                 XCTAssertEqual(request.identityId, input.identityId)
             }
 
-            switch result {
+            switch apiData.output {
             case .success(let response):
                 return response
             case .failure(let error):
