@@ -6,7 +6,7 @@ public struct Post8V2: Model {
     public let id: String
     public var name: String
     public var randomId: String?
-    internal var _blog: LazyModel<Blog8V2>
+    internal var _blog: LazyReference<Blog8V2>
     public var blog: Blog8V2? {
         get async throws {
             try await _blog.get()
@@ -39,14 +39,14 @@ public struct Post8V2: Model {
         self.id = id
         self.name = name
         self.randomId = randomId
-        self._blog = LazyModel(element: blog)
+        self._blog = LazyReference(blog)
         self.comments = comments
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
     
     public mutating func setBlog(_ blog: Blog8V2) {
-        self._blog = LazyModel(element: blog)
+        self._blog = LazyReference(blog)
     }
     
     public init(from decoder: Decoder) throws {
@@ -54,7 +54,7 @@ public struct Post8V2: Model {
         id = try values.decode(String.self, forKey: .id)
         name = try values.decode(String.self, forKey: .name)
         randomId = try values.decode(String.self, forKey: .randomId)
-        _blog = try values.decode(LazyModel<Blog8V2>.self, forKey: .blog)
+        _blog = try values.decode(LazyReference<Blog8V2>.self, forKey: .blog)
         comments = try values.decode(List<Comment8V2>?.self, forKey: .comments)
         createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
         updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)

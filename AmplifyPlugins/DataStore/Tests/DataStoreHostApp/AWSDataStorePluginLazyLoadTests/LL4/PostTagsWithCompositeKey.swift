@@ -4,13 +4,13 @@ import Foundation
 
 public struct PostTagsWithCompositeKey: Model {
     public let id: String
-    internal var _postWithTagsCompositeKey: LazyModel<PostWithTagsCompositeKey>
+    internal var _postWithTagsCompositeKey: LazyReference<PostWithTagsCompositeKey>
     public var postWithTagsCompositeKey: PostWithTagsCompositeKey {
         get async throws {
             try await _postWithTagsCompositeKey.require()
         }
     }
-    internal var _tagWithCompositeKey: LazyModel<TagWithCompositeKey>
+    internal var _tagWithCompositeKey: LazyReference<TagWithCompositeKey>
     public var tagWithCompositeKey: TagWithCompositeKey {
         get async throws {
             try await _tagWithCompositeKey.require()
@@ -34,25 +34,25 @@ public struct PostTagsWithCompositeKey: Model {
                   createdAt: Temporal.DateTime? = nil,
                   updatedAt: Temporal.DateTime? = nil) {
         self.id = id
-        self._postWithTagsCompositeKey = LazyModel(element: postWithTagsCompositeKey)
-        self._tagWithCompositeKey = LazyModel(element: tagWithCompositeKey)
+        self._postWithTagsCompositeKey = LazyReference(postWithTagsCompositeKey)
+        self._tagWithCompositeKey = LazyReference(tagWithCompositeKey)
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
     
     public mutating func setPostWithTagsCompositeKey(_ postWithTagsCompositeKey: PostWithTagsCompositeKey) {
-        self._postWithTagsCompositeKey = LazyModel(element: postWithTagsCompositeKey)
+        self._postWithTagsCompositeKey = LazyReference(postWithTagsCompositeKey)
     }
     
     public mutating func setTagWithCompositeKey(_ tagWithCompositeKey: TagWithCompositeKey) {
-        self._tagWithCompositeKey = LazyModel(element: tagWithCompositeKey)
+        self._tagWithCompositeKey = LazyReference(tagWithCompositeKey)
     }
     
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         id = try values.decode(String.self, forKey: .id)
-        _postWithTagsCompositeKey = try values.decode(LazyModel<PostWithTagsCompositeKey>.self, forKey: .postWithTagsCompositeKey)
-        _tagWithCompositeKey = try values.decode(LazyModel<TagWithCompositeKey>.self, forKey: .tagWithCompositeKey)
+        _postWithTagsCompositeKey = try values.decode(LazyReference<PostWithTagsCompositeKey>.self, forKey: .postWithTagsCompositeKey)
+        _tagWithCompositeKey = try values.decode(LazyReference<TagWithCompositeKey>.self, forKey: .tagWithCompositeKey)
         createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
         updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
     }

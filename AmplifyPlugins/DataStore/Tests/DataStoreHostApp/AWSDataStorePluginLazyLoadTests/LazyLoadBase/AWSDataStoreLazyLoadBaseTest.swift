@@ -185,11 +185,11 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
     }
     
     enum AssertLazyModelState<M: Model> {
-        case notLoaded(identifiers: [LazyModelIdentifier]?)
+        case notLoaded(identifiers: [LazyReferenceIdentifier]?)
         case loaded(model: M?)
     }
     
-    func assertLazyModel<M: Model>(_ lazyModel: LazyModel<M>,
+    func assertLazyReference<M: Model>(_ lazyModel: LazyReference<M>,
                                    state: AssertLazyModelState<M>) {
         switch state {
         case .notLoaded(let expectedIdentifiers):
@@ -280,8 +280,8 @@ struct DataStoreDebugger {
     }
 }
 
-extension LazyModelIdentifier: Equatable {
-    public static func == (lhs: LazyModelIdentifier, rhs: LazyModelIdentifier) -> Bool {
+extension LazyReferenceIdentifier: Equatable {
+    public static func == (lhs: LazyReferenceIdentifier, rhs: LazyReferenceIdentifier) -> Bool {
         lhs.name == rhs.name && lhs.value == rhs.value
     }
 }

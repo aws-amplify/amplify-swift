@@ -10,7 +10,7 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSAPIPlugin
 
-final class LazyModelTests: XCTestCase {
+final class LazyReferenceTests: XCTestCase {
     
     override func setUp() {
         ModelRegistry.register(modelType: LazyParentPost4V2.self)
@@ -19,7 +19,7 @@ final class LazyModelTests: XCTestCase {
     
     class MockModelProvider<ModelType: Model>: ModelProvider {
         enum LoadedState {
-            case notLoaded(identifiers: [LazyModelIdentifier]?)
+            case notLoaded(identifiers: [LazyReferenceIdentifier]?)
             case loaded(model: ModelType?)
         }
         
@@ -71,7 +71,7 @@ final class LazyModelTests: XCTestCase {
         let modelProvider = MockModelProvider<LazyParentPost4V2>(loadedState:
                 .notLoaded(identifiers: [.init(name: "id", value: "postId")])).eraseToAnyModelProvider()
         
-        comment._post = LazyModel(modelProvider: modelProvider)
+        comment._post = LazyReference(modelProvider: modelProvider)
         let json = try comment.toJSON()
         XCTAssertEqual(json, "{\"id\":\"commentId\",\"content\":\"content\",\"post\":[{\"name\":\"id\",\"value\":\"postId\"}]}")
     }

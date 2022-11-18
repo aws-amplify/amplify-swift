@@ -17,7 +17,7 @@ public struct AppSyncModelMetadata: Codable {
 
 /// Metadata that contains partial information of a model
 public struct AppSyncModelIdentifierMetadata: Codable {
-    let identifiers: [LazyModelIdentifier]
+    let identifiers: [LazyReferenceIdentifier]
     let apiName: String?
     
     func getIdentifiers() -> [(name: String, value: String)] {
@@ -187,7 +187,7 @@ public struct AppSyncModelMetadataUtils {
                                               modelObject: [String: JSONValue],
                                               apiName: String?) -> AppSyncModelIdentifierMetadata? {
         let primarykeys = associatedModel.schema.primaryKey
-        var identifiers = [LazyModelIdentifier]()
+        var identifiers = [LazyReferenceIdentifier]()
         for identifierField in primarykeys.fields {
             if case .string(let identifierValue) = modelObject[identifierField.name] {
                 identifiers.append(.init(name: identifierField.name, value: identifierValue))

@@ -5,7 +5,7 @@ import Foundation
 public struct CommentWithCompositeKey: Model {
     public let id: String
     public let content: String
-    internal var _post: LazyModel<PostWithCompositeKey>
+    internal var _post: LazyReference<PostWithCompositeKey>
     public var post: PostWithCompositeKey? {
         get async throws {
             try await _post.get()
@@ -30,13 +30,13 @@ public struct CommentWithCompositeKey: Model {
                   updatedAt: Temporal.DateTime? = nil) {
         self.id = id
         self.content = content
-        self._post = LazyModel(element: post)
+        self._post = LazyReference(post)
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
     
     public mutating func setPost(_ post: PostWithCompositeKey?) {
-        self._post = LazyModel(element: post)
+        self._post = LazyReference(post)
     }
     
     public init(from decoder: Decoder) throws {
@@ -44,9 +44,9 @@ public struct CommentWithCompositeKey: Model {
         id = try values.decode(String.self, forKey: .id)
         content = try values.decode(String.self, forKey: .content)
         do {
-            _post = try values.decode(LazyModel<PostWithCompositeKey>.self, forKey: .post)
+            _post = try values.decode(LazyReference<PostWithCompositeKey>.self, forKey: .post)
         } catch {
-            _post = LazyModel(identifiers: nil)
+            _post = LazyReference(identifiers: nil)
         }
         
         createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)

@@ -12,7 +12,7 @@ import Combine
 public class DataStoreModelProvider<ModelType: Model>: ModelProvider {
     
     enum LoadedState {
-        case notLoaded(identifiers: [LazyModelIdentifier]?)
+        case notLoaded(identifiers: [LazyReferenceIdentifier]?)
         case loaded(model: ModelType?)
     }
     
@@ -31,7 +31,7 @@ public class DataStoreModelProvider<ModelType: Model>: ModelProvider {
         self.loadedState = .loaded(model: model)
     }
     
-    init(identifiers: [LazyModelIdentifier]?) {
+    init(identifiers: [LazyReferenceIdentifier]?) {
         self.loadedState = .notLoaded(identifiers: identifiers)
     }
     

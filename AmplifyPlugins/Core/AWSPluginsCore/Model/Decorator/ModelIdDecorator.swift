@@ -14,10 +14,19 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
     private var identifierFields: [(name: String, value: String, type: String)] = [(name: String, value: String, type: String)]()
 
     public init(model: Model, schema: ModelSchema) {
+        
         var firstField = true
-        model.identifier(schema: schema).fields.forEach { name, value in
-            identifierFields.append((name: name, value: "\(value)", type: firstField == true ? "ID!" : "String!"))
-            firstField = false
+        self.identifierFields = model.identifier(schema: schema).fields.compactMap { fieldName, _ in
+            guard let value = model.graphQLInputForPrimaryKey(modelFieldName: fieldName,
+                                                              modelSchema: schema) else {
+                return nil
+            }
+            if firstField {
+                firstField = false
+                return (name: fieldName, value: value, type: "ID!")
+            } else {
+                return (name: fieldName, value: value, type: "String!")
+            }
         }
     }
     

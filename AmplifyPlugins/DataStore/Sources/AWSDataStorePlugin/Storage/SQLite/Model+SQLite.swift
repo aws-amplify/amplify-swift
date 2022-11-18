@@ -112,7 +112,7 @@ extension Model {
                 // Check if it is a Model or json object.
                 if let associatedModelValue = value as? Model {
                     return associatedModelValue.identifier
-                } else if let associatedLazyModel = value as? (any LazyModelMarker) {
+                } else if let associatedLazyModel = value as? (any LazyReferenceMarker) {
                     // The identifier (sometimes the FK), comes from the loaded model's identifier or
                     // from the not loaded identifier's first and only value
                     return associatedLazyModel.element?.identifier ?? associatedLazyModel.identifiers?.first?.value

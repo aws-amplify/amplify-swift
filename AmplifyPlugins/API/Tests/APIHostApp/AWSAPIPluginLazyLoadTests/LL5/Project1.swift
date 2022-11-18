@@ -5,7 +5,7 @@ import Foundation
 public struct Project1: Model {
     public let projectId: String
     public let name: String
-    internal var _team: LazyModel<Team1>
+    internal var _team: LazyReference<Team1>
     public var team: Team1? {
         get async throws {
             try await _team.get()
@@ -38,7 +38,7 @@ public struct Project1: Model {
                   project1TeamName: String? = nil) {
         self.projectId = projectId
         self.name = name
-        self._team = LazyModel(element: team)
+        self._team = LazyReference(team)
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.project1TeamTeamId = project1TeamTeamId
@@ -46,7 +46,7 @@ public struct Project1: Model {
     }
     
     public mutating func setTeam(_ team: Team1?) {
-        self._team = LazyModel(element: team)
+        self._team = LazyReference(team)
     }
     
     public init(from decoder: Decoder) throws {
@@ -54,9 +54,9 @@ public struct Project1: Model {
         projectId = try values.decode(String.self, forKey: .projectId)
         name = try values.decode(String.self, forKey: .name)
         do {
-            _team = try values.decode(LazyModel<Team1>.self, forKey: .team)
+            _team = try values.decode(LazyReference<Team1>.self, forKey: .team)
         } catch {
-            _team = LazyModel(identifiers: nil)
+            _team = LazyReference(identifiers: nil)
         }
         createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
         updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)

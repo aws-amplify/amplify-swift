@@ -5,7 +5,7 @@ import Foundation
 public struct Comment8V2: Model {
     public let id: String
     public var content: String?
-    internal var _post: LazyModel<Post8V2>
+    internal var _post: LazyReference<Post8V2>
     public var post: Post8V2? {
         get async throws {
             try await _post.get()
@@ -30,20 +30,20 @@ public struct Comment8V2: Model {
                   updatedAt: Temporal.DateTime? = nil) {
         self.id = id
         self.content = content
-        self._post = LazyModel(element: post)
+        self._post = LazyReference(post)
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
     
     public mutating func setPost(_ post: Post8V2) {
-        self._post = LazyModel(element: post)
+        self._post = LazyReference(post)
     }
     
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         id = try values.decode(String.self, forKey: .id)
         content = try values.decode(String.self, forKey: .content)
-        _post = try values.decode(LazyModel<Post8V2>.self, forKey: .post)
+        _post = try values.decode(LazyReference<Post8V2>.self, forKey: .post)
         createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
         updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
     }

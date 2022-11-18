@@ -37,7 +37,7 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
     
     func assertComment(_ comment: Comment,
                        hasEagerLoaded post: Post) async throws {
-        assertLazyModel(comment._post,
+        assertLazyReference(comment._post,
                         state: .loaded(model: post))
         
         guard let loadedPost = try await comment.post else {
@@ -51,14 +51,14 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
     
     func assertComment(_ comment: Comment,
                        canLazyLoad post: Post) async throws {
-        assertLazyModel(comment._post,
+        assertLazyReference(comment._post,
                         state: .notLoaded(identifiers: [.init(name: "id", value: post.identifier)]))
         guard let loadedPost = try await comment.post else {
             XCTFail("Failed to load the post from the comment")
             return
         }
         XCTAssertEqual(loadedPost.id, post.id)
-        assertLazyModel(comment._post,
+        assertLazyReference(comment._post,
                         state: .loaded(model: post))
         try await assertPost(loadedPost, canLazyLoad: comment)
     }
@@ -80,7 +80,7 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
         }
         
         // further nested models should not be loaded
-        assertLazyModel(comment._post,
+        assertLazyReference(comment._post,
                         state: .notLoaded(identifiers: [.init(name: "id", value: post.identifier)]))
     }
     
@@ -89,7 +89,7 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
         let comment = Comment(content: "content")
         let savedComment = try await saveAndWaitForSync(comment)
         var queriedComment = try await query(for: savedComment)
-        assertLazyModel(queriedComment._post,
+        assertLazyReference(queriedComment._post,
                         state: .notLoaded(identifiers: nil))
         let post = Post(title: "title")
         let savedPost = try await saveAndWaitForSync(post)
@@ -106,7 +106,7 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
         let savedPost = try await saveAndWaitForSync(post)
         let savedComment = try await saveAndWaitForSync(comment)
         let queriedComment = try await query(for: savedComment)
-        assertLazyModel(queriedComment._post,
+        assertLazyReference(queriedComment._post,
                         state: .notLoaded(identifiers: [.init(name: "id", value: post.identifier)]))
         let savedQueriedComment = try await saveAndWaitForSync(queriedComment, assertVersion: 2)
         let queriedComment2 = try await query(for: savedQueriedComment)
@@ -121,7 +121,7 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
         _ = try await saveAndWaitForSync(post)
         let savedComment = try await saveAndWaitForSync(comment)
         var queriedComment = try await query(for: savedComment)
-        assertLazyModel(queriedComment._post,
+        assertLazyReference(queriedComment._post,
                         state: .notLoaded(identifiers: [.init(name: "id", value: post.identifier)]))
         
         let newPost = Post(title: "title")
@@ -140,13 +140,13 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
         _ = try await saveAndWaitForSync(post)
         let savedComment = try await saveAndWaitForSync(comment)
         var queriedComment = try await query(for: savedComment)
-        assertLazyModel(queriedComment._post,
+        assertLazyReference(queriedComment._post,
                         state: .notLoaded(identifiers: [.init(name: "id", value: post.identifier)]))
         
         queriedComment.setPost(nil)
         let saveCommentRemovePost = try await saveAndWaitForSync(queriedComment, assertVersion: 2)
         let queriedCommentNoPost = try await query(for: saveCommentRemovePost)
-        assertLazyModel(queriedCommentNoPost._post,
+        assertLazyReference(queriedCommentNoPost._post,
                         state: .notLoaded(identifiers: nil))
     }
     

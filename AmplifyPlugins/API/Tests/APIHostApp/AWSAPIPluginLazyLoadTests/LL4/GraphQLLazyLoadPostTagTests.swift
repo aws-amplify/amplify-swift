@@ -83,15 +83,15 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
     }
     
     func assertPostTag(_ postTag: PostTag, canLazyLoadTag tag: Tag, canLazyLoadPost post: Post) async throws {
-        assertLazyModel(postTag._tagWithCompositeKey, state: .notLoaded(identifiers: [.init(name: "id", value: tag.id),
+        assertLazyReference(postTag._tagWithCompositeKey, state: .notLoaded(identifiers: [.init(name: "id", value: tag.id),
                                                                                       .init(name: "name", value: tag.name)]))
-        assertLazyModel(postTag._postWithTagsCompositeKey, state: .notLoaded(identifiers: [.init(name: "postId", value: post.postId),
+        assertLazyReference(postTag._postWithTagsCompositeKey, state: .notLoaded(identifiers: [.init(name: "postId", value: post.postId),
                                                                                            .init(name: "title", value: post.title)]))
         let loadedTag = try await postTag.tagWithCompositeKey
-        assertLazyModel(postTag._tagWithCompositeKey, state: .loaded(model: loadedTag))
+        assertLazyReference(postTag._tagWithCompositeKey, state: .loaded(model: loadedTag))
         try await assertTag(loadedTag, canLazyLoad: postTag)
         let loadedPost = try await postTag.postWithTagsCompositeKey
-        assertLazyModel(postTag._postWithTagsCompositeKey, state: .loaded(model: loadedPost))
+        assertLazyReference(postTag._postWithTagsCompositeKey, state: .loaded(model: loadedPost))
         try await assertPost(loadedPost, canLazyLoad: postTag)
     }
     
@@ -110,7 +110,7 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
         _ = try await mutate(.create(newPost))
         queriedPostTag.setPostWithTagsCompositeKey(newPost)
         let savedPostTagWithNewPost = try await mutate(.update(queriedPostTag, includes: { postTag in [postTag.postWithTagsCompositeKey] }))
-        assertLazyModel(savedPostTagWithNewPost._postWithTagsCompositeKey, state: .loaded(model: newPost))
+        assertLazyReference(savedPostTagWithNewPost._postWithTagsCompositeKey, state: .loaded(model: newPost))
         let queriedPreviousPost = try await query(for: post)!
         try await assertPostWithNoPostTag(queriedPreviousPost)
         
@@ -120,7 +120,7 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
         _ = try await mutate(.create(newTag))
         queriedPostTagWithNewPost.setTagWithCompositeKey(newTag)
         let savedPostTagWithNewTag = try await mutate(.update(queriedPostTagWithNewPost, includes: { postTag in [postTag.tagWithCompositeKey]}))
-        assertLazyModel(savedPostTagWithNewTag._tagWithCompositeKey, state: .loaded(model: newTag))
+        assertLazyReference(savedPostTagWithNewTag._tagWithCompositeKey, state: .loaded(model: newTag))
         let queriedPreviousTag = try await query(for: savedTag)!
         try await assertTagWithNoPostTag(queriedPreviousTag)
     }

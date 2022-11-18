@@ -33,7 +33,7 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
         try await queriedPost.comments?.fetch()
         assertList(queriedPost.comments!, state: .isLoaded(count: 0))
         
-        assertLazyModel(queriedPost._blog, state: .notLoaded(identifiers: nil))
+        assertLazyReference(queriedPost._blog, state: .notLoaded(identifiers: nil))
     }
     
     func testSaveBlogThenPost() async throws {
@@ -47,12 +47,12 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
         assertList(createdBlog.posts!, state: .isNotLoaded(associatedIdentifiers: [blog.id], associatedField: "blog"))
         try await createdBlog.posts?.fetch()
         assertList(createdBlog.posts!, state: .isLoaded(count: 1))
-        assertLazyModel(createdBlog.posts!.first!._blog, state: .notLoaded(identifiers: [.init(name: "id", value: blog.id)]))
+        assertLazyReference(createdBlog.posts!.first!._blog, state: .notLoaded(identifiers: [.init(name: "id", value: blog.id)]))
         
         // the post can load the blog
-        assertLazyModel(createdPost._blog, state: .notLoaded(identifiers: [.init(name: "id", value: blog.id)]))
+        assertLazyReference(createdPost._blog, state: .notLoaded(identifiers: [.init(name: "id", value: blog.id)]))
         let loadedBlog = try await createdPost.blog!
-        assertLazyModel(createdPost._blog, state: .loaded(model: loadedBlog))
+        assertLazyReference(createdPost._blog, state: .loaded(model: loadedBlog))
         assertList(loadedBlog.posts!, state: .isNotLoaded(associatedIdentifiers: [blog.id], associatedField: "blog"))
     }
     
@@ -60,7 +60,7 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
         await setup(withModels: BlogPostComment8V2Models())
         let comment = Comment(content: "content")
         let createdComment = try await mutate(.create(comment))
-        assertLazyModel(createdComment._post, state: .notLoaded(identifiers: nil))
+        assertLazyReference(createdComment._post, state: .notLoaded(identifiers: nil))
     }
     
     func testSavePostComment() async throws {
@@ -71,7 +71,7 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
         let createdComment = try await mutate(.create(comment))
         
         // the comment can load the post
-        assertLazyModel(createdComment._post, state: .notLoaded(identifiers: [.init(name: "id", value: post.id)]))
+        assertLazyReference(createdComment._post, state: .notLoaded(identifiers: [.init(name: "id", value: post.id)]))
         let loadedPost = try await createdComment.post!
         assertList(loadedPost.comments!, state: .isNotLoaded(associatedIdentifiers: [post.id], associatedField: "post"))
         
@@ -91,9 +91,9 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
         let createdComment = try await mutate(.create(comment))
         
         // the comment can load the post and load the blog
-        assertLazyModel(createdComment._post, state: .notLoaded(identifiers: [.init(name: "id", value: post.id)]))
+        assertLazyReference(createdComment._post, state: .notLoaded(identifiers: [.init(name: "id", value: post.id)]))
         let loadedPost = try await createdComment.post!
-        assertLazyModel(loadedPost._blog, state: .notLoaded(identifiers: [.init(name: "id", value: blog.id)]))
+        assertLazyReference(loadedPost._blog, state: .notLoaded(identifiers: [.init(name: "id", value: blog.id)]))
         let loadedBlog = try await loadedPost.blog!
         assertList(loadedBlog.posts!, state: .isNotLoaded(associatedIdentifiers: [blog.id], associatedField: "blog"))
         
@@ -103,7 +103,7 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
         let loadedPost2 = createdBlog.posts!.first!
         assertList(loadedPost2.comments!, state: .isNotLoaded(associatedIdentifiers: [loadedPost2.id], associatedField: "post"))
         try await loadedPost2.comments?.fetch()
-        assertLazyModel(loadedPost2.comments!.first!._post, state: .notLoaded(identifiers: [.init(name: "id", value: post.id)]))
+        assertLazyReference(loadedPost2.comments!.first!._post, state: .notLoaded(identifiers: [.init(name: "id", value: post.id)]))
     }
     
     func testBlogIncludesPostAndPostIncludesBlog() async throws {
@@ -123,7 +123,7 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
         
         // post includes blog
         let queriedPostWithBlog = try await query(.get(Post.self, byIdentifier: post.id, includes: { post in [post.blog] }))!
-        assertLazyModel(queriedPostWithBlog._blog, state: .loaded(model: blog))
+        assertLazyReference(queriedPostWithBlog._blog, state: .loaded(model: blog))
     }
     
     func testPostIncludesCommentAndCommentIncludesPost() async throws {
@@ -139,7 +139,7 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
         
         // comment includes post
         let queriedCommentWithPost = try await query(.get(Comment.self, byIdentifier: comment.id, includes: { comment in [comment.post] }))!
-        assertLazyModel(queriedCommentWithPost._post, state: .loaded(model: post))
+        assertLazyReference(queriedCommentWithPost._post, state: .loaded(model: post))
     }
     
     func testBlogIncludesPostAndCommentAndCommentIncludesPostAndBlog() async throws {
@@ -162,9 +162,9 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
         
         // comment includes post and blog
         let queriedCommentWithPostBlog = try await query(.get(Comment.self, byIdentifier: comment.id, includes: { comment in [comment.post.blog] }))!
-        assertLazyModel(queriedCommentWithPostBlog._post, state: .loaded(model: post))
+        assertLazyReference(queriedCommentWithPostBlog._post, state: .loaded(model: post))
         let loadedPost = try await queriedCommentWithPostBlog.post!
-        assertLazyModel(loadedPost._blog, state: .loaded(model: blog))
+        assertLazyReference(loadedPost._blog, state: .loaded(model: blog))
     }
     
     func testUpdate() {

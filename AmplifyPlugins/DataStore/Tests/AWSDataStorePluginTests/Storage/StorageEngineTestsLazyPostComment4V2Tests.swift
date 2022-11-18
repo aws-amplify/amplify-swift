@@ -417,8 +417,8 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
     }
 }
 
-extension LazyModelIdentifier: Equatable {
-    public static func == (lhs: LazyModelIdentifier, rhs: LazyModelIdentifier) -> Bool {
+extension LazyReferenceIdentifier: Equatable {
+    public static func == (lhs: LazyReferenceIdentifier, rhs: LazyReferenceIdentifier) -> Bool {
         lhs.name == rhs.name && lhs.value == rhs.value
     }
 }

@@ -194,7 +194,7 @@ extension Model {
         } else if let optionalModel = value as? Model?,
                   let modelValue = optionalModel {
             return modelValue.identifier(schema: modelSchema).values
-        } else if let lazyModel = value as? (any LazyModelMarker) {
+        } else if let lazyModel = value as? (any LazyReferenceMarker) {
             if let modelValue = lazyModel.element {
                 return modelValue.identifier(schema: modelSchema).values
             } else if let identifiers = lazyModel.identifiers {

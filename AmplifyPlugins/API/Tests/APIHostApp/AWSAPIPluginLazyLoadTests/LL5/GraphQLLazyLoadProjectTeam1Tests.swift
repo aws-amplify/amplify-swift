@@ -92,7 +92,7 @@ class GraphQLLazyLoadProjectTeam1Tests: GraphQLLazyLoadBaseTest {
     func assertProject(_ project: Project, hasTeam team: Team) async throws {
         XCTAssertEqual(project.project1TeamTeamId, team.teamId)
         XCTAssertEqual(project.project1TeamName, team.name)
-        assertLazyModel(project._team, state: .notLoaded(identifiers: [.init(name: "teamId", value: team.teamId),
+        assertLazyReference(project._team, state: .notLoaded(identifiers: [.init(name: "teamId", value: team.teamId),
                                                                        .init(name: "name", value: team.name)]))
         
         let loadedTeam = try await project.team!
@@ -102,15 +102,15 @@ class GraphQLLazyLoadProjectTeam1Tests: GraphQLLazyLoadBaseTest {
     func assertProjectDoesNotContainTeam(_ project: Project) {
         XCTAssertNil(project.project1TeamTeamId)
         XCTAssertNil(project.project1TeamName)
-        assertLazyModel(project._team, state: .notLoaded(identifiers: nil))
+        assertLazyReference(project._team, state: .notLoaded(identifiers: nil))
     }
     
     func assertTeam(_ team: Team, hasProject project: Project) {
-        assertLazyModel(team._project, state: .notLoaded(identifiers: [.init(name: "projectId", value: project.projectId), .init(name: "name", value: project.name)]))
+        assertLazyReference(team._project, state: .notLoaded(identifiers: [.init(name: "projectId", value: project.projectId), .init(name: "name", value: project.name)]))
     }
     
     func assertTeamDoesNotContainProject(_ team: Team) {
-        assertLazyModel(team._project, state: .notLoaded(identifiers: nil))
+        assertLazyReference(team._project, state: .notLoaded(identifiers: nil))
     }
     
     func testSaveProjectWithTeamThenUpdate() async throws {

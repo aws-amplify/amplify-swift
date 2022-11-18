@@ -14,7 +14,7 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
     let apiName: String?
     
     enum LoadedState {
-        case notLoaded(identifiers: [LazyModelIdentifier])
+        case notLoaded(identifiers: [LazyReferenceIdentifier])
         case loaded(model: ModelType?)
     }
     
@@ -33,7 +33,7 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
     }
     
     // Initializer for not loaded state
-    init(identifiers: [LazyModelIdentifier], apiName: String? = nil) {
+    init(identifiers: [LazyReferenceIdentifier], apiName: String? = nil) {
         self.loadedState = .notLoaded(identifiers: identifiers)
         self.apiName = apiName
     }

@@ -107,7 +107,7 @@ extension LazyParentPost4V2 {
 public struct LazyChildComment4V2: Model {
     public let id: String
     public var content: String
-    internal var _post: LazyModel<LazyParentPost4V2>
+    internal var _post: LazyReference<LazyParentPost4V2>
     public var post: LazyParentPost4V2? {
         get async throws {
             try await _post.get()
@@ -132,20 +132,20 @@ public struct LazyChildComment4V2: Model {
                   updatedAt: Temporal.DateTime? = nil) {
         self.id = id
         self.content = content
-        self._post = LazyModel(element: post)
+        self._post = LazyReference(post)
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
     
     public mutating func setPost(_ post: LazyParentPost4V2) {
-        self._post = LazyModel(element: post)
+        self._post = LazyReference(post)
     }
     
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         id = try values.decode(String.self, forKey: .id)
         content = try values.decode(String.self, forKey: .content)
-        _post = try values.decode(LazyModel<LazyParentPost4V2>.self, forKey: .post)
+        _post = try values.decode(LazyReference<LazyParentPost4V2>.self, forKey: .post)
     }
     
     public func encode(to encoder: Encoder) throws {

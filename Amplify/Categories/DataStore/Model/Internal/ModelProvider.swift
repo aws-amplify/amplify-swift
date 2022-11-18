@@ -7,12 +7,12 @@
 
 import Foundation
 
-public protocol LazyModelMarker {
+public protocol LazyReferenceMarker {
     associatedtype Element: Model
     
     var element: Element? { get }
     
-    var identifiers: [LazyModelIdentifier]? { get }
+    var identifiers: [LazyReferenceIdentifier]? { get }
 }
 
 public struct AnyModelProvider<Element: Model>: ModelProvider {
@@ -43,6 +43,6 @@ public protocol ModelProvider {
 }
 
 public enum ModelProviderState<Element: Model> {
-    case notLoaded(identifiers: [LazyModelIdentifier]?)
+    case notLoaded(identifiers: [LazyReferenceIdentifier]?)
     case loaded(Element?)
 }

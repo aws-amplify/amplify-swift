@@ -25,8 +25,8 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         
         try await assertPost(savedPost, canLazyLoad: savedPostTag)
         try await assertTag(savedTag, canLazyLoad: savedPostTag)
-        assertLazyModel(savedPostTag._postWithTagsCompositeKey, state: .loaded(model: savedPost))
-        assertLazyModel(savedPostTag._tagWithCompositeKey, state: .loaded(model: savedTag))
+        assertLazyReference(savedPostTag._postWithTagsCompositeKey, state: .loaded(model: savedPost))
+        assertLazyReference(savedPostTag._tagWithCompositeKey, state: .loaded(model: savedTag))
         let queriedPost = try await query(for: savedPost)
         try await assertPost(queriedPost, canLazyLoad: savedPostTag)
         let queriedTag = try await query(for: savedTag)
@@ -60,13 +60,13 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func assertPostTag(_ postTag: PostTag, canLazyLoadTag tag: Tag, canLazyLoadPost post: Post) async throws {
-        assertLazyModel(postTag._tagWithCompositeKey, state: .notLoaded(identifiers: [.init(name: "@@primaryKey", value: tag.identifier)]))
-        assertLazyModel(postTag._postWithTagsCompositeKey, state: .notLoaded(identifiers: [.init(name: "@@primaryKey", value: post.identifier)]))
+        assertLazyReference(postTag._tagWithCompositeKey, state: .notLoaded(identifiers: [.init(name: "@@primaryKey", value: tag.identifier)]))
+        assertLazyReference(postTag._postWithTagsCompositeKey, state: .notLoaded(identifiers: [.init(name: "@@primaryKey", value: post.identifier)]))
         let loadedTag = try await postTag.tagWithCompositeKey
-        assertLazyModel(postTag._tagWithCompositeKey, state: .loaded(model: loadedTag))
+        assertLazyReference(postTag._tagWithCompositeKey, state: .loaded(model: loadedTag))
         try await assertTag(loadedTag, canLazyLoad: postTag)
         let loadedPost = try await postTag.postWithTagsCompositeKey
-        assertLazyModel(postTag._postWithTagsCompositeKey, state: .loaded(model: loadedPost))
+        assertLazyReference(postTag._postWithTagsCompositeKey, state: .loaded(model: loadedPost))
         try await assertPost(loadedPost, canLazyLoad: postTag)
     }
     
@@ -85,7 +85,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         _ = try await saveAndWaitForSync(newPost)
         queriedPostTag.setPostWithTagsCompositeKey(newPost)
         let savedPostTagWithNewPost = try await saveAndWaitForSync(queriedPostTag, assertVersion: 2)
-        assertLazyModel(savedPostTagWithNewPost._postWithTagsCompositeKey, state: .loaded(model: newPost))
+        assertLazyReference(savedPostTagWithNewPost._postWithTagsCompositeKey, state: .loaded(model: newPost))
         let queriedPreviousPost = try await query(for: savedPost)
         try await assertPostWithNoPostTag(queriedPreviousPost)
         
@@ -95,7 +95,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         _ = try await saveAndWaitForSync(newTag)
         queriedPostTagWithNewPost.setTagWithCompositeKey(newTag)
         let savedPostTagWithNewTag = try await saveAndWaitForSync(queriedPostTagWithNewPost, assertVersion: 3)
-        assertLazyModel(savedPostTagWithNewTag._tagWithCompositeKey, state: .loaded(model: newTag))
+        assertLazyReference(savedPostTagWithNewTag._tagWithCompositeKey, state: .loaded(model: newTag))
         let queriedPreviousTag = try await query(for: savedTag)
         try await assertTagWithNoPostTag(queriedPreviousTag)
     }

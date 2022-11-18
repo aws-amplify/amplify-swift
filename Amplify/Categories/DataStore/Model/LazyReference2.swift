@@ -11,7 +11,7 @@
 ///
 /// The default implementation only handles in-memory data, therefore `get()` and
 /// `require()` will simply return the current `reference`.
-class LazyReference<ModelType: Model> : Codable {
+class LazyReference2<ModelType: Model> : Codable {
 
     /// The model reference.
     private var reference: ModelType?
