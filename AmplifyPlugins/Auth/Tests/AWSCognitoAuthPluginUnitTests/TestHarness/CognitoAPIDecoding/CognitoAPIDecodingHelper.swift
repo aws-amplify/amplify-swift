@@ -171,9 +171,9 @@ struct CognitoAPIDecodingHelper {
             result = .failure(error)
         case "success":
             let responseData = try! JSONEncoder().encode(response)
-            let forgotPasswordOutput = try! JSONDecoder().decode(
+            let output = try! JSONDecoder().decode(
                 Output.self, from: responseData)
-            result = .success(forgotPasswordOutput)
+            result = .success(output)
         default:
             fatalError("invalid response type")
         }

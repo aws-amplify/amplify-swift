@@ -63,13 +63,11 @@ extension AuthTestHarnessInput {
                 case .failure(let error):
                     throw error
                 }
-            },
-            mockChangePasswordOutputResponse: { input in
+            }, mockChangePasswordOutputResponse: { input in
                 fatalError()
                 //                    XCTAssertEqual(input, self.featureSpecification.cognitoService.changePassword.input)
                 //                    return self.featureSpecification.cognitoService.changePassword.response
-            },
-            mockDeleteUserOutputResponse: { input in
+            }, mockDeleteUserOutputResponse: { input in
                 guard case .deleteUser(let apiData) = cognitoAPI[.deleteUser] else {
                     fatalError("Missing input")
                 }
@@ -79,8 +77,7 @@ extension AuthTestHarnessInput {
                 case .failure(let error):
                     throw error
                 }
-            },
-            mockForgotPasswordOutputResponse: { input in
+            }, mockForgotPasswordOutputResponse: { input in
                 guard case .forgotPassword(let apiData) = cognitoAPI[.forgotPassword] else {
                     fatalError("Missing input")
                 }
@@ -96,8 +93,21 @@ extension AuthTestHarnessInput {
                 case .failure(let error):
                     throw error
                 }
-            }
+            }, mockConfirmDeviceResponse: { input in
+                guard case .confirmDevice(let apiData) = cognitoAPI[.confirmDevice] else {
+                    fatalError("Missing input")
+                }
+                if let request = apiData.expectedInput {
+                    XCTAssertEqual(request, input)
+                }
 
+                switch apiData.output {
+                case .success(let response):
+                    return response
+                case .failure(let error):
+                    throw error
+                }
+            }
         )
     }
 
