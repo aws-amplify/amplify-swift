@@ -89,8 +89,6 @@ public struct AppSyncModelMetadataUtils {
         // The metadata gets decoded to the LazyModel and List implementations respectively.
         for modelField in modelSchema.fields.values {
             
-            print("Iterating over \(modelField.name) isArray \(modelField.isArray) hasAssociation \(modelField.hasAssociation)")
-            
             // Handle Belongs-to associations. For the current `modelField` that is a belongs-to association,
             // retrieve the data and attempt to decode to the association's modelType. If it can be decoded,
             // this means it is eager loaded and does not need to be lazy loaded. If it cannot, extract the
@@ -198,15 +196,12 @@ public struct AppSyncModelMetadataUtils {
         
         // if the number of fields extracted + typename != the data object's fields, then this is not for eager loading.
         if (identifiers.count + 1) != (modelObject.keys.count) {
-            print("returning nil for \(associatedModel.modelName)")
             return nil
         }
         
         if !identifiers.isEmpty {
-            print("Creating not loaded \(associatedModel.modelName) object of \(modelObject)")
             return AppSyncModelIdentifierMetadata(identifiers: identifiers, apiName: apiName)
         } else {
-            print("Creating not loaded \(associatedModel.modelName)")
             return nil
         }
     }
@@ -219,7 +214,6 @@ public struct AppSyncModelMetadataUtils {
             // retrieve the targetName here instead of the name of the field on the model.
             // we don't have the target name on here because it's the
             if case .string(let id) = modelJSON[identifierField.name] {
-                print("Found key value \(identifierField.name) value: \(id)")
                 identifiers.append(id)
             }
         }
