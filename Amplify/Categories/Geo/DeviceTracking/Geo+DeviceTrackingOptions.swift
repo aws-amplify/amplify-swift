@@ -185,3 +185,15 @@ public extension Geo.BatchingOption {
         }
     }
 }
+
+public extension Geo {
+    struct DeviceTrackingHubPayloadData {
+        public let error: Geo.Error?
+        public let locations: [Geo.Location]
+        
+        public init(error: Geo.Error? = nil, locations: [Geo.Location] = []) {
+            self.error = error
+            self.locations = locations
+        }
+    }
+}
