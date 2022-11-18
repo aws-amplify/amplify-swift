@@ -33,7 +33,7 @@ class StorageTransferResponse {
                 let description = errorDescription(forStatusCode: statusCode)
                 if [401, 403].contains(statusCode) {
                     error = .accessDenied(description,
-                                          "Make sure the user has access to the key before trying to download it.",
+                                          "Make sure the user has access to the key before trying to download/upload it.",
                                           self.error)
                 } else if 404 == statusCode {
                     error = .keyNotFound(transferTask.key,
