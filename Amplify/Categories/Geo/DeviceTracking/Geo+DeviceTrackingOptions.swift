@@ -187,7 +187,7 @@ public extension Geo.BatchingOption {
 }
 
 public extension Geo {
-    struct DeviceTrackingHubPayloadData {
+    struct SaveLocationsFailedHubPayloadData {
         public let error: Geo.Error?
         public let locations: [Geo.Location]
         
