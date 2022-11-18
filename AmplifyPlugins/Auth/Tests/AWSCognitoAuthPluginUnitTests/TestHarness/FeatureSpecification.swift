@@ -92,6 +92,7 @@ struct API: Codable {
         case signIn
         case deleteUser
         case confirmSignIn
+        case fetchAuthSession
 
         
         case getId

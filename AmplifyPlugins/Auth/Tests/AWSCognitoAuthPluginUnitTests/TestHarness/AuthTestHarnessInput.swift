@@ -66,6 +66,9 @@ enum AmplifyAPI {
     case signIn(
         input: AuthSignInRequest,
         expectedOutput: Result<AuthSignInResult, AuthError>?)
+    case fetchAuthSession(
+        input: AuthFetchSessionRequest,
+        expectedOutput: Result<AWSAuthCognitoSession, AuthError>?)
     case deleteUser(
         input: Void,
         expectedOutput: Result<Void, AuthError>?)

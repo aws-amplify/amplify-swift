@@ -58,6 +58,11 @@ struct TestHarnessAPIDecoder {
                     params: specification.api.params,
                     responseType: responseType,
                     data: data)
+            case .fetchAuthSession:
+                return fetchAuthSession(
+                    params: specification.api.params,
+                    responseType: responseType,
+                    data: data)
             default:
                 fatalError()
             }
@@ -126,6 +131,20 @@ struct TestHarnessAPIDecoder {
         return .confirmSignIn(
             input: .init(challengeResponse: challengeResponse, options: .init()),
             expectedOutput: generateResult(responseType: responseType, data: data))
+    }
+
+    private static func fetchAuthSession(
+        params: JSONValue,
+        responseType: String,
+        data: Data
+    ) -> AmplifyAPI {
+
+        let result: Result<AWSAuthCognitoSession, AuthError> = generateResult(
+            responseType: responseType, data: data)
+
+        return .fetchAuthSession(
+            input: .init(options: .init()),
+            expectedOutput: result)
     }
 
     private static func deleteUserAPI(

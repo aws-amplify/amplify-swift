@@ -29,6 +29,7 @@ class AmplifyAuthCognitoPluginTests: XCTestCase {
 
             for testSuiteFile in testSuiteFiles {
                 XCTContext.runActivity(named: testSuiteFile) { activity in
+                    print("Test Suite File: ---> \(directory)/\(testSuiteFile)")
                     let specification = FeatureSpecification(
                         fileName: testSuiteFile,
                         subdirectory: "\(AuthTestHarnessConstants.testSuitesPath)/\(directory)")
@@ -65,6 +66,11 @@ class AmplifyAuthCognitoPluginTests: XCTestCase {
                     return try await plugin.signIn(
                         username: request.username,
                         password: request.password, options: .init())
+                }
+            case .fetchAuthSession(_,
+                                   let expectedOutput):
+                validateAPI(expectedOutput: expectedOutput) {
+                    return try await plugin.fetchAuthSession(options: .init()) as! AWSAuthCognitoSession
                 }
             case .deleteUser(_, let expectedOutput):
                 let expectation = expectation(description: "expectation")
