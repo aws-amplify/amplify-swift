@@ -381,7 +381,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
     
     
     // MARK: - Hub
-    func sendHubErrorEvent(error: Geo.Error? = nil, locations: [CLLocation]) {
+    func sendHubErrorEvent(error: Geo.Error, locations: [CLLocation]) {
         let geoLocations = locations.map({
             Geo.Location(latitude: $0.coordinate.latitude, longitude: $0.coordinate.longitude) })
         let data = Geo.SaveLocationsFailedHubPayloadData(error: error, locations: geoLocations)
@@ -389,7 +389,7 @@ class AWSDeviceTracker: NSObject, CLLocationManagerDelegate, AWSDeviceTrackingBe
         Amplify.Hub.dispatch(to: .geo, payload: payload)
     }
     
-    func sendHubErrorEvent(error: Geo.Error? = nil, locations: [Position]) {
+    func sendHubErrorEvent(error: Geo.Error, locations: [Position]) {
         let geoLocations = locations.map({
             Geo.Location(latitude: $0.location.latitude, longitude: $0.location.longitude) })
         let data = Geo.SaveLocationsFailedHubPayloadData(error: error, locations: geoLocations)

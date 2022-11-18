@@ -188,10 +188,10 @@ public extension Geo.BatchingOption {
 
 public extension Geo {
     struct SaveLocationsFailedHubPayloadData {
-        public let error: Geo.Error?
+        public let error: Geo.Error
         public let locations: [Geo.Location]
         
-        public init(error: Geo.Error? = nil, locations: [Geo.Location] = []) {
+        public init(error: Geo.Error, locations: [Geo.Location] = []) {
             self.error = error
             self.locations = locations
         }
