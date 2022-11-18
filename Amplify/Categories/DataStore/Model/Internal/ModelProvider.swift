@@ -8,9 +8,9 @@
 import Foundation
 
 public protocol LazyReferenceMarker {
-    associatedtype Element: Model
+    associatedtype ModelType: Model
     
-    var element: Element? { get }
+    var reference: ModelType? { get }
     
     var identifiers: [LazyReferenceIdentifier]? { get }
 }
@@ -39,10 +39,17 @@ public protocol ModelProvider {
     func load() async throws -> Element?
     
     func getState() -> ModelProviderState<Element>
-
 }
 
 public enum ModelProviderState<Element: Model> {
     case notLoaded(identifiers: [LazyReferenceIdentifier]?)
     case loaded(Element?)
+}
+
+// MARK - AnyModelProvider
+
+public extension ModelProvider {
+    func eraseToAnyModelProvider() -> AnyModelProvider<Element> {
+        AnyModelProvider(provider: self)
+    }
 }

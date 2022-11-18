@@ -36,7 +36,7 @@ public class LazyReference<ModelType: Model>: Codable, LazyReferenceMarker {
     let modelProvider: AnyModelProvider<ModelType>
     
     /// The model reference.
-    public internal(set) var element: ModelType? {
+    public internal(set) var reference: ModelType? {
         get {
             switch loadedState {
             case .notLoaded:

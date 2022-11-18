@@ -115,7 +115,7 @@ extension Model {
                 } else if let associatedLazyModel = value as? (any LazyReferenceMarker) {
                     // The identifier (sometimes the FK), comes from the loaded model's identifier or
                     // from the not loaded identifier's first and only value
-                    return associatedLazyModel.element?.identifier ?? associatedLazyModel.identifiers?.first?.value
+                    return associatedLazyModel.reference?.identifier ?? associatedLazyModel.identifiers?.first?.value
                 } else if let associatedModelJSON = value as? [String: JSONValue] {
                     return associatedPrimaryKeyValue(fromJSON: associatedModelJSON,
                                                      associatedModelSchema: associatedModelSchema)

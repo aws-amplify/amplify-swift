@@ -18,13 +18,13 @@ extension GraphQLResponseDecoder {
      1. String, special case where the object is serialized as a JSON string.
      2. AnyModel, used by DataStore's sync engine
      3. ModelListMarker, checks if it is a List type, inject additional information to create a loaded list.
-     4. AppSyncModelMetadataUtils.shouldAddMetadata/addMetadata injects metadata for hasMany associations to
+     4. AppSyncModelMetadataUtils.shouldAddMetadata/addMetadata injects metadata recursively
         decode to nested notloaded Lists.
-     5. Default encode/decode path (6)
+     5. Default encode/decode path
      */
     func decodeToResponseType(_ graphQLData: [String: JSONValue]) throws -> R {
         let graphQLData = try valueAtDecodePath(from: JSONValue.object(graphQLData))
-        if request.responseType == String.self {
+        if request.responseType == String.self { // 1
             let serializedJSON = try encoder.encode(graphQLData)
             guard let responseString = String(data: serializedJSON, encoding: .utf8) else {
                 throw APIError.operationError("Could not get String from data", "", nil)
