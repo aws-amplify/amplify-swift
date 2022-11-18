@@ -35,6 +35,9 @@ extension Comment4 {
       .field(comment4.post4CommentsTitle, is: .optional, ofType: .string)
     )
     }
+    public class Path: ModelPath<Comment4> { }
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension Comment4: ModelIdentifiable {
@@ -47,4 +50,14 @@ extension Comment4.IdentifierProtocol {
       content: String) -> Self {
     .make(fields:[(name: "commentId", value: commentId), (name: "content", value: content)])
   }
+}
+
+extension ModelPath where ModelType == Comment4 {
+    var commentId: FieldPath<String> { string("commentId") }
+    var content: FieldPath<String> { string("content") }
+    var createdAt: FieldPath<Temporal.DateTime> { datetime("createdAt") }
+    var updatedAt: FieldPath<Temporal.DateTime> { datetime("updatedAt") }
+    var post4CommentsPostId: FieldPath<String> { string("post4CommentsPostId") }
+    var post4CommentsTitle: FieldPath<String> { string("post4CommentsTitle") }
+    
 }

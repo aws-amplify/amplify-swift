@@ -33,6 +33,9 @@ extension TagWithCompositeKey {
       .field(tagWithCompositeKey.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
+    public class Path: ModelPath<TagWithCompositeKey> { }
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension TagWithCompositeKey: ModelIdentifiable {
@@ -45,4 +48,12 @@ extension TagWithCompositeKey.IdentifierProtocol {
       name: String) -> Self {
     .make(fields:[(name: "id", value: id), (name: "name", value: name)])
   }
+}
+
+extension ModelPath where ModelType == TagWithCompositeKey {
+    var id: FieldPath<String> { id() }
+    var name: FieldPath<String> { string("name") }
+    var posts: ModelPath<PostTagsWithCompositeKey> { PostTagsWithCompositeKey.Path(name: "posts", isCollection: true, parent: self) }
+    var createdAt: FieldPath<Temporal.DateTime> { datetime("createdAt") }
+    var updatedAt: FieldPath<Temporal.DateTime> { datetime("updatedAt") }
 }

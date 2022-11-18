@@ -37,6 +37,10 @@ extension Project5 {
       .field(project5.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
+    
+    public class Path: ModelPath<Project5> { }
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension Project5: ModelIdentifiable {
@@ -49,4 +53,14 @@ extension Project5.IdentifierProtocol {
       name: String) -> Self {
     .make(fields:[(name: "projectId", value: projectId), (name: "name", value: name)])
   }
+}
+
+extension ModelPath where ModelType == Project5 {
+    var projectId: FieldPath<String> { string("projectId") }
+    var name: FieldPath<String> { string("name") }
+    var team: ModelPath<Team5> { Team5.Path(name: "team", parent: self) }
+    var teamId: FieldPath<String> { string("teamId") }
+    var teamName: FieldPath<String> { string("teamName") }
+    var createdAt: FieldPath<Temporal.DateTime> { datetime("createdAt") }
+    var updatedAt: FieldPath<Temporal.DateTime> { datetime("updatedAt") }
 }
