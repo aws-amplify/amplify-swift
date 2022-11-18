@@ -35,6 +35,8 @@ extension Amplify {
                 await reset(Storage)
             case .predictions:
                 await reset(Predictions)
+            case .pushNotifications:
+                await reset(Notifications.Push)
             case .hub, .logging:
                 // Hub and Logging should be reset after all other categories
                 break
@@ -79,6 +81,8 @@ extension Amplify {
                 Geo = GeoCategory()
             case .predictions:
                 Predictions = PredictionsCategory()
+            case .pushNotifications:
+                Notifications.Push = PushNotificationsCategory()
             case .storage:
                 Storage = StorageCategory()
             }

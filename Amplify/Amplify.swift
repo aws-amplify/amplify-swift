@@ -33,6 +33,7 @@ public class Amplify {
     public static internal(set) var DataStore = DataStoreCategory()
     public static internal(set) var Geo = GeoCategory()
     public static internal(set) var Hub = HubCategory()
+    public static internal(set) var Notifications = NotificationsCategory()
     public static internal(set) var Predictions = PredictionsCategory()
     public static internal(set) var Storage = StorageCategory()
 
@@ -70,6 +71,8 @@ public class Amplify {
             try Logging.add(plugin: plugin)
         case let plugin as PredictionsCategoryPlugin:
             try Predictions.add(plugin: plugin)
+        case let plugin as PushNotificationsCategoryPlugin:
+            try Notifications.Push.add(plugin: plugin)
         case let plugin as StorageCategoryPlugin:
             try Storage.add(plugin: plugin)
         default:
