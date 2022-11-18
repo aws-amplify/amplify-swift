@@ -8,7 +8,7 @@
 import Foundation
 
 struct AuthTestHarnessConstants {
-    static let authConfigurationResourcePath = "TestResources/authConfigurations"
+    static let authConfigurationResourcePath = "TestResources/configuration"
     static let authStatesResourcePath = "TestResources/states"
     static let testSuitesPath = "TestResources/testSuites"
 }
