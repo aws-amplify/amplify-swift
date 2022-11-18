@@ -36,6 +36,9 @@ public enum CategoryType: String {
 
     /// Prediction
     case predictions
+    
+    /// Push Notifications
+    case pushNotifications
 
     /// Upload and download files from the cloud
     case storage
@@ -62,6 +65,8 @@ public extension CategoryType {
             return "Logging"
         case .predictions:
             return "Predictions"
+        case .pushNotifications:
+            return "PushNotifications"
         case .storage:
             return "Storage"
         }
@@ -85,6 +90,8 @@ public extension CategoryType {
             return Amplify.Logging
         case .predictions:
             return Amplify.Predictions
+        case .pushNotifications:
+            return Amplify.Notifications.Push
         case .storage:
             return Amplify.Storage
         }
