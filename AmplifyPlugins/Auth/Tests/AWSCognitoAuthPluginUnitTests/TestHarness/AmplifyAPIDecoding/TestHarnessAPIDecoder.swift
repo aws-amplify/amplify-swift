@@ -65,7 +65,7 @@ struct TestHarnessAPIDecoder {
                     data: data)
             case .signOut:
                 return signOutApi(
-                    params: specification.api.params,
+                    options: specification.api.options,
                     responseType: responseType,
                     data: data)
             default:
@@ -153,16 +153,21 @@ struct TestHarnessAPIDecoder {
     }
 
     private static func signOutApi(
-        params: JSONValue,
+        options: JSONValue,
         responseType: String,
         data: Data
     ) -> AmplifyAPI {
+
+        var globalSignOut = false
+        if case .boolean(let globalSignOutVal) = options["globalSignOut"] {
+            globalSignOut = globalSignOutVal
+        }
 
         let result: Result<AWSCognitoSignOutResult, AuthError> = generateResult(
             responseType: responseType, data: data)
 
         return .signOut(
-            input: .init(options: .init()),
+            input: .init(options: .init(globalSignOut: globalSignOut)),
             expectedOutput: result)
     }
 

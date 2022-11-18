@@ -34,6 +34,12 @@ extension AWSCognitoSignOutResult: Codable {
     enum CodingKeys: String, CodingKey {
         case signOutResult
         case error
+        case revokeTokenError
+        case hostedUIError
+        case globalSignOutError
+        case exception
+        case refreshToken
+        case accessToken
     }
 
     public init(from decoder: Decoder) throws {
@@ -44,10 +50,32 @@ extension AWSCognitoSignOutResult: Codable {
             let error = try values.decode(AuthError.self, forKey: .error)
             self = .failed(error)
         } else if try values.decode(String.self, forKey: .signOutResult) == "PARTIAL" {
-            fatalError("decode associated types")
+
+            let revokeTokenParent = try? values.nestedContainer(keyedBy: CodingKeys.self, forKey: .revokeTokenError)
+            let revokeAuthError = try revokeTokenParent?.decodeIfPresent(AuthError.self, forKey: .exception)
+            let refreshToken = try revokeTokenParent?.decodeIfPresent(String.self, forKey: .refreshToken)
+
+            let globalSignOutError = try? values.nestedContainer(keyedBy: CodingKeys.self, forKey: .globalSignOutError)
+            let globalAuthError = try globalSignOutError?.decodeIfPresent(AuthError.self, forKey: .exception)
+            let accessToken = try globalSignOutError?.decodeIfPresent(String.self, forKey: .accessToken)
+
+            var revokeTokenErrorObject: AWSCognitoRevokeTokenError? = nil
+            if let revokeAuthError = revokeAuthError,
+               let refreshToken = refreshToken {
+                revokeTokenErrorObject = AWSCognitoRevokeTokenError(
+                    refreshToken: refreshToken, error: revokeAuthError)
+            }
+
+            var globalSignOutErrorObject: AWSCognitoGlobalSignOutError? = nil
+            if let globalAuthError = globalAuthError,
+               let accessToken = accessToken {
+                globalSignOutErrorObject = AWSCognitoGlobalSignOutError(
+                    accessToken: accessToken, error: globalAuthError)
+            }
+
             self = .partial(
-                revokeTokenError: nil,
-                globalSignOutError: nil,
+                revokeTokenError: revokeTokenErrorObject,
+                globalSignOutError: globalSignOutErrorObject,
                 hostedUIError: nil)
         } else {
             fatalError("type not supported")
