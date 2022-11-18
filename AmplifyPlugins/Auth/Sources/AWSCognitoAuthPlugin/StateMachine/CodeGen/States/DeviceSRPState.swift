@@ -10,7 +10,7 @@ import AWSCognitoIdentityProvider
 enum DeviceSRPState: State {
 
     case notStarted
-    case initiatingDeviceSRP(SRPStateData)
+    case initiatingDeviceSRP
     case respondingDevicePasswordVerifier(SRPStateData)
     case signedIn(SignedInData)
     case error(SignInError)
@@ -34,8 +34,8 @@ extension DeviceSRPState {
         switch (lhs, rhs) {
         case (.notStarted, .notStarted):
             return true
-        case (.initiatingDeviceSRP(let lhsData), .initiatingDeviceSRP(let rhsData)):
-            return lhsData == rhsData
+        case (.initiatingDeviceSRP, .initiatingDeviceSRP):
+            return true
         case (.cancelling, .cancelling):
             return true
         case (.respondingDevicePasswordVerifier(let lhsData), .respondingDevicePasswordVerifier(let rhsData)):

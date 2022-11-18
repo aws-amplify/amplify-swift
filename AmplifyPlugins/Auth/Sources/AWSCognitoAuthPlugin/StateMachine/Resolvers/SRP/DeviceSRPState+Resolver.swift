@@ -50,13 +50,12 @@ extension DeviceSRPState {
         private func resolveNotStarted(
             byApplying signInEvent: SignInEvent) -> StateResolution<DeviceSRPState> {
                 switch signInEvent.eventType {
-                case .respondDeviceSRPChallenge(let srpStateData, let authResponse):
+                case .respondDeviceSRPChallenge(let username, let authResponse):
                     let action = InitiateAuthDeviceSRP(
-                        username: srpStateData.username,
-                        deviceMetadata: srpStateData.deviceMetadata,
+                        username: username,
                         authResponse: authResponse)
                     return StateResolution(
-                        newState: DeviceSRPState.initiatingDeviceSRP(srpStateData),
+                        newState: DeviceSRPState.initiatingDeviceSRP,
                         actions: [action]
                     )
                 default:

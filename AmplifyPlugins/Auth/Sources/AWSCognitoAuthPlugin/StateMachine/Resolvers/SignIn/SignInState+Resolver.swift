@@ -89,10 +89,10 @@ extension SignInState {
                 }
 
                 if let signInEvent = event as? SignInEvent,
-                   case .initiateDeviceSRP(let challengeResponse) = signInEvent.eventType,
-                   case .respondingPasswordVerifier(let srpStateData) = srpSignInState {
+                   case .initiateDeviceSRP(let username, let challengeResponse) = signInEvent.eventType,
+                   case .respondingPasswordVerifier = srpSignInState {
                     let action = StartDeviceSRPFlow(
-                        srpStateData: srpStateData,
+                        username: username,
                         authResponse: challengeResponse)
                     return .init(newState: .resolvingDeviceSrpa(.notStarted),
                                  actions: [action])
@@ -148,6 +148,16 @@ extension SignInState {
                    case .confirmDevice(let signedInData) = signInEvent.eventType {
                     let action = ConfirmDevice(signedInData: signedInData)
                     return .init(newState: .confirmingDevice,
+                                 actions: [action])
+                }
+
+                if let signInEvent = event as? SignInEvent,
+                   case .initiateDeviceSRP(let username, let challengeResponse) = signInEvent.eventType,
+                   case .signingIn = migrateSignInState {
+                    let action = StartDeviceSRPFlow(
+                        username: username,
+                        authResponse: challengeResponse)
+                    return .init(newState: .resolvingDeviceSrpa(.notStarted),
                                  actions: [action])
                 }
 
