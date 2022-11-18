@@ -84,4 +84,10 @@ enum CognitoAPI {
     case confirmSignIn(
         expectedInput: RespondToAuthChallengeInput?,
         output: Result<RespondToAuthChallengeOutputResponse, RespondToAuthChallengeOutputError>)
+    case getId(
+        expectedInput: GetIdInput?,
+        output: Result<GetIdOutputResponse, GetIdOutputError>)
+    case getCredentialsForIdentity(
+        expectedInput: GetCredentialsForIdentityInput?,
+        output: Result<GetCredentialsForIdentityOutputResponse, GetCredentialsForIdentityOutputError>)
 }

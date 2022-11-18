@@ -91,6 +91,8 @@ struct API: Codable {
         case signUp
         case deleteUser
         case confirmSignIn
+        case getId
+        case getCredentialsForIdentity
     }
 
     public init(from decoder: Decoder) throws {

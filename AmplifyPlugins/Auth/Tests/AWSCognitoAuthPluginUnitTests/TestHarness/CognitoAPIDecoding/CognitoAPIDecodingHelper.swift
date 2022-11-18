@@ -23,7 +23,8 @@ struct CognitoAPIDecodingHelper {
         for mockedResponse in specification.preConditions.mockedResponses {
 
             // Response
-            guard mockedResponse["type"] == .string("cognitoIdentityProvider") else {
+            guard mockedResponse["type"] == .string("cognitoIdentityProvider") ||
+                    mockedResponse["type"] == .string("cognitoIdentity") else {
                 continue
             }
 
@@ -64,6 +65,16 @@ struct CognitoAPIDecodingHelper {
                 )
             case "respondToAuthChallenge":
                 decodedAPIs[.confirmSignIn] = confirmSignInApi(
+                    request: requestData,
+                    response: response,
+                    responseType: responseType)
+            case "getId":
+                decodedAPIs[.getId] = getIdApi(
+                    request: requestData,
+                    response: response,
+                    responseType: responseType)
+            case "getCredentialsForIdentity":
+                decodedAPIs[.getCredentialsForIdentity] = getCredentialsForIdentityApi(
                     request: requestData,
                     response: response,
                     responseType: responseType)
@@ -250,6 +261,86 @@ struct CognitoAPIDecodingHelper {
         }
 
         return .confirmSignIn(
+            expectedInput: input,
+            output: result)
+    }
+
+    private static func getIdApi(
+        request: Data?,
+        response: [String: JSONValue],
+        responseType: String
+    ) -> CognitoAPI {
+        var input: GetIdInput? = nil
+
+        if let request = request {
+            input = try! JSONDecoder().decode(GetIdInput.self, from: request)
+        }
+
+        let result: Result<GetIdOutputResponse, GetIdOutputError>
+
+        switch responseType {
+        case "failure":
+            guard case .string(let errorType) = response["errorType"],
+                  case .string(let errorMessage) = response["errorType"] else {
+                fatalError()
+            }
+
+            let error = try! GetIdOutputError(
+                errorType: errorType,
+                //TODO: Figure out a way to pass status code if needed
+                httpResponse: .init(body: .empty, statusCode: .ok),
+                message: errorMessage)
+            result = .failure(error)
+        case "success":
+            let responseData = try! JSONEncoder().encode(response)
+            let output = try! JSONDecoder().decode(
+                GetIdOutputResponse.self, from: responseData)
+            result = .success(output)
+        default:
+            fatalError("invalid response type")
+        }
+
+        return .getId(
+            expectedInput: input,
+            output: result)
+    }
+
+    private static func getCredentialsForIdentityApi(
+        request: Data?,
+        response: [String: JSONValue],
+        responseType: String
+    ) -> CognitoAPI {
+        var input: GetCredentialsForIdentityInput? = nil
+
+        if let request = request {
+            input = try! JSONDecoder().decode(GetCredentialsForIdentityInput.self, from: request)
+        }
+
+        let result: Result<GetCredentialsForIdentityOutputResponse, GetCredentialsForIdentityOutputError>
+
+        switch responseType {
+        case "failure":
+            guard case .string(let errorType) = response["errorType"],
+                  case .string(let errorMessage) = response["errorType"] else {
+                fatalError()
+            }
+
+            let error = try! GetCredentialsForIdentityOutputError(
+                errorType: errorType,
+                //TODO: Figure out a way to pass status code if needed
+                httpResponse: .init(body: .empty, statusCode: .ok),
+                message: errorMessage)
+            result = .failure(error)
+        case "success":
+            let responseData = try! JSONEncoder().encode(response)
+            let output = try! JSONDecoder().decode(
+                GetCredentialsForIdentityOutputResponse.self, from: responseData)
+            result = .success(output)
+        default:
+            fatalError("invalid response type")
+        }
+
+        return .getCredentialsForIdentity(
             expectedInput: input,
             output: result)
     }
