@@ -1,0 +1,46 @@
+{
+    "description": "Nothing is returned when delete user succeeds",
+    "preConditions": {
+        "amplify-configuration": "authconfiguration.json",
+        "state": "SignedIn_SessionEstablished.json",
+        "mockedResponses": [
+            {
+                "type": "cognitoIdentityProvider",
+                "apiName": "deleteUser",
+                "responseType": "success",
+                "response": {
+                }
+            },
+            {
+                "type": "cognitoIdentityProvider",
+                "apiName": "revokeToken",
+                "responseType": "success",
+                "response": {
+                }
+            },
+            {
+                "type": "cognitoIdentityProvider",
+                "apiName": "globalSignOut",
+                "responseType": "success",
+                "response": {
+                }
+            }
+        ]
+    },
+    "api": {
+        "name": "deleteUser",
+        "params": {
+        },
+        "options": {
+        }
+    },
+    "validations": [
+        {
+            "type": "amplify",
+            "apiName": "deleteUser",
+            "responseType": "success",
+            "response": {
+            }
+        }
+    ]
+}

@@ -1,0 +1,27 @@
+{
+    "description": "Test that signOut while already signed out returns complete with success",
+    "preConditions": {
+        "amplify-configuration": "authconfiguration.json",
+        "state": "SignedOut_Configured.json",
+        "mockedResponses": [
+        ]
+    },
+    "api": {
+        "name": "signOut",
+        "params": {
+        },
+        "options": {
+            "globalSignOut": false
+        }
+    },
+    "validations": [
+        {
+            "type": "amplify",
+            "apiName": "signOut",
+            "responseType": "success",
+            "response": {
+                "signOutResult": "COMPLETE"
+            }
+        }
+    ]
+}

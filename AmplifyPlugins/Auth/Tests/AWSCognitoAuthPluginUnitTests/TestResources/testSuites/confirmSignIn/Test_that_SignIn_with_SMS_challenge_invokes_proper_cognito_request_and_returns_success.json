@@ -1,0 +1,71 @@
+{
+    "description": "Test that SignIn with SMS challenge invokes proper cognito request and returns success",
+    "preConditions": {
+        "amplify-configuration": "authconfiguration.json",
+        "state": "SigningIn_SigningIn.json",
+        "mockedResponses": [
+            {
+                "type": "cognitoIdentityProvider",
+                "apiName": "respondToAuthChallenge",
+                "responseType": "success",
+                "response": {
+                    "AuthenticationResult": {
+                        "IdToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VySWQiLCJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZXhwIjoxNTE2MjM5MDIyLCJvcmlnaW5fanRpIjoib3JpZ2luX2p0aSJ9.Xqa-vjJe5wwwsqeRAdHf8kTBn_rYSkDn2lB7xj9Z1xU",
+                        "AccessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VySWQiLCJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZXhwIjoxNTE2MjM5MDIyLCJvcmlnaW5fanRpIjoib3JpZ2luX2p0aSJ9.Xqa-vjJe5wwwsqeRAdHf8kTBn_rYSkDn2lB7xj9Z1xU",
+                        "RefreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VySWQiLCJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZXhwIjoxNTE2MjM5MDIyLCJvcmlnaW5fanRpIjoib3JpZ2luX2p0aSJ9.Xqa-vjJe5wwwsqeRAdHf8kTBn_rYSkDn2lB7xj9Z1xU",
+                        "ExpiresIn": 300
+                    }
+                }
+            },
+            {
+                "type": "cognitoIdentity",
+                "apiName": "getId",
+                "responseType": "success",
+                "response": {
+                    "IdentityId": "someIdentityId"
+                }
+            },
+            {
+                "type": "cognitoIdentity",
+                "apiName": "getCredentialsForIdentity",
+                "responseType": "success",
+                "response": {
+                    "Credentials": {
+                        "AccessKeyId": "someAccessKey",
+                        "SecretKey": "someSecretKey",
+                        "SessionToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VySWQiLCJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZXhwIjoxNTE2MjM5MDIyLCJvcmlnaW5fanRpIjoib3JpZ2luX2p0aSJ9.Xqa-vjJe5wwwsqeRAdHf8kTBn_rYSkDn2lB7xj9Z1xU",
+                        "Expiration": 2342134
+                    },
+                    "IdentityId": "someIdentityId"
+                }
+            }
+        ]
+    },
+    "api": {
+        "name": "confirmSignIn",
+        "params": {
+            "challengeResponse": "000000"
+        },
+        "options": {
+        }
+    },
+    "validations": [
+        {
+            "type": "amplify",
+            "apiName": "confirmSignIn",
+            "responseType": "success",
+            "response": {
+                "isSignedIn": true,
+                "nextStep": {
+                    "signInStep": "DONE",
+                    "additionalInfo": {
+                    }
+                }
+            }
+        },
+        {
+            "type": "state",
+            "expectedState": "SignedIn_SessionEstablished.json"
+        }
+    ]
+}

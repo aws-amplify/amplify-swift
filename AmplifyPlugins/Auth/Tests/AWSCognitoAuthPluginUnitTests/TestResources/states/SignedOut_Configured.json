@@ -1,0 +1,12 @@
+{
+    "type": "AuthState.Configured",
+    "AuthenticationState": {
+        "type": "AuthenticationState.SignedOut",
+        "signedOutData": {
+            "lastKnownUsername": "username"
+        }
+    },
+    "AuthorizationState": {
+        "type": "AuthorizationState.Configured"
+    }
+}
