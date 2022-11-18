@@ -93,12 +93,14 @@ struct API: Codable {
         case deleteUser
         case confirmSignIn
         case fetchAuthSession
-
+        case signOut
         
         case getId
         case getCredentialsForIdentity
         case confirmDevice
         case initiateAuth
+        case revokeToken
+        case globalSignOut
     }
 
     public init(from decoder: Decoder) throws {

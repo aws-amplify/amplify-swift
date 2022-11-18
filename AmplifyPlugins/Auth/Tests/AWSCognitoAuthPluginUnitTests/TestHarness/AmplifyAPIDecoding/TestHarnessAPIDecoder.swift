@@ -63,6 +63,11 @@ struct TestHarnessAPIDecoder {
                     params: specification.api.params,
                     responseType: responseType,
                     data: data)
+            case .signOut:
+                return signOutApi(
+                    params: specification.api.params,
+                    responseType: responseType,
+                    data: data)
             default:
                 fatalError()
             }
@@ -143,6 +148,20 @@ struct TestHarnessAPIDecoder {
             responseType: responseType, data: data)
 
         return .fetchAuthSession(
+            input: .init(options: .init()),
+            expectedOutput: result)
+    }
+
+    private static func signOutApi(
+        params: JSONValue,
+        responseType: String,
+        data: Data
+    ) -> AmplifyAPI {
+
+        let result: Result<AWSCognitoSignOutResult, AuthError> = generateResult(
+            responseType: responseType, data: data)
+
+        return .signOut(
             input: .init(options: .init()),
             expectedOutput: result)
     }

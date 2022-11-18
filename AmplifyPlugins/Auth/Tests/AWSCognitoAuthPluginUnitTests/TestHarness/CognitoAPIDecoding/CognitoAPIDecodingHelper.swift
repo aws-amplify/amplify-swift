@@ -93,6 +93,14 @@ struct CognitoAPIDecodingHelper {
                         responseType: responseType
                     )
                 )
+            case "revokeToken":
+                decodedAPIs[.revokeToken] = .revokeToken(
+                    getApiInputAndOutput(
+                        request: requestData,
+                        response: response,
+                        responseType: responseType
+                    )
+                )
             case "getId":
                 decodedAPIs[.getId] = .getId(
                     getApiInputAndOutput(
@@ -103,6 +111,14 @@ struct CognitoAPIDecodingHelper {
                 )
             case "getCredentialsForIdentity":
                 decodedAPIs[.getCredentialsForIdentity] = .getCredentialsForIdentity(
+                    getApiInputAndOutput(
+                        request: requestData,
+                        response: response,
+                        responseType: responseType
+                    )
+                )
+            case "globalSignOut":
+                decodedAPIs[.globalSignOut] = .globalSignOut(
                     getApiInputAndOutput(
                         request: requestData,
                         response: response,

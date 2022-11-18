@@ -1,26 +1,12 @@
 {
-    "description": "Nothing is returned when delete user succeeds",
+    "description": "Test that signOut while signed in returns complete with success",
     "preConditions": {
         "amplify-configuration": "authconfiguration.json",
         "state": "SignedIn_SessionEstablished.json",
         "mockedResponses": [
             {
                 "type": "cognitoIdentityProvider",
-                "apiName": "deleteUser",
-                "responseType": "success",
-                "response": {
-                }
-            },
-            {
-                "type": "cognitoIdentityProvider",
                 "apiName": "revokeToken",
-                "responseType": "success",
-                "response": {
-                }
-            },
-            {
-                "type": "cognitoIdentityProvider",
-                "apiName": "globalSignOut",
                 "responseType": "success",
                 "response": {
                 }
@@ -28,18 +14,20 @@
         ]
     },
     "api": {
-        "name": "deleteUser",
+        "name": "signOut",
         "params": {
         },
         "options": {
+            "globalSignOut": false
         }
     },
     "validations": [
         {
             "type": "amplify",
-            "apiName": "deleteUser",
+            "apiName": "signOut",
             "responseType": "success",
             "response": {
+                "signOutResult": "COMPLETE"
             }
         }
     ]

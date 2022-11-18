@@ -30,7 +30,19 @@ extension AuthTestHarnessInput {
                     throw error
                 }
             }, mockRevokeTokenResponse: { input in
-                return RevokeTokenOutputResponse()
+                guard case .revokeToken(let apiData) = cognitoAPI[.revokeToken] else {
+                    fatalError("Missing input")
+                }
+                if let request = apiData.expectedInput {
+                    XCTAssertEqual(input, request)
+                }
+
+                switch apiData.output {
+                case .success(let response):
+                    return response
+                case .failure(let error):
+                    throw error
+                }
             }, mockInitiateAuthResponse: { input in
                 guard case .initiateAuth(let apiData) = cognitoAPI[.initiateAuth] else {
                     fatalError("Missing input")
@@ -47,7 +59,19 @@ extension AuthTestHarnessInput {
                 }
             },
             mockGlobalSignOutResponse: { input in
-                return GlobalSignOutOutputResponse()
+                guard case .globalSignOut(let apiData) = cognitoAPI[.globalSignOut] else {
+                    fatalError("Missing input")
+                }
+                if let request = apiData.expectedInput {
+                    XCTAssertEqual(input, request)
+                }
+
+                switch apiData.output {
+                case .success(let response):
+                    return response
+                case .failure(let error):
+                    throw error
+                }
             },
             mockRespondToAuthChallengeResponse: { input in
                 guard case .respondToAuthChallenge(let apiData) = cognitoAPI[.confirmSignIn] else {

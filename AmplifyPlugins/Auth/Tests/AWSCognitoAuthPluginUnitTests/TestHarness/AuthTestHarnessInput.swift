@@ -69,6 +69,9 @@ enum AmplifyAPI {
     case fetchAuthSession(
         input: AuthFetchSessionRequest,
         expectedOutput: Result<AWSAuthCognitoSession, AuthError>?)
+    case signOut(
+        input: AuthSignOutRequest,
+        expectedOutput: Result<AWSCognitoSignOutResult, AuthError>?)
     case deleteUser(
         input: Void,
         expectedOutput: Result<Void, AuthError>?)
@@ -86,6 +89,8 @@ enum CognitoAPI {
     case getCredentialsForIdentity(CognitoAPIData<GetCredentialsForIdentityInput, GetCredentialsForIdentityOutputResponse, GetCredentialsForIdentityOutputError>)
     case confirmDevice(CognitoAPIData<ConfirmDeviceInput, ConfirmDeviceOutputResponse, ConfirmDeviceOutputError>)
     case initiateAuth(CognitoAPIData<InitiateAuthInput, InitiateAuthOutputResponse, InitiateAuthOutputError>)
+    case revokeToken(CognitoAPIData<RevokeTokenInput, RevokeTokenOutputResponse, RevokeTokenOutputError>)
+    case globalSignOut(CognitoAPIData<GlobalSignOutInput, GlobalSignOutOutputResponse, GlobalSignOutOutputError>)
 }
 
 struct CognitoAPIData<Input: Decodable, Output: Decodable, E: Swift.Error & ClientRuntime.HttpResponseBinding> {
