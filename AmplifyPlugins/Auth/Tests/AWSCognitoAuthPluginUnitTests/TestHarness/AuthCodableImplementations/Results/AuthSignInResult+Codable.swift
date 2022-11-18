@@ -57,6 +57,12 @@ extension AuthSignInStep: Codable {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         if try values.decode(String.self, forKey: .signInStep) == "DONE" {
             self = .done
+        } else if try values.decode(String.self, forKey: .signInStep) == "CONFIRM_SIGN_IN_WITH_SMS_MFA_CODE" {
+            let codeDeliveryDetails = try values.decode(AuthCodeDeliveryDetails.self, forKey: .codeDeliveryDetails)
+            let additionalInfo = try values.decodeIfPresent([String: String].self, forKey: .additionalInfo)
+            self = .confirmSignInWithSMSMFACode(
+                codeDeliveryDetails,
+                additionalInfo)
         } else {
             fatalError("next step type not supported")
         }

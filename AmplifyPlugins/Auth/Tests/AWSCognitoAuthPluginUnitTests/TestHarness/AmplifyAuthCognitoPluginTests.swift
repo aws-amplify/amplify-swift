@@ -59,6 +59,13 @@ class AmplifyAuthCognitoPluginTests: XCTestCase {
                         username: signUpRequest.username,
                         password: signUpRequest.password, options: .init())
                 }
+            case .signIn(let request,
+                         let expectedOutput):
+                validateAPI(expectedOutput: expectedOutput) {
+                    return try await plugin.signIn(
+                        username: request.username,
+                        password: request.password, options: .init())
+                }
             case .deleteUser(_, let expectedOutput):
                 let expectation = expectation(description: "expectation")
                 Task {

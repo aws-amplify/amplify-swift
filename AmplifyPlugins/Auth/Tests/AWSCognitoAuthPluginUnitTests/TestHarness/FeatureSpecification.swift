@@ -89,8 +89,11 @@ struct API: Codable {
         case resetPassword
         case forgotPassword
         case signUp
+        case signIn
         case deleteUser
         case confirmSignIn
+
+        
         case getId
         case getCredentialsForIdentity
         case confirmDevice

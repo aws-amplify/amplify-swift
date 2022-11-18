@@ -38,6 +38,11 @@ struct TestHarnessAPIDecoder {
                     responseType: responseType,
                     data: data
                 )
+            case .signIn:
+                return signInAPI(
+                    params: specification.api.params,
+                    responseType: responseType,
+                    data: data)
             case .signUp:
                 return signUpAPI(
                     params: specification.api.params,
@@ -58,6 +63,25 @@ struct TestHarnessAPIDecoder {
             }
         }
 
+    private static func signInAPI(
+        params: JSONValue,
+        responseType: String,
+        data: Data
+    ) -> AmplifyAPI {
+        guard case .string(let username) = params["username"] else {
+            fatalError("missing username parameter")
+        }
+        var inputPassword: String?
+        if case .string(let password) = params["password"] {
+            inputPassword = password
+        }
+        return .signIn(
+            input: .init(
+                username: username,
+                password: inputPassword, options: .init()),
+            expectedOutput: generateResult(responseType: responseType, data: data))
+    }
+
     private static func signUpAPI(
         params: JSONValue,
         responseType: String,
@@ -70,26 +94,11 @@ struct TestHarnessAPIDecoder {
         if case .string(let password) = params["password"] {
             inputPassword = password
         }
-
-        let result: Result<AuthSignUpResult, AuthError>
-
-        switch responseType {
-        case "failure":
-            let authError = try! JSONDecoder().decode(
-                AuthError.self, from: data)
-            result = .failure(authError)
-        case "success":
-            let resetPasswordResult = try! JSONDecoder().decode(
-                AuthSignUpResult.self, from: data)
-            result = .success(resetPasswordResult)
-        default:
-            fatalError("invalid response type")
-        }
         return .signUp(
             input: .init(
                 username: username,
                 password: inputPassword, options: .init()),
-            expectedOutput: result)
+            expectedOutput: generateResult(responseType: responseType, data: data))
     }
 
     private static func resetPasswordAPI(
@@ -100,25 +109,23 @@ struct TestHarnessAPIDecoder {
         guard case .string(let username) = params["username"] else {
             fatalError("missing username parameter")
         }
-
-        let result: Result<AuthResetPasswordResult, AuthError>
-
-        switch responseType {
-        case "failure":
-            let authError = try! JSONDecoder().decode(
-                AuthError.self, from: data)
-            result = .failure(authError)
-        case "success":
-            let resetPasswordResult = try! JSONDecoder().decode(
-                AuthResetPasswordResult.self, from: data)
-            result = .success(resetPasswordResult)
-        default:
-            fatalError("invalid response type")
-        }
         return .resetPassword(
             input: .init(username: username,
                          options: .init()),
-            expectedOutput: result)
+            expectedOutput: generateResult(responseType: responseType, data: data))
+    }
+
+    private static func confirmSignInAPI(
+        params: JSONValue,
+        responseType: String,
+        data: Data
+    ) -> AmplifyAPI {
+        guard case .string(let challengeResponse) = params["challengeResponse"] else {
+            fatalError("missing username parameter")
+        }
+        return .confirmSignIn(
+            input: .init(challengeResponse: challengeResponse, options: .init()),
+            expectedOutput: generateResult(responseType: responseType, data: data))
     }
 
     private static func deleteUserAPI(
@@ -144,16 +151,10 @@ struct TestHarnessAPIDecoder {
             expectedOutput: result)
     }
 
-    private static func confirmSignInAPI(
-        params: JSONValue,
-        responseType: String,
-        data: Data
-    ) -> AmplifyAPI {
-        guard case .string(let challengeResponse) = params["challengeResponse"] else {
-            fatalError("missing username parameter")
-        }
+    private static func generateResult<Output: Decodable>(
+        responseType: String, data: Data) -> Result<Output, AuthError> {
 
-        let result: Result<AuthSignInResult, AuthError>
+        let result: Result<Output, AuthError>
 
         switch responseType {
         case "failure":
@@ -161,14 +162,12 @@ struct TestHarnessAPIDecoder {
                 AuthError.self, from: data)
             result = .failure(authError)
         case "success":
-            let resetPasswordResult = try! JSONDecoder().decode(
-                AuthSignInResult.self, from: data)
-            result = .success(resetPasswordResult)
+            let output = try! JSONDecoder().decode(
+                Output.self, from: data)
+            result = .success(output)
         default:
             fatalError("invalid response type")
         }
-        return .confirmSignIn(
-            input: .init(challengeResponse: challengeResponse, options: .init()),
-            expectedOutput: result)
+        return result
     }
 }

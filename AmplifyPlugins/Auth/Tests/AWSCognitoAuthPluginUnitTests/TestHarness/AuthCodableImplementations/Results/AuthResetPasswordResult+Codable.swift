@@ -76,18 +76,20 @@ extension AuthCodeDeliveryDetails: Codable {
         let deliveryMedium = try values.decode(String.self, forKey: .deliveryMedium)
 
         let destination: DeliveryDestination
-        let attributeKey: AuthUserAttributeKey
+        var attributeKey: AuthUserAttributeKey? = nil
 
         if deliveryMedium == "EMAIL" {
             destination = .email(destinationDescription)
-        } else {
+        } else if deliveryMedium == "SMS"{
+            destination = .sms(destinationDescription)
+        }  else {
             fatalError()
         }
 
-        let attributeName = try values.decode(String.self, forKey: .attributeName)
+        let attributeName = try values.decodeIfPresent(String.self, forKey: .attributeName)
         if attributeName == "EMAIL" {
             attributeKey = .email
-        } else {
+        } else if let attributeName = attributeName  {
             attributeKey = .unknown(attributeName)
         }
 

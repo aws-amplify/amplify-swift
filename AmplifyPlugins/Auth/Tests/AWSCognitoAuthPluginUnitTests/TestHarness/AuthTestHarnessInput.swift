@@ -63,6 +63,9 @@ enum AmplifyAPI {
     case signUp(
         input: AuthSignUpRequest,
         expectedOutput: Result<AuthSignUpResult, AuthError>?)
+    case signIn(
+        input: AuthSignInRequest,
+        expectedOutput: Result<AuthSignInResult, AuthError>?)
     case deleteUser(
         input: Void,
         expectedOutput: Result<Void, AuthError>?)

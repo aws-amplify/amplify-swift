@@ -1,0 +1,86 @@
+{
+    "description": "Test that SRP signIn invokes proper cognito request and returns success",
+    "preConditions": {
+        "amplify-configuration": "authconfiguration.json",
+        "state": "SignedOut_Configured.json",
+        "mockedResponses": [
+            {
+                "type": "cognitoIdentityProvider",
+                "apiName": "initiateAuth",
+                "responseType": "success",
+                "response": {
+                    "ChallengeName": "PASSWORD_VERIFIER",
+                    "ChallengeParameters": {
+                        "SALT": "79b00c90ebb6221ab4cad530f41441ed",
+                        "SECRET_BLOCK": "CDX6lsfSfPHwLUJpDSXIfkoLHEPmRc0e+g8riKvQzoqhA8UxgAKGQxx9NG5iKMpWtlRNqviaz0SOm3smLgVYrzwbkMYlrtqD2E1PO9/1GSQsV/Kqddum/p+y4CMFujQZE4TWH/VbxD0BtZOfKL9M/dr1Pw7aOwxAlNKung5+KW3sFMdj7GNvU6MMNGXspx7u8d2L0de1GuAlF0YSxTE5NOrrFuatU/rPRetJN5c/vvgBZr+5eoGVdYLuDL/8gk2QHgS/+SIR88OBbs1h5zb8GKnhQk/eib2PozCd96L/TTEGU0Lxg89UOnQ/HNQnNiKHBRym/1zUsNW0bjQex4K4y9Ap2tZJgODy5yzNrpa21mMskYK5Ryv8zn+G36Otp2tdWwGxV8MkJPyW56LLY5Gbbr3T5xOSUavVAGgGU/1ikV3V1BPITwikCpVZdxwnldNCBh98en60Uz+o9Q+k+/PtfbyhenfNCn61umTofEc78Lo6SL9WRmkTyabBrR+iX4YjGBAyxURLChdhnA+StCkGq+cDmgJuMO9rAV1BWh4fMCvykQww6ZnFHHWkL3PSyPzfTiOIcnPT6QIb5jxDut/lZm5JJiyGi1FqjCjuhMrwKilwP92zm15WvGy74LWMVtwa5Qy+KwZS1cvNULGL9QaOs+H+xbI1Hu+heLPPUsfAFZwOH2vDlkmRSD1B7cSxtsY4Zb54j3+vrz1rT4EAWLZCwZ9OJhVPPK68llsH2NWKzKKbfvEdxwDNMXll2D1GCTkhvTw7jmuzKD5k4vQyvmLduuhr4NpyaAzgmNfVIljhjjz7yJjiF8/JKuPHMLMrBV8kXeJqlDfhqa/0sDKhkIdAcuGLPnUHiVWG5pdzyp0ELUwSwoS0p5HmOd8Mv/sXX/ZNqMDTTYm0G7IXrTtKWWQAvMw2bVMFC5f4fSbSpIoVjbTChumqLqDrT0zeC6whXT1NWL1RDrIyWN5BQBH5hpF5HPsxkPVEskQzeNjeFTvHA4sgSlbSVoSP8TnTkwwBxoLG6kH2JMn3ar5K2lCf2VSd+wcgztAIVgiSc6eDVZEnXThX2j2ZJObPwcN7d21R1l6+FgH7XA7kbBWUV/dVchXuflNa+K2/ubmO/ofsasdw1+4JkJzjJVecX/KN/E79m1TDLzWSb1jnTrQpw5fCu+bAXtADzHdo7gynnek5gr9jzfZfPZ1Niu6/IVmTN/ClBt/hbr42VUnDw0liYqXe0/2m4ah2t/w1PYIeCnFUtNU+19PfCzXnLOCwFwNNAj4JA7mX03nwvWKBMTjqv2Rx5h0dicuRZJKxjbzS/NrRjVTeaLJ+dg8iM0zXGxVGVNcc7WfmpngTDxGQyxUWeOTx53CL543xIZpTlsuR50uHc0/epmg5WpCQsKMAAyO3Fv2PRS378XaNMGNIyb7ZRuik+7IHbCNOB6B4Uqry3QJUg9dycsumcLqJw4Z3EvAuj5EMO6FMA0Gre8GVhICluhCmkNwbfe/UfsBSGffohGMMDHO/4IVn1pGiNRix6aAhiRdTtRgeFHq4fl/swCbhKecSbdzHlvCPjpfaidWI7ZYBALwTeWIDbFP21Rdk1BuU79bCwmuZ9No5y52oyAbA7jMS0q3ld4sAAw8YfRNf0KggdA9Iolz9qdI/8xVLTLWsdvv1NA1JIPb8lPtlkqTlFYDpinYbJk4W/1BOS85TSWPBwadRpVhEIDeH42hIgnvEPA==",
+                        "SRP_B": "b39ff004593719894a4d2d79146aa19be1e45992f44392fdf13dab2c4765ecefc8627f2e7ac8f30f136116f848f9606119ee4cd7e2e617caa21cf7c53b2e9b07bda875cf10f69344c97916cd640b2a207bd54b28b2893c0f4d2273ecdc1f8bcd693f3d929e4038ae217d0a83daa5c782879558e0e9c66b7d1e851801f5190e5c226dd613c5234740039f9ed1e732f2c4f57660025fd84275313f0b0a93642daeb2ab9f414a01fb973eaa9c9e940ff2e5ffb56e03171d88969f93d57c30afdead8c5ac095d9c0a94ce04dba97404f993821cfb7aa5b7e7d3461c4ef09462a3bdbc1002e3b9f2803a3dac11b2cbcb1353381ed35731a13f60adadb6b33cf3d31a2b102c507265cede30e5bc84bb0b6ed1005c1cdc72cf87efa96eec45283edfc75060a4bd0dc31544eb424cd25939626c014199ad433079b26a0ecab129c2eef61d22994ad70c96d286e6e8c1abc65e7060ba69cb0d8c4a31cc08cc7d76ef92f757b2a34e7ae236aadbced9bb7a4a06e67da3a084833e0f3a0b903af0a74816031",                        "USERNAME": "royji2",
+                        "USER_ID_FOR_SRP": "royji2"
+                    }
+                }
+            },
+            {
+                "type": "cognitoIdentityProvider",
+                "apiName": "respondToAuthChallenge",
+                "responseType": "success",
+                "response": {
+                    "AuthenticationResult": {
+                        "IdToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VySWQiLCJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZXhwIjoxNTE2MjM5MDIyLCJvcmlnaW5fanRpIjoib3JpZ2luX2p0aSJ9.Xqa-vjJe5wwwsqeRAdHf8kTBn_rYSkDn2lB7xj9Z1xU",
+                        "AccessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VySWQiLCJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZXhwIjoxNTE2MjM5MDIyLCJvcmlnaW5fanRpIjoib3JpZ2luX2p0aSJ9.Xqa-vjJe5wwwsqeRAdHf8kTBn_rYSkDn2lB7xj9Z1xU",
+                        "RefreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VySWQiLCJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZXhwIjoxNTE2MjM5MDIyLCJvcmlnaW5fanRpIjoib3JpZ2luX2p0aSJ9.Xqa-vjJe5wwwsqeRAdHf8kTBn_rYSkDn2lB7xj9Z1xU",
+                        "ExpiresIn": 300
+                    }
+                }
+            },
+            {
+                "type": "cognitoIdentity",
+                "apiName": "getId",
+                "responseType": "success",
+                "response": {
+                    "IdentityId": "someIdentityId"
+                }
+            },
+            {
+                "type": "cognitoIdentity",
+                "apiName": "getCredentialsForIdentity",
+                "responseType": "success",
+                "response": {
+                    "Credentials": {
+                        "AccessKeyId": "someAccessKey",
+                        "SecretKey": "someSecretKey",
+                        "SessionToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VySWQiLCJ1c2VybmFtZSI6InVzZXJuYW1lIiwiZXhwIjoxNTE2MjM5MDIyLCJvcmlnaW5fanRpIjoib3JpZ2luX2p0aSJ9.Xqa-vjJe5wwwsqeRAdHf8kTBn_rYSkDn2lB7xj9Z1xU",
+                        "Expiration": 2342134
+                    },
+                    "IdentityId": "someIdentityId"
+                }
+            }
+        ]
+    },
+    "api": {
+        "name": "signIn",
+        "params": {
+            "username": "username",
+            "password": "password"
+        },
+        "options": {
+        }
+    },
+    "validations": [
+        {
+            "type": "amplify",
+            "apiName": "signIn",
+            "responseType": "success",
+            "response": {
+                "isSignedIn": true,
+                "nextStep": {
+                    "signInStep": "DONE",
+                    "additionalInfo": {
+                    }
+                }
+            }
+        },
+        {
+            "type": "state",
+            "expectedState": "SignedIn_SessionEstablished.json"
+        }
+    ]
+}
