@@ -15,152 +15,253 @@ import AWSPluginsCore
 final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
 
     func testSave() async throws {
-        await setup(withModels: PostComment4Models(), logLevel: .verbose)
-        
+        await setup(withModels: PostComment4Models())
         let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              post4CommentsPostId: post.postId,
-                              post4CommentsTitle: post.title)
-        let savedPost = try await mutate(.create(post))
-        let savedComment = try await mutate(.create(comment))
+        let comment = Comment(content: "content", post: post)
+        try await mutate(.create(post))
+        try await mutate(.create(comment))
     }
     
-    func testLazyLoad() async throws {
+    // Without `includes` and latest codegenerated types with the model path, the post should be lazy loaded
+    func testCommentWithLazyLoadPost() async throws {
         await setup(withModels: PostComment4Models(), logLevel: .verbose)
+        let post = Post(title: "title")
+        let comment = Comment(content: "content", post: post)
+        let createdPost = try await mutate(.create(post))
+        let createdComment = try await mutate(.create(comment))
         
-        let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              post4CommentsPostId: post.postId,
-                              post4CommentsTitle: post.title)
-        let savedPost = try await mutate(.create(post))
-        let savedComment = try await mutate(.create(comment))
-        assertComment(savedComment, contains: savedPost)
-        try await assertPost(savedPost, canLazyLoad: savedComment)
-//        let queriedComment = try await query(for: comment)!
-//        assertComment(queriedComment, contains: savedPost)
-//        let queriedPost = try await query(for: post)!
-//        try await assertPost(queriedPost, canLazyLoad: savedComment)
-    }
-    
-    func assertComment(_ comment: Comment, contains post: Post) {
-        XCTAssertEqual(comment.post4CommentsPostId, post.postId)
-        XCTAssertEqual(comment.post4CommentsTitle, post.title)
-    }
-    
-    func assertCommentDoesNotContainPost(_ comment: Comment) {
-        XCTAssertNil(comment.post4CommentsPostId)
-        XCTAssertNil(comment.post4CommentsTitle)
-    }
-    
-    func assertPost(_ post: Post,
-                    canLazyLoad comment: Comment) async throws {
-        guard let comments = post.comments else {
-            XCTFail("Missing comments on post")
-            return
-        }
-        assertList(comments, state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title],
-                                                 associatedField: "post"))
+        XCTAssertEqual(createdComment.post4CommentsPostId, post.postId)
+        XCTAssertEqual(createdComment.post4CommentsTitle, post.title)
+        
+        // The created post should have comments that are also not loaded
+        let comments = createdPost.comments!
+        assertList(comments, state: .isNotLoaded(associatedIdentifiers: [createdPost.postId, createdPost.title], associatedField: "post"))
+        // load the comments
         try await comments.fetch()
         assertList(comments, state: .isLoaded(count: 1))
-        guard let comment = comments.first else {
-            XCTFail("Missing lazy loaded comment from post")
-            return
-        }
-        assertComment(comment, contains: post)
+        XCTAssertEqual(comments.first!.post4CommentsPostId, post.postId)
+        XCTAssertEqual(comments.first!.post4CommentsTitle, post.title)
     }
     
-    func testSaveWithoutPost() async throws {
+    // Without `includes` and latest codegenerated types with the model path, the post's comments should be lazy loaded
+    func testPostWithLazyLoadComments() async throws {
         await setup(withModels: PostComment4Models(), logLevel: .verbose)
-        let comment = Comment(commentId: UUID().uuidString, content: "content")
-        let savedComment = try await mutate(.create(comment))
+        let post = Post(title: "title")
+        let comment = Comment(content: "content", post: post)
+        _ = try await mutate(.create(post))
+        _ = try await mutate(.create(comment))
+        let queriedPost = try await query(.get(Post.self, byIdentifier: .identifier(postId: post.postId, title: post.title)))!
+        let comments = queriedPost.comments!
+        assertList(comments, state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title], associatedField: "post"))
+        try await comments.fetch()
+        assertList(comments, state: .isLoaded(count: 1))
+        XCTAssertEqual(comments.first!.post4CommentsPostId, post.postId)
+        XCTAssertEqual(comments.first!.post4CommentsTitle, post.title)
+    }
+    
+    // With `includes` on `post.comments` should eager load the post's comments
+    func testPostWithEagerLoadComments() async throws {
+        await setup(withModels: PostComment4Models(), logLevel: .verbose)
+        let post = Post(title: "title")
+        let comment = Comment(content: "content", post: post)
+        _ = try await mutate(.create(post))
+        _ = try await mutate(.create(comment))
+        let queriedPost = try await query(.get(Post.self, byIdentifier: .identifier(postId: post.postId, title: post.title), includes: { post in [post.comments]}))!
+        let comments = queriedPost.comments!
+        assertList(comments, state: .isLoaded(count: 1))
+        XCTAssertEqual(comments.first!.post4CommentsPostId, post.postId)
+        XCTAssertEqual(comments.first!.post4CommentsTitle, post.title)
+    }
+    
+    func testCreateWithoutPost() async throws {
+        await setup(withModels: PostComment4Models(), logLevel: .verbose)
+        let comment = Comment(content: "content")
+        try await mutate(.create(comment))
         var queriedComment = try await query(for: comment)!
-        assertCommentDoesNotContainPost(queriedComment)
-        let post = Post(postId: UUID().uuidString, title: "title")
-        let savedPost = try await mutate(.create(post))
-        queriedComment.post4CommentsPostId = savedPost.postId
-        queriedComment.post4CommentsTitle = savedPost.title
-        let saveCommentWithPost = try await mutate(.update(queriedComment))
-        let queriedComment2 = try await query(for: saveCommentWithPost)!
-        assertComment(queriedComment2, contains: post)
-    }
-    
-    func testUpdateFromQueriedComment() async throws {
-        await setup(withModels: PostComment4Models(), logLevel: .verbose)
-        let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              post4CommentsPostId: post.postId,
-                              post4CommentsTitle: post.title)
-        let savedPost = try await mutate(.create(post))
-        let savedComment = try await mutate(.create(comment))
-        let queriedComment = try await query(for: comment)!
-        assertComment(queriedComment, contains: post)
-        let savedQueriedComment = try await mutate(.update(queriedComment))
-        let queriedComment2 = try await query(for: savedQueriedComment)!
-        assertComment(queriedComment2, contains: savedPost)
+        XCTAssertEqual(queriedComment.post4CommentsPostId, nil)
+        XCTAssertEqual(queriedComment.post4CommentsTitle, nil)
+        let post = Post(title: "title")
+        let createdPost = try await mutate(.create(post))
+        queriedComment.post4CommentsTitle = nil
+        queriedComment.post4CommentsPostId = nil
+        let updateCommentWithPost = try await mutate(.update(queriedComment))
+        let queriedCommentAfterUpdate = try await query(for: updateCommentWithPost)!
+        XCTAssertEqual(queriedCommentAfterUpdate.post4CommentsPostId, post.postId)
+        XCTAssertEqual(queriedCommentAfterUpdate.post4CommentsTitle, post.title)
     }
     
     func testUpdateToNewPost() async throws {
         await setup(withModels: PostComment4Models(), logLevel: .verbose)
-        
-        let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              post4CommentsPostId: post.postId,
-                              post4CommentsTitle: post.title)
-        _ = try await mutate(.create(post))
-        let savedComment = try await mutate(.create(comment))
-        var queriedComment = try await query(for: comment)!
-        assertComment(queriedComment, contains: post)
-        let newPost = Post(postId: UUID().uuidString, title: "title")
-        _ = try await mutate(.create(newPost))
+        let post = Post(title: "title")
+        let comment = Comment(content: "content", post: post)
+        try await mutate(.create(post))
+        try await mutate(.create(comment))
+        var queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(commentId: comment.commentId,
+                                                                                          content: comment.content)))!
+        XCTAssertEqual(queriedComment.post4CommentsPostId, post.postId)
+        XCTAssertEqual(queriedComment.post4CommentsTitle, post.title)
+        let newPost = Post(title: "title")
+        let createdNewPost = try await mutate(.create(newPost))
         queriedComment.post4CommentsPostId = newPost.postId
         queriedComment.post4CommentsTitle = newPost.title
-        let saveCommentWithNewPost = try await mutate(.update(queriedComment))
-        let queriedComment2 = try await query(for: saveCommentWithNewPost)!
-        assertComment(queriedComment2, contains: newPost)
+        let updateCommentWithPost = try await mutate(.update(queriedComment))
+        let queriedCommentAfterUpdate = try await query(for: updateCommentWithPost)!
+        XCTAssertEqual(queriedCommentAfterUpdate.post4CommentsPostId, newPost.postId)
+        XCTAssertEqual(queriedCommentAfterUpdate.post4CommentsTitle, newPost.title)
     }
     
     func testUpdateRemovePost() async throws {
         await setup(withModels: PostComment4Models(), logLevel: .verbose)
-        
-        let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              post4CommentsPostId: post.postId,
-                              post4CommentsTitle: post.title)
-        _ = try await mutate(.create(post))
-        let savedComment = try await mutate(.create(comment))
+        let post = Post(title: "title")
+        let comment = Comment(content: "content", post: post)
+        try await mutate(.create(post))
+        try await mutate(.create(comment))
         var queriedComment = try await query(for: comment)!
-        assertComment(queriedComment, contains: post)
+        XCTAssertEqual(queriedComment.post4CommentsPostId, post.postId)
+        XCTAssertEqual(queriedComment.post4CommentsTitle, post.title)
         
         queriedComment.post4CommentsPostId = nil
         queriedComment.post4CommentsTitle = nil
-        
-        let saveCommentRemovePost = try await mutate(.update(queriedComment))
-        let queriedCommentNoPost = try await query(for: saveCommentRemovePost)!
-        assertCommentDoesNotContainPost(queriedCommentNoPost)
+        let updateCommentRemovePost = try await mutate(.update(queriedComment))
+        let queriedCommentAfterUpdate = try await query(for: updateCommentRemovePost)!
+        XCTAssertEqual(queriedCommentAfterUpdate.post4CommentsPostId, nil)
+        XCTAssertEqual(queriedCommentAfterUpdate.post4CommentsTitle, nil)
     }
     
     func testDelete() async throws {
         await setup(withModels: PostComment4Models(), logLevel: .verbose)
+        let post = Post(title: "title")
+        let comment = Comment(content: "content", post: post)
+        let createdPost = try await mutate(.create(post))
+        try await mutate(.create(comment))
+            
+        try await mutate(.delete(createdPost))
+        let queriedPost = try await query(for: post)
+        XCTAssertNil(queriedPost)
+        let queriedComment = try await query(for: comment)!
+        XCTAssertEqual(queriedComment.post4CommentsPostId, nil)
+        XCTAssertEqual(queriedComment.post4CommentsTitle, nil)
+        try await mutate(.delete(queriedComment))
+        let queryDeletedComment = try await query(for: comment)
+        XCTAssertNil(queryDeletedComment)
+    }
+    
+    func testSubscribeToComments() async throws {
+        await setup(withModels: PostComment4Models(), logLevel: .verbose)
+        let post = Post(title: "title")
+        try await mutate(.create(post))
+        let connected = asyncExpectation(description: "subscription connected")
+        let onCreatedComment = asyncExpectation(description: "onCreatedComment received")
+        let subscription = Amplify.API.subscribe(request: .subscription(of: Comment.self, type: .onCreate))
+        Task {
+            do {
+                for try await subscriptionEvent in subscription {
+                    switch subscriptionEvent {
+                    case .connection(let subscriptionConnectionState):
+                        log.verbose("Subscription connect state is \(subscriptionConnectionState)")
+                        if case .connected = subscriptionConnectionState {
+                            await connected.fulfill()
+                        }
+                    case .data(let result):
+                        switch result {
+                        case .success(let createdComment):
+                            log.verbose("Successfully got createdComment from subscription: \(createdComment)")
+                            XCTAssertEqual(createdComment.post4CommentsPostId, post.postId)
+                            XCTAssertEqual(createdComment.post4CommentsTitle, post.title)
+                            await onCreatedComment.fulfill()
+                        case .failure(let error):
+                            XCTFail("Got failed result with \(error.errorDescription)")
+                        }
+                    }
+                }
+            } catch {
+                XCTFail("Subscription has terminated with \(error)")
+            }
+        }
         
-        let post = Post(postId: UUID().uuidString, title: "title")
-        let comment = Comment(commentId: UUID().uuidString,
-                              content: "content",
-                              post4CommentsPostId: post.postId,
-                              post4CommentsTitle: post.title)
-        let savedPost = try await mutate(.create(post))
-        let savedComment = try await mutate(.create(comment))
-        try await mutate(.delete(savedPost))
+        await waitForExpectations([connected], timeout: 10)
+        let comment = Comment(content: "content", post: post)
+        try await mutate(.create(comment))
+        await waitForExpectations([onCreatedComment], timeout: 10)
+        subscription.cancel()
+    }
+    
+    func testSubscribeToPosts() async throws {
+        await setup(withModels: PostComment4Models(), logLevel: .verbose)
+        let post = Post(title: "title")
         
-        // The expected behavior when deleting a post should be that the
-        // child models are deleted (comment) followed by the parent model (post).
-        try await assertModelDoesNotExist(savedPost)
-        // Is there a way to delete the children models in uni directional relationships?
-        try await assertModelExists(savedComment)
+        let connected = asyncExpectation(description: "subscription connected")
+        let onCreatedPost = asyncExpectation(description: "onCreatedPost received")
+        let subscription = Amplify.API.subscribe(request: .subscription(of: Post.self, type: .onCreate))
+        Task {
+            do {
+                for try await subscriptionEvent in subscription {
+                    switch subscriptionEvent {
+                    case .connection(let subscriptionConnectionState):
+                        log.verbose("Subscription connect state is \(subscriptionConnectionState)")
+                        if case .connected = subscriptionConnectionState {
+                            await connected.fulfill()
+                        }
+                    case .data(let result):
+                        switch result {
+                        case .success(let createdPost):
+                            log.verbose("Successfully got createdPost from subscription: \(createdPost)")
+                            assertList(createdPost.comments!, state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title], associatedField: "post4CommentsPostId"))
+                            await onCreatedPost.fulfill()
+                        case .failure(let error):
+                            XCTFail("Got failed result with \(error.errorDescription)")
+                        }
+                    }
+                }
+            } catch {
+                XCTFail("Subscription has terminated with \(error)")
+            }
+        }
+        
+        await waitForExpectations([connected], timeout: 10)
+        try await mutate(.create(post))
+        await waitForExpectations([onCreatedPost], timeout: 10)
+        subscription.cancel()
+    }
+    
+    func testSubscribeToPostsIncludes() async throws {
+        await setup(withModels: PostComment4Models(), logLevel: .verbose)
+        let post = Post(title: "title")
+        
+        let connected = asyncExpectation(description: "subscription connected")
+        let onCreatedPost = asyncExpectation(description: "onCreatedPost received")
+        let subscriptionIncludes = Amplify.API.subscribe(request: .subscription(of: Post.self,
+                                                                                type: .onCreate,
+                                                                                includes: { post in [post.comments]}))
+        Task {
+            do {
+                for try await subscriptionEvent in subscriptionIncludes {
+                    switch subscriptionEvent {
+                    case .connection(let subscriptionConnectionState):
+                        log.verbose("Subscription connect state is \(subscriptionConnectionState)")
+                        if case .connected = subscriptionConnectionState {
+                            await connected.fulfill()
+                        }
+                    case .data(let result):
+                        switch result {
+                        case .success(let createdPost):
+                            log.verbose("Successfully got createdPost from subscription: \(createdPost)")
+                            assertList(createdPost.comments!, state: .isLoaded(count: 0))
+                            await onCreatedPost.fulfill()
+                        case .failure(let error):
+                            XCTFail("Got failed result with \(error.errorDescription)")
+                        }
+                    }
+                }
+            } catch {
+                XCTFail("Subscription has terminated with \(error)")
+            }
+        }
+        
+        await waitForExpectations([connected], timeout: 10)
+        try await mutate(.create(post, includes: { post in [post.comments]}))
+        await waitForExpectations([onCreatedPost], timeout: 10)
+        subscriptionIncludes.cancel()
     }
 }
 
@@ -176,5 +277,21 @@ extension GraphQLLazyLoadPostComment4Tests {
             ModelRegistry.register(modelType: Post4.self)
             ModelRegistry.register(modelType: Comment4.self)
         }
+    }
+}
+
+extension Post4 {
+    init(title: String) {
+        self.init(postId: UUID().uuidString, title: title)
+    }
+}
+
+extension Comment4 {
+    init(content: String,
+         post: Post4? = nil) {
+        self.init(commentId: UUID().uuidString,
+                  content: content,
+                  post4CommentsPostId: post?.postId,
+                  post4CommentsTitle: post?.title)
     }
 }
