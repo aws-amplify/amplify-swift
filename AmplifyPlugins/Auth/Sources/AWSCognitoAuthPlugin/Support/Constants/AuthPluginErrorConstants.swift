@@ -328,4 +328,8 @@ extension AuthPluginErrorConstants {
     Received an error message from the service
     """
 
+    static let forbiddenError: RecoverySuggestion = """
+    Check if you are allowed to make this request based on the web ACL thats associated with your user pool. 
+    """
+
 }

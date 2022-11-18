@@ -48,9 +48,10 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
                      delegateQueue: OperationQueue? = nil,
                      logger: Logger = storageLogger) throws {
         let credentialsProvider = authService.getCredentialsProvider()
-        let clientConfig = try S3Client.S3ClientConfiguration(region: region,
-                                                              credentialsProvider: credentialsProvider,
-                                                              signingRegion: region)
+        let clientConfig = try S3Client.S3ClientConfiguration(
+            credentialsProvider: credentialsProvider,
+            region: region,
+            signingRegion: region)
 
         let s3Client = S3Client(config: clientConfig)
         let awsS3 = AWSS3Adapter(s3Client, config: clientConfig)

@@ -7,8 +7,13 @@
 
 import AWSClientRuntime
 import ClientRuntime
+import AWSCognitoIdentityProvider
 
-struct AWSEndpointResolving: AWSClientRuntime.EndpointResolver {
+struct AWSEndpointResolving: AWSCognitoIdentityProvider.EndpointResolver {
+    func resolve(params: AWSCognitoIdentityProvider.EndpointParams) throws -> ClientRuntime.Endpoint {
+        try endpoint()
+    }
+
     let endpoint: () throws -> ClientRuntime.Endpoint
 
     init(_ endpoint: @escaping () throws -> ClientRuntime.Endpoint) {
@@ -17,10 +22,5 @@ struct AWSEndpointResolving: AWSClientRuntime.EndpointResolver {
 
     init(_ endpoint: @escaping @autoclosure () throws -> ClientRuntime.Endpoint) {
         self.endpoint = endpoint
-    }
-
-    func resolve(serviceId: String, region: String) throws -> AWSEndpoint {
-        let endpoint = try endpoint()
-        return AWSEndpoint(endpoint: endpoint)
     }
 }

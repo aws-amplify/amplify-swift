@@ -84,21 +84,12 @@ extension AWSCognitoAuthPlugin {
     private func makeUserPool() throws -> CognitoUserPoolBehavior {
         switch authConfiguration {
         case .userPools(let userPoolConfig), .userPoolsAndIdentityPools(let userPoolConfig, _):
-
-            let configuration: CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration
-            if let customEndpoint = userPoolConfig.endpoint {
-                configuration = try .init(
-                    region: userPoolConfig.region,
-                    endpointResolver: customEndpoint.resolver,
-                    frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData()
-                )
-            } else {
-                configuration = try CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration(
-                    region: userPoolConfig.region, frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData())
-            }
-
+            let configuration = try CognitoIdentityProviderClient.CognitoIdentityProviderClientConfiguration(
+                endpointResolver: userPoolConfig.endpoint?.resolver,
+                frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
+                region: userPoolConfig.region
+            )
             return CognitoIdentityProviderClient(config: configuration)
-
         default:
             fatalError()
         }
@@ -108,7 +99,9 @@ extension AWSCognitoAuthPlugin {
         switch authConfiguration {
         case .identityPools(let identityPoolConfig), .userPoolsAndIdentityPools(_, let identityPoolConfig):
             let configuration = try CognitoIdentityClient.CognitoIdentityClientConfiguration(
-                region: identityPoolConfig.region, frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData())
+                frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
+                region: identityPoolConfig.region
+            )
             return CognitoIdentityClient(config: configuration)
         default:
             fatalError()

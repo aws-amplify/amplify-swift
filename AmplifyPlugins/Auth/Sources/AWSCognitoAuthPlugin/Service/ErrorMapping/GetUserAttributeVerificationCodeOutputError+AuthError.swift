@@ -78,6 +78,12 @@ extension GetUserAttributeVerificationCodeOutputError: AuthErrorConvertible {
             let statusCode = unknownAWSHttpServiceError._statusCode?.rawValue ?? -1
             let message = unknownAWSHttpServiceError._message ?? ""
             return .unknown("Unknown service error occurred with status \(statusCode) \(message)")
+            
+        case .forbiddenException(let forbiddenException):
+            return .service(forbiddenException.message ?? "Access to the requested resource is forbidden",
+                            AuthPluginErrorConstants.forbiddenError)
+        @unknown default:
+            return .unknown("Unknown service error occurred")
         }
     }
 
