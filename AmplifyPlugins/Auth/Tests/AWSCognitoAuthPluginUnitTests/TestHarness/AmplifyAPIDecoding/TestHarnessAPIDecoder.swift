@@ -15,21 +15,19 @@ struct TestHarnessAPIDecoder {
     static func decode(
         specification: FeatureSpecification) -> AmplifyAPI {
 
-            guard let expectedAmplifyResponseValidation = specification.validations.first(where: { validation in
+            let expectedAmplifyResponseValidation = specification.validations.first(where: { validation in
                 validation.value(at: "type") == .string("amplify")
-            }) else {
-                fatalError("Expected Amplify response not found")
+            })
+
+            var responseType: String? = nil
+            if case .string(let responseTypeUnwrapped) = expectedAmplifyResponseValidation?["responseType"] {
+                responseType = responseTypeUnwrapped
             }
 
-            guard case .string(let responseType) = expectedAmplifyResponseValidation["responseType"] else {
-                fatalError("Expected Amplify response type not found")
+            var data: Data? = nil
+            if case .object(let response) = expectedAmplifyResponseValidation?["response"] {
+                data = try? JSONEncoder().encode(response)
             }
-
-            guard case .object(let response) = expectedAmplifyResponseValidation["response"] else {
-                fatalError("Expected Amplify response not found")
-            }
-
-            let data = try! JSONEncoder().encode(response)
 
             switch specification.api.name {
             case .resetPassword:
@@ -75,8 +73,8 @@ struct TestHarnessAPIDecoder {
 
     private static func signInAPI(
         params: JSONValue,
-        responseType: String,
-        data: Data
+        responseType: String?,
+        data: Data?
     ) -> AmplifyAPI {
         guard case .string(let username) = params["username"] else {
             fatalError("missing username parameter")
@@ -94,8 +92,8 @@ struct TestHarnessAPIDecoder {
 
     private static func signUpAPI(
         params: JSONValue,
-        responseType: String,
-        data: Data
+        responseType: String?,
+        data: Data?
     ) -> AmplifyAPI {
         guard case .string(let username) = params["username"] else {
             fatalError("missing username parameter")
@@ -113,8 +111,8 @@ struct TestHarnessAPIDecoder {
 
     private static func resetPasswordAPI(
         params: JSONValue,
-        responseType: String,
-        data: Data
+        responseType: String?,
+        data: Data?
     ) -> AmplifyAPI {
         guard case .string(let username) = params["username"] else {
             fatalError("missing username parameter")
@@ -127,8 +125,8 @@ struct TestHarnessAPIDecoder {
 
     private static func confirmSignInAPI(
         params: JSONValue,
-        responseType: String,
-        data: Data
+        responseType: String?,
+        data: Data?
     ) -> AmplifyAPI {
         guard case .string(let challengeResponse) = params["challengeResponse"] else {
             fatalError("missing username parameter")
@@ -140,11 +138,11 @@ struct TestHarnessAPIDecoder {
 
     private static func fetchAuthSession(
         params: JSONValue,
-        responseType: String,
-        data: Data
+        responseType: String?,
+        data: Data?
     ) -> AmplifyAPI {
 
-        let result: Result<AWSAuthCognitoSession, AuthError> = generateResult(
+        let result: Result<AWSAuthCognitoSession, AuthError>? = generateResult(
             responseType: responseType, data: data)
 
         return .fetchAuthSession(
@@ -154,8 +152,8 @@ struct TestHarnessAPIDecoder {
 
     private static func signOutApi(
         options: JSONValue,
-        responseType: String,
-        data: Data
+        responseType: String?,
+        data: Data?
     ) -> AmplifyAPI {
 
         var globalSignOut = false
@@ -163,7 +161,7 @@ struct TestHarnessAPIDecoder {
             globalSignOut = globalSignOutVal
         }
 
-        let result: Result<AWSCognitoSignOutResult, AuthError> = generateResult(
+        let result: Result<AWSCognitoSignOutResult, AuthError>? = generateResult(
             responseType: responseType, data: data)
 
         return .signOut(
@@ -173,9 +171,15 @@ struct TestHarnessAPIDecoder {
 
     private static func deleteUserAPI(
         params: JSONValue,
-        responseType: String,
-        data: Data
+        responseType: String?,
+        data: Data?
     ) -> AmplifyAPI {
+
+        guard let responseType = responseType, let data = data else {
+            return .deleteUser(
+                input: (),
+                expectedOutput: nil)
+        }
 
         let result: Result<Void, AuthError>
 
@@ -195,22 +199,26 @@ struct TestHarnessAPIDecoder {
     }
 
     private static func generateResult<Output: Decodable>(
-        responseType: String, data: Data) -> Result<Output, AuthError> {
+        responseType: String?, data: Data?) -> Result<Output, AuthError>? {
 
-        let result: Result<Output, AuthError>
+            guard let responseType = responseType, let data = data else {
+                return nil
+            }
 
-        switch responseType {
-        case "failure":
-            let authError = try! JSONDecoder().decode(
-                AuthError.self, from: data)
-            result = .failure(authError)
-        case "success":
-            let output = try! JSONDecoder().decode(
-                Output.self, from: data)
-            result = .success(output)
-        default:
-            fatalError("invalid response type")
+            let result: Result<Output, AuthError>
+
+            switch responseType {
+            case "failure":
+                let authError = try! JSONDecoder().decode(
+                    AuthError.self, from: data)
+                result = .failure(authError)
+            case "success":
+                let output = try! JSONDecoder().decode(
+                    Output.self, from: data)
+                result = .success(output)
+            default:
+                fatalError("invalid response type")
+            }
+            return result
         }
-        return result
-    }
 }
