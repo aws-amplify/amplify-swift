@@ -29,29 +29,15 @@ public struct AppSyncModelIdentifierMetadata: Codable {
 
 public struct AppSyncModelMetadataUtils {
     
-    // This validation represents the requirements for adding metadata. For example,
-    // It needs to have the `id` of the model so it can be injected into lazy lists as the "associatedId"
-    // It needs to have the Model type from `__typename` so it can populate it as "associatedField"
-    //
-    // This check is currently broken for some of the CPK use cases since the identifier may not be named `id` anymore
-    // and can be a composite key made up of multiple fields. Some CPK use cases like having `id` and another key
-    // still works since part of the composite key is still named `id`.
+    // A fairly light check to make sure the payload is an object and we have the schema for `addMetadata`.
+    // Note: `addMetadata` should be very tightly checking the associated fields to determine when it should add
+    // metadata. Do we still need to do this anymore?
     static func shouldAddMetadata(toModel graphQLData: JSONValue) -> Bool {
-
         guard case let .object(modelJSON) = graphQLData,
               case let .string(modelName) = modelJSON["__typename"],
-              let schema = ModelRegistry.modelSchema(from: modelName) else {
-              //case .string = modelJSON["id"] else {
+              ModelRegistry.modelSchema(from: modelName) != nil else {
             return false
         }
-
-//        let primarykeys = schema.primaryKey
-//        for identifierField in primarykeys.fields {
-//            // Don't add metadata if any of the primary keys is missing.
-//            if modelJSON[identifierField.name] == nil {
-//                return false
-//            }
-//        }
 
         return true
     }
@@ -85,9 +71,8 @@ public struct AppSyncModelMetadataUtils {
         }
 
         guard let identifiers = retrieveIdentifiers(modelJSON, modelSchema) else {
-        // guard case let .string(id) = modelJSON["id"] else {
             Amplify.API.log.debug("""
-                Could not retrieve the `id` attribute from the return value. Be sure to include `id` in \
+                Could not retrieve the identifiers from the return value. Be sure to include the model's `id` in \
                 the selection set of the GraphQL operation. GraphQL:
                 \(graphQLData)
                 """)
@@ -131,11 +116,9 @@ public struct AppSyncModelMetadataUtils {
                         """)
                     }
                 } else {
-                    // the object is eager loaded, recursively add metadata to the eager loaded object.
-                    print("object \(nestedModelJSON) is eager loaded")
-                    // TODO only recusively add metadata if the codegen allows lazy loading objets.
+                    // The object is eager loaded, recursively add metadata to its fields, to create lazy loaded
+                    // objects, only if the MIPR contains the functionality
                     if associatedModelType.rootPath != nil {
-                        print("lazy model enabled - recursive addMetadata to eager loaded model \(nestedModelJSON)")
                         let nestedModelWithMetadata = addMetadata(toModel: nestedModelJSON, apiName: apiName)
                         modelJSON.updateValue(nestedModelWithMetadata, forKey: modelField.name)
                     }
@@ -146,29 +129,34 @@ public struct AppSyncModelMetadataUtils {
             // Has-Many eager loaded, with lazy loading
             if modelField.isArray && modelField.hasAssociation,
                let associatedField = modelField.associatedField,
-               var nestedModelJSON = modelJSON[modelField.name],
+               let associatedModelName = modelField.associatedModelName,
+               let associatedModelType = ModelRegistry.modelType(from: associatedModelName),
+               let nestedModelJSON = modelJSON[modelField.name],
                case .object(var graphQLDataObject) = nestedModelJSON,
                case .array(var graphQLDataArray) = graphQLDataObject["items"] {
-                
-                for (index, item) in graphQLDataArray.enumerated() {
-                    let modelJSON = AppSyncModelMetadataUtils.addMetadata(toModel: item,
-                                                                          apiName: apiName)
-                    graphQLDataArray[index] = modelJSON
+                // items array is eager loaded, recursively add metadata to each item, to create lazy loaded
+                // objects, only if the MIPR contains the functionality
+                if associatedModelType.rootPath != nil {
+                    for (index, item) in graphQLDataArray.enumerated() {
+                        
+                        let modelJSON = AppSyncModelMetadataUtils.addMetadata(toModel: item,
+                                                                              apiName: apiName)
+                        graphQLDataArray[index] = modelJSON
+                    }
+                    graphQLDataObject["items"] = JSONValue.array(graphQLDataArray)
+                    let payload = AppSyncListPayload(graphQLData: JSONValue.object(graphQLDataObject),
+                                                     apiName: apiName,
+                                                     variables: nil)
+                    if let serializedPayload = try? encoder.encode(payload),
+                       let payloadJSON = try? decoder.decode(JSONValue.self, from: serializedPayload) {
+                        log.verbose("Adding [\(modelField.name): \(payloadJSON)]")
+                        modelJSON.updateValue(payloadJSON, forKey: modelField.name)
+                    } else {
+                        log.error("""
+                            Found eager loaded assocation but failed to add payload to: \(modelJSON)
+                            """)
+                    }
                 }
-                graphQLDataObject["items"] = JSONValue.array(graphQLDataArray)
-                let payload = AppSyncListPayload(graphQLData: JSONValue.object(graphQLDataObject),
-                                                 apiName: apiName,
-                                                 variables: nil)
-                if let serializedPayload = try? encoder.encode(payload),
-                   let payloadJSON = try? decoder.decode(JSONValue.self, from: serializedPayload) {
-                    log.verbose("Adding [\(modelField.name): \(payloadJSON)]")
-                    modelJSON.updateValue(payloadJSON, forKey: modelField.name)
-                } else {
-                    log.error("""
-                        Found eager loaded assocation but failed to add payload to: \(modelJSON)
-                        """)
-                }
-                
             }
             
             // Handle Has-many. Store the association data (parent's identifier and field name) only when the model
@@ -197,8 +185,6 @@ public struct AppSyncModelMetadataUtils {
         return JSONValue.object(modelJSON)
     }
     
-    // At this point, we know the model cannot be decoded to the fully model
-    // so extract the primary key and values out.
     static func createModelIdentifierMetadata(_ associatedModel: Model.Type,
                                               modelObject: [String: JSONValue],
                                               apiName: String?) -> AppSyncModelIdentifierMetadata? {
@@ -209,12 +195,6 @@ public struct AppSyncModelMetadataUtils {
                 identifiers.append(.init(name: identifierField.name, value: identifierValue))
             }
         }
-        
-        // How do we determine if the model is eager loaded or not?
-        // eager loaded means, all fields are available
-        // lazy loaded means only identifiers are available.
-        
-        // what if the count of eager loaded == lazy loaded ? then it should always be
         
         // if the number of fields extracted + typename != the data object's fields, then this is not for eager loading.
         if (identifiers.count + 1) != (modelObject.keys.count) {

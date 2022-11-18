@@ -19,7 +19,7 @@ final class LazyModelTests: XCTestCase {
     
     class MockModelProvider<ModelType: Model>: ModelProvider {
         enum LoadedState {
-            case notLoaded(identifiers: [String: String])
+            case notLoaded(identifiers: [LazyModelIdentifier]?)
             case loaded(model: ModelType?)
         }
         
@@ -68,10 +68,11 @@ final class LazyModelTests: XCTestCase {
     
     func testEncodeNotLoaded() async throws {
         var comment = LazyChildComment4V2(id: "commentId", content: "content")
-        let modelProvider = MockModelProvider<LazyParentPost4V2>(loadedState: .notLoaded(identifiers: ["id": "postId"])).eraseToAnyModelProvider()
+        let modelProvider = MockModelProvider<LazyParentPost4V2>(loadedState:
+                .notLoaded(identifiers: [.init(name: "id", value: "postId")])).eraseToAnyModelProvider()
         
         comment._post = LazyModel(modelProvider: modelProvider)
         let json = try comment.toJSON()
-        XCTAssertEqual(json, "{\"id\":\"commentId\",\"content\":\"content\",\"post\":{\"id\":\"postId\"}}")
+        XCTAssertEqual(json, "{\"id\":\"commentId\",\"content\":\"content\",\"post\":[{\"name\":\"id\",\"value\":\"postId\"}]}")
     }
 }

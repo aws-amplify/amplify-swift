@@ -178,8 +178,8 @@ class GraphQLResponseDecoderPostComment4V2Tests: XCTestCase, SharedTestCasesPost
             return
         }
         switch comments.listProvider.getState() {
-        case .notLoaded(let associatedId, let associatedField):
-            XCTAssertEqual(associatedId, "postId")
+        case .notLoaded(let associatedIdentifiers, let associatedField):
+            XCTAssertEqual(associatedIdentifiers, ["postId"])
             XCTAssertEqual(associatedField, ChildComment4V2.CodingKeys.post.stringValue)
         case .loaded:
             XCTFail("Should be not loaded with post data")
@@ -366,8 +366,8 @@ class GraphQLResponseDecoderPostComment4V2Tests: XCTestCase, SharedTestCasesPost
             return
         }
         switch comments.listProvider.getState() {
-        case .notLoaded(let associatedId, let associatedField):
-            XCTAssertEqual(associatedId, "postId")
+        case .notLoaded(let associatedIdentifiers, let associatedField):
+            XCTAssertEqual(associatedIdentifiers, ["postId"])
             XCTAssertEqual(associatedField, ChildComment4V2.CodingKeys.post.stringValue)
         case .loaded:
             XCTFail("Should be not loaded with post data")
@@ -430,8 +430,8 @@ class GraphQLResponseDecoderPostComment4V2Tests: XCTestCase, SharedTestCasesPost
             return
         }
         switch comments.listProvider.getState() {
-        case .notLoaded(let associatedId, let associatedField):
-            XCTAssertEqual(associatedId, "id1")
+        case .notLoaded(let associatedIdentifiers, let associatedField):
+            XCTAssertEqual(associatedIdentifiers, ["id1"])
             XCTAssertEqual(associatedField, "post")
         case .loaded:
             XCTFail("Should be in not loaded state")

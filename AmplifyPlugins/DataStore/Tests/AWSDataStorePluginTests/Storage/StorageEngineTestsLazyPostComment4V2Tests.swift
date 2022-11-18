@@ -90,8 +90,8 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         }
         XCTAssertEqual(queriedPost.id, queriedPost.id)
         switch queriedPost.comments?.listProvider.getState() {
-        case .notLoaded(let associatedId, let associatedField):
-            XCTAssertEqual(associatedId, post.id)
+        case .notLoaded(let associatedIdentifiers, let associatedField):
+            XCTAssertEqual(associatedIdentifiers, [post.id])
             XCTAssertEqual(associatedField, LazyChildComment4V2.CodingKeys.post.stringValue)
         case .loaded:
             XCTFail("Should be not loaded")
@@ -208,7 +208,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
                 XCTFail("Missing identifiers")
                 return
             }
-            XCTAssertEqual(identifiers["id"], "postId")
+            XCTAssertEqual(identifiers[0], .init(name: "id", value: "postId"))
         case .loaded:
             XCTFail("Should be not loaded")
         }
@@ -263,7 +263,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
                 XCTFail("Missing identifiers")
                 return
             }
-            XCTAssertEqual(identifiers["id"], post.id)
+            XCTAssertEqual(identifiers[0], .init(name: "id", value: post.id))
         case .loaded:
             XCTFail("lazy loaded post should be not loaded")
         }
@@ -288,8 +288,8 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         }
         
         switch comments.listProvider.getState() {
-        case .notLoaded(let associatedId, let associatedField):
-            XCTAssertEqual(associatedId, post.id)
+        case .notLoaded(let associatedIdentifiers, let associatedField):
+            XCTAssertEqual(associatedIdentifiers, [post.id])
             XCTAssertEqual(associatedField, "post")
         case .loaded:
             XCTFail("Should not be loaded")
@@ -354,7 +354,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
                 XCTFail("Missing identifiers")
                 return
             }
-            XCTAssertEqual(identifiers["id"], "postId1")
+            XCTAssertEqual(identifiers[0], .init(name: "id", value: "postId1"))
         case .loaded:
             XCTFail("Should be not loaded")
         }
@@ -364,7 +364,7 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
                 XCTFail("Missing identifiers")
                 return
             }
-            XCTAssertEqual(identifiers["id"], "postId2")
+            XCTAssertEqual(identifiers[0], .init(name: "id", value: "postId2"))
         case .loaded:
             XCTFail("Should be not loaded")
         }
@@ -396,8 +396,8 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         }
         
         switch comments1.listProvider.getState() {
-        case .notLoaded(let associatedId, let associatedField):
-            XCTAssertEqual(associatedId, post1.id)
+        case .notLoaded(let associatedIdentifiers, let associatedField):
+            XCTAssertEqual(associatedIdentifiers, [post1.id])
             XCTAssertEqual(associatedField, "post")
         case .loaded:
             XCTFail("Should not be loaded")
@@ -408,8 +408,8 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
             return
         }
         switch comments2.listProvider.getState() {
-        case .notLoaded(let associatedId, let associatedField):
-            XCTAssertEqual(associatedId, post2.id)
+        case .notLoaded(let associatedIdentifiers, let associatedField):
+            XCTAssertEqual(associatedIdentifiers, [post2.id])
             XCTAssertEqual(associatedField, "post")
         case .loaded:
             XCTFail("Should not be loaded")
@@ -417,3 +417,8 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
     }
 }
 
+extension LazyModelIdentifier: Equatable {
+    public static func == (lhs: LazyModelIdentifier, rhs: LazyModelIdentifier) -> Bool {
+        lhs.name == rhs.name && lhs.value == rhs.value
+    }
+}

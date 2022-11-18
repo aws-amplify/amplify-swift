@@ -73,11 +73,11 @@ class DataStoreListDecoderTests: BaseDataStoreTests {
             XCTFail("Could get AppSyncListProvider")
             return
         }
-        guard case .notLoaded(let associatedId, let associatedField) = provider.loadedState else {
+        guard case .notLoaded(let associatedIdentifiers, let associatedField) = provider.loadedState else {
             XCTFail("Should be in loaded state")
             return
         }
-        XCTAssertEqual(associatedId, "postId")
+        XCTAssertEqual(associatedIdentifiers, ["postId"])
         XCTAssertEqual(associatedField, "post")
     }
 

@@ -88,7 +88,7 @@ class AppSyncListDecoderTests: XCTestCase {
     }
 
     func testShouldDecodeFromModelMetadata() throws {
-        let modelMetadata = AppSyncModelMetadata(appSyncAssociatedId: "postId",
+        let modelMetadata = AppSyncModelMetadata(appSyncAssociatedIdentifiers: ["postId"],
                                                  appSyncAssociatedField: "post",
                                                  apiName: "apiName")
         let data = try encoder.encode(modelMetadata)
@@ -99,11 +99,11 @@ class AppSyncListDecoderTests: XCTestCase {
             XCTFail("Could get AppSyncListProvider")
             return
         }
-        guard case .notLoaded(let associatedId, let associatedField) = provider.loadedState else {
+        guard case .notLoaded(let associatedIdentifiers, let associatedField) = provider.loadedState else {
             XCTFail("Should be in not loaded state")
             return
         }
-        XCTAssertEqual(associatedId, "postId")
+        XCTAssertEqual(associatedIdentifiers, ["postId"])
         XCTAssertEqual(associatedField, "post")
     }
 

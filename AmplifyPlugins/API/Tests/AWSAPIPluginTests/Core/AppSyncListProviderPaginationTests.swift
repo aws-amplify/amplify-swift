@@ -34,7 +34,7 @@ extension AppSyncListProviderTests {
     }
 
     func testNotLoadedStateHasNextPageFalse() {
-        let modelMetadata = AppSyncModelMetadata(appSyncAssociatedId: "postId",
+        let modelMetadata = AppSyncModelMetadata(appSyncAssociatedIdentifiers: ["postId"],
                                                  appSyncAssociatedField: "post",
                                                  apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
@@ -136,7 +136,7 @@ extension AppSyncListProviderTests {
     }
 
     func testNotLoadedStateGetNextPageFailure() async {
-        let modelMetadata = AppSyncModelMetadata(appSyncAssociatedId: "postId",
+        let modelMetadata = AppSyncModelMetadata(appSyncAssociatedIdentifiers: ["postId"],
                                                  appSyncAssociatedField: "post",
                                                  apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)

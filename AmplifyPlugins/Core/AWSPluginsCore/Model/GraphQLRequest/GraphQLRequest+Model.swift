@@ -187,10 +187,7 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
                                           where predicate: QueryPredicate? = nil,
                                           includes: IncludedAssociations<M> = { _ in [] },
                                           type: GraphQLMutationType) -> GraphQLRequest<M> {
-        var primaryKeysOnly = false
-        if let modelPath = M.rootPath as? ModelPath<M> {
-            primaryKeysOnly = true
-        }
+        let primaryKeysOnly = (M.rootPath != nil) ? true : false
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema,
                                                                operationType: .mutation,
                                                                primaryKeysOnly: primaryKeysOnly)
@@ -227,10 +224,7 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
     public static func get<M: Model>(_ modelType: M.Type,
                                      byId id: String,
                                      includes: IncludedAssociations<M> = { _ in [] }) -> GraphQLRequest<M?> {
-        var primaryKeysOnly = false
-        if let modelPath = M.rootPath as? ModelPath<M> {
-            primaryKeysOnly = true
-        }
+        let primaryKeysOnly = (M.rootPath != nil) ? true : false
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
                                                                operationType: .query,
                                                                primaryKeysOnly: primaryKeysOnly)
@@ -261,10 +255,7 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
                                      byIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
                                      includes: IncludedAssociations<M> = { _ in [] }) -> GraphQLRequest<M?>
         where M: ModelIdentifiable {
-            var primaryKeysOnly = false
-            if let modelPath = M.rootPath as? ModelPath<M> {
-                primaryKeysOnly = true
-            }
+            let primaryKeysOnly = (M.rootPath != nil) ? true : false
             var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
                                                                    operationType: .query,
                                                                    primaryKeysOnly: primaryKeysOnly)
@@ -287,10 +278,7 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
                                       where predicate: QueryPredicate? = nil,
                                       includes: IncludedAssociations<M> = { _ in [] },
                                       limit: Int? = nil) -> GraphQLRequest<List<M>> {
-        var primaryKeysOnly = false
-        if let modelPath = modelType.rootPath as? ModelPath<M> {
-            primaryKeysOnly = true
-        }
+        let primaryKeysOnly = (M.rootPath != nil) ? true : false
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
                                                                operationType: .query,
                                                                primaryKeysOnly: primaryKeysOnly)
@@ -317,10 +305,7 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
     public static func subscription<M: Model>(of modelType: M.Type,
                                               type: GraphQLSubscriptionType,
                                               includes: IncludedAssociations<M> = { _ in [] }) -> GraphQLRequest<M> {
-        var primaryKeysOnly = false
-        if let modelPath = M.rootPath as? ModelPath<M> {
-            primaryKeysOnly = true
-        }
+        let primaryKeysOnly = (M.rootPath != nil) ? true : false
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
                                                                operationType: .subscription,
                                                                primaryKeysOnly: primaryKeysOnly)

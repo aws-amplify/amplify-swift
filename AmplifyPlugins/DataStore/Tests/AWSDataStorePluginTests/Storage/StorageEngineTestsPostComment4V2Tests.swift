@@ -182,8 +182,8 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
         }
 
         switch comments.listProvider.getState() {
-        case .notLoaded(let associatedId, let associatedField):
-            XCTAssertEqual(associatedId, post.id)
+        case .notLoaded(let associatedIdentifiers, let associatedField):
+            XCTAssertEqual(associatedIdentifiers, [post.id])
             XCTAssertEqual(associatedField, "post")
         case .loaded(let comments):
             print("loaded comments \(comments)")
@@ -236,8 +236,8 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
             return
         }
         switch postId1.comments?.listProvider.getState() {
-        case .notLoaded(let associatedId, let associatedField):
-            XCTAssertEqual(associatedId, postId1.id)
+        case .notLoaded(let associatedIdentifiers, let associatedField):
+            XCTAssertEqual(associatedIdentifiers, [postId1.id])
             XCTAssertEqual(associatedField, "post")
         case .loaded:
             XCTFail("Should not be loaded")
@@ -245,8 +245,8 @@ final class StorageEngineTestsPostComment4V2Tests: StorageEngineTestsBase, Share
             XCTFail("missing comments")
         }
         switch postId2.comments?.listProvider.getState() {
-        case .notLoaded(let associatedId, let associatedField):
-            XCTAssertEqual(associatedId, postId2.id)
+        case .notLoaded(let associatedIdentifiers, let associatedField):
+            XCTAssertEqual(associatedIdentifiers, [postId2.id])
             XCTAssertEqual(associatedField, "post")
         case .loaded:
             XCTFail("Should not be loaded")
