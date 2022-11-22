@@ -257,9 +257,9 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         }
     }
 
-    /// Test a signIn with smsMFA as signIn result response
+    /// Test a signIn with softwareTokenMfa as signIn result response
     ///
-    /// - Given: Given an auth plugin with mocked service. Mock smsMFA response for signIn result
+    /// - Given: An auth plugin with mocked service. Mock softwareTokenMfa response for signIn result
     ///
     /// - When:
     ///    - I invoke signIn
@@ -277,7 +277,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         }, mockRespondToAuthChallengeResponse: { _ in
             RespondToAuthChallengeOutputResponse(
                 authenticationResult: .none,
-                challengeName: .smsMfa,
+                challengeName: .softwareTokenMfa,
                 challengeParameters: [:],
                 session: "session")
         })
@@ -285,8 +285,8 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         let options = AuthSignInRequest.Options()
         do {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
-            guard case .confirmSignInWithSMSMFACode = result.nextStep else {
-                XCTFail("Result should be .confirmSignInWithSMSMFACode for next step")
+            guard case .confirmSignInWithSoftwareToken = result.nextStep else {
+                XCTFail("Result should be .confirmSignInWithSoftwareToken for next step")
                 return
             }
             XCTAssertFalse(result.isSignedIn, "Signin result should not be complete")

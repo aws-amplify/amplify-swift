@@ -40,10 +40,11 @@ struct UserPoolSignInHelper {
                                        with challenge: RespondToAuthChallenge)
     throws -> AuthSignInResult {
         switch challengeType {
-        // TODO: FIX sending signInResult next step as `confirmSignInWithSMSMFACode` during `softwareTokenMfa` challenge. Potentially create a new nextStep case
-        case .smsMfa, .softwareTokenMfa:
+        case .smsMfa:
             let delivery = challenge.codeDeliveryDetails
             return .init(nextStep: .confirmSignInWithSMSMFACode(delivery, challenge.parameters))
+        case .softwareTokenMfa:
+            return .init(nextStep: .confirmSignInWithSoftwareToken(challenge.parameters))
         case .customChallenge:
             return .init(nextStep: .confirmSignInWithCustomChallenge(challenge.parameters))
         case .newPasswordRequired:
