@@ -80,8 +80,7 @@ class AWSAuthSignInTask: AuthSignInTask {
                     throw error
                 }
             case .error(let error):
-                let error = AuthError.unknown("Sign in reached an error state", error)
-                throw error
+                throw error.authError
 
             case .signingIn(let signInState):
                 guard let result = try UserPoolSignInHelper.checkNextStep(signInState) else {
