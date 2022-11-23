@@ -89,10 +89,10 @@ extension SignInState {
                 }
 
                 if let signInEvent = event as? SignInEvent,
-                   case .initiateDeviceSRP(let challengeResponse) = signInEvent.eventType,
-                   case .respondingPasswordVerifier(let srpStateData) = srpSignInState {
+                   case .initiateDeviceSRP(let username, let challengeResponse) = signInEvent.eventType,
+                   case .respondingPasswordVerifier = srpSignInState {
                     let action = StartDeviceSRPFlow(
-                        srpStateData: srpStateData,
+                        username: username,
                         authResponse: challengeResponse)
                     return .init(newState: .resolvingDeviceSrpa(.notStarted),
                                  actions: [action])
@@ -125,6 +125,15 @@ extension SignInState {
                                  actions: [action])
                 }
 
+                if let signInEvent = event as? SignInEvent,
+                   case .initiateDeviceSRP(let username, let challengeResponse) = signInEvent.eventType {
+                    let action = StartDeviceSRPFlow(
+                        username: username,
+                        authResponse: challengeResponse)
+                    return .init(newState: .resolvingDeviceSrpa(.notStarted),
+                                 actions: [action])
+                }
+
                 let resolution = CustomSignInState.Resolver().resolve(
                     oldState: customSignInState, byApplying: event)
                 let signingInWithCustom = SignInState.signingInWithCustom(
@@ -151,6 +160,16 @@ extension SignInState {
                                  actions: [action])
                 }
 
+                if let signInEvent = event as? SignInEvent,
+                   case .initiateDeviceSRP(let username, let challengeResponse) = signInEvent.eventType,
+                   case .signingIn = migrateSignInState {
+                    let action = StartDeviceSRPFlow(
+                        username: username,
+                        authResponse: challengeResponse)
+                    return .init(newState: .resolvingDeviceSrpa(.notStarted),
+                                 actions: [action])
+                }
+
                 let resolution = MigrateSignInState.Resolver().resolve(
                     oldState: migrateSignInState, byApplying: event)
                 let signingInWithMigration = SignInState.signingInViaMigrateAuth(
@@ -163,6 +182,15 @@ extension SignInState {
                    case .confirmDevice(let signedInData) = signInEvent.eventType {
                     let action = ConfirmDevice(signedInData: signedInData)
                     return .init(newState: .confirmingDevice,
+                                 actions: [action])
+                }
+
+                if let signInEvent = event as? SignInEvent,
+                   case .initiateDeviceSRP(let username, let challengeResponse) = signInEvent.eventType {
+                    let action = StartDeviceSRPFlow(
+                        username: username,
+                        authResponse: challengeResponse)
+                    return .init(newState: .resolvingDeviceSrpa(.notStarted),
                                  actions: [action])
                 }
 
@@ -199,6 +227,15 @@ extension SignInState {
                         challenge.challenge.authChallengeType,
                         signInMethod
                     ), actions: [action])
+                }
+
+                if let signInEvent = event as? SignInEvent,
+                   case .initiateDeviceSRP(let username, let challengeResponse) = signInEvent.eventType {
+                    let action = StartDeviceSRPFlow(
+                        username: username,
+                        authResponse: challengeResponse)
+                    return .init(newState: .resolvingDeviceSrpa(.notStarted),
+                                 actions: [action])
                 }
 
                 if let signInEvent = event as? SignInEvent,

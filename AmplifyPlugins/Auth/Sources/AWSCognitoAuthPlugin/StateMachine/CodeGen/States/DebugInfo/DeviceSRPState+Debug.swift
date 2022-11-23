@@ -15,8 +15,8 @@ extension DeviceSRPState {
         switch self {
         case .notStarted:
             additionalMetadataDictionary = [:]
-        case .initiatingDeviceSRP(let signInEventData):
-            additionalMetadataDictionary = signInEventData.debugDictionary
+        case .initiatingDeviceSRP:
+            additionalMetadataDictionary = [:]
         case .cancelling:
             additionalMetadataDictionary = [:]
         case .respondingDevicePasswordVerifier(let srpStateData):

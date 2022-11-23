@@ -542,6 +542,49 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         }
     }
 
+    /// Test a signIn with deviceSRP response
+    ///
+    /// - Given: Given an auth plugin with mocked service. Mock unknown response for signIn result
+    ///
+    /// - When:
+    ///    - I invoke signIn
+    /// - Then:
+    ///    - I should get a .service error, because the response doesn't return valid data
+    ///
+    func testSignInWithNextDeviceSRP() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+            InitiateAuthOutputResponse(
+                authenticationResult: .none,
+                challengeName: .deviceSrpAuth,
+                challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                session: "someSession")
+        }, mockRespondToAuthChallengeResponse: { _ in
+            RespondToAuthChallengeOutputResponse(
+                authenticationResult: .none,
+                challengeName: .devicePasswordVerifier,
+                challengeParameters: ["paramKey": "value"],
+                session: "session")
+        })
+
+        let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
+                                                 metadata: ["somekey": "somevalue"],
+                                                 authFlowType: .userPassword)
+        let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
+        do {
+            let result = try await plugin.signIn(
+                username: "username",
+                password: "password",
+                options: options)
+            XCTFail("Should not produce result - \(result)")
+        } catch {
+            guard case AuthError.service = error else {
+                XCTFail("Should produce as service error")
+                return
+            }
+        }
+    }
+
     // MARK: - Service error for initiateAuth
 
     /// Test a signIn with `InternalErrorException` from service
