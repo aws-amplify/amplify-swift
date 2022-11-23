@@ -587,7 +587,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
 
     /// Test a signIn with customAuthWIthoutSRP
     ///
-    /// - Given: Given an auth plugin with mocked service. Returning a new challenge after confirm sign in is called
+    /// - Given: An auth plugin with mocked service. Returning a new challenge after confirm sign in is called
     ///
     /// - When:
     ///    - I invoke signIn and then confirm sign in
