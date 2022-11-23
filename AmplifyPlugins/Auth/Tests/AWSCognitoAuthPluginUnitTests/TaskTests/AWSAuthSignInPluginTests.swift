@@ -585,6 +585,54 @@ class AWSAuthSignInPluginTests: BasePluginTest {
         }
     }
 
+    /// Test a signIn with customAuthWIthoutSRP
+    ///
+    /// - Given: An auth plugin with mocked service. Returning a new challenge after confirm sign in is called
+    ///
+    /// - When:
+    ///    - I invoke signIn and then confirm sign in
+    /// - Then:
+    ///    - The next step smsMfA should be triggered
+    ///
+    func testSignInWithCustomAuthIncorrectCode() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+            InitiateAuthOutputResponse(
+                authenticationResult: .none,
+                challengeName: .customChallenge,
+                challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                session: "someSession")
+        }, mockRespondToAuthChallengeResponse: { _ in
+            RespondToAuthChallengeOutputResponse(
+                authenticationResult: .none,
+                challengeName: .smsMfa,
+                challengeParameters: ["paramKey": "value"],
+                session: "session")
+        })
+
+        let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
+                                                 metadata: ["somekey": "somevalue"],
+                                                 authFlowType: .customWithoutSRP)
+        let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
+        do {
+            let result = try await plugin.signIn(
+                username: "username",
+                password: "password",
+                options: options)
+            guard case .confirmSignInWithCustomChallenge = result.nextStep,
+                  case let confirmSignInResult = try await plugin.confirmSignIn(
+                    challengeResponse: "245234"
+                  ),
+                  case .confirmSignInWithSMSMFACode = confirmSignInResult.nextStep
+            else {
+                return XCTFail("Incorrect challenge type")
+            }
+        } catch {
+            XCTFail("Should not fail with \(error)")
+        }
+    }
+
+
     // MARK: - Service error for initiateAuth
 
     /// Test a signIn with `InternalErrorException` from service
