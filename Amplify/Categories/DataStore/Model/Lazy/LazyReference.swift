@@ -8,6 +8,8 @@
 import Foundation
 import Combine
 
+/// A Codable struct to hold key value pairs representing the identifier's field name and value.
+/// Useful for maintaining order for key-value pairs when used as an Array type.
 public struct LazyReferenceIdentifier: Codable {
     public let name: String
     public let value: String
@@ -21,7 +23,7 @@ public struct LazyReferenceIdentifier: Codable {
 /// This class represents a lazy reference to a `Model`, meaning that the reference
 /// may or may not exist at instantiation time.
 ///
-/// The default implementation only handles in-memory data, therefore `get()` and
+/// The default implementation `DefaultModelProvider` only handles in-memory data, therefore `get()` and
 /// `require()` will simply return the current `reference`.
 public class LazyReference<ModelType: Model>: Codable, LazyReferenceMarker {
     
@@ -151,12 +153,14 @@ public class LazyReference<ModelType: Model>: Codable, LazyReferenceMarker {
         switch loadedState {
         case .notLoaded:
             guard let element = try await modelProvider.load() else {
+                // TODO: based on PR review, we may change all CoreError's to DataError's.
                 throw CoreError.operation("Expected required element not found", "", nil)
             }
             self.loadedState = .loaded(element)
             return element
         case .loaded(let element):
             guard let element = element else {
+                // TODO: based on PR review, we may change all CoreError's to DataError's.
                 // throw CoreError.operation("Expected required element not found", "", nil)
                 throw DataError.dataUnavailable
             }

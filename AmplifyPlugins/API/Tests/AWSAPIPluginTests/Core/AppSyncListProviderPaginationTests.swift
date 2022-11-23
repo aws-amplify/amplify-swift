@@ -32,11 +32,11 @@ extension AppSyncListProviderTests {
         }
         XCTAssertFalse(provider.hasNextPage())
     }
-
+    
     func testNotLoadedStateHasNextPageFalse() {
-        let modelMetadata = AppSyncModelMetadata(appSyncAssociatedIdentifiers: ["postId"],
-                                                 appSyncAssociatedField: "post",
-                                                 apiName: "apiName")
+        let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
+                                                        appSyncAssociatedField: "post",
+                                                        apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
@@ -134,11 +134,11 @@ extension AppSyncListProviderTests {
             XCTFail("Unexpected error type \(error)")
         }
     }
-
+    
     func testNotLoadedStateGetNextPageFailure() async {
-        let modelMetadata = AppSyncModelMetadata(appSyncAssociatedIdentifiers: ["postId"],
-                                                 appSyncAssociatedField: "post",
-                                                 apiName: "apiName")
+        let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
+                                                        appSyncAssociatedField: "post",
+                                                        apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")

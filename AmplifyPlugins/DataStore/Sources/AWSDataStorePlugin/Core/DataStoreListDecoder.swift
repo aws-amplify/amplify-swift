@@ -11,6 +11,16 @@ import Combine
 
 public struct DataStoreListDecoder: ModelListDecoder {
 
+    /// Creates a data structure that is capable of initializing a `List<M>` with
+    /// lazy-load capabilities when the list is being decoded.
+    static func lazyInit(associatedId: String, associatedWith: String?) -> [String: Any?] {
+        return [
+            "associatedId": associatedId,
+            "associatedField": associatedWith,
+            "elements": []
+        ]
+    }
+    
     public static func shouldDecode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> Bool {
         guard let json = try? JSONValue(from: decoder) else {
             return false

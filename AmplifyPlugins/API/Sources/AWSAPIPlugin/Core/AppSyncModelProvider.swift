@@ -20,24 +20,17 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
     
     var loadedState: LoadedState
     
-    // init(AppSyncModelMetadata) creates a notLoaded provider
-    convenience init(metadata: AppSyncModelIdentifierMetadata) {
-        self.init(identifiers: metadata.identifiers,
-                  apiName: metadata.apiName)
+    // Creates a "not loaded" provider
+    init(metadata: AppSyncModelDecoder.Metadata) {
+        self.loadedState = .notLoaded(identifiers: metadata.identifiers)
+        self.apiName = metadata.apiName
     }
     
-    // Initializer for a loaded state
+    // Creates a "loaded" provider
     init(model: ModelType?) {
         self.loadedState = .loaded(model: model)
         self.apiName = nil
     }
-    
-    // Initializer for not loaded state
-    init(identifiers: [LazyReferenceIdentifier], apiName: String? = nil) {
-        self.loadedState = .notLoaded(identifiers: identifiers)
-        self.apiName = apiName
-    }
-    
     
     // MARK: - APIs
     
@@ -60,6 +53,7 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
                     return model
                 case .failure(let graphQLError):
                     self.log.error(error: graphQLError)
+                    // TODO: May want to return DataError instead.
                     throw CoreError.operation(
                         "The AppSync response returned successfully with GraphQL errors.",
                         "Check the underlying error for the failed GraphQL response.",
@@ -67,6 +61,7 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
                 }
             } catch let apiError as APIError {
                 self.log.error(error: apiError)
+                // TODO: May want to return DataError instead.
                 throw CoreError.operation("The AppSync request failed",
                                           "See underlying `APIError` for more details.",
                                           apiError)

@@ -19,7 +19,7 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
 
     /// The current state of lazily loaded list
     enum LoadedState {
-        /// If the list represents an association between two models, the `associatedId` will
+        /// If the list represents an association between two models, the `associatedIdentifiers` will
         /// hold the information necessary to query the associated elements (e.g. comments of a post)
         ///
         /// The associatedField represents the field to which the owner of the `List` is linked to.
@@ -56,7 +56,7 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
                   nextToken: listResponse.nextToken)
     }
 
-    convenience init(metadata: AppSyncModelMetadata) {
+    convenience init(metadata: AppSyncListDecoder.Metadata) {
         self.init(associatedIdentifiers: metadata.appSyncAssociatedIdentifiers,
                   associatedField: metadata.appSyncAssociatedField,
                   apiName: metadata.apiName)
@@ -220,6 +220,7 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
     
     // MARK: - Helpers
     
+    /// Retrieve the column names for the specified field `field` for this schema.
     func columnNames(field: String, _ modelSchema: ModelSchema) -> [String] {
         guard let modelField = modelSchema.field(withName: field) else {
             return [field]

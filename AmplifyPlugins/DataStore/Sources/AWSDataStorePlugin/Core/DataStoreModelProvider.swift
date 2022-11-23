@@ -18,21 +18,18 @@ public class DataStoreModelProvider<ModelType: Model>: ModelProvider {
     
     var loadedState: LoadedState
     
-    convenience init(metadata: DataStoreModelIdentifierMetadata) {
+    // Create a "not loaded" model provider with the identifier metadata, useful for hydrating the model
+    init(metadata: DataStoreModelDecoder.Metadata) {
         if let identifier = metadata.identifier {
-            self.init(identifiers: [.init(name: ModelType.schema.primaryKey.sqlName, value: identifier)])
+            self.loadedState = .notLoaded(identifiers: [.init(name: ModelType.schema.primaryKey.sqlName, value: identifier)])
         } else {
-            self.init(identifiers: nil)
+            self.loadedState = .notLoaded(identifiers: nil)
         }
-        
     }
     
+    // Create a "loaded" model provider with the model instance
     init(model: ModelType?) {
         self.loadedState = .loaded(model: model)
-    }
-    
-    init(identifiers: [LazyReferenceIdentifier]?) {
-        self.loadedState = .notLoaded(identifiers: identifiers)
     }
     
     // MARK: - APIs

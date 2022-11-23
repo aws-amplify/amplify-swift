@@ -7,8 +7,11 @@
 
 import Foundation
 
-/// Protocol used as a marker to detecth when the type is a `LazyReference`.
-/// Useful to extract out the `reference` or the identifiers of the Model.
+/// Protocol used as a marker to detect when the type is a `LazyReference`.
+/// Used to retrieve either the `reference` or the `identifiers` of the Model directly, without having load a not
+/// loaded LazyReference. This is useful when translating the model object over to the payload required for the
+/// underlying storage, such as storing the values in DataStore's local database or AppSync GraphQL request payload.
+///
 ///
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 /// directly by host applications. The behavior of this may change without warning. Though it is not used by host

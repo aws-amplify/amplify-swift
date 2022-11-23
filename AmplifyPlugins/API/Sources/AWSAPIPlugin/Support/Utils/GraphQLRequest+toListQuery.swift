@@ -17,11 +17,7 @@ extension GraphQLRequest {
                                                    limit: Int? = nil,
                                                    nextToken: String? = nil,
                                                    apiName: String? = nil) -> GraphQLRequest<ResponseType> {
-        
-        var primaryKeysOnly = false
-        if let modelType = ModelRegistry.modelType(from: modelSchema.name), modelType.rootPath != nil {
-            primaryKeysOnly = true
-        }
+        let primaryKeysOnly = ModelRegistry.modelType(from: modelSchema.name)?.rootPath != nil ? true : false
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema,
                                                                operationType: .query,
                                                                primaryKeysOnly: primaryKeysOnly)

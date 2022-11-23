@@ -88,9 +88,9 @@ class AppSyncListDecoderTests: XCTestCase {
     }
 
     func testShouldDecodeFromModelMetadata() throws {
-        let modelMetadata = AppSyncModelMetadata(appSyncAssociatedIdentifiers: ["postId"],
-                                                 appSyncAssociatedField: "post",
-                                                 apiName: "apiName")
+        let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
+                                                        appSyncAssociatedField: "post",
+                                                        apiName: "apiName")
         let data = try encoder.encode(modelMetadata)
         let harness = try decoder.decode(AppSyncListDecoderHarness<Comment4>.self, from: data)
         XCTAssertTrue(harness.shouldDecode)

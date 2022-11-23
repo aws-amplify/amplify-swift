@@ -144,8 +144,8 @@ extension Statement: StatementModelConvertible {
                 let prefix = column.replacingOccurrences(of: field.name, with: "")
                 associations.forEach { association in
                     let associatedField = association.associatedField?.name
-                    let lazyList = List<AnyModel>.lazyInit(associatedId: id,
-                                                           associatedWith: associatedField)
+                    let lazyList = DataStoreListDecoder.lazyInit(associatedId: id,
+                                                                 associatedWith: associatedField)
                     let listKeyPath = prefix + association.name
                     modelDictionary.updateValue(lazyList, forKeyPath: listKeyPath)
                 }
@@ -182,28 +182,13 @@ extension Statement: StatementModelConvertible {
                 if let foreignModelField = modelSchema.foreignKeys.first(where: { modelField in
                     modelField.sqlName == foreignColumnName
                 }) {
-                    modelDictionary[foreignModelField.name] = ["identifier": foreignKeyValue.1]
+                    modelDictionary[foreignModelField.name] = DataStoreModelDecoder.lazyInit(identifier: foreignKeyValue.1)
                 }
             }
         }
         
         // swiftlint:disable:next force_cast
         return modelDictionary as! ModelValues
-    }
-}
-
-internal extension List {
-
-    /// Creates a data structure that is capable of initializing a `List<M>` with
-    /// lazy-load capabilities when the list is being decoded.
-    ///
-    /// See the `List.init(from:Decoder)` for details.
-    static func lazyInit(associatedId: String, associatedWith: String?) -> [String: Any?] {
-        return [
-            "associatedId": associatedId,
-            "associatedField": associatedWith,
-            "elements": []
-        ]
     }
 }
 

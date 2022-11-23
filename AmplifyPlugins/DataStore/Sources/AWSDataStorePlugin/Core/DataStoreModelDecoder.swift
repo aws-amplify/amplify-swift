@@ -11,11 +11,18 @@ import SQLite
 
 public struct DataStoreModelDecoder: ModelProviderDecoder {
     
-    // TODO: have some sort of priority on the ModelProviderDecoder
-    // to indicate run 1 then run 2
+    /// Metadata that contains the foreign key value of a parent model, which is the primary key of the model to be loaded.
+    struct Metadata: Codable {
+        let identifier: String?
+    }
+    
+    /// Create a SQLite payload that is capable of initializting a LazyReference, by decoding to `DataStoreModelDecoder.Metadata`.
+    static func lazyInit(identifier: Binding?) -> [String: Binding?] {
+        return ["identifier": identifier]
+    }
     
     public static func shouldDecode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> Bool {
-        if (try? DataStoreModelIdentifierMetadata(from: decoder)) != nil {
+        if (try? DataStoreModelDecoder.Metadata(from: decoder)) != nil {
             return true
         }
         
@@ -40,7 +47,7 @@ public struct DataStoreModelDecoder: ModelProviderDecoder {
                                                             decoder: Decoder) throws -> DataStoreModelProvider<ModelType>? {
         if let model = try? ModelType.init(from: decoder) {
             return DataStoreModelProvider(model: model)
-        } else if let metadata = try? DataStoreModelIdentifierMetadata.init(from: decoder) {
+        } else if let metadata = try? Metadata.init(from: decoder) {
             return DataStoreModelProvider<ModelType>(metadata: metadata)
         }
 
@@ -50,9 +57,4 @@ public struct DataStoreModelDecoder: ModelProviderDecoder {
         assertionFailure(message)
         return nil
     }
-}
-
-/// Metadata that contains the primary keys and values of a model
-public struct DataStoreModelIdentifierMetadata: Codable {
-    let identifier: String?
 }
