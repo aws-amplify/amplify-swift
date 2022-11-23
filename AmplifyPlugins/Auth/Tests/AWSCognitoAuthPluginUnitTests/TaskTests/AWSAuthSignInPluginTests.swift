@@ -619,15 +619,13 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 username: "username",
                 password: "password",
                 options: options)
-            if case .confirmSignInWithCustomChallenge = result.nextStep {
-                let confirmSignInResult = try await plugin.confirmSignIn(challengeResponse: "245234")
-                if case .confirmSignInWithSMSMFACode = confirmSignInResult.nextStep {
-
-                } else {
-                    XCTFail("Incorrect challenge type")
-                }
-            } else {
-                XCTFail("Incorrect challenge type")
+            guard case .confirmSignInWithCustomChallenge = result.nextStep,
+                  case let confirmSignInResult = try await plugin.confirmSignIn(
+                    challengeResponse: "245234"
+                  ),
+                  case .confirmSignInWithSMSMFACode = confirmSignInResult.nextStep
+            else {
+                return XCTFail("Incorrect challenge type")
             }
         } catch {
             XCTFail("Should not fail with \(error)")
