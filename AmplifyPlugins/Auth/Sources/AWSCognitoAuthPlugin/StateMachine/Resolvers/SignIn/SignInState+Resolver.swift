@@ -125,6 +125,15 @@ extension SignInState {
                                  actions: [action])
                 }
 
+                if let signInEvent = event as? SignInEvent,
+                   case .initiateDeviceSRP(let username, let challengeResponse) = signInEvent.eventType {
+                    let action = StartDeviceSRPFlow(
+                        username: username,
+                        authResponse: challengeResponse)
+                    return .init(newState: .resolvingDeviceSrpa(.notStarted),
+                                 actions: [action])
+                }
+
                 let resolution = CustomSignInState.Resolver().resolve(
                     oldState: customSignInState, byApplying: event)
                 let signingInWithCustom = SignInState.signingInWithCustom(
@@ -176,6 +185,15 @@ extension SignInState {
                                  actions: [action])
                 }
 
+                if let signInEvent = event as? SignInEvent,
+                   case .initiateDeviceSRP(let username, let challengeResponse) = signInEvent.eventType {
+                    let action = StartDeviceSRPFlow(
+                        username: username,
+                        authResponse: challengeResponse)
+                    return .init(newState: .resolvingDeviceSrpa(.notStarted),
+                                 actions: [action])
+                }
+
                 // This could when we have nested challenges
                 // Example newPasswordRequired -> sms_mfa
                 if let signInEvent = event as? SignInEvent,
@@ -209,6 +227,15 @@ extension SignInState {
                         challenge.challenge.authChallengeType,
                         signInMethod
                     ), actions: [action])
+                }
+
+                if let signInEvent = event as? SignInEvent,
+                   case .initiateDeviceSRP(let username, let challengeResponse) = signInEvent.eventType {
+                    let action = StartDeviceSRPFlow(
+                        username: username,
+                        authResponse: challengeResponse)
+                    return .init(newState: .resolvingDeviceSrpa(.notStarted),
+                                 actions: [action])
                 }
 
                 if let signInEvent = event as? SignInEvent,
