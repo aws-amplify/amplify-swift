@@ -29,6 +29,9 @@ struct VerifySignInChallenge: Action {
             let challengeType = challenge.challenge
             let responseKey = try challenge.getChallengeKey()
 
+            let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
+                for: environment, with: username)
+
             let input = RespondToAuthChallengeInput.verifyChallenge(
                 username: username,
                 challengeType: challengeType,
@@ -37,6 +40,7 @@ struct VerifySignInChallenge: Action {
                 answer: confirmSignEventData.answer,
                 clientMetadata: confirmSignEventData.metadata,
                 attributes: confirmSignEventData.attributes,
+                deviceMetadata: deviceMetadata,
                 environment: userpoolEnv)
 
             let responseEvent = try await UserPoolSignInHelper.sendRespondToAuth(
