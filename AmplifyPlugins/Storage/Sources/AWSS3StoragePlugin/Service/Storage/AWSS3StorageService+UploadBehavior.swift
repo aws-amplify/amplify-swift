@@ -66,7 +66,7 @@ extension AWSS3StorageService {
 
         request.setHTTPRequestHeaders(transferTask: transferTask)
 
-        let uploadTask = urlSession.uploadTask(with: request, fromFile: fileURL)
+        let uploadTask = foregroundUrlSession.uploadTask(with: request, fromFile: fileURL)
         transferTask.sessionTask = uploadTask
 
         // log task identifier?

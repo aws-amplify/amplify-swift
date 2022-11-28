@@ -10,16 +10,45 @@ import Foundation
 import Amplify
 import AWSPluginsCore
 
-// MARK: - StorageServiceSessionDelegate -
+/// - Tag: StorageServiceSessionControllerDelegate
+protocol StorageServiceSessionControllerDelegate: AnyObject {
+    var identifier: String { get }
+    func unregister(task: StorageTransferTask)
+    func findTask(taskIdentifier: TaskIdentifier) -> StorageTransferTask?
+    func findMultipartUploadSession(uploadId: UploadID) -> StorageMultipartUploadSession?
+    func completeDownload(taskIdentifier: TaskIdentifier, sourceURL: URL)
+}
 
-class StorageServiceSessionDelegate: NSObject {
+/// Represents glue code between a `URLSession` and its
+/// [StorageServiceSessionControllerDelegate](x-source-tag://StorageServiceSessionControllerDelegate)
+/// which at the time of this writing is a
+/// [AWSS3StorageService](x-source-tag://AWSS3StorageService).
+///
+/// - Tag: StorageServiceSessionController
+class StorageServiceSessionController: NSObject {
+
+    weak var delegate: StorageServiceSessionControllerDelegate?
+
     let identifier: String
+    let configuration: URLSessionConfiguration
+    let delegateQueue: OperationQueue?
     let logger: Logger
-    weak var storageService: AWSS3StorageService?
+    var session: URLSession = .shared
 
-    init(identifier: String, logger: Logger = storageLogger) {
+    init(identifier: String,
+         configuration: URLSessionConfiguration,
+         logger: Logger = storageLogger,
+         delegateQueue: OperationQueue? = nil) {
         self.identifier = identifier
+        self.configuration = configuration
         self.logger = logger
+        self.delegateQueue = delegateQueue
+        super.init()
+        self.resetURLSession()
+    }
+    
+    private func resetURLSession() {
+        self.session = URLSession(configuration: configuration, delegate: self, delegateQueue: delegateQueue)
     }
 
     // Set a Symbolic Breakpoint in Xcode to monitor these messages
@@ -32,7 +61,7 @@ class StorageServiceSessionDelegate: NSObject {
     }
 
     private func findTransferTask(for taskIdentifier: TaskIdentifier) -> StorageTransferTask? {
-        guard let storageService = storageService,
+        guard let storageService = delegate,
               let transferTask = storageService.findTask(taskIdentifier: taskIdentifier) else {
                   logger.debug("Did not find transfer task: \(taskIdentifier)")
                   return nil
@@ -48,12 +77,12 @@ public extension Notification.Name {
 
 // MARK: - URLSessionDelegate -
 
-extension StorageServiceSessionDelegate: URLSessionDelegate {
+extension StorageServiceSessionController: URLSessionDelegate {
 
     func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
         logURLSessionActivity("Session did finish background events")
 
-        if let identifier = storageService?.identifier,
+        if let identifier = delegate?.identifier,
            let continuation = StorageBackgroundEventsRegistry.getContinuation(for: identifier) {
             // Must be run on main thread as covered by Apple Developer docs.
             Task { @MainActor in
@@ -74,13 +103,13 @@ extension StorageServiceSessionDelegate: URLSessionDelegate {
         NotificationCenter.default.post(name: Notification.Name.StorageURLSessionDidBecomeInvalidNotification, object: session)
 
         // Reset URLSession since the current one has become invalid.
-        storageService?.resetURLSession()
+        resetURLSession()
     }
 }
 
 // MARK: - URLSessionTaskDelegate -
 
-extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
+extension StorageServiceSessionController: URLSessionTaskDelegate {
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if let error = error {
@@ -106,7 +135,7 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
             logURLSessionActivity("Session task did complete: \(task.taskIdentifier)")
         }
 
-        guard let storageService = storageService,
+        guard let storageService = delegate,
               let transferTask = findTransferTask(for: task.taskIdentifier) else {
                   logURLSessionActivity("Session task not handled: \(task.taskIdentifier)")
                   return
@@ -155,7 +184,7 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
     func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
         logURLSessionActivity("Session task update: [bytesSent: \(bytesSent)], [totalBytesSent: \(totalBytesSent)], [totalBytesExpectedToSend: \(totalBytesExpectedToSend)]")
 
-        guard let storageService = storageService,
+        guard let storageService = delegate,
               let transferTask = findTransferTask(for: task.taskIdentifier) else { return }
 
         switch transferTask.transferType {
@@ -180,7 +209,7 @@ extension StorageServiceSessionDelegate: URLSessionTaskDelegate {
 
 // MARK: - URLSessionDownloadDelegate -
 
-extension StorageServiceSessionDelegate: URLSessionDownloadDelegate {
+extension StorageServiceSessionController: URLSessionDownloadDelegate {
 
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         logURLSessionActivity("Session download task [\(downloadTask.taskIdentifier)] did write [\(bytesWritten)], [totalBytesWritten \(totalBytesWritten)], [totalBytesExpectedToWrite: \(totalBytesExpectedToWrite)]")
@@ -195,7 +224,7 @@ extension StorageServiceSessionDelegate: URLSessionDownloadDelegate {
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         logURLSessionActivity("Session download task [\(downloadTask.taskIdentifier)] did finish downloading to \(location.path)")
 
-        guard let storageService = storageService,
+        guard let storageService = delegate,
               let transferTask = findTransferTask(for: downloadTask.taskIdentifier) else { return }
 
         let response = StorageTransferResponse(task: downloadTask, error: nil, transferTask: transferTask)

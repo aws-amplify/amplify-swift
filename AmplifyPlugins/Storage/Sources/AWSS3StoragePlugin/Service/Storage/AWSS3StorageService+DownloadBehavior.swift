@@ -52,7 +52,7 @@ extension AWSS3StorageService {
 
         request.setHTTPRequestHeaders(transferTask: transferTask)
 
-        let downloadTask = urlSession.downloadTask(with: request)
+        let downloadTask = backgroundUrlSession.downloadTask(with: request)
         transferTask.sessionTask = downloadTask
 
         // log task identifier?

@@ -106,7 +106,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
             request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
              */
 
-            let uploadTask = serviceProxy.urlSession.uploadTask(with: request, fromFile: partialFileURL)
+            let uploadTask = serviceProxy.backgroundUrlSession.uploadTask(with: request, fromFile: partialFileURL)
             subTask.sessionTask = uploadTask
             subTask.uploadPart = multipartUpload.part(for: partNumber)
 
@@ -180,7 +180,7 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
     func cancelUploadTasks(taskIdentifiers: [TaskIdentifier], done: @escaping () -> Void) {
         guard let service = serviceProxy else { return }
         service.unregister(taskIdentifiers: taskIdentifiers)
-        service.urlSession.getActiveTasks { tasks in
+        service.backgroundUrlSession.getActiveTasks { tasks in
             for task in tasks {
                 if taskIdentifiers.contains(task.taskIdentifier) {
                     task.cancel()

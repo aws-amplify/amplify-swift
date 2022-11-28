@@ -11,6 +11,11 @@ import AWSS3
 import Amplify
 import AWSPluginsCore
 
+/// Represents a concrete implementation of the
+/// [AWSS3StorageServiceBehaviour](x-source-tag://AWSS3StorageServiceBehaviour)
+/// protocol.
+///
+/// - Tag: AWSS3StorageService
 class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
 
     // resettable values
@@ -24,9 +29,10 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
     var s3Client: S3Client!
 
     let storageConfiguration: StorageConfiguration
-    let sessionConfiguration: URLSessionConfiguration
-    var delegateQueue: OperationQueue?
-    var urlSession: URLSession
+    let backgroundSessionController: StorageServiceSessionController
+    var backgroundUrlSession: URLSession { backgroundSessionController.session }
+    let foregroundSessionController: StorageServiceSessionController
+    var foregroundUrlSession: URLSession { foregroundSessionController.session }
     let storageTransferDatabase: StorageTransferDatabase
     let fileSystem: FileSystem
 
@@ -76,7 +82,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
         self.init(authService: authService,
                   storageConfiguration: storageConfiguration,
                   storageTransferDatabase: storageTransferDatabase,
-                  sessionConfiguration: _sessionConfiguration,
+                  backgroundSessionConfiguration: _sessionConfiguration,
                   s3Client: s3Client,
                   preSignedURLBuilder: preSignedURLBuilder,
                   awsS3: awsS3,
@@ -87,7 +93,8 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
          storageConfiguration: StorageConfiguration = .default,
          storageTransferDatabase: StorageTransferDatabase = .default,
          fileSystem: FileSystem = .default,
-         sessionConfiguration: URLSessionConfiguration,
+         backgroundSessionConfiguration: URLSessionConfiguration,
+         foregroundSessionConfiguration: URLSessionConfiguration = .default,
          delegateQueue: OperationQueue? = nil,
          logger: Logger = storageLogger,
          s3Client: S3Client,
@@ -97,11 +104,15 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
         self.storageConfiguration = storageConfiguration
         self.storageTransferDatabase = storageTransferDatabase
         self.fileSystem = fileSystem
-        self.sessionConfiguration = sessionConfiguration
 
-        let delegate = StorageServiceSessionDelegate(identifier: storageConfiguration.sessionIdentifier, logger: logger)
-        self.delegateQueue = delegateQueue
-        self.urlSession = URLSession(configuration: sessionConfiguration, delegate: delegate, delegateQueue: delegateQueue)
+        self.backgroundSessionController = StorageServiceSessionController(identifier: storageConfiguration.sessionIdentifier,
+                                                                           configuration: backgroundSessionConfiguration,
+                                                                           logger: logger,
+                                                                           delegateQueue: delegateQueue)
+        self.foregroundSessionController = StorageServiceSessionController(identifier: storageConfiguration.sessionIdentifier,
+                                                                           configuration: foregroundSessionConfiguration,
+                                                                           logger: logger,
+                                                                           delegateQueue: delegateQueue)
 
         self.logger = logger
         self.s3Client = s3Client
@@ -111,22 +122,30 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
 
         StorageBackgroundEventsRegistry.register(identifier: identifier)
 
-        delegate.storageService = self
-
-        storageTransferDatabase.recover(urlSession: urlSession) { [weak self] result in
+        self.backgroundSessionController.delegate = self
+        self.foregroundSessionController.delegate = self
+        storageTransferDatabase.recover(urlSession: backgroundUrlSession) { [weak self] result in
             guard let self = self else { fatalError() }
-            switch result {
-            case .success(let pairs):
-                logger.info("Recovery completed: [pairs = \(pairs.count)]")
-                self.processTransferTaskPairs(pairs: pairs)
-            case .failure(let error):
-                logger.error(error: error)
-            }
+            self.didRecover(tasks: result)
+        }
+        storageTransferDatabase.recover(urlSession: foregroundUrlSession) { [weak self] result in
+            guard let self = self else { fatalError() }
+            self.didRecover(tasks: result)
         }
     }
 
     deinit {
         StorageBackgroundEventsRegistry.unregister(identifier: identifier)
+    }
+
+    private func didRecover(tasks result: Result<StorageTransferTaskPairs, Error>) {
+        switch result {
+        case .success(let pairs):
+            logger.info("Recovery completed: [pairs = \(pairs.count)]")
+            self.processTransferTaskPairs(pairs: pairs)
+        case .failure(let error):
+            logger.error(error: error)
+        }
     }
 
     func reset() {
@@ -137,11 +156,6 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
         bucket = nil
         tasks.removeAll()
         multipartUploadSessions.removeAll()
-    }
-
-    func resetURLSession() {
-        let delegate = StorageServiceSessionDelegate(identifier: storageConfiguration.sessionIdentifier, logger: logger)
-        self.urlSession = URLSession(configuration: sessionConfiguration, delegate: delegate, delegateQueue: delegateQueue)
     }
 
     func attachEventHandlers(onUpload: AWSS3StorageServiceBehaviour.StorageServiceUploadEventHandler? = nil,
@@ -282,3 +296,5 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
     }
 
 }
+
+extension AWSS3StorageService: StorageServiceSessionControllerDelegate {}
