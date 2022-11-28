@@ -9,14 +9,8 @@ import Foundation
 import Amplify
 import Combine
 
-public class DataStoreModelProvider<ModelType: Model>: ModelProvider {
-    
-    enum LoadedState {
-        case notLoaded(identifiers: [LazyReferenceIdentifier]?)
-        case loaded(model: ModelType?)
-    }
-    
-    var loadedState: LoadedState
+public class DataStoreModelProvider<ModelType: Model>: ModelProvider {    
+    var loadedState: ModelProviderState<ModelType>
     
     // Create a "not loaded" model provider with the identifier metadata, useful for hydrating the model
     init(metadata: DataStoreModelDecoder.Metadata) {
@@ -53,11 +47,6 @@ public class DataStoreModelProvider<ModelType: Model>: ModelProvider {
     }
     
     public func getState() -> ModelProviderState<ModelType> {
-        switch loadedState {
-        case .notLoaded(let identifiers):
-            return .notLoaded(identifiers: identifiers)
-        case .loaded(let model):
-            return .loaded(model)
-        }
+        loadedState
     }
 }

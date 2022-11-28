@@ -17,12 +17,13 @@ import Foundation
 /// directly by host applications. The behavior of this may change without warning. Though it is not used by host
 /// application making any change to these `public` types should be backward compatible, otherwise it will be a breaking
 /// change.
-public protocol LazyReferenceMarker {
-    associatedtype ModelType: Model
-    
-    var reference: ModelType? { get }
-    
-    var identifiers: [LazyReferenceIdentifier]? { get }
+public protocol LazyReferenceValue {
+    var state: LazyReferenceValueState { get }
+}
+
+public enum LazyReferenceValueState {
+    case notLoaded(identifiers: [LazyReferenceIdentifier]?)
+    case loaded(model: Model?)
 }
 
 /// State of the ModelProvider
@@ -33,7 +34,7 @@ public protocol LazyReferenceMarker {
 /// change.
 public enum ModelProviderState<Element: Model> {
     case notLoaded(identifiers: [LazyReferenceIdentifier]?)
-    case loaded(Element?)
+    case loaded(model: Element?)
 }
 
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used

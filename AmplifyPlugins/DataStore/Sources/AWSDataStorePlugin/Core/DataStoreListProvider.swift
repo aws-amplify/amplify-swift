@@ -18,20 +18,7 @@ import Combine
 /// of the associated `id` and `field` and fetches the associated data on demand.
 public class DataStoreListProvider<Element: Model>: ModelListProvider {
 
-    /// The current state of lazily loaded list
-    enum LoadedState {
-        /// If the list represents an association between two models, the `associatedIdentifiers` will
-        /// hold the information necessary to query the associated elements (e.g. comments of a post)
-        ///
-        /// The associatedField represents the field to which the owner of the `List` is linked to.
-        /// For example, if `Post.comments` is associated with `Comment.post` the `List<Comment>`
-        /// of `Post` will have a reference to the `post` field in `Comment`.
-        case notLoaded(associatedIdentifiers: [String], associatedField: String)
-
-        case loaded([Element])
-    }
-
-    var loadedState: LoadedState
+    var loadedState: ModelListProviderState<Element>
 
     init(associatedIdentifiers: [String],
          associatedField: String) {

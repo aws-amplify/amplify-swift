@@ -30,8 +30,10 @@ public struct ModelBasedGraphQLDocumentBuilder {
         self.init(modelSchema: modelType.schema, operationType: operationType, primaryKeysOnly: primaryKeysOnly)
     }
 
-    public init(modelSchema: ModelSchema, operationType: GraphQLOperationType, primaryKeysOnly: Bool = false) {
+    public init(modelSchema: ModelSchema, operationType: GraphQLOperationType, primaryKeysOnly: Bool? = false) {
         self.modelSchema = modelSchema
+        let primaryKeysOnly = primaryKeysOnly ?? 
+            ModelRegistry.modelType(from: modelSchema.name)?.rootPath != nil ? true : false
         switch operationType {
         case .query:
             self.document = GraphQLQuery(modelSchema: modelSchema, primaryKeysOnly: primaryKeysOnly)

@@ -38,7 +38,7 @@ public struct ModelIdDecorator: ModelBasedGraphQLDocumentDecorator {
         }
     }
     
-    public init(identifiers: [(name: String, value: String)]) {
+    public init(identifiers: [LazyReferenceIdentifier]) {
         var firstField = true
         identifiers.forEach({ identifier in
             self.identifierFields.append((name: identifier.name, value: identifier.value, type: firstField == true ? "ID!": "String!"))

@@ -187,10 +187,8 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
                                           where predicate: QueryPredicate? = nil,
                                           includes: IncludedAssociations<M> = { _ in [] },
                                           type: GraphQLMutationType) -> GraphQLRequest<M> {
-        let primaryKeysOnly = (M.rootPath != nil) ? true : false
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema,
-                                                               operationType: .mutation,
-                                                               primaryKeysOnly: primaryKeysOnly)
+                                                               operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: type))
         
         if let modelPath = M.rootPath as? ModelPath<M> {
@@ -224,10 +222,8 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
     public static func get<M: Model>(_ modelType: M.Type,
                                      byId id: String,
                                      includes: IncludedAssociations<M> = { _ in [] }) -> GraphQLRequest<M?> {
-        let primaryKeysOnly = (M.rootPath != nil) ? true : false
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
-                                                               operationType: .query,
-                                                               primaryKeysOnly: primaryKeysOnly)
+                                                               operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
 
         if let modelPath = modelType.rootPath as? ModelPath<M> {
@@ -255,10 +251,8 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
                                      byIdentifier id: ModelIdentifier<M, M.IdentifierFormat>,
                                      includes: IncludedAssociations<M> = { _ in [] }) -> GraphQLRequest<M?>
         where M: ModelIdentifiable {
-            let primaryKeysOnly = (M.rootPath != nil) ? true : false
             var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
-                                                                   operationType: .query,
-                                                                   primaryKeysOnly: primaryKeysOnly)
+                                                                   operationType: .query)
             documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
             
             if let modelPath = modelType.rootPath as? ModelPath<M> {
@@ -280,8 +274,7 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
                                       limit: Int? = nil) -> GraphQLRequest<List<M>> {
         let primaryKeysOnly = (M.rootPath != nil) ? true : false
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
-                                                               operationType: .query,
-                                                               primaryKeysOnly: primaryKeysOnly)
+                                                               operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
 
         if let modelPath = modelType.rootPath as? ModelPath<M> {
@@ -305,10 +298,8 @@ extension GraphQLRequest: ModelGraphQLRequestFactory {
     public static func subscription<M: Model>(of modelType: M.Type,
                                               type: GraphQLSubscriptionType,
                                               includes: IncludedAssociations<M> = { _ in [] }) -> GraphQLRequest<M> {
-        let primaryKeysOnly = (M.rootPath != nil) ? true : false
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
-                                                               operationType: .subscription,
-                                                               primaryKeysOnly: primaryKeysOnly)
+                                                               operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: type))
 
         if let modelPath = modelType.rootPath as? ModelPath<M> {

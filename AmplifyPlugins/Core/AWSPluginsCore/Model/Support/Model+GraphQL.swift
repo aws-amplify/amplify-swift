@@ -194,12 +194,17 @@ extension Model {
         } else if let optionalModel = value as? Model?,
                   let modelValue = optionalModel {
             return modelValue.identifier(schema: modelSchema).values
-        } else if let lazyModel = value as? (any LazyReferenceMarker) {
-            if let model = lazyModel.reference {
-                return model.identifier(schema: modelSchema).values
-            } else if let identifiers = lazyModel.identifiers {
-                return identifiers.map { identifier in
-                    return identifier.value
+        } else if let lazyModel = value as? (any LazyReferenceValue) {
+            switch lazyModel.state {
+            case .notLoaded(let identifiers):
+                if let identifiers = identifiers {
+                    return identifiers.map { identifier in
+                        return identifier.value
+                    }
+                }
+            case .loaded(let model):
+                if let model = model {
+                    return model.identifier(schema: modelSchema).values
                 }
             }
         } else if let value = value as? [String: JSONValue] {

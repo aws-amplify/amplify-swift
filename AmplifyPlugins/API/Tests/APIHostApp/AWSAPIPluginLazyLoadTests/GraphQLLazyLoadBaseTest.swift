@@ -153,15 +153,8 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
     func query<M: Model>(for model: M, includes: IncludedAssociations<M> = { _ in [] }) async throws -> M? {
         let id = M.identifier(model)(schema: model.schema)
         
-        let modelType = model
-        
-        var primaryKeysOnly = false
-        if M.rootPath != nil {
-            primaryKeysOnly = true
-        }
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
-                                                               operationType: .query,
-                                                               primaryKeysOnly: primaryKeysOnly)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: model.schema,
+                                                               operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         
         if let modelPath = M.rootPath as? ModelPath<M> {

@@ -10,12 +10,8 @@ import Foundation
 // MARK: - DefaultModelProvider
 
 public struct DefaultModelProvider<Element: Model>: ModelProvider {
-    enum LoadedState {
-        case notLoaded(identifiers: [LazyReferenceIdentifier]?)
-        case loaded(model: Element?)
-    }
     
-    var loadedState: LoadedState
+    var loadedState: ModelProviderState<Element>
     
     public init(element: Element? = nil) {
         self.loadedState = .loaded(model: element)
@@ -35,11 +31,6 @@ public struct DefaultModelProvider<Element: Model>: ModelProvider {
     }
     
     public func getState() -> ModelProviderState<Element> {
-        switch loadedState {
-        case .notLoaded(let identifiers):
-            return .notLoaded(identifiers: identifiers)
-        case .loaded(let model):
-            return .loaded(model)
-        }
+        loadedState
     }
 }

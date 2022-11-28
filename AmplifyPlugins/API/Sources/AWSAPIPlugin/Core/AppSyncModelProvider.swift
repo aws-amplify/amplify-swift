@@ -13,12 +13,7 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
    
     let apiName: String?
     
-    enum LoadedState {
-        case notLoaded(identifiers: [LazyReferenceIdentifier])
-        case loaded(model: ModelType?)
-    }
-    
-    var loadedState: LoadedState
+    var loadedState: ModelProviderState<ModelType>
     
     // Creates a "not loaded" provider
     init(metadata: AppSyncModelDecoder.Metadata) {
@@ -38,8 +33,9 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
         
         switch loadedState {
         case .notLoaded(let identifiers):
-            let identifiers = identifiers.map { identifier in
-                return (name: identifier.name, value: identifier.value)
+            guard let identifiers = identifiers else {
+                self.loadedState = .loaded(model: nil)
+                return nil
             }
             let request = GraphQLRequest<ModelType?>.getRequest(ModelType.self,
                                                                 byIdentifiers: identifiers,
@@ -74,12 +70,7 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
     }
     
     public func getState() -> ModelProviderState<ModelType> {
-        switch loadedState {
-        case .notLoaded(let identifiers):
-            return .notLoaded(identifiers: identifiers)
-        case .loaded(let model):
-            return .loaded(model)
-        }
+        loadedState
     }
 }
 

@@ -25,40 +25,27 @@ public struct LazyReferenceIdentifier: Codable {
 ///
 /// The default implementation `DefaultModelProvider` only handles in-memory data, therefore `get()` and
 /// `require()` will simply return the current `reference`.
-public class LazyReference<ModelType: Model>: Codable, LazyReferenceMarker {
+public class LazyReference<ModelType: Model>: Codable, LazyReferenceValue {
     
     /// Represents the data state of the `LazyModel`.
     enum LoadedState {
         case notLoaded(identifiers: [LazyReferenceIdentifier]?)
         case loaded(ModelType?)
     }
+    
     var loadedState: LoadedState
+    
+    public var state: LazyReferenceValueState {
+        switch loadedState {
+        case .notLoaded(let identifiers):
+            return .notLoaded(identifiers: identifiers)
+        case .loaded(let model):
+            return .loaded(model: model)
+        }
+    }
     
     /// The provider for fulfilling list behaviors
     let modelProvider: AnyModelProvider<ModelType>
-    
-    /// The model reference.
-    public internal(set) var reference: ModelType? {
-        get {
-            switch loadedState {
-            case .notLoaded:
-                return nil
-            case .loaded(let element):
-                return element
-            }
-        }
-        set {
-            switch loadedState {
-            case .loaded:
-                Amplify.log.error("""
-                    There is an attempt to set an already lazy model. The existing data will not be overwritten
-                    """)
-                return
-            case .notLoaded:
-                loadedState = .loaded(newValue)
-            }
-        }
-    }
     
     public var identifiers: [LazyReferenceIdentifier]? {
         get {

@@ -17,12 +17,6 @@ public struct AppSyncModelDecoder: ModelProviderDecoder {
     struct Metadata: Codable {
         let identifiers: [LazyReferenceIdentifier]
         let apiName: String?
-        
-        func getIdentifiers() -> [(name: String, value: String)] {
-            identifiers.map { identifier in
-                return (name: identifier.name, value: identifier.value)
-            }
-        }
     }
     
     public static func shouldDecode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> Bool {

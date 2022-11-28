@@ -17,10 +17,8 @@ extension GraphQLRequest {
                                                    limit: Int? = nil,
                                                    nextToken: String? = nil,
                                                    apiName: String? = nil) -> GraphQLRequest<ResponseType> {
-        let primaryKeysOnly = ModelRegistry.modelType(from: modelSchema.name)?.rootPath != nil ? true : false
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema,
-                                                               operationType: .query,
-                                                               primaryKeysOnly: primaryKeysOnly)
+                                                               operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
         if let filter = filter {
             documentBuilder.add(decorator: FilterDecorator(filter: filter))
@@ -35,12 +33,10 @@ extension GraphQLRequest {
     }
     
     static func getRequest<M: Model>(_ modelType: M.Type,
-                                     byIdentifiers identifiers: [(name: String, value: String)],
+                                     byIdentifiers identifiers: [LazyReferenceIdentifier],
                                      apiName: String?) -> GraphQLRequest<M?> {
-        let primaryKeysOnly = (modelType.rootPath != nil) ? true : false
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
-                                                               operationType: .query,
-                                                               primaryKeysOnly: primaryKeysOnly)
+                                                               operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(identifiers: identifiers))
         
