@@ -201,7 +201,7 @@ jobs:
           command: xcodebuild build-for-testing -scheme <<parameters.scheme>> -sdk << parameters.sdk >> -destination "<<parameters.destination>>" | tee "artifacts/build-<< parameters.scheme >>-<< parameters.sdk >>.log" | xcpretty
       - run:
           name: Test << parameters.scheme >>
-          command: xcodebuild test -scheme <<parameters.scheme>> -sdk << parameters.sdk >> -destination "<<parameters.destination>>" —test—iterations 10 -retry-tests-on-failure  | tee "artifacts/test-<< parameters.scheme >>-<< parameters.sdk >>.log" | xcpretty --simple --color --report junit
+          command: xcodebuild test -scheme <<parameters.scheme>> -sdk << parameters.sdk >> -destination "<<parameters.destination>>" -test-iterations 10 -run-tests-until-failure  | tee "artifacts/test-<< parameters.scheme >>-<< parameters.sdk >>.log" | xcpretty --simple --color --report junit
       - run:
           name: Upload << parameters.scheme >> coverage report to Codecov
           command: bash ~/amplify-swift/build-support/codecov.sh -F << parameters.scheme >>_unit_test -J '^<< parameters.scheme >>$'
