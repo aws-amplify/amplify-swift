@@ -1,0 +1,26 @@
+name: 'Run repeated xcodebuild test'
+description: 'Action runs the test multiple times for the scheme specified'
+
+inputs:
+  scheme:
+    required: true
+    type: string
+  project_path:
+    required: false
+    type: string
+  destination:
+    required: false
+    type: string
+    default: 'platform=iOS Simulator,name=iPhone 13,OS=latest'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Test ${{ inputs.scheme }}
+      env:
+        SCHEME: ${{ inputs.scheme }}
+        PROJECT_PATH: ${{ inputs.project_path }}
+      run: |
+        cd $PROJECT_PATH
+        xcodebuild test -scheme $SCHEME -sdk iphonesimulator -destination '${{ inputs.destination }}' -test-iterations 3 -run-tests-until-failure | xcpretty --simple --color --report junit && exit ${PIPESTATUS[0]}        
+      shell: bash 
