@@ -1,7 +1,6 @@
 name: Nightly Repeated Integration Tests
 on:
   workflow_dispatch:
-  branches: [chore/integ-test-multiple-runs]
   schedule:
     - cron:  '0 5 * * *'
 
