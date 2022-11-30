@@ -586,7 +586,3 @@ workflows:
           destination: << pipeline.parameters.macos-destination >>
           requires:
             - build_amplify_macos_spm
-    filters:
-      branches:
-        only:
-          - chore/unit-test-multiple-runs
