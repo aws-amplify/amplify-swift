@@ -126,7 +126,7 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
 
     // MARK: - Category tests
 
-    func testUsingCategory_withConfiguredPlugin_shouldSucceed() throws {
+    func testUsingCategory_withConfiguredPlugin_shouldSucceed() async throws {
         let plugin = MockPushNotificationsCategoryPlugin()
         let methodInvokedOnDefaultPlugin = expectation(description: "test method invoked on default plugin")
         plugin.listeners.append { message in
@@ -137,11 +137,11 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
         try Amplify.add(plugin: plugin)
         try Amplify.configure(createAmplifyConfig())
 
-        Amplify.Notifications.Push.identifyUser(userId: "test")
-        waitForExpectations(timeout: 1.0)
+        try await Amplify.Notifications.Push.identifyUser(userId: "test")
+        await waitForExpectations(timeout: 1.0)
     }
 
-    func testUsingCategory_withMultiplePlugins_shouldThrowFatalError() throws {
+    func testUsingCategory_withMultiplePlugins_shouldThrowFatalError() async throws {
         let plugin1 = MockPushNotificationsCategoryPlugin()
         try Amplify.add(plugin: plugin1)
 
@@ -150,18 +150,24 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(createAmplifyConfig(hasSecondPlugin: true))
 
-        try XCTAssertThrowFatalError {
-            Amplify.Notifications.Push.identifyUser(userId: "test")
+        let registry = TypeRegistry.register(type: PushNotificationsCategoryPlugin.self) { _ in
+            MockPushNotificationsCategoryPlugin()
         }
+
+        try await Amplify.Notifications.Push.identifyUser(userId: "test")
+        XCTAssertEqual(registry.messages.count, 1)
     }
 
-    func testUsingCategory_withoutCallingConfigure_shouldThrowFatalError() throws {
+    func testUsingCategory_withoutCallingConfigure_shouldThrowFatalError() async throws {
         let plugin = MockPushNotificationsCategoryPlugin()
         try Amplify.add(plugin: plugin)
 
-        try XCTAssertThrowFatalError {
-            Amplify.Notifications.Push.identifyUser(userId: "test")
+        let registry = TypeRegistry.register(type: PushNotificationsCategoryPlugin.self) { _ in
+            MockPushNotificationsCategoryPlugin()
         }
+
+        try await Amplify.Notifications.Push.identifyUser(userId: "test")
+        XCTAssertEqual(registry.messages.count, 1)
     }
 
     // MARK: - Plugin tests
@@ -201,7 +207,7 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
         XCTAssertNotNil(try Amplify.Notifications.Push.getPlugin(for: "MockPushNotificationsCategoryPlugin"))
     }
     
-    func testUsingPlugin_withMultiplePlugins_shouldSucceed() throws {
+    func testUsingPlugin_withMultiplePlugins_shouldSucceed() async throws {
         let plugin1 = MockPushNotificationsCategoryPlugin()
         let methodShouldNotBeInvokedOnDefaultPlugin =
         expectation(description: "test method should not be invoked on default plugin")
@@ -225,8 +231,8 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
 
         try Amplify.configure(createAmplifyConfig(hasSecondPlugin: true))
 
-        try Amplify.Notifications.Push.getPlugin(for: "MockSecondPushNotificationsCategoryPlugin").identifyUser(userId: "test")
-        waitForExpectations(timeout: 1.0)
+        try await Amplify.Notifications.Push.getPlugin(for: "MockSecondPushNotificationsCategoryPlugin").identifyUser(userId: "test")
+        await waitForExpectations(timeout: 1.0)
     }
 
     func testUsingPlugin_callingConfigure_shouldSucceed() throws {

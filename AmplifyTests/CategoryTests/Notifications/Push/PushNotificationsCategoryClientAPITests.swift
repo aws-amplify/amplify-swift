@@ -34,7 +34,7 @@ class PushNotificationsCategoryClientAPITests: XCTestCase {
         plugin = nil
     }
 
-    func testIdentifyUser_shouldSucceed() {
+    func testIdentifyUser_shouldSucceed() async throws {
         let expectedMessage = "identifyUser(userId:test)"
         let methodInvoked = expectation(description: "Expected method was invoked on plugin")
         plugin.listeners.append { message in
@@ -43,11 +43,11 @@ class PushNotificationsCategoryClientAPITests: XCTestCase {
             }
         }
 
-        category.identifyUser(userId: "test")
-        waitForExpectations(timeout: 1.0)
+        try await category.identifyUser(userId: "test")
+        await waitForExpectations(timeout: 1.0)
     }
 
-    func testRegisterDeviceToken_shouldSucceed() {
+    func testRegisterDeviceToken_shouldSucceed() async throws {
         let data = "Data".data(using: .utf8)!
         let expectedMessage = "registerDevice(token:\(data))"
         let methodInvoked = expectation(description: "Expected method was invoked on plugin")
@@ -57,13 +57,13 @@ class PushNotificationsCategoryClientAPITests: XCTestCase {
             }
         }
 
-        category.registerDevice(token: data)
-        waitForExpectations(timeout: 1.0)
+        try await category.registerDevice(apnsToken: data)
+        await waitForExpectations(timeout: 1.0)
     }
 
-    func testRegisterDidReceiveUserInfo_shouldSucceed() {
-        let userInfo: NotificationUserInfo = ["test": "test"]
-        let expectedMessage = "registerDidReceive(userInfo:\(userInfo))"
+    func testRecordNotificationReceived_shouldSucceed() async {
+        let userInfo: Notifications.Push.UserInfo = ["test": "test"]
+        let expectedMessage = "recordNotificationReceived(userInfo:\(userInfo))"
         let methodInvoked = expectation(description: "Expected method was invoked on plugin")
         plugin.listeners.append { message in
             if message == expectedMessage {
@@ -71,13 +71,13 @@ class PushNotificationsCategoryClientAPITests: XCTestCase {
             }
         }
 
-        category.registerDidReceive(userInfo)
-        waitForExpectations(timeout: 1.0)
+        await category.recordNotificationReceived(userInfo)
+        await waitForExpectations(timeout: 1.0)
     }
 
-    func testRegisterDidReceiveResponse_shouldSucceed() {
+    func testRecordNotificationOpened_shouldSucceed() async {
         let response = UNNotificationResponse(coder: MockedKeyedArchiver(requiringSecureCoding: false))!
-        let expectedMessage = "registerDidReceive(response:\(response))"
+        let expectedMessage = "recordNotificationOpened(response:\(response))"
         let methodInvoked = expectation(description: "Expected method was invoked on plugin")
         plugin.listeners.append { message in
             if message == expectedMessage {
@@ -85,8 +85,8 @@ class PushNotificationsCategoryClientAPITests: XCTestCase {
             }
         }
 
-        category.registerDidReceive(response)
-        waitForExpectations(timeout: 1.0)
+        await category.recordNotificationOpened(response)
+        await waitForExpectations(timeout: 1.0)
     }
 
     private class MockedKeyedArchiver: NSKeyedArchiver {
