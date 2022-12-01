@@ -25,8 +25,8 @@ public protocol AnalyticsClientBehaviour: Actor {
     func removeGlobalMetric(forKey key: String, forEventType eventType: String)
     func record(_ event: PinpointEvent) throws
 
-    func setGlobalEventSourceAttributes(_ attributes: [String: Any]) throws
-    func removeAllGlobalEventSourceAttributes()
+    func setRemoteGlobalAttributes(_ attributes: [String: String])
+    func removeAllRemoteGlobalAttributes()
     func setAutomaticSubmitEventsInterval(_ interval: TimeInterval,
                                           onSubmit: SubmitResult?)
 
@@ -62,8 +62,7 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
     private let sessionProvider: SessionProvider
     private lazy var globalAttributes: PinpointEventAttributes = [:]
     private lazy var globalMetrics: PinpointEventMetrics = [:]
-    // TODO: review this type
-    private lazy var globalEventSourceAttributes: [String: Any] = [:]
+    private lazy var globalRemoteAttributes: [String: String] = [:]
     private lazy var eventTypeAttributes: [String: PinpointEventAttributes] = [:]
     private lazy var eventTypeMetrics: [String: PinpointEventMetrics] = [:]
 
@@ -129,16 +128,12 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
         eventTypeMetrics[eventType, default: [:]][key] = metric
     }
 
-    func setGlobalEventSourceAttributes(_ attributes: [String: Any]) throws {
-        guard let attributes = attributes as? [String: String] else {
-            return
+    func setRemoteGlobalAttributes(_ attributes: [String: String]) {
+        removeAllRemoteGlobalAttributes()
+        for (key, value) in attributes {
+            addGlobalAttribute(value, forKey: key)
         }
-        globalEventSourceAttributes = attributes
-        let sessionId = self.sessionProvider().sessionId
-
-        try eventRecorder.updateAttributesOfEvents(ofType: SessionClient.Constants.Events.start,
-                                                   withSessionId: sessionId,
-                                                   setAttributes: attributes)
+        globalRemoteAttributes = attributes
     }
 
     func removeGlobalAttribute(forKey key: String) {
@@ -157,11 +152,11 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
         eventTypeMetrics[eventType]?[key] = nil
     }
 
-    func removeAllGlobalEventSourceAttributes() {
-        for key in globalEventSourceAttributes.keys {
+    func removeAllRemoteGlobalAttributes() {
+        for key in globalRemoteAttributes.keys {
             removeGlobalAttribute(forKey: key)
         }
-        globalEventSourceAttributes = [:]
+        globalRemoteAttributes = [:]
     }
 
     // MARK: - Monetization events
@@ -259,14 +254,6 @@ actor AnalyticsClient: AnalyticsClientBehaviour {
         // Add global metrics
         for (key, metric) in globalMetrics {
             event.addMetric(metric, forKey: key)
-        }
-
-        // Add event source attributes
-        for (key, attribute) in globalEventSourceAttributes {
-            // TODO: review this
-            if let attribute = attribute as? String {
-                event.addAttribute(attribute, forKey: key)
-            }
         }
 
         try eventRecorder.save(event)

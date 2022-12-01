@@ -26,16 +26,16 @@ class MockPushNotificationsCategoryPlugin: MessageReporter, PushNotificationsCat
         notify("identifyUser(userId:\(userId))")
     }
     
-    func registerDevice(token: Data) {
-        notify("registerDevice(token:\(token))")
+    func registerDevice(apnsToken: Data) {
+        notify("registerDevice(token:\(apnsToken))")
     }
     
-    func registerDidReceive(_ userInfo: NotificationUserInfo) {
-        notify("registerDidReceive(userInfo:\(userInfo))")
+    func recordNotificationReceived(_ userInfo: Notifications.Push.UserInfo) {
+        notify("recordNotificationReceived(userInfo:\(userInfo))")
     }
     
-    func registerDidReceive(_ response: UNNotificationResponse) {
-        notify("registerDidReceive(response:\(response))")
+    func recordNotificationOpened(_ response: UNNotificationResponse) {
+        notify("recordNotificationOpened(response:\(response))")
     }
 }
 
