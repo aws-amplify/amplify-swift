@@ -167,7 +167,8 @@ class SessionClient: SessionClientBehaviour {
         log.info("Session Stopped.")
 
         Task {
-            await analyticsClient?.removeAllGlobalEventSourceAttributes()
+            log.verbose("Removing remote global attributes")
+            await analyticsClient?.removeAllRemoteGlobalAttributes()
             log.verbose("Firing Session Event: Stop")
             record(eventType: Constants.Events.stop)
         }

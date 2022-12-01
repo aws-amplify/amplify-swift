@@ -18,10 +18,6 @@ public protocol EndpointClientBehaviour: Actor {
     func currentEndpointProfile() async -> PinpointEndpointProfile
     func updateEndpointProfile() async throws
     func updateEndpointProfile(with endpointProfile: PinpointEndpointProfile) async throws
-    func addAttributes(_ attributes: [String], forKey key: String)
-    func removeAttributes(forKey key: String)
-    func addMetric(_ metric: Double, forKey key: String)
-    func removeMetric(forKey key: String)
     nonisolated func convertToPublicEndpoint(_ endpointProfile: PinpointEndpointProfile) -> PinpointClientTypes.PublicEndpoint
 }
 
@@ -39,12 +35,6 @@ actor EndpointClient: EndpointClientBehaviour {
     private let endpointInformation: EndpointInformation
     private let userDefaults: UserDefaultsBehaviour
     private let keychain: KeychainStoreBehavior
-
-    typealias GlobalAttributes = [String: [String]]
-    typealias GlobalMetrics = [String: Double]
-
-    private var globalAttributes: GlobalAttributes = [:]
-    private var globalMetrics: GlobalMetrics = [:]
 
     private var endpointProfile: PinpointEndpointProfile?
     private static let defaultDateFormatter = ISO8601DateFormatter()
@@ -64,23 +54,10 @@ actor EndpointClient: EndpointClientBehaviour {
         self.keychain = keychain
 
         Self.migrateStoredValues(from: userDefaults, to: keychain, using: archiver)
-        if let attributes = Self.getStoredGlobalValues(key: Constants.attributesKey, as: GlobalAttributes.self, from: keychain, fallbackTo: userDefaults, using: archiver) {
-            globalAttributes = attributes
-        }
-
-        if let metrics = Self.getStoredGlobalValues(key: Constants.metricsKey, as: GlobalMetrics.self, from: keychain, fallbackTo: userDefaults, using: archiver) {
-            globalMetrics = metrics
-        }
     }
 
     func currentEndpointProfile() async -> PinpointEndpointProfile {
         let endpointProfile = await retrieveOrCreateEndpointProfile()
-
-        // Refresh Attributes and Metrics
-        endpointProfile.removeAllAttributes()
-        endpointProfile.removeAllMetrics()
-        addAttributesAndMetrics(to: endpointProfile)
-
         self.endpointProfile = endpointProfile
         return endpointProfile
     }
@@ -90,54 +67,7 @@ actor EndpointClient: EndpointClientBehaviour {
     }
 
     func updateEndpointProfile(with endpointProfile: PinpointEndpointProfile) async throws {
-        addAttributesAndMetrics(to: endpointProfile)
         try await updateEndpoint(with: endpointProfile)
-    }
-
-    func addAttributes(_ attributes: [String], forKey key: String) {
-        precondition(!key.isEmpty, "Attributes and metrics must have a valid key")
-        globalAttributes[key] = attributes
-        do {
-            if let data = try? archiver.encode(globalAttributes) {
-                try keychain._set(data, key: Constants.attributesKey)
-            }
-        } catch {
-            log.error("Unable to store Analytics global attributes")
-        }
-    }
-
-    func removeAttributes(forKey key: String) {
-        globalAttributes[key] = nil
-    }
-
-    func addMetric(_ metric: Double, forKey key: String) {
-        precondition(!key.isEmpty, "Attributes and metrics must have a valid key")
-        globalMetrics[key] = metric
-        do {
-            if let data = try? archiver.encode(globalMetrics) {
-                try keychain._set(data, key: Constants.metricsKey)
-            }
-        } catch {
-            log.error("Unable to store Analytics global metrics")
-        }
-    }
-
-    func removeMetric(forKey key: String) {
-        globalMetrics[key] = nil
-    }
-
-    private func addAttributesAndMetrics(to endpointProfile: PinpointEndpointProfile) {
-        // Add global attributes
-        log.verbose("Applying Global Endpoint Attributes: \(globalAttributes)")
-        for (key, attributes) in globalAttributes {
-            endpointProfile.addAttributes(attributes, forKey: key)
-        }
-
-        // Add global metrics
-        log.verbose("Applying Global Endpoint Metrics: \(globalMetrics)")
-        for (key, metric) in globalMetrics {
-            endpointProfile.addMetric(metric, forKey: key)
-        }
     }
 
     private func retrieveOrCreateEndpointProfile() async -> PinpointEndpointProfile {
@@ -263,26 +193,6 @@ actor EndpointClient: EndpointClientBehaviour {
                 log.error("Unable to migrate Analytics key-value store for key \(Constants.deviceTokenKey)")
             }
         }
-
-        if let attributes = userDefaults.object(forKey: Constants.attributesKey) as? GlobalAttributes,
-           let attributesData = try? archiver.encode(attributes) {
-            do {
-                try keychain._set(attributesData, key: Constants.attributesKey)
-                userDefaults.removeObject(forKey: Constants.attributesKey)
-            } catch {
-                log.error("Unable to migrate Analytics key-value store for key \(Constants.attributesKey)")
-            }
-        }
-
-        if let metrics = userDefaults.object(forKey: Constants.metricsKey) as? GlobalMetrics,
-           let metricsData = try? archiver.encode(metrics) {
-            do {
-                try keychain._set(metricsData, key: Constants.metricsKey)
-                userDefaults.removeObject(forKey: Constants.metricsKey)
-            } catch {
-                log.error("Unable to migrate Analytics key-value store for key \(Constants.metricsKey)")
-            }
-        }
     }
 
     private static func getStoredData(
@@ -296,20 +206,6 @@ actor EndpointClient: EndpointClientBehaviour {
             return defaultSource.data(forKey: key)
         }
     }
-
-    private static func getStoredGlobalValues<T: Decodable>(
-        key: String,
-        as: T.Type,
-        from keychain: KeychainStoreBehavior,
-        fallbackTo defaultSource: UserDefaultsBehaviour,
-        using archiver: AmplifyArchiverBehaviour
-    ) -> T? {
-        guard let data = try? keychain._getData(key) else {
-            return defaultSource.object(forKey: key) as? T
-        }
-
-        return try? archiver.decode(T.self, from: data)
-    }
 }
 
 extension EndpointClient: DefaultLogger {}
@@ -321,8 +217,6 @@ extension EndpointClient {
             static let none = "NONE"
         }
 
-        static let attributesKey = "AWSPinpointEndpointAttributesKey"
-        static let metricsKey = "AWSPinpointEndpointMetricsKey"
         static let endpointProfileKey = "AWSPinpointEndpointProfileKey"
         static let deviceTokenKey = "com.amazonaws.AWSDeviceTokenKey"
     }

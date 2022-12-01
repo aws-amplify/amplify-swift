@@ -7,21 +7,26 @@
 
 import Foundation
 import UserNotifications
-#if canImport(UIKit)
-public typealias NotificationUserInfo = [AnyHashable: Any]
-#else
-public typealias NotificationUserInfo = [String: Any]
-#endif
 
 /// Defines the behaviour of the Push Notifications category that clients will use
 public protocol PushNotificationsCategoryBehaviour: NotificationsSubcategoryBehaviour {
-    // TODO: These APIs can change. Document them once finalized.
+    /// Associates a given user ID with the current device
+    ///
+    /// - Parameter userId: The unique identifier for the user
+    func identifyUser(userId: String) async throws
 
-    func identifyUser(userId: String)
-    
-    func registerDevice(token: Data)
-    
-    func registerDidReceive(_ userInfo: NotificationUserInfo)
-    
-    func registerDidReceive(_ response: UNNotificationResponse)
+    /// Registers the given APNs token for this device, allowing it to receive Push Notifications
+    ///
+    /// - Parameter apnsToken: A globally unique token that identifies this device to APNs
+    func registerDevice(apnsToken: Data) async throws
+
+    /// Records that a notification has been received.
+    ///
+    /// - Parameter userInfo: A dictionary that contains information related to the remote notification
+    func recordNotificationReceived(_ userInfo: Notifications.Push.UserInfo) async
+
+    /// Records that a notification was opened, i.e. the user tapped on it
+    ///
+    /// - Parameter response: The user’s response to the notification
+    func recordNotificationOpened(_ response: UNNotificationResponse) async
 }

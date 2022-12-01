@@ -60,11 +60,11 @@ actor MockAnalyticsClient: AnalyticsClientBehaviour {
         return PinpointEvent(eventType: eventType, session: PinpointSession(appId: "", uniqueId: ""))
     }
 
-    func setGlobalEventSourceAttributes(_ attributes: [String: Any]) {
+    func setRemoteGlobalAttributes(_ attributes: [String: String]) {
 
     }
 
-    func removeAllGlobalEventSourceAttributes() {
+    func removeAllRemoteGlobalAttributes() {
 
     }
 
