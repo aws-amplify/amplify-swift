@@ -75,6 +75,8 @@ extension SdkError: AuthErrorConvertible {
 
         case .unknownError(let message):
             return AuthError.unknown(message, clientError)
+        @unknown default:
+            return .unknown("Unknown service error occurred")
         }
     }
 

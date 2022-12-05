@@ -12,17 +12,39 @@ import AWSCognitoIdentity
 extension AuthTestHarnessInput {
 
     func getMockIdentity() -> MockIdentity {
-        let getId: MockIdentity.MockGetIdResponse = { _ in
-            return .init(identityId: "mockIdentityId")
-        }
 
-        let getCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
-            let credentials = CognitoIdentityClientTypes.Credentials(
-                accessKeyId: "accessKey",
-                expiration: Date(),
-                secretKey: "secret",
-                sessionToken: "session")
-            return .init(credentials: credentials, identityId: "responseIdentityID")
+        let getId: MockIdentity.MockGetIdResponse = { input in
+
+            guard case .getId(let apiData) = cognitoAPI[.getId] else {
+                fatalError("Missing input")
+            }
+            if let request = apiData.expectedInput {
+                XCTAssertEqual(request.logins, input.logins)
+            }
+
+            switch apiData.output {
+            case .success(let response):
+                return response
+            case .failure(let error):
+                throw error
+            }
+        }
+        let getCredentials: MockIdentity.MockGetCredentialsResponse = { input in
+
+            guard case .getCredentialsForIdentity(let apiData) = cognitoAPI[.getCredentialsForIdentity] else {
+                fatalError("Missing input")
+            }
+            if let request = apiData.expectedInput {
+                XCTAssertEqual(request.logins, input.logins)
+                XCTAssertEqual(request.identityId, input.identityId)
+            }
+
+            switch apiData.output {
+            case .success(let response):
+                return response
+            case .failure(let error):
+                throw error
+            }
         }
 
         return MockIdentity(

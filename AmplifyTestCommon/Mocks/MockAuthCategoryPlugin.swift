@@ -41,13 +41,13 @@ class MockAuthCategoryPlugin: MessageReporter, AuthCategoryPlugin {
     }
 
 #if canImport(AuthenticationServices)
-    public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor,
+    public func signInWithWebUI(presentationAnchor: AuthUIPresentationAnchor? = nil,
                                 options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
         fatalError()
     }
 
     public func signInWithWebUI(for authProvider: AuthProvider,
-                                presentationAnchor: AuthUIPresentationAnchor,
+                                presentationAnchor: AuthUIPresentationAnchor? = nil,
                                 options: AuthWebUISignInRequest.Options? = nil) async throws -> AuthSignInResult {
             fatalError()
     }

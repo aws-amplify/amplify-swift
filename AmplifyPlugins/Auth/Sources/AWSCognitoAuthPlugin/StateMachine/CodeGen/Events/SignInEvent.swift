@@ -29,9 +29,9 @@ struct SignInEvent: StateMachineEvent {
 
         case respondPasswordVerifier(SRPStateData, InitiateAuthOutputResponse)
 
-        case initiateDeviceSRP(SignInResponseBehavior)
+        case initiateDeviceSRP(Username, SignInResponseBehavior)
 
-        case respondDeviceSRPChallenge(SRPStateData, SignInResponseBehavior)
+        case respondDeviceSRPChallenge(Username, SignInResponseBehavior)
 
         case respondDevicePasswordVerifier(SRPStateData, SignInResponseBehavior)
 

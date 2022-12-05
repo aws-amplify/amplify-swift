@@ -35,6 +35,12 @@ extension RemoteSyncEngine {
             urlErrorOptional = underlyingError
         } else if let urlError = error as? URLError {
             urlErrorOptional = urlError
+        } else if let dataStoreError = error as? DataStoreError,
+                  case .api(let amplifyError, _) = dataStoreError,
+                  let apiError = amplifyError as? APIError,
+                  case .networkError(_, _, let error) = apiError,
+                  let urlError = error as? URLError {
+            urlErrorOptional = urlError
         }
 
         let advice = requestRetryablePolicy.retryRequestAdvice(urlError: urlErrorOptional,

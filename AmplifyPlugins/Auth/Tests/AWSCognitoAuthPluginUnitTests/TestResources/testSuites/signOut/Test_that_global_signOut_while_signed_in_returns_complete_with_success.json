@@ -1,0 +1,41 @@
+{
+    "description": "Test that global signOut while signed in returns complete with success",
+    "preConditions": {
+        "amplify-configuration": "authconfiguration.json",
+        "state": "SignedIn_SessionEstablished.json",
+        "mockedResponses": [
+            {
+                "type": "cognitoIdentityProvider",
+                "apiName": "globalSignOut",
+                "responseType": "success",
+                "response": {
+                }
+            },
+            {
+                "type": "cognitoIdentityProvider",
+                "apiName": "revokeToken",
+                "responseType": "success",
+                "response": {
+                }
+            }
+        ]
+    },
+    "api": {
+        "name": "signOut",
+        "params": {
+        },
+        "options": {
+            "globalSignOut": true
+        }
+    },
+    "validations": [
+        {
+            "type": "amplify",
+            "apiName": "signOut",
+            "responseType": "success",
+            "response": {
+                "signOutResult": "COMPLETE"
+            }
+        }
+    ]
+}

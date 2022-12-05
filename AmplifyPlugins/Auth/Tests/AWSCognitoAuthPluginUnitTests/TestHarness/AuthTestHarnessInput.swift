@@ -18,7 +18,7 @@ struct AuthTestHarnessInput {
     let initialAuthState: AuthState
     let expectedAuthState: AuthState?
     let amplifyAPI: AmplifyAPI
-    let cognitoAPI: CognitoAPI
+    let cognitoAPI: [API.APIName: CognitoAPI]
 }
 
 extension AuthTestHarnessInput {
@@ -39,7 +39,7 @@ extension AuthTestHarnessInput {
     }
 
     private static func getCognitoAPI(
-        from specification: FeatureSpecification) -> CognitoAPI {
+        from specification: FeatureSpecification) -> [API.APIName: CognitoAPI] {
             return CognitoAPIDecodingHelper.decode(with: specification)
     }
 
@@ -60,10 +60,42 @@ enum AmplifyAPI {
     case resetPassword(
         input: AuthResetPasswordRequest,
         expectedOutput: Result<AuthResetPasswordResult, AuthError>?)
+    case signUp(
+        input: AuthSignUpRequest,
+        expectedOutput: Result<AuthSignUpResult, AuthError>?)
+    case signIn(
+        input: AuthSignInRequest,
+        expectedOutput: Result<AuthSignInResult, AuthError>?)
+    case fetchAuthSession(
+        input: AuthFetchSessionRequest,
+        expectedOutput: Result<AWSAuthCognitoSession, AuthError>?)
+    case signOut(
+        input: AuthSignOutRequest,
+        expectedOutput: Result<AWSCognitoSignOutResult, AuthError>?)
+    case deleteUser(
+        input: Void,
+        expectedOutput: Result<Void, AuthError>?)
+    case confirmSignIn(
+        input: AuthConfirmSignInRequest,
+        expectedOutput: Result<AuthSignInResult, AuthError>?)
 }
 
 enum CognitoAPI {
-    case forgotPassword(
-        expectedInput: ForgotPasswordInput?,
-        output: Result<ForgotPasswordOutputResponse, ForgotPasswordOutputError>)
+    case forgotPassword(CognitoAPIData<ForgotPasswordInput, ForgotPasswordOutputResponse, ForgotPasswordOutputError>)
+    case signUp(CognitoAPIData<SignUpInput, SignUpOutputResponse, SignUpOutputError>)
+    case deleteUser(CognitoAPIData<DeleteUserInput, DeleteUserOutputResponse, DeleteUserOutputError>)
+    case respondToAuthChallenge(CognitoAPIData<RespondToAuthChallengeInput, RespondToAuthChallengeOutputResponse, RespondToAuthChallengeOutputError>)
+    case getId(CognitoAPIData<GetIdInput, GetIdOutputResponse, GetIdOutputError>)
+    case getCredentialsForIdentity(CognitoAPIData<GetCredentialsForIdentityInput, GetCredentialsForIdentityOutputResponse, GetCredentialsForIdentityOutputError>)
+    case confirmDevice(CognitoAPIData<ConfirmDeviceInput, ConfirmDeviceOutputResponse, ConfirmDeviceOutputError>)
+    case initiateAuth(CognitoAPIData<InitiateAuthInput, InitiateAuthOutputResponse, InitiateAuthOutputError>)
+    case revokeToken(CognitoAPIData<RevokeTokenInput, RevokeTokenOutputResponse, RevokeTokenOutputError>)
+    case globalSignOut(CognitoAPIData<GlobalSignOutInput, GlobalSignOutOutputResponse, GlobalSignOutOutputError>)
+}
+
+struct CognitoAPIData<Input: Decodable, Output: Decodable, E: Swift.Error & ClientRuntime.HttpResponseBinding> {
+
+    let expectedInput: Input?
+    let output: Result<Output, E>
+
 }

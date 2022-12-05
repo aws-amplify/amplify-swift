@@ -46,6 +46,8 @@ extension GetIdOutputError: AuthErrorConvertible {
             let statusCode = unknownAWSHttpServiceError._statusCode?.rawValue ?? -1
             let message = unknownAWSHttpServiceError._message ?? ""
             return .unknown("Unknown service error occurred with status \(statusCode) \(message)")
+        @unknown default:
+            return .unknown("Unknown service error occurred")
         }
     }
 

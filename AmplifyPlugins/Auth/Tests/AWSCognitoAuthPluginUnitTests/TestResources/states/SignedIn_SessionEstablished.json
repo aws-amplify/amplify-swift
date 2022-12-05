@@ -1,0 +1,49 @@
+{
+    "type": "AuthState.Configured",
+    "AuthenticationState": {
+        "type": "AuthenticationState.SignedIn",
+        "signedInData": {
+            "userId": "userId",
+            "username": "username",
+            "signedInDate": 0,
+            "signInMethod": {
+                "type": "SignInMethod.ApiBased",
+                "authType": "USER_SRP_AUTH"
+            },
+            "cognitoUserPoolTokens": {
+                "idToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIyNjY4NzUzMDg5LjQ5NjYwMiIsInVzZXJuYW1lIjoiSm9obiBEb2UiLCJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoiMTUxNjIzOTAyMiJ9.f9tefevrIRRtfVK99jirKvnUu4lBohBEFwDWPPr9vTE",
+                "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIyNjY4NzUzMDg5LjQ5NjYwMiIsInVzZXJuYW1lIjoiSm9obiBEb2UiLCJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoiMTUxNjIzOTAyMiJ9.f9tefevrIRRtfVK99jirKvnUu4lBohBEFwDWPPr9vTE",
+                "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIyNjY4NzUzMDg5LjQ5NjYwMiIsInVzZXJuYW1lIjoiSm9obiBEb2UiLCJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoiMTUxNjIzOTAyMiJ9.f9tefevrIRRtfVK99jirKvnUu4lBohBEFwDWPPr9vTE",
+                "expiration": 300
+            }
+        }
+    },
+    "AuthorizationState": {
+        "type": "AuthorizationState.SessionEstablished",
+        "amplifyCredential": {
+            "type": "userAndIdentityPool",
+            "signedInData": {
+                "userId": "userId",
+                "username": "username",
+                "signedInDate": 0,
+                "signInMethod": {
+                    "type": "SignInMethod.ApiBased",
+                    "authType": "USER_SRP_AUTH"
+                },
+                "cognitoUserPoolTokens": {
+                    "idToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIyNjY4NzUzMDg5LjQ5NjYwMiIsInVzZXJuYW1lIjoiSm9obiBEb2UiLCJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoiMTUxNjIzOTAyMiJ9.f9tefevrIRRtfVK99jirKvnUu4lBohBEFwDWPPr9vTE",
+                    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIyNjY4NzUzMDg5LjQ5NjYwMiIsInVzZXJuYW1lIjoiSm9obiBEb2UiLCJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoiMTUxNjIzOTAyMiJ9.f9tefevrIRRtfVK99jirKvnUu4lBohBEFwDWPPr9vTE",
+                    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIyNjY4NzUzMDg5LjQ5NjYwMiIsInVzZXJuYW1lIjoiSm9obiBEb2UiLCJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoiMTUxNjIzOTAyMiJ9.f9tefevrIRRtfVK99jirKvnUu4lBohBEFwDWPPr9vTE",
+                    "expiration": 10690446268
+                }
+            },
+            "identityId": "someIdentityId",
+            "credentials": {
+                "accessKeyId": "someAccessKey",
+                "secretAccessKey": "someSecretKey",
+                "sessionToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIyNjY4NzUzMDg5LjQ5NjYwMiIsInVzZXJuYW1lIjoiSm9obiBEb2UiLCJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoiMTUxNjIzOTAyMiJ9.f9tefevrIRRtfVK99jirKvnUu4lBohBEFwDWPPr9vTE",
+                "expiration": 10690446268
+            }
+        }
+    }
+}

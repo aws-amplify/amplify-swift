@@ -28,14 +28,19 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
         if let validationError = request.hasError() {
             throw validationError
         }
-
-        let pluginOptions = (request.options.pluginOptions as? AWSAuthConfirmSignInOptions)
-
-        await taskHelper.didStateMachineConfigured()
-
         let invalidStateError = AuthError.invalidState(
             "User is not attempting signIn operation",
             AuthPluginErrorConstants.invalidStateError, nil)
+
+        await taskHelper.didStateMachineConfigured()
+
+        if case .configured(let authNState, _) = await authStateMachine.currentState,
+           case .signingIn(let signInState) = authNState,
+           case .resolvingChallenge(let challengeState, _, _) = signInState,
+           case .waitingForAnswer = challengeState {
+            await sendConfirmSignInEvent()
+        }
+
         let stateSequences = await authStateMachine.listen()
         for await state in stateSequences {
                guard case .configured(let authNState, let authZState) = state else {
@@ -68,19 +73,11 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
                    } else if case .resolvingChallenge(let challengeState, _, _) = signInState {
                        switch challengeState {
                        case .waitingForAnswer:
-                           // Convert the attributes to [String: String]
-                           let attributePrefix = AuthPluginConstants.cognitoIdentityUserUserAttributePrefix
-                           let attributes = pluginOptions?.userAttributes?.reduce(
-                               into: [String: String]()) {
-                                   $0[attributePrefix + $1.key.rawValue] = $1.value
-                               } ?? [:]
-                           let confirmSignInData = ConfirmSignInEventData(
-                               answer: self.request.challengeResponse,
-                               attributes: attributes,
-                               metadata: pluginOptions?.metadata)
-                           let event = SignInChallengeEvent(
-                               eventType: .verifyChallengeAnswer(confirmSignInData))
-                           await authStateMachine.send(event)
+                           guard let result = try UserPoolSignInHelper.checkNextStep(signInState) else {
+                               continue
+                           }
+                           return result
+
                        default:
                            continue
                        }
@@ -94,6 +91,24 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
                }
         }
         throw invalidStateError
+    }
+
+    func sendConfirmSignInEvent() async {
+        let pluginOptions = (request.options.pluginOptions as? AWSAuthConfirmSignInOptions)
+
+        // Convert the attributes to [String: String]
+        let attributePrefix = AuthPluginConstants.cognitoIdentityUserUserAttributePrefix
+        let attributes = pluginOptions?.userAttributes?.reduce(
+            into: [String: String]()) {
+                $0[attributePrefix + $1.key.rawValue] = $1.value
+            } ?? [:]
+        let confirmSignInData = ConfirmSignInEventData(
+            answer: self.request.challengeResponse,
+            attributes: attributes,
+            metadata: pluginOptions?.metadata)
+        let event = SignInChallengeEvent(
+            eventType: .verifyChallengeAnswer(confirmSignInData))
+        await authStateMachine.send(event)
     }
 
 }

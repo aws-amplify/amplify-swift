@@ -14,7 +14,6 @@ struct InitiateAuthDeviceSRP: Action {
     let identifier = "InitiateAuthDeviceSRP"
 
     let username: String
-    let deviceMetadata: DeviceMetadata
     let authResponse: SignInResponseBehavior
 
     func execute(withDispatcher dispatcher: EventDispatcher,
@@ -28,6 +27,11 @@ struct InitiateAuthDeviceSRP: Action {
             let nHexValue = srpEnv.srpConfiguration.nHexValue
             let gHexValue = srpEnv.srpConfiguration.gHexValue
             let srpKeyPair = srpClient.generateClientKeyPair()
+
+            // Get device metadata
+            let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
+                for: environment,
+                with: username)
 
             let srpStateData = SRPStateData(
                 username: username,

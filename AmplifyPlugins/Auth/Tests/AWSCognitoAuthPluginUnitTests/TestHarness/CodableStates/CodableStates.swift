@@ -11,115 +11,6 @@ import Foundation
 import AWSPluginsCore
 import Amplify
 
-extension AuthState: Codable {
-
-    enum CodingKeys: String, CodingKey {
-        case type
-        case authenticationState = "AuthenticationState"
-        case authorizationState = "AuthorizationState"
-    }
-
-    public init(from decoder: Decoder) throws {
-        let values = try decoder.container(keyedBy: CodingKeys.self)
-
-        let type = try values.decode(String.self, forKey: .type)
-
-        if type == "AuthState.Configured" {
-            let authenticationState = try values.decode(AuthenticationState.self, forKey: .authenticationState)
-            let authorizationState = try values.decode(AuthorizationState.self, forKey: .authorizationState)
-            self = .configured(
-                authenticationState,
-                authorizationState)
-        } else {
-            fatalError("Decoding not supported")
-        }
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        switch self {
-        case .configured(let authenticationState, let authorizationState):
-            var container = encoder.container(keyedBy: CodingKeys.self)
-            try container.encode(authenticationState, forKey: .authenticationState)
-            try container.encode(authorizationState, forKey: .authorizationState)
-        default:
-            fatalError("not implemented")
-        }
-
-    }
-
-    static func initialize(
-        fileName: String,
-        with fileExtension: String = "") -> AuthState {
-        let bundle = Bundle.authCognitoTestBundle()
-        let url = bundle.url(
-            forResource: fileName,
-            withExtension: fileExtension,
-            subdirectory: AuthTestHarnessConstants.authStatesResourcePath)!
-        let fileData: Data = try! Data(contentsOf: url)
-        return try! JSONDecoder().decode(
-            AuthState.self, from: fileData)
-    }
-}
-
-extension AuthenticationState: Codable {
-
-    enum CodingKeys: String, CodingKey {
-        case type
-        case signedInData
-    }
-
-    public init(from decoder: Decoder) throws {
-        let values = try decoder.container(keyedBy: CodingKeys.self)
-
-        let type = try values.decode(String.self, forKey: .type)
-        if type == "AuthenticationState.SignedIn" {
-            // TODO: Discuss with android team
-            // let signedInData = try values.decode(SignedInData.self, forKey: .signedInData)
-            self = .signedIn(.testData)
-        } else {
-            fatalError("Decoding not supported")
-        }
-    }
-
-    public func encode(to encoder: Encoder) throws {
-
-        switch self {
-        default:
-            fatalError("encoding not supported")
-        }
-
-    }
-}
-
-extension AuthorizationState: Codable {
-
-    enum CodingKeys: String, CodingKey {
-        case type
-        case amplifyCredential
-    }
-
-    public init(from decoder: Decoder) throws {
-        let values = try decoder.container(keyedBy: CodingKeys.self)
-
-        let type = try values.decode(String.self, forKey: .type)
-        if type == "AuthorizationState.SessionEstablished" {
-            // TODO: Discuss with android team
-            // let amplifyCredential = try values.decode(AmplifyCredentials.self, forKey: .amplifyCredential)
-            self = .sessionEstablished(.testData)
-        } else {
-            fatalError("Decoding not supported")
-        }
-
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        switch self {
-        default:
-            fatalError()
-        }
-    }
-}
-
 extension DeviceMetadata {
 
     public init(from decoder: Decoder) throws {
@@ -152,25 +43,7 @@ extension SignOutState: Codable {
     }
 }
 
-extension SignInState: Codable {
-    public init(from decoder: Decoder) throws {
-        self = .notStarted
-    }
 
-    public func encode(to encoder: Encoder) throws {
-
-    }
-}
-
-extension SignInChallengeState: Codable {
-    public init(from decoder: Decoder) throws {
-        self = .notStarted
-    }
-
-    public func encode(to encoder: Encoder) throws {
-
-    }
-}
 
 extension RefreshSessionState: Codable {
     public init(from decoder: Decoder) throws {
@@ -230,25 +103,7 @@ extension FetchAuthSessionState: Codable {
     }
 }
 
-extension SignUpOutputResponse: Codable {
-    enum CodingKeys: CodingKey {
-        case codeDeliveryDetails
-        case userConfirmed
-        case userSub
-    }
 
-    public init(from decoder: Decoder) throws {
-        self.init()
-        let containerValues = try decoder.container(keyedBy: CodingKeys.self)
-        self.userConfirmed = try containerValues.decode(Swift.Bool.self, forKey: .userConfirmed)
-        self.codeDeliveryDetails = try containerValues.decodeIfPresent(CognitoIdentityProviderClientTypes.CodeDeliveryDetailsType.self, forKey: .codeDeliveryDetails)
-        self.userSub = try containerValues.decodeIfPresent(String.self, forKey: .userSub)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        fatalError("This implementation is not needed")
-    }
-}
 
 extension AuthorizationError: Codable {
     public init(from decoder: Decoder) throws {
