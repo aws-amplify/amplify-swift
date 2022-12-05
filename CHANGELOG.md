@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.2.0 (2022-12-05)
+
+### Features
+
+- **Auth**: Adding Auth test cases for test harness (#2579)
+- **auth**: Make the presentation anchor optional (#2545)
+
+### Bug Fixes
+
+- **Auth**: Add correct validation for initial state when executing confirm sign in (#2587)
+- **Auth**: Fixing deviceSRP auth flow during MigrateAuth (#2584)
+- **datastore**: retry on subscription connection error (#2571)
+
 ## 2.1.0 (2022-11-10)
 
 ### Features
