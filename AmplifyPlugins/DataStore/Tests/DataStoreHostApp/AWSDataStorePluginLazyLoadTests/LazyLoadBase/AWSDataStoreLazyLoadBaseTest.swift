@@ -137,7 +137,7 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
             }
         }
         let savedModel = try await Amplify.DataStore.save(model)
-        await waitForExpectations([modelSynced], timeout: 10)
+        await waitForExpectations([modelSynced], timeout: 100)
         return savedModel
     }
     

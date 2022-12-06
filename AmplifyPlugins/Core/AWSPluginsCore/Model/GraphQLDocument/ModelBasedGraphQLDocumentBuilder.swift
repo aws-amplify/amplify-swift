@@ -15,7 +15,7 @@ public struct ModelBasedGraphQLDocumentBuilder {
     private var document: SingleDirectiveGraphQLDocument
     private let modelSchema: ModelSchema
 
-    public init(modelName: String, operationType: GraphQLOperationType, primaryKeysOnly: Bool = false) {
+    public init(modelName: String, operationType: GraphQLOperationType, primaryKeysOnly: Bool = true) {
         guard let modelSchema = ModelRegistry.modelSchema(from: modelName) else {
             preconditionFailure("Missing ModelSchema in ModelRegistry for model name: \(modelName)")
         }
@@ -26,14 +26,18 @@ public struct ModelBasedGraphQLDocumentBuilder {
     @available(*, deprecated, message: """
     Init with modelType is deprecated, use init with modelSchema instead.
     """)
-    public init(modelType: Model.Type, operationType: GraphQLOperationType, primaryKeysOnly: Bool = false) {
+    public init(modelType: Model.Type, operationType: GraphQLOperationType, primaryKeysOnly: Bool = true) {
         self.init(modelSchema: modelType.schema, operationType: operationType, primaryKeysOnly: primaryKeysOnly)
     }
 
-    public init(modelSchema: ModelSchema, operationType: GraphQLOperationType, primaryKeysOnly: Bool? = false) {
+    public init(modelSchema: ModelSchema, operationType: GraphQLOperationType, primaryKeysOnly: Bool = true) {
         self.modelSchema = modelSchema
-        let primaryKeysOnly = primaryKeysOnly ?? 
-            ModelRegistry.modelType(from: modelSchema.name)?.rootPath != nil ? true : false
+        var primaryKeysOnly = primaryKeysOnly
+        if primaryKeysOnly && ModelRegistry.modelType(from: modelSchema.name)?.rootPath == nil {
+            Amplify.Logging.warn("`primaryKeysOnly` can only be true when ModelPath's are enabled. Setting to false.")
+            primaryKeysOnly = false
+        }
+        
         switch operationType {
         case .query:
             self.document = GraphQLQuery(modelSchema: modelSchema, primaryKeysOnly: primaryKeysOnly)

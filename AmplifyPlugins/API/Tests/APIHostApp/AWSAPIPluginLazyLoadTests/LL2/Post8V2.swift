@@ -53,7 +53,7 @@ public struct Post8V2: Model {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         id = try values.decode(String.self, forKey: .id)
         name = try values.decode(String.self, forKey: .name)
-        randomId = try values.decode(String.self, forKey: .randomId)
+        randomId = try values.decode(String?.self, forKey: .randomId)
         _blog = try values.decode(LazyReference<Blog8V2>.self, forKey: .blog)
         comments = try values.decode(List<Comment8V2>?.self, forKey: .comments)
         createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)

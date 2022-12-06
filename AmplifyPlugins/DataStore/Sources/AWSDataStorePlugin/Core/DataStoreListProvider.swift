@@ -48,13 +48,14 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
                 throw CoreError.listOperation("Unexpected identifiers.",
                                               "See underlying DataStoreError for more details.", nil)
             }
+            self.log.verbose("Loading \(Element.schema.name) by \(associatedField) == \(associatedId) ")
             let predicate: QueryPredicate = field(associatedField) == associatedId
             do {
                 let elements = try await Amplify.DataStore.query(Element.self, where: predicate)
                 self.loadedState = .loaded(elements)
                 return elements
             } catch let error as DataStoreError {
-                Amplify.DataStore.log.error(error: error)
+                self.log.error(error: error)
                 throw CoreError.listOperation("Failed to Query DataStore.",
                                               "See underlying DataStoreError for more details.",
                                               error)
@@ -75,3 +76,5 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
                                          nil)
     }
 }
+
+extension DataStoreListProvider: DefaultLogger { }
