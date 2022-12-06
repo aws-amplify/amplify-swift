@@ -34,6 +34,9 @@ extension StrangeExplicitChild {
       .field(strangeExplicitChild.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
+    public class Path: ModelPath<StrangeExplicitChild> { }
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension StrangeExplicitChild: ModelIdentifiable {
@@ -46,4 +49,21 @@ extension StrangeExplicitChild.IdentifierProtocol {
       content: String) -> Self {
     .make(fields:[(name: "strangeId", value: strangeId), (name: "content", value: content)])
   }
+}
+extension ModelPath where ModelType == StrangeExplicitChild {
+  public var strangeId: FieldPath<String>   {
+      string("strangeId") 
+    }
+  public var content: FieldPath<String>   {
+      string("content") 
+    }
+  public var parent: ModelPath<CompositePKParent>   {
+      CompositePKParent.Path(name: "parent", parent: self) 
+    }
+  public var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt") 
+    }
+  public var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt") 
+    }
 }

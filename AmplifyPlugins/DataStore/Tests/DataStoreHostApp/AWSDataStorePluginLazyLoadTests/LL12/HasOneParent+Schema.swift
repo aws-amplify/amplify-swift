@@ -33,9 +33,29 @@ extension HasOneParent {
       .field(hasOneParent.hasOneParentChildId, is: .optional, ofType: .string)
     )
     }
+    public class Path: ModelPath<HasOneParent> { }
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension HasOneParent: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
   public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
+}
+extension ModelPath where ModelType == HasOneParent {
+  public var id: FieldPath<String>   {
+      string("id") 
+    }
+  public var child: ModelPath<HasOneChild>   {
+      HasOneChild.Path(name: "child", parent: self) 
+    }
+  public var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt") 
+    }
+  public var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt") 
+    }
+  public var hasOneParentChildId: FieldPath<String>   {
+      string("hasOneParentChildId") 
+    }
 }

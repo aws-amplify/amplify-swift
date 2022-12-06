@@ -31,9 +31,26 @@ extension HasOneChild {
       .field(hasOneChild.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
+    public class Path: ModelPath<HasOneChild> { }
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension HasOneChild: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
   public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
+}
+extension ModelPath where ModelType == HasOneChild {
+  public var id: FieldPath<String>   {
+      string("id") 
+    }
+  public var content: FieldPath<String>   {
+      string("content") 
+    }
+  public var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt") 
+    }
+  public var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt") 
+    }
 }

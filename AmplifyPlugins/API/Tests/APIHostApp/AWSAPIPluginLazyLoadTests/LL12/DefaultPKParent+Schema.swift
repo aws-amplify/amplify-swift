@@ -33,9 +33,29 @@ extension DefaultPKParent {
       .field(defaultPKParent.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
+    public class Path: ModelPath<DefaultPKParent> { }
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension DefaultPKParent: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
   public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
+}
+extension ModelPath where ModelType == DefaultPKParent {
+  public var id: FieldPath<String>   {
+      string("id") 
+    }
+  public var content: FieldPath<String>   {
+      string("content") 
+    }
+  public var children: ModelPath<DefaultPKChild>   {
+      DefaultPKChild.Path(name: "children", isCollection: true, parent: self) 
+    }
+  public var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt") 
+    }
+  public var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt") 
+    }
 }

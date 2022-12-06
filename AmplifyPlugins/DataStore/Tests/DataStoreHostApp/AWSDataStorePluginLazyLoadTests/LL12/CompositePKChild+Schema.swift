@@ -34,6 +34,9 @@ extension CompositePKChild {
       .field(compositePKChild.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
+    public class Path: ModelPath<CompositePKChild> { }
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension CompositePKChild: ModelIdentifiable {
@@ -46,4 +49,21 @@ extension CompositePKChild.IdentifierProtocol {
       content: String) -> Self {
     .make(fields:[(name: "childId", value: childId), (name: "content", value: content)])
   }
+}
+extension ModelPath where ModelType == CompositePKChild {
+  public var childId: FieldPath<String>   {
+      string("childId") 
+    }
+  public var content: FieldPath<String>   {
+      string("content") 
+    }
+  public var parent: ModelPath<CompositePKParent>   {
+      CompositePKParent.Path(name: "parent", parent: self) 
+    }
+  public var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt") 
+    }
+  public var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt") 
+    }
 }

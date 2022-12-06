@@ -36,6 +36,9 @@ extension ChildSansBelongsTo {
       .field(childSansBelongsTo.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
+    public class Path: ModelPath<ChildSansBelongsTo> { }
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension ChildSansBelongsTo: ModelIdentifiable {
@@ -48,4 +51,24 @@ extension ChildSansBelongsTo.IdentifierProtocol {
       content: String) -> Self {
     .make(fields:[(name: "childId", value: childId), (name: "content", value: content)])
   }
+}
+extension ModelPath where ModelType == ChildSansBelongsTo {
+  public var childId: FieldPath<String>   {
+      string("childId") 
+    }
+  public var content: FieldPath<String>   {
+      string("content") 
+    }
+  public var compositePKParentChildrenSansBelongsToCustomId: FieldPath<String>   {
+      string("compositePKParentChildrenSansBelongsToCustomId") 
+    }
+  public var compositePKParentChildrenSansBelongsToContent: FieldPath<String>   {
+      string("compositePKParentChildrenSansBelongsToContent") 
+    }
+  public var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt") 
+    }
+  public var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt") 
+    }
 }

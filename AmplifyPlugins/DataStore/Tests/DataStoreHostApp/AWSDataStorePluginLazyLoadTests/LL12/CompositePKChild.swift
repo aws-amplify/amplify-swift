@@ -5,7 +5,12 @@ import Foundation
 public struct CompositePKChild: Model {
   public let childId: String
   public let content: String
-  public var parent: CompositePKParent?
+  internal var _parent: LazyReference<CompositePKParent>
+  public var parent: CompositePKParent?   {
+      get async throws { 
+        try await _parent.get()
+      } 
+    }
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   
@@ -25,8 +30,27 @@ public struct CompositePKChild: Model {
       updatedAt: Temporal.DateTime? = nil) {
       self.childId = childId
       self.content = content
-      self.parent = parent
+      self._parent = LazyReference(parent)
       self.createdAt = createdAt
       self.updatedAt = updatedAt
+  }
+  public mutating func setParent(parent: CompositePKParent? = nil) {
+    self._parent = LazyReference(parent)
+  }
+  public init(from decoder: Decoder) throws {
+      let values = try decoder.container(keyedBy: CodingKeys.self)
+      childId = try values.decode(String.self, forKey: .childId)
+      content = try values.decode(String.self, forKey: .content)
+      _parent = try values.decodeIfPresent(LazyReference<CompositePKParent>.self, forKey: .parent) ?? LazyReference(identifiers: nil)
+      createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
+      updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
+  }
+  public func encode(to encoder: Encoder) throws {
+      var container = encoder.container(keyedBy: CodingKeys.self)
+      try container.encode(childId, forKey: .childId)
+      try container.encode(content, forKey: .content)
+      try container.encode(_parent, forKey: .parent)
+      try container.encode(createdAt, forKey: .createdAt)
+      try container.encode(updatedAt, forKey: .updatedAt)
   }
 }
