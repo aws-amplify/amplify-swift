@@ -90,6 +90,21 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
         throw "See XCTFail message"
     }
     
+    func listQuery<M: Model>(_ request: GraphQLRequest<List<M>>) async throws -> List<M> {
+        do {
+            let graphQLResponse = try await Amplify.API.query(request: request)
+            switch graphQLResponse {
+            case .success(let models):
+                return models
+            case .failure(let graphQLError):
+                XCTFail("Failed with error \(graphQLError)")
+            }
+        } catch {
+            XCTFail("Failed with error \(error)")
+        }
+        throw "See XCTFail message"
+    }
+    
     enum AssertLazyModelState<M: Model> {
         case notLoaded(identifiers: [LazyReferenceIdentifier]?)
         case loaded(model: M?)

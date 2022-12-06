@@ -34,7 +34,7 @@ public struct HasOneParent: Model {
       self.updatedAt = updatedAt
       self.hasOneParentChildId = hasOneParentChildId
   }
-  public mutating func setChild(child: HasOneChild? = nil) {
+  public mutating func setChild(_ child: HasOneChild? = nil) {
     self._child = LazyReference(child)
   }
   public init(from decoder: Decoder) throws {

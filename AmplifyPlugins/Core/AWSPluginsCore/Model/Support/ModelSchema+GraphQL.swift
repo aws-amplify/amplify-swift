@@ -18,6 +18,8 @@ extension ModelSchema {
         case .list:
             if let listPluralName = listPluralName {
                 graphQLName = queryType.rawValue + listPluralName
+            } else if let pluralName = pluralName {
+                graphQLName = queryType.rawValue + pluralName
             } else {
                 graphQLName = (queryType.rawValue + name).pluralize()
             }

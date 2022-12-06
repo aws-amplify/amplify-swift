@@ -34,7 +34,7 @@ public struct DefaultPKChild: Model {
       self.createdAt = createdAt
       self.updatedAt = updatedAt
   }
-  public mutating func setParent(parent: DefaultPKParent? = nil) {
+  public mutating func setParent(_ parent: DefaultPKParent? = nil) {
     self._parent = LazyReference(parent)
   }
   public init(from decoder: Decoder) throws {

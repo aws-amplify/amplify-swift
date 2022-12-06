@@ -164,6 +164,7 @@
 		21908A79291D7631005021F7 /* Post8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A74291D7631005021F7 /* Post8+Schema.swift */; };
 		21908A7A291D7631005021F7 /* Comment8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A75291D7631005021F7 /* Comment8+Schema.swift */; };
 		219253C428BFEBE400820737 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 219253C328BFEBE200820737 /* XCTest.framework */; };
+		21C3C4BC293FB540009194A0 /* GraphQLLazyLoadL12Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C3C4BB293FB540009194A0 /* GraphQLLazyLoadL12Tests.swift */; };
 		21E73E6F28898D7900D7DB7E /* APIHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E73E6E28898D7900D7DB7E /* APIHostAppApp.swift */; };
 		21E73E7128898D7900D7DB7E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E73E7028898D7900D7DB7E /* ContentView.swift */; };
 		21E73E7328898D7A00D7DB7E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21E73E7228898D7A00D7DB7E /* Assets.xcassets */; };
@@ -453,6 +454,7 @@
 		21908A74291D7631005021F7 /* Post8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post8+Schema.swift"; sourceTree = "<group>"; };
 		21908A75291D7631005021F7 /* Comment8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment8+Schema.swift"; sourceTree = "<group>"; };
 		219253C328BFEBE200820737 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		21C3C4BB293FB540009194A0 /* GraphQLLazyLoadL12Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLLazyLoadL12Tests.swift; sourceTree = "<group>"; };
 		21D335B7289867FC00657B12 /* amplify-ios-staging */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios-staging"; path = ../../../..; sourceTree = "<group>"; };
 		21E73E6B28898D7900D7DB7E /* APIHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = APIHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		21E73E6E28898D7900D7DB7E /* APIHostAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIHostAppApp.swift; sourceTree = "<group>"; };
@@ -864,6 +866,7 @@
 		219089E4291D6B2A005021F7 /* LL12 */ = {
 			isa = PBXGroup;
 			children = (
+				21C3C4BB293FB540009194A0 /* GraphQLLazyLoadL12Tests.swift */,
 				21908A58291D762B005021F7 /* ChildSansBelongsTo.swift */,
 				21908A53291D762B005021F7 /* ChildSansBelongsTo+Schema.swift */,
 				21908A5B291D762B005021F7 /* CompositePKChild.swift */,
@@ -1728,6 +1731,7 @@
 				218D0193291AE3750068D133 /* Post4V2.swift in Sources */,
 				21908A0B291D75D6005021F7 /* PostTagsWithCompositeKey+Schema.swift in Sources */,
 				219089F0291D75C3005021F7 /* Blog8V2+Schema.swift in Sources */,
+				21C3C4BC293FB540009194A0 /* GraphQLLazyLoadL12Tests.swift in Sources */,
 				21908A3F291D75FE005021F7 /* Project6.swift in Sources */,
 				21EA888028F9BCC50000BA75 /* XCTestCase+AsyncTesting.swift in Sources */,
 				21908A0A291D75D6005021F7 /* PostTagsWithCompositeKey.swift in Sources */,
