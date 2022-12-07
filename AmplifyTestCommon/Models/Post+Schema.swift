@@ -52,7 +52,7 @@ extension Post {
 }
 
 extension ModelPath where ModelType == Post {
-    var id: FieldPath<String> { id() }
+    var id: FieldPath<String> { string("id") }
     var title: FieldPath<String> { string("title") }
     var content: FieldPath<String> { string("content") }
     var createdAt: FieldPath<Temporal.DateTime> { datetime("createdAt") }

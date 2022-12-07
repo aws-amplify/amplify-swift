@@ -42,7 +42,7 @@ extension Comment {
 }
 
 extension ModelPath where ModelType == Comment {
-    var id: FieldPath<String> { id() }
+    var id: FieldPath<String> { string("id") }
     var content: FieldPath<String> { string("content") }
     var createdAt: FieldPath<Temporal.DateTime> { datetime("createdAt") }
     var post: ModelPath<Post> { Post.Path(name: "post", parent: self) }

@@ -34,7 +34,7 @@ public protocol PropertyPath {
 /// - SeeAlso: `ModelPath`
 public protocol PropertyContainerPath : PropertyPath {
 
-    /// 
+    /// Must return the full path of the property, e.g. `"post.author.name"`
     func getKeyPath() -> String
 
     /// Must return a reference to the type containing the properties
@@ -72,12 +72,14 @@ public struct FieldPath<ValueType>: PropertyPath {
 ///
 /// - Example:
 /// ```swift
-/// class PostModelPath : ModelPath<Post> {}
+/// extension Post {
+///   class Path : ModelPath<Post> {}
 ///
-/// extension ModelPath where ModelType == Post {
-///   var id: FieldPath<String> { id() }
-///   var title: FieldPath<String> { string("title") }
-///   var blog: ModelPath<Blog> { BlogModelPath(name: "blog", parent: self) }
+///   extension ModelPath where ModelType == Post {
+///     var id: FieldPath<String> { string("id") }
+///     var title: FieldPath<String> { string("title") }
+///     var blog: ModelPath<Blog> { Blog.Path(name: "blog", parent: self) }
+///   }
 /// }
 /// ```
 open class ModelPath<ModelType: Model> : PropertyContainerPath {
@@ -100,11 +102,15 @@ open class ModelPath<ModelType: Model> : PropertyContainerPath {
         return metadata.parent == nil
     }
 
-    public func id(_ name: String = "id") -> FieldPath<String> {
+    public func string(_ name: String) -> FieldPath<String> {
         FieldPath(name: name, parent: self)
     }
 
-    public func string(_ name: String) -> FieldPath<String> {
+    public func int(_ name: String) -> FieldPath<Int> {
+        FieldPath(name: name, parent: self)
+    }
+
+    public func double(_ name: String) -> FieldPath<Double> {
         FieldPath(name: name, parent: self)
     }
 

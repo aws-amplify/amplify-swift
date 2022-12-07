@@ -40,6 +40,6 @@ extension Book {
 }
 
 extension ModelPath where ModelType == Book {
-    var id: FieldPath<String> { id() }
+    var id: FieldPath<String> { string("id") }
     var authors: ModelPath<BookAuthor> { BookAuthor.Path(name: "authors", isCollection: true, parent: self) }
 }
