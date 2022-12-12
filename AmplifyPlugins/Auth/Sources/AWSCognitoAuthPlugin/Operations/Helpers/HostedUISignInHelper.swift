@@ -26,7 +26,6 @@ struct HostedUISignInHelper {
 
     func initiateSignIn() async throws -> AuthSignInResult {
         try await isValidState()
-        await prepareForSignIn()
         return try await doSignIn()
     }
 
@@ -38,37 +37,18 @@ struct HostedUISignInHelper {
             }
             switch authenticationState {
             case .signingIn:
-                continue
+                await sendCancelSignInEvent()
             case .signedIn:
                 throw AuthError.invalidState(
                     "There is already a user in signedIn state. SignOut the user first before calling signIn",
                     AuthPluginErrorConstants.invalidStateError, nil)
-            default:
-                return
-            }
-        }
-    }
-
-    private func prepareForSignIn() async {
-
-        let stateSequences = await authStateMachine.listen()
-
-        for await state in stateSequences {
-            guard case .configured(let authNState, _) = state else { continue }
-
-            switch authNState {
             case .signedOut:
                 return
-
-            case .signingIn:
-                Task {
-                    await sendCancelSignInEvent()
-                }
-            default:
-                continue
+            default: continue
             }
         }
     }
+
 
     private func doSignIn() async throws -> AuthSignInResult {
 

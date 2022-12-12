@@ -56,6 +56,8 @@ class AWSAuthSignInTask: AuthSignInTask {
                     "There is already a user in signedIn state. SignOut the user first before calling signIn",
                     AuthPluginErrorConstants.invalidStateError, nil)
                 throw error
+            case .signingIn:
+                await sendCancelSignInEvent()
             case .signedOut:
                 return
             default: continue
@@ -92,6 +94,11 @@ class AWSAuthSignInTask: AuthSignInTask {
             }
         }
         throw AuthError.unknown("Sign in reached an error state")
+    }
+
+    private func sendCancelSignInEvent() async {
+        let event = AuthenticationEvent(eventType: .cancelSignIn)
+        await authStateMachine.send(event)
     }
 
     private func sendSignInEvent(authflowType: AuthFlowType) async {
