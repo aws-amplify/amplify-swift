@@ -273,6 +273,9 @@ extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
               notes
               updatedAt
               __typename
+              _version
+              _deleted
+              _lastChangedAt
             }
             __typename
             _version
@@ -312,6 +315,9 @@ extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
               notes
               updatedAt
               __typename
+              _version
+              _deleted
+              _lastChangedAt
             }
             __typename
             _version
@@ -351,6 +357,9 @@ extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
               notes
               updatedAt
               __typename
+              _version
+              _deleted
+              _lastChangedAt
             }
             __typename
             _version
@@ -480,6 +489,9 @@ extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
               randomId
               updatedAt
               __typename
+              _version
+              _deleted
+              _lastChangedAt
             }
             __typename
             _version
@@ -506,6 +518,9 @@ extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
               randomId
               updatedAt
               __typename
+              _version
+              _deleted
+              _lastChangedAt
             }
             __typename
             _version
@@ -532,6 +547,9 @@ extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
               randomId
               updatedAt
               __typename
+              _version
+              _deleted
+              _lastChangedAt
             }
             __typename
             _version

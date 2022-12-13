@@ -16,10 +16,23 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
 
     private let version: Int?
     private let lastSync: Int?
-
-    public init(version: Int? = nil, lastSync: Int? = nil) {
+    private let graphQLType: GraphQLType
+    private var primaryKeysOnly: Bool
+    
+    public enum GraphQLType {
+        case query
+        case mutation
+        case subscription
+    }
+    
+    public init(version: Int? = nil,
+                lastSync: Int? = nil,
+                graphQLType: GraphQLType,
+                primaryKeysOnly: Bool = true) {
         self.version = version
         self.lastSync = lastSync
+        self.graphQLType = graphQLType
+        self.primaryKeysOnly = primaryKeysOnly
     }
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
@@ -29,6 +42,11 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
                          modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument {
+        var primaryKeysOnly = primaryKeysOnly
+        if primaryKeysOnly && ModelRegistry.modelType(from: modelSchema.name)?.rootPath == nil {
+            Amplify.Logging.warn("`primaryKeysOnly` can only be true when ModelPath's are enabled. Setting to false.")
+            primaryKeysOnly = false
+        }
         var inputs = document.inputs
 
         if let version = version,
@@ -46,7 +64,7 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
         }
 
         if let selectionSet = document.selectionSet {
-            addConflictResolution(selectionSet: selectionSet)
+            addConflictResolution(selectionSet: selectionSet, primaryKeysOnly: primaryKeysOnly)
             return document.copy(inputs: inputs, selectionSet: selectionSet)
         }
 
@@ -54,8 +72,10 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
     }
 
     /// Append the correct conflict resolution fields for `model` and `pagination` selection sets.
-    private func addConflictResolution(selectionSet: SelectionSet, added: Bool = false) {
-        var added = added
+    private func addConflictResolution(selectionSet: SelectionSet,
+                                       primaryKeysOnly: Bool,
+                                       addedVersionFields: Bool = false) {
+        var addedVersionFields = addedVersionFields
         switch selectionSet.value.fieldType {
         case .value, .embedded:
             break
@@ -63,14 +83,28 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
             selectionSet.addChild(settingParentOf: .init(value: .init(name: "_version", fieldType: .value)))
             selectionSet.addChild(settingParentOf: .init(value: .init(name: "_deleted", fieldType: .value)))
             selectionSet.addChild(settingParentOf: .init(value: .init(name: "_lastChangedAt", fieldType: .value)))
-            added = true
+            addedVersionFields = true
         case .pagination:
             selectionSet.addChild(settingParentOf: .init(value: .init(name: "startedAt", fieldType: .value)))
         }
 
-        if !added {
+        if !primaryKeysOnly || graphQLType == .mutation {
+            // Continue to add version fields for all levels, for backwards compatibility
+            // Reduce the selection set only when the type is "subscription" and "query"
+            // (specifically for syncQuery). Selection set for mutation should not be reduced because it needs to be the full selection set to send mutation events to older iOS clients, which do not have the reduced subscription
+            // selection set. subscriptions and sync query is to receive data, so it can be reduced to allow decoding to the
+            // LazyReference type.
             selectionSet.children.forEach { child in
-                addConflictResolution(selectionSet: child, added: added)
+                addConflictResolution(selectionSet: child,
+                                      primaryKeysOnly: primaryKeysOnly,
+                                      addedVersionFields: false)
+            }
+        } else if !addedVersionFields {
+            // Only add version fields once. This is done once, controlled by `addedVersionFields`.
+            selectionSet.children.forEach { child in
+                addConflictResolution(selectionSet: child,
+                                      primaryKeysOnly: primaryKeysOnly,
+                                      addedVersionFields: addedVersionFields)
             }
         }
     }

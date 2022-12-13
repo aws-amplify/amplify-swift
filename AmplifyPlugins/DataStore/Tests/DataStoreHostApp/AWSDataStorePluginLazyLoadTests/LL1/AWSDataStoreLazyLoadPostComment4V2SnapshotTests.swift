@@ -170,6 +170,9 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
               title
               updatedAt
               __typename
+              _version
+              _deleted
+              _lastChangedAt
             }
             __typename
             _version
@@ -195,6 +198,9 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
               title
               updatedAt
               __typename
+              _version
+              _deleted
+              _lastChangedAt
             }
             __typename
             _version
@@ -220,6 +226,9 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
               title
               updatedAt
               __typename
+              _version
+              _deleted
+              _lastChangedAt
             }
             __typename
             _version

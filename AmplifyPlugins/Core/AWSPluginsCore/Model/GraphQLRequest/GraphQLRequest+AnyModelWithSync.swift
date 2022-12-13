@@ -66,7 +66,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                                primaryKeysOnly: false)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
         documentBuilder.add(decorator: ModelIdDecorator(id: id))
-        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .query))
         documentBuilder.add(decorator: AuthRuleDecorator(.query, authType: authType))
         let document = documentBuilder.build()
 
@@ -154,7 +154,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
         if let filter = filter {
             documentBuilder.add(decorator: FilterDecorator(filter: filter))
         }
-        documentBuilder.add(decorator: ConflictResolutionDecorator(version: version))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(version: version, graphQLType: .mutation, primaryKeysOnly: false))
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation, authType: authType))
         let document = documentBuilder.build()
 
@@ -176,7 +176,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                                operationType: .subscription,
                                                                primaryKeysOnly: true)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: subscriptionType))
-        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription, primaryKeysOnly: true))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(subscriptionType, nil), authType: authType))
         let document = documentBuilder.build()
 
@@ -199,7 +199,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                                operationType: .subscription,
                                                                primaryKeysOnly: true)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: subscriptionType))
-        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription, primaryKeysOnly: true))
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(subscriptionType, claims), authType: authType))
         let document = documentBuilder.build()
 
@@ -227,7 +227,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
             documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter(for: modelSchema)))
         }
         documentBuilder.add(decorator: PaginationDecorator(limit: limit, nextToken: nextToken))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: lastSync))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: lastSync, graphQLType: .query, primaryKeysOnly: true))
         documentBuilder.add(decorator: AuthRuleDecorator(.query, authType: authType))
         let document = documentBuilder.build()
 
@@ -257,7 +257,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
         if let filter = filter {
             documentBuilder.add(decorator: FilterDecorator(filter: filter))
         }
-        documentBuilder.add(decorator: ConflictResolutionDecorator(version: version))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(version: version, graphQLType: .mutation, primaryKeysOnly: false))
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation, authType: authType))
         let document = documentBuilder.build()
 
