@@ -85,7 +85,7 @@ class AWSAuthSignOutTaskTests: BasePluginTest {
 
         guard let result = await authPlugin.signOut() as? AWSCognitoSignOutResult,
               case .failed(let authError) = result,
-              case .invalidState = authError else {
+              authError.type == AuthError.invalidStateError else {
 
             XCTFail("Sign out during federation should not succeed")
             return

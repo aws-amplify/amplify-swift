@@ -419,8 +419,7 @@ class InitialSyncOperationTests: XCTestCase {
             }
             guard let actualAPIError = amplifyError as? APIError,
                 case let .operationError(_, _, underlyingError) = actualAPIError,
-                let authError = underlyingError as? AuthError,
-                case .signedOut = authError else {
+                  let authError = underlyingError as? AuthError, authError.type == AuthError.signedOutError else {
                     XCTFail("Should be `signedOut` error but got \(amplifyError)")
                     return
             }

@@ -34,9 +34,11 @@ class AuthGetCurrentUserTests: XCTestCase {
             _ = try await plugin.getCurrentUser()
             XCTFail("Should throw AuthError.signedOut")
         }
-        catch AuthError.signedOut { }
         catch {
-            XCTFail("Should throw AuthError.signedOut")
+            guard let authError = error as? AuthError, authError.type == AuthError.signedOutError else {
+                XCTFail("Should throw AuthError.signedOut")
+                return
+            }
         }
 
     }
@@ -50,9 +52,11 @@ class AuthGetCurrentUserTests: XCTestCase {
             _ = try await plugin.getCurrentUser()
             XCTFail("Should throw AuthError.configuration")
         }
-        catch AuthError.configuration { }
         catch {
-            XCTFail("Should throw AuthError.configuration")
+            guard let authError = error as? AuthError, authError.type == AuthError.configurationError else {
+                XCTFail("Should throw AuthError.configuration")
+                return
+            }
         }
 
     }
@@ -66,11 +70,12 @@ class AuthGetCurrentUserTests: XCTestCase {
             _ = try await plugin.getCurrentUser()
             XCTFail("Should throw AuthError.invalidState")
         }
-        catch AuthError.invalidState { }
         catch {
-            XCTFail("Should throw AuthError.invalidState")
+            guard let authError = error as? AuthError, authError.type == AuthError.invalidStateError else {
+                XCTFail("Should throw AuthError.invalidState")
+                return
+            }
         }
-
     }
 
 

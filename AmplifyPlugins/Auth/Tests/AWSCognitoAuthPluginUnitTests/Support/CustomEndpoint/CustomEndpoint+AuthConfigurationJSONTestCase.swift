@@ -136,7 +136,7 @@ class CustomEndpoint_AuthConfigurationJSONTestCase: XCTestCase {
 
 extension AuthError {
     static func validateConfigurationError(_ error: Error) {
-        guard case .configuration = (error as? AuthError) else {
+        guard let authError = error as? AuthError, authError.type == AuthError.configurationError else {
             return XCTFail("Expected error AuthError.configuration")
         }
     }

@@ -182,7 +182,7 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
 
         let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
         guard case .failure(let error) = tokensResult,
-              case .signedOut = error else {
+              error.type == AuthError.signedOutError else {
             XCTFail("Should return signed out error")
             return
         }
@@ -217,21 +217,21 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         XCTAssertTrue(session.isSignedIn)
 
         let credentialsResult = (session as? AuthAWSCredentialsProvider)?.getAWSCredentials()
-        guard case .failure(let error) = credentialsResult, case .sessionExpired = error else {
+        guard case .failure(let error) = credentialsResult, error.type == AuthError.sessionExpiredError else {
             XCTFail("Should return sessionExpired error")
             return
         }
 
         let identityIdResult = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
         guard case .failure(let identityIdError) = identityIdResult,
-              case .sessionExpired = identityIdError else {
+            identityIdError.type == AuthError.sessionExpiredError else {
             XCTFail("Should return sessionExpired error")
             return
         }
 
         let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
         guard case .failure(let tokenError) = tokensResult,
-              case .sessionExpired = tokenError else {
+            tokenError.type == AuthError.sessionExpiredError else {
             XCTFail("Should return sessionExpired error")
             return
         }
@@ -278,21 +278,21 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
 
         XCTAssertTrue(session.isSignedIn)
         let credentialsResult = (session as? AuthAWSCredentialsProvider)?.getAWSCredentials()
-        guard case .failure(let error) = credentialsResult, case .sessionExpired = error else {
+        guard case .failure(let error) = credentialsResult, error.type == AuthError.sessionExpiredError else {
             XCTFail("Should return sessionExpired error")
             return
         }
 
         let identityIdResult = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
         guard case .failure(let identityIdError) = identityIdResult,
-              case .sessionExpired = identityIdError else {
+            identityIdError.type == AuthError.sessionExpiredError else {
             XCTFail("Should return sessionExpired error")
             return
         }
 
         let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
         guard case .failure(let tokenError) = tokensResult,
-              case .sessionExpired = tokenError else {
+            tokenError.type == AuthError.sessionExpiredError else {
             XCTFail("Should return sessionExpired error")
             return
         }
@@ -505,21 +505,22 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
 
         XCTAssertTrue(session.isSignedIn)
         let credentialsResult = (session as? AuthAWSCredentialsProvider)?.getAWSCredentials()
-        guard case .failure(let error) = credentialsResult, case .unknown = error else {
+        guard case .failure(let error) = credentialsResult,
+            error.type == AuthError.unknownError else {
             XCTFail("Should return unknown error")
             return
         }
 
         let identityIdResult = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
         guard case .failure(let identityIdError) = identityIdResult,
-              case .unknown = identityIdError else {
+            identityIdError.type == AuthError.unknownError else {
             XCTFail("Should return unknown error")
             return
         }
 
         let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
         guard case .failure(let tokenError) = tokensResult,
-              case .unknown = tokenError else {
+            tokenError.type == AuthError.unknownError else {
             XCTFail("Should return unknown error")
             return
         }
@@ -562,21 +563,22 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
 
         XCTAssertTrue(session.isSignedIn)
         let credentialsResult = (session as? AuthAWSCredentialsProvider)?.getAWSCredentials()
-        guard case .failure(let error) = credentialsResult, case .unknown = error else {
+        guard case .failure(let error) = credentialsResult,
+            error.type == AuthError.unknownError else {
             XCTFail("Should return unknown error")
             return
         }
 
         let identityIdResult = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
         guard case .failure(let identityIdError) = identityIdResult,
-              case .unknown = identityIdError else {
+              identityIdError.type == AuthError.unknownError else {
             XCTFail("Should return unknown error")
             return
         }
 
         let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
         guard case .failure(let tokenError) = tokensResult,
-              case .unknown = tokenError else {
+            tokenError.type == AuthError.unknownError else {
             XCTFail("Should return unknown error")
             return
         }
@@ -629,7 +631,7 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
 
         let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
         guard case .failure(let tokenError) = tokensResult,
-              case .signedOut =  tokenError else {
+              tokenError.type == AuthError.signedOutError else {
             XCTFail("Should return signedOut error")
             return
         }

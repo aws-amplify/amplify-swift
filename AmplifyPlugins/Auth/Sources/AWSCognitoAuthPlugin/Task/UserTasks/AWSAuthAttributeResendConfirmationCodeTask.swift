@@ -57,7 +57,7 @@ class AWSAuthAttributeResendConfirmationCodeTask: AuthAttributeResendConfirmatio
 
         let result = try await userPoolService.getUserAttributeVerificationCode(input: input)
         guard let deliveryDetails = result.codeDeliveryDetails?.toAuthCodeDeliveryDetails() else {
-            let authError = AuthError.unknown("Unable to get Auth code delivery details", nil)
+            let authError = AuthError.unknown("Unable to get Auth code delivery details")
             throw authError
         }
         return deliveryDetails

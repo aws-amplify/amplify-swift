@@ -79,7 +79,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
             try await plugin.forgetDevice()
             XCTFail("Should return an error")
         } catch {
-            guard case AuthError.unknown = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.unknownError else {
                 XCTFail("Should produce unknown error")
                 return
             }
@@ -113,7 +113,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
             try await plugin.forgetDevice(awsAuthDevice, options: AuthForgetDeviceRequest.Options())
             XCTFail("Should return an error")
         } catch {
-            guard case AuthError.unknown = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.unknownError else {
                 XCTFail("Should produce unknown error")
                 return
             }
@@ -141,8 +141,8 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
             try await plugin.forgetDevice()
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError,
+                  case .invalidParameter = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be invalidParameter \(error)")
                 return
             }
@@ -176,8 +176,8 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
             try await plugin.forgetDevice(awsAuthDevice, options: AuthForgetDeviceRequest.Options())
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError,
+                  case .invalidParameter = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be invalidParameter \(error)")
                 return
             }
@@ -205,7 +205,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
             try await plugin.forgetDevice()
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.configuration = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.configurationError else {
                 XCTFail("Should produce configuration error instead of \(error)")
                 return
             }
@@ -239,7 +239,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
             try await plugin.forgetDevice(awsAuthDevice, options: AuthForgetDeviceRequest.Options())
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.configuration = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.configurationError else {
                 XCTFail("Should produce configuration error instead of \(error)")
                 return
             }
@@ -267,7 +267,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
             try await plugin.forgetDevice()
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.notAuthorized = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.notAuthorizedError else {
                 XCTFail("Should produce notAuthorized error instead of \(error)")
                 return
             }
@@ -301,7 +301,7 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
             try await plugin.forgetDevice(awsAuthDevice, options: AuthForgetDeviceRequest.Options())
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.notAuthorized = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.notAuthorizedError else {
                 XCTFail("Should produce notAuthorized error instead of \(error)")
                 return
             }
@@ -329,11 +329,11 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
             try await plugin.forgetDevice()
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .passwordResetRequired = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .passwordResetRequired = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be passwordResetRequired \(error)")
                 return
             }
@@ -367,11 +367,11 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
             try await plugin.forgetDevice(awsAuthDevice, options: AuthForgetDeviceRequest.Options())
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .passwordResetRequired = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .passwordResetRequired = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be passwordResetRequired \(error)")
                 return
             }
@@ -399,11 +399,11 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
             try await plugin.forgetDevice()
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .resourceNotFound = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be resourceNotFound \(error)")
                 return
             }
@@ -437,11 +437,11 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
             try await plugin.forgetDevice(awsAuthDevice, options: AuthForgetDeviceRequest.Options())
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .resourceNotFound = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be resourceNotFound \(error)")
                 return
             }
@@ -469,11 +469,11 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
             try await plugin.forgetDevice()
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .requestLimitExceeded = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be requestLimitExceeded \(error)")
                 return
             }
@@ -507,11 +507,11 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
             try await plugin.forgetDevice(awsAuthDevice, options: AuthForgetDeviceRequest.Options())
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .requestLimitExceeded = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be requestLimitExceeded \(error)")
                 return
             }
@@ -539,11 +539,11 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
             try await plugin.forgetDevice()
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .userNotConfirmed = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .userNotConfirmed = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be userNotFound \(error)")
                 return
             }
@@ -577,11 +577,11 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
             try await plugin.forgetDevice(awsAuthDevice, options: AuthForgetDeviceRequest.Options())
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .userNotConfirmed = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .userNotConfirmed = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be userNotFound \(error)")
                 return
             }
@@ -609,11 +609,11 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
             try await plugin.forgetDevice()
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .userNotFound = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be userNotFound \(error)")
                 return
             }
@@ -647,11 +647,11 @@ class DeviceBehaviorForgetDeviceTests: BasePluginTest {
             try await plugin.forgetDevice(awsAuthDevice, options: AuthForgetDeviceRequest.Options())
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .userNotFound = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be userNotFound \(error)")
                 return
             }

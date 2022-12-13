@@ -128,7 +128,7 @@ class ProcessMutationErrorFromCloudOperation: AsynchronousOperation {
     private func isAuthSignedOutError(apiError: APIError) -> Bool {
         if case let .operationError(_, _, underlyingError) = apiError,
             let authError = underlyingError as? AuthError,
-            case .signedOut = authError {
+           authError.type == AuthError.signedOutError {
             return true
         }
 

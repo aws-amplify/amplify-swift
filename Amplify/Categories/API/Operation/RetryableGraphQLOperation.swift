@@ -124,12 +124,11 @@ public final class RetryableGraphQLOperation<Payload: Decodable>: Operation, Ret
                   return false
               }
 
-        switch authError {
-        case .signedOut, .notAuthorized:
+        if authError.type == AuthError.signedOutError || authError.type == AuthError.notAuthorizedError {
             return attempts < maxRetries
-        default:
-            return false
         }
+        
+        return false
     }
 }
 

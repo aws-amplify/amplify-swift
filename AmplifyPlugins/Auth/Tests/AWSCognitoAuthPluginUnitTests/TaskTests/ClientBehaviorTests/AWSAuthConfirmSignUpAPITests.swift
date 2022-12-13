@@ -154,16 +154,10 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
                 return
             }
 
-            guard case .notAuthorized(let errorDescription,
-                                      let recoverySuggestion,
-                                      let notAuthorizedError) = authError else {
-                XCTFail("Auth error should be of type notAuthorized")
-                return
-            }
 
-            XCTAssertNotNil(errorDescription)
-            XCTAssertNotNil(recoverySuggestion)
-            XCTAssertNil(notAuthorizedError)
+            XCTAssertNotNil(authError.errorDescription)
+            XCTAssertNotNil(authError.recoverySuggestion)
+            XCTAssertTrue(authError.type == AuthError.notAuthorizedError)
         }
     }
 
@@ -186,12 +180,12 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
                 return
             }
 
-            guard case .unknown(let errorMessage, _) = authError else {
+            guard authError.type == AuthError.unknownError else {
                 XCTFail("Auth error should be of type unknown")
                 return
             }
 
-            XCTAssertNotNil(errorMessage)
+            XCTAssertNotNil(authError.errorDescription)
         }
     }
 
@@ -215,12 +209,12 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
                 return
             }
 
-            guard case .unknown(let errorMessage, _) = authError else {
+            guard authError.type == AuthError.unknownError else {
                 XCTFail("Auth error should be of type unknown")
                 return
             }
 
-            XCTAssertNotNil(errorMessage)
+            XCTAssertNotNil(authError.errorDescription)
         }
     }
 
@@ -244,17 +238,15 @@ class AWSAuthConfirmSignUpAPITests: BasePluginTest {
                     return
                 }
 
-                guard case .service(let errorMessage,
-                                    let recovery,
-                                    let serviceError) = authError else {
+                guard authError.type == AuthError.serviceError else {
                     XCTFail("Auth error should be of type service error")
                     return
                 }
 
-                XCTAssertNotNil(errorMessage)
-                XCTAssertNotNil(recovery)
+                XCTAssertNotNil(authError.errorDescription)
+                XCTAssertNotNil(authError.recoverySuggestion)
 
-                guard let awsCognitoAuthError = serviceError as? AWSCognitoAuthError else {
+                guard let awsCognitoAuthError = authError.underlyingError as? AWSCognitoAuthError else {
                     XCTFail("Service error wrapped should be of type AWSCognitoAuthError")
                     return
                 }

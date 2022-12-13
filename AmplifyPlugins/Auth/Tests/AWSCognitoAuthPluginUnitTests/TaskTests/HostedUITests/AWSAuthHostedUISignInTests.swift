@@ -88,8 +88,8 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             _ = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
             XCTFail("Should not succeed")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .userCancelled = (underlyingError as? AWSCognitoAuthError) else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError,
+                    case .userCancelled = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should not fail with error = \(error)")
                 return
             }
@@ -106,8 +106,8 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             _ = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
             XCTFail("Should not succeed")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .userCancelled = (underlyingError as? AWSCognitoAuthError) else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError,
+                    case .userCancelled = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should not fail with error = \(error)")
                 return
             }
@@ -141,7 +141,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             _ = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
             XCTFail("Should not succeed")
         } catch {
-            guard case AuthError.service = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should not fail with error = \(error)")
                 return
             }
@@ -158,7 +158,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             _ = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
             XCTFail("Should not succeed")
         } catch {
-            guard case AuthError.invalidState = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.invalidStateError else {
                 XCTFail("Should not fail with error = \(error)")
                 return
             }
@@ -186,7 +186,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             _ = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
             XCTFail("Should not succeed")
         } catch {
-            guard case AuthError.service = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should not fail with error = \(error)")
                 return
             }
@@ -214,7 +214,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             _ = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
             XCTFail("Should not succeed")
         } catch {
-            guard case AuthError.service = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should not fail with error = \(error)")
                 return
             }

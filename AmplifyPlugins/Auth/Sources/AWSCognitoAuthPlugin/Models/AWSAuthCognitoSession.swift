@@ -60,10 +60,6 @@ public struct AWSAuthCognitoSession: AuthSession,
                 return .failure(error)
             }
             return .success(userSub)
-        } catch AuthError.signedOut {
-            return .failure(AuthError.signedOut(
-                            AuthPluginErrorConstants.userSubSignOutError.errorDescription,
-                            AuthPluginErrorConstants.userSubSignOutError.recoverySuggestion))
         } catch let error as AuthError {
             return .failure(error)
         } catch {

@@ -62,7 +62,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             try await plugin.deleteUser()
             XCTFail("Should not get success")
         } catch {
-            guard case AuthError.unknown = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.unknownError else {
                 XCTFail("Should produce unknown error instead of \(error)")
                 return
             }
@@ -95,8 +95,8 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             try await plugin.deleteUser()
             XCTFail("Should not get success")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError,
+                  case .invalidParameter = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should produce invalidParameter error instead of \(error)")
                 return
             }
@@ -129,7 +129,7 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             try await plugin.deleteUser()
             XCTFail("Should not get success")
         } catch {
-            guard case AuthError.notAuthorized = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.notAuthorizedError else {
                 XCTFail("Should produce notAuthorized error instead of \(error)")
                 return
             }
@@ -162,8 +162,8 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             try await plugin.deleteUser()
             XCTFail("Should not get success")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .passwordResetRequired = (underlyingError as? AWSCognitoAuthError) else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError,
+                  case .passwordResetRequired = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should produce unknown error instead of \(error)")
                 return
             }
@@ -196,8 +196,8 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             try await plugin.deleteUser()
             XCTFail("Should not get success")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError,
+                  case .resourceNotFound = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should produce unknown error instead of \(error)")
                 return
             }
@@ -230,8 +230,8 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             try await plugin.deleteUser()
             XCTFail("Should not get success")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError,
+                  case .requestLimitExceeded = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should produce unknown error instead of \(error)")
                 return
             }
@@ -264,8 +264,8 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             try await plugin.deleteUser()
             XCTFail("Should not get success")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .userNotConfirmed = (underlyingError as? AWSCognitoAuthError) else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError,
+                  case .userNotConfirmed = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should produce userNotConfirmed error instead of \(error)")
                 return
             }
@@ -298,8 +298,8 @@ class AuthenticationProviderDeleteUserTests: BasePluginTest {
             try await plugin.deleteUser()
             XCTFail("Should not get success")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError,
+                  case .userNotFound = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should produce userNotFound error but instead produced \(error)")
                 return
             }

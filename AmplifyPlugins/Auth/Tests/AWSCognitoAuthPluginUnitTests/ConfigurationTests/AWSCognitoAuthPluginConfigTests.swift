@@ -160,7 +160,7 @@ class AWSCognitoAuthPluginConfigTests: XCTestCase {
             try Amplify.configure(amplifyConfig)
             XCTFail("Should have thrown a AuthError.configuration error if both cognito service config are invalid")
         } catch {
-            guard case AuthError.configuration = error else {
+            guard let authError = error as? AuthError, AuthError.configurationError == authError.type else {
                 XCTFail("Should have thrown a AuthError.configuration error if both cognito service config are invalid")
                 return
             }

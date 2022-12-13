@@ -70,7 +70,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             _ = try await plugin.confirmSignIn(challengeResponse: "")
             XCTFail("Should not succeed")
         } catch {
-            guard case AuthError.validation = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.validationError else {
                 XCTFail("Should produce validation error instead of \(error)")
                 return
             }
@@ -96,7 +96,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             _ = try await plugin.confirmSignIn(challengeResponse: "")
             XCTFail("Should not succeed")
         } catch {
-            guard case AuthError.validation = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.validationError else {
                 XCTFail("Should produce validation error instead of \(error)")
                 return
             }
@@ -169,11 +169,11 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .aliasExists = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .aliasExists = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be aliasExists \(error)")
                 return
             }
@@ -200,11 +200,11 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .codeMismatch = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .codeMismatch = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be codeMismatch \(error)")
                 return
             }
@@ -232,11 +232,11 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .codeExpired = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .codeExpired = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be codeExpired \(error)")
                 return
             }
@@ -263,7 +263,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.unknown = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.unknownError else {
                 XCTFail("Should produce an unknown error instead of \(error)")
                 return
             }
@@ -290,11 +290,11 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .lambda = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be lambda \(error)")
                 return
             }
@@ -323,11 +323,11 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .invalidParameter = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be invalidParameter \(error)")
                 return
             }
@@ -356,11 +356,11 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .invalidPassword = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .invalidPassword = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be invalidPassword \(error)")
                 return
             }
@@ -387,11 +387,11 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .smsRole = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be invalidPassword \(error)")
                 return
             }
@@ -418,11 +418,11 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .smsRole = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .smsRole = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be invalidPassword \(error)")
                 return
             }
@@ -467,7 +467,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.configuration(_, _, _) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.configurationError else {
                 XCTFail("Should produce configuration instead produced \(error)")
                 return
             }
@@ -497,11 +497,11 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should not succeed")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .mfaMethodNotFound = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .mfaMethodNotFound = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be mfaMethodNotFound \(error)")
                 return
             }
@@ -530,7 +530,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.notAuthorized = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.notAuthorizedError else {
                 XCTFail("Should produce notAuthorized error instead of \(error)")
                 return
             }
@@ -588,11 +588,11 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .resourceNotFound = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be resourceNotFound \(error)")
                 return
             }
@@ -621,11 +621,11 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .softwareTokenMFANotEnabled = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .softwareTokenMFANotEnabled = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be softwareTokenMFANotEnabled \(error)")
                 return
             }
@@ -654,11 +654,11 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .requestLimitExceeded = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be requestLimitExceeded \(error)")
                 return
             }
@@ -687,11 +687,11 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .lambda = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be lambda \(error)")
                 return
             }
@@ -720,11 +720,11 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .lambda = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be lambda \(error)")
                 return
             }
@@ -782,11 +782,11 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
             _ = try await plugin.confirmSignIn(challengeResponse: "code")
             XCTFail("Should return an error if the result from service is invalid")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce service error instead of \(error)")
                 return
             }
-            guard case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
+            guard case .userNotFound = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Underlying error should be userNotFound \(error)")
                 return
             }

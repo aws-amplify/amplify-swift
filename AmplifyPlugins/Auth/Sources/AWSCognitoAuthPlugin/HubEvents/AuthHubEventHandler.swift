@@ -110,7 +110,7 @@ class AuthHubEventHandler: AuthHubEventBehavior {
               case let .failure(authError) = tokensProvider.getCognitoTokens() else {
             return
         }
-        guard case .sessionExpired = authError else {
+        guard case AuthError.sessionExpiredError = authError.type else {
             return
         }
         sendSessionExpiredEvent()

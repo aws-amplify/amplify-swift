@@ -219,8 +219,7 @@ final class InitialSyncOperation: AsynchronousOperation {
 
     private func isAuthSignedOutError(apiError: APIError) -> Bool {
         if case let .operationError(_, _, underlyingError) = apiError,
-            let authError = underlyingError as? AuthError,
-            case .signedOut = authError {
+            let authError = underlyingError as? AuthError, authError.type == AuthError.signedOutError {
             return true
         }
 

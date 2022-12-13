@@ -68,7 +68,7 @@ class AWSAuthServiceTests: XCTestCase {
             XCTFail("passed in token with two parts, but expecting 3")
             return
         }
-        guard case .validation = error else {
+        guard error.type == AuthError.validationError else {
             XCTFail("expecting validation error")
             return
         }
@@ -94,11 +94,11 @@ class AWSAuthServiceTests: XCTestCase {
             XCTFail("passed in token with two parts, but expecting 3")
             return
         }
-        guard case .validation(_, _, _, let error) = authError else {
+        guard authError.type == AuthError.validationError else {
             XCTFail("expecting validation error")
             return
         }
-        guard let jsonDecodeError = error as NSError? else {
+        guard let jsonDecodeError = authError.underlyingError as NSError? else {
             XCTFail("expecting json decode error")
             return
         }

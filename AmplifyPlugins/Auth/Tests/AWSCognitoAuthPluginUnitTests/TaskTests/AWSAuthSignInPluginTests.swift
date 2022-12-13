@@ -132,7 +132,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             let result = try await plugin.signIn(username: "", password: "password", options: options)
             XCTFail("Should not receive a success response \(result)")
         } catch {
-            guard case AuthError.validation = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.validationError else {
                 XCTFail("Should receive validation error instead got \(error)")
                 return
             }
@@ -202,7 +202,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not receive a success response \(result)")
         } catch {
-            guard case AuthError.service = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should receive unknown error instead got \(error)")
                 return
             }
@@ -535,7 +535,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
         } catch {
-            guard case AuthError.unknown = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.unknownError else {
                 XCTFail("Should produce unknown error")
                 return
             }
@@ -578,7 +578,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 options: options)
             XCTFail("Should not produce result - \(result)")
         } catch {
-            guard case AuthError.service = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError else {
                 XCTFail("Should produce as service error")
                 return
             }
@@ -656,7 +656,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
         } catch {
-            guard case AuthError.unknown = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.unknownError else {
                 XCTFail("Should produce unknown error")
                 return
             }
@@ -683,8 +683,8 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError,
+                  case .lambda = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should produce lambda error but instead produced \(error)")
                 return
             }
@@ -711,8 +711,8 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .invalidParameter = (underlyingError as? AWSCognitoAuthError) else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError,
+                  case .invalidParameter = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should produce invalidParameter error but instead produced \(error)")
                 return
             }
@@ -739,7 +739,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
         } catch {
-            guard case AuthError.configuration = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.configurationError else {
                 XCTFail("Should produce configuration intead produced \(error)")
                 return
             }
@@ -766,7 +766,7 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
         } catch {
-            guard case AuthError.notAuthorized = error else {
+            guard let authError = error as? AuthError, authError.type == AuthError.notAuthorizedError else {
                 XCTFail("Should produce notAuthorized error but instead produced \(error)")
                 return
             }
@@ -852,8 +852,8 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .resourceNotFound = (underlyingError as? AWSCognitoAuthError) else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError,
+                  case .resourceNotFound = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should produce resourceNotFound error but instead produced \(error)")
                 return
             }
@@ -880,8 +880,8 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .requestLimitExceeded = (underlyingError as? AWSCognitoAuthError) else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError,
+                  case .requestLimitExceeded = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should produce requestLimitExceeded error but instead produced \(error)")
                 return
             }
@@ -908,8 +908,8 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError,
+                  case .lambda = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should produce lambda error but instead produced \(error)")
                 return
             }
@@ -936,8 +936,8 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .lambda = (underlyingError as? AWSCognitoAuthError) else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError,
+                  case .lambda = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should produce lambda error but instead produced \(error)")
                 return
             }
@@ -1023,8 +1023,8 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .userNotFound = (underlyingError as? AWSCognitoAuthError) else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError,
+                  case .userNotFound = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should produce userNotFound error but instead produced \(error)")
                 return
             }
@@ -1059,8 +1059,8 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .aliasExists = (underlyingError as? AWSCognitoAuthError) else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError,
+                  case .aliasExists = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should produce aliasExists error but instead produced \(error)")
                 return
             }
@@ -1093,8 +1093,8 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             let result = try await plugin.signIn(username: "username", password: "password", options: options)
             XCTFail("Should not produce result - \(result)")
         } catch {
-            guard case AuthError.service(_, _, let underlyingError) = error,
-                  case .invalidPassword = (underlyingError as? AWSCognitoAuthError) else {
+            guard let authError = error as? AuthError, authError.type == AuthError.serviceError,
+                  case .invalidPassword = (authError.underlyingError as? AWSCognitoAuthError) else {
                 XCTFail("Should produce invalidPassword error but instead produced \(error)")
                 return
             }

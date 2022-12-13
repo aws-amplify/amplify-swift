@@ -58,13 +58,13 @@ class AWSAuthConfirmSignInTask: AuthConfirmSignInTask {
                    if case .resolvingChallenge(let challengeState, _, _) = signInState,
                       case .error(_, let signInError) = challengeState {
                        let authError = signInError.authError
-                       if case .service(_, _, let serviceError) = authError,
-                          let cognitoError = serviceError as? AWSCognitoAuthError,
+                       if authError.type == AuthError.serviceError,
+                          let cognitoError = authError.underlyingError as? AWSCognitoAuthError,
                           case .passwordResetRequired = cognitoError {
                            return AuthSignInResult(nextStep: .resetPassword(nil))
 
-                       } else if case .service(_, _, let serviceError) = authError,
-                                 let cognitoError = serviceError as? AWSCognitoAuthError,
+                       } else if authError.type == AuthError.serviceError,
+                           let cognitoError = authError.underlyingError as? AWSCognitoAuthError,
                                  case .userNotConfirmed = cognitoError {
                            return AuthSignInResult(nextStep: .confirmSignUp(nil))
                        } else {
