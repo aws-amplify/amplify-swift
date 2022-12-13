@@ -147,7 +147,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                       authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelSchema.name,
                                                                operationType: .mutation,
-                                                               primaryKeysOnly: true)
+                                                               primaryKeysOnly: false)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelIdDecorator(model: model,
                                                         schema: modelSchema))
@@ -251,7 +251,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelSchema.name,
                                                                operationType: .mutation,
-                                                               primaryKeysOnly: true)
+                                                               primaryKeysOnly: false)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: type))
         documentBuilder.add(decorator: ModelDecorator(model: model, mutationType: type))
         if let filter = filter {

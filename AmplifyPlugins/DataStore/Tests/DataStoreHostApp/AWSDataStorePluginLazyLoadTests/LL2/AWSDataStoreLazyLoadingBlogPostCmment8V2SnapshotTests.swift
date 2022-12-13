@@ -256,6 +256,22 @@ extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
             updatedAt
             blog {
               id
+              createdAt
+              customs {
+                children {
+                  id
+                  nestedName
+                  notes
+                  __typename
+                }
+                desc
+                id
+                name
+                __typename
+              }
+              name
+              notes
+              updatedAt
               __typename
             }
             __typename
@@ -279,6 +295,22 @@ extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
             updatedAt
             blog {
               id
+              createdAt
+              customs {
+                children {
+                  id
+                  nestedName
+                  notes
+                  __typename
+                }
+                desc
+                id
+                name
+                __typename
+              }
+              name
+              notes
+              updatedAt
               __typename
             }
             __typename
@@ -302,6 +334,22 @@ extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
             updatedAt
             blog {
               id
+              createdAt
+              customs {
+                children {
+                  id
+                  nestedName
+                  notes
+                  __typename
+                }
+                desc
+                id
+                name
+                __typename
+              }
+              name
+              notes
+              updatedAt
               __typename
             }
             __typename
@@ -427,6 +475,10 @@ extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
             updatedAt
             post {
               id
+              createdAt
+              name
+              randomId
+              updatedAt
               __typename
             }
             __typename
@@ -449,6 +501,10 @@ extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
             updatedAt
             post {
               id
+              createdAt
+              name
+              randomId
+              updatedAt
               __typename
             }
             __typename
@@ -471,6 +527,10 @@ extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
             updatedAt
             post {
               id
+              createdAt
+              name
+              randomId
+              updatedAt
               __typename
             }
             __typename

@@ -166,6 +166,9 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
             updatedAt
             post {
               id
+              createdAt
+              title
+              updatedAt
               __typename
             }
             __typename
@@ -188,6 +191,9 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
             updatedAt
             post {
               id
+              createdAt
+              title
+              updatedAt
               __typename
             }
             __typename
@@ -210,6 +216,9 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
             updatedAt
             post {
               id
+              createdAt
+              title
+              updatedAt
               __typename
             }
             __typename
