@@ -12,42 +12,47 @@ import XCTest
 @testable import Amplify
 import AWSPluginsCore
 
-class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
-    
+final class AWSDataStoreLazyLoadBlogPostComment8V2Tests: AWSDataStoreLazyLoadBaseTest {
+
     func testStart() async throws {
-        await setup(withModels: PostComment4V2Models(), eagerLoad: false, clearOnTearDown: false)
+        await setup(withModels: BlogPostComment8V2Models(), eagerLoad: false, clearOnTearDown: false)
         try await startAndWaitForReady()
-        printDBPath()
+    }
+
+    func testSaveBlog() async throws {
+        await setup(withModels: BlogPostComment8V2Models(), eagerLoad: false, clearOnTearDown: false)
+        
+        let blog = Blog(name: "name")
+        let savedBlog = try await saveAndWaitForSync(blog)
     }
     
     func testSavePost() async throws {
-        await setup(withModels: PostComment4V2Models(), logLevel: .verbose, eagerLoad: false)
-        let post = Post(title: "title")
+        await setup(withModels: BlogPostComment8V2Models(), eagerLoad: false, clearOnTearDown: false)
+        let blog = Blog(name: "name")
+        let post = Post(name: "name", randomId: "randomId", blog: blog)
+        let savedBlog = try await saveAndWaitForSync(blog)
         let savedPost = try await saveAndWaitForSync(post)
+        
     }
     
     func testSaveComment() async throws {
-        await setup(withModels: PostComment4V2Models(), logLevel: .verbose, eagerLoad: false)
-        
-        let post = Post(title: "title")
+        await setup(withModels: BlogPostComment8V2Models(), eagerLoad: false, clearOnTearDown: false)
+
+        let post = Post(name: "name", randomId: "randomId")
         let comment = Comment(content: "content", post: post)
         let savedPost = try await saveAndWaitForSync(post)
         let savedComment = try await saveAndWaitForSync(comment)
     }
     
     func testLazyLoad() async throws {
-        await setup(withModels: PostComment4V2Models(), logLevel: .verbose, eagerLoad: false)
-        
-        let post = Post(title: "title")
+        await setup(withModels: BlogPostComment8V2Models(), eagerLoad: false, clearOnTearDown: false)
+
+        let blog = Blog(name: "name")
+        let post = Post(name: "name", randomId: "randomId", blog: blog)
         let comment = Comment(content: "content", post: post)
+        let savedBlog = try await saveAndWaitForSync(blog)
         let savedPost = try await saveAndWaitForSync(post)
         let savedComment = try await saveAndWaitForSync(comment)
-        try await assertComment(savedComment, hasEagerLoaded: savedPost)
-        try await assertPost(savedPost, canLazyLoad: savedComment)
-        let queriedComment = try await query(for: savedComment)
-        try await assertComment(queriedComment, canLazyLoad: savedPost)
-        let queriedPost = try await query(for: savedPost)
-        try await assertPost(queriedPost, canLazyLoad: savedComment)
     }
     
     func assertComment(_ comment: Comment,
@@ -100,13 +105,13 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testSaveWithoutPost() async throws {
-        await setup(withModels: PostComment4V2Models(), logLevel: .verbose, eagerLoad: false)
+        await setup(withModels: BlogPostComment8V2Models(), logLevel: .verbose, eagerLoad: false)
         let comment = Comment(content: "content")
         let savedComment = try await saveAndWaitForSync(comment)
         var queriedComment = try await query(for: savedComment)
         assertLazyReference(queriedComment._post,
                         state: .notLoaded(identifiers: nil))
-        let post = Post(title: "title")
+        let post = Post(name: "name", randomId: "randomId")
         let savedPost = try await saveAndWaitForSync(post)
         queriedComment.setPost(savedPost)
         let saveCommentWithPost = try await saveAndWaitForSync(queriedComment, assertVersion: 2)
@@ -115,8 +120,8 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testUpdateFromQueriedComment() async throws {
-        await setup(withModels: PostComment4V2Models(), logLevel: .verbose, eagerLoad: false)
-        let post = Post(title: "title")
+        await setup(withModels: BlogPostComment8V2Models(), logLevel: .verbose, eagerLoad: false)
+        let post = Post(name: "name", randomId: "randomId")
         let comment = Comment(content: "content", post: post)
         let savedPost = try await saveAndWaitForSync(post)
         let savedComment = try await saveAndWaitForSync(comment)
@@ -129,9 +134,9 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testUpdateToNewPost() async throws {
-        await setup(withModels: PostComment4V2Models(), logLevel: .verbose, eagerLoad: false)
+        await setup(withModels: BlogPostComment8V2Models(), logLevel: .verbose, eagerLoad: false)
         
-        let post = Post(title: "title")
+        let post = Post(name: "name", randomId: "randomId")
         let comment = Comment(content: "content", post: post)
         _ = try await saveAndWaitForSync(post)
         let savedComment = try await saveAndWaitForSync(comment)
@@ -139,7 +144,7 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
         assertLazyReference(queriedComment._post,
                         state: .notLoaded(identifiers: [.init(name: "id", value: post.identifier)]))
         
-        let newPost = Post(title: "title")
+        let newPost = Post(name: "name")
         _ = try await saveAndWaitForSync(newPost)
         queriedComment.setPost(newPost)
         let saveCommentWithNewPost = try await saveAndWaitForSync(queriedComment, assertVersion: 2)
@@ -148,9 +153,9 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testUpdateRemovePost() async throws {
-        await setup(withModels: PostComment4V2Models(), logLevel: .verbose, eagerLoad: false)
+        await setup(withModels: BlogPostComment8V2Models(), logLevel: .verbose, eagerLoad: false)
         
-        let post = Post(title: "title")
+        let post = Post(name: "name", randomId: "randomId")
         let comment = Comment(content: "content", post: post)
         _ = try await saveAndWaitForSync(post)
         let savedComment = try await saveAndWaitForSync(comment)
@@ -166,9 +171,9 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testDelete() async throws {
-        await setup(withModels: PostComment4V2Models(), logLevel: .verbose, eagerLoad: false)
+        await setup(withModels: BlogPostComment8V2Models(), logLevel: .verbose, eagerLoad: false)
         
-        let post = Post(title: "title")
+        let post = Post(name: "name", randomId: "randomId")
         let comment = Comment(content: "content", post: post)
         let savedPost = try await saveAndWaitForSync(post)
         let savedComment = try await saveAndWaitForSync(comment)
@@ -178,9 +183,9 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testObservePost() async throws {
-        await setup(withModels: PostComment4V2Models(), logLevel: .verbose, eagerLoad: false)
+        await setup(withModels: BlogPostComment8V2Models(), logLevel: .verbose, eagerLoad: false)
         try await startAndWaitForReady()
-        let post = Post(title: "title")
+        let post = Post(name: "name", randomId: "randomId")
         let mutationEventReceived = asyncExpectation(description: "Received mutation event")
         let mutationEvents = Amplify.DataStore.observe(Post.self)
         Task {
@@ -210,9 +215,9 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testObserveComment() async throws {
-        await setup(withModels: PostComment4V2Models(), logLevel: .verbose, eagerLoad: false)
+        await setup(withModels: BlogPostComment8V2Models(), logLevel: .verbose, eagerLoad: false)
         try await startAndWaitForReady()
-        let post = Post(title: "title")
+        let post = Post(name: "name", randomId: "randomId")
         let savedPost = try await saveAndWaitForSync(post)
         let comment = Comment(content: "content", post: post)
         let mutationEventReceived = asyncExpectation(description: "Received mutation event")
@@ -244,15 +249,17 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
     }
 }
 
-extension AWSDataStoreLazyLoadPostComment4V2Tests {
-    typealias Post = Post4V2
-    typealias Comment = Comment4V2
+extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
+    typealias Blog = Blog8V2
+    typealias Post = Post8V2
+    typealias Comment = Comment8V2
     
-    struct PostComment4V2Models: AmplifyModelRegistration {
+    struct BlogPostComment8V2Models: AmplifyModelRegistration {
         public let version: String = "version"
         func registerModels(registry: ModelRegistry.Type) {
-            ModelRegistry.register(modelType: Post4V2.self)
-            ModelRegistry.register(modelType: Comment4V2.self)
+            ModelRegistry.register(modelType: Blog8V2.self)
+            ModelRegistry.register(modelType: Post8V2.self)
+            ModelRegistry.register(modelType: Comment8V2.self)
         }
     }
 }

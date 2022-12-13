@@ -53,7 +53,7 @@ public struct Project6: Model {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         projectId = try values.decode(String.self, forKey: .projectId)
         name = try values.decode(String.self, forKey: .name)
-        _team = try values.decode(LazyReference<Team6>.self, forKey: .team)
+        _team = try values.decodeIfPresent(LazyReference<Team6>.self, forKey: .team) ?? LazyReference(identifiers: nil)
         teamId = try values.decode(String?.self, forKey: .teamId)
         teamName = try values.decode(String?.self, forKey: .teamName)
         createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)

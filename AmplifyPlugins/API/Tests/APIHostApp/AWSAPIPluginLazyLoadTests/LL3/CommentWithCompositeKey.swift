@@ -43,7 +43,7 @@ public struct CommentWithCompositeKey: Model {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         id = try values.decode(String.self, forKey: .id)
         content = try values.decode(String.self, forKey: .content)
-        _post = try values.decode(LazyReference<PostWithCompositeKey>.self, forKey: .post)
+        _post = try values.decodeIfPresent(LazyReference<PostWithCompositeKey>.self, forKey: .post) ?? LazyReference(identifiers: nil)
         createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
         updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
     }

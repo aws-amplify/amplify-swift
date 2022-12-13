@@ -44,26 +44,4 @@ public struct CompositePKParent: Model {
       self.createdAt = createdAt
       self.updatedAt = updatedAt
   }
-  public init(from decoder: Decoder) throws {
-      let values = try decoder.container(keyedBy: CodingKeys.self)
-      customId = try values.decode(String.self, forKey: .customId)
-      content = try values.decode(String.self, forKey: .content)
-      children = try values.decode(List<CompositePKChild>?.self, forKey: .children)
-      implicitChildren = try values.decode(List<ImplicitChild>?.self, forKey: .implicitChildren)
-      strangeChildren = try values.decode(List<StrangeExplicitChild>?.self, forKey: .strangeChildren)
-      childrenSansBelongsTo = try values.decode(List<ChildSansBelongsTo>?.self, forKey: .childrenSansBelongsTo)
-      createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
-      updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
-  }
-  public func encode(to encoder: Encoder) throws {
-      var container = encoder.container(keyedBy: CodingKeys.self)
-      try container.encode(customId, forKey: .customId)
-      try container.encode(content, forKey: .content)
-      try container.encode(children, forKey: .children)
-      try container.encode(implicitChildren, forKey: .implicitChildren)
-      try container.encode(strangeChildren, forKey: .strangeChildren)
-      try container.encode(childrenSansBelongsTo, forKey: .childrenSansBelongsTo)
-      try container.encode(createdAt, forKey: .createdAt)
-      try container.encode(updatedAt, forKey: .updatedAt)
-  }
 }

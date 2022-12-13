@@ -3,7 +3,7 @@ import Amplify
 import Foundation
 
 extension Blog8V2 {
-  // MARK: - CodingKeys 
+  // MARK: - CodingKeys
    public enum CodingKeys: String, ModelKey {
     case id
     case name
@@ -15,7 +15,7 @@ extension Blog8V2 {
   }
   
   public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
+  //  MARK: - ModelSchema
   
   public static let schema = defineSchema { model in
     let blog8V2 = Blog8V2.keys
@@ -36,7 +36,6 @@ extension Blog8V2 {
       .field(blog8V2.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
-    
     public class Path: ModelPath<Blog8V2> { }
     
     public static var rootPath: PropertyContainerPath? { Path() }
@@ -46,11 +45,23 @@ extension Blog8V2: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
   public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
 }
-
 extension ModelPath where ModelType == Blog8V2 {
-    var id: FieldPath<String> { id() }
-    var name: FieldPath<String> { string("name") }
-    var posts: ModelPath<Post8V2> { Post8V2.Path(name: "posts", isCollection: true, parent: self) }
-    var createdAt: FieldPath<Temporal.DateTime> { datetime("createdAt") }
-    var updatedAt: FieldPath<Temporal.DateTime> { datetime("updatedAt") }
+  public var id: FieldPath<String>   {
+      string("id")
+    }
+  public var name: FieldPath<String>   {
+      string("name")
+    }
+  public var notes: FieldPath<String>   {
+      string("notes")
+    }
+  public var posts: ModelPath<Post8V2>   {
+      Post8V2.Path(name: "posts", isCollection: true, parent: self)
+    }
+  public var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt")
+    }
+  public var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt")
+    }
 }

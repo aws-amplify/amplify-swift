@@ -37,20 +37,6 @@
                BlueprintName = "AWSDataStorePluginLazyLoadTests"
                ReferencedContainer = "container:DataStoreHostApp.xcodeproj">
             </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "AWSDataStoreLazyLoadPostComment4Tests/testLazyLoad()">
-               </Test>
-               <Test
-                  Identifier = "AWSDataStoreLazyLoadPostComment4Tests/testSaveWithoutPost()">
-               </Test>
-               <Test
-                  Identifier = "AWSDataStoreLazyLoadPostComment8Tests/testLazyLoad()">
-               </Test>
-               <Test
-                  Identifier = "AWSDataStoreLazyLoadPostComment8Tests/testSaveWithoutPost()">
-               </Test>
-            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

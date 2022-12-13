@@ -51,8 +51,8 @@ public struct PostTagsWithCompositeKey: Model {
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         id = try values.decode(String.self, forKey: .id)
-        _postWithTagsCompositeKey = try values.decode(LazyReference<PostWithTagsCompositeKey>.self, forKey: .postWithTagsCompositeKey)
-        _tagWithCompositeKey = try values.decode(LazyReference<TagWithCompositeKey>.self, forKey: .tagWithCompositeKey)
+        _postWithTagsCompositeKey = try values.decodeIfPresent(LazyReference<PostWithTagsCompositeKey>.self, forKey: .postWithTagsCompositeKey) ?? LazyReference(identifiers: nil)
+        _tagWithCompositeKey = try values.decodeIfPresent(LazyReference<TagWithCompositeKey>.self, forKey: .tagWithCompositeKey) ?? LazyReference(identifiers: nil)
         createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
         updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
     }

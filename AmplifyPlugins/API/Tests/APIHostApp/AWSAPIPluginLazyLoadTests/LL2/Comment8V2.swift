@@ -35,7 +35,7 @@ public struct Comment8V2: Model {
         self.updatedAt = updatedAt
     }
     
-    public mutating func setPost(_ post: Post8V2) {
+    public mutating func setPost(_ post: Post8V2?) {
         self._post = LazyReference(post)
     }
     
@@ -43,7 +43,7 @@ public struct Comment8V2: Model {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         id = try values.decode(String.self, forKey: .id)
         content = try values.decode(String.self, forKey: .content)
-        _post = try values.decode(LazyReference<Post8V2>.self, forKey: .post)
+        _post = try values.decodeIfPresent(LazyReference<Post8V2>.self, forKey: .post) ?? LazyReference(identifiers: nil)
         createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
         updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
     }

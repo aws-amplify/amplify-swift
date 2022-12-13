@@ -175,8 +175,12 @@ public struct AppSyncModelMetadataUtils {
                 identifiers.append(.init(name: identifierField.name, value: identifierValue))
             }
         }
-
-        if !identifiers.isEmpty && (identifiers.count + 1) == modelObject.keys.count {
+        var modelObject = modelObject
+        modelObject["__typename"] = nil
+        modelObject["_lastChangedAt"] = nil
+        modelObject["_deleted"] = nil
+        modelObject["_version"] = nil
+        if !identifiers.isEmpty && (identifiers.count) == modelObject.keys.count {
             return AppSyncModelDecoder.Metadata(identifiers: identifiers, apiName: apiName)
         } else {
             return nil

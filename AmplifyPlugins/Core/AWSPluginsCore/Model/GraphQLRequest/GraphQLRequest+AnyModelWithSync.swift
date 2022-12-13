@@ -147,7 +147,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                       authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelSchema.name,
                                                                operationType: .mutation,
-                                                               primaryKeysOnly: false)
+                                                               primaryKeysOnly: true)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelIdDecorator(model: model,
                                                         schema: modelSchema))
@@ -174,7 +174,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
 
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema,
                                                                operationType: .subscription,
-                                                               primaryKeysOnly: false)
+                                                               primaryKeysOnly: true)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: subscriptionType))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(subscriptionType, nil), authType: authType))
@@ -182,7 +182,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
 
         let awsPluginOptions = AWSPluginOptions(authType: authType)
         let requestOptions = GraphQLRequest<MutationSyncResult>.Options(pluginOptions: awsPluginOptions)
-
+        print("lawmicha subscription \(document.stringValue)")
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
                                                   variables: document.variables,
                                                   responseType: MutationSyncResult.self,
@@ -197,7 +197,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
 
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema,
                                                                operationType: .subscription,
-                                                               primaryKeysOnly: false)
+                                                               primaryKeysOnly: true)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: subscriptionType))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(subscriptionType, claims), authType: authType))
@@ -205,7 +205,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
 
         let awsPluginOptions = AWSPluginOptions(authType: authType)
         let requestOptions = GraphQLRequest<MutationSyncResult>.Options(pluginOptions: awsPluginOptions)
-
+        print("lawmicha subscription \(document.stringValue)")
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
                                                   variables: document.variables,
                                                   responseType: MutationSyncResult.self,
@@ -221,7 +221,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                  authType: AWSAuthorizationType? = nil) -> GraphQLRequest<SyncQueryResult> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema,
                                                                operationType: .query,
-                                                               primaryKeysOnly: false)
+                                                               primaryKeysOnly: true)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         if let predicate = optimizePredicate(predicate) {
             documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter(for: modelSchema)))
@@ -251,7 +251,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelSchema.name,
                                                                operationType: .mutation,
-                                                               primaryKeysOnly: false)
+                                                               primaryKeysOnly: true)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: type))
         documentBuilder.add(decorator: ModelDecorator(model: model, mutationType: type))
         if let filter = filter {

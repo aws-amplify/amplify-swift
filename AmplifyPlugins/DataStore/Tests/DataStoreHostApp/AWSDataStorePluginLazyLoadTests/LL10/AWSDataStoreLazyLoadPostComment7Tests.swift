@@ -14,6 +14,21 @@ import AWSPluginsCore
 
 final class AWSDataStoreLazyLoadPostComment7Tests: AWSDataStoreLazyLoadBaseTest {
 
+    func testSavePost() async throws {
+        await setup(withModels: PostComment7Models(), logLevel: .verbose, eagerLoad: false)
+        let post = Post(postId: UUID().uuidString, title: "title")
+        try await saveAndWaitForSync(post)
+    }
+    
+    func testSaveComment() async throws {
+        await setup(withModels: PostComment7Models(), logLevel: .verbose, eagerLoad: false)
+        try await startAndWaitForReady()
+        let post = Post(postId: UUID().uuidString, title: "title")
+        let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
+        let savedPost = try await saveAndWaitForSync(post)
+        let savedComment = try await saveAndWaitForSync(comment)
+    }
+    
     func testLazyLoad() async throws {
         await setup(withModels: PostComment7Models(), logLevel: .verbose, eagerLoad: false)
         

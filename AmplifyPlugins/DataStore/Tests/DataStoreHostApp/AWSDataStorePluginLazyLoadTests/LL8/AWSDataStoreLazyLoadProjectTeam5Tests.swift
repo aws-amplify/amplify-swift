@@ -38,12 +38,7 @@ class AWSDataStoreLazyLoadProjectTeam5Tests: AWSDataStoreLazyLoadBaseTest {
               team {
                 teamId
                 name
-                createdAt
-                updatedAt
                 __typename
-                _version
-                _deleted
-                _lastChangedAt
               }
               __typename
               _version
@@ -70,14 +65,7 @@ class AWSDataStoreLazyLoadProjectTeam5Tests: AWSDataStoreLazyLoadBaseTest {
               project {
                 projectId
                 name
-                createdAt
-                teamId
-                teamName
-                updatedAt
                 __typename
-                _version
-                _deleted
-                _lastChangedAt
               }
               __typename
               _version

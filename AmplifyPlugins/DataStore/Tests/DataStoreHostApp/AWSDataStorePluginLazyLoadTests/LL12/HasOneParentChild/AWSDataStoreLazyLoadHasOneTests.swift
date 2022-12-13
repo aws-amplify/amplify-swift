@@ -13,9 +13,30 @@ import XCTest
 import AWSPluginsCore
 
 class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
+    
     func testStart() async throws {
         await setup(withModels: HasOneModels(), eagerLoad: false, clearOnTearDown: false)
         try await startAndWaitForReady()
+    }
+    
+    func testSaveHasOneParent() async throws {
+        await setup(withModels: HasOneModels(), eagerLoad: false, clearOnTearDown: false)
+        let parent = HasOneParent()
+        let savedParent = try await saveAndWaitForSync(parent)
+    }
+    
+    func testSaveHasOneChild() async throws {
+        await setup(withModels: HasOneModels(), eagerLoad: false, clearOnTearDown: false)
+        let child = HasOneChild()
+        let savedChild = try await saveAndWaitForSync(child)
+    }
+    
+    func testSaveParentWithChild() async throws {
+        await setup(withModels: HasOneModels(), eagerLoad: false, clearOnTearDown: false)
+        let child = HasOneChild()
+        let savedChild = try await saveAndWaitForSync(child)
+        let parent = HasOneParent(child: child)
+        let savedParent = try await saveAndWaitForSync(parent)
     }
 }
 

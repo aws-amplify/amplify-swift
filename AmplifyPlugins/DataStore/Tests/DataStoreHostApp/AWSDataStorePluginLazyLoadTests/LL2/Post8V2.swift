@@ -7,7 +7,7 @@ public struct Post8V2: Model {
     public var name: String
     public var randomId: String?
     internal var _blog: LazyReference<Blog8V2>
-    public var blog: Blog8V2? {
+    public var blog: Blog8V2?   {
         get async throws {
             try await _blog.get()
         }
@@ -44,22 +44,19 @@ public struct Post8V2: Model {
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
-    
-    public mutating func setBlog(_ blog: Blog8V2) {
+    public mutating func setBlog(_ blog: Blog8V2? = nil) {
         self._blog = LazyReference(blog)
     }
-    
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         id = try values.decode(String.self, forKey: .id)
         name = try values.decode(String.self, forKey: .name)
-        randomId = try values.decode(String.self, forKey: .randomId)
-        _blog = try values.decode(LazyReference<Blog8V2>.self, forKey: .blog)
-        comments = try values.decode(List<Comment8V2>?.self, forKey: .comments)
+        randomId = try values.decode(String?.self, forKey: .randomId)
+        _blog = try values.decodeIfPresent(LazyReference<Blog8V2>.self, forKey: .blog) ?? LazyReference(identifiers: nil)
+        comments = try values.decodeIfPresent(List<Comment8V2>?.self, forKey: .comments) ?? .init()
         createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
         updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
     }
-    
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
@@ -70,5 +67,4 @@ public struct Post8V2: Model {
         try container.encode(createdAt, forKey: .createdAt)
         try container.encode(updatedAt, forKey: .updatedAt)
     }
-    
 }

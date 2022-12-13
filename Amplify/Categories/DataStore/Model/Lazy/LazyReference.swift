@@ -20,6 +20,20 @@ public struct LazyReferenceIdentifier: Codable {
     }
 }
 
+extension Array where Element == LazyReferenceIdentifier {
+    public var stringValue: String {
+        var fields = [(String, Persistable)]()
+        for id in self {
+            fields.append((id.name, id.value))
+        }
+        return LazyReferenceModelIdentifier(fields: fields).stringValue
+    }
+}
+
+struct LazyReferenceModelIdentifier: ModelIdentifierProtocol {
+    var fields: [(name: String, value: Persistable)]
+}
+
 /// This class represents a lazy reference to a `Model`, meaning that the reference
 /// may or may not exist at instantiation time.
 ///
@@ -62,8 +76,10 @@ public class LazyReference<ModelType: Model>: Codable, LazyReferenceValue {
         self.modelProvider = modelProvider
         switch self.modelProvider.getState() {
         case .loaded(let element):
+            print("lawmicha enter LazyReference init 1")
             self.loadedState = .loaded(element)
         case .notLoaded(let identifiers):
+            print("lawmicha enter LazyReference init 2 \(identifiers)")
             self.loadedState = .notLoaded(identifiers: identifiers)
         }
     }
@@ -84,18 +100,29 @@ public class LazyReference<ModelType: Model>: Codable, LazyReferenceValue {
     
     /// Decodable implementation is delegated to the underlying `self.reference`.
     required convenience public init(from decoder: Decoder) throws {
+        print("lawmicha enter LazyReference decoder")
         for modelDecoder in ModelProviderRegistry.decoders.get() {
             if modelDecoder.shouldDecode(modelType: ModelType.self, decoder: decoder) {
                 let modelProvider = try modelDecoder.makeModelProvider(modelType: ModelType.self, decoder: decoder)
+                print("lawmicha enter LazyReference decoder 1")
                 self.init(modelProvider: modelProvider)
                 return
             }
         }
+        print("lawmicha enter LazyReference decoder 2")
         let json = try JSONValue(from: decoder)
         if case .object = json {
-            let element = try ModelType(from: decoder)
-            self.init(element)
+            print("lawmicha enter LazyReference decoder 3")
+            do {
+                let element = try ModelType(from: decoder)
+                self.init(element)
+            } catch {
+                self.init(identifiers: nil)
+            }
+            
+            
         } else {
+            print("lawmicha enter LazyReference decoder 4")
             self.init(identifiers: nil)
         }
     }

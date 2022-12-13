@@ -43,7 +43,7 @@ public struct Comment7: Model {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         commentId = try values.decode(String.self, forKey: .commentId)
         content = try values.decode(String.self, forKey: .content)
-        _post = try values.decode(LazyReference<Post7>.self, forKey: .post)
+        _post = try values.decodeIfPresent(LazyReference<Post7>.self, forKey: .post) ?? LazyReference(identifiers: nil)
         createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
         updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
     }

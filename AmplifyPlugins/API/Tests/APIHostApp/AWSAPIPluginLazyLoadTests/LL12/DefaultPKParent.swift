@@ -29,20 +29,4 @@ public struct DefaultPKParent: Model {
       self.createdAt = createdAt
       self.updatedAt = updatedAt
   }
-  public init(from decoder: Decoder) throws {
-      let values = try decoder.container(keyedBy: CodingKeys.self)
-      id = try values.decode(String.self, forKey: .id)
-      content = try values.decode(String?.self, forKey: .content)
-      children = try values.decode(List<DefaultPKChild>?.self, forKey: .children)
-      createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
-      updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
-  }
-  public func encode(to encoder: Encoder) throws {
-      var container = encoder.container(keyedBy: CodingKeys.self)
-      try container.encode(id, forKey: .id)
-      try container.encode(content, forKey: .content)
-      try container.encode(children, forKey: .children)
-      try container.encode(createdAt, forKey: .createdAt)
-      try container.encode(updatedAt, forKey: .updatedAt)
-  }
 }

@@ -18,25 +18,69 @@ class AWSDataStoreLazyLoadCompositePKTests: AWSDataStoreLazyLoadBaseTest {
         try await startAndWaitForReady()
     }
     
-    func testSave() async throws {
+    func testSaveCompositePKParent() async throws {
         await setup(withModels: CompositePKModels(), eagerLoad: false, clearOnTearDown: false)
-        
         let compositePKParent = CompositePKParent(customId: UUID().uuidString,
                                                   content: "content")
         let savedParent = try await saveAndWaitForSync(compositePKParent)
+    }
+    
+    func testSaveCompositePKChild() async throws {
+        await setup(withModels: CompositePKModels(), eagerLoad: false, clearOnTearDown: false)
+        let compositePKParent = CompositePKParent(customId: UUID().uuidString,
+                                                  content: "content")
+        let savedParent = try await saveAndWaitForSync(compositePKParent)
+        
         let compositePKChild = CompositePKChild(childId: UUID().uuidString, content: "content", parent: savedParent)
         let savedCompositePKChild = try await saveAndWaitForSync(compositePKChild)
+    }
+    
+    func testSaveImplicitChild() async throws {
+        await setup(withModels: CompositePKModels(), eagerLoad: false, clearOnTearDown: false)
+        let compositePKParent = CompositePKParent(customId: UUID().uuidString,
+                                                  content: "content")
+        let savedParent = try await saveAndWaitForSync(compositePKParent)
+        
         let implicitChild = ImplicitChild(childId: UUID().uuidString, content: "content", parent: savedParent)
         let savedImplicitChild = try await saveAndWaitForSync(implicitChild)
-        let strangeExplicitChild = StrangeExplicitChild(strangeId: UUID().uuidString, content: "content", parent: savedParent)
-        let savedStrangeImplicitChild = try await saveAndWaitForSync(strangeExplicitChild)
+    }
+    
+    func testSaveExplicitChild() async throws {
+        await setup(withModels: CompositePKModels(), eagerLoad: false, clearOnTearDown: false)
+        let compositePKParent = CompositePKParent(customId: UUID().uuidString,
+                                                  content: "content")
+        let savedParent = try await saveAndWaitForSync(compositePKParent)
+        
         let childSansBelongsTo = ChildSansBelongsTo(
             childId: UUID().uuidString,
             content: "content",
             compositePKParentChildrenSansBelongsToCustomId: savedParent.customId,
             compositePKParentChildrenSansBelongsToContent: savedParent.content)
         let savedChildSansBelongsTo = try await saveAndWaitForSync(childSansBelongsTo)
+    }
+    
+    func testSaveStrangeImplicitChild() async throws {
+        await setup(withModels: CompositePKModels(), eagerLoad: false, clearOnTearDown: false)
+        let compositePKParent = CompositePKParent(customId: UUID().uuidString,
+                                                  content: "content")
+        let savedParent = try await saveAndWaitForSync(compositePKParent)
         
+        let strangeExplicitChild = StrangeExplicitChild(strangeId: UUID().uuidString, content: "content", parent: savedParent)
+        let savedStrangeExplicitChild = try await saveAndWaitForSync(strangeExplicitChild)
+    }
+    
+    func testSaveSansBelongsTo() async throws {
+        await setup(withModels: CompositePKModels(), eagerLoad: false, clearOnTearDown: false)
+        let compositePKParent = CompositePKParent(customId: UUID().uuidString,
+                                                  content: "content")
+        let savedParent = try await saveAndWaitForSync(compositePKParent)
+        
+        let childSansBelongsTo = ChildSansBelongsTo(
+            childId: UUID().uuidString,
+            content: "content",
+            compositePKParentChildrenSansBelongsToCustomId: savedParent.customId,
+            compositePKParentChildrenSansBelongsToContent: savedParent.content)
+        let savedChildSansBelongsTo = try await saveAndWaitForSync(childSansBelongsTo)
     }
 }
 

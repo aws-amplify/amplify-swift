@@ -34,22 +34,4 @@ public struct ChildSansBelongsTo: Model {
       self.createdAt = createdAt
       self.updatedAt = updatedAt
   }
-  public init(from decoder: Decoder) throws {
-      let values = try decoder.container(keyedBy: CodingKeys.self)
-      childId = try values.decode(String.self, forKey: .childId)
-      content = try values.decode(String.self, forKey: .content)
-      compositePKParentChildrenSansBelongsToCustomId = try values.decode(String.self, forKey: .compositePKParentChildrenSansBelongsToCustomId)
-      compositePKParentChildrenSansBelongsToContent = try values.decode(String?.self, forKey: .compositePKParentChildrenSansBelongsToContent)
-      createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
-      updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
-  }
-  public func encode(to encoder: Encoder) throws {
-      var container = encoder.container(keyedBy: CodingKeys.self)
-      try container.encode(childId, forKey: .childId)
-      try container.encode(content, forKey: .content)
-      try container.encode(compositePKParentChildrenSansBelongsToCustomId, forKey: .compositePKParentChildrenSansBelongsToCustomId)
-      try container.encode(compositePKParentChildrenSansBelongsToContent, forKey: .compositePKParentChildrenSansBelongsToContent)
-      try container.encode(createdAt, forKey: .createdAt)
-      try container.encode(updatedAt, forKey: .updatedAt)
-  }
 }

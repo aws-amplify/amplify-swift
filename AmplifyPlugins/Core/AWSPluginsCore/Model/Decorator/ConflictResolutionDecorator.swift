@@ -54,7 +54,8 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
     }
 
     /// Append the correct conflict resolution fields for `model` and `pagination` selection sets.
-    private func addConflictResolution(selectionSet: SelectionSet) {
+    private func addConflictResolution(selectionSet: SelectionSet, added: Bool = false) {
+        var added = added
         switch selectionSet.value.fieldType {
         case .value, .embedded:
             break
@@ -62,12 +63,15 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
             selectionSet.addChild(settingParentOf: .init(value: .init(name: "_version", fieldType: .value)))
             selectionSet.addChild(settingParentOf: .init(value: .init(name: "_deleted", fieldType: .value)))
             selectionSet.addChild(settingParentOf: .init(value: .init(name: "_lastChangedAt", fieldType: .value)))
+            added = true
         case .pagination:
             selectionSet.addChild(settingParentOf: .init(value: .init(name: "startedAt", fieldType: .value)))
         }
 
-        selectionSet.children.forEach { child in
-            addConflictResolution(selectionSet: child)
+        if !added {
+            selectionSet.children.forEach { child in
+                addConflictResolution(selectionSet: child, added: added)
+            }
         }
     }
 }

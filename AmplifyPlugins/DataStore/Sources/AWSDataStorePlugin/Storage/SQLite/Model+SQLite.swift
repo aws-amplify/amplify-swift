@@ -114,10 +114,13 @@ extension Model {
                     return associatedModelValue.identifier
                 } else if let associatedLazyModel = value as? (any LazyReferenceValue) {
                     // The identifier (sometimes the FK), comes from the loaded model's identifier or
-                    // from the not loaded identifier's first and only value
+                    // from the not loaded identifier's stringValue (the value, or the formatted value for CPK)
                     switch associatedLazyModel.state {
                     case .notLoaded(let identifiers):
-                        return identifiers?.first?.value
+                        guard let identifiers = identifiers else {
+                            return nil
+                        }
+                        return identifiers.stringValue
                     case .loaded(let model):
                         return model?.identifier
                     }
