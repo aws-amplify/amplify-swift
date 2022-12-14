@@ -33,6 +33,29 @@ extension DeviceMetadata: Codable { }
 
 extension DeviceMetadata: Equatable { }
 
+extension DeviceMetadata: CustomDebugDictionaryConvertible {
+
+    var debugDictionary: [String: Any] {
+        switch self {
+        case .noData:
+            return ["noData": "noData"]
+        case .metadata(let data):
+            return [
+                "deviceKey": data.deviceKey.masked(interiorCount: 5),
+                "deviceGroupKey": data.deviceGroupKey.masked(interiorCount: 5),
+                "deviceSecret": data.deviceSecret.masked(interiorCount: 5)
+            ]
+        }
+    }
+}
+
+extension DeviceMetadata: CustomDebugStringConvertible {
+
+    var debugDescription: String {
+        debugDictionary.debugDescription
+    }
+}
+
 extension CognitoIdentityProviderClientTypes.AuthenticationResultType {
 
     var deviceMetadata: DeviceMetadata {
