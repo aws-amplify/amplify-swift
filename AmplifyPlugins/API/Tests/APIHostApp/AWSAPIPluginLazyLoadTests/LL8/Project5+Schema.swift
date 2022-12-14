@@ -3,7 +3,7 @@ import Amplify
 import Foundation
 
 extension Project5 {
-  // MARK: - CodingKeys 
+  // MARK: - CodingKeys
    public enum CodingKeys: String, ModelKey {
     case projectId
     case name
@@ -15,7 +15,7 @@ extension Project5 {
   }
   
   public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
+  //  MARK: - ModelSchema
   
   public static let schema = defineSchema { model in
     let project5 = Project5.keys
@@ -37,7 +37,6 @@ extension Project5 {
       .field(project5.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
-    
     public class Path: ModelPath<Project5> { }
     
     public static var rootPath: PropertyContainerPath? { Path() }
@@ -54,13 +53,26 @@ extension Project5.IdentifierProtocol {
     .make(fields:[(name: "projectId", value: projectId), (name: "name", value: name)])
   }
 }
-
 extension ModelPath where ModelType == Project5 {
-    var projectId: FieldPath<String> { string("projectId") }
-    var name: FieldPath<String> { string("name") }
-    var team: ModelPath<Team5> { Team5.Path(name: "team", parent: self) }
-    var teamId: FieldPath<String> { string("teamId") }
-    var teamName: FieldPath<String> { string("teamName") }
-    var createdAt: FieldPath<Temporal.DateTime> { datetime("createdAt") }
-    var updatedAt: FieldPath<Temporal.DateTime> { datetime("updatedAt") }
+  public var projectId: FieldPath<String>   {
+      string("projectId")
+    }
+  public var name: FieldPath<String>   {
+      string("name")
+    }
+  public var team: ModelPath<Team5>   {
+      Team5.Path(name: "team", parent: self)
+    }
+  public var teamId: FieldPath<String>   {
+      string("teamId")
+    }
+  public var teamName: FieldPath<String>   {
+      string("teamName")
+    }
+  public var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt")
+    }
+  public var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt")
+    }
 }

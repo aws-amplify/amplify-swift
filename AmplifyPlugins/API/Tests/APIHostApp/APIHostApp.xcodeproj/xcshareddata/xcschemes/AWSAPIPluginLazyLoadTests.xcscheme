@@ -41,12 +41,6 @@
                <Test
                   Identifier = "GraphQLLazyLoadPostComment4V2Tests/testCommentWithEagerLoadPostAndPostCommentsAndPostCommentsPost()">
                </Test>
-               <Test
-                  Identifier = "GraphQLLazyLoadProjectTeam5Tests">
-               </Test>
-               <Test
-                  Identifier = "GraphQLLazyLoadProjectTeam6Tests">
-               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

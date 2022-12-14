@@ -51,7 +51,7 @@ class GraphQLLazyLoadProjectTeam5Tests: GraphQLLazyLoadBaseTest {
                                team: team)
         let savedProject2 = try await mutate(.create(project2))
         let queriedProject2 = try await query(for: savedProject2)!
-        assertProjectDoesNotContainTeam(queriedProject2)
+        assertProject(queriedProject2, hasTeam: savedTeam)
         
         // Project initializer variation #3 (pass fields in)
         let project3 = Project(projectId: UUID().uuidString,
@@ -99,8 +99,7 @@ class GraphQLLazyLoadProjectTeam5Tests: GraphQLLazyLoadBaseTest {
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await mutate(.create(team))
         var queriedProject = try await query(for: savedProject)!
-        queriedProject.teamId = team.teamId
-        queriedProject.teamName = team.name
+        queriedProject.setTeam(team)
         let savedProjectWithNewTeam = try await mutate(.update(queriedProject))
         assertProject(savedProjectWithNewTeam, hasTeam: savedTeam)
     }
@@ -113,8 +112,7 @@ class GraphQLLazyLoadProjectTeam5Tests: GraphQLLazyLoadBaseTest {
         let savedProject = try await mutate(.create(project))
         var queriedProject = try await query(for: savedProject)!
         assertProject(queriedProject, hasTeam: savedTeam)
-        queriedProject.teamId = nil
-        queriedProject.teamName = nil
+        queriedProject.setTeam(nil)
         let savedProjectWithNoTeam = try await mutate(.update(queriedProject))
         assertProjectDoesNotContainTeam(savedProjectWithNoTeam)
     }
@@ -129,10 +127,9 @@ class GraphQLLazyLoadProjectTeam5Tests: GraphQLLazyLoadBaseTest {
         let savedNewTeam = try await mutate(.create(newTeam))
         var queriedProject = try await query(for: savedProject)!
         assertProject(queriedProject, hasTeam: savedTeam)
-        queriedProject.teamId = newTeam.teamId
-        queriedProject.teamName = newTeam.name
+        queriedProject.setTeam(newTeam)
         let savedProjectWithNewTeam = try await mutate(.update(queriedProject))
-        assertProject(queriedProject, hasTeam: savedNewTeam)
+        assertProject(savedProjectWithNewTeam, hasTeam: savedNewTeam)
     }
     
     func testDeleteTeam() async throws {

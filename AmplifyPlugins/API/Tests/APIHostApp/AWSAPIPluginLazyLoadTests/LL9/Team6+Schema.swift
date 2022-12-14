@@ -3,7 +3,7 @@ import Amplify
 import Foundation
 
 extension Team6 {
-  // MARK: - CodingKeys 
+  // MARK: - CodingKeys
    public enum CodingKeys: String, ModelKey {
     case teamId
     case name
@@ -12,7 +12,7 @@ extension Team6 {
   }
   
   public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
+  //  MARK: - ModelSchema
   
   public static let schema = defineSchema { model in
     let team6 = Team6.keys
@@ -31,7 +31,6 @@ extension Team6 {
       .field(team6.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
-    
     public class Path: ModelPath<Team6> { }
     
     public static var rootPath: PropertyContainerPath? { Path() }
@@ -48,10 +47,17 @@ extension Team6.IdentifierProtocol {
     .make(fields:[(name: "teamId", value: teamId), (name: "name", value: name)])
   }
 }
-
 extension ModelPath where ModelType == Team6 {
-    var teamId: FieldPath<String> { string("projectId") }
-    var name: FieldPath<String> { string("name") }
-    var createdAt: FieldPath<Temporal.DateTime> { datetime("createdAt") }
-    var updatedAt: FieldPath<Temporal.DateTime> { datetime("updatedAt") }
+  public var teamId: FieldPath<String>   {
+      string("teamId")
+    }
+  public var name: FieldPath<String>   {
+      string("name")
+    }
+  public var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt")
+    }
+  public var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt")
+    }
 }
