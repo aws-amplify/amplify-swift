@@ -37,7 +37,7 @@ final class LazyReferenceTests: XCTestCase {
             case .notLoaded(let identifiers):
                 return .notLoaded(identifiers: identifiers)
             case .loaded(let model):
-                return .loaded(model)
+                return .loaded(model: model)
             }
         }
     }

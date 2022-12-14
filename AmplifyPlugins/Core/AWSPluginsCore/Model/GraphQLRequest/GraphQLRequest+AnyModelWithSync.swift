@@ -44,7 +44,7 @@ protocol ModelSyncGraphQLRequestFactory {
                              subscriptionType: GraphQLSubscriptionType,
                              claims: IdentityClaimsDictionary,
                              authType: AWSAuthorizationType?) -> GraphQLRequest<MutationSyncResult>
-
+    
     static func syncQuery(modelSchema: ModelSchema,
                           where predicate: QueryPredicate?,
                           limit: Int?,
@@ -70,7 +70,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
         documentBuilder.add(decorator: AuthRuleDecorator(.query, authType: authType))
         let document = documentBuilder.build()
 
-        let awsPluginOptions = AWSPluginOptions(authType: authType)
+        let awsPluginOptions = AWSPluginOptions(authType: authType, modelName: modelName)
         let requestOptions = GraphQLRequest<MutationSyncResult?>.Options(pluginOptions: awsPluginOptions)
 
         return GraphQLRequest<MutationSyncResult?>(document: document.stringValue,
@@ -158,7 +158,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation, authType: authType))
         let document = documentBuilder.build()
 
-        let awsPluginOptions = AWSPluginOptions(authType: authType)
+        let awsPluginOptions = AWSPluginOptions(authType: authType, modelName: modelSchema.name)
         let requestOptions = GraphQLRequest<MutationSyncResult>.Options(pluginOptions: awsPluginOptions)
 
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
@@ -180,7 +180,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(subscriptionType, nil), authType: authType))
         let document = documentBuilder.build()
 
-        let awsPluginOptions = AWSPluginOptions(authType: authType)
+        let awsPluginOptions = AWSPluginOptions(authType: authType, modelName: modelSchema.name)
         let requestOptions = GraphQLRequest<MutationSyncResult>.Options(pluginOptions: awsPluginOptions)
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
                                                   variables: document.variables,
@@ -202,7 +202,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(subscriptionType, claims), authType: authType))
         let document = documentBuilder.build()
 
-        let awsPluginOptions = AWSPluginOptions(authType: authType)
+        let awsPluginOptions = AWSPluginOptions(authType: authType, modelName: modelSchema.name)
         let requestOptions = GraphQLRequest<MutationSyncResult>.Options(pluginOptions: awsPluginOptions)
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
                                                   variables: document.variables,
@@ -210,7 +210,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                   decodePath: document.name,
                                                   options: requestOptions)
     }
-
+    
     public static func syncQuery(modelSchema: ModelSchema,
                                  where predicate: QueryPredicate? = nil,
                                  limit: Int? = nil,
@@ -229,7 +229,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
         documentBuilder.add(decorator: AuthRuleDecorator(.query, authType: authType))
         let document = documentBuilder.build()
 
-        let awsPluginOptions = AWSPluginOptions(authType: authType)
+        let awsPluginOptions = AWSPluginOptions(authType: authType, modelName: modelSchema.name)
         let requestOptions = GraphQLRequest<SyncQueryResult>.Options(pluginOptions: awsPluginOptions)
 
         return GraphQLRequest<SyncQueryResult>(document: document.stringValue,
@@ -259,7 +259,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
         documentBuilder.add(decorator: AuthRuleDecorator(.mutation, authType: authType))
         let document = documentBuilder.build()
 
-        let awsPluginOptions = AWSPluginOptions(authType: authType)
+        let awsPluginOptions = AWSPluginOptions(authType: authType, modelName: modelSchema.name)
         let requestOptions = GraphQLRequest<MutationSyncResult>.Options(pluginOptions: awsPluginOptions)
 
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,

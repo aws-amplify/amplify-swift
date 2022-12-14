@@ -23,7 +23,7 @@ extension GraphQLResponseDecoder {
      5. Default encode/decode path
      */
     func decodeToResponseType(_ graphQLData: [String: JSONValue]) throws -> R {
-        let graphQLData = try valueAtDecodePath(from: JSONValue.object(graphQLData))
+        var graphQLData = try valueAtDecodePath(from: JSONValue.object(graphQLData))
         if request.responseType == String.self { // 1
             let serializedJSON = try encoder.encode(graphQLData)
             guard let responseString = String(data: serializedJSON, encoding: .utf8) else {
@@ -35,6 +35,9 @@ extension GraphQLResponseDecoder {
             return response
         }
 
+        if let graphQLDataWithTypeName = shouldAddTypename(to: graphQLData) {
+            graphQLData = graphQLDataWithTypeName
+        }
         let serializedJSON: Data
         
         if request.responseType == AnyModel.self { // 2
@@ -85,5 +88,34 @@ extension GraphQLResponseDecoder {
 
         let variablesData = try JSONSerialization.data(withJSONObject: variables)
         return try decoder.decode([String: JSONValue].self, from: variablesData)
+    }
+    
+    // The Swift DataStore plugin has a dependency on using `__typename` from the response data.
+    // For example, DataStore will use the type `MutationSync<AnyModel>` to decode the model with sync metadata by
+    // pulling out the modelName from `__typename` and use that to decode to the actual model type.
+    // The selection set created by other platforms such as JS and Android does not contain the `__typename`
+    // in the mutation request, which is one of the reasons for the decoding error when the mutation is sent from
+    // Studio/JS/Android.
+    //
+    // This code injects the typename field at runtime for response payloads specifically used by DataStore,
+    // `MutationSync<AnyModel>`, so that that the JS/Android sourced subscription events decode successfully.
+    //
+    // Since we are injecting the typename into the response payload, do we still need to request it from the service?
+    // Yes, because mutations sourced from the new iOS clients sent to old iOS clients should be able to decode
+    // successfully. We're enabling new use cases (successful decoding of Studio/JS/Android sourced mutations) but
+    // should not break iOS upgrade use cases without a major version bump. iOS users that haven't upgraded to the
+    // latest version of the developer's app will continue to work because the the mutation request sent from the
+    // latest library continues to have the typename field.
+    private func shouldAddTypename(to graphQLData: JSONValue) -> JSONValue? {
+        if let modelName = modelName,
+           request.responseType == MutationSync<AnyModel>.self,
+           case var .object(modelJSON) = graphQLData,
+           // No need to replace existing response payloads that have it already
+           modelJSON["__typename"] == nil {
+            modelJSON["__typename"] = .string(modelName)
+            return JSONValue.object(modelJSON)
+        } else {
+            return nil
+        }
     }
 }
