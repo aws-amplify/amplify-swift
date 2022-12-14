@@ -318,7 +318,7 @@ class AuthSRPSignInTests: AWSAuthBaseTest {
             signInExpectation.fulfill()
         }
 
-        wait(for: [signInExpectation, fetchAuthSessionExpectation], timeout: networkTimeout)
+        wait(for: [signInExpectation, fetchAuthSessionExpectation], timeout: 10)
     }
 
 }
