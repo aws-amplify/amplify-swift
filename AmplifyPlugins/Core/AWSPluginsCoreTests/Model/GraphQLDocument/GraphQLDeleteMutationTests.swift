@@ -83,7 +83,7 @@ class GraphQLDeleteMutationTests: XCTestCase {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelIdDecorator(id: post.id))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(version: 5))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(version: 5, graphQLType: .mutation))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         mutation DeletePost($input: DeletePostInput!) {
@@ -126,7 +126,7 @@ class GraphQLDeleteMutationTests: XCTestCase {
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .delete))
         documentBuilder.add(decorator: ModelDecorator(model: record, mutationType: .create))
-        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .mutation))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         mutation DeleteRecord($input: DeleteRecordInput!) {

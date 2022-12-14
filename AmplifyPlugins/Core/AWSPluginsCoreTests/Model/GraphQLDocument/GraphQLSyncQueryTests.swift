@@ -40,7 +40,7 @@ class GraphQLSyncQueryTests: XCTestCase {
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: FilterDecorator(filter: predicate.graphQLFilter(for: Post.schema)))
         documentBuilder.add(decorator: PaginationDecorator(limit: 100, nextToken: "token"))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: 123))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: 123, graphQLType: .query))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         query SyncPosts($filter: ModelPostFilterInput, $lastSync: AWSTimestamp, $limit: Int, $nextToken: String) {
@@ -86,7 +86,7 @@ class GraphQLSyncQueryTests: XCTestCase {
                                                                primaryKeysOnly: true)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .sync))
         documentBuilder.add(decorator: PaginationDecorator(limit: 100, nextToken: "token"))
-        documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: 123))
+        documentBuilder.add(decorator: ConflictResolutionDecorator(lastSync: 123, graphQLType: .query, primaryKeysOnly: true))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         query SyncComments($lastSync: AWSTimestamp, $limit: Int, $nextToken: String) {
@@ -98,9 +98,7 @@ class GraphQLSyncQueryTests: XCTestCase {
               post {
                 id
                 __typename
-                _version
                 _deleted
-                _lastChangedAt
               }
               __typename
               _version

@@ -3,7 +3,7 @@ import Amplify
 import Foundation
 
 extension Comment4 {
-  // MARK: - CodingKeys 
+  // MARK: - CodingKeys
    public enum CodingKeys: String, ModelKey {
     case commentId
     case content
@@ -14,7 +14,7 @@ extension Comment4 {
   }
   
   public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
+  //  MARK: - ModelSchema
   
   public static let schema = defineSchema { model in
     let comment4 = Comment4.keys
@@ -51,13 +51,23 @@ extension Comment4.IdentifierProtocol {
     .make(fields:[(name: "commentId", value: commentId), (name: "content", value: content)])
   }
 }
-
 extension ModelPath where ModelType == Comment4 {
-    var commentId: FieldPath<String> { string("commentId") }
-    var content: FieldPath<String> { string("content") }
-    var createdAt: FieldPath<Temporal.DateTime> { datetime("createdAt") }
-    var updatedAt: FieldPath<Temporal.DateTime> { datetime("updatedAt") }
-    var post4CommentsPostId: FieldPath<String> { string("post4CommentsPostId") }
-    var post4CommentsTitle: FieldPath<String> { string("post4CommentsTitle") }
-    
+  public var commentId: FieldPath<String>   {
+      string("commentId")
+    }
+  public var content: FieldPath<String>   {
+      string("content")
+    }
+  public var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt")
+    }
+  public var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt")
+    }
+  public var post4CommentsPostId: FieldPath<String>   {
+      string("post4CommentsPostId")
+    }
+  public var post4CommentsTitle: FieldPath<String>   {
+      string("post4CommentsTitle")
+    }
 }

@@ -16,18 +16,12 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
 
     private let version: Int?
     private let lastSync: Int?
-    private let graphQLType: GraphQLType
+    private let graphQLType: GraphQLOperationType
     private var primaryKeysOnly: Bool
-    
-    public enum GraphQLType {
-        case query
-        case mutation
-        case subscription
-    }
     
     public init(version: Int? = nil,
                 lastSync: Int? = nil,
-                graphQLType: GraphQLType,
+                graphQLType: GraphQLOperationType,
                 primaryKeysOnly: Bool = true) {
         self.version = version
         self.lastSync = lastSync
@@ -71,19 +65,28 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
         return document.copy(inputs: inputs)
     }
 
+    enum SyncMetadataFields {
+        case full
+        case deletedFieldOnly
+    }
     /// Append the correct conflict resolution fields for `model` and `pagination` selection sets.
     private func addConflictResolution(selectionSet: SelectionSet,
                                        primaryKeysOnly: Bool,
-                                       addedVersionFields: Bool = false) {
-        var addedVersionFields = addedVersionFields
+                                       includeSyncMetadataFields: SyncMetadataFields = .full) {
+        var includeSyncMetadataFields = includeSyncMetadataFields
         switch selectionSet.value.fieldType {
         case .value, .embedded:
             break
         case .model, .collection:
-            selectionSet.addChild(settingParentOf: .init(value: .init(name: "_version", fieldType: .value)))
-            selectionSet.addChild(settingParentOf: .init(value: .init(name: "_deleted", fieldType: .value)))
-            selectionSet.addChild(settingParentOf: .init(value: .init(name: "_lastChangedAt", fieldType: .value)))
-            addedVersionFields = true
+            switch includeSyncMetadataFields {
+            case .full:
+                selectionSet.addChild(settingParentOf: .init(value: .init(name: "_version", fieldType: .value)))
+                selectionSet.addChild(settingParentOf: .init(value: .init(name: "_deleted", fieldType: .value)))
+                selectionSet.addChild(settingParentOf: .init(value: .init(name: "_lastChangedAt", fieldType: .value)))
+                includeSyncMetadataFields = .deletedFieldOnly
+            case .deletedFieldOnly:
+                selectionSet.addChild(settingParentOf: .init(value: .init(name: "_deleted", fieldType: .value)))
+            }
         case .pagination:
             selectionSet.addChild(settingParentOf: .init(value: .init(name: "startedAt", fieldType: .value)))
         }
@@ -97,14 +100,15 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
             selectionSet.children.forEach { child in
                 addConflictResolution(selectionSet: child,
                                       primaryKeysOnly: primaryKeysOnly,
-                                      addedVersionFields: false)
+                                      includeSyncMetadataFields: .full)
             }
-        } else if !addedVersionFields {
-            // Only add version fields once. This is done once, controlled by `addedVersionFields`.
+        } else {
+            // Only add all the sync metadata fields once. Once this was done once, `includeSyncMetadataFields`
+            // should be set to `.deletedFieldOnly` and passed down to the recursive call stack.
             selectionSet.children.forEach { child in
                 addConflictResolution(selectionSet: child,
                                       primaryKeysOnly: primaryKeysOnly,
-                                      addedVersionFields: addedVersionFields)
+                                      includeSyncMetadataFields: includeSyncMetadataFields)
             }
         }
     }

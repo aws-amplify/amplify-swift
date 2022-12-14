@@ -39,16 +39,7 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "GraphQLLazyLoadPostComment4Tests">
-               </Test>
-               <Test
                   Identifier = "GraphQLLazyLoadPostComment4V2Tests/testCommentWithEagerLoadPostAndPostCommentsAndPostCommentsPost()">
-               </Test>
-               <Test
-                  Identifier = "GraphQLLazyLoadPostComment7Tests">
-               </Test>
-               <Test
-                  Identifier = "GraphQLLazyLoadPostComment8Tests">
                </Test>
                <Test
                   Identifier = "GraphQLLazyLoadProjectTeam5Tests">

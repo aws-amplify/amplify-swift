@@ -59,7 +59,7 @@ class GraphQLSubscriptionTests: XCTestCase {
     func testOnCreateGraphQLSubscriptionFromSimpleModelWithSyncEnabled() {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
-        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         subscription OnCreatePost {
@@ -122,7 +122,7 @@ class GraphQLSubscriptionTests: XCTestCase {
                                                                operationType: .subscription,
                                                                primaryKeysOnly: true)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
-        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         subscription OnCreateComment {
@@ -133,9 +133,7 @@ class GraphQLSubscriptionTests: XCTestCase {
             post {
               id
               __typename
-              _version
               _deleted
-              _lastChangedAt
             }
             __typename
             _version
@@ -184,7 +182,7 @@ class GraphQLSubscriptionTests: XCTestCase {
     func testOnUpdateGraphQLSubscriptionFromSimpleModelWithSyncEnabled() {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onUpdate))
-        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         subscription OnUpdatePost {
@@ -243,7 +241,7 @@ class GraphQLSubscriptionTests: XCTestCase {
     func testOnDeleteGraphQLSubscriptionFromSimpleModelWithSyncEnabled() {
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Post.schema, operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
-        documentBuilder.add(decorator: ConflictResolutionDecorator())
+        documentBuilder.add(decorator: ConflictResolutionDecorator(graphQLType: .subscription))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
         subscription OnDeletePost {

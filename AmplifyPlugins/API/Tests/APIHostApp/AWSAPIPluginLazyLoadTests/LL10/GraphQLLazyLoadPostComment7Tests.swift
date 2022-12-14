@@ -30,19 +30,24 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
         let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
         let createdPost = try await mutate(.create(post))
         let createdComment = try await mutate(.create(comment))
+        
         // The comment's post should not be loaded, since no `includes` is passed in.
         // And the codegenerated swift models have the new modelPath properties.
-        assertLazyReference(createdComment._post, state: .notLoaded(identifiers: [.init(name: "postId", value: createdPost.postId)]))
+        assertLazyReference(createdComment._post, state: .notLoaded(identifiers: [.init(name: "postId", value: createdPost.postId),
+                                                                                  .init(name: "title", value: post.title)]))
         let loadedPost = try await createdComment.post!
         XCTAssertEqual(loadedPost.postId, createdPost.postId)
-        //let comments = loadedPost.comments!
+        XCTAssertEqual(loadedPost.title, createdPost.title)
+        
+        let comments = loadedPost.comments!
         // The loaded post should have comments that are also not loaded
-        //assertList(comments, state: .isNotLoaded(associatedId: createdPost.postId, associatedField: "post"))
+        assertList(comments, state: .isNotLoaded(associatedIdentifiers: [createdPost.postId, createdPost.title], associatedField: "post"))
         // load the comments
-        //try await comments.fetch()
-        //assertList(comments, state: .isLoaded(count: 1))
+        try await comments.fetch()
+        assertList(comments, state: .isLoaded(count: 1))
         // the loaded comment's post should not be loaded
-        //assertLazyReference(comments.first!._post, state: .notLoaded(identifiers: ["postId": createdPost.postId]))
+        assertLazyReference(comments.first!._post, state: .notLoaded(identifiers: [.init(name: "postId", value: createdPost.postId),
+                                                                                   .init(name: "title", value: createdPost.title)]))
     }
     
     // With `includes` on `comment.post`, the comment's post should be eager loaded.
@@ -55,18 +60,19 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
         // The comment's post should be loaded, since `includes` include the post
         assertLazyReference(createdComment._post, state: .loaded(model: createdPost))
         let loadedPost = try await createdComment.post!
-        //XCTAssertEqual(loadedPost.postId, post.postId)
+        XCTAssertEqual(loadedPost.postId, post.postId)
         // The loaded post should have comments that are not loaded
-        //let comments = loadedPost.comments!
-        //assertList(comments, state: .isNotLoaded(associatedId: post.identifier, associatedField: "post"))
+        let comments = loadedPost.comments!
+        assertList(comments, state: .isNotLoaded(associatedIdentifiers: [createdPost.postId, createdPost.title], associatedField: "post"))
         // load the comments
-        //try await comments.fetch()
-        //assertList(comments, state: .isLoaded(count: 1))
+        try await comments.fetch()
+        assertList(comments, state: .isLoaded(count: 1))
         // further nested models should not be loaded
-        //assertLazyReference(comments.first!._post, state: .notLoaded(identifiers: [.init(name: "id", value: post.identifier)]))
+        assertLazyReference(comments.first!._post, state: .notLoaded(identifiers: [.init(name: "postId", value: createdPost.postId),
+                                                                                   .init(name: "title", value: createdPost.title)]))
     }
     
-    func testLazyLoad() async throws {
+    func testQueryThenLazyLoad() async throws {
         await setup(withModels: PostComment7Models(), logLevel: .verbose)
         
         let post = Post(postId: UUID().uuidString, title: "title")
@@ -75,9 +81,10 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
         let savedComment = try await mutate(.create(comment, includes: { comment in [comment.post]}))
         try await assertComment(savedComment, hasEagerLoaded: savedPost)
         try await assertPost(savedPost, canLazyLoad: savedComment)
-        let queriedComment = try await query(.get(Comment.self, byId: comment.commentId))!
+        let queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(commentId: comment.commentId,
+                                                                                          content: comment.content)))!
         try await assertComment(queriedComment, canLazyLoad: savedPost)
-        let queriedPost = try await query(.get(Post.self, byId: post.postId))!
+        let queriedPost = try await query(.get(Post.self, byIdentifier: .identifier(postId: post.postId, title: post.title)))!
         try await assertPost(queriedPost, canLazyLoad: savedComment)
     }
     
@@ -97,8 +104,8 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
     
     func assertComment(_ comment: Comment,
                        canLazyLoad post: Post) async throws {
-        assertLazyReference(comment._post,
-                        state: .notLoaded(identifiers: [.init(name: "@@primaryKey", value: post.identifier)]))
+        assertLazyReference(comment._post, state: .notLoaded(identifiers: [.init(name: "postId", value: post.postId),
+                                                                            .init(name: "title", value: post.title)]))
         guard let loadedPost = try await comment.post else {
             XCTFail("Failed to load the post from the comment")
             return
@@ -123,15 +130,16 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
             XCTFail("Missing lazy loaded comment from post")
             return
         }
-        assertLazyReference(comment._post,
-                        state: .notLoaded(identifiers: [.init(name: "@@primaryKey", value: post.identifier)]))
+        assertLazyReference(comment._post, state: .notLoaded(identifiers: [.init(name: "postId", value: post.postId),
+                                                                            .init(name: "title", value: post.title)]))
     }
     
     func testSaveWithoutPost() async throws {
         await setup(withModels: PostComment7Models(), logLevel: .verbose)
         let comment = Comment(commentId: UUID().uuidString, content: "content")
         let savedComment = try await mutate(.create(comment))
-        var queriedComment = try await query(.get(Comment.self, byId: comment.commentId))!
+        var queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(commentId: comment.commentId,
+                                                                                          content: comment.content)))!
         assertLazyReference(queriedComment._post,
                         state: .notLoaded(identifiers: nil))
         let post = Post(postId: UUID().uuidString, title: "title")
@@ -148,9 +156,10 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
         let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
         let savedPost = try await mutate(.create(post))
         let savedComment = try await mutate(.create(comment))
-        let queriedComment = try await query(.get(Comment.self, byId: comment.commentId))!
-        assertLazyReference(queriedComment._post,
-                        state: .notLoaded(identifiers: [.init(name: "@@primaryKey", value: post.identifier)]))
+        var queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(commentId: comment.commentId,
+                                                                                          content: comment.content)))!
+        assertLazyReference(queriedComment._post, state: .notLoaded(identifiers: [.init(name: "postId", value: post.postId),
+                                                                                  .init(name: "title", value: post.title)]))
         let savedQueriedComment = try await mutate(.update(queriedComment))
         let queriedComment2 = try await query(for: savedQueriedComment)!
         try await assertComment(queriedComment2, canLazyLoad: savedPost)
@@ -163,9 +172,10 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
         let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
         _ = try await mutate(.create(post))
         let savedComment = try await mutate(.create(comment))
-        var queriedComment = try await query(.get(Comment.self, byId: comment.commentId))!
-        assertLazyReference(queriedComment._post,
-                        state: .notLoaded(identifiers: [.init(name: "@@primaryKey", value: post.identifier)]))
+        var queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(commentId: comment.commentId,
+                                                                                          content: comment.content)))!
+        assertLazyReference(queriedComment._post, state: .notLoaded(identifiers: [.init(name: "postId", value: post.postId),
+                                                                                  .init(name: "title", value: post.title)]))
         
         let newPost = Post(postId: UUID().uuidString, title: "title")
         _ = try await mutate(.create(newPost))
@@ -182,10 +192,10 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
         let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
         _ = try await mutate(.create(post))
         let savedComment = try await mutate(.create(comment))
-        var queriedComment = try await query(.get(Comment.self, byId: comment.commentId))!
-        assertLazyReference(queriedComment._post,
-                        state: .notLoaded(identifiers: [.init(name: "@@primaryKey", value: post.identifier)]))
-        
+        var queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(commentId: comment.commentId,
+                                                                                          content: comment.content)))!
+        assertLazyReference(queriedComment._post, state: .notLoaded(identifiers: [.init(name: "postId", value: post.postId),
+                                                                                  .init(name: "title", value: post.title)]))
         queriedComment.setPost(nil)
         let saveCommentRemovePost = try await mutate(.update(queriedComment))
         let queriedCommentNoPost = try await query(for: saveCommentRemovePost)!
@@ -201,8 +211,10 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
         let savedPost = try await mutate(.create(post))
         let savedComment = try await mutate(.create(comment))
         try await mutate(.delete(savedPost))
-        try await assertModelDoesNotExist(savedComment)
         try await assertModelDoesNotExist(savedPost)
+        try await assertModelExists(savedComment)
+        try await mutate(.delete(savedComment))
+        try await assertModelDoesNotExist(savedComment)
     }
 }
 

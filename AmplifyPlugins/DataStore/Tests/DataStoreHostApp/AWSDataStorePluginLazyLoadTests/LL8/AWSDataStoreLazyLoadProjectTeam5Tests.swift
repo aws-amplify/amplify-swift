@@ -39,6 +39,7 @@ class AWSDataStoreLazyLoadProjectTeam5Tests: AWSDataStoreLazyLoadBaseTest {
                 teamId
                 name
                 __typename
+                _deleted
               }
               __typename
               _version
@@ -66,6 +67,7 @@ class AWSDataStoreLazyLoadProjectTeam5Tests: AWSDataStoreLazyLoadBaseTest {
                 projectId
                 name
                 __typename
+                _deleted
               }
               __typename
               _version

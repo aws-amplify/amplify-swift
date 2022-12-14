@@ -251,6 +251,7 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
             post {
               id
               __typename
+              _deleted
             }
             __typename
             _version
@@ -273,6 +274,7 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
             post {
               id
               __typename
+              _deleted
             }
             __typename
             _version
@@ -295,6 +297,7 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
             post {
               id
               __typename
+              _deleted
             }
             __typename
             _version
@@ -318,6 +321,7 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
               post {
                 id
                 __typename
+                _deleted
               }
               __typename
               _version

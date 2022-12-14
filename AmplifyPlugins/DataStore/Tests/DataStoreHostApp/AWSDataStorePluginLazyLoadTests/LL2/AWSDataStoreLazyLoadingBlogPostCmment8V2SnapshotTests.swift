@@ -383,6 +383,7 @@ extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
             blog {
               id
               __typename
+              _deleted
             }
             __typename
             _version
@@ -406,6 +407,7 @@ extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
             blog {
               id
               __typename
+              _deleted
             }
             __typename
             _version
@@ -429,6 +431,7 @@ extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
             blog {
               id
               __typename
+              _deleted
             }
             __typename
             _version
@@ -453,6 +456,7 @@ extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
               blog {
                 id
                 __typename
+                _deleted
               }
               __typename
               _version
@@ -572,6 +576,7 @@ extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
             post {
               id
               __typename
+              _deleted
             }
             __typename
             _version
@@ -594,6 +599,7 @@ extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
             post {
               id
               __typename
+              _deleted
             }
             __typename
             _version
@@ -616,6 +622,7 @@ extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
             post {
               id
               __typename
+              _deleted
             }
             __typename
             _version
@@ -639,6 +646,7 @@ extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
               post {
                 id
                 __typename
+                _deleted
               }
               __typename
               _version
