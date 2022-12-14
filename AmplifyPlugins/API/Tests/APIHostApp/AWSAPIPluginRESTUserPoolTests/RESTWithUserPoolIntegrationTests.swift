@@ -199,7 +199,6 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
             switch result {
             case .success(let signUpResult):
                 if signUpResult.isSignUpComplete {
-                    print("lawmicha sign up successful")
                     signUpSuccess.fulfill()
                 } else {
                     XCTFail("Sign up successful but not complete")
@@ -219,7 +218,6 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
             switch result {
             case .success(let signInResult):
                 if signInResult.isSignedIn {
-                    print("lawmicha sign in successful")
                     signInSuccess.fulfill()
                 } else {
                     XCTFail("Sign in successful but not complete")

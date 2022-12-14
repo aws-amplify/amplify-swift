@@ -182,7 +182,6 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
 
         let awsPluginOptions = AWSPluginOptions(authType: authType)
         let requestOptions = GraphQLRequest<MutationSyncResult>.Options(pluginOptions: awsPluginOptions)
-        print("lawmicha subscription \(document.stringValue)")
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
                                                   variables: document.variables,
                                                   responseType: MutationSyncResult.self,
@@ -205,7 +204,6 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
 
         let awsPluginOptions = AWSPluginOptions(authType: authType)
         let requestOptions = GraphQLRequest<MutationSyncResult>.Options(pluginOptions: awsPluginOptions)
-        print("lawmicha subscription \(document.stringValue)")
         return GraphQLRequest<MutationSyncResult>(document: document.stringValue,
                                                   variables: document.variables,
                                                   responseType: MutationSyncResult.self,
