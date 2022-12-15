@@ -433,8 +433,10 @@ workflows:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
       - checkout_code
-      - run:
-          name: The First Step
+      - install_fortify:
+          name: Install Fortify
+          requires:
+            - checkout_code
           command: |
             echo 'Hello World!'
             echo 'This is the delivery pipeline'
