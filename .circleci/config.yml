@@ -242,7 +242,7 @@ jobs:
     <<: *defaults
     steps:
       - aws-cli/setup:
-          role-arn: 'arn:aws:iam::579633542375:role/CircleCI_S3_ReadOnly'
+          role-arn: 'arn:aws:iam::579633542375:role/Amplify-Swift-S3-ReadOnly'
       - run:
           name: Print Hello
           command: |
