@@ -426,3 +426,23 @@ workflows:
           xcode-version: "13.4.1"
           simulator-os-version: "15.5"
           simulator-device: "iPhone 13 Pro"
+
+  fortify_scan:
+    when:
+      not:
+        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+    jobs:
+      - checkout_code
+          filters:
+            branches:
+              only:
+                - phantum/automate_fortify_scan 
+      - run:
+          name: The First Step
+          command: |
+            echo 'Hello World!'
+            echo 'This is the delivery pipeline'
+          filters:
+            branches:
+              only:
+                - phantum/automate_fortify_scan
