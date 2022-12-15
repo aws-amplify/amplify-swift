@@ -236,6 +236,15 @@ jobs:
           name: Release Amplify for Swift
           command: bundle exec fastlane << parameters.lane >>
           no_output_timeout: 60m
+  
+  install_fortify:
+    <<: *defaults
+    steps:
+      - run:
+          name: Fortify Install
+          command: |
+            echo 'Hello World!'
+            echo 'This is the delivery pipeline'
 
 deploy_requires: &deploy_requires
   requires:
@@ -257,15 +266,6 @@ deploy_requires: &deploy_requires
     - macos_unit_test_datastore
     - macos_unit_test_geo
     - macos_unit_test_storage
-
-install_fortify:
-  <<: *defaults
-  steps:
-    - run:
-        name: Fortify Install
-        command: |
-          echo 'Hello World!'
-          echo 'This is the delivery pipeline'
 
 workflows:
   build_test_deploy:
