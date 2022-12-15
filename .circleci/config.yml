@@ -243,7 +243,7 @@ jobs:
     steps:
       - aws-cli/setup:
           role-arn: 'arn:aws:iam::579633542375:role/CircleCI_S3_ReadOnly'
-          aws-region: 'us-east-1'
+          aws-region: "us-east-1"
       - run:
           name: Print Hello
           command: |
