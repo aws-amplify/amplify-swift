@@ -7,7 +7,8 @@ let dependencies: [Package.Dependency] = [
     .package(url: "https://github.com/awslabs/aws-sdk-swift.git", exact: "0.6.1"),
     .package(url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git", from: "3.0.0"),
     .package(url: "https://github.com/stephencelis/SQLite.swift.git", exact: "0.13.2"),
-    .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0")
+    .package(url: "https://github.com/mattgallagher/CwlPreconditionTesting.git", from: "2.1.0"),
+    .package(url: "https://github.com/aws-amplify/amplify-swift-utils-notifications.git", from: "0.0.1")
 ]
 
 let amplifyTargets: [Target] = [
@@ -270,7 +271,9 @@ let pinpointTargets: [Target] = [
             .target(name: "AWSCognitoAuthPlugin"),
             .target(name: "AWSPluginsCore"),
             .product(name: "SQLite", package: "SQLite.swift"),
-            .product(name: "AWSPinpoint", package: "aws-sdk-swift")],
+            .product(name: "AWSPinpoint", package: "aws-sdk-swift"),
+            .product(name: "AmplifyUtilsNotifications", package: "amplify-swift-utils-notifications")
+        ],
         path: "AmplifyPlugins/Pinpoint/Internal/Sources/InternalAWSPinpoint"
     ),
     .testTarget(
@@ -295,6 +298,21 @@ let pinpointTargets: [Target] = [
             "AmplifyTestCommon"
         ],
         path: "AmplifyPlugins/Pinpoint/Analytics/Tests/AWSPinpointAnalyticsPluginUnitTests"
+    ),
+    .target(
+        name: "AWSPinpointPushNotificationsPlugin",
+        dependencies: [
+            .target(name: "InternalAWSPinpoint")
+        ],
+        path: "AmplifyPlugins/Pinpoint/PushNotifications/Sources/AWSPinpointPushNotificationsPlugin"
+    ),
+    .testTarget(
+        name: "AWSPinpointPushNotificationsPluginUnitTests",
+        dependencies: [
+            "AWSPinpointPushNotificationsPlugin",
+            "AmplifyTestCommon"
+        ],
+        path: "AmplifyPlugins/Pinpoint/PushNotifications/Tests/AWSPinpointPushNotificationsPluginUnitTests"
     )
 ]
 
@@ -336,6 +354,10 @@ let package = Package(
         .library(
             name: "AWSPinpointAnalyticsPlugin",
             targets: ["AWSPinpointAnalyticsPlugin"]
+        ),
+        .library(
+            name: "AWSPinpointPushNotificationsPlugin",
+            targets: ["AWSPinpointPushNotificationsPlugin"]
         )
     ],
     dependencies: dependencies,

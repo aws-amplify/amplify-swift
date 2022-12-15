@@ -33,6 +33,11 @@ public protocol AWSPinpointBehavior {
     /// - Parameter key: The name of the property
     func removeGlobalProperty(_ value: AnalyticsPropertyValue, forKey key: String) async
 
+    /// Adds the provided remote attributes to all subsequent recorded events.
+    /// Calling this method will remove any previously set remote attributes.
+    /// - Parameter attributes:The global attributes to set
+    func setRemoteGlobalAttributes(_ attributes: [String: String]) async
+
     /// Records the specified `PinpointEvent` to the local storage.
     /// - Parameter event: The `PinpointEvent` to persist
     func record(_ event: PinpointEvent) async throws
@@ -59,9 +64,9 @@ public protocol AWSPinpointBehavior {
     /// - Returns:A `PinpointEndpointProfile`  representing the current endpoint.
     func currentEndpointProfile() async -> PinpointEndpointProfile
 
-    /// Updates the current endpoint with the provided one
+    /// Updates the current endpoint with the provided profile
     /// - Parameter endpointProfile: The new endpoint profile
-    func update(_ endpointProfile: PinpointEndpointProfile) async throws
+    func updateEndpoint(with endpointProfile: PinpointEndpointProfile) async throws
 }
 
 extension AWSPinpointBehavior {

@@ -34,7 +34,10 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
     }
 
     private func createAmplifyConfig(hasSecondPlugin: Bool = false) -> AmplifyConfiguration {
-        return AmplifyConfiguration(pushNotifications: createCategoryConfig(hasSecondPlugin: hasSecondPlugin))
+        let categoryConfiguration = NotificationsCategoryConfiguration(
+            push: createCategoryConfig(hasSecondPlugin: hasSecondPlugin)
+        )
+        return AmplifyConfiguration(notifications: categoryConfiguration)
     }
 
     // MARK: - Amplify tests
@@ -98,11 +101,13 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
         )
         try Amplify.add(plugin: loggingPlugin)
 
-        let categoryConfig = PushNotificationsCategoryConfiguration(
-            plugins: ["NonExistentPlugin": true]
+        let categoryConfig = NotificationsCategoryConfiguration(
+            push: PushNotificationsCategoryConfiguration(
+                plugins: ["NonExistentPlugin": true]
+            )
         )
 
-        let amplifyConfig = AmplifyConfiguration(logging: loggingConfig, pushNotifications: categoryConfig)
+        let amplifyConfig = AmplifyConfiguration(logging: loggingConfig, notifications: categoryConfig)
         try Amplify.configure(amplifyConfig)
 
         waitForExpectations(timeout: 0.1)

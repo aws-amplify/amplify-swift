@@ -71,6 +71,10 @@ public class PinpointEndpointProfile: Codable, AnalyticsPropertiesModel {
         }
     }
 
+    public func setAPNsToken(_ apnsToken: Data) {
+        deviceToken = apnsToken.asHexString()
+    }
+
     public func addAttribute(_ attribute: String, forKey key: String) {
         attributes[key] = [attribute]
     }

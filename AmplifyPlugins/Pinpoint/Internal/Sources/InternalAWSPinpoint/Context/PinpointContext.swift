@@ -107,7 +107,8 @@ class PinpointContext {
          userDefaults: UserDefaultsBehaviour = UserDefaults.standard,
          keychainStore: KeychainStoreBehavior = KeychainStore(service: PinpointContext.Constants.Keychain.service),
          fileManager: FileManagerBehaviour = FileManager.default,
-         archiver: AmplifyArchiverBehaviour = AmplifyArchiver()) throws {
+         archiver: AmplifyArchiverBehaviour = AmplifyArchiver(),
+         remoteNotificationsHelper: RemoteNotificationsBehaviour = .default) throws {
         self.configuration = configuration
         storage = PinpointContextStorage(userDefaults: userDefaults,
                                          keychainStore: keychainStore,
@@ -124,7 +125,8 @@ class PinpointContext {
                                         pinpointClient: pinpointClient,
                                         endpointInformation: endpointInformation,
                                         userDefaults: userDefaults,
-                                        keychain: keychainStore)
+                                        keychain: keychainStore,
+                                        remoteNotificationsHelper: remoteNotificationsHelper)
 
         sessionClient = SessionClient(archiver: archiver,
                                       configuration: .init(appId: configuration.appId,

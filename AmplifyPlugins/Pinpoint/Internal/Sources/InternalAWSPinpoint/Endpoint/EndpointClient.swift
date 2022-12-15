@@ -6,10 +6,10 @@
 //
 
 import Amplify
+import AmplifyUtilsNotifications
 import AWSPinpoint
-import Foundation
-import AWSPluginsCore
 @_spi(KeychainStore) import AWSPluginsCore
+import Foundation
 
 @_spi(InternalAWSPinpoint)
 public protocol EndpointClientBehaviour: Actor {
@@ -35,6 +35,7 @@ actor EndpointClient: EndpointClientBehaviour {
     private let endpointInformation: EndpointInformation
     private let userDefaults: UserDefaultsBehaviour
     private let keychain: KeychainStoreBehavior
+    private let remoteNotificationsHelper: RemoteNotificationsBehaviour
 
     private var endpointProfile: PinpointEndpointProfile?
     private static let defaultDateFormatter = ISO8601DateFormatter()
@@ -44,7 +45,8 @@ actor EndpointClient: EndpointClientBehaviour {
          archiver: AmplifyArchiverBehaviour = AmplifyArchiver(),
          endpointInformation: EndpointInformation = .current,
          userDefaults: UserDefaultsBehaviour = UserDefaults.standard,
-         keychain: KeychainStoreBehavior = KeychainStore(service: PinpointContext.Constants.Keychain.service)
+         keychain: KeychainStoreBehavior = KeychainStore(service: PinpointContext.Constants.Keychain.service),
+         remoteNotificationsHelper: RemoteNotificationsBehaviour = .default
     ) {
         self.configuration = configuration
         self.pinpointClient = pinpointClient
@@ -52,6 +54,7 @@ actor EndpointClient: EndpointClientBehaviour {
         self.endpointInformation = endpointInformation
         self.userDefaults = userDefaults
         self.keychain = keychain
+        self.remoteNotificationsHelper = remoteNotificationsHelper
 
         Self.migrateStoredValues(from: userDefaults, to: keychain, using: archiver)
     }
@@ -67,25 +70,29 @@ actor EndpointClient: EndpointClientBehaviour {
     }
 
     func updateEndpointProfile(with endpointProfile: PinpointEndpointProfile) async throws {
+        try updateStoredAPNsToken(from: endpointProfile)
         try await updateEndpoint(with: endpointProfile)
     }
 
     private func retrieveOrCreateEndpointProfile() async -> PinpointEndpointProfile {
         // 1. Look for the local endpointProfile variable
         if let endpointProfile = endpointProfile {
-            return await configure(endpointProfile: endpointProfile)
+            // Update endpoint's optOut flag, as the user might have disabled notifications since the last time
+            endpointProfile.isOptOut = await isNotEligibleForPinpointNotifications(endpointProfile)
+            return endpointProfile
         }
 
-        // 2. Look for a valid PinpointEndpointProfile object stored in the Keychain. It needs to match the current applicationId, otherwise we'll discard it.
+        // 2. Look for a valid PinpointEndpointProfile object stored locally. It needs to match the current applicationId, otherwise we'll discard it.
         if let endpointProfileData = Self.getStoredData(from: keychain, forKey: Constants.endpointProfileKey, fallbackTo: userDefaults),
-           let decodedEndpointProfile = try? archiver.decode(PinpointEndpointProfile.self, from: endpointProfileData), decodedEndpointProfile.applicationId == configuration.appId {
+           let decodedEndpointProfile = try? archiver.decode(PinpointEndpointProfile.self, from: endpointProfileData),
+           decodedEndpointProfile.applicationId == configuration.appId {
             return await configure(endpointProfile: decodedEndpointProfile)
         }
 
         try? keychain._remove(Constants.endpointProfileKey)
         // Create a new PinpointEndpointProfile
         return await configure(endpointProfile: PinpointEndpointProfile(applicationId: configuration.appId,
-                                                                  endpointId: configuration.uniqueDeviceId))
+                                                                        endpointId: configuration.uniqueDeviceId))
     }
 
     private func configure(endpointProfile: PinpointEndpointProfile) async -> PinpointEndpointProfile {
@@ -94,23 +101,18 @@ actor EndpointClient: EndpointClientBehaviour {
             deviceToken = tokenData.asHexString()
         }
 
-        // TODO: Revisit when Campaing Notifications are implemented
-        let areNotificationsEnabled = false
-        let isUsingPinpointForNotifications = areNotificationsEnabled && deviceToken.isNotEmpty
-
-        endpointProfile.applicationId = configuration.appId
         endpointProfile.endpointId = configuration.uniqueDeviceId
         endpointProfile.deviceToken = deviceToken
         endpointProfile.location = .init()
         endpointProfile.demographic = .init(device: endpointInformation)
-        endpointProfile.effectiveDate = Date()
-        endpointProfile.isOptOut = !isUsingPinpointForNotifications
+        endpointProfile.isOptOut = await isNotEligibleForPinpointNotifications(endpointProfile)
         endpointProfile.isDebug = configuration.isDebug
 
         return endpointProfile
     }
 
     private func updateEndpoint(with endpointProfile: PinpointEndpointProfile) async throws {
+        endpointProfile.effectiveDate = Date()
         let input = createUpdateInput(from: endpointProfile)
         log.verbose("UpdateEndpointInput: \(input)")
         do {
@@ -125,6 +127,27 @@ actor EndpointClient: EndpointClientBehaviour {
             log.error(error: error)
             throw error
         }
+    }
+
+    private func updateStoredAPNsToken(from endpointProfile: PinpointEndpointProfile) throws {
+        guard let deviceToken = endpointProfile.deviceToken,
+              let apnsToken = Data(hexString: deviceToken) else {
+            try keychain._remove(Constants.deviceTokenKey)
+            return
+        }
+
+        let currentToken = try keychain._getData(Constants.deviceTokenKey)
+        if currentToken != apnsToken {
+            try keychain._set(apnsToken, key: Constants.deviceTokenKey)
+        }
+    }
+
+    private func isNotEligibleForPinpointNotifications(_ endpointProfile: PinpointEndpointProfile) async -> Bool {
+        guard endpointProfile.deviceToken.isNotEmpty else {
+            return true
+        }
+
+        return !(await remoteNotificationsHelper.isRegisteredForRemoteNotifications)
     }
 
     private func createUpdateInput(from endpointProfile: PinpointEndpointProfile) -> UpdateEndpointInput {
@@ -238,11 +261,5 @@ extension PinpointClientTypes.EndpointDemographic {
                   platform: device.platform.name,
                   platformVersion: device.platform.version,
                   timezone: timezone)
-    }
-}
-
-extension Data {
-    func asHexString() -> String {
-        reduce("") { "\($0)\(String(format: "%02x", $1))" }
     }
 }

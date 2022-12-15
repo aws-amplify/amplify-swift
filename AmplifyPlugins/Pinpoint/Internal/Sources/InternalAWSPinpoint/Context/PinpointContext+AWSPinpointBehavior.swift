@@ -31,7 +31,7 @@ extension PinpointContext: AWSPinpointBehavior {
         await endpointClient.currentEndpointProfile()
     }
 
-    func update(_ endpointProfile: PinpointEndpointProfile) async throws {
+    func updateEndpoint(with endpointProfile: PinpointEndpointProfile) async throws {
         try await endpointClient.updateEndpointProfile(with: endpointProfile)
     }
 
@@ -53,6 +53,10 @@ extension PinpointContext: AWSPinpointBehavior {
         } else if let value = value as? Bool {
             await analyticsClient.addGlobalAttribute(String(value), forKey: forKey)
         }
+    }
+
+    func setRemoteGlobalAttributes(_ attributes: [String : String]) async {
+        await analyticsClient.setRemoteGlobalAttributes(attributes)
     }
     
     func setAutomaticSubmitEventsInterval(_ interval: TimeInterval,
