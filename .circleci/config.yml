@@ -243,6 +243,7 @@ jobs:
     steps:
       - aws-cli/setup:
           role-arn: 'arn:aws:iam::579633542375:role/Amplify-Swift-S3-ReadOnly'
+          role-session-name: 'aws-cli-install-session'
       - run:
           name: Print Hello
           command: |
