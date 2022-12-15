@@ -442,9 +442,6 @@ workflows:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
       - checkout_code
-          filters:
-            branches:
-              only: phantum/automate_fortify_scan
       - install_fortify:
           name: Install Fortify
           requires:
