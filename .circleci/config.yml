@@ -244,6 +244,8 @@ jobs:
       - aws-cli/setup:
           role-arn: 'arn:aws:iam::579633542375:role/CircleCI_S3_ReadOnly'
           aws-region: $AWS_REGION
+          environment:
+            AWS_REGION: "us-east-1"
       - run:
           name: Print Hello
           command: |
@@ -254,8 +256,6 @@ jobs:
           command: |
             echo 'Print S3'
             aws s3 ls s3://amplifyfortify
-    environment:
-      AWS_REGION: us-east-1
 
 deploy_requires: &deploy_requires
   requires:
