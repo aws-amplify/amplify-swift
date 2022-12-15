@@ -240,7 +240,6 @@ jobs:
   
   install_fortify:
     <<: *defaults
-    executor: aws-cli/default
     steps:
       - aws-cli/setup:
           role-arn: 'arn:aws:iam::579633542375:role/CircleCI_S3_ReadOnly'
