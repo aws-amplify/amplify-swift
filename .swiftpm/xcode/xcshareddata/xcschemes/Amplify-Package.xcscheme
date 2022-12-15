@@ -328,6 +328,20 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSPinpointPushNotificationsPlugin"
+               BuildableName = "AWSPinpointPushNotificationsPlugin"
+               BlueprintName = "AWSPinpointPushNotificationsPlugin"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -468,6 +482,16 @@
                BlueprintIdentifier = "InternalAWSPinpointUnitTests"
                BuildableName = "InternalAWSPinpointUnitTests"
                BlueprintName = "InternalAWSPinpointUnitTests"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AWSPinpointPushNotificationsPluginUnitTests"
+               BuildableName = "AWSPinpointPushNotificationsPluginUnitTests"
+               BlueprintName = "AWSPinpointPushNotificationsPluginUnitTests"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>

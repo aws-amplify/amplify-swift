@@ -17,8 +17,8 @@ public struct AmplifyConfiguration: Codable {
         case geo
         case hub
         case logging
+        case notifications
         case predictions
-        case pushNotifications
         case storage
     }
 
@@ -43,11 +43,11 @@ public struct AmplifyConfiguration: Codable {
     /// Configurations for the Amplify Logging category
     let logging: LoggingCategoryConfiguration?
 
+    /// Configurations for the Amplify Notifications category
+    let notifications: NotificationsCategoryConfiguration?
+
     /// Configurations for the Amplify Predictions category
     let predictions: PredictionsCategoryConfiguration?
-    
-    /// Configurations for the Amplify Push Notifications category
-    let pushNotifications: PushNotificationsCategoryConfiguration?
 
     /// Configurations for the Amplify Storage category
     let storage: StorageCategoryConfiguration?
@@ -59,8 +59,8 @@ public struct AmplifyConfiguration: Codable {
                 geo: GeoCategoryConfiguration? = nil,
                 hub: HubCategoryConfiguration? = nil,
                 logging: LoggingCategoryConfiguration? = nil,
+                notifications: NotificationsCategoryConfiguration? = nil,
                 predictions: PredictionsCategoryConfiguration? = nil,
-                pushNotifications: PushNotificationsCategoryConfiguration? = nil,
                 storage: StorageCategoryConfiguration? = nil) {
         self.analytics = analytics
         self.api = api
@@ -69,8 +69,8 @@ public struct AmplifyConfiguration: Codable {
         self.geo = geo
         self.hub = hub
         self.logging = logging
+        self.notifications = notifications
         self.predictions = predictions
-        self.pushNotifications = pushNotifications
         self.storage = storage
     }
 

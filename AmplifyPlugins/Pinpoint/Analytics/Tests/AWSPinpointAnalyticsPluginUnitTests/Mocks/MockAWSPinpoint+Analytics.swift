@@ -155,4 +155,8 @@ extension MockAWSPinpoint {
     public func startTrackingSessions(backgroundTimeout: TimeInterval) {
         
     }
+
+    func setRemoteGlobalAttributes(_ attributes: [String : String]) async {
+
+    }
 }
