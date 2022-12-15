@@ -244,17 +244,15 @@ jobs:
       - aws-cli/setup:
           role-arn: 'arn:aws:iam::579633542375:role/Amplify-Swift-S3-ReadOnly'
           role-session-name: 'aws-s3-session'
-          profile-name: "OIDC-PROFILE"
       - run:
           name: Print Hello
           command: |
             echo 'Hello World!'
             echo 'This is the delivery pipeline'
       - run:
-          name: Print S3 files
+          name: List Files
           command: |
-            echo 'Print S3'
-            aws s3 ls https://amplifyfortify.s3.amazonaws.com --profile "OIDC-PROFILE"
+            aws s3 ls s3://amplifyfortify
 
 deploy_requires: &deploy_requires
   requires:
