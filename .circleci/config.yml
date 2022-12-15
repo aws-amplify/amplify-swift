@@ -435,8 +435,7 @@ workflows:
       - checkout_code
           filters:
             branches:
-              only:
-                - phantum/automate_fortify_scan 
+              only: phantum/automate_fortify_scan 
       - run:
           name: The First Step
           command: |
@@ -444,5 +443,4 @@ workflows:
             echo 'This is the delivery pipeline'
           filters:
             branches:
-              only:
-                - phantum/automate_fortify_scan
+              only: phantum/automate_fortify_scan
