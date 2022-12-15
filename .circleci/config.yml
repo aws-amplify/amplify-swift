@@ -243,9 +243,7 @@ jobs:
     steps:
       - aws-cli/setup:
           role-arn: 'arn:aws:iam::579633542375:role/CircleCI_S3_ReadOnly'
-          aws-region: ${AWS_REGION}
-          environment:
-            AWS_REGION: "us-east-1"
+          aws-region: "us-east-1"
       - run:
           name: Print Hello
           command: |
@@ -454,6 +452,7 @@ workflows:
     jobs:
       - checkout_code
       - install_fortify:
+          context: aws
           name: Install Fortify
           requires:
             - checkout_code
