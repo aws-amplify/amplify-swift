@@ -30,7 +30,7 @@ extension CategoryTypeable {
         case .predictions:
             return amplifyConfiguration.predictions
         case .pushNotifications:
-            return amplifyConfiguration.pushNotifications
+            return amplifyConfiguration.notifications?.push
         case .storage:
             return amplifyConfiguration.storage
         case .auth:

@@ -28,11 +28,13 @@ final class NotificationsCategoryTests: XCTestCase {
 
     func testSubcategories_withPushConfigured_shouldReturnPush() throws {
         let notificationsPlugin = MockPushNotificationsCategoryPlugin()
-        let notificationsConfig = PushNotificationsCategoryConfiguration(
-            plugins: [notificationsPlugin.key: true]
+        let notificationsConfig = NotificationsCategoryConfiguration(
+            push: PushNotificationsCategoryConfiguration(
+                plugins: [notificationsPlugin.key: true]
+            )
         )
         try Amplify.add(plugin: notificationsPlugin)
-        try Amplify.configure(AmplifyConfiguration(pushNotifications:notificationsConfig))
+        try Amplify.configure(AmplifyConfiguration(notifications:notificationsConfig))
 
         let configuredCategories = category.subcategories
         XCTAssertEqual(configuredCategories.count, 1)

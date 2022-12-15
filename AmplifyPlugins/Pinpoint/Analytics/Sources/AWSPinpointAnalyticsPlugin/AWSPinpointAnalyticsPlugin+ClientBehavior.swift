@@ -24,7 +24,7 @@ extension AWSPinpointAnalyticsPlugin {
                 currentEndpointProfile.addUserProfile(userProfile)
             }
             do {
-                try await pinpoint.update(currentEndpointProfile)
+                try await pinpoint.updateEndpoint(with: currentEndpointProfile)
                 Amplify.Hub.dispatchIdentifyUser(userId, userProfile: userProfile)
             } catch {
                 Amplify.Hub.dispatchIdentifyUser(AnalyticsErrorHelper.getDefaultError(error))

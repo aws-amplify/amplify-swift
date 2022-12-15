@@ -6,6 +6,7 @@
 //
 
 import Amplify
+@testable import AmplifyTestCommon
 @_spi(InternalAWSPinpoint) @testable import InternalAWSPinpoint
 @testable import AWSPinpointAnalyticsPlugin
 import XCTest

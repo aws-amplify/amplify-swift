@@ -8,7 +8,7 @@
 import Foundation
 
 /// Push Notifications Error
-enum PushNotificationsError {
+public enum PushNotificationsError {
     /// Configuration Error
     case configuration(ErrorDescription, RecoverySuggestion, Error? = nil)
     /// Network Error
@@ -20,7 +20,7 @@ enum PushNotificationsError {
 }
 
 extension PushNotificationsError: AmplifyError {
-    var errorDescription: ErrorDescription {
+    public var errorDescription: ErrorDescription {
         switch self {
         case .configuration(let description, _, _),
              .network(let description, _, _),
@@ -31,7 +31,7 @@ extension PushNotificationsError: AmplifyError {
         }
     }
 
-    var recoverySuggestion: RecoverySuggestion {
+    public var recoverySuggestion: RecoverySuggestion {
         switch self {
         case .configuration(_, let recoverySuggestion, _),
              .network(_, let recoverySuggestion, _),
@@ -42,7 +42,7 @@ extension PushNotificationsError: AmplifyError {
         }
     }
 
-    var underlyingError: Error? {
+    public var underlyingError: Error? {
         switch self {
         case .configuration(_, _, let error),
              .network(_, _, let error),
@@ -52,7 +52,7 @@ extension PushNotificationsError: AmplifyError {
         }
     }
 
-    init(
+    public init(
         errorDescription: ErrorDescription = "An unknown error occurred",
         recoverySuggestion: RecoverySuggestion = "(Ignored)",
         error: Error
