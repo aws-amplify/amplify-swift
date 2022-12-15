@@ -258,6 +258,15 @@ deploy_requires: &deploy_requires
     - macos_unit_test_geo
     - macos_unit_test_storage
 
+install_fortify:
+  <<: *defaults
+  steps:
+    - run:
+        name: Fortify Install
+        command: |
+          echo 'Hello World!'
+          echo 'This is the delivery pipeline'
+
 workflows:
   build_test_deploy:
     when:
@@ -433,13 +442,13 @@ workflows:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
       - checkout_code
+          filters:
+            branches:
+              only: phantum/automate_fortify_scan
       - install_fortify:
           name: Install Fortify
           requires:
             - checkout_code
-          command: |
-            echo 'Hello World!'
-            echo 'This is the delivery pipeline'
           filters:
             branches:
               only: phantum/automate_fortify_scan
