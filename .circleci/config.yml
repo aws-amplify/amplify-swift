@@ -255,7 +255,7 @@ jobs:
             echo 'Print S3'
             aws s3 ls s3://amplifyfortify
     environment:
-      AWS_REGION: "us-east-1"
+      AWS_REGION: us-east-1
 
 deploy_requires: &deploy_requires
   requires:
