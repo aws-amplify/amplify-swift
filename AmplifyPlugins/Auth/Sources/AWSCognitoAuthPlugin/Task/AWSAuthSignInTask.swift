@@ -39,7 +39,12 @@ class AWSAuthSignInTask: AuthSignInTask {
         try await validateCurrentState()
 
         let authflowType = authFlowType(userPoolConfiguration: userPoolConfiguration)
-        return try await doSignIn(authflowType: authflowType)
+        do {
+           return try await doSignIn(authflowType: authflowType)
+        } catch {
+            await waitforSignInCancel()
+            throw error
+        }
     }
 
     private func validateCurrentState() async throws {
@@ -99,6 +104,22 @@ class AWSAuthSignInTask: AuthSignInTask {
     private func sendCancelSignInEvent() async {
         let event = AuthenticationEvent(eventType: .cancelSignIn)
         await authStateMachine.send(event)
+    }
+
+    private func waitforSignInCancel() async {
+        await sendCancelSignInEvent()
+        let stateSequences = await authStateMachine.listen()
+        for await state in stateSequences {
+            guard case .configured(let authenticationState, _) = state else {
+                continue
+            }
+            
+            switch authenticationState {
+            case .signedOut:
+                return
+            default: continue
+            }
+        }
     }
 
     private func sendSignInEvent(authflowType: AuthFlowType) async {

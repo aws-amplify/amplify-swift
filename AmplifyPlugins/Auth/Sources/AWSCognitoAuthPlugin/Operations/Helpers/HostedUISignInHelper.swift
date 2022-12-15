@@ -81,13 +81,19 @@ struct HostedUISignInHelper {
                 }
 
             case .error(let error):
-                throw AuthError.unknown("Sign in reached an error state", error)
+                await waitforSignInCancel()
+                throw error.authError
 
             case .signingIn(let signInState):
-                guard let result = try UserPoolSignInHelper.checkNextStep(signInState) else {
-                    continue
+                do {
+                    guard let result = try UserPoolSignInHelper.checkNextStep(signInState) else {
+                        continue
+                    }
+                    return result
+                } catch {
+                    await waitforSignInCancel()
+                    throw error
                 }
-                return result
             default:
                 continue
             }
@@ -121,4 +127,19 @@ struct HostedUISignInHelper {
         await authStateMachine.send(event)
     }
 
+    private func waitforSignInCancel() async {
+        await sendCancelSignInEvent()
+        let stateSequences = await authStateMachine.listen()
+        for await state in stateSequences {
+            guard case .configured(let authenticationState, _) = state else {
+                continue
+            }
+
+            switch authenticationState {
+            case .signedOut:
+                return
+            default: continue
+            }
+        }
+    }
 }

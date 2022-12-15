@@ -74,10 +74,8 @@ extension CustomSignInState {
 
         private func errorStateWithCancelSignIn(_ error: SignInError)
         -> StateResolution<CustomSignInState> {
-            let action = CancelSignIn()
             return StateResolution(
-                newState: CustomSignInState.error(error),
-                actions: [action]
+                newState: CustomSignInState.error(error)
             )
         }
     }
