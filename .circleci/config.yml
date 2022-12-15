@@ -245,14 +245,13 @@ jobs:
           role-arn: 'arn:aws:iam::579633542375:role/Amplify-Swift-S3-ReadOnly'
           role-session-name: 'aws-s3-session'
       - run:
-          name: Print Hello
+          name: Download License
           command: |
-            echo 'Hello World!'
-            echo 'This is the delivery pipeline'
+            aws s3 cp s3://amplifyfortify/fortify.license fortify.license
       - run:
-          name: List Files
+          name: Download Installer
           command: |
-            aws s3 ls s3://amplifyfortify
+            aws s3 cp s3://amplifyfortify/Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz
 
 deploy_requires: &deploy_requires
   requires:
