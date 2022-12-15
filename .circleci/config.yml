@@ -11,6 +11,7 @@ parameters:
     default: platform=macOS,arch=x86_64
 
 orbs:
+  aws-cli: circleci/aws-cli@3.1.4
   # Using inline orb for now
   getting-started-smoke-test:
     orbs:
@@ -239,12 +240,15 @@ jobs:
   
   install_fortify:
     <<: *defaults
-    steps:
-      - run:
-          name: Fortify Install
-          command: |
-            echo 'Hello World!'
-            echo 'This is the delivery pipeline'
+  steps:
+    - aws-cli/setup:
+      role-arn: 'arn:aws:iam::579633542375:role/CircleCI_S3_ReadOnly'
+      aws-region: "us-east-1"
+    - run:
+        name: Fortify Install
+        command: |
+          echo 'Hello World!'
+          echo 'This is the delivery pipeline'
 
 deploy_requires: &deploy_requires
   requires:
