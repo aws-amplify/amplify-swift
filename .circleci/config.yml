@@ -242,13 +242,18 @@ jobs:
     <<: *defaults
   steps:
     - aws-cli/setup:
-      role-arn: 'arn:aws:iam::579633542375:role/CircleCI_S3_ReadOnly'
-      aws-region: "us-east-1"
+        role-arn: 'arn:aws:iam::579633542375:role/CircleCI_S3_ReadOnly'
+        aws-region: 'us-east-1'
     - run:
-        name: Fortify Install
+        name: Print Hello
         command: |
           echo 'Hello World!'
           echo 'This is the delivery pipeline'
+    - run:
+        name: Print S3 files
+        command: |
+          echo 'Print S3'
+          aws s3 ls
 
 deploy_requires: &deploy_requires
   requires:
