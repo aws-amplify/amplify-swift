@@ -244,7 +244,6 @@ jobs:
     steps:
       - aws-cli/setup:
           role-arn: 'arn:aws:iam::579633542375:role/CircleCI_S3_ReadOnly'
-          aws-region: $AWS_DEFAULT_REGION
       - run:
           name: Print Hello
           command: |
@@ -454,7 +453,7 @@ workflows:
       - checkout_code
       - install_fortify:
           context:
-            - aws-context
+            - amplify-swift-aws-s3-download
           name: Install Fortify
           requires:
             - checkout_code
