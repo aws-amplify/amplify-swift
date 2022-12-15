@@ -37,6 +37,8 @@ extension ClientError {
             return true
         case .pathCreationFailed:
             return true
+        case .queryItemCreationFailed(_):
+            return true
         case .retryError:
             return true
         case .serializationFailed:
