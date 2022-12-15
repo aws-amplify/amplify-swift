@@ -252,6 +252,10 @@ jobs:
           name: Download Installer
           command: |
             aws s3 cp s3://amplifyfortify/Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz
+      - run:
+          name: Extract Installer
+          command: |
+            tar -xvf Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz
 
 deploy_requires: &deploy_requires
   requires:
