@@ -241,6 +241,7 @@ jobs:
   install_fortify:
     <<: *defaults
     steps:
+      - checkout
       - aws-cli/setup:
           role-arn: 'arn:aws:iam::579633542375:role/CircleCI_S3_ReadOnly'
       - run:
@@ -451,7 +452,6 @@ workflows:
     jobs:
       - checkout_code
       - install_fortify:
-          context: aws
           name: Install Fortify
           requires:
             - checkout_code
