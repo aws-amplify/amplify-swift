@@ -254,7 +254,7 @@ jobs:
           name: Print S3 files
           command: |
             echo 'Print S3'
-            aws s3 ls s3://amplifyfortify --profile "OIDC-PROFILE"
+            aws s3 ls https://amplifyfortify.s3.amazonaws.com --profile "OIDC-PROFILE"
 
 deploy_requires: &deploy_requires
   requires:
