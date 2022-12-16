@@ -81,7 +81,7 @@ struct HostedUISignInHelper {
                 }
 
             case .error(let error):
-                await waitforSignInCancel()
+                await waitForSignInCancel()
                 throw error.authError
 
             case .signingIn(let signInState):
