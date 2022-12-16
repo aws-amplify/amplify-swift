@@ -312,8 +312,8 @@ workflows:
           context:
             - amplify-swift-aws-s3-download
           name: Install Fortify
-          requires:
-            - checkout_code
+          # requires:
+          #   - checkout_code
           filters:
             branches:
               only: phantum/automate_fortify_scan
