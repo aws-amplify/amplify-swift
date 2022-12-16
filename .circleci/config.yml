@@ -243,10 +243,11 @@ jobs:
     steps:
       - aws-cli/setup:
           role-arn: 'arn:aws:iam::579633542375:role/Amplify-Swift-S3-ReadOnly'
+          role-session-name: 'aws-s3-session'
       - run:
           name: Download License
           command: |
-            aws s3 cp s3://amplify-swift-fortify/fortify.license fortify.license
+            aws s3 cp ss3://amplify-swift-fortify/fortify.license fortify.license
       - run:
           name: Download Installer
           command: |
@@ -254,14 +255,14 @@ jobs:
       - run:
           name: Run Installer
           command: |
-            Fortify_SCA_and_Apps_22.1.1_osx_x64.app/Contents/MacOS/installbuilder.sh --mode unattended --installdir Fortify --InstallSamples 0  --fortify_license_path fortify.license --MigrateSCA 0
-            export PATH=~/amplify-swift/Fortify/bin:$PATH
-            export PATH=~/amplify-swift/Fortify/bin:$PATH
-            echo "export PATH=~/amplify-swift/Fortify/bin:\$PATH" >> "$BASH_ENV"
+            Fortify_SCA_and_Apps_22.1.1_osx_x64.app/Contents/MacOS/installbuilder.sh --mode unattended --installdir $FORTIFY_INSTALL_DIRECTORY --InstallSamples 0  --fortify_license_path fortify.license --MigrateSCA 0
+            export PATH=$FORTIFY_INSTALL_DIRECTORY/bin:$PATH
+            export PATH=$INSTALL_DIRECTORY/bin:$PATH
+            echo "export PATH=$INSTALL_DIRECTORY/bin:\$PATH" >> "$BASH_ENV"
             fortifyupdate -acceptKey
             sourceanalyzer -version
-        # environment:
-        #   FORTIFY_INSTALL_DIRECTORY: ~/amplify-swift/Fortify
+      environment:
+        FORTIFY_INSTALL_DIRECTORY: ~/amplify-swift/Fortify
 
 deploy_requires: &deploy_requires
   requires:
