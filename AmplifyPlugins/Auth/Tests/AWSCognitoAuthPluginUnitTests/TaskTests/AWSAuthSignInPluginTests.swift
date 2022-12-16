@@ -249,8 +249,8 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             })
 
             do {
-                let result = try await plugin.signIn(username: "username", password: "password", options: options)
-                XCTAssertTrue(result.isSignedIn, "Signin result should be complete")
+                let result2 = try await plugin.signIn(username: "username", password: "password", options: options)
+                XCTAssertTrue(result2.isSignedIn, "Signin result should be complete")
             } catch {
                 XCTFail("Received failure with error \(error)")
             }

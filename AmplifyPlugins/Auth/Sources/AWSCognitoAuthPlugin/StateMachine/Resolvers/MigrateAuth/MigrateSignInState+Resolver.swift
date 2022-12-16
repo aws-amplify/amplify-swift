@@ -83,10 +83,8 @@ extension MigrateSignInState {
 
         private func errorStateWithCancelSignIn(_ error: SignInError)
         -> StateResolution<MigrateSignInState> {
-            let action = CancelSignIn()
             return StateResolution(
-                newState: MigrateSignInState.error(error),
-                actions: [action]
+                newState: MigrateSignInState.error(error)
             )
         }
     }
