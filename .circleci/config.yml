@@ -247,7 +247,7 @@ jobs:
       - run:
           name: Download License
           command: |
-            aws s3 cp ss3://amplify-swift-fortify/fortify.license fortify.license
+            aws s3 cp s3://amplify-swift-fortify/fortify.license fortify.license
       - run:
           name: Download Installer
           command: |
