@@ -106,7 +106,7 @@ class AWSAuthSignInTask: AuthSignInTask {
         await authStateMachine.send(event)
     }
 
-    private func waitforSignInCancel() async {
+    private func waitForSignInCancel() async {
         await sendCancelSignInEvent()
         let stateSequences = await authStateMachine.listen()
         for await state in stateSequences {
