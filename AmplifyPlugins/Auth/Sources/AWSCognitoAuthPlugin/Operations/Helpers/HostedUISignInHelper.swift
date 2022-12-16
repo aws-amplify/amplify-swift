@@ -91,7 +91,7 @@ struct HostedUISignInHelper {
                     }
                     return result
                 } catch {
-                    await waitforSignInCancel()
+                    await waitForSignInCancel()
                     throw error
                 }
             default:
