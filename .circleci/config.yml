@@ -243,19 +243,35 @@ jobs:
     steps:
       - aws-cli/setup:
           role-arn: 'arn:aws:iam::579633542375:role/Amplify-Swift-S3-ReadOnly'
-          role-session-name: 'aws-s3-session'
       - run:
           name: Download License
           command: |
-            aws s3 cp s3://amplifyfortify/fortify.license fortify.license
+            aws s3 cp s3://amplify-swift-fortify/fortify.license fortify.license
       - run:
           name: Download Installer
           command: |
-            aws s3 cp s3://amplifyfortify/Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz
+            aws s3 cp s3://amplify-swift-fortify/Fortify_SCA_and_Apps_22.1.1_osx_x64.app.zip Fortify_SCA_and_Apps_22.1.1_osx_x64.app.zip
       - run:
-          name: Extract Installer
+          name: Run Installer
           command: |
-            tar -xvf Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz
+            # Run Installer
+            Fortify_SCA_and_Apps_22.1.1_osx_x64.app/Contents/MacOS/installbuilder.sh --mode unattended --installdir $FORTIFY_INSTALL_DIRECTORY --InstallSamples 0  --fortify_license_path fortify.license --MigrateSCA 0
+            
+            export PATH=$FORTIFY_INSTALL_DIRECTORY/bin:$PATH
+            
+            # add fortify to path
+            export PATH=$FORTIFY_INSTALL_DIRECTORY/bin:$PATH
+
+            # add fortify to path for other circleci command
+            echo "export PATH=$FORTIFY_INSTALL_DIRECTORY/bin:\$PATH" >> "$BASH_ENV"
+
+            # update to latest
+            fortifyupdate -acceptKey
+
+            # print used version
+            sourceanalyzer -version
+      environment:
+        FORTIFY_INSTALL_DIRECTORY: ~/amplify-swift/Fortify
 
 deploy_requires: &deploy_requires
   requires:
