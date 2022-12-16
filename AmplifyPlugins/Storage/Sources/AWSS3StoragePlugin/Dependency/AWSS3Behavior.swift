@@ -19,9 +19,6 @@ protocol AWSS3Behavior {
     // Deletes object.
     func deleteObject(_ request: AWSS3DeleteObjectRequest, completion: @escaping (Result<Void, StorageError>) -> Void)
 
-    // Lists objects in a bucket.
-    func listObjectsV2(_ request: AWSS3ListObjectsV2Request, completion: @escaping (Result<StorageListResult, StorageError>) -> Void)
-
     // Creates a Multipart Upload.
     func createMultipartUpload(_ request: CreateMultipartUploadRequest, completion: @escaping (Result<AWSS3CreateMultipartUploadResponse, StorageError>) -> Void)
 

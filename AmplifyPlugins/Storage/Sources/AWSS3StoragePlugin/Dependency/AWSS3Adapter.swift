@@ -42,38 +42,6 @@ class AWSS3Adapter: AWSS3Behavior {
         }
     }
 
-    /// Lists objects in the bucket specified by `request`.
-    /// - Parameters:
-    ///   - request: request identifying bucket and options
-    ///   - completion: handle which return a result with list of items
-    func listObjectsV2(_ request: AWSS3ListObjectsV2Request, completion: @escaping (Result<StorageListResult, StorageError>) -> Void) {
-        Task {
-            var finalPrefix: String?
-            if let prefix = request.prefix {
-                finalPrefix = prefix + (request.path ?? "")
-            }
-            let input = ListObjectsV2Input(bucket: request.bucket,
-                                           continuationToken: request.continuationToken,
-                                           delimiter: request.delimiter,
-                                           maxKeys: request.maxKeys,
-                                           prefix: finalPrefix,
-                                           startAfter: request.startAfter)
-            do {
-                let response = try await awsS3.listObjectsV2(input: input)
-                let contents: S3BucketContents = response.contents ?? []
-                let items = try contents.map {
-                    try StorageListResult.Item(s3Object: $0, prefix: request.prefix ?? "")
-                }
-                let listResult = StorageListResult(items: items)
-                completion(.success(listResult))
-            } catch let error as SdkError<ListObjectsV2OutputError> {
-                completion(.failure(error.storageError))
-            } catch {
-                completion(.failure(StorageError(error: error)))
-            }
-        }
-    }
-
     /// Creates a MultipartUpload
     /// - Parameters:
     ///   - request: request

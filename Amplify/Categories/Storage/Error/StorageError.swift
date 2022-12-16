@@ -5,6 +5,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+/// - Tag: StorageError
 public enum StorageError {
     case accessDenied(ErrorDescription, RecoverySuggestion, Error? = nil)
     case authError(ErrorDescription, RecoverySuggestion, Error? = nil)

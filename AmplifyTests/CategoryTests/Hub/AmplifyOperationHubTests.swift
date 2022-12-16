@@ -33,22 +33,49 @@ class AmplifyOperationHubTests: XCTestCase {
     /// When: I invoke Hub.listen(to: operation)
     /// Then: I am notified of events for that operation, in the operation event listener format
     func testlistenerViaListenToOperation() async throws {
-        let options = StorageListRequest.Options(pluginOptions: ["pluginDelay": 0.5])
-        let request = StorageListRequest(options: options)
+        class NoOpRequest: AmplifyOperationRequest {
+            var options: NSDictionary = NSDictionary()
+        }
+        struct NoOpError: AmplifyError {
+            var errorDescription: ErrorDescription
+            var recoverySuggestion: RecoverySuggestion
+            var underlyingError: Error?
+            init(errorDescription: ErrorDescription, recoverySuggestion: RecoverySuggestion, error: Error) {
+                self.errorDescription = errorDescription
+                self.recoverySuggestion = recoverySuggestion
+                self.underlyingError = error
+            }
+        }
+        class NoOpOperation: AmplifyOperation<NoOpRequest, Void, NoOpError> {
+            override func main() {
+                self.dispatch(result: .success(()))
+                self.finish()
+            }
+        }
 
-        let operation = MockDispatchingStorageListOperation(request: request)
+        let operation = NoOpOperation(categoryType: .storage, eventName: HubPayload.EventName.Storage.uploadFile, request: NoOpRequest())
 
         let listenerWasInvoked = expectation(description: "listener was invoked")
 
-        let token = Amplify.Hub.listenForResult(to: operation) { _ in
-            listenerWasInvoked.fulfill()
+        let token = Amplify.Hub.listenForResult(to: operation) { result in
+            switch result {
+            case .success:
+                listenerWasInvoked.fulfill()
+            case .failure(let error):
+                XCTFail("Expecting successful result but got: \(error)")
+            }
         }
 
         try await waitForToken(token)
 
-        operation.doMockDispatch()
+        let queueExpectation = expectation(description: "queue completed")
+        let queue = OperationQueue()
+        queue.addOperation(operation)
+        queue.addBarrierBlock {
+            queueExpectation.fulfill()
+        }
 
-        await waitForExpectations(timeout: 1.0)
+        wait(for: [listenerWasInvoked, queueExpectation], timeout: 1.0)
     }
 
     /// Given: A configured system
@@ -112,6 +139,11 @@ class AmplifyOperationHubTests: XCTestCase {
 }
 
 class MockDispatchingStoragePlugin: StorageCategoryPlugin {
+
+    enum PluginError: Error {
+        case missingResult
+    }
+    var listResults: [Result<StorageListResult, Error>] = []
 
     var key: PluginKey = "MockDispatchingStoragePlugin"
 
@@ -206,17 +238,6 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
         return operation
     }
 
-    func list(options: StorageListRequest.Options?,
-              resultListener: StorageListOperation.ResultListener?) -> StorageListOperation {
-        let options = options ?? StorageListRequest.Options()
-
-        let request = StorageListRequest(options: options)
-
-        let operation = MockDispatchingStorageListOperation(request: request,
-                                                            resultListener: resultListener)
-        return operation
-    }
-
     func handleBackgroundEvents(identifier: String) async -> Bool {
         false
     }
@@ -292,11 +313,14 @@ class MockDispatchingStoragePlugin: StorageCategoryPlugin {
 
     @discardableResult
     func list(options: StorageListOperation.Request.Options?) async throws -> StorageListResult {
-        let options = options ?? StorageListRequest.Options()
-        let request = StorageListRequest(options: options)
-        let operation = MockDispatchingStorageListOperation(request: request)
-        let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
-        return try await taskAdapter.value
+        if let result = listResults.first {
+            listResults.removeFirst()
+            switch result {
+            case .failure(let error): throw error
+            case .success(let list): return list
+            }
+        }
+        throw PluginError.missingResult
     }
 
 }
@@ -363,23 +387,6 @@ class MockDispatchingStorageGetURLOperation: AmplifyOperation<
 
     func doMockDispatch(result: StorageGetURLOperation.OperationResult = .success(URL(fileURLWithPath: "/path"))) {
         super.dispatch(result: result)
-    }
-}
-
-class MockDispatchingStorageListOperation: AmplifyOperation<
-    StorageListRequest,
-    StorageListResult,
-    StorageError
->, StorageListOperation {
-    init(request: Request, resultListener: ResultListener? = nil) {
-        super.init(categoryType: .storage,
-                   eventName: HubPayload.EventName.Storage.list,
-                   request: request,
-                   resultListener: resultListener)
-    }
-
-    func doMockDispatch() {
-        super.dispatch(result: .success(StorageListResult(items: [])))
     }
 }
 

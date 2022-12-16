@@ -13,13 +13,14 @@ import AWSS3
 
 public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
 
+    var interactions: [String] = []
+
     // MARK: method call counts
 
     var downloadCalled = 0
     var getPreSignedURLCalled = 0
     var uploadCalled = 0
     var multiPartUploadCalled = 0
-    var listCalled = 0
     var deleteCalled = 0
 
     // MARK: method arguments
@@ -40,9 +41,6 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
     var multiPartUploadContentType: String?
     var multiPartUploadMetadata: [String: String]?
 
-    var listPrefix: String?
-    var listPath: String?
-
     var deleteServiceKey: String?
 
     // MARK: Mock behavior
@@ -52,7 +50,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
     var storageServiceGetPreSignedURLEvents: [StorageServiceGetPreSignedURLEvent]?
     var storageServiceUploadEvents: [StorageServiceUploadEvent]?
     var storageServiceMultiPartUploadEvents: [StorageServiceMultiPartUploadEvent]?
-    var storageServiceListEvents: [StorageServiceListEvent]?
+    var storageServiceListResults: [Result<StorageListResult, Error>] = []
     var storageServiceDeleteEvents: [StorageServiceDeleteEvent]?
 
     // MARK: Mock functionality
@@ -69,6 +67,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
     }
 
     public func download(serviceKey: String, fileURL: URL?, onEvent: @escaping StorageServiceDownloadEventHandler) {
+        interactions.append(#function)
         downloadCalled += 1
 
         downloadServiceKey = serviceKey
@@ -83,6 +82,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
                          signingOperation: AWSS3SigningOperation = .getObject,
                          expires: Int,
                          onEvent: @escaping StorageServiceGetPreSignedURLEventHandler) {
+        interactions.append(#function)
         getPreSignedURLCalled += 1
 
         getPreSignedURLServiceKey = serviceKey
@@ -98,6 +98,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
                        contentType: String?,
                        metadata: [String: String]?,
                        onEvent: @escaping StorageServiceUploadEventHandler) {
+        interactions.append(#function)
         uploadCalled += 1
 
         uploadServiceKey = serviceKey
@@ -115,6 +116,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
                                 contentType: String?,
                                 metadata: [String: String]?,
                                 onEvent: @escaping StorageServiceMultiPartUploadEventHandler) {
+        interactions.append(#function)
         multiPartUploadCalled += 1
 
         multiPartUploadServiceKey = serviceKey
@@ -127,18 +129,25 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
         }
     }
 
-    public func list(prefix: String, path: String?, onEvent: @escaping StorageServiceListEventHandler) {
-        listCalled += 1
+    public func list(prefix: String, options: StorageListRequest.Options) async throws -> StorageListResult {
+        interactions.append("\(#function) \(prefix) \(options.path ?? "")")
 
-        listPrefix = prefix
-        listPath = path
-
-        for event in storageServiceListEvents ?? [] {
-            onEvent(event)
+        if let result = storageServiceListResults.first {
+            storageServiceListResults.removeFirst()
+            switch result {
+            case .failure(let error): throw error
+            case .success(let list): return list
+            }
         }
+
+        enum ListingError: Error {
+            case missingResult
+        }
+        throw ListingError.missingResult
     }
 
     public func delete(serviceKey: String, onEvent: @escaping StorageServiceDeleteEventHandler) {
+        interactions.append(#function)
         deleteCalled += 1
 
         deleteServiceKey = serviceKey
@@ -214,13 +223,6 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
         }
         XCTAssertEqual(multiPartUploadContentType, contentType)
         XCTAssertEqual(multiPartUploadMetadata, metadata)
-    }
-
-    public func verifyList(prefix: String, path: String?) {
-        XCTAssertEqual(listCalled, 1)
-
-        XCTAssertEqual(listPrefix, prefix)
-        XCTAssertEqual(listPath, path)
     }
 
     public func verifyDelete(serviceKey: String) {

@@ -59,8 +59,7 @@ protocol AWSS3StorageServiceBehaviour {
                          onEvent: @escaping StorageServiceMultiPartUploadEventHandler)
 
     func list(prefix: String,
-              path: String?,
-              onEvent: @escaping StorageServiceListEventHandler)
+              options: StorageListRequest.Options) async throws -> StorageListResult
 
     func delete(serviceKey: String,
                 onEvent: @escaping StorageServiceDeleteEventHandler)
