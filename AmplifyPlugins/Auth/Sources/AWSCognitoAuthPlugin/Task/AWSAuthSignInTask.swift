@@ -42,7 +42,7 @@ class AWSAuthSignInTask: AuthSignInTask {
         do {
            return try await doSignIn(authflowType: authflowType)
         } catch {
-            await waitforSignInCancel()
+            await waitForSignInCancel()
             throw error
         }
     }
