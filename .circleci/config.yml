@@ -251,7 +251,7 @@ jobs:
       - run:
           name: Download Installer
           command: |
-            aws s3 cp s3://amplify-swift-fortify/Fortify_SCA_and_Apps_22.1.1_osx_x64.app.zip Fortify_SCA_and_Apps_22.1.1_osx_x64.app
+            aws s3 cp s3://amplify-swift-fortify/Fortify_SCA_and_Apps_22.1.1_osx_x64.app.zip Fortify_SCA_and_Apps_22.1.1_osx_x64.app.zip
       - run:
           name: Run Installer
           command: |
