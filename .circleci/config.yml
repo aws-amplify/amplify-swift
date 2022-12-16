@@ -256,7 +256,7 @@ jobs:
           name: Run Installer
           command: |
             ls
-            Fortify_SCA_and_Apps_22.1.1_osx_x64.app/Contents/MacOS/installbuilder.sh --mode unattended --installdir Fortify --InstallSamples 0  --fortify_license_path fortify.license --MigrateSCA 0
+            Fortify_SCA_and_Apps_22.1.1_osx_x64.app.zip/Contents/MacOS/installbuilder.sh --mode unattended --installdir Fortify --InstallSamples 0  --fortify_license_path fortify.license --MigrateSCA 0
             export PATH=~/amplify-swift/Fortify/bin:$PATH
             export PATH=~/amplify-swift/Fortify/bin:$PATH
             echo "export PATH=~/amplify-swift/Fortify/bin:\$PATH" >> "$BASH_ENV"
