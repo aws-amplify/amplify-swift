@@ -270,8 +270,8 @@ jobs:
 
             # print used version
             sourceanalyzer -version
-      environment:
-        FORTIFY_INSTALL_DIRECTORY: ~/amplify-swift/Fortify
+        environment:
+          FORTIFY_INSTALL_DIRECTORY: ~/amplify-swift/Fortify
 
 deploy_requires: &deploy_requires
   requires:
