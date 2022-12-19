@@ -59,7 +59,7 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
     /// - Then:
     ///    - I should get an .validation error
     ///
-    func testSuccessfullyConfirmSignIn() async {
+    func testConfirmSignInWithEmptyResponse() async {
         
         self.mockIdentityProvider = MockIdentityProvider(
             mockRespondToAuthChallengeResponse: { _ in
@@ -208,6 +208,40 @@ class AuthenticationProviderConfirmSigninTests: BasePluginTest {
                 XCTFail("Underlying error should be codeMismatch \(error)")
                 return
             }
+        }
+    }
+
+    func testConfirmSignInRetryWithCodeMismatchException() async {
+        self.mockIdentityProvider = MockIdentityProvider(
+            mockRespondToAuthChallengeResponse: { _ in
+                throw RespondToAuthChallengeOutputError.codeMismatchException(
+                    .init(message: "Exception"))
+            })
+
+        do {
+            _ = try await plugin.confirmSignIn(challengeResponse: "code")
+            XCTFail("Should return an error if the result from service is invalid")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error else {
+                XCTFail("Should produce service error instead of \(error)")
+                return
+            }
+            guard case .codeMismatch = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Underlying error should be codeMismatch \(error)")
+                return
+            }
+
+            self.mockIdentityProvider = MockIdentityProvider(
+                mockRespondToAuthChallengeResponse: { _ in
+                    return .testData()
+                })
+            do {
+                let confirmSignInResult = try await plugin.confirmSignIn(challengeResponse: "code")
+                XCTAssertTrue(confirmSignInResult.isSignedIn, "Signin result should be complete")
+            } catch {
+                XCTFail("Received failure with error \(error)")
+            }
+
         }
     }
     

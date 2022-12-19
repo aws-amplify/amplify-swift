@@ -29,13 +29,17 @@ class AWSAuthSignInTask: AuthSignInTask {
     }
 
     func execute() async throws -> AuthSignInResult {
+        await taskHelper.didStateMachineConfigured()
+        //Check if we have a user pool configuration
         guard let userPoolConfiguration = authConfiguration.getUserPoolConfiguration() else {
             let message = AuthPluginErrorConstants.configurationError
-            let authError = AuthenticationError.configuration(message: message)
+            let authError = AuthError.configuration(
+                "Could not find user pool configuration",
+                message)
             throw authError
         }
 
-        await taskHelper.didStateMachineConfigured()
+
         try await validateCurrentState()
 
         let authflowType = authFlowType(userPoolConfiguration: userPoolConfiguration)
