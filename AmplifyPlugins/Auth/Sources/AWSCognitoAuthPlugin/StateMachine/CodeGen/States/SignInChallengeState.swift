@@ -13,11 +13,11 @@ enum SignInChallengeState: State {
 
     case waitingForAnswer(RespondToAuthChallenge, SignInMethod)
 
-    case verifying(RespondToAuthChallenge, String)
+    case verifying(RespondToAuthChallenge, SignInMethod, String)
 
     case verified
 
-    case error(RespondToAuthChallenge, SignInError)
+    case error(RespondToAuthChallenge, SignInMethod, SignInError)
 }
 
 extension SignInChallengeState {
