@@ -238,7 +238,7 @@ jobs:
           command: bundle exec fastlane << parameters.lane >>
           no_output_timeout: 60m
   
-  install_fortify:
+  fortify:
     <<: *defaults
     steps:
       - aws-cli/setup:
@@ -266,16 +266,12 @@ jobs:
             echo "export PATH=~/amplify-swift/Fortify/bin:\$PATH" >> "$BASH_ENV"
             fortifyupdate -acceptKey
             sourceanalyzer -version
-
-  run_fortify:
-    <<: *defaults
-    steps:
-
       - run:
           name: Run Scan
           command: |
             ls
             sh ./fortify_scan.sh
+
 
 deploy_requires: &deploy_requires
   requires:
@@ -322,20 +318,12 @@ workflows:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
       - checkout_code
-      - install_fortify:
+      - fortify:
           context:
             - amplify-swift-aws-s3-download
-          name: Install Fortify
-          requires:
-            - checkout_code
-          filters:
-            branches:
-              only: phantum/automate_fortify_scan
-      - run_fortify:
           name: Run Fortify
           requires:
             - checkout_code
-            - Install Fortify
           filters:
             branches:
               only: phantum/automate_fortify_scan
