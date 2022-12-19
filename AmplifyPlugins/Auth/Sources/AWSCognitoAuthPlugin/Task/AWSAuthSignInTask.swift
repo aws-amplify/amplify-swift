@@ -29,17 +29,26 @@ class AWSAuthSignInTask: AuthSignInTask {
     }
 
     func execute() async throws -> AuthSignInResult {
+        await taskHelper.didStateMachineConfigured()
+        //Check if we have a user pool configuration
         guard let userPoolConfiguration = authConfiguration.getUserPoolConfiguration() else {
             let message = AuthPluginErrorConstants.configurationError
-            let authError = AuthenticationError.configuration(message: message)
+            let authError = AuthError.configuration(
+                "Could not find user pool configuration",
+                message)
             throw authError
         }
 
-        await taskHelper.didStateMachineConfigured()
+
         try await validateCurrentState()
 
         let authflowType = authFlowType(userPoolConfiguration: userPoolConfiguration)
-        return try await doSignIn(authflowType: authflowType)
+        do {
+           return try await doSignIn(authflowType: authflowType)
+        } catch {
+            await waitForSignInCancel()
+            throw error
+        }
     }
 
     private func validateCurrentState() async throws {
@@ -56,6 +65,8 @@ class AWSAuthSignInTask: AuthSignInTask {
                     "There is already a user in signedIn state. SignOut the user first before calling signIn",
                     AuthPluginErrorConstants.invalidStateError, nil)
                 throw error
+            case .signingIn:
+                await sendCancelSignInEvent()
             case .signedOut:
                 return
             default: continue
@@ -92,6 +103,27 @@ class AWSAuthSignInTask: AuthSignInTask {
             }
         }
         throw AuthError.unknown("Sign in reached an error state")
+    }
+
+    private func sendCancelSignInEvent() async {
+        let event = AuthenticationEvent(eventType: .cancelSignIn)
+        await authStateMachine.send(event)
+    }
+
+    private func waitForSignInCancel() async {
+        await sendCancelSignInEvent()
+        let stateSequences = await authStateMachine.listen()
+        for await state in stateSequences {
+            guard case .configured(let authenticationState, _) = state else {
+                continue
+            }
+            
+            switch authenticationState {
+            case .signedOut:
+                return
+            default: continue
+            }
+        }
     }
 
     private func sendSignInEvent(authflowType: AuthFlowType) async {

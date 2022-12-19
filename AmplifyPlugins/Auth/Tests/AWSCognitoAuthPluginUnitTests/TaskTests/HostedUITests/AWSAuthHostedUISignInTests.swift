@@ -11,11 +11,13 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 import AuthenticationServices
+import AWSCognitoIdentityProvider
 
 class AWSAuthHostedUISignInTests: XCTestCase {
 
-    var plugin: AWSCognitoAuthPlugin?
+    var plugin: AWSCognitoAuthPlugin!
     let networkTimeout = TimeInterval(5)
+    var mockIdentityProvider: CognitoUserPoolBehavior!
     var mockHostedUIResult: Result<[URLQueryItem], HostedUIError>!
     var mockTokenResult = ["id_token": AWSCognitoUserPoolTokens.testData.idToken,
                            "access_token": AWSCognitoUserPoolTokens.testData.accessToken,
@@ -57,11 +59,15 @@ class AWSAuthHostedUISignInTests: XCTestCase {
                                                    hostedUISessionFactory: sessionFactory,
                                                    urlSessionFactory: urlSessionMock,
                                                    randomStringFactory: mockRandomString)
-        let authEnvironment = Defaults.makeDefaultAuthEnvironment(hostedUIEnvironment: environment)
-        let stateMachine = Defaults.authStateMachineWith(environment: authEnvironment,
-                                                         initialState: initialState)
+        let authEnvironment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: { self.mockIdentityProvider },
+            hostedUIEnvironment: environment)
+        let stateMachine = Defaults.authStateMachineWith(
+            environment: authEnvironment,
+            initialState: initialState
+        )
 
-        plugin?.configure(
+        plugin.configure(
             authConfiguration: Defaults.makeDefaultAuthConfigData(withHostedUI: configuration),
             authEnvironment: authEnvironment,
             authStateMachine: stateMachine,
@@ -76,8 +82,8 @@ class AWSAuthHostedUISignInTests: XCTestCase {
             .init(name: "state", value: mockState),
             .init(name: "code", value: mockProof)
         ])
-        let result = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
-        XCTAssertTrue(result!.isSignedIn)
+        let result = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
+        XCTAssertTrue(result.isSignedIn)
     }
 
     @MainActor
@@ -85,7 +91,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         mockHostedUIResult = .failure(.cancelled)
         let expectation  = expectation(description: "SignIn operation should complete")
         do {
-            _ = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
+            _ = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
             XCTFail("Should not succeed")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error,
@@ -103,7 +109,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         mockHostedUIResult = .failure(.cancelled)
         let errorExpectation  = expectation(description: "SignIn operation should complete")
         do {
-            _ = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
+            _ = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
             XCTFail("Should not succeed")
         } catch {
             guard case AuthError.service(_, _, let underlyingError) = error,
@@ -121,8 +127,8 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         ])
         let signInExpectation = expectation(description: "SignIn operation should complete")
         do {
-            let result = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
-            XCTAssertTrue(result!.isSignedIn)
+            let result = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
+            XCTAssertTrue(result.isSignedIn)
             signInExpectation.fulfill()
         } catch {
             XCTFail("Should not fail with error = \(error)")
@@ -138,7 +144,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         ])
         let expectation  = expectation(description: "SignIn operation should complete")
         do {
-            _ = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
+            _ = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
             XCTFail("Should not succeed")
         } catch {
             guard case AuthError.service = error else {
@@ -155,7 +161,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         mockHostedUIResult = .failure(.invalidContext)
         let expectation  = expectation(description: "SignIn operation should complete")
         do {
-            _ = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
+            _ = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
             XCTFail("Should not succeed")
         } catch {
             guard case AuthError.invalidState = error else {
@@ -183,7 +189,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
 
         let expectation  = expectation(description: "SignIn operation should complete")
         do {
-            _ = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
+            _ = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
             XCTFail("Should not succeed")
         } catch {
             guard case AuthError.service = error else {
@@ -211,7 +217,7 @@ class AWSAuthHostedUISignInTests: XCTestCase {
 
         let expectation  = expectation(description: "SignIn operation should complete")
         do {
-            _ = try await plugin?.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
+            _ = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
             XCTFail("Should not succeed")
         } catch {
             guard case AuthError.service = error else {
@@ -223,4 +229,53 @@ class AWSAuthHostedUISignInTests: XCTestCase {
         wait(for: [expectation], timeout: networkTimeout)
     }
 
+
+
+    /// Test a signIn restart while another sign in is in progress
+    ///
+    /// - Given: Given an auth plugin with mocked service and a in progress signIn waiting for SMS verification
+    ///
+    /// - When:
+    ///    - I invoke another signIn with valid values
+    /// - Then:
+    ///    - I should get a .done response
+    ///
+    @MainActor
+    func testRestartSignInWithWebUI() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+            InitiateAuthOutputResponse(
+                authenticationResult: .none,
+                challengeName: .passwordVerifier,
+                challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                session: "someSession")
+        }, mockRespondToAuthChallengeResponse: { _ in
+            RespondToAuthChallengeOutputResponse(
+                authenticationResult: .none,
+                challengeName: .smsMfa,
+                challengeParameters: [:],
+                session: "session")
+        })
+
+        let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
+                                                 metadata: ["somekey": "somevalue"])
+        let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
+
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            guard case .confirmSignInWithSMSMFACode =  result.nextStep else {
+                XCTFail("Result should be .confirmSignInWithSMSMFACode for next step")
+                return
+            }
+            XCTAssertFalse(result.isSignedIn)
+            mockHostedUIResult = .success([
+                .init(name: "state", value: mockState),
+                .init(name: "code", value: mockProof)
+            ])
+            let result2 = try await plugin.signInWithWebUI(presentationAnchor: ASPresentationAnchor(), options: nil)
+            XCTAssertTrue(result2.isSignedIn)
+        } catch {
+            XCTFail("Received failure with error \(error)")
+        }
+    }
 }

@@ -249,8 +249,8 @@ class AWSAuthSignInPluginTests: BasePluginTest {
             })
 
             do {
-                let result = try await plugin.signIn(username: "username", password: "password", options: options)
-                XCTAssertTrue(result.isSignedIn, "Signin result should be complete")
+                let result2 = try await plugin.signIn(username: "username", password: "password", options: options)
+                XCTAssertTrue(result2.isSignedIn, "Signin result should be complete")
             } catch {
                 XCTFail("Received failure with error \(error)")
             }
@@ -1098,6 +1098,72 @@ class AWSAuthSignInPluginTests: BasePluginTest {
                 XCTFail("Should produce invalidPassword error but instead produced \(error)")
                 return
             }
+        }
+    }
+
+    /// Test a signIn restart while another sign in is in progress
+    ///
+    /// - Given: Given an auth plugin with mocked service and a in progress signIn waiting for SMS verification
+    ///
+    /// - When:
+    ///    - I invoke another signIn with valid values
+    /// - Then:
+    ///    - I should get a .done response
+    ///
+    func testRestartSignIn() async {
+
+        self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+            InitiateAuthOutputResponse(
+                authenticationResult: .none,
+                challengeName: .passwordVerifier,
+                challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                session: "someSession")
+        }, mockRespondToAuthChallengeResponse: { _ in
+            RespondToAuthChallengeOutputResponse(
+                authenticationResult: .none,
+                challengeName: .smsMfa,
+                challengeParameters: [:],
+                session: "session")
+        })
+
+        let pluginOptions = AWSAuthSignInOptions(validationData: ["somekey": "somevalue"],
+                                                 metadata: ["somekey": "somevalue"])
+        let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
+
+        do {
+            let result = try await plugin.signIn(username: "username", password: "password", options: options)
+            guard case .confirmSignInWithSMSMFACode =  result.nextStep else {
+                XCTFail("Result should be .confirmSignInWithSMSMFACode for next step")
+                return
+            }
+            XCTAssertFalse(result.isSignedIn)
+            self.mockIdentityProvider = MockIdentityProvider(mockInitiateAuthResponse: { _ in
+                InitiateAuthOutputResponse(
+                    authenticationResult: .none,
+                    challengeName: .passwordVerifier,
+                    challengeParameters: InitiateAuthOutputResponse.validChalengeParams,
+                    session: "someSession")
+            }, mockRespondToAuthChallengeResponse: { _ in
+                RespondToAuthChallengeOutputResponse(
+                    authenticationResult: .init(
+                        accessToken: Defaults.validAccessToken,
+                        expiresIn: 300,
+                        idToken: "idToken",
+                        newDeviceMetadata: nil,
+                        refreshToken: "refreshToken",
+                        tokenType: ""),
+                    challengeName: .none,
+                    challengeParameters: [:],
+                    session: "session")
+            })
+            let result2 = try await plugin.signIn(username: "username2", password: "password", options: options)
+            guard case .done =  result2.nextStep else {
+                XCTFail("Result should be .confirmSignInWithSMSMFACode for next step")
+                return
+            }
+            XCTAssertTrue(result2.isSignedIn)
+        } catch {
+            XCTFail("Received failure with error \(error)")
         }
     }
 }

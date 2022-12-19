@@ -30,6 +30,7 @@ extension HostedUISignInState {
 
             case .showingUI:
                 if case .throwError(let error) = event.isHostedUIEvent {
+                    // Remove this?
                     let action = CancelSignIn()
                     return .init(newState: .error(error), actions: [action])
                 }
@@ -42,6 +43,7 @@ extension HostedUISignInState {
 
             case .fetchingToken:
                 if case .throwError(let error) = event.isHostedUIEvent {
+                    // Remove this?
                     let action = CancelSignIn()
                     return .init(newState: .error(error), actions: [action])
                 }

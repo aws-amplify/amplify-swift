@@ -114,10 +114,8 @@ extension SRPSignInState {
 
         private func errorState(_ error: SignInError)
         -> StateResolution<SRPSignInState> {
-            let action = ThrowSignInError(error: error)
             return StateResolution(
-                newState: SRPSignInState.error(error),
-                actions: [action]
+                newState: SRPSignInState.error(error)
             )
         }
 

@@ -33,11 +33,14 @@ extension SignInChallengeState {
                         challenge: challenge,
                         confirmSignEventData: answerEventData,
                         signInMethod: signInMethod)
-                    return .init(newState: .verifying(challenge, answerEventData.answer), actions: [action])
+                    return .init(
+                        newState: .verifying(challenge, signInMethod, answerEventData.answer),
+                        actions: [action]
+                    )
                 }
                 return .from(oldState)
 
-            case .verifying(let challenge, _):
+            case .verifying(let challenge, let signInMethod, _):
 
                 if case .finalizeSignIn(let signedInData) = event.isSignInEvent {
                     return .init(newState: .verified,
@@ -45,11 +48,25 @@ extension SignInChallengeState {
                 }
 
                 if case .throwAuthError(let error) = event.isSignInEvent {
-                    return .init(newState: .error(challenge, error))
+                    return .init(newState: .error(challenge, signInMethod, error))
                 }
                 return .from(oldState)
 
-            case .verified, .error:
+            case .error(let challenge, let signInMethod, _):
+                // If a verifyChallengeAnswer is received on error state we allow
+                // to retry the challenge.
+                if case .verifyChallengeAnswer(let answerEventData) = event.isChallengeEvent {
+                    let action = VerifySignInChallenge(
+                        challenge: challenge,
+                        confirmSignEventData: answerEventData,
+                        signInMethod: signInMethod)
+                    return .init(
+                        newState: .verifying(challenge, signInMethod, answerEventData.answer),
+                        actions: [action]
+                    )
+                }
+                return .from(oldState)
+            case .verified:
 
                 return .from(oldState)
             }

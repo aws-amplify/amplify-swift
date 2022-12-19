@@ -77,7 +77,7 @@ extension AuthError: AmplifyError {
              .invalidState(_, let recoverySuggestion, _):
             return recoverySuggestion
         case .unknown:
-            return AmplifyErrorMessages.shouldNotHappenReportBugToAWS()
+            return AmplifyErrorMessages.shouldNotHappenReportBugToAWSWithoutLineInfo()
         }
     }
 
