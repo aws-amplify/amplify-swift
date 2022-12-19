@@ -268,8 +268,6 @@ jobs:
             sourceanalyzer -version
       - run:
           name: Run Scan
-          command: |
-            ls
             sh ./fortify_scan.sh
 
 
