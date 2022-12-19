@@ -255,6 +255,10 @@ jobs:
             tar -xvf Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz
             unzip Fortify_SCA_and_Apps_22.1.1_osx_x64.app.zip
       - run:
+          name: Download Script
+          command: |
+            aws s3 cp s3://amplify-swift-fortify/fortify_scan.sh fortify_scan.sh
+      - run:
           name: Run Installer
           command: |
             Fortify_SCA_and_Apps_22.1.1_osx_x64.app/Contents/MacOS/installbuilder.sh --mode unattended --installdir Fortify --InstallSamples 0  --fortify_license_path fortify.license --MigrateSCA 0
@@ -262,6 +266,15 @@ jobs:
             echo "export PATH=~/amplify-swift/Fortify/bin:\$PATH" >> "$BASH_ENV"
             fortifyupdate -acceptKey
             sourceanalyzer -version
+
+  run_fortify:
+    <<: *defaults
+    steps:
+
+      - run:
+          name: Run Scan
+          command: |
+            sh fortify_scan.sh
 
 deploy_requires: &deploy_requires
   requires:
@@ -307,13 +320,24 @@ workflows:
       not:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
-      # - checkout_code
+      - checkout_code
+          filters:
+            branches:
+              only: phantum/automate_fortify_scan
       - install_fortify:
           context:
             - amplify-swift-aws-s3-download
           name: Install Fortify
-          # requires:
-          #   - checkout_code
+          requires:
+            - checkout_code
+          filters:
+            branches:
+              only: phantum/automate_fortify_scan
+      - run_fortify:
+          name: Run Fortify
+          requires:
+            - checkout_code
+            - install_fortify
           filters:
             branches:
               only: phantum/automate_fortify_scan
