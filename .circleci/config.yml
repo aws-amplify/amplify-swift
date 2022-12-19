@@ -270,6 +270,7 @@ jobs:
           name: Run Scan
           command: |
             pwd
+            ls
             sh ./fortify_scan.sh
 
 
