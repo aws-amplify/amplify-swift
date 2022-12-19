@@ -334,7 +334,7 @@ workflows:
           name: Run Fortify
           requires:
             - checkout_code
-            - install_fortify
+            - Install Fortify
           filters:
             branches:
               only: phantum/automate_fortify_scan
