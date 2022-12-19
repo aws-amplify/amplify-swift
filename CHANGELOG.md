@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.2.1 (2022-12-19)
+
+### Bug Fixes
+
+- **auth**: Enable retrying when confirm signIn fails (#2617)
+- **auth**: Remove parallel event that move auth plugin to an error state and other cleanups (#2612)
+- **auth**: Enable signIn restart while another signIn is in progress (#2609)
+
 ## 2.2.0 (2022-12-05)
 
 ### Features
