@@ -274,7 +274,8 @@ jobs:
       - run:
           name: Run Scan
           command: |
-            sh fortify_scan.sh
+            ls
+            sh ./fortify_scan.sh
 
 deploy_requires: &deploy_requires
   requires:
