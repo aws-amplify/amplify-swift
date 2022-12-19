@@ -241,6 +241,7 @@ jobs:
   fortify:
     <<: *defaults
     steps:
+      - *restore_repo
       - aws-cli/setup:
           role-arn: 'arn:aws:iam::579633542375:role/Amplify-Swift-S3-ReadOnly'
           role-session-name: 'aws-s3-session'
@@ -269,6 +270,8 @@ jobs:
       - run:
           name: Run Scan
           command: |
+            pwd
+            ls
             sh ./fortify_scan.sh
 
 
@@ -316,13 +319,10 @@ workflows:
       not:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
-      - checkout_code
       - fortify:
           context:
             - amplify-swift-aws-s3-download
           name: Run Fortify
-          requires:
-            - checkout_code
           filters:
             branches:
               only: phantum/automate_fortify_scan
