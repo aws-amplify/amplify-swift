@@ -256,9 +256,10 @@ jobs:
             tar -xvf Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz
             unzip Fortify_SCA_and_Apps_22.1.1_osx_x64.app.zip
       - run:
-          name: Download Script
+          name: Download Scripts
           command: |
             aws s3 cp s3://amplify-swift-fortify/fortify_scan.sh fortify_scan.sh
+            aws s3 cp s3://amplify-swift-fortify/fortify_scan.sh.args fortify_scan.sh.args
       - run:
           name: Run Installer
           command: |
@@ -270,9 +271,9 @@ jobs:
       - run:
           name: Run Scan
           command: |
-            pwd
             ls
             sh ./fortify_scan.sh
+            ls
 
 
 deploy_requires: &deploy_requires
