@@ -199,29 +199,31 @@ class AWSPinpointAnalyticsPluginIntergrationTests: XCTestCase {
         let recordExpectation = asyncExpectation(description: "Records are successfully recorded",
                                                  expectedFulfillmentCount: concurrencyLimit)
         for eventNumber in 0...concurrencyLimit {
-            let properties = ["eventPropertyStringKey1": "eventProperyStringValue1",
-                              "eventPropertyStringKey2": "eventProperyStringValue2",
-                              "eventPropertyStringKey3": "eventProperyStringValue3",
-                              "eventPropertyStringKey4": "eventProperyStringValue4",
-                              "eventPropertyStringKey5": "eventProperyStringValue5",
-                              "eventPropertyIntKey1": 123,
-                              "eventPropertyIntKey2": 123,
-                              "eventPropertyIntKey3": 123,
-                              "eventPropertyIntKey4": 123,
-                              "eventPropertyIntKey5": 123,
-                              "eventPropertyDoubleKey1": 12.34,
-                              "eventPropertyDoubleKey2": 12.34,
-                              "eventPropertyDoubleKey3": 12.34,
-                              "eventPropertyDoubleKey4": 12.34,
-                              "eventPropertyDoubleKey5": 12.34,
-                              "eventPropertyBoolKey1": true,
-                              "eventPropertyBoolKey2": true,
-                              "eventPropertyBoolKey3": true,
-                              "eventPropertyBoolKey4": true,
-                              "eventPropertyBoolKey5": true] as [String: AnalyticsPropertyValue]
-            let event = BasicAnalyticsEvent(name: "eventName" + String(eventNumber), properties: properties)
-            Amplify.Analytics.record(event: event)
-            await recordExpectation.fulfill()
+            Task {
+                let properties = ["eventPropertyStringKey1": "eventProperyStringValue1",
+                                  "eventPropertyStringKey2": "eventProperyStringValue2",
+                                  "eventPropertyStringKey3": "eventProperyStringValue3",
+                                  "eventPropertyStringKey4": "eventProperyStringValue4",
+                                  "eventPropertyStringKey5": "eventProperyStringValue5",
+                                  "eventPropertyIntKey1": 123,
+                                  "eventPropertyIntKey2": 123,
+                                  "eventPropertyIntKey3": 123,
+                                  "eventPropertyIntKey4": 123,
+                                  "eventPropertyIntKey5": 123,
+                                  "eventPropertyDoubleKey1": 12.34,
+                                  "eventPropertyDoubleKey2": 12.34,
+                                  "eventPropertyDoubleKey3": 12.34,
+                                  "eventPropertyDoubleKey4": 12.34,
+                                  "eventPropertyDoubleKey5": 12.34,
+                                  "eventPropertyBoolKey1": true,
+                                  "eventPropertyBoolKey2": true,
+                                  "eventPropertyBoolKey3": true,
+                                  "eventPropertyBoolKey4": true,
+                                  "eventPropertyBoolKey5": true] as [String: AnalyticsPropertyValue]
+                let event = BasicAnalyticsEvent(name: "eventName" + String(eventNumber), properties: properties)
+                Amplify.Analytics.record(event: event)
+                await recordExpectation.fulfill()
+            }
         }
 
         await waitForExpectations([recordExpectation], timeout: TestCommonConstants.networkTimeout)
