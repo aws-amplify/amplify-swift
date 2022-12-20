@@ -41,12 +41,12 @@ class AWSS3PreSignedURLBuilderAdapter: AWSS3PreSignedURLBuilderBehavior {
         switch signingOperation {
         case .getObject:
             let input = GetObjectInput(bucket: bucket, key: key)
-            preSignedUrl = try await input.customPresignURL(
+            preSignedUrl = try await input.presignURL(
                 config: config,
                 expiration: expiration)
         case .putObject:
             let input = PutObjectInput(bucket: bucket, key: key)
-            preSignedUrl = try await input.customPresignURL(
+            preSignedUrl = try await input.presignURL(
                 config: config,
                 expiration: expiration)
         case .uploadPart(let partNumber, let uploadId):

@@ -48,6 +48,9 @@ extension SdkError: AuthErrorConvertible {
 
         case .pathCreationFailed(let message):
             return AuthError.service(message, "", clientError)
+            
+        case .queryItemCreationFailed(let message):
+            return AuthError.service(message, "", clientError)
 
         case .serializationFailed(let message):
             return AuthError.service(message, "", clientError)

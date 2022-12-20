@@ -509,6 +509,7 @@
 				CODE_SIGN_ENTITLEMENTS = StorageHostApp/StorageHostApp.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = W3DRXD72QU;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StorageHostApp/Info.plist;
@@ -539,6 +540,7 @@
 				CODE_SIGN_ENTITLEMENTS = StorageHostApp/StorageHostApp.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = W3DRXD72QU;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StorageHostApp/Info.plist;
@@ -565,6 +567,7 @@
 			baseConfigurationReference = 0311113428EBED6500D58441 /* Tests.xcconfig */;
 			buildSettings = {
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W3DRXD72QU;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
 				MARKETING_VERSION = 1.0;
@@ -580,6 +583,7 @@
 			baseConfigurationReference = 0311113428EBED6500D58441 /* Tests.xcconfig */;
 			buildSettings = {
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W3DRXD72QU;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
 				MARKETING_VERSION = 1.0;
