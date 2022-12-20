@@ -206,4 +206,40 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
             XCTFail("Email attribute not found")
         }
     }
+    
+    // MARK: - Stress tests
+    /// Test concurrent fetching of the user's email attribute.
+    ///
+    /// - Given: A confirmed user
+    /// - When:
+    ///    - I invoke Amplify.Auth.fetchUserAttributes simultaneously from 50 tasks
+    /// - Then:
+    ///    - The request should be successful and the email attribute should have the correct value
+    ///
+    func testMultipleFetchUserAttributes() async throws {
+        let username = "integTest\(UUID().uuidString)"
+        let password = "P123@\(UUID().uuidString)"
+
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username,
+                                               password: password,
+                                               email: defaultTestEmail)
+        XCTAssertTrue(didSucceed, "SignIn operation failed")
+
+        let fetchUserAttributesExpectation = asyncExpectation(description: "Fetch user attributes was successful",
+                                                              expectedFulfillmentCount: concurrencyLimit)
+        for _ in 0...concurrencyLimit {
+            Task {
+                let attributes = try await Amplify.Auth.fetchUserAttributes()
+                if let emailAttribute = attributes.filter({ $0.key == .email }).first {
+                    XCTAssertEqual(emailAttribute.value, self.defaultTestEmail)
+                } else {
+                    XCTFail("Email attribute not found")
+                }
+                await fetchUserAttributesExpectation.fulfill()
+            }
+        }
+        
+        await waitForExpectations([fetchUserAttributesExpectation], timeout: 30)
+    }
+    
 }

@@ -235,4 +235,76 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
         }
         await waitForExpectations(timeout: networkTimeout)
     }
+    
+    // MARK: - Stress Tests
+    /// Test if successful session is retreived after a user signin and tried to fetch auth session multiple times
+    /// simultaneously
+    ///
+    /// - Given: A signedout Amplify Auth Category
+    /// - When:
+    ///    - I sign in to the Auth Category, and try fetch Auth session from 50 tasks
+    /// - Then:
+    ///    - I should receive a valid session in signed in state
+    ///
+    func testMultipleFetchAuthSessionAfterSignIn() async throws {
+        let username = "integTest\(UUID().uuidString)"
+        let password = "P123@\(UUID().uuidString)"
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(username: username, password: password,
+                                               email: defaultTestEmail)
+        XCTAssertTrue(didSucceed, "SignIn operation failed")
+
+        let fetchAuthSessionExpectation = asyncExpectation(description: "Fetch auth session was successful",
+                                                           expectedFulfillmentCount: concurrencyLimit)
+        for _ in 0...concurrencyLimit {
+            Task {
+                let session = try await Amplify.Auth.fetchAuthSession()
+                XCTAssertTrue(session.isSignedIn, "Session state should be signed In")
+                await fetchAuthSessionExpectation.fulfill()
+            }
+        }
+        
+        await waitForExpectations([fetchAuthSessionExpectation], timeout: networkTimeout)
+    }
+    
+    /// Test if successful session is retrieved with random force refresh operation happening in between
+    ///
+    /// - Given: A signedIn auth plugin
+    /// - When:
+    ///    - I start a parallel fetchAuthSession from 50 tasks simultaneously
+    ///    - I invoke a force refresh
+    /// - Then:
+    ///    - I should receive a valid sessions
+    ///
+    func testMultipleFetchAuthSessionWithRandomForceRefresh() async throws {
+        let username = "integTest\(UUID().uuidString)"
+        let password = "P123@\(UUID().uuidString)"
+        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
+            username: username,
+            password: password,
+            email: defaultTestEmail
+        )
+        XCTAssertTrue(didSucceed, "SignIn operation failed")
+
+        let identityIDExpectation = asyncExpectation(description: "Identity id should be fetched",
+                                                     expectedFulfillmentCount: concurrencyLimit)
+        for index in 0...concurrencyLimit {
+            Task {
+                // Randomly yield the task so that below execution of force refresh happens
+                let session : AuthSession
+                if index == concurrencyLimit/2 {
+                    session = try await Amplify.Auth.fetchAuthSession(options: .forceRefresh())
+                } else {
+                    session = try await Amplify.Auth.fetchAuthSession()
+                }
+                guard let cognitoSession = session as? AWSAuthCognitoSession,
+                      let _ = try? cognitoSession.identityIdResult.get() else {
+                    XCTFail("Could not fetch Identity ID")
+                    return
+                }
+                await identityIDExpectation.fulfill()
+            }
+        }
+        
+        await waitForExpectations([identityIDExpectation], timeout: networkTimeout)
+    }
 }

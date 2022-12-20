@@ -132,4 +132,25 @@ class SignedOutAuthSessionTests: AWSAuthBaseTest {
             return
         }
     }
+    
+    // MARK: - Stress tests
+    func testMultipleFetchAuthSessionWhenSignedOut() async throws {
+        let fetchAuthSessionExpectation = asyncExpectation(description: "Session state should not be signedIn",
+                                           expectedFulfillmentCount: concurrencyLimit)
+        for _ in 0...concurrencyLimit {
+            Task {
+                let result = try await Amplify.Auth.fetchAuthSession()
+                XCTAssertFalse(result.isSignedIn, "Session state should be not signed In")
+                let credentialsResult = (result as? AuthAWSCredentialsProvider)?.getAWSCredentials()
+                guard let awsCredentails = try? credentialsResult?.get() else {
+                    XCTFail("Could not fetch aws credentials")
+                    return
+                }
+                XCTAssertNotNil(awsCredentails.accessKeyId, "Access key should not be nil")
+                await fetchAuthSessionExpectation.fulfill()
+            }
+        }
+        
+        await waitForExpectations([fetchAuthSessionExpectation], timeout: networkTimeout)
+    }
 }
