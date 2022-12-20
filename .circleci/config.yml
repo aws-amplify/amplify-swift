@@ -259,7 +259,6 @@ jobs:
           name: Download Scripts
           command: |
             aws s3 cp s3://amplify-swift-fortify/fortify_scan.sh fortify_scan.sh
-            aws s3 cp s3://amplify-swift-fortify/fortify_scan.sh.args fortify_scan.sh.args
       - run:
           name: Run Installer
           command: |
@@ -271,9 +270,7 @@ jobs:
       - run:
           name: Run Scan
           command: |
-            ls
             sh ./fortify_scan.sh
-            ls
 
 
 deploy_requires: &deploy_requires
