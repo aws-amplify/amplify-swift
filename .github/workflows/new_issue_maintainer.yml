@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     if: |
       !github.event.issue.pull_request && 
-      contains(fromJSON('["palpatim", "brennanMKE", "5d", "harsh62", "thisisabhash", "ameter", "royjit", "atierian", "ukhan-amazon", "ruisebas", "phantumcode"]'), github.event.issue.user.login) ||
+      contains(fromJSON('["palpatim", "5d", "harsh62", "thisisabhash", "ameter", "royjit", "atierian", "ukhan-amazon", "ruisebas", "phantumcode"]'), github.event.issue.user.login) ||
       contains(fromJSON('["drochetti", "mikepschneider", "lawmicha", "dcipoletti", "dpilch", "manueliglesias", "svidgen", "david-mcafee", "poojamat", "AaronZyLee", "marcvberg", "iartemiev", "phani-srikar", "sundersc", "alharris-at", "yeung-wah", "manaswi223"]'), github.event.issue.user.login)
     steps:
       - name: add message if maintainer opened
