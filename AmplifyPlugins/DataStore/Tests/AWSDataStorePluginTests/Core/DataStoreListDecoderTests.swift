@@ -19,19 +19,15 @@ class DataStoreListDecoderTests: BaseDataStoreTests {
     let decoder = JSONDecoder()
 
     class DataStoreListDecoderHarness<ModelType: Model>: Decodable {
-        var shouldDecode = false
         let listProvider: DataStoreListProvider<ModelType>?
 
-        init(shouldDecode: Bool, listProvider: DataStoreListProvider<ModelType>?) {
-            self.shouldDecode = shouldDecode
+        init(listProvider: DataStoreListProvider<ModelType>?) {
             self.listProvider = listProvider
         }
 
-        required convenience init(from decoder: Decoder) throws {
-            let shouldDecode = DataStoreListDecoder.shouldDecode(modelType: ModelType.self, decoder: decoder)
-            let provider = try DataStoreListDecoder.getDataStoreListProvider(modelType: ModelType.self,
-                                                                             decoder: decoder)
-            self.init(shouldDecode: shouldDecode, listProvider: provider)
+        required convenience init(from decoder: Decoder) {
+            let provider = DataStoreListDecoder.shouldDecodeToDataStoreListProvider(modelType: ModelType.self, decoder: decoder)
+            self.init(listProvider: provider)
         }
     }
 
@@ -47,13 +43,12 @@ class DataStoreListDecoderTests: BaseDataStoreTests {
         ]
         let data = try encoder.encode(json)
         let harness = try decoder.decode(DataStoreListDecoderHarness<Post4>.self, from: data)
-        XCTAssertTrue(harness.shouldDecode)
         XCTAssertNotNil(harness.listProvider)
         guard let provider = harness.listProvider else {
             XCTFail("Could get AppSyncListProvider")
             return
         }
-        guard case .loaded(let elements) = provider.loadedState else {
+        guard case .loaded(let elements) = provider.getState() else {
             XCTFail("Should be in loaded state")
             return
         }
@@ -67,13 +62,12 @@ class DataStoreListDecoderTests: BaseDataStoreTests {
         ]
         let data = try encoder.encode(json)
         let harness = try decoder.decode(DataStoreListDecoderHarness<Post4>.self, from: data)
-        XCTAssertTrue(harness.shouldDecode)
         XCTAssertNotNil(harness.listProvider)
         guard let provider = harness.listProvider else {
             XCTFail("Could get AppSyncListProvider")
             return
         }
-        guard case .notLoaded(let associatedIdentifiers, let associatedField) = provider.loadedState else {
+        guard case .notLoaded(let associatedIdentifiers, let associatedField) = provider.getState() else {
             XCTFail("Should be in loaded state")
             return
         }
@@ -81,15 +75,14 @@ class DataStoreListDecoderTests: BaseDataStoreTests {
         XCTAssertEqual(associatedField, "post")
     }
 
-    func testDataStoreListDecoderAssertForInvalidAssociationData() throws {
+    func testDataStoreListDecoderShouldNotDecodeForInvalidAssociationData() throws {
         let json: JSONValue = [
             "associatedId": "postId",
             "associatedField": ["invalidField"]
         ]
         let data = try encoder.encode(json)
-        try XCTAssertThrowFatalError {
-            _ = try? self.decoder.decode(DataStoreListDecoderHarness<Post4>.self, from: data)
-        }
+        let result = try self.decoder.decode(DataStoreListDecoderHarness<Post4>.self, from: data)
+        XCTAssertNil(result.listProvider)
     }
 
     func testDataStoreListDecoderShouldNotDecodeFromMissingAssociationData() throws {
@@ -97,16 +90,14 @@ class DataStoreListDecoderTests: BaseDataStoreTests {
             "associatedId": "123"
         ]
         let data = try encoder.encode(json)
-        try XCTAssertThrowFatalError {
-            _ = try? self.decoder.decode(DataStoreListDecoderHarness<Post4>.self, from: data)
-        }
+        let result = try self.decoder.decode(DataStoreListDecoderHarness<Post4>.self, from: data)
+        XCTAssertNil(result.listProvider)
     }
 
     func testDataStoreListDecoderShouldNotDecodeJSONString() throws {
         let json: JSONValue = "JSONString"
         let data = try encoder.encode(json)
-        try XCTAssertThrowFatalError {
-            _ = try? self.decoder.decode(DataStoreListDecoderHarness<Post4>.self, from: data)
-        }
+        let result = try self.decoder.decode(DataStoreListDecoderHarness<Post4>.self, from: data)
+        XCTAssertNil(result.listProvider)
     }
 }

@@ -24,44 +24,19 @@ public struct DataStoreModelDecoder: ModelProviderDecoder {
         return ["identifier": identifier, "source": DataStoreSource]
     }
     
-    public static func shouldDecode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> Bool {
+    public static func shouldDecode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AnyModelProvider<ModelType>? {
         if let metadata = try? DataStoreModelDecoder.Metadata(from: decoder) {
             if metadata.source == DataStoreSource {
-                return true
+                return DataStoreModelProvider<ModelType>(metadata: metadata).eraseToAnyModelProvider()
             } else {
-                return false
+                return nil
             }
         }
         
-        if (try? ModelType(from: decoder)) != nil {
-            return true
-        }
-        
-        return false
-    }
-    
-    public static func makeModelProvider<ModelType: Model>(modelType: ModelType.Type,
-                                                           decoder: Decoder) throws -> AnyModelProvider<ModelType> {
-        
-        if let provider = try getDataStoreModelProvider(modelType: modelType, decoder: decoder) {
-            return provider.eraseToAnyModelProvider()
-        }
-        
-        return DefaultModelProvider<ModelType>(element: nil).eraseToAnyModelProvider()
-    }
-    
-    static func getDataStoreModelProvider<ModelType: Model>(modelType: ModelType.Type,
-                                                            decoder: Decoder) throws -> DataStoreModelProvider<ModelType>? {
         if let model = try? ModelType.init(from: decoder) {
-            return DataStoreModelProvider(model: model)
-        } else if let metadata = try? Metadata.init(from: decoder) {
-            return DataStoreModelProvider<ModelType>(metadata: metadata)
+            return DataStoreModelProvider(model: model).eraseToAnyModelProvider()
         }
-
-        let json = try? JSONValue(from: decoder)
-        let message = "DataStoreModelProvider could not be created from \(String(describing: json))"
-        Amplify.DataStore.log.error(message)
-        assertionFailure(message)
+        
         return nil
     }
 }

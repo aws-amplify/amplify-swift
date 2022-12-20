@@ -99,8 +99,7 @@ public class LazyReference<ModelType: Model>: Codable, LazyReferenceValue {
     /// Decodable implementation is delegated to the underlying `self.reference`.
     required convenience public init(from decoder: Decoder) throws {
         for modelDecoder in ModelProviderRegistry.decoders.get() {
-            if modelDecoder.shouldDecode(modelType: ModelType.self, decoder: decoder) {
-                let modelProvider = try modelDecoder.makeModelProvider(modelType: ModelType.self, decoder: decoder)
+            if let modelProvider = modelDecoder.shouldDecode(modelType: ModelType.self, decoder: decoder) {
                 self.init(modelProvider: modelProvider)
                 return
             }

@@ -143,8 +143,7 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
     /// the plugin to successfully return an instance of `ModelListProvider`.
     required convenience public init(from decoder: Decoder) throws {
         for listDecoder in ModelListDecoderRegistry.listDecoders.get() {
-            if listDecoder.shouldDecode(modelType: ModelType.self, decoder: decoder) {
-                let listProvider = try listDecoder.makeListProvider(modelType: ModelType.self, decoder: decoder)
+            if let listProvider = listDecoder.shouldDecode(modelType: ModelType.self, decoder: decoder) {
                 self.init(listProvider: listProvider)
                 return
             }

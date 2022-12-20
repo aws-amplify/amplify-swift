@@ -17,19 +17,15 @@ class AppSyncListDecoderTests: XCTestCase {
     let decoder = JSONDecoder()
 
     class AppSyncListDecoderHarness<ModelType: Model>: Decodable {
-        var shouldDecode = false
         let listProvider: AppSyncListProvider<ModelType>?
 
-        init(shouldDecode: Bool, listProvider: AppSyncListProvider<ModelType>?) {
-            self.shouldDecode = shouldDecode
+        init(listProvider: AppSyncListProvider<ModelType>?) {
             self.listProvider = listProvider
         }
 
         required convenience init(from decoder: Decoder) throws {
-            let shouldDecode = AppSyncListDecoder.shouldDecode(modelType: ModelType.self, decoder: decoder)
-            let provider = try AppSyncListDecoder.makeAppSyncListProvider(modelType: ModelType.self,
-                                                                          decoder: decoder)
-            self.init(shouldDecode: shouldDecode, listProvider: provider)
+            let provider = AppSyncListDecoder.shouldDecodeToAppSyncListProvider(modelType: ModelType.self, decoder: decoder)
+            self.init(listProvider: provider)
         }
     }
 
@@ -50,7 +46,6 @@ class AppSyncListDecoderTests: XCTestCase {
         let data = try encoder.encode(appSyncPayload)
 
         let harness = try decoder.decode(AppSyncListDecoderHarness<Post4>.self, from: data)
-        XCTAssertTrue(harness.shouldDecode)
         XCTAssertNotNil(harness.listProvider)
         guard let provider = harness.listProvider else {
             XCTFail("Could get AppSyncListProvider")
@@ -65,7 +60,7 @@ class AppSyncListDecoderTests: XCTestCase {
         XCTAssertNil(filter)
     }
 
-    func testInvalidAppSyncListPayloadShouldFail() throws {
+    func testShouldNotDecodeForInvalidAppSyncListPayload() throws {
         let json: JSONValue = [
             "items": [
                 [
@@ -77,14 +72,8 @@ class AppSyncListDecoderTests: XCTestCase {
         ]
         let appSyncPayload = AppSyncListPayload(graphQLData: json, apiName: nil, variables: nil)
         let data = try encoder.encode(appSyncPayload)
-        do {
-            _ = try decoder.decode(AppSyncListDecoderHarness<Post4>.self, from: data)
-            XCTFail("Should fail in catch block")
-        } catch _ as DecodingError {
-
-        } catch {
-            XCTFail("Should be caught as decoding error")
-        }
+        let result = try decoder.decode(AppSyncListDecoderHarness<Post4>.self, from: data)
+        XCTAssertNil(result.listProvider)
     }
 
     func testShouldDecodeFromModelMetadata() throws {
@@ -93,13 +82,12 @@ class AppSyncListDecoderTests: XCTestCase {
                                                         apiName: "apiName")
         let data = try encoder.encode(modelMetadata)
         let harness = try decoder.decode(AppSyncListDecoderHarness<Comment4>.self, from: data)
-        XCTAssertTrue(harness.shouldDecode)
         XCTAssertNotNil(harness.listProvider)
         guard let provider = harness.listProvider else {
             XCTFail("Could get AppSyncListProvider")
             return
         }
-        guard case .notLoaded(let associatedIdentifiers, let associatedField) = provider.loadedState else {
+        guard case .notLoaded(let associatedIdentifiers, let associatedField) = provider.getState() else {
             XCTFail("Should be in not loaded state")
             return
         }
@@ -113,7 +101,6 @@ class AppSyncListDecoderTests: XCTestCase {
                                                                 nextToken: "nextToken")
         let data = try encoder.encode(listResponse)
         let harness = try decoder.decode(AppSyncListDecoderHarness<Post4>.self, from: data)
-        XCTAssertTrue(harness.shouldDecode)
         XCTAssertNotNil(harness.listProvider)
         guard let provider = harness.listProvider else {
             XCTFail("Could get AppSyncListProvider")
@@ -128,11 +115,11 @@ class AppSyncListDecoderTests: XCTestCase {
         XCTAssertNil(filter)
     }
 
-    func testInvalidPayloadShouldAssert() throws {
+    func testInvalidPayload() throws {
         let json = "json"
         let data = try encoder.encode(json)
-        try XCTAssertThrowFatalError {
-            _ = try? self.decoder.decode(AppSyncListDecoderHarness<Comment4>.self, from: data)
-        }
+        let result = try self.decoder.decode(AppSyncListDecoderHarness<Comment4>.self, from: data)
+        XCTAssertNil(result.listProvider)
+        
     }
 }

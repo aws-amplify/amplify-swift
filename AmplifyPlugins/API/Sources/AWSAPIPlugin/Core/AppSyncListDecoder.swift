@@ -22,50 +22,30 @@ public struct AppSyncListDecoder: ModelListDecoder {
     
     /// Used by the custom decoder implemented in the `List` type to detect if the payload can be
     /// decoded to an AppSyncListProvider.
-    public static func shouldDecode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> Bool {
-        if (try? AppSyncListPayload(from: decoder)) != nil {
-            return true
-        }
-
-        if (try? Metadata(from: decoder)) != nil {
-            return true
-        }
-
-        if (try? AppSyncListResponse<ModelType>(from: decoder)) != nil {
-            return true
-        }
-
-        return false
+    public static func shouldDecode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AnyModelListProvider<ModelType>? {
+        self.shouldDecodeToAppSyncListProvider(modelType: modelType, decoder: decoder)?.eraseToAnyModelListProvider()
     }
-
-    /// Create an AppSyncListProvider in different states, such as a "not loaded" provider with metadata
-    /// or a "loaded" list with the response data items, or the response with "next token"
-    public static func makeListProvider<ModelType: Model>(modelType: ModelType.Type,
-                                                          decoder: Decoder) throws -> AnyModelListProvider<ModelType> {
-        if let appSyncListProvider = try makeAppSyncListProvider(modelType: modelType, decoder: decoder) {
-            return appSyncListProvider.eraseToAnyModelListProvider()
-        }
-
-        return ArrayLiteralListProvider<ModelType>(elements: []).eraseToAnyModelListProvider()
-    }
-
-    static func makeAppSyncListProvider<ModelType: Model>(modelType: ModelType.Type,
-                                                   decoder: Decoder) throws -> AppSyncListProvider<ModelType>? {
+    
+    static func shouldDecodeToAppSyncListProvider<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AppSyncListProvider<ModelType>? {
         if let listPayload = try? AppSyncListPayload.init(from: decoder) {
             log.verbose("Creating loaded list of \(modelType.modelName)")
-            return try AppSyncListProvider(payload: listPayload)
+            do {
+                return try AppSyncListProvider(payload: listPayload)
+            } catch {
+                return nil
+            }
         } else if let metadata = try? Metadata.init(from: decoder) {
             log.verbose("Creating not loaded list of \(modelType.modelName) with \(metadata)")
             return AppSyncListProvider<ModelType>(metadata: metadata)
         } else if let listResponse = try? AppSyncListResponse<ModelType>.init(from: decoder) {
             log.verbose("Creating list response for \(modelType.modelName)")
-            return try AppSyncListProvider<ModelType>(listResponse: listResponse)
+            do {
+                return try AppSyncListProvider<ModelType>(listResponse: listResponse)
+            } catch {
+                return nil
+            }
         }
 
-        let json = try JSONValue(from: decoder)
-        let message = "AppSyncListProvider could not be created from \(String(describing: json))"
-        log.error(message)
-        assertionFailure(message)
         return nil
     }
 }
