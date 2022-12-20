@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		978B1D6429515FFB0079E55A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978B1D5E29515DEF0079E55A /* AsyncTesting.swift */; };
+		978B1D6529515FFB0079E55A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978B1D5F29515DEF0079E55A /* AsyncExpectation.swift */; };
+		978B1D6629515FFB0079E55A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978B1D6029515DEF0079E55A /* XCTestCase+AsyncTesting.swift */; };
 		97AD223228230B98001AFCC1 /* GeoHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AD223128230B98001AFCC1 /* GeoHostAppApp.swift */; };
 		97AD223428230B98001AFCC1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AD223328230B98001AFCC1 /* ContentView.swift */; };
 		97AD223628230B9A001AFCC1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97AD223528230B9A001AFCC1 /* Assets.xcassets */; };
@@ -30,6 +33,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		978B1D5E29515DEF0079E55A /* AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTesting.swift; sourceTree = "<group>"; };
+		978B1D5F29515DEF0079E55A /* AsyncExpectation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncExpectation.swift; sourceTree = "<group>"; };
+		978B1D6029515DEF0079E55A /* XCTestCase+AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AsyncTesting.swift"; sourceTree = "<group>"; };
 		97AD222E28230B98001AFCC1 /* GeoHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GeoHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		97AD223128230B98001AFCC1 /* GeoHostAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoHostAppApp.swift; sourceTree = "<group>"; };
 		97AD223328230B98001AFCC1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -63,6 +69,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		978B1D5D29515DEF0079E55A /* AsyncTesting */ = {
+			isa = PBXGroup;
+			children = (
+				978B1D5E29515DEF0079E55A /* AsyncTesting.swift */,
+				978B1D5F29515DEF0079E55A /* AsyncExpectation.swift */,
+				978B1D6029515DEF0079E55A /* XCTestCase+AsyncTesting.swift */,
+			);
+			name = AsyncTesting;
+			path = ../../../../../AmplifyAsyncTesting/Sources/AsyncTesting;
+			sourceTree = "<group>";
+		};
 		97AD222528230B98001AFCC1 = {
 			isa = PBXGroup;
 			children = (
@@ -86,6 +103,7 @@
 		97AD223028230B98001AFCC1 /* GeoHostApp */ = {
 			isa = PBXGroup;
 			children = (
+				978B1D5D29515DEF0079E55A /* AsyncTesting */,
 				97AD223128230B98001AFCC1 /* GeoHostAppApp.swift */,
 				97AD223328230B98001AFCC1 /* ContentView.swift */,
 				97AD223528230B9A001AFCC1 /* Assets.xcassets */,
@@ -265,6 +283,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				978B1D6429515FFB0079E55A /* AsyncTesting.swift in Sources */,
+				978B1D6529515FFB0079E55A /* AsyncExpectation.swift in Sources */,
+				978B1D6629515FFB0079E55A /* XCTestCase+AsyncTesting.swift in Sources */,
 				97DB824728233A1D00FC2228 /* AWSLocationGeoPluginIntegrationTests.swift in Sources */,
 				97DB82552823466800FC2228 /* TestConfigHelper.swift in Sources */,
 			);

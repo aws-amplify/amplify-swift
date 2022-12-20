@@ -17,6 +17,7 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
     let searchText = "coffee shop"
     let coordinates = Geo.Coordinates(latitude: 39.7392, longitude: -104.9903)
     let amplifyConfigurationFile = "testconfiguration/AWSLocationGeoPluginIntegrationTests-amplifyconfiguration"
+    let concurrencyLimit = 50
 
     override func setUp() {
         continueAfterFailure = false
@@ -123,5 +124,58 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
         } catch {
             XCTFail("Failed with error: \(error)")
         }
+    }
+    
+    
+    // MARK: - Stress Tests
+    
+    /// Test if concurrent execution of search(for: text) is successful
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke search(for: text) from 50 tasks concurrently
+    /// - Then:
+    ///    - Place results are returned.
+    ///
+    func testMultipleSearchForText() async {
+        let successExpectation = asyncExpectation(description: "searchForText was successful", expectedFulfillmentCount: concurrencyLimit)
+        for _ in 0...concurrencyLimit {
+            Task {
+                do {
+                    let options = Geo.SearchForTextOptions(area: .near(coordinates))
+                    let places = try await Amplify.Geo.search(for: searchText, options: options)
+                    XCTAssertFalse(places.isEmpty)
+                    await successExpectation.fulfill()
+                } catch {
+                    XCTFail("Failed with error: \(error)")
+                }
+            }
+        }
+        
+        await waitForExpectations([successExpectation], timeout: timeout)
+    }
+    
+    /// Test if concurrent execution of search(for: coordinates) is successful
+    /// - Given: Geo plugin with a valid configuration.
+    /// - When:
+    ///    - I invoke search(for: coordinates) from 50 tasks concurrently
+    /// - Then:
+    ///    - Place results are returned.
+    ///
+    func testMultipleSearchForCoordinates() async {
+        let successExpectation = asyncExpectation(description: "searchForCoordinates was successful", expectedFulfillmentCount: concurrencyLimit)
+        for _ in 0...concurrencyLimit {
+            Task {
+                do {
+                    let places = try await Amplify.Geo.search(for: coordinates, options: nil)
+                    XCTAssertFalse(places.isEmpty)
+                    XCTAssertNotNil(places.first?.coordinates)
+                    await successExpectation.fulfill()
+                } catch {
+                    XCTFail("Failed with error: \(error)")
+                }
+            }
+        }
+        
+        await waitForExpectations([successExpectation], timeout: timeout)
     }
 }
