@@ -42,11 +42,6 @@ public enum DataStoreConflictHandlerResult {
     case retry(Model)
 }
 
-public enum DataStoreLoadingStrategy {
-    case eagerLoad
-    case lazyLoad
-}
-
 /// The `DataStore` plugin configuration object.
 public struct DataStoreConfiguration {
 
@@ -75,17 +70,13 @@ public struct DataStoreConfiguration {
     /// Authorization mode strategy
     public var authModeStrategyType: AuthModeStrategyType
 
-    /// Loading sttrategy
-    public var loadingStrategy: DataStoreLoadingStrategy
-    
     init(errorHandler: @escaping DataStoreErrorHandler,
          conflictHandler: @escaping DataStoreConflictHandler,
          syncInterval: TimeInterval,
          syncMaxRecords: UInt,
          syncPageSize: UInt,
          syncExpressions: [DataStoreSyncExpression],
-         authModeStrategy: AuthModeStrategyType = .default,
-         loadingStrategy: DataStoreLoadingStrategy = .eagerLoad) {
+         authModeStrategy: AuthModeStrategyType = .default) {
         self.errorHandler = errorHandler
         self.conflictHandler = conflictHandler
         self.syncInterval = syncInterval
@@ -93,7 +84,6 @@ public struct DataStoreConfiguration {
         self.syncPageSize = syncPageSize
         self.syncExpressions = syncExpressions
         self.authModeStrategyType = authModeStrategy
-        self.loadingStrategy = loadingStrategy
     }
 
 }
@@ -126,8 +116,7 @@ extension DataStoreConfiguration {
         syncMaxRecords: UInt = DataStoreConfiguration.defaultSyncMaxRecords,
         syncPageSize: UInt = DataStoreConfiguration.defaultSyncPageSize,
         syncExpressions: [DataStoreSyncExpression] = [],
-        authModeStrategy: AuthModeStrategyType = .default,
-        loadingStrategy: DataStoreLoadingStrategy = .eagerLoad
+        authModeStrategy: AuthModeStrategyType = .default
     ) -> DataStoreConfiguration {
         return DataStoreConfiguration(errorHandler: errorHandler,
                                       conflictHandler: conflictHandler,
@@ -135,8 +124,7 @@ extension DataStoreConfiguration {
                                       syncMaxRecords: syncMaxRecords,
                                       syncPageSize: syncPageSize,
                                       syncExpressions: syncExpressions,
-                                      authModeStrategy: authModeStrategy,
-                                      loadingStrategy: loadingStrategy)
+                                      authModeStrategy: authModeStrategy)
     }
 
     /// The default configuration.

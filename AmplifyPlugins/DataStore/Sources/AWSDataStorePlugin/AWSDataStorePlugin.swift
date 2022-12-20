@@ -70,12 +70,9 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         }
     }
     
-    var isEagerLoad: Bool {
-        // TODO: We may want to remove the public config property all together and infer that data should be
-        // lazy loaded when the ModelRegistry contains models which uses the latest LazyModel
-        // or some sort of CLI version stored with the AmplifyModel class
-        dataStoreConfiguration.loadingStrategy == .eagerLoad ? true : false
-    }
+    /// Configuration of the query against the local storage, whether it should load the belongs-to/has-one associations
+    /// or not.
+    var isEagerLoad: Bool = true
 
     /// No-argument init that uses defaults for all providers
     public init(modelRegistration: AmplifyModelRegistration,
@@ -117,8 +114,14 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
     /// them to `StorageEngine.setUp(modelSchemas:)`
     public func configure(using amplifyConfiguration: Any?) throws {
         modelRegistration.registerModels(registry: ModelRegistry.self)
+        
         for modelSchema in ModelRegistry.modelSchemas {
             dispatchedModelSyncedEvents[modelSchema.name] = AtomicValue(initialValue: false)
+            // `isEagerLoad` is true by default, unless the models contain the rootPath
+            // which is indication of the codegen that supports for lazy loading.
+            if isEagerLoad && ModelRegistry.modelType(from: modelSchema.name)?.rootPath != nil {
+                isEagerLoad = false
+            }
         }
         resolveSyncEnabled()
         ModelListDecoderRegistry.registerDecoder(DataStoreListDecoder.self)

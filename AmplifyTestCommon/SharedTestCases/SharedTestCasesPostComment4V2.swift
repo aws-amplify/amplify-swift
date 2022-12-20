@@ -145,6 +145,8 @@ public struct LazyChildComment4V2: Model {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         id = try values.decode(String.self, forKey: .id)
         content = try values.decode(String.self, forKey: .content)
+        createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
+        updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
         _post = try values.decode(LazyReference<LazyParentPost4V2>.self, forKey: .post)
     }
     
@@ -152,6 +154,8 @@ public struct LazyChildComment4V2: Model {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
         try container.encode(content, forKey: .content)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encode(updatedAt, forKey: .updatedAt)
         try container.encode(_post, forKey: .post)
     }
 }

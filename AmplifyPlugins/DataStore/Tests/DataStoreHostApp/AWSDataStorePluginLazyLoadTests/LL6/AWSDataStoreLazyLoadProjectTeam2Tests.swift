@@ -15,7 +15,7 @@ import AWSPluginsCore
 class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
     
     func testStart() async throws {
-        await setup(withModels: ProjectTeam2Models(), eagerLoad: false, clearOnTearDown: false)
+        await setup(withModels: ProjectTeam2Models(), clearOnTearDown: false)
         try await startAndWaitForReady()
         printDBPath()
     }
@@ -81,14 +81,14 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testSaveTeam() async throws {
-        await setup(withModels: ProjectTeam2Models(), eagerLoad: false)
+        await setup(withModels: ProjectTeam2Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await saveAndWaitForSync(team)
         try await assertModelExists(savedTeam)
     }
     
     func testSaveProject() async throws {
-        await setup(withModels: ProjectTeam2Models(), eagerLoad: false)
+        await setup(withModels: ProjectTeam2Models())
         let project = Project(projectId: UUID().uuidString,
                               name: "name")
         let savedProject = try await saveAndWaitForSync(project)
@@ -97,7 +97,7 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testSaveProjectWithTeam() async throws {
-        await setup(withModels: ProjectTeam2Models(), eagerLoad: false)
+        await setup(withModels: ProjectTeam2Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await saveAndWaitForSync(team)
         
@@ -143,7 +143,7 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testSaveProjectWithTeamThenUpdate() async throws {
-        await setup(withModels: ProjectTeam2Models(), eagerLoad: false)
+        await setup(withModels: ProjectTeam2Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await saveAndWaitForSync(team)
     
@@ -157,7 +157,7 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testSaveProjectWithoutTeamUpdateProjectWithTeam() async throws {
-        await setup(withModels: ProjectTeam2Models(), eagerLoad: false)
+        await setup(withModels: ProjectTeam2Models())
         let project = Project(projectId: UUID().uuidString, name: "name")
         let savedProject = try await saveAndWaitForSync(project)
         assertProjectDoesNotContainTeam(savedProject)
@@ -172,7 +172,7 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testSaveTeamSaveProjectWithTeamUpdateProjectToNoTeam() async throws {
-        await setup(withModels: ProjectTeam2Models(), eagerLoad: false)
+        await setup(withModels: ProjectTeam2Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await saveAndWaitForSync(team)
         let project = initializeProjectWithTeam(team)
@@ -186,7 +186,7 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testSaveProjectWithTeamUpdateProjectToNewTeam() async throws {
-        await setup(withModels: ProjectTeam2Models(), eagerLoad: false)
+        await setup(withModels: ProjectTeam2Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await saveAndWaitForSync(team)
         let project = initializeProjectWithTeam(team)
@@ -202,7 +202,7 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testDeleteTeam() async throws {
-        await setup(withModels: ProjectTeam2Models(), eagerLoad: false)
+        await setup(withModels: ProjectTeam2Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await saveAndWaitForSync(team)
         try await assertModelExists(savedTeam)
@@ -211,7 +211,7 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testDeleteProject() async throws {
-        await setup(withModels: ProjectTeam2Models(), eagerLoad: false)
+        await setup(withModels: ProjectTeam2Models())
         let project = Project(projectId: UUID().uuidString, name: "name")
         let savedProject = try await saveAndWaitForSync(project)
         try await assertModelExists(savedProject)
@@ -220,7 +220,7 @@ class AWSDataStoreLazyLoadProjectTeam2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testDeleteProjectWithTeam() async throws {
-        await setup(withModels: ProjectTeam2Models(), eagerLoad: false)
+        await setup(withModels: ProjectTeam2Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await saveAndWaitForSync(team)
         let project = initializeProjectWithTeam(team)

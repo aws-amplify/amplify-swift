@@ -15,7 +15,7 @@ import AWSPluginsCore
 final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLazyLoadBaseTest {
 
     func testLazyLoad() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose, eagerLoad: false)
+        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose)
         
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
@@ -83,7 +83,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
     }
     
     func testSaveWithoutPost() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose, eagerLoad: false)
+        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose)
         let comment = Comment(content: "content")
         let savedComment = try await saveAndWaitForSync(comment)
         var queriedComment = try await query(for: savedComment)
@@ -98,7 +98,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
     }
     
     func testUpdateFromQueriedComment() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose, eagerLoad: false)
+        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose)
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
         let savedPost = try await saveAndWaitForSync(post)
@@ -112,7 +112,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
     }
     
     func testUpdateToNewPost() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose, eagerLoad: false)
+        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose)
         
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
@@ -131,7 +131,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
     }
     
     func testUpdateRemovePost() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose, eagerLoad: false)
+        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose)
         
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
@@ -149,7 +149,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
     }
     
     func testDelete() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose, eagerLoad: false)
+        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose)
         
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
