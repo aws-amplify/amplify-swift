@@ -269,6 +269,7 @@ jobs:
             sourceanalyzer -version
       - run:
           name: Run Scan
+          no_output_timeout: 20m
           command: |
             sh ./fortify_scan.sh
 
