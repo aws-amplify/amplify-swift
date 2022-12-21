@@ -31,7 +31,7 @@ public struct Comment4: Model {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         id = try values.decode(String.self, forKey: .id)
         content = try values.decode(String.self, forKey: .content)
-        _post = try values.decode(LazyReference<Post4>.self, forKey: .post)
+        _post = try values.decodeIfPresent(LazyReference<Post4>.self, forKey: .post) ?? LazyReference(identifiers: nil)
     }
     
     public func encode(to encoder: Encoder) throws {

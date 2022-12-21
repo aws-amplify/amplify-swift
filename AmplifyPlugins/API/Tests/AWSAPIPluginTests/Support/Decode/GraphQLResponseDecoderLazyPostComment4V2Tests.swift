@@ -225,6 +225,7 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
         let decoder = GraphQLResponseDecoder<List<LazyChildComment4V2>>(
             request: request.toOperationRequest(operationType: .query))
         
+        let date = Temporal.DateTime.now().iso8601String
         let graphQLData: [String: JSONValue] = [
             "\(request.decodePath!)": [
                 "items": [
@@ -232,12 +233,16 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
                         "id": "id1",
                         "content": "content1",
                         "__typename": "LazyChildComment4V2",
+                        "createdAt": .string("\(date)"),
+                        "updatedAt": .string("\(date)"),
                         "post": nil
                     ],
                     [
                         "id": "id2",
                         "content": "content2",
                         "__typename": "LazyChildComment4V2",
+                        "createdAt": .string("\(date)"),
+                        "updatedAt": .string("\(date)"),
                         "post": nil
                     ],
                 ],
@@ -420,7 +425,7 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
     func testSaveMultipleCommentWithPostThenQueryCommentsAndAccessPost() async throws {
         let post = LazyParentPost4V2(title: "title")
         let request = GraphQLRequest<LazyChildComment4V2>.list(LazyChildComment4V2.self)
-        
+        let date = Temporal.DateTime.now().iso8601String
         var graphQLData: [String: JSONValue] = [
             "\(request.decodePath!)": [
                 "items": [
@@ -428,6 +433,8 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
                         "id": "id1",
                         "content": "content1",
                         "__typename": "LazyChildComment4V2",
+                        "createdAt": .string("\(date)"),
+                        "updatedAt": .string("\(date)"),
                         "post": [
                             "id": .string("\(post.id)"),
                             "__typename": "LazyParentPost4V2"
@@ -469,6 +476,8 @@ class GraphQLResponseDecoderLazyPostComment4V2Tests: XCTestCase, SharedTestCases
                         "id": "id1",
                         "content": "content1",
                         "__typename": "LazyChildComment4V2",
+                        "createdAt": .string("\(date)"),
+                        "updatedAt": .string("\(date)"),
                         "post": [
                             "id": .string("\(post.id)"),
                             "title": "title",

@@ -147,7 +147,7 @@ public struct LazyChildComment4V2: Model {
         content = try values.decode(String.self, forKey: .content)
         createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
         updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
-        _post = try values.decode(LazyReference<LazyParentPost4V2>.self, forKey: .post)
+        _post = try values.decodeIfPresent(LazyReference<LazyParentPost4V2>.self, forKey: .post) ?? LazyReference(identifiers: nil)
     }
     
     public func encode(to encoder: Encoder) throws {
