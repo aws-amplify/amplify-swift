@@ -17,11 +17,11 @@ extension PushNotificationsCategory: PushNotificationsCategoryBehaviour {
         try await plugin.registerDevice(apnsToken: apnsToken)
     }
     
-    public func recordNotificationReceived(_ userInfo: Notifications.Push.UserInfo) async {
-        await plugin.recordNotificationReceived(userInfo)
+    public func recordNotificationReceived(_ userInfo: Notifications.Push.UserInfo) async throws {
+        try await plugin.recordNotificationReceived(userInfo)
     }
     
-    public func recordNotificationOpened(_ response: UNNotificationResponse) async {
-        await plugin.recordNotificationOpened(response)
+    public func recordNotificationOpened(_ response: UNNotificationResponse) async throws {
+        try await plugin.recordNotificationOpened(response)
     }
 }

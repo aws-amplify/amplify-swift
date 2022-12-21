@@ -25,4 +25,19 @@ struct PushNotificationsPluginErrorConstants {
         "Plugin is missing `PinpointPushNotifications` section.",
         "Add the `PinpointPushNotifications` section to the plugin."
     )
+
+    static let deviceOffline: PushNotificationsPluginErrorString = (
+        "The device does not have internet access.",
+        "Please ensure the device is online and try again."
+    )
+
+    static let retryableServiceError: PushNotificationsPluginErrorString = (
+        "Operation failed with a retryable error.",
+        "Please try again."
+    )
+
+    static let nonRetryableServiceError: PushNotificationsPluginErrorString = (
+        "Operation failed with a non-retryable error.",
+        "Please check that your inputs are valid."
+    )
 }
