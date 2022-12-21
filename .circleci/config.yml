@@ -245,10 +245,10 @@ jobs:
       - run:
           name: Make temp directory
           command: |
-            mkdir "temp"
-            cp -r . temp
+            mkdir temp
+            cp -r $(pwd) temp
             ls
-            ls temp/
+            ls temp
       - aws-cli/setup:
           role-arn: 'arn:aws:iam::579633542375:role/Amplify-Swift-S3-ReadOnly'
           role-session-name: 'aws-s3-session'
