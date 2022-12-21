@@ -11,6 +11,7 @@
 - [ ] Security oriented best practices and standards are followed (e.g. using input sanitization, principle of least privilege, etc)
 - [ ] Documentation update for the change if required
 - [ ] PR title conforms to conventional commit style
+- [ ] New or updated tests include `Given When Then` inline code documentation and are named accordingly `testThing_condition_expectation()`
 - [ ] If breaking change, documentation/changelog update with migration instructions
 
 *DataStore checkpoints (check when completed)*
