@@ -66,7 +66,7 @@ class GetCurrentUserTests: AWSAuthBaseTest {
         
         let getCurrentUserExpectation = asyncExpectation(description: "getCurrentUser() is successful",
                                                          expectedFulfillmentCount: concurrencyLimit)
-        for _ in 0...concurrencyLimit {
+        for _ in 1...concurrencyLimit {
             Task {
                 let authUser = try await Amplify.Auth.getCurrentUser()
                 XCTAssertEqual(authUser.username.lowercased(), username.lowercased())

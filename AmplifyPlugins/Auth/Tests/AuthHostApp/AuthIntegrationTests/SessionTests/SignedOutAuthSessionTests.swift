@@ -134,10 +134,19 @@ class SignedOutAuthSessionTests: AWSAuthBaseTest {
     }
     
     // MARK: - Stress tests
+    
+    /// Test if we can fetch auth session in signedOut state
+    ///
+    /// - Given: Auth category with a signedOut state
+    /// - When:
+    ///    - I invoke fetchAuthSession from 50 tasks simulateneously
+    /// - Then:
+    ///    - Valid response with signedOut state = false
+    ///
     func testMultipleFetchAuthSessionWhenSignedOut() async throws {
         let fetchAuthSessionExpectation = asyncExpectation(description: "Session state should not be signedIn",
                                            expectedFulfillmentCount: concurrencyLimit)
-        for _ in 0...concurrencyLimit {
+        for _ in 1...concurrencyLimit {
             Task {
                 let result = try await Amplify.Auth.fetchAuthSession()
                 XCTAssertFalse(result.isSignedIn, "Session state should be not signed In")

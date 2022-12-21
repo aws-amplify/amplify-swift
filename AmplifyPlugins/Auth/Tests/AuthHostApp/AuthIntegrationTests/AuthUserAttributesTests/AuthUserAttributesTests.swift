@@ -208,6 +208,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
     }
     
     // MARK: - Stress tests
+    
     /// Test concurrent fetching of the user's email attribute.
     ///
     /// - Given: A confirmed user
@@ -227,7 +228,7 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
 
         let fetchUserAttributesExpectation = asyncExpectation(description: "Fetch user attributes was successful",
                                                               expectedFulfillmentCount: concurrencyLimit)
-        for _ in 0...concurrencyLimit {
+        for _ in 1...concurrencyLimit {
             Task {
                 let attributes = try await Amplify.Auth.fetchUserAttributes()
                 if let emailAttribute = attributes.filter({ $0.key == .email }).first {

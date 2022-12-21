@@ -237,6 +237,7 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
     }
     
     // MARK: - Stress Tests
+    
     /// Test if successful session is retreived after a user signin and tried to fetch auth session multiple times
     /// simultaneously
     ///
@@ -255,7 +256,7 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
 
         let fetchAuthSessionExpectation = asyncExpectation(description: "Fetch auth session was successful",
                                                            expectedFulfillmentCount: concurrencyLimit)
-        for _ in 0...concurrencyLimit {
+        for _ in 1...concurrencyLimit {
             Task {
                 let session = try await Amplify.Auth.fetchAuthSession()
                 XCTAssertTrue(session.isSignedIn, "Session state should be signed In")
@@ -287,7 +288,7 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
 
         let identityIDExpectation = asyncExpectation(description: "Identity id should be fetched",
                                                      expectedFulfillmentCount: concurrencyLimit)
-        for index in 0...concurrencyLimit {
+        for index in 1...concurrencyLimit {
             Task {
                 // Randomly yield the task so that below execution of force refresh happens
                 let session : AuthSession
