@@ -128,7 +128,9 @@ class DefaultStorageMultipartUploadClient: StorageMultipartUploadClient {
                     let operation = AWSS3SigningOperation.uploadPart(partNumber: partNumber, uploadId: uploadId)
                     let preSignedURL = try await serviceProxy.preSignedURLBuilder.getPreSignedURL(
                         key: self.key,
-                        signingOperation: operation
+                        signingOperation: operation,
+                        accelerate: nil,
+                        expires: nil
                     )
                     startUploadPart(partialFileURL, preSignedURL)
                 } catch {

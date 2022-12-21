@@ -68,7 +68,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
     public func reset() {
     }
 
-    public func download(serviceKey: String, fileURL: URL?, onEvent: @escaping StorageServiceDownloadEventHandler) {
+    public func download(serviceKey: String, fileURL: URL?, accelerate: Bool?, onEvent: @escaping StorageServiceDownloadEventHandler) {
         downloadCalled += 1
 
         downloadServiceKey = serviceKey
@@ -80,7 +80,8 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
     }
 
     public func getPreSignedURL(serviceKey: String,
-                         signingOperation: AWSS3SigningOperation = .getObject,
+                         signingOperation: AWSS3SigningOperation,
+                         accelerate: Bool?,
                          expires: Int,
                          onEvent: @escaping StorageServiceGetPreSignedURLEventHandler) {
         getPreSignedURLCalled += 1
@@ -97,6 +98,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
                        uploadSource: UploadSource,
                        contentType: String?,
                        metadata: [String: String]?,
+                       accelerate: Bool?,
                        onEvent: @escaping StorageServiceUploadEventHandler) {
         uploadCalled += 1
 
@@ -114,6 +116,7 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
                                 uploadSource: UploadSource,
                                 contentType: String?,
                                 metadata: [String: String]?,
+                                accelerate: Bool?,
                                 onEvent: @escaping StorageServiceMultiPartUploadEventHandler) {
         multiPartUploadCalled += 1
 

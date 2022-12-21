@@ -39,10 +39,12 @@ protocol AWSS3StorageServiceBehaviour {
 
     func download(serviceKey: String,
                   fileURL: URL?,
+                  accelerate: Bool?,
                   onEvent: @escaping StorageServiceDownloadEventHandler)
 
     func getPreSignedURL(serviceKey: String,
                          signingOperation: AWSS3SigningOperation,
+                         accelerate: Bool?,
                          expires: Int,
                          onEvent: @escaping StorageServiceGetPreSignedURLEventHandler)
 
@@ -50,12 +52,14 @@ protocol AWSS3StorageServiceBehaviour {
                 uploadSource: UploadSource,
                 contentType: String?,
                 metadata: [String: String]?,
+                accelerate: Bool?,
                 onEvent: @escaping StorageServiceUploadEventHandler)
 
     func multiPartUpload(serviceKey: String,
                          uploadSource: UploadSource,
                          contentType: String?,
                          metadata: [String: String]?,
+                         accelerate: Bool?,
                          onEvent: @escaping StorageServiceMultiPartUploadEventHandler)
 
     func list(prefix: String,
@@ -70,6 +74,6 @@ extension AWSS3StorageServiceBehaviour {
     func getPreSignedURL(serviceKey: String,
                          expires: Int,
                          onEvent: @escaping StorageServiceGetPreSignedURLEventHandler) {
-        getPreSignedURL(serviceKey: serviceKey, signingOperation: .getObject, expires: expires, onEvent: onEvent)
+        getPreSignedURL(serviceKey: serviceKey, signingOperation: .getObject, accelerate: nil, expires: expires, onEvent: onEvent)
     }
 }

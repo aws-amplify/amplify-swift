@@ -63,8 +63,11 @@ class AWSS3StorageGetURLOperation: AmplifyOperation<
             do {
                 let prefix = try await prefixResolver.resolvePrefix(for: request.options.accessLevel, targetIdentityId: request.options.targetIdentityId)
                 let serviceKey = prefix + request.key
+                let accelerate = try AWSS3PluginOptions.accelerateValue(pluginOptions: request.options.pluginOptions)
                 storageService.getPreSignedURL(serviceKey: serviceKey,
-                                                    expires: request.options.expires) { [weak self] event in
+                                               signingOperation: .getObject,
+                                               accelerate: accelerate,
+                                               expires: request.options.expires) { [weak self] event in
                     self?.onServiceEvent(event: event)
                 }
             } catch {
