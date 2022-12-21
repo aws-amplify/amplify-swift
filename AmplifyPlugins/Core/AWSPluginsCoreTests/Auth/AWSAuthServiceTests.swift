@@ -9,6 +9,7 @@ import XCTest
 
 @testable import Amplify
 @testable import AWSPluginsCore
+import AWSClientRuntime
 
 class AWSAuthServiceTests: XCTestCase {
 
@@ -153,4 +154,41 @@ class AWSAuthServiceTests: XCTestCase {
 
         XCTAssertEqual(iat, 1_551_307_661)
     }
+
+
+    /// Given: A credentials that will expire after 100 second
+    /// When: I convert the credentials to AWS SDK ClientRuntime
+    /// Then: I should get a valid CRT credentials
+    func testValidCredentialsToCRTConversion() throws {
+
+        let credentials = MockCredentials(
+            sessionToken: "somesession",
+            accessKeyId: "accessKeyId",
+            secretAccessKey: "secretAccessKey",
+            expiration: Date().addingTimeInterval(100))
+        let sdkCredentials = credentials.toAWSSDKCredentials()
+        XCTAssertNotNil(sdkCredentials)
+    }
+
+    /// Given: A credentials that expired 100 second back
+    /// When: I convert the credentials to AWS SDK ClientRuntime
+    /// Then: I should get a valid CRT credentials
+    func testExpiredCredentialsToCRTConversion() throws {
+
+        let credentials = MockCredentials(
+            sessionToken: "somesession",
+            accessKeyId: "accessKeyId",
+            secretAccessKey: "secretAccessKey",
+            expiration: Date().addingTimeInterval(-100))
+        let sdkCredentials = credentials.toAWSSDKCredentials()
+        XCTAssertNotNil(sdkCredentials)
+    }
+}
+
+
+struct MockCredentials: AWSTemporaryCredentials {
+    let sessionToken: String
+    let accessKeyId: String
+    let secretAccessKey: String
+    let expiration: Date
 }
