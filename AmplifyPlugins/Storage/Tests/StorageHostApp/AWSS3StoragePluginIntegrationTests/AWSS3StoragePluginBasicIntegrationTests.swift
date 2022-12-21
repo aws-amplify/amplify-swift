@@ -336,6 +336,115 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 //        }
 //    }
 
+    // MARK: - Stress tests
+    
+    /// Given: A small data object
+    /// When: Upload the data simultaneously from 10 tasks
+    /// Then: The operation completes successfully
+    func testUploadMultipleSmallDataObjects() async {
+        let uploadExpectation = asyncExpectation(description: "Small data object uploaded successfully",
+                                    expectedFulfillmentCount: AWSS3StoragePluginTestBase.concurrencyLimit)
+        let removeExpectation = asyncExpectation(description: "Data object removed successfully",
+                                          expectedFulfillmentCount: AWSS3StoragePluginTestBase.concurrencyLimit)
+        for _ in 1...AWSS3StoragePluginTestBase.concurrencyLimit {
+            Task {
+                do {
+                    let key = UUID().uuidString
+                    let uploadKey = try await Amplify.Storage.uploadData(key: key,
+                                                                         data: AWSS3StoragePluginTestBase.smallDataObjectForStressTest,
+                                                                         options: nil).value
+                    XCTAssertEqual(uploadKey, key)
+                    await uploadExpectation.fulfill()
+                    
+                    try await Amplify.Storage.remove(key: key)
+                    await removeExpectation.fulfill()
+                } catch {
+                    XCTFail("Error: \(error)")
+                }
+            }
+        }
+        
+        await waitForExpectations([uploadExpectation, removeExpectation], timeout: 60)
+    }
+    
+    /// Given: A very large data object(100MB)
+    /// When: Upload the data
+    /// Then: The operation completes successfully
+    func testUploadLargeDataObject() async {
+        let uploadExpectation = asyncExpectation(description: "Large data object uploaded successfully")
+        let removeExpectation = asyncExpectation(description: "Data object removed successfully")
+        do {
+            let key = UUID().uuidString
+            let uploadKey = try await Amplify.Storage.uploadData(key: key,
+                                                                 data: AWSS3StoragePluginTestBase.largeDataObjectForStressTest,
+                                                                 options: nil).value
+            XCTAssertEqual(uploadKey, key)
+            await uploadExpectation.fulfill()
+            
+            try await Amplify.Storage.remove(key: key)
+            await removeExpectation.fulfill()
+        } catch {
+            XCTFail("Error: \(error)")
+        }
+        await waitForExpectations([uploadExpectation, removeExpectation], timeout: 180)
+    }
+    
+    /// Given: An object in storage
+    /// When: Object is downloaded simultaneously from 10 tasks
+    /// Then: The operation completes successfully with the data retrieved
+    func testDownloadMultipleSmallDataObjects() async {
+        let downloadExpectation = asyncExpectation(description: "Data object downloaded successfully",
+                                    expectedFulfillmentCount: AWSS3StoragePluginTestBase.concurrencyLimit)
+        let uploadExpectation = asyncExpectation(description: "Data object uploaded successfully",
+                                    expectedFulfillmentCount: AWSS3StoragePluginTestBase.concurrencyLimit)
+        let removeExpectation = asyncExpectation(description: "Data object removed successfully",
+                                          expectedFulfillmentCount: AWSS3StoragePluginTestBase.concurrencyLimit)
+        for _ in 1...AWSS3StoragePluginTestBase.concurrencyLimit {
+            Task {
+                let key = UUID().uuidString
+                let uploadKey = try await Amplify.Storage.uploadData(key: key,
+                                                                     data: AWSS3StoragePluginTestBase.smallDataObjectForStressTest,
+                                                                     options: nil).value
+                XCTAssertEqual(uploadKey, key)
+                await uploadExpectation.fulfill()
+                
+                let _ = try await Amplify.Storage.downloadData(key: key, options: .init()).value
+                await downloadExpectation.fulfill()
+                
+                try await Amplify.Storage.remove(key: key)
+                await removeExpectation.fulfill()
+            }
+        }
+        
+        await waitForExpectations([downloadExpectation, uploadExpectation, removeExpectation], timeout: 60)
+    }
+    
+    /// Given: A very large data object(100MB) in storage
+    /// When: Download the data
+    /// Then: The operation completes successfully
+    func testDownloadLargeDataObject() async {
+        let downloadExpectation = asyncExpectation(description: "Data object downloaded successfully")
+        let uploadExpectation = asyncExpectation(description: "Data object uploaded successfully")
+        let removeExpectation = asyncExpectation(description: "Data object removed successfully")
+        do {
+            let key = UUID().uuidString
+            let uploadKey = try await Amplify.Storage.uploadData(key: key,
+                                                                 data: AWSS3StoragePluginTestBase.largeDataObjectForStressTest,
+                                                                 options: nil).value
+            XCTAssertEqual(uploadKey, key)
+            await uploadExpectation.fulfill()
+            
+            let _ = try await Amplify.Storage.downloadData(key: key, options: .init()).value
+            await downloadExpectation.fulfill()
+            
+            try await Amplify.Storage.remove(key: key)
+            await removeExpectation.fulfill()
+        } catch {
+            XCTFail("Error: \(error)")
+        }
+        await waitForExpectations([uploadExpectation, removeExpectation], timeout: 180)
+    }
+    
     // MARK: Helper functions
 
     func removeIfExists(_ fileURL: URL) {
