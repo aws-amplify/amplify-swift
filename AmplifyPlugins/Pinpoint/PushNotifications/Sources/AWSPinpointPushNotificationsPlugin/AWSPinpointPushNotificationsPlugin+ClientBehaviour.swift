@@ -25,10 +25,14 @@ extension AWSPinpointPushNotificationsPlugin {
     public func registerDevice(apnsToken: Data) async throws {
         let currentEndpointProfile = await pinpoint.currentEndpointProfile()
         currentEndpointProfile.setAPNsToken(apnsToken)
-        try await pinpoint.updateEndpoint(with: currentEndpointProfile)
+        do {
+            try await pinpoint.updateEndpoint(with: currentEndpointProfile)
+        } catch {
+            throw error.pushNotificationsError
+        }
     }
 
-    public func recordNotificationReceived(_ userInfo: Notifications.Push.UserInfo) async {
+    public func recordNotificationReceived(_ userInfo: Notifications.Push.UserInfo) async throws {
         let applicationState = await self.applicationState
         await recordNotification(
             userInfo,
@@ -37,7 +41,7 @@ extension AWSPinpointPushNotificationsPlugin {
         )
     }
 
-    public func recordNotificationOpened(_ response: UNNotificationResponse) async {
+    public func recordNotificationOpened(_ response: UNNotificationResponse) async throws {
         let applicationState = await self.applicationState
         await recordNotification(
             response.notification.request.content.userInfo,

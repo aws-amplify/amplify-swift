@@ -23,10 +23,10 @@ public protocol PushNotificationsCategoryBehaviour: NotificationsSubcategoryBeha
     /// Records that a notification has been received.
     ///
     /// - Parameter userInfo: A dictionary that contains information related to the remote notification
-    func recordNotificationReceived(_ userInfo: Notifications.Push.UserInfo) async
+    func recordNotificationReceived(_ userInfo: Notifications.Push.UserInfo) async throws
 
     /// Records that a notification was opened, i.e. the user tapped on it
     ///
     /// - Parameter response: The user’s response to the notification
-    func recordNotificationOpened(_ response: UNNotificationResponse) async
+    func recordNotificationOpened(_ response: UNNotificationResponse) async throws
 }
