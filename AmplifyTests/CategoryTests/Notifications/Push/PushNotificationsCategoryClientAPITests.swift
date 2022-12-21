@@ -63,7 +63,7 @@ class PushNotificationsCategoryClientAPITests: XCTestCase {
         await waitForExpectations(timeout: 1.0)
     }
 
-    func testRecordNotificationReceived_shouldSucceed() async {
+    func testRecordNotificationReceived_shouldSucceed() async throws {
         let userInfo: Notifications.Push.UserInfo = ["test": "test"]
         let expectedMessage = "recordNotificationReceived(userInfo:\(userInfo))"
         let methodInvoked = expectation(description: "Expected method was invoked on plugin")
@@ -73,11 +73,11 @@ class PushNotificationsCategoryClientAPITests: XCTestCase {
             }
         }
 
-        await category.recordNotificationReceived(userInfo)
+        try await category.recordNotificationReceived(userInfo)
         await waitForExpectations(timeout: 1.0)
     }
 
-    func testRecordNotificationOpened_shouldSucceed() async {
+    func testRecordNotificationOpened_shouldSucceed() async throws {
         let response = UNNotificationResponse(coder: MockedKeyedArchiver(requiringSecureCoding: false))!
         let expectedMessage = "recordNotificationOpened(response:\(response))"
         let methodInvoked = expectation(description: "Expected method was invoked on plugin")
@@ -87,7 +87,7 @@ class PushNotificationsCategoryClientAPITests: XCTestCase {
             }
         }
 
-        await category.recordNotificationOpened(response)
+        try await category.recordNotificationOpened(response)
         await waitForExpectations(timeout: 1.0)
     }
 

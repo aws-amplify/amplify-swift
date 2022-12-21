@@ -9,7 +9,8 @@ import AWSPinpoint
 import ClientRuntime
 import Foundation
 
-extension SdkError {
+@_spi(InternalAWSPinpoint)
+public extension SdkError {
     var isRetryable: Bool {
         switch self {
         case .service(let error, _):

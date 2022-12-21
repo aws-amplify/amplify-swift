@@ -38,8 +38,8 @@ class AWSPinpointPushNotificationsPluginClientBehaviourTests: AWSPinpointPushNot
     }
     
     // MARK: - Record Notification received tests
-    func testRecordNotificationReceived_withValidCampaignPayload_shouldRecordEvent() async {
-        await plugin.recordNotificationReceived(createUserInfo(for: .campaign))
+    func testRecordNotificationReceived_withValidCampaignPayload_shouldRecordEvent() async throws {
+        try await plugin.recordNotificationReceived(createUserInfo(for: .campaign))
         
         XCTAssertEqual(mockPinpoint.createEventCount, 1)
         XCTAssertTrue(mockPinpoint.mockedCreatedEvent!.eventType.starts(with: "_campaign.received_"))
@@ -47,8 +47,8 @@ class AWSPinpointPushNotificationsPluginClientBehaviourTests: AWSPinpointPushNot
         XCTAssertEqual(mockPinpoint.recordCount, 1)
     }
     
-    func testRecordNotificationReceived_withValidJourneyPayload_shouldRecordEvent() async {
-        await plugin.recordNotificationReceived(createUserInfo(for: .journey))
+    func testRecordNotificationReceived_withValidJourneyPayload_shouldRecordEvent() async throws {
+        try await plugin.recordNotificationReceived(createUserInfo(for: .journey))
         
         XCTAssertEqual(mockPinpoint.createEventCount, 1)
         XCTAssertTrue(mockPinpoint.mockedCreatedEvent!.eventType.starts(with: "_journey.received_"))
@@ -56,11 +56,11 @@ class AWSPinpointPushNotificationsPluginClientBehaviourTests: AWSPinpointPushNot
         XCTAssertEqual(mockPinpoint.recordCount, 1)
     }
     
-    func testRecordNotificationReceived_withInvalidPayload_shouldRecordEvent() async {
+    func testRecordNotificationReceived_withInvalidPayload_shouldRecordEvent() async throws {
         let userInfo: Notifications.Push.UserInfo = [
             "invalid": "payload"
         ]
-        await plugin.recordNotificationReceived(userInfo)
+        try await plugin.recordNotificationReceived(userInfo)
         
         XCTAssertEqual(mockPinpoint.createEventCount, 0)
         XCTAssertNil(mockPinpoint.mockedCreatedEvent?.eventType)
@@ -69,9 +69,9 @@ class AWSPinpointPushNotificationsPluginClientBehaviourTests: AWSPinpointPushNot
     }
     
     // MARK: - Record Notification opened tests
-    func testRecordNotificationOpened_withValidCampaignPayload_shouldRecordEvent() async {
+    func testRecordNotificationOpened_withValidCampaignPayload_shouldRecordEvent() async throws {
         let response = UNNotificationResponse(coder: createCoder(for: .campaign))!
-        await plugin.recordNotificationOpened(response)
+        try await plugin.recordNotificationOpened(response)
         
         XCTAssertEqual(mockPinpoint.createEventCount, 1)
         XCTAssertEqual(mockPinpoint.mockedCreatedEvent?.eventType, "_campaign.opened_notification")
@@ -79,9 +79,9 @@ class AWSPinpointPushNotificationsPluginClientBehaviourTests: AWSPinpointPushNot
         XCTAssertEqual(mockPinpoint.recordCount, 1)
     }
     
-    func testRecordNotificationOpened_withValidJourneyPayload_shouldRecordEvent() async {
+    func testRecordNotificationOpened_withValidJourneyPayload_shouldRecordEvent() async throws {
         let response = UNNotificationResponse(coder: createCoder(for: .journey))!
-        await plugin.recordNotificationOpened(response)
+        try await plugin.recordNotificationOpened(response)
         
         XCTAssertEqual(mockPinpoint.createEventCount, 1)
         XCTAssertEqual(mockPinpoint.mockedCreatedEvent?.eventType, "_journey.opened_notification")
@@ -89,9 +89,9 @@ class AWSPinpointPushNotificationsPluginClientBehaviourTests: AWSPinpointPushNot
         XCTAssertEqual(mockPinpoint.recordCount, 1)
     }
     
-    func testRecordNotificationOpened_withInvalidPayload_shouldRecordEvent() async {
+    func testRecordNotificationOpened_withInvalidPayload_shouldRecordEvent() async throws {
         let response = UNNotificationResponse(coder: MockedKeyedArchiver(requiringSecureCoding: false))!
-        await plugin.recordNotificationOpened(response)
+        try await plugin.recordNotificationOpened(response)
         
         XCTAssertEqual(mockPinpoint.createEventCount, 0)
         XCTAssertNil(mockPinpoint.mockedCreatedEvent?.eventType)
