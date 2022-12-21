@@ -138,7 +138,7 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
     ///
     func testMultipleSearchForText() async {
         let successExpectation = asyncExpectation(description: "searchForText was successful", expectedFulfillmentCount: concurrencyLimit)
-        for _ in 0...concurrencyLimit {
+        for _ in 1...concurrencyLimit {
             Task {
                 do {
                     let options = Geo.SearchForTextOptions(area: .near(coordinates))
@@ -163,7 +163,7 @@ class AWSLocationGeoPluginIntergrationTests: XCTestCase {
     ///
     func testMultipleSearchForCoordinates() async {
         let successExpectation = asyncExpectation(description: "searchForCoordinates was successful", expectedFulfillmentCount: concurrencyLimit)
-        for _ in 0...concurrencyLimit {
+        for _ in 1...concurrencyLimit {
             Task {
                 do {
                     let places = try await Amplify.Geo.search(for: coordinates, options: nil)
