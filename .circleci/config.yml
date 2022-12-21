@@ -246,7 +246,8 @@ jobs:
           name: Make temp directory
           command: |
             mkdir temp
-            cp -r $(pwd) temp
+            cp -r Amplify temp
+            cp -r AmplifyPlugins temp
             ls
             ls temp
       - aws-cli/setup:
