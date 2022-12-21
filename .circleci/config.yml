@@ -243,13 +243,11 @@ jobs:
     steps:
       - *restore_repo
       - run:
-          name: Make temp directory
+          name: Make source directory
           command: |
-            mkdir temp
-            cp -r Amplify temp
-            cp -r AmplifyPlugins temp
-            ls
-            ls temp
+            mkdir source
+            cp -r Amplify source
+            cp -r AmplifyPlugins source
       - aws-cli/setup:
           role-arn: 'arn:aws:iam::579633542375:role/Amplify-Swift-S3-ReadOnly'
           role-session-name: 'aws-s3-session'
@@ -278,9 +276,7 @@ jobs:
       - run:
           name: Run Scan
           command: |
-            sh ./fortify_scan.sh temp
-            ls
-            ls temp
+            sh ./fortify_scan.sh source
 
 
 deploy_requires: &deploy_requires
