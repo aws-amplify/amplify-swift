@@ -271,7 +271,7 @@ jobs:
           name: Run Scan
           no_output_timeout: 20m
           command: |
-            sh ./fortify_scan.sh
+            sh ./fortify_scan.sh ~/amplify-swift
 
 
 deploy_requires: &deploy_requires
