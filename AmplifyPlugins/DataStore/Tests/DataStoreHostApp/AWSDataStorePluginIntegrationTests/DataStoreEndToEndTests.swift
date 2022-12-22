@@ -479,31 +479,29 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
         try await Amplify.DataStore.start()
     }
 
-    /// Perform concurrent saves and observe the data successfuly synced from cloud. Then delete the items afterwards
-    /// and ensure they have successfully synced from cloud
+    // MARK: - Stress tests
+    
+    /// Perform concurrent saves and observe the data successfuly synced from cloud
     ///
     /// - Given: DataStore is in ready state
     /// - When:
-    ///    - Concurrently perform Save's
+    ///    - Concurrently perform Datastore.save() from 50 tasks
     /// - Then:
     ///    - Ensure the expected mutation event with version 1 (synced from cloud) is received
-    ///    - Clean up: Concurrently perform Delete's
-    ///    - Ensure the expected mutation event with version 2 (synced from cloud) is received
     ///
-    func testConcurrentSave() async throws {
+    func testMultipleSave() async throws {
         await setUp(withModels: TestModelRegistration(), logLevel: .verbose)
         try await startAmplifyAndWaitForSync()
 
         var posts = [Post]()
-        let count = 2
-        for index in 0 ..< count {
+        for index in 0 ..< concurrencyLimit {
             let post = Post(title: "title \(index)",
                             content: "content",
                             createdAt: .now())
             posts.append(post)
         }
-        let postsSyncedToCloud = expectation(description: "All posts saved and synced to cloud")
-        postsSyncedToCloud.expectedFulfillmentCount = count
+        let postsSyncedToCloud = asyncExpectation(description: "All posts saved and synced to cloud",
+                                                  expectedFulfillmentCount: concurrencyLimit)
         log.debug("Created posts: [\(posts.map { $0.identifier })]")
 
         let postsCopy = posts
@@ -520,7 +518,7 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                        mutationEvent.version == 1 {
                         postsSyncedToCloudCount += 1
                         self.log.debug("Post saved and synced from cloud \(mutationEvent.modelId) \(postsSyncedToCloudCount)")
-                        postsSyncedToCloud.fulfill()
+                        await postsSyncedToCloud.fulfill()
                     }
                 }
             } catch {
@@ -530,18 +528,226 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
 
         let capturedPosts = posts
 
-        DispatchQueue.concurrentPerform(iterations: count) { index in
+        DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
                 _ = try await Amplify.DataStore.save(capturedPosts[index])
             }
         }
-        await waitForExpectations(timeout: 100)
+        
+        await waitForExpectations([postsSyncedToCloud], timeout: networkTimeout)
+    }
+    
+    /// Perform concurrent saves and observe the data successfuly synced from cloud
+    ///
+    /// - Given: DataStore is in ready state
+    /// - When:
+    ///    - Concurrently perform Datastore.save() from 50 tasks and Datastore.query(model:byId:) from 50 tasks
+    /// - Then:
+    ///    - Ensure the expected mutation event with version 1 (synced from cloud) is received
+    ///    - Query for the item is successful
+    ///
+    func testMultipleQueryByID() async throws {
+        await setUp(withModels: TestModelRegistration(), logLevel: .verbose)
+        try await startAmplifyAndWaitForSync()
 
-        let postsDeletedLocally = expectation(description: "All posts deleted locally")
-        postsDeletedLocally.expectedFulfillmentCount = count
+        var posts = [Post]()
+        for index in 0 ..< concurrencyLimit {
+            let post = Post(title: "title \(index)",
+                            content: "content",
+                            createdAt: .now())
+            posts.append(post)
+        }
+        let postsSyncedToCloud = asyncExpectation(description: "All posts saved and synced to cloud",
+                                                  expectedFulfillmentCount: concurrencyLimit)
+        log.debug("Created posts: [\(posts.map { $0.identifier })]")
 
-        let postsDeletedFromCloud = expectation(description: "All posts deleted and synced to cloud")
-        postsDeletedFromCloud.expectedFulfillmentCount = count
+        let postsCopy = posts
+        Task {
+            var postsSyncedToCloudCount = 0
+            let mutationEvents = Amplify.DataStore.observe(Post.self)
+            do {
+                for try await mutationEvent in mutationEvents {
+                    guard postsCopy.contains(where: { $0.id == mutationEvent.modelId }) else {
+                        return
+                    }
+
+                    if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue,
+                       mutationEvent.version == 1 {
+                        postsSyncedToCloudCount += 1
+                        self.log.debug("Post saved and synced from cloud \(mutationEvent.modelId) \(postsSyncedToCloudCount)")
+                        await postsSyncedToCloud.fulfill()
+                    }
+                }
+            } catch {
+                XCTFail("Failed \(error)")
+            }
+        }
+
+        let capturedPosts = posts
+
+        DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
+            Task {
+                _ = try await Amplify.DataStore.save(capturedPosts[index])
+            }
+        }
+        
+        await waitForExpectations([postsSyncedToCloud], timeout: networkTimeout)
+        
+        let localQueryForPosts = asyncExpectation(description: "Query for the post is successful",
+                                                expectedFulfillmentCount: concurrencyLimit)
+        
+        DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
+            Task {
+                let queriedPost = try await Amplify.DataStore.query(Post.self, byId: capturedPosts[index].id)
+                XCTAssertNotNil(queriedPost)
+                XCTAssertEqual(capturedPosts[index].id, queriedPost?.id)
+                XCTAssertEqual(capturedPosts[index].title, queriedPost?.title)
+                XCTAssertEqual(capturedPosts[index].content, queriedPost?.content)
+                await localQueryForPosts.fulfill()
+            }
+        }
+        
+        await waitForExpectations([localQueryForPosts], timeout: networkTimeout)
+    }
+    
+    /// Perform concurrent saves and observe the data successfuly synced from cloud
+    ///
+    /// - Given: DataStore is in ready state
+    /// - When:
+    ///    - Concurrently perform Datastore.save() from 50 tasks and Datastore.query(model:where:) from 50 tasks
+    /// - Then:
+    ///    - Ensure the expected mutation event with version 1 (synced from cloud) is received
+    ///    - Query for the item is successful
+    ///
+    func testMultipleQueryByPredicate() async throws {
+        await setUp(withModels: TestModelRegistration(), logLevel: .verbose)
+        try await startAmplifyAndWaitForSync()
+
+        var posts = [Post]()
+        for index in 0 ..< concurrencyLimit {
+            let post = Post(title: "title \(index)",
+                            content: "content",
+                            createdAt: .now())
+            posts.append(post)
+        }
+        let postsSyncedToCloud = asyncExpectation(description: "All posts saved and synced to cloud",
+                                                  expectedFulfillmentCount: concurrencyLimit)
+        log.debug("Created posts: [\(posts.map { $0.identifier })]")
+
+        let postsCopy = posts
+        Task {
+            var postsSyncedToCloudCount = 0
+            let mutationEvents = Amplify.DataStore.observe(Post.self)
+            do {
+                for try await mutationEvent in mutationEvents {
+                    guard postsCopy.contains(where: { $0.id == mutationEvent.modelId }) else {
+                        return
+                    }
+
+                    if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue,
+                       mutationEvent.version == 1 {
+                        postsSyncedToCloudCount += 1
+                        self.log.debug("Post saved and synced from cloud \(mutationEvent.modelId) \(postsSyncedToCloudCount)")
+                        await postsSyncedToCloud.fulfill()
+                    }
+                }
+            } catch {
+                XCTFail("Failed \(error)")
+            }
+        }
+
+        let capturedPosts = posts
+
+        DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
+            Task {
+                _ = try await Amplify.DataStore.save(capturedPosts[index])
+            }
+        }
+        
+        await waitForExpectations([postsSyncedToCloud], timeout: networkTimeout)
+        
+        let localQueryForPosts = asyncExpectation(description: "Query for the post is successful")
+        
+        // query by predicate where title of the post is "title 25", should be successful for
+        // only one query
+        let predicate = Post.keys.id.eq(capturedPosts[25].id).and(Post.keys.title.eq(capturedPosts[25].title))
+        DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
+            Task {
+                let queriedPosts = try await Amplify.DataStore.query(Post.self, where: predicate)
+                XCTAssertNotNil(queriedPosts)
+                XCTAssertEqual(queriedPosts.count, 1)
+                XCTAssertEqual(capturedPosts[25].id, queriedPosts[0].id)
+                XCTAssertEqual(capturedPosts[25].title, queriedPosts[0].title)
+                XCTAssertEqual(capturedPosts[25].content, queriedPosts[0].content)
+                await localQueryForPosts.fulfill()
+            }
+        }
+        
+        await waitForExpectations([localQueryForPosts], timeout: networkTimeout)
+    }
+    
+    /// Perform concurrent saves and observe the data successfuly synced from cloud. Then delete the items afterwards
+    /// and ensure they have successfully synced from cloud
+    ///
+    /// - Given: DataStore is in ready state
+    /// - When:
+    ///    - Concurrently perform Datastore.save() from 50 tasks and then delete the posts from 50 tasks
+    /// - Then:
+    ///    - Ensure the expected mutation event with version 1 (synced from cloud) is received
+    ///    - Clean up: Concurrently perform Delete's
+    ///    - Ensure the expected mutation event with version 2 (synced from cloud) is received
+    ///
+    func testMultipleDelete() async throws {
+        await setUp(withModels: TestModelRegistration(), logLevel: .verbose)
+        try await startAmplifyAndWaitForSync()
+
+        var posts = [Post]()
+        for index in 0 ..< concurrencyLimit {
+            let post = Post(title: "title \(index)",
+                            content: "content",
+                            createdAt: .now())
+            posts.append(post)
+        }
+        let postsSyncedToCloud = asyncExpectation(description: "All posts saved and synced to cloud",
+                                                  expectedFulfillmentCount: concurrencyLimit)
+        log.debug("Created posts: [\(posts.map { $0.identifier })]")
+
+        let postsCopy = posts
+        Task {
+            var postsSyncedToCloudCount = 0
+            let mutationEvents = Amplify.DataStore.observe(Post.self)
+            do {
+                for try await mutationEvent in mutationEvents {
+                    guard postsCopy.contains(where: { $0.id == mutationEvent.modelId }) else {
+                        return
+                    }
+
+                    if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue,
+                       mutationEvent.version == 1 {
+                        postsSyncedToCloudCount += 1
+                        self.log.debug("Post saved and synced from cloud \(mutationEvent.modelId) \(postsSyncedToCloudCount)")
+                        await postsSyncedToCloud.fulfill()
+                    }
+                }
+            } catch {
+                XCTFail("Failed \(error)")
+            }
+        }
+
+        let capturedPosts = posts
+
+        DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
+            Task {
+                _ = try await Amplify.DataStore.save(capturedPosts[index])
+            }
+        }
+        await waitForExpectations([postsSyncedToCloud], timeout: networkTimeout)
+
+        let postsDeletedLocally = asyncExpectation(description: "All posts deleted locally",
+                                                   expectedFulfillmentCount: concurrencyLimit)
+
+        let postsDeletedFromCloud = asyncExpectation(description: "All posts deleted and synced to cloud",
+                                                     expectedFulfillmentCount: concurrencyLimit)
         
         Task {
             var postsDeletedFromCloudCount = 0
@@ -556,13 +762,13 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
                               mutationEvent.version == 1 {
                         self.log.debug(
                             "Post deleted locally \(mutationEvent.modelId)")
-                        postsDeletedLocally.fulfill()
+                        await postsDeletedLocally.fulfill()
                     } else if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue,
                               mutationEvent.version == 2 {
                         postsDeletedFromCloudCount += 1
                         self.log.debug(
                             "Post deleted and synced from cloud \(mutationEvent.modelId) \(postsDeletedFromCloudCount)")
-                        postsDeletedFromCloud.fulfill()
+                        await postsDeletedFromCloud.fulfill()
                     }
                 }
             } catch {
@@ -570,13 +776,13 @@ class DataStoreEndToEndTests: SyncEngineIntegrationTestBase {
             }
         }
         
-        DispatchQueue.concurrentPerform(iterations: count) { index in
+        DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
                 try await Amplify.DataStore.delete(capturedPosts[index])
             }
         }
         
-        await waitForExpectations(timeout: 100)
+        await waitForExpectations([postsDeletedLocally, postsDeletedFromCloud], timeout: networkTimeout)
     }
 
     // MARK: - Helpers
