@@ -22,38 +22,27 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
     /// When: List API with protected access level
     /// Then: Operation completes successfully with no items since there are no keys at that location.
     func testListFromProtectedForUnauthenticatedUser() async throws {
-        try await testTask {
-            let key = UUID().uuidString
-            let options = StorageListRequest.Options(accessLevel: .protected,
-                                                     path: key)
-            let items = try await Amplify.Storage.list(options: options).items
-            XCTAssertEqual(items.count, 0)
-        }
+        let key = UUID().uuidString
+        let options = StorageListRequest.Options(accessLevel: .protected,
+                                                 path: key)
+        let items = try await Amplify.Storage.list(options: options).items
+        XCTAssertEqual(items.count, 0)
     }
 
     /// Given: An unauthenticated user
     /// When: List API with private access level
     /// Then: Operation fails with access denied service error
     func testListFromPrivateForUnauthenticatedUserForReturnAccessDenied() async throws {
-        try await testTask {
-            let notDone = asyncExpectation(description: "not done", isInverted: true)
-
-            do {
-                let key = UUID().uuidString
-                let options = StorageListRequest.Options(accessLevel: .private,
-                                                         path: key)
-                _ = try await Amplify.Storage.list(options: options).items
-                await notDone.fulfill()
-            } catch {
-                // access denied error expected
-                guard case let .accessDenied(description, _, _) = (error as? StorageError) else {
-                    XCTFail("Expected access denied error: \(error)")
-                    return
-                }
-                XCTAssertEqual(description, StorageErrorConstants.accessDenied.errorDescription)
-            }
-
-            await waitForExpectations([notDone])
+        do {
+            let key = UUID().uuidString
+            let options = StorageListRequest.Options(accessLevel: .private,
+                                                     path: key)
+            _ = try await Amplify.Storage.list(options: options).items
+            XCTFail("Expecting failure")
+        } catch StorageError.accessDenied(let description, _, _){
+            XCTAssertEqual(description, StorageErrorConstants.accessDenied.errorDescription)
+        } catch {
+            XCTFail(String(describing: error))
         }
     }
 
@@ -76,34 +65,26 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
             return
         }
 
-        let done = asyncExpectation(description: "done with \(accessLevel)")
-
         let key = UUID().uuidString
         guard let dataInput = UUID().uuidString.data(using: .utf8) else {
             XCTFail("Failed to create test data")
             return
         }
 
-        Task {
-            do {
-                logger.debug("Upload [\(accessLevel)]")
-                let uploadDataOptions = StorageUploadDataRequest.Options(accessLevel: accessLevel)
-                let uploadKey = try await Amplify.Storage.uploadData(key: key, data: dataInput, options: uploadDataOptions).value
-                XCTAssertEqual(key, uploadKey)
+        do {
+            logger.debug("Upload [\(accessLevel)]")
+            let uploadDataOptions = StorageUploadDataRequest.Options(accessLevel: accessLevel)
+            let uploadKey = try await Amplify.Storage.uploadData(key: key, data: dataInput, options: uploadDataOptions).value
+            XCTAssertEqual(key, uploadKey)
 
-                logger.debug("Remove [\(accessLevel)]")
-                let removeOptions = StorageRemoveRequest.Options(accessLevel: accessLevel)
-                let removeKey = try await Amplify.Storage.remove(key: key, options: removeOptions)
-                XCTAssertEqual(key, removeKey)
-            } catch {
-                logger.error(error: error)
-                XCTFail("Error: \(error) [\(accessLevel)]")
-            }
-
-            await done.fulfill()
+            logger.debug("Remove [\(accessLevel)]")
+            let removeOptions = StorageRemoveRequest.Options(accessLevel: accessLevel)
+            let removeKey = try await Amplify.Storage.remove(key: key, options: removeOptions)
+            XCTAssertEqual(key, removeKey)
+        } catch {
+            logger.error(error: error)
+            XCTFail("Error: \(error) [\(accessLevel)]")
         }
-
-        await waitForExpectations([done], timeout: TestCommonConstants.networkTimeout)
     }
 
     func testUploadAndListThenGetThenRemove() async throws {
@@ -127,27 +108,12 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         let username = AWSS3StoragePluginTestBase.user1.lowercased()
         let password = AWSS3StoragePluginTestBase.password
 
-        let signin = asyncExpectation(description: "Sign In")
-
-        let isSignedIn: Bool = await Task {
-            let didSignIn: Bool
-            do {
-                logger.debug("Signing in as user1")
-                let result = try await Amplify.Auth.signIn(username: username, password: password)
-                XCTAssertTrue(result.isSignedIn)
-                let currentUser = try await Amplify.Auth.getCurrentUser()
-                XCTAssertEqual(username, currentUser.username)
-                didSignIn = true
-            } catch {
-                logger.error(error: error)
-                XCTFail("Error: \(error)")
-                didSignIn = false
-            }
-            await signin.fulfill()
-            return didSignIn
-        }.value
-
-        await waitForExpectations([signin], timeout: TestCommonConstants.networkTimeout)
+        logger.debug("Signing in as user1")
+        let result = try await Amplify.Auth.signIn(username: username, password: password)
+        XCTAssertTrue(result.isSignedIn)
+        let currentUser = try await Amplify.Auth.getCurrentUser()
+        XCTAssertEqual(username, currentUser.username)
+        let isSignedIn = result.isSignedIn
 
         // must be signed in to continue
         guard isSignedIn else { return }
@@ -155,69 +121,48 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         for accessLevel in levels {
             logger.debug("Testing storage access level: \(accessLevel)")
 
-            let done = asyncExpectation(description: "done with \(accessLevel)")
-
             let key = UUID().uuidString
             guard let dataInput = UUID().uuidString.data(using: .utf8) else {
                 XCTFail("Failed to create test data")
                 return
             }
+            logger.debug("Upload [\(accessLevel)]")
+            let uploadDataOptions = StorageUploadDataRequest.Options(accessLevel: accessLevel)
+            let uploadKey = try await Amplify.Storage.uploadData(key: key, data: dataInput, options: uploadDataOptions).value
+            XCTAssertEqual(key, uploadKey)
 
-            Task {
-                do {
-                    logger.debug("Upload [\(accessLevel)]")
-                    let uploadDataOptions = StorageUploadDataRequest.Options(accessLevel: accessLevel)
-                    let uploadKey = try await Amplify.Storage.uploadData(key: key, data: dataInput, options: uploadDataOptions).value
-                    XCTAssertEqual(key, uploadKey)
+            logger.debug("List [\(accessLevel)]")
+            let listOptions = StorageListRequest.Options(accessLevel: accessLevel,
+                                                         path: key)
+            let keys = try await Amplify.Storage.list(options: listOptions).items
+            XCTAssertEqual(keys.count, 1)
 
-                    logger.debug("List [\(accessLevel)]")
-                    let listOptions = StorageListRequest.Options(accessLevel: accessLevel,
-                                                                 path: key)
-                    let keys = try await Amplify.Storage.list(options: listOptions).items
-                    XCTAssertEqual(keys.count, 1)
+            logger.debug("Download [\(accessLevel)]")
+            let downloadDataOptions = StorageDownloadDataRequest.Options(accessLevel: accessLevel)
+            let dataOutput = try await Amplify.Storage.downloadData(key: key, options: downloadDataOptions).value
+            XCTAssertNotNil(dataOutput, "Data undefined")
+            XCTAssertEqual(dataInput.count, dataOutput.count)
+            XCTAssertEqual(dataInput, dataOutput)
 
-                    logger.debug("Download [\(accessLevel)]")
-                    let downloadDataOptions = StorageDownloadDataRequest.Options(accessLevel: accessLevel)
-                    let dataOutput = try await Amplify.Storage.downloadData(key: key, options: downloadDataOptions).value
-                    XCTAssertNotNil(dataOutput, "Data undefined")
-                    XCTAssertEqual(dataInput.count, dataOutput.count)
-                    XCTAssertEqual(dataInput, dataOutput)
+            logger.debug("Remove [\(accessLevel)]")
+            let removeOptions = StorageRemoveRequest.Options(accessLevel: accessLevel)
+            let removeKey = try await Amplify.Storage.remove(key: key, options: removeOptions)
+            XCTAssertEqual(key, removeKey)
 
-                    logger.debug("Remove [\(accessLevel)]")
-                    let removeOptions = StorageRemoveRequest.Options(accessLevel: accessLevel)
-                    let removeKey = try await Amplify.Storage.remove(key: key, options: removeOptions)
-                    XCTAssertEqual(key, removeKey)
-
-                    do {
-                        logger.debug("Download after remove [\(accessLevel)]")
-                        _ = try await Amplify.Storage.downloadData(key: key, options: downloadDataOptions).value
-                    } catch {
-                        // expect error to be Not Found
-                        logger.debug("Error from download: \(error) [\(accessLevel)]")
-                        if let storageError = error as? StorageError {
-                            var isNotFoundError = false
-                            if case .keyNotFound = storageError {
-                                isNotFoundError = true
-                            }
-                            XCTAssertTrue(isNotFoundError, "Expected Not Found error: \(storageError) [\(accessLevel)]")
-                        } else {
-                            XCTFail("Expected Not Found error: \(error) [\(accessLevel)]")
-                        }
-                    }
-                } catch {
-                    logger.error(error: error)
-                    XCTFail("Error: \(error) [\(accessLevel)]")
-                }
-
-                await done.fulfill()
+            do {
+                logger.debug("Download after remove [\(accessLevel)]")
+                _ = try await Amplify.Storage.downloadData(key: key, options: downloadDataOptions).value
+                XCTFail("Expecting a StorageError.keyNotFound error")
+            } catch StorageError.keyNotFound(_, _, _, let error) {
+                XCTAssertNil(error)
+            } catch {
+                XCTFail("Expected Not Found error: \(error) [\(accessLevel)]")
             }
-
-            await waitForExpectations([done], timeout: TestCommonConstants.networkTimeout)
         }
     }
 
     /// Validate access levels between 2 users for each access level.
-    func testAccessLevelsBetweenTwoUsers() async {
+    func testAccessLevelsBetweenTwoUsers() async throws {
         let logger = Amplify.Logging.logger(forCategory: "Storage", logLevel: .verbose)
 
         let testRuns: [StorageAccessLevelsTestRun] = [
@@ -230,9 +175,6 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
         ]
 
         for testRun in testRuns {
-            let done = asyncExpectation(description: "done with \(testRun.accessLevel) [\(testRun.key)]")
-
-            Task {
                 do {
                     logger.debug("Starting loop for \(testRun.label)")
                     logger.debug("Signing out at start of loop")
@@ -275,27 +217,18 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                     if testRun.accessLevel == .private {
                         logger.debug("Testing private access as user2")
                         // check for Access Denied error
-                        let notDone = asyncExpectation(description: "not done for \(testRun.accessLevel)", isInverted: true)
                         do {
                             logger.debug("Getting list as user2")
                             let listOptions2 = StorageListRequest.Options(accessLevel: testRun.accessLevel,
                                                                           targetIdentityId: user1IdentityId,
                                                                           path: testRun.key)
-                            let keys2 = try await Amplify.Storage.list(options: listOptions2).items.filter {
-                                $0.key == testRun.key
-                            }
-                            // expects error to be thrown so notDone expectation is not reached
-                            await notDone.fulfill()
-                            logger.debug("Keys: \(keys2)")
+                            try await Amplify.Storage.list(options: listOptions2)
+                            XCTFail("Expecting validation error")
+                        } catch StorageError.validation(_, let errorDescription, _, _) {
+                            XCTAssertEqual(errorDescription, StorageErrorConstants.invalidAccessLevelWithTarget.errorDescription)
                         } catch {
-                            // access denied error expected
-                            guard case let .validation(_, description, _, _) = (error as? StorageError) else {
-                                XCTFail("Expected validation error: \(error)")
-                                return
-                            }
-                            XCTAssertEqual(description, StorageErrorConstants.invalidAccessLevelWithTarget.errorDescription)
+                            XCTFail(String(describing: error))
                         }
-                        await waitForExpectations([notDone])
 
                         logger.debug("Signing out as user2")
                         await signOut()
@@ -329,10 +262,6 @@ class AWSS3StoragePluginAccessLevelTests: AWSS3StoragePluginTestBase {
                     logger.debug("Error: \(error)")
                     XCTFail("Error: \(error)")
                 }
-                await done.fulfill()
-            }
-
-            await waitForExpectations([done], timeout: TestCommonConstants.networkTimeout * 2)
         }
 
     }
