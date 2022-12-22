@@ -11,6 +11,8 @@ import AWSPinpoint
 import UserNotifications
 
 class EndpointClientTests: XCTestCase {
+    private let newTokenHex = "646576696365546f6b656e"
+
     private var endpointClient: EndpointClient!
     private var archiver: MockArchiver!
     private var userDefaults: MockUserDefaults!
@@ -92,15 +94,15 @@ class EndpointClientTests: XCTestCase {
                                                             deviceToken: "oldToken",
                                                             effectiveDate: oldEffectiveDate,
                                                             demographic: oldDemographic)
-        keychain.resetCounters()
         let newToken = storeToken("newToken")
+        keychain.resetCounters()
         archiver.decoded = storedEndpointProfile
 
         let endpointProfile = await endpointClient.currentEndpointProfile()
 
         XCTAssertEqual(keychain.dataForKeyCount, 2)
         XCTAssertEqual(keychain.dataForKeyCountMap[EndpointClient.Constants.endpointProfileKey], 1)
-        XCTAssertEqual(keychain.dataForKeyCountMap[EndpointClient.Constants.deviceTokenKey], 2)
+        XCTAssertEqual(keychain.dataForKeyCountMap[EndpointClient.Constants.deviceTokenKey], 1)
         XCTAssertEqual(archiver.decodeCount, 0)
         XCTAssertFalse(endpointProfile === storedEndpointProfile, "Expected new PinpointEndpointProfile object")
         XCTAssertEqual(endpointProfile.applicationId, currentApplicationId)
@@ -158,6 +160,60 @@ class EndpointClientTests: XCTestCase {
         XCTAssertEqual(keychain.saveDataCount, 1)
     }
 
+    func testUpdateEndpointProfile_withAPNsToken_withoutStoredToken_shouldSaveToken() async {
+        keychain.resetCounters()
+
+        let endpoint = PinpointEndpointProfile(applicationId: "applicationId",
+                                               endpointId: "endpointId")
+        endpoint.setAPNsToken(Data(hexString: newTokenHex)!)
+        try? await endpointClient.updateEndpointProfile(with: endpoint)
+
+        XCTAssertEqual(keychain.removeObjectCount, 0)
+        XCTAssertEqual(keychain.dataForKeyCountMap[EndpointClient.Constants.deviceTokenKey, default: 0], 1)
+        XCTAssertEqual(keychain.saveDataCountMap[EndpointClient.Constants.deviceTokenKey, default: 0], 1)
+    }
+
+    func testUpdateEndpointProfile_withAPNsToken_withOldStoredToken_shouldSaveToken() async {
+        storeToken("oldToken")
+        keychain.resetCounters()
+
+        let endpoint = PinpointEndpointProfile(applicationId: "applicationId",
+                                               endpointId: "endpointId")
+        endpoint.setAPNsToken(Data(hexString: newTokenHex)!)
+        try? await endpointClient.updateEndpointProfile(with: endpoint)
+
+        XCTAssertEqual(keychain.removeObjectCount, 0)
+        XCTAssertEqual(keychain.dataForKeyCountMap[EndpointClient.Constants.deviceTokenKey, default: 0], 1)
+        XCTAssertEqual(keychain.saveDataCountMap[EndpointClient.Constants.deviceTokenKey, default: 0], 1)
+    }
+
+    func testUpdateEndpointProfile_withAPNsToken_withSameStoredToken_shouldNotSaveToken() async {
+        storeToken(newTokenHex)
+        keychain.resetCounters()
+
+        let endpoint = PinpointEndpointProfile(applicationId: "applicationId",
+                                               endpointId: "endpointId")
+        endpoint.setAPNsToken(Data(hexString: newTokenHex)!)
+        try? await endpointClient.updateEndpointProfile(with: endpoint)
+
+        XCTAssertEqual(keychain.removeObjectCount, 0)
+        XCTAssertEqual(keychain.dataForKeyCountMap[EndpointClient.Constants.deviceTokenKey, default: 0], 1)
+        XCTAssertEqual(keychain.saveDataCountMap[EndpointClient.Constants.deviceTokenKey, default: 0], 0)
+    }
+
+    func testUpdateEndpointProfile_withoutAPNsToken_withStoredToken_shouldRemoveToken() async {
+        storeToken("oldToken")
+        keychain.resetCounters()
+
+        let endpoint = PinpointEndpointProfile(applicationId: "applicationId",
+                                               endpointId: "endpointId")
+        try? await endpointClient.updateEndpointProfile(with: endpoint)
+
+        XCTAssertEqual(keychain.removeObjectCount, 1)
+        XCTAssertEqual(keychain.dataForKeyCountMap[EndpointClient.Constants.deviceTokenKey, default: 0], 0)
+        XCTAssertEqual(keychain.saveDataCountMap[EndpointClient.Constants.deviceTokenKey, default: 0], 0)
+    }
+
     func testConvertToPublicEndpoint_shouldReturnPublicEndpoint() async {
         let endpointProfile = await endpointClient.currentEndpointProfile()
         let publicEndpoint = endpointClient.convertToPublicEndpoint(endpointProfile)
@@ -177,7 +233,7 @@ class EndpointClientTests: XCTestCase {
 
     @discardableResult
     private func storeToken(_ deviceToken: String) -> Data? {
-        let newToken = deviceToken.data(using: .utf8)
+        let newToken = Data(hexString: deviceToken) ?? deviceToken.data(using: .utf8)
         do {
             try keychain._set(newToken!, key: EndpointClient.Constants.deviceTokenKey)
         } catch {
