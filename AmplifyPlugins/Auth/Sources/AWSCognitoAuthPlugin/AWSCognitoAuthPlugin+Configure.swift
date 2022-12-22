@@ -113,7 +113,9 @@ extension AWSCognitoAuthPlugin {
     }
 
     private func makeURLSession() -> URLSession {
-        return URLSession.shared
+        let configuration = URLSessionConfiguration.default
+        configuration.urlCache = nil
+        return URLSession(configuration: configuration)
     }
 
     private func makeRandomString() -> RandomStringBehavior {
