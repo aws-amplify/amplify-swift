@@ -16,7 +16,7 @@ Thumbs.db
 
 *.xcworkspace/
 !.swiftpm/xcode/package.xcworkspace
-!AmplifyPlugins/Pinpoint/Analytics/Tests/AnalyticsHostApp/AnalyticsHostApp.xcodeproj/project.xcworkspace
+!AmplifyPlugins/Analytics/Tests/AnalyticsHostApp/AnalyticsHostApp.xcodeproj/project.xcworkspace
 !AmplifyPlugins/Auth/Tests/AuthHostApp/AuthHostApp.xcodeproj/project.xcworkspace
 !AmplifyPlugins/DataStore/Tests/DataStoreHostApp/DataStoreHostApp.xcodeproj/project.xcworkspace
 !AmplifyPlugins/API/Tests/APIHostApp/APIHostApp.xcodeproj/project.xcworkspace
