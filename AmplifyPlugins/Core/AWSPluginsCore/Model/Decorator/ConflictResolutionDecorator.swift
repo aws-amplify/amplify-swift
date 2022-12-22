@@ -38,7 +38,6 @@ public struct ConflictResolutionDecorator: ModelBasedGraphQLDocumentDecorator {
                          modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument {
         var primaryKeysOnly = primaryKeysOnly
         if primaryKeysOnly && ModelRegistry.modelType(from: modelSchema.name)?.rootPath == nil {
-            Amplify.Logging.warn("`primaryKeysOnly` can only be true when ModelPath's are enabled. Setting to false.")
             primaryKeysOnly = false
         }
         var inputs = document.inputs

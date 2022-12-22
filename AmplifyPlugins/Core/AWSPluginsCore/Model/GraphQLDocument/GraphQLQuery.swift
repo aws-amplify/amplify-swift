@@ -28,7 +28,7 @@ public struct GraphQLQuery: SingleDirectiveGraphQLDocument {
         self.init(modelSchema: modelType.schema, primaryKeysOnly: primaryKeysOnly)
     }
 
-    public init(modelSchema: ModelSchema, primaryKeysOnly: Bool = false) {
+    public init(modelSchema: ModelSchema, primaryKeysOnly: Bool) {
         self.selectionSet = SelectionSet(fields: modelSchema.graphQLFields, primaryKeysOnly: primaryKeysOnly)
     }
 
