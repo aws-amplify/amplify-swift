@@ -44,37 +44,4 @@ class GetCurrentUserTests: AWSAuthBaseTest {
         XCTAssertNotNil(authUser.userId)
     }
 
-    
-    // MARK: - Stress tests
-    /// Test concurrent invocations of get current user API
-    ///
-    /// - Given: A signedIn Amplify Auth Category
-    /// - When:
-    ///    - I call Amplify.Auth.getCurrentUser for 50 tasks simultaneously
-    /// - Then:
-    ///    - I should receive a valid user back
-    ///
-    func testMultipleGetCurrentUser() async throws {
-        let username = "integtest\(UUID().uuidString)"
-        let password = "P123@\(UUID().uuidString)"
-        let didSucceed = try await AuthSignInHelper.registerAndSignInUser(
-            username: username,
-            password: password,
-            email: defaultTestEmail)
-
-        XCTAssertTrue(didSucceed, "SignIn operation failed")
-        
-        let getCurrentUserExpectation = asyncExpectation(description: "getCurrentUser() is successful",
-                                                         expectedFulfillmentCount: concurrencyLimit)
-        for _ in 1...concurrencyLimit {
-            Task {
-                let authUser = try await Amplify.Auth.getCurrentUser()
-                XCTAssertEqual(authUser.username.lowercased(), username.lowercased())
-                XCTAssertNotNil(authUser.userId)
-                await getCurrentUserExpectation.fulfill()
-            }
-        }
-        
-        await waitForExpectations([getCurrentUserExpectation], timeout: networkTimeout)
-    }
 }

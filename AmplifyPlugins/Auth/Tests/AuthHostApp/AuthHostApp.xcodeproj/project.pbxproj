@@ -34,6 +34,15 @@
 		9737C7502880BFD600DA0D2B /* AuthForgetDeviceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737C74F2880BFD600DA0D2B /* AuthForgetDeviceTests.swift */; };
 		97829201286B802E000DE190 /* AuthResetPasswordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97829200286B802E000DE190 /* AuthResetPasswordTests.swift */; };
 		97829203286E41FA000DE190 /* AuthConfirmResetPasswordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97829202286E41FA000DE190 /* AuthConfirmResetPasswordTests.swift */; };
+		97914B4C2955099A002000EA /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEA828E747B80000C36A /* AsyncTesting.swift */; };
+		97914B4D2955099A002000EA /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEA928E747B80000C36A /* AsyncExpectation.swift */; };
+		97914B4E2955099A002000EA /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEAA28E747B80000C36A /* XCTestCase+AsyncTesting.swift */; };
+		97914B4F295509A2002000EA /* AuthStressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97914AD72954FE0A002000EA /* AuthStressTests.swift */; };
+		97914B50295509A2002000EA /* AWSAuthBaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97914ADF2954FF94002000EA /* AWSAuthBaseTest.swift */; };
+		97914B51295509AB002000EA /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 97914AF6295503D4002000EA /* README.md */; };
+		97914B5229550A2B002000EA /* AuthSessionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97914AE229550116002000EA /* AuthSessionHelper.swift */; };
+		97914B5329550A2B002000EA /* AuthSignInHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97914AE429550122002000EA /* AuthSignInHelper.swift */; };
+		97914B5429550A2B002000EA /* AuthEnvironmentHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97914AF82955060D002000EA /* AuthEnvironmentHelper.swift */; };
 		97B370C52878DA5A00F1C088 /* AuthFetchDeviceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B370C42878DA5A00F1C088 /* AuthFetchDeviceTests.swift */; };
 		B43C26CA27BC9D54003F3BF7 /* AuthSignUpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43C26C727BC9D54003F3BF7 /* AuthSignUpTests.swift */; };
 		B43C26CB27BC9D54003F3BF7 /* AuthConfirmSignUpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43C26C827BC9D54003F3BF7 /* AuthConfirmSignUpTests.swift */; };
@@ -44,6 +53,13 @@
 
 /* Begin PBXContainerItemProxy section */
 		485CB5A327B61E04006CCEC7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 485CB53227B614CE006CCEC7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 485CB53927B614CE006CCEC7;
+			remoteInfo = AuthHostApp;
+		};
+		97914B2829550988002000EA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 485CB53227B614CE006CCEC7 /* Project object */;
 			proxyType = 1;
@@ -82,6 +98,13 @@
 		9737C74F2880BFD600DA0D2B /* AuthForgetDeviceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthForgetDeviceTests.swift; sourceTree = "<group>"; };
 		97829200286B802E000DE190 /* AuthResetPasswordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthResetPasswordTests.swift; sourceTree = "<group>"; };
 		97829202286E41FA000DE190 /* AuthConfirmResetPasswordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfirmResetPasswordTests.swift; sourceTree = "<group>"; };
+		97914AD72954FE0A002000EA /* AuthStressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthStressTests.swift; sourceTree = "<group>"; };
+		97914ADF2954FF94002000EA /* AWSAuthBaseTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAuthBaseTest.swift; sourceTree = "<group>"; };
+		97914AE229550116002000EA /* AuthSessionHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSessionHelper.swift; sourceTree = "<group>"; };
+		97914AE429550122002000EA /* AuthSignInHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignInHelper.swift; sourceTree = "<group>"; };
+		97914AF6295503D4002000EA /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		97914AF82955060D002000EA /* AuthEnvironmentHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthEnvironmentHelper.swift; sourceTree = "<group>"; };
+		97914B4B29550988002000EA /* AuthStressTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AuthStressTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		97B370C42878DA5A00F1C088 /* AuthFetchDeviceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthFetchDeviceTests.swift; sourceTree = "<group>"; };
 		B43C26C727BC9D54003F3BF7 /* AuthSignUpTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthSignUpTests.swift; sourceTree = "<group>"; };
 		B43C26C827BC9D54003F3BF7 /* AuthConfirmSignUpTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthConfirmSignUpTests.swift; sourceTree = "<group>"; };
@@ -100,6 +123,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		485CB59C27B61E04006CCEC7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		97914B4429550988002000EA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -147,6 +177,7 @@
 				485CB5C627B62C5C006CCEC7 /* Packages */,
 				485CB53C27B614CE006CCEC7 /* AuthHostApp */,
 				485CB5A027B61E04006CCEC7 /* AuthIntegrationTests */,
+				97914AD62954FE0A002000EA /* AuthStressTests */,
 				485CB53B27B614CE006CCEC7 /* Products */,
 				485CB58F27B61BA9006CCEC7 /* Frameworks */,
 			);
@@ -157,6 +188,7 @@
 			children = (
 				485CB53A27B614CE006CCEC7 /* AuthHostApp.app */,
 				485CB59F27B61E04006CCEC7 /* AuthIntegrationTests.xctest */,
+				97914B4B29550988002000EA /* AuthStressTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -274,6 +306,27 @@
 			path = ResetPasswordTests;
 			sourceTree = "<group>";
 		};
+		97914AD62954FE0A002000EA /* AuthStressTests */ = {
+			isa = PBXGroup;
+			children = (
+				97914AF6295503D4002000EA /* README.md */,
+				97914AE129550100002000EA /* Helpers */,
+				97914AD72954FE0A002000EA /* AuthStressTests.swift */,
+				97914ADF2954FF94002000EA /* AWSAuthBaseTest.swift */,
+			);
+			path = AuthStressTests;
+			sourceTree = "<group>";
+		};
+		97914AE129550100002000EA /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				97914AE229550116002000EA /* AuthSessionHelper.swift */,
+				97914AE429550122002000EA /* AuthSignInHelper.swift */,
+				97914AF82955060D002000EA /* AuthEnvironmentHelper.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		97B370C32878DA3500F1C088 /* DeviceTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -339,6 +392,27 @@
 			productReference = 485CB59F27B61E04006CCEC7 /* AuthIntegrationTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		97914B2629550988002000EA /* AuthStressTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 97914B4829550988002000EA /* Build configuration list for PBXNativeTarget "AuthStressTests" */;
+			buildPhases = (
+				97914B2929550988002000EA /* Sources */,
+				97914B4429550988002000EA /* Frameworks */,
+				97914B4529550988002000EA /* Resources */,
+				97914B4729550988002000EA /* Copy Configuration folder */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				97914B2729550988002000EA /* PBXTargetDependency */,
+			);
+			name = AuthStressTests;
+			packageProductDependencies = (
+			);
+			productName = AuthIntegrationTests;
+			productReference = 97914B4B29550988002000EA /* AuthStressTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -346,7 +420,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1320;
+				LastSwiftUpdateCheck = 1400;
 				LastUpgradeCheck = 1320;
 				TargetAttributes = {
 					485CB53927B614CE006CCEC7 = {
@@ -373,6 +447,7 @@
 			targets = (
 				485CB53927B614CE006CCEC7 /* AuthHostApp */,
 				485CB59E27B61E04006CCEC7 /* AuthIntegrationTests */,
+				97914B2629550988002000EA /* AuthStressTests */,
 			);
 		};
 /* End PBXProject section */
@@ -395,9 +470,35 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		97914B4529550988002000EA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				97914B51295509AB002000EA /* README.md in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		97914B4729550988002000EA /* Copy Configuration folder */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration folder";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n      \nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n      \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
 		B4EBE94027BD417F0005AE5C /* Copy Configuration folder */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -461,6 +562,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		97914B2929550988002000EA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				97914B5229550A2B002000EA /* AuthSessionHelper.swift in Sources */,
+				97914B5329550A2B002000EA /* AuthSignInHelper.swift in Sources */,
+				97914B5429550A2B002000EA /* AuthEnvironmentHelper.swift in Sources */,
+				97914B4F295509A2002000EA /* AuthStressTests.swift in Sources */,
+				97914B50295509A2002000EA /* AWSAuthBaseTest.swift in Sources */,
+				97914B4C2955099A002000EA /* AsyncTesting.swift in Sources */,
+				97914B4D2955099A002000EA /* AsyncExpectation.swift in Sources */,
+				97914B4E2955099A002000EA /* XCTestCase+AsyncTesting.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -468,6 +584,11 @@
 			isa = PBXTargetDependency;
 			target = 485CB53927B614CE006CCEC7 /* AuthHostApp */;
 			targetProxy = 485CB5A327B61E04006CCEC7 /* PBXContainerItemProxy */;
+		};
+		97914B2729550988002000EA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 485CB53927B614CE006CCEC7 /* AuthHostApp */;
+			targetProxy = 97914B2829550988002000EA /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -684,6 +805,42 @@
 			};
 			name = Release;
 		};
+		97914B4929550988002000EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 94KV3E626L;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.auth.AuthIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AuthHostApp.app/AuthHostApp";
+			};
+			name = Debug;
+		};
+		97914B4A29550988002000EA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 94KV3E626L;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.auth.AuthIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AuthHostApp.app/AuthHostApp";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -710,6 +867,15 @@
 			buildConfigurations = (
 				485CB5A627B61E04006CCEC7 /* Debug */,
 				485CB5A727B61E04006CCEC7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		97914B4829550988002000EA /* Build configuration list for PBXNativeTarget "AuthStressTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				97914B4929550988002000EA /* Debug */,
+				97914B4A29550988002000EA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

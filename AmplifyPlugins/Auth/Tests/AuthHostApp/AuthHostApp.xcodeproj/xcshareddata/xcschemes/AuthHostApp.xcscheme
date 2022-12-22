@@ -52,6 +52,17 @@
                </Test>
             </SkippedTests>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "97914AD42954FE0A002000EA"
+               BuildableName = "AuthStressTests.xctest"
+               BlueprintName = "AuthStressTests"
+               ReferencedContainer = "container:AuthHostApp.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
