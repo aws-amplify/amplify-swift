@@ -263,7 +263,7 @@ let geoTargets: [Target] = [
     )
 ]
 
-let pinpointTargets: [Target] = [
+let internalPinpointTargets: [Target] = [
     .target(
         name: "InternalAWSPinpoint",
         dependencies: [
@@ -274,7 +274,7 @@ let pinpointTargets: [Target] = [
             .product(name: "AWSPinpoint", package: "aws-sdk-swift"),
             .product(name: "AmplifyUtilsNotifications", package: "amplify-swift-utils-notifications")
         ],
-        path: "AmplifyPlugins/Pinpoint/Internal/Sources/InternalAWSPinpoint"
+        path: "AmplifyPlugins/Internal/Sources/InternalAWSPinpoint"
     ),
     .testTarget(
         name: "InternalAWSPinpointUnitTests",
@@ -282,14 +282,17 @@ let pinpointTargets: [Target] = [
             "InternalAWSPinpoint",
             "AmplifyTestCommon"
         ],
-        path: "AmplifyPlugins/Pinpoint/Internal/Tests/InternalAWSPinpointUnitTests"
-    ),
+        path: "AmplifyPlugins/Internal/Tests/InternalAWSPinpointUnitTests"
+    )
+]
+
+let analyticsTargets: [Target] = [
     .target(
         name: "AWSPinpointAnalyticsPlugin",
         dependencies: [
             .target(name: "InternalAWSPinpoint")
         ],
-        path: "AmplifyPlugins/Pinpoint/Analytics/Sources/AWSPinpointAnalyticsPlugin"
+        path: "AmplifyPlugins/Analytics/Sources/AWSPinpointAnalyticsPlugin"
     ),
     .testTarget(
         name: "AWSPinpointAnalyticsPluginUnitTests",
@@ -297,14 +300,17 @@ let pinpointTargets: [Target] = [
             "AWSPinpointAnalyticsPlugin",
             "AmplifyTestCommon"
         ],
-        path: "AmplifyPlugins/Pinpoint/Analytics/Tests/AWSPinpointAnalyticsPluginUnitTests"
-    ),
+        path: "AmplifyPlugins/Analytics/Tests/AWSPinpointAnalyticsPluginUnitTests"
+    )
+]
+
+let pushNotificationsTargets: [Target] = [
     .target(
         name: "AWSPinpointPushNotificationsPlugin",
         dependencies: [
             .target(name: "InternalAWSPinpoint")
         ],
-        path: "AmplifyPlugins/Pinpoint/PushNotifications/Sources/AWSPinpointPushNotificationsPlugin"
+        path: "AmplifyPlugins/Notifications/Push/Sources/AWSPinpointPushNotificationsPlugin"
     ),
     .testTarget(
         name: "AWSPinpointPushNotificationsPluginUnitTests",
@@ -312,12 +318,12 @@ let pinpointTargets: [Target] = [
             "AWSPinpointPushNotificationsPlugin",
             "AmplifyTestCommon"
         ],
-        path: "AmplifyPlugins/Pinpoint/PushNotifications/Tests/AWSPinpointPushNotificationsPluginUnitTests"
+        path: "AmplifyPlugins/Notifications/Push/Tests/AWSPinpointPushNotificationsPluginUnitTests"
     )
 ]
 
 let targets: [Target] = amplifyTargets + apiTargets + authTargets + dataStoreTargets + storageTargets +
-                        geoTargets + pinpointTargets
+                        geoTargets + analyticsTargets + pushNotificationsTargets + internalPinpointTargets
 
 let package = Package(
     name: "Amplify",

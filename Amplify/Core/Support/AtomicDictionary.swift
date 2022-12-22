@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Collections
 
 public final class AtomicDictionary<Key: Hashable, Value> {
     private let lock: NSLocking
