@@ -32,9 +32,17 @@ public class RESTRequest {
                 headers: [String: String]? = nil,
                 queryParameters: [String: String]? = nil,
                 body: Data? = nil) {
+        if let headers = headers,
+            headers["Cache-Control"] == nil {
+            var updatedHeaders = headers
+            updatedHeaders["Cache-Control"] = "no-key"
+            self.headers = updatedHeaders
+        } else {
+            self.headers = headers
+        }
+
         self.apiName = apiName
         self.path = path
-        self.headers = headers
         self.queryParameters = queryParameters
         self.body = body
     }
