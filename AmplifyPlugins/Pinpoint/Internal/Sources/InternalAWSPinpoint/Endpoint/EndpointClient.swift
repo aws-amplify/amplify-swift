@@ -70,7 +70,7 @@ actor EndpointClient: EndpointClientBehaviour {
     }
 
     func updateEndpointProfile(with endpointProfile: PinpointEndpointProfile) async throws {
-        try updateStoredAPNsToken(from: endpointProfile)
+        updateStoredAPNsToken(from: endpointProfile)
         try await updateEndpoint(with: endpointProfile)
     }
 
@@ -129,16 +129,22 @@ actor EndpointClient: EndpointClientBehaviour {
         }
     }
 
-    private func updateStoredAPNsToken(from endpointProfile: PinpointEndpointProfile) throws {
-        guard let deviceToken = endpointProfile.deviceToken,
-              let apnsToken = Data(hexString: deviceToken) else {
-            try keychain._remove(Constants.deviceTokenKey)
-            return
-        }
+    private func updateStoredAPNsToken(from endpointProfile: PinpointEndpointProfile) {
+        do {
+            guard let deviceToken = endpointProfile.deviceToken,
+                  let apnsToken = Data(hexString: deviceToken) else {
+                try keychain._remove(Constants.deviceTokenKey)
+                return
+            }
 
-        let currentToken = try keychain._getData(Constants.deviceTokenKey)
-        if currentToken != apnsToken {
-            try keychain._set(apnsToken, key: Constants.deviceTokenKey)
+            // If we already have a token stored, validate that it's not the same before updating.
+            let currentToken = try? keychain._getData(Constants.deviceTokenKey)
+            if currentToken != apnsToken {
+                try keychain._set(apnsToken, key: Constants.deviceTokenKey)
+            }
+        } catch {
+            log.error("Unable to update the APNs token in the Keychain: \(error.localizedDescription)")
+            log.error(error: error)
         }
     }
 

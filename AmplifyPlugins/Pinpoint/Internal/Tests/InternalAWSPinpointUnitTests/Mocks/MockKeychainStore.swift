@@ -38,8 +38,10 @@ class MockKeychainStore: KeychainStoreBehavior {
     }
 
     var saveDataCount = 0
+    var saveDataCountMap: [String: Int] = [:]
     func _set(_ value: Data, key: String) throws {
         saveDataCount += 1
+        saveDataCountMap[key] = saveDataCountMap[key, default: 0] + 1
         dataValues[key] = value
     }
 
@@ -66,5 +68,7 @@ class MockKeychainStore: KeychainStoreBehavior {
         removeObjectCount = 0
         saveStringCount = 0
         saveDataCount = 0
+        dataForKeyCountMap = [:]
+        saveDataCountMap = [:]
     }
 }
