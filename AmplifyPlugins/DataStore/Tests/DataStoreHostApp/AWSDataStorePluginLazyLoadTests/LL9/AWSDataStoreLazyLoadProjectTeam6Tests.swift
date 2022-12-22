@@ -15,7 +15,7 @@ import AWSPluginsCore
 class AWSDataStoreLazyLoadProjectTeam6Tests: AWSDataStoreLazyLoadBaseTest {
     
     func testStart() async throws {
-        await setup(withModels: ProjectTeam6Models(), clearOnTearDown: false)
+        await setup(withModels: ProjectTeam6Models())
         try await startAndWaitForReady()
         printDBPath()
     }

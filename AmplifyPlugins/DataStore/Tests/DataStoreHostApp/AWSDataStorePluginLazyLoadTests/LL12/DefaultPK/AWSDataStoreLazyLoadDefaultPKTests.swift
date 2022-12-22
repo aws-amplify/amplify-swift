@@ -15,18 +15,18 @@ import AWSPluginsCore
 class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
     
     func testStart() async throws {
-        await setup(withModels: DefaultPKModels(), clearOnTearDown: false)
+        await setup(withModels: DefaultPKModels())
         try await startAndWaitForReady()
     }
     
     func testSaveDefaultPKParent() async throws {
-        await setup(withModels: DefaultPKModels(), clearOnTearDown: false)
+        await setup(withModels: DefaultPKModels())
         let parent = DefaultPKParent()
         let savedParent = try await saveAndWaitForSync(parent)
     }
     
     func testSaveDefaultPKChild() async throws {
-        await setup(withModels: DefaultPKModels(), clearOnTearDown: false)
+        await setup(withModels: DefaultPKModels())
         let parent = DefaultPKParent()
         let savedParent = try await saveAndWaitForSync(parent)
         let child = DefaultPKChild(parent: parent)

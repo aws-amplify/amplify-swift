@@ -15,13 +15,13 @@ import AWSPluginsCore
 final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest {
 
     func testSavePost() async throws {
-        await setup(withModels: PostComment8Models(), logLevel: .verbose)
+        await setup(withModels: PostComment8Models())
         let post = Post(postId: UUID().uuidString, title: "title")
         let savedPost = try await saveAndWaitForSync(post)
     }
     
     func testSaveComment() async throws {
-        await setup(withModels: PostComment8Models(), logLevel: .verbose)
+        await setup(withModels: PostComment8Models())
         
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString,
@@ -34,7 +34,7 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest 
     
     func testLazyLoad() async throws {
         throw XCTSkip("Need further investigation, saved post cannot lazy load comment")
-        await setup(withModels: PostComment8Models(), logLevel: .verbose)
+        await setup(withModels: PostComment8Models())
         
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString,
@@ -100,7 +100,7 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest 
      */
     func testSaveWithoutPost() async throws {
         throw XCTSkip("Need further investigation")
-        await setup(withModels: PostComment8Models(), logLevel: .verbose)
+        await setup(withModels: PostComment8Models())
         let comment = Comment(commentId: UUID().uuidString, content: "content")
         let savedComment = try await saveAndWaitForSync(comment)
         var queriedComment = try await query(for: savedComment)
@@ -115,7 +115,7 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest 
     }
     
     func testUpdateFromQueriedComment() async throws {
-        await setup(withModels: PostComment8Models(), logLevel: .verbose)
+        await setup(withModels: PostComment8Models())
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString,
                               content: "content",
@@ -131,7 +131,7 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest 
     }
     
     func testUpdateToNewPost() async throws {
-        await setup(withModels: PostComment8Models(), logLevel: .verbose)
+        await setup(withModels: PostComment8Models())
         
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString,
@@ -152,7 +152,7 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest 
     }
     
     func testUpdateRemovePost() async throws {
-        await setup(withModels: PostComment8Models(), logLevel: .verbose)
+        await setup(withModels: PostComment8Models())
         
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString,
@@ -173,7 +173,7 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest 
     }
     
     func testDelete() async throws {
-        await setup(withModels: PostComment8Models(), logLevel: .verbose)
+        await setup(withModels: PostComment8Models())
         
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString,

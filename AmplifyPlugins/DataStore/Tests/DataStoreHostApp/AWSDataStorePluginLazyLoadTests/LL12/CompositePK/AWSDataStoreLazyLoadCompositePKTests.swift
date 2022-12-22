@@ -14,19 +14,19 @@ import AWSPluginsCore
 
 class AWSDataStoreLazyLoadCompositePKTests: AWSDataStoreLazyLoadBaseTest {
     func testStart() async throws {
-        await setup(withModels: CompositePKModels(), clearOnTearDown: false)
+        await setup(withModels: CompositePKModels())
         try await startAndWaitForReady()
     }
     
     func testSaveCompositePKParent() async throws {
-        await setup(withModels: CompositePKModels(), clearOnTearDown: false)
+        await setup(withModels: CompositePKModels())
         let compositePKParent = CompositePKParent(customId: UUID().uuidString,
                                                   content: "content")
         let savedParent = try await saveAndWaitForSync(compositePKParent)
     }
     
     func testSaveCompositePKChild() async throws {
-        await setup(withModels: CompositePKModels(), clearOnTearDown: false)
+        await setup(withModels: CompositePKModels())
         let compositePKParent = CompositePKParent(customId: UUID().uuidString,
                                                   content: "content")
         let savedParent = try await saveAndWaitForSync(compositePKParent)
@@ -36,7 +36,7 @@ class AWSDataStoreLazyLoadCompositePKTests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testSaveImplicitChild() async throws {
-        await setup(withModels: CompositePKModels(), clearOnTearDown: false)
+        await setup(withModels: CompositePKModels())
         let compositePKParent = CompositePKParent(customId: UUID().uuidString,
                                                   content: "content")
         let savedParent = try await saveAndWaitForSync(compositePKParent)
@@ -46,7 +46,7 @@ class AWSDataStoreLazyLoadCompositePKTests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testSaveExplicitChild() async throws {
-        await setup(withModels: CompositePKModels(), clearOnTearDown: false)
+        await setup(withModels: CompositePKModels())
         let compositePKParent = CompositePKParent(customId: UUID().uuidString,
                                                   content: "content")
         let savedParent = try await saveAndWaitForSync(compositePKParent)
@@ -60,7 +60,7 @@ class AWSDataStoreLazyLoadCompositePKTests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testSaveStrangeImplicitChild() async throws {
-        await setup(withModels: CompositePKModels(), clearOnTearDown: false)
+        await setup(withModels: CompositePKModels())
         let compositePKParent = CompositePKParent(customId: UUID().uuidString,
                                                   content: "content")
         let savedParent = try await saveAndWaitForSync(compositePKParent)
@@ -70,7 +70,7 @@ class AWSDataStoreLazyLoadCompositePKTests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testSaveSansBelongsTo() async throws {
-        await setup(withModels: CompositePKModels(), clearOnTearDown: false)
+        await setup(withModels: CompositePKModels())
         let compositePKParent = CompositePKParent(customId: UUID().uuidString,
                                                   content: "content")
         let savedParent = try await saveAndWaitForSync(compositePKParent)

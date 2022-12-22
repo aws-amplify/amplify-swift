@@ -15,19 +15,19 @@ import AWSPluginsCore
 class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
     
     func testStart() async throws {
-        await setup(withModels: PostComment4V2Models(), clearOnTearDown: false)
+        await setup(withModels: PostComment4V2Models())
         try await startAndWaitForReady()
         printDBPath()
     }
     
     func testSavePost() async throws {
-        await setup(withModels: PostComment4V2Models(), logLevel: .verbose)
+        await setup(withModels: PostComment4V2Models())
         let post = Post(title: "title")
         let savedPost = try await saveAndWaitForSync(post)
     }
     
     func testSaveComment() async throws {
-        await setup(withModels: PostComment4V2Models(), logLevel: .verbose)
+        await setup(withModels: PostComment4V2Models())
         
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
@@ -36,7 +36,7 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testLazyLoad() async throws {
-        await setup(withModels: PostComment4V2Models(), logLevel: .verbose)
+        await setup(withModels: PostComment4V2Models())
         
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
@@ -100,7 +100,7 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testSaveWithoutPost() async throws {
-        await setup(withModels: PostComment4V2Models(), logLevel: .verbose)
+        await setup(withModels: PostComment4V2Models())
         let comment = Comment(content: "content")
         let savedComment = try await saveAndWaitForSync(comment)
         var queriedComment = try await query(for: savedComment)
@@ -115,7 +115,7 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testUpdateFromQueriedComment() async throws {
-        await setup(withModels: PostComment4V2Models(), logLevel: .verbose)
+        await setup(withModels: PostComment4V2Models())
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
         let savedPost = try await saveAndWaitForSync(post)
@@ -129,7 +129,7 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testUpdateToNewPost() async throws {
-        await setup(withModels: PostComment4V2Models(), logLevel: .verbose)
+        await setup(withModels: PostComment4V2Models())
         
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
@@ -148,7 +148,7 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testUpdateRemovePost() async throws {
-        await setup(withModels: PostComment4V2Models(), logLevel: .verbose)
+        await setup(withModels: PostComment4V2Models())
         
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
@@ -166,7 +166,7 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testDelete() async throws {
-        await setup(withModels: PostComment4V2Models(), logLevel: .verbose)
+        await setup(withModels: PostComment4V2Models())
         
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
@@ -178,7 +178,7 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testObservePost() async throws {
-        await setup(withModels: PostComment4V2Models(), logLevel: .verbose)
+        await setup(withModels: PostComment4V2Models())
         try await startAndWaitForReady()
         let post = Post(title: "title")
         let mutationEventReceived = asyncExpectation(description: "Received mutation event")
@@ -210,7 +210,7 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testObserveComment() async throws {
-        await setup(withModels: PostComment4V2Models(), logLevel: .verbose)
+        await setup(withModels: PostComment4V2Models())
         try await startAndWaitForReady()
         let post = Post(title: "title")
         let savedPost = try await saveAndWaitForSync(post)

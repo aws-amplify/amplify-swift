@@ -15,7 +15,7 @@ import AWSPluginsCore
 final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
 
     func testLazyLoad() async throws {
-        await setup(withModels: PostTagModels(), logLevel: .verbose)
+        await setup(withModels: PostTagModels())
         let post = Post(postId: UUID().uuidString, title: "title")
         let tag = Tag(name: "name")
         let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)
@@ -71,7 +71,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testUpdate() async throws {
-        await setup(withModels: PostTagModels(), logLevel: .verbose)
+        await setup(withModels: PostTagModels())
         let post = Post(postId: UUID().uuidString, title: "title")
         let tag = Tag(name: "name")
         let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)
@@ -123,7 +123,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testDeletePost() async throws {
-        await setup(withModels: PostTagModels(), logLevel: .verbose)
+        await setup(withModels: PostTagModels())
         let post = Post(postId: UUID().uuidString, title: "title")
         let tag = Tag(name: "name")
         let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)
@@ -139,7 +139,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testDeleteTag() async throws {
-        await setup(withModels: PostTagModels(), logLevel: .verbose)
+        await setup(withModels: PostTagModels())
         let post = Post(postId: UUID().uuidString, title: "title")
         let tag = Tag(name: "name")
         let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)
@@ -155,7 +155,7 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testDeletePostTag() async throws {
-        await setup(withModels: PostTagModels(), logLevel: .verbose)
+        await setup(withModels: PostTagModels())
         let post = Post(postId: UUID().uuidString, title: "title")
         let tag = Tag(name: "name")
         let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)

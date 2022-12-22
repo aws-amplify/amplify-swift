@@ -15,7 +15,7 @@ import XCTest
 class AWSDataStoreLazyLoadProjectTeam1Tests: AWSDataStoreLazyLoadBaseTest {
     
     func testStart() async throws {
-        await setup(withModels: ProjectTeam1Models(), clearOnTearDown: false)
+        await setup(withModels: ProjectTeam1Models())
         try await startAndWaitForReady()
         printDBPath()
     }
@@ -135,7 +135,7 @@ class AWSDataStoreLazyLoadProjectTeam1Tests: AWSDataStoreLazyLoadBaseTest {
     }
     
     func testSaveProjectWithTeamThenAccessProjectFromTeam() async throws {
-        await setup(withModels: ProjectTeam1Models(), clearOnTearDown: false)
+        await setup(withModels: ProjectTeam1Models())
         
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await saveAndWaitForSync(team)

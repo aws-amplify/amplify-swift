@@ -60,7 +60,7 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
     /// - Parameter models: DataStore models
     func setup(withModels models: AmplifyModelRegistration,
                logLevel: LogLevel = .verbose,
-               clearOnTearDown: Bool = true) async {
+               clearOnTearDown: Bool = false) async {
         self.clearOnTearDown = clearOnTearDown
         do {
             setupConfig()
@@ -79,7 +79,7 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
     
     func setUpDataStoreOnly(withModels models: AmplifyModelRegistration,
                             logLevel: LogLevel = .verbose,
-                            clearOnTearDown: Bool = true) async {
+                            clearOnTearDown: Bool = false) async {
         self.clearOnTearDown = clearOnTearDown
         do {
             setupConfig()
