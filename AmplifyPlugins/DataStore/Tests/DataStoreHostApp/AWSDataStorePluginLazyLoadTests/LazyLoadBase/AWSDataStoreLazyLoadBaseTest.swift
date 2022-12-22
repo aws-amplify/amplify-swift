@@ -20,6 +20,7 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
     var amplifyConfig: AmplifyConfiguration!
     
     var apiOnly: Bool = false
+    var modelsOnly: Bool = false
     var clearOnTearDown: Bool = false
     
     override func setUp() {
@@ -27,7 +28,7 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
     }
     
     override func tearDown() async throws {
-        if !apiOnly && clearOnTearDown {
+        if (!apiOnly || !modelsOnly) && clearOnTearDown {
             try await clearDataStore()
         }
         
@@ -65,7 +66,8 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
             setupConfig()
             Amplify.Logging.logLevel = logLevel
             
-            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models))
+            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models,
+                                                       configuration: .custom(syncMaxRecords: 100)))
             try Amplify.add(plugin: AWSAPIPlugin())
             try Amplify.configure(amplifyConfig)
             
@@ -90,6 +92,12 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
         } catch {
             XCTFail("Error during setup: \(error)")
         }
+    }
+    
+    func setUpModelRegistrationOnly(withModels models: AmplifyModelRegistration,
+                                    logLevel: LogLevel = .verbose) {
+        modelsOnly = true
+        models.registerModels(registry: ModelRegistry.self)
     }
     
     func setupAPIOnly(withModels models: AmplifyModelRegistration, logLevel: LogLevel = .verbose) async {

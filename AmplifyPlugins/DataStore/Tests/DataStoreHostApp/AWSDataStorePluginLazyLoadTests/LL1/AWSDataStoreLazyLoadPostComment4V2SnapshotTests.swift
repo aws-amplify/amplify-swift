@@ -14,8 +14,8 @@ import AWSPluginsCore
 
 extension AWSDataStoreLazyLoadPostComment4V2Tests {
  
-    func testPostSelectionSets() async throws {
-        await setUpDataStoreOnly(withModels: PostComment4V2Models(), clearOnTearDown: false)
+    func testPostSelectionSets() {
+        setUpModelRegistrationOnly(withModels: PostComment4V2Models())
         continueAfterFailure = true
         let post = Post(title: "title")
         // Create
@@ -149,8 +149,8 @@ extension AWSDataStoreLazyLoadPostComment4V2Tests {
         XCTAssertEqual(syncRequest.document, syncDocument)
     }
     
-    func testCommentSelectionSets() async throws {
-        await setUpDataStoreOnly(withModels: PostComment4V2Models(), clearOnTearDown: false)
+    func testCommentSelectionSets() {
+        setUpModelRegistrationOnly(withModels: PostComment4V2Models())
         continueAfterFailure = true
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
