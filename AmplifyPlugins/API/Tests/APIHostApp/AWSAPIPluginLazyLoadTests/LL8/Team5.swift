@@ -42,8 +42,8 @@ public struct Team5: Model {
       teamId = try values.decode(String.self, forKey: .teamId)
       name = try values.decode(String.self, forKey: .name)
       _project = try values.decodeIfPresent(LazyReference<Project5>.self, forKey: .project) ?? LazyReference(identifiers: nil)
-      createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
-      updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
+      createdAt = try? values.decode(Temporal.DateTime?.self, forKey: .createdAt)
+      updatedAt = try? values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
   }
   public func encode(to encoder: Encoder) throws {
       var container = encoder.container(keyedBy: CodingKeys.self)

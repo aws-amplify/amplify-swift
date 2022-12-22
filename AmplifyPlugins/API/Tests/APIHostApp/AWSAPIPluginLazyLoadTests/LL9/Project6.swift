@@ -52,10 +52,10 @@ public struct Project6: Model {
       projectId = try values.decode(String.self, forKey: .projectId)
       name = try values.decode(String.self, forKey: .name)
       _team = try values.decodeIfPresent(LazyReference<Team6>.self, forKey: .team) ?? LazyReference(identifiers: nil)
-      teamId = try values.decode(String?.self, forKey: .teamId)
-      teamName = try values.decode(String?.self, forKey: .teamName)
-      createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
-      updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
+      teamId = try? values.decode(String?.self, forKey: .teamId)
+      teamName = try? values.decode(String?.self, forKey: .teamName)
+      createdAt = try? values.decode(Temporal.DateTime?.self, forKey: .createdAt)
+      updatedAt = try? values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
   }
   public func encode(to encoder: Encoder) throws {
       var container = encoder.container(keyedBy: CodingKeys.self)

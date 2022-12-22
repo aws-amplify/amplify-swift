@@ -7,9 +7,9 @@ public struct ImplicitChild: Model {
   public let content: String
   internal var _parent: LazyReference<CompositePKParent>
   public var parent: CompositePKParent   {
-      get async throws { 
+      get async throws {
         try await _parent.require()
-      } 
+      }
     }
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
@@ -34,7 +34,7 @@ public struct ImplicitChild: Model {
       self.createdAt = createdAt
       self.updatedAt = updatedAt
   }
-  public mutating func setParent(parent: CompositePKParent) {
+  public mutating func setParent(_ parent: CompositePKParent) {
     self._parent = LazyReference(parent)
   }
   public init(from decoder: Decoder) throws {
@@ -42,8 +42,8 @@ public struct ImplicitChild: Model {
       childId = try values.decode(String.self, forKey: .childId)
       content = try values.decode(String.self, forKey: .content)
       _parent = try values.decodeIfPresent(LazyReference<CompositePKParent>.self, forKey: .parent) ?? LazyReference(identifiers: nil)
-      createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
-      updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
+      createdAt = try? values.decode(Temporal.DateTime?.self, forKey: .createdAt)
+      updatedAt = try? values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
   }
   public func encode(to encoder: Encoder) throws {
       var container = encoder.container(keyedBy: CodingKeys.self)

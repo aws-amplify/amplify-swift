@@ -6,9 +6,9 @@ public struct HasOneParent: Model {
   public let id: String
   internal var _child: LazyReference<HasOneChild>
   public var child: HasOneChild?   {
-      get async throws { 
+      get async throws {
         try await _child.get()
-      } 
+      }
     }
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
@@ -34,16 +34,16 @@ public struct HasOneParent: Model {
       self.updatedAt = updatedAt
       self.hasOneParentChildId = hasOneParentChildId
   }
-  public mutating func setChild(child: HasOneChild? = nil) {
+  public mutating func setChild(_ child: HasOneChild? = nil) {
     self._child = LazyReference(child)
   }
   public init(from decoder: Decoder) throws {
       let values = try decoder.container(keyedBy: CodingKeys.self)
       id = try values.decode(String.self, forKey: .id)
       _child = try values.decodeIfPresent(LazyReference<HasOneChild>.self, forKey: .child) ?? LazyReference(identifiers: nil)
-      createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
-      updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
-      hasOneParentChildId = try values.decode(String?.self, forKey: .hasOneParentChildId)
+      createdAt = try? values.decode(Temporal.DateTime?.self, forKey: .createdAt)
+      updatedAt = try? values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
+      hasOneParentChildId = try? values.decode(String?.self, forKey: .hasOneParentChildId)
   }
   public func encode(to encoder: Encoder) throws {
       var container = encoder.container(keyedBy: CodingKeys.self)

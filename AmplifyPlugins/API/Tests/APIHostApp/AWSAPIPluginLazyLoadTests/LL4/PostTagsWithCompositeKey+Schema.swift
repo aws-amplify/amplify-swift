@@ -3,7 +3,7 @@ import Amplify
 import Foundation
 
 extension PostTagsWithCompositeKey {
-  // MARK: - CodingKeys 
+  // MARK: - CodingKeys
    public enum CodingKeys: String, ModelKey {
     case id
     case postWithTagsCompositeKey
@@ -13,7 +13,7 @@ extension PostTagsWithCompositeKey {
   }
   
   public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
+  //  MARK: - ModelSchema
   
   public static let schema = defineSchema { model in
     let postTagsWithCompositeKey = PostTagsWithCompositeKey.keys
@@ -34,7 +34,6 @@ extension PostTagsWithCompositeKey {
       .field(postTagsWithCompositeKey.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
-    
     public class Path: ModelPath<PostTagsWithCompositeKey> { }
     
     public static var rootPath: PropertyContainerPath? { Path() }
@@ -44,11 +43,20 @@ extension PostTagsWithCompositeKey: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
   public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
 }
-
 extension ModelPath where ModelType == PostTagsWithCompositeKey {
-    var id: FieldPath<String> { id() }
-    var postWithTagsCompositeKey: ModelPath<PostWithTagsCompositeKey> { PostWithTagsCompositeKey.Path(name: "postWithTagsCompositeKey", parent: self) }
-    var tagWithCompositeKey: ModelPath<TagWithCompositeKey> { TagWithCompositeKey.Path(name: "tagWithCompositeKey", parent: self) }
-    var createdAt: FieldPath<Temporal.DateTime> { datetime("createdAt") }
-    var updatedAt: FieldPath<Temporal.DateTime> { datetime("updatedAt") }
+  public var id: FieldPath<String>   {
+      string("id")
+    }
+  public var postWithTagsCompositeKey: ModelPath<PostWithTagsCompositeKey>   {
+      PostWithTagsCompositeKey.Path(name: "postWithTagsCompositeKey", parent: self)
+    }
+  public var tagWithCompositeKey: ModelPath<TagWithCompositeKey>   {
+      TagWithCompositeKey.Path(name: "tagWithCompositeKey", parent: self)
+    }
+  public var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt")
+    }
+  public var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt")
+    }
 }

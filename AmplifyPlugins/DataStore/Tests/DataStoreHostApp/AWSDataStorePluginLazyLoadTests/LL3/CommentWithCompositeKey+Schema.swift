@@ -3,7 +3,7 @@ import Amplify
 import Foundation
 
 extension CommentWithCompositeKey {
-  // MARK: - CodingKeys 
+  // MARK: - CodingKeys
    public enum CodingKeys: String, ModelKey {
     case id
     case content
@@ -13,7 +13,7 @@ extension CommentWithCompositeKey {
   }
   
   public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
+  //  MARK: - ModelSchema
   
   public static let schema = defineSchema { model in
     let commentWithCompositeKey = CommentWithCompositeKey.keys
@@ -33,7 +33,6 @@ extension CommentWithCompositeKey {
       .field(commentWithCompositeKey.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
-    
     public class Path: ModelPath<CommentWithCompositeKey> { }
     
     public static var rootPath: PropertyContainerPath? { Path() }
@@ -50,11 +49,20 @@ extension CommentWithCompositeKey.IdentifierProtocol {
     .make(fields:[(name: "id", value: id), (name: "content", value: content)])
   }
 }
-
 extension ModelPath where ModelType == CommentWithCompositeKey {
-    var id: FieldPath<String> { id() }
-    var content: FieldPath<String> { string("content") }
-    var post: ModelPath<PostWithCompositeKey> { PostWithCompositeKey.Path(name: "post", parent: self) }
-    var createdAt: FieldPath<Temporal.DateTime> { datetime("createdAt") }
-    var updatedAt: FieldPath<Temporal.DateTime> { datetime("updatedAt") }
+  public var id: FieldPath<String>   {
+      string("id")
+    }
+  public var content: FieldPath<String>   {
+      string("content")
+    }
+  public var post: ModelPath<PostWithCompositeKey>   {
+      PostWithCompositeKey.Path(name: "post", parent: self)
+    }
+  public var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt")
+    }
+  public var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt")
+    }
 }

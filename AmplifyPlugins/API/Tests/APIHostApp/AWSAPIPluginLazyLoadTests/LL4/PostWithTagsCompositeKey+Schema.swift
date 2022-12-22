@@ -3,7 +3,7 @@ import Amplify
 import Foundation
 
 extension PostWithTagsCompositeKey {
-  // MARK: - CodingKeys 
+  // MARK: - CodingKeys
    public enum CodingKeys: String, ModelKey {
     case postId
     case title
@@ -13,7 +13,7 @@ extension PostWithTagsCompositeKey {
   }
   
   public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
+  //  MARK: - ModelSchema
   
   public static let schema = defineSchema { model in
     let postWithTagsCompositeKey = PostWithTagsCompositeKey.keys
@@ -33,7 +33,6 @@ extension PostWithTagsCompositeKey {
       .field(postWithTagsCompositeKey.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
-    
     public class Path: ModelPath<PostWithTagsCompositeKey> { }
     
     public static var rootPath: PropertyContainerPath? { Path() }
@@ -51,9 +50,19 @@ extension PostWithTagsCompositeKey.IdentifierProtocol {
   }
 }
 extension ModelPath where ModelType == PostWithTagsCompositeKey {
-    var postId: FieldPath<String> { string("postId") }
-    var title: FieldPath<String> { string("title") }
-    var tags: ModelPath<PostTagsWithCompositeKey> { PostTagsWithCompositeKey.Path(name: "tags", isCollection: true, parent: self) }
-    var createdAt: FieldPath<Temporal.DateTime> { datetime("createdAt") }
-    var updatedAt: FieldPath<Temporal.DateTime> { datetime("updatedAt") }
+  public var postId: FieldPath<String>   {
+      string("postId")
+    }
+  public var title: FieldPath<String>   {
+      string("title")
+    }
+  public var tags: ModelPath<PostTagsWithCompositeKey>   {
+      PostTagsWithCompositeKey.Path(name: "tags", isCollection: true, parent: self)
+    }
+  public var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt")
+    }
+  public var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt")
+    }
 }

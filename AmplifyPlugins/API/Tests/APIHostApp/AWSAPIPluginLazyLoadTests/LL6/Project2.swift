@@ -6,7 +6,7 @@ public struct Project2: Model {
     public let projectId: String
     public let name: String
     internal var _team: LazyReference<Team2>
-    public var team: Team2? {
+    public var team: Team2?   {
         get async throws {
             try await _team.get()
         }
@@ -15,7 +15,7 @@ public struct Project2: Model {
     public var updatedAt: Temporal.DateTime?
     public var project2TeamTeamId: String?
     public var project2TeamName: String?
-
+    
     public init(projectId: String,
                 name: String,
                 team: Team2? = nil,
@@ -44,22 +44,19 @@ public struct Project2: Model {
         self.project2TeamTeamId = project2TeamTeamId
         self.project2TeamName = project2TeamName
     }
-
-    public mutating func setTeam(_ team: Team2?) {
+    public mutating func setTeam(_ team: Team2? = nil) {
         self._team = LazyReference(team)
     }
-
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         projectId = try values.decode(String.self, forKey: .projectId)
         name = try values.decode(String.self, forKey: .name)
         _team = try values.decodeIfPresent(LazyReference<Team2>.self, forKey: .team) ?? LazyReference(identifiers: nil)
-        createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
-        updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
-        project2TeamTeamId = try values.decode(String?.self, forKey: .project2TeamTeamId)
-        project2TeamName = try values.decode(String?.self, forKey: .project2TeamName)
+        createdAt = try? values.decode(Temporal.DateTime?.self, forKey: .createdAt)
+        updatedAt = try? values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
+        project2TeamTeamId = try? values.decode(String?.self, forKey: .project2TeamTeamId)
+        project2TeamName = try? values.decode(String?.self, forKey: .project2TeamName)
     }
-
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(projectId, forKey: .projectId)

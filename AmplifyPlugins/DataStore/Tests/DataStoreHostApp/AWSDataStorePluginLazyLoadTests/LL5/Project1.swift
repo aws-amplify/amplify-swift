@@ -6,7 +6,7 @@ public struct Project1: Model {
     public let projectId: String
     public let name: String
     internal var _team: LazyReference<Team1>
-    public var team: Team1? {
+    public var team: Team1?   {
         get async throws {
             try await _team.get()
         }
@@ -44,22 +44,19 @@ public struct Project1: Model {
         self.project1TeamTeamId = project1TeamTeamId
         self.project1TeamName = project1TeamName
     }
-    
-    public mutating func setTeam(_ team: Team1?) {
+    public mutating func setTeam(_ team: Team1? = nil) {
         self._team = LazyReference(team)
     }
-    
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         projectId = try values.decode(String.self, forKey: .projectId)
         name = try values.decode(String.self, forKey: .name)
         _team = try values.decodeIfPresent(LazyReference<Team1>.self, forKey: .team) ?? LazyReference(identifiers: nil)
-        createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
-        updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
-        project1TeamTeamId = try values.decode(String?.self, forKey: .project1TeamTeamId)
-        project1TeamName = try values.decode(String?.self, forKey: .project1TeamName)
+        createdAt = try? values.decode(Temporal.DateTime?.self, forKey: .createdAt)
+        updatedAt = try? values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
+        project1TeamTeamId = try? values.decode(String?.self, forKey: .project1TeamTeamId)
+        project1TeamName = try? values.decode(String?.self, forKey: .project1TeamName)
     }
-    
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(projectId, forKey: .projectId)

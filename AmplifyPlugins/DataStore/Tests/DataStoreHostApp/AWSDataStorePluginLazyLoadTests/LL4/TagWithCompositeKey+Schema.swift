@@ -3,7 +3,7 @@ import Amplify
 import Foundation
 
 extension TagWithCompositeKey {
-  // MARK: - CodingKeys 
+  // MARK: - CodingKeys
    public enum CodingKeys: String, ModelKey {
     case id
     case name
@@ -13,7 +13,7 @@ extension TagWithCompositeKey {
   }
   
   public static let keys = CodingKeys.self
-  //  MARK: - ModelSchema 
+  //  MARK: - ModelSchema
   
   public static let schema = defineSchema { model in
     let tagWithCompositeKey = TagWithCompositeKey.keys
@@ -49,11 +49,20 @@ extension TagWithCompositeKey.IdentifierProtocol {
     .make(fields:[(name: "id", value: id), (name: "name", value: name)])
   }
 }
-
 extension ModelPath where ModelType == TagWithCompositeKey {
-    var id: FieldPath<String> { id() }
-    var name: FieldPath<String> { string("name") }
-    var posts: ModelPath<PostTagsWithCompositeKey> { PostTagsWithCompositeKey.Path(name: "posts", isCollection: true, parent: self) }
-    var createdAt: FieldPath<Temporal.DateTime> { datetime("createdAt") }
-    var updatedAt: FieldPath<Temporal.DateTime> { datetime("updatedAt") }
+  public var id: FieldPath<String>   {
+      string("id")
+    }
+  public var name: FieldPath<String>   {
+      string("name")
+    }
+  public var posts: ModelPath<PostTagsWithCompositeKey>   {
+      PostTagsWithCompositeKey.Path(name: "posts", isCollection: true, parent: self)
+    }
+  public var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt")
+    }
+  public var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt")
+    }
 }

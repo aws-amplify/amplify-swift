@@ -6,7 +6,7 @@ public struct Comment4V2: Model {
     public let id: String
     public var content: String
     internal var _post: LazyReference<Post4V2>
-    public var post: Post4V2? {
+    public var post: Post4V2?   {
         get async throws {
             try await _post.get()
         }
@@ -34,20 +34,17 @@ public struct Comment4V2: Model {
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
-    
-    public mutating func setPost(_ post: Post4V2?) {
+    public mutating func setPost(_ post: Post4V2? = nil) {
         self._post = LazyReference(post)
     }
-    
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         id = try values.decode(String.self, forKey: .id)
         content = try values.decode(String.self, forKey: .content)
         _post = try values.decodeIfPresent(LazyReference<Post4V2>.self, forKey: .post) ?? LazyReference(identifiers: nil)
-        createdAt = try values.decode(Temporal.DateTime?.self, forKey: .createdAt)
-        updatedAt = try values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
+        createdAt = try? values.decode(Temporal.DateTime?.self, forKey: .createdAt)
+        updatedAt = try? values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
     }
-    
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
