@@ -15,7 +15,7 @@ import AWSPluginsCore
 extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
 
     func testBlogSelectionSets() async throws {
-        await setup(withModels: BlogPostComment8V2Models(), clearOnTearDown: false)
+        await setUpDataStoreOnly(withModels: BlogPostComment8V2Models(), clearOnTearDown: false)
         continueAfterFailure = true
         let blog = Blog(name: "name")
         // Create
@@ -241,7 +241,7 @@ extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
     }
     
     func testPostSelectionSets() async throws {
-        await setup(withModels: BlogPostComment8V2Models(), clearOnTearDown: false)
+        await setUpDataStoreOnly(withModels: BlogPostComment8V2Models(), clearOnTearDown: false)
         continueAfterFailure = true
         let post = Post(name: "name")
         // Create
@@ -472,7 +472,7 @@ extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
     }
     
     func testCommentSelectionSets() async throws {
-        await setup(withModels: BlogPostComment8V2Models(), clearOnTearDown: false)
+        await setUpDataStoreOnly(withModels: BlogPostComment8V2Models(), clearOnTearDown: false)
         continueAfterFailure = true
         let post = Post(name: "name")
         let comment = Comment(content: "content", post: post)
