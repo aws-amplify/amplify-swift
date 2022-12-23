@@ -15,7 +15,6 @@ import AWSAPIPlugin
 class SyncEngineIntegrationTestBase: DataStoreTestBase {
 
     static let amplifyConfigurationFile = "testconfiguration/AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration"
-    let concurrencyLimit = 50
 
     static let networkTimeout = TimeInterval(180)
     let networkTimeout = SyncEngineIntegrationTestBase.networkTimeout

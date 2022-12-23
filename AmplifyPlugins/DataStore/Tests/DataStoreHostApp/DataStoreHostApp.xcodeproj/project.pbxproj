@@ -507,6 +507,17 @@
 		97731F0328B68452006F180B /* DataStoreConnectionScenario3aV2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA0B289BFE3400B32A39 /* DataStoreConnectionScenario3aV2Tests.swift */; };
 		97731F0528B68DAC006F180B /* schema.graphql in Resources */ = {isa = PBXBuildFile; fileRef = 97731F0428B68DAC006F180B /* schema.graphql */; };
 		97731F0628B68DDF006F180B /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 21BBFA07289BFE3400B32A39 /* README.md */; };
+		97914C3B29563544002000EA /* Comment+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCD1289C06E300B32A39 /* Comment+Schema.swift */; };
+		97914C4429563544002000EA /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD20289C06E300B32A39 /* Comment.swift */; };
+		97914C4F29563544002000EA /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8128E746C10000C36A /* AsyncExpectation.swift */; };
+		97914C5129563544002000EA /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8228E746C10000C36A /* XCTestCase+AsyncTesting.swift */; };
+		97914C5229563544002000EA /* Post+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCC2289C06E300B32A39 /* Post+Schema.swift */; };
+		97914C9229563544002000EA /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC27289C062000B32A39 /* TestConfigHelper.swift */; };
+		97914CE729563544002000EA /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8028E746C10000C36A /* AsyncTesting.swift */; };
+		97914D0329563544002000EA /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCD2289C06E300B32A39 /* Post.swift */; };
+		97914D0F295637F5002000EA /* DataStoreStressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97914C2529563539002000EA /* DataStoreStressTests.swift */; };
+		97914D1029563928002000EA /* PostStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC93289C06E300B32A39 /* PostStatus.swift */; };
+		97914D1229563C3D002000EA /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 97914D1129563C3D002000EA /* README.md */; };
 		979722F728B6AE0B00679E3C /* DataStoreConnectionScenario3V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA03289BFE3400B32A39 /* DataStoreConnectionScenario3V2Tests.swift */; };
 		979722F828B7D25100679E3C /* DataStoreConnectionScenario4V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA04289BFE3400B32A39 /* DataStoreConnectionScenario4V2Tests.swift */; };
 		979722F928B7DC9D00679E3C /* DataStoreConnectionScenario5V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA01289BFE3400B32A39 /* DataStoreConnectionScenario5V2Tests.swift */; };
@@ -562,6 +573,13 @@
 			remoteInfo = DataStoreHostApp;
 		};
 		21BBFB90289C010E00B32A39 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 21182124289BFB4B001B5945 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2118212B289BFB4B001B5945;
+			remoteInfo = DataStoreHostApp;
+		};
+		97914C2E29563544002000EA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 21182124289BFB4B001B5945 /* Project object */;
 			proxyType = 1;
@@ -1088,6 +1106,9 @@
 		97731E0828B3BD39006F180B /* Comment6V2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment6V2.swift; sourceTree = "<group>"; };
 		97731E0928B3BD39006F180B /* TodoWithDefaultValueV2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TodoWithDefaultValueV2+Schema.swift"; sourceTree = "<group>"; };
 		97731F0428B68DAC006F180B /* schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = schema.graphql; sourceTree = "<group>"; };
+		97914C2529563539002000EA /* DataStoreStressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreStressTests.swift; sourceTree = "<group>"; };
+		97914D0E29563544002000EA /* DatastoreStressTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DatastoreStressTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		97914D1129563C3D002000EA /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1152,6 +1173,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		97914D0729563544002000EA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -1167,6 +1195,7 @@
 				213DBBDB28A5770000B30280 /* AWSDataStorePluginAuthCognitoTests */,
 				213DBBE828A5771400B30280 /* AWSDataStorePluginAuthIAMTests */,
 				213DBBF528A5772500B30280 /* AWSDataStorePluginMultiAuthTests */,
+				97914C2429563539002000EA /* DataStoreStressTests */,
 				2118212D289BFB4B001B5945 /* Products */,
 				2118213F289BFBC4001B5945 /* Frameworks */,
 			);
@@ -1183,6 +1212,7 @@
 				213DBBDA28A5770000B30280 /* AWSDataStorePluginAuthCognitoTests.xctest */,
 				213DBBE728A5771400B30280 /* AWSDataStorePluginAuthIAMTests.xctest */,
 				213DBBF428A5772500B30280 /* AWSDataStorePluginMultiAuthTests.xctest */,
+				97914D0E29563544002000EA /* DatastoreStressTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2271,6 +2301,15 @@
 			path = 6V2;
 			sourceTree = "<group>";
 		};
+		97914C2429563539002000EA /* DataStoreStressTests */ = {
+			isa = PBXGroup;
+			children = (
+				97914D1129563C3D002000EA /* README.md */,
+				97914C2529563539002000EA /* DataStoreStressTests.swift */,
+			);
+			path = DataStoreStressTests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -2429,6 +2468,25 @@
 			productReference = 21BBFB8C289C010E00B32A39 /* AWSDataStorePluginFlutterTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		97914C2C29563544002000EA /* DatastoreStressTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 97914D0B29563544002000EA /* Build configuration list for PBXNativeTarget "DatastoreStressTests" */;
+			buildPhases = (
+				97914C2F29563544002000EA /* Sources */,
+				97914D0729563544002000EA /* Frameworks */,
+				97914D0829563544002000EA /* Resources */,
+				97914D0A29563544002000EA /* Copy Configuration Files */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				97914C2D29563544002000EA /* PBXTargetDependency */,
+			);
+			name = DatastoreStressTests;
+			productName = AWSDataStorePluginIntegrationTests;
+			productReference = 97914D0E29563544002000EA /* DatastoreStressTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -2493,6 +2551,7 @@
 				213DBBD928A5770000B30280 /* AWSDataStorePluginAuthCognitoTests */,
 				213DBBE628A5771400B30280 /* AWSDataStorePluginAuthIAMTests */,
 				213DBBF328A5772500B30280 /* AWSDataStorePluginMultiAuthTests */,
+				97914C2C29563544002000EA /* DatastoreStressTests */,
 			);
 		};
 /* End PBXProject section */
@@ -2557,6 +2616,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		97914D0829563544002000EA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				97914D1229563C3D002000EA /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2654,6 +2721,24 @@
 			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
 		};
 		97731F0128B3D5B5006F180B /* Copy Configuration Files */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration Files";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n\nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
+		97914D0A29563544002000EA /* Copy Configuration Files */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -3228,6 +3313,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		97914C2F29563544002000EA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				97914D1029563928002000EA /* PostStatus.swift in Sources */,
+				97914D0F295637F5002000EA /* DataStoreStressTests.swift in Sources */,
+				97914C3B29563544002000EA /* Comment+Schema.swift in Sources */,
+				97914C4429563544002000EA /* Comment.swift in Sources */,
+				97914C4F29563544002000EA /* AsyncExpectation.swift in Sources */,
+				97914C5129563544002000EA /* XCTestCase+AsyncTesting.swift in Sources */,
+				97914C5229563544002000EA /* Post+Schema.swift in Sources */,
+				97914C9229563544002000EA /* TestConfigHelper.swift in Sources */,
+				97914CE729563544002000EA /* AsyncTesting.swift in Sources */,
+				97914D0329563544002000EA /* Post.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -3265,6 +3367,11 @@
 			isa = PBXTargetDependency;
 			target = 2118212B289BFB4B001B5945 /* DataStoreHostApp */;
 			targetProxy = 21BBFB90289C010E00B32A39 /* PBXContainerItemProxy */;
+		};
+		97914C2D29563544002000EA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2118212B289BFB4B001B5945 /* DataStoreHostApp */;
+			targetProxy = 97914C2E29563544002000EA /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -3697,6 +3804,42 @@
 			};
 			name = Release;
 		};
+		97914D0C29563544002000EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AWSDataStorePluginIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DataStoreHostApp.app/DataStoreHostApp";
+			};
+			name = Debug;
+		};
+		97914D0D29563544002000EA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AWSDataStorePluginIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DataStoreHostApp.app/DataStoreHostApp";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -3777,6 +3920,15 @@
 			buildConfigurations = (
 				21BBFB93289C010E00B32A39 /* Debug */,
 				21BBFB94289C010E00B32A39 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		97914D0B29563544002000EA /* Build configuration list for PBXNativeTarget "DatastoreStressTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				97914D0C29563544002000EA /* Debug */,
+				97914D0D29563544002000EA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
