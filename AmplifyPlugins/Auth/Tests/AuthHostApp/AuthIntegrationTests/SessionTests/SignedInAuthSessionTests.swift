@@ -235,5 +235,4 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
         }
         await waitForExpectations(timeout: networkTimeout)
     }
-
 }

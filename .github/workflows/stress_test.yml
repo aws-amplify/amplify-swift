@@ -2,7 +2,7 @@ name: Amplify Stress Tests
 on:
   workflow_dispatch:
   push:
-    branches: [main, chore/stress-test-auth]
+    branches: [main]
 
 permissions:
     id-token: write

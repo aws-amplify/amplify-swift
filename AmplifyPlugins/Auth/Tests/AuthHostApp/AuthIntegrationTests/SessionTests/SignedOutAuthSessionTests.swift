@@ -132,5 +132,4 @@ class SignedOutAuthSessionTests: AWSAuthBaseTest {
             return
         }
     }
-    
 }

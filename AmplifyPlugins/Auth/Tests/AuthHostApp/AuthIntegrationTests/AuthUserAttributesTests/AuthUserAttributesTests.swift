@@ -206,5 +206,4 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
             XCTFail("Email attribute not found")
         }
     }
-    
 }

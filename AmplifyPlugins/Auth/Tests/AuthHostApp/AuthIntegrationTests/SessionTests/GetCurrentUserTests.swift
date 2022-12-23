@@ -11,7 +11,7 @@ import AWSCognitoAuthPlugin
 import AWSPluginsCore
 
 class GetCurrentUserTests: AWSAuthBaseTest {
-    
+
     override func setUp() async throws {
         try await super.setUp()
         AuthSessionHelper.clearSession()
