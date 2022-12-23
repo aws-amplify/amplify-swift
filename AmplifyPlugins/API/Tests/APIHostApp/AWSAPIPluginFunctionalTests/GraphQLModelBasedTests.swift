@@ -14,7 +14,6 @@ import XCTest
 class GraphQLModelBasedTests: XCTestCase {
     
     static let amplifyConfiguration = "testconfiguration/GraphQLModelBasedTests-amplifyconfiguration"
-    let concurrencyLimit = 50
     
     final public class PostCommentModelRegistration: AmplifyModelRegistration {
         public func registerModels(registry: ModelRegistry.Type) {
