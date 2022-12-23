@@ -40,7 +40,7 @@ import XCTest
 
 final class APIStressTests: XCTestCase {
 
-    static let amplifyConfiguration = "testconfiguration/GraphQLAPIStressTests-amplifyconfiguration"
+    static let amplifyConfiguration = "testconfiguration/AWSGraphQLAPIStressTests-amplifyconfiguration"
     let concurrencyLimit = 50
     
     final public class PostCommentModelRegistration: AmplifyModelRegistration {

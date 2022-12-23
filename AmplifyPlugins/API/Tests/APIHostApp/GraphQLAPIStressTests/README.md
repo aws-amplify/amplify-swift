@@ -238,9 +238,9 @@ type Nested {
 
 ? Do you want to generate code for your newly created GraphQL API (Y/n) `N`
 
-4. Copy `amplifyconfiguration.json` over as `GraphQLAPIStressTests-amplifyconfiguration.json` to `~/.aws-amplify/amplify-ios/testconfiguration/`
+4. Copy `amplifyconfiguration.json` over as `AWSGraphQLAPIStressTests-amplifyconfiguration.json` to `~/.aws-amplify/amplify-ios/testconfiguration/`
 
 ```
-cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/GraphQLAPIStressTests-amplifyconfiguration.json
+cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSGraphQLAPIStressTests-amplifyconfiguration.json
 ```
 You can now run the tests!
