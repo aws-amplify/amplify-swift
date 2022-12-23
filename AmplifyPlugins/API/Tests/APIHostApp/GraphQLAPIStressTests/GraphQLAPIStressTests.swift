@@ -38,8 +38,44 @@ import XCTest
  }
  */
 
-extension GraphQLModelBasedTests {
+final class APIStressTests: XCTestCase {
+
+    static let amplifyConfiguration = "testconfiguration/GraphQLAPIStressTests-amplifyconfiguration"
+    let concurrencyLimit = 50
     
+    final public class PostCommentModelRegistration: AmplifyModelRegistration {
+        public func registerModels(registry: ModelRegistry.Type) {
+            ModelRegistry.register(modelType: Post.self)
+            ModelRegistry.register(modelType: Comment.self)
+        }
+        
+        public let version: String = "1"
+    }
+    
+    override func setUp() async throws {
+        await Amplify.reset()
+        Amplify.Logging.logLevel = .verbose
+        let plugin = AWSAPIPlugin(modelRegistration: PostCommentModelRegistration())
+        
+        do {
+            try Amplify.add(plugin: plugin)
+            
+            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
+                forResource: Self.amplifyConfiguration)
+            try Amplify.configure(amplifyConfig)
+            
+            ModelRegistry.register(modelType: Comment.self)
+            ModelRegistry.register(modelType: Post.self)
+            
+        } catch {
+            XCTFail("Error during setup: \(error)")
+        }
+    }
+    
+    override func tearDown() async throws {
+        await Amplify.reset()
+    }
+
     // MARK: - Stress tests
     
     /// - Given: APIPlugin configured with valid configuration and schema
@@ -262,6 +298,58 @@ extension GraphQLModelBasedTests {
         var posts: [Post] = []
         func append(post: Post) {
             posts.append(post)
+        }
+    }
+    
+    // MARK: Helpers
+
+    func createPost(id: String, title: String) async throws -> Post? {
+        let post = Post(id: id, title: title, content: "content", createdAt: .now())
+        return try await createPost(post: post)
+    }
+
+    func createComment(content: String, post: Post) async throws -> Comment? {
+        let comment = Comment(content: content, createdAt: .now(), post: post)
+        return try await createComment(comment: comment)
+    }
+
+    func createPost(post: Post) async throws -> Post? {
+        let data = try await Amplify.API.mutate(request: .create(post))
+        switch data {
+        case .success(let post):
+            return post
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    func createComment(comment: Comment) async throws -> Comment? {
+        let data = try await Amplify.API.mutate(request: .create(comment))
+        switch data {
+        case .success(let comment):
+            return comment
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    func mutatePost(_ post: Post) async throws -> Post {
+        let data = try await Amplify.API.mutate(request: .update(post))
+        switch data {
+        case .success(let post):
+            return post
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    func deletePost(post: Post) async throws -> Post {
+        let data = try await Amplify.API.mutate(request: .delete(post))
+        switch data {
+        case .success(let post):
+            return post
+        case .failure(let error):
+            throw error
         }
     }
 }
