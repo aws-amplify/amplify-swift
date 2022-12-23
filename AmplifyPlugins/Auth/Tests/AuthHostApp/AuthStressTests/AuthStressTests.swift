@@ -12,6 +12,8 @@ import AWSPluginsCore
 
 final class AuthStressTests: AWSAuthBaseTest {
 
+    let concurrencyLimit = 50
+    
     override func setUp() async throws {
         try await super.setUp()
         AuthSessionHelper.clearSession()
