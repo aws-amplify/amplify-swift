@@ -38,6 +38,17 @@
                ReferencedContainer = "container:StorageHostApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "97914B942955797E002000EA"
+               BuildableName = "StorageStressTests.xctest"
+               BlueprintName = "StorageStressTests"
+               ReferencedContainer = "container:StorageHostApp.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
