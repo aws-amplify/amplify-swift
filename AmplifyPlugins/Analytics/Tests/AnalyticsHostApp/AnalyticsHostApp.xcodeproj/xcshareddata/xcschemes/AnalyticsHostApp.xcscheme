@@ -38,6 +38,17 @@
                ReferencedContainer = "container:AnalyticsHostApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "97914D16295641D3002000EA"
+               BuildableName = "AnalyticsStressTests.xctest"
+               BlueprintName = "AnalyticsStressTests"
+               ReferencedContainer = "container:AnalyticsHostApp.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
