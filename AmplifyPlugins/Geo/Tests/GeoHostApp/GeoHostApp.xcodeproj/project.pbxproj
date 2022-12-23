@@ -10,6 +10,12 @@
 		978B1D6429515FFB0079E55A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978B1D5E29515DEF0079E55A /* AsyncTesting.swift */; };
 		978B1D6529515FFB0079E55A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978B1D5F29515DEF0079E55A /* AsyncExpectation.swift */; };
 		978B1D6629515FFB0079E55A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978B1D6029515DEF0079E55A /* XCTestCase+AsyncTesting.swift */; };
+		97914B82295570E1002000EA /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978B1D5E29515DEF0079E55A /* AsyncTesting.swift */; };
+		97914B83295570E1002000EA /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978B1D5F29515DEF0079E55A /* AsyncExpectation.swift */; };
+		97914B84295570E1002000EA /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978B1D6029515DEF0079E55A /* XCTestCase+AsyncTesting.swift */; };
+		97914B86295570E1002000EA /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DB82542823466800FC2228 /* TestConfigHelper.swift */; };
+		97914B8F2955711A002000EA /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 97914B7829556F88002000EA /* README.md */; };
+		97914B9029557126002000EA /* GeoStressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97914B7029556F38002000EA /* GeoStressTests.swift */; };
 		97AD223228230B98001AFCC1 /* GeoHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AD223128230B98001AFCC1 /* GeoHostAppApp.swift */; };
 		97AD223428230B98001AFCC1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AD223328230B98001AFCC1 /* ContentView.swift */; };
 		97AD223628230B9A001AFCC1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97AD223528230B9A001AFCC1 /* Assets.xcassets */; };
@@ -23,6 +29,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		97914B80295570E1002000EA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97AD222628230B98001AFCC1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 97AD222D28230B98001AFCC1;
+			remoteInfo = GeoHostApp;
+		};
 		97DB823F282339B700FC2228 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 97AD222628230B98001AFCC1 /* Project object */;
@@ -36,6 +49,9 @@
 		978B1D5E29515DEF0079E55A /* AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTesting.swift; sourceTree = "<group>"; };
 		978B1D5F29515DEF0079E55A /* AsyncExpectation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncExpectation.swift; sourceTree = "<group>"; };
 		978B1D6029515DEF0079E55A /* XCTestCase+AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AsyncTesting.swift"; sourceTree = "<group>"; };
+		97914B7029556F38002000EA /* GeoStressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoStressTests.swift; sourceTree = "<group>"; };
+		97914B7829556F88002000EA /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		97914B8E295570E1002000EA /* GeoStressTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GeoStressTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		97AD222E28230B98001AFCC1 /* GeoHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GeoHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		97AD223128230B98001AFCC1 /* GeoHostAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoHostAppApp.swift; sourceTree = "<group>"; };
 		97AD223328230B98001AFCC1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -49,6 +65,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		97914B87295570E1002000EA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		97AD222B28230B98001AFCC1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -80,12 +103,22 @@
 			path = ../../../../../AmplifyAsyncTesting/Sources/AsyncTesting;
 			sourceTree = "<group>";
 		};
+		97914B6F29556F38002000EA /* GeoStressTests */ = {
+			isa = PBXGroup;
+			children = (
+				97914B7829556F88002000EA /* README.md */,
+				97914B7029556F38002000EA /* GeoStressTests.swift */,
+			);
+			path = GeoStressTests;
+			sourceTree = "<group>";
+		};
 		97AD222528230B98001AFCC1 = {
 			isa = PBXGroup;
 			children = (
 				97DB824C28233F2B00FC2228 /* Packages */,
 				97AD223028230B98001AFCC1 /* GeoHostApp */,
 				97DB823C282339B700FC2228 /* AWSLocationGeoPluginIntegrationTests */,
+				97914B6F29556F38002000EA /* GeoStressTests */,
 				97AD222F28230B98001AFCC1 /* Products */,
 				97DB824E2823417000FC2228 /* Frameworks */,
 			);
@@ -96,6 +129,7 @@
 			children = (
 				97AD222E28230B98001AFCC1 /* GeoHostApp.app */,
 				97DB823B282339B700FC2228 /* AWSLocationGeoPluginIntegrationTests.xctest */,
+				97914B8E295570E1002000EA /* GeoStressTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -148,6 +182,25 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		97914B7E295570E1002000EA /* GeoStressTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 97914B8B295570E1002000EA /* Build configuration list for PBXNativeTarget "GeoStressTests" */;
+			buildPhases = (
+				97914B81295570E1002000EA /* Sources */,
+				97914B87295570E1002000EA /* Frameworks */,
+				97914B88295570E1002000EA /* Resources */,
+				97914B8A295570E1002000EA /* Copy Configuration Folder */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				97914B7F295570E1002000EA /* PBXTargetDependency */,
+			);
+			name = GeoStressTests;
+			productName = AWSLocationGeoPluginIntegrationTests;
+			productReference = 97914B8E295570E1002000EA /* GeoStressTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		97AD222D28230B98001AFCC1 /* GeoHostApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 97AD223C28230B9A001AFCC1 /* Build configuration list for PBXNativeTarget "GeoHostApp" */;
@@ -196,7 +249,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1320;
+				LastSwiftUpdateCheck = 1400;
 				LastUpgradeCheck = 1320;
 				TargetAttributes = {
 					97AD222D28230B98001AFCC1 = {
@@ -224,11 +277,20 @@
 			targets = (
 				97AD222D28230B98001AFCC1 /* GeoHostApp */,
 				97DB823A282339B700FC2228 /* AWSLocationGeoPluginIntegrationTests */,
+				97914B7E295570E1002000EA /* GeoStressTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		97914B88295570E1002000EA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				97914B8F2955711A002000EA /* README.md in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		97AD222C28230B98001AFCC1 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -249,6 +311,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		97914B8A295570E1002000EA /* Copy Configuration Folder */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration Folder";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n      \nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n      \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
 		97DB82512823429C00FC2228 /* Copy Configuration Folder */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -270,6 +350,18 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		97914B81295570E1002000EA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				97914B9029557126002000EA /* GeoStressTests.swift in Sources */,
+				97914B82295570E1002000EA /* AsyncTesting.swift in Sources */,
+				97914B83295570E1002000EA /* AsyncExpectation.swift in Sources */,
+				97914B84295570E1002000EA /* XCTestCase+AsyncTesting.swift in Sources */,
+				97914B86295570E1002000EA /* TestConfigHelper.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		97AD222A28230B98001AFCC1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -294,6 +386,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		97914B7F295570E1002000EA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 97AD222D28230B98001AFCC1 /* GeoHostApp */;
+			targetProxy = 97914B80295570E1002000EA /* PBXContainerItemProxy */;
+		};
 		97DB8240282339B700FC2228 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 97AD222D28230B98001AFCC1 /* GeoHostApp */;
@@ -302,6 +399,53 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		97914B8C295570E1002000EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazon.com.AWSLocationGeoPluginIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GeoHostApp.app/GeoHostApp";
+			};
+			name = Debug;
+		};
+		97914B8D295570E1002000EA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amazon.com.GeoStressTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GeoHostApp.app/GeoHostApp";
+			};
+			name = Release;
+		};
 		97AD223A28230B9A001AFCC1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -524,6 +668,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		97914B8B295570E1002000EA /* Build configuration list for PBXNativeTarget "GeoStressTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				97914B8C295570E1002000EA /* Debug */,
+				97914B8D295570E1002000EA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		97AD222928230B98001AFCC1 /* Build configuration list for PBXProject "GeoHostApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
