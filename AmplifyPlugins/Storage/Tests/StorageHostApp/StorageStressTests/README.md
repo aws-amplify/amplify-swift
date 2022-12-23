@@ -1,6 +1,7 @@
 ## Storage Stress Tests
 
-The following steps demonstrate how to set up Storage with unauthenticated and authenticated access.In the case of authenticated access, we will be using Cognito UserPools. Both unauthenticated and authenticated configurations are used to execute the AWSS3StoragePluginFunctionalTests. This set up is used to run the tests in AWSS3StoragePluginFunctionalTests
+The following steps demonstrate how to set up Storage with unauthenticated and authenticated access.In the case of authenticated access, we will be using Cognito UserPools. 
+This set up is used to run the tests in StorageStressTests.
 
 
 ### Set-up
