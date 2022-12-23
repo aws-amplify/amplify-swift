@@ -12,7 +12,6 @@ import AWSCognitoAuthPlugin
 class AWSAuthBaseTest: XCTestCase {
 
     let networkTimeout = TimeInterval(5)
-    let concurrencyLimit = 50
 
     var defaultTestEmail = "test-\(UUID().uuidString)@amazon.com"
     var defaultTestPassword = UUID().uuidString
