@@ -16,10 +16,23 @@
 		9737697629519E050074B63A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737697029519DEC0074B63A /* AsyncTesting.swift */; };
 		9737697729519E050074B63A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737697129519DEC0074B63A /* AsyncExpectation.swift */; };
 		9737697829519E050074B63A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737697229519DEC0074B63A /* XCTestCase+AsyncTesting.swift */; };
+		97914D2429564227002000EA /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737697029519DEC0074B63A /* AsyncTesting.swift */; };
+		97914D2529564227002000EA /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737697129519DEC0074B63A /* AsyncExpectation.swift */; };
+		97914D2629564227002000EA /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737697229519DEC0074B63A /* XCTestCase+AsyncTesting.swift */; };
+		97914D2829564227002000EA /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6857648828AE9951000CE2E9 /* TestConfigHelper.swift */; };
+		97914D3029564246002000EA /* AnalyticsStressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97914D19295641D3002000EA /* AnalyticsStressTests.swift */; };
+		97914D32295642B6002000EA /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 97914D31295642B6002000EA /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		6857647A28AE95ED000CE2E9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6857645428AE94D9000CE2E9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6857645B28AE94D9000CE2E9;
+			remoteInfo = AnalyticsHostApp;
+		};
+		97914D2229564227002000EA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6857645428AE94D9000CE2E9 /* Project object */;
 			proxyType = 1;
@@ -39,6 +52,9 @@
 		9737697029519DEC0074B63A /* AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTesting.swift; sourceTree = "<group>"; };
 		9737697129519DEC0074B63A /* AsyncExpectation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncExpectation.swift; sourceTree = "<group>"; };
 		9737697229519DEC0074B63A /* XCTestCase+AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AsyncTesting.swift"; sourceTree = "<group>"; };
+		97914D19295641D3002000EA /* AnalyticsStressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsStressTests.swift; sourceTree = "<group>"; };
+		97914D2F29564227002000EA /* AnalyticsStressTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AnalyticsStressTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		97914D31295642B6002000EA /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +74,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		97914D2929564227002000EA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -67,6 +90,7 @@
 				6857648028AE9688000CE2E9 /* Packages */,
 				6857645E28AE94D9000CE2E9 /* AnalyticsHostApp */,
 				6857647728AE95ED000CE2E9 /* AWSPinpointAnalyticsPluginIntegrationTests */,
+				97914D18295641D3002000EA /* AnalyticsStressTests */,
 				6857645D28AE94D9000CE2E9 /* Products */,
 				6857648328AE97FF000CE2E9 /* Frameworks */,
 			);
@@ -77,6 +101,7 @@
 			children = (
 				6857645C28AE94D9000CE2E9 /* AnalyticsHostApp.app */,
 				6857647628AE95ED000CE2E9 /* AWSPinpointAnalyticsPluginIntegrationTests.xctest */,
+				97914D2F29564227002000EA /* AnalyticsStressTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -126,6 +151,15 @@
 			path = ../../../../../AmplifyAsyncTesting/Sources/AsyncTesting;
 			sourceTree = "<group>";
 		};
+		97914D18295641D3002000EA /* AnalyticsStressTests */ = {
+			isa = PBXGroup;
+			children = (
+				97914D31295642B6002000EA /* README.md */,
+				97914D19295641D3002000EA /* AnalyticsStressTests.swift */,
+			);
+			path = AnalyticsStressTests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -169,6 +203,25 @@
 			productReference = 6857647628AE95ED000CE2E9 /* AWSPinpointAnalyticsPluginIntegrationTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		97914D2029564227002000EA /* AnalyticsStressTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 97914D2C29564227002000EA /* Build configuration list for PBXNativeTarget "AnalyticsStressTests" */;
+			buildPhases = (
+				97914D2329564227002000EA /* Sources */,
+				97914D2929564227002000EA /* Frameworks */,
+				97914D2A29564227002000EA /* Resources */,
+				97914D2B29564227002000EA /* Copy Configuration folder */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				97914D2129564227002000EA /* PBXTargetDependency */,
+			);
+			name = AnalyticsStressTests;
+			productName = AWSPinpointAnalyticsPluginIntegrationTests;
+			productReference = 97914D2F29564227002000EA /* AnalyticsStressTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -176,7 +229,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1340;
+				LastSwiftUpdateCheck = 1400;
 				LastUpgradeCheck = 1340;
 				TargetAttributes = {
 					6857645B28AE94D9000CE2E9 = {
@@ -203,6 +256,7 @@
 			targets = (
 				6857645B28AE94D9000CE2E9 /* AnalyticsHostApp */,
 				6857647528AE95ED000CE2E9 /* AWSPinpointAnalyticsPluginIntegrationTests */,
+				97914D2029564227002000EA /* AnalyticsStressTests */,
 			);
 		};
 /* End PBXProject section */
@@ -222,10 +276,36 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		97914D2A29564227002000EA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				97914D32295642B6002000EA /* README.md in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
 		6857647F28AE9615000CE2E9 /* Copy Configuration folder */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration folder";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TEMP_FILE=$HOME/.aws-amplify/amplify-ios/testconfiguration/.\nDEST_PATH=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/testconfiguration/\"\n\nif [[ ! -d $TEMP_FILE ]] ; then\n    echo \"${TEMP_FILE} does not exist. Using empty configuration.\"\n    exit 0\nfi\n      \nif [[ -f $DEST_PATH ]] ; then\n    rm $DEST_PATH\nfi\n      \ncp -r $TEMP_FILE $DEST_PATH\n";
+		};
+		97914D2B29564227002000EA /* Copy Configuration folder */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -267,6 +347,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		97914D2329564227002000EA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				97914D3029564246002000EA /* AnalyticsStressTests.swift in Sources */,
+				97914D2429564227002000EA /* AsyncTesting.swift in Sources */,
+				97914D2529564227002000EA /* AsyncExpectation.swift in Sources */,
+				97914D2629564227002000EA /* XCTestCase+AsyncTesting.swift in Sources */,
+				97914D2829564227002000EA /* TestConfigHelper.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -274,6 +366,11 @@
 			isa = PBXTargetDependency;
 			target = 6857645B28AE94D9000CE2E9 /* AnalyticsHostApp */;
 			targetProxy = 6857647A28AE95ED000CE2E9 /* PBXContainerItemProxy */;
+		};
+		97914D2129564227002000EA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6857645B28AE94D9000CE2E9 /* AnalyticsHostApp */;
+			targetProxy = 97914D2229564227002000EA /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -484,6 +581,42 @@
 			};
 			name = Release;
 		};
+		97914D2D29564227002000EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.analytics.AWSAnalyticsStressTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AnalyticsHostApp.app/AnalyticsHostApp";
+			};
+			name = Debug;
+		};
+		97914D2E29564227002000EA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W3DRXD72QU;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.analytics.AWSAnalyticsStressTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AnalyticsHostApp.app/AnalyticsHostApp";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -510,6 +643,15 @@
 			buildConfigurations = (
 				6857647D28AE95ED000CE2E9 /* Debug */,
 				6857647E28AE95ED000CE2E9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		97914D2C29564227002000EA /* Build configuration list for PBXNativeTarget "AnalyticsStressTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				97914D2D29564227002000EA /* Debug */,
+				97914D2E29564227002000EA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
