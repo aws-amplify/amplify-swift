@@ -10,12 +10,12 @@ import Amplify
 
 class GraphQLOperationRequestUtilsTests: XCTestCase {
 
-    let baseURL = URL(string: "https://someurl")
+    let baseURL = URL(string: "https://someurl")!
     let testDocument = "testDocument"
 
     func testGraphQLOperationRequestWithCache() throws {
         let request = GraphQLOperationRequestUtils.constructRequest(with: baseURL,
                                                                     requestPayload: Data())
-        XCTAssertEqual(request.allHTTPHeaderFields["Cache-Control"], "no-store")
+        XCTAssertEqual(request.allHTTPHeaderFields?["Cache-Control"], "no-store")
     }
 }
