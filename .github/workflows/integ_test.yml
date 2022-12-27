@@ -2,7 +2,7 @@ name: Integration Tests
 on:
   workflow_dispatch:
   push:
-    branches: [main, fix/add-integ-test-scheme]
+    branches: [main]
 
 permissions:
     id-token: write
