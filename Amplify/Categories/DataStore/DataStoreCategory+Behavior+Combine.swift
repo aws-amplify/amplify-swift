@@ -53,7 +53,7 @@ public extension DataStoreBaseBehavior {
         _ modelType: M.Type,
         withIdentifier identifier: String,
         where predicate: QueryPredicate? = nil
-    )  -> DataStorePublisher<Void> where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default {
+    ) -> DataStorePublisher<Void> where M: ModelIdentifiable, M.IdentifierFormat == ModelIdentifierFormat.Default {
         Future { promise in
             self.delete(modelType, withIdentifier: identifier, where: predicate) { promise($0) }
         }.eraseToAnyPublisher()
@@ -70,7 +70,7 @@ public extension DataStoreBaseBehavior {
         _ modelType: M.Type,
         withIdentifier identifier: ModelIdentifier<M, M.IdentifierFormat>,
         where predicate: QueryPredicate? = nil
-    )  -> DataStorePublisher<Void> where M: ModelIdentifiable {
+    ) -> DataStorePublisher<Void> where M: ModelIdentifiable {
         Future { promise in
             self.delete(modelType, withIdentifier: identifier, where: predicate) { promise($0) }
         }.eraseToAnyPublisher()

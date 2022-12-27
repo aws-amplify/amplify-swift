@@ -35,7 +35,7 @@ public class RESTRequest {
         if let headers = headers,
             headers["Cache-Control"] == nil {
             var updatedHeaders = headers
-            updatedHeaders["Cache-Control"] = "no-key"
+            updatedHeaders["Cache-Control"] = "no-store"
             self.headers = updatedHeaders
         } else {
             self.headers = headers
