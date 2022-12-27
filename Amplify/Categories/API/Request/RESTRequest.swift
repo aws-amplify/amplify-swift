@@ -32,9 +32,13 @@ public class RESTRequest {
                 headers: [String: String]? = nil,
                 queryParameters: [String: String]? = nil,
                 body: Data? = nil) {
+        if headers?["Cache-Control"] == nil {
+            self.headers = ["Cache-Control": "no-store"]
+        } else {
+            self.headers = headers
+        }
         self.apiName = apiName
         self.path = path
-        self.headers = headers
         self.queryParameters = queryParameters
         self.body = body
     }

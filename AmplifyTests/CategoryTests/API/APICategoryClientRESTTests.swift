@@ -44,6 +44,16 @@ class APICategoryClientRESTTests: XCTestCase {
         await waitForExpectations(timeout: 0.5)
     }
 
+    func testCacheInRequest() {
+        let request = RESTRequest(apiName: "someapi")
+        XCTAssertEqual(request.headers?["Cache-Control"], "no-store")
+    }
+
+    func testCustomCacheInRequest() {
+        let request = RESTRequest(apiName: "someapi", headers: ["Cache-Control": "private"])
+        XCTAssertEqual(request.headers?["Cache-Control"], "private")
+    }
+
     // MARK: - Utilities
 
     func makeAndAddMockPlugin() throws -> MockAPICategoryPlugin {
