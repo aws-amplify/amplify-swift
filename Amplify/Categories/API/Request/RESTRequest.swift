@@ -32,11 +32,8 @@ public class RESTRequest {
                 headers: [String: String]? = nil,
                 queryParameters: [String: String]? = nil,
                 body: Data? = nil) {
-        if let headers = headers,
-            headers["Cache-Control"] == nil {
-            var updatedHeaders = headers
-            updatedHeaders["Cache-Control"] = "no-store"
-            self.headers = updatedHeaders
+        if headers?["Cache-Control"] == nil {
+            self.headers = ["Cache-Control": "no-store"]
         } else {
             self.headers = headers
         }
