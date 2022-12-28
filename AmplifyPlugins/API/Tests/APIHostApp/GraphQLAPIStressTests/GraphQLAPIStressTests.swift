@@ -12,30 +12,20 @@ import XCTest
 
 /*
  Model Schema
- enum PostStatus {
-    PRIVATE
-    DRAFT
-    PUBLISHED
- }
  
  type Post @model {
-    id: ID!
-    title: String!
-    content: String!
-    createdAt: AWSDateTime!
-    updatedAt: AWSDateTime
-    draft: Boolean
-    rating: Float
-    status: PostStatus
-    comments: [Comment] @connection(name: "PostComment")
+   id: ID!
+   title: String!
+   status: PostStatus!
+   rating: Int
+   content: String
+ }
+
+ enum PostStatus {
+   ACTIVE
+   INACTIVE
  }
  
- type Comment @model {
-    id: ID!
-    content: String!
-    createdAt: AWSDateTime!
-    post: Post @connection(name: "PostComment")
- }
  */
 
 final class APIStressTests: XCTestCase {
@@ -46,7 +36,6 @@ final class APIStressTests: XCTestCase {
     final public class PostCommentModelRegistration: AmplifyModelRegistration {
         public func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Post.self)
-            ModelRegistry.register(modelType: Comment.self)
         }
         
         public let version: String = "1"
@@ -64,7 +53,6 @@ final class APIStressTests: XCTestCase {
                 forResource: Self.amplifyConfiguration)
             try Amplify.configure(amplifyConfig)
             
-            ModelRegistry.register(modelType: Comment.self)
             ModelRegistry.register(modelType: Post.self)
             
         } catch {
@@ -153,7 +141,7 @@ final class APIStressTests: XCTestCase {
     func testMultipleCreateMutations() async throws {
         let postCreateExpectation = asyncExpectation(description: "Post was created successfully",
                                                      expectedFulfillmentCount: concurrencyLimit)
-        for index in 0..<concurrencyLimit {
+        DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
                 let id = UUID().uuidString
                 let title = "title" + String(index)
@@ -176,9 +164,9 @@ final class APIStressTests: XCTestCase {
                                                      expectedFulfillmentCount: concurrencyLimit)
         let postUpdateExpectation = asyncExpectation(description: "Post was updated successfully",
                                                      expectedFulfillmentCount: concurrencyLimit)
-        let postOffice = PostOffice()
+        let postActor = PostActor()
         
-        for index in 0..<concurrencyLimit {
+        DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
                 let id = UUID().uuidString
                 let title = "title" + String(index)
@@ -186,16 +174,16 @@ final class APIStressTests: XCTestCase {
                 XCTAssertNotNil(post)
                 XCTAssertEqual(id, post?.id)
                 XCTAssertEqual(title, post?.title)
-                await postOffice.append(post: post!)
+                await postActor.append(post: post!)
                 await postCreateExpectation.fulfill()
             }
         }
 
         await waitForExpectations([postCreateExpectation], timeout: TestCommonConstants.networkTimeout)
         
-        for index in 0..<concurrencyLimit {
+        DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
-                var post = await postOffice.posts[index]
+                var post = await postActor.posts[index]
                 post.title = "newTitle" + String(index)
                 let updatedPost = try await mutatePost(post)
                 XCTAssertNotNil(updatedPost)
@@ -216,9 +204,9 @@ final class APIStressTests: XCTestCase {
                                                      expectedFulfillmentCount: concurrencyLimit)
         let postDeleteExpectation = asyncExpectation(description: "Post was deleted successfully",
                                                      expectedFulfillmentCount: concurrencyLimit)
-        let postOffice = PostOffice()
+        let postActor = PostActor()
         
-        for index in 0..<concurrencyLimit {
+        DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
                 let id = UUID().uuidString
                 let title = "title" + String(index)
@@ -226,16 +214,16 @@ final class APIStressTests: XCTestCase {
                 XCTAssertNotNil(post)
                 XCTAssertEqual(id, post?.id)
                 XCTAssertEqual(title, post?.title)
-                await postOffice.append(post: post!)
+                await postActor.append(post: post!)
                 await postCreateExpectation.fulfill()
             }
         }
 
         await waitForExpectations([postCreateExpectation], timeout: TestCommonConstants.networkTimeout)
         
-        for index in 0..<concurrencyLimit {
+        DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
-                var post = await postOffice.posts[index]
+                let post = await postActor.posts[index]
                 let deletedPost = try await deletePost(post: post)
                 XCTAssertNotNil(deletedPost)
                 XCTAssertEqual(post.id, deletedPost.id)
@@ -255,9 +243,9 @@ final class APIStressTests: XCTestCase {
                                                      expectedFulfillmentCount: concurrencyLimit)
         let postQueryExpectation = asyncExpectation(description: "Post was deleted successfully",
                                                      expectedFulfillmentCount: concurrencyLimit)
-        let postOffice = PostOffice()
+        let postActor = PostActor()
         
-        for index in 0..<concurrencyLimit {
+        DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
                 let id = UUID().uuidString
                 let title = "title" + String(index)
@@ -265,16 +253,16 @@ final class APIStressTests: XCTestCase {
                 XCTAssertNotNil(post)
                 XCTAssertEqual(id, post?.id)
                 XCTAssertEqual(title, post?.title)
-                await postOffice.append(post: post!)
+                await postActor.append(post: post!)
                 await postCreateExpectation.fulfill()
             }
         }
 
         await waitForExpectations([postCreateExpectation], timeout: TestCommonConstants.networkTimeout)
         
-        for index in 0..<concurrencyLimit {
+        DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
-                var post = await postOffice.posts[index]
+                let post = await postActor.posts[index]
                 let graphQLResponse = try await Amplify.API.query(request: .get(Post.self, byId: post.id))
                 guard case .success(let data) = graphQLResponse else {
                     XCTFail("Missing successful response")
@@ -294,23 +282,18 @@ final class APIStressTests: XCTestCase {
         await waitForExpectations([postQueryExpectation], timeout: TestCommonConstants.networkTimeout)
     }
     
-    actor PostOffice {
+    actor PostActor {
         var posts: [Post] = []
         func append(post: Post) {
             posts.append(post)
         }
     }
     
-    // MARK: Helpers
+    // MARK: - Helpers
 
     func createPost(id: String, title: String) async throws -> Post? {
-        let post = Post(id: id, title: title, content: "content", createdAt: .now())
+        let post = Post(id: id, title: title, status: .active, rating: 3)
         return try await createPost(post: post)
-    }
-
-    func createComment(content: String, post: Post) async throws -> Comment? {
-        let comment = Comment(content: content, createdAt: .now(), post: post)
-        return try await createComment(comment: comment)
     }
 
     func createPost(post: Post) async throws -> Post? {
@@ -318,16 +301,6 @@ final class APIStressTests: XCTestCase {
         switch data {
         case .success(let post):
             return post
-        case .failure(let error):
-            throw error
-        }
-    }
-
-    func createComment(comment: Comment) async throws -> Comment? {
-        let data = try await Amplify.API.mutate(request: .create(comment))
-        switch data {
-        case .success(let comment):
-            return comment
         case .failure(let error):
             throw error
         }

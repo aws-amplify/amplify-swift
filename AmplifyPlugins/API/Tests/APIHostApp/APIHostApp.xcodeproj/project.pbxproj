@@ -118,17 +118,15 @@
 		681DFEA428E747470000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE6F28E7451D0000C36A /* AsyncTesting.swift */; };
 		681DFEA528E747470000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7028E7451D0000C36A /* AsyncExpectation.swift */; };
 		681DFEA628E747470000C36A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7128E7451D0000C36A /* XCTestCase+AsyncTesting.swift */; };
+		970333C0295C54840019981E /* AmplifyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970333BC295C54840019981E /* AmplifyModels.swift */; };
+		970333C1295C54840019981E /* Post+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970333BD295C54840019981E /* Post+Schema.swift */; };
+		970333C2295C54840019981E /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970333BE295C54840019981E /* Post.swift */; };
+		970333C3295C54840019981E /* PostStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970333BF295C54840019981E /* PostStatus.swift */; };
 		97914BD92955872A002000EA /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE6F28E7451D0000C36A /* AsyncTesting.swift */; };
 		97914BE42955872A002000EA /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7128E7451D0000C36A /* XCTestCase+AsyncTesting.swift */; };
 		97914BEB2955872A002000EA /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262523289ABB0C003788E3 /* TestConfigHelper.swift */; };
-		97914BED2955872A002000EA /* Comment+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126272B289ABFEA003788E3 /* Comment+Schema.swift */; };
 		97914BF62955872A002000EA /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE7028E7451D0000C36A /* AsyncExpectation.swift */; };
-		97914BF92955872A002000EA /* Post+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126272E289ABFEB003788E3 /* Post+Schema.swift */; };
-		97914BFB2955872A002000EA /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126271C289ABFE8003788E3 /* Comment.swift */; };
-		97914C092955872A002000EA /* PostStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262722289ABFE9003788E3 /* PostStatus.swift */; };
-		97914C0A2955872A002000EA /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21262704289ABFE5003788E3 /* Post.swift */; };
 		97914C1A295588DA002000EA /* GraphQLAPIStressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97914BC529558714002000EA /* GraphQLAPIStressTests.swift */; };
-		97914C1C29558913002000EA /* AmplifyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97914C1B29558913002000EA /* AmplifyModels.swift */; };
 		97914C1E29558AF2002000EA /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 97914C1D29558AF2002000EA /* README.md */; };
 /* End PBXBuildFile section */
 
@@ -299,9 +297,12 @@
 		681DFE6F28E7451D0000C36A /* AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTesting.swift; sourceTree = "<group>"; };
 		681DFE7028E7451D0000C36A /* AsyncExpectation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncExpectation.swift; sourceTree = "<group>"; };
 		681DFE7128E7451D0000C36A /* XCTestCase+AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AsyncTesting.swift"; sourceTree = "<group>"; };
+		970333BC295C54840019981E /* AmplifyModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyModels.swift; sourceTree = "<group>"; };
+		970333BD295C54840019981E /* Post+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post+Schema.swift"; sourceTree = "<group>"; };
+		970333BE295C54840019981E /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
+		970333BF295C54840019981E /* PostStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostStatus.swift; sourceTree = "<group>"; };
 		97914BC529558714002000EA /* GraphQLAPIStressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLAPIStressTests.swift; sourceTree = "<group>"; };
 		97914C182955872A002000EA /* GraphQLAPIStressTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GraphQLAPIStressTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		97914C1B29558913002000EA /* AmplifyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplifyModels.swift; sourceTree = "<group>"; };
 		97914C1D29558AF2002000EA /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -685,12 +686,23 @@
 			path = ../../../../../AmplifyAsyncTesting/Sources/AsyncTesting;
 			sourceTree = "<group>";
 		};
+		9703337B295C322E0019981E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				970333BC295C54840019981E /* AmplifyModels.swift */,
+				970333BE295C54840019981E /* Post.swift */,
+				970333BD295C54840019981E /* Post+Schema.swift */,
+				970333BF295C54840019981E /* PostStatus.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		97914BC429558714002000EA /* GraphQLAPIStressTests */ = {
 			isa = PBXGroup;
 			children = (
+				9703337B295C322E0019981E /* Models */,
 				97914C1D29558AF2002000EA /* README.md */,
 				97914BC529558714002000EA /* GraphQLAPIStressTests.swift */,
-				97914C1B29558913002000EA /* AmplifyModels.swift */,
 			);
 			path = GraphQLAPIStressTests;
 			sourceTree = "<group>";
@@ -1312,14 +1324,12 @@
 				97914C1A295588DA002000EA /* GraphQLAPIStressTests.swift in Sources */,
 				97914BD92955872A002000EA /* AsyncTesting.swift in Sources */,
 				97914BE42955872A002000EA /* XCTestCase+AsyncTesting.swift in Sources */,
+				970333C2295C54840019981E /* Post.swift in Sources */,
 				97914BEB2955872A002000EA /* TestConfigHelper.swift in Sources */,
-				97914BED2955872A002000EA /* Comment+Schema.swift in Sources */,
+				970333C0295C54840019981E /* AmplifyModels.swift in Sources */,
+				970333C1295C54840019981E /* Post+Schema.swift in Sources */,
+				970333C3295C54840019981E /* PostStatus.swift in Sources */,
 				97914BF62955872A002000EA /* AsyncExpectation.swift in Sources */,
-				97914BF92955872A002000EA /* Post+Schema.swift in Sources */,
-				97914C1C29558913002000EA /* AmplifyModels.swift in Sources */,
-				97914BFB2955872A002000EA /* Comment.swift in Sources */,
-				97914C092955872A002000EA /* PostStatus.swift in Sources */,
-				97914C0A2955872A002000EA /* Post.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
