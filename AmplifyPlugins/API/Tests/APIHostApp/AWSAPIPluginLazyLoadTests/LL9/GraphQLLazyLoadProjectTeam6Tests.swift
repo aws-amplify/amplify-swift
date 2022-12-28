@@ -169,6 +169,82 @@ class GraphQLLazyLoadProjectTeam6Tests: GraphQLLazyLoadBaseTest {
         try await mutate(.delete(savedTeam))
         try await assertModelDoesNotExist(savedTeam)
     }
+    
+    func testSubscribeToTeam() async throws {
+        await setup(withModels: ProjectTeam6Models())
+        let connected = asyncExpectation(description: "subscription connected")
+        let onCreatedTeam = asyncExpectation(description: "onCreate received")
+        let subscription = Amplify.API.subscribe(request: .subscription(of: Team.self, type: .onCreate))
+        Task {
+            do {
+                for try await subscriptionEvent in subscription {
+                    switch subscriptionEvent {
+                    case .connection(let subscriptionConnectionState):
+                        log.verbose("Subscription connect state is \(subscriptionConnectionState)")
+                        if case .connected = subscriptionConnectionState {
+                            await connected.fulfill()
+                        }
+                    case .data(let result):
+                        switch result {
+                        case .success(let createdTeam):
+                            log.verbose("Successfully got createdTeam from subscription: \(createdTeam)")
+                            await onCreatedTeam.fulfill()
+                        case .failure(let error):
+                            XCTFail("Got failed result with \(error.errorDescription)")
+                        }
+                    }
+                }
+            } catch {
+                XCTFail("Subscription has terminated with \(error)")
+            }
+        }
+        
+        await waitForExpectations([connected], timeout: 10)
+        
+        let team = Team(teamId: UUID().uuidString, name: "name")
+        let savedTeam = try await mutate(.create(team))
+        await waitForExpectations([onCreatedTeam], timeout: 10)
+        subscription.cancel()
+    }
+    
+    func testSubscribeProject() async throws {
+        await setup(withModels: ProjectTeam6Models())
+        let connected = asyncExpectation(description: "subscription connected")
+        let onCreated = asyncExpectation(description: "onCreate received")
+        let subscription = Amplify.API.subscribe(request: .subscription(of: Project.self, type: .onCreate))
+        Task {
+            do {
+                for try await subscriptionEvent in subscription {
+                    switch subscriptionEvent {
+                    case .connection(let subscriptionConnectionState):
+                        log.verbose("Subscription connect state is \(subscriptionConnectionState)")
+                        if case .connected = subscriptionConnectionState {
+                            await connected.fulfill()
+                        }
+                    case .data(let result):
+                        switch result {
+                        case .success(let created):
+                            log.verbose("Successfully got model from subscription: \(created)")
+                            await onCreated.fulfill()
+                        case .failure(let error):
+                            XCTFail("Got failed result with \(error.errorDescription)")
+                        }
+                    }
+                }
+            } catch {
+                XCTFail("Subscription has terminated with \(error)")
+            }
+        }
+        
+        await waitForExpectations([connected], timeout: 10)
+        
+        let project = Project(projectId: UUID().uuidString,
+                              name: "name")
+        let savedProject = try await mutate(.create(project))
+        
+        await waitForExpectations([onCreated], timeout: 10)
+        subscription.cancel()
+    }
 }
 
 extension GraphQLLazyLoadProjectTeam6Tests: DefaultLogger { }
