@@ -13,18 +13,17 @@ import XCTest
 /*
  Model Schema
  
- type Post @model {
-   id: ID!
-   title: String!
-   status: PostStatus!
-   rating: Int
-   content: String
- }
-
- enum PostStatus {
-   ACTIVE
-   INACTIVE
- }
+ type Post @model @auth(rules: [{ allow: public }]) {
+    id: ID!
+    title: String!
+    status: PostStatus!
+    content: String!
+  }
+  
+  enum PostStatus {
+    ACTIVE
+    INACTIVE
+  }
  
  */
 
@@ -33,7 +32,7 @@ final class APIStressTests: XCTestCase {
     static let amplifyConfiguration = "testconfiguration/AWSGraphQLAPIStressTests-amplifyconfiguration"
     let concurrencyLimit = 50
     
-    final public class PostCommentModelRegistration: AmplifyModelRegistration {
+    final public class TestModelRegistration: AmplifyModelRegistration {
         public func registerModels(registry: ModelRegistry.Type) {
             ModelRegistry.register(modelType: Post.self)
         }
@@ -44,7 +43,7 @@ final class APIStressTests: XCTestCase {
     override func setUp() async throws {
         await Amplify.reset()
         Amplify.Logging.logLevel = .verbose
-        let plugin = AWSAPIPlugin(modelRegistration: PostCommentModelRegistration())
+        let plugin = AWSAPIPlugin(modelRegistration: TestModelRegistration())
         
         do {
             try Amplify.add(plugin: plugin)
@@ -79,49 +78,44 @@ final class APIStressTests: XCTestCase {
         let testMethodName = String("\(#function)".dropLast(2))
         let title = testMethodName + "Title"
 
-        let sequences = await withTaskGroup(of: AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<Post>>.self) { group -> [AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<Post>>] in
-            for _ in 0..<concurrencyLimit {
-                group.addTask {
-                    let subscription = Amplify.API.subscribe(request: .subscription(of: Post.self, type: .onCreate))
-                    Task {
-                        for try await subscriptionEvent in subscription {
-                            switch subscriptionEvent {
-                            case .connection(let state):
-                                switch state {
-                                case .connecting:
-                                    break
-                                case .connected:
-                                    await connectedInvoked.fulfill()
-                                case .disconnected:
-                                    await disconnectedInvoked.fulfill()
+        let sequenceActor = SequenceActor()
+        DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
+            Task {
+                let subscription = Amplify.API.subscribe(request: .subscription(of: Post.self, type: .onCreate))
+                Task {
+                    for try await subscriptionEvent in subscription {
+                        switch subscriptionEvent {
+                        case .connection(let state):
+                            switch state {
+                            case .connecting:
+                                break
+                            case .connected:
+                                await connectedInvoked.fulfill()
+                            case .disconnected:
+                                await disconnectedInvoked.fulfill()
+                            }
+                        case .data(let result):
+                            switch result {
+                            case .success(let post):
+                                if post.id == uuid {
+                                    await progressInvoked.fulfill()
                                 }
-                            case .data(let result):
-                                switch result {
-                                case .success(let post):
-                                    if post.id == uuid {
-                                        await progressInvoked.fulfill()
-                                    }
-                                case .failure(let error):
-                                    XCTFail("\(error)")
-                                }
+                            case .failure(let error):
+                                XCTFail("\(error)")
                             }
                         }
-                        await completedInvoked.fulfill()
                     }
-                    return subscription
+                    await completedInvoked.fulfill()
                 }
+                
+                await sequenceActor.append(sequence: subscription)
             }
-            
-            var sequences = [AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<Post>>]()
-            for await sequence in group {
-                sequences.append(sequence)
-            }
-            return sequences
-            
         }
-    
+        
         await waitForExpectations([connectedInvoked], timeout: TestCommonConstants.networkTimeout)
-        XCTAssertEqual(sequences.count, concurrencyLimit)
+        
+        let sequenceCount = await sequenceActor.sequences.count
+        XCTAssertEqual(sequenceCount, concurrencyLimit)
         
         guard try await createPost(id: uuid, title: title) != nil else {
             XCTFail("Failed to create post")
@@ -129,9 +123,13 @@ final class APIStressTests: XCTestCase {
         }
 
         await waitForExpectations([progressInvoked], timeout: TestCommonConstants.networkTimeout)
-        sequences.forEach { sequence in
-            sequence.cancel()
+        
+        DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
+            Task {
+                await sequenceActor.sequences[index].cancel()
+            }
         }
+
         await waitForExpectations([disconnectedInvoked, completedInvoked], timeout: TestCommonConstants.networkTimeout)
     }
     
@@ -289,10 +287,17 @@ final class APIStressTests: XCTestCase {
         }
     }
     
+    actor SequenceActor {
+        var sequences: [AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<Post>>] = []
+        func append(sequence: AmplifyAsyncThrowingSequence<GraphQLSubscriptionEvent<Post>>) {
+            sequences.append(sequence)
+        }
+    }
+    
     // MARK: - Helpers
 
     func createPost(id: String, title: String) async throws -> Post? {
-        let post = Post(id: id, title: title, status: .active, rating: 3)
+        let post = Post(id: id, title: title, status: .active, content: "content")
         return try await createPost(post: post)
     }
 

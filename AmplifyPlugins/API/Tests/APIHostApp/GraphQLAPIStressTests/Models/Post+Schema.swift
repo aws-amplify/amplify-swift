@@ -1,3 +1,10 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
 // swiftlint:disable all
 import Amplify
 import Foundation
@@ -8,7 +15,6 @@ extension Post {
     case id
     case title
     case status
-    case rating
     case content
     case createdAt
     case updatedAt
@@ -20,6 +26,10 @@ extension Post {
   public static let schema = defineSchema { model in
     let post = Post.keys
     
+    model.authRules = [
+      rule(allow: .public, operations: [.create, .update, .delete, .read])
+    ]
+    
     model.pluralName = "Posts"
     
     model.attributes(
@@ -30,8 +40,7 @@ extension Post {
       .field(post.id, is: .required, ofType: .string),
       .field(post.title, is: .required, ofType: .string),
       .field(post.status, is: .required, ofType: .enum(type: PostStatus.self)),
-      .field(post.rating, is: .optional, ofType: .int),
-      .field(post.content, is: .optional, ofType: .string),
+      .field(post.content, is: .required, ofType: .string),
       .field(post.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(post.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )

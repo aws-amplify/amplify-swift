@@ -26,18 +26,17 @@ Run `amplify codegen models` from your amplify app, compare and replace if neede
 Edit the schema to the following:
 ```
 
-type Post @model {
-  id: ID!
-  title: String!
-  status: PostStatus!
-  rating: Int
-  content: String
-}
-
-enum PostStatus {
-  ACTIVE
-  INACTIVE
-}
+type Post @model @auth(rules: [{ allow: public }]) {
+   id: ID!
+   title: String!
+   status: PostStatus!
+   content: String!
+ }
+ 
+ enum PostStatus {
+   ACTIVE
+   INACTIVE
+ }
 
 ```
 
