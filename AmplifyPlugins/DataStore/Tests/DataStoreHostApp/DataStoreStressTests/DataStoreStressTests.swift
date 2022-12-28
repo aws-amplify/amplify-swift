@@ -15,34 +15,14 @@ import AWSAPIPlugin
 @testable import AWSDataStorePlugin
 @testable import DataStoreHostApp
 
-final class DataStoreStressTests: XCTestCase {
-
-    static let amplifyConfigurationFile = "testconfiguration/AWSDataStoreStressTests-amplifyconfiguration"
-    let concurrencyLimit = 50
-
-    let networkTimeout = TimeInterval(180)
+final class DataStoreStressTests: DataStoreStressBaseTest {
     
     struct TestModelRegistration: AmplifyModelRegistration {
         func registerModels(registry: ModelRegistry.Type) {
             registry.register(modelType: Post.self)
-            registry.register(modelType: Comment.self)
         }
 
         let version: String = "1"
-    }
-
-    func setUp(withModels models: AmplifyModelRegistration, logLevel: LogLevel = .error) async {
-        continueAfterFailure = false
-        await Amplify.reset()
-        Amplify.Logging.logLevel = logLevel
-
-        do {
-            try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: models))
-            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models))
-        } catch {
-            XCTFail(String(describing: error))
-            return
-        }
     }
     
     // MARK: - Stress tests
@@ -57,12 +37,13 @@ final class DataStoreStressTests: XCTestCase {
     ///
     func testMultipleSave() async throws {
         await setUp(withModels: TestModelRegistration(), logLevel: .verbose)
-        try await startAmplifyAndWaitForSync()
+        try await startDataStoreAndWaitForSync()
 
         var posts = [Post]()
         for index in 0 ..< concurrencyLimit {
             let post = Post(title: "title \(index)",
-                            content: "content",
+                            status: .active,
+                            content: "content \(index)",
                             createdAt: .now())
             posts.append(post)
         }
@@ -90,7 +71,7 @@ final class DataStoreStressTests: XCTestCase {
                 XCTFail("Failed \(error)")
             }
         }
-
+        
         let capturedPosts = posts
 
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
@@ -113,59 +94,20 @@ final class DataStoreStressTests: XCTestCase {
     ///
     func testMultipleQueryByID() async throws {
         await setUp(withModels: TestModelRegistration(), logLevel: .verbose)
-        try await startAmplifyAndWaitForSync()
+        try await startDataStoreAndWaitForSync()
 
-        var posts = [Post]()
-        for index in 0 ..< concurrencyLimit {
-            let post = Post(title: "title \(index)",
-                            content: "content",
-                            createdAt: .now())
-            posts.append(post)
-        }
-        let postsSyncedToCloud = asyncExpectation(description: "All posts saved and synced to cloud",
-                                                  expectedFulfillmentCount: concurrencyLimit)
-
-        let postsCopy = posts
-        Task {
-            var postsSyncedToCloudCount = 0
-            let mutationEvents = Amplify.DataStore.observe(Post.self)
-            do {
-                for try await mutationEvent in mutationEvents {
-                    guard postsCopy.contains(where: { $0.id == mutationEvent.modelId }) else {
-                        return
-                    }
-
-                    if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue,
-                       mutationEvent.version == 1 {
-                        postsSyncedToCloudCount += 1
-                        await postsSyncedToCloud.fulfill()
-                    }
-                }
-            } catch {
-                XCTFail("Failed \(error)")
-            }
-        }
-
-        let capturedPosts = posts
-
-        DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
-            Task {
-                _ = try await Amplify.DataStore.save(capturedPosts[index])
-            }
-        }
-        
-        await waitForExpectations([postsSyncedToCloud], timeout: networkTimeout)
+        let posts = await saveAndSyncPosts(concurrencyLimit: concurrencyLimit)
         
         let localQueryForPosts = asyncExpectation(description: "Query for the post is successful",
                                                 expectedFulfillmentCount: concurrencyLimit)
         
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
-                let queriedPost = try await Amplify.DataStore.query(Post.self, byId: capturedPosts[index].id)
+                let queriedPost = try await Amplify.DataStore.query(Post.self, byId: posts[index].id)
                 XCTAssertNotNil(queriedPost)
-                XCTAssertEqual(capturedPosts[index].id, queriedPost?.id)
-                XCTAssertEqual(capturedPosts[index].title, queriedPost?.title)
-                XCTAssertEqual(capturedPosts[index].content, queriedPost?.content)
+                XCTAssertEqual(posts[index].id, queriedPost?.id)
+                XCTAssertEqual(posts[index].title, queriedPost?.title)
+                XCTAssertEqual(posts[index].content, queriedPost?.content)
                 await localQueryForPosts.fulfill()
             }
         }
@@ -184,62 +126,22 @@ final class DataStoreStressTests: XCTestCase {
     ///
     func testMultipleQueryByPredicate() async throws {
         await setUp(withModels: TestModelRegistration(), logLevel: .verbose)
-        try await startAmplifyAndWaitForSync()
+        try await startDataStoreAndWaitForSync()
 
-        var posts = [Post]()
-        for index in 0 ..< concurrencyLimit {
-            let post = Post(title: "title \(index)",
-                            content: "content",
-                            createdAt: .now())
-            posts.append(post)
-        }
-        let postsSyncedToCloud = asyncExpectation(description: "All posts saved and synced to cloud",
+        let posts = await saveAndSyncPosts(concurrencyLimit: concurrencyLimit)
+        
+        let localQueryForPosts = asyncExpectation(description: "Query for the post is successful",
                                                   expectedFulfillmentCount: concurrencyLimit)
-
-        let postsCopy = posts
-        Task {
-            var postsSyncedToCloudCount = 0
-            let mutationEvents = Amplify.DataStore.observe(Post.self)
-            do {
-                for try await mutationEvent in mutationEvents {
-                    guard postsCopy.contains(where: { $0.id == mutationEvent.modelId }) else {
-                        return
-                    }
-
-                    if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue,
-                       mutationEvent.version == 1 {
-                        postsSyncedToCloudCount += 1
-                        await postsSyncedToCloud.fulfill()
-                    }
-                }
-            } catch {
-                XCTFail("Failed \(error)")
-            }
-        }
-
-        let capturedPosts = posts
-
+        
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
-                _ = try await Amplify.DataStore.save(capturedPosts[index])
-            }
-        }
-        
-        await waitForExpectations([postsSyncedToCloud], timeout: networkTimeout)
-        
-        let localQueryForPosts = asyncExpectation(description: "Query for the post is successful")
-        
-        // query by predicate where title of the post is "title 25", should be successful for
-        // only one query
-        let predicate = Post.keys.id.eq(capturedPosts[25].id).and(Post.keys.title.eq(capturedPosts[25].title))
-        DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
-            Task {
+                let predicate = Post.keys.id.eq(posts[index].id).and(Post.keys.title.eq(posts[index].title))
                 let queriedPosts = try await Amplify.DataStore.query(Post.self, where: predicate)
                 XCTAssertNotNil(queriedPosts)
                 XCTAssertEqual(queriedPosts.count, 1)
-                XCTAssertEqual(capturedPosts[25].id, queriedPosts[0].id)
-                XCTAssertEqual(capturedPosts[25].title, queriedPosts[0].title)
-                XCTAssertEqual(capturedPosts[25].content, queriedPosts[0].content)
+                XCTAssertEqual(posts[index].id, queriedPosts[0].id)
+                XCTAssertEqual(posts[index].title, queriedPosts[0].title)
+                XCTAssertEqual(posts[index].content, queriedPosts[0].content)
                 await localQueryForPosts.fulfill()
             }
         }
@@ -260,51 +162,13 @@ final class DataStoreStressTests: XCTestCase {
     ///
     func testMultipleDelete() async throws {
         await setUp(withModels: TestModelRegistration(), logLevel: .verbose)
-        try await startAmplifyAndWaitForSync()
-
-        var posts = [Post]()
-        for index in 0 ..< concurrencyLimit {
-            let post = Post(title: "title \(index)",
-                            content: "content",
-                            createdAt: .now())
-            posts.append(post)
-        }
-        let postsSyncedToCloud = asyncExpectation(description: "All posts saved and synced to cloud",
-                                                  expectedFulfillmentCount: concurrencyLimit)
-
-        let postsCopy = posts
-        Task {
-            var postsSyncedToCloudCount = 0
-            let mutationEvents = Amplify.DataStore.observe(Post.self)
-            do {
-                for try await mutationEvent in mutationEvents {
-                    guard postsCopy.contains(where: { $0.id == mutationEvent.modelId }) else {
-                        return
-                    }
-
-                    if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue,
-                       mutationEvent.version == 1 {
-                        postsSyncedToCloudCount += 1
-                        await postsSyncedToCloud.fulfill()
-                    }
-                }
-            } catch {
-                XCTFail("Failed \(error)")
-            }
-        }
-
-        let capturedPosts = posts
-
-        DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
-            Task {
-                _ = try await Amplify.DataStore.save(capturedPosts[index])
-            }
-        }
-        await waitForExpectations([postsSyncedToCloud], timeout: networkTimeout)
-
+        try await startDataStoreAndWaitForSync()
+        
+        let posts = await saveAndSyncPosts(concurrencyLimit: concurrencyLimit)
+        
         let postsDeletedLocally = asyncExpectation(description: "All posts deleted locally",
                                                    expectedFulfillmentCount: concurrencyLimit)
-
+        
         let postsDeletedFromCloud = asyncExpectation(description: "All posts deleted and synced to cloud",
                                                      expectedFulfillmentCount: concurrencyLimit)
         
@@ -313,12 +177,12 @@ final class DataStoreStressTests: XCTestCase {
             let mutationEvents = Amplify.DataStore.observe(Post.self)
             do {
                 for try await mutationEvent in mutationEvents {
-                    guard capturedPosts.contains(where: { $0.id == mutationEvent.modelId }) else {
+                    guard posts.contains(where: { $0.id == mutationEvent.modelId }) else {
                         return
                     }
-
+                    
                     if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue,
-                              mutationEvent.version == 1 {
+                       mutationEvent.version == 1 {
                         await postsDeletedLocally.fulfill()
                     } else if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue,
                               mutationEvent.version == 2 {
@@ -333,100 +197,58 @@ final class DataStoreStressTests: XCTestCase {
         
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
-                try await Amplify.DataStore.delete(capturedPosts[index])
+                try await Amplify.DataStore.delete(posts[index])
             }
         }
         
         await waitForExpectations([postsDeletedLocally, postsDeletedFromCloud], timeout: networkTimeout)
     }
-
+    
+    
     // MARK: - Helpers
-
-    func validateSavePost() async throws {
-        let date = Temporal.DateTime.now()
-        let newPost = Post(
-            title: "This is a new post I created",
-            content: "Original content from DataStoreEndToEndTests at \(date)",
-            createdAt: date)
-        let createReceived = expectation(description: "Create notification received")
-        let hubListener = Amplify.Hub.listen(
-            to: .dataStore,
-            eventName: HubPayload.EventName.DataStore.syncReceived) { payload in
-                guard let mutationEvent = payload.data as? MutationEvent
-                    else {
-                        XCTFail("Can't cast payload as mutation event")
-                        return
-                }
-
-                // This check is to protect against stray events being processed after the test has completed,
-                // and it shouldn't be construed as a pattern necessary for production applications.
-                guard let post = try? mutationEvent.decodeModel() as? Post, post.id == newPost.id else {
-                    return
-                }
-
-                if mutationEvent.mutationType == GraphQLMutationType.create.rawValue {
-                    XCTAssertEqual(post.content, newPost.content)
-                    XCTAssertEqual(mutationEvent.version, 1)
-                    createReceived.fulfill()
-                    return
-                }
+    
+    func saveAndSyncPosts(concurrencyLimit: Int) async -> [Post] {
+        var posts = [Post]()
+        for index in 0 ..< concurrencyLimit {
+            let post = Post(title: "title \(index)",
+                            status: .active,
+                            content: "content \(index)",
+                            createdAt: .now())
+            posts.append(post)
         }
-
-        guard try await HubListenerTestUtilities.waitForListener(with: hubListener, timeout: 5.0) else {
-            XCTFail("Listener not registered for hub")
-            return
-        }
-
-        _ = try await Amplify.DataStore.save(newPost)
+        let postsSyncedToCloud = asyncExpectation(description: "All posts saved and synced to cloud",
+                                                  expectedFulfillmentCount: concurrencyLimit)
         
-        await waitForExpectations(timeout: networkTimeout)
-    }
-    
-    func stopDataStore() async throws {
-        try await Amplify.DataStore.stop()
-    }
-    
-    func clearDataStore() async throws {
-        try await Amplify.DataStore.clear()
-    }
-
-    func startAmplify() throws {
-        let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
-            forResource: Self.amplifyConfigurationFile)
-        do {
-            try Amplify.configure(amplifyConfig)
-        } catch {
-            XCTFail(String(describing: error))
+        let postsCopy = posts
+        Task {
+            var postsSyncedToCloudCount = 0
+            let mutationEvents = Amplify.DataStore.observe(Post.self)
+            do {
+                for try await mutationEvent in mutationEvents {
+                    guard postsCopy.contains(where: { $0.id == mutationEvent.modelId }) else {
+                        return
+                    }
+                    
+                    if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue,
+                       mutationEvent.version == 1 {
+                        postsSyncedToCloudCount += 1
+                        await postsSyncedToCloud.fulfill()
+                    }
+                }
+            } catch {
+                XCTFail("Failed \(error)")
+            }
         }
-    }
-
-    func startAmplifyAndWaitForSync() async throws {
-        try await startAmplifyAndWait(for: HubPayload.EventName.DataStore.syncStarted)
-    }
-
-    func startAmplifyAndWaitForReady() async throws {
-        try await startAmplifyAndWait(for: HubPayload.EventName.DataStore.ready)
-    }
-
-    private func startAmplifyAndWait(for eventName: String) async throws {
-        let eventReceived = expectation(description: "DataStore \(eventName) event")
-
-        var token: UnsubscribeToken!
-        token = Amplify.Hub.listen(to: .dataStore,
-                                   eventName: eventName) { _ in
-            eventReceived.fulfill()
-            Amplify.Hub.removeListener(token)
+        
+        let capturedPosts = posts
+        
+        DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
+            Task {
+                _ = try await Amplify.DataStore.save(capturedPosts[index])
+            }
         }
-
-        guard try await HubListenerTestUtilities.waitForListener(with: token, timeout: 5.0) else {
-            XCTFail("Hub Listener not registered")
-            return
-        }
-
-        try startAmplify()
-        try await Amplify.DataStore.start()
-
-        await waitForExpectations(timeout: 100.0)
+        await waitForExpectations([postsSyncedToCloud], timeout: networkTimeout)
+        
+        return capturedPosts
     }
-
 }

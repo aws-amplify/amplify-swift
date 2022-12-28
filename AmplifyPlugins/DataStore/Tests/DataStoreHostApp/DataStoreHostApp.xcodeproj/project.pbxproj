@@ -422,6 +422,11 @@
 		681DFE9528E746FE0000C36A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8228E746C10000C36A /* XCTestCase+AsyncTesting.swift */; };
 		681DFE9628E746FE0000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8128E746C10000C36A /* AsyncExpectation.swift */; };
 		681DFE9728E746FE0000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8028E746C10000C36A /* AsyncTesting.swift */; };
+		970333C5295C5B160019981E /* DataStoreStressBaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970333C4295C5B160019981E /* DataStoreStressBaseTest.swift */; };
+		970333E3295CCE490019981E /* AmplifyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970333DF295CCE490019981E /* AmplifyModels.swift */; };
+		970333E4295CCE490019981E /* PostStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970333E0295CCE490019981E /* PostStatus.swift */; };
+		970333E5295CCE490019981E /* Post+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970333E1295CCE490019981E /* Post+Schema.swift */; };
+		970333E6295CCE490019981E /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970333E2295CCE490019981E /* Post.swift */; };
 		97731D4B28B3BD19006F180B /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731D4A28B3BD19006F180B /* TestConfigHelper.swift */; };
 		97731D5728B3BD25006F180B /* DataStoreTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731D4F28B3BD25006F180B /* DataStoreTestBase.swift */; };
 		97731D5828B3BD25006F180B /* DataStoreInternal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97731D5028B3BD25006F180B /* DataStoreInternal.swift */; };
@@ -507,16 +512,11 @@
 		97731F0328B68452006F180B /* DataStoreConnectionScenario3aV2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA0B289BFE3400B32A39 /* DataStoreConnectionScenario3aV2Tests.swift */; };
 		97731F0528B68DAC006F180B /* schema.graphql in Resources */ = {isa = PBXBuildFile; fileRef = 97731F0428B68DAC006F180B /* schema.graphql */; };
 		97731F0628B68DDF006F180B /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 21BBFA07289BFE3400B32A39 /* README.md */; };
-		97914C3B29563544002000EA /* Comment+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCD1289C06E300B32A39 /* Comment+Schema.swift */; };
-		97914C4429563544002000EA /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFD20289C06E300B32A39 /* Comment.swift */; };
 		97914C4F29563544002000EA /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8128E746C10000C36A /* AsyncExpectation.swift */; };
 		97914C5129563544002000EA /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8228E746C10000C36A /* XCTestCase+AsyncTesting.swift */; };
-		97914C5229563544002000EA /* Post+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCC2289C06E300B32A39 /* Post+Schema.swift */; };
 		97914C9229563544002000EA /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC27289C062000B32A39 /* TestConfigHelper.swift */; };
 		97914CE729563544002000EA /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8028E746C10000C36A /* AsyncTesting.swift */; };
-		97914D0329563544002000EA /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFCD2289C06E300B32A39 /* Post.swift */; };
 		97914D0F295637F5002000EA /* DataStoreStressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97914C2529563539002000EA /* DataStoreStressTests.swift */; };
-		97914D1029563928002000EA /* PostStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFC93289C06E300B32A39 /* PostStatus.swift */; };
 		97914D1229563C3D002000EA /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 97914D1129563C3D002000EA /* README.md */; };
 		979722F728B6AE0B00679E3C /* DataStoreConnectionScenario3V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA03289BFE3400B32A39 /* DataStoreConnectionScenario3V2Tests.swift */; };
 		979722F828B7D25100679E3C /* DataStoreConnectionScenario4V2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BBFA04289BFE3400B32A39 /* DataStoreConnectionScenario4V2Tests.swift */; };
@@ -1023,6 +1023,11 @@
 		681DFE8028E746C10000C36A /* AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTesting.swift; sourceTree = "<group>"; };
 		681DFE8128E746C10000C36A /* AsyncExpectation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncExpectation.swift; sourceTree = "<group>"; };
 		681DFE8228E746C10000C36A /* XCTestCase+AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AsyncTesting.swift"; sourceTree = "<group>"; };
+		970333C4295C5B160019981E /* DataStoreStressBaseTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreStressBaseTest.swift; sourceTree = "<group>"; };
+		970333DF295CCE490019981E /* AmplifyModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyModels.swift; sourceTree = "<group>"; };
+		970333E0295CCE490019981E /* PostStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostStatus.swift; sourceTree = "<group>"; };
+		970333E1295CCE490019981E /* Post+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post+Schema.swift"; sourceTree = "<group>"; };
+		970333E2295CCE490019981E /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		97731D4A28B3BD19006F180B /* TestConfigHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConfigHelper.swift; sourceTree = "<group>"; };
 		97731D4F28B3BD25006F180B /* DataStoreTestBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreTestBase.swift; sourceTree = "<group>"; };
 		97731D5028B3BD25006F180B /* DataStoreInternal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreInternal.swift; sourceTree = "<group>"; };
@@ -2086,6 +2091,17 @@
 			path = ../../../../../AmplifyAsyncTesting/Sources/AsyncTesting;
 			sourceTree = "<group>";
 		};
+		970333C6295C640C0019981E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				970333DF295CCE490019981E /* AmplifyModels.swift */,
+				970333E2295CCE490019981E /* Post.swift */,
+				970333E1295CCE490019981E /* Post+Schema.swift */,
+				970333E0295CCE490019981E /* PostStatus.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		97731D4928B3BD19006F180B /* Base */ = {
 			isa = PBXGroup;
 			children = (
@@ -2304,8 +2320,10 @@
 		97914C2429563539002000EA /* DataStoreStressTests */ = {
 			isa = PBXGroup;
 			children = (
+				970333C6295C640C0019981E /* Models */,
 				97914D1129563C3D002000EA /* README.md */,
 				97914C2529563539002000EA /* DataStoreStressTests.swift */,
+				970333C4295C5B160019981E /* DataStoreStressBaseTest.swift */,
 			);
 			path = DataStoreStressTests;
 			sourceTree = "<group>";
@@ -3317,16 +3335,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				97914D1029563928002000EA /* PostStatus.swift in Sources */,
+				970333E5295CCE490019981E /* Post+Schema.swift in Sources */,
 				97914D0F295637F5002000EA /* DataStoreStressTests.swift in Sources */,
-				97914C3B29563544002000EA /* Comment+Schema.swift in Sources */,
-				97914C4429563544002000EA /* Comment.swift in Sources */,
 				97914C4F29563544002000EA /* AsyncExpectation.swift in Sources */,
 				97914C5129563544002000EA /* XCTestCase+AsyncTesting.swift in Sources */,
-				97914C5229563544002000EA /* Post+Schema.swift in Sources */,
+				970333C5295C5B160019981E /* DataStoreStressBaseTest.swift in Sources */,
 				97914C9229563544002000EA /* TestConfigHelper.swift in Sources */,
+				970333E4295CCE490019981E /* PostStatus.swift in Sources */,
 				97914CE729563544002000EA /* AsyncTesting.swift in Sources */,
-				97914D0329563544002000EA /* Post.swift in Sources */,
+				970333E3295CCE490019981E /* AmplifyModels.swift in Sources */,
+				970333E6295CCE490019981E /* Post.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
