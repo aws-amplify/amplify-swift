@@ -335,7 +335,7 @@ class AWSS3StoragePluginBasicIntegrationTests: AWSS3StoragePluginTestBase {
 //            XCTFail("Failed to get AWSS3StoragePlugin")
 //        }
 //    }
-
+    
     // MARK: Helper functions
 
     func removeIfExists(_ fileURL: URL) {
