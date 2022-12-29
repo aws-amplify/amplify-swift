@@ -22,19 +22,23 @@ class DataStoreStressBaseTest: XCTestCase {
     let networkTimeout = TimeInterval(180)
     
     func setUp(withModels models: AmplifyModelRegistration, logLevel: LogLevel = .error) async {
+        
         continueAfterFailure = false
-        await Amplify.reset()
         Amplify.Logging.logLevel = logLevel
         
         do {
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfigurationFile)
-            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models))
+            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models, configuration: .custom(syncMaxRecords: 100)))
             try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: models))
             try Amplify.configure(amplifyConfig)
         } catch {
             XCTFail(String(describing: error))
             return
         }
+    }
+    
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
     
     func stopDataStore() async throws {
@@ -70,6 +74,6 @@ class DataStoreStressBaseTest: XCTestCase {
 
         try await Amplify.DataStore.start()
 
-        await waitForExpectations(timeout: 100.0)
+        await waitForExpectations(timeout: networkTimeout)
     }
 }
