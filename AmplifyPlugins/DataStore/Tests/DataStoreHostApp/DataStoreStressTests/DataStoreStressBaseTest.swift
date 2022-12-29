@@ -17,7 +17,7 @@ import AWSAPIPlugin
 
 class DataStoreStressBaseTest: XCTestCase {
  
-    static let amplifyConfigurationFile = "testconfiguration/AWSDataStoreStressTests-amplifyconfiguration"
+    static let amplifyConfigurationFile = "testconfiguration/AWSAmplifyStressTests-amplifyconfiguration"
     let concurrencyLimit = 50
     let networkTimeout = TimeInterval(180)
     
