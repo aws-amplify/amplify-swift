@@ -134,7 +134,7 @@ jobs:
           project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
           scheme: DatastoreStressTests
 
-  grapql-api-stress-test:
+  graphql-api-stress-test:
     needs: prepare-for-test
     runs-on: macos-12
     environment: IntegrationTest
