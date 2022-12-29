@@ -17,10 +17,10 @@ Auth category is also required for signing with AWS Pinpoint service and request
 
 3. `amplify push`
 
-4. Copy `amplifyconfiguration.json` as `AWSAnalyticsStressTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`
+4. Copy `amplifyconfiguration.json` as `AWSAmplifyStressTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`
 
 ```perl
-cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSAnalyticsStressTests-amplifyconfiguration.json
+cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSAmplifyStressTests-amplifyconfiguration.json
 ```
 
 5. You can now run all of the integration tests. 

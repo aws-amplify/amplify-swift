@@ -32,6 +32,6 @@ The following steps demonstrate how to set up Geo. Auth category is also require
 
 4. `amplify push`
 
-5. Copy `amplifyconfiguration.json` to a new file named `AWSGeoStressTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`.
+5. Copy `amplifyconfiguration.json` to a new file named `AWSAmplifyStressTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`.
 
 6. You can now run all of the integration tests. 
