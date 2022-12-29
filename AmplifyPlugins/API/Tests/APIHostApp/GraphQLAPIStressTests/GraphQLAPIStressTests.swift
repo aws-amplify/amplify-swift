@@ -51,9 +51,6 @@ final class APIStressTests: XCTestCase {
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
                 forResource: Self.amplifyConfiguration)
             try Amplify.configure(amplifyConfig)
-            
-            ModelRegistry.register(modelType: Post.self)
-            
         } catch {
             XCTFail("Error during setup: \(error)")
         }
