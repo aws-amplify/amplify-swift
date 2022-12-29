@@ -28,7 +28,7 @@ class DataStoreStressBaseTest: XCTestCase {
         
         do {
             let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfigurationFile)
-            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models, configuration: .custom(syncMaxRecords: 500)))
+            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models))
             try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: models))
             try Amplify.configure(amplifyConfig)
         } catch {
