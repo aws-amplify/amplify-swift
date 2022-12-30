@@ -21,7 +21,11 @@ class NativeWebSocketProvider: NSObject, AWSTranscribeStreamingWebSocketProvider
         self.clientDelegate = clientDelegate
         self.callbackQueue = callbackQueue
         super.init()
-        self.urlSession = URLSession(configuration: .default, delegate: self, delegateQueue: delegateQueue)
+        let urlConfiguration = URLSessionConfiguration.default
+        urlConfiguration.urlCache = nil
+        self.urlSession = URLSession(configuration: urlConfiguration,
+                                     delegate: self,
+                                     delegateQueue: delegateQueue)
 
     }
 

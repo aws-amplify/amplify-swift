@@ -30,6 +30,7 @@ class AWSAPICategoryPluginTestBase: XCTestCase {
     let testPath = "testPath"
 
     override func setUp() {
+        Amplify.reset()
         apiPlugin = AWSAPIPlugin()
 
         let authService = MockAWSAuthService()
@@ -62,7 +63,6 @@ class AWSAPICategoryPluginTestBase: XCTestCase {
             XCTFail("Failed to create endpoint config")
         }
 
-        Amplify.reset()
         let config = AmplifyConfiguration()
         do {
             try Amplify.configure(config)
@@ -72,9 +72,6 @@ class AWSAPICategoryPluginTestBase: XCTestCase {
     }
 
     override func tearDown() {
-        if let api = apiPlugin {
-            api.reset {
-            }
-        }
+        Amplify.reset()
     }
 }

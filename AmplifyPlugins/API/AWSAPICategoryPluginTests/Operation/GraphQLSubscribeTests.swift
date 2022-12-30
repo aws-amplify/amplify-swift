@@ -33,6 +33,8 @@ class GraphQLSubscribeTests: OperationTestBase {
     var subscriptionItem: SubscriptionItem!
     var subscriptionEventHandler: SubscriptionEventHandler!
 
+    var expectedCompletionFailureError: APIError?
+
     override func setUpWithError() throws {
         try super.setUpWithError()
 
@@ -122,7 +124,23 @@ class GraphQLSubscribeTests: OperationTestBase {
     /// - The value handler is not invoked with with a data value
     /// - The value handler is invoked with a disconnection message
     /// - The completion handler is invoked with an error termination
-    func testConnectionError() throws {
+    func testConnectionErrorWithLimitExceeded() throws {
+        receivedCompletionFinish.shouldTrigger = false
+        receivedCompletionFailure.shouldTrigger = true
+        receivedConnected.shouldTrigger = false
+        receivedDisconnected.shouldTrigger = false
+        receivedSubscriptionEventData.shouldTrigger = false
+        receivedSubscriptionEventError.shouldTrigger = false
+
+        subscribe()
+        wait(for: [onSubscribeInvoked], timeout: 0.05)
+
+        subscriptionEventHandler(.failed(ConnectionProviderError.limitExceeded(nil)), subscriptionItem)
+        expectedCompletionFailureError = APIError.operationError("", "", ConnectionProviderError.limitExceeded(nil))
+        waitForExpectations(timeout: 0.05)
+    }
+
+    func testConnectionErrorWithSubscriptionError() throws {
         receivedCompletionFinish.shouldTrigger = false
         receivedCompletionFailure.shouldTrigger = true
         receivedConnected.shouldTrigger = false
@@ -134,8 +152,42 @@ class GraphQLSubscribeTests: OperationTestBase {
         wait(for: [onSubscribeInvoked], timeout: 0.05)
 
         subscriptionEventHandler(.connection(.connecting), subscriptionItem)
-        subscriptionEventHandler(.failed("Error"), subscriptionItem)
+        subscriptionEventHandler(.failed(ConnectionProviderError.subscription("", nil)), subscriptionItem)
+        expectedCompletionFailureError = APIError.operationError("", "", ConnectionProviderError.subscription("", nil))
+        waitForExpectations(timeout: 0.05)
+    }
 
+    func testConnectionErrorWithConnectionUnauthorizedError() throws {
+        receivedCompletionFinish.shouldTrigger = false
+        receivedCompletionFailure.shouldTrigger = true
+        receivedConnected.shouldTrigger = false
+        receivedDisconnected.shouldTrigger = false
+        receivedSubscriptionEventData.shouldTrigger = false
+        receivedSubscriptionEventError.shouldTrigger = false
+
+        subscribe()
+        wait(for: [onSubscribeInvoked], timeout: 0.05)
+
+        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
+        subscriptionEventHandler(.failed(ConnectionProviderError.unauthorized), subscriptionItem)
+        expectedCompletionFailureError = APIError.operationError("", "", ConnectionProviderError.unauthorized)
+        waitForExpectations(timeout: 0.05)
+    }
+
+    func testConnectionErrorWithConnectionProviderConnectionError() throws {
+        receivedCompletionFinish.shouldTrigger = false
+        receivedCompletionFailure.shouldTrigger = true
+        receivedConnected.shouldTrigger = false
+        receivedDisconnected.shouldTrigger = false
+        receivedSubscriptionEventData.shouldTrigger = false
+        receivedSubscriptionEventError.shouldTrigger = false
+
+        subscribe()
+        wait(for: [onSubscribeInvoked], timeout: 0.05)
+
+        subscriptionEventHandler(.connection(.connecting), subscriptionItem)
+        subscriptionEventHandler(.failed(ConnectionProviderError.connection), subscriptionItem)
+        expectedCompletionFailureError = APIError.networkError("", nil, URLError(.networkConnectionLost))
         waitForExpectations(timeout: 0.05)
     }
 
@@ -286,7 +338,11 @@ class GraphQLSubscribeTests: OperationTestBase {
                 }
         }, completionListener: { result in
             switch result {
-            case .failure:
+            case .failure(let error):
+                if let apiError = error as? APIError,
+                   let expectedError = self.expectedCompletionFailureError {
+                    XCTAssertEqual(apiError, expectedError)
+                }
                 self.receivedCompletionFailure.fulfill()
             case .success:
                 self.receivedCompletionFinish.fulfill()
@@ -294,5 +350,45 @@ class GraphQLSubscribeTests: OperationTestBase {
         })
 
         return operation
+    }
+}
+
+extension APIError: Equatable {
+    public static func == (lhs: APIError, rhs: APIError) -> Bool {
+        switch (lhs, rhs) {
+        case (.unknown, .unknown),
+            (.invalidConfiguration, .invalidConfiguration),
+            (.httpStatusError, .httpStatusError),
+            (.pluginError, .pluginError):
+            return true
+        case (.operationError(_, _, let lhs), .operationError(_, _, let rhs)):
+            if let lhs = lhs as? ConnectionProviderError, let rhs = rhs as? ConnectionProviderError {
+                switch (lhs, rhs) {
+                case (.connection, .connection),
+                    (.jsonParse, .jsonParse),
+                    (.limitExceeded, .limitExceeded),
+                    (.subscription, .subscription),
+                    (.unauthorized, .unauthorized),
+                    (.unknown, .unknown):
+                    return true
+                default:
+                    return false
+                }
+            } else if lhs == nil && rhs == nil {
+                return true
+            } else {
+                return false
+            }
+        case (.networkError(_, _, let lhs), .networkError(_, _, let rhs)):
+            if let lhs = lhs as? URLError, let rhs = rhs as? URLError {
+                return lhs.code == rhs.code
+            } else if lhs == nil && rhs == nil {
+                return true
+            } else {
+                return false
+            }
+        default:
+            return false
+        }
     }
 }
