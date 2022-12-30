@@ -15,7 +15,8 @@ $OPTIMISTIC_AWS_SDK_VERSION = "~> #{$AWS_SDK_VERSION}"
 def include_build_tools!
   # Pin to 0.44.17 until we resolve closing braces
   pod 'SwiftFormat/CLI', '0.44.17'
-  pod 'SwiftLint'
+  # Pin to 0.49.1 until we update config and code
+  pod 'SwiftLint', '0.49.1'
 end
 
 # Include common test dependencies

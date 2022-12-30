@@ -47,7 +47,7 @@ PODS:
     - CwlMachBadInstructionHandler (~> 2.1.0)
     - CwlPosixPreconditionTesting (~> 2.1.0)
   - SwiftFormat/CLI (0.44.17)
-  - SwiftLint (0.50.3)
+  - SwiftLint (0.49.1)
 
 DEPENDENCIES:
   - Amplify (from `../../`)
@@ -57,7 +57,7 @@ DEPENDENCIES:
   - AWSPluginsCore (from `../../`)
   - CwlPreconditionTesting (from `https://github.com/mattgallagher/CwlPreconditionTesting.git`, tag `2.1.0`)
   - SwiftFormat/CLI (= 0.44.17)
-  - SwiftLint
+  - SwiftLint (= 0.49.1)
 
 SPEC REPOS:
   trunk:
@@ -109,7 +109,7 @@ SPEC CHECKSUMS:
   CwlPosixPreconditionTesting: 1ba4471964405941f79b3f06bbcf3c2be782950c
   CwlPreconditionTesting: 73ae5de517a8761e5e40fb4136c6a26365af0440
   SwiftFormat: 3b5caa6389b2b9adbc00e133b3ccc8c6e687a6a4
-  SwiftLint: 77f7cb2b9bb81ab4a12fcc86448ba3f11afa50c6
+  SwiftLint: 32ee33ded0636d0905ef6911b2b67bbaeeedafa5
 
 PODFILE CHECKSUM: 48d1574dddce5cef7bdb7b05b06fc588ee22956e
 
