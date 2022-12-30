@@ -1,5 +1,12 @@
 # Changelog
 ## Unreleased
+## 1.28.4 (2022-12-30)
+
+### Bug Fixes
+
+- update SDK to v2.29.1 (#2649)
+- **datastore-v1**: retry on subscription connection error (#2581)
+
 ## 1.28.3 (2022-11-10)
 
 ### Bug Fixes
