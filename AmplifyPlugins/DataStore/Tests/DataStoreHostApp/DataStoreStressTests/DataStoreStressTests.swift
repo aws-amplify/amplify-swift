@@ -213,7 +213,6 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
             posts.append(post)
         }
         
-        let observeQuerySetup = asyncExpectation(description: "ObserveQuery setup done")
         let postsSyncedToCloud = asyncExpectation(description: "All posts saved and synced to cloud",
                                                   expectedFulfillmentCount: concurrencyLimit)
         
