@@ -494,6 +494,13 @@
 		21C3C4C1293FD9BD009194A0 /* AWSDataStoreLazyLoadDefaultPKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C3C4C0293FD9BD009194A0 /* AWSDataStoreLazyLoadDefaultPKTests.swift */; };
 		21C3C4C3293FD9FF009194A0 /* AWSDataStoreLazyLoadHasOneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C3C4C2293FD9FF009194A0 /* AWSDataStoreLazyLoadHasOneTests.swift */; };
 		21C3C4C5293FDA12009194A0 /* AWSDataStoreLazyLoadCompositePKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C3C4C4293FDA12009194A0 /* AWSDataStoreLazyLoadCompositePKTests.swift */; };
+		21DFAE9F295F4E8600B4A883 /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAE99295F4E8500B4A883 /* Person.swift */; };
+		21DFAEA0295F4E8600B4A883 /* PhoneCall+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAE9A295F4E8500B4A883 /* PhoneCall+Schema.swift */; };
+		21DFAEA1295F4E8600B4A883 /* Transcript+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAE9B295F4E8500B4A883 /* Transcript+Schema.swift */; };
+		21DFAEA2295F4E8600B4A883 /* Person+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAE9C295F4E8600B4A883 /* Person+Schema.swift */; };
+		21DFAEA3295F4E8600B4A883 /* PhoneCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAE9D295F4E8600B4A883 /* PhoneCall.swift */; };
+		21DFAEA4295F4E8600B4A883 /* Transcript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAE9E295F4E8600B4A883 /* Transcript.swift */; };
+		21DFAEA6295F4E9E00B4A883 /* AWSDataStoreLazyLoadPhoneCallTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAEA5295F4E9E00B4A883 /* AWSDataStoreLazyLoadPhoneCallTests.swift */; };
 		681DFE8328E746C10000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8028E746C10000C36A /* AsyncTesting.swift */; };
 		681DFE8428E746C10000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8128E746C10000C36A /* AsyncExpectation.swift */; };
 		681DFE8528E746C10000C36A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFE8228E746C10000C36A /* XCTestCase+AsyncTesting.swift */; };
@@ -1213,6 +1220,13 @@
 		21C3C4C0293FD9BD009194A0 /* AWSDataStoreLazyLoadDefaultPKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreLazyLoadDefaultPKTests.swift; sourceTree = "<group>"; };
 		21C3C4C2293FD9FF009194A0 /* AWSDataStoreLazyLoadHasOneTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreLazyLoadHasOneTests.swift; sourceTree = "<group>"; };
 		21C3C4C4293FDA12009194A0 /* AWSDataStoreLazyLoadCompositePKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreLazyLoadCompositePKTests.swift; sourceTree = "<group>"; };
+		21DFAE99295F4E8500B4A883 /* Person.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
+		21DFAE9A295F4E8500B4A883 /* PhoneCall+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PhoneCall+Schema.swift"; sourceTree = "<group>"; };
+		21DFAE9B295F4E8500B4A883 /* Transcript+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Transcript+Schema.swift"; sourceTree = "<group>"; };
+		21DFAE9C295F4E8600B4A883 /* Person+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Person+Schema.swift"; sourceTree = "<group>"; };
+		21DFAE9D295F4E8600B4A883 /* PhoneCall.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhoneCall.swift; sourceTree = "<group>"; };
+		21DFAE9E295F4E8600B4A883 /* Transcript.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transcript.swift; sourceTree = "<group>"; };
+		21DFAEA5295F4E9E00B4A883 /* AWSDataStoreLazyLoadPhoneCallTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDataStoreLazyLoadPhoneCallTests.swift; sourceTree = "<group>"; };
 		681DFE8028E746C10000C36A /* AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTesting.swift; sourceTree = "<group>"; };
 		681DFE8128E746C10000C36A /* AsyncExpectation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncExpectation.swift; sourceTree = "<group>"; };
 		681DFE8228E746C10000C36A /* XCTestCase+AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AsyncTesting.swift"; sourceTree = "<group>"; };
@@ -1526,6 +1540,7 @@
 				21801D462902E0F600FFA37E /* LL10 */,
 				21801D472902E0FD00FFA37E /* LL11 */,
 				21801D4B29097CAB00FFA37E /* LL12 */,
+				21DFAE98295F4E4C00B4A883 /* LL13 */,
 			);
 			path = AWSDataStorePluginLazyLoadTests;
 			sourceTree = "<group>";
@@ -2509,6 +2524,20 @@
 			path = DefaultPK;
 			sourceTree = "<group>";
 		};
+		21DFAE98295F4E4C00B4A883 /* LL13 */ = {
+			isa = PBXGroup;
+			children = (
+				21DFAEA5295F4E9E00B4A883 /* AWSDataStoreLazyLoadPhoneCallTests.swift */,
+				21DFAE99295F4E8500B4A883 /* Person.swift */,
+				21DFAE9C295F4E8600B4A883 /* Person+Schema.swift */,
+				21DFAE9D295F4E8600B4A883 /* PhoneCall.swift */,
+				21DFAE9A295F4E8500B4A883 /* PhoneCall+Schema.swift */,
+				21DFAE9E295F4E8600B4A883 /* Transcript.swift */,
+				21DFAE9B295F4E8500B4A883 /* Transcript+Schema.swift */,
+			);
+			path = LL13;
+			sourceTree = "<group>";
+		};
 		681DFE7F28E746C10000C36A /* AsyncTesting */ = {
 			isa = PBXGroup;
 			children = (
@@ -3405,8 +3434,11 @@
 				21801CE028F9A86800FFA37E /* Post8V2.swift in Sources */,
 				21801D3E2900A10600FFA37E /* AWSDataStoreLazyLoadProjectTeam1Tests.swift in Sources */,
 				21801C7D28F9A22900FFA37E /* AWSDataStoreLazyLoadBaseTest.swift in Sources */,
+				21DFAEA6295F4E9E00B4A883 /* AWSDataStoreLazyLoadPhoneCallTests.swift in Sources */,
 				21801CFF28F9A86800FFA37E /* Team2.swift in Sources */,
 				217AA7BF2909C6330042CD5D /* AWSDataStoreLazyLoadProjectTeam6Tests.swift in Sources */,
+				21DFAEA1295F4E8600B4A883 /* Transcript+Schema.swift in Sources */,
+				21DFAE9F295F4E8600B4A883 /* Person.swift in Sources */,
 				21801D0228F9A86800FFA37E /* Comment8+Schema.swift in Sources */,
 				21801D5F29097D5800FFA37E /* HasOneChild+Schema.swift in Sources */,
 				21801CFC28F9A86800FFA37E /* Comment4V2+Schema.swift in Sources */,
@@ -3419,6 +3451,7 @@
 				21801CF528F9A86800FFA37E /* Comment7.swift in Sources */,
 				21801D5E29097D5800FFA37E /* StrangeExplicitChild.swift in Sources */,
 				21801CE828F9A86800FFA37E /* Comment4V2.swift in Sources */,
+				21DFAEA2295F4E8600B4A883 /* Person+Schema.swift in Sources */,
 				21C3C4C1293FD9BD009194A0 /* AWSDataStoreLazyLoadDefaultPKTests.swift in Sources */,
 				21801CD528F9A86800FFA37E /* CommentWithCompositeKey+Schema.swift in Sources */,
 				217AA7BD2909C1D00042CD5D /* AWSDataStoreLazyLoadProjectTeam5Tests.swift in Sources */,
@@ -3441,6 +3474,7 @@
 				21801D2B29006DA300FFA37E /* Project1+Schema.swift in Sources */,
 				21801D6629097D5800FFA37E /* DefaultPKChild+Schema.swift in Sources */,
 				21801D0728F9B11800FFA37E /* AsyncTesting.swift in Sources */,
+				21DFAEA0295F4E8600B4A883 /* PhoneCall+Schema.swift in Sources */,
 				21801D2A29006DA300FFA37E /* Project1.swift in Sources */,
 				2138482A2947ACCF00BBA647 /* AWSDataStoreLazyLoadBlogPostComment8V2Tests.swift in Sources */,
 				21801CF128F9A86800FFA37E /* Project2+Schema.swift in Sources */,
@@ -3475,7 +3509,9 @@
 				21801CDA28F9A86800FFA37E /* PostWithTagsCompositeKey.swift in Sources */,
 				21801D0928F9B11E00FFA37E /* XCTestCase+AsyncTesting.swift in Sources */,
 				21801D7129097E9400FFA37E /* AWSDataStoreLazyLoadProjectTeam2Tests.swift in Sources */,
+				21DFAEA3295F4E8600B4A883 /* PhoneCall.swift in Sources */,
 				21801CF428F9A86800FFA37E /* Post7.swift in Sources */,
+				21DFAEA4295F4E8600B4A883 /* Transcript.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

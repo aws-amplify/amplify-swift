@@ -164,6 +164,13 @@
 		21908A79291D7631005021F7 /* Post8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A74291D7631005021F7 /* Post8+Schema.swift */; };
 		21908A7A291D7631005021F7 /* Comment8+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21908A75291D7631005021F7 /* Comment8+Schema.swift */; };
 		219253C428BFEBE400820737 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 219253C328BFEBE200820737 /* XCTest.framework */; };
+		21DFAEAE295F9F8C00B4A883 /* Person+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAEA8295F9F8C00B4A883 /* Person+Schema.swift */; };
+		21DFAEAF295F9F8C00B4A883 /* PhoneCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAEA9295F9F8C00B4A883 /* PhoneCall.swift */; };
+		21DFAEB0295F9F8C00B4A883 /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAEAA295F9F8C00B4A883 /* Person.swift */; };
+		21DFAEB1295F9F8C00B4A883 /* Transcript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAEAB295F9F8C00B4A883 /* Transcript.swift */; };
+		21DFAEB2295F9F8C00B4A883 /* PhoneCall+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAEAC295F9F8C00B4A883 /* PhoneCall+Schema.swift */; };
+		21DFAEB3295F9F8C00B4A883 /* Transcript+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAEAD295F9F8C00B4A883 /* Transcript+Schema.swift */; };
+		21DFAEB5295F9FA600B4A883 /* GraphQLLazyLoadPhoneCallTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DFAEB4295F9FA600B4A883 /* GraphQLLazyLoadPhoneCallTests.swift */; };
 		21E73E6F28898D7900D7DB7E /* APIHostAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E73E6E28898D7900D7DB7E /* APIHostAppApp.swift */; };
 		21E73E7128898D7900D7DB7E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21E73E7028898D7900D7DB7E /* ContentView.swift */; };
 		21E73E7328898D7A00D7DB7E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21E73E7228898D7A00D7DB7E /* Assets.xcassets */; };
@@ -457,6 +464,13 @@
 		21908A75291D7631005021F7 /* Comment8+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Comment8+Schema.swift"; sourceTree = "<group>"; };
 		219253C328BFEBE200820737 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		21D335B7289867FC00657B12 /* amplify-ios-staging */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-ios-staging"; path = ../../../..; sourceTree = "<group>"; };
+		21DFAEA8295F9F8C00B4A883 /* Person+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Person+Schema.swift"; sourceTree = "<group>"; };
+		21DFAEA9295F9F8C00B4A883 /* PhoneCall.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhoneCall.swift; sourceTree = "<group>"; };
+		21DFAEAA295F9F8C00B4A883 /* Person.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
+		21DFAEAB295F9F8C00B4A883 /* Transcript.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transcript.swift; sourceTree = "<group>"; };
+		21DFAEAC295F9F8C00B4A883 /* PhoneCall+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PhoneCall+Schema.swift"; sourceTree = "<group>"; };
+		21DFAEAD295F9F8C00B4A883 /* Transcript+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Transcript+Schema.swift"; sourceTree = "<group>"; };
+		21DFAEB4295F9FA600B4A883 /* GraphQLLazyLoadPhoneCallTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLLazyLoadPhoneCallTests.swift; sourceTree = "<group>"; };
 		21E73E6B28898D7900D7DB7E /* APIHostApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = APIHostApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		21E73E6E28898D7900D7DB7E /* APIHostAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIHostAppApp.swift; sourceTree = "<group>"; };
 		21E73E7028898D7900D7DB7E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -885,6 +899,20 @@
 			name = Packages;
 			sourceTree = "<group>";
 		};
+		21DFAEA7295F9F4100B4A883 /* L13 */ = {
+			isa = PBXGroup;
+			children = (
+				21DFAEB4295F9FA600B4A883 /* GraphQLLazyLoadPhoneCallTests.swift */,
+				21DFAEAA295F9F8C00B4A883 /* Person.swift */,
+				21DFAEA8295F9F8C00B4A883 /* Person+Schema.swift */,
+				21DFAEA9295F9F8C00B4A883 /* PhoneCall.swift */,
+				21DFAEAC295F9F8C00B4A883 /* PhoneCall+Schema.swift */,
+				21DFAEAB295F9F8C00B4A883 /* Transcript.swift */,
+				21DFAEAD295F9F8C00B4A883 /* Transcript+Schema.swift */,
+			);
+			path = L13;
+			sourceTree = "<group>";
+		};
 		21E73E6228898D7800D7DB7E = {
 			isa = PBXGroup;
 			children = (
@@ -960,6 +988,7 @@
 				219089E2291D6466005021F7 /* LL10 */,
 				219089E3291D6B20005021F7 /* LL11 */,
 				219089E4291D6B2A005021F7 /* LL12 */,
+				21DFAEA7295F9F4100B4A883 /* L13 */,
 				21EA888328F9BD2D0000BA75 /* lazyload-schema.graphql */,
 				21EA888128F9BCD90000BA75 /* TestConfigHelper.swift */,
 				21EA887D28F9BCBB0000BA75 /* README.md */,
@@ -1734,6 +1763,7 @@
 				21908A36291D75F4005021F7 /* GraphQLLazyLoadProjectTeam5Tests.swift in Sources */,
 				219089F7291D75C3005021F7 /* MyNestedModel8+Schema.swift in Sources */,
 				21908A5F291D762B005021F7 /* HasOneChild.swift in Sources */,
+				21DFAEAE295F9F8C00B4A883 /* Person+Schema.swift in Sources */,
 				21908A61291D762B005021F7 /* HasOneChild+Schema.swift in Sources */,
 				21908A48291D7608005021F7 /* Comment7.swift in Sources */,
 				21908A24291D75E4005021F7 /* Team2.swift in Sources */,
@@ -1748,6 +1778,7 @@
 				219089F1291D75C3005021F7 /* MyNestedModel8.swift in Sources */,
 				21908A38291D75F4005021F7 /* Team5+Schema.swift in Sources */,
 				218D0194291AE3750068D133 /* Comment4V2.swift in Sources */,
+				21DFAEB1295F9F8C00B4A883 /* Transcript.swift in Sources */,
 				218D0198291AE3C00068D133 /* GraphQLLazyLoadPostComment4V2Tests.swift in Sources */,
 				21908A37291D75F4005021F7 /* Project5.swift in Sources */,
 				21908A70291D762B005021F7 /* StrangeExplicitChild+Schema.swift in Sources */,
@@ -1779,6 +1810,7 @@
 				21908A6A291D762B005021F7 /* ChildSansBelongsTo.swift in Sources */,
 				219089F2291D75C3005021F7 /* Post8V2+Schema.swift in Sources */,
 				21908A22291D75E4005021F7 /* Team2+Schema.swift in Sources */,
+				21DFAEB3295F9F8C00B4A883 /* Transcript+Schema.swift in Sources */,
 				21908A0D291D75D6005021F7 /* TagWithCompositeKey.swift in Sources */,
 				21FA8EF7295C9609009F6A07 /* GraphQLLazyLoadHasOneTests.swift in Sources */,
 				21908A6F291D762B005021F7 /* StrangeExplicitChild.swift in Sources */,
@@ -1796,6 +1828,7 @@
 				21908A6B291D762B005021F7 /* CompositePKParent+Schema.swift in Sources */,
 				219089F3291D75C3005021F7 /* Blog8V2.swift in Sources */,
 				21908A67291D762B005021F7 /* DefaultPKParent.swift in Sources */,
+				21DFAEB5295F9FA600B4A883 /* GraphQLLazyLoadPhoneCallTests.swift in Sources */,
 				21908A42291D75FE005021F7 /* Team6+Schema.swift in Sources */,
 				21FA8EF9295C962E009F6A07 /* GraphQLLazyLoadDefaultPKTests.swift in Sources */,
 				21908A2C291D75EB005021F7 /* Comment4+Schema.swift in Sources */,
@@ -1803,8 +1836,10 @@
 				21908A17291D75DD005021F7 /* GraphQLLazyLoadProjectTeam1Tests.swift in Sources */,
 				21908A69291D762B005021F7 /* HasOneParent.swift in Sources */,
 				21908A4C291D7608005021F7 /* Comment7+Schema.swift in Sources */,
+				21DFAEAF295F9F8C00B4A883 /* PhoneCall.swift in Sources */,
 				21908A2B291D75EB005021F7 /* GraphQLLazyLoadPostComment4Tests.swift in Sources */,
 				21908A65291D762B005021F7 /* ChildSansBelongsTo+Schema.swift in Sources */,
+				21DFAEB0295F9F8C00B4A883 /* Person.swift in Sources */,
 				21908A66291D762B005021F7 /* DefaultPKChild+Schema.swift in Sources */,
 				21908A02291D75CE005021F7 /* CommentWithCompositeKey+Schema.swift in Sources */,
 				21EA887E28F9BCC10000BA75 /* AsyncTesting.swift in Sources */,
@@ -1816,6 +1851,7 @@
 				21908A49291D7608005021F7 /* GraphQLLazyLoadPostComment7Tests.swift in Sources */,
 				21908A2D291D75EB005021F7 /* Post4+Schema.swift in Sources */,
 				218D0196291AE3750068D133 /* Post4V2+Schema.swift in Sources */,
+				21DFAEB2295F9F8C00B4A883 /* PhoneCall+Schema.swift in Sources */,
 				21908A64291D762B005021F7 /* ImplicitChild+Schema.swift in Sources */,
 				21908A34291D75F4005021F7 /* Project5+Schema.swift in Sources */,
 			);

@@ -147,6 +147,7 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
         print("DBPath: \(dbPath)")
     }
     
+    @discardableResult
     func saveAndWaitForSync<M: Model>(_ model: M, assertVersion: Int = 1) async throws -> M {
         let modelSynced = asyncExpectation(description: "model was synced successfully")
         let mutationEvents = Amplify.DataStore.observe(M.self)
@@ -162,6 +163,11 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
         return savedModel
     }
     
+    @discardableResult
+    func updateAndWaitForSync<M: Model>(_ model: M, assertVersion: Int = 2) async throws -> M {
+        try await saveAndWaitForSync(model, assertVersion: assertVersion)
+    }
+
     func deleteAndWaitForSync<M: Model>(_ model: M) async throws {
         let modelSynced = asyncExpectation(description: "model was synced successfully")
         let dataStoreEvents = HubPayload.EventName.DataStore.self

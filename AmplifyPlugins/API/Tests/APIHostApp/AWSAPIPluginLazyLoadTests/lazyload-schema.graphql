@@ -258,3 +258,28 @@ type ChildSansBelongsTo @model {
   compositePKParentChildrenSansBelongsToCustomId: ID! @index(name: "byParent", sortKeyFields: ["compositePKParentChildrenSansBelongsToContent"])
   compositePKParentChildrenSansBelongsToContent: String
 }
+
+# LL.13 PhoneCall - Two BelongsTo to Person, Bidirectional HasOne to Transcript
+
+type PhoneCall @model {
+  id: ID!
+  callerId: ID! @index(name: "byCaller")
+  calleeId: ID! @index(name: "byCallee")
+  caller: Person! @belongsTo(fields: ["callerId"])
+  callee: Person! @belongsTo(fields: ["calleeId"])
+  transcript: Transcript @hasOne
+}
+
+type Person @model {
+  id: ID!
+  name: String!
+  callerOf: [PhoneCall!] @hasMany(indexName: "byCaller")
+  calleeOf: [PhoneCall!] @hasMany(indexName: "byCallee")
+}
+
+type Transcript @model {
+  id: ID!
+  text: String!
+  language: String
+  phoneCall: PhoneCall @belongsTo
+}
