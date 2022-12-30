@@ -30,6 +30,7 @@
 		681DFEAB28E747B80000C36A /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEA828E747B80000C36A /* AsyncTesting.swift */; };
 		681DFEAC28E747B80000C36A /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEA928E747B80000C36A /* AsyncExpectation.swift */; };
 		681DFEAD28E747B80000C36A /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEAA28E747B80000C36A /* XCTestCase+AsyncTesting.swift */; };
+		970333F0295D793B0019981E /* AuthStressBaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970333EF295D793B0019981E /* AuthStressBaseTest.swift */; };
 		9737C74E287E208400DA0D2B /* AuthRememberDeviceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737C74D287E208400DA0D2B /* AuthRememberDeviceTests.swift */; };
 		9737C7502880BFD600DA0D2B /* AuthForgetDeviceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737C74F2880BFD600DA0D2B /* AuthForgetDeviceTests.swift */; };
 		97829201286B802E000DE190 /* AuthResetPasswordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97829200286B802E000DE190 /* AuthResetPasswordTests.swift */; };
@@ -39,7 +40,6 @@
 		97914B4E2955099A002000EA /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEAA28E747B80000C36A /* XCTestCase+AsyncTesting.swift */; };
 		97914B4F295509A2002000EA /* AuthStressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97914AD72954FE0A002000EA /* AuthStressTests.swift */; };
 		97914B51295509AB002000EA /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 97914AF6295503D4002000EA /* README.md */; };
-		97914B5529552D0C002000EA /* AWSAuthBaseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5AF27B61EAA006CCEC7 /* AWSAuthBaseTest.swift */; };
 		97914B5629552D2B002000EA /* AuthSessionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5B727B61F0F006CCEC7 /* AuthSessionHelper.swift */; };
 		97914B5729552D2B002000EA /* AuthSignInHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485CB5B827B61F0F006CCEC7 /* AuthSignInHelper.swift */; };
 		97B370C52878DA5A00F1C088 /* AuthFetchDeviceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B370C42878DA5A00F1C088 /* AuthFetchDeviceTests.swift */; };
@@ -93,6 +93,7 @@
 		681DFEA828E747B80000C36A /* AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncTesting.swift; sourceTree = "<group>"; };
 		681DFEA928E747B80000C36A /* AsyncExpectation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncExpectation.swift; sourceTree = "<group>"; };
 		681DFEAA28E747B80000C36A /* XCTestCase+AsyncTesting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+AsyncTesting.swift"; sourceTree = "<group>"; };
+		970333EF295D793B0019981E /* AuthStressBaseTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthStressBaseTest.swift; sourceTree = "<group>"; };
 		9737C74D287E208400DA0D2B /* AuthRememberDeviceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRememberDeviceTests.swift; sourceTree = "<group>"; };
 		9737C74F2880BFD600DA0D2B /* AuthForgetDeviceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthForgetDeviceTests.swift; sourceTree = "<group>"; };
 		97829200286B802E000DE190 /* AuthResetPasswordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthResetPasswordTests.swift; sourceTree = "<group>"; };
@@ -306,6 +307,7 @@
 			children = (
 				97914AF6295503D4002000EA /* README.md */,
 				97914AD72954FE0A002000EA /* AuthStressTests.swift */,
+				970333EF295D793B0019981E /* AuthStressBaseTest.swift */,
 			);
 			path = AuthStressTests;
 			sourceTree = "<group>";
@@ -551,8 +553,8 @@
 			files = (
 				97914B5629552D2B002000EA /* AuthSessionHelper.swift in Sources */,
 				97914B5729552D2B002000EA /* AuthSignInHelper.swift in Sources */,
-				97914B5529552D0C002000EA /* AWSAuthBaseTest.swift in Sources */,
 				97914B4F295509A2002000EA /* AuthStressTests.swift in Sources */,
+				970333F0295D793B0019981E /* AuthStressBaseTest.swift in Sources */,
 				97914B4C2955099A002000EA /* AsyncTesting.swift in Sources */,
 				97914B4D2955099A002000EA /* AsyncExpectation.swift in Sources */,
 				97914B4E2955099A002000EA /* XCTestCase+AsyncTesting.swift in Sources */,

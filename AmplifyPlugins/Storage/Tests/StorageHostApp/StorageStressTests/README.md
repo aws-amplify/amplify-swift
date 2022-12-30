@@ -93,8 +93,8 @@ Successfully added auth resource
 3. `amplify push`
 
 
-4. Copy `amplifyconfiguration.json` as `AWSStorageStressTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`
+4. Copy `amplifyconfiguration.json` as `AWSAmplifyStressTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`
 
 ```
-cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSStorageStressTests-amplifyconfiguration.json
+cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSAmplifyStressTests-amplifyconfiguration.json
 ```

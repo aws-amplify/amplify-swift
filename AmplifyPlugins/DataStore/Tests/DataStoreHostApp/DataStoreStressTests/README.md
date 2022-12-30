@@ -39,10 +39,10 @@ type Post @model @auth(rules: [{ allow: public }]) {
 
 3. `amplify push`
 
-4. Copy `amplifyconfiguration.json` to a new file named `AWSDataStoreStressTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`
+4. Copy `amplifyconfiguration.json` to a new file named `AWSAmplifyStressTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`
 
 ```
-cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSDataStoreStressTests-amplifyconfiguration.json
+cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSAmplifyStressTests-amplifyconfiguration.json
 ```
 
 You should now be able to run all of the tests 

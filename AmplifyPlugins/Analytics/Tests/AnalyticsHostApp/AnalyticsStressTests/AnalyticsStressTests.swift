@@ -15,7 +15,7 @@ import Network
 
 final class AnalyticsStressTests: XCTestCase {
 
-    static let amplifyConfiguration = "testconfiguration/AWSAnalyticsStressTests-amplifyconfiguration"
+    static let amplifyConfiguration = "testconfiguration/AWSAmplifyStressTests-amplifyconfiguration"
     static let analyticsPluginKey = "awsPinpointAnalyticsPlugin"
     let concurrencyLimit = 50
     

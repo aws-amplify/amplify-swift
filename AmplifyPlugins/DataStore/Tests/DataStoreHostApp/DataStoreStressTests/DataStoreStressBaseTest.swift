@@ -17,13 +17,13 @@ import AWSAPIPlugin
 
 class DataStoreStressBaseTest: XCTestCase {
  
-    static let amplifyConfigurationFile = "testconfiguration/AWSDataStoreStressTests-amplifyconfiguration"
+    static let amplifyConfigurationFile = "testconfiguration/AWSAmplifyStressTests-amplifyconfiguration"
     let concurrencyLimit = 50
     let networkTimeout = TimeInterval(180)
     
     func setUp(withModels models: AmplifyModelRegistration, logLevel: LogLevel = .error) async {
+        
         continueAfterFailure = false
-        await Amplify.reset()
         Amplify.Logging.logLevel = logLevel
         
         do {
@@ -35,6 +35,10 @@ class DataStoreStressBaseTest: XCTestCase {
             XCTFail(String(describing: error))
             return
         }
+    }
+    
+    override func tearDown() async throws {
+        await Amplify.reset()
     }
     
     func stopDataStore() async throws {
@@ -70,6 +74,6 @@ class DataStoreStressBaseTest: XCTestCase {
 
         try await Amplify.DataStore.start()
 
-        await waitForExpectations(timeout: 100.0)
+        await waitForExpectations(timeout: networkTimeout)
     }
 }

@@ -15,7 +15,7 @@ final class GeoStressTests: XCTestCase {
     let searchText = "coffee shop"
     let coordinates = Geo.Coordinates(latitude: 39.7392, longitude: -104.9903)
     let concurrencyLimit = 50
-    let amplifyConfigurationFile = "testconfiguration/AWSGeoStressTests-amplifyconfiguration"
+    let amplifyConfigurationFile = "testconfiguration/AWSAmplifyStressTests-amplifyconfiguration"
 
     override func setUp() {
         continueAfterFailure = false

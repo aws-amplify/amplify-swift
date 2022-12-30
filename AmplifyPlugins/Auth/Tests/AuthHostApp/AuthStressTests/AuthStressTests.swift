@@ -10,7 +10,7 @@ import XCTest
 import AWSCognitoAuthPlugin
 import AWSPluginsCore
 
-final class AuthStressTests: AWSAuthBaseTest {
+final class AuthStressTests: AuthStressBaseTest {
 
     let concurrencyLimit = 50
     

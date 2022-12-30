@@ -13,7 +13,7 @@ import AWSCognitoAuthPlugin
 final class StorageStressTests: XCTestCase {
 
     static let logger = Amplify.Logging.logger(forCategory: "Storage", logLevel: .verbose)
-    static let amplifyConfiguration = "testconfiguration/AWSStorageStressTests-amplifyconfiguration"
+    static let amplifyConfiguration = "testconfiguration/AWSAmplifyStressTests-amplifyconfiguration"
     
     let smallDataObjectForStressTest = Data(repeating: 0xff, count: 1_024 * 1_024) // 1MB
     let largeDataObjectForStressTest = Data(repeating: 0xff, count: 1_024 * 1_024 * 100) // 100MB

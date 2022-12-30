@@ -82,7 +82,5 @@ Successfully added resource amplifyintegtest locally
 amplify push
 ```
 
-This will create a amplifyconfiguration.json file in your local, copy that file to `~/.aws-amplify/amplify-ios/testconfiguration/` and rename as `AWSAuthStressTests-amplifyconfiguration.json`.
+This will create a amplifyconfiguration.json file in your local, copy that file to `~/.aws-amplify/amplify-ios/testconfiguration/` and rename as `AWSAmplifyStressTests-amplifyconfiguration.json`.
 
-For Auth Device tests:
-Follow steps here (https://docs.amplify.aws/lib/auth/device_features/q/platform/ios/#configure-auth-category)[https://docs.amplify.aws/lib/auth/device_features/q/platform/ios/#configure-auth-category] and select "Always" for "Do you want to remember your user's devices?"
