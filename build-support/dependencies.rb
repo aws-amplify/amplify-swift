@@ -8,14 +8,15 @@ $AMPLIFY_RELEASE_TAG = "v#{$AMPLIFY_VERSION}"
 
 # AWS SDK version
 # http://guides.cocoapods.org/using/the-podfile.html#specifying-pod-versions
-$AWS_SDK_VERSION = '2.28.0'
+$AWS_SDK_VERSION = '2.29.1'
 $OPTIMISTIC_AWS_SDK_VERSION = "~> #{$AWS_SDK_VERSION}"
 
 # Include common tooling
 def include_build_tools!
   # Pin to 0.44.17 until we resolve closing braces
   pod 'SwiftFormat/CLI', '0.44.17'
-  pod 'SwiftLint'
+  # Pin to 0.49.1 until we update config and code
+  pod 'SwiftLint', '0.49.1'
 end
 
 # Include common test dependencies
