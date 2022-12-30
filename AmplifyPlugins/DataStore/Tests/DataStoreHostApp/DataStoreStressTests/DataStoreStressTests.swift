@@ -48,15 +48,12 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
             posts.append(post)
         }
         
-        let observeQuerySetup = asyncExpectation(description: "ObserveQuery setup done")
         let postsSyncedToCloud = asyncExpectation(description: "All posts saved and synced to cloud",
                                                   expectedFulfillmentCount: concurrencyLimit)
 
         let postsCopy = posts
+        let mutationEvents = Amplify.DataStore.observe(Post.self)
         Task {
-            var postsSyncedToCloudCount = 0
-            let mutationEvents = Amplify.DataStore.observe(Post.self)
-            await observeQuerySetup.fulfill()
             do {
                 for try await mutationEvent in mutationEvents {
                     guard postsCopy.contains(where: { $0.id == mutationEvent.modelId }) else {
@@ -65,7 +62,6 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
 
                     if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue,
                        mutationEvent.version == 1 {
-                        postsSyncedToCloudCount += 1
                         await postsSyncedToCloud.fulfill()
                     }
                 }
@@ -73,8 +69,6 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
                 XCTFail("Failed \(error)")
             }
         }
-        
-        await waitForExpectations([observeQuerySetup], timeout: networkTimeout)
         
         let capturedPosts = posts
 
@@ -176,11 +170,8 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
         let postsDeletedFromCloud = asyncExpectation(description: "All posts deleted and synced to cloud",
                                                      expectedFulfillmentCount: concurrencyLimit)
         
-        let observeQuerySetup = asyncExpectation(description: "ObserveQuery setup done")
+        let mutationEvents = Amplify.DataStore.observe(Post.self)
         Task {
-            var postsDeletedFromCloudCount = 0
-            let mutationEvents = Amplify.DataStore.observe(Post.self)
-            await observeQuerySetup.fulfill()
             do {
                 for try await mutationEvent in mutationEvents {
                     guard posts.contains(where: { $0.id == mutationEvent.modelId }) else {
@@ -192,7 +183,6 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
                         await postsDeletedLocally.fulfill()
                     } else if mutationEvent.mutationType == MutationEvent.MutationType.delete.rawValue,
                               mutationEvent.version == 2 {
-                        postsDeletedFromCloudCount += 1
                         await postsDeletedFromCloud.fulfill()
                     }
                 }
@@ -200,8 +190,6 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
                 XCTFail("Failed \(error)")
             }
         }
-        
-        await waitForExpectations([observeQuerySetup], timeout: networkTimeout)
         
         DispatchQueue.concurrentPerform(iterations: concurrencyLimit) { index in
             Task {
@@ -230,10 +218,8 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
                                                   expectedFulfillmentCount: concurrencyLimit)
         
         let postsCopy = posts
+        let mutationEvents = Amplify.DataStore.observe(Post.self)
         Task {
-            var postsSyncedToCloudCount = 0
-            let mutationEvents = Amplify.DataStore.observe(Post.self)
-            await observeQuerySetup.fulfill()
             do {
                 for try await mutationEvent in mutationEvents {
                     guard postsCopy.contains(where: { $0.id == mutationEvent.modelId }) else {
@@ -242,7 +228,6 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
                     
                     if mutationEvent.mutationType == MutationEvent.MutationType.create.rawValue,
                        mutationEvent.version == 1 {
-                        postsSyncedToCloudCount += 1
                         await postsSyncedToCloud.fulfill()
                     }
                 }
@@ -250,8 +235,6 @@ final class DataStoreStressTests: DataStoreStressBaseTest {
                 XCTFail("Failed \(error)")
             }
         }
-        
-        await waitForExpectations([observeQuerySetup], timeout: networkTimeout)
         
         let capturedPosts = posts
         
