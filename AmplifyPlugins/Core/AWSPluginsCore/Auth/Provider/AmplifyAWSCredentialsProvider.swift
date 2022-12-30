@@ -29,7 +29,7 @@ extension AWSCredentials {
         if let tempCredentials = self as? AWSTemporaryCredentials {
 
             let expirationTimeSinceNow = tempCredentials.expiration.timeIntervalSinceNow
-            let expirationTimeout = UInt64(clamping: expirationTimeSinceNow)
+            let expirationTimeout = UInt64(max(0, expirationTimeSinceNow))
 
             return AWSClientRuntime.AWSCredentials(
                 accessKey: tempCredentials.accessKeyId,
