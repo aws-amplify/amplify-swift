@@ -9,6 +9,7 @@ import Amplify
 import Foundation
 import AWSCognitoIdentityProvider
 import AWSCognitoIdentity
+import ClientRuntime
 
 struct InformSessionError: Action {
 
@@ -37,12 +38,33 @@ struct InformSessionError: Action {
     }
 
     func isNotAuthorizedError(_ error: Error) -> Bool {
+
+        if let sdkError = error as? SdkError<InitiateAuthOutputError>,
+           case .client(let clientError, _) = sdkError,
+           case .retryError(let retryError) = clientError,
+           let serviceError = retryError as? SdkError<InitiateAuthOutputError>,
+           case .service(let internalError, _) = serviceError
+        {
+            return isNotAuthorizedError(internalError)
+        }
+
+
+        if let sdkError = error as? SdkError<GetCredentialsForIdentityOutputError>,
+           case .client(let clientError, _) = sdkError,
+           case .retryError(let retryError) = clientError,
+           let serviceError = retryError as? SdkError<GetCredentialsForIdentityOutputError>,
+           case .service(let internalError, _) = serviceError
+        {
+            return isNotAuthorizedError(internalError)
+        }
+
         if let initiateAuthError = error as? InitiateAuthOutputError,
            case .notAuthorizedException = initiateAuthError {
             return true
         }
-        if let initiateAuthError = error as? GetCredentialsForIdentityOutputError,
-           case .notAuthorizedException = initiateAuthError {
+
+        if let credentialError = error as? GetCredentialsForIdentityOutputError,
+           case .notAuthorizedException = credentialError {
             return true
         }
         return false
