@@ -53,7 +53,7 @@ struct UserPoolSignInHelper {
     }
 
     private static func validateError(signInError: SignInError) throws -> AuthSignInResult {
-        if signInError.isUserUnConfirmed {
+        if signInError.isUserNotConfirmed {
             return AuthSignInResult(nextStep: .confirmSignUp(nil))
         } else if signInError.isResetPassword {
             return AuthSignInResult(nextStep: .resetPassword(nil))

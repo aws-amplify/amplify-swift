@@ -65,10 +65,8 @@ struct FetchAuthIdentityId: Action {
     }
 
     func isNotAuthorizedError(_ error: Error) -> Bool {
-        if case .client(let clientError, _) = error as? SdkError<GetIdOutputError>,
-           case .retryError(let serviceError) = clientError,
-           let sdkError = serviceError as? SdkError<GetIdOutputError>,
-           case .service(let getIdError, _ ) = sdkError,
+
+        if let getIdError: GetIdOutputError = error.internalAWSServiceError(),
            case .notAuthorizedException = getIdError {
             return true
         }
