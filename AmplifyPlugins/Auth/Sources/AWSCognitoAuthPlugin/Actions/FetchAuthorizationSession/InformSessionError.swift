@@ -9,7 +9,6 @@ import Amplify
 import Foundation
 import AWSCognitoIdentityProvider
 import AWSCognitoIdentity
-import ClientRuntime
 
 struct InformSessionError: Action {
 
