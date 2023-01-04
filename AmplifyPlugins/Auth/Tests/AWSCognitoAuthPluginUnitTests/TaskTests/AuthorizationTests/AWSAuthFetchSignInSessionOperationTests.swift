@@ -591,10 +591,10 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
     ///    - I invoke fetchAuthSession
     /// - Then:
     ///    - I should get an a valid session with the following details:
-    ///         - isSignedIn = true
-    ///         - aws credentails = unknown error
-    ///         - identity id = unknown error
-    ///         - cognito tokens = unknown error
+    ///         - isSignedIn = false
+    ///         - aws credentails = valid values
+    ///         - identity id = valid values
+    ///         - cognito tokens = .signedOut error
     ///
     func testSignOutSessionRefresh() async throws {
         let initialState = AuthState.configured(
@@ -675,9 +675,8 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
             XCTFail("Should return sessionExpired error")
             return
         }
-
         let identityIdResult = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
-        guard case .failure(let identityIdError) = identityIdResult,
+         guard case .failure(let identityIdError) = identityIdResult,
               case .sessionExpired = identityIdError else {
             XCTFail("Should return sessionExpired error")
             return
@@ -685,8 +684,64 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
 
         let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
         guard case .failure(let tokenError) = tokensResult,
-              case .sessionExpired = tokenError else {
+         case .sessionExpired = tokenError else {
             XCTFail("Should return sessionExpired error")
+             return
+        }
+    }
+
+    /// Test fetching auth session when a signIn is in progress
+    ///
+    /// - Given: Given an auth plugin with signingIn as the auth state
+    ///        Mock service will return valid AWS Credentials
+    /// - When:
+    ///    - I invoke fetchAuthSession
+    /// - Then:
+    ///    - I should get an a valid session with the following details:
+    ///         - isSignedIn = false
+    ///         - aws credentails = valid values
+    ///         - identity id = valid values
+    ///         - cognito tokens = .signedOut error
+    ///
+    func testFetchAuthSessionDuringSignIn() async throws {
+        let initialState = AuthState.configured(
+            AuthenticationState.signingIn(.testData),
+            AuthorizationState.signingIn)
+
+        let getId: MockIdentity.MockGetIdResponse = { _ in
+            return .init(identityId: "mockIdentityId")
+        }
+        let awsCredentials: MockIdentity.MockGetCredentialsResponse = { _ in
+            let credentials = CognitoIdentityClientTypes.Credentials(accessKeyId: "accessKey",
+                                                                     expiration: Date(),
+                                                                     secretKey: "secret",
+                                                                     sessionToken: "session")
+            return GetCredentialsForIdentityOutputResponse(credentials: credentials,
+                                                           identityId: "ss")
+        }
+        let plugin = configurePluginWith(
+            identityPool: { MockIdentity(mockGetIdResponse: getId,
+                                         mockGetCredentialsResponse: awsCredentials) },
+            initialState: initialState)
+
+        let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
+        XCTAssertFalse(session.isSignedIn)
+        let credentialsResult = (session as? AuthAWSCredentialsProvider)?.getAWSCredentials()
+        guard case .success = credentialsResult else {
+            XCTFail("Should return valid credentials")
+            return
+        }
+
+        let identityIdResult = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
+        guard case .success = identityIdResult else {
+            XCTFail("Should return identity id")
+            return
+        }
+
+        let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
+        guard case .failure(let tokenError) = tokensResult,
+              case .signedOut =  tokenError else {
+            XCTFail("Should return signedOut error")
             return
         }
     }

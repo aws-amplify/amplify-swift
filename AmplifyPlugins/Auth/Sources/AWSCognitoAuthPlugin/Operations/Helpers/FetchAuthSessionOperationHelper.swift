@@ -30,11 +30,20 @@ class FetchAuthSessionOperationHelper {
             let event = AuthorizationEvent(eventType: .fetchUnAuthSession)
             await authStateMachine.send(event)
             return try await listenForSession(authStateMachine: authStateMachine)
+
+        case .signingIn:
+            // Cancel the signIn flow and try to fetch unauth credentials
+            await waitForSignInCancel(authStateMachine: authStateMachine)
+            let event = AuthorizationEvent(eventType: .fetchUnAuthSession)
+            await authStateMachine.send(event)
+            return try await listenForSession(authStateMachine: authStateMachine)
+
         case .sessionEstablished(let credentials):
             return try await postAuthSessionEvent(
                 forCredential: credentials,
                 authStateMachine: authStateMachine,
                 forceRefresh: forceRefresh)
+
         case .error(let error):
             if case .sessionExpired = error {
                 let session = AuthCognitoSignedInSessionHelper.makeExpiredSignedInSession()
@@ -194,4 +203,20 @@ class FetchAuthSessionOperationHelper {
         return session
     }
 
+    private func waitForSignInCancel(authStateMachine: AuthStateMachine) async {
+        let event = AuthenticationEvent(eventType: .cancelSignIn)
+        await authStateMachine.send(event)
+        let stateSequences = await authStateMachine.listen()
+        for await state in stateSequences {
+            guard case .configured(let authenticationState, _) = state else {
+                continue
+            }
+
+            switch authenticationState {
+            case .signedOut:
+                return
+            default: continue
+            }
+        }
+    }
 }
