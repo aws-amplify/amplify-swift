@@ -32,11 +32,11 @@ public class RESTRequest {
                 headers: [String: String]? = nil,
                 queryParameters: [String: String]? = nil,
                 body: Data? = nil) {
-        if headers?["Cache-Control"] == nil {
-            self.headers = ["Cache-Control": "no-store"]
-        } else {
-            self.headers = headers
-        }
+        let inputHeaders = headers ?? [:]
+        self.headers = inputHeaders.merging(
+            ["Cache-Control": "no-store"],
+            uniquingKeysWith: { current, _ in current}
+        )
 
         self.apiName = apiName
         self.path = path
