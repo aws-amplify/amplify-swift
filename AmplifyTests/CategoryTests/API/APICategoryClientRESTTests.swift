@@ -54,6 +54,12 @@ class APICategoryClientRESTTests: XCTestCase {
         XCTAssertEqual(request.headers?["Cache-Control"], "private")
     }
 
+    func testCacheWithExistingValuesInRequest() {
+        let request = RESTRequest(apiName: "someapi", headers: ["somekey": "somevalue"])
+        XCTAssertEqual(request.headers?["Cache-Control"], "no-store")
+        XCTAssertEqual(request.headers?["somekey"], "somevalue")
+    }
+
     // MARK: - Utilities
 
     func makeAndAddMockPlugin() throws -> MockAPICategoryPlugin {
