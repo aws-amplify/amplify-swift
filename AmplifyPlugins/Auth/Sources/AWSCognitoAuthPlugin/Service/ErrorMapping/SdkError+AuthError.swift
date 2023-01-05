@@ -82,3 +82,51 @@ extension SdkError: AuthErrorConvertible {
     }
 
 }
+
+extension Error {
+    func internalAWSServiceError<E>() -> E? {
+        if let internalError = self as? E {
+            return internalError
+        }
+
+        if let sdkError = self as? SdkError<E> {
+            return sdkError.internalAWSServiceError()
+        }
+        return nil
+    }
+}
+
+extension SdkError {
+
+    func internalAWSServiceError<E>() -> E? {
+        switch self {
+
+        case .service(let error, _):
+            if let serviceError = error as? E {
+                return serviceError
+            }
+
+        case .client(let clientError, _):
+            return clientError.internalAWSServiceError()
+
+        default: break
+
+        }
+        return nil
+    }
+}
+
+extension ClientError {
+
+    func internalAWSServiceError<E>() -> E? {
+        switch self {
+        case .retryError(let retryError):
+            if let sdkError = retryError as? SdkError<E> {
+                return sdkError.internalAWSServiceError()
+            }
+
+        default: break
+        }
+        return nil
+    }
+}
