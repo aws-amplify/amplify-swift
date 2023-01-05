@@ -32,9 +32,13 @@ public class RESTRequest {
                 headers: [String: String]? = nil,
                 queryParameters: [String: String]? = nil,
                 body: Data? = nil) {
+        let inputHeaders = headers ?? [:]
+        self.headers = inputHeaders.merging(
+            ["Cache-Control": "no-store"],
+            uniquingKeysWith: { current, _ in current}
+        )
         self.apiName = apiName
         self.path = path
-        self.headers = headers
         self.queryParameters = queryParameters
         self.body = body
     }
