@@ -62,7 +62,7 @@ extension Model {
                 } else {
                     input.updateValue(nil, forKey: name)
                 }
-                
+
                 continue
             }
 
