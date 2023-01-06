@@ -85,6 +85,18 @@ public class AWSS3StorageUploadFileOperation: AmplifyInProcessReportingOperation
             return
         }
 
+        // If the file does NOT exist, a StorageError.localFileNotFound will be
+        // thrown by the S3 api in the AWS SDK. This check was added because the
+        // v1 version of the AWS SDK fails silently on access denied.
+        if FileManager.default.fileExists(atPath: request.local.path) {
+            guard FileManager.default.isReadableFile(atPath: request.local.path) else {
+                dispatch(StorageError.accessDenied("Access to local file denied: \(request.local.path)",
+                                                   "Please ensure that \(request.local) is readable"))
+                finish()
+                return
+            }
+        }
+
         let uploadSize: UInt64
         do {
             uploadSize = try StorageRequestUtils.getSize(request.local)
