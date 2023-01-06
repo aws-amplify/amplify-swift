@@ -9,7 +9,7 @@ permissions:
     contents: read 
 
 jobs:
-  prepare-for-scan:
+  fortify_scan:
     runs-on: macos-12
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -45,9 +45,8 @@ jobs:
 
       - name: Run Installer
         run: |
+          ls
           Fortify_SCA_and_Apps_22.1.1_osx_x64.app/Contents/MacOS/installbuilder.sh --mode unattended --installdir Fortify --InstallSamples 0  --fortify_license_path fortify.license --MigrateSCA 0
-          export PATH=~/amplify-swift/Fortify/bin:$PATH
-          echo "export PATH=~/amplify-swift/Fortify/bin:\$PATH" >> "$BASH_ENV"
           fortifyupdate -acceptKey
           sourceanalyzer -version
           
