@@ -1,0 +1,56 @@
+name: Fortify Scan
+on:
+  workflow_dispatch:
+  push:
+    branches: [phantum/automate_fortify_scan]
+
+permissions:
+    id-token: write
+    contents: read 
+
+jobs:
+  prepare-for-scan:
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          persist-credentials: false
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::579633542375:role/AmplifySwiftFortifyS3ReadOnly
+          role-session-name: aws-s3-session
+          aws-region: us-east-1
+      
+      - name: Make source directory
+        run: |
+          mkdir source
+          cp -r Amplify source
+          cp -r AmplifyPlugins source
+
+      - name:  Download Scripts
+        run: |
+          aws s3 cp s3://amplify-swift-fortify/fortify_scan.sh fortify_scan.sh
+
+      - name:  Download License
+        run: |
+          aws s3 cp s3://amplify-swift-fortify/fortify.license fortify.license
+
+      - name:  Download Installer
+        run: |
+          aws s3 cp s3://amplify-swift-fortify/Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz
+          tar -xvf Fortify_SCA_and_Apps_22.1.1_Mac.tar.gz
+          unzip Fortify_SCA_and_Apps_22.1.1_osx_x64.app.zip
+
+      - name: Run Installer
+        run: |
+          Fortify_SCA_and_Apps_22.1.1_osx_x64.app/Contents/MacOS/installbuilder.sh --mode unattended --installdir Fortify --InstallSamples 0  --fortify_license_path fortify.license --MigrateSCA 0
+          export PATH=~/amplify-swift/Fortify/bin:$PATH
+          echo "export PATH=~/amplify-swift/Fortify/bin:\$PATH" >> "$BASH_ENV"
+          fortifyupdate -acceptKey
+          sourceanalyzer -version
+          
+      - name: Scan
+        run: |
+          sh ./fortify_scan.sh source
