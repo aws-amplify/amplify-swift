@@ -70,9 +70,13 @@ extension SdkError: AuthErrorConvertible {
             if let authError = error as? AuthErrorConvertible {
                 return authError.authError
             } else {
-                return AuthError.service(error.localizedDescription,
-                                         "",
-                                         AWSCognitoAuthError.network)
+                return AuthError.service(
+                    error.localizedDescription,
+                    """
+                    Check your network connection, retry when the network is available.
+                    HTTP Response stauts code: \(String(describing: httpResponse?.statusCode))
+                    """,
+                    AWSCognitoAuthError.network)
 
             }
 
