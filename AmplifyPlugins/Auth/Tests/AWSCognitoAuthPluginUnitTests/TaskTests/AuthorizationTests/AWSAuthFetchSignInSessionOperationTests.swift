@@ -671,12 +671,12 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         let credentialsResult = (session as? AuthAWSCredentialsProvider)?.getAWSCredentials()
 
         guard case .failure(let error) = credentialsResult,
-                case .sessionExpired = error else {
+              case .sessionExpired = error else {
             XCTFail("Should return sessionExpired error")
             return
         }
         let identityIdResult = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
-         guard case .failure(let identityIdError) = identityIdResult,
+        guard case .failure(let identityIdError) = identityIdResult,
               case .sessionExpired = identityIdError else {
             XCTFail("Should return sessionExpired error")
             return
@@ -684,9 +684,9 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
 
         let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
         guard case .failure(let tokenError) = tokensResult,
-         case .sessionExpired = tokenError else {
+              case .sessionExpired = tokenError else {
             XCTFail("Should return sessionExpired error")
-             return
+            return
         }
     }
 
