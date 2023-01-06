@@ -112,10 +112,10 @@ extension Model {
                 // Check if it is a Model or json object.
                 if let associatedModelValue = value as? Model {
                     return associatedModelValue.identifier
-                } else if let associatedLazyModel = value as? (any LazyReferenceValue) {
+                } else if let associatedLazyModel = value as? (any _LazyReferenceValue) {
                     // The identifier (sometimes the FK), comes from the loaded model's identifier or
                     // from the not loaded identifier's stringValue (the value, or the formatted value for CPK)
-                    switch associatedLazyModel.state {
+                    switch associatedLazyModel._state {
                     case .notLoaded(let identifiers):
                         guard let identifiers = identifiers else {
                             return nil

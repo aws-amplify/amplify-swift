@@ -194,8 +194,8 @@ extension Model {
         } else if let optionalModel = value as? Model?,
                   let modelValue = optionalModel {
             return modelValue.identifier(schema: modelSchema).values
-        } else if let lazyModel = value as? (any LazyReferenceValue) {
-            switch lazyModel.state {
+        } else if let lazyModel = value as? (any _LazyReferenceValue) {
+            switch lazyModel._state {
             case .notLoaded(let identifiers):
                 if let identifiers = identifiers {
                     return identifiers.map { identifier in

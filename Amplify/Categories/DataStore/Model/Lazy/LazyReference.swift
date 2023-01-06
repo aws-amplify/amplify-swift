@@ -39,7 +39,7 @@ struct LazyReferenceModelIdentifier: ModelIdentifierProtocol {
 ///
 /// The default implementation `DefaultModelProvider` only handles in-memory data, therefore `get()` and
 /// `require()` will simply return the current `reference`.
-public class LazyReference<ModelType: Model>: Codable, LazyReferenceValue {
+public class LazyReference<ModelType: Model>: Codable, _LazyReferenceValue {
     
     /// Represents the data state of the `LazyModel`.
     enum LoadedState {
@@ -49,7 +49,8 @@ public class LazyReference<ModelType: Model>: Codable, LazyReferenceValue {
     
     var loadedState: LoadedState
     
-    public var state: LazyReferenceValueState {
+    @_spi(LazyReference)
+    public var _state: _LazyReferenceValueState {
         switch loadedState {
         case .notLoaded(let identifiers):
             return .notLoaded(identifiers: identifiers)
@@ -60,17 +61,6 @@ public class LazyReference<ModelType: Model>: Codable, LazyReferenceValue {
     
     /// The provider for fulfilling list behaviors
     let modelProvider: AnyModelProvider<ModelType>
-    
-    public var identifiers: [LazyReferenceIdentifier]? {
-        get {
-            switch loadedState {
-            case .notLoaded(let identifiers):
-                return identifiers
-            case .loaded:
-                return nil
-            }
-        }
-    }
     
     public init(modelProvider: AnyModelProvider<ModelType>) {
         self.modelProvider = modelProvider
@@ -99,22 +89,22 @@ public class LazyReference<ModelType: Model>: Codable, LazyReferenceValue {
     /// Decodable implementation is delegated to the underlying `self.reference`.
     required convenience public init(from decoder: Decoder) throws {
         for modelDecoder in ModelProviderRegistry.decoders.get() {
-            if let modelProvider = modelDecoder.shouldDecode(modelType: ModelType.self, decoder: decoder) {
+            if let modelProvider = modelDecoder.decode(modelType: ModelType.self, decoder: decoder) {
                 self.init(modelProvider: modelProvider)
                 return
             }
         }
         let json = try JSONValue(from: decoder)
-        if case .object = json {
-            do {
-                let element = try ModelType(from: decoder)
+        switch json {
+        case .object:
+            if let element = try? ModelType(from: decoder) {
                 self.init(element)
-            } catch {
-                self.init(identifiers: nil)
+                return
             }
-        } else {
-            self.init(identifiers: nil)
+        default:
+            break
         }
+        self.init(identifiers: nil)
     }
     
     /// Encodable implementation is delegated to the underlying `self.reference`.

@@ -28,7 +28,7 @@ public struct AppSyncModelDecoder: ModelProviderDecoder {
         }
     }
     
-    public static func shouldDecode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AnyModelProvider<ModelType>? {
+    public static func decode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AnyModelProvider<ModelType>? {
         if let metadata = try? Metadata(from: decoder) {
             if metadata.source == AppSyncSource {
                 log.verbose("Creating not loaded model \(modelType.modelName) with metadata \(metadata)")

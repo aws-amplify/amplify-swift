@@ -51,7 +51,7 @@ extension ModelSchema {
     /// The list of fields formatted for GraphQL usage.
     var graphQLFields: [ModelField] {
         sortedFields.filter { field in
-            !field.hasAssociation || field.isBelongsToOrHasOne
+            !field.hasAssociation || field._isBelongsToOrHasOne
         }
     }
 }

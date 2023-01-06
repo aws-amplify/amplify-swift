@@ -24,7 +24,7 @@ public struct DataStoreModelDecoder: ModelProviderDecoder {
         return ["identifier": identifier, "source": DataStoreSource]
     }
     
-    public static func shouldDecode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AnyModelProvider<ModelType>? {
+    public static func decode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AnyModelProvider<ModelType>? {
         if let metadata = try? DataStoreModelDecoder.Metadata(from: decoder) {
             if metadata.source == DataStoreSource {
                 return DataStoreModelProvider<ModelType>(metadata: metadata).eraseToAnyModelProvider()

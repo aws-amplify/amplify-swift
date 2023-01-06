@@ -227,20 +227,12 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
         }
         let defaultFieldName = modelSchema.name.camelCased() + field.pascalCased() + "Id"
         switch modelField.association {
-        case .belongsTo(_, let targetNames):
-            if targetNames.count > 1 {
-                return targetNames
-            } else {
-                let targetName = targetNames.first ?? defaultFieldName
-                return [targetName]
+        case .belongsTo(_, let targetNames), .hasOne(_, let targetNames):
+            guard !targetNames.isEmpty else {
+                return [defaultFieldName]
+                
             }
-        case .hasOne(_, let targetNames):
-            if targetNames.count > 1 {
-                return targetNames
-            } else {
-                let targetName = targetNames.first ?? defaultFieldName
-                return [targetName]
-            }
+            return targetNames
         default:
             return [field]
         }

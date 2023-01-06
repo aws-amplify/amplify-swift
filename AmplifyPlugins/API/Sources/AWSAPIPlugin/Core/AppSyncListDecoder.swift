@@ -22,7 +22,7 @@ public struct AppSyncListDecoder: ModelListDecoder {
     
     /// Used by the custom decoder implemented in the `List` type to detect if the payload can be
     /// decoded to an AppSyncListProvider.
-    public static func shouldDecode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AnyModelListProvider<ModelType>? {
+    public static func decode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AnyModelListProvider<ModelType>? {
         self.shouldDecodeToAppSyncListProvider(modelType: modelType, decoder: decoder)?.eraseToAnyModelListProvider()
     }
     

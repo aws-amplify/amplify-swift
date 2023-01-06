@@ -21,7 +21,7 @@ public struct DataStoreListDecoder: ModelListDecoder {
         ]
     }
     
-    public static func shouldDecode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AnyModelListProvider<ModelType>? {
+    public static func decode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AnyModelListProvider<ModelType>? {
         shouldDecodeToDataStoreListProvider(modelType: modelType, decoder: decoder)?.eraseToAnyModelListProvider()
     }
     

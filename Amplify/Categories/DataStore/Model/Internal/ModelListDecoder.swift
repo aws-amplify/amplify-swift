@@ -36,5 +36,5 @@ extension ModelListDecoderRegistry {
 /// application making any change to these `public` types should be backward compatible, otherwise it will be a breaking
 /// change.
 public protocol ModelListDecoder {
-    static func shouldDecode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AnyModelListProvider<ModelType>?
+    static func decode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AnyModelListProvider<ModelType>?
 }

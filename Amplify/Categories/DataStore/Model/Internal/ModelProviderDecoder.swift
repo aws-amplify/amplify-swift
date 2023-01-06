@@ -15,7 +15,7 @@ import Foundation
 /// application making any change to these `public` types should be backward compatible, otherwise it will be a breaking
 /// change.
 public struct ModelProviderRegistry {
-    public static var decoders = AtomicValue(initialValue: [ModelProviderDecoder.Type]())
+    static var decoders = AtomicValue(initialValue: [ModelProviderDecoder.Type]())
 
     /// Register a decoder during plugin configuration time, to allow runtime retrievals of model providers.
     public static func registerDecoder(_ decoder: ModelProviderDecoder.Type) {
@@ -36,5 +36,5 @@ extension ModelProviderRegistry {
 /// application making any change to these `public` types should be backward compatible, otherwise it will be a breaking
 /// change.
 public protocol ModelProviderDecoder {
-    static func shouldDecode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AnyModelProvider<ModelType>?
+    static func decode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AnyModelProvider<ModelType>?
 }

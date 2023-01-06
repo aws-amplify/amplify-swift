@@ -230,7 +230,7 @@ extension ModelField {
     ///   directly by host applications. The behavior of this may change without warning. Though it is not used by host
     ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
     ///   breaking change.
-    public var isBelongsToOrHasOne: Bool {
+    public var _isBelongsToOrHasOne: Bool {
         switch association {
         case .belongsTo, .hasOne:
             return true

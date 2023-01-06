@@ -48,12 +48,12 @@ extension SelectionSet {
                 let child = SelectionSet(value: .init(name: field.name, fieldType: .embedded))
                 child.withEmbeddableFields(embeddedTypeSchema.sortedFields)
                 self.addChild(settingParentOf: child)
-            } else if field.isBelongsToOrHasOne,
+            } else if field._isBelongsToOrHasOne,
                       let associatedModelName = field.associatedModelName,
                       let schema = ModelRegistry.modelSchema(from: associatedModelName) {
                 if recursive {
                     var recursive = recursive
-                    if field.isBelongsToOrHasOne {
+                    if field._isBelongsToOrHasOne {
                         recursive = false
                     }
                     
