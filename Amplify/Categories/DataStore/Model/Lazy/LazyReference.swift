@@ -157,16 +157,13 @@ public class LazyReference<ModelType: Model>: Codable, LazyReferenceValue {
         switch loadedState {
         case .notLoaded:
             guard let element = try await modelProvider.load() else {
-                // TODO: based on PR review, we may change all CoreError's to DataError's.
-                throw CoreError.operation("Expected required element not found", "", nil)
+                throw CoreError.clientValidation("Data is required but underlying data source successfully loaded no data. ", "")
             }
             self.loadedState = .loaded(element)
             return element
         case .loaded(let element):
             guard let element = element else {
-                // TODO: based on PR review, we may change all CoreError's to DataError's.
-                // throw CoreError.operation("Expected required element not found", "", nil)
-                throw DataError.dataUnavailable
+                throw CoreError.clientValidation("Data is required but containing LazyReference is loaded with no data.", "")
             }
             return element
         }

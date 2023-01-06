@@ -40,29 +40,15 @@ public class AppSyncModelProvider<ModelType: Model>: ModelProvider {
             let request = GraphQLRequest<ModelType?>.getRequest(ModelType.self,
                                                                 byIdentifiers: identifiers,
                                                                 apiName: apiName)
-            do {
-                log.verbose("Loading \(ModelType.modelName) with \(identifiers)")
-                let graphQLResponse = try await Amplify.API.query(request: request)
-                switch graphQLResponse {
-                case .success(let model):
-                    self.loadedState = .loaded(model: model)
-                    return model
-                case .failure(let graphQLError):
-                    self.log.error(error: graphQLError)
-                    // TODO: May want to return DataError instead.
-                    throw CoreError.operation(
-                        "The AppSync response returned successfully with GraphQL errors.",
-                        "Check the underlying error for the failed GraphQL response.",
-                        graphQLError)
-                }
-            } catch let apiError as APIError {
-                self.log.error(error: apiError)
-                // TODO: May want to return DataError instead.
-                throw CoreError.operation("The AppSync request failed",
-                                          "See underlying `APIError` for more details.",
-                                          apiError)
-            } catch {
-                throw error
+            log.verbose("Loading \(ModelType.modelName) with \(identifiers)")
+            let graphQLResponse = try await Amplify.API.query(request: request)
+            switch graphQLResponse {
+            case .success(let model):
+                self.loadedState = .loaded(model: model)
+                return model
+            case .failure(let graphQLError):
+                self.log.error(error: graphQLError)
+                throw graphQLError
             }
         case .loaded(let element):
             return element
