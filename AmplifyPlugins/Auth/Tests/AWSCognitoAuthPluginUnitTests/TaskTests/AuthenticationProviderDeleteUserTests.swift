@@ -12,10 +12,103 @@ import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
 import AWSCognitoIdentityProvider
+import ClientRuntime
+import AwsCommonRuntimeKit
 
 class AuthenticationProviderDeleteUserTests: BasePluginTest {
 
     func testDeleteUserSuccess() async {
+        mockIdentityProvider = MockIdentityProvider(
+            mockRevokeTokenResponse: { _ in
+                try RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+            }, mockGlobalSignOutResponse: { _ in
+                try GlobalSignOutOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+            },
+            mockDeleteUserOutputResponse: { _ in
+                try DeleteUserOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+            }
+        )
+        do {
+            try await plugin.deleteUser()
+            print("Delete user success")
+        } catch {
+            XCTFail("Received failure with error \(error)")
+        }
+    }
+
+
+    /// Test a deleteUser with network error from service
+    ///
+    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    ///   network error
+    ///
+    /// - When:
+    ///    - I invoke deleteUser
+    /// - Then:
+    ///    - I should get a .service error with .network as underlying error
+    ///
+    func testOfflineDeleteUser() async {
+        mockIdentityProvider = MockIdentityProvider(
+            mockRevokeTokenResponse: { _ in
+                try RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+            }, mockGlobalSignOutResponse: { _ in
+                try GlobalSignOutOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+            },
+            mockDeleteUserOutputResponse: { _ in
+                let crtError = ClientRuntime.ClientError.retryError(
+                    CRTError.crtError(
+                        AWSError(errorCode: 1059)))
+                throw SdkError<DeleteUserOutputError>.client(crtError)
+            }
+        )
+        do {
+            try await plugin.deleteUser()
+            XCTFail("Should not get success")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error,
+                  case .network = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should produce network error instead of \(error)")
+                return
+            }
+        }
+    }
+
+    /// Test a deleteUser with network error from service and retry with success on no network error
+    ///
+    /// - Given: Given an auth plugin with mocked service. Mocked service should mock a
+    ///   network error for the first call and mock an actual result on the second call
+    ///
+    /// - When:
+    ///    - I invoke deleteUser and retry it
+    /// - Then:
+    ///    - I should get a .service error with .network as underlying error for the first call
+    ///    - I should get a valid response for the second call
+    ///
+    func testOfflineDeleteUserAndRetry() async {
+        mockIdentityProvider = MockIdentityProvider(
+            mockRevokeTokenResponse: { _ in
+                try RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+            }, mockGlobalSignOutResponse: { _ in
+                try GlobalSignOutOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
+            },
+            mockDeleteUserOutputResponse: { _ in
+                let crtError = ClientRuntime.ClientError.retryError(
+                    CRTError.crtError(
+                        AWSError(errorCode: 1059)))
+                throw SdkError<DeleteUserOutputError>.client(crtError)
+            }
+        )
+        do {
+            try await plugin.deleteUser()
+            XCTFail("Should not get success")
+        } catch {
+            guard case AuthError.service(_, _, let underlyingError) = error,
+                  case .network = (underlyingError as? AWSCognitoAuthError) else {
+                XCTFail("Should produce network error instead of \(error)")
+                return
+            }
+        }
+
         mockIdentityProvider = MockIdentityProvider(
             mockRevokeTokenResponse: { _ in
                 try RevokeTokenOutputResponse(httpResponse: .init(body: .empty, statusCode: .ok))
