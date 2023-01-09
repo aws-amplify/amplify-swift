@@ -1,0 +1,271 @@
+//
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+import Foundation
+import Combine
+import XCTest
+
+@testable import Amplify
+import AWSPluginsCore
+
+class AWSDataStoreLazyLoadProjectTeam5Tests: AWSDataStoreLazyLoadBaseTest {
+    
+    func testStart() async throws {
+        await setup(withModels: ProjectTeam5Models())
+        try await startAndWaitForReady()
+        printDBPath()
+    }
+    
+    func testAPISyncQuery() async throws {
+        await setupAPIOnly(withModels: ProjectTeam5Models())
+    
+        // The selection set of project should include "hasOne" team, and no further
+        let projectRequest = GraphQLRequest<SyncQueryResult>.syncQuery(modelType: Project.self)
+        let projectDocument = """
+        query SyncProject5s($limit: Int) {
+          syncProject5s(limit: $limit) {
+            items {
+              projectId
+              name
+              createdAt
+              teamId
+              teamName
+              updatedAt
+              team {
+                teamId
+                name
+                __typename
+                _deleted
+              }
+              __typename
+              _version
+              _deleted
+              _lastChangedAt
+            }
+            nextToken
+            startedAt
+          }
+        }
+        """
+        XCTAssertEqual(projectRequest.document, projectDocument)
+        
+        // In this "Explicit bi-directional Has One", team "belongsTo" so it should include the project.
+        let teamRequest = GraphQLRequest<SyncQueryResult>.syncQuery(modelType: Team.self)
+        let teamDocument = """
+        query SyncTeam5s($limit: Int) {
+          syncTeam5s(limit: $limit) {
+            items {
+              teamId
+              name
+              createdAt
+              updatedAt
+              project {
+                projectId
+                name
+                __typename
+                _deleted
+              }
+              __typename
+              _version
+              _deleted
+              _lastChangedAt
+            }
+            nextToken
+            startedAt
+          }
+        }
+        """
+        XCTAssertEqual(teamRequest.document, teamDocument)
+        // Making the actual requests and ensuring they can decode to the Model types.
+        _ = try await Amplify.API.query(request: projectRequest)
+        _ = try await Amplify.API.query(request: teamRequest)
+    }
+    
+    func testSaveTeam() async throws {
+        await setup(withModels: ProjectTeam5Models())
+        let team = Team(teamId: UUID().uuidString, name: "name")
+        let savedTeam = try await saveAndWaitForSync(team)
+        try await assertModelExists(savedTeam)
+    }
+    
+    func testSaveProject() async throws {
+        await setup(withModels: ProjectTeam5Models())
+        let project = Project(projectId: UUID().uuidString,
+                              name: "name")
+        let savedProject = try await saveAndWaitForSync(project)
+        try await assertModelExists(savedProject)
+        assertProjectDoesNotContainTeam(savedProject)
+    }
+    
+    func testSaveProjectWithTeam() async throws {
+        await setup(withModels: ProjectTeam5Models())
+        let team = Team(teamId: UUID().uuidString, name: "name")
+        let savedTeam = try await saveAndWaitForSync(team)
+        
+        // Project initializer variation #1 (pass both team reference and fields in)
+        let project = Project(projectId: UUID().uuidString,
+                              name: "name",
+                              team: team,
+                              teamId: team.teamId,
+                              teamName: team.name)
+        let savedProject = try await saveAndWaitForSync(project)
+        let queriedProject = try await query(for: savedProject)
+        assertProject(queriedProject, hasTeam: savedTeam)
+        
+        // Project initializer variation #2 (pass only team reference)
+        let project2 = Project(projectId: UUID().uuidString,
+                               name: "name",
+                               team: team)
+        let savedProject2 = try await saveAndWaitForSync(project2)
+        let queriedProject2 = try await query(for: savedProject2)
+        assertProjectDoesNotContainTeam(queriedProject2)
+        
+        // Project initializer variation #3 (pass fields in)
+        let project3 = Project(projectId: UUID().uuidString,
+                               name: "name",
+                               teamId: team.teamId,
+                               teamName: team.name)
+        let savedProject3 = try await saveAndWaitForSync(project3)
+        let queriedProject3 = try await query(for: savedProject3)
+        assertProject(queriedProject3, hasTeam: savedTeam)
+    }
+    
+    // One-to-One relationships do not create a foreign key for the Team or Project table
+    // So the LazyModel does not have the FK value to be instantiated as metadata for lazy loading.
+    // We only assert the FK fields on the Project exist and are equal to the Team's PK.
+    func assertProject(_ project: Project, hasTeam team: Team) {
+        XCTAssertEqual(project.teamId, team.teamId)
+        XCTAssertEqual(project.teamName, team.name)
+    }
+    
+    func assertProjectDoesNotContainTeam(_ project: Project) {
+        XCTAssertNil(project.teamId)
+        XCTAssertNil(project.teamName)
+    }
+    
+    func testSaveProjectWithTeamThenUpdate() async throws {
+        await setup(withModels: ProjectTeam5Models())
+        let team = Team(teamId: UUID().uuidString, name: "name")
+        let savedTeam = try await saveAndWaitForSync(team)
+    
+        let project = initializeProjectWithTeam(team)
+        let savedProject = try await saveAndWaitForSync(project)
+        assertProject(savedProject, hasTeam: savedTeam)
+        let queriedProject = try await query(for: savedProject)
+        assertProject(queriedProject, hasTeam: savedTeam)
+        let updatedProject = try await saveAndWaitForSync(project, assertVersion: 2)
+        assertProject(updatedProject, hasTeam: savedTeam)
+    }
+    
+    func testSaveProjectWithoutTeamUpdateProjectWithTeam() async throws {
+        await setup(withModels: ProjectTeam5Models())
+        let project = Project(projectId: UUID().uuidString, name: "name")
+        let savedProject = try await saveAndWaitForSync(project)
+        assertProjectDoesNotContainTeam(savedProject)
+        
+        let team = Team(teamId: UUID().uuidString, name: "name")
+        let savedTeam = try await saveAndWaitForSync(team)
+        var queriedProject = try await query(for: savedProject)
+        queriedProject.teamId = team.teamId
+        queriedProject.teamName = team.name
+        let savedProjectWithNewTeam = try await saveAndWaitForSync(queriedProject, assertVersion: 2)
+        assertProject(savedProjectWithNewTeam, hasTeam: savedTeam)
+    }
+    
+    func testSaveTeamSaveProjectWithTeamUpdateProjectToNoTeam() async throws {
+        await setup(withModels: ProjectTeam5Models())
+        let team = Team(teamId: UUID().uuidString, name: "name")
+        let savedTeam = try await saveAndWaitForSync(team)
+        let project = initializeProjectWithTeam(team)
+        let savedProject = try await saveAndWaitForSync(project)
+        var queriedProject = try await query(for: savedProject)
+        assertProject(queriedProject, hasTeam: savedTeam)
+        queriedProject.teamId = nil
+        queriedProject.teamName = nil
+        let savedProjectWithNoTeam = try await saveAndWaitForSync(queriedProject, assertVersion: 2)
+        assertProjectDoesNotContainTeam(savedProjectWithNoTeam)
+    }
+    
+    func testSaveProjectWithTeamUpdateProjectToNewTeam() async throws {
+        await setup(withModels: ProjectTeam5Models())
+        let team = Team(teamId: UUID().uuidString, name: "name")
+        let savedTeam = try await saveAndWaitForSync(team)
+        let project = initializeProjectWithTeam(team)
+        let savedProject = try await saveAndWaitForSync(project)
+        let newTeam = Team(teamId: UUID().uuidString, name: "name")
+        let savedNewTeam = try await saveAndWaitForSync(newTeam)
+        var queriedProject = try await query(for: savedProject)
+        assertProject(queriedProject, hasTeam: savedTeam)
+        queriedProject.teamId = newTeam.teamId
+        queriedProject.teamName = newTeam.name
+        let savedProjectWithNewTeam = try await saveAndWaitForSync(queriedProject, assertVersion: 2)
+        assertProject(queriedProject, hasTeam: savedNewTeam)
+    }
+    
+    func testDeleteTeam() async throws {
+        await setup(withModels: ProjectTeam5Models())
+        let team = Team(teamId: UUID().uuidString, name: "name")
+        let savedTeam = try await saveAndWaitForSync(team)
+        try await assertModelExists(savedTeam)
+        try await deleteAndWaitForSync(savedTeam)
+        try await assertModelDoesNotExist(savedTeam)
+    }
+    
+    func testDeleteProject() async throws {
+        await setup(withModels: ProjectTeam5Models())
+        let project = Project(projectId: UUID().uuidString, name: "name")
+        let savedProject = try await saveAndWaitForSync(project)
+        try await assertModelExists(savedProject)
+        try await deleteAndWaitForSync(savedProject)
+        try await assertModelDoesNotExist(savedProject)
+    }
+    
+    func testDeleteProjectWithTeam() async throws {
+        await setup(withModels: ProjectTeam5Models())
+        let team = Team(teamId: UUID().uuidString, name: "name")
+        let savedTeam = try await saveAndWaitForSync(team)
+        let project = Project(projectId: UUID().uuidString,
+                              name: "name",
+                              team: team,
+                              teamId: team.teamId,
+                              teamName: team.name)
+        let savedProject = try await saveAndWaitForSync(project)
+        
+        try await assertModelExists(savedProject)
+        try await assertModelExists(savedTeam)
+        
+        try await deleteAndWaitForSync(savedProject)
+        
+        try await assertModelDoesNotExist(savedProject)
+        try await assertModelExists(savedTeam)
+        
+        try await deleteAndWaitForSync(savedTeam)
+        try await assertModelDoesNotExist(savedTeam)
+    }
+}
+
+extension AWSDataStoreLazyLoadProjectTeam5Tests {
+    
+    typealias Project = Project5
+    typealias Team = Team5
+    
+    struct ProjectTeam5Models: AmplifyModelRegistration {
+        public let version: String = "version"
+        func registerModels(registry: ModelRegistry.Type) {
+            ModelRegistry.register(modelType: Project5.self)
+            ModelRegistry.register(modelType: Team5.self)
+        }
+    }
+    
+    func initializeProjectWithTeam(_ team: Team) -> Project {
+        return Project(projectId: UUID().uuidString,
+                       name: "name",
+                       team: team,
+                       teamId: team.teamId,
+                       teamName: team.name)
+    }
+}

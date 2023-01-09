@@ -162,7 +162,7 @@ class GraphQLConnectionScenario2Tests: XCTestCase {
         }
         var results: List<Project2>?
         let predicate = Project2.keys.teamID.eq(team.id)
-        let result = try await Amplify.API.query(request: .list(Project2.self, where: predicate, limit: 1))
+        let result = try await Amplify.API.query(request: .list(Project2.self, where: predicate, limit: 100))
         guard case .success(let projects) = result else {
             XCTFail("Missing Successful response")
             return

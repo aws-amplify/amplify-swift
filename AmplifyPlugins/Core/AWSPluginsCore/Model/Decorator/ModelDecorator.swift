@@ -14,9 +14,11 @@ import Amplify
 public struct ModelDecorator: ModelBasedGraphQLDocumentDecorator {
 
     private let model: Model
-
-    public init(model: Model) {
+    private let mutationType: GraphQLMutationType
+    
+    public init(model: Model, mutationType: GraphQLMutationType) {
         self.model = model
+        self.mutationType = mutationType
     }
 
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
@@ -27,7 +29,7 @@ public struct ModelDecorator: ModelBasedGraphQLDocumentDecorator {
     public func decorate(_ document: SingleDirectiveGraphQLDocument,
                          modelSchema: ModelSchema) -> SingleDirectiveGraphQLDocument {
         var inputs = document.inputs
-        var graphQLInput = model.graphQLInputForMutation(modelSchema)
+        var graphQLInput = model.graphQLInputForMutation(modelSchema, mutationType: mutationType)
 
         if !modelSchema.authRules.isEmpty {
             modelSchema.authRules.forEach { authRule in

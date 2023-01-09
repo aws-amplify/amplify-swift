@@ -1,8 +1,8 @@
 //
-//  ContentView.swift
-//  DataStoreHostApp
+// Copyright Amazon.com Inc. or its affiliates.
+// All Rights Reserved.
 //
-//  Created by Law, Michael on 8/4/22.
+// SPDX-License-Identifier: Apache-2.0
 //
 
 import SwiftUI

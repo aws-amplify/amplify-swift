@@ -37,7 +37,7 @@ class ListTests: BaseDataStoreTests {
             XCTAssertEqual(comments.count, 2)
             expect.fulfill()
         }
-        
+
         do {
             let result = try await Amplify.DataStore.query(Post.self, byId: postId)
             if let post = result, let comments = post.comments {
@@ -48,7 +48,7 @@ class ListTests: BaseDataStoreTests {
         } catch {
             XCTFail("\(error)")
         }
-    
+
         await waitForExpectations(timeout: 1)
     }
 

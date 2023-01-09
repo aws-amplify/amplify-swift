@@ -18,24 +18,11 @@ import Combine
 /// of the associated `id` and `field` and fetches the associated data on demand.
 public class DataStoreListProvider<Element: Model>: ModelListProvider {
 
-    /// The current state of lazily loaded list
-    enum LoadedState {
-        /// If the list represents an association between two models, the `associatedId` will
-        /// hold the information necessary to query the associated elements (e.g. comments of a post)
-        ///
-        /// The associatedField represents the field to which the owner of the `List` is linked to.
-        /// For example, if `Post.comments` is associated with `Comment.post` the `List<Comment>`
-        /// of `Post` will have a reference to the `post` field in `Comment`.
-        case notLoaded(associatedId: String, associatedField: String)
+    var loadedState: ModelListProviderState<Element>
 
-        case loaded([Element])
-    }
-
-    var loadedState: LoadedState
-
-    init(associatedId: String,
+    init(associatedIdentifiers: [String],
          associatedField: String) {
-        self.loadedState = .notLoaded(associatedId: associatedId,
+        self.loadedState = .notLoaded(associatedIdentifiers: associatedIdentifiers,
                                       associatedField: associatedField)
     }
 
@@ -45,8 +32,8 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
     
     public func getState() -> ModelListProviderState<Element> {
         switch loadedState {
-        case .notLoaded:
-            return .notLoaded
+        case .notLoaded(let associatedIdentifiers, let associatedField):
+            return .notLoaded(associatedIdentifiers: associatedIdentifiers, associatedField: associatedField)
         case .loaded(let elements):
             return .loaded(elements)
         }
@@ -56,14 +43,19 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
         switch loadedState {
         case .loaded(let elements):
             return elements
-        case .notLoaded(let associatedId, let associatedField):
+        case .notLoaded(let associatedIdentifiers, let associatedField):
+            guard let associatedId = associatedIdentifiers.first else {
+                throw CoreError.listOperation("Unexpected identifiers.",
+                                              "See underlying DataStoreError for more details.", nil)
+            }
+            self.log.verbose("Loading List of \(Element.schema.name) by \(associatedField) == \(associatedId) ")
             let predicate: QueryPredicate = field(associatedField) == associatedId
             do {
                 let elements = try await Amplify.DataStore.query(Element.self, where: predicate)
                 self.loadedState = .loaded(elements)
                 return elements
             } catch let error as DataStoreError {
-                Amplify.DataStore.log.error(error: error)
+                self.log.error(error: error)
                 throw CoreError.listOperation("Failed to Query DataStore.",
                                               "See underlying DataStoreError for more details.",
                                               error)
@@ -84,3 +76,5 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
                                          nil)
     }
 }
+
+extension DataStoreListProvider: DefaultLogger { }

@@ -11,13 +11,16 @@ import Foundation
 public struct Book: Model {
 
     public let id: String
+    public let title: String
 
     // hasMany(associatedWith: "book")
     public var authors: List<BookAuthor>
 
     public init(id: String = UUID().uuidString,
+                title: String,
                 authors: List<BookAuthor> = []) {
         self.id = id
+        self.title = title
         self.authors = authors
     }
 }

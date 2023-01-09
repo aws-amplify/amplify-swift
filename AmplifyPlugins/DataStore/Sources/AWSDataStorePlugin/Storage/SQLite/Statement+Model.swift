@@ -41,7 +41,8 @@ protocol StatementModelConvertible {
     /// - Returns: an array of `Model` of the specified type
     func convert<M: Model>(to modelType: M.Type,
                            withSchema modelSchema: ModelSchema,
-                           using statement: SelectStatement) throws -> [M]
+                           using statement: SelectStatement,
+                           eagerLoad: Bool) throws -> [M]
 
 }
 
@@ -52,44 +53,55 @@ extension Statement: StatementModelConvertible {
         Amplify.Logging.logger(forCategory: .dataStore)
     }
 
+    
     func convert<M: Model>(to modelType: M.Type,
                            withSchema modelSchema: ModelSchema,
-                           using statement: SelectStatement) throws -> [M] {
+                           using statement: SelectStatement,
+                           eagerLoad: Bool = true) throws -> [M] {
+        let elements: [ModelValues] = try self.convertToModelValues(to: modelType,
+                                                                    withSchema: modelSchema,
+                                                                    using: statement,
+                                                                    eagerLoad: eagerLoad)
+        let values: ModelValues = ["elements": elements]
+        let result: StatementResult<M> = try StatementResult.from(dictionary: values)
+        return result.elements
+    }
+    
+    func convertToModelValues<M: Model>(to modelType: M.Type,
+                                        withSchema modelSchema: ModelSchema,
+                                        using statement: SelectStatement,
+                                        eagerLoad: Bool = true) throws -> [ModelValues] {
         var elements: [ModelValues] = []
 
         // parse each row of the result
         let iter = makeIterator()
         while let row = try iter.failableNext() {
-            let modelDictionary = try convert(row: row, withSchema: modelSchema, using: statement)
+            let modelDictionary = try convert(row: row, withSchema: modelSchema, using: statement, eagerLoad: eagerLoad)
             elements.append(modelDictionary)
         }
-
-        let values: ModelValues = ["elements": elements]
-        let result: StatementResult<M> = try StatementResult.from(dictionary: values)
-        return result.elements
+        return elements
     }
-
+    
     func convert(row: Element,
                  withSchema modelSchema: ModelSchema,
-                 using statement: SelectStatement) throws -> ModelValues {
+                 using statement: SelectStatement,
+                 eagerLoad: Bool = true) throws -> ModelValues {
         let columnMapping = statement.metadata.columnMapping
         let modelDictionary = ([:] as ModelValues).mutableCopy()
         var skipColumns = Set<String>()
+        var foreignKeyValues = [(String, Binding?)]()
         for (index, value) in row.enumerated() {
             let column = columnNames[index]
             guard let (schema, field) = columnMapping[column] else {
-                logger.debug("""
-                A column named \(column) was found in the result set but no field on
-                \(modelSchema.name) could be found with that name and it will be ignored.
-                """)
+                logger.debug("[LazyLoad] Foreign key `\(column)` was found in the SQL result set with value: \(value)")
+                foreignKeyValues.append((column, value))
                 continue
             }
-
+            
             let modelValue = try SQLiteModelValueConverter.convertToSource(
                 from: value,
                 fieldType: field.type
             )
-
             // Check if the value for the primary key is `nil`. This is when an associated model does not exist.
             // To create a decodable `modelDictionary` that can be decoded to the Model types, the entire
             // object at this particular key should be set to `nil`. The following code does that by dropping the last
@@ -132,8 +144,8 @@ extension Statement: StatementModelConvertible {
                 let prefix = column.replacingOccurrences(of: field.name, with: "")
                 associations.forEach { association in
                     let associatedField = association.associatedField?.name
-                    let lazyList = List<AnyModel>.lazyInit(associatedId: id,
-                                                           associatedWith: associatedField)
+                    let lazyList = DataStoreListDecoder.lazyInit(associatedId: id,
+                                                                 associatedWith: associatedField)
                     let listKeyPath = prefix + association.name
                     modelDictionary.updateValue(lazyList, forKeyPath: listKeyPath)
                 }
@@ -162,23 +174,21 @@ extension Statement: StatementModelConvertible {
         }
         modelDictionary["__typename"] = modelSchema.name
 
+        // `foreignKeyValues` are all foreign keys and their values that can be added to the object for lazy loading
+        // belongs to associations. 
+        if !eagerLoad {
+            for foreignKeyValue in foreignKeyValues {
+                let foreignColumnName = foreignKeyValue.0
+                if let foreignModelField = modelSchema.foreignKeys.first(where: { modelField in
+                    modelField.sqlName == foreignColumnName
+                }) {
+                    modelDictionary[foreignModelField.name] = DataStoreModelDecoder.lazyInit(identifier: foreignKeyValue.1)
+                }
+            }
+        }
+        
         // swiftlint:disable:next force_cast
         return modelDictionary as! ModelValues
-    }
-}
-
-internal extension List {
-
-    /// Creates a data structure that is capable of initializing a `List<M>` with
-    /// lazy-load capabilities when the list is being decoded.
-    ///
-    /// See the `List.init(from:Decoder)` for details.
-    static func lazyInit(associatedId: String, associatedWith: String?) -> [String: Any?] {
-        return [
-            "associatedId": associatedId,
-            "associatedField": associatedWith,
-            "elements": []
-        ]
     }
 }
 

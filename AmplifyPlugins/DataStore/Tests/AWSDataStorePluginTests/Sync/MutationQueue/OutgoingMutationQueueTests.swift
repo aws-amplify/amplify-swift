@@ -49,7 +49,6 @@ class OutgoingMutationQueueTests: SyncEngineTestBase {
                 }
 
                 if outboxStatusReceivedCurrentCount.get() == 1 {
-                    print("lawmicha - outboxStatusEvent.isEmpty: \(outboxStatusEvent.isEmpty)")
                     XCTAssertTrue(outboxStatusEvent.isEmpty)
                     outboxStatusOnStart.fulfill()
                 } else {
