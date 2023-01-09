@@ -38,193 +38,122 @@ class RESTWithIAMIntegrationTests: XCTestCase {
         XCTAssertTrue(true)
     }
 
-    func testGetAPISuccess() async {
-        let completeInvoked = expectation(description: "request completed")
+    func testGetAPISuccess() async throws {
         let request = RESTRequest(path: "/items")
-        _ = Amplify.API.get(request: request) { event in
-            switch event {
-            case .success(let data):
-                let result = String(decoding: data, as: UTF8.self)
-                print(result)
-                completeInvoked.fulfill()
-            case .failure(let error):
-                if case let .httpStatusError(_, response) = error,
-                    let awsResponse = response as? AWSHTTPURLResponse,
-                    let responseBody = awsResponse.body {
-                    let str = String(decoding: responseBody, as: UTF8.self)
-
-                    print("Response contains a \(str)")
-                }
-                XCTFail("Unexpected .failed event: \(error)")
-            }
-        }
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        let data = try await Amplify.API.get(request: request)
+        let result = String(decoding: data, as: UTF8.self)
+        print(result)
     }
 
     func testGetAPIFailedAccessDenied() async {
-        let failedInvoked = expectation(description: "request failed")
         let request = RESTRequest(path: "/invalidPath")
-        _ = Amplify.API.get(request: request) { event in
-            switch event {
-            case .success(let data):
-                XCTFail("Unexpected .complted event: \(data)")
-            case .failure(let error):
-                guard case let .httpStatusError(statusCode, response) = error else {
-                    XCTFail("Error should be httpStatusError")
-                    return
-                }
-                XCTAssertNotNil(response.url)
-                XCTAssertEqual(response.mimeType, "application/json")
-                // XCTAssertEqual(response.expectedContentLength, 272)
-                XCTAssertEqual(response.statusCode, 403)
-                XCTAssertNotNil(response.allHeaderFields)
-                if let awsResponse = response as? AWSHTTPURLResponse, let data = awsResponse.body {
-                    let dataString = String(decoding: data, as: UTF8.self)
-                    XCTAssertTrue(dataString.contains("not authorized"))
-                } else {
-                    XCTFail("Missing response body")
-                }
-                XCTAssertEqual(statusCode, 403)
-                failedInvoked.fulfill()
+        do {
+            let data = try await Amplify.API.get(request: request)
+        } catch {
+            guard let apiError = error as? APIError else {
+                XCTFail("Error should be APIError")
+                return
             }
+            
+            guard case let .httpStatusError(statusCode, response) = apiError else {
+                XCTFail("Error should be httpStatusError")
+                return
+            }
+            XCTAssertNotNil(response.url)
+            XCTAssertEqual(response.mimeType, "application/json")
+            // XCTAssertEqual(response.expectedContentLength, 272)
+            XCTAssertEqual(response.statusCode, 403)
+            XCTAssertNotNil(response.allHeaderFields)
+            if let awsResponse = response as? AWSHTTPURLResponse, let data = awsResponse.body {
+                let dataString = String(decoding: data, as: UTF8.self)
+                XCTAssertTrue(dataString.contains("not authorized"))
+            } else {
+                XCTFail("Missing response body")
+            }
+            XCTAssertEqual(statusCode, 403)
         }
-
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testGetAPIWithQueryParamsSuccess() async {
-        let completeInvoked = expectation(description: "request completed")
+    // TODO: Should not be HTTPStatusError
+    func testGetAPIWithQueryParamsSuccess() async throws {
         let request = RESTRequest(path: "/items",
                                   queryParameters: [
                                     "user": "hello@email.com",
                                     "created": "2021-06-18T09:00:00Z"
                                   ])
-        _ = Amplify.API.get(request: request) { event in
-            switch event {
-            case .success(let data):
-                let result = String(decoding: data, as: UTF8.self)
-                print(result)
-                completeInvoked.fulfill()
-            case .failure(let error):
-                XCTFail("Unexpected .failed event: \(error)")
-            }
-        }
-
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        let data = try await Amplify.API.get(request: request)
+        let result = String(decoding: data, as: UTF8.self)
+        print(result)
     }
 
-    func testGetAPIWithEncodedQueryParamsSuccess() async {
-        let completeInvoked = expectation(description: "request completed")
+    // TODO: Should not be HTTPStatusError
+    func testGetAPIWithEncodedQueryParamsSuccess() async throws {
         let request = RESTRequest(path: "/items",
                                   queryParameters: [
                                     "user": "hello%40email.com",
                                     "created": "2021-06-18T09%3A00%3A00Z"
                                   ])
-        _ = Amplify.API.get(request: request) { event in
-            switch event {
-            case .success(let data):
-                let result = String(decoding: data, as: UTF8.self)
-                print(result)
-                completeInvoked.fulfill()
-            case .failure(let error):
-                XCTFail("Unexpected .failed event: \(error)")
-            }
-        }
-
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        let data = try await Amplify.API.get(request: request)
+        let result = String(decoding: data, as: UTF8.self)
+        print(result)
     }
 
-    func testPutAPISuccess() async {
-        let completeInvoked = expectation(description: "request completed")
+    func testPutAPISuccess() async throws {
         let request = RESTRequest(path: "/items")
-        _ = Amplify.API.put(request: request) { event in
-            switch event {
-            case .success(let data):
-                let result = String(decoding: data, as: UTF8.self)
-                print(result)
-                completeInvoked.fulfill()
-            case .failure(let error):
-                XCTFail("Unexpected .failed event: \(error)")
-            }
-        }
-
-    await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        let data = try await Amplify.API.put(request: request)
+        let result = String(decoding: data, as: UTF8.self)
+        print(result)
     }
 
-    func testPostAPISuccess() async {
-        let completeInvoked = expectation(description: "request completed")
+    func testPostAPISuccess() async throws {
         let request = RESTRequest(path: "/items")
-        _ = Amplify.API.post(request: request) { event in
-            switch event {
-            case .success(let data):
-                let result = String(decoding: data, as: UTF8.self)
-                print(result)
-                completeInvoked.fulfill()
-            case .failure(let error):
-                XCTFail("Unexpected .failed event: \(error)")
-            }
-        }
-
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        let data = try await Amplify.API.post(request: request)
+        let result = String(decoding: data, as: UTF8.self)
+        print(result)
     }
 
-    func testDeleteAPISuccess() async {
-        let completeInvoked = expectation(description: "request completed")
+    func testDeleteAPISuccess() async throws {
         let request = RESTRequest(path: "/items")
-        _ = Amplify.API.delete(request: request) { event in
-            switch event {
-            case .success(let data):
-                let result = String(decoding: data, as: UTF8.self)
-                print(result)
-                completeInvoked.fulfill()
-            case .failure(let error):
-                XCTFail("Unexpected .failed event: \(error)")
-            }
-        }
-
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        let data = try await Amplify.API.delete(request: request)
+        let result = String(decoding: data, as: UTF8.self)
+        print(result)
     }
 
-    func testHeadAPIAccessDenied() async {
-        let failedInvoked = expectation(description: "request completed")
+    func testHeadAPIAccessDenied() async throws {
         let request = RESTRequest(path: "/items")
-        _ = Amplify.API.head(request: request) { event in
-            switch event {
-            case .success(let data):
-                XCTFail("Unexpected .completed event: \(data)")
-            case .failure(let error):
-                guard case let .httpStatusError(statusCode, _) = error else {
-                    XCTFail("Error should be httpStatusError")
-                    return
-                }
-
-                XCTAssertEqual(statusCode, 403)
-                failedInvoked.fulfill()
+        do {
+            _ = try await Amplify.API.head(request: request)
+            XCTFail("Should catch error")
+        } catch {
+            guard let apiError = error as? APIError else {
+                XCTFail("Error should be APIError")
+                return
             }
+            guard case let .httpStatusError(statusCode, _) = apiError else {
+                XCTFail("Error should be httpStatusError")
+                return
+            }
+            
+            XCTAssertEqual(statusCode, 403)
         }
-
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
 
-    func testPatchAPINotFound() async {
-        let failedInvoked = expectation(description: "request completed")
+    func testPatchAPINotFound() async throws {
         let request = RESTRequest(path: "/items")
-        _ = Amplify.API.patch(request: request) { event in
-            switch event {
-            case .success(let data):
-                XCTFail("Unexpected .completed event: \(data)")
-            case .failure(let error):
-                guard case let .httpStatusError(statusCode, _) = error else {
-                    XCTFail("Error should be httpStatusError")
-                    return
-                }
-
-                XCTAssertEqual(statusCode, 404)
-                failedInvoked.fulfill()
+        do {
+            _ = try await Amplify.API.patch(request: request)
+            XCTFail("Should catch error")
+        } catch {
+            guard let apiError = error as? APIError else {
+                XCTFail("Error should be APIError")
+                return
             }
+            guard case let .httpStatusError(statusCode, _) = apiError else {
+                XCTFail("Error should be httpStatusError")
+                return
+            }
+            
+            XCTAssertEqual(statusCode, 404)
         }
-
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
     }
-
 }

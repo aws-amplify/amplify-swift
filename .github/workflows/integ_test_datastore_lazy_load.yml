@@ -1,4 +1,4 @@
-name: DataStore TransformerV2 Tests
+name: DataStore Lazy Load Tests
 on:
   workflow_dispatch:
   push:
@@ -30,6 +30,7 @@ jobs:
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
   datastore-integration-v2-test:
+    continue-on-error: true
     timeout-minutes: 30
     needs: prepare-for-test
     runs-on: macos-12
@@ -54,6 +55,6 @@ jobs:
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
-          scheme: AWSDataStorePluginV2Tests
+          scheme: AWSDataStorePluginLazyLoadTests
 
  

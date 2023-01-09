@@ -24,7 +24,6 @@
 		213DBBA128A5743600B30280 /* Project2+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB6728A5743300B30280 /* Project2+Schema.swift */; };
 		213DBBA228A5743600B30280 /* Post4+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB6828A5743300B30280 /* Post4+Schema.swift */; };
 		213DBBA328A5743600B30280 /* PostWithCompositeKeyUnidirectional+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB6928A5743300B30280 /* PostWithCompositeKeyUnidirectional+Schema.swift */; };
-		213DBBA428A5743600B30280 /* primarykey_schema.graphql in Resources */ = {isa = PBXBuildFile; fileRef = 213DBB6A28A5743300B30280 /* primarykey_schema.graphql */; };
 		213DBBA528A5743600B30280 /* PostWithCompositeKeyUnidirectional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB6B28A5743300B30280 /* PostWithCompositeKeyUnidirectional.swift */; };
 		213DBBA628A5743600B30280 /* Project6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB6C28A5743300B30280 /* Project6.swift */; };
 		213DBBA728A5743600B30280 /* Team6+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213DBB6D28A5743300B30280 /* Team6+Schema.swift */; };
@@ -611,7 +610,6 @@
 		213DBB6728A5743300B30280 /* Project2+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Project2+Schema.swift"; sourceTree = "<group>"; };
 		213DBB6828A5743300B30280 /* Post4+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post4+Schema.swift"; sourceTree = "<group>"; };
 		213DBB6928A5743300B30280 /* PostWithCompositeKeyUnidirectional+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostWithCompositeKeyUnidirectional+Schema.swift"; sourceTree = "<group>"; };
-		213DBB6A28A5743300B30280 /* primarykey_schema.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = primarykey_schema.graphql; sourceTree = "<group>"; };
 		213DBB6B28A5743300B30280 /* PostWithCompositeKeyUnidirectional.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostWithCompositeKeyUnidirectional.swift; sourceTree = "<group>"; };
 		213DBB6C28A5743300B30280 /* Project6.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project6.swift; sourceTree = "<group>"; };
 		213DBB6D28A5743300B30280 /* Team6+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Team6+Schema.swift"; sourceTree = "<group>"; };
@@ -1377,7 +1375,6 @@
 				213DBB6928A5743300B30280 /* PostWithCompositeKeyUnidirectional+Schema.swift */,
 				213DBB9228A5743400B30280 /* PostWithTagsCompositeKey.swift */,
 				213DBB7428A5743300B30280 /* PostWithTagsCompositeKey+Schema.swift */,
-				213DBB6A28A5743300B30280 /* primarykey_schema.graphql */,
 				213DBB8E28A5743400B30280 /* Project2.swift */,
 				213DBB6728A5743300B30280 /* Project2+Schema.swift */,
 				213DBB6C28A5743300B30280 /* Project6.swift */,
@@ -1388,7 +1385,6 @@
 				213DBB9528A5743400B30280 /* Team2+Schema.swift */,
 				213DBB9A28A5743400B30280 /* Team6.swift */,
 				213DBB6D28A5743300B30280 /* Team6+Schema.swift */,
-				21977D84289C1633005B49D6 /* primarykey_schema.graphql */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1456,6 +1452,7 @@
 			children = (
 				211F5095296DD4E00040EB62 /* 7 */,
 				21BC10C8296DDB2B000E189E /* 10 */,
+				21977D84289C1633005B49D6 /* primarykey_schema.graphql */,
 				21BBFA12289BFE3400B32A39 /* README.md */,
 				21BBFA13289BFE3400B32A39 /* AWSDataStorePrimaryKeyTests.swift */,
 				21BBFA14289BFE3400B32A39 /* AWSDataStorePrimaryKeyBaseTest.swift */,
@@ -2660,7 +2657,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				213DBBA428A5743600B30280 /* primarykey_schema.graphql in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

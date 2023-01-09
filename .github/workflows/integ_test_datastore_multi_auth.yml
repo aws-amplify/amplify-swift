@@ -1,4 +1,4 @@
-name: DataStore TransformerV2 Tests
+name: DataStore Multi Auth Tests
 on:
   workflow_dispatch:
   push:
@@ -54,6 +54,6 @@ jobs:
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
-          scheme: AWSDataStorePluginV2Tests
+          scheme: AWSDataStorePluginMultiAuthTests
 
  

@@ -33,7 +33,7 @@ m now)
 ? Choose a schema template: Blank Schema
 ```
 
-Copy the content of the schema from `AWSDataStoreCategoryPluginIntegrationTests/PrimaryKey/schema.graphql` into the newly created `schema.graphql` file
+Copy the content of the schema from `AWSDataStoreCategoryPluginIntegrationTests/PrimaryKey/primarykey_schema.graphql` into the newly created `schema.graphql` file
 
 3. `amplify update api`
 ? Please select from one of the below mentioned services: `GraphQL`
@@ -47,6 +47,10 @@ Copy the content of the schema from `AWSDataStoreCategoryPluginIntegrationTests/
 
 5. Copy `amplifyconfiguration.json` to a new file named `AWSDataStoreCategoryPluginPrimaryKeyIntegrationTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`
 
+```
+cp amplifyconfiguration.json AWSDataStoreCategoryPluginPrimaryKeyIntegrationTests-amplifyconfiguration.json
+cp AWSDataStoreCategoryPluginPrimaryKeyIntegrationTests-amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/
+```
 
 Now you can run the AWSDataStoreCategoryPluginPrimaryKeyIntegrationTests
 

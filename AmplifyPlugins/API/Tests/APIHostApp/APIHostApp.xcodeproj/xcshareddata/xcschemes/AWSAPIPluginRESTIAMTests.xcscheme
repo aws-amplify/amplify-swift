@@ -44,20 +44,7 @@
                <Test
                   Identifier = "RESTWithIAMIntegrationTests/testGetAPIWithQueryParamsSuccess()">
                </Test>
-               <Test
-                  Identifier = "RESTWithIAMIntegrationTests/testHeadAPIAccessDenied()">
-               </Test>
             </SkippedTests>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "395906BF28AC63A9004B96B1"
-               BuildableName = "AWSAPIPluginRESTUserPoolTests.xctest"
-               BlueprintName = "AWSAPIPluginRESTUserPoolTests"
-               ReferencedContainer = "container:APIHostApp.xcodeproj">
-            </BuildableReference>
          </TestableReference>
       </Testables>
    </TestAction>
