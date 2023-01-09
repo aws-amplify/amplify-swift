@@ -403,7 +403,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                 return
             }
 
-            storageAdapter.save(inProcessModel.syncMetadata, condition: nil) { result in
+            storageAdapter.save(inProcessModel.syncMetadata, condition: nil, eagerLoad: true) { result in
                 switch result {
                 case .failure(let dataStoreError):
                     self.notifyDropped(error: dataStoreError)

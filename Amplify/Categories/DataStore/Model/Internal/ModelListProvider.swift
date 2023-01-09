@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Combine
 
 /// Empty protocol used as a marker to detect when the type is a `List`
 ///
@@ -23,7 +22,13 @@ public protocol ModelListMarker { }
 /// application making any change to these `public` types should be backward compatible, otherwise it will be a breaking
 /// change.
 public enum ModelListProviderState<Element: Model> {
-    case notLoaded
+    /// If the list represents an association between two models, the `associatedIdentifiers` will
+    /// hold the information necessary to query the associated elements (e.g. comments of a post)
+    ///
+    /// The associatedField represents the field to which the owner of the `List` is linked to.
+    /// For example, if `Post.comments` is associated with `Comment.post` the `List<Comment>`
+    /// of `Post` will have a reference to the `post` field in `Comment`.
+    case notLoaded(associatedIdentifiers: [String], associatedField: String)
     case loaded([Element])
 }
 

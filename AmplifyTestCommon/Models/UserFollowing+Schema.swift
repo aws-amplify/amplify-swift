@@ -32,4 +32,14 @@ extension UserFollowing {
       .belongsTo(userFollowing.followingUser, is: .optional, ofType: User.self, targetName: "userFollowingFollowingUserId")
     )
     }
+    
+    public class Path: ModelPath<UserFollowing> {}
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
+}
+
+extension ModelPath where ModelType == UserFollowing {
+    var id: FieldPath<String> { id() }
+    var user: ModelPath<User> { User.Path(name: "user", parent: self) }
+    var followingUser: ModelPath<User> { User.Path(name: "followingUser", parent: self) }
 }

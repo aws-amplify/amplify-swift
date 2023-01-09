@@ -36,7 +36,6 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
 
         continueAfterFailure = false
 
-        await Amplify.reset()
         Amplify.Logging.logLevel = logLevel
 
         do {
@@ -47,6 +46,11 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
             XCTFail(String(describing: error))
             return
         }
+    }
+    
+    override func tearDown() async throws {
+        try await Amplify.DataStore.stop()
+        await Amplify.reset()
     }
     
     func stopDataStore() async throws {
@@ -91,9 +95,13 @@ class SyncEngineIntegrationTestBase: DataStoreTestBase {
         }
 
         try startAmplify()
-        try await Amplify.DataStore.start()
+        // try await Amplify.DataStore.start()
+        try await deleteMutationEvents()
 
         await waitForExpectations(timeout: 100.0)
     }
-
+    
+    func deleteMutationEvents() async throws {
+        try await Amplify.DataStore.delete(MutationEvent.self, where: QueryPredicateConstant.all)
+    }
 }

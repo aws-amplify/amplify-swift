@@ -33,5 +33,17 @@ extension Comment {
       .field(comment.createdAt, is: .required, ofType: .dateTime),
       .belongsTo(comment.post, is: .required, ofType: Post.self, targetName: "commentPostId")
     )
-    }
+  }
+
+  public class Path : ModelPath<Comment> {}
+
+  public static var rootPath: PropertyContainerPath? { Path() }
+
+}
+
+extension ModelPath where ModelType == Comment {
+    var id: FieldPath<String> { id() }
+    var content: FieldPath<String> { string("content") }
+    var createdAt: FieldPath<Temporal.DateTime> { datetime("createdAt") }
+    var post: ModelPath<Post> { Post.Path(name: "post", parent: self) }
 }

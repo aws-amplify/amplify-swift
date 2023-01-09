@@ -193,7 +193,7 @@ extension GraphQLConnectionScenario3Tests {
         }
         var results: List<Comment3>?
         let predicate = Comment3.keys.postID.eq(post.id)
-        let result = try await Amplify.API.query(request: .list(Comment3.self, where: predicate, limit: 1))
+        let result = try await Amplify.API.query(request: .list(Comment3.self, where: predicate, limit: 100))
         switch result {
         case .success(let comments):
             results = comments

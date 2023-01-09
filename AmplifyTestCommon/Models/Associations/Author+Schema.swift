@@ -13,6 +13,7 @@ extension Author {
     // MARK: - CodingKeys
     public enum CodingKeys: String, ModelKey {
         case id
+        case name
         case books
     }
 
@@ -25,10 +26,21 @@ extension Author {
 
         model.fields(
             .id(),
+            .field(author.name, is: .required, ofType: .string),
             .hasMany(author.books,
                      ofType: BookAuthor.self,
                      associatedWith: BookAuthor.keys.book)
         )
     }
 
+    public class Path : ModelPath<Author> {}
+
+    public static var rootPath: PropertyContainerPath? { Path() }
+
+}
+
+extension ModelPath where ModelType == Author {
+    var id: FieldPath<String> { id() }
+    var name: FieldPath<String> { string("name") }
+    var books: ModelPath<BookAuthor> { BookAuthor.Path(name: "books", isCollection: true, parent: self) }
 }

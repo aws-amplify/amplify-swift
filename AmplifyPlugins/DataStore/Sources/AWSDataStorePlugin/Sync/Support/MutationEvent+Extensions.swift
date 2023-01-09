@@ -58,7 +58,7 @@ extension MutationEvent {
                     return
                 }
 
-                storageAdapter.save(reconciledEvent, condition: nil) { result in
+                storageAdapter.save(reconciledEvent, condition: nil, eagerLoad: true) { result in
                     switch result {
                     case .failure(let dataStoreError):
                         completion(.failure(dataStoreError))

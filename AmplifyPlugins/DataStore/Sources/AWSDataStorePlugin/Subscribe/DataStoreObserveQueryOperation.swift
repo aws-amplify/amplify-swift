@@ -197,6 +197,7 @@ class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThr
             predicate: predicate,
             sort: sortInput,
             paginationInput: nil,
+            eagerLoad: true,
             completion: { queryResult in
                 switch queryResult {
                 case .success(let queriedModels):
