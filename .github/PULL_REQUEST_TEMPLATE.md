@@ -1,8 +1,11 @@
-*Issue #, if available:*
+## Issue \#
+<!-- If applicable, please link to issue(s) this change addresses -->
 
-*Description of changes:*
+## Description
+<!-- Why is this change required? What problem does it solve? -->
 
-*Check points: (check or cross out if not relevant)*
+## General Checklist
+<!-- Check or cross out if not relevant -->
 
 - [ ] Added new tests to cover change, if needed
 - [ ] Build succeeds with all target using Swift Package Manager
@@ -13,7 +16,8 @@
 - [ ] PR title conforms to conventional commit style
 - [ ] If breaking change, documentation/changelog update with migration instructions
 
-*DataStore checkpoints (check when completed)*
+## DataStore Checklist
+<!-- Check when completed or remove section, if not applicable -->
 
 - [ ] Ran AWSDataStorePluginIntegrationTests
 - [ ] Ran AWSDataStorePluginV2Tests
