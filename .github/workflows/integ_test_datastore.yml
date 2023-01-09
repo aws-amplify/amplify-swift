@@ -2,7 +2,7 @@ name: DataStore Integration Tests
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [data-dev-preview.github-workflows]
 
 permissions:
     id-token: write
