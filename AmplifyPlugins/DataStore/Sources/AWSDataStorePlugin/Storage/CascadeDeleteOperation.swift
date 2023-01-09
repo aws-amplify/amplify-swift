@@ -103,7 +103,8 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                                       modelSchema: self.modelSchema,
                                       predicate: self.deleteInput.predicate,
                                       sort: nil,
-                                      paginationInput: nil) { result in
+                                      paginationInput: nil,
+                                      eagerLoad: true) { result in
                 continuation.resume(returning: result)
             }
         }

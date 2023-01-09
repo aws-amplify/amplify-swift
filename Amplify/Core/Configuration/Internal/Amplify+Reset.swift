@@ -44,6 +44,12 @@ extension Amplify {
         await reset(Hub)
         await reset(Logging)
 
+        log.verbose("Resetting ModelRegistry, ModelListDecoderRegistry, ModelProviderRegistry")
+        ModelRegistry.reset()
+        ModelListDecoderRegistry.reset()
+        ModelProviderRegistry.reset()
+        log.verbose("Resetting ModelRegistry, ModelListDecoderRegistry, ModelProviderRegistry finished")
+        
 #if canImport(UIKit)
         await MainActor.run {
             devMenu = nil

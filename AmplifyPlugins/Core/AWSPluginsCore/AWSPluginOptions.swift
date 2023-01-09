@@ -14,7 +14,11 @@ public struct AWSPluginOptions {
     /// authorization type
     public let authType: AWSAuthorizationType?
 
-    public init(authType: AWSAuthorizationType?) {
+    /// name of the model
+    public let modelName: String?
+    
+    public init(authType: AWSAuthorizationType?, modelName: String?) {
         self.authType = authType
+        self.modelName = modelName
     }
 }

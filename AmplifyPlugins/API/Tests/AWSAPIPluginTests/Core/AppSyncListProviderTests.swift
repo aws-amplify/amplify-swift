@@ -93,15 +93,15 @@ class AppSyncListProviderTests: XCTestCase {
     }
 
     func testInitWithModelMetadataShouldBeNotLoadedState() throws {
-        let modelMetadata = AppSyncModelMetadata(appSyncAssociatedId: "postId",
-                                                 appSyncAssociatedField: "post",
-                                                 apiName: "apiName")
+        let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
+                                                        appSyncAssociatedField: "post",
+                                                        apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
-        guard case .notLoaded(let associatedId, let associatedField) = provider.loadedState else {
+        guard case .notLoaded(let associatedIdentifiers, let associatedField) = provider.loadedState else {
             XCTFail("Should be in not loaded state")
             return
         }
-        XCTAssertEqual(associatedId, "postId")
+        XCTAssertEqual(associatedIdentifiers, ["postId"])
         XCTAssertEqual(associatedField, "post")
     }
 
@@ -136,9 +136,9 @@ class AppSyncListProviderTests: XCTestCase {
             let event: GraphQLOperation<JSONValue>.OperationResult = .success(.success(json))
             return event
         }
-        let modelMetadata = AppSyncModelMetadata(appSyncAssociatedId: "postId",
-                                                 appSyncAssociatedField: "post",
-                                                 apiName: "apiName")
+        let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
+                                                        appSyncAssociatedField: "post",
+                                                        apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
@@ -166,16 +166,16 @@ class AppSyncListProviderTests: XCTestCase {
         }
         XCTAssertEqual(postId, "postId")
     }
-
+    
     func testNotLoadedStateSynchronousLoadFailure() async {
         mockAPIPlugin.responders[.queryRequestResponse] =
         QueryRequestResponder<JSONValue> { _ in
             let event: GraphQLOperation<JSONValue>.OperationResult = .failure(APIError.unknown("", "", nil))
             return event
         }
-        let modelMetadata = AppSyncModelMetadata(appSyncAssociatedId: "postId",
-                                                 appSyncAssociatedField: "post",
-                                                 apiName: "apiName")
+        let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
+                                                        appSyncAssociatedField: "post",
+                                                        apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
@@ -220,9 +220,9 @@ class AppSyncListProviderTests: XCTestCase {
             let event: GraphQLOperation<JSONValue>.OperationResult = .success(.success(json))
             return event
         }
-        let modelMetadata = AppSyncModelMetadata(appSyncAssociatedId: "postId",
-                                                 appSyncAssociatedField: "post",
-                                                 apiName: "apiName")
+        let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
+                                                        appSyncAssociatedField: "post",
+                                                        apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
@@ -257,9 +257,9 @@ class AppSyncListProviderTests: XCTestCase {
             let event: GraphQLOperation<JSONValue>.OperationResult = .failure(APIError.unknown("", "", nil))
             return event
         }
-        let modelMetadata = AppSyncModelMetadata(appSyncAssociatedId: "postId",
-                                                 appSyncAssociatedField: "post",
-                                                 apiName: "apiName")
+        let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
+                                                        appSyncAssociatedField: "post",
+                                                        apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
@@ -293,7 +293,7 @@ class AppSyncListProviderTests: XCTestCase {
                 .failure(GraphQLResponseError.error([GraphQLError]())))
             return event
         }
-        let modelMetadata = AppSyncModelMetadata(appSyncAssociatedId: "postId",
+        let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
                                                  appSyncAssociatedField: "post",
                                                  apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
@@ -342,9 +342,9 @@ class AppSyncListProviderTests: XCTestCase {
             let event: GraphQLOperation<JSONValue>.OperationResult = .success(.success(json))
             return event
         }
-        let modelMetadata = AppSyncModelMetadata(appSyncAssociatedId: "postId",
-                                                 appSyncAssociatedField: "post",
-                                                 apiName: "apiName")
+        let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
+                                                        appSyncAssociatedField: "post",
+                                                        apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")

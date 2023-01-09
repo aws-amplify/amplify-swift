@@ -20,6 +20,7 @@ class DataStoreConfigurationTests: XCTestCase {
 
     override func tearDown() async throws {
         try await Amplify.DataStore.clear()
+        await Amplify.reset()
     }
 
     func testConfigureWithSameSchemaDoesNotDeleteDatabase() async throws {

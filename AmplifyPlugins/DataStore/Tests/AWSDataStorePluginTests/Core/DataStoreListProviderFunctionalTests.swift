@@ -16,7 +16,7 @@ class DataStoreListProviderFunctionalTests: BaseDataStoreTests {
 
     func testDataStoreListProviderWithAssociationDataShouldLoad() async throws {
         let postId = preparePost4DataForTest()
-        let provider = DataStoreListProvider<Comment4>(associatedId: postId, associatedField: "post")
+        let provider = DataStoreListProvider<Comment4>(associatedIdentifiers: [postId], associatedField: "post")
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
             return

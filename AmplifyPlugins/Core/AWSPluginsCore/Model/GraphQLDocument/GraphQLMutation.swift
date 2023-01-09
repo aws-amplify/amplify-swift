@@ -24,12 +24,12 @@ public struct GraphQLMutation: SingleDirectiveGraphQLDocument {
     @available(*, deprecated, message: """
     Init with modelType is deprecated, use init with modelSchema instead.
     """)
-    public init(modelType: Model.Type) {
-        self.init(modelSchema: modelType.schema)
+    public init(modelType: Model.Type, primaryKeysOnly: Bool) {
+        self.init(modelSchema: modelType.schema, primaryKeysOnly: primaryKeysOnly)
     }
 
-    public init(modelSchema: ModelSchema) {
-        self.selectionSet = SelectionSet(fields: modelSchema.graphQLFields)
+    public init(modelSchema: ModelSchema, primaryKeysOnly: Bool) {
+        self.selectionSet = SelectionSet(fields: modelSchema.graphQLFields, primaryKeysOnly: primaryKeysOnly)
     }
 
     public var name: String = ""
