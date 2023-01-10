@@ -419,52 +419,52 @@ class VerifyPasswordSRPTests: XCTestCase {
         await waitForExpectations(timeout: 0.1)
     }
 
-//    /// Test verify password retry on device not found
-//    ///
-//    /// - Given: VerifyPasswordSRP action with mocked cognito client and configuration
-//    /// - When:
-//    ///    - I invoke the action with valid input and mock empty device not found error from Cognito
-//    /// - Then:
-//    ///    - Should send an event with retryRespondPasswordVerifier
-//    ///
-//    func testPasswordVerifierWithDeviceNotFound() async {
-//
-//        let identityProviderFactory: CognitoFactory = {
-//            MockIdentityProvider(
-//                mockRespondToAuthChallengeResponse: { _ in
-//                    throw RespondToAuthChallengeOutputError.resourceNotFoundException(
-//                        ResourceNotFoundException()
-//                    )
-//                })
-//        }
-//
-//        let environment = Defaults.makeDefaultAuthEnvironment(
-//            userPoolFactory: identityProviderFactory)
-//
-//        let data = InitiateAuthOutputResponse.validTestData
-//        let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
-//                                       authResponse: data)
-//
-//        let passwordVerifierError = expectation(description: "passwordVerifierError")
-//
-//        let dispatcher = MockDispatcher { event in
-//            defer { passwordVerifierError.fulfill() }
-//
-//            guard let event = event as? SignInEvent else {
-//                XCTFail("Expected event to be SignInEvent but got \(event)")
-//                return
-//            }
-//
-//            guard case .retryRespondPasswordVerifier = event.eventType
-//            else {
-//                XCTFail("Should receive retryRespondPasswordVerifier")
-//                return
-//            }
-//        }
-//
-//        await action.execute(withDispatcher: dispatcher, environment: environment)
-//        await waitForExpectations(timeout: 0.1)
-//    }
+    /// Test verify password retry on device not found
+    ///
+    /// - Given: VerifyPasswordSRP action with mocked cognito client and configuration
+    /// - When:
+    ///    - I invoke the action with valid input and mock empty device not found error from Cognito
+    /// - Then:
+    ///    - Should send an event with retryRespondPasswordVerifier
+    ///
+    func testPasswordVerifierWithDeviceNotFound() async {
+
+        let identityProviderFactory: CognitoFactory = {
+            MockIdentityProvider(
+                mockRespondToAuthChallengeResponse: { _ in
+                    throw RespondToAuthChallengeOutputError.resourceNotFoundException(
+                        ResourceNotFoundException()
+                    )
+                })
+        }
+
+        let environment = Defaults.makeDefaultAuthEnvironment(
+            userPoolFactory: identityProviderFactory)
+
+        let data = InitiateAuthOutputResponse.validTestData
+        let action = VerifyPasswordSRP(stateData: SRPStateData.testData,
+                                       authResponse: data)
+
+        let passwordVerifierError = expectation(description: "passwordVerifierError")
+
+        let dispatcher = MockDispatcher { event in
+            defer { passwordVerifierError.fulfill() }
+
+            guard let event = event as? SignInEvent else {
+                XCTFail("Expected event to be SignInEvent but got \(event)")
+                return
+            }
+
+            guard case .retryRespondPasswordVerifier = event.eventType
+            else {
+                XCTFail("Should receive retryRespondPasswordVerifier")
+                return
+            }
+        }
+
+        await action.execute(withDispatcher: dispatcher, environment: environment)
+        await waitForExpectations(timeout: 0.1)
+    }
 
     /// Test  successful response from the VerifyPasswordSRP for confirmDevice
     ///
