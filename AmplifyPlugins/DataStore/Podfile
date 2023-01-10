@@ -45,4 +45,10 @@ target "HostApp" do
     pod 'AmplifyPlugins/AWSAPIPlugin', :path => '../../'
     pod 'AmplifyPlugins/AWSCognitoAuthPlugin', :path => '../../'
   end
+
+  target "AWSDataStoreCategoryPluginCPKTests" do
+    inherit! :complete
+
+    pod 'AmplifyPlugins/AWSAPIPlugin', :path => '../../'
+  end
 end
