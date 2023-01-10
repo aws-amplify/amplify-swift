@@ -4,6 +4,8 @@ The following steps demonstrate how to setup a GraphQL endpoint for testing Cust
 
 ### Set-up
 
+The following steps have been tested with Amplify CLI v10.5.0.
+
 1. `amplify init`
 
 Make sure the `cli.json` has CPK feature enabled:

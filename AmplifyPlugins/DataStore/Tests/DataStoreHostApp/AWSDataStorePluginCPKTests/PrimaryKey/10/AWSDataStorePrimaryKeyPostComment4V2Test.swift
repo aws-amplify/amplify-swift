@@ -78,8 +78,12 @@ final class AWSDataStorePrimaryKeyPostComment4V2Test: AWSDataStorePrimaryKeyBase
             XCTFail("Failed to query post")
             return
         }
-        try await queriedPost.comments!.fetch()
-        XCTAssertEqual(queriedPost.comments?.count, 1)
+        guard let comments = queriedPost.comments else{
+            XCTFail("Lazy List of Comment should exist on post")
+            return
+        }
+        try await comments.fetch()
+        XCTAssertEqual(comments.count, 1)
         
         try await assertDeleteMutation(parent: parent, child: child)
     }
