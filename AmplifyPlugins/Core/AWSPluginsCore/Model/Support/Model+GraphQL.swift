@@ -59,6 +59,8 @@ extension Model {
                             input.updateValue(nil, forKey: fieldName)
                         }
                     }
+                } else if case .collection = modelField.type { // skip all "has-many"
+                    continue
                 } else {
                     input.updateValue(nil, forKey: name)
                 }
