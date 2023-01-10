@@ -60,8 +60,8 @@ class AWSAuthRememberDeviceTask: AuthRememberDeviceTask {
     private func rememberDevice(with accessToken: String, username: String) async throws {
         let userPoolService = try environment.cognitoUserPoolFactory()
         let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
-            for: environment,
-            with: username)
+            for: username,
+            environment: environment)
         if case .metadata(let data) = deviceMetadata {
             let input = UpdateDeviceStatusInput(accessToken: accessToken,
                                                 deviceKey: data.deviceKey,

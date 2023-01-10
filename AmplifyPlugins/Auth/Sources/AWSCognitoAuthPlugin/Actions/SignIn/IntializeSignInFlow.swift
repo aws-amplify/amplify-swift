@@ -34,8 +34,8 @@ struct InitializeSignInFlow: Action {
         var deviceMetadata = DeviceMetadata.noData
         if let username = signInEventData.username {
             deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
-                for: environment,
-                with: username)
+                for: username,
+                environment: environment)
         }
 
         let event: SignInEvent

@@ -10,8 +10,8 @@ import AWSPluginsCore
 struct DeviceMetadataHelper {
 
     static func getDeviceMetadata(
-        for environment: Environment,
-        with username: String) async -> DeviceMetadata {
+        for username: String,
+        environment: Environment) async -> DeviceMetadata {
             let credentialStoreClient = (environment as? AuthEnvironment)?.credentialsClient
             do {
                 let data = try await credentialStoreClient?.fetchData(type: .deviceMetadata(username: username))
@@ -29,6 +29,19 @@ struct DeviceMetadataHelper {
                 logger?.error("Unable to fetch device metadata with error: \(error)")
             }
             return .noData
+        }
+
+    static func removeDeviceMetaData(
+        of username: String,
+        environment: Environment) async {
+            let credentialStoreClient = (environment as? AuthEnvironment)?.credentialsClient
+            do {
+                try await credentialStoreClient?.deleteData(
+                    type: .deviceMetadata(username: username))
+            } catch {
+                let logger = (environment as? LoggerProvider)?.logger
+                logger?.error("Unable to fetch device metadata with error: \(error)")
+            }
         }
 
 }

@@ -69,16 +69,12 @@ struct UserPoolSignInHelper {
         environment: UserPoolEnvironment) async throws -> StateMachineEvent {
 
             let client = try environment.cognitoUserPoolFactory()
-
-            do {
-                let response = try await client.respondToAuthChallenge(input: request)
-                let event = try self.parseResponse(response, for: username, signInMethod: signInMethod)
-                return event
-            } catch {
-                let authError = SignInError.service(error: error)
-                return SignInEvent(eventType: .throwAuthError(authError))
-            }
+            let response = try await client.respondToAuthChallenge(input: request)
+            let event = try self.parseResponse(response, for: username, signInMethod: signInMethod)
+            return event
         }
+
+
 
     static func parseResponse(
         _ response: SignInResponseBehavior,

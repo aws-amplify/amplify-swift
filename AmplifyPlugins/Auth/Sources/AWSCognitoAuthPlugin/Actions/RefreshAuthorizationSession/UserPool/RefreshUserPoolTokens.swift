@@ -34,8 +34,8 @@ struct RefreshUserPoolTokens: Action {
             let existingTokens = existingSignedIndata.cognitoUserPoolTokens
 
             let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
-                for: environment,
-                with: existingSignedIndata.username)
+                for: existingSignedIndata.username,
+                environment: environment)
 
             let asfDeviceId = try await CognitoUserPoolASF.asfDeviceID(
                 for: existingSignedIndata.username,
