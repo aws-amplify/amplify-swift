@@ -224,3 +224,18 @@ type Comment8 @model {
 #  title: String!
 #  description: String
 #}
+
+## iOS 10. bi-directional has-many PostComment4V2
+
+type Post4V2 @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String!
+  comments: [Comment4V2] @hasMany(indexName: "byPost4", fields: ["id"])
+}
+
+type Comment4V2 @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  postID: ID! @index(name: "byPost4", sortKeyFields: ["content"])
+  content: String!
+  post: Post4V2 @belongsTo(fields: ["postID"])
+}
