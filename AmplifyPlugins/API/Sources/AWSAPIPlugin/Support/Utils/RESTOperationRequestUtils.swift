@@ -29,7 +29,9 @@ final class RESTOperationRequestUtils {
             components.path.append(path)
         }
 
-        try components.encodeQueryItemsPerSigV4Rules(queryParameters)
+        // remove percent encoding to prepare for request signing
+        // `removingPercentEncoding` is a no-op if the query isn't encoded
+        components.query = components.query?.removingPercentEncoding ?? components.query
 
         guard let url = components.url else {
             throw APIError.invalidURL(

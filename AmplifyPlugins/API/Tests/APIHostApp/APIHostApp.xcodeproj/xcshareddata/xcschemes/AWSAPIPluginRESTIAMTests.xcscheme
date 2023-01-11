@@ -37,14 +37,6 @@
                BlueprintName = "AWSAPIPluginRESTIAMTests"
                ReferencedContainer = "container:APIHostApp.xcodeproj">
             </BuildableReference>
-            <SkippedTests>
-               <Test
-                  Identifier = "RESTWithIAMIntegrationTests/testGetAPIWithEncodedQueryParamsSuccess()">
-               </Test>
-               <Test
-                  Identifier = "RESTWithIAMIntegrationTests/testGetAPIWithQueryParamsSuccess()">
-               </Test>
-            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>
