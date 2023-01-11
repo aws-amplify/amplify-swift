@@ -1,4 +1,4 @@
-name: DataStore Integration Tests
+name: DataStore Auth Cognito Tests
 on:
   workflow_dispatch:
   push:
@@ -29,7 +29,7 @@ jobs:
           aws_region: ${{ secrets.AWS_REGION }}
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
-  datastore-integration-test:
+  datastore-integration-v2-test:
     timeout-minutes: 30
     needs: prepare-for-test
     runs-on: macos-12
@@ -54,6 +54,6 @@ jobs:
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           project_path: ./AmplifyPlugins/DataStore/Tests/DataStoreHostApp
-          scheme: AWSDataStorePluginIntegrationTests
+          scheme: AWSDataStorePluginAuthCognitoTests
 
  

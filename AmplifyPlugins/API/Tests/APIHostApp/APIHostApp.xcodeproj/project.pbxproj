@@ -486,7 +486,6 @@
 		21698A9628899818004BD994 /* AWSAPIPluginIntegrationTests */ = {
 			isa = PBXGroup;
 			children = (
-				21698BC428899B99004BD994 /* REST */,
 				21698B9528899AE3004BD994 /* GraphQL */,
 			);
 			path = AWSAPIPluginIntegrationTests;
@@ -518,13 +517,6 @@
 				21698CC42889D75F004BD994 /* SocialNote.swift */,
 			);
 			path = AuthDirective;
-			sourceTree = "<group>";
-		};
-		21698BC428899B99004BD994 /* REST */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = REST;
 			sourceTree = "<group>";
 		};
 		21698BD728899EBB004BD994 /* Frameworks */ = {
