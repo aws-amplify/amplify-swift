@@ -1,8 +1,8 @@
 name: Amplify Nightly Unit Test
 on:
   workflow_dispatch:
-  push:
-    branches: [royjit.repeattest]
+  schedule:
+    - cron: '30 1 * * *'
 
 permissions:
     contents: read
