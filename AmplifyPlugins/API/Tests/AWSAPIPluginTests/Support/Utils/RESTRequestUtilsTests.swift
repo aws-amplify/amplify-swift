@@ -97,7 +97,6 @@ class RESTRequestUtilsTests: XCTestCase {
     }
 }
 
-
 extension RESTRequestUtilsTests {
     private struct ConstructURLTestCase {
         let baseURL: URL
