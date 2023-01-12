@@ -1,4 +1,4 @@
-name: Amplify Nightly Unit Test
+name: Amplify Nightly Repeated Unit Test
 on:
   workflow_dispatch:
   schedule:
@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
 
-      - name: Run unit test iOS
+      - name: Run repeated unit test iOS
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           project_path: .
@@ -35,7 +35,7 @@ jobs:
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
 
-      - name: Run unit test macOS
+      - name: Run repeated unit test macOS
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           project_path: .
