@@ -1,11 +1,20 @@
 # DataStore Primary Key Integration Tests
 
-The following steps demonstrate how to setup a GraphQL endpoint with AppSync and IAM.
-This configuration is used to run the tests in `AWSDataStorePrimaryKeyTest.swift`.
+The following steps demonstrate how to setup a GraphQL endpoint for testing Custom Primary Key (CPK) use cases.
 
 ### Set-up
 
+The following steps have been tested with Amplify CLI v10.5.0.
+
 1. `amplify init`
+
+Make sure the `cli.json` has CPK feature enabled:
+
+```
+"respectprimarykeyattributesonconnectionfield": true
+```
+
+Amplify CLI version 10.5.0 is the minimum version that defaults the feature flag to true.
 
 2. `amplify add api`
 
@@ -24,7 +33,7 @@ m now)
 ? Choose a schema template: Blank Schema
 ```
 
-Copy the content of the schema from `AWSDataStoreCategoryPluginIntegrationTests/PrimaryKey/schema.graphql` into the newly created `schema.graphql` file
+Copy the content of the schema from `AWSDataStoreCategoryPluginIntegrationTests/PrimaryKey/primarykey_schema.graphql` into the newly created `schema.graphql` file
 
 3. `amplify update api`
 ? Please select from one of the below mentioned services: `GraphQL`
@@ -38,6 +47,10 @@ Copy the content of the schema from `AWSDataStoreCategoryPluginIntegrationTests/
 
 5. Copy `amplifyconfiguration.json` to a new file named `AWSDataStoreCategoryPluginPrimaryKeyIntegrationTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`
 
+```
+cp amplifyconfiguration.json AWSDataStoreCategoryPluginPrimaryKeyIntegrationTests-amplifyconfiguration.json
+cp AWSDataStoreCategoryPluginPrimaryKeyIntegrationTests-amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/
+```
 
 Now you can run the AWSDataStoreCategoryPluginPrimaryKeyIntegrationTests
 

@@ -35,8 +35,8 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
     }
 
     override func tearDown() async throws {
-        if await isSignedIn() {
-            await signOut()
+        if try await isSignedIn() {
+            try await signOut()
         }
         await Amplify.reset()
     }
@@ -45,203 +45,116 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
         XCTAssertTrue(true)
     }
 
-    func testCreateUser() async {
-        await createAuthenticatedUser()
+    func testCreateUser() async throws {
+        try await createAuthenticatedUser()
     }
     
-    func testCreateUserAndGetToken() async {
-        await createAuthenticatedUser()
-        let getToken = expectation(description: "get token success")
-        Amplify.Auth.fetchAuthSession { result in
-            do {
-                let session = try result.get()
-                // Get cognito user pool token
-                if let cognitoTokenProvider = session as? AuthCognitoTokensProvider {
-                    let tokens = try cognitoTokenProvider.getCognitoTokens().get()
-                    print("Id token - \(tokens.idToken) ")
-                    print("Access token - \(tokens.accessToken) ")
-                }
-                getToken.fulfill()
-            } catch {
-                XCTFail("shouldn't have failed to get session \(error)")
-            }
-            
+    func testCreateUserAndGetToken() async throws {
+        try await createAuthenticatedUser()
+        let session = try await Amplify.Auth.fetchAuthSession()
+        // Get cognito user pool token
+        if let cognitoTokenProvider = session as? AuthCognitoTokensProvider {
+            let tokens = try cognitoTokenProvider.getCognitoTokens().get()
+            print("Id token - \(tokens.idToken) ")
+            print("Access token - \(tokens.accessToken) ")
         }
-        await waitForExpectations(timeout: 10)
     }
     
-    func testGetAPISuccess() async {
-        await createAuthenticatedUser()
-        let completeInvoked = expectation(description: "request completed")
+    func testGetAPISuccess() async throws {
+        try await createAuthenticatedUser()
         let request = RESTRequest(path: "/items")
-        _ = Amplify.API.get(request: request) { event in
-            switch event {
-            case .success(let data):
-                let result = String(decoding: data, as: UTF8.self)
-                print(result)
-                completeInvoked.fulfill()
-            case .failure(let error):
-                XCTFail("Unexpected .failed event: \(error)")
-            }
-        }
-
-        await waitForExpectations(timeout: TestCommonConstants.networkTimeout)
+        let data = try await Amplify.API.get(request: request)
+        let result = String(decoding: data, as: UTF8.self)
+        print(result)
     }
 
-    func testGetAPIWithQueryParamsSuccess() async {
-        await createAuthenticatedUser()
-        let completeInvoked = expectation(description: "request completed")
+    func testGetAPIWithQueryParamsSuccess() async throws {
+        try await createAuthenticatedUser()
         let request = RESTRequest(path: "/items",
                                   queryParameters: [
                                     "user": "hello@email.com",
                                     "created": "2021-06-18T09:00:00Z"
                                   ])
-        _ = Amplify.API.get(request: request) { event in
-            switch event {
-            case .success(let data):
-                let result = String(decoding: data, as: UTF8.self)
-                print(result)
-                completeInvoked.fulfill()
-            case .failure(let error):
-                XCTFail("Unexpected .failed event: \(error)")
-            }
-        }
-
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        let data = try await Amplify.API.get(request: request)
+        let result = String(decoding: data, as: UTF8.self)
+        print(result)
     }
 
-    func testGetAPIWithEncodedQueryParamsSuccess() async {
-        await createAuthenticatedUser()
-        let completeInvoked = expectation(description: "request completed")
+    func testGetAPIWithEncodedQueryParamsSuccess() async throws {
+        try await createAuthenticatedUser()
         let request = RESTRequest(path: "/items",
                                   queryParameters: [
                                     "user": "hello%40email.com",
                                     "created": "2021-06-18T09%3A00%3A00Z"
                                   ])
-        _ = Amplify.API.get(request: request) { event in
-            switch event {
-            case .success(let data):
-                let result = String(decoding: data, as: UTF8.self)
-                print(result)
-                completeInvoked.fulfill()
-            case .failure(let error):
-                XCTFail("Unexpected .failed event: \(error)")
-            }
-        }
-
-        wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
+        let data = try await Amplify.API.get(request: request)
+        let result = String(decoding: data, as: UTF8.self)
+        print(result)
     }
 
-    func testGetAPIFailedWithSignedOutError() async {
-        await signOut()
-        let failedInvoked = expectation(description: "request failed")
+    func testGetAPIFailedWithSignedOutError() async throws {
+        try await signOut()
         let request = RESTRequest(path: "/items")
-        _ = Amplify.API.get(request: request) { event in
-            switch event {
-            case .success(let data):
-                XCTFail("Unexpected .complted event: \(data)")
-            case .failure(let error):
-                guard case let .operationError(_, _, underlyingError) = error else {
-                    XCTFail("Error should be operationError")
-                    return
-                }
+        do {
+            _ = try await Amplify.API.get(request: request)
+            XCTFail("Should have caught error")
+        } catch {
+            guard let apiError = error as? APIError else {
+                XCTFail("Should be APIError")
+                return
+            }
+            
+            guard case let .operationError(_, _, underlyingError) = apiError else {
+                XCTFail("Error should be operationError")
+                return
+            }
 
-                guard let authError = underlyingError as? AuthError else {
-                    XCTFail("underlying error should be AuthError, but instead was \(underlyingError ?? "nil")")
-                    return
-                }
+            guard let authError = underlyingError as? AuthError else {
+                XCTFail("underlying error should be AuthError, but instead was \(underlyingError ?? "nil")")
+                return
+            }
 
-                guard case .signedOut = authError else {
-                    XCTFail("Error should be AuthError.signedOut")
-                    return
-                }
-
-                failedInvoked.fulfill()
+            guard case .signedOut = authError else {
+                XCTFail("Error should be AuthError.signedOut")
+                return
             }
         }
-
-        wait(for: [failedInvoked], timeout: TestCommonConstants.networkTimeout)
     }
     
     // MARK: - Auth Helpers
     
-    func createAuthenticatedUser() async {
-        if await isSignedIn() {
-            await signOut()
+    func createAuthenticatedUser() async throws {
+        if try await isSignedIn() {
+            try await signOut()
         }
-        await signUp()
-        await signIn()
+        try await signUp()
+        try await signIn()
     }
     
-    func isSignedIn() async -> Bool {
-        let checkIsSignedInCompleted = expectation(description: "retrieve auth session completed")
-        var resultOptional: Bool?
-        _ = Amplify.Auth.fetchAuthSession { event in
-            switch event {
-            case .success(let authSession):
-                resultOptional = authSession.isSignedIn
-                checkIsSignedInCompleted.fulfill()
-            case .failure(let error):
-                fatalError("Failed to get auth session \(error)")
-            }
-        }
-        await waitForExpectations(timeout: 100)
-        guard let result = resultOptional else {
-            fatalError("Could not get isSignedIn for user")
-        }
-
-        return result
+    func isSignedIn() async throws -> Bool {
+        let authSession = try await Amplify.Auth.fetchAuthSession()
+        return authSession.isSignedIn
     }
     
-    func signUp() async {
-        let signUpSuccess = expectation(description: "sign up success")
-        _ = Amplify.Auth.signUp(username: username, password: password) { result in
-            switch result {
-            case .success(let signUpResult):
-                if signUpResult.isSignUpComplete {
-                    signUpSuccess.fulfill()
-                } else {
-                    XCTFail("Sign up successful but not complete")
-                }
-            case .failure(let error):
-                XCTFail("Failed to sign up \(error)")
-            }
+    func signUp() async throws {
+        let signUpResult = try await Amplify.Auth.signUp(username: username, password: password)
+        guard signUpResult.isSignUpComplete else {
+            XCTFail("Sign up successful but not complete")
+            return
         }
-        await waitForExpectations(timeout: 100)
     }
 
     
-    func signIn() async {
-        let signInSuccess = expectation(description: "sign in success")
-        _ = Amplify.Auth.signIn(username: username,
-                                password: password) { result in
-            switch result {
-            case .success(let signInResult):
-                if signInResult.isSignedIn {
-                    signInSuccess.fulfill()
-                } else {
-                    XCTFail("Sign in successful but not complete")
-                }
-                
-            case .failure(let error):
-                XCTFail("Failed to sign in \(error)")
-            }
+    func signIn() async throws {
+        let signInResult = try await Amplify.Auth.signIn(username: username,
+                                               password: password)
+        guard signInResult.isSignedIn else {
+            XCTFail("Sign in successful but not complete")
+            return
         }
-        await waitForExpectations(timeout: 100)
     }
     
-    func signOut() async {
-        let signOutCompleted = expectation(description: "sign out completed")
-        _ = Amplify.Auth.signOut { event in
-            switch event {
-            case .success:
-                signOutCompleted.fulfill()
-            case .failure(let error):
-                print("Could not sign out user \(error)")
-                signOutCompleted.fulfill()
-            }
-        }
-        
-        await waitForExpectations(timeout: 100)
+    func signOut() async throws {
+        try await Amplify.Auth.signOut()
     }
 }
