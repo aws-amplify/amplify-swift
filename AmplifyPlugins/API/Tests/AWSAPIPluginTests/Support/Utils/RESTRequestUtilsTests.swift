@@ -10,24 +10,11 @@ import XCTest
 @testable import AWSAPIPlugin
 
 class RESTRequestUtilsTests: XCTestCase {
-    private struct ConstructURLTestCase {
-        let baseURL: URL
-        let path: String?
-        let queryParameters: [String: String]?
-        let expectedParameters: [String: String]?
-
-        init(_ url: String,
-             _ path: String?,
-             _ params: [String: String]?,
-             expectedParameters: [String: String]?) {
-            self.baseURL = URL(string: url)!
-            self.path = path
-            self.queryParameters = params
-            self.expectedParameters = expectedParameters
-        }
-    }
-
-    private func assertQueryParameters(testCase: Int, withURL url: URL, expected: [String: String]?) throws {
+    private func assertQueryParameters(
+        testCase: Int,
+        withURL url: URL,
+        expected: [String: String]?
+    ) throws {
         var queryParams: [String: String] = [:]
         url.query?.split(separator: "&").forEach {
             let components = $0.split(separator: "=")
@@ -37,61 +24,55 @@ class RESTRequestUtilsTests: XCTestCase {
         }
 
         guard let expected = expected else {
-            XCTAssertTrue(queryParams.isEmpty,
-                          "Test \(testCase): Unexpected query items found \(queryParams)")
-            return
+            return XCTAssertTrue(
+                queryParams.isEmpty,
+                "Test \(testCase): Unexpected query items found \(queryParams)"
+            )
         }
         XCTAssertEqual(queryParams, expected, "Test \(testCase): query params mismatch")
     }
 
     func testConstructURL() throws {
-        let baseURL = "https://aws.amazon.com"
+        let baseURL = URL(string: "https://aws.amazon.com")!
         let path = "/projects"
+        let base = ConstructURLTestCase(baseURL: baseURL, path: path)
         let testCases: [ConstructURLTestCase] = [
-            ConstructURLTestCase(baseURL,
-                                 path,
-                              ["author": "john@email.com"],
-                              expectedParameters: ["author": "john%40email.com"]),
-            ConstructURLTestCase(baseURL,
-                                 path,
-                              ["created": "2021-06-18T09:00:00Z"],
-                              expectedParameters: ["created": "2021-06-18T09%3A00%3A00Z"]),
-            ConstructURLTestCase(baseURL,
-                                 path,
-                                 [
-                                  "created": "2021-06-18T09:00:00Z",
-                                  "param1": "query!",
-                                  "param2": "!*';:@&=+$,/?%#[]()\\"],
-                                 expectedParameters: [
-                                    "created": "2021-06-18T09%3A00%3A00Z",
-                                    "param1": "query%21",
-                                    "param2": "%21%2A%27%3B%3A%40%26%3D%2B%24%2C%2F%3F%25%23%5B%5D%28%29%5C"]),
-            ConstructURLTestCase(baseURL,
-                                 path,
-                                 nil,
-                                 expectedParameters: nil),
-            ConstructURLTestCase(baseURL, nil, nil, expectedParameters: nil),
-            ConstructURLTestCase(baseURL,
-                                 path,
-                                 ["author": "john%40email.com"],
-                                 expectedParameters: ["author": "john%40email.com"])
+            base.withInput(.unencodedEmail).expecting(.unencodedEmail),
+            base.withInput(.encodedEmail).expecting(.unencodedEmail),
+            base.withInput(.unencodedDate).expecting(.unencodedDate),
+            base.withInput(.encodedDate).expecting(.unencodedDate),
+            base.withInput(.nilCase).expecting(.nilCase)
         ]
+
         for (index, test) in testCases.enumerated() {
             let resultURL = try RESTOperationRequestUtils.constructURL(
                 for: test.baseURL,
-                with: test.path,
-                with: test.queryParameters)
-            try assertQueryParameters(testCase: index, withURL: resultURL, expected: test.expectedParameters)
+                withPath: test.path,
+                withParams: test.inputParams
+            )
+
+            try assertQueryParameters(
+                testCase: index,
+                withURL: resultURL,
+                expected: test.expectedOutputParams
+            )
         }
     }
 
     func testConstructURLRequest() throws {
         let baseURL = URL(string: "https://aws.amazon.com")!
-        let url = try RESTOperationRequestUtils.constructURL(for: baseURL, with: "/projects", with: nil)
-        let urlRequest = RESTOperationRequestUtils.constructURLRequest(with: url,
-                                                                       operationType: .get,
-                                                                       headers: nil,
-                                                                       requestPayload: nil)
+        let url = try RESTOperationRequestUtils.constructURL(
+            for: baseURL,
+            withPath: "/projects",
+            withParams: nil
+        )
+
+        let urlRequest = RESTOperationRequestUtils.constructURLRequest(
+            with: url,
+            operationType: .get,
+            headers: nil,
+            requestPayload: nil
+        )
 
         XCTAssertEqual(urlRequest.httpMethod, RESTOperationType.get.rawValue)
 
@@ -103,10 +84,70 @@ class RESTRequestUtilsTests: XCTestCase {
         let baseURL = URL(string: "https://aws.amazon.com")!
         let paramValue = String(
             bytes: [0xd8, 0x00] as [UInt8],
-            encoding: String.Encoding.utf16BigEndian)!
+            encoding: String.Encoding.utf16BigEndian
+        )!
         let invalidQueryParams: [String: String] = ["param": paramValue]
-        XCTAssertThrowsError(try RESTOperationRequestUtils.constructURL(for: baseURL,
-                                                             with: "/projects",
-                                                             with: invalidQueryParams))
+        XCTAssertThrowsError(
+            try RESTOperationRequestUtils.constructURL(
+                for: baseURL,
+                withPath: "/projects",
+                withParams: invalidQueryParams
+            )
+        )
+    }
+}
+
+
+extension RESTRequestUtilsTests {
+    private struct ConstructURLTestCase {
+        let baseURL: URL
+        let path: String?
+        var inputParams: [String: String]?
+        var expectedOutputParams: [String: String]?
+
+        init(
+            baseURL: URL,
+            path: String?,
+            inputParams: [String: String]? = nil,
+            expectedOutputParams: [String: String]? = nil
+        ) {
+            self.baseURL = baseURL
+            self.path = path
+            self.inputParams = inputParams
+            self.expectedOutputParams = expectedOutputParams
+        }
+
+        struct Params {
+            let value: [String: String]?
+            static let unencodedEmail = Params(value: ["author": "john@email.com"])
+            static let encodedEmail = Params(value: ["author": "john%40email.com"])
+            static let unencodedDate = Params(value: ["created": "2021-06-18T09:00:00Z"])
+            static let encodedDate = Params(value: ["created": "2021-06-18T09%3A00%3A00Z"])
+            static let unencodedVarious = Params(
+                value: [
+                    "created": "2021-06-18T09%3A00%3A00Z",
+                    "param1": "query%21"
+                ]
+            )
+            static let encodedVarious = Params(
+                value: [
+                    "created": "2021-06-18T09:00:00Z",
+                    "param1": "query!"
+                ]
+            )
+            static let nilCase = Params(value: nil)
+        }
+
+        func withInput(_ inputParams: Params) -> Self {
+            var copy = self
+            copy.inputParams = inputParams.value
+            return self
+        }
+
+        func expecting(_ outputParams: Params) -> Self {
+            var copy = self
+            copy.expectedOutputParams = outputParams.value
+            return self
+        }
     }
 }
