@@ -33,7 +33,7 @@ final class RESTOperationRequestUtils {
             components.path.append(path)
         }
 
-        if let queryParameters {
+        if let queryParameters = queryParameters {
             components.queryItems = try prepareQueryParamsForSigning(params: queryParameters)
         }
 
