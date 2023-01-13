@@ -283,3 +283,40 @@ type Transcript @model {
   language: String
   phoneCall: PhoneCall @belongsTo
 }
+
+# LL.14
+
+enum PostStatus {
+  ACTIVE
+  INACTIVE
+}
+
+type User14 @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  username: String!
+  posts: [Post14] @hasMany
+  comments: [Comment14] @hasMany
+  settings: UserSettings14 @hasOne
+}
+
+type UserSettings14 @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  language: String
+  user: User14! @belongsTo
+}
+
+type Post14 @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String!
+  rating: Int!
+  status: PostStatus!
+  comments: [Comment14] @hasMany
+  author: User14! @belongsTo
+}
+
+type Comment14 @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  content: String
+  post: Post14 @belongsTo
+  author: User14! @belongsTo
+}
