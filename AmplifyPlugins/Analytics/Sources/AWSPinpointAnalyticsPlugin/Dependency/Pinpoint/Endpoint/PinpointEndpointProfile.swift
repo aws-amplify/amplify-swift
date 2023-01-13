@@ -61,8 +61,12 @@ class PinpointEndpointProfile: Codable, AnalyticsPropertiesModel {
             addAttribute(plan, forKey: Constants.AttributeKeys.plan)
         }
 
-        if let properties = userProfile.properties {
-            addProperties(properties)
+        if let customProperties = userProfile.endpointCustomProperties {
+            addCustomProperties(customProperties)
+        }
+
+        if let userProperties = userProfile.endpointUserProperties {
+            addUserProperties(userProperties)
         }
 
         if let userLocation = userProfile.location {
@@ -100,6 +104,26 @@ class PinpointEndpointProfile: Codable, AnalyticsPropertiesModel {
 
     func removeAllMetrics() {
         metrics = [:]
+    }
+
+    private func addCustomProperties(_ properties: [String: AnalyticsPropertyValue]) {
+        addProperties(properties)
+    }
+
+    private func addUserProperties(_ properties: [String: AnalyticsPropertyValue]) {
+        var userAttributes = user.userAttributes ?? [:]
+        for (key, value) in properties {
+            if let value = value as? String {
+                userAttributes[key] = [value]
+            } else if let value = value as? Int {
+                userAttributes[key] = [String(value)]
+            } else if let value = value as? Double {
+                userAttributes[key] = [String(value)]
+            } else if let value = value as? Bool {
+                userAttributes[key] = [String(value)]
+            }
+        }
+        user.userAttributes = userAttributes
     }
 }
 

@@ -51,11 +51,18 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
             }
         }
 
-        let userProfile = AnalyticsUserProfile(name: testName,
+        var userProfile = AnalyticsUserProfile(name: testName,
                                                email: testEmail,
                                                plan: testPlan,
                                                location: testLocation,
                                                properties: testProperties)
+        userProfile.addPinpointEndpointUserProperty("endpointUserAttributeValue",
+                                                    forKey: "endpointUserAttribute")
+        let endpointProperties: AnalyticsProperties = [
+            "endpointCustomAttribute": "endpointCustomAttributeValue",
+            "endpointCustomMetric": 2
+        ]
+        userProfile.addPinpointEndpointProperties(endpointProperties)
         let expectedEndpointProfile = PinpointEndpointProfile(applicationId: "appId",
                                                               endpointId: "endpointId")
         expectedEndpointProfile.addUserId(testIdentityId)
@@ -66,6 +73,16 @@ class AWSPinpointAnalyticsPluginClientBehaviorTests: AWSPinpointAnalyticsPluginT
         waitForExpectations(timeout: 1)
         mockPinpoint.verifyCurrentEndpointProfile()
         mockPinpoint.verifyUpdate(expectedEndpointProfile)
+
+        guard let profile = mockPinpoint.updateEndpointProfileValue else {
+            XCTFail("Expected endpoint profile")
+            return
+        }
+
+        XCTAssertEqual(profile.user.userAttributes?["endpointUserAttribute"]?.first, "endpointUserAttributeValue")
+        XCTAssertEqual(profile.attributes["endpointCustomAttribute"]?.first, "endpointCustomAttributeValue")
+        XCTAssertEqual(profile.metrics["endpointCustomMetric"], 2)
+        XCTAssertEqual(profile.attributes.count + profile.metrics.count, testProperties.count + endpointProperties.count + 3) // name, email and plan are added as attributes
     }
 
     /// Given: AnalyticsPlugin is disabled

@@ -35,7 +35,7 @@ public struct AnalyticsUserProfile {
     public init(name: String? = nil,
                 email: String? = nil,
                 plan: String? = nil,
-                location: Location?,
+                location: Location? = nil,
                 properties: AnalyticsProperties? = nil) {
         self.name = name
         self.email = email
