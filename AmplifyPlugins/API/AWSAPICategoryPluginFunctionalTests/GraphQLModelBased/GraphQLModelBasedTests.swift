@@ -212,12 +212,25 @@ class GraphQLModelBasedTests: XCTestCase {
             post.rating == 12.3 &&
             post.draft == true
 
-        _ = Amplify.API.query(request: .list(Post.self, where: predicate)) { event in
+        _ = Amplify.API.query(request: .paginatedList(Post.self, where: predicate)) { event in
             switch event {
             case .success(let graphQLResponse):
-                guard case let .success(posts) = graphQLResponse else {
+                guard case var .success(posts) = graphQLResponse else {
                     XCTFail("Missing successful response")
                     return
+                }
+                while posts.isEmpty, posts.hasNextPage() {
+                    let getNextPageCompleted = self.expectation(description: "get next page completed")
+                    posts.getNextPage { result in
+                        switch result {
+                        case .success(let nextPage):
+                            posts = nextPage
+                            getNextPageCompleted.fulfill()
+                        case .failure(let error):
+                            XCTFail("Failed with error \(error)")
+                        }
+                    }
+                    self.wait(for: [getNextPageCompleted], timeout: TestCommonConstants.networkTimeout)
                 }
                 XCTAssertEqual(posts.count, 1)
                 guard let singlePost = posts.first else {
