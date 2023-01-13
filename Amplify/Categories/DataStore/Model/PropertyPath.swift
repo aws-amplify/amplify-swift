@@ -123,4 +123,8 @@ open class ModelPath<ModelType: Model> : PropertyContainerPath {
     public func time(_ name: String) -> FieldPath<Temporal.Time> {
         FieldPath(name: name, parent: self)
     }
+    
+    public func int(_ name: String) -> FieldPath<Int> {
+        FieldPath(name: name, parent: self)
+    }
 }
