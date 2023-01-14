@@ -21,6 +21,8 @@ struct VerifySignInChallenge: Action {
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
+        let username = challenge.username
+        var deviceMetadata = DeviceMetadata.noData
 
         do {
             let userpoolEnv = try environment.userPoolEnvironment()
@@ -29,7 +31,7 @@ struct VerifySignInChallenge: Action {
             let challengeType = challenge.challenge
             let responseKey = try challenge.getChallengeKey()
 
-            let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
+            deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
                 for: username,
                 environment: environment)
 
@@ -52,6 +54,15 @@ struct VerifySignInChallenge: Action {
             logVerbose("\(#fileID) Sending event \(responseEvent)",
                        environment: environment)
             await dispatcher.send(responseEvent)
+        } catch let error where deviceNotFound(error: error, deviceMetadata: deviceMetadata) {
+            logVerbose("\(#fileID) Received device not found \(error)", environment: environment)
+            // Remove the saved device details and retry verify challenge
+            await DeviceMetadataHelper.removeDeviceMetaData(of: username, environment: environment)
+            let event = SignInChallengeEvent(
+                eventType: .retryVerifyChallengeAnswer(confirmSignEventData)
+            )
+            logVerbose("\(#fileID) Sending event \(event)", environment: environment)
+            await dispatcher.send(event)
         } catch let error as SignInError {
             let errorEvent = SignInEvent(eventType: .throwAuthError(error))
             logVerbose("\(#fileID) Sending event \(errorEvent)",
@@ -64,6 +75,20 @@ struct VerifySignInChallenge: Action {
                        environment: environment)
             await dispatcher.send(errorEvent)
         }
+    }
+
+    func deviceNotFound(error: Error, deviceMetadata: DeviceMetadata) -> Bool {
+
+        // If deviceMetadata was not send, the error returned is not from device not found.
+        if case .noData = deviceMetadata {
+            return false
+        }
+
+        if let serviceError: RespondToAuthChallengeOutputError = error.internalAWSServiceError(),
+           case .resourceNotFoundException = serviceError {
+            return true
+        }
+        return false
     }
 
 }
