@@ -310,7 +310,6 @@ class ProcessMutationErrorFromCloudOperationTests: XCTestCase {
     }
 
     func testProcessMutationErrorFromCloudOperationSuccessForUnauthorized() throws {
-        let remotePost = Post(id: localPost.id, title: "remoteTitle", content: "remoteContent", createdAt: .now())
         let mutationEvent = try MutationEvent(model: localPost, modelSchema: localPost.schema, mutationType: .delete)
         let graphQLResponseError = GraphQLResponseError<MutationSync<AnyModel>>.error([graphQLError(.unauthorized)])
         let expectCompletion = expectation(description: "Expect to complete error processing")

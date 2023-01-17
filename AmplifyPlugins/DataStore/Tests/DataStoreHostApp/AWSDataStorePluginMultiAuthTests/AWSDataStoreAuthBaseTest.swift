@@ -225,16 +225,9 @@ extension AWSDataStoreAuthBaseTest {
     func signOut(file: StaticString = #file,
                  line: UInt = #line) async {
         let signoutInvoked = AsyncExpectation(description: "sign out completed")
-        do {
-            _ = try await Amplify.Auth.signOut()
-            Task {
-                await signoutInvoked.fulfill()
-            }
-        } catch(let error) {
-            XCTFail("Signout failure \(error)", file: file, line: line)
-            Task {
-                await signoutInvoked.fulfill() // won't count as pass
-            }
+        Task {
+            _ = await Amplify.Auth.signOut()
+            await signoutInvoked.fulfill()
         }
         
         await waitForExpectations([signoutInvoked], timeout: TestCommonConstants.networkTimeout)

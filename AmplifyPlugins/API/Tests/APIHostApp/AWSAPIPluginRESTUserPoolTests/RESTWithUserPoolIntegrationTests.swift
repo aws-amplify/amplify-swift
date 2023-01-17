@@ -36,7 +36,7 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
 
     override func tearDown() async throws {
         if try await isSignedIn() {
-            try await signOut()
+            await signOut()
         }
         await Amplify.reset()
     }
@@ -93,7 +93,7 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
     }
 
     func testGetAPIFailedWithSignedOutError() async throws {
-        try await signOut()
+        await signOut()
         let request = RESTRequest(path: "/items")
         do {
             _ = try await Amplify.API.get(request: request)
@@ -125,7 +125,7 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
     
     func createAuthenticatedUser() async throws {
         if try await isSignedIn() {
-            try await signOut()
+            await signOut()
         }
         try await signUp()
         try await signIn()
@@ -154,7 +154,7 @@ class RESTWithUserPoolIntegrationTests: XCTestCase {
         }
     }
     
-    func signOut() async throws {
-        try await Amplify.Auth.signOut()
+    func signOut() async {
+        _ = await Amplify.Auth.signOut()
     }
 }
