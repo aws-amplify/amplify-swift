@@ -13,6 +13,7 @@ import XCTest
 import AWSCognitoIdentity
 import AWSCognitoIdentityProvider
 import AWSPluginsCore
+import ClientRuntime
 
 @testable import AWSPluginsTestCommon
 
@@ -631,6 +632,61 @@ class AWSAuthFetchSignInSessionOperationTests: BaseAuthorizationTests {
         guard case .failure(let tokenError) = tokensResult,
               case .signedOut =  tokenError else {
             XCTFail("Should return signedOut error")
+            return
+        }
+    }
+
+    /// Test signedIn session with notAuthorized error
+    ///
+    /// - Given: Given an auth plugin with signedIn state
+    /// - When:
+    ///    - I invoke fetchAuthSession and mock notAuthorizedError
+    /// - Then:
+    ///    - I should get an a valid session with the following details:
+    ///         - isSignedIn = true
+    ///         - aws credentails = .sessionExpired
+    ///         - identity id = .sessionExpired
+    ///         - cognito tokens = .sessionExpired
+    ///
+    func testSignInSessionWithNotAuthorizedError() async throws {
+        let initialState = AuthState.configured(
+            AuthenticationState.signedIn(.testData),
+            AuthorizationState.sessionEstablished(
+                AmplifyCredentials.testDataWithExpiredTokens))
+
+        let initAuth: MockIdentityProvider.MockInitiateAuthResponse = { _ in
+            let notAuthorized = InitiateAuthOutputError.notAuthorizedException(.init(message: "NotAuthorized"))
+            let serviceError = SdkError<InitiateAuthOutputError>.service(notAuthorized, .init(body: .none, statusCode: .accepted))
+            let clientError = ClientError.retryError(serviceError)
+            throw SdkError<InitiateAuthOutputError>.client(clientError, nil)
+        }
+
+        let plugin = configurePluginWith(
+            userPool: { MockIdentityProvider(mockInitiateAuthResponse: initAuth) },
+            initialState: initialState)
+
+        let session = try await plugin.fetchAuthSession(options: AuthFetchSessionRequest.Options())
+
+        XCTAssertTrue(session.isSignedIn)
+        let credentialsResult = (session as? AuthAWSCredentialsProvider)?.getAWSCredentials()
+
+        guard case .failure(let error) = credentialsResult,
+                case .sessionExpired = error else {
+            XCTFail("Should return sessionExpired error")
+            return
+        }
+
+        let identityIdResult = (session as? AuthCognitoIdentityProvider)?.getIdentityId()
+        guard case .failure(let identityIdError) = identityIdResult,
+              case .sessionExpired = identityIdError else {
+            XCTFail("Should return sessionExpired error")
+            return
+        }
+
+        let tokensResult = (session as? AuthCognitoTokensProvider)?.getCognitoTokens()
+        guard case .failure(let tokenError) = tokensResult,
+              case .sessionExpired = tokenError else {
+            XCTFail("Should return sessionExpired error")
             return
         }
     }

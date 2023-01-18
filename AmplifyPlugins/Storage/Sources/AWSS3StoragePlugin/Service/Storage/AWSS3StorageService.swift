@@ -66,6 +66,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
             #else
             let sessionConfiguration = URLSessionConfiguration.background(withIdentifier: storageConfiguration.sessionIdentifier)
             #endif
+            sessionConfiguration.urlCache = nil
             sessionConfiguration.allowsCellularAccess = storageConfiguration.allowsCellularAccess
             sessionConfiguration.timeoutIntervalForResource = TimeInterval(storageConfiguration.timeoutIntervalForResource)
             _sessionConfiguration = sessionConfiguration

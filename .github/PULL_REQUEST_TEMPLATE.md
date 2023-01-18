@@ -1,8 +1,11 @@
-*Issue #, if available:*
+## Issue \#
+<!-- If applicable, please link to issue(s) this change addresses -->
 
-*Description of changes:*
+## Description
+<!-- Why is this change required? What problem does it solve? -->
 
-*Check points: (check or cross out if not relevant)*
+## General Checklist
+<!-- Check or cross out if not relevant -->
 
 - [ ] Added new tests to cover change, if needed
 - [ ] Build succeeds with all target using Swift Package Manager
@@ -11,15 +14,7 @@
 - [ ] Security oriented best practices and standards are followed (e.g. using input sanitization, principle of least privilege, etc)
 - [ ] Documentation update for the change if required
 - [ ] PR title conforms to conventional commit style
+- [ ] New or updated tests include `Given When Then` inline code documentation and are named accordingly `testThing_condition_expectation()`
 - [ ] If breaking change, documentation/changelog update with migration instructions
-
-*DataStore checkpoints (check when completed)*
-
-- [ ] Ran AWSDataStorePluginIntegrationTests
-- [ ] Ran AWSDataStorePluginV2Tests
-- [ ] Ran AWSDataStorePluginMultiAuthTests
-- [ ] Ran AWSDataStorePluginCPKTests
-- [ ] Ran AWSDataStorePluginAuthCognitoTests
-- [ ] Ran AWSDataStorePluginAuthIAMTests
 
 By submitting this pull request, I confirm that my contribution is made under the terms of the Apache 2.0 license.

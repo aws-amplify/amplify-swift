@@ -177,7 +177,8 @@ extension AWSDataStorePrimaryKeyBaseTest {
     ///   - onFailure: failure callback
     func assertMutationsParentChild<P: Model & ModelIdentifiable,
                                     C: Model & ModelIdentifiable>(parent: P,
-                                                                  child: C) async throws {
+                                                                  child: C,
+                                                                  shouldDeleteParent: Bool = true) async throws {
         let mutationSaveProcessed = expectation(description: "mutation saved processed")
         mutationSaveProcessed.expectedFulfillmentCount = 2
         
@@ -206,6 +207,15 @@ extension AWSDataStorePrimaryKeyBaseTest {
 
         await waitForExpectations(timeout: 60)
         
+        guard shouldDeleteParent else {
+            return
+        }
+        
+        try await assertDeleteMutation(parent: parent, child: child)
+    }
+    
+    func assertDeleteMutation<P: Model & ModelIdentifiable,
+                              C: Model & ModelIdentifiable>(parent: P, child: C) async throws {
         let mutationDeleteProcessed = expectation(description: "mutation delete processed")
         Amplify
             .Hub

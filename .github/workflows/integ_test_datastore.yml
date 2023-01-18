@@ -30,8 +30,7 @@ jobs:
           aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET_INTEG }}
 
   datastore-integration-test:
-    continue-on-error: true
-    timeout-minutes: 15
+    timeout-minutes: 30
     needs: prepare-for-test
     runs-on: macos-12
     environment: IntegrationTest

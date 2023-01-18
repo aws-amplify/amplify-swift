@@ -30,4 +30,3 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           gh pr close $PR_NUMBER --comment "Invalid PR!  PRs targeting the release branch must be created by the GHA release workflow."
-          exit 1

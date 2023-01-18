@@ -28,6 +28,14 @@
 		68828E4628C2736C006E7C0A /* AWSS3StoragePluginProgressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB08C28BEAF8E00C8A6EB /* AWSS3StoragePluginProgressTests.swift */; };
 		68828E4728C27745006E7C0A /* AWSS3StoragePluginPutDataResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB08828BEAF8E00C8A6EB /* AWSS3StoragePluginPutDataResumabilityTests.swift */; };
 		68828E4828C2AAA6006E7C0A /* AWSS3StoragePluginGetDataResumabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB08B28BEAF8E00C8A6EB /* AWSS3StoragePluginGetDataResumabilityTests.swift */; };
+		97914BA32955798D002000EA /* AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEAF28E748270000C36A /* AsyncTesting.swift */; };
+		97914BA52955798D002000EA /* AsyncExpectation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEB028E748270000C36A /* AsyncExpectation.swift */; };
+		97914BB02955798D002000EA /* XCTestCase+AsyncTesting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681DFEB128E748270000C36A /* XCTestCase+AsyncTesting.swift */; };
+		97914BB22955798D002000EA /* TestConfigHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB09D28BEAFE700C8A6EB /* TestConfigHelper.swift */; };
+		97914BBB29557A52002000EA /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 97914BBA29557A52002000EA /* README.md */; };
+		97914BBC29557A81002000EA /* StorageStressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97914B972955797E002000EA /* StorageStressTests.swift */; };
+		97914BBD29557AB6002000EA /* AWSS3StoragePluginTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB07E28BEAF8E00C8A6EB /* AWSS3StoragePluginTestBase.swift */; };
+		97914BBE29557DBD002000EA /* AuthSignInHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684FB0C228BEB45600C8A6EB /* AuthSignInHelper.swift */; };
 		B4A5B59B2919730700D873D2 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = B4A5B59A2919730700D873D2 /* Amplify */; };
 		B4A5B59D2919730700D873D2 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = B4A5B59C2919730700D873D2 /* AWSCognitoAuthPlugin */; };
 		B4A5B59F2919730700D873D2 /* AWSS3StoragePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = B4A5B59E2919730700D873D2 /* AWSS3StoragePlugin */; };
@@ -35,6 +43,13 @@
 
 /* Begin PBXContainerItemProxy section */
 		684FB0AD28BEB07200C8A6EB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 684FB06228BEAF1500C8A6EB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 684FB06928BEAF1500C8A6EB;
+			remoteInfo = StorageHostApp;
+		};
+		97914BA02955798D002000EA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 684FB06228BEAF1500C8A6EB /* Project object */;
 			proxyType = 1;
@@ -69,6 +84,9 @@
 		684FB0A928BEB07200C8A6EB /* AWSS3StoragePluginIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AWSS3StoragePluginIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		684FB0C228BEB45600C8A6EB /* AuthSignInHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSignInHelper.swift; sourceTree = "<group>"; };
 		684FB0C528BEB84800C8A6EB /* StorageHostApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = StorageHostApp.entitlements; sourceTree = "<group>"; };
+		97914B972955797E002000EA /* StorageStressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageStressTests.swift; sourceTree = "<group>"; };
+		97914BB92955798D002000EA /* StorageStressTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StorageStressTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		97914BBA29557A52002000EA /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		B4A5B5982919725100D873D2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		B4A5B5992919727700D873D2 /* amplify-swift */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "amplify-swift"; path = ../../../..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -85,6 +103,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		684FB0A628BEB07200C8A6EB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		97914BB32955798D002000EA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -121,6 +146,7 @@
 				684FB07B28BEAF5500C8A6EB /* Packages */,
 				684FB07D28BEAF8E00C8A6EB /* AWSS3StoragePluginIntegrationTests */,
 				684FB06C28BEAF1500C8A6EB /* StorageHostApp */,
+				97914B962955797E002000EA /* StorageStressTests */,
 				684FB06B28BEAF1500C8A6EB /* Products */,
 				684FB0A028BEB02E00C8A6EB /* Frameworks */,
 			);
@@ -131,6 +157,7 @@
 			children = (
 				684FB06A28BEAF1500C8A6EB /* StorageHostApp.app */,
 				684FB0A928BEB07200C8A6EB /* AWSS3StoragePluginIntegrationTests.xctest */,
+				97914BB92955798D002000EA /* StorageStressTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -200,6 +227,15 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
+		97914B962955797E002000EA /* StorageStressTests */ = {
+			isa = PBXGroup;
+			children = (
+				97914BBA29557A52002000EA /* README.md */,
+				97914B972955797E002000EA /* StorageStressTests.swift */,
+			);
+			path = StorageStressTests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -249,6 +285,27 @@
 			productReference = 684FB0A928BEB07200C8A6EB /* AWSS3StoragePluginIntegrationTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		97914B9E2955798D002000EA /* StorageStressTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 97914BB62955798D002000EA /* Build configuration list for PBXNativeTarget "StorageStressTests" */;
+			buildPhases = (
+				97914BA12955798D002000EA /* Sources */,
+				97914BB32955798D002000EA /* Frameworks */,
+				97914BB42955798D002000EA /* Resources */,
+				97914BB52955798D002000EA /* Copy Configuration */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				97914B9F2955798D002000EA /* PBXTargetDependency */,
+			);
+			name = StorageStressTests;
+			packageProductDependencies = (
+			);
+			productName = AWSS3StoragePluginIntegrationTests;
+			productReference = 97914BB92955798D002000EA /* StorageStressTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -256,7 +313,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1340;
+				LastSwiftUpdateCheck = 1400;
 				LastUpgradeCheck = 1340;
 				TargetAttributes = {
 					684FB06928BEAF1500C8A6EB = {
@@ -283,6 +340,7 @@
 			targets = (
 				684FB06928BEAF1500C8A6EB /* StorageHostApp */,
 				684FB0A828BEB07200C8A6EB /* AWSS3StoragePluginIntegrationTests */,
+				97914B9E2955798D002000EA /* StorageStressTests */,
 			);
 		};
 /* End PBXProject section */
@@ -304,10 +362,38 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		97914BB42955798D002000EA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				97914BBB29557A52002000EA /* README.md in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
 		684FB0C428BEB81900C8A6EB /* Copy Configuration */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Configuration";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "${PROJECT_DIR}/copy_configuration.sh\n";
+			showEnvVarsInLog = 0;
+		};
+		97914BB52955798D002000EA /* Copy Configuration */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -363,6 +449,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		97914BA12955798D002000EA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				97914BBE29557DBD002000EA /* AuthSignInHelper.swift in Sources */,
+				97914BBD29557AB6002000EA /* AWSS3StoragePluginTestBase.swift in Sources */,
+				97914BBC29557A81002000EA /* StorageStressTests.swift in Sources */,
+				97914BA32955798D002000EA /* AsyncTesting.swift in Sources */,
+				97914BA52955798D002000EA /* AsyncExpectation.swift in Sources */,
+				97914BB02955798D002000EA /* XCTestCase+AsyncTesting.swift in Sources */,
+				97914BB22955798D002000EA /* TestConfigHelper.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -382,6 +482,11 @@
 			isa = PBXTargetDependency;
 			target = 684FB06928BEAF1500C8A6EB /* StorageHostApp */;
 			targetProxy = 684FB0AD28BEB07200C8A6EB /* PBXContainerItemProxy */;
+		};
+		97914B9F2955798D002000EA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 684FB06928BEAF1500C8A6EB /* StorageHostApp */;
+			targetProxy = 97914BA02955798D002000EA /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -509,6 +614,7 @@
 				CODE_SIGN_ENTITLEMENTS = StorageHostApp/StorageHostApp.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = W3DRXD72QU;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StorageHostApp/Info.plist;
@@ -539,6 +645,7 @@
 				CODE_SIGN_ENTITLEMENTS = StorageHostApp/StorageHostApp.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = W3DRXD72QU;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StorageHostApp/Info.plist;
@@ -565,6 +672,7 @@
 			baseConfigurationReference = 0311113428EBED6500D58441 /* Tests.xcconfig */;
 			buildSettings = {
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W3DRXD72QU;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
 				MARKETING_VERSION = 1.0;
@@ -580,10 +688,43 @@
 			baseConfigurationReference = 0311113428EBED6500D58441 /* Tests.xcconfig */;
 			buildSettings = {
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W3DRXD72QU;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.AWSS3StoragePluginIntegrationTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		97914BB72955798D002000EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0311113428EBED6500D58441 /* Tests.xcconfig */;
+			buildSettings = {
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = IntegTests;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.StorageStressTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		97914BB82955798D002000EA /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0311113428EBED6500D58441 /* Tests.xcconfig */;
+			buildSettings = {
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = IntegTests;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aws.amplify.StorageStressTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -616,6 +757,15 @@
 			buildConfigurations = (
 				684FB0B028BEB07200C8A6EB /* Debug */,
 				684FB0B128BEB07200C8A6EB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		97914BB62955798D002000EA /* Build configuration list for PBXNativeTarget "StorageStressTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				97914BB72955798D002000EA /* Debug */,
+				97914BB82955798D002000EA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

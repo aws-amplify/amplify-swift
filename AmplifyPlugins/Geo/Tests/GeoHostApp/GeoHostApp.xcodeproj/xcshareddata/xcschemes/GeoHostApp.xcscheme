@@ -32,9 +32,20 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "97AD225F28231287001AFCC1"
+               BlueprintIdentifier = "97DB823A282339B700FC2228"
                BuildableName = "AWSLocationGeoPluginIntegrationTests.xctest"
                BlueprintName = "AWSLocationGeoPluginIntegrationTests"
+               ReferencedContainer = "container:GeoHostApp.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "97914B6D29556F38002000EA"
+               BuildableName = "GeoStressTests.xctest"
+               BlueprintName = "GeoStressTests"
                ReferencedContainer = "container:GeoHostApp.xcodeproj">
             </BuildableReference>
          </TestableReference>

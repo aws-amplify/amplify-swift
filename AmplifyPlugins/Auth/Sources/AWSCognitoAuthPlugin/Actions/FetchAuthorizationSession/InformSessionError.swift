@@ -37,12 +37,14 @@ struct InformSessionError: Action {
     }
 
     func isNotAuthorizedError(_ error: Error) -> Bool {
-        if let initiateAuthError = error as? InitiateAuthOutputError,
-           case .notAuthorizedException = initiateAuthError {
+
+
+        if let serviceError: GetCredentialsForIdentityOutputError = error.internalAWSServiceError(),
+           case .notAuthorizedException = serviceError {
             return true
         }
-        if let initiateAuthError = error as? GetCredentialsForIdentityOutputError,
-           case .notAuthorizedException = initiateAuthError {
+        if let serviceError: InitiateAuthOutputError = error.internalAWSServiceError(),
+           case .notAuthorizedException = serviceError {
             return true
         }
         return false

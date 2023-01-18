@@ -53,7 +53,7 @@ jobs:
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           project_path: ./AmplifyPlugins/Analytics/Tests/AnalyticsHostApp
-          scheme: AnalyticsHostApp
+          scheme: AWSPinpointAnalyticsPluginIntegrationTests
 
   auth-integration-test:
     needs: prepare-for-test
@@ -79,7 +79,7 @@ jobs:
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           project_path: ./AmplifyPlugins/Auth/Tests/AuthHostApp/
-          scheme: AuthHostApp
+          scheme: AuthIntegrationTests
 
   geo-integration-test:
     needs: prepare-for-test
@@ -105,11 +105,10 @@ jobs:
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           project_path: ./AmplifyPlugins/Geo/Tests/GeoHostApp/
-          scheme: GeoHostApp
+          scheme: AWSLocationGeoPluginIntegrationTests
 
 
   storage-integration-test:
-    continue-on-error: true
     needs: prepare-for-test
     runs-on: macos-12
     environment: IntegrationTest
@@ -133,4 +132,4 @@ jobs:
         uses: ./.github/composite_actions/run_xcodebuild_test
         with:
           project_path: ./AmplifyPlugins/Storage/Tests/StorageHostApp/
-          scheme: StorageHostApp
+          scheme: AWSS3StoragePluginIntegrationTests

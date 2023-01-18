@@ -130,10 +130,14 @@ extension GraphQLConnectionScenario3Tests {
 
         let post = Post3.keys
         let predicate = post.id == uuid && post.title == uniqueTitle
-        let graphQLResponse = try await Amplify.API.query(request: .list(Post3.self, where: predicate))
-        guard case let .success(posts) = graphQLResponse else {
+        let graphQLResponse = try await Amplify.API.query(request: .list(Post3.self, where: predicate, limit: 1000))
+        guard case var .success(posts) = graphQLResponse else {
             XCTFail("Missing successful response")
             return
+        }
+        
+        while posts.count == 0 && posts.hasNextPage() {
+            posts = try await posts.getNextPage()
         }
         XCTAssertEqual(posts.count, 1)
         guard let singlePost = posts.first else {
