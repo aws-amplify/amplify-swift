@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.3.1 (2023-01-18)
+
+### Bug Fixes
+
+- **API**: remove encoding step before feeding request to signer (#2666)
+
 ## 2.3.0 (2023-01-18)
 
 ### Features
