@@ -87,7 +87,6 @@ class RESTWithIAMIntegrationTests: XCTestCase {
     }
 
     func testGetAPIWithEncodedQueryParamsSuccess() async throws {
-        throw XCTSkip("This test is currently failing with 403 and needs to be fixed")
         let request = RESTRequest(path: "/items",
                                   queryParameters: [
                                     "user": "hello%40email.com",
@@ -99,7 +98,6 @@ class RESTWithIAMIntegrationTests: XCTestCase {
     }
 
     func testPutAPISuccess() async throws {
-        throw XCTSkip("This test is currently failing with 403 and needs to be fixed")
         let request = RESTRequest(path: "/items")
         let data = try await Amplify.API.put(request: request)
         let result = String(decoding: data, as: UTF8.self)

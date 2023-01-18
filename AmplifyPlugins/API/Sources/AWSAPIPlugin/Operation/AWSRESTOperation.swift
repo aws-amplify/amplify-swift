@@ -77,9 +77,11 @@ final public class AWSRESTOperation: AmplifyOperation<
         // Construct URL with path
         let url: URL
         do {
-            url = try RESTOperationRequestUtils.constructURL(for: endpointConfig.baseURL,
-                                                             with: request.path,
-                                                             with: request.queryParameters)
+            url = try RESTOperationRequestUtils.constructURL(
+                for: endpointConfig.baseURL,
+                withPath: request.path,
+                withParams: request.queryParameters
+            )
         } catch let error as APIError {
             dispatch(result: .failure(error))
             finish()
