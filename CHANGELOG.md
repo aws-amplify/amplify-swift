@@ -1,5 +1,20 @@
 # Changelog
 
+## 2.3.0 (2023-01-18)
+
+### Features
+
+- **api**: Update url cache for storage and api to nil (#2647)
+
+### Bug Fixes
+
+- **datastore**: skip has-many model to graphQL translation (#2661)
+- **auth**: Return session expired on revoke token (#2652)
+- **core**: Add proper handling of expired credentials (#2637)
+- Add missing integration test scheme for Storage and Analytics (#2646)
+- Change Integration Test Github action to run only integration test scheme (#2645)
+- upgrade to aws-sdk-swift v0.6.0 (#2620)
+
 ## 2.2.1 (2022-12-19)
 
 ### Bug Fixes
