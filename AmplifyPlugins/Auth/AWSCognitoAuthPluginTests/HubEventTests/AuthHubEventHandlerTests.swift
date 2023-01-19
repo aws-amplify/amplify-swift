@@ -12,12 +12,12 @@ import XCTest
 class AuthHubEventHandlerTests: XCTestCase {
 
     var authHandler: AuthHubEventHandler!
-    override func setUp() {
-        try? Amplify.configure()
+    override func setUpWithError() throws {
+        try Amplify.configure(AmplifyConfiguration())
         authHandler = AuthHubEventHandler()
     }
 
-    override func tearDown() {
+    override func tearDownWithError() throws {
         Amplify.reset()
         authHandler = nil
     }
