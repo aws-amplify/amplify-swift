@@ -65,11 +65,21 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
             finish()
             return
         }
-
+        
         // Retrieve endpoint configuration
         let endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig
+        let requestInterceptors: [URLRequestInterceptor]
+
         do {
             endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .graphQL)
+
+            if let pluginOptions = request.options.pluginOptions as? AWSPluginOptions,
+               let authType = pluginOptions.authType {
+                requestInterceptors = try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig,
+                                                                               authType: authType)
+            } else {
+                requestInterceptors = try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig)
+            }
         } catch let error as APIError {
             fail(error)
             return
@@ -77,19 +87,38 @@ public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner,
             fail(APIError.unknown("Could not get endpoint configuration", "", nil))
             return
         }
-
+        
+        var urlRequest = URLRequest(url: endpointConfig.baseURL)
+        
+        // Set User-Agent
+        urlRequest.setValue(AWSAPIPluginsCore.baseUserAgent(),
+                            forHTTPHeaderField: URLRequestConstants.Header.userAgent)
+        
+        // Intercept the request
+        for interceptor in requestInterceptors {
+            do {
+                urlRequest = try await interceptor.intercept(urlRequest)
+            } catch let error as APIError {
+                fail(error)
+                return
+            } catch {
+                fail(APIError.unknown("Could not validate request", "", nil))
+                return
+            }
+        }
+        
         // Retrieve request plugin option and
         // auth type in case of a multi-auth setup
         let pluginOptions = request.options.pluginOptions as? AWSPluginOptions
-
-        // Retrieve the subscription connection
+        
         subscriptionQueue.sync {
             do {
                 subscriptionConnection = try subscriptionConnectionFactory
                     .getOrCreateConnection(for: endpointConfig,
-                                              authService: authService,
-                                              authType: pluginOptions?.authType,
-                                              apiAuthProviderFactory: apiAuthProviderFactory)
+                                           urlRequest: urlRequest,
+                                           authService: authService,
+                                           authType: pluginOptions?.authType,
+                                           apiAuthProviderFactory: apiAuthProviderFactory)
             } catch {
                 let error = APIError.operationError("Unable to get connection for api \(endpointConfig.name)", "", error)
                 fail(error)
@@ -254,8 +283,18 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
 
         // Retrieve endpoint configuration
         let endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig
+        let requestInterceptors: [URLRequestInterceptor]
+
         do {
             endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .graphQL)
+
+            if let pluginOptions = request.options.pluginOptions as? AWSPluginOptions,
+               let authType = pluginOptions.authType {
+                requestInterceptors = try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig,
+                                                                               authType: authType)
+            } else {
+                requestInterceptors = try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig)
+            }
         } catch let error as APIError {
             dispatch(result: .failure(error))
             finish()
@@ -265,33 +304,57 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             finish()
             return
         }
-
-        // Retrieve request plugin option and
-        // auth type in case of a multi-auth setup
-        let pluginOptions = request.options.pluginOptions as? AWSPluginOptions
-
-        // Retrieve the subscription connection
-        subscriptionQueue.sync {
-            do {
-                subscriptionConnection = try subscriptionConnectionFactory
-                    .getOrCreateConnection(for: endpointConfig,
-                                              authService: authService,
-                                              authType: pluginOptions?.authType,
-                                              apiAuthProviderFactory: apiAuthProviderFactory)
-            } catch {
-                let error = APIError.operationError("Unable to get connection for api \(endpointConfig.name)", "", error)
-                dispatch(result: .failure(error))
-                finish()
-                return
+        
+        Task {
+            var urlRequest = URLRequest(url: endpointConfig.baseURL)
+            
+            // Set User-Agent
+            urlRequest.setValue(AWSAPIPluginsCore.baseUserAgent(),
+                                forHTTPHeaderField: URLRequestConstants.Header.userAgent)
+            
+            // Intercept the request
+            for interceptor in requestInterceptors {
+                do {
+                    urlRequest = try await interceptor.intercept(urlRequest)
+                } catch let error as APIError {
+                    dispatch(result: .failure(error))
+                    finish()
+                    return
+                } catch {
+                    dispatch(result: .failure(APIError.unknown("Could not get endpoint configuration", "", nil)))
+                    finish()
+                    return
+                }
             }
-
-            // Create subscription
-
-            subscriptionItem = subscriptionConnection?.subscribe(requestString: request.document,
-                                                                 variables: request.variables,
-                                                                 eventHandler: { [weak self] event, _ in
-                self?.onAsyncSubscriptionEvent(event: event)
-            })
+            
+            // Retrieve request plugin option and
+            // auth type in case of a multi-auth setup
+            let pluginOptions = request.options.pluginOptions as? AWSPluginOptions
+            let finalUrlRequest = urlRequest
+            // Retrieve the subscription connection
+            subscriptionQueue.sync {
+                do {
+                    subscriptionConnection = try subscriptionConnectionFactory
+                        .getOrCreateConnection(for: endpointConfig,
+                                               urlRequest: finalUrlRequest,
+                                               authService: authService,
+                                               authType: pluginOptions?.authType,
+                                               apiAuthProviderFactory: apiAuthProviderFactory)
+                } catch {
+                    let error = APIError.operationError("Unable to get connection for api \(endpointConfig.name)", "", error)
+                    dispatch(result: .failure(error))
+                    finish()
+                    return
+                }
+                
+                // Create subscription
+                
+                subscriptionItem = subscriptionConnection?.subscribe(requestString: request.document,
+                                                                     variables: request.variables,
+                                                                     eventHandler: { [weak self] event, _ in
+                    self?.onAsyncSubscriptionEvent(event: event)
+                })
+            }
         }
     }
 

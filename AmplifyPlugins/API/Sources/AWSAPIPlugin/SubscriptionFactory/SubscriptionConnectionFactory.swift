@@ -8,12 +8,14 @@
 import Amplify
 import AWSPluginsCore
 import AppSyncRealTimeClient
+import Foundation
 
 /// Protocol for the subscription factory
 protocol SubscriptionConnectionFactory {
 
     /// Get connection based on the connection type
     func getOrCreateConnection(for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
+                               urlRequest: URLRequest,
                                authService: AWSAuthServiceBehavior,
                                authType: AWSAuthorizationType?,
                                apiAuthProviderFactory: APIAuthProviderFactory) throws -> SubscriptionConnection

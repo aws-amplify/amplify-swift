@@ -23,22 +23,27 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
     private var apiToConnectionProvider: [MapperCacheKey: ConnectionProvider] = [:]
 
     func getOrCreateConnection(for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
+                               urlRequest: URLRequest,
                                authService: AWSAuthServiceBehavior,
                                authType: AWSAuthorizationType? = nil,
                                apiAuthProviderFactory: APIAuthProviderFactory) throws -> SubscriptionConnection {
         return try concurrencyQueue.sync {
             let apiName = endpointConfig.name
 
-            let url = endpointConfig.baseURL
-
-            let authInterceptor = try getInterceptor(for: getOrCreateAuthConfiguration(from: endpointConfig,
+            let authInterceptor = try self.getInterceptor(for: self.getOrCreateAuthConfiguration(from: endpointConfig,
                                                                                        authType: authType),
-                                                     authService: authService,
-                                                     apiAuthProviderFactory: apiAuthProviderFactory)
+                                                          authService: authService,
+                                                          apiAuthProviderFactory: apiAuthProviderFactory)
 
+            // TODO: consume AppSyncRTClient 3.0.0 and pass in `urlRequest` instead of `url`.
+            guard let url = urlRequest.url else {
+                throw APIError.invalidConfiguration(
+                    "",
+                    "", nil)
+            }
             // create or retrieve the connection provider. If creating, add interceptors onto the provider.
-            let connectionProvider = apiToConnectionProvider[MapperCacheKey(apiName: apiName, authType: authType)] ??
-                ConnectionProviderFactory.createConnectionProviderAsync(for: url,
+            let connectionProvider = self.apiToConnectionProvider[MapperCacheKey(apiName: apiName, authType: authType)] ??
+            ConnectionProviderFactory.createConnectionProviderAsync(for: url,
                                                                         authInterceptor: authInterceptor,
                                                                         connectionType: .appSyncRealtime)
 

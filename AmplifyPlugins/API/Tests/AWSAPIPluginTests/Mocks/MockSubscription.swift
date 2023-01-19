@@ -10,8 +10,10 @@ import Amplify
 
 import AWSPluginsCore
 import AppSyncRealTimeClient
+import Foundation
 
 struct MockSubscriptionConnectionFactory: SubscriptionConnectionFactory {
+    
     typealias OnGetOrCreateConnection = (
         AWSAPICategoryPluginConfiguration.EndpointConfig,
         AWSAuthServiceBehavior,
@@ -27,6 +29,7 @@ struct MockSubscriptionConnectionFactory: SubscriptionConnectionFactory {
 
     func getOrCreateConnection(
         for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
+        urlRequest: URLRequest,
         authService: AWSAuthServiceBehavior,
         authType: AWSAuthorizationType?,
         apiAuthProviderFactory: APIAuthProviderFactory
