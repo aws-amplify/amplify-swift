@@ -78,14 +78,39 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
 
         // Retrieve endpoint configuration
         let endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig
+        let reqeustInspectors: [URLRequestInterceptor]
         do {
             endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .graphQL)
+            if let pluginOptions = request.options.pluginOptions as? AWSPluginOptions,
+               let authType = pluginOptions.authType
+            {
+                reqeustInspectors = try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig, authType: authType)
+            } else {
+                reqeustInspectors = try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig)
+            }
         } catch let error as APIError {
             dispatch(result: .failure(error))
             finish()
             return
         } catch {
             dispatch(result: .failure(APIError.unknown("Could not get endpoint configuration", "", nil)))
+            finish()
+            return
+        }
+
+        var urlRequest = URLRequest(url: endpointConfig.baseURL)
+        do {
+            // set default user-agent value
+
+            for inspector in reqeustInspectors {
+                urlRequest = try inspector.intercept(urlRequest)
+            }
+        } catch let error as APIError {
+            dispatch(result: .failure(error))
+            finish()
+            return
+        } catch {
+            dispatch(result: .failure(APIError.unknown("Failed to intercept URLRequest", "", nil)))
             finish()
             return
         }
@@ -99,6 +124,7 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
             do {
                 subscriptionConnection = try subscriptionConnectionFactory
                     .getOrCreateConnection(for: endpointConfig,
+                                           urlRequest: urlRequest,
                                               authService: authService,
                                               authType: pluginOptions?.authType,
                                               apiAuthProviderFactory: apiAuthProviderFactory)
