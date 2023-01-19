@@ -101,7 +101,8 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         var urlRequest = URLRequest(url: endpointConfig.baseURL)
         do {
             // set default user-agent value
-
+            urlRequest.setValue(AmplifyAWSServiceConfiguration.baseUserAgent(),
+                                forHTTPHeaderField: URLRequestConstants.Header.userAgent)
             for inspector in reqeustInspectors {
                 urlRequest = try inspector.intercept(urlRequest)
             }
