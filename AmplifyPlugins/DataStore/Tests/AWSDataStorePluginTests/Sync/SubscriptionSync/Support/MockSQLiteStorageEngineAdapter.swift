@@ -120,6 +120,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
 
     func query(modelSchema: ModelSchema,
                predicate: QueryPredicate?,
+               eagerLoad: Bool,
                completion: DataStoreCallback<[Model]>) {
         let result = resultForQuery ?? .failure(DataStoreError.invalidOperation(causedBy: nil))
         completion(result)
@@ -153,7 +154,7 @@ class MockSQLiteStorageEngineAdapter: StorageEngineAdapter {
         return true
     }
 
-    func save(untypedModel: Model, completion: @escaping DataStoreCallback<Model>) {
+    func save(untypedModel: Model, eagerLoad: Bool, completion: @escaping DataStoreCallback<Model>) {
         if let responder = responders[.saveUntypedModel] as? SaveUntypedModelResponder {
             responder.callback((untypedModel, completion))
             return

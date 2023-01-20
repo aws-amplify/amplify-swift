@@ -237,6 +237,67 @@ class AWSDataStoreLazyLoadProjectTeam6Tests: AWSDataStoreLazyLoadBaseTest {
         try await deleteAndWaitForSync(savedTeam)
         try await assertModelDoesNotExist(savedTeam)
     }
+    
+    func testObserveProject() async throws {
+        await setup(withModels: ProjectTeam6Models())
+        try await startAndWaitForReady()
+        let team = Team(teamId: UUID().uuidString, name: "name")
+        let savedTeam = try await saveAndWaitForSync(team)
+        let project = initializeProjectWithTeam(team)
+        
+        let mutationEventReceived = asyncExpectation(description: "Received mutation event")
+        let mutationEvents = Amplify.DataStore.observe(Project.self)
+        Task {
+            for try await mutationEvent in mutationEvents {
+                if let version = mutationEvent.version,
+                   version == 1,
+                   let receivedProject = try? mutationEvent.decodeModel(as: Project.self),
+                   receivedProject.projectId == project.projectId {
+                    assertProject(receivedProject, hasTeam: savedTeam)
+                    await mutationEventReceived.fulfill()
+                }
+            }
+        }
+        
+        let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: project, modelSchema: Project.schema)
+        do {
+            _ = try await Amplify.API.mutate(request: createRequest)
+        } catch {
+            XCTFail("Failed to send mutation request \(error)")
+        }
+        
+        await waitForExpectations([mutationEventReceived], timeout: 60)
+        mutationEvents.cancel()
+    }
+    
+    func testObserveTeam() async throws {
+        await setup(withModels: ProjectTeam6Models())
+        try await startAndWaitForReady()
+        let team = Team(teamId: UUID().uuidString, name: "name")
+        let mutationEventReceived = asyncExpectation(description: "Received mutation event")
+        let mutationEvents = Amplify.DataStore.observe(Team.self)
+        Task {
+            for try await mutationEvent in mutationEvents {
+                if let version = mutationEvent.version,
+                   version == 1,
+                   let receivedTeam = try? mutationEvent.decodeModel(as: Team.self),
+                   receivedTeam.teamId == team.teamId {
+                        
+                    await mutationEventReceived.fulfill()
+                }
+            }
+        }
+        
+        let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: team, modelSchema: Team.schema)
+        do {
+            _ = try await Amplify.API.mutate(request: createRequest)
+        } catch {
+            XCTFail("Failed to send mutation request \(error)")
+        }
+        
+        await waitForExpectations([mutationEventReceived], timeout: 60)
+        mutationEvents.cancel()
+    }
 }
 
 extension AWSDataStoreLazyLoadProjectTeam6Tests {

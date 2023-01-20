@@ -11,6 +11,16 @@ import Combine
 
 public struct DataStoreListDecoder: ModelListDecoder {
 
+    struct Meetadata: Codable {
+        let associatedId: String
+        let associatedField: String
+        
+        init(associatedId: String, associatedField: String) {
+            self.associatedId = associatedId
+            self.associatedField = associatedField
+        }
+    }
+    
     /// Creates a data structure that is capable of initializing a `List<M>` with
     /// lazy-load capabilities when the list is being decoded.
     static func lazyInit(associatedId: String, associatedWith: String?) -> [String: Any?] {

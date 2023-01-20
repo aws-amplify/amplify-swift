@@ -75,6 +75,24 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
                                          "Only call `getNextPage()` when `hasNextPage()` is true.",
                                          nil)
     }
+    
+    public func encode(to encoder: Encoder) throws {
+        switch loadedState {
+        case .notLoaded(let associatedIdentifiers,
+                        let associatedField):
+            
+            if let associatedId = associatedIdentifiers.first {
+                let metadata = DataStoreListDecoder.Meetadata(associatedId: associatedId,
+                                                              associatedField: associatedField)
+                var container = encoder.singleValueContainer()
+                try container.encode(metadata)
+            }
+            
+            
+        case .loaded(let elements):
+            try elements.encode(to: encoder)
+        }
+    }
 }
 
 extension DataStoreListProvider: DefaultLogger { }

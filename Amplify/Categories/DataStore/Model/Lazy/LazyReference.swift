@@ -86,7 +86,7 @@ public class LazyReference<ModelType: Model>: Codable, _LazyReferenceValue {
     
     // MARK: - Codable implementation
     
-    /// Decodable implementation is delegated to the underlying `self.reference`.
+    /// Decodable implementation is delegated to the ModelProviders.
     required convenience public init(from decoder: Decoder) throws {
         for modelDecoder in ModelProviderRegistry.decoders.get() {
             if let modelProvider = modelDecoder.decode(modelType: ModelType.self, decoder: decoder) {
@@ -107,15 +107,9 @@ public class LazyReference<ModelType: Model>: Codable, _LazyReferenceValue {
         self.init(identifiers: nil)
     }
     
-    /// Encodable implementation is delegated to the underlying `self.reference`.
+    /// Encodable implementation is delegated to the underlying ModelProviders.
     public func encode(to encoder: Encoder) throws {
-        switch loadedState {
-        case .notLoaded(let identifiers):
-            var container = encoder.singleValueContainer()
-            try container.encode(identifiers)
-        case .loaded(let element):
-            try element.encode(to: encoder)
-        }
+        try modelProvider.encode(to: encoder)
     }
     
     // MARK: - APIs
