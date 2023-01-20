@@ -9,19 +9,22 @@ import Amplify
 @testable import AWSCognitoAuthPlugin
 
 class MockAuthHubEventBehavior: AuthHubEventBehavior {
+
+    var interactions: [String] = []
+
     func sendUserSignedInEvent() {
-        // Incomplete implementation
+        interactions.append(#function)
     }
 
     func sendUserSignedOutEvent() {
-        // Incomplete implementation
+        interactions.append(#function)
     }
 
     func sendUserDeletedEvent() {
-        // Incomplete implementation
+        interactions.append(#function)
     }
 
     func sendSessionExpiredEvent() {
-        // Incomplete implementation
+        interactions.append(#function)
     }
 }

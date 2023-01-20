@@ -18,6 +18,10 @@
 		5653A9F22979B5F400AC6D82 /* AuthHubEventHandlerSignInApiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5653A9F12979B5F400AC6D82 /* AuthHubEventHandlerSignInApiTests.swift */; };
 		5653A9F42979BF7700AC6D82 /* AuthHubEventHandlerSignOutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5653A9F32979BF7700AC6D82 /* AuthHubEventHandlerSignOutTests.swift */; };
 		5653A9F62979C2FC00AC6D82 /* AuthHubEventHandlerUserDeletedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5653A9F52979C2FC00AC6D82 /* AuthHubEventHandlerUserDeletedTests.swift */; };
+		5653A9F8297AE40200AC6D82 /* AWSCognitoAuthPluginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5653A9F7297AE40200AC6D82 /* AWSCognitoAuthPluginTests.swift */; };
+		5653A9FA297B157900AC6D82 /* AWSCognitoAuthPluginUserDefaultsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5653A9F9297B157900AC6D82 /* AWSCognitoAuthPluginUserDefaultsTests.swift */; };
+		5653A9FC297B1F8C00AC6D82 /* AuthenticationProviderAdapterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5653A9FB297B1F8C00AC6D82 /* AuthenticationProviderAdapterTests.swift */; };
+		5653A9FE297B229600AC6D82 /* AuthorizationProviderAdapterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5653A9FD297B229600AC6D82 /* AuthorizationProviderAdapterTests.swift */; };
 		5C33248B2772384600F2C47B /* AWSAuthDeleteUserOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C33248A2772384600F2C47B /* AWSAuthDeleteUserOperation.swift */; };
 		5C33248D27723D0800F2C47B /* AuthenticationProviderAdapter+DeleteUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C33248C27723D0800F2C47B /* AuthenticationProviderAdapter+DeleteUser.swift */; };
 		5CD3C21A277D275D007DB926 /* AuthDeleteUserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD3C219277D275D007DB926 /* AuthDeleteUserTests.swift */; };
@@ -210,6 +214,10 @@
 		5653A9F12979B5F400AC6D82 /* AuthHubEventHandlerSignInApiTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthHubEventHandlerSignInApiTests.swift; sourceTree = "<group>"; };
 		5653A9F32979BF7700AC6D82 /* AuthHubEventHandlerSignOutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthHubEventHandlerSignOutTests.swift; sourceTree = "<group>"; };
 		5653A9F52979C2FC00AC6D82 /* AuthHubEventHandlerUserDeletedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthHubEventHandlerUserDeletedTests.swift; sourceTree = "<group>"; };
+		5653A9F7297AE40200AC6D82 /* AWSCognitoAuthPluginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSCognitoAuthPluginTests.swift; sourceTree = "<group>"; };
+		5653A9F9297B157900AC6D82 /* AWSCognitoAuthPluginUserDefaultsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSCognitoAuthPluginUserDefaultsTests.swift; sourceTree = "<group>"; };
+		5653A9FB297B1F8C00AC6D82 /* AuthenticationProviderAdapterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationProviderAdapterTests.swift; sourceTree = "<group>"; };
+		5653A9FD297B229600AC6D82 /* AuthorizationProviderAdapterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationProviderAdapterTests.swift; sourceTree = "<group>"; };
 		5C33248A2772384600F2C47B /* AWSAuthDeleteUserOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSAuthDeleteUserOperation.swift; sourceTree = "<group>"; };
 		5C33248C27723D0800F2C47B /* AuthenticationProviderAdapter+DeleteUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AuthenticationProviderAdapter+DeleteUser.swift"; sourceTree = "<group>"; };
 		5CD3C219277D275D007DB926 /* AuthDeleteUserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthDeleteUserTests.swift; sourceTree = "<group>"; };
@@ -445,6 +453,7 @@
 				B4136E3D256D76960011210B /* AuthenticationProviderSignoutTests.swift */,
 				B4060294256C21BC00D23D50 /* AuthenticationProviderSignupTests.swift */,
 				B402C915257700610020B83B /* BaseAuthenticationProviderTest.swift */,
+				5653A9FB297B1F8C00AC6D82 /* AuthenticationProviderAdapterTests.swift */,
 			);
 			path = AuthenticationProviderTests;
 			sourceTree = "<group>";
@@ -542,6 +551,7 @@
 				B4136E5D256D7A690011210B /* AuthorizationProviderSessionSignInTests.swift */,
 				B4136E63256D7A740011210B /* AuthorizationProviderSessionSignoutTests.swift */,
 				B4D5411A256F2C8A00436E5C /* BaseAuthorizationProviderTest.swift */,
+				5653A9FD297B229600AC6D82 /* AuthorizationProviderAdapterTests.swift */,
 			);
 			path = AuthorizationProviderTests;
 			sourceTree = "<group>";
@@ -789,6 +799,7 @@
 				B43B4DD72565E803008F345D /* Mocks */,
 				B41D0FDC2475A3A10049D08D /* Utils */,
 				B41D0FE02475A3A10049D08D /* Info.plist */,
+				5653A9F7297AE40200AC6D82 /* AWSCognitoAuthPluginTests.swift */,
 			);
 			path = AWSCognitoAuthPluginTests;
 			sourceTree = "<group>";
@@ -797,6 +808,7 @@
 			isa = PBXGroup;
 			children = (
 				B41D0FDD2475A3A10049D08D /* AuthUserAttributeKeyTests.swift */,
+				5653A9F9297B157900AC6D82 /* AWSCognitoAuthPluginUserDefaultsTests.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1535,8 +1547,10 @@
 			files = (
 				B4136E1A256D73D80011210B /* AuthenticationProviderSigninTests.swift in Sources */,
 				B4136E32256D76640011210B /* AuthenticationProviderSigninWithWebUITests.swift in Sources */,
+				5653A9FC297B1F8C00AC6D82 /* AuthenticationProviderAdapterTests.swift in Sources */,
 				FA1C817D25868C46006160E9 /* AWSCognitoAuthPluginAmplifyVersionableTests.swift in Sources */,
 				B4136E9A256D7B700011210B /* AuthDeviceRememberDeviceTests.swift in Sources */,
+				5653A9FA297B157900AC6D82 /* AWSCognitoAuthPluginUserDefaultsTests.swift in Sources */,
 				B4136E4E256D79710011210B /* AuthenticationProviderConfirmResetPasswordTests.swift in Sources */,
 				B43B4DE32565E8D7008F345D /* MockAuthorizationProviderBehavior.swift in Sources */,
 				5653A9F22979B5F400AC6D82 /* AuthHubEventHandlerSignInApiTests.swift in Sources */,
@@ -1549,6 +1563,7 @@
 				B43B4E1A2565FBFE008F345D /* AWSCognitoAuthDeviceBehaviorTests.swift in Sources */,
 				B43B4E032565E95E008F345D /* MockAuthDeviceServiceBehavior.swift in Sources */,
 				B4136E6C256D7AF30011210B /* UserBehaviorFetchAttributeTests.swift in Sources */,
+				5653A9F8297AE40200AC6D82 /* AWSCognitoAuthPluginTests.swift in Sources */,
 				B4D5411B256F2C8A00436E5C /* BaseAuthorizationProviderTest.swift in Sources */,
 				B43B4E102565EA64008F345D /* AWSCognitoAuthClientBehaviorTests.swift in Sources */,
 				B4136E2C256D764B0011210B /* AuthenticationProviderResendSignupCodeTests.swift in Sources */,
@@ -1569,6 +1584,7 @@
 				5653A9F62979C2FC00AC6D82 /* AuthHubEventHandlerUserDeletedTests.swift in Sources */,
 				5653A9F42979BF7700AC6D82 /* AuthHubEventHandlerSignOutTests.swift in Sources */,
 				B4060295256C21BC00D23D50 /* AuthenticationProviderSignupTests.swift in Sources */,
+				5653A9FE297B229600AC6D82 /* AuthorizationProviderAdapterTests.swift in Sources */,
 				B41D0FE22475A3A10049D08D /* AuthUserAttributeKeyTests.swift in Sources */,
 				5653A9EC2979B42100AC6D82 /* MockAuthSession.swift in Sources */,
 				B4136E26256D76300011210B /* AuthenticationProviderConfirmSigninTests.swift in Sources */,
