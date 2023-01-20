@@ -9,10 +9,8 @@
 import AWSMobileClient
 
 class MockAWSMobileClient: AWSMobileClientBehavior {
-    func signOut(uiwindow: UIWindow, options: SignOutOptions, completionHandler: @escaping ((Error?) -> Void)) {
 
-    }
-
+    var interactions: [String] = []
 
     var signupMockResult: Result<SignUpResult, Error>?
     var confirmSignUpMockResult: Result<SignUpResult, Error>?
@@ -34,7 +32,7 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
     var forgotPasswordMockResult: Result<ForgotPasswordResult, Error>?
     var confirmForgotPasswordMockResult: Result<ForgotPasswordResult, Error>?
 
-    var getIdentityIdMockResult: AWSTask<NSString>?
+    var getIdentityIdMockResult: AWSTask<NSString> = AWSTask(result: UUID().uuidString as NSString)
     var tokensMockResult: Result<Tokens, Error>?
     var awsCredentialsMockResult: Result<AWSCredentials, Error>?
     var getCurrentUserStateMockResult: UserState?
@@ -47,7 +45,11 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
     var mockCurrentUserState: UserState = .unknown
 
     func initialize() throws {
-        fatalError()
+        interactions.append(#function)
+    }
+
+    func signOut(uiwindow: UIWindow, options: SignOutOptions, completionHandler: @escaping ((Error?) -> Void)) {
+        interactions.append(#function)
     }
 
     func signUp(username: String,
@@ -56,6 +58,7 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
                 validationData: [String: String],
                 clientMetaData: [String: String],
                 completionHandler: @escaping ((SignUpResult?, Error?) -> Void)) {
+        interactions.append(#function)
         prepareResult(mockResult: signupMockResult, completionHandler: completionHandler)
     }
 
@@ -63,12 +66,14 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
                        confirmationCode: String,
                        clientMetaData: [String: String],
                        completionHandler: @escaping ((SignUpResult?, Error?) -> Void)) {
+        interactions.append(#function)
         prepareResult(mockResult: confirmSignUpMockResult, completionHandler: completionHandler)
     }
 
     func resendSignUpCode(username: String,
                           clientMetaData: [String: String],
                           completionHandler: @escaping ((SignUpResult?, Error?) -> Void)) {
+        interactions.append(#function)
         prepareResult(mockResult: resendSignUpCodeMockResult, completionHandler: completionHandler)
     }
 
@@ -77,6 +82,7 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
                 validationData: [String: String]?,
                 clientMetaData: [String: String],
                 completionHandler: @escaping ((SignInResult?, Error?) -> Void)) {
+        interactions.append(#function)
         prepareResult(mockResult: signInMockResult, completionHandler: completionHandler)
     }
 
@@ -84,6 +90,7 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
                          token: String,
                          federatedSignInOptions: FederatedSignInOptions,
                          completionHandler: @escaping ((UserState?, Error?) -> Void)) {
+        interactions.append(#function)
         prepareResult(mockResult: federatedSignInMockResult, completionHandler: completionHandler)
     }
 
@@ -91,12 +98,14 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
                     signInUIOptions: SignInUIOptions,
                     hostedUIOptions: HostedUIOptions?,
                     _ completionHandler: @escaping (UserState?, Error?) -> Void) {
+        interactions.append(#function)
         prepareResult(mockResult: showSignInMockResult, completionHandler: completionHandler)
     }
 
     func showSignIn(uiwindow: UIWindow,
                     hostedUIOptions: HostedUIOptions,
                     _ completionHandler: @escaping (UserState?, Error?) -> Void) {
+        interactions.append(#function)
         prepareResult(mockResult: showSignInMockResult, completionHandler: completionHandler)
     }
 
@@ -104,61 +113,76 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
                        userAttributes: [String: String],
                        clientMetaData: [String: String],
                        completionHandler: @escaping ((SignInResult?, Error?) -> Void)) {
+        interactions.append(#function)
         prepareResult(mockResult: confirmSignInMockResult, completionHandler: completionHandler)
     }
 
     func signOut(options: SignOutOptions,
                  completionHandler: @escaping ((Error?) -> Void)) {
+        interactions.append(#function)
        completionHandler(signOutMockError)
     }
 
     func signOutLocally() {
-        // Do nothing
+        interactions.append(#function)
     }
 
     func deleteUser(completionHandler: @escaping ((Error?) -> Void)) {
+        interactions.append(#function)
        completionHandler(deleteUserMockError)
     }
 
+    var username: String?
+
     func getUsername() -> String? {
-        fatalError()
+        interactions.append(#function)
+        return username
     }
 
+    var userSub: String?
+
     func getUserSub() -> String? {
-        fatalError()
+        interactions.append(#function)
+        return userSub
     }
 
     func verifyUserAttribute(attributeName: String,
                              clientMetaData: [String: String],
                              completionHandler: @escaping ((UserCodeDeliveryDetails?, Error?) -> Void)) {
+        interactions.append(#function)
         prepareResult(mockResult: verifyUserAttributeMockResult, completionHandler: completionHandler)
     }
 
     func updateUserAttributes(attributeMap: [String: String],
                               clientMetaData: [String: String],
                               completionHandler: @escaping (([UserCodeDeliveryDetails]?, Error?) -> Void)) {
+        interactions.append(#function)
         prepareResult(mockResult: updateUserAttributesMockResult, completionHandler: completionHandler)
     }
 
     func getUserAttributes(completionHandler: @escaping (([String: String]?, Error?) -> Void)) {
+        interactions.append(#function)
         prepareResult(mockResult: getUserAttributeMockResult, completionHandler: completionHandler)
     }
 
     func confirmUpdateUserAttributes(attributeName: String,
                                      code: String,
                                      completionHandler: @escaping ((Error?) -> Void)) {
+        interactions.append(#function)
         completionHandler(confirmUserAttributeMockResult)
     }
 
     func changePassword(currentPassword: String,
                         proposedPassword: String,
                         completionHandler: @escaping ((Error?) -> Void)) {
+        interactions.append(#function)
         completionHandler(changePasswordMockResult)
     }
 
     func forgotPassword(username: String,
                         clientMetaData: [String: String],
                         completionHandler: @escaping ((ForgotPasswordResult?, Error?) -> Void)) {
+        interactions.append(#function)
         prepareResult(mockResult: forgotPasswordMockResult, completionHandler: completionHandler)
     }
 
@@ -167,60 +191,70 @@ class MockAWSMobileClient: AWSMobileClientBehavior {
                                confirmationCode: String,
                                clientMetaData: [String: String],
                                completionHandler: @escaping ((ForgotPasswordResult?, Error?) -> Void)) {
+        interactions.append(#function)
         prepareResult(mockResult: confirmForgotPasswordMockResult, completionHandler: completionHandler)
     }
 
     func getIdentityId() -> AWSTask<NSString> {
-        return getIdentityIdMockResult!
+        interactions.append(#function)
+        return getIdentityIdMockResult
     }
 
     func getTokens(_ completionHandler: @escaping (Tokens?, Error?) -> Void) {
+        interactions.append(#function)
         prepareResult(mockResult: tokensMockResult, completionHandler: completionHandler)
     }
 
     func getAWSCredentials(_ completionHandler: @escaping (AWSCredentials?, Error?) -> Void) {
+        interactions.append(#function)
         prepareResult(mockResult: awsCredentialsMockResult, completionHandler: completionHandler)
     }
 
     func getCurrentUserState() -> UserState {
+        interactions.append(#function)
         return mockCurrentUserState
     }
 
     func listDevices(completionHandler: @escaping ((ListDevicesResult?, Error?) -> Void)) {
+        interactions.append(#function)
         prepareResult(mockResult: listDevicesMockResult, completionHandler: completionHandler)
     }
 
     func updateDeviceStatus(remembered: Bool,
                             completionHandler: @escaping ((UpdateDeviceStatusResult?, Error?) -> Void)) {
+        interactions.append(#function)
         prepareResult(mockResult: rememberDeviceMockResult, completionHandler: completionHandler)
     }
 
     func getDevice(_ completionHandler: @escaping ((Device?, Error?) -> Void)) {
-        fatalError()
+        interactions.append(#function)
+        completionHandler(nil, nil)
     }
 
     func forgetDevice(deviceId: String, completionHandler: @escaping ((Error?) -> Void)) {
+        interactions.append(#function)
         completionHandler(forgetDeviceMockResult)
     }
 
     func forgetCurrentDevice(_ completionHandler: @escaping ((Error?) -> Void)) {
+        interactions.append(#function)
         completionHandler(forgetCurrentDeviceMockResult)
     }
 
     func invalidateCachedTemporaryCredentials() {
-        fatalError()
+        interactions.append(#function)
     }
 
     func addUserStateListener(_ object: AnyObject, _ callback: @escaping UserStateChangeCallback) {
-
+        interactions.append(#function)
     }
 
     func removeUserStateListener(_ object: AnyObject) {
-        fatalError()
+        interactions.append(#function)
     }
 
     func releaseSignInWait() {
-        fatalError()
+        interactions.append(#function)
     }
 
     func prepareResult<R, E>(mockResult: Result<R, E>?,
