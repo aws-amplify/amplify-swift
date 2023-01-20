@@ -64,85 +64,125 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         }
 
         // Validate the request
+        if case let .failure(error) = validate(request: request) {
+            dispatch(result: .failure(error))
+            finish()
+            return
+        }
+
+        let endpointConfig = getEndpointConfig(from: pluginConfig, apiName: request.apiName)
+        let authType = (request.options.pluginOptions as? AWSPluginOptions).flatMap { $0.authType }
+        let urlRequestInterceptors = endpointConfig.flatMap {
+            getURLRequestInterceptors(
+                pluginConfig: pluginConfig,
+                endpointConfig: $0,
+                authType: authType
+            )
+        }
+
+        let urlRequest = endpointConfig.map { makeURLRequest(with: $0) }.flatMap { request in
+            urlRequestInterceptors.flatMap { interceptors in
+                decorateURLRequest(urlRequestInterceptors: interceptors, urlRequest: request)
+            }
+        }
+
+        switch (endpointConfig, urlRequest) {
+        case let (.failure(error), _), let (_, .failure(error)):
+            dispatch(result: .failure(error))
+            finish()
+        case let (.success(endpointConfig), .success(urlRequest)):
+            // Retrieve the subscription connection
+            subscriptionQueue.sync {
+                do {
+                    subscriptionConnection = try subscriptionConnectionFactory
+                        .getOrCreateConnection(for: endpointConfig,
+                                               urlRequest: urlRequest,
+                                               authService: authService,
+                                               authType: authType,
+                                               apiAuthProviderFactory: apiAuthProviderFactory)
+                } catch {
+                    let error = APIError.operationError("Unable to get connection for api \(endpointConfig.name)", "", error)
+                    dispatch(result: .failure(error))
+                    finish()
+                    return
+                }
+
+                // Create subscription
+
+                subscriptionItem = subscriptionConnection?.subscribe(requestString: request.document,
+                                                                     variables: request.variables,
+                                                                     eventHandler: { [weak self] event, _ in
+                    self?.onAsyncSubscriptionEvent(event: event)
+                })
+            }
+        }
+    }
+
+    private func validate<T>(request: GraphQLOperationRequest<T>) -> Result<Void, APIError> {
         do {
             try request.validate()
+            return .success(())
         } catch let error as APIError {
-            dispatch(result: .failure(error))
-            finish()
-            return
+            return .failure(error)
         } catch {
-            dispatch(result: .failure(APIError.unknown("Could not validate request", "", nil)))
-            finish()
-            return
+            return .failure(APIError.unknown("Could not validate request", "", nil))
         }
+    }
 
-        // Retrieve endpoint configuration
-        let endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig
-        let reqeustInspectors: [URLRequestInterceptor]
+    private func getEndpointConfig(
+        from pluginConfig: AWSAPICategoryPluginConfiguration,
+        apiName: String?
+    ) -> Result<AWSAPICategoryPluginConfiguration.EndpointConfig, APIError> {
         do {
-            endpointConfig = try pluginConfig.endpoints.getConfig(for: request.apiName, endpointType: .graphQL)
-            if let pluginOptions = request.options.pluginOptions as? AWSPluginOptions,
-               let authType = pluginOptions.authType
-            {
-                reqeustInspectors = try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig, authType: authType)
-            } else {
-                reqeustInspectors = try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig)
-            }
+            return .success(try pluginConfig.endpoints.getConfig(for: apiName, endpointType: .graphQL))
         } catch let error as APIError {
-            dispatch(result: .failure(error))
-            finish()
-            return
+            return .failure(error)
         } catch {
-            dispatch(result: .failure(APIError.unknown("Could not get endpoint configuration", "", nil)))
-            finish()
-            return
+            return .failure(APIError.unknown("Could not get endpoint configuration", "", nil))
         }
+    }
 
+    private func makeURLRequest(
+        with endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig
+    ) -> URLRequest {
         var urlRequest = URLRequest(url: endpointConfig.baseURL)
+        urlRequest.setValue(AmplifyAWSServiceConfiguration.baseUserAgent(),
+                            forHTTPHeaderField: URLRequestConstants.Header.userAgent)
+        return urlRequest
+    }
+
+    private func getURLRequestInterceptors(
+        pluginConfig: AWSAPICategoryPluginConfiguration,
+        endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
+        authType: AWSAuthorizationType?
+    ) -> Result<[URLRequestInterceptor], APIError> {
         do {
-            // set default user-agent value
-            urlRequest.setValue(AmplifyAWSServiceConfiguration.baseUserAgent(),
-                                forHTTPHeaderField: URLRequestConstants.Header.userAgent)
-            for inspector in reqeustInspectors {
-                urlRequest = try inspector.intercept(urlRequest)
+            if let authType = authType {
+                return .success(try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig, authType: authType))
+            } else {
+                return .success(try pluginConfig.interceptorsForEndpoint(withConfig: endpointConfig))
             }
         } catch let error as APIError {
-            dispatch(result: .failure(error))
-            finish()
-            return
+            return .failure(error)
         } catch {
-            dispatch(result: .failure(APIError.unknown("Failed to intercept URLRequest", "", nil)))
-            finish()
-            return
+            return .failure(APIError.unknown("Could not get request interceptoors", "", nil))
         }
+    }
 
-        // Retrieve request plugin option and
-        // auth type in case of a multi-auth setup
-        let pluginOptions = request.options.pluginOptions as? AWSPluginOptions
-
-        // Retrieve the subscription connection
-        subscriptionQueue.sync {
-            do {
-                subscriptionConnection = try subscriptionConnectionFactory
-                    .getOrCreateConnection(for: endpointConfig,
-                                           urlRequest: urlRequest,
-                                              authService: authService,
-                                              authType: pluginOptions?.authType,
-                                              apiAuthProviderFactory: apiAuthProviderFactory)
-            } catch {
-                let error = APIError.operationError("Unable to get connection for api \(endpointConfig.name)", "", error)
-                dispatch(result: .failure(error))
-                finish()
-                return
+    private func decorateURLRequest(
+        urlRequestInterceptors: [URLRequestInterceptor],
+        urlRequest: URLRequest
+    ) -> Result<URLRequest, APIError> {
+        do {
+            var mutableRequest = urlRequest
+            for inspector in urlRequestInterceptors {
+                mutableRequest = try inspector.intercept(mutableRequest)
             }
-
-            // Create subscription
-
-            subscriptionItem = subscriptionConnection?.subscribe(requestString: request.document,
-                                                                 variables: request.variables,
-                                                                 eventHandler: { [weak self] event, _ in
-                self?.onAsyncSubscriptionEvent(event: event)
-            })
+            return .success(mutableRequest)
+        } catch let error as APIError {
+            return .failure(error)
+        } catch {
+            return .failure(APIError.unknown("Failed to intercept URLRequest", "", nil))
         }
     }
 
