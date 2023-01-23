@@ -6,7 +6,7 @@
 //
 
 /// Event for subscription
-public enum GraphQLSubscriptionEvent<T: Decodable> {
+public enum GraphQLSubscriptionEvent<T: Decodable & Sendable> {
     /// The subscription's connection state has changed.
     case connection(SubscriptionConnectionState)
 

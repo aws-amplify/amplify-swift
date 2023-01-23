@@ -9,7 +9,7 @@ import Foundation
 
 /// A snapshot of the items from DataStore, the changes since last snapshot, and whether this model has
 /// finished syncing and subscriptions are active
-public struct DataStoreQuerySnapshot<M: Model> {
+public struct DataStoreQuerySnapshot<M: Model & Sendable> {
 
     /// All model instances from the local store
     public let items: [M]

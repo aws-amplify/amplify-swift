@@ -5,7 +5,11 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+#if swift(<5.7)
+@preconcurrency import Foundation
+#else
 import Foundation
+#endif
 
 extension Temporal {
     /// `Temporal.DateTime` represents a `DateTime` with specific allowable formats.
@@ -14,7 +18,7 @@ extension Temporal {
     ///  * `.medium` => `yyyy-MM-dd'T'HH:mm:ss`
     ///  * `.long` => `yyyy-MM-dd'T'HH:mm:ssZZZZZ`
     ///  * `.full` => `yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ`
-    public struct DateTime: TemporalSpec {
+    public struct DateTime: TemporalSpec, Sendable {
         // Inherits documentation from `TemporalSpec`
         public let foundationDate: Foundation.Date
 

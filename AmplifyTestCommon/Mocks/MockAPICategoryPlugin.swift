@@ -434,7 +434,7 @@ class MockFunctionAuthProvider: AmplifyFunctionAuthProvider {
     }
 }
 
-class MockAWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel {
+class MockAWSGraphQLSubscriptionTaskRunner<R: Decodable & Sendable>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel {
     
     public typealias Request = GraphQLOperationRequest<R>
     public typealias InProcess = GraphQLSubscriptionEvent<R>

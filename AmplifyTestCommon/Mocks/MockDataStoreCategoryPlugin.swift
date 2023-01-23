@@ -329,7 +329,7 @@ class ObserveQueryRequest: AmplifyOperationRequest {
     
 }
 
-class MockObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel {
+class MockObserveQueryTaskRunner<M: Model & Sendable>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel {
 
     public typealias Request = ObserveQueryRequest
     public typealias InProcess = DataStoreQuerySnapshot<M>

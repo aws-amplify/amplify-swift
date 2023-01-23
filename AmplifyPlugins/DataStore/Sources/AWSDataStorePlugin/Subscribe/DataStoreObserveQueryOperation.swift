@@ -39,7 +39,7 @@ class ObserveQueryRequest: AmplifyOperationRequest {
 ///
 /// This operation should perform its methods under the serial DispatchQueue `serialQueue` to ensure all its properties
 /// remain thread-safe.
-class ObserveQueryTaskRunner<M: Model>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel, DataStoreObserveQueryOperation {
+class ObserveQueryTaskRunner<M: Model & Sendable>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel, DataStoreObserveQueryOperation {
     typealias Request = ObserveQueryRequest
     typealias InProcess = DataStoreQuerySnapshot<M>
     var request: ObserveQueryRequest

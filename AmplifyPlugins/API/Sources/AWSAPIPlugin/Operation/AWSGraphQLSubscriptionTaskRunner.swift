@@ -10,7 +10,7 @@ import Foundation
 import AWSPluginsCore
 import AppSyncRealTimeClient
 
-public class AWSGraphQLSubscriptionTaskRunner<R: Decodable>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel {
+public class AWSGraphQLSubscriptionTaskRunner<R: Decodable & Sendable>: InternalTaskRunner, InternalTaskAsyncThrowingSequence, InternalTaskThrowingChannel {
     public typealias Request = GraphQLOperationRequest<R>
     public typealias InProcess = GraphQLSubscriptionEvent<R>
 
