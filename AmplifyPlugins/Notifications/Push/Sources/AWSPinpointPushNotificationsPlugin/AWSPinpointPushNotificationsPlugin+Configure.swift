@@ -27,12 +27,12 @@ extension AWSPinpointPushNotificationsPlugin {
             )
         }
 
-        let pluginConfiguration = try AWSPinpointPushNotificationsPluginConfiguration(config)
+        let pluginConfiguration = try AWSPinpointPluginConfiguration(config)
         try configure(using: pluginConfiguration)
     }
 
     /// Configure AWSPinpointPushNotificationsPlugin programatically using AWSPinpointPushNotificationsPluginConfiguration
-    public func configure(using configuration: AWSPinpointPushNotificationsPluginConfiguration) throws {
+    private func configure(using configuration: AWSPinpointPluginConfiguration) throws {
         let pinpoint = try AWSPinpointFactory.sharedPinpoint(
             appId: configuration.appId,
             region: configuration.region

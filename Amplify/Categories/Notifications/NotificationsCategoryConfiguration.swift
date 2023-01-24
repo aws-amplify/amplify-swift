@@ -8,11 +8,13 @@
 import Foundation
 
 /// The configuration for the Notifications category
-public struct NotificationsCategoryConfiguration: Codable {
-    /// The Push subcategory configuration
-    public let push: PushNotificationsCategoryConfiguration?
+public struct NotificationsCategoryConfiguration: CategoryConfiguration {    
+    /// Plugins
+    public let plugins: [String: JSONValue]
 
-    public init(push: PushNotificationsCategoryConfiguration? = nil) {
-        self.push = push
+    /// Initializer
+    /// - Parameter plugins: Plugins
+    public init(plugins: [String: JSONValue] = [:]) {
+        self.plugins = plugins
     }
 }

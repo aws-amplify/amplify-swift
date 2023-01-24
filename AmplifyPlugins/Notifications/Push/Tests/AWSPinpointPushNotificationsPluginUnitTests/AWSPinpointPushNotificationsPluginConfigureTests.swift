@@ -133,9 +133,6 @@ class AWSPinpointPushNotificationsPluginConfigureTests: AWSPinpointPushNotificat
                 (AWSPinpointPluginConfiguration.regionConfigKey, region)
         )
 
-        return JSONValue(
-            dictionaryLiteral:
-                (AWSPinpointPushNotificationsPluginConfiguration.pinpointConfigKey, pinpointConfiguration)
-        )
+        return pinpointConfiguration
     }
 }
