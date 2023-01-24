@@ -20,7 +20,7 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
         await Amplify.reset()
     }
 
-    private func createCategoryConfig(hasSecondPlugin: Bool = false) -> PushNotificationsCategoryConfiguration {
+    private func createCategoryConfig(hasSecondPlugin: Bool = false) -> NotificationsCategoryConfiguration {
         var plugins: [String: JSONValue] = [
             "MockPushNotificationsCategoryPlugin": true
         ]
@@ -28,15 +28,14 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
             plugins["MockSecondPushNotificationsCategoryPlugin"] = true
         }
 
-        return PushNotificationsCategoryConfiguration(
+        return NotificationsCategoryConfiguration(
             plugins: plugins
         )
     }
 
     private func createAmplifyConfig(hasSecondPlugin: Bool = false) -> AmplifyConfiguration {
-        let categoryConfiguration = NotificationsCategoryConfiguration(
-            push: createCategoryConfig(hasSecondPlugin: hasSecondPlugin)
-        )
+        let categoryConfiguration = createCategoryConfig(hasSecondPlugin: hasSecondPlugin)
+        
         return AmplifyConfiguration(notifications: categoryConfiguration)
     }
 
@@ -102,9 +101,7 @@ class PushNotificationsCategoryConfigurationTests: XCTestCase {
         try Amplify.add(plugin: loggingPlugin)
 
         let categoryConfig = NotificationsCategoryConfiguration(
-            push: PushNotificationsCategoryConfiguration(
-                plugins: ["NonExistentPlugin": true]
-            )
+            plugins: ["NonExistentPlugin": true]
         )
 
         let amplifyConfig = AmplifyConfiguration(logging: loggingConfig, notifications: categoryConfig)
