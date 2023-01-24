@@ -20,9 +20,7 @@ class PushNotificationsCategoryClientAPITests: XCTestCase {
         plugin = MockPushNotificationsCategoryPlugin()
         
         let categoryConfiguration = NotificationsCategoryConfiguration(
-            push: PushNotificationsCategoryConfiguration(
-                plugins: ["MockPushNotificationsCategoryPlugin": true]
-            )
+            plugins: ["MockPushNotificationsCategoryPlugin": true]
         )
         
         let amplifyConfiguration = AmplifyConfiguration(notifications: categoryConfiguration)

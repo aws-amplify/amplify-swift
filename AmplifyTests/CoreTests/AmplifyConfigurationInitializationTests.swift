@@ -143,7 +143,7 @@ class AmplifyConfigurationInitializationTests: XCTestCase {
             case .predictions:
                 XCTAssertNil(amplifyConfig.predictions)
             case .pushNotifications:
-                XCTAssertNil(amplifyConfig.notifications?.push)
+                XCTAssertNil(amplifyConfig.notifications)
             case .storage:
                 XCTAssertNil(amplifyConfig.storage)
             }

@@ -29,9 +29,7 @@ final class NotificationsCategoryTests: XCTestCase {
     func testSubcategories_withPushConfigured_shouldReturnPush() throws {
         let notificationsPlugin = MockPushNotificationsCategoryPlugin()
         let notificationsConfig = NotificationsCategoryConfiguration(
-            push: PushNotificationsCategoryConfiguration(
-                plugins: [notificationsPlugin.key: true]
-            )
+            plugins: [notificationsPlugin.key: true]
         )
         try Amplify.add(plugin: notificationsPlugin)
         try Amplify.configure(AmplifyConfiguration(notifications:notificationsConfig))
