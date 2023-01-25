@@ -127,4 +127,8 @@ open class ModelPath<ModelType: Model> : PropertyContainerPath {
     public func int(_ name: String) -> FieldPath<Int> {
         FieldPath(name: name, parent: self)
     }
+    
+    public func double(_ name: String) -> FieldPath<Double> {
+        FieldPath(name: name, parent: self)
+    }
 }
