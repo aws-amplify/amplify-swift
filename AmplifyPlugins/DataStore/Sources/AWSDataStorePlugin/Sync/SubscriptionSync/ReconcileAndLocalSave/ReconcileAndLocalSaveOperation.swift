@@ -41,6 +41,8 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         return mutationEventPublisher.eraseToAnyPublisher()
     }
 
+    var isEagerLoad: Bool = true
+    
     init(modelSchema: ModelSchema,
          remoteModels: [RemoteModel],
          storageAdapter: StorageEngineAdapter?,
@@ -54,6 +56,13 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
         self.mutationEventPublisher = PassthroughSubject<ReconcileAndLocalSaveOperationEvent, DataStoreError>()
 
         self.cancellables = Set<AnyCancellable>()
+        
+        // `isEagerLoad` is true by default, unless the models contain the rootPath
+        // which is indication that codegenerated model types support for lazy loading.
+        if isEagerLoad && ModelRegistry.modelType(from: modelSchema.name)?.rootPath != nil {
+            self.isEagerLoad = false
+        }
+        
         super.init()
 
         self.stateMachineSink = self.stateMachine
@@ -368,7 +377,7 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
     private func save(storageAdapter: StorageEngineAdapter,
                       remoteModel: RemoteModel) -> Future<ApplyRemoteModelResult, DataStoreError> {
         Future<ApplyRemoteModelResult, DataStoreError> { promise in
-            storageAdapter.save(untypedModel: remoteModel.model.instance) { response in
+            storageAdapter.save(untypedModel: remoteModel.model.instance, eagerLoad: self.isEagerLoad) { response in
                 switch response {
                 case .failure(let dataStoreError):
                     self.notifyDropped(error: dataStoreError)
@@ -403,7 +412,9 @@ class ReconcileAndLocalSaveOperation: AsynchronousOperation {
                 return
             }
 
-            storageAdapter.save(inProcessModel.syncMetadata, condition: nil, eagerLoad: true) { result in
+            storageAdapter.save(inProcessModel.syncMetadata,
+                                condition: nil,
+                                eagerLoad: self.isEagerLoad) { result in
                 switch result {
                 case .failure(let dataStoreError):
                     self.notifyDropped(error: dataStoreError)

@@ -8,9 +8,11 @@
 
 1. `amplify init`
 
-These tests were provisioned with V2 Transform:, and updates to `cli.json` 
-- "respectprimarykeyattributesonconnectionfield": true
-- "TODOlazyLoadiOS": true 
+These tests were provisioned with V2 Transform, CPK enabled, and with the lazy loading feature flag. Review or make updates to cli.json
+
+"transformerversion":2
+"respectprimarykeyattributesonconnectionfield": true
+"generateModelsForLazyLoadAndCustomSelectionSet": true
 
 2. `amplify add api`
 

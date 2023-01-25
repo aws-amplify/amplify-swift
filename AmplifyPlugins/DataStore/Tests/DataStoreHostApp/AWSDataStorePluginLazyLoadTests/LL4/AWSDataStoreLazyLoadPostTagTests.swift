@@ -14,6 +14,11 @@ import AWSPluginsCore
 
 final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
 
+    func testStart() async throws {
+        await setup(withModels: PostTagModels())
+        try await startAndWaitForReady()
+    }
+    
     func testLazyLoad() async throws {
         await setup(withModels: PostTagModels())
         let post = Post(postId: UUID().uuidString, title: "title")
@@ -168,6 +173,120 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         try await assertModelExists(savedPost)
         try await assertModelExists(savedTag)
         try await assertModelDoesNotExist(savedPostTag)
+    }
+    
+    func testObservePost() async throws {
+        await setup(withModels: PostTagModels())
+        try await startAndWaitForReady()
+        let post = Post(postId: UUID().uuidString, title: "title")
+        let mutationEventReceived = asyncExpectation(description: "Received mutation event")
+        let mutationEvents = Amplify.DataStore.observe(Post.self)
+        Task {
+            for try await mutationEvent in mutationEvents {
+                if let version = mutationEvent.version,
+                   version == 1,
+                   let receivedPost = try? mutationEvent.decodeModel(as: Post.self),
+                   receivedPost.postId == post.postId {
+                    
+                    guard let tags = receivedPost.tags else {
+                        XCTFail("Lazy List does not exist")
+                        return
+                    }
+                    do {
+                        try await tags.fetch()
+                    } catch {
+                        XCTFail("Failed to lazy load \(error)")
+                    }
+                    XCTAssertEqual(tags.count, 0)
+                    
+                    await mutationEventReceived.fulfill()
+                }
+            }
+        }
+        let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: post, modelSchema: Post.schema)
+        do {
+            _ = try await Amplify.API.mutate(request: createRequest)
+        } catch {
+            XCTFail("Failed to send mutation request \(error)")
+        }
+        
+        await waitForExpectations([mutationEventReceived], timeout: 60)
+        mutationEvents.cancel()
+    }
+    
+    func testObserveTag() async throws {
+        await setup(withModels: PostTagModels())
+        try await startAndWaitForReady()
+        let tag = Tag(name: "name")
+        
+        let mutationEventReceived = asyncExpectation(description: "Received mutation event")
+        let mutationEvents = Amplify.DataStore.observe(Tag.self)
+        Task {
+            for try await mutationEvent in mutationEvents {
+                if let version = mutationEvent.version,
+                   version == 1,
+                   let receivedTag = try? mutationEvent.decodeModel(as: Tag.self),
+                   receivedTag.id == tag.id {
+                    guard let posts = receivedTag.posts else {
+                        XCTFail("Lazy List does not exist")
+                        return
+                    }
+                    do {
+                        try await posts.fetch()
+                    } catch {
+                        XCTFail("Failed to lazy load \(error)")
+                    }
+                    XCTAssertEqual(posts.count, 0)
+                    
+                    await mutationEventReceived.fulfill()
+                }
+            }
+        }
+        let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: tag, modelSchema: Tag.schema)
+        do {
+            _ = try await Amplify.API.mutate(request: createRequest)
+        } catch {
+            XCTFail("Failed to send mutation request \(error)")
+        }
+        
+        await waitForExpectations([mutationEventReceived], timeout: 60)
+        mutationEvents.cancel()
+    }
+    
+    func testObservePostTag() async throws {
+        await setup(withModels: PostTagModels())
+        try await startAndWaitForReady()
+        let post = Post(postId: UUID().uuidString, title: "title")
+        let tag = Tag(name: "name")
+        let savedPost = try await saveAndWaitForSync(post)
+        let savedTag = try await saveAndWaitForSync(tag)
+        
+        let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)
+        
+        let mutationEventReceived = asyncExpectation(description: "Received mutation event")
+        let mutationEvents = Amplify.DataStore.observe(PostTag.self)
+        Task {
+            for try await mutationEvent in mutationEvents {
+                if let version = mutationEvent.version,
+                   version == 1,
+                   let receivedPostTag = try? mutationEvent.decodeModel(as: PostTag.self),
+                   receivedPostTag.id == postTag.id {
+                    
+                    try await assertPostTag(receivedPostTag, canLazyLoadTag: tag, canLazyLoadPost: post)
+                    await mutationEventReceived.fulfill()
+                }
+            }
+        }
+        
+        let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: postTag, modelSchema: PostTag.schema)
+        do {
+            _ = try await Amplify.API.mutate(request: createRequest)
+        } catch {
+            XCTFail("Failed to send mutation request \(error)")
+        }
+        
+        await waitForExpectations([mutationEventReceived], timeout: 60)
+        mutationEvents.cancel()
     }
 }
 extension AWSDataStoreLazyLoadPostTagTests {
