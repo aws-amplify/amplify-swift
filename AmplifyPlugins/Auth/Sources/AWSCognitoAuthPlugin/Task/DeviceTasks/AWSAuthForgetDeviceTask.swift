@@ -62,8 +62,8 @@ class AWSAuthForgetDeviceTask: AuthForgetDeviceTask {
         let userPoolService = try environment.cognitoUserPoolFactory()
         guard let device = request.device else {
             let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
-                for: environment,
-                with: username)
+                for: username,
+                with: environment)
             if case .metadata(let data) = deviceMetadata {
                 let input = ForgetDeviceInput(accessToken: accessToken, deviceKey: data.deviceKey)
                 _ = try await userPoolService.forgetDevice(input: input)
