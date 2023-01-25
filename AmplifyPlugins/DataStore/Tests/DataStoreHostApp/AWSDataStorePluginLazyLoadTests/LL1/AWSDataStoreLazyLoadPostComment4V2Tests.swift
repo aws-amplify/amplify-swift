@@ -23,7 +23,7 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
     func testSavePost() async throws {
         await setup(withModels: PostComment4V2Models())
         let post = Post(title: "title")
-        let savedPost = try await saveAndWaitForSync(post)
+        try await saveAndWaitForSync(post)
     }
     
     func testSaveComment() async throws {
@@ -31,8 +31,8 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
         
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
-        let savedPost = try await saveAndWaitForSync(post)
-        let savedComment = try await saveAndWaitForSync(comment)
+        try await saveAndWaitForSync(post)
+        try await saveAndWaitForSync(comment)
     }
     
     func testLazyLoad() async throws {
@@ -48,6 +48,56 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
         try await assertComment(queriedComment, canLazyLoad: savedPost)
         let queriedPost = try await query(for: savedPost)
         try await assertPost(queriedPost, canLazyLoad: savedComment)
+    }
+    
+    func testLazyLoadOnSaveAfterEncodeDecode() async throws {
+        await setup(withModels: PostComment4V2Models())
+        
+        let post = Post(title: "title")
+        let comment = Comment(content: "content", post: post)
+        let savedPost = try await saveAndWaitForSync(post)
+        let savedComment = try await saveAndWaitForSync(comment)
+        
+        guard let encodedComment = try? savedComment.toJSON() else {
+            XCTFail("Could not encode comment")
+            return
+        }
+        try await assertComment(savedComment, hasEagerLoaded: savedPost)
+        
+        guard let decodedComment = try? ModelRegistry.decode(modelName: Comment.modelName,
+                                                             from: encodedComment) as? Comment else {
+            
+            XCTFail("Could not decode comment")
+            return
+        }
+        
+        try await assertComment(decodedComment, hasEagerLoaded: savedPost)
+    }
+    
+    func testLazyLoadOnQueryAfterEncodeDecoder() async throws {
+        await setup(withModels: PostComment4V2Models())
+        
+        let post = Post(title: "title")
+        let comment = Comment(content: "content", post: post)
+        let savedPost = try await saveAndWaitForSync(post)
+        let savedComment = try await saveAndWaitForSync(comment)
+        let queriedComment = try await query(for: savedComment)
+        
+        guard let encodedComment = try? queriedComment.toJSON() else {
+            XCTFail("Could not encode comment")
+            return
+        }
+        
+        try await assertComment(queriedComment, canLazyLoad: savedPost)
+        
+        guard let decodedComment = try? ModelRegistry.decode(modelName: Comment.modelName,
+                                                             from: encodedComment) as? Comment else {
+            
+            XCTFail("Could not decode comment")
+            return
+        }
+        
+        try await assertComment(decodedComment, canLazyLoad: savedPost)
     }
     
     func assertComment(_ comment: Comment,
@@ -181,26 +231,37 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
         await setup(withModels: PostComment4V2Models())
         try await startAndWaitForReady()
         let post = Post(title: "title")
+        let comment = Comment(content: "content", post: post)
         let mutationEventReceived = asyncExpectation(description: "Received mutation event")
         let mutationEvents = Amplify.DataStore.observe(Post.self)
         Task {
             for try await mutationEvent in mutationEvents {
-                if let version = mutationEvent.version, version == 1 {
-                    do {
-                        let receivedPost = try mutationEvent.decodeModel(as: Post.self)
-                        if receivedPost.id == post.id {
-                            await mutationEventReceived.fulfill()
-                        }
-                    } catch {
+                if let version = mutationEvent.version,
+                   version == 1,
+                   let receivedPost = try? mutationEvent.decodeModel(as: Post.self),
+                   receivedPost.id == post.id {
+                    
+                    try await saveAndWaitForSync(comment)
+                    
+                    guard let comments = receivedPost.comments else {
+                        XCTFail("Lazy List does not exist")
+                        return
                     }
+                    do {
+                        try await comments.fetch()
+                    } catch {
+                        XCTFail("Failed to lazy load comments \(error)")
+                    }
+                    XCTAssertEqual(comments.count, 1)
+                    
+                    await mutationEventReceived.fulfill()
                 }
-                
             }
         }
         
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: post, modelSchema: Post.schema)
         do {
-            let response = try await Amplify.API.mutate(request: createRequest)
+            _ = try await Amplify.API.mutate(request: createRequest)
         } catch {
             XCTFail("Failed to send mutation request \(error)")
         }
@@ -219,22 +280,19 @@ class AWSDataStoreLazyLoadPostComment4V2Tests: AWSDataStoreLazyLoadBaseTest {
         let mutationEvents = Amplify.DataStore.observe(Comment.self)
         Task {
             for try await mutationEvent in mutationEvents {
-                if let version = mutationEvent.version, version == 1 {
-                    do {
-                        let receivedComment = try mutationEvent.decodeModel(as: Comment.self)
-                        if receivedComment.id == comment.id {
-                            await mutationEventReceived.fulfill()
-                        }
-                    } catch {
-                    }
+                if let version = mutationEvent.version,
+                   version == 1,
+                   let receivedComment = try? mutationEvent.decodeModel(as: Comment.self),
+                   receivedComment.id == comment.id {
+                    try await assertComment(receivedComment, canLazyLoad: savedPost)
+                    await mutationEventReceived.fulfill()
                 }
-                
             }
         }
         
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: comment, modelSchema: Comment.schema)
         do {
-            let response = try await Amplify.API.mutate(request: createRequest)
+            _ = try await Amplify.API.mutate(request: createRequest)
         } catch {
             XCTFail("Failed to send mutation request \(error)")
         }

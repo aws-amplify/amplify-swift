@@ -179,7 +179,8 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                 
             let associatedModelIds = queriedModels.map { $0.1.identifier(schema: modelSchema).stringValue }
             associatedModels.append(contentsOf: queriedModels)
-            associatedModels.append(contentsOf: await recurseQueryAssociatedModels(modelSchema: associatedModelSchema,                                           ids: associatedModelIds))
+            associatedModels.append(contentsOf: await recurseQueryAssociatedModels(modelSchema: associatedModelSchema,
+                                                                                   ids: associatedModelIds))
         }
         return associatedModels
     }
@@ -199,7 +200,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
             
             do {
                 let models = try await withCheckedThrowingContinuation { continuation in
-                    storageAdapter.query(modelSchema: modelSchema, predicate: groupedQueryPredicates) { result in
+                    storageAdapter.query(modelSchema: modelSchema, predicate: groupedQueryPredicates, eagerLoad: true) { result in
                         continuation.resume(with: result)
                     }
                 }

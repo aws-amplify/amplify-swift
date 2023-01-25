@@ -49,4 +49,18 @@ public class DataStoreModelProvider<ModelType: Model>: ModelProvider {
     public func getState() -> ModelProviderState<ModelType> {
         loadedState
     }
+    
+    public func encode(to encoder: Encoder) throws {
+        switch loadedState {
+        case .notLoaded(let identifiers):
+            if let identifier = identifiers?.first {
+                let metadata = DataStoreModelDecoder.Metadata(identifier: identifier.value)
+                var container = encoder.singleValueContainer()
+                try container.encode(metadata)
+            }
+            
+        case .loaded(let element):
+            try element.encode(to: encoder)
+        }
+    }
 }

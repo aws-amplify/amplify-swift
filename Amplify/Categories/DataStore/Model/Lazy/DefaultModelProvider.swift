@@ -33,4 +33,14 @@ public struct DefaultModelProvider<Element: Model>: ModelProvider {
     public func getState() -> ModelProviderState<Element> {
         loadedState
     }
+    
+    public func encode(to encoder: Encoder) throws {
+        switch loadedState {
+        case .notLoaded(let identifiers):
+            var container = encoder.singleValueContainer()
+            try container.encode(identifiers)
+        case .loaded(let element):
+            try element.encode(to: encoder)
+        }
+    }
 }

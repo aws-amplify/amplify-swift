@@ -159,6 +159,77 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         try await assertModelDoesNotExist(savedComment)
         try await assertModelDoesNotExist(savedPost)
     }
+    
+    func testObservePost() async throws {
+        await setup(withModels: PostCommentWithCompositeKeyModels())
+        try await startAndWaitForReady()
+        let post = Post(title: "title")
+        let mutationEventReceived = asyncExpectation(description: "Received mutation event")
+        let mutationEvents = Amplify.DataStore.observe(Post.self)
+        Task {
+            for try await mutationEvent in mutationEvents {
+                if let version = mutationEvent.version,
+                   version == 1,
+                   let receivedPost = try? mutationEvent.decodeModel(as: Post.self),
+                   receivedPost.id == post.id {
+                        
+                    guard let comments = receivedPost.comments else {
+                        XCTFail("Lazy List does not exist")
+                        return
+                    }
+                    do {
+                        try await comments.fetch()
+                    } catch {
+                        XCTFail("Failed to lazy load comments \(error)")
+                    }
+                    XCTAssertEqual(comments.count, 0)
+                    
+                    await mutationEventReceived.fulfill()
+                }
+            }
+        }
+        
+        let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: post, modelSchema: Post.schema)
+        do {
+            _ = try await Amplify.API.mutate(request: createRequest)
+        } catch {
+            XCTFail("Failed to send mutation request \(error)")
+        }
+        
+        await waitForExpectations([mutationEventReceived], timeout: 60)
+        mutationEvents.cancel()
+    }
+    
+    func testObserveComment() async throws {
+        await setup(withModels: PostCommentWithCompositeKeyModels())
+        try await startAndWaitForReady()
+        let post = Post(title: "title")
+        let savedPost = try await saveAndWaitForSync(post)
+        let comment = Comment(content: "content", post: post)
+        let mutationEventReceived = asyncExpectation(description: "Received mutation event")
+        let mutationEvents = Amplify.DataStore.observe(Comment.self)
+        Task {
+            for try await mutationEvent in mutationEvents {
+                if let version = mutationEvent.version,
+                   version == 1,
+                   let receivedComment = try? mutationEvent.decodeModel(as: Comment.self),
+                   receivedComment.id == comment.id {
+                    try await assertComment(receivedComment, canLazyLoad: savedPost)
+                    await mutationEventReceived.fulfill()
+                }
+            }
+        }
+        
+        let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: comment, modelSchema: Comment.schema)
+        do {
+            _ = try await Amplify.API.mutate(request: createRequest)
+        } catch {
+            XCTFail("Failed to send mutation request \(error)")
+        }
+        
+        await waitForExpectations([mutationEventReceived], timeout: 60)
+        mutationEvents.cancel()
+    }
 }
 
 extension AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests {

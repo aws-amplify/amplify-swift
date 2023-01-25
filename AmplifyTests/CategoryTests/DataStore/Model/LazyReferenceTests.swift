@@ -40,6 +40,16 @@ final class LazyReferenceTests: XCTestCase {
                 return .loaded(model: model)
             }
         }
+        
+        func encode(to encoder: Encoder) throws {
+            switch loadedState {
+            case .notLoaded(let identifiers):
+                var container = encoder.singleValueContainer()
+                try container.encode(identifiers)
+            case .loaded(let model):
+                try model.encode(to: encoder)
+            }
+        }
     }
     
     func testEncodeDecodeLoaded() throws {

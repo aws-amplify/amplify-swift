@@ -95,20 +95,24 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
         storageAdapter.query(MutationEvent.self,
                              predicate: predicate) { result in
-                                switch result {
-                                case .failure(let dataStoreError):
-                                    XCTAssertNil(dataStoreError)
-                                case .success(let mutationEvents):
-                                    guard let mutationEvent = mutationEvents.first else {
-                                        XCTFail("mutationEvents empty or nil")
-                                        return
-                                    }
-                                    XCTAssertEqual(mutationEvent.json, try? mutatedPost.toJSON())
-                                    XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.create.rawValue)
-                                }
-                                mutationEventVerified.fulfill()
+            switch result {
+            case .failure(let dataStoreError):
+                XCTAssertNil(dataStoreError)
+            case .success(let mutationEvents):
+                guard let mutationEvent = mutationEvents.first else {
+                    XCTFail("mutationEvents empty or nil")
+                    return
+                }
+                guard let mutationEventPost = try? mutationEvent.decodeModel(as: Post.self) else {
+                    XCTFail("Could not decode mutation event json to Post instance")
+                    return
+                }
+                XCTAssertEqual(mutationEventPost.content, mutatedPost.content)
+                XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.create.rawValue)
+            }
+            mutationEventVerified.fulfill()
         }
-
+        
         wait(for: [mutationEventVerified], timeout: 1.0)
     }
 
@@ -226,20 +230,24 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
         let predicate = MutationEvent.keys.id == SyncEngineTestBase.mutationEventId(for: post)
         storageAdapter.query(MutationEvent.self,
                              predicate: predicate) { result in
-                                switch result {
-                                case .failure(let dataStoreError):
-                                    XCTAssertNil(dataStoreError)
-                                case .success(let mutationEvents):
-                                    guard let mutationEvent = mutationEvents.first else {
-                                        XCTFail("mutationEvents empty or nil")
-                                        return
-                                    }
-                                    XCTAssertEqual(mutationEvent.json, try? mutatedPost.toJSON())
-                                    XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.update.rawValue)
-                                }
-                                mutationEventVerified.fulfill()
+            switch result {
+            case .failure(let dataStoreError):
+                XCTAssertNil(dataStoreError)
+            case .success(let mutationEvents):
+                guard let mutationEvent = mutationEvents.first else {
+                    XCTFail("mutationEvents empty or nil")
+                    return
+                }
+                guard let mutationEventPost = try? mutationEvent.decodeModel(as: Post.self) else {
+                    XCTFail("Could not decode mutation event json to Post instance")
+                    return
+                }
+                XCTAssertEqual(mutationEventPost.content, mutatedPost.content)
+                XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.update.rawValue)
+            }
+            mutationEventVerified.fulfill()
         }
-
+        
         wait(for: [mutationEventVerified], timeout: 1.0)
     }
 
@@ -416,7 +424,11 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
                     XCTFail("mutationEvents empty or nil")
                     return
                 }
-                XCTAssertEqual(mutationEvent.json, try? post.toJSON())
+                guard let mutationEventPost = try? mutationEvent.decodeModel(as: Post.self) else {
+                    XCTFail("Could not decode mutation event json to Post instance")
+                    return
+                }
+                XCTAssertEqual(mutationEventPost.id, savedPost.id)
                 XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.create.rawValue)
             }
             mutationEventVerified.fulfill()
@@ -457,7 +469,11 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
                     XCTFail("mutationEvents empty or nil")
                     return
                 }
-                XCTAssertEqual(mutationEvent.json, try? post.toJSON())
+                guard let mutationEventPost = try? mutationEvent.decodeModel(as: Post.self) else {
+                    XCTFail("Could not decode mutation event json to Post instance")
+                    return
+                }
+                XCTAssertEqual(mutationEventPost.id, savedPost.id)
                 XCTAssertEqual(mutationEvent.mutationType, GraphQLMutationType.update.rawValue)
             }
             mutationEventVerified.fulfill()
@@ -580,10 +596,19 @@ class MutationIngesterConflictResolutionTests: SyncEngineTestBase {
             case .success(let mutationEvents):
                 XCTAssertEqual(mutationEvents.count, 2)
                 XCTAssertEqual(mutationEvents[0].mutationType, GraphQLMutationType.create.rawValue)
-                XCTAssertEqual(mutationEvents[0].json, try? post.toJSON())
+                guard let mutationEventPost1 = try? mutationEvents[0].decodeModel(as: Post.self) else {
+                    XCTFail("Could not decode mutation event json to Post instance")
+                    return
+                }
+                XCTAssertEqual(mutationEventPost1.id, savedPost.id)
 
                 XCTAssertEqual(mutationEvents[1].mutationType, GraphQLMutationType.update.rawValue)
-                XCTAssertEqual(mutationEvents[1].json, try? mutatedPost.toJSON())
+                guard let mutationEventPost2 = try? mutationEvents[1].decodeModel(as: Post.self) else {
+                    XCTFail("Could not decode mutation event json to Post instance")
+                    return
+                }
+                XCTAssertEqual(mutationEventPost2.id, mutatedPost.id)
+                XCTAssertEqual(mutationEventPost2.content, mutatedPost.content)
             }
             mutationEventVerified.fulfill()
         }

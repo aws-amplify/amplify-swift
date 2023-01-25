@@ -17,6 +17,11 @@ public struct DataStoreModelDecoder: ModelProviderDecoder {
     struct Metadata: Codable {
         let identifier: String?
         let source: String
+        
+        init(identifier: String?, source: String = DataStoreSource) {
+            self.identifier = identifier
+            self.source = source
+        }
     }
     
     /// Create a SQLite payload that is capable of initializting a LazyReference, by decoding to `DataStoreModelDecoder.Metadata`.

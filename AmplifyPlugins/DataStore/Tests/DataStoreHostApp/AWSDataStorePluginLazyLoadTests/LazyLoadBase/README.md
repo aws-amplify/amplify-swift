@@ -8,9 +8,11 @@
 
 1. `amplify init`
 
-These tests were provisioned with V2 Transform:, and updates to `cli.json` 
+These tests were provisioned with V2 Transform, CPK enabled, and with the lazy loading feature flag.
+Review or make updates to `cli.json`
+- "transformerversion":2 
 - "respectprimarykeyattributesonconnectionfield": true
-- "TODOlazyLoadiOS": true 
+- "generateModelsForLazyLoadAndCustomSelectionSet": true 
 
 2. `amplify add api`
 
@@ -28,5 +30,6 @@ These tests were provisioned with V2 Transform:, and updates to `cli.json`
 4. Copy `amplifyconfiguration.json` to a new file named `AWSDataStoreCategoryPluginLazyLoadIntegrationTests-amplifyconfiguration.json` inside `~/.aws-amplify/amplify-ios/testconfiguration/`
 
 ```perl
-cp amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/AWSDataStoreCategoryPluginLazyLoadIntegrationTests-amplifyconfiguration.json
+cp amplifyconfiguration.json AWSDataStoreCategoryPluginLazyLoadIntegrationTests-amplifyconfiguration.json
+cp AWSDataStoreCategoryPluginLazyLoadIntegrationTests-amplifyconfiguration.json ~/.aws-amplify/amplify-ios/testconfiguration/
 ```

@@ -52,6 +52,9 @@ public protocol ModelListProvider {
     /// Asynchronously retrieve the next page as a new in-memory List object. Returns a failure if there
     /// is no next page of results. You can validate whether the list has another page with `hasNextPage()`.
     func getNextPage() async throws -> List<Element>
+    
+    /// Custom encoder
+    func encode(to encoder: Encoder) throws
 }
 
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
@@ -63,7 +66,8 @@ public struct AnyModelListProvider<Element: Model>: ModelListProvider {
     private let loadAsync: () async throws -> [Element]
     private let hasNextPageClosure: () -> Bool
     private let getNextPageAsync: () async throws -> List<Element>
-
+    private let encodeClosure: (Encoder) throws -> Void
+    
     public init<Provider: ModelListProvider>(
         provider: Provider
     ) where Provider.Element == Self.Element {
@@ -71,6 +75,7 @@ public struct AnyModelListProvider<Element: Model>: ModelListProvider {
         self.loadAsync = provider.load
         self.hasNextPageClosure = provider.hasNextPage
         self.getNextPageAsync = provider.getNextPage
+        self.encodeClosure = provider.encode
     }
 
     public func getState() -> ModelListProviderState<Element> {
@@ -87,6 +92,10 @@ public struct AnyModelListProvider<Element: Model>: ModelListProvider {
 
     public func getNextPage() async throws -> List<Element> {
         try await getNextPageAsync()
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        try encodeClosure(encoder)
     }
 }
 
