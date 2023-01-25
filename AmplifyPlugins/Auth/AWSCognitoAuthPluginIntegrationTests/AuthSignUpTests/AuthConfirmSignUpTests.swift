@@ -11,13 +11,11 @@ import AWSCognitoAuthPlugin
 
 class AuthConfirmSignUpTests: AWSAuthBaseTest {
 
-    override func setUp() {
-        super.setUp()
-        initializeAmplify()
+    override func setUpWithError() throws {
+        try initializeAmplify()
     }
 
-    override func tearDown() {
-        super.tearDown()
+    override func tearDownWithError() throws {
         Amplify.reset()
         sleep(2)
     }
