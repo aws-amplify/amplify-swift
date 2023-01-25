@@ -18,6 +18,7 @@ import AWSMobileClientXCF
 class AuthDeviceOperationTests: AWSAuthBaseTest {
 
     override func setUpWithError() throws {
+        continueAfterFailure = false
         try initializeAmplify()
     }
 
@@ -37,7 +38,9 @@ class AuthDeviceOperationTests: AWSAuthBaseTest {
     func testForgetDeviceWithSignedOutUser() {
         let forgetDeviceExpectation = expectation(description: "Received event result from forgetDevice")
         _ = Amplify.Auth.forgetDevice { result in
-            forgetDeviceExpectation.fulfill()
+            defer {
+                forgetDeviceExpectation.fulfill()
+            }
             switch result {
             case .success:
                 XCTFail("Forget device with signed out user should not return success")
@@ -66,17 +69,24 @@ class AuthDeviceOperationTests: AWSAuthBaseTest {
         let signInExpectation = expectation(description: "SignIn operation should complete")
         AuthSignInHelper.registerAndSignInUser(username: username, password: password,
                                                email: email) { didSucceed, error in
-            signInExpectation.fulfill()
+            defer {
+                signInExpectation.fulfill()
+            }
             XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
         }
         wait(for: [signInExpectation], timeout: networkTimeout)
+        defer {
+            _ = Amplify.Auth.signOut()
+        }
 
         let user = Amplify.Auth.getCurrentUser()
         XCTAssertNotNil(user)
 
         let forgetDeviceExpectation = expectation(description: "Received event result from forgetDevice")
         _ = Amplify.Auth.forgetDevice { result in
-            forgetDeviceExpectation.fulfill()
+            defer {
+                forgetDeviceExpectation.fulfill()
+            }
             switch result {
             case .success:
                 XCTFail("Forget device with untracked device should not return result")
@@ -86,7 +96,6 @@ class AuthDeviceOperationTests: AWSAuthBaseTest {
                     XCTFail("Should return deviceNotTracked")
                     return
                 }
-
             }
         }
         wait(for: [forgetDeviceExpectation], timeout: networkTimeout)
