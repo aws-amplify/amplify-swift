@@ -26,14 +26,16 @@ struct VerifyPasswordSRP: Action {
 
         logVerbose("\(#fileID) Starting execution", environment: environment)
 
+        let inputUsername = stateData.username
+        var username = inputUsername
+        var deviceMetadata = DeviceMetadata.noData
         do {
             let srpEnv = try environment.srpEnvironment()
             let userPoolEnv = try environment.userPoolEnvironment()
             let srpClient = try SRPSignInHelper.srpClient(srpEnv)
             let parameters = try challengeParameters()
 
-            let inputUsername = stateData.username
-            let username = parameters["USERNAME"] ?? inputUsername
+            username = parameters["USERNAME"] ?? inputUsername
             let userIdForSRP = parameters["USER_ID_FOR_SRP"] ?? inputUsername
 
             let saltHex = try saltHex(parameters)
@@ -41,7 +43,7 @@ struct VerifyPasswordSRP: Action {
             let secretBlock = try secretBlock(secretBlockString)
             let serverPublicB = try serverPublic(parameters)
 
-            let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
+            deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
                 for: username,
                 with: environment)
             let signature = try signature(userIdForSRP: userIdForSRP,

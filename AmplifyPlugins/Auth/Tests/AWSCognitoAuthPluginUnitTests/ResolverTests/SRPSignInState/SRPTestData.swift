@@ -83,6 +83,30 @@ extension RespondToAuthChallengeOutputResponse {
             challengeParameters: [:],
             session: "session")
     }
+
+    static func testDataWithNewDevice() -> RespondToAuthChallengeOutputResponse {
+        let result = CognitoIdentityProviderClientTypes.AuthenticationResultType(
+            accessToken: Defaults.validAccessToken,
+            expiresIn: 3_600,
+            idToken: "idTokenXXX",
+            newDeviceMetadata: .init(deviceGroupKey: "mockGroupKey", deviceKey: "mockKey"),
+            refreshToken: "refreshTokenXXX",
+            tokenType: "Bearer")
+
+        return RespondToAuthChallengeOutputResponse(
+            authenticationResult: result,
+            challengeName: .none,
+            challengeParameters: [:],
+            session: "session")
+    }
+
+    static func testDataWithVerifyDevice() -> RespondToAuthChallengeOutputResponse {
+        return RespondToAuthChallengeOutputResponse(
+            authenticationResult: nil,
+            challengeName: .deviceSrpAuth,
+            challengeParameters: [:],
+            session: "session")
+    }
 }
 
 extension RespondToAuthChallenge {
