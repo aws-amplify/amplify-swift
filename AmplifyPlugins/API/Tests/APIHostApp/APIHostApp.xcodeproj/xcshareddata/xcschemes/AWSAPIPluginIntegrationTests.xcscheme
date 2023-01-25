@@ -17,8 +17,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "21698A9428899818004BD994"
-               BuildableName = "AWSAPIPluginIntegrationTests.xctest"
-               BlueprintName = "AWSAPIPluginIntegrationTests"
+               BuildableName = "AWSAPIPluginGraphQLAuthDirectiveTests.xctest"
+               BlueprintName = "AWSAPIPluginGraphQLAuthDirectiveTests"
                ReferencedContainer = "container:APIHostApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
