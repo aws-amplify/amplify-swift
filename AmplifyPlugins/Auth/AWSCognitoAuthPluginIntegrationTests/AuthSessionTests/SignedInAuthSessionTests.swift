@@ -15,7 +15,7 @@ import AmplifyTestCommon
 class SignedInAuthSessionTests: AWSAuthBaseTest {
 
     override func setUpWithError() throws {
-        try initializeAmplifyWithError()
+        try initializeAmplify()
         AuthSessionHelper.clearKeychain()
     }
 
