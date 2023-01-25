@@ -82,8 +82,8 @@ public class DataStoreListProvider<Element: Model>: ModelListProvider {
                         let associatedField):
             
             if let associatedId = associatedIdentifiers.first {
-                let metadata = DataStoreListDecoder.Meetadata(associatedId: associatedId,
-                                                              associatedField: associatedField)
+                let metadata = DataStoreListDecoder.Metadata(associatedId: associatedId,
+                                                             associatedField: associatedField)
                 var container = encoder.singleValueContainer()
                 try container.encode(metadata)
             }

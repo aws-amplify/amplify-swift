@@ -11,7 +11,7 @@ import Combine
 
 public struct DataStoreListDecoder: ModelListDecoder {
 
-    struct Meetadata: Codable {
+    struct Metadata: Codable {
         let associatedId: String
         let associatedField: String
         
