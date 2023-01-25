@@ -68,7 +68,9 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
          apiName: String? = nil,
          limit: Int? = nil,
          filter: [String: Any]? = nil) {
-        self.loadedState = .loaded(elements: elements, nextToken: nextToken, filter: filter)
+        self.loadedState = .loaded(elements: elements,
+                                   nextToken: nextToken,
+                                   filter: filter)
         self.apiName = apiName
         self.limit = limit
     }
@@ -99,8 +101,6 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
             return try await load(associatedIdentifiers: associatedIdentifiers, associatedField: associatedField)
         }
     }
-    
-    
     
     //// Internal `load` to perform the retrieval of the first page and storing it in memory
     func load(associatedIdentifiers: [String],
@@ -146,14 +146,14 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
                                            filter: filter)
                 return listResponse.items
             case .failure(let graphQLError):
-                Amplify.API.log.error(error: graphQLError)
+                log.error(error: graphQLError)
                 throw CoreError.listOperation(
                     "The AppSync response returned successfully with GraphQL errors.",
                     "Check the underlying error for the failed GraphQL response.",
                     graphQLError)
             }
         } catch let apiError as APIError {
-            Amplify.API.log.error(error: apiError)
+            log.error(error: apiError)
             throw CoreError.listOperation("The AppSync request failed",
                                           "See underlying `APIError` for more details.",
                                           apiError)
@@ -203,18 +203,38 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
                 _ = try await nextPageList.fetch()
                 return nextPageList
             case .failure(let graphQLError):
-                Amplify.API.log.error(error: graphQLError)
+                log.error(error: graphQLError)
                 throw CoreError.listOperation("""
                     The AppSync request was processed by the service, but the response contained GraphQL errors.
                     """, "Check the underlying error for the failed GraphQL response.", graphQLError)
             }
         } catch let apiError as APIError {
-            Amplify.API.log.error(error: apiError)
+            log.error(error: apiError)
             throw CoreError.listOperation("The AppSync request failed",
                                           "See underlying `APIError` for more details.",
                                           apiError)
         } catch {
             throw error
+        }
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        switch loadedState {
+        case .notLoaded(let associatedIdentifiers, let associatedField):
+            let metadata = AppSyncListDecoder.Metadata.init(
+                appSyncAssociatedIdentifiers: associatedIdentifiers,
+                appSyncAssociatedField: associatedField,
+                apiName: apiName)
+            var container = encoder.singleValueContainer()
+            try container.encode(metadata)
+        case .loaded(let elements, _, _):
+            // This does not encode the `nextToken` or `filter`, which means the data is essentially dropped.
+            // If the encoded list is later decoded, the existing `elements` will be available but will be missing
+            // the metadata to reflect whether there's a next page or not. Encoding the metadata is rather difficult
+            // with the filter being `Any` type and is not a call pattern that is recommended/supported. The extent
+            // of this supported flow is to allow encoding and decoding of the `elements`. To get the
+            // latest data, make the call to your data source directly through **Amplify.API**.
+            try elements.encode(to: encoder)
         }
     }
     
@@ -239,3 +259,5 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
     }
     
 }
+
+extension AppSyncListProvider: DefaultLogger { }

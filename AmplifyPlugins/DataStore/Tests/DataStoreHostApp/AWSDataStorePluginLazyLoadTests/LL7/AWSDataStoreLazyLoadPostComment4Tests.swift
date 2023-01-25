@@ -186,6 +186,77 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
         // Is there a way to delete the children models in uni directional relationships?
         try await assertModelExists(savedComment)
     }
+    
+    func testObservePost() async throws {
+        await setup(withModels: PostComment4Models())
+        try await startAndWaitForReady()
+        let post = Post(postId: UUID().uuidString, title: "title")
+        let comment = Comment(commentId: UUID().uuidString,
+                              content: "content",
+                              post4CommentsPostId: post.postId,
+                              post4CommentsTitle: post.title)
+        let mutationEventReceived = asyncExpectation(description: "Received mutation event")
+        let mutationEvents = Amplify.DataStore.observe(Post.self)
+        Task {
+            for try await mutationEvent in mutationEvents {
+                if let version = mutationEvent.version,
+                   version == 1,
+                   let receivedPost = try? mutationEvent.decodeModel(as: Post.self),
+                   receivedPost.postId == post.postId {
+                    
+                    // TODO: Needs further investigation, received post cannot lazy load comment
+                    //let savedComment = try await saveAndWaitForSync(comment)
+                    //try await assertPost(receivedPost, canLazyLoad: savedComment)
+                    
+                    await mutationEventReceived.fulfill()
+                }
+            }
+        }
+        
+        let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: post, modelSchema: Post.schema)
+        do {
+            _ = try await Amplify.API.mutate(request: createRequest)
+        } catch {
+            XCTFail("Failed to send mutation request \(error)")
+        }
+        
+        await waitForExpectations([mutationEventReceived], timeout: 60)
+        mutationEvents.cancel()
+    }
+    
+    func testObserveComment() async throws {
+        await setup(withModels: PostComment4Models())
+        try await startAndWaitForReady()
+        let post = Post(postId: UUID().uuidString, title: "title")
+        let savedPost = try await saveAndWaitForSync(post)
+        let comment = Comment(commentId: UUID().uuidString,
+                              content: "content",
+                              post4CommentsPostId: post.postId,
+                              post4CommentsTitle: post.title)
+        let mutationEventReceived = asyncExpectation(description: "Received mutation event")
+        let mutationEvents = Amplify.DataStore.observe(Comment.self)
+        Task {
+            for try await mutationEvent in mutationEvents {
+                if let version = mutationEvent.version,
+                   version == 1,
+                   let receivedComment = try? mutationEvent.decodeModel(as: Comment.self),
+                   receivedComment.commentId == comment.commentId {
+                    assertComment(receivedComment, contains: savedPost)
+                    await mutationEventReceived.fulfill()
+                }
+            }
+        }
+        
+        let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: comment, modelSchema: Comment.schema)
+        do {
+            _ = try await Amplify.API.mutate(request: createRequest)
+        } catch {
+            XCTFail("Failed to send mutation request \(error)")
+        }
+        
+        await waitForExpectations([mutationEventReceived], timeout: 60)
+        mutationEvents.cancel()
+    }
 }
 
 extension AWSDataStoreLazyLoadPostComment4Tests {

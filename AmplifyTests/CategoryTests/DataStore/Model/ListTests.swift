@@ -109,6 +109,10 @@ class ListTests: XCTestCase {
                 fatalError("Mock not implemented")
             }
         }
+        
+        func encode(to encoder: Encoder) throws {
+            try elements.encode(to: encoder)
+        }
     }
 
     func testModelListDecoderRegistry() throws {

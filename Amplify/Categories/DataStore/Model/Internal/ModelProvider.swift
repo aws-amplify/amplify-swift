@@ -47,6 +47,8 @@ public protocol ModelProvider {
     func load() async throws -> Element?
     
     func getState() -> ModelProviderState<Element>
+    
+    func encode(to encoder: Encoder) throws
 }
 
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
@@ -57,17 +59,24 @@ public struct AnyModelProvider<Element: Model>: ModelProvider {
     
     private let loadAsync: () async throws -> Element?
     private let getStateClosure: () -> ModelProviderState<Element>
+    private let encodeClosure: (Encoder) throws -> Void
     
     public init<Provider: ModelProvider>(provider: Provider) where Provider.Element == Self.Element {
         self.loadAsync = provider.load
         self.getStateClosure = provider.getState
+        self.encodeClosure = provider.encode
     }
+    
     public func load() async throws -> Element? {
         try await loadAsync()
     }
     
     public func getState() -> ModelProviderState<Element> {
         getStateClosure()
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        try encodeClosure(encoder)
     }
 }
 

@@ -158,11 +158,6 @@ public class List<ModelType: Model>: Collection, Codable, ExpressibleByArrayLite
     }
 
     public func encode(to encoder: Encoder) throws {
-        switch loadedState {
-        case .notLoaded:
-            try [Element]().encode(to: encoder)
-        case .loaded(let elements):
-            try elements.encode(to: encoder)
-        }
+        try listProvider.encode(to: encoder)
     }
 }
