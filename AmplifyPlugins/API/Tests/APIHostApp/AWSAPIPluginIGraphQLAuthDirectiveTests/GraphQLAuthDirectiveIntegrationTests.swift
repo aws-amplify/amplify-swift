@@ -131,6 +131,9 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
     }
     
     /// An unauthorized user should not be able to make a mutation
+    /// - Given: An API backend as per README.md with SocialNote schema
+    /// - When: An unauthorized mutation request is made
+    /// - Then: The request should fail
     func testUnauthorizedMutation() async throws {
         let failureInvoked = expectation(description: "failure invoked")
         let note = SocialNote(content: "owner created content", owner: nil)
@@ -145,6 +148,9 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
         wait(for: [failureInvoked], timeout: TestCommonConstants.networkTimeout)
     }
     
+    /// - Given: An API backend as per README.md with SocialNote schema
+    /// - When: An authrorized syncQuery request is made
+    /// - Then: The request should succeed
     func testSyncQuery() async throws {
         try await signIn(username: user1.username, password: user1.password)
         let id = UUID().uuidString
@@ -158,6 +164,9 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
     }
     
     /// An unauthorized user should not be able to query
+    /// - Given: An API backend as per README.md with SocialNote schema
+    /// - When: An unauthrorized syncQuery request is made
+    /// - Then: The request should fail
     func testUnauthorizedSyncQuery() async throws {
         let failureInvoked = asyncExpectation(description: "failure invoked")
         let request = GraphQLRequest<SyncQueryResult>.syncQuery(modelType: SocialNote.self, limit: 1)
@@ -172,6 +181,10 @@ class GraphQLAuthDirectiveIntegrationTests: XCTestCase {
         await waitForExpectations([failureInvoked], timeout: TestCommonConstants.networkTimeout)
     }
     
+    /// An authorized user should not subscribe to mutation events
+    /// - Given: An API backend as per README.md with SocialNote schema
+    /// - When: An authorized user sets up subscription to API
+    /// - Then: The request should succeed and the user should receive mutation events
     func testOnCreateSubscriptionOnlyWhenSignedIntoUserPool() async throws {
         try await signIn(username: user1.username, password: user1.password)
         let connectedInvoked = asyncExpectation(description: "Connection established")
