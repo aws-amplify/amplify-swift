@@ -45,8 +45,4 @@ struct DeviceMetadataHelper {
                 logger?.error("Unable to remove device metadata with error: \(error)")
             }
         }
-<<<<<<< HEAD
-=======
-
->>>>>>> 1ac16570 (fix(auth): Device binding to use the right username for mapping)
 }
