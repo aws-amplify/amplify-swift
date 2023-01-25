@@ -13,8 +13,6 @@ enum AuthorizationState: State {
 
     case configured
 
-    case signingIn
-
     case signingOut(AmplifyCredentials?)
 
     case clearingFederation
@@ -47,8 +45,6 @@ extension AuthorizationState {
             return "AuthorizationState.notConfigured"
         case .configured:
             return "AuthorizationState.configured"
-        case .signingIn:
-            return "AuthorizationState.signingIn"
         case .signingOut:
             return "AuthorizationState.signingOut"
         case .federatingToIdentityPool:

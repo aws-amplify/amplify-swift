@@ -20,6 +20,22 @@ extension AuthorizationState {
             byApplying event: StateMachineEvent
         ) -> StateResolution<StateType> {
 
+            if let authEvent = event.isAuthenticationEvent {
+                switch authEvent {
+                case .signInCompleted(let signedInData):
+                    let action = InitializeFetchAuthSessionWithUserPool(
+                        signedInData: signedInData)
+                    return .init(
+                        newState: .fetchingAuthSessionWithUserPool(.notStarted, signedInData),
+                        actions: [action])
+                case .error(let error):
+                    return .init(newState: .error(AuthorizationError.service(error: error)))
+                case .cancelSignIn:
+                    return .init(newState: .configured)
+                default: break
+                }
+            }
+
             switch oldState {
             case .notConfigured:
                 guard let authZEvent = event.isAuthorizationEvent else {
@@ -28,11 +44,6 @@ extension AuthorizationState {
                 return resolveNotConfigured(byApplying: authZEvent)
 
             case .configured:
-
-                if let authNEvent = event.isAuthenticationEvent,
-                   case .signInRequested = authNEvent {
-                    return .init(newState: .signingIn)
-                }
 
                 if case .fetchUnAuthSession = event.isAuthorizationEvent {
                     let action = InitializeFetchUnAuthSession()
@@ -57,9 +68,7 @@ extension AuthorizationState {
 
             case .sessionEstablished(let credentials):
                 if let authNEvent = event.isAuthenticationEvent {
-                    if case .signInRequested = authNEvent {
-                        return .from(.signingIn)
-                    } else if case .signOutRequested = authNEvent {
+                    if case .signOutRequested = authNEvent {
                         return .from(.signingOut(credentials))
                     } else if case .clearFederationToIdentityPool = authNEvent {
                         return .from(.clearingFederation)
@@ -125,23 +134,6 @@ extension AuthorizationState {
                         federatedToken,
                         existingCredentials: credentials),
                     actions: resolution.actions)
-
-            case .signingIn:
-                if let authEvent = event.isAuthenticationEvent {
-                    switch authEvent {
-                    case .signInCompleted(let signedInData):
-                        let action = InitializeFetchAuthSessionWithUserPool(
-                            signedInData: signedInData)
-                        return .init(newState: .fetchingAuthSessionWithUserPool(.notStarted, signedInData),
-                                     actions: [action])
-                    case .error(let error):
-                        return .init(newState: .error(AuthorizationError.service(error: error)))
-                    case .cancelSignIn:
-                        return .init(newState: .configured)
-                    default: return .from(.signingIn)
-                    }
-                }
-                return .from(.signingIn)
 
             case .signingOut(let credentials):
                 if let signOutEvent = event.isSignOutEvent,
@@ -267,7 +259,7 @@ extension AuthorizationState {
 
                     switch authNEvent {
                     case .signInRequested:
-                        return .from(.signingIn)
+                        return .from(.configured)
                     case .signOutRequested:
                         return .from(.signingOut(nil))
                     case .cancelSignIn:

@@ -14,7 +14,6 @@ extension AuthorizationState: CustomDebugDictionaryConvertible {
         switch self {
         case .notConfigured,
                 .configured,
-                .signingIn,
                 .signingOut,
                 .clearingFederation,
                 .deletingUser:

@@ -82,8 +82,6 @@ extension AuthorizationState: Codable {
 
         } else if type == "AuthorizationState.Configured" {
             self = .configured
-        } else if type == "AuthorizationState.SigningIn" {
-            self = .signingIn
         } else {
             fatalError("Decoding not supported")
         }
