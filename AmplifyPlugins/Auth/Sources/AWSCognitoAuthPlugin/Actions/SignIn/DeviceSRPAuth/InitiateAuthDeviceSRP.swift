@@ -39,7 +39,6 @@ struct InitiateAuthDeviceSRP: Action {
                 NHexValue: nHexValue,
                 gHexValue: gHexValue,
                 srpKeyPair: srpKeyPair,
-                deviceMetadata: deviceMetadata,
                 clientTimestamp: Date())
 
             let request = RespondToAuthChallengeInput.deviceSRP(
