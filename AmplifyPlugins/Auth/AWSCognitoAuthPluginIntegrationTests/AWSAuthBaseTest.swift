@@ -18,13 +18,17 @@ class AWSAuthBaseTest: XCTestCase {
 
     let amplifyConfigurationFile = "testconfiguration/AWSCognitoAuthPluginIntegrationTests-amplifyconfiguration"
 
+    func initializeAmplifyWithError() throws {
+        let configuration = try TestConfigHelper.retrieveAmplifyConfiguration(
+            forResource: amplifyConfigurationFile)
+        let authPlugin = AWSCognitoAuthPlugin()
+        try Amplify.add(plugin: authPlugin)
+        try Amplify.configure(configuration)
+    }
+
     func initializeAmplify() {
         do {
-            let configuration = try TestConfigHelper.retrieveAmplifyConfiguration(
-                forResource: amplifyConfigurationFile)
-            let authPlugin = AWSCognitoAuthPlugin()
-            try Amplify.add(plugin: authPlugin)
-            try Amplify.configure(configuration)
+            try initializeAmplifyWithError()
             print("Amplify configured with auth plugin")
         } catch {
             print(error)
