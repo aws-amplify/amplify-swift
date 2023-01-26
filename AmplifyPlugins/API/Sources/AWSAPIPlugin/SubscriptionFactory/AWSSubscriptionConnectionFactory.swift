@@ -22,23 +22,25 @@ class AWSSubscriptionConnectionFactory: SubscriptionConnectionFactory {
 
     private var apiToConnectionProvider: [MapperCacheKey: ConnectionProvider] = [:]
 
-    func getOrCreateConnection(for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
-                               authService: AWSAuthServiceBehavior,
-                               authType: AWSAuthorizationType? = nil,
-                               apiAuthProviderFactory: APIAuthProviderFactory) throws -> SubscriptionConnection {
+    func getOrCreateConnection(
+        for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
+        urlRequest: URLRequest,
+        authService: AWSAuthServiceBehavior,
+        authType: AWSAuthorizationType? = nil,
+        apiAuthProviderFactory: APIAuthProviderFactory
+    ) throws -> SubscriptionConnection {
         return try concurrencyQueue.sync {
             let apiName = endpointConfig.name
 
-            let url = endpointConfig.baseURL
-
-            let authInterceptor = try getInterceptor(for: getOrCreateAuthConfiguration(from: endpointConfig,
-                                                                                       authType: authType),
-                                                     authService: authService,
-                                                     apiAuthProviderFactory: apiAuthProviderFactory)
+            let authInterceptor = try self.getInterceptor(
+                for: self.getOrCreateAuthConfiguration(from: endpointConfig, authType: authType),
+                authService: authService,
+                apiAuthProviderFactory: apiAuthProviderFactory
+            )
 
             // create or retrieve the connection provider. If creating, add interceptors onto the provider.
             let connectionProvider = apiToConnectionProvider[MapperCacheKey(apiName: apiName, authType: authType)] ??
-                ConnectionProviderFactory.createConnectionProviderAsync(for: url,
+                ConnectionProviderFactory.createConnectionProviderAsync(for: urlRequest,
                                                                         authInterceptor: authInterceptor,
                                                                         connectionType: .appSyncRealtime)
 
