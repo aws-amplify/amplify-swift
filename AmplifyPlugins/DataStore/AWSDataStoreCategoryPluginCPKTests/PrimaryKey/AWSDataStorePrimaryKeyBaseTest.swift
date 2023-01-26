@@ -238,6 +238,7 @@ extension AWSDataStorePrimaryKeyBaseTest {
                                     C: Model & ModelIdentifiable>(parent: P,
                                                                   child: C,
                                                                   _ expectations: TestExpectations,
+                                                                  shouldDeleteParent: Bool = true,
                                                                   onFailure: @escaping (_ error: DataStoreError) -> Void) {
         expectations.mutationSave.expectedFulfillmentCount = 2
         expectations.mutationSaveProcessed.expectedFulfillmentCount = 2
@@ -288,6 +289,19 @@ extension AWSDataStorePrimaryKeyBaseTest {
 
         wait(for: [expectations.mutationSave, expectations.mutationSaveProcessed], timeout: 60)
 
+        guard shouldDeleteParent else {
+            return
+        }
+        assertDeleteMutation(parent: parent, child: child, expectations) { error in
+            onFailure(error)
+        }
+    }
+    
+    func assertDeleteMutation<P: Model & ModelIdentifiable,
+                              C: Model & ModelIdentifiable>(parent: P,
+                                                            child: C,
+                                                            _ expectations: TestExpectations,
+                                                            onFailure: @escaping (_ error: DataStoreError) -> Void) {
         // delete parent
         Amplify.DataStore.delete(parent).sink {
             if case let .failure(error) = $0 {

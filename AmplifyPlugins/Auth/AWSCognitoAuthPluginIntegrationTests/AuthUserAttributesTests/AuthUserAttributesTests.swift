@@ -10,15 +10,15 @@ import XCTest
 import AWSCognitoAuthPlugin
 import AmplifyTestCommon
 
+// swiftlint:disable line_length
 class AuthUserAttributesTests: AWSAuthBaseTest {
 
-    override func setUp() {
-        super.setUp()
-        initializeAmplify()
+    override func setUpWithError() throws {
+        continueAfterFailure = false
+        try initializeAmplify()
     }
 
-    override func tearDown() {
-        super.tearDown()
+    override func tearDownWithError() throws {
         Amplify.reset()
         sleep(2)
     }
@@ -43,7 +43,9 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         AuthSignInHelper.registerAndSignInUser(username: username,
                                                password: password,
                                                email: email) { didSucceed, error in
-            signInExpectation.fulfill()
+            defer {
+                signInExpectation.fulfill()
+            }
             XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
         }
         wait(for: [signInExpectation], timeout: networkTimeout)
@@ -52,9 +54,12 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         let pluginOptions = AWSUpdateUserAttributeOptions(metadata: ["mydata": "myvalue"])
         let options = AuthUpdateUserAttributeRequest.Options(pluginOptions: pluginOptions)
         _ = Amplify.Auth.update(userAttribute: AuthUserAttribute(.email, value: email), options: options) { result in
+            defer {
+                updateExpectation.fulfill()
+            }
             switch result {
             case .success:
-                updateExpectation.fulfill()
+                break
             case .failure(let error):
                 XCTFail("Failed to update user attribute with \(error)")
             }
@@ -82,7 +87,9 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         AuthSignInHelper.registerAndSignInUser(username: username,
                                                password: password,
                                                email: email) { didSucceed, error in
-            signInExpectation.fulfill()
+            defer {
+                signInExpectation.fulfill()
+            }
             XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
         }
         wait(for: [signInExpectation], timeout: networkTimeout)
@@ -90,9 +97,12 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         let updateExpectation = expectation(description: "Update operation should complete")
 
         _ = Amplify.Auth.update(userAttribute: AuthUserAttribute(.email, value: email2)) { result in
+            defer {
+                updateExpectation.fulfill()
+            }
             switch result {
             case .success:
-                updateExpectation.fulfill()
+                break
             case .failure(let error):
                 XCTFail("Failed to update user attribute with \(error)")
             }
@@ -104,10 +114,12 @@ class AuthUserAttributesTests: AWSAuthBaseTest {
         let pluginOptions = AWSAttributeResendConfirmationCodeOptions(metadata: ["mydata": "myvalue"])
         let options = AuthAttributeResendConfirmationCodeRequest.Options(pluginOptions: pluginOptions)
         _ = Amplify.Auth.resendConfirmationCode(for: .email, options: options) { result in
+            defer {
+                resendExpectation.fulfill()
+            }
             switch result {
             case .success(let deliveryDetails):
                 print("Resend code send to - \(deliveryDetails)")
-                resendExpectation.fulfill()
             case .failure(let error):
                 print("Resend code failed with error \(error)")
             }

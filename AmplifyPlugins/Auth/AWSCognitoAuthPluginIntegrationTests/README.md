@@ -1,10 +1,13 @@
 #  AWSCognitoAuthPlugin Integration tests
 
-The following steps demonstrate how to setup the integration tests for auth plugin. 
+The following steps demonstrate how to setup the integration tests for the auth plugin. 
 
 ## CLI setup
 
-The integration test require auth configured with AWS Cognito User Pool and AWS Cognito Identity Pool. 
+The integration tests require auth configured with AWS Cognito User Pool and
+AWS Cognito Identity Pool. So, the first time you attempt to run the
+integration tests, you may have to do the following from the (directory
+containing the xcodeproj)[../]:
 
 ```
 amplify add auth

@@ -8,22 +8,41 @@
 import XCTest
 @testable import Amplify
 @testable import AWSCognitoAuthPlugin
+import Combine
 
-class AWSCognitoAuthClientBehaviorTests: XCTestCase {
+// swiftlint:disable file_length type_body_length
+final class AWSCognitoAuthClientBehaviorTests: XCTestCase {
 
     var plugin: AWSCognitoAuthPlugin!
+    var authenticationProvider: MockAuthenticationProviderBehavior!
+    var authorizationProvider: MockAuthorizationProviderBehavior!
+    var userService: MockAuthUserServiceBehavior!
+    var deviceService: MockAuthDeviceServiceBehavior!
+    var hubEventHandler: MockAuthHubEventBehavior!
 
-    override func setUp() {
+    override func setUpWithError() throws {
+        authenticationProvider = MockAuthenticationProviderBehavior()
+        authorizationProvider = MockAuthorizationProviderBehavior()
+        userService = MockAuthUserServiceBehavior()
+        deviceService = MockAuthDeviceServiceBehavior()
+        hubEventHandler = MockAuthHubEventBehavior()
         plugin = AWSCognitoAuthPlugin()
-        plugin.configure(authenticationProvider: MockAuthenticationProviderBehavior(),
-                         authorizationProvider: MockAuthorizationProviderBehavior(),
-                         userService: MockAuthUserServiceBehavior(),
-                         deviceService: MockAuthDeviceServiceBehavior(),
-                         hubEventHandler: MockAuthHubEventBehavior())
+        plugin.configure(authenticationProvider: authenticationProvider,
+                         authorizationProvider: authorizationProvider,
+                         userService: userService,
+                         deviceService: deviceService,
+                         hubEventHandler: hubEventHandler)
+        try Amplify.configure(AmplifyConfiguration())
     }
 
-    override func tearDown() {
+    override func tearDownWithError() throws {
         Amplify.reset()
+        authenticationProvider = nil
+        authorizationProvider = nil
+        userService = nil
+        deviceService = nil
+        hubEventHandler = nil
+        plugin = nil
     }
 
     /// Test signup operation can be invoked
@@ -41,6 +60,14 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
         let options = AuthSignUpRequest.Options(userAttributes: [emailAttribute], pluginOptions: pluginOptions)
         let operation = plugin.signUp(username: "userName", password: "password", options: options)
         XCTAssertNotNil(operation)
+
+        operation.waitUntilFinished()
+
+        XCTAssertEqual(authenticationProvider.interactions, ["signUp(request:completionHandler:)"])
+        XCTAssertEqual(authorizationProvider.interactions, [])
+        XCTAssertEqual(userService.interactions, [])
+        XCTAssertEqual(deviceService.interactions, [])
+        XCTAssertEqual(hubEventHandler.interactions, [])
     }
 
     /// Test signup operation can be invoked without options
@@ -54,6 +81,14 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
     func testSignUpRequestWithoutOptions() {
         let operation = plugin.signUp(username: "userName", password: "password")
         XCTAssertNotNil(operation)
+
+        operation.waitUntilFinished()
+
+        XCTAssertEqual(authenticationProvider.interactions, ["signUp(request:completionHandler:)"])
+        XCTAssertEqual(authorizationProvider.interactions, [])
+        XCTAssertEqual(userService.interactions, [])
+        XCTAssertEqual(deviceService.interactions, [])
+        XCTAssertEqual(hubEventHandler.interactions, [])
     }
 
     /// Test confirmSignup operation can be invoked
@@ -70,6 +105,14 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
         let options = AuthConfirmSignUpRequest.Options(pluginOptions: pluginOptions)
         let operation = plugin.confirmSignUp(for: "username", confirmationCode: "code", options: options)
         XCTAssertNotNil(operation)
+
+        operation.waitUntilFinished()
+
+        XCTAssertEqual(authenticationProvider.interactions, ["confirmSignUp(request:completionHandler:)"])
+        XCTAssertEqual(authorizationProvider.interactions, [])
+        XCTAssertEqual(userService.interactions, [])
+        XCTAssertEqual(deviceService.interactions, [])
+        XCTAssertEqual(hubEventHandler.interactions, [])
     }
 
     /// Test confirmSignup operation can be invoked without options
@@ -83,6 +126,14 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
     func testConfirmSignUpRequestWithoutOptions() {
         let operation = plugin.confirmSignUp(for: "username", confirmationCode: "code")
         XCTAssertNotNil(operation)
+
+        operation.waitUntilFinished()
+
+        XCTAssertEqual(authenticationProvider.interactions, ["confirmSignUp(request:completionHandler:)"])
+        XCTAssertEqual(authorizationProvider.interactions, [])
+        XCTAssertEqual(userService.interactions, [])
+        XCTAssertEqual(deviceService.interactions, [])
+        XCTAssertEqual(hubEventHandler.interactions, [])
     }
 
     /// Test resendSignUpCode operation can be invoked
@@ -98,6 +149,14 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
         let options = AuthResendSignUpCodeRequest.Options(pluginOptions: pluginOptions)
         let operation = plugin.resendSignUpCode(for: "username", options: options)
         XCTAssertNotNil(operation)
+
+        operation.waitUntilFinished()
+
+        XCTAssertEqual(authenticationProvider.interactions, ["resendSignUpCode(request:completionHandler:)"])
+        XCTAssertEqual(authorizationProvider.interactions, [])
+        XCTAssertEqual(userService.interactions, [])
+        XCTAssertEqual(deviceService.interactions, [])
+        XCTAssertEqual(hubEventHandler.interactions, [])
     }
 
     /// Test resendSignUpCode operation can be invoked without options
@@ -111,6 +170,14 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
     func testResendSignupCodeRequestWithoutOptions() {
         let operation = plugin.resendSignUpCode(for: "username")
         XCTAssertNotNil(operation)
+
+        operation.waitUntilFinished()
+
+        XCTAssertEqual(authenticationProvider.interactions, ["resendSignUpCode(request:completionHandler:)"])
+        XCTAssertEqual(authorizationProvider.interactions, [])
+        XCTAssertEqual(userService.interactions, [])
+        XCTAssertEqual(deviceService.interactions, [])
+        XCTAssertEqual(hubEventHandler.interactions, [])
     }
 
     /// Test signIn operation can be invoked
@@ -127,6 +194,14 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
         let options = AuthSignInRequest.Options(pluginOptions: pluginOptions)
         let operation = plugin.signIn(username: "username", password: "password", options: options)
         XCTAssertNotNil(operation)
+
+        operation.waitUntilFinished()
+
+        XCTAssertEqual(authenticationProvider.interactions, ["signIn(request:completionHandler:)"])
+        XCTAssertEqual(authorizationProvider.interactions, [])
+        XCTAssertEqual(userService.interactions, [])
+        XCTAssertEqual(deviceService.interactions, [])
+        XCTAssertEqual(hubEventHandler.interactions, [])
     }
 
     /// Test signIn operation can be invoked without options
@@ -140,6 +215,14 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
     func testSigninRequestWithoutOptions() {
         let operation = plugin.signIn(username: "username", password: "password")
         XCTAssertNotNil(operation)
+
+        operation.waitUntilFinished()
+
+        XCTAssertEqual(authenticationProvider.interactions, ["signIn(request:completionHandler:)"])
+        XCTAssertEqual(authorizationProvider.interactions, [])
+        XCTAssertEqual(userService.interactions, [])
+        XCTAssertEqual(deviceService.interactions, [])
+        XCTAssertEqual(hubEventHandler.interactions, [])
     }
 
     /// Test signInWithWebUI operation can be invoked
@@ -160,6 +243,14 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
                                                      pluginOptions: pluginOptions)
         let operation = plugin.signInWithWebUI(presentationAnchor: UIWindow(), options: options)
         XCTAssertNotNil(operation)
+
+        operation.waitUntilFinished()
+
+        XCTAssertEqual(authenticationProvider.interactions, ["signInWithWebUI(request:completionHandler:)"])
+        XCTAssertEqual(authorizationProvider.interactions, [])
+        XCTAssertEqual(userService.interactions, [])
+        XCTAssertEqual(deviceService.interactions, [])
+        XCTAssertEqual(hubEventHandler.interactions, [])
     }
 
     /// Test signInWithWebUI operation can be invoked without options
@@ -173,6 +264,14 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
     func testSigninWithWebUIRequestWithoutOptions() {
         let operation = plugin.signInWithWebUI(presentationAnchor: UIWindow())
         XCTAssertNotNil(operation)
+
+        operation.waitUntilFinished()
+
+        XCTAssertEqual(authenticationProvider.interactions, ["signInWithWebUI(request:completionHandler:)"])
+        XCTAssertEqual(authorizationProvider.interactions, [])
+        XCTAssertEqual(userService.interactions, [])
+        XCTAssertEqual(deviceService.interactions, [])
+        XCTAssertEqual(hubEventHandler.interactions, [])
     }
 
     /// Test signInWithWebUI operation can be invoked
@@ -193,6 +292,14 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
                                                      pluginOptions: pluginOptions)
         let operation = plugin.signInWithWebUI(for: .amazon, presentationAnchor: UIWindow(), options: options)
         XCTAssertNotNil(operation)
+
+        operation.waitUntilFinished()
+
+        XCTAssertEqual(authenticationProvider.interactions, ["signInWithWebUI(request:completionHandler:)"])
+        XCTAssertEqual(authorizationProvider.interactions, [])
+        XCTAssertEqual(userService.interactions, [])
+        XCTAssertEqual(deviceService.interactions, [])
+        XCTAssertEqual(hubEventHandler.interactions, [])
     }
 
     /// Test signInWithWebUI operation can be invoked without options
@@ -206,6 +313,14 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
     func testSigninWithSocialWebUIRequestWithoutOptions() {
         let operation = plugin.signInWithWebUI(for: .amazon, presentationAnchor: UIWindow())
         XCTAssertNotNil(operation)
+
+        operation.waitUntilFinished()
+
+        XCTAssertEqual(authenticationProvider.interactions, ["signInWithWebUI(request:completionHandler:)"])
+        XCTAssertEqual(authorizationProvider.interactions, [])
+        XCTAssertEqual(userService.interactions, [])
+        XCTAssertEqual(deviceService.interactions, [])
+        XCTAssertEqual(hubEventHandler.interactions, [])
     }
 
     /// Test confirmSignIn operation can be invoked
@@ -223,6 +338,14 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
         let options = AuthConfirmSignInRequest.Options(pluginOptions: pluginOptions)
         let operation = plugin.confirmSignIn(challengeResponse: "reponse", options: options)
         XCTAssertNotNil(operation)
+
+        operation.waitUntilFinished()
+
+        XCTAssertEqual(authenticationProvider.interactions, ["confirmSignIn(request:completionHandler:)"])
+        XCTAssertEqual(authorizationProvider.interactions, [])
+        XCTAssertEqual(userService.interactions, [])
+        XCTAssertEqual(deviceService.interactions, [])
+        XCTAssertEqual(hubEventHandler.interactions, [])
     }
 
     /// Test confirmSignIn operation can be invoked without options
@@ -236,6 +359,14 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
     func testConfirmSigninRequestWithoutOptions() {
         let operation = plugin.confirmSignIn(challengeResponse: "reponse")
         XCTAssertNotNil(operation)
+
+        operation.waitUntilFinished()
+
+        XCTAssertEqual(authenticationProvider.interactions, ["confirmSignIn(request:completionHandler:)"])
+        XCTAssertEqual(authorizationProvider.interactions, [])
+        XCTAssertEqual(userService.interactions, [])
+        XCTAssertEqual(deviceService.interactions, [])
+        XCTAssertEqual(hubEventHandler.interactions, [])
     }
 
     /// Test signOut operation can be invoked
@@ -250,6 +381,14 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
         let options = AuthSignOutRequest.Options(globalSignOut: true)
         let operation = plugin.signOut(options: options)
         XCTAssertNotNil(operation)
+
+        operation.waitUntilFinished()
+
+        XCTAssertEqual(authenticationProvider.interactions, ["signOut(request:completionHandler:)"])
+        XCTAssertEqual(authorizationProvider.interactions, [])
+        XCTAssertEqual(userService.interactions, [])
+        XCTAssertEqual(deviceService.interactions, [])
+        XCTAssertEqual(hubEventHandler.interactions, [])
     }
 
     /// Test signOut operation can be invoked without options
@@ -263,6 +402,14 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
     func testSignoutRequestWithoutOptions() {
         let operation = plugin.signOut()
         XCTAssertNotNil(operation)
+
+        operation.waitUntilFinished()
+
+        XCTAssertEqual(authenticationProvider.interactions, ["signOut(request:completionHandler:)"])
+        XCTAssertEqual(authorizationProvider.interactions, [])
+        XCTAssertEqual(userService.interactions, [])
+        XCTAssertEqual(deviceService.interactions, [])
+        XCTAssertEqual(hubEventHandler.interactions, [])
     }
 
     /// Test fetchAuthSession operation can be invoked
@@ -277,6 +424,14 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
         let options = AuthFetchSessionRequest.Options()
         let operation = plugin.fetchAuthSession(options: options)
         XCTAssertNotNil(operation)
+
+        operation.waitUntilFinished()
+
+        XCTAssertEqual(authenticationProvider.interactions, [])
+        XCTAssertEqual(authorizationProvider.interactions, ["fetchSession(request:completionHandler:)"])
+        XCTAssertEqual(userService.interactions, [])
+        XCTAssertEqual(deviceService.interactions, [])
+        XCTAssertEqual(hubEventHandler.interactions, [])
     }
 
     /// Test fetchAuthSession operation can be invoked without options
@@ -290,6 +445,14 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
     func testfetchAuthSessionWithoutOptions() {
         let operation = plugin.fetchAuthSession()
         XCTAssertNotNil(operation)
+
+        operation.waitUntilFinished()
+
+        XCTAssertEqual(authenticationProvider.interactions, [])
+        XCTAssertEqual(authorizationProvider.interactions, ["fetchSession(request:completionHandler:)"])
+        XCTAssertEqual(userService.interactions, [])
+        XCTAssertEqual(deviceService.interactions, [])
+        XCTAssertEqual(hubEventHandler.interactions, [])
     }
 
     /// Test resetPassword operation can be invoked
@@ -305,6 +468,14 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
         let options = AuthResetPasswordRequest.Options(pluginOptions: pluginOptions)
         let operation = plugin.resetPassword(for: "username", options: options)
         XCTAssertNotNil(operation)
+
+        operation.waitUntilFinished()
+
+        XCTAssertEqual(authenticationProvider.interactions, ["resetPassword(request:completionHandler:)"])
+        XCTAssertEqual(authorizationProvider.interactions, [])
+        XCTAssertEqual(userService.interactions, [])
+        XCTAssertEqual(deviceService.interactions, [])
+        XCTAssertEqual(hubEventHandler.interactions, [])
     }
 
     /// Test resetPassword operation can be invoked without options
@@ -318,6 +489,14 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
     func testResetPasswordRequestWithoutOptions() {
         let operation = plugin.resetPassword(for: "username")
         XCTAssertNotNil(operation)
+
+        operation.waitUntilFinished()
+
+        XCTAssertEqual(authenticationProvider.interactions, ["resetPassword(request:completionHandler:)"])
+        XCTAssertEqual(authorizationProvider.interactions, [])
+        XCTAssertEqual(userService.interactions, [])
+        XCTAssertEqual(deviceService.interactions, [])
+        XCTAssertEqual(hubEventHandler.interactions, [])
     }
 
     /// Test confirmResetPassword operation can be invoked
@@ -336,6 +515,14 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
                                                     confirmationCode: "code",
                                                     options: options)
         XCTAssertNotNil(operation)
+
+        operation.waitUntilFinished()
+
+        XCTAssertEqual(authenticationProvider.interactions, ["confirmResetPassword(request:completionHandler:)"])
+        XCTAssertEqual(authorizationProvider.interactions, [])
+        XCTAssertEqual(userService.interactions, [])
+        XCTAssertEqual(deviceService.interactions, [])
+        XCTAssertEqual(hubEventHandler.interactions, [])
     }
 
     /// Test confirmResetPassword operation can be invoked without options
@@ -346,8 +533,16 @@ class AWSCognitoAuthClientBehaviorTests: XCTestCase {
     /// - Then:
     ///    - I should get a valid operation object
     ///
-    func testConfirmResetPasswordRequestWithoutOptions() {
+    func testConfirmResetPasswordRequestWithoutOptions() throws {
         let operation = plugin.confirmResetPassword(for: "username", with: "password", confirmationCode: "code")
         XCTAssertNotNil(operation)
+
+        operation.waitUntilFinished()
+
+        XCTAssertEqual(authenticationProvider.interactions, ["confirmResetPassword(request:completionHandler:)"])
+        XCTAssertEqual(authorizationProvider.interactions, [])
+        XCTAssertEqual(userService.interactions, [])
+        XCTAssertEqual(deviceService.interactions, [])
+        XCTAssertEqual(hubEventHandler.interactions, [])
     }
 }

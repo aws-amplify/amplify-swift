@@ -14,13 +14,13 @@ import AmplifyTestCommon
 
 class AuthDeleteUserTests: AWSAuthBaseTest {
 
-    override func setUp() {
-        super.setUp()
-        initializeAmplify()
+    override func setUpWithError() throws {
+        continueAfterFailure = false
+        try initializeAmplify()
     }
 
-    override func tearDown() {
-        super.tearDown()
+    override func tearDownWithError() throws {
+        _ = Amplify.Auth.signOut()
         Amplify.reset()
         sleep(2)
     }
@@ -52,10 +52,10 @@ class AuthDeleteUserTests: AWSAuthBaseTest {
             defer {
                 authSignedInSessionExpectation.fulfill()
             }
-            do {
-                let session = try result.get()
+            switch result {
+            case .success(let session):
                 XCTAssertTrue(session.isSignedIn, "Auth session should be signedIn")
-            } catch {
+            case .failure(let error):
                 XCTFail("Fetch auth session failed with error - \(error)")
             }
         }
@@ -68,7 +68,7 @@ class AuthDeleteUserTests: AWSAuthBaseTest {
             }
             switch result {
             case .success:
-                print("Success deleteUser")
+                break
             case .failure(let error):
                 XCTFail("deleteUser should not fail - \(error)")
             }
@@ -100,10 +100,10 @@ class AuthDeleteUserTests: AWSAuthBaseTest {
             defer {
                 authSignedOutSessionExpectation.fulfill()
             }
-            do {
-                let session = try result.get()
+            switch result {
+            case .success(let session):
                 XCTAssertFalse(session.isSignedIn, "Auth session should NOT be signedIn")
-            } catch {
+            case .failure(let error):
                 XCTFail("Fetch auth session failed with error - \(error)")
             }
         }

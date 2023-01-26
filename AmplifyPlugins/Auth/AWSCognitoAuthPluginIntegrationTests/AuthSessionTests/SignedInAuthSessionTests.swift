@@ -14,14 +14,13 @@ import AmplifyTestCommon
 
 class SignedInAuthSessionTests: AWSAuthBaseTest {
 
-    override func setUp() {
-        super.setUp()
-        initializeAmplify()
+    override func setUpWithError() throws {
+        try initializeAmplify()
         AuthSessionHelper.clearKeychain()
     }
 
-    override func tearDown() {
-        super.tearDown()
+    override func tearDownWithError() throws {
+        _ = Amplify.Auth.signOut()
         Amplify.reset()
         sleep(2)
         AuthSessionHelper.clearKeychain()
@@ -41,21 +40,21 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
         let signInExpectation = expectation(description: "SignIn operation should complete")
         AuthSignInHelper.registerAndSignInUser(username: username, password: password,
                                                email: email) { didSucceed, error in
-            signInExpectation.fulfill()
+            if didSucceed {
+                signInExpectation.fulfill()
+            }
             XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
         }
         wait(for: [signInExpectation], timeout: networkTimeout)
 
         let authSessionExpectation = expectation(description: "Received event result from fetchAuth")
         _ = Amplify.Auth.fetchAuthSession { result in
-            defer {
-                authSessionExpectation.fulfill()
-            }
             switch result {
+            case .failure(let error):
+                XCTFail("Unable to fetch session: \(error)")
             case .success(let session):
                 XCTAssertTrue(session.isSignedIn, "Session state should be signed In")
-            case .failure(let error):
-                XCTFail("Should not receive error \(error)")
+                authSessionExpectation.fulfill()
             }
         }
         wait(for: [authSessionExpectation], timeout: networkTimeout)
@@ -69,52 +68,64 @@ class SignedInAuthSessionTests: AWSAuthBaseTest {
     /// - Then:
     ///    - I should get the signedin state as true but with token result as sessionExpired
     ///
-    func testSessionExpired() {
+    func testSessionExpired() throws {
         let username = "integTest\(UUID().uuidString)"
         let password = "P123@\(UUID().uuidString)"
         let signInExpectation = expectation(description: "SignIn operation should complete")
         AuthSignInHelper.registerAndSignInUser(username: username, password: password,
                                                email: email) { didSucceed, error in
-            signInExpectation.fulfill()
+            if didSucceed {
+                signInExpectation.fulfill()
+            }
             XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
         }
         wait(for: [signInExpectation], timeout: networkTimeout)
 
-        let authSessionExpectation = expectation(description: "Received event result from fetchAuth")
+        let originalSessionExpectation = expectation(description: "Received event result from fetchAuth")
+        var originalSession: AuthSession?
         _ = Amplify.Auth.fetchAuthSession { result in
-            defer {
-                authSessionExpectation.fulfill()
-            }
-
-            do {
-                let authSession = try result.get() as? AuthCognitoTokensProvider
-                _ = try authSession?.getCognitoTokens().get()
-            } catch {
-                XCTFail("Should not receive error \(error)")
+            switch result {
+            case .failure(let error):
+                XCTFail("Unable to retreive session \(error)")
+            case .success(let session):
+                XCTAssertTrue(session.isSignedIn)
+                originalSession = session
+                originalSessionExpectation.fulfill()
             }
         }
-        wait(for: [authSessionExpectation], timeout: networkTimeout)
+        wait(for: [originalSessionExpectation], timeout: networkTimeout)
+
+        let originalTokenProvider = try XCTUnwrap(originalSession as? AuthCognitoTokensProvider)
+        _ = try originalTokenProvider.getCognitoTokens().get()
 
         // Manually invalidate the tokens and then try to fetch the session.
         AuthSessionHelper.invalidateSession(username: username)
-        let authSessionExpiredExpectation = expectation(description: "Received event result from fetchAuth")
+        let postExpirationExpectation = expectation(description: "Received event result from fetchAuth")
+        var postExpirationSession: AuthSession?
         _ = Amplify.Auth.fetchAuthSession { result in
-            defer {
-                authSessionExpiredExpectation.fulfill()
-            }
-
-            do {
-                let authSession = try result.get() as? AuthCognitoTokensProvider
-                _ = try authSession?.getCognitoTokens().get()
-                XCTFail("Should not receive a valid token")
-            } catch {
-                guard let authError = error as? AuthError,
-                      case .sessionExpired = authError else {
-                    XCTFail("Should receive a session expired error")
-                    return
-                }
+            switch result {
+            case .failure(let error):
+                XCTFail("Unable to retreive session \(error)")
+            case .success(let session):
+                XCTAssertTrue(session.isSignedIn)
+                postExpirationSession = session
+                postExpirationExpectation.fulfill()
             }
         }
-        wait(for: [authSessionExpiredExpectation], timeout: networkTimeout)
+        wait(for: [postExpirationExpectation], timeout: networkTimeout)
+
+        let postExpirationTokenProvider = try XCTUnwrap(postExpirationSession as? AuthCognitoTokensProvider)
+        let tokenResult = postExpirationTokenProvider.getCognitoTokens()
+        switch tokenResult {
+        case .failure(let error):
+            switch error {
+            case .sessionExpired:
+                break
+            default:
+                XCTFail("Unexpected error case: \(error)")
+            }
+        case .success(let tokens):
+            XCTFail("Unexpected tokens: \(String(describing: tokens).prefix(64))")
+        }
     }
 }

@@ -10,32 +10,32 @@ let package = Package(
         .library(
             name: "Amplify",
             targets: ["Amplify"]),
-        
+
         .library(name: "AWSPluginsCore",
                  targets: ["AWSPluginsCore"]),
-        
+
         .library(name: "AWSAPIPlugin",
                  targets: ["AWSAPIPlugin"]),
-        
+
         .library(name: "AWSCognitoAuthPlugin",
                  targets: ["AWSCognitoAuthPlugin"]),
-        
+
         .library(name: "AWSDataStorePlugin",
                  targets: ["AWSDataStorePlugin"]),
-        
+
         .library(name: "AWSLocationGeoPlugin",
                  targets: ["AWSLocationGeoPlugin"]),
-        
+
         .library(name: "AWSPinpointAnalyticsPlugin",
                  targets: ["AWSPinpointAnalyticsPlugin"]),
-        
+
         .library(name: "AWSS3StoragePlugin",
                  targets: ["AWSS3StoragePlugin"]),
-        
+
     ],
     dependencies: [
-        .package(name: "AWSiOSSDKV2", url: "https://github.com/aws-amplify/aws-sdk-ios-spm.git", .upToNextMinor(from: "2.29.1")),
-        .package(name: "AppSyncRealTimeClient", url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git", from: "2.0.0"),
+        .package(name: "AWSiOSSDKV2", url: "https://github.com/aws-amplify/aws-sdk-ios-spm.git", .upToNextMinor(from: "2.30.1")),
+        .package(name: "AppSyncRealTimeClient", url: "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git", from: "3.0.0"),
         .package(url: "https://github.com/stephencelis/SQLite.swift.git", .exact("0.13.2"))
     ],
     targets: [

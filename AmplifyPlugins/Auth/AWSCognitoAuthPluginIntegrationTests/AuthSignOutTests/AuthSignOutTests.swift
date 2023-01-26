@@ -14,13 +14,12 @@ import AmplifyTestCommon
 
 class AuthSignedOutTests: AWSAuthBaseTest {
 
-    override func setUp() {
-        super.setUp()
-        initializeAmplify()
+    override func setUpWithError() throws {
+        continueAfterFailure = false
+        try initializeAmplify()
     }
 
-    override func tearDown() {
-        super.tearDown()
+    override func tearDownWithError() throws {
         Amplify.reset()
         sleep(2)
     }
@@ -41,7 +40,7 @@ class AuthSignedOutTests: AWSAuthBaseTest {
             }
             switch result {
             case .success:
-                print("Success signout")
+                break
             case .failure(let error):
                 XCTFail("SignOut should not fail - \(error)")
             }
@@ -67,7 +66,9 @@ class AuthSignedOutTests: AWSAuthBaseTest {
         AuthSignInHelper.registerAndSignInUser(username: username,
                                                password: password,
                                                email: email) { didSucceed, error in
-            signInExpectation.fulfill()
+            defer {
+                signInExpectation.fulfill()
+            }
             XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
         }
         wait(for: [signInExpectation], timeout: networkTimeout)
@@ -78,10 +79,10 @@ class AuthSignedOutTests: AWSAuthBaseTest {
             defer {
                 authSignedInSessionExpectation.fulfill()
             }
-            do {
-                let session = try result.get()
+            switch result {
+            case .success(let session):
                 XCTAssertTrue(session.isSignedIn, "Auth session should be signedin")
-            } catch {
+            case .failure(let error):
                 XCTFail("Fetch auth session failed with error - \(error)")
             }
         }
@@ -94,7 +95,7 @@ class AuthSignedOutTests: AWSAuthBaseTest {
             }
             switch result {
             case .success:
-                print("Success signout")
+                break
             case .failure(let error):
                 XCTFail("SignOut should not fail - \(error)")
             }
@@ -135,7 +136,9 @@ class AuthSignedOutTests: AWSAuthBaseTest {
         AuthSignInHelper.registerAndSignInUser(username: username,
                                                password: password,
                                                email: email) { didSucceed, error in
-            signInExpectation.fulfill()
+            defer {
+                signInExpectation.fulfill()
+            }
             XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
         }
         wait(for: [signInExpectation], timeout: networkTimeout)
@@ -147,10 +150,10 @@ class AuthSignedOutTests: AWSAuthBaseTest {
             defer {
                 authSignedInSessionExpectation.fulfill()
             }
-            do {
-                let session = try result.get()
+            switch result {
+            case .success(let session):
                 XCTAssertTrue(session.isSignedIn, "Auth session should be signedin")
-            } catch {
+            case .failure(let error):
                 XCTFail("Fetch auth session failed with error - \(error)")
             }
         }
@@ -163,7 +166,7 @@ class AuthSignedOutTests: AWSAuthBaseTest {
             }
             switch result {
             case .success:
-                print("Success signout")
+                break
             case .failure(let error):
                 XCTFail("SignOut should not fail - \(error)")
             }

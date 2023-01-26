@@ -290,7 +290,7 @@ class GraphQLSubscribeTests: OperationTestBase {
             return item
         }
 
-        let onGetOrCreateConnection: MockSubscriptionConnectionFactory.OnGetOrCreateConnection = { _, _, _, _  in
+        let onGetOrCreateConnection: MockSubscriptionConnectionFactory.OnGetOrCreateConnection = { _, _, _, _, _  in
             MockSubscriptionConnection(onSubscribe: onSubscribe, onUnsubscribe: { _ in })
         }
 

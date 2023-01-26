@@ -67,7 +67,7 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
     }
 
     func testCancelSendsCompletion() {
-        let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _ in
+        let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _, _ in
             return MockSubscriptionConnection(onSubscribe: { (_, _, eventHandler) -> SubscriptionItem in
                 let item = SubscriptionItem(requestString: "", variables: nil, eventHandler: { _, _ in
                 })
@@ -126,7 +126,7 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
     }
 
     func testFailureOnConnection() {
-        let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _ in
+        let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _, _ in
             throw APIError.invalidConfiguration("something went wrong", "", nil)
         })
 
@@ -168,16 +168,17 @@ class AWSGraphQLSubscriptionOperationCancelTests: XCTestCase {
 
     func testCallingCancelWhileCreatingConnectionShouldCallCompletionListener() {
         let connectionCreation = expectation(description: "connection factory called")
-        let mockSubscriptionConnectionFactory = MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _ in
-            connectionCreation.fulfill()
-            return MockSubscriptionConnection(onSubscribe: { (_, _, eventHandler) -> SubscriptionItem in
-                let item = SubscriptionItem(requestString: "", variables: nil, eventHandler: { _, _ in
+        let mockSubscriptionConnectionFactory =
+            MockSubscriptionConnectionFactory(onGetOrCreateConnection: { _, _, _, _, _ in
+                connectionCreation.fulfill()
+                return MockSubscriptionConnection(onSubscribe: { (_, _, eventHandler) -> SubscriptionItem in
+                    let item = SubscriptionItem(requestString: "", variables: nil, eventHandler: { _, _ in
+                    })
+                    eventHandler(.connection(.connecting), item)
+                    return item
+                }, onUnsubscribe: {_ in
                 })
-                eventHandler(.connection(.connecting), item)
-                return item
-            }, onUnsubscribe: {_ in
             })
-        })
 
         setUp(subscriptionConnectionFactory: mockSubscriptionConnectionFactory)
 

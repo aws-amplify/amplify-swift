@@ -12,13 +12,12 @@ import AmplifyTestCommon
 
 class AuthUsernamePasswordSignInTests: AWSAuthBaseTest {
 
-    override func setUp() {
-        super.setUp()
-        initializeAmplify()
+    override func setUpWithError() throws {
+        continueAfterFailure = false
+        try initializeAmplify()
     }
 
-    override func tearDown() {
-        super.tearDown()
+    override func tearDownWithError() throws {
         Amplify.reset()
         sleep(2)
     }
@@ -39,7 +38,9 @@ class AuthUsernamePasswordSignInTests: AWSAuthBaseTest {
         let signUpExpectation = expectation(description: "SignUp operation should complete")
         AuthSignInHelper.signUpUser(username: username, password: password,
                                     email: email) { didSucceed, error in
-            signUpExpectation.fulfill()
+            defer {
+                signUpExpectation.fulfill()
+            }
             XCTAssertTrue(didSucceed, "Signup operation failed - \(String(describing: error))")
         }
         wait(for: [signUpExpectation], timeout: networkTimeout)
@@ -76,7 +77,9 @@ class AuthUsernamePasswordSignInTests: AWSAuthBaseTest {
         let signUpExpectation = expectation(description: "SignUp operation should complete")
         AuthSignInHelper.signUpUser(username: username, password: password,
                                     email: email) { didSucceed, error in
-            signUpExpectation.fulfill()
+            defer {
+                signUpExpectation.fulfill()
+            }
             XCTAssertTrue(didSucceed, "Signup operation failed - \(String(describing: error))")
         }
         wait(for: [signUpExpectation], timeout: networkTimeout)
@@ -116,7 +119,9 @@ class AuthUsernamePasswordSignInTests: AWSAuthBaseTest {
         let signUpExpectation = expectation(description: "SignUp operation should complete")
         AuthSignInHelper.signUpUser(username: username, password: password,
                                     email: email) { didSucceed, error in
-            signUpExpectation.fulfill()
+            defer {
+                signUpExpectation.fulfill()
+            }
             XCTAssertTrue(didSucceed, "Signup operation failed - \(String(describing: error))")
         }
         wait(for: [signUpExpectation], timeout: networkTimeout)
@@ -159,7 +164,9 @@ class AuthUsernamePasswordSignInTests: AWSAuthBaseTest {
         let signUpExpectation = expectation(description: "SignUp operation should complete")
         AuthSignInHelper.signUpUser(username: username, password: password,
                                     email: email) { didSucceed, error in
-            signUpExpectation.fulfill()
+            defer {
+                signUpExpectation.fulfill()
+            }
             XCTAssertTrue(didSucceed, "Signup operation failed - \(String(describing: error))")
         }
         wait(for: [signUpExpectation], timeout: networkTimeout)
@@ -232,7 +239,9 @@ class AuthUsernamePasswordSignInTests: AWSAuthBaseTest {
         let signUpExpectation = expectation(description: "SignUp operation should complete")
         AuthSignInHelper.signUpUser(username: username, password: password,
                                     email: email) { didSucceed, error in
-            signUpExpectation.fulfill()
+            defer {
+                signUpExpectation.fulfill()
+            }
             XCTAssertTrue(didSucceed, "Signup operation failed - \(String(describing: error))")
         }
         wait(for: [signUpExpectation], timeout: networkTimeout)
@@ -299,7 +308,9 @@ class AuthUsernamePasswordSignInTests: AWSAuthBaseTest {
         let firstSignInExpectation = expectation(description: "SignIn operation should complete")
         AuthSignInHelper.registerAndSignInUser(username: username, password: password,
                                                email: email) { didSucceed, error in
-            firstSignInExpectation.fulfill()
+            defer {
+                firstSignInExpectation.fulfill()
+            }
             XCTAssertTrue(didSucceed, "SignIn operation failed - \(String(describing: error))")
         }
         wait(for: [firstSignInExpectation], timeout: networkTimeout)
@@ -361,8 +372,10 @@ class AuthUsernamePasswordSignInTests: AWSAuthBaseTest {
         let operationExpectation = expectation(description: "Operation should not complete")
         operationExpectation.isInverted = true
         let operation = Amplify.Auth.signIn(username: username, password: password) { result in
+            defer {
+                operationExpectation.fulfill()
+            }
             XCTFail("Received result \(result)")
-            operationExpectation.fulfill()
         }
         XCTAssertNotNil(operation, "signIn operations should not be nil")
         operation.cancel()
