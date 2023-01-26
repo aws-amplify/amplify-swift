@@ -42,7 +42,7 @@ struct DeviceMetadataHelper {
                 )
             } catch {
                 let logger = (environment as? LoggerProvider)?.logger
-                logger?.error("Unable to fetch device metadata with error: \(error)")
+                logger?.error("Unable to remove device metadata with error: \(error)")
             }
         }
 }
