@@ -65,6 +65,13 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
         // The child model id can be found on the explicit field.
         let childId = queriedParent.hasOneParentChildId
         XCTAssertEqual(childId, child.id)
+        
+        // Delete
+        try await deleteAndWaitForSync(parent)
+        try await assertModelDoesNotExist(parent)
+        try await assertModelExists(child)
+        try await deleteAndWaitForSync(child)
+        try await assertModelDoesNotExist(child)
     }
 }
 

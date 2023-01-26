@@ -20,66 +20,6 @@ class AWSDataStoreLazyLoadProjectTeam6Tests: AWSDataStoreLazyLoadBaseTest {
         printDBPath()
     }
     
-    func testAPISyncQuery() async throws {
-        await setupAPIOnly(withModels: ProjectTeam6Models())
-    
-        // The selection set of project should include "hasOne" team, and no further
-        let projectRequest = GraphQLRequest<SyncQueryResult>.syncQuery(modelType: Project.self)
-        let projectDocument = """
-        query SyncProject6s($limit: Int) {
-          syncProject6s(limit: $limit) {
-            items {
-              projectId
-              name
-              createdAt
-              teamId
-              teamName
-              updatedAt
-              team {
-                teamId
-                name
-                __typename
-                _deleted
-              }
-              __typename
-              _version
-              _deleted
-              _lastChangedAt
-            }
-            nextToken
-            startedAt
-          }
-        }
-        """
-        XCTAssertEqual(projectRequest.document, projectDocument)
-        
-        // In this "Explicit Uni-directional Has One", only project hasOne team, team does not reference the project
-        // So, the selection set of team does not include project
-        let teamRequest = GraphQLRequest<SyncQueryResult>.syncQuery(modelType: Team.self)
-        let teamDocument = """
-        query SyncTeam6s($limit: Int) {
-          syncTeam6s(limit: $limit) {
-            items {
-              teamId
-              name
-              createdAt
-              updatedAt
-              __typename
-              _version
-              _deleted
-              _lastChangedAt
-            }
-            nextToken
-            startedAt
-          }
-        }
-        """
-        XCTAssertEqual(teamRequest.document, teamDocument)
-        // Making the actual requests and ensuring they can decode to the Model types.
-        _ = try await Amplify.API.query(request: projectRequest)
-        _ = try await Amplify.API.query(request: teamRequest)
-    }
-    
     func testSaveTeam() async throws {
         await setup(withModels: ProjectTeam6Models())
         let team = Team(teamId: UUID().uuidString, name: "name")

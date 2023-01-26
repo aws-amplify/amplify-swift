@@ -10,25 +10,25 @@ import Combine
 import XCTest
 
 @testable import Amplify
-@testable import AWSPluginsCore
+import AWSPluginsCore
 
-extension AWSDataStoreLazyLoadProjectTeam1Tests {
+extension AWSDataStoreLazyLoadProjectTeam2Tests {
     
     func testProjectSelectionSets() {
-        setUpModelRegistrationOnly(withModels: ProjectTeam1Models())
+        setUpModelRegistrationOnly(withModels: ProjectTeam2Models())
         continueAfterFailure = true
         let project = Project(projectId: UUID().uuidString,
                               name: "name")
         // Create
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: project, modelSchema: Project.schema)
         let createDocument = """
-        mutation CreateProject1($input: CreateProject1Input!) {
-          createProject1(input: $input) {
+        mutation CreateProject2($input: CreateProject2Input!) {
+          createProject2(input: $input) {
             projectId
             name
             createdAt
-            project1TeamName
-            project1TeamTeamId
+            project2TeamName
+            project2TeamTeamId
             updatedAt
             team {
               teamId
@@ -52,13 +52,13 @@ extension AWSDataStoreLazyLoadProjectTeam1Tests {
         // Update
         let updateRequest = GraphQLRequest<MutationSyncResult>.updateMutation(of: project, modelSchema: Project.schema)
         let updateDocument = """
-        mutation UpdateProject1($input: UpdateProject1Input!) {
-          updateProject1(input: $input) {
+        mutation UpdateProject2($input: UpdateProject2Input!) {
+          updateProject2(input: $input) {
             projectId
             name
             createdAt
-            project1TeamName
-            project1TeamTeamId
+            project2TeamName
+            project2TeamTeamId
             updatedAt
             team {
               teamId
@@ -82,13 +82,13 @@ extension AWSDataStoreLazyLoadProjectTeam1Tests {
         // Delete
         let deleteRequest = GraphQLRequest<MutationSyncResult>.deleteMutation(of: project, modelSchema: Project.schema)
         let deleteDocument = """
-        mutation DeleteProject1($input: DeleteProject1Input!) {
-          deleteProject1(input: $input) {
+        mutation DeleteProject2($input: DeleteProject2Input!) {
+          deleteProject2(input: $input) {
             projectId
             name
             createdAt
-            project1TeamName
-            project1TeamTeamId
+            project2TeamName
+            project2TeamTeamId
             updatedAt
             team {
               teamId
@@ -112,13 +112,13 @@ extension AWSDataStoreLazyLoadProjectTeam1Tests {
         // onCreate
         let onCreateRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Project.self, subscriptionType: .onCreate)
         let onCreateDocument = """
-        subscription OnCreateProject1 {
-          onCreateProject1 {
+        subscription OnCreateProject2 {
+          onCreateProject2 {
             projectId
             name
             createdAt
-            project1TeamName
-            project1TeamTeamId
+            project2TeamName
+            project2TeamTeamId
             updatedAt
             team {
               teamId
@@ -138,13 +138,13 @@ extension AWSDataStoreLazyLoadProjectTeam1Tests {
         // onUpdate
         let onUpdateRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Project.self, subscriptionType: .onUpdate)
         let onUpdateDocument = """
-        subscription OnUpdateProject1 {
-          onUpdateProject1 {
+        subscription OnUpdateProject2 {
+          onUpdateProject2 {
             projectId
             name
             createdAt
-            project1TeamName
-            project1TeamTeamId
+            project2TeamName
+            project2TeamTeamId
             updatedAt
             team {
               teamId
@@ -164,13 +164,13 @@ extension AWSDataStoreLazyLoadProjectTeam1Tests {
         // onDelete
         let onDeleteRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Project.self, subscriptionType: .onDelete)
         let onDeleteDocument = """
-        subscription OnDeleteProject1 {
-          onDeleteProject1 {
+        subscription OnDeleteProject2 {
+          onDeleteProject2 {
             projectId
             name
             createdAt
-            project1TeamName
-            project1TeamTeamId
+            project2TeamName
+            project2TeamTeamId
             updatedAt
             team {
               teamId
@@ -190,14 +190,14 @@ extension AWSDataStoreLazyLoadProjectTeam1Tests {
         // SyncQuery
         let syncRequest = GraphQLRequest<MutationSyncResult>.syncQuery(modelType: Project.self)
         let syncDocument = """
-        query SyncProject1s($limit: Int) {
-          syncProject1s(limit: $limit) {
+        query SyncProject2s($limit: Int) {
+          syncProject2s(limit: $limit) {
             items {
               projectId
               name
               createdAt
-              project1TeamName
-              project1TeamTeamId
+              project2TeamName
+              project2TeamTeamId
               updatedAt
               team {
                 teamId
@@ -219,31 +219,19 @@ extension AWSDataStoreLazyLoadProjectTeam1Tests {
     }
     
     func testTeamSelectionSets() {
-        setUpModelRegistrationOnly(withModels: ProjectTeam1Models())
+        setUpModelRegistrationOnly(withModels: ProjectTeam2Models())
         continueAfterFailure = true
         let team = Team(teamId: UUID().uuidString, name: "name")
         
         // Create
         let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: team, modelSchema: Team.schema)
         let createDocument = """
-        mutation CreateTeam1($input: CreateTeam1Input!) {
-          createTeam1(input: $input) {
+        mutation CreateTeam2($input: CreateTeam2Input!) {
+          createTeam2(input: $input) {
             teamId
             name
             createdAt
             updatedAt
-            project {
-              projectId
-              name
-              createdAt
-              project1TeamName
-              project1TeamTeamId
-              updatedAt
-              __typename
-              _version
-              _deleted
-              _lastChangedAt
-            }
             __typename
             _version
             _deleted
@@ -256,24 +244,12 @@ extension AWSDataStoreLazyLoadProjectTeam1Tests {
         // Update
         let updateRequest = GraphQLRequest<MutationSyncResult>.updateMutation(of: team, modelSchema: Team.schema)
         let updateDocument = """
-        mutation UpdateTeam1($input: UpdateTeam1Input!) {
-          updateTeam1(input: $input) {
+        mutation UpdateTeam2($input: UpdateTeam2Input!) {
+          updateTeam2(input: $input) {
             teamId
             name
             createdAt
             updatedAt
-            project {
-              projectId
-              name
-              createdAt
-              project1TeamName
-              project1TeamTeamId
-              updatedAt
-              __typename
-              _version
-              _deleted
-              _lastChangedAt
-            }
             __typename
             _version
             _deleted
@@ -286,24 +262,12 @@ extension AWSDataStoreLazyLoadProjectTeam1Tests {
         // Delete
         let deleteRequest = GraphQLRequest<MutationSyncResult>.deleteMutation(of: team, modelSchema: Team.schema)
         let deleteDocument = """
-        mutation DeleteTeam1($input: DeleteTeam1Input!) {
-          deleteTeam1(input: $input) {
+        mutation DeleteTeam2($input: DeleteTeam2Input!) {
+          deleteTeam2(input: $input) {
             teamId
             name
             createdAt
             updatedAt
-            project {
-              projectId
-              name
-              createdAt
-              project1TeamName
-              project1TeamTeamId
-              updatedAt
-              __typename
-              _version
-              _deleted
-              _lastChangedAt
-            }
             __typename
             _version
             _deleted
@@ -316,18 +280,12 @@ extension AWSDataStoreLazyLoadProjectTeam1Tests {
         // onCreate
         let onCreateRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Team.schema, subscriptionType: .onCreate)
         let onCreateDocument = """
-        subscription OnCreateTeam1 {
-          onCreateTeam1 {
+        subscription OnCreateTeam2 {
+          onCreateTeam2 {
             teamId
             name
             createdAt
             updatedAt
-            project {
-              projectId
-              name
-              __typename
-              _deleted
-            }
             __typename
             _version
             _deleted
@@ -340,18 +298,12 @@ extension AWSDataStoreLazyLoadProjectTeam1Tests {
         // onUpdate
         let onUpdateRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Team.self, subscriptionType: .onUpdate)
         let onUpdateDocument = """
-        subscription OnUpdateTeam1 {
-          onUpdateTeam1 {
+        subscription OnUpdateTeam2 {
+          onUpdateTeam2 {
             teamId
             name
             createdAt
             updatedAt
-            project {
-              projectId
-              name
-              __typename
-              _deleted
-            }
             __typename
             _version
             _deleted
@@ -364,18 +316,12 @@ extension AWSDataStoreLazyLoadProjectTeam1Tests {
         // onDelete
         let onDeleteRequest = GraphQLRequest<MutationSyncResult>.subscription(to: Team.self, subscriptionType: .onDelete)
         let onDeleteDocument = """
-        subscription OnDeleteTeam1 {
-          onDeleteTeam1 {
+        subscription OnDeleteTeam2 {
+          onDeleteTeam2 {
             teamId
             name
             createdAt
             updatedAt
-            project {
-              projectId
-              name
-              __typename
-              _deleted
-            }
             __typename
             _version
             _deleted
@@ -388,19 +334,13 @@ extension AWSDataStoreLazyLoadProjectTeam1Tests {
         // SyncQuery
         let syncRequest = GraphQLRequest<MutationSyncResult>.syncQuery(modelType: Team.self)
         let syncDocument = """
-        query SyncTeam1s($limit: Int) {
-          syncTeam1s(limit: $limit) {
+        query SyncTeam2s($limit: Int) {
+          syncTeam2s(limit: $limit) {
             items {
               teamId
               name
               createdAt
               updatedAt
-              project {
-                projectId
-                name
-                __typename
-                _deleted
-              }
               __typename
               _version
               _deleted

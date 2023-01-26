@@ -76,7 +76,7 @@ final class GraphQLLazyLoadUserPostCommentTests: GraphQLLazyLoadBaseTest {
         XCTAssertEqual(queriedUser.posts?.count, 1)
         try await queriedUser.comments?.fetch()
         XCTAssertEqual(queriedUser.comments?.count, 1)
-        // Cannot traverse from User to settings
+        // Cannot traverse from User to settings since no FK is set on the User
         //let queriedUserSettings = try await queriedUser.settings
         //XCTAssertNotNil(queriedUserSettings)
         
@@ -108,6 +108,45 @@ final class GraphQLLazyLoadUserPostCommentTests: GraphQLLazyLoadBaseTest {
         try await assertModelDoesNotExist(userSettings)
         try await mutate(.delete(user))
         try await assertModelDoesNotExist(user)
+    }
+    
+    func testIncludesNestedModels() async throws {
+        await setup(withModels: UserPostCommentModels())
+        let user = User(username: "name")
+        let savedUser = try await mutate(.create(user))
+        let userSettings = UserSettings(language: "en-us", user: savedUser)
+        try await mutate(.create(userSettings))
+        let post = Post(title: "title", rating: 1, status: .active, author: savedUser)
+        let savedPost = try await mutate(.create(post))
+        let comment = Comment(content: "content", post: savedPost, author: savedUser)
+        try await mutate(.create(comment))
+        
+        guard let queriedUser = try await query(.get(User.self,
+                                                     byIdentifier: user.id,
+                                                     includes: { user in [user.comments,
+                                                                          user.posts] })) else {
+            XCTFail("Could not perform nested query for User")
+            return
+        }
+        
+        XCTAssertEqual(queriedUser.posts?.count, 1)
+        XCTAssertEqual(queriedUser.comments?.count, 1)
+    }
+    
+    func testSaveUserWithUserSettings() async throws {
+        await setup(withModels: UserPostCommentModels())
+        let user = User(username: "name")
+        var savedUser = try await mutate(.create(user))
+        let userSettings = UserSettings(language: "en-us", user: savedUser)
+        try await mutate(.create(userSettings))
+        
+        // Update the User with the UserSettings (this is required for bi-directional has-one belongs-to)
+        savedUser.setSettings(userSettings)
+        try await mutate(.update(savedUser))
+        
+        let queriedUser = try await query(for: user)!
+        let queriedUserSettings = try await queriedUser.settings
+        XCTAssertNotNil(queriedUserSettings)
     }
 }
 
