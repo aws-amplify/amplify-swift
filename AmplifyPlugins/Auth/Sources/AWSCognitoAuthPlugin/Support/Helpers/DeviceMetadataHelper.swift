@@ -33,7 +33,7 @@ struct DeviceMetadataHelper {
         }
 
     static func removeDeviceMetaData(
-        of username: String,
+        for username: String,
         with environment: Environment) async {
             let credentialStoreClient = (environment as? AuthEnvironment)?.credentialsClient
             do {
