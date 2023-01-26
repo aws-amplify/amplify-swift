@@ -93,15 +93,17 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
         // Retrieve request plugin option and
         // auth type in case of a multi-auth setup
         let pluginOptions = request.options.pluginOptions as? AWSPluginOptions
+        let urlRequest = generateSubscriptionURLRequest(from: endpointConfig)
 
         // Retrieve the subscription connection
         subscriptionQueue.sync {
             do {
                 subscriptionConnection = try subscriptionConnectionFactory
                     .getOrCreateConnection(for: endpointConfig,
-                                              authService: authService,
-                                              authType: pluginOptions?.authType,
-                                              apiAuthProviderFactory: apiAuthProviderFactory)
+                                           urlRequest: urlRequest,
+                                           authService: authService,
+                                           authType: pluginOptions?.authType,
+                                           apiAuthProviderFactory: apiAuthProviderFactory)
             } catch {
                 let error = APIError.operationError("Unable to get connection for api \(endpointConfig.name)", "", error)
                 dispatch(result: .failure(error))
@@ -117,6 +119,17 @@ final public class AWSGraphQLSubscriptionOperation<R: Decodable>: GraphQLSubscri
                 self?.onAsyncSubscriptionEvent(event: event)
             })
         }
+    }
+
+    private func generateSubscriptionURLRequest(
+        from endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig
+    ) -> URLRequest {
+        var urlRequest = URLRequest(url: endpointConfig.baseURL)
+        urlRequest.setValue(
+            AmplifyAWSServiceConfiguration.baseUserAgent(),
+            forHTTPHeaderField: URLRequestConstants.Header.userAgent
+        )
+        return urlRequest
     }
 
     private func onAsyncSubscriptionEvent(event: SubscriptionItemEvent) {

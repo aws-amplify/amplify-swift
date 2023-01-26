@@ -3,7 +3,7 @@ PODS:
     - Amplify/Default (= 1.28.4)
   - Amplify/Default (1.28.4)
   - AmplifyPlugins/AWSAPIPlugin (1.28.4):
-    - AppSyncRealTimeClient (~> 2.0)
+    - AppSyncRealTimeClient (~> 3.0)
     - AWSCore (~> 2.30.1)
     - AWSPluginsCore (= 1.28.4)
   - AmplifyPlugins/AWSCognitoAuthPlugin (1.28.4):
@@ -23,7 +23,7 @@ PODS:
     - AWSMobileClient (~> 2.30.1)
     - AWSPluginsCore (= 1.28.4)
     - CwlPreconditionTesting (~> 2.0)
-  - AppSyncRealTimeClient (2.1.1):
+  - AppSyncRealTimeClient (3.0.0):
     - Starscream (~> 4.0.4)
   - AWSAuthCore (2.30.1):
     - AWSCore (= 2.30.1)
@@ -106,9 +106,9 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Amplify: be704bdc5c808a61b1a9a0ee79ba4892de9c5dcc
-  AmplifyPlugins: 667480a37ee4239024148daf67e0b4346b7c46d1
+  AmplifyPlugins: 12ae75a354d38ad623f1f78dc7f672f7baf4c0de
   AmplifyTestCommon: ee2908d5c7e372bb9caf5733644fe06f2cd7fcaf
-  AppSyncRealTimeClient: 937360221f2b664c4c33ae142a60643e64f480cd
+  AppSyncRealTimeClient: ec19a24f635611b193eb98a2da573abcf98b793b
   AWSAuthCore: 88e77e867b210e5d09e35a484de19753d587aee3
   AWSCognitoIdentityProvider: 37ff510e8f64dc6a1240088ba92ad4d6f0cd841e
   AWSCognitoIdentityProviderASF: f2cd19990c4ae642ad73d09a4945018a994c9ff8
