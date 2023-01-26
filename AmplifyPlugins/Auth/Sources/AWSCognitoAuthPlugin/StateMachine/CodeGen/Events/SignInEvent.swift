@@ -74,7 +74,7 @@ struct SignInEvent: StateMachineEvent {
         case .throwAuthError: return "SignInEvent.throwAuthError"
         case .receivedChallenge: return "SignInEvent.receivedChallenge"
         case .verifySMSChallenge: return "SignInEvent.verifySMSChallenge"
-        case . retryRespondPasswordVerifier: return "SignInEvent.retryRespondPasswordVerifier"
+        case .retryRespondPasswordVerifier: return "SignInEvent.retryRespondPasswordVerifier"
         }
     }
 
