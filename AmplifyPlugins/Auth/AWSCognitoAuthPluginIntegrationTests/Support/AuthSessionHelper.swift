@@ -25,7 +25,14 @@ struct AuthSessionHelper {
         // Please note that the clientId + username namespace combination is
         // normalized by converting it to a lower-case string somewhere upstream
         // of the AWSUICKeyChainStore. So, the same is done below.
-        let namespace = "\(clientId).\(username)".lowercased()
+        let namespace = "\(clientId).\(username)"
+        invalidateSession(keychain: keychain, namespace: namespace)
+
+        let namespaceNormalized = namespace.lowercased()
+        invalidateSession(keychain: keychain, namespace: namespaceNormalized)
+    }
+
+    private static func invalidateSession(keychain: AWSUICKeyChainStore, namespace: String) {
         let expirationKey = "\(namespace).tokenExpiration"
         let refreshTokenKey = "\(namespace).refreshToken"
 
