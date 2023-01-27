@@ -84,6 +84,17 @@ class AWSS3StorageUploadFileOperation: AmplifyInProcessReportingOperation<
             return
         }
 
+        // This check was added because, at the time of this writing, AWS SDK
+        // failed silently on access denied.
+        if FileManager.default.fileExists(atPath: request.local.path) {
+            guard FileManager.default.isReadableFile(atPath: request.local.path) else {
+                dispatch(StorageError.accessDenied("Access to local file denied: \(request.local.path)",
+                                                   "Please ensure that \(request.local) is readable"))
+                finish()
+                return
+            }
+        }
+
         let uploadSize: UInt64
         do {
             uploadSize = try StorageRequestUtils.getSize(request.local)
