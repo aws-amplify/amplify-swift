@@ -1,0 +1,46 @@
+name: Amplify Nightly Repeated Unit Test
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 1 * * *'
+
+permissions:
+    contents: read
+
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  unit_test_ios:
+    runs-on: macos-12
+    strategy:
+      matrix:
+        scheme: [Amplify, AWSPluginsCore, AWSPinpointAnalyticsPlugin, AWSAPIPlugin, AWSCognitoAuthPlugin, AWSDataStorePlugin, AWSLocationGeoPlugin, AWSS3StoragePlugin]
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+
+      - name: Run repeated unit test iOS
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: .
+          scheme: ${{ matrix.scheme }}
+          other_flags: -test-iterations 100 -run-tests-until-failure
+
+  unit_test_macos:
+    runs-on: macos-12
+    strategy:
+      matrix:
+        scheme: [Amplify, AWSPluginsCore, AWSPinpointAnalyticsPlugin, AWSAPIPlugin, AWSCognitoAuthPlugin, AWSDataStorePlugin, AWSLocationGeoPlugin, AWSS3StoragePlugin]
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+
+      - name: Run repeated unit test macOS
+        uses: ./.github/composite_actions/run_xcodebuild_test
+        with:
+          project_path: .
+          scheme: ${{ matrix.scheme }}
+          sdk: macosx
+          destination: platform=macOS,arch=x86_64
+          other_flags: -test-iterations 100 -run-tests-until-failure
+      
