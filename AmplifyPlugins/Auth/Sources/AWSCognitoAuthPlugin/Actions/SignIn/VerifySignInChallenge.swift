@@ -21,6 +21,8 @@ struct VerifySignInChallenge: Action {
 
     func execute(withDispatcher dispatcher: EventDispatcher, environment: Environment) async {
         logVerbose("\(#fileID) Starting execution", environment: environment)
+        let username = challenge.username
+        var deviceMetadata = DeviceMetadata.noData
 
         do {
             let userpoolEnv = try environment.userPoolEnvironment()
@@ -28,6 +30,10 @@ struct VerifySignInChallenge: Action {
             let session = challenge.session
             let challengeType = challenge.challenge
             let responseKey = try challenge.getChallengeKey()
+
+            deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
+                            for: username,
+                            with: environment)
 
             let input = RespondToAuthChallengeInput.verifyChallenge(
                 username: username,
@@ -37,6 +43,7 @@ struct VerifySignInChallenge: Action {
                 answer: confirmSignEventData.answer,
                 clientMetadata: confirmSignEventData.metadata,
                 attributes: confirmSignEventData.attributes,
+                deviceMetadata: deviceMetadata,
                 environment: userpoolEnv)
 
             let responseEvent = try await UserPoolSignInHelper.sendRespondToAuth(
