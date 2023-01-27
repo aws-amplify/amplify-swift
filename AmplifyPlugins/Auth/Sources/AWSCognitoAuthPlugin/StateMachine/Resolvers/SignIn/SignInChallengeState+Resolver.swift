@@ -42,6 +42,17 @@ extension SignInChallengeState {
 
             case .verifying(let challenge, let signInMethod, _):
 
+                if case .retryVerifyChallengeAnswer(let answerEventData) = event.isChallengeEvent {
+                    let action = VerifySignInChallenge(
+                        challenge: challenge,
+                        confirmSignEventData: answerEventData,
+                        signInMethod: signInMethod)
+                    return .init(
+                        newState: .verifying(challenge, signInMethod, answerEventData.answer),
+                        actions: [action]
+                    )
+                }
+
                 if case .finalizeSignIn(let signedInData) = event.isSignInEvent {
                     return .init(newState: .verified,
                                  actions: [SignInComplete(signedInData: signedInData)])

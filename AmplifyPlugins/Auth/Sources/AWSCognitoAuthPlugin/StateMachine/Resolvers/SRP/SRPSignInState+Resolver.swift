@@ -102,6 +102,13 @@ extension SRPSignInState {
             byApplying signInEvent: SignInEvent)
         -> StateResolution<SRPSignInState> {
             switch signInEvent.eventType {
+            case .retryRespondPasswordVerifier(let srpStateData, let authResponse):
+                let action = VerifyPasswordSRP(stateData: srpStateData,
+                                               authResponse: authResponse)
+                return StateResolution(
+                    newState: SRPSignInState.respondingPasswordVerifier(srpStateData),
+                    actions: [action]
+                )
             case .finalizeSignIn(let signedInData):
                 return .init(newState: .signedIn(signedInData),
                              actions: [SignInComplete(signedInData: signedInData)])
