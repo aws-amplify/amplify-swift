@@ -174,13 +174,18 @@ class FetchAuthSessionOperationHelper {
 
         switch error {
 
-        case .notAuthorized:
+        case .notAuthorized, .noCredentialsToRefresh:
             if !isSignedIn {
                 return AuthCognitoSignedOutSessionHelper.makeSessionWithNoGuestAccess()
             }
-        case .noCredentialsToRefresh:
-            if !isSignedIn {
-                return AuthCognitoSignedOutSessionHelper.makeSessionWithNoGuestAccess()
+
+        case .service(let error):
+            if let authError = (error as? AuthErrorConvertible)?.authError {
+                let session = AWSAuthCognitoSession(isSignedIn: isSignedIn,
+                                                    identityIdResult: .failure(authError),
+                                                    awsCredentialsResult: .failure(authError),
+                                                    cognitoTokensResult: .failure(authError))
+                return session
             }
         default: break
 

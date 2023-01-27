@@ -12,20 +12,29 @@ import AWSPluginsCore
 class AWSAuthDeleteUserTask: AuthDeleteUserTask {
     private let authStateMachine: AuthStateMachine
     private let taskHelper: AWSAuthTaskHelper
+    private let configuration: AuthConfiguration
 
     var eventName: HubPayloadEventName {
         HubPayload.EventName.Auth.deleteUserAPI
     }
 
-    init(authStateMachine: AuthStateMachine) {
+    init(authStateMachine: AuthStateMachine,
+         authConfiguraiton: AuthConfiguration) {
         self.authStateMachine = authStateMachine
+        self.configuration = authConfiguraiton
         self.taskHelper = AWSAuthTaskHelper(authStateMachine: authStateMachine)
     }
 
     func execute() async throws {
         await taskHelper.didStateMachineConfigured()
         let accessToken = try await taskHelper.getAccessToken()
-        try await deleteUser(with: accessToken)
+
+        do {
+            try  await deleteUser(with: accessToken)
+        } catch {
+            await waitForReConfigure()
+            throw error
+        }
     }
 
     private func deleteUser(with token: String) async throws {
@@ -51,5 +60,11 @@ class AWSAuthDeleteUserTask: AuthDeleteUserTask {
                 continue
             }
         }
+    }
+
+    private func waitForReConfigure() async {
+        let event = AuthEvent(eventType: .reconfigure(configuration))
+        await authStateMachine.send(event)
+        await taskHelper.didStateMachineConfigured()
     }
 }

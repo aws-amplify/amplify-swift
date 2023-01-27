@@ -80,6 +80,11 @@ extension AuthState {
                 return .init(newState: newState, actions: authNresolution.actions + authZresolution.actions)
 
             case .configured(let authenticationState, let authorizationState):
+                if case .reconfigure(let authConfiguration) = isAuthEvent(event)?.eventType {
+                    let newState = AuthState.configuringAuth
+                    let action = InitializeAuthConfiguration(authConfiguration: authConfiguration)
+                    return .init(newState: newState, actions: [action])
+                }
                 let authenticationResolver = AuthenticationState.Resolver()
                 let authorizationResolver = AuthorizationState.Resolver()
                 let authNresolution = authenticationResolver.resolve(oldState: authenticationState, byApplying: event)
