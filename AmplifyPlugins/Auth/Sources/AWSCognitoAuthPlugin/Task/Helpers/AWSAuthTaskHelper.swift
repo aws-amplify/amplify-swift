@@ -10,7 +10,7 @@ import Amplify
 import AWSPluginsCore
 import AWSCognitoIdentityProvider
 
-class AWSAuthTaskHelper {
+class AWSAuthTaskHelper: DefaultLogger {
 
     private let authStateMachine: AuthStateMachine
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
@@ -21,9 +21,13 @@ class AWSAuthTaskHelper {
     }
 
     func didStateMachineConfigured() async {
+        log.verbose("Check if authstate configured")
         let stateSequences = await authStateMachine.listen()
         for await state in stateSequences {
-            if case .configured = state { return }
+            if case .configured = state {
+                log.verbose("Auth state configured")
+                return
+            }
         }
     }
 

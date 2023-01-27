@@ -9,7 +9,7 @@ import Foundation
 import Amplify
 import AWSPluginsCore
 
-class AWSAuthDeleteUserTask: AuthDeleteUserTask {
+class AWSAuthDeleteUserTask: AuthDeleteUserTask, DefaultLogger {
     private let authStateMachine: AuthStateMachine
     private let taskHelper: AWSAuthTaskHelper
     private let configuration: AuthConfiguration
@@ -26,12 +26,15 @@ class AWSAuthDeleteUserTask: AuthDeleteUserTask {
     }
 
     func execute() async throws {
+        log.verbose("Starting execution")
         await taskHelper.didStateMachineConfigured()
         let accessToken = try await taskHelper.getAccessToken()
 
         do {
             try  await deleteUser(with: accessToken)
+            log.verbose("Received Success")
         } catch {
+            log.verbose("Delete user failed, reconfiguring auth state. \(error)")
             await waitForReConfigure()
             throw error
         }
@@ -41,6 +44,7 @@ class AWSAuthDeleteUserTask: AuthDeleteUserTask {
         let stateSequences = await authStateMachine.listen()
         let deleteUserEvent = DeleteUserEvent(eventType: .deleteUser(token))
         await authStateMachine.send(deleteUserEvent)
+        log.verbose("Waiting for delete user to complete")
         for await state in stateSequences {
             guard case .configured(let authNState, _) = state else {
                 let error = AuthError.invalidState("Auth state should be in configured state and authentication state should be in deleting user state", AuthPluginErrorConstants.invalidStateError, nil)
@@ -63,6 +67,7 @@ class AWSAuthDeleteUserTask: AuthDeleteUserTask {
     }
 
     private func waitForReConfigure() async {
+
         let event = AuthEvent(eventType: .reconfigure(configuration))
         await authStateMachine.send(event)
         await taskHelper.didStateMachineConfigured()

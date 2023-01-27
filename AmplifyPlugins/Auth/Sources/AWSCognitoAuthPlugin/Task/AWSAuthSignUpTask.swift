@@ -9,7 +9,7 @@ import Foundation
 import AWSCognitoIdentityProvider
 import Amplify
 
-class AWSAuthSignUpTask: AuthSignUpTask {
+class AWSAuthSignUpTask: AuthSignUpTask, DefaultLogger {
 
     private let request: AuthSignUpRequest
 
@@ -25,6 +25,7 @@ class AWSAuthSignUpTask: AuthSignUpTask {
     }
 
     func execute() async throws -> AuthSignUpResult {
+        log.verbose("Starting execution")
         let userPoolEnvironment = authEnvironment.userPoolEnvironment
         try request.hasError()
 
@@ -49,6 +50,7 @@ class AWSAuthSignUpTask: AuthSignUpTask {
                                     environment: userPoolEnvironment)
 
             let response = try await client.signUp(input: input)
+            log.verbose("Received result")
             return response.authResponse
         } catch let error as AuthError {
             throw error

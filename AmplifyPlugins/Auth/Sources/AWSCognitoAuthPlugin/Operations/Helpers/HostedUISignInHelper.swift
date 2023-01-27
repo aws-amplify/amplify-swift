@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-struct HostedUISignInHelper {
+struct HostedUISignInHelper: DefaultLogger {
 
     let request: AuthWebUISignInRequest
 
@@ -26,11 +26,13 @@ struct HostedUISignInHelper {
 
     func initiateSignIn() async throws -> AuthSignInResult {
         try await isValidState()
+        log.verbose("Start signIn flow")
         return try await doSignIn()
     }
 
     func isValidState() async throws {
         let stateSequences = await authStateMachine.listen()
+        log.verbose("Wait for a valid state")
         for await state in stateSequences {
             guard case .configured(let authenticationState, _) = state else {
                 continue
@@ -70,6 +72,7 @@ struct HostedUISignInHelper {
         }
         let stateSequences = await authStateMachine.listen()
         await sendSignInEvent(oauthConfiguration: oauthConfiguration)
+        log.verbose("Wait for signIn to complete")
         for await state in stateSequences {
             guard case .configured(let authNState,
                                    let authZState) = state else { continue }
@@ -128,7 +131,9 @@ struct HostedUISignInHelper {
     }
 
     private func waitForSignInCancel() async {
+        log.verbose("Sending cancel signIn")
         await sendCancelSignInEvent()
+        log.verbose("Wait for signIn to cancel")
         let stateSequences = await authStateMachine.listen()
         for await state in stateSequences {
             guard case .configured(let authenticationState, _) = state else {
