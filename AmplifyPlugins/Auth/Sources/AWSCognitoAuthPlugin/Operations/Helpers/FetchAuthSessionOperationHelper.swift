@@ -67,18 +67,13 @@ class FetchAuthSessionOperationHelper: DefaultLogger {
         authStateMachine: AuthStateMachine,
         forceRefresh: Bool) async throws -> AuthSession {
 
-            if forceRefresh || !credentials.areValid(){
-                return try await refreshCredentials(authStateMachine, forceRefresh: forceRefresh)
+            if forceRefresh || !credentials.areValid() {
+                let event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
+                await authStateMachine.send(event)
+                return try await listenForSession(authStateMachine: authStateMachine)
             }
             return credentials.cognitoSession
         }
-
-    func refreshCredentials(_ authStateMachine: AuthStateMachine,
-                            forceRefresh: Bool) async throws -> AuthSession {
-        let event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
-        await authStateMachine.send(event)
-        return try await listenForSession(authStateMachine: authStateMachine)
-    }
 
     func listenForSession(authStateMachine: AuthStateMachine) async throws -> AuthSession {
 
