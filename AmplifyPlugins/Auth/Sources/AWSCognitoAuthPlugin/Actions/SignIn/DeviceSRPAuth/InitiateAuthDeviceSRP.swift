@@ -30,8 +30,8 @@ struct InitiateAuthDeviceSRP: Action {
 
             // Get device metadata
             let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
-                for: environment,
-                with: username)
+                for: username,
+                with: environment)
 
             let srpStateData = SRPStateData(
                 username: username,
