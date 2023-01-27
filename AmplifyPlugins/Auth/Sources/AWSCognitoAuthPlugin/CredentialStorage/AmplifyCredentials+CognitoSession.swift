@@ -10,6 +10,8 @@ import Amplify
 
 extension AmplifyCredentials {
 
+    static let expiryBufferInSeconds = TimeInterval.seconds(2 * 60)
+    
     var cognitoSession: AWSAuthCognitoSession {
 
         switch self {
@@ -47,5 +49,38 @@ extension AmplifyCredentials {
         case .noCredentials:
             return AuthCognitoSignedOutSessionHelper.makeSessionWithNoGuestAccess()
         }
+    }
+
+    func areValid() -> Bool {
+
+        switch self {
+            
+        case .userPoolOnly(signedInData: let data):
+            if data.cognitoUserPoolTokens.doesExpire(in: Self.expiryBufferInSeconds) {
+                return false
+            }
+
+        case .identityPoolOnly(identityID: _, credentials: let awsCredentials):
+            if awsCredentials.doesExpire(in: Self.expiryBufferInSeconds) {
+                return false
+            }
+
+        case .userPoolAndIdentityPool(signedInData: let data,
+                                      identityID: _,
+                                      credentials: let awsCredentials):
+            if  data.cognitoUserPoolTokens.doesExpire(in: Self.expiryBufferInSeconds) ||
+                    awsCredentials.doesExpire(in: Self.expiryBufferInSeconds) {
+                return false
+            }
+
+        case .identityPoolWithFederation(_, _, let awsCredentials):
+            if awsCredentials.doesExpire() {
+                return false
+            }
+
+        case .noCredentials:
+            return false
+        }
+        return true
     }
 }

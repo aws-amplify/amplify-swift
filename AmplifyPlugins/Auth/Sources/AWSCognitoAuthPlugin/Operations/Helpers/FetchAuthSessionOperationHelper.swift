@@ -35,8 +35,8 @@ class FetchAuthSessionOperationHelper: DefaultLogger {
 
         case .sessionEstablished(let credentials):
             log.verbose("Session exists, checking validity")
-            return try await postAuthSessionEvent(
-                forCredential: credentials,
+            return try await refreshIfRequired(
+                existingCredentials: credentials,
                 authStateMachine: authStateMachine,
                 forceRefresh: forceRefresh)
 
@@ -46,8 +46,8 @@ class FetchAuthSessionOperationHelper: DefaultLogger {
                 let session = AuthCognitoSignedInSessionHelper.makeExpiredSignedInSession()
                 return session
             } else if case .sessionError(_, let credentials) = error {
-                return try await postAuthSessionEvent(
-                    forCredential: credentials,
+                return try await refreshIfRequired(
+                    existingCredentials: credentials,
                     authStateMachine: authStateMachine,
                     forceRefresh: forceRefresh)
             } else {
@@ -62,61 +62,23 @@ class FetchAuthSessionOperationHelper: DefaultLogger {
         }
     }
 
-    func postAuthSessionEvent(
-        forCredential credentials: AmplifyCredentials,
+    func refreshIfRequired(
+        existingCredentials credentials: AmplifyCredentials,
         authStateMachine: AuthStateMachine,
         forceRefresh: Bool) async throws -> AuthSession {
-            switch credentials {
 
-            case .userPoolOnly(signedInData: let data):
-                if data.cognitoUserPoolTokens.doesExpire(in: Self.expiryBufferInSeconds) ||
-                    forceRefresh {
-                    let event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
-                    await authStateMachine.send(event)
-                    return try await listenForSession(authStateMachine: authStateMachine)
-                } else {
-                    return credentials.cognitoSession
-                }
-
-            case .identityPoolOnly(identityID: _, credentials: let awsCredentials):
-                if awsCredentials.doesExpire(in: Self.expiryBufferInSeconds) ||
-                    forceRefresh {
-                    let event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
-                    await authStateMachine.send(event)
-                    return try await listenForSession(authStateMachine: authStateMachine)
-                } else {
-                   return credentials.cognitoSession
-                }
-
-            case .userPoolAndIdentityPool(signedInData: let data,
-                                          identityID: _,
-                                          credentials: let awsCredentials):
-                if  data.cognitoUserPoolTokens.doesExpire(in: Self.expiryBufferInSeconds) ||
-                        awsCredentials.doesExpire(in: Self.expiryBufferInSeconds) ||
-                        forceRefresh {
-                    let event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
-                    await authStateMachine.send(event)
-                    return try await listenForSession(authStateMachine: authStateMachine)
-                } else {
-                    return credentials.cognitoSession
-                }
-
-            case .identityPoolWithFederation(let federatedToken, let identityId, let awsCredentials):
-                if awsCredentials.doesExpire() || forceRefresh {
-                    let event = AuthorizationEvent.init(
-                        eventType: .startFederationToIdentityPool(federatedToken, identityId))
-                    await authStateMachine.send(event)
-                    return try await listenForSession(authStateMachine: authStateMachine)
-                } else {
-                    return credentials.cognitoSession
-                }
-
-            case .noCredentials:
-                let event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
-                await authStateMachine.send(event)
-                return try await listenForSession(authStateMachine: authStateMachine)
+            if forceRefresh || !credentials.areValid(){
+                return try await refreshCredentials(authStateMachine, forceRefresh: forceRefresh)
             }
+            return credentials.cognitoSession
         }
+
+    func refreshCredentials(_ authStateMachine: AuthStateMachine,
+                            forceRefresh: Bool) async throws -> AuthSession {
+        let event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
+        await authStateMachine.send(event)
+        return try await listenForSession(authStateMachine: authStateMachine)
+    }
 
     func listenForSession(authStateMachine: AuthStateMachine) async throws -> AuthSession {
 
@@ -155,8 +117,8 @@ class FetchAuthSessionOperationHelper: DefaultLogger {
         switch error {
         case .sessionError(let fetchError, let credentials):
             return try sessionResultWithFetchError(fetchError,
-                                        authenticationState: authenticationState,
-                                        existingCredentials: credentials)
+                                                   authenticationState: authenticationState,
+                                                   existingCredentials: credentials)
         case .sessionExpired:
             let session = AuthCognitoSignedInSessionHelper.makeExpiredSignedInSession()
             return session
@@ -172,8 +134,8 @@ class FetchAuthSessionOperationHelper: DefaultLogger {
     }
 
     func sessionResultWithFetchError(_ error: FetchSessionError,
-                                authenticationState: AuthenticationState,
-                                existingCredentials: AmplifyCredentials)
+                                     authenticationState: AuthenticationState,
+                                     existingCredentials: AmplifyCredentials)
     throws -> AuthSession {
 
         var isSignedIn = false
