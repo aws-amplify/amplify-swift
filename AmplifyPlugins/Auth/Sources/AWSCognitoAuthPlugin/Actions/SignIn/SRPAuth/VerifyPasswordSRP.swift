@@ -41,6 +41,9 @@ struct VerifyPasswordSRP: Action {
             let secretBlock = try secretBlock(secretBlockString)
             let serverPublicB = try serverPublic(parameters)
 
+            let deviceMetadata = await DeviceMetadataHelper.getDeviceMetadata(
+                for: username,
+                with: environment)
             let signature = try signature(userIdForSRP: userIdForSRP,
                                           saltHex: saltHex,
                                           secretBlock: secretBlock,
@@ -53,6 +56,7 @@ struct VerifyPasswordSRP: Action {
                 session: authResponse.session,
                 secretBlock: secretBlockString,
                 signature: signature,
+                deviceMetadata: deviceMetadata,
                 environment: userPoolEnv)
             let responseEvent = try await UserPoolSignInHelper.sendRespondToAuth(
                 request: request,
