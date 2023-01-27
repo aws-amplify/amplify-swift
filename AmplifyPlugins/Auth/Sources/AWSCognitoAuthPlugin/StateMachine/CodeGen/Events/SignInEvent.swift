@@ -29,6 +29,8 @@ struct SignInEvent: StateMachineEvent {
 
         case respondPasswordVerifier(SRPStateData, InitiateAuthOutputResponse)
 
+        case retryRespondPasswordVerifier(SRPStateData, InitiateAuthOutputResponse)
+
         case initiateDeviceSRP(Username, SignInResponseBehavior)
 
         case respondDeviceSRPChallenge(Username, SignInResponseBehavior)
@@ -72,6 +74,7 @@ struct SignInEvent: StateMachineEvent {
         case .throwAuthError: return "SignInEvent.throwAuthError"
         case .receivedChallenge: return "SignInEvent.receivedChallenge"
         case .verifySMSChallenge: return "SignInEvent.verifySMSChallenge"
+        case .retryRespondPasswordVerifier: return "SignInEvent.retryRespondPasswordVerifier"
         }
     }
 
@@ -104,7 +107,8 @@ extension SignInEvent.EventType: Equatable {
             (.cancelSRPSignIn, .cancelSRPSignIn),
             (.throwAuthError, .throwAuthError),
             (.receivedChallenge, .receivedChallenge),
-            (.verifySMSChallenge, .verifySMSChallenge):
+            (.verifySMSChallenge, .verifySMSChallenge),
+            (.retryRespondPasswordVerifier, .retryRespondPasswordVerifier):
             return true
         default: return false
         }
