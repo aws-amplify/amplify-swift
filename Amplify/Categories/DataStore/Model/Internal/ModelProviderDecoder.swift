@@ -7,34 +7,34 @@
 
 import Foundation
 
-/// Registry of `ModelListDecoder`'s used to retrieve decoders that can create `ModelListProvider`s to perform
-/// List functionality.
+/// Registry of `ModelProviderDecoder`'s used to retrieve decoders that can create `ModelProvider`s to perform
+/// LazyReference functionality.
 ///
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 /// directly by host applications. The behavior of this may change without warning. Though it is not used by host
 /// application making any change to these `public` types should be backward compatible, otherwise it will be a breaking
 /// change.
-public struct ModelListDecoderRegistry {
-    public static var listDecoders = AtomicValue(initialValue: [ModelListDecoder.Type]())
+public struct ModelProviderRegistry {
+    static var decoders = AtomicValue(initialValue: [ModelProviderDecoder.Type]())
 
-    /// Register a decoder during plugin configuration time, to allow runtime retrievals of list providers.
-    public static func registerDecoder(_ listDecoder: ModelListDecoder.Type) {
-        listDecoders.append(listDecoder)
+    /// Register a decoder during plugin configuration time, to allow runtime retrievals of model providers.
+    public static func registerDecoder(_ decoder: ModelProviderDecoder.Type) {
+        decoders.append(decoder)
     }
 }
 
-extension ModelListDecoderRegistry {
+extension ModelProviderRegistry {
     static func reset() {
-        listDecoders.set([ModelListDecoder.Type]())
+        decoders.set([ModelProviderDecoder.Type]())
     }
 }
 
-/// `ModelListDecoder` provides decoding and list functionality.
+/// `ModelProviderDecoder` provides decoding and lazy reference functionality.
 ///
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 /// directly by host applications. The behavior of this may change without warning. Though it is not used by host
 /// application making any change to these `public` types should be backward compatible, otherwise it will be a breaking
 /// change.
-public protocol ModelListDecoder {
-    static func decode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AnyModelListProvider<ModelType>?
+public protocol ModelProviderDecoder {
+    static func decode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AnyModelProvider<ModelType>?
 }

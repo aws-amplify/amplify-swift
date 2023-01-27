@@ -37,7 +37,8 @@ extension MutationEvent {
             storageAdapter.query(MutationEvent.self,
                                  predicate: final,
                                  sort: [sort],
-                                 paginationInput: nil) { result in
+                                 paginationInput: nil,
+                                 eagerLoad: true) { result in
                 defer {
                     sempahore.signal()
                 }

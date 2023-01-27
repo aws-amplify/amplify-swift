@@ -17,7 +17,8 @@ extension GraphQLRequest {
                                                    limit: Int? = nil,
                                                    nextToken: String? = nil,
                                                    apiName: String? = nil) -> GraphQLRequest<ResponseType> {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema, operationType: .query)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelSchema,
+                                                               operationType: .query)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .list))
         if let filter = filter {
             documentBuilder.add(decorator: FilterDecorator(filter: filter))
@@ -29,5 +30,22 @@ extension GraphQLRequest {
                                             variables: document.variables,
                                             responseType: responseType.self,
                                             decodePath: document.name)
+    }
+
+    static func getRequest<M: Model>(_ modelType: M.Type,
+                                     byIdentifiers identifiers: [LazyReferenceIdentifier],
+                                     apiName: String?) -> GraphQLRequest<M?> {
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
+                                                               operationType: .query)
+        documentBuilder.add(decorator: DirectiveNameDecorator(type: .get))
+        documentBuilder.add(decorator: ModelIdDecorator(identifiers: identifiers))
+
+        let document = documentBuilder.build()
+
+        return GraphQLRequest<M?>(apiName: apiName,
+                                  document: document.stringValue,
+                                  variables: document.variables,
+                                  responseType: M?.self,
+                                  decodePath: document.name)
     }
 }

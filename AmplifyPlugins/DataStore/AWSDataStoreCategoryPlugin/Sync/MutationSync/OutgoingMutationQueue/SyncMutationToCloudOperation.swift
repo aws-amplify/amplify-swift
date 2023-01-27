@@ -159,7 +159,7 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
             return nil
         }
 
-        let awsPluginOptions = AWSPluginOptions(authType: authType)
+        let awsPluginOptions = AWSPluginOptions(authType: authType, modelName: mutationEvent.modelName)
         request.options = GraphQLRequest<MutationSyncResult>.Options(pluginOptions: awsPluginOptions)
         return request
     }

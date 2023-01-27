@@ -63,6 +63,10 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         }
     }
 
+    /// Configuration of the query against the local storage, whether it should load the belongs-to/has-one associations
+    /// or not.
+    var isEagerLoad: Bool = true
+
     /// No-argument init that uses defaults for all providers
     public init(modelRegistration: AmplifyModelRegistration,
                 configuration dataStoreConfiguration: DataStoreConfiguration = .default) {
@@ -109,9 +113,15 @@ final public class AWSDataStorePlugin: DataStoreCategoryPlugin {
         modelRegistration.registerModels(registry: ModelRegistry.self)
         for modelSchema in ModelRegistry.modelSchemas {
             dispatchedModelSyncedEvents[modelSchema.name] = AtomicValue(initialValue: false)
+            // `isEagerLoad` is true by default, unless the models contain the rootPath
+            // which is indication of the codegen that supports for lazy loading.
+            if isEagerLoad && ModelRegistry.modelType(from: modelSchema.name)?.rootPath != nil {
+                isEagerLoad = false
+            }
         }
         resolveSyncEnabled()
         ModelListDecoderRegistry.registerDecoder(DataStoreListDecoder.self)
+        ModelProviderRegistry.registerDecoder(DataStoreModelDecoder.self)
     }
 
     /// Initializes the underlying storage engine

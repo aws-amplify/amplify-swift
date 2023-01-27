@@ -207,7 +207,7 @@ final class InitialSyncOperation: AsynchronousOperation {
         }
 
         let syncMetadata = ModelSyncMetadata(id: modelSchema.name, lastSync: lastSyncTime)
-        storageAdapter.save(syncMetadata, condition: nil) { result in
+        storageAdapter.save(syncMetadata, condition: nil, eagerLoad: true) { result in
             switch result {
             case .failure(let dataStoreError):
                 self.finish(result: .failure(dataStoreError))

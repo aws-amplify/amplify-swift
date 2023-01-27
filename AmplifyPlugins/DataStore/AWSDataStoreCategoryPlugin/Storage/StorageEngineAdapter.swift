@@ -14,7 +14,7 @@ protocol StorageEngineAdapter: AnyObject, ModelStorageBehavior, ModelStorageErro
     static var maxNumberOfPredicates: Int { get }
 
     // MARK: - Async APIs
-    func save(untypedModel: Model, completion: @escaping DataStoreCallback<Model>)
+    func save(untypedModel: Model, eagerLoad: Bool, completion: @escaping DataStoreCallback<Model>)
 
     func delete<M: Model>(_ modelType: M.Type,
                           modelSchema: ModelSchema,
@@ -35,6 +35,7 @@ protocol StorageEngineAdapter: AnyObject, ModelStorageBehavior, ModelStorageErro
 
     func query(modelSchema: ModelSchema,
                predicate: QueryPredicate?,
+               eagerLoad: Bool,
                completion: DataStoreCallback<[Model]>)
 
     // MARK: - Synchronous APIs

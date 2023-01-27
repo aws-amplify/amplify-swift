@@ -134,6 +134,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                                      predicate: deleteInput.predicate,
                                      sort: nil,
                                      paginationInput: nil,
+                                     eagerLoad: true,
                                      completion: queryCompletionBlock)
             }
         } catch {
@@ -186,7 +187,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
             let groupedQueryPredicates = QueryPredicateGroup(type: .or, predicates: queryPredicates)
 
             let sempahore = DispatchSemaphore(value: 0)
-            storageAdapter.query(modelSchema: modelSchema, predicate: groupedQueryPredicates) { result in
+            storageAdapter.query(modelSchema: modelSchema, predicate: groupedQueryPredicates, eagerLoad: true) { result in
                 defer {
                     sempahore.signal()
                 }

@@ -21,6 +21,10 @@ public protocol Model: Codable {
     /// The name of the model, as registered in `ModelRegistry`.
     static var modelName: String { get }
 
+    /// The reference to the root path. It might be `nil` if models do not support
+    /// property references.
+    static var rootPath: PropertyContainerPath? { get }
+
     /// Convenience property to return the Type's `modelName`. Developers are strongly encouraged not to override the
     /// instance property, as an implementation that returns a different value for the instance property will cause
     /// undefined behavior.
@@ -70,4 +74,8 @@ extension Model {
             return ModelIdentifier<Self, ModelIdentifierFormat.Custom>(fields: fields)
         }
     }
+
+    /// The `rootPath` is set to `nil` by default. Specific models should override this
+    /// behavior and provide the proper path reference when available.
+    public static var rootPath: PropertyContainerPath? { nil }
 }

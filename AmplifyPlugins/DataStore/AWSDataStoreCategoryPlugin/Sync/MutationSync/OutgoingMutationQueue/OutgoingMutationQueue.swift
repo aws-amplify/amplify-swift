@@ -334,7 +334,8 @@ final class OutgoingMutationQueue: OutgoingMutationQueueBehavior {
         storageAdapter.query(MutationEvent.self,
                              predicate: predicate,
                              sort: nil,
-                             paginationInput: nil) { result in
+                             paginationInput: nil,
+                             eagerLoad: true) { result in
             switch result {
             case .success(let events):
                 self.dispatchOutboxStatusEvent(isEmpty: events.isEmpty)

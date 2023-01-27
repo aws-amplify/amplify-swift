@@ -84,16 +84,13 @@ extension SingleDirectiveGraphQLDocument {
     /// Provides default construction of the graphQL document based on the components of the document.
     public var stringValue: String {
 
-        var selectionSetString = ""
-        if let selectionSet = selectionSet {
-            selectionSetString = selectionSet.stringValue()
-        }
+        let selectionSetString = selectionSet?.stringValue(indentSize: 2) ?? ""
 
         guard !inputs.isEmpty else {
             return """
             \(operationType.rawValue) \(name.pascalCased()) {
               \(name) {
-                \(selectionSetString)
+            \(selectionSetString)
               }
             }
             """
@@ -105,7 +102,7 @@ extension SingleDirectiveGraphQLDocument {
         return """
         \(operationType.rawValue) \(name.pascalCased())(\(inputTypes)) {
           \(name)(\(inputParameters)) {
-            \(selectionSetString)
+        \(selectionSetString)
           }
         }
         """

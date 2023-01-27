@@ -15,6 +15,8 @@
 		2104FE5928492D67007CF949 /* DataStoreConnectionOptionalAssociations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE5828492D67007CF949 /* DataStoreConnectionOptionalAssociations.swift */; };
 		2104FE5B284E7168007CF949 /* DataStoreSchemaDriftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE5A284E7168007CF949 /* DataStoreSchemaDriftTests.swift */; };
 		2104FE64284E8B21007CF949 /* DataStoreInternal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2104FE63284E8B21007CF949 /* DataStoreInternal.swift */; };
+		210D5D732984236000D748FE /* DataStoreModelDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210D5D722984236000D748FE /* DataStoreModelDecoder.swift */; };
+		210D5D752984237D00D748FE /* DataStoreModelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210D5D742984237D00D748FE /* DataStoreModelProvider.swift */; };
 		210E218226601C1C00D90ED8 /* MutationEventQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210E218126601C1C00D90ED8 /* MutationEventQueryTests.swift */; };
 		211A81D7270F787200C5483D /* SortedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211A81D6270F787200C5483D /* SortedList.swift */; };
 		211A81D9270F78B100C5483D /* SortedListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211A81D8270F78B100C5483D /* SortedListTests.swift */; };
@@ -448,6 +450,8 @@
 		2104FE5828492D67007CF949 /* DataStoreConnectionOptionalAssociations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreConnectionOptionalAssociations.swift; sourceTree = "<group>"; };
 		2104FE5A284E7168007CF949 /* DataStoreSchemaDriftTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataStoreSchemaDriftTests.swift; sourceTree = "<group>"; };
 		2104FE63284E8B21007CF949 /* DataStoreInternal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreInternal.swift; sourceTree = "<group>"; };
+		210D5D722984236000D748FE /* DataStoreModelDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreModelDecoder.swift; sourceTree = "<group>"; };
+		210D5D742984237D00D748FE /* DataStoreModelProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreModelProvider.swift; sourceTree = "<group>"; };
 		210E218126601C1C00D90ED8 /* MutationEventQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutationEventQueryTests.swift; sourceTree = "<group>"; };
 		211A81D6270F787200C5483D /* SortedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortedList.swift; sourceTree = "<group>"; };
 		211A81D8270F78B100C5483D /* SortedListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortedListTests.swift; sourceTree = "<group>"; };
@@ -1248,6 +1252,8 @@
 			children = (
 				21A4EE4A259D508600E1047D /* DataStoreListDecoder.swift */,
 				21FE027D25890B2F00B81D72 /* DataStoreListProvider.swift */,
+				210D5D722984236000D748FE /* DataStoreModelDecoder.swift */,
+				210D5D742984237D00D748FE /* DataStoreModelProvider.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -2610,6 +2616,7 @@
 				FA8F4D1E2395AF7600861D91 /* DataStoreError+Plugin.swift in Sources */,
 				FA6C3FEE239890B500A73110 /* AWSMutationEventPublisher.swift in Sources */,
 				2149E5D02388684F00873955 /* QueryPredicate+SQLite.swift in Sources */,
+				210D5D732984236000D748FE /* DataStoreModelDecoder.swift in Sources */,
 				FA55A54B2391EAB5002AFF2D /* MutationEventSubscriber.swift in Sources */,
 				FA3B3F07238F23CA002EFDB3 /* OutgoingMutationQueue+Resolver.swift in Sources */,
 				2149E5D22388684F00873955 /* SQLStatement+Condition.swift in Sources */,
@@ -2632,6 +2639,7 @@
 				FA60461323980A75009E4B97 /* InitialSyncOperation.swift in Sources */,
 				6B3CC67C23F86D680008ECBC /* RemoteSyncEngine+IncomingEventReconciliationQueueEvent.swift in Sources */,
 				2149E5C72388684F00873955 /* StorageEngine.swift in Sources */,
+				210D5D752984237D00D748FE /* DataStoreModelProvider.swift in Sources */,
 				FA3B3F05238F22F5002EFDB3 /* OutgoingMutationQueue+Action.swift in Sources */,
 				21233E1324763D0700039337 /* StorageEngine+SyncRequirement.swift in Sources */,
 				D838AB4624FF268400BF4940 /* SyncQueriesStartedEvent.swift in Sources */,

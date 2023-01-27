@@ -247,6 +247,7 @@ public class AWSDataStoreObserveQueryOperation<M: Model>: AsynchronousOperation,
             predicate: predicate,
             sort: sortInput,
             paginationInput: nil,
+            eagerLoad: true,
             completion: { queryResult in
                 if isCancelled || isFinished {
                     finish()

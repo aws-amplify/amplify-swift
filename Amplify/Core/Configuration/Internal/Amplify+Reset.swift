@@ -57,6 +57,12 @@ extension Amplify {
             }
         }
 
+        log.verbose("Resetting ModelRegistry, ModelListDecoderRegistry, ModelProviderRegistry")
+        ModelRegistry.reset()
+        ModelListDecoderRegistry.reset()
+        ModelProviderRegistry.reset()
+        log.verbose("Resetting ModelRegistry, ModelListDecoderRegistry, ModelProviderRegistry finished")
+
         if #available(iOS 13.0.0, *) {
             devMenu = nil
         }

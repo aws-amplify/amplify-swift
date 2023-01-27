@@ -22,7 +22,8 @@ struct SelectStatementMetadata {
     static func metadata(from modelSchema: ModelSchema,
                          predicate: QueryPredicate? = nil,
                          sort: [QuerySortDescriptor]? = nil,
-                         paginationInput: QueryPaginationInput? = nil) -> SelectStatementMetadata {
+                         paginationInput: QueryPaginationInput? = nil,
+                         eagerLoad: Bool = true) -> SelectStatementMetadata {
         let rootNamespace = "root"
         let fields = modelSchema.columns
         let tableName = modelSchema.name
@@ -33,7 +34,7 @@ struct SelectStatementMetadata {
         }
 
         // eager load many-to-one/one-to-one relationships
-        let joinStatements = joins(from: modelSchema)
+        let joinStatements = joins(from: modelSchema, eagerLoad: eagerLoad)
         columns += joinStatements.columns
         columnMapping.merge(joinStatements.columnMapping) { _, new in new }
 
@@ -86,10 +87,15 @@ struct SelectStatementMetadata {
     ///
     /// Implementation note: this should be revisited once we define support
     /// for explicit `eager` vs `lazy` associations.
-    private static func joins(from schema: ModelSchema) -> JoinStatement {
+    private static func joins(from schema: ModelSchema, eagerLoad: Bool = true) -> JoinStatement {
         var columns: [String] = []
         var joinStatements: [String] = []
         var columnMapping: ColumnMapping = [:]
+        guard eagerLoad == true else {
+            return JoinStatement(columns: columns,
+                                 statements: joinStatements,
+                                 columnMapping: columnMapping)
+        }
 
         func visitAssociations(node: ModelSchema, namespace: String = "root") {
             for foreignKey in node.foreignKeys {
@@ -142,12 +148,14 @@ struct SelectStatement: SQLStatement {
     init(from modelSchema: ModelSchema,
          predicate: QueryPredicate? = nil,
          sort: [QuerySortDescriptor]? = nil,
-         paginationInput: QueryPaginationInput? = nil) {
+         paginationInput: QueryPaginationInput? = nil,
+         eagerLoad: Bool = true) {
         self.modelSchema = modelSchema
         self.metadata = .metadata(from: modelSchema,
                                   predicate: predicate,
                                   sort: sort,
-                                  paginationInput: paginationInput)
+                                  paginationInput: paginationInput,
+                                  eagerLoad: eagerLoad)
     }
 
     var stringValue: String {
