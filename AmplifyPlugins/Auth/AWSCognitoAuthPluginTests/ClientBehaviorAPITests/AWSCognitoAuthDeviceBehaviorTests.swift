@@ -14,16 +14,15 @@ class AWSCognitoAuthDeviceBehaviorTests: XCTestCase {
     var plugin: AWSCognitoAuthPlugin!
 
     override func setUp() {
+        Amplify.reset()
+        wait(for: 1)
+
         plugin = AWSCognitoAuthPlugin()
         plugin.configure(authenticationProvider: MockAuthenticationProviderBehavior(),
                          authorizationProvider: MockAuthorizationProviderBehavior(),
                          userService: MockAuthUserServiceBehavior(),
                          deviceService: MockAuthDeviceServiceBehavior(),
                          hubEventHandler: MockAuthHubEventBehavior())
-    }
-
-    override func tearDown() {
-        Amplify.reset()
     }
 
     /// Test fetchDevices operation can be invoked

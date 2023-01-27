@@ -26,6 +26,7 @@
 		5C33248D27723D0800F2C47B /* AuthenticationProviderAdapter+DeleteUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C33248C27723D0800F2C47B /* AuthenticationProviderAdapter+DeleteUser.swift */; };
 		5CD3C21A277D275D007DB926 /* AuthDeleteUserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD3C219277D275D007DB926 /* AuthDeleteUserTests.swift */; };
 		5CF59BBB277BCD5300E1912D /* AuthenticationProviderDeleteUserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF59BBA277BCD5300E1912D /* AuthenticationProviderDeleteUserTests.swift */; };
+		6043243329836376007F5C35 /* XCTestCase+Amplify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6043243229836375007F5C35 /* XCTestCase+Amplify.swift */; };
 		70E42920C1C9027C533FE097 /* Pods_HostApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 079163684273F9FB27298F8F /* Pods_HostApp.framework */; };
 		7B2955116F0489917FC30BE3 /* Pods_AWSCognitoAuthPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB0C6F042059ACEDBC3306C2 /* Pods_AWSCognitoAuthPlugin.framework */; };
 		9B3E7ADD46949E5B8F2CF1BC /* Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20977603F769B87802DEAEB7 /* Pods_HostApp_AWSCognitoAuthPluginIntegrationTests.framework */; };
@@ -222,6 +223,7 @@
 		5C33248C27723D0800F2C47B /* AuthenticationProviderAdapter+DeleteUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AuthenticationProviderAdapter+DeleteUser.swift"; sourceTree = "<group>"; };
 		5CD3C219277D275D007DB926 /* AuthDeleteUserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthDeleteUserTests.swift; sourceTree = "<group>"; };
 		5CF59BBA277BCD5300E1912D /* AuthenticationProviderDeleteUserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationProviderDeleteUserTests.swift; sourceTree = "<group>"; };
+		6043243229836375007F5C35 /* XCTestCase+Amplify.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Amplify.swift"; sourceTree = "<group>"; };
 		68CA57EB40AAAB3A1A6756EA /* Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.release.xcconfig"; path = "Target Support Files/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests/Pods-HostApp-AWSCognitoAuthPluginIntegrationTests.release.xcconfig"; sourceTree = "<group>"; };
 		8EAD42CD0F2BB4A5A4B497F6 /* Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.release.xcconfig"; path = "Target Support Files/Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests/Pods-AWSCognitoAuthPlugin-AWSCognitoAuthPluginTests.release.xcconfig"; sourceTree = "<group>"; };
 		B402C915257700610020B83B /* BaseAuthenticationProviderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseAuthenticationProviderTest.swift; sourceTree = "<group>"; };
@@ -807,6 +809,7 @@
 		B41D0FDC2475A3A10049D08D /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				6043243229836375007F5C35 /* XCTestCase+Amplify.swift */,
 				B41D0FDD2475A3A10049D08D /* AuthUserAttributeKeyTests.swift */,
 				5653A9F9297B157900AC6D82 /* AWSCognitoAuthPluginUserDefaultsTests.swift */,
 			);
@@ -1566,6 +1569,7 @@
 				5653A9F8297AE40200AC6D82 /* AWSCognitoAuthPluginTests.swift in Sources */,
 				B4D5411B256F2C8A00436E5C /* BaseAuthorizationProviderTest.swift in Sources */,
 				B43B4E102565EA64008F345D /* AWSCognitoAuthClientBehaviorTests.swift in Sources */,
+				6043243329836376007F5C35 /* XCTestCase+Amplify.swift in Sources */,
 				B4136E2C256D764B0011210B /* AuthenticationProviderResendSignupCodeTests.swift in Sources */,
 				B41D0FE32475A3A10049D08D /* AuthHubEventHandlerTests.swift in Sources */,
 				B4136E38256D76790011210B /* AuthenticationProviderSigninWithSocialWebUITests.swift in Sources */,
