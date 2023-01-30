@@ -15,7 +15,7 @@ import AWSPluginsCore
 final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
 
     func testSave() async throws {
-        await setup(withModels: PostComment8Models(), logLevel: .verbose)
+        await setup(withModels: PostComment8Models())
         
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString,
@@ -27,7 +27,7 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
     }
     
     func testQueryThenLazyLoad() async throws {
-        await setup(withModels: PostComment8Models(), logLevel: .verbose)
+        await setup(withModels: PostComment8Models())
         
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString,
@@ -71,6 +71,28 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
         assertComment(comment, contains: post)
     }
     
+    func testListPostsListComments() async throws {
+        await setup(withModels: PostComment8Models())
+        let post = Post(postId: UUID().uuidString, title: "title")
+        let comment = Comment(commentId: UUID().uuidString,
+                              content: "content",
+                              postId: post.postId,
+                              postTitle: post.title)
+        try await mutate(.create(post))
+        try await mutate(.create(comment))
+        
+        
+        let queriedPosts = try await listQuery(.list(Post.self, where: Post.keys.postId == post.postId))
+        assertList(queriedPosts, state: .isLoaded(count: 1))
+        assertList(queriedPosts.first!.comments!,
+                   state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title], associatedField: "postId"))
+        
+        let queriedComments = try await listQuery(.list(Comment.self, where: Comment.keys.commentId == comment.commentId))
+        assertList(queriedComments, state: .isLoaded(count: 1))
+        XCTAssertEqual(queriedComments.first!.postId, post.postId)
+        XCTAssertEqual(queriedComments.first!.postTitle, post.title)
+    }
+    
     /*
      This test fails when the create mutation contains Null values for the foreign keys. On create mutation, we should
      be able to detect that the values being set are foreign key fields and remove them from the input
@@ -88,7 +110,7 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
      */
     func testSaveWithoutPost() async throws {
         throw XCTSkip("Create mutation with null foreign keys fail.")
-        await setup(withModels: PostComment8Models(), logLevel: .verbose)
+        await setup(withModels: PostComment8Models())
         let comment = Comment(commentId: UUID().uuidString, content: "content")
         let savedComment = try await mutate(.create(comment))
 //        var queriedComment = try await query(.get(Comment.self, byId: comment.commentId))!
@@ -103,7 +125,7 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
     }
     
     func testUpdateFromQueriedComment() async throws {
-        await setup(withModels: PostComment8Models(), logLevel: .verbose)
+        await setup(withModels: PostComment8Models())
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString,
                               content: "content",
@@ -119,7 +141,7 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
     }
     
     func testUpdateToNewPost() async throws {
-        await setup(withModels: PostComment8Models(), logLevel: .verbose)
+        await setup(withModels: PostComment8Models())
         
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString,
@@ -140,7 +162,7 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
     }
     
     func testUpdateRemovePost() async throws {
-        await setup(withModels: PostComment8Models(), logLevel: .verbose)
+        await setup(withModels: PostComment8Models())
         
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString,
@@ -161,7 +183,7 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
     }
     
     func testDelete() async throws {
-        await setup(withModels: PostComment8Models(), logLevel: .verbose)
+        await setup(withModels: PostComment8Models())
         
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString,

@@ -15,17 +15,17 @@ import AWSPluginsCore
 final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
 
     func testSave() async throws {
-        await setup(withModels: PostComment7Models(), logLevel: .verbose)
+        await setup(withModels: PostComment7Models())
         
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
-        let savedPost = try await mutate(.create(post))
-        let savedComment = try await mutate(.create(comment))
+        try await mutate(.create(post))
+        try await mutate(.create(comment))
     }
     
     // Without `includes` and latest codegenerated types with the model path, the post should be lazy loaded
     func testCommentWithLazyLoadPost() async throws {
-        await setup(withModels: PostComment7Models(), logLevel: .verbose)
+        await setup(withModels: PostComment7Models())
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
         let createdPost = try await mutate(.create(post))
@@ -52,7 +52,7 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
     
     // With `includes` on `comment.post`, the comment's post should be eager loaded.
     func testCommentWithEagerLoadPost() async throws {
-        await setup(withModels: PostComment7Models(), logLevel: .verbose)
+        await setup(withModels: PostComment7Models())
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
         let createdPost = try await mutate(.create(post))
@@ -73,8 +73,7 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
     }
     
     func testQueryThenLazyLoad() async throws {
-        await setup(withModels: PostComment7Models(), logLevel: .verbose)
-        
+        await setup(withModels: PostComment7Models())
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
         let savedPost = try await mutate(.create(post))
@@ -86,6 +85,26 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
         try await assertComment(queriedComment, canLazyLoad: savedPost)
         let queriedPost = try await query(.get(Post.self, byIdentifier: .identifier(postId: post.postId, title: post.title)))!
         try await assertPost(queriedPost, canLazyLoad: savedComment)
+    }
+    
+    func testListPostsListComments() async throws {
+        await setup(withModels: PostComment7Models())
+        let post = Post(postId: UUID().uuidString, title: "title")
+        let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
+        try await mutate(.create(post))
+        try await mutate(.create(comment))
+        
+        let queriedPosts = try await listQuery(.list(Post.self, where: Post.keys.postId == post.postId))
+        assertList(queriedPosts, state: .isLoaded(count: 1))
+        assertList(queriedPosts.first!.comments!,
+                   state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title], associatedField: "post"))
+        
+        let queriedComments = try await listQuery(.list(Comment.self, where: Comment.keys.commentId == comment.commentId))
+        assertList(queriedComments, state: .isLoaded(count: 1))
+        assertLazyReference(queriedComments.first!._post,
+                            state: .notLoaded(identifiers: [
+                                .init(name: "postId", value: post.postId),
+                                .init(name: "title", value: "title")]))
     }
     
     func assertComment(_ comment: Comment,
@@ -135,7 +154,7 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
     }
     
     func testSaveWithoutPost() async throws {
-        await setup(withModels: PostComment7Models(), logLevel: .verbose)
+        await setup(withModels: PostComment7Models())
         let comment = Comment(commentId: UUID().uuidString, content: "content")
         let savedComment = try await mutate(.create(comment))
         var queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(commentId: comment.commentId,
@@ -151,7 +170,7 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
     }
     
     func testUpdateFromQueriedComment() async throws {
-        await setup(withModels: PostComment7Models(), logLevel: .verbose)
+        await setup(withModels: PostComment7Models())
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
         let savedPost = try await mutate(.create(post))
@@ -166,7 +185,7 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
     }
     
     func testUpdateToNewPost() async throws {
-        await setup(withModels: PostComment7Models(), logLevel: .verbose)
+        await setup(withModels: PostComment7Models())
         
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
@@ -186,7 +205,7 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
     }
     
     func testUpdateRemovePost() async throws {
-        await setup(withModels: PostComment7Models(), logLevel: .verbose)
+        await setup(withModels: PostComment7Models())
         
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)
@@ -204,7 +223,7 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
     }
     
     func testDelete() async throws {
-        await setup(withModels: PostComment7Models(), logLevel: .verbose)
+        await setup(withModels: PostComment7Models())
         
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString, content: "content", post: post)

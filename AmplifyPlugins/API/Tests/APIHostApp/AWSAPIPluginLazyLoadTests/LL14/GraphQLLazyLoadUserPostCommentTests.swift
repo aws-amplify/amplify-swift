@@ -14,7 +14,7 @@ import XCTest
 final class GraphQLLazyLoadUserPostCommentTests: GraphQLLazyLoadBaseTest {
 
     func testConfigure() async throws {
-        await setup(withModels: UserPostCommentModels(), logLevel: .verbose)
+        await setup(withModels: UserPostCommentModels())
     }
 
     func testSaveUser() async throws {
