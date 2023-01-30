@@ -83,23 +83,7 @@ final class AWSDataStoreLazyLoadPostComment8Tests: AWSDataStoreLazyLoadBaseTest 
         assertComment(comment, contains: post)
     }
     
-    /*
-     This test fails when the create mutation contains Null values for the foreign keys. On create mutation, we should
-     be able to detect that the values being set are foreign key fields and remove them from the input
-     {
-       "variables" : {
-         "input" : {
-           "content" : "content",
-           "postId" : null,
-           "commentId" : "532C8869-FD00-4694-A2DE-38223E080206",
-           "postTitle" : null
-         }
-       },
-       "query" : "mutation CreateComment8($input: CreateComment8Input!) {\n  createComment8(input: $input) {\n    commentId\n    content\n    createdAt\n    postId\n    postTitle\n    updatedAt\n    __typename\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
-     }
-     */
     func testSaveWithoutPost() async throws {
-        throw XCTSkip("Need further investigation")
         await setup(withModels: PostComment8Models())
         let comment = Comment(commentId: UUID().uuidString, content: "content")
         let savedComment = try await saveAndWaitForSync(comment)
