@@ -66,7 +66,15 @@ public protocol AWSPinpointBehavior {
 
     /// Updates the current endpoint with the provided profile
     /// - Parameter endpointProfile: The new endpoint profile
-    func updateEndpoint(with endpointProfile: PinpointEndpointProfile) async throws
+    /// - Parameter source: The source that originates this endpoint update, i.e. analytics or pushNotifications
+    func updateEndpoint(with endpointProfile: PinpointEndpointProfile,
+                        source: AWSPinpointSource) async throws
+}
+
+@_spi(InternalAWSPinpoint)
+public enum AWSPinpointSource: String {
+    case analytics
+    case pushNotifications
 }
 
 extension AWSPinpointBehavior {

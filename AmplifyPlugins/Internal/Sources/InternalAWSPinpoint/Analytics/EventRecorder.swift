@@ -127,6 +127,7 @@ class EventRecorder: AnalyticsEventRecording {
         let putEventsInput = PutEventsInput(applicationId: appId,
                                             eventsRequest: .init(batchItem: batchItem))
 
+        await identifySource(for: pinpointEvents)
         do {
             log.verbose("PutEventsInput: \(putEventsInput)")
             let response = try await pinpointClient.putEvents(input: putEventsInput)
@@ -297,6 +298,16 @@ class EventRecorder: AnalyticsEventRecording {
             }
         }
     }
+
+    private func identifySource(for pinpointEvents: [PinpointEvent]) async {
+        let numberOfPushNotificationsEvents = pinpointEvents.numberOfPushNotificationsEvents()
+        if numberOfPushNotificationsEvents > 0 {
+            await PinpointRequestsRegistry.shared.registerSource(.pushNotifications, for: .recordEvent)
+        }
+        if pinpointEvents.count > numberOfPushNotificationsEvents {
+            await PinpointRequestsRegistry.shared.registerSource(.analytics, for: .recordEvent)
+        }
+    }
 }
 
 extension EventRecorder: DefaultLogger {}
@@ -310,5 +321,16 @@ extension EventRecorder {
         static let acceptedResponseMessage = "Accepted"
         static let defaultNumberOfRetriesForStorageOperations = 1
         static let maxNumberOfRetries = 3
+    }
+}
+
+private extension Array where Element == PinpointEvent {
+    func numberOfPushNotificationsEvents() -> Int {
+        let pushNotificationsEvents = filter({ event in
+            event.eventType.contains(".opened_notification")
+            || event.eventType.contains(".received_foreground")
+            || event.eventType.contains(".received_background")
+        })
+        return pushNotificationsEvents.count
     }
 }

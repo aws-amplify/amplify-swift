@@ -31,7 +31,9 @@ extension PinpointContext: AWSPinpointBehavior {
         await endpointClient.currentEndpointProfile()
     }
 
-    func updateEndpoint(with endpointProfile: PinpointEndpointProfile) async throws {
+    func updateEndpoint(with endpointProfile: PinpointEndpointProfile,
+                        source: AWSPinpointSource) async throws {
+        await PinpointRequestsRegistry.shared.registerSource(source, for: .updateEndpoint)
         try await endpointClient.updateEndpointProfile(with: endpointProfile)
     }
 
