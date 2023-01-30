@@ -15,7 +15,7 @@ import AWSPluginsCore
 final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
     
     func testLazyLoad() async throws {
-        await setup(withModels: PostTagModels(), logLevel: .verbose)
+        await setup(withModels: PostTagModels())
         let post = Post(postId: UUID().uuidString, title: "title")
         let tag = Tag(name: "name")
         let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)
@@ -95,8 +95,39 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
         try await assertPost(loadedPost, canLazyLoad: postTag)
     }
     
+    func testListPostListTagListPostTag() async throws {
+        await setup(withModels: PostTagModels())
+        let post = Post(postId: UUID().uuidString, title: "title")
+        let tag = Tag(name: "name")
+        let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)
+        try await mutate(.create(post))
+        try await mutate(.create(tag))
+        try await mutate(.create(postTag))
+        
+        let queriedPosts = try await listQuery(.list(Post.self, where: Post.keys.postId == post.postId))
+        assertList(queriedPosts, state: .isLoaded(count: 1))
+        assertList(queriedPosts.first!.tags!,
+                   state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title], associatedField: "postWithTagsCompositeKey"))
+        
+        let queriedTags = try await listQuery(.list(Tag.self, where: Tag.keys.id == tag.id))
+        assertList(queriedTags, state: .isLoaded(count: 1))
+        assertList(queriedTags.first!.posts!,
+                   state: .isNotLoaded(associatedIdentifiers: [tag.id, tag.name], associatedField: "tagWithCompositeKey"))
+        
+        let queriedPostTags = try await listQuery(.list(PostTag.self, where: PostTag.keys.id == postTag.id))
+        assertList(queriedPostTags, state: .isLoaded(count: 1))
+        assertLazyReference(queriedPostTags.first!._postWithTagsCompositeKey,
+                            state: .notLoaded(identifiers: [
+                                .init(name: "postId", value: post.postId),
+                                .init(name: "title", value: post.title)]))
+        assertLazyReference(queriedPostTags.first!._tagWithCompositeKey,
+                            state: .notLoaded(identifiers: [
+                                .init(name: "id", value: tag.id),
+                                .init(name: "name", value: tag.name)]))
+    }
+    
     func testUpdate() async throws {
-        await setup(withModels: PostTagModels(), logLevel: .verbose)
+        await setup(withModels: PostTagModels())
         let post = Post(postId: UUID().uuidString, title: "title")
         let tag = Tag(name: "name")
         let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)
@@ -148,7 +179,7 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
     }
     
     func testDeletePost() async throws {
-        await setup(withModels: PostTagModels(), logLevel: .verbose)
+        await setup(withModels: PostTagModels())
         let post = Post(postId: UUID().uuidString, title: "title")
         let savedPost = try await mutate(.create(post))
         
@@ -157,7 +188,7 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
     }
     
     func testDeleteTag() async throws {
-        await setup(withModels: PostTagModels(), logLevel: .verbose)
+        await setup(withModels: PostTagModels())
         let tag = Tag(name: "name")
         let savedTag = try await mutate(.create(tag))
         
@@ -166,7 +197,7 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
     }
     
     func testDeletePostTag() async throws {
-        await setup(withModels: PostTagModels(), logLevel: .verbose)
+        await setup(withModels: PostTagModels())
         let post = Post(postId: UUID().uuidString, title: "title")
         let tag = Tag(name: "name")
         let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)

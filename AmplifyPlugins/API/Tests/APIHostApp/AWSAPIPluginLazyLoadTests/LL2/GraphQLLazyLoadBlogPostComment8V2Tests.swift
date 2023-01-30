@@ -15,7 +15,7 @@ import AWSPluginsCore
 final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
 
     func testSaveBlog() async throws {
-        await setup(withModels: BlogPostComment8V2Models(), logLevel: .verbose)
+        await setup(withModels: BlogPostComment8V2Models())
         let blog = Blog(name: "name")
         let createdBlog = try await mutate(.create(blog))
         let queriedBlog = try await query(for: createdBlog)!
@@ -25,7 +25,7 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
     }
     
     func testSavePost() async throws {
-        await setup(withModels: BlogPostComment8V2Models(), logLevel: .verbose)
+        await setup(withModels: BlogPostComment8V2Models())
         let post = Post(name: "name", randomId: "randomId")
         let createdPost = try await mutate(.create(post))
         let queriedPost = try await query(for: createdPost)!
@@ -37,7 +37,7 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
     }
     
     func testSaveBlogThenPost() async throws {
-        await setup(withModels: BlogPostComment8V2Models(), logLevel: .verbose)
+        await setup(withModels: BlogPostComment8V2Models())
         let blog = Blog(name: "name")
         let createdBlog = try await mutate(.create(blog))
         let post = Post(name: "name", randomId: "randomId", blog: blog)
@@ -64,7 +64,7 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
     }
     
     func testSavePostComment() async throws {
-        await setup(withModels: BlogPostComment8V2Models(), logLevel: .verbose)
+        await setup(withModels: BlogPostComment8V2Models())
         let post = Post(name: "name", randomId: "randomId")
         let createdPost = try await mutate(.create(post))
         let comment = Comment(content: "content", post: post)
@@ -82,7 +82,7 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
     }
     
     func testSaveBlogPostComment() async throws {
-        await setup(withModels: BlogPostComment8V2Models(), logLevel: .verbose)
+        await setup(withModels: BlogPostComment8V2Models())
         let blog = Blog(name: "name")
         let createdBlog = try await mutate(.create(blog))
         let post = Post(name: "name", randomId: "randomId", blog: blog)
@@ -107,7 +107,7 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
     }
     
     func testBlogIncludesPostAndPostIncludesBlog() async throws {
-        await setup(withModels: BlogPostComment8V2Models(), logLevel: .verbose)
+        await setup(withModels: BlogPostComment8V2Models())
         let blog = Blog(name: "name")
         try await mutate(.create(blog))
         let post = Post(name: "name", randomId: "randomId", blog: blog)
@@ -127,7 +127,7 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
     }
     
     func testPostIncludesCommentAndCommentIncludesPost() async throws {
-        await setup(withModels: BlogPostComment8V2Models(), logLevel: .verbose)
+        await setup(withModels: BlogPostComment8V2Models())
         let post = Post(name: "name", randomId: "randomId")
         try await mutate(.create(post))
         let comment = Comment(content: "content", post: post)
@@ -143,7 +143,7 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
     }
     
     func testBlogIncludesPostAndCommentAndCommentIncludesPostAndBlog() async throws {
-        await setup(withModels: BlogPostComment8V2Models(), logLevel: .verbose)
+        await setup(withModels: BlogPostComment8V2Models())
         let blog = Blog(name: "name")
         try await mutate(.create(blog))
         let post = Post(name: "name", randomId: "randomId", blog: blog)
@@ -165,6 +165,31 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
         assertLazyReference(queriedCommentWithPostBlog._post, state: .loaded(model: post))
         let loadedPost = try await queriedCommentWithPostBlog.post!
         assertLazyReference(loadedPost._blog, state: .loaded(model: blog))
+    }
+    
+    func testListBlogListPostsListComments() async throws {
+        await setup(withModels: BlogPostComment8V2Models())
+        let blog = Blog(name: "name")
+        try await mutate(.create(blog))
+        let post = Post(name: "name", randomId: "randomId", blog: blog)
+        try await mutate(.create(post))
+        let comment = Comment(content: "content", post: post)
+        try await mutate(.create(comment))
+        
+        let queriedBlogs = try await listQuery(.list(Blog.self, where: Blog.keys.id == blog.id))
+        assertList(queriedBlogs, state: .isLoaded(count: 1))
+        assertList(queriedBlogs.first!.posts!,
+                   state: .isNotLoaded(associatedIdentifiers: [blog.id], associatedField: "blog"))
+        
+        let queriedPosts = try await listQuery(.list(Post.self, where: Post.keys.id == post.id))
+        assertList(queriedPosts, state: .isLoaded(count: 1))
+        assertList(queriedPosts.first!.comments!,
+                   state: .isNotLoaded(associatedIdentifiers: [post.id], associatedField: "post"))
+        
+        let queriedComments = try await listQuery(.list(Comment.self, where: Comment.keys.id == comment.id))
+        assertList(queriedComments, state: .isLoaded(count: 1))
+        assertLazyReference(queriedComments.first!._post,
+                            state: .notLoaded(identifiers: [.init(name: "id", value: post.id)]))
     }
     
     func testUpdate() {

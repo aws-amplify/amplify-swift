@@ -76,6 +76,23 @@ class GraphQLLazyLoadProjectTeam6Tests: GraphQLLazyLoadBaseTest {
         XCTAssertNil(project.teamName)
     }
     
+    func testListProjectListTeam() async throws {
+        await setup(withModels: ProjectTeam6Models())
+        let team = Team(teamId: UUID().uuidString, name: "name")
+        try await mutate(.create(team))
+        let project = initializeProjectWithTeam(team)
+        try await mutate(.create(project))
+        
+        let queriedProjects = try await listQuery(.list(Project.self, where: Project.keys.projectId == project.projectId))
+        assertList(queriedProjects, state: .isLoaded(count: 1))
+        assertLazyReference(queriedProjects.first!._team, state: .notLoaded(identifiers: [
+            .init(name: "teamId", value: team.teamId),
+            .init(name: "name", value: team.name)]))
+        
+        let queriedTeams = try await listQuery(.list(Team.self, where: Team.keys.teamId == team.teamId))
+        assertList(queriedTeams, state: .isLoaded(count: 1))
+    }
+    
     func testSaveProjectWithTeamThenUpdate() async throws {
         await setup(withModels: ProjectTeam6Models())
         let team = Team(teamId: UUID().uuidString, name: "name")

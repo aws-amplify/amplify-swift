@@ -15,7 +15,7 @@ import AWSPluginsCore
 final class GraphQLLazyLoadPhoneCallTests: GraphQLLazyLoadBaseTest {
     
     func testConfigure() async throws {
-        await setup(withModels: PhoneCallModels(), logLevel: .verbose)
+        await setup(withModels: PhoneCallModels())
     }
     
     /// Saving a person should be successfully
