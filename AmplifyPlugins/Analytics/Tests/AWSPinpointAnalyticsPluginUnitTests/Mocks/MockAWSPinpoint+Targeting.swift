@@ -25,7 +25,8 @@ extension MockAWSPinpoint {
         }
     }
 
-    public func updateEndpoint(with endpointProfile: PinpointEndpointProfile) async throws {
+    public func updateEndpoint(with endpointProfile: PinpointEndpointProfile,
+                               source: AWSPinpointSource) async throws {
         updateEndpointProfileCalled += 1
         updateEndpointProfileValue = endpointProfile
 

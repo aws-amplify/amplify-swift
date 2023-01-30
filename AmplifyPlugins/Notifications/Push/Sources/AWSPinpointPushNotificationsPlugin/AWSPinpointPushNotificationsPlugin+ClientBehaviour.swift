@@ -19,14 +19,16 @@ extension AWSPinpointPushNotificationsPlugin {
     public func identifyUser(userId: String) async throws {
         let currentEndpointProfile = await pinpoint.currentEndpointProfile()
         currentEndpointProfile.addUserId(userId)
-        try await pinpoint.updateEndpoint(with: currentEndpointProfile)
+        try await pinpoint.updateEndpoint(with: currentEndpointProfile,
+                                          source: .pushNotifications)
     }
 
     public func registerDevice(apnsToken: Data) async throws {
         let currentEndpointProfile = await pinpoint.currentEndpointProfile()
         currentEndpointProfile.setAPNsToken(apnsToken)
         do {
-            try await pinpoint.updateEndpoint(with: currentEndpointProfile)
+            try await pinpoint.updateEndpoint(with: currentEndpointProfile,
+                                              source: .pushNotifications)
         } catch {
             throw error.pushNotificationsError
         }

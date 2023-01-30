@@ -47,7 +47,8 @@ class MockAWSPinpoint: AWSPinpointBehavior {
     }
 
     var updateEndpointCount = 0
-    func updateEndpoint(with endpointProfile: PinpointEndpointProfile) async throws {
+    func updateEndpoint(with endpointProfile: PinpointEndpointProfile,
+                        source: AWSPinpointSource) async throws {
         updateEndpointCount += 1
     }
 
