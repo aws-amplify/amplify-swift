@@ -31,6 +31,7 @@ class AWSAPICategoryPluginTestBase: XCTestCase {
 
     override func setUp() {
         Amplify.reset()
+        wait(for: 1)
         apiPlugin = AWSAPIPlugin()
 
         let authService = MockAWSAuthService()
@@ -71,7 +72,12 @@ class AWSAPICategoryPluginTestBase: XCTestCase {
         }
     }
 
-    override func tearDown() {
-        Amplify.reset()
+    private func wait(for duration: TimeInterval) {
+        let expectation = expectation(description: "Sleep for \(duration) seconds")
+        DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: DispatchTime.now() + duration) {
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: duration + 0.5)
     }
 }
