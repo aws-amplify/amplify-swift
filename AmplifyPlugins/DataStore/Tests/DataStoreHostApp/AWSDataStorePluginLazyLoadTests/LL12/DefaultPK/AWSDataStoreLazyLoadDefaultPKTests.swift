@@ -225,7 +225,7 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
         try await assertModelDoesNotExist(savedParent)
     }
     
-    func testObservePost() async throws {
+    func testObserveParent() async throws {
         await setup(withModels: DefaultPKModels())
         try await startAndWaitForReady()
         let parent = Parent()
@@ -268,7 +268,7 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
         mutationEvents.cancel()
     }
     
-    func testObserveComment() async throws {
+    func testObserveChild() async throws {
         await setup(withModels: DefaultPKModels())
         try await startAndWaitForReady()
         let parent = Parent()
@@ -297,6 +297,73 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
         
         await waitForExpectations([mutationEventReceived], timeout: 60)
         mutationEvents.cancel()
+    }
+    
+    func testObserveQueryParent() async throws {
+        await setup(withModels: DefaultPKModels())
+        try await startAndWaitForReady()
+        let parent = Parent()
+        let child = Child(parent: parent)
+        let snapshotReceived = asyncExpectation(description: "Received query snapshot")
+        let querySnapshots = Amplify.DataStore.observeQuery(for: Parent.self, where: Parent.keys.id == parent.id)
+        Task {
+            for try await querySnapshot in querySnapshots {
+                if let receivedParent = querySnapshot.items.first {
+                    try await saveAndWaitForSync(child)
+                    guard let children = receivedParent.children else {
+                        XCTFail("Lazy List does not exist")
+                        return
+                    }
+                    do {
+                        try await children.fetch()
+                    } catch {
+                        XCTFail("Failed to lazy load children \(error)")
+                    }
+                    XCTAssertEqual(children.count, 1)
+                    
+                    await snapshotReceived.fulfill()
+                }
+            }
+        }
+        
+        let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: parent, modelSchema: Parent.schema)
+        do {
+            _ = try await Amplify.API.mutate(request: createRequest)
+        } catch {
+            XCTFail("Failed to send mutation request \(error)")
+        }
+        
+        await waitForExpectations([snapshotReceived], timeout: 60)
+        querySnapshots.cancel()
+    }
+    
+    func testObserveQueryChild() async throws {
+        await setup(withModels: DefaultPKModels())
+        try await startAndWaitForReady()
+        
+        let parent = Parent()
+        let savedParent = try await saveAndWaitForSync(parent)
+        let child = Child(parent: parent)
+        let snapshotReceived = asyncExpectation(description: "Received query snapshot")
+        let querySnapshots = Amplify.DataStore.observeQuery(for: Child.self, where: Child.keys.id == child.id)
+        Task {
+            for try await querySnapshot in querySnapshots {
+                if let receivedChild = querySnapshot.items.first {
+                    try await assertChild(receivedChild, canLazyLoad: savedParent)
+                    await snapshotReceived.fulfill()
+                }
+            }
+        }
+        
+        let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: child, modelSchema: Child.schema)
+        do {
+            _ = try await Amplify.API.mutate(request: createRequest)
+        } catch {
+            XCTFail("Failed to send mutation request \(error)")
+        }
+        
+        await waitForExpectations([snapshotReceived], timeout: 60)
+        querySnapshots.cancel()
     }
 }
 

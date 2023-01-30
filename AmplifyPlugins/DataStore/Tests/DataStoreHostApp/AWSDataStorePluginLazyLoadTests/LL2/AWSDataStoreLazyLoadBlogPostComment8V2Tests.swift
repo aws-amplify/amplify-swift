@@ -255,6 +255,73 @@ final class AWSDataStoreLazyLoadBlogPostComment8V2Tests: AWSDataStoreLazyLoadBas
         await waitForExpectations([mutationEventReceived], timeout: 60)
         mutationEvents.cancel()
     }
+    
+    func testObserveQueryPost() async throws {
+        await setup(withModels: BlogPostComment8V2Models())
+        try await startAndWaitForReady()
+        let post = Post(name: "name", randomId: "randomId")
+        let comment = Comment(content: "content", post: post)
+        let snapshotReceived = asyncExpectation(description: "Received query snapshot")
+        let querySnapshots = Amplify.DataStore.observeQuery(for: Post.self, where: Post.keys.id == post.id)
+        Task {
+            for try await querySnapshot in querySnapshots {
+                if let receivedPost = querySnapshot.items.first {
+                    try await saveAndWaitForSync(comment)
+                    guard let comments = receivedPost.comments else {
+                        XCTFail("Lazy List does not exist")
+                        return
+                    }
+                    do {
+                        try await comments.fetch()
+                    } catch {
+                        XCTFail("Failed to lazy load comments \(error)")
+                    }
+                    XCTAssertEqual(comments.count, 1)
+                    
+                    await snapshotReceived.fulfill()
+                }
+            }
+        }
+        
+        let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: post, modelSchema: Post.schema)
+        do {
+            _ = try await Amplify.API.mutate(request: createRequest)
+        } catch {
+            XCTFail("Failed to send mutation request \(error)")
+        }
+        
+        await waitForExpectations([snapshotReceived], timeout: 60)
+        querySnapshots.cancel()
+    }
+    
+    func testObserveQueryComment() async throws {
+        await setup(withModels: BlogPostComment8V2Models())
+        try await startAndWaitForReady()
+        
+        let post = Post(name: "name", randomId: "randomId")
+        let savedPost = try await saveAndWaitForSync(post)
+        let comment = Comment(content: "content", post: post)
+        let snapshotReceived = asyncExpectation(description: "Received query snapshot")
+        let querySnapshots = Amplify.DataStore.observeQuery(for: Comment.self, where: Comment.keys.id == comment.id)
+        Task {
+            for try await querySnapshot in querySnapshots {
+                if let receivedComment = querySnapshot.items.first {
+                    try await assertComment(receivedComment, canLazyLoad: savedPost)
+                    await snapshotReceived.fulfill()
+                }
+            }
+        }
+        
+        let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: comment, modelSchema: Comment.schema)
+        do {
+            _ = try await Amplify.API.mutate(request: createRequest)
+        } catch {
+            XCTFail("Failed to send mutation request \(error)")
+        }
+        
+        await waitForExpectations([snapshotReceived], timeout: 60)
+        querySnapshots.cancel()
+    }
 }
 
 extension AWSDataStoreLazyLoadBlogPostComment8V2Tests {
