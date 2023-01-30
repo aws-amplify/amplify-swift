@@ -41,9 +41,14 @@ extension Model {
             let name = modelField.name
             
             guard let value = modelFieldValue else {
-                // Special case for associated models when the value is `nil`, by setting all of the associated
-                // model's primary key fields (targetNames) to `nil`.
-                if case .model = modelField.type { // add it for "belongs-to"
+                // Scenario: When there is no model field value, set `nil` for removal of values or deassociation.
+                // 1. It is unnessessary to set `nil` values for create mutations.
+                if mutationType == .create {
+                    continue
+                }
+                // 2. On update/delete mutations, set the current model's associated model's primary key fields (which
+                // are the targetNames) to `nil`. on the current model.
+                if case .model = modelField.type { // add it for "belongs-to" and "has-one" associations.
                     let fieldNames = getFieldNameForAssociatedModels(modelField: modelField)
                     for fieldName in fieldNames {
                         // Only set to `nil` if it has not been set already. For hasOne relationships, where the
@@ -51,17 +56,16 @@ extension Model {
                         // cannot guarantee which field is processed first, thus if there is a value for the explicit
                         // field and was already set, don't overwrite it.
                         if input[fieldName] == nil {
-                            // Always setting the value to `nil` is not necessary for create mutations, since leaving it
-                            // out will also reflect that there's no associated model. However, we always set it to `nil`
-                            // to account for the update mutation use cases where the caller may be de-associating the
-                            // model from the associated model, which is why the `nil` is required in input variables
-                            // to persist the removal the association.
+                            // we always set it to `nil` to account for the update mutation use cases where the caller
+                            // may be de-associating the model from the associated model, which is why the `nil` is
+                            // required in input variables to persist the removal the association.
                             input.updateValue(nil, forKey: fieldName)
                         }
                     }
                 } else if case .collection = modelField.type { // skip all "has-many"
                     continue
                 } else {
+                    // 3. Set field values to `nil` for removal of values.
                     input.updateValue(nil, forKey: name)
                 }
                 

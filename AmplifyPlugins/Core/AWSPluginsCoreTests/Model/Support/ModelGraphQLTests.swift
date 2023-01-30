@@ -47,7 +47,7 @@ class ModelGraphQLTests: XCTestCase {
                         rating: 5.0,
                         status: status)
 
-        let graphQLInput = post.graphQLInputForMutation(Post.schema, mutationType: .create)
+        let graphQLInput = post.graphQLInputForMutation(Post.schema, mutationType: .update)
 
         XCTAssertEqual(graphQLInput["title"] as? String, post.title)
         XCTAssertEqual(graphQLInput["content"] as? String, post.content)
@@ -105,7 +105,7 @@ class ModelGraphQLTests: XCTestCase {
         let team1 = Team1(name: "team")
         let project1 = Project1(team: team1)
 
-        let graphQLInput = project1.graphQLInputForMutation(Project1.schema, mutationType: .create)
+        let graphQLInput = project1.graphQLInputForMutation(Project1.schema, mutationType: .update)
 
         XCTAssertEqual(graphQLInput["id"] as? String, project1.id)
         XCTAssertTrue(graphQLInput.keys.contains("name"))
@@ -119,7 +119,7 @@ class ModelGraphQLTests: XCTestCase {
     func testProjectHasOneTeamSuccess() {
         let team2 = Team2(name: "team")
         let project2 = Project2(teamID: team2.id, team: team2)
-        let graphQLInput = project2.graphQLInputForMutation(Project2.schema, mutationType: .create)
+        let graphQLInput = project2.graphQLInputForMutation(Project2.schema, mutationType: .update)
         XCTAssertEqual(graphQLInput["id"] as? String, project2.id)
         XCTAssertTrue(graphQLInput.keys.contains("name"))
         XCTAssertNil(graphQLInput["name"]!)
@@ -131,7 +131,7 @@ class ModelGraphQLTests: XCTestCase {
     func testProjectHasOneTeamRandomTeamIDSuccess() {
         let team2 = Team2(name: "team")
         let project2 = Project2(teamID: "randomTeamId", team: team2)
-        let graphQLInput = project2.graphQLInputForMutation(Project2.schema, mutationType: .create)
+        let graphQLInput = project2.graphQLInputForMutation(Project2.schema, mutationType: .update)
         XCTAssertEqual(graphQLInput["id"] as? String, project2.id)
         XCTAssertTrue(graphQLInput.keys.contains("name"))
         XCTAssertNil(graphQLInput["name"]!)
@@ -143,7 +143,7 @@ class ModelGraphQLTests: XCTestCase {
     func testProjectHasOneTeamMissingTeamObjectSuccess() {
         let team2 = Team2(name: "team")
         let project2 = Project2(teamID: team2.id)
-        let graphQLInput = project2.graphQLInputForMutation(Project2.schema, mutationType: .create)
+        let graphQLInput = project2.graphQLInputForMutation(Project2.schema, mutationType: .update)
         XCTAssertEqual(graphQLInput["id"] as? String, project2.id)
         XCTAssertTrue(graphQLInput.keys.contains("name"))
         XCTAssertNil(graphQLInput["name"]!)

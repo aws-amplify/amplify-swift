@@ -94,21 +94,20 @@ final class GraphQLLazyLoadPostComment4Tests: GraphQLLazyLoadBaseTest {
     }
     
     func testCreateWithoutPost() async throws {
-        throw XCTSkip("Create mutation with null foreign keys fail.")
         await setup(withModels: PostComment4Models())
         let comment = Comment(content: "content")
         try await mutate(.create(comment))
-//        var queriedComment = try await query(for: comment)!
-//        XCTAssertEqual(queriedComment.post4CommentsPostId, nil)
-//        XCTAssertEqual(queriedComment.post4CommentsTitle, nil)
-//        let post = Post(title: "title")
-//        let createdPost = try await mutate(.create(post))
-//        queriedComment.post4CommentsTitle = nil
-//        queriedComment.post4CommentsPostId = nil
-//        let updateCommentWithPost = try await mutate(.update(queriedComment))
-//        let queriedCommentAfterUpdate = try await query(for: updateCommentWithPost)!
-//        XCTAssertEqual(queriedCommentAfterUpdate.post4CommentsPostId, post.postId)
-//        XCTAssertEqual(queriedCommentAfterUpdate.post4CommentsTitle, post.title)
+        var queriedComment = try await query(for: comment)!
+        XCTAssertEqual(queriedComment.post4CommentsPostId, nil)
+        XCTAssertEqual(queriedComment.post4CommentsTitle, nil)
+        let post = Post(title: "title")
+        let createdPost = try await mutate(.create(post))
+        queriedComment.post4CommentsTitle = nil
+        queriedComment.post4CommentsPostId = nil
+        let updateCommentWithPost = try await mutate(.update(queriedComment))
+        let queriedCommentAfterUpdate = try await query(for: updateCommentWithPost)!
+        XCTAssertEqual(queriedCommentAfterUpdate.post4CommentsPostId, post.postId)
+        XCTAssertEqual(queriedCommentAfterUpdate.post4CommentsTitle, post.title)
     }
     
     func testUpdateToNewPost() async throws {
