@@ -16,7 +16,7 @@ extension PinpointClient {
             frameworkMetadata: AmplifyAWSServiceConfiguration.frameworkMetaData(),
             region: region
         )
-
+        PinpointRequestsRegistry.shared.setCustomHttpEngine(on: configuration)
         self.init(config: configuration)
     }
 }
