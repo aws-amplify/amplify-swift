@@ -9,29 +9,40 @@ import Foundation
 import Amplify
 import AWSCognitoIdentityProvider
 
-struct UserPoolSignInHelper {
+struct UserPoolSignInHelper: DefaultLogger {
 
     static func checkNextStep(_ signInState: SignInState)
     throws -> AuthSignInResult? {
 
+        log.verbose("Checking next step for: \(signInState)")
+
         if case .signingInWithSRP(let srpState, _) = signInState,
            case .error(let signInError) = srpState {
             return try validateError(signInError: signInError)
+
         } else if case .signingInWithSRPCustom(let srpState, _) = signInState,
                   case .error(let signInError) = srpState {
             return try validateError(signInError: signInError)
+
         } else if case .signingInViaMigrateAuth(let migratedAuthState, _) = signInState,
                   case .error(let signInError) = migratedAuthState {
             return try validateError(signInError: signInError)
+
         } else if case .signingInWithCustom(let customAuthState, _) = signInState,
                   case .error(let signInError) = customAuthState {
             return try validateError(signInError: signInError)
-        } else if case .resolvingChallenge(let challengeState, let challengeType, _) = signInState,
-                  case .waitingForAnswer(let challenge, _) = challengeState {
-            return try validateResult(for: challengeType, with: challenge)
+
         } else if case .signingInWithHostedUI(let hostedUIState) = signInState,
                   case .error(let hostedUIError) = hostedUIState {
             return try validateError(signInError: hostedUIError)
+
+        } else if case .resolvingChallenge(let challengeState, _, _) = signInState,
+                  case .error(_, _, let signInError) = challengeState {
+            return try validateError(signInError: signInError)
+
+        } else if case .resolvingChallenge(let challengeState, let challengeType, _) = signInState,
+                  case .waitingForAnswer(let challenge, _) = challengeState {
+            return try validateResult(for: challengeType, with: challenge)
         }
         return nil
     }

@@ -11,7 +11,7 @@ import AWSPluginsCore
 import ClientRuntime
 import AWSCognitoIdentityProvider
 
-class AWSAuthResendSignUpCodeTask: AuthResendSignUpCodeTask {
+class AWSAuthResendSignUpCodeTask: AuthResendSignUpCodeTask, DefaultLogger {
     private let request: AuthResendSignUpCodeRequest
     private let environment: AuthEnvironment
     private let authConfiguration: AuthConfiguration
@@ -27,12 +27,15 @@ class AWSAuthResendSignUpCodeTask: AuthResendSignUpCodeTask {
     }
 
     func execute() async throws -> AuthCodeDeliveryDetails {
+        log.verbose("Starting execution")
         if let validationError = request.hasError() {
             throw validationError
         }
 
         do {
-            return try await resendSignUpCode()
+            let details = try await resendSignUpCode()
+            log.verbose("Received result")
+            return details
         } catch let error as ResendConfirmationCodeOutputError {
             throw error.authError
         } catch let error as SdkError<ResendConfirmationCodeOutputError> {

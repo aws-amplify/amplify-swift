@@ -10,7 +10,7 @@ import Amplify
 import AWSPluginsCore
 import AWSCognitoIdentityProvider
 
-class AWSAuthChangePasswordTask: AuthChangePasswordTask {
+class AWSAuthChangePasswordTask: AuthChangePasswordTask, DefaultLogger {
     typealias CognitoUserPoolFactory = () throws -> CognitoUserPoolBehavior
 
     private let request: AuthChangePasswordRequest
@@ -33,10 +33,12 @@ class AWSAuthChangePasswordTask: AuthChangePasswordTask {
     }
 
     func execute() async throws {
+        log.verbose("Starting execution")
         do {
             await taskHelper.didStateMachineConfigured()
             let accessToken = try await taskHelper.getAccessToken()
             try await changePassword(with: accessToken)
+            log.verbose("Received success")
         } catch let error as ChangePasswordOutputError {
             throw error.authError
         } catch let error {
@@ -46,7 +48,9 @@ class AWSAuthChangePasswordTask: AuthChangePasswordTask {
 
     func changePassword(with accessToken: String) async throws {
         let userPoolService = try userPoolFactory()
-        let input = ChangePasswordInput(accessToken: accessToken, previousPassword: request.oldPassword, proposedPassword: request.newPassword)
+        let input = ChangePasswordInput(accessToken: accessToken,
+                                        previousPassword: request.oldPassword,
+                                        proposedPassword: request.newPassword)
         _ = try await userPoolService.changePassword(input: input)
     }
 }

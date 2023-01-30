@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-class FetchAuthSessionOperationHelper {
+class FetchAuthSessionOperationHelper: DefaultLogger {
 
     static let expiryBufferInSeconds = TimeInterval.seconds(2 * 60)
 
@@ -23,20 +23,26 @@ class FetchAuthSessionOperationHelper {
             throw error
         }
 
+        log.verbose("Fetching current state")
         switch authorizationState {
         case .configured:
             // If session has not been established, ask statemachine to invoke fetching
             // a fresh session.
+            log.verbose("No session found, fetching unauth session")
             let event = AuthorizationEvent(eventType: .fetchUnAuthSession)
             await authStateMachine.send(event)
             return try await listenForSession(authStateMachine: authStateMachine)
+
         case .sessionEstablished(let credentials):
+            log.verbose("Session exists, checking validity")
             return try await postAuthSessionEvent(
                 forCredential: credentials,
                 authStateMachine: authStateMachine,
                 forceRefresh: forceRefresh)
+
         case .error(let error):
             if case .sessionExpired = error {
+                log.verbose("Session is expired")
                 let session = AuthCognitoSignedInSessionHelper.makeExpiredSignedInSession()
                 return session
             } else if case .sessionError(_, let credentials) = error {
@@ -45,6 +51,7 @@ class FetchAuthSessionOperationHelper {
                     authStateMachine: authStateMachine,
                     forceRefresh: forceRefresh)
             } else {
+                log.verbose("Session is in error state \(error)")
                 let event = AuthorizationEvent(eventType: .fetchUnAuthSession)
                 await authStateMachine.send(event)
                 return try await listenForSession(authStateMachine: authStateMachine)
@@ -114,6 +121,7 @@ class FetchAuthSessionOperationHelper {
     func listenForSession(authStateMachine: AuthStateMachine) async throws -> AuthSession {
 
         let stateSequences = await authStateMachine.listen()
+        log.verbose("Waiting for session to establish")
         for await state in stateSequences {
             guard case .configured(let authenticationState, let authorizationState) = state  else {
                 let message = "Auth state machine not in configured state: \(state)"
@@ -138,6 +146,7 @@ class FetchAuthSessionOperationHelper {
     func sessionResultWithError(_ error: AuthorizationError,
                                 authenticationState: AuthenticationState)
     throws -> AuthSession {
+        log.verbose("Received error - \(error)")
 
         var isSignedIn = false
         if case .signedIn = authenticationState {

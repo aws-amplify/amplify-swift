@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-class AWSAuthFetchSessionTask: AuthFetchSessionTask {
+class AWSAuthFetchSessionTask: AuthFetchSessionTask, DefaultLogger {
     private let request: AuthFetchSessionRequest
     private let authStateMachine: AuthStateMachine
     private let fetchAuthSessionHelper: FetchAuthSessionOperationHelper
@@ -26,6 +26,7 @@ class AWSAuthFetchSessionTask: AuthFetchSessionTask {
     }
 
     func execute() async throws -> AuthSession {
+        log.verbose("Starting execution")
         await taskHelper.didStateMachineConfigured()
         let doesNeedForceRefresh = request.options.forceRefresh
         return try await fetchAuthSessionHelper.fetch(authStateMachine,

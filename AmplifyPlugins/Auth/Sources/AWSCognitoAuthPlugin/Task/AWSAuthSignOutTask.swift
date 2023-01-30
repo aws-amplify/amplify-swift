@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-class AWSAuthSignOutTask: AuthSignOutTask {
+class AWSAuthSignOutTask: AuthSignOutTask, DefaultLogger {
 
     private let request: AuthSignOutRequest
     private let authStateMachine: AuthStateMachine
@@ -25,14 +25,15 @@ class AWSAuthSignOutTask: AuthSignOutTask {
     }
 
     func execute() async -> AuthSignOutResult {
+        log.verbose("Starting execution")
         await taskHelper.didStateMachineConfigured()
 
         guard case .configured(let authNState, _) = await authStateMachine.currentState else {
             return invalidStateResult()
-
         }
 
         if isValidAuthNStateToStart(authNState) {
+            log.verbose("Sending signOut event")
             await sendSignOutEvent()
             return await doSignOut()
         } else if case .federatedToIdentityPool = authNState {
@@ -49,6 +50,7 @@ class AWSAuthSignOutTask: AuthSignOutTask {
     private func doSignOut() async -> AuthSignOutResult {
 
         let stateSequences = await authStateMachine.listen()
+        log.verbose("Waiting for signOut completion")
         for await state in stateSequences {
             guard case .configured(let authNState, _) = state else {
                 return invalidStateResult()
@@ -66,6 +68,7 @@ class AWSAuthSignOutTask: AuthSignOutTask {
                 }
                 return AWSCognitoSignOutResult.complete
             case .signingIn:
+                log.verbose("Cancel if a signIn is in progress")
                 await authStateMachine.send(AuthenticationEvent.init(eventType: .cancelSignIn))
             case .signingOut(let state):
                 if case .error(let error) = state {
