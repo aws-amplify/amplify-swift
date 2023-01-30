@@ -1,5 +1,18 @@
 # Changelog
 ## Unreleased
+## 1.29.0 (2023-01-30)
+
+### Features
+
+- **api**: Add no store for the cache in urlsession for API category (#2641)
+
+### Bug Fixes
+
+- **test**: data race on reseting in test case tearDown (#2710)
+- **auth**: Restore non-normalized keychain namespace in AuthSessionHelper.
+- **api**: add default user-agent header value for subscription requests (#2700)
+- **datastore-v1**: skip has-many model to graphQL translation (#2663)
+
 ## 1.28.4 (2022-12-30)
 
 ### Bug Fixes
