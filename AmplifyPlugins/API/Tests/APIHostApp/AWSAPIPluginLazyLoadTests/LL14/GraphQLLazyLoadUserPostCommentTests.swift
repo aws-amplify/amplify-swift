@@ -128,9 +128,47 @@ final class GraphQLLazyLoadUserPostCommentTests: GraphQLLazyLoadBaseTest {
             XCTFail("Could not perform nested query for User")
             return
         }
+        guard var posts = queriedUser.posts else {
+            XCTFail("Could not get queriedUser's posts")
+            return
+        }
+        while posts.hasNextPage() {
+            posts = try await posts.getNextPage()
+        }
+        XCTAssertEqual(posts.count, 1)
+        guard var comments = queriedUser.comments else {
+            XCTFail("Could not get queriedUser's comments")
+            return
+        }
+        while comments.hasNextPage() {
+            comments = try await comments.getNextPage()
+        }
+        XCTAssertEqual(comments.count, 1)
         
-        XCTAssertEqual(queriedUser.posts?.count, 1)
-        XCTAssertEqual(queriedUser.comments?.count, 1)
+        guard let queriedPost = try await query(.get(Post.self,
+                                                     byIdentifier: post.id,
+                                                     includes: { post in [post.author, post.comments] })) else {
+            XCTFail("Could not perform nested query for Post")
+            return
+        }
+        assertLazyReference(queriedPost._author, state: .loaded(model: user))
+        guard var queriedPostComments = queriedPost.comments else {
+            XCTFail("Could not get queriedUser's comments")
+            return
+        }
+        while queriedPostComments.hasNextPage() {
+            queriedPostComments = try await queriedPostComments.getNextPage()
+        }
+        XCTAssertEqual(queriedPostComments.count, 1)
+        
+        guard let queriedComment = try await query(.get(Comment.self,
+                                                     byIdentifier: comment.id,
+                                                        includes: { comment in [comment.author, comment.post] })) else {
+            XCTFail("Could not perform nested query for Comment")
+            return
+        }
+        assertLazyReference(queriedComment._author, state: .loaded(model: user))
+        assertLazyReference(queriedComment._post, state: .loaded(model: post))
     }
     
     func testSaveUserWithUserSettings() async throws {

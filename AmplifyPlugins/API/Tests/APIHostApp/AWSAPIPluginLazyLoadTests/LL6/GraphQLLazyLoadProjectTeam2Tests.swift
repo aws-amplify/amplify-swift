@@ -79,6 +79,24 @@ class GraphQLLazyLoadProjectTeam2Tests: GraphQLLazyLoadBaseTest {
         assertLazyReference(project._team, state: .notLoaded(identifiers: nil))
     }
     
+    func testIncludesNestedModels() async throws {
+        await setup(withModels: ProjectTeam2Models())
+        let team = Team(teamId: UUID().uuidString, name: "name")
+        try await mutate(.create(team))
+        let project = initializeProjectWithTeam(team)
+        try await mutate(.create(project))
+        
+        guard let queriedProject = try await query(.get(Project.self,
+                                                     byIdentifier: .identifier(projectId: project.projectId,
+                                                                               name: project.name),
+                                                     includes: { project in [project.team]})) else {
+            XCTFail("Could not perform nested query for Project")
+            return
+        }
+        
+        assertLazyReference(queriedProject._team, state: .loaded(model: team))
+    }
+    
     func testListProjectListTeam() async throws {
         await setup(withModels: ProjectTeam2Models())
         let team = Team(teamId: UUID().uuidString, name: "name")

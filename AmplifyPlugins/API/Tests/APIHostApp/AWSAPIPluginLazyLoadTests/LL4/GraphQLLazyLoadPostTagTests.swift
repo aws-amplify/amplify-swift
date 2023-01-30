@@ -95,6 +95,60 @@ final class GraphQLLazyLoadPostTagTests: GraphQLLazyLoadBaseTest {
         try await assertPost(loadedPost, canLazyLoad: postTag)
     }
     
+    func testIncludesNestedModel() async throws {
+        await setup(withModels: PostTagModels())
+        let post = Post(postId: UUID().uuidString, title: "title")
+        let tag = Tag(name: "name")
+        let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)
+        try await mutate(.create(post))
+        try await mutate(.create(tag))
+        try await mutate(.create(postTag))
+        
+        guard let queriedPost = try await query(.get(Post.self,
+                                                     byIdentifier: .identifier(postId: post.postId,
+                                                                               title: post.title),
+                                                     includes: { post in [post.tags] })) else {
+            XCTFail("Could not perform nested query for Post")
+            return
+        }
+        guard var tags = queriedPost.tags else {
+            XCTFail("Could not get queriedPost's tags")
+            return
+        }
+        while tags.hasNextPage() {
+            tags = try await tags.getNextPage()
+        }
+        XCTAssertEqual(tags.count, 1)
+        
+        guard let queriedTag = try await query(.get(Tag.self,
+                                                    byIdentifier: .identifier(id: tag.id,
+                                                                              name: tag.name),
+                                                    includes: { tag in [tag.posts] })) else {
+            XCTFail("Could not perform nested query for Tag")
+            return
+        }
+        guard var posts = queriedTag.posts else {
+            XCTFail("Could not get queriedTag's posts")
+            return
+        }
+        while posts.hasNextPage() {
+            posts = try await posts.getNextPage()
+        }
+        XCTAssertEqual(posts.count, 1)
+        
+        guard let queriedPostTag = try await query(.get(PostTag.self,
+                                                        byIdentifier: postTag.id,
+                                                        includes: { postTag in [
+                                                            postTag.postWithTagsCompositeKey,
+                                                            postTag.tagWithCompositeKey] })) else {
+            XCTFail("Could not perform nested query for PostTag")
+            return
+        }
+        
+        assertLazyReference(queriedPostTag._postWithTagsCompositeKey, state: .loaded(model: post))
+        assertLazyReference(queriedPostTag._tagWithCompositeKey, state: .loaded(model: tag))
+    }
+    
     func testListPostListTagListPostTag() async throws {
         await setup(withModels: PostTagModels())
         let post = Post(postId: UUID().uuidString, title: "title")
