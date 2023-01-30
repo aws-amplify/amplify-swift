@@ -10,7 +10,7 @@ import Amplify
 
 class FetchAuthSessionOperationHelper: DefaultLogger {
 
-    static let expiryBufferInSeconds = TimeInterval.seconds(2 * 60)
+
 
     typealias FetchAuthSessionCompletion = (Result<AuthSession, AuthError>) -> Void
 

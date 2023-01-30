@@ -9,9 +9,7 @@ import Foundation
 import Amplify
 
 extension AmplifyCredentials {
-
     static let expiryBufferInSeconds = TimeInterval.seconds(2 * 60)
-    
     var cognitoSession: AWSAuthCognitoSession {
 
         switch self {
@@ -52,35 +50,33 @@ extension AmplifyCredentials {
     }
 
     func areValid() -> Bool {
+        return self != .noCredentials &&
+        !doesExpire(in: Self.expiryBufferInSeconds)
+    }
 
+    private func doesExpire(in expiryBuffer: TimeInterval) -> Bool {
+        var doesExpire = false
         switch self {
-            
+
         case .userPoolOnly(signedInData: let data):
-            if data.cognitoUserPoolTokens.doesExpire(in: Self.expiryBufferInSeconds) {
-                return false
-            }
+            doesExpire = data.cognitoUserPoolTokens.doesExpire(in: expiryBuffer)
 
         case .identityPoolOnly(identityID: _, credentials: let awsCredentials):
-            if awsCredentials.doesExpire(in: Self.expiryBufferInSeconds) {
-                return false
-            }
+            doesExpire = awsCredentials.doesExpire(in: expiryBuffer)
 
         case .userPoolAndIdentityPool(signedInData: let data,
                                       identityID: _,
                                       credentials: let awsCredentials):
-            if  data.cognitoUserPoolTokens.doesExpire(in: Self.expiryBufferInSeconds) ||
-                    awsCredentials.doesExpire(in: Self.expiryBufferInSeconds) {
-                return false
-            }
+            doesExpire = (
+                data.cognitoUserPoolTokens.doesExpire(in: expiryBuffer) ||
+                awsCredentials.doesExpire(in: expiryBuffer)
+            )
 
         case .identityPoolWithFederation(_, _, let awsCredentials):
-            if awsCredentials.doesExpire() {
-                return false
-            }
+            doesExpire = awsCredentials.doesExpire(in: expiryBuffer)
 
-        case .noCredentials:
-            return false
+        default: fatalError("No credentials present to check for expiration")
         }
-        return true
+        return doesExpire
     }
 }
