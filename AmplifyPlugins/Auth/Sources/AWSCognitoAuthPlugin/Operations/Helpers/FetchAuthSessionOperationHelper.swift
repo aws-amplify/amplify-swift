@@ -67,8 +67,19 @@ class FetchAuthSessionOperationHelper: DefaultLogger {
         authStateMachine: AuthStateMachine,
         forceRefresh: Bool) async throws -> AuthSession {
 
+            var event: AuthorizationEvent
             if forceRefresh || !credentials.areValid() {
-                let event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
+                if case .identityPoolWithFederation(
+                    let federatedToken,
+                    let identityId,
+                    _
+                ) = credentials {
+                    event = AuthorizationEvent(
+                        eventType: .startFederationToIdentityPool(federatedToken, identityId)
+                    )
+                } else {
+                    event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
+                }
                 await authStateMachine.send(event)
                 return try await listenForSession(authStateMachine: authStateMachine)
             }
