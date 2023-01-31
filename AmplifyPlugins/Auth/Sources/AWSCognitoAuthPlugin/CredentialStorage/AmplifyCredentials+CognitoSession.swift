@@ -75,7 +75,8 @@ extension AmplifyCredentials {
         case .identityPoolWithFederation(_, _, let awsCredentials):
             doesExpire = awsCredentials.doesExpire(in: expiryBuffer)
 
-        default: fatalError("No credentials present to check for expiration")
+        case .noCredentials:
+            doesExpire = true
         }
         return doesExpire
     }
