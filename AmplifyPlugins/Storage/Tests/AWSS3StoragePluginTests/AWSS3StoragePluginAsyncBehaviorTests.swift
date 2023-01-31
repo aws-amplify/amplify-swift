@@ -11,24 +11,45 @@ import Amplify
 @testable import AmplifyTestCommon
 @testable import AWSPluginsTestCommon
 
-class AWSS3StoragePluginAsyncBehaviorTests: AWSS3StoragePluginTests {
+class AWSS3StoragePluginAsyncBehaviorTests: XCTestCase {
 
-    override func setUp() {
+    var storagePlugin: AWSS3StoragePlugin!
+    var storageService: MockAWSS3StorageService!
+    var authService: MockAWSAuthService!
+    var testKey: String!
+    var testURL: URL!
+    var testData: Data!
+    var queue: OperationQueue!
 
+    let defaultAccessLevel: StorageAccessLevel = .guest
+
+    override func setUpWithError() throws {
         storagePlugin = AWSS3StoragePlugin()
         storageService = MockAWSS3StorageService()
         authService = MockAWSAuthService()
-        let queue = OperationQueue()
-
+        testKey = UUID().uuidString
+        testURL = URL(fileURLWithPath: NSTemporaryDirectory().appendingPathComponent(UUID().uuidString))
+        testData = Data(UUID().uuidString.utf8)
+        queue = OperationQueue()
         storagePlugin.configure(storageService: storageService,
                                 authService: authService,
                                 defaultAccessLevel: defaultAccessLevel,
                                 queue: queue)
     }
 
+    override func tearDownWithError() throws {
+        queue.cancelAllOperations()
+
+        storagePlugin = nil
+        storageService = nil
+        authService = nil
+        testKey = nil
+        queue = nil
+    }
+
     func testPluginGetURLAsync() async throws {
         let done = asyncExpectation(description: "done")
-        let input = URL(string: "https://bucket.aws.amazon.com/\(testKey)")!
+        let input = URL(string: "https://bucket.aws.amazon.com/\(testKey ?? "")")!
 
         Task {
             storageService.storageServiceGetPreSignedURLEvents = [.completed(input)]
@@ -42,125 +63,70 @@ class AWSS3StoragePluginAsyncBehaviorTests: AWSS3StoragePluginTests {
     }
 
     func testPluginDownloadDataAsync() async throws {
-        let done = asyncExpectation(description: "done")
         let input = "AWS".data(using: .utf8)!
         storageService.storageServiceDownloadEvents = [.completed(input)]
 
-        Task {
-            let task = try await storagePlugin.downloadData(key: testKey,
-                                                            options: nil)
-            let output = try await task.value
-            XCTAssertEqual(input, output)
-            await done.fulfill()
-        }
-
-        await waitForExpectations([done], timeout: 3.0)
-
+        let task = storagePlugin.downloadData(key: testKey, options: nil)
+        let output = try await task.value
+        XCTAssertEqual(input, output)
         XCTAssertEqual(1, storageService.downloadCalled)
     }
 
     func testPluginDownloadFileAsync() async throws {
-        let done = asyncExpectation(description: "done")
         storageService.storageServiceDownloadEvents = [.completed(nil)]
         
-        Task {
-            let task = try await storagePlugin.downloadFile(key: testKey,
-                                                            local: testURL,
-                                                            options: nil)
-            do {
-                _ = try await task.value
-            } catch {
-                XCTFail("Error: \(error)")
-            }
-            await done.fulfill()
-        }
-
-        await waitForExpectations([done], timeout: 3.0)
-
+        let task = storagePlugin.downloadFile(key: testKey,
+                                              local: testURL,
+                                              options: nil)
+        _ = try await task.value
         XCTAssertEqual(1, storageService.downloadCalled)
     }
 
     func testPluginUploadDataAsync() async throws {
-        let done = asyncExpectation(description: "done")
         storageService.storageServiceUploadEvents = [.completedVoid]
-        let input = testKey
-
-        Task {
-            let task = try await storagePlugin.uploadData(key: input,
-                                                          data: testData,
-                                                          options: nil)
-            do {
-                let output = try await task.value
-                XCTAssertEqual(input, output)
-            } catch {
-                XCTFail("Error: \(error)")
-            }
-            await done.fulfill()
-
-        }
-
-        await waitForExpectations([done], timeout: 3.0)
-
+        let input = try XCTUnwrap(testKey)
+        let task = storagePlugin.uploadData(key: input,
+                                            data: testData,
+                                            options: nil)
+        let output = try await task.value
+        XCTAssertEqual(input, output)
         XCTAssertEqual(1, storageService.uploadCalled)
     }
 
     func testPluginUploadFileAsync() async throws {
-        let done = asyncExpectation(description: "done")
         storageService.storageServiceUploadEvents = [.completedVoid]
-        let input = testKey
-        let fileURL = try FileSystem.default.createTemporaryFile(data: "Amplify".data(using: .utf8)!)
+        let key = try XCTUnwrap(testKey)
+        let fileURL = try FileSystem.default.createTemporaryFile(data: Data("Amplify".utf8))
         defer {
             FileSystem.default.removeFileIfExists(fileURL: fileURL)
         }
 
-        Task {
-            let task = try await storagePlugin.uploadFile(key: input,
-                                                          local: fileURL,
-                                                          options: nil)
-            do {
-                let output = try await task.value
-                XCTAssertEqual(input, output)
-            } catch {
-                XCTFail("Error: \(error)")
-            }
-            await done.fulfill()
-
-        }
-
-        await waitForExpectations([done], timeout: 3.0)
-
+        let task = storagePlugin.uploadFile(key: key,
+                                            local: fileURL,
+                                            options: nil)
+        let output = try await task.value
+        XCTAssertEqual(key, output)
         XCTAssertEqual(1, storageService.uploadCalled)
     }
 
     func testPluginRemoveAsync() async throws {
-        let done = asyncExpectation(description: "done")
         storageService.storageServiceDeleteEvents = [.completed(())]
-        let input = testKey
-
-        Task {
-            let output = try await storagePlugin.remove(key: input, options: nil)
-            XCTAssertEqual(input, output)
-            XCTAssertEqual(1, storageService.deleteCalled)
-            await done.fulfill()
-        }
-
-        await waitForExpectations([done])
+        let key = try XCTUnwrap(testKey)
+        let output = try await storagePlugin.remove(key: key, options: nil)
+        XCTAssertEqual(key, output)
+        XCTAssertEqual(1, storageService.deleteCalled)
     }
 
     func testPluginListAsync() async throws  {
-        let done = asyncExpectation(description: "done")
+        let testKey = UUID().uuidString
         let item = StorageListResult.Item(key: testKey)
-        let input = StorageListResult(items: [item])
-
-        Task {
-            storageService.storageServiceListEvents = [.completed(input)]
-            let output = try await storagePlugin.list(options: nil)
-            XCTAssertEqual(input.items.first?.key, output.items.first?.key)
-            XCTAssertEqual(1, storageService.listCalled)
-            await done.fulfill()
+        storageService.listHandler = { (_, _) in
+            return .init(items: [item])
         }
-
-        await waitForExpectations([done], timeout: 3.0)
+        let output = try await storagePlugin.list(options: nil)
+        XCTAssertEqual(1, output.items.count, String(describing: output))
+        XCTAssertEqual(testKey, output.items.first?.key)
+        XCTAssertEqual(1, storageService.interactions.count)
     }
 
 }

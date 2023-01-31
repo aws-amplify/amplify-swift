@@ -11,6 +11,7 @@ import AWSS3
 import Amplify
 import AWSPluginsCore
 
+/// - Tag: AWSS3StorageService
 class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
 
     // resettable values
@@ -21,7 +22,12 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
     var region: String!
     var bucket: String!
 
+    /// - Tag: AWSS3StorageService.s3Client
+    @available(*, deprecated, renamed: "client")
     var s3Client: S3Client!
+
+    /// - Tag: AWSS3StorageService.client
+    var client: S3ClientProtocol
 
     let storageConfiguration: StorageConfiguration
     let sessionConfiguration: URLSessionConfiguration
@@ -106,6 +112,7 @@ class AWSS3StorageService: AWSS3StorageServiceBehaviour, StorageServiceProxy {
 
         self.logger = logger
         self.s3Client = s3Client
+        self.client = s3Client
         self.preSignedURLBuilder = preSignedURLBuilder
         self.awsS3 = awsS3
         self.bucket = bucket
