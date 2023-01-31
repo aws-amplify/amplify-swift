@@ -122,15 +122,15 @@ extension AWSS3StoragePlugin {
         options: StorageListRequest.Options? = nil
     ) async throws -> StorageListResult {
         let options = options ?? StorageListRequest.Options()
-        let request = StorageListRequest(options: options)
-        let operation = AWSS3StorageListOperation(request,
-                                                  storageConfiguration: storageConfiguration,
-                                                  storageService: storageService,
-                                                  authService: authService)
-        let taskAdapter = AmplifyOperationTaskAdapter(operation: operation)
-        queue.addOperation(operation)
-        
-        return try await taskAdapter.value
+        let prefixResolver = storageConfiguration.prefixResolver ?? StorageAccessLevelAwarePrefixResolver(authService: authService)
+        let prefix = try await prefixResolver.resolvePrefix(for: options.accessLevel, targetIdentityId: options.targetIdentityId)
+        let result = try await storageService.list(prefix: prefix, options: options)
+
+        let channel = HubChannel(from: categoryType)
+        let payload = HubPayload(eventName: HubPayload.EventName.Storage.list, context: options, data: result)
+        Amplify.Hub.dispatch(to: channel, payload: payload)
+
+        return result
     }
 
     public func handleBackgroundEvents(identifier: String) async -> Bool {
