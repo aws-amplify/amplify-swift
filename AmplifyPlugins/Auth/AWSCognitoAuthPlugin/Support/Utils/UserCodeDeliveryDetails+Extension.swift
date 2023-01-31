@@ -22,6 +22,8 @@ extension UserCodeDeliveryDetails {
             return DeliveryDestination.sms(destination)
         case .unknown:
             return DeliveryDestination.unknown(destination)
+        @unknown default:
+            return DeliveryDestination.unknown(destination)
         }
     }
 

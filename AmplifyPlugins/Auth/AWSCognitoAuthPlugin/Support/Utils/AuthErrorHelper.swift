@@ -165,6 +165,8 @@ struct AuthErrorHelper {
         case .internalError(let message),
              .unknown(let message):
             return AuthError.unknown(message)
+        @unknown default:
+            return AuthError.unknown("An unknown error occurred", awsMobileClientError)
         }
     }
 
