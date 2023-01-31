@@ -81,114 +81,120 @@ extension Statement: StatementModelConvertible {
         }
         return elements
     }
-    
-    func convert(row: Element,
-                 withSchema modelSchema: ModelSchema,
-                 using statement: SelectStatement,
-                 eagerLoad: Bool = true) throws -> ModelValues {
-        let columnMapping = statement.metadata.columnMapping
-        let modelDictionary = ([:] as ModelValues).mutableCopy()
-        var skipColumns = Set<String>()
-        var foreignKeyValues = [(String, Binding?)]()
-        for (index, value) in row.enumerated() {
-            let column = columnNames[index]
-            guard let (schema, field) = columnMapping[column] else {
-                logger.debug("[LazyLoad] Foreign key `\(column)` was found in the SQL result set with value: \(value)")
-                foreignKeyValues.append((column, value))
-                continue
-            }
-            
-            let modelValue = try SQLiteModelValueConverter.convertToSource(
-                from: value,
-                fieldType: field.type
-            )
-            // Check if the value for the primary key is `nil`. This is when an associated model does not exist.
-            // To create a decodable `modelDictionary` that can be decoded to the Model types, the entire
-            // object at this particular key should be set to `nil`. The following code does that by dropping the last
-            // path from the column, for example given "blog.id" `column` has a nil `modelValue`, then store the
-            // keypath in `skipColumns`, which will be used to set modelDictionary["blog"] to nil later on.
-            //
-            // `skipColumns` keeps track of these scenarios. At this point in the code we cannot make an assumption
-            // about the ordering of the columns, it may handle "blog.description", then "blog.id", then "blog.title".
-            // The code will perform the following:
-            //  1. set ["blog"]["description"] = `nil`, because it has not encountered `nil` primary key
-            //  2. store skipColumn["blog"], because the value is the primary key and is nil
-            //  3. skip setting modelDictionary["blog"]["title"], because `skipColumn` has been set for "blog".
-            if field.isPrimaryKey && modelValue == nil {
-                let keyPathParent = column.dropLastPath()
-                skipColumns.insert(keyPathParent)
-            }
 
-            if skipColumns.isEmpty {
-                modelDictionary.updateValue(modelValue, forKeyPath: column)
+    func convert(
+        row: Element,
+        withSchema modelSchema: ModelSchema,
+        using statement: SelectStatement,
+        eagerLoad: Bool = true,
+        path: [String] = []
+    ) throws -> ModelValues {
+        let modelValues = try modelSchema.fields.mapValues {
+            try convert(field: $0, schema: modelSchema, using: statement, from: row, eagerLoad: eagerLoad, path: path)
+        }
+
+        return modelValues.merging(schemeMetadata(schema: modelSchema, element: row, path: path)) { $1 }
+    }
+
+    private func convert(
+        field: ModelField,
+        schema: ModelSchema,
+        using statement: SelectStatement,
+        from element: Element,
+        eagerLoad: Bool,
+        path: [String]
+    ) throws -> Any? {
+
+        switch (field.type, eagerLoad) {
+        case (.collection, _):
+            return convertCollection(field: field, schema: schema, from: element, path: path)
+        case (.model, false):
+            // TODO: need to handle composite key case
+            let targetNames = field.association.map(getTargetNames) ?? []
+            if targetNames.count > 1 {
+                let targetBinding = getValue(from: element, by: path + ["@@\(field.name)ForeignKey"])
+                return DataStoreModelDecoder.lazyInit(identifier: targetBinding)
+            } else if targetNames.count == 1 {
+                let targetBinding = targetNames.first
+                    .flatMap { getValue(from: element, by: path + [$0]) }
+                return DataStoreModelDecoder.lazyInit(identifier: targetBinding)
             } else {
-                let keyPathParent = column.dropLastPath()
-                if !skipColumns.contains(keyPathParent) {
-                    modelDictionary.updateValue(modelValue, forKeyPath: column)
-                }
+                return nil
             }
 
-            // create lazy list for "many" relationships
-            // this code only executes once when the `id` is the primary key of the current model
-            // and runs in an iteration over all of the associations
-            // For example, when the value is the `id` of the Blog, then the field.isPrimaryKey is satisfied.
-            // Every association of the Blog, such as the has-many Post is populated with the List with
-            // associatedId == blog's id. This way, the list of post can be lazily loaded later using the associated id.
-            if let id = modelValue as? String,
-                (field.name == ModelIdentifierFormat.Custom.sqlColumnName || // this is the `@@primaryKey` (CPK)
-                 (schema.primaryKey.fields.count == 1 // or there's only one primary key (not composite key)
-                  && schema.primaryKey.indexOfField(named: field.name) != nil)) { // and this field is the primary key
-                let associations = schema.fields.values.filter {
-                    $0.isArray && $0.hasAssociation
-                }
-                let prefix = column.replacingOccurrences(of: field.name, with: "")
-                associations.forEach { association in
-                    let associatedField = association.associatedField?.name
-                    let lazyList = DataStoreListDecoder.lazyInit(associatedId: id,
-                                                                 associatedWith: associatedField)
-                    let listKeyPath = prefix + association.name
-                    modelDictionary.updateValue(lazyList, forKeyPath: listKeyPath)
-                }
+        case let (.model(modelName), true):
+            guard !path.contains(field.name),
+                  let modelSchema = getModelSchema(for: modelName, with: statement)
+            else { return nil }
+
+            return try convert(
+                row: element,
+                withSchema: modelSchema,
+                using: statement,
+                eagerLoad: eagerLoad,
+                path: path + [field.name])
+
+        default:
+            let value = getValue(from: element, by: path + [field.name])
+            return try SQLiteModelValueConverter.convertToSource(from: value, fieldType: field.type)
+        }
+    }
+
+    private func getModelSchema(for modelName: ModelName, with statement: SelectStatement) -> ModelSchema? {
+        return statement.metadata.columnMapping.values.first { $0.0.name == modelName }.map { $0.0 }
+    }
+
+    private func convertCollection(field: ModelField, schema: ModelSchema, from element: Element, path: [String]) -> Any? {
+        if field.isArray && field.hasAssociation,
+           case let .some(.hasMany(associatedFieldName: associatedFieldName)) = field.association
+        {
+            let primeryKey = schema.primaryKey.isCompositeKey
+                ? getValue(from: element, by: path + [ModelIdentifierFormat.Custom.sqlColumnName])
+                : schema.primaryKey.fields.map { getValue(from: element, by: path + [$0.name]) }.first?.flatMap { $0 }
+            return primeryKey.map {
+                DataStoreListDecoder.lazyInit(associatedId: String(describing: $0), associatedWith: associatedFieldName)
             }
         }
 
-        // the `skipColumns` is sorted from longest to shortest since we eager load all belongs-to, for the example of
-        // a Comment, that belongs to a Post, that belongs to a Blog. Comment has nil Post and nil Blog. The
-        // `skipColumns` will be populated as
-        //  - skipColumns["post"]
-        //  - skipColumns["post.blog"]
-        //
-        // By ordering it as "post.blog" then "post", before setting the `nil` values for those keypaths, then the
-        // shortest keypath will the last key in the `modelDictionary`. modelDictionary["post"]["blog"] will be
-        // replaced with modelDictionary["post"] = nil.
-        //
-        // If there does exist a post but no blog on the post, then the following `skipColumns` would be populated:
-        //  - skipColumns["post.blog"] (since only primary key for blog does not exist, post object exists)
-        // and the resulting modelDictionary will be populated:
-        // modelDictionary["post"]["id"] = <ID>
-        // modelDictionary["post"][<remaining required/optional fields of post>] = <values>
-        // modelDictionary["post"]["blog"] = nil
-        let sortedColumns = skipColumns.sorted(by: { $0.count > $1.count })
-        for skipColumn in sortedColumns {
-            modelDictionary.updateValue(nil, forKeyPath: skipColumn)
-        }
-        modelDictionary["__typename"] = modelSchema.name
+        return nil
+    }
 
-        // `foreignKeyValues` are all foreign keys and their values that can be added to the object for lazy loading
-        // belongs to associations. 
-        if !eagerLoad {
-            for foreignKeyValue in foreignKeyValues {
-                let foreignColumnName = foreignKeyValue.0
-                if let foreignModelField = modelSchema.foreignKeys.first(where: { modelField in
-                    modelField.sqlName == foreignColumnName
-                }) {
-                    modelDictionary[foreignModelField.name] = DataStoreModelDecoder.lazyInit(identifier: foreignKeyValue.1)
-                }
-            }
+    private func getTargetNames(assoication: ModelAssociation) -> [String] {
+        switch assoication {
+        case let .hasOne(associatedFieldName: _, targetNames: targets):
+            return targets
+        case let.belongsTo(associatedFieldName: _, targetNames: targets):
+            return targets
+        case .hasMany:
+            return []
         }
-        
-        // swiftlint:disable:next force_cast
-        return modelDictionary as! ModelValues
+    }
+
+    private func convert(
+        data: [String: Binding],
+        schema: ModelSchema,
+        eagerLoad: Bool
+    ) -> ModelValues {
+        fatalError()
+    }
+
+    private func getValue(from element: Element, by path: [String]) -> Binding? {
+        return columnNames.firstIndex { $0 == path.fieldPath }
+            .flatMap { element[$0] }
+    }
+
+    private func schemeMetadata(schema: ModelSchema, element: Element, path: [String]) -> ModelValues {
+        var metadata = [
+            "__typename": schema.name,
+        ]
+
+        if schema.primaryKey.isCompositeKey,
+           let compositeKey = getValue(from: element, by: path + [ModelIdentifierFormat.Custom.sqlColumnName])
+        {
+            metadata.updateValue(String(describing: compositeKey), forKey: ModelIdentifierFormat.Custom.sqlColumnName)
+        }
+
+        return metadata
     }
 }
 
@@ -283,5 +289,11 @@ extension String {
             let subKeyComponents = keyComponents.dropLast()
             return subKeyComponents.joined(separator: ".")
         }
+    }
+}
+
+extension Array where Element == String {
+    var fieldPath: String {
+        self.filter { !$0.isEmpty }.joined(separator: ".")
     }
 }

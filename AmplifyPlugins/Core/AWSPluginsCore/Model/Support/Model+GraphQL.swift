@@ -87,7 +87,9 @@ extension Model {
                                                                          associatedModelName: associateModelName,
                                                                          mutationType: mutationType)
                 for (fieldName, fieldValue) in associatedModelIds {
-                    input.updateValue(fieldValue, forKey: fieldName)
+                    if !fields.map({ $0.0 }).contains(where: { $0.name == fieldName }) {
+                        input.updateValue(fieldValue, forKey: fieldName)
+                    }
                 }
             case .embedded, .embeddedCollection:
                 if let encodable = value as? Encodable {
