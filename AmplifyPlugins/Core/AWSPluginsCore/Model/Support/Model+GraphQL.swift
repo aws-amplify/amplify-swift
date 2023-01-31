@@ -87,7 +87,7 @@ extension Model {
                                                                          associatedModelName: associateModelName,
                                                                          mutationType: mutationType)
                 for (fieldName, fieldValue) in associatedModelIds {
-                    if !fields.map({ $0.0 }).contains(where: { $0.name == fieldName }) {
+                    if !fields.map({ $0.0.name }).contains(fieldName) {
                         input.updateValue(fieldValue, forKey: fieldName)
                     }
                 }

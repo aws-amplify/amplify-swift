@@ -119,7 +119,6 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
             switch mutationType {
             case .delete:
                 let model = try mutationEvent.decodeModel()
-                print("########## delete event:", model)
                 guard let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName) else {
                     return Fatal.preconditionFailure("""
                     Could not retrieve schema for the model \(mutationEvent.modelName), verify that datastore is
@@ -132,7 +131,6 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
                                                                             version: mutationEvent.version)
             case .update:
                 let model = try mutationEvent.decodeModel()
-                print("########## update event:", model)
                 guard let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName) else {
                     return Fatal.preconditionFailure("""
                     Could not retrieve schema for the model \(mutationEvent.modelName), verify that datastore is
@@ -145,7 +143,6 @@ class SyncMutationToCloudOperation: AsynchronousOperation {
                                                                             version: mutationEvent.version)
             case .create:
                 let model = try mutationEvent.decodeModel()
-                print("########## create event:", model)
                 guard let modelSchema = ModelRegistry.modelSchema(from: mutationEvent.modelName) else {
                     return Fatal.preconditionFailure("""
                     Could not retrieve schema for the model \(mutationEvent.modelName), verify that datastore is

@@ -108,19 +108,15 @@ extension Statement: StatementModelConvertible {
         switch (field.type, eagerLoad) {
         case (.collection, _):
             return convertCollection(field: field, schema: schema, from: element, path: path)
+
         case (.model, false):
-            // TODO: need to handle composite key case
-            let targetNames = field.association.map(getTargetNames) ?? []
-            if targetNames.count > 1 {
-                let targetBinding = getValue(from: element, by: path + ["@@\(field.name)ForeignKey"])
-                return DataStoreModelDecoder.lazyInit(identifier: targetBinding)
-            } else if targetNames.count == 1 {
-                let targetBinding = targetNames.first
-                    .flatMap { getValue(from: element, by: path + [$0]) }
-                return DataStoreModelDecoder.lazyInit(identifier: targetBinding)
-            } else {
-                return nil
+            let foreignKey = field.association.map(getTargetNames).map {
+                field.foreignKeySqlName(withAssociationTargets: $0)
             }
+            let targetBinding = foreignKey.flatMap {
+                getValue(from: element, by: path + [$0])
+            }
+            return DataStoreModelDecoder.lazyInit(identifier: targetBinding)
 
         case let (.model(modelName), true):
             guard !path.contains(field.name),
@@ -148,10 +144,12 @@ extension Statement: StatementModelConvertible {
         if field.isArray && field.hasAssociation,
            case let .some(.hasMany(associatedFieldName: associatedFieldName)) = field.association
         {
-            let primeryKey = schema.primaryKey.isCompositeKey
-                ? getValue(from: element, by: path + [ModelIdentifierFormat.Custom.sqlColumnName])
-                : schema.primaryKey.fields.map { getValue(from: element, by: path + [$0.name]) }.first?.flatMap { $0 }
-            return primeryKey.map {
+            let primeryKeyName = schema.primaryKey.isCompositeKey
+                ? ModelIdentifierFormat.Custom.sqlColumnName
+                : schema.primaryKey.fields.first.flatMap { $0.name }
+            let primeryKeyValue = primeryKeyName.flatMap { getValue(from: element, by: path + [$0]) }
+
+            return primeryKeyValue.map {
                 DataStoreListDecoder.lazyInit(associatedId: String(describing: $0), associatedWith: associatedFieldName)
             }
         }
@@ -168,14 +166,6 @@ extension Statement: StatementModelConvertible {
         case .hasMany:
             return []
         }
-    }
-
-    private func convert(
-        data: [String: Binding],
-        schema: ModelSchema,
-        eagerLoad: Bool
-    ) -> ModelValues {
-        fatalError()
     }
 
     private func getValue(from element: Element, by path: [String]) -> Binding? {

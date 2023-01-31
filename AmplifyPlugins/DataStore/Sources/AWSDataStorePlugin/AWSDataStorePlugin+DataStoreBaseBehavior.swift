@@ -56,7 +56,6 @@ extension AWSDataStorePlugin: DataStoreBaseBehavior {
         let publishingCompletion: DataStoreCallback<M> = { result in
             switch result {
             case .success(let model):
-                print("######### publishing to appsync:", model)
                 // TODO: Differentiate between save & update
                 // TODO: Handle errors from mutation event creation
                 self.publishMutationEvent(from: model, modelSchema: modelSchema, mutationType: mutationType)
