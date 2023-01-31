@@ -57,7 +57,7 @@ struct VerifySignInChallenge: Action {
         } catch let error where deviceNotFound(error: error, deviceMetadata: deviceMetadata) {
             logVerbose("\(#fileID) Received device not found \(error)", environment: environment)
             // Remove the saved device details and retry verify challenge
-            await DeviceMetadataHelper.removeDeviceMetaData(of: username, environment: environment)
+            await DeviceMetadataHelper.removeDeviceMetaData(for: username, with: environment)
             let event = SignInChallengeEvent(
                 eventType: .retryVerifyChallengeAnswer(confirmSignEventData)
             )
