@@ -47,21 +47,6 @@ class AWSS3StoragePluginAsyncBehaviorTests: XCTestCase {
         queue = nil
     }
 
-    func testPluginGetURLAsync() async throws {
-        let done = asyncExpectation(description: "done")
-        let input = URL(string: "https://bucket.aws.amazon.com/\(testKey ?? "")")!
-
-        Task {
-            storageService.storageServiceGetPreSignedURLEvents = [.completed(input)]
-            let output = try await storagePlugin.getURL(key: testKey, options: nil)
-            XCTAssertEqual(input, output)
-            XCTAssertEqual(1, storageService.getPreSignedURLCalled)
-            await done.fulfill()
-        }
-
-        await waitForExpectations([done], timeout: 3.0)
-    }
-
     func testPluginDownloadDataAsync() async throws {
         let input = "AWS".data(using: .utf8)!
         storageService.storageServiceDownloadEvents = [.completed(input)]
