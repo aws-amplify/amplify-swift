@@ -9,6 +9,7 @@ import XCTest
 
 class RESTRequestUtilsValidatorTests: XCTestCase {
     func testClassMustNotBeEmptyOrSwiftFormatWillCrash() {
-        //TODO implement code
+        // swiftlint:disable:next todo
+        // TODO implement code
     }
 }

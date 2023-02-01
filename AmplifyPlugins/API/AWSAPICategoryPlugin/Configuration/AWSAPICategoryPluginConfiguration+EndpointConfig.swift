@@ -72,14 +72,17 @@ public extension AWSAPICategoryPluginConfiguration {
             self.baseURL = baseURL
             self.region = region
             self.authorizationType = authorizationType
-            self.authorizationConfiguration = try AWSAuthorizationConfiguration.makeConfiguration(authType: authorizationType,
-                                                                                         region: region,
-                                                                                         apiKey: apiKey)
+            self.authorizationConfiguration = try AWSAuthorizationConfiguration.makeConfiguration(
+                authType: authorizationType,
+                region: region,
+                apiKey: apiKey
+            )
             self.endpointType = endpointType
             self.apiKey = apiKey
         }
 
         public func authorizationConfigurationFor(authType: AWSAuthorizationType) throws -> AWSAuthorizationConfiguration {
+            // swiftlint:disable:previous line_length
             return try AWSAuthorizationConfiguration.makeConfiguration(authType: authType,
                                                               region: region,
                                                               apiKey: apiKey)

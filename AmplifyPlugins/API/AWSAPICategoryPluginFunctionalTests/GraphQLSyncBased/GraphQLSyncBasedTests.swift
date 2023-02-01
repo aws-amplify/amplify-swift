@@ -94,6 +94,7 @@ class GraphQLSyncBasedTests: XCTestCase {
     // Given: A newly created post
     // When: Call get query to retrieve the newly created post
     // Then: The query result should be the post with the latest version
+    // swiftlint:disable:next cyclomatic_complexity
     func testCreatePostThenQueryPost() {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
@@ -160,6 +161,7 @@ class GraphQLSyncBasedTests: XCTestCase {
     //       passing in version 1, which is the correct unmodified version
     // Then: The mutation result should be the post with the updated title.
     //       MutationSync metadata contains version 2
+    // swiftlint:disable:next cyclomatic_complexity
     func testCreatePostThenUpdatePostShouldHaveNewVersion() {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
@@ -229,6 +231,7 @@ class GraphQLSyncBasedTests: XCTestCase {
     //       with a condition that does not match the newly created post
     // Then: The mutation result in a successful response, with graphQL repsonse data containing error
     //       The error should be "ConditionalCheckFailedException"
+    // swiftlint:disable:next cyclomatic_complexity
     func testUpdatePostWithInvalidConditionShouldFailWithConditionalCheckFailed() {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
@@ -304,6 +307,7 @@ class GraphQLSyncBasedTests: XCTestCase {
     // Given: A newly created post
     // When: Call update mutation, with updated title and version 1, twice
     // Then: The first mutation is successful, and second returns conflict unhandled exception due to older version.
+    // swiftlint:disable:next cyclomatic_complexity
     func testCreatePostThenUpdateTwiceWithConflictUnhandledException() throws {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
@@ -400,6 +404,7 @@ class GraphQLSyncBasedTests: XCTestCase {
     // Given: Two newly created posts
     // When: Call sync query with limit of 1, to ensure that we get a nextToken back
     // Then: The result should be a PaginatedList contain all fields populated (items, startedAt, nextToken)
+    // swiftlint:disable:next cyclomatic_complexity
     func testQuerySyncWithLastSyncTime() {
         let uuid = UUID().uuidString
         let testMethodName = String("\(#function)".dropLast(2))
@@ -563,4 +568,4 @@ class GraphQLSyncBasedTests: XCTestCase {
         wait(for: [completeInvoked], timeout: TestCommonConstants.networkTimeout)
         return result
     }
-}
+} // swiftlint:disable:this file_length

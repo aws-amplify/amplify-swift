@@ -11,6 +11,7 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSAPICategoryPlugin
 
+// swiftlint:disable:next type_body_length
 class AppSyncListProviderTests: XCTestCase {
     var mockAPIPlugin: MockAPICategoryPlugin!
 

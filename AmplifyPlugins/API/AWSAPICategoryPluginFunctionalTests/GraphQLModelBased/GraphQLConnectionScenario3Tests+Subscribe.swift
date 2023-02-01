@@ -13,6 +13,7 @@ import XCTest
 
 extension GraphQLConnectionScenario3Tests {
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testOnCreatePostSubscriptionWithModel() {
         let connectedInvoked = expectation(description: "Connection established")
         let disconnectedInvoked = expectation(description: "Connection disconnected")

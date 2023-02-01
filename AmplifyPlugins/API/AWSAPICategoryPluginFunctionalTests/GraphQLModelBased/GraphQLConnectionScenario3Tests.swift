@@ -229,6 +229,7 @@ class GraphQLConnectionScenario3Tests: XCTestCase {
     // Create a post and then create a comment associated with the post
     // Delete the comment and then query for the comment
     // Expected query should return `nil` comment
+    // swiftlint:disable:next cyclomatic_complexity
     func testDeleteAndGetComment() {
         guard let post = createPost(title: "title") else {
             XCTFail("Could not create post")

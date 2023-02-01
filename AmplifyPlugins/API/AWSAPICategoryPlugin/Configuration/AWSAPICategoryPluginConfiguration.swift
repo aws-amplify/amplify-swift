@@ -34,12 +34,16 @@ public struct AWSAPICategoryPluginConfiguration {
             )
         }
 
-        let endpoints = try AWSAPICategoryPluginConfiguration.endpointsFromConfig(config: config,
-                                                                                  apiAuthProviderFactory: apiAuthProviderFactory,
-                                                                                  authService: authService)
-        let interceptors = try AWSAPICategoryPluginConfiguration.makeInterceptors(forEndpoints: endpoints,
-                                                                                  apiAuthProviderFactory: apiAuthProviderFactory,
-                                                                                  authService: authService)
+        let endpoints = try AWSAPICategoryPluginConfiguration.endpointsFromConfig(
+            config: config,
+            apiAuthProviderFactory: apiAuthProviderFactory,
+            authService: authService
+        )
+        let interceptors = try AWSAPICategoryPluginConfiguration.makeInterceptors(
+            forEndpoints: endpoints,
+            apiAuthProviderFactory: apiAuthProviderFactory,
+            authService: authService
+        )
 
         self.init(endpoints: endpoints,
                   interceptors: interceptors,
@@ -175,6 +179,7 @@ public struct AWSAPICategoryPluginConfiguration {
     private static func makeInterceptors(forEndpoints endpoints: [APIEndpointName: EndpointConfig],
                                          apiAuthProviderFactory: APIAuthProviderFactory,
                                          authService: AWSAuthServiceBehavior) throws -> [APIEndpointName: AWSAPIEndpointInterceptors] {
+        // swiftlint:disable:previous line_length
         var interceptors: [APIEndpointName: AWSAPIEndpointInterceptors] = [:]
         for (name, config) in endpoints {
             var interceptorsConfig = AWSAPIEndpointInterceptors(endpointName: name,

@@ -31,6 +31,7 @@ import XCTest
  */
 extension GraphQLConnectionScenario3Tests {
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testGetPostThenIterateComments() {
         guard let post = createPost(title: "title"),
               createComment(postID: post.id, content: "content") != nil,
@@ -89,6 +90,7 @@ extension GraphQLConnectionScenario3Tests {
         XCTAssertEqual(resultsArray.count, 2)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testGetPostThenFetchComments() {
         guard let post = createPost(title: "title"),
               createComment(postID: post.id, content: "content") != nil,
@@ -271,6 +273,7 @@ extension GraphQLConnectionScenario3Tests {
     /// - Then:
     ///    - the in-memory Array is a populated with exactly two comments.
     func testPaginatedListCommentsByPostID() {
+        // swiftlint:disable:previous cyclomatic_complexity
         guard let post = createPost(title: "title") else {
             XCTFail("Could not create post")
             return
@@ -336,6 +339,7 @@ extension GraphQLConnectionScenario3Tests {
     /// - Then:
     ///    - A validation error is returned
     func testPaginatedListFetchValidationError() throws {
+        // swiftlint:disable:previous cyclomatic_complexity
         let uuid1 = UUID().uuidString
         guard createPost(id: uuid1, title: "title") != nil else {
             XCTFail("Failed to create post")
@@ -400,4 +404,4 @@ extension GraphQLConnectionScenario3Tests {
 
         wait(for: [invalidFetchCompleted], timeout: TestCommonConstants.networkTimeout)
     }
-}
+} // swiftlint:disable:this file_length
