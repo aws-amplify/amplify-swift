@@ -38,6 +38,7 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
         let parent = HasOneParent(child: child)
         let savedParent = try await saveAndWaitForSync(parent)
     }
+
 }
 
 extension AWSDataStoreLazyLoadHasOneTests {
