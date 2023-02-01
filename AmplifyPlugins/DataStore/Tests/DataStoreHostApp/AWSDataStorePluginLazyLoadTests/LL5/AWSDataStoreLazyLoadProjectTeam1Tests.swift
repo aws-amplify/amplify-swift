@@ -74,42 +74,26 @@ class AWSDataStoreLazyLoadProjectTeam1Tests: AWSDataStoreLazyLoadBaseTest {
         
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await saveAndWaitForSync(team)
-        let project = initializeProjectWithTeam(savedTeam)
-        let savedProject = try await saveAndWaitForSync(project)
-        let queriedProject = try await query(for: savedProject)
-        assertProject(queriedProject, hasTeam: savedTeam)
-        var queriedTeam = try await query(for: savedTeam)
+        let projectWithTeam = initializeProjectWithTeam(savedTeam)
+        let savedProjectWithTeam = try await saveAndWaitForSync(projectWithTeam)
+        let queriedProjectWithTeam = try await query(for: savedProjectWithTeam)
+        assertProject(queriedProjectWithTeam, hasTeam: savedTeam)
         
-        // The team has a FK referencing the Project. Updating the project with team
-        // does not reflect the team, which is why the queried team does not have the project
-        // to load.
-        // Project (Parent) hasOne Team
-        // Team (Child) belongsTo Project
-        // Team has the FK of Project.
-        switch queriedTeam._project.modelProvider.getState() {
-        case .notLoaded(let identifiers):
-            print("NOT LOADED \(identifiers)")
-        case .loaded(let model):
-            print("LOADED \(model)")
-        }
+        // For bi-directional has-one belongs-to, we require setting the FK on both sides
+        // Thus, when querying for the team `queriedTeam`, the team does not have the project.
+        var queriedTeam = try await query(for: savedTeam)
+        assertLazyReference(queriedTeam._project, state: .notLoaded(identifiers: nil))
 
-        queriedTeam.setProject(queriedProject)
+        // Update the team with the project.
+        queriedTeam.setProject(queriedProjectWithTeam)
         let savedTeamWithProject = try await saveAndWaitForSync(queriedTeam, assertVersion: 2)
-        // Now the FK in the Team should be populated with Project's PK
-        switch savedTeamWithProject._project.modelProvider.getState() {
-        case .notLoaded(let identifiers):
-            print("NOT LOADED \(identifiers)")
-        case .loaded(let model):
-            print("LOADED \(model)")
-        }
+        
+        assertLazyReference(savedTeamWithProject._project, state: .loaded(model: projectWithTeam))
         var queriedTeamWithProject = try await query(for: savedTeamWithProject)
-        switch savedTeamWithProject._project.modelProvider.getState() {
-        case .notLoaded(let identifiers):
-            print("NOT LOADED \(identifiers)")
-        case .loaded(let model):
-            print("LOADED \(model)")
-        }
-        printDBPath()
+        assertLazyReference(queriedTeamWithProject._project, state: .notLoaded(identifiers: [.init(name: "@@primaryKey", value: projectWithTeam.identifier)]))
+        
+        let loadedProject = try await queriedTeamWithProject.project!
+        XCTAssertEqual(loadedProject.projectId, projectWithTeam.projectId)
     }
     
     // One-to-One relationships do not create a foreign key for the Team or Project table
