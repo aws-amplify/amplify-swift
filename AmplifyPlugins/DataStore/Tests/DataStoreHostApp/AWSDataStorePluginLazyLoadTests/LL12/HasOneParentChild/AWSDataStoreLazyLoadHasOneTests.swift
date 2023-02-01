@@ -59,8 +59,10 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
         // Query from DataStore
         let queriedParent = try await query(for: parent)
         
-        // The lazy model isn't populated here, hence the child lazy reference is nil
-        assertLazyReference(queriedParent._child, state: .notLoaded(identifiers: nil))
+        // The child can be lazy loaded.
+        assertLazyReference(queriedParent._child, state: .notLoaded(identifiers: [.init(name: "id", value: child.id)]))
+        let queriedParentChild = try await queriedParent.child!
+        XCTAssertEqual(queriedParentChild.id, child.id)
         
         // The child model id can be found on the explicit field.
         let childId = queriedParent.hasOneParentChildId
