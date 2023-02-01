@@ -11,16 +11,8 @@ import Amplify
 extension AWSS3StorageService {
 
     func getPreSignedURL(serviceKey: String,
-                         signingOperation: AWSS3SigningOperation = .getObject,
-                         expires: Int,
-                         onEvent: @escaping StorageServiceGetPreSignedURLEventHandler) {
-        Task {
-            do {
-                onEvent(.completed(try await preSignedURLBuilder.getPreSignedURL(key: serviceKey,
-                                                                                 expires: Int64(expires))))
-            } catch {
-                onEvent(.failed(StorageError.unknown("Failed to get pre-signed URL", nil)))
-            }
-        }
+                         signingOperation: AWSS3SigningOperation,
+                         expires: Int) async throws -> URL {
+        return try await preSignedURLBuilder.getPreSignedURL(key: serviceKey, signingOperation: signingOperation, expires: Int64(expires))
     }
 }

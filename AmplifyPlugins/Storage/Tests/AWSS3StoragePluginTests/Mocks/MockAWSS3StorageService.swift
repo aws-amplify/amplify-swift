@@ -16,7 +16,6 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
     // MARK: method call counts
     var interactions: [String] = []
     var downloadCalled = 0
-    var getPreSignedURLCalled = 0
     var uploadCalled = 0
     var multiPartUploadCalled = 0
     var deleteCalled = 0
@@ -25,9 +24,6 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
 
     var downloadServiceKey: String?
     var downloadFileURL: URL?
-
-    var getPreSignedURLServiceKey: String?
-    var getPreSignedURLExpires: Int?
 
     var uploadServiceKey: String?
     var uploadUploadSource: UploadSource?
@@ -45,7 +41,6 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
 
     // array of StorageEvents to be mocked as the stream of events.
     var storageServiceDownloadEvents: [StorageServiceDownloadEvent]?
-    var storageServiceGetPreSignedURLEvents: [StorageServiceGetPreSignedURLEvent]?
     var storageServiceUploadEvents: [StorageServiceUploadEvent]?
     var storageServiceMultiPartUploadEvents: [StorageServiceMultiPartUploadEvent]?
     var storageServiceDeleteEvents: [StorageServiceDeleteEvent]?
@@ -76,19 +71,13 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
         }
     }
 
-    public func getPreSignedURL(serviceKey: String,
-                                signingOperation: AWSS3SigningOperation = .getObject,
-                                expires: Int,
-                                onEvent: @escaping StorageServiceGetPreSignedURLEventHandler) {
-        interactions.append(#function)
-        getPreSignedURLCalled += 1
+    var getPreSignedURLHandler: (String, AWSS3SigningOperation, Int) async throws -> URL = { (_, _, _) in
+        return URL(fileURLWithPath: NSTemporaryDirectory())
+    }
 
-        getPreSignedURLServiceKey = serviceKey
-        getPreSignedURLExpires = expires
-
-        for event in storageServiceGetPreSignedURLEvents ?? [] {
-            onEvent(event)
-        }
+    public func getPreSignedURL(serviceKey: String, signingOperation: AWSS3SigningOperation, expires: Int) async throws -> URL {
+        interactions.append("\(#function) \(serviceKey) \(signingOperation) \(expires)")
+        return try await getPreSignedURLHandler(serviceKey, signingOperation, expires)
     }
 
     public func upload(serviceKey: String,
@@ -161,14 +150,6 @@ public class MockAWSS3StorageService: AWSS3StorageServiceBehaviour {
         XCTAssertEqual(downloadCalled, 1)
         XCTAssertEqual(downloadServiceKey, serviceKey)
         XCTAssertEqual(downloadFileURL, fileURL)
-    }
-
-    public func verifyGetPreSignedURL(serviceKey: String,
-                                      expires: Int?) {
-        getPreSignedURLCalled += 1
-
-        XCTAssertEqual(getPreSignedURLServiceKey, serviceKey)
-        XCTAssertEqual(getPreSignedURLExpires, expires)
     }
 
     public func verifyUpload(serviceKey: String,

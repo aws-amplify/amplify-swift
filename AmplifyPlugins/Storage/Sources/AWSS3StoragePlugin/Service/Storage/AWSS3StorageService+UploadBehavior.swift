@@ -34,7 +34,8 @@ extension AWSS3StorageService {
 
             do {
                 let preSignedURL = try await preSignedURLBuilder.getPreSignedURL(key: serviceKey,
-                                                                                 signingOperation: .putObject)
+                                                                                 signingOperation: .putObject,
+                                                                                 expires: nil)
                 startUpload(preSignedURL: preSignedURL,
                             fileURL: uploadFileURL,
                             contentType: contentType,
