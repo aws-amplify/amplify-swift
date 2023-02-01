@@ -76,8 +76,9 @@ extension Statement: StatementModelConvertible {
         // parse each row of the result
         let iter = makeIterator()
         while let row = try iter.failableNext() {
-            let modelDictionary = try convert(row: row, withSchema: modelSchema, using: statement, eagerLoad: eagerLoad)
-            elements.append(modelDictionary)
+            if let modelDictionary = try convert(row: row, withSchema: modelSchema, using: statement, eagerLoad: eagerLoad) {
+                elements.append(modelDictionary)
+            }
         }
         return elements
     }
@@ -88,12 +89,16 @@ extension Statement: StatementModelConvertible {
         using statement: SelectStatement,
         eagerLoad: Bool = true,
         path: [String] = []
-    ) throws -> ModelValues {
+    ) throws -> ModelValues? {
         let modelValues = try modelSchema.fields.mapValues {
             try convert(field: $0, schema: modelSchema, using: statement, from: row, eagerLoad: eagerLoad, path: path)
         }
 
-        return modelValues.merging(schemeMetadata(schema: modelSchema, element: row, path: path)) { $1 }
+        if modelValues.values.contains(where: { $0 != nil }) {
+            return modelValues.merging(schemeMetadata(schema: modelSchema, element: row, path: path)) { $1 }
+        } else {
+            return nil
+        }
     }
 
     private func convert(
