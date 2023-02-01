@@ -90,6 +90,12 @@ extension Statement: StatementModelConvertible {
         eagerLoad: Bool = true,
         path: [String] = []
     ) throws -> ModelValues? {
+        guard let maxDepth = columnNames.map({ $0.split(separator: ".").count }).max(),
+              path.count < maxDepth
+        else {
+            return nil
+        }
+
         let modelValues = try modelSchema.fields.mapValues {
             try convert(field: $0, schema: modelSchema, using: statement, from: row, eagerLoad: eagerLoad, path: path)
         }
@@ -124,9 +130,10 @@ extension Statement: StatementModelConvertible {
             return DataStoreModelDecoder.lazyInit(identifier: targetBinding)
 
         case let (.model(modelName), true):
-            guard !path.contains(field.name),
-                  let modelSchema = getModelSchema(for: modelName, with: statement)
-            else { return nil }
+            guard let modelSchema = getModelSchema(for: modelName, with: statement)
+            else {
+                return nil
+            }
 
             return try convert(
                 row: element,
