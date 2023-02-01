@@ -437,4 +437,4 @@ public struct ModelWithMultipleAuthRules: Model {
             .field(modelWithMultipleAuthRules.content, is: .required, ofType: .string),
             .field(modelWithMultipleAuthRules.author, is: .optional, ofType: .string))
     }
-}
+} // swiftlint:disable:this file_length

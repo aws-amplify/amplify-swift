@@ -139,7 +139,7 @@ class QueryPredicateGenerator: XCTestCase {
         "Temporal.Time,Temporal.Time": [("Temporal.Time.now().add(value:1, to:.hour)", "Temporal.Time.now().add(value:3, to:.hour)")]
     ]
 
-    //the type of v3 is the type of v1 (which is the first part of the key)
+    // the type of v3 is the type of v1 (which is the first part of the key)
     let typePairTov3BetweenTestsMap = [
         "Double,Double": ["0", "0.0", "1", "1.1", "2", "1.2", "3", "3.1", "3.2", "4", ""],
         "Double,Int": ["0", "0.0", "1", "1.1", "2", "1.2", "3", "3.1", "3.2", "4", ""],
@@ -187,7 +187,7 @@ class QueryPredicateGenerator: XCTestCase {
                     }
                     if let requestedOperations = requestedList[key] {
                         for requestedOperation in requestedOperations {
-                            if operation.contains(requestedOperation) {
+                            if operation.contains(requestedOperation) { // swiftlint:disable:this for_where
                                 count += performGeneration(type1: type1, type2: type2, operation: operation)
                             }
                         }
@@ -213,6 +213,7 @@ class QueryPredicateGenerator: XCTestCase {
             let val3s = typePairTov3BetweenTestsMap[key]!
             for (val1, val2) in v1v2s {
                 for val3 in val3s {
+                    // swiftlint:disable:next for_where
                     if handleBetween(type1: type1, val1: val1, type2: type2, val2: val2, val3: val3, operation: operation) {
                         count += 1
                     }
@@ -220,7 +221,7 @@ class QueryPredicateGenerator: XCTestCase {
             }
         } else {
             if type1 == "Int" && type2 == "Double" {
-                //Unable to assign a double value to a Int Type, so these tests are invalid
+                // Unable to assign a double value to a Int Type, so these tests are invalid
                 return 0
             }
             for val1 in values1 {
@@ -228,6 +229,7 @@ class QueryPredicateGenerator: XCTestCase {
                     continue
                 }
                 for val2 in values2 {
+                    // swiftlint:disable:next for_where
                     if handleOtherOperations(type1: type1, val1: val1, type2: type2, val2: val2, operation: operation) {
                         count += 1
                     }
@@ -266,7 +268,7 @@ class QueryPredicateGenerator: XCTestCase {
         let type1 = type1.replacingOccurrences(of: ".", with: "")
         let type2 = type2.replacingOccurrences(of: ".", with: "")
 
-        //In cases of between, we should check we have v1, v2 and v3, E.g.: (v1 < v3 && v3 > v2)
+        // In cases of between, we should check we have v1, v2 and v3, E.g.: (v1 < v3 && v3 > v2)
         if val2 == "" {
             return false
         }
@@ -490,7 +492,7 @@ class QueryPredicateGenerator: XCTestCase {
     func attemptToResolveTemporal(_ type1: String, _ sv1: String,
                                   _ type2: String, _ sv2: String,
                                   _ operation: String) -> Bool {
-        //Use built-in Date to determine the assert logic
+        // Use built-in Date to determine the assert logic
         let val1 = temporalToTimeMap[sv1]!
         let val2 = temporalToTimeMap[sv2]!
 
@@ -521,7 +523,7 @@ class QueryPredicateGenerator: XCTestCase {
         if sv3 == "" {
             return false
         }
-        //Use built-in Date to determine the assert logic
+        // Use built-in Date to determine the assert logic
         let val1 = temporalToTimeMap[sv1]!
         let val2 = temporalToTimeMap[sv2]!
         let val3 = temporalToTimeMap[sv3]!

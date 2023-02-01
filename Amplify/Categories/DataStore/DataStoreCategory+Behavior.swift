@@ -22,6 +22,7 @@ extension DataStoreCategory: DataStoreBaseBehavior {
                                 byIdentifier id: String,
                                 completion: (DataStoreResult<M?>) -> Void) where M: ModelIdentifiable,
                                                                                  M.IdentifierFormat == ModelIdentifierFormat.Default {
+        // swiftlint:disable:previous line_length
         plugin.query(modelType, byIdentifier: id, completion: completion)
     }
 
@@ -57,7 +58,7 @@ extension DataStoreCategory: DataStoreBaseBehavior {
                                  where predicate: QueryPredicate? = nil,
                                  completion: @escaping DataStoreCallback<Void>) where M: ModelIdentifiable,
                                                                                       M.IdentifierFormat == ModelIdentifierFormat.Default {
-
+        // swiftlint:disable:previous line_length
         plugin.delete(modelType, withIdentifier: id, where: predicate, completion: completion)
     }
 

@@ -75,14 +75,14 @@ public class QueryPredicateGroup: QueryPredicate {
         switch type {
         case .or:
             for predicate in predicates {
-                if predicate.evaluate(target: target) {
+                if predicate.evaluate(target: target) { // swiftlint:disable:this for_where
                     return true
                 }
             }
             return false
         case .and:
             for predicate in predicates {
-                if !predicate.evaluate(target: target) {
+                if !predicate.evaluate(target: target) { // swiftlint:disable:this for_where
                     return false
                 }
             }

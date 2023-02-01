@@ -20,4 +20,3 @@ public struct AuthDeleteUserRequest: AmplifyOperationRequest {
 public extension AuthDeleteUserRequest {
     struct Options {}
 }
-

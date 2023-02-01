@@ -53,7 +53,9 @@ public struct AuthSignInHelper {
                     completionHandler(signUpSuccess, error)
                     return
                 }
-                AuthSignInHelper.signInUser(username: username, password: password, completionHandler: completionHandler)
+                AuthSignInHelper.signInUser(username: username,
+                                            password: password,
+                                            completionHandler: completionHandler)
             }
         }
 }

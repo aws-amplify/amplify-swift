@@ -11,6 +11,7 @@ import Foundation
 public typealias SyncQueryResult = PaginatedList<AnyModel>
 public typealias MutationSyncResult = MutationSync<AnyModel>
 
+// swiftlint:disable:next todo
 /// TODO document this and change it to work in a way that these functions are not
 /// publicly exposed to developers
 protocol ModelSyncGraphQLRequestFactory {
@@ -45,6 +46,7 @@ protocol ModelSyncGraphQLRequestFactory {
                              claims: IdentityClaimsDictionary,
                              authType: AWSAuthorizationType?) -> GraphQLRequest<MutationSyncResult>
 
+    // swiftlint:disable:next function_parameter_count
     static func syncQuery(modelSchema: ModelSchema,
                           where predicate: QueryPredicate?,
                           limit: Int?,
@@ -242,6 +244,7 @@ extension GraphQLRequest: ModelSyncGraphQLRequestFactory {
                                                type: GraphQLMutationType,
                                                version: Int? = nil,
                                                authType: AWSAuthorizationType? = nil) -> GraphQLRequest<MutationSyncResult> {
+        // swiftlint:disable:previous line_length
         var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelName: modelSchema.name,
                                                                operationType: .mutation)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: type))

@@ -34,6 +34,7 @@ public extension StorageDownloadDataRequest {
         /// key/values
         public let pluginOptions: Any?
 
+        // swiftlint:disable:next todo
         // TODO: transferAcceleration should be in pluginOptions
         // https://docs.aws.amazon.com/AmazonS3/latest/dev/transfer-acceleration.html
 

@@ -64,7 +64,7 @@ extension AuthRule {
 }
 
 extension Array where Element == AuthRule {
-
+    // swiftlint:disable line_length
     // This function returns a map of all of the read restricting static groups defined for your app's schema
     // Example 1: Single group with implicit read restriction
     // {allow: groups, groups: ["Admins"]}
@@ -90,6 +90,7 @@ extension Array where Element == AuthRule {
     //     "https://app2.com/claims/groups" : ["Moderators", "Editors"]
     // }
     //
+    // swiftlint:enable line_length
     func groupClaimsToReadRestrictingStaticGroups() -> [String: Set<String>] {
         var readRestrictingStaticGroupsMap = [String: Set<String>]()
         let readRestrictingGroupRules = filter { $0.isReadRestrictingStaticGroup() }

@@ -54,6 +54,7 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
                          byIdentifier id: String,
                          completion: (DataStoreResult<M?>) -> Void) where M: ModelIdentifiable,
                                                                           M.IdentifierFormat == ModelIdentifierFormat.Default {
+        // swiftlint:disable:previous line_length
         notify("queryByIdentifier")
 
         if let responder = responders[.queryByIdListener] as? QueryByIdResponder<M> {
@@ -109,7 +110,8 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
                           withIdentifier id: String,
                           where predicate: QueryPredicate? = nil,
                           completion: @escaping (DataStoreResult<Void>) -> Void) where M: ModelIdentifiable,
-                                                                             M.IdentifierFormat == ModelIdentifierFormat.Default {
+                                                                                       M.IdentifierFormat == ModelIdentifierFormat.Default {
+        // swiftlint:disable:previous line_length
         notify("deleteByIdentifier")
 
         if let responder = responders[.deleteByIdListener] as? DeleteByIdResponder<M> {
@@ -133,8 +135,8 @@ class MockDataStoreCategoryPlugin: MessageReporter, DataStoreCategoryPlugin {
     }
 
     func delete<M: Model>(_ modelType: M.Type,
-                           where predicate: QueryPredicate,
-                           completion: (DataStoreResult<Void>) -> Void) {
+                          where predicate: QueryPredicate,
+                          completion: (DataStoreResult<Void>) -> Void) {
         notify("deleteModelTypeByPredicate")
 
         if let responder = responders[.deleteModelTypeListener] as? DeleteModelTypeResponder<M> {

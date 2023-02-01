@@ -12,6 +12,7 @@ import XCTest
 
 let pst = TimeZone(secondsFromGMT: -28_800)!
 
+// swiftlint:disable:next type_body_length
 class TemporalTests: XCTestCase {
 
     // MARK: - DateTime

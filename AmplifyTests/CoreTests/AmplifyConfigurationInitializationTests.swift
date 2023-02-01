@@ -132,6 +132,7 @@ class AmplifyConfigurationInitializationTests: XCTestCase {
             case .auth:
                 XCTAssertNil(amplifyConfig.auth)
             case .dataStore:
+                // swiftlint:disable:next todo
                 // TODO assert
                 XCTAssert(true)
             case .geo:

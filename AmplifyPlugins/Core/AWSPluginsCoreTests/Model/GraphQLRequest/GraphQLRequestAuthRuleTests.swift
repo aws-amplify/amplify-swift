@@ -10,6 +10,7 @@ import XCTest
 @testable import AmplifyTestCommon
 @testable import AWSPluginsCore
 
+// swiftlint:disable:next type_body_length
 class GraphQLRequestAuthRuleTests: XCTestCase {
 
     override func setUp() {
@@ -265,7 +266,8 @@ class GraphQLRequestAuthRuleTests: XCTestCase {
         let modelType = Article.self as Model.Type
         let claims = ["username": "user1",
                       "sub": "123e4567-dead-beef-a456-426614174000"] as IdentityClaimsDictionary
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema, operationType: .subscription)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: modelType.schema,
+                                                               operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onDelete))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         documentBuilder.add(decorator: AuthRuleDecorator(.subscription(.onDelete, claims)))

@@ -65,6 +65,7 @@ public enum ModelFieldType {
         return .embedded(type: type, schema: nil)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     public static func from(type: Any.Type) -> ModelFieldType {
         if type is String.Type {
             return .string

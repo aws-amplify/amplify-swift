@@ -14,6 +14,7 @@ extension Model {
     ///   application making any change to these `public` types should be backward compatible, otherwise it will be a
     ///   breaking change.
     public static var schema: ModelSchema {
+        // swiftlint:disable:next todo
         // TODO load schema from JSON when this it not overridden by specific models
         ModelSchema(name: modelName, fields: [:])
     }

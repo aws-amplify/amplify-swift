@@ -71,6 +71,7 @@ struct PersistableHelper {
     }
 
     // We are promoting Int to Double in the case where we are comparing these two types
+    // swiftlint:disable:next cyclomatic_complexity
     public static func isEqual(_ lhs: Any?, _ rhs: Persistable?) -> Bool {
         if lhs == nil && rhs == nil {
             return true

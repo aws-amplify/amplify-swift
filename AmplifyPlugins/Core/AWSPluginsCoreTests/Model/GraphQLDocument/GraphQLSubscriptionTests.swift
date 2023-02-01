@@ -93,7 +93,8 @@ class GraphQLSubscriptionTests: XCTestCase {
     ///   - check if the generated GraphQL document is a valid subscription
     ///     - it has a list of fields with no nested models
     func testOnCreateGraphQLSubscriptionFromModelWithAssociation() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .subscription)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema,
+                                                               operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         let document = documentBuilder.build()
         let expectedQueryDocument = """
@@ -123,7 +124,8 @@ class GraphQLSubscriptionTests: XCTestCase {
     }
 
     func testOnCreateGraphQLSubscriptionFromModelWithAssociationWithSyncEnabled() {
-        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema, operationType: .subscription)
+        var documentBuilder = ModelBasedGraphQLDocumentBuilder(modelSchema: Comment.schema,
+                                                               operationType: .subscription)
         documentBuilder.add(decorator: DirectiveNameDecorator(type: .onCreate))
         documentBuilder.add(decorator: ConflictResolutionDecorator())
         let document = documentBuilder.build()

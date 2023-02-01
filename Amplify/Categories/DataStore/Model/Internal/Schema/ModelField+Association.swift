@@ -244,6 +244,7 @@ extension ModelField {
             case .belongsTo(let associatedKey, _),
                     .hasOne(let associatedKey, _, _),
                     .hasMany(let associatedKey, _):
+                // swiftlint:disable:next todo
                 // TODO handle modelName casing (convert to camelCase)
                 let key = associatedKey ?? associatedModel
                 let schema = ModelRegistry.modelSchema(from: associatedModel)

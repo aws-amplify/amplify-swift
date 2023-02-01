@@ -10,7 +10,7 @@ import XCTest
 
 // Removing this test case since it's not actually used in the default hub plugin. Leaving the commented case in place
 // in case we want to re-enable to test specific use cases.
-
+// swiftlint:disable comment_spacing
 //class ConcurrentDispatcherPerformanceTests: XCTestCase {
 //
 //    let dispatcherTypeUnderTest = ConcurrentDispatcher.self
@@ -216,3 +216,4 @@ import XCTest
 //    }
 //
 //}
+// swiftlint:enable comment_spacing

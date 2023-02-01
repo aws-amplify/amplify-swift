@@ -46,7 +46,7 @@ public struct GraphQLOperationRequest<R: Decodable>: AmplifyOperationRequest {
     }
 }
 
-// MARK:  GraphQLOperationRequest + Options
+// MARK: GraphQLOperationRequest + Options
 public extension GraphQLOperationRequest {
     struct Options {
         public let pluginOptions: Any?
