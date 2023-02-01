@@ -343,7 +343,7 @@ class AuthenticationProviderConfirmSigninTests: BaseAuthenticationProviderTest {
     ///    - I should get a --
     ///
     func testConfirmSignInWithinvalidSmsRoleAccessPolicyException() {
-        // TODO: Not implemented.
+        // TODO: Not implemented. swiftlint:disable:this todo
     }
 
     /// Test a confirmSignIn call with InvalidSmsRoleTrustRelationship response from service
@@ -356,7 +356,7 @@ class AuthenticationProviderConfirmSigninTests: BaseAuthenticationProviderTest {
     ///    - I should get a --
     ///
     func testConfirmSignInWithInvalidSmsRoleTrustRelationshipException() {
-        // TODO: Not implemented.
+        // TODO: Not implemented. swiftlint:disable:this todo
     }
 
     /// Test a confirmSignIn with InvalidSmsRoleTrustRelationshipException from service

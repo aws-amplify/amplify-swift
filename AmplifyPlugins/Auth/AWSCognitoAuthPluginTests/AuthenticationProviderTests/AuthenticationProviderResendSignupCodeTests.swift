@@ -197,7 +197,7 @@ class AuthenticationProviderResendSignupCodeTests: BaseAuthenticationProviderTes
     ///    - I should get a --
     ///
     func testResendSignupCodeWithInvalidEmailRoleAccessPolicyException() {
-        // TODO: Not implemented.
+        // TODO: Not implemented. swiftlint:disable:this todo
     }
 
     /// Test a resendSignUpCode call with InvalidSmsRoleAccessPolicy response from service
@@ -210,7 +210,7 @@ class AuthenticationProviderResendSignupCodeTests: BaseAuthenticationProviderTes
     ///    - I should get a --
     ///
     func testResendSignupCodeWithinvalidSmsRoleAccessPolicyException() {
-        // TODO: Not implemented.
+        // TODO: Not implemented. swiftlint:disable:this todo
     }
 
     /// Test a resendSignUpCode call with InvalidSmsRoleTrustRelationship response from service
@@ -223,7 +223,7 @@ class AuthenticationProviderResendSignupCodeTests: BaseAuthenticationProviderTes
     ///    - I should get a --
     ///
     func testResendSignupCodeWithInvalidSmsRoleTrustRelationshipException() {
-        // TODO: Not implemented.
+        // TODO: Not implemented. swiftlint:disable:this todo
     }
 
     /// Test a resendSignUpCode call with InvalidLambdaResponseException response from service
