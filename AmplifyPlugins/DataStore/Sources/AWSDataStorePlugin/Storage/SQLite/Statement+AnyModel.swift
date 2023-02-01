@@ -20,9 +20,14 @@ extension Statement {
                                           withSchema: modelSchema,
                                           using: statement,
                                           eagerLoad: eagerLoad)
-            let untypedModel = try convertToAnyModel(using: modelSchema,
-                                                     modelDictionary: modelValues)
-            models.append(untypedModel)
+
+            let untypedModel = try modelValues.map {
+                try convertToAnyModel(using: modelSchema, modelDictionary: $0)
+            }
+
+            if let untypedModel = untypedModel {
+                models.append(untypedModel)
+            }
         }
 
         return models
