@@ -78,24 +78,7 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
         assertComment(comment, contains: post)
     }
     
-    /*
-     This test fails when the create mutation contains Null values for the foreign keys. On create mutation, we should
-     be able to detect that the values being set are foreign key fields and remove them from the input
-     {
-       "variables" : {
-         "input" : {
-           "post4CommentsPostId" : null,
-           "post4CommentsTitle" : null,
-           "commentId" : "A3C577B3-7CAD-4603-947A-FB1EBEC0E8CE",
-           "content" : "content"
-         }
-       },
-       "query" : "mutation CreateComment4($input: CreateComment4Input!) {\n  createComment4(input: $input) {\n    commentId\n    content\n    createdAt\n    post4CommentsPostId\n    post4CommentsTitle\n    updatedAt\n    __typename\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
-     }
-     One or more parameter values were invalid: Type mismatch for Index Key post4CommentsPostId Expected: S Actual: NULL IndexName: gsi-Post4.comments
-     */
     func testSaveWithoutPost() async throws {
-        throw XCTSkip("Need further investigation")
         await setup(withModels: PostComment4Models())
         let comment = Comment(commentId: UUID().uuidString, content: "content")
         let savedComment = try await saveAndWaitForSync(comment)
@@ -256,6 +239,71 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
         
         await waitForExpectations([mutationEventReceived], timeout: 60)
         mutationEvents.cancel()
+    }
+    
+    func testObserveQueryPost() async throws {
+        await setup(withModels: PostComment4Models())
+        try await startAndWaitForReady()
+        let post = Post(postId: UUID().uuidString, title: "title")
+        let comment = Comment(commentId: UUID().uuidString,
+                              content: "content",
+                              post4CommentsPostId: post.postId,
+                              post4CommentsTitle: post.title)
+        let snapshotReceived = asyncExpectation(description: "Received query snapshot")
+        let querySnapshots = Amplify.DataStore.observeQuery(for: Post.self, where: Post.keys.postId == post.postId)
+        Task {
+            for try await querySnapshot in querySnapshots {
+                if let receivedPost = querySnapshot.items.first {
+                    // TODO: Needs further investigation, received post cannot lazy load comment
+                    //let savedComment = try await saveAndWaitForSync(comment)
+                    //try await assertPost(receivedPost, canLazyLoad: savedComment)
+                    
+                    await snapshotReceived.fulfill()
+                }
+            }
+        }
+        
+        let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: post, modelSchema: Post.schema)
+        do {
+            _ = try await Amplify.API.mutate(request: createRequest)
+        } catch {
+            XCTFail("Failed to send mutation request \(error)")
+        }
+        
+        await waitForExpectations([snapshotReceived], timeout: 60)
+        querySnapshots.cancel()
+    }
+    
+    func testObserveQueryComment() async throws {
+        await setup(withModels: PostComment4Models())
+        try await startAndWaitForReady()
+        
+        let post = Post(postId: UUID().uuidString, title: "title")
+        let savedPost = try await saveAndWaitForSync(post)
+        let comment = Comment(commentId: UUID().uuidString,
+                              content: "content",
+                              post4CommentsPostId: post.postId,
+                              post4CommentsTitle: post.title)
+        let snapshotReceived = asyncExpectation(description: "Received query snapshot")
+        let querySnapshots = Amplify.DataStore.observeQuery(for: Comment.self, where: Comment.keys.commentId == comment.commentId)
+        Task {
+            for try await querySnapshot in querySnapshots {
+                if let receivedComment = querySnapshot.items.first {
+                    assertComment(receivedComment, contains: savedPost)
+                    await snapshotReceived.fulfill()
+                }
+            }
+        }
+        
+        let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: comment, modelSchema: Comment.schema)
+        do {
+            _ = try await Amplify.API.mutate(request: createRequest)
+        } catch {
+            XCTFail("Failed to send mutation request \(error)")
+        }
+        
+        await waitForExpectations([snapshotReceived], timeout: 60)
+        querySnapshots.cancel()
     }
 }
 

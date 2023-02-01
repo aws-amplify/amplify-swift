@@ -79,6 +79,41 @@ class GraphQLLazyLoadProjectTeam2Tests: GraphQLLazyLoadBaseTest {
         assertLazyReference(project._team, state: .notLoaded(identifiers: nil))
     }
     
+    func testIncludesNestedModels() async throws {
+        await setup(withModels: ProjectTeam2Models())
+        let team = Team(teamId: UUID().uuidString, name: "name")
+        try await mutate(.create(team))
+        let project = initializeProjectWithTeam(team)
+        try await mutate(.create(project))
+        
+        guard let queriedProject = try await query(.get(Project.self,
+                                                     byIdentifier: .identifier(projectId: project.projectId,
+                                                                               name: project.name),
+                                                     includes: { project in [project.team]})) else {
+            XCTFail("Could not perform nested query for Project")
+            return
+        }
+        
+        assertLazyReference(queriedProject._team, state: .loaded(model: team))
+    }
+    
+    func testListProjectListTeam() async throws {
+        await setup(withModels: ProjectTeam2Models())
+        let team = Team(teamId: UUID().uuidString, name: "name")
+        try await mutate(.create(team))
+        let project = initializeProjectWithTeam(team)
+        try await mutate(.create(project))
+        
+        let queriedProjects = try await listQuery(.list(Project.self, where: Project.keys.projectId == project.projectId))
+        assertList(queriedProjects, state: .isLoaded(count: 1))
+        assertLazyReference(queriedProjects.first!._team, state: .notLoaded(identifiers: [
+            .init(name: "teamId", value: team.teamId),
+            .init(name: "name", value: team.name)]))
+        
+        let queriedTeams = try await listQuery(.list(Team.self, where: Team.keys.teamId == team.teamId))
+        assertList(queriedTeams, state: .isLoaded(count: 1))
+    }
+    
     func testSaveProjectWithTeamThenUpdate() async throws {
         await setup(withModels: ProjectTeam2Models())
         let team = Team(teamId: UUID().uuidString, name: "name")

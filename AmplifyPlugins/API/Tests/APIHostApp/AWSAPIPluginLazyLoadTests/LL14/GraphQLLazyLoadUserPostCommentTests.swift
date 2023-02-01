@@ -14,7 +14,7 @@ import XCTest
 final class GraphQLLazyLoadUserPostCommentTests: GraphQLLazyLoadBaseTest {
 
     func testConfigure() async throws {
-        await setup(withModels: UserPostCommentModels(), logLevel: .verbose)
+        await setup(withModels: UserPostCommentModels())
     }
 
     func testSaveUser() async throws {
@@ -76,7 +76,7 @@ final class GraphQLLazyLoadUserPostCommentTests: GraphQLLazyLoadBaseTest {
         XCTAssertEqual(queriedUser.posts?.count, 1)
         try await queriedUser.comments?.fetch()
         XCTAssertEqual(queriedUser.comments?.count, 1)
-        // Cannot traverse from User to settings
+        // Cannot traverse from User to settings since no FK is set on the User
         //let queriedUserSettings = try await queriedUser.settings
         //XCTAssertNotNil(queriedUserSettings)
         
@@ -108,6 +108,83 @@ final class GraphQLLazyLoadUserPostCommentTests: GraphQLLazyLoadBaseTest {
         try await assertModelDoesNotExist(userSettings)
         try await mutate(.delete(user))
         try await assertModelDoesNotExist(user)
+    }
+    
+    func testIncludesNestedModels() async throws {
+        await setup(withModels: UserPostCommentModels())
+        let user = User(username: "name")
+        let savedUser = try await mutate(.create(user))
+        let userSettings = UserSettings(language: "en-us", user: savedUser)
+        try await mutate(.create(userSettings))
+        let post = Post(title: "title", rating: 1, status: .active, author: savedUser)
+        let savedPost = try await mutate(.create(post))
+        let comment = Comment(content: "content", post: savedPost, author: savedUser)
+        try await mutate(.create(comment))
+        
+        guard let queriedUser = try await query(.get(User.self,
+                                                     byIdentifier: user.id,
+                                                     includes: { user in [user.comments,
+                                                                          user.posts] })) else {
+            XCTFail("Could not perform nested query for User")
+            return
+        }
+        guard var posts = queriedUser.posts else {
+            XCTFail("Could not get queriedUser's posts")
+            return
+        }
+        while posts.hasNextPage() {
+            posts = try await posts.getNextPage()
+        }
+        XCTAssertEqual(posts.count, 1)
+        guard var comments = queriedUser.comments else {
+            XCTFail("Could not get queriedUser's comments")
+            return
+        }
+        while comments.hasNextPage() {
+            comments = try await comments.getNextPage()
+        }
+        XCTAssertEqual(comments.count, 1)
+        
+        guard let queriedPost = try await query(.get(Post.self,
+                                                     byIdentifier: post.id,
+                                                     includes: { post in [post.author, post.comments] })) else {
+            XCTFail("Could not perform nested query for Post")
+            return
+        }
+        assertLazyReference(queriedPost._author, state: .loaded(model: user))
+        guard var queriedPostComments = queriedPost.comments else {
+            XCTFail("Could not get queriedUser's comments")
+            return
+        }
+        while queriedPostComments.hasNextPage() {
+            queriedPostComments = try await queriedPostComments.getNextPage()
+        }
+        XCTAssertEqual(queriedPostComments.count, 1)
+        
+        guard let queriedComment = try await query(.get(Comment.self,
+                                                     byIdentifier: comment.id,
+                                                        includes: { comment in [comment.author, comment.post] })) else {
+            XCTFail("Could not perform nested query for Comment")
+            return
+        }
+        assertLazyReference(queriedComment._author, state: .loaded(model: user))
+        assertLazyReference(queriedComment._post, state: .loaded(model: post))
+    }
+    
+    func testSaveUserWithUserSettings() async throws {
+        await setup(withModels: UserPostCommentModels())
+        let user = User(username: "name")
+        var savedUser = try await mutate(.create(user))
+        let userSettings = UserSettings(language: "en-us", user: savedUser)
+        try await mutate(.create(userSettings))
+        
+        // Update the User with the UserSettings (this is required for bi-directional has-one belongs-to)
+        savedUser.setSettings(userSettings)
+        try await mutate(.update(savedUser))
+        
+        let queriedUser = try await query(for: user)!
+        let queriedUserSettings = try await queriedUser.settings
+        XCTAssertNotNil(queriedUserSettings)
     }
 }
 

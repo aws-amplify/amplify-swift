@@ -20,71 +20,6 @@ class AWSDataStoreLazyLoadProjectTeam1Tests: AWSDataStoreLazyLoadBaseTest {
         printDBPath()
     }
     
-    func testAPISyncQuery() async throws {
-        await setupAPIOnly(withModels: ProjectTeam1Models())
-    
-        // The selection set of project should include "hasOne" team, and no further
-        let projectRequest = GraphQLRequest<SyncQueryResult>.syncQuery(modelType: Project.self)
-        let projectDocument = """
-        query SyncProject1s($limit: Int) {
-          syncProject1s(limit: $limit) {
-            items {
-              projectId
-              name
-              createdAt
-              project1TeamName
-              project1TeamTeamId
-              updatedAt
-              team {
-                teamId
-                name
-                __typename
-                _deleted
-              }
-              __typename
-              _version
-              _deleted
-              _lastChangedAt
-            }
-            nextToken
-            startedAt
-          }
-        }
-        """
-        XCTAssertEqual(projectRequest.document, projectDocument)
-        
-        // The selection set of team should include "belongsTo" project, and no further.
-        let teamRequest = GraphQLRequest<SyncQueryResult>.syncQuery(modelType: Team.self)
-        let teamDocument = """
-        query SyncTeam1s($limit: Int) {
-          syncTeam1s(limit: $limit) {
-            items {
-              teamId
-              name
-              createdAt
-              updatedAt
-              project {
-                projectId
-                name
-                __typename
-                _deleted
-              }
-              __typename
-              _version
-              _deleted
-              _lastChangedAt
-            }
-            nextToken
-            startedAt
-          }
-        }
-        """
-        XCTAssertEqual(teamRequest.document, teamDocument)
-        // Making the actual requests and ensuring they can decode to the Model types.
-        _ = try await Amplify.API.query(request: projectRequest)
-        _ = try await Amplify.API.query(request: teamRequest)
-    }
-    
     func testSaveTeam() async throws {
         await setup(withModels: ProjectTeam1Models())
         let team = Team(teamId: UUID().uuidString, name: "name")
@@ -139,42 +74,26 @@ class AWSDataStoreLazyLoadProjectTeam1Tests: AWSDataStoreLazyLoadBaseTest {
         
         let team = Team(teamId: UUID().uuidString, name: "name")
         let savedTeam = try await saveAndWaitForSync(team)
-        let project = initializeProjectWithTeam(savedTeam)
-        let savedProject = try await saveAndWaitForSync(project)
-        let queriedProject = try await query(for: savedProject)
-        assertProject(queriedProject, hasTeam: savedTeam)
-        var queriedTeam = try await query(for: savedTeam)
+        let projectWithTeam = initializeProjectWithTeam(savedTeam)
+        let savedProjectWithTeam = try await saveAndWaitForSync(projectWithTeam)
+        let queriedProjectWithTeam = try await query(for: savedProjectWithTeam)
+        assertProject(queriedProjectWithTeam, hasTeam: savedTeam)
         
-        // The team has a FK referencing the Project. Updating the project with team
-        // does not reflect the team, which is why the queried team does not have the project
-        // to load.
-        // Project (Parent) hasOne Team
-        // Team (Child) belongsTo Project
-        // Team has the FK of Project.
-        switch queriedTeam._project.modelProvider.getState() {
-        case .notLoaded(let identifiers):
-            print("NOT LOADED \(identifiers)")
-        case .loaded(let model):
-            print("LOADED \(model)")
-        }
+        // For bi-directional has-one belongs-to, we require setting the FK on both sides
+        // Thus, when querying for the team `queriedTeam`, the team does not have the project.
+        var queriedTeam = try await query(for: savedTeam)
+        assertLazyReference(queriedTeam._project, state: .notLoaded(identifiers: nil))
 
-        queriedTeam.setProject(queriedProject)
+        // Update the team with the project.
+        queriedTeam.setProject(queriedProjectWithTeam)
         let savedTeamWithProject = try await saveAndWaitForSync(queriedTeam, assertVersion: 2)
-        // Now the FK in the Team should be populated with Project's PK
-        switch savedTeamWithProject._project.modelProvider.getState() {
-        case .notLoaded(let identifiers):
-            print("NOT LOADED \(identifiers)")
-        case .loaded(let model):
-            print("LOADED \(model)")
-        }
+        
+        assertLazyReference(savedTeamWithProject._project, state: .loaded(model: projectWithTeam))
         var queriedTeamWithProject = try await query(for: savedTeamWithProject)
-        switch savedTeamWithProject._project.modelProvider.getState() {
-        case .notLoaded(let identifiers):
-            print("NOT LOADED \(identifiers)")
-        case .loaded(let model):
-            print("LOADED \(model)")
-        }
-        printDBPath()
+        assertLazyReference(queriedTeamWithProject._project, state: .notLoaded(identifiers: [.init(name: "@@primaryKey", value: projectWithTeam.identifier)]))
+        
+        let loadedProject = try await queriedTeamWithProject.project!
+        XCTAssertEqual(loadedProject.projectId, projectWithTeam.projectId)
     }
     
     // One-to-One relationships do not create a foreign key for the Team or Project table
@@ -344,6 +263,61 @@ class AWSDataStoreLazyLoadProjectTeam1Tests: AWSDataStoreLazyLoadBaseTest {
         
         await waitForExpectations([mutationEventReceived], timeout: 60)
         mutationEvents.cancel()
+    }
+    
+    func testObserveQueryProject() async throws {
+        await setup(withModels: ProjectTeam1Models())
+        try await startAndWaitForReady()
+        let team = Team(teamId: UUID().uuidString, name: "name")
+        let savedTeam = try await saveAndWaitForSync(team)
+        let project = initializeProjectWithTeam(team)
+        
+        let snapshotReceived = asyncExpectation(description: "Received query snapshot")
+        let querySnapshots = Amplify.DataStore.observeQuery(for: Project.self, where: Project.keys.projectId == project.projectId)
+        Task {
+            for try await querySnapshot in querySnapshots {
+                if let receivedProject = querySnapshot.items.first {
+                    assertProject(receivedProject, hasTeam: savedTeam)
+                    await snapshotReceived.fulfill()
+                }
+            }
+        }
+        
+        let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: project, modelSchema: Project.schema)
+        do {
+            _ = try await Amplify.API.mutate(request: createRequest)
+        } catch {
+            XCTFail("Failed to send mutation request \(error)")
+        }
+        
+        await waitForExpectations([snapshotReceived], timeout: 60)
+        querySnapshots.cancel()
+    }
+    
+    func testObserveQueryTeam() async throws {
+        await setup(withModels: ProjectTeam1Models())
+        try await startAndWaitForReady()
+        let team = Team(teamId: UUID().uuidString, name: "name")
+        let snapshotReceived = asyncExpectation(description: "Received query snapshot")
+        let querySnapshots = Amplify.DataStore.observeQuery(for: Team.self, where: Team.keys.teamId == team.teamId)
+        Task {
+            for try await querySnapshot in querySnapshots {
+                if let receivedTeam = querySnapshot.items.first {
+                    XCTAssertEqual(receivedTeam.teamId, team.teamId)
+                    await snapshotReceived.fulfill()
+                }
+            }
+        }
+        
+        let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: team, modelSchema: Team.schema)
+        do {
+            _ = try await Amplify.API.mutate(request: createRequest)
+        } catch {
+            XCTFail("Failed to send mutation request \(error)")
+        }
+        
+        await waitForExpectations([snapshotReceived], timeout: 60)
+        querySnapshots.cancel()
     }
 }
 
