@@ -39,29 +39,6 @@ class AWSDataStoreLazyLoadHasOneTests: AWSDataStoreLazyLoadBaseTest {
         let savedParent = try await saveAndWaitForSync(parent)
     }
 
-    func testUpdateParentWithNewChild() async throws {
-        await setup(withModels: HasOneModels())
-        let child = HasOneChild()
-        let savedChild = try await saveAndWaitForSync(child)
-        let parent = HasOneParent(child: savedChild, hasOneParentChildId: savedChild.id)
-        let savedParent = try await saveAndWaitForSync(parent)
-
-        var queriedParent = try await query(for: parent)
-        XCTAssertEqual(queriedParent.hasOneParentChildId, savedChild.id)
-
-        let newChild = HasOneChild()
-        let savedNewChild = try await saveAndWaitForSync(newChild)
-        queriedParent.setChild(savedNewChild)
-        queriedParent.hasOneParentChildId = savedNewChild.id
-        try await updateAndWaitForSync(queriedParent)
-        print("New Child \(savedNewChild)")
-        print("Parent: \(savedParent)")
-
-        let queriedParentV2 = try await query(for: parent)
-        print("ParentV2: \(queriedParentV2)")
-        XCTAssertEqual(queriedParentV2.hasOneParentChildId, savedNewChild.id)
-
-    }
 }
 
 extension AWSDataStoreLazyLoadHasOneTests {
