@@ -288,7 +288,111 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
         await waitForExpectations([mutationEventReceived], timeout: 60)
         mutationEvents.cancel()
     }
+    
+    func testObserveQueryPost() async throws {
+        await setup(withModels: PostTagModels())
+        try await startAndWaitForReady()
+        let post = Post(postId: UUID().uuidString, title: "title")
+        let snapshotReceived = asyncExpectation(description: "Received query snapshot")
+        let querySnapshots = Amplify.DataStore.observeQuery(for: Post.self, where: Post.keys.postId == post.postId)
+        Task {
+            for try await querySnapshot in querySnapshots {
+                if let receivedPost = querySnapshot.items.first {
+                    guard let tags = receivedPost.tags else {
+                        XCTFail("Lazy List does not exist")
+                        return
+                    }
+                    do {
+                        try await tags.fetch()
+                    } catch {
+                        XCTFail("Failed to lazy load \(error)")
+                    }
+                    XCTAssertEqual(tags.count, 0)
+                    
+                    await snapshotReceived.fulfill()
+                }
+            }
+        }
+        let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: post, modelSchema: Post.schema)
+        do {
+            _ = try await Amplify.API.mutate(request: createRequest)
+        } catch {
+            XCTFail("Failed to send mutation request \(error)")
+        }
+        
+        await waitForExpectations([snapshotReceived], timeout: 60)
+        querySnapshots.cancel()
+    }
+    
+    func testObserveQueryTag() async throws {
+        await setup(withModels: PostTagModels())
+        try await startAndWaitForReady()
+        let tag = Tag(name: "name")
+        
+        let snapshotReceived = asyncExpectation(description: "Received query snapshot")
+        let querySnapshots = Amplify.DataStore.observeQuery(for: Tag.self, where: Tag.keys.id == tag.id)
+        Task {
+            for try await querySnapshot in querySnapshots {
+                if let receivedTag = querySnapshot.items.first {
+                    guard let posts = receivedTag.posts else {
+                        XCTFail("Lazy List does not exist")
+                        return
+                    }
+                    do {
+                        try await posts.fetch()
+                    } catch {
+                        XCTFail("Failed to lazy load \(error)")
+                    }
+                    XCTAssertEqual(posts.count, 0)
+                    
+                    await snapshotReceived.fulfill()
+                }
+            }
+        }
+        let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: tag, modelSchema: Tag.schema)
+        do {
+            _ = try await Amplify.API.mutate(request: createRequest)
+        } catch {
+            XCTFail("Failed to send mutation request \(error)")
+        }
+        
+        await waitForExpectations([snapshotReceived], timeout: 60)
+        querySnapshots.cancel()
+    }
+    
+    func testObserveQueryPostTag() async throws {
+        await setup(withModels: PostTagModels())
+        try await startAndWaitForReady()
+        let post = Post(postId: UUID().uuidString, title: "title")
+        let tag = Tag(name: "name")
+        try await saveAndWaitForSync(post)
+        try await saveAndWaitForSync(tag)
+        
+        let postTag = PostTag(postWithTagsCompositeKey: post, tagWithCompositeKey: tag)
+        
+        let snapshotReceived = asyncExpectation(description: "Received query snapshot")
+        let querySnapshots = Amplify.DataStore.observeQuery(for: PostTag.self, where: PostTag.keys.id == postTag.id)
+        Task {
+            for try await querySnapshot in querySnapshots {
+                if let receivedPostTag = querySnapshot.items.first {
+                    try await assertPostTag(receivedPostTag, canLazyLoadTag: tag, canLazyLoadPost: post)
+                    await snapshotReceived.fulfill()
+                }
+            }
+        }
+        
+        let createRequest = GraphQLRequest<MutationSyncResult>.createMutation(of: postTag, modelSchema: PostTag.schema)
+        do {
+            _ = try await Amplify.API.mutate(request: createRequest)
+        } catch {
+            XCTFail("Failed to send mutation request \(error)")
+        }
+        
+        await waitForExpectations([snapshotReceived], timeout: 60)
+        querySnapshots.cancel()
+    }
 }
+
 extension AWSDataStoreLazyLoadPostTagTests {
     typealias Post = PostWithTagsCompositeKey
     typealias Tag = TagWithCompositeKey
