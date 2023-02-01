@@ -15,7 +15,7 @@ import AWSPluginsCore
 final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBaseTest {
 
     func testSave() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose)
+        await setup(withModels: PostCommentWithCompositeKeyModels())
         
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
@@ -24,7 +24,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBase
     }
     
     func testCommentWithLazyLoadPost() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose)
+        await setup(withModels: PostCommentWithCompositeKeyModels())
         
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
@@ -50,7 +50,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBase
     
     // With `includes` on `comment.post`, the comment's post should be eager loaded.
     func testCommentWithEagerLoadPost() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose)
+        await setup(withModels: PostCommentWithCompositeKeyModels())
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
         let createdPost = try await mutate(.create(post))
@@ -73,7 +73,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBase
     
     // With `includes` on `comment.post.comments`,
     func testCommentWithEagerLoadPostAndPostComments() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose)
+        await setup(withModels: PostCommentWithCompositeKeyModels())
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
         let createdPost = try await mutate(.create(post))
@@ -124,7 +124,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBase
     
     // Without `includes` and latest codegenerated types with the model path, the post's comments should be lazy loaded
     func testPostWithLazyLoadComments() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose)
+        await setup(withModels: PostCommentWithCompositeKeyModels())
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
         _ = try await mutate(.create(post))
@@ -140,7 +140,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBase
     
     // With `includes` on `post.comments` should eager load the post's comments
     func testPostWithEagerLoadComments() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose)
+        await setup(withModels: PostCommentWithCompositeKeyModels())
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
         _ = try await mutate(.create(post))
@@ -154,7 +154,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBase
     
     // With `includes` on `post.comments.post` should eager load the post's comments' post
     func testPostWithEagerLoadCommentsAndPost() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose)
+        await setup(withModels: PostCommentWithCompositeKeyModels())
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
         let createdPost = try await mutate(.create(post))
@@ -168,8 +168,28 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBase
         assertLazyReference(comments.first!._post, state: .loaded(model: createdPost))
     }
     
+    func testListPostsListComments() async throws {
+        await setup(withModels: PostCommentWithCompositeKeyModels())
+        let post = Post(title: "title")
+        let comment = Comment(content: "content", post: post)
+        try await mutate(.create(post))
+        try await mutate(.create(comment))
+        
+        let queriedPosts = try await listQuery(.list(Post.self, where: Post.keys.id == post.id))
+        assertList(queriedPosts, state: .isLoaded(count: 1))
+        assertList(queriedPosts.first!.comments!,
+                   state: .isNotLoaded(associatedIdentifiers: [post.id, post.title], associatedField: "post"))
+        
+        let queriedComments = try await listQuery(.list(Comment.self, where: Comment.keys.id == comment.id))
+        assertList(queriedComments, state: .isLoaded(count: 1))
+        assertLazyReference(queriedComments.first!._post,
+                            state: .notLoaded(identifiers: [
+                                .init(name: "id", value: post.id),
+                                .init(name: "title", value: "title")]))
+    }
+    
     func testCreateWithoutPost() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose)
+        await setup(withModels: PostCommentWithCompositeKeyModels())
         let comment = Comment(content: "content")
         try await mutate(.create(comment))
         var queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(id: comment.id, content: comment.content)))!
@@ -191,7 +211,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBase
     }
     
     func testUpdateToNewPost() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose)
+        await setup(withModels: PostCommentWithCompositeKeyModels())
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
         try await mutate(.create(post))
@@ -217,7 +237,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBase
     }
     
     func testUpdateRemovePost() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose)
+        await setup(withModels: PostCommentWithCompositeKeyModels())
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
         try await mutate(.create(post))
@@ -233,7 +253,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBase
     }
     
     func testDelete() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose)
+        await setup(withModels: PostCommentWithCompositeKeyModels())
         let post = Post(title: "title")
         let comment = Comment(content: "content", post: post)
         let createdPost = try await mutate(.create(post))
@@ -250,7 +270,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBase
     }
     
     func testSubscribeToComments() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose)
+        await setup(withModels: PostCommentWithCompositeKeyModels())
         let post = Post(title: "title")
         try await mutate(.create(post))
         let connected = asyncExpectation(description: "subscription connected")
@@ -292,7 +312,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBase
     // The identical `includes` parameter should be used because the selection set of the mutation
     // has to match the selection set of the subscription.
     func testSubscribeToCommentsIncludesPost() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose)
+        await setup(withModels: PostCommentWithCompositeKeyModels())
         let post = Post(title: "title")
         try await mutate(.create(post))
         let connected = asyncExpectation(description: "subscription connected")
@@ -333,7 +353,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBase
     }
     
     func testSubscribeToPosts() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose)
+        await setup(withModels: PostCommentWithCompositeKeyModels())
         let post = Post(title: "title")
         
         let connected = asyncExpectation(description: "subscription connected")
@@ -371,7 +391,7 @@ final class GraphQLLazyLoadPostCommentWithCompositeKeyTests: GraphQLLazyLoadBase
     }
     
     func testSubscribeToPostsIncludes() async throws {
-        await setup(withModels: PostCommentWithCompositeKeyModels(), logLevel: .verbose)
+        await setup(withModels: PostCommentWithCompositeKeyModels())
         let post = Post(title: "title")
         
         let connected = asyncExpectation(description: "subscription connected")

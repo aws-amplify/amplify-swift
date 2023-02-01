@@ -15,11 +15,11 @@ import AWSPluginsCore
 final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest {
 
     func testConfigure() async throws {
-        await setup(withModels: HasOneParentChildModels(), logLevel: .verbose)
+        await setup(withModels: HasOneParentChildModels())
     }
     
     func testHasOneParentChild() async throws {
-        await setup(withModels: HasOneParentChildModels(), logLevel: .verbose)
+        await setup(withModels: HasOneParentChildModels())
         let hasOneChild = HasOneChild()
         let savedChild = try await mutate(.create(hasOneChild))
         let hasOneParent = HasOneParent(child: hasOneChild)
@@ -33,7 +33,7 @@ final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest {
     }
     
     func testHasOneParentChildUpdate() async throws {
-        await setup(withModels: HasOneParentChildModels(), logLevel: .verbose)
+        await setup(withModels: HasOneParentChildModels())
         let hasOneChild = HasOneChild()
         let savedChild = try await mutate(.create(hasOneChild))
         let hasOneParent = HasOneParent(child: hasOneChild)
@@ -52,7 +52,7 @@ final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest {
     }
     
     func testHasOneParentChildDelete() async throws {
-        await setup(withModels: HasOneParentChildModels(), logLevel: .verbose)
+        await setup(withModels: HasOneParentChildModels())
         let hasOneChild = HasOneChild()
         let savedChild = try await mutate(.create(hasOneChild))
         let hasOneParent = HasOneParent(child: hasOneChild)
@@ -66,7 +66,7 @@ final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest {
     }
     
     func testHasOneParentChildGet() async throws {
-        await setup(withModels: HasOneParentChildModels(), logLevel: .verbose)
+        await setup(withModels: HasOneParentChildModels())
         let hasOneChild = HasOneChild()
         let savedChild = try await mutate(.create(hasOneChild))
         let hasOneParent = HasOneParent(child: hasOneChild)
@@ -83,7 +83,7 @@ final class GraphQLLazyLoadHasOneTests: GraphQLLazyLoadBaseTest {
     }
     
     func testHasOneParentChildList() async throws {
-        await setup(withModels: HasOneParentChildModels(), logLevel: .verbose)
+        await setup(withModels: HasOneParentChildModels())
         let hasOneChild = HasOneChild()
         let savedChild = try await mutate(.create(hasOneChild))
         let hasOneParent = HasOneParent(child: hasOneChild)

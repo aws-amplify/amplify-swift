@@ -15,11 +15,11 @@ import AWSPluginsCore
 final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest {
 
     func testConfigure() async throws {
-        await setup(withModels: DefaultPKModels(), logLevel: .verbose)
+        await setup(withModels: DefaultPKModels())
     }
     
     func testDefaultPKParentChild() async throws {
-        await setup(withModels: DefaultPKModels(), logLevel: .verbose)
+        await setup(withModels: DefaultPKModels())
         let defaultPKParent = DefaultPKParent()
         let savedParent = try await mutate(.create(defaultPKParent))
         let defaultPKChild = DefaultPKChild(parent: savedParent)
@@ -33,7 +33,7 @@ final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest {
     }
     
     func testDefaultParentChildUpdate() async throws {
-        await setup(withModels: DefaultPKModels(), logLevel: .verbose)
+        await setup(withModels: DefaultPKModels())
         let defaultPKParent = DefaultPKParent()
         let savedParent = try await mutate(.create(defaultPKParent))
         let defaultPKChild = DefaultPKChild(parent: savedParent)
@@ -52,7 +52,7 @@ final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest {
     }
     
     func testDefaultParentChildDelete() async throws {
-        await setup(withModels: DefaultPKModels(), logLevel: .verbose)
+        await setup(withModels: DefaultPKModels())
         let defaultPKParent = DefaultPKParent()
         let savedParent = try await mutate(.create(defaultPKParent))
         let defaultPKChild = DefaultPKChild(parent: savedParent)
@@ -66,7 +66,7 @@ final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest {
     }
     
     func testDefaultPKParentChildGet() async throws {
-        await setup(withModels: DefaultPKModels(), logLevel: .verbose)
+        await setup(withModels: DefaultPKModels())
         let defaultPKParent = DefaultPKParent()
         let savedParent = try await mutate(.create(defaultPKParent))
         let defaultPKChild = DefaultPKChild(parent: savedParent)
@@ -87,7 +87,7 @@ final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest {
     }
     
     func testDefaultPKParentChildList() async throws {
-        await setup(withModels: DefaultPKModels(), logLevel: .verbose)
+        await setup(withModels: DefaultPKModels())
         let defaultPKParent = DefaultPKParent()
         let savedParent = try await mutate(.create(defaultPKParent))
         let defaultPKChild = DefaultPKChild(parent: savedParent)

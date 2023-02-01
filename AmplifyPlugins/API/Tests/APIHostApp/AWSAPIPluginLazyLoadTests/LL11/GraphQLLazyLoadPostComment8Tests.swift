@@ -15,7 +15,7 @@ import AWSPluginsCore
 final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
 
     func testSave() async throws {
-        await setup(withModels: PostComment8Models(), logLevel: .verbose)
+        await setup(withModels: PostComment8Models())
         
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString,
@@ -27,7 +27,7 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
     }
     
     func testQueryThenLazyLoad() async throws {
-        await setup(withModels: PostComment8Models(), logLevel: .verbose)
+        await setup(withModels: PostComment8Models())
         
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString,
@@ -71,39 +71,45 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
         assertComment(comment, contains: post)
     }
     
-    /*
-     This test fails when the create mutation contains Null values for the foreign keys. On create mutation, we should
-     be able to detect that the values being set are foreign key fields and remove them from the input
-     {
-       "variables" : {
-         "input" : {
-           "content" : "content",
-           "postId" : null,
-           "commentId" : "532C8869-FD00-4694-A2DE-38223E080206",
-           "postTitle" : null
-         }
-       },
-       "query" : "mutation CreateComment8($input: CreateComment8Input!) {\n  createComment8(input: $input) {\n    commentId\n    content\n    createdAt\n    postId\n    postTitle\n    updatedAt\n    __typename\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
-     }
-     */
+    func testListPostsListComments() async throws {
+        await setup(withModels: PostComment8Models())
+        let post = Post(postId: UUID().uuidString, title: "title")
+        let comment = Comment(commentId: UUID().uuidString,
+                              content: "content",
+                              postId: post.postId,
+                              postTitle: post.title)
+        try await mutate(.create(post))
+        try await mutate(.create(comment))
+        
+        
+        let queriedPosts = try await listQuery(.list(Post.self, where: Post.keys.postId == post.postId))
+        assertList(queriedPosts, state: .isLoaded(count: 1))
+        assertList(queriedPosts.first!.comments!,
+                   state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title], associatedField: "postId"))
+        
+        let queriedComments = try await listQuery(.list(Comment.self, where: Comment.keys.commentId == comment.commentId))
+        assertList(queriedComments, state: .isLoaded(count: 1))
+        XCTAssertEqual(queriedComments.first!.postId, post.postId)
+        XCTAssertEqual(queriedComments.first!.postTitle, post.title)
+    }
+    
     func testSaveWithoutPost() async throws {
-        throw XCTSkip("Create mutation with null foreign keys fail.")
-        await setup(withModels: PostComment8Models(), logLevel: .verbose)
+        await setup(withModels: PostComment8Models())
         let comment = Comment(commentId: UUID().uuidString, content: "content")
-        let savedComment = try await mutate(.create(comment))
-//        var queriedComment = try await query(.get(Comment.self, byId: comment.commentId))!
-//        assertCommentDoesNotContainPost(queriedComment)
-//        let post = Post(postId: UUID().uuidString, title: "title")
-//        let savedPost = try await mutate(.create(post))
-//        queriedComment.postId = savedPost.postId
-//        queriedComment.postTitle = savedPost.title
-//        let saveCommentWithPost = try await mutate(.update(queriedComment))
-//        let queriedComment2 = try await query(for: saveCommentWithPost)!
-//        assertComment(queriedComment2, contains: post)
+        try await mutate(.create(comment))
+        var queriedComment = try await query(.get(Comment.self, byIdentifier: .identifier(commentId: comment.commentId, content: comment.content)))!
+        assertCommentDoesNotContainPost(queriedComment)
+        let post = Post(postId: UUID().uuidString, title: "title")
+        let savedPost = try await mutate(.create(post))
+        queriedComment.postId = savedPost.postId
+        queriedComment.postTitle = savedPost.title
+        let saveCommentWithPost = try await mutate(.update(queriedComment))
+        let queriedComment2 = try await query(for: saveCommentWithPost)!
+        assertComment(queriedComment2, contains: post)
     }
     
     func testUpdateFromQueriedComment() async throws {
-        await setup(withModels: PostComment8Models(), logLevel: .verbose)
+        await setup(withModels: PostComment8Models())
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString,
                               content: "content",
@@ -119,7 +125,7 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
     }
     
     func testUpdateToNewPost() async throws {
-        await setup(withModels: PostComment8Models(), logLevel: .verbose)
+        await setup(withModels: PostComment8Models())
         
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString,
@@ -140,7 +146,7 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
     }
     
     func testUpdateRemovePost() async throws {
-        await setup(withModels: PostComment8Models(), logLevel: .verbose)
+        await setup(withModels: PostComment8Models())
         
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString,
@@ -161,7 +167,7 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
     }
     
     func testDelete() async throws {
-        await setup(withModels: PostComment8Models(), logLevel: .verbose)
+        await setup(withModels: PostComment8Models())
         
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString,

@@ -15,11 +15,11 @@ import AWSPluginsCore
 final class GraphQLLazyLoadCompositePKTests: GraphQLLazyLoadBaseTest {
 
     func testConfigure() async throws {
-        await setup(withModels: CompositePKModels(), logLevel: .verbose)
+        await setup(withModels: CompositePKModels())
     }
     
     func testCompositePKParent() async throws {
-        await setup(withModels: CompositePKModels(), logLevel: .verbose)
+        await setup(withModels: CompositePKModels())
         
         let compositePKParent = CompositePKParent(customId: UUID().uuidString,
                                                   content: "content")
@@ -39,7 +39,7 @@ final class GraphQLLazyLoadCompositePKTests: GraphQLLazyLoadBaseTest {
     }
     
     func testCompositePKParentUpdate() async throws {
-        await setup(withModels: CompositePKModels(), logLevel: .verbose)
+        await setup(withModels: CompositePKModels())
         
         let compositePKParent = CompositePKParent(customId: UUID().uuidString,
                                                   content: "content")
@@ -60,7 +60,7 @@ final class GraphQLLazyLoadCompositePKTests: GraphQLLazyLoadBaseTest {
     }
     
     func testCompositePKParentDelete() async throws {
-        await setup(withModels: CompositePKModels(), logLevel: .verbose)
+        await setup(withModels: CompositePKModels())
         
         let compositePKParent = CompositePKParent(customId: UUID().uuidString,
                                                   content: "content")
@@ -94,7 +94,7 @@ final class GraphQLLazyLoadCompositePKTests: GraphQLLazyLoadBaseTest {
     }
     
     func testCompositePKParentGet() async throws {
-        await setup(withModels: CompositePKModels(), logLevel: .verbose)
+        await setup(withModels: CompositePKModels())
         
         let compositePKParent = CompositePKParent(customId: UUID().uuidString,
                                                   content: "content")
@@ -199,7 +199,7 @@ final class GraphQLLazyLoadCompositePKTests: GraphQLLazyLoadBaseTest {
     }
     
     func testCompositePKParentList() async throws {
-        await setup(withModels: CompositePKModels(), logLevel: .verbose)
+        await setup(withModels: CompositePKModels())
         
         let compositePKParent = CompositePKParent(customId: UUID().uuidString,
                                                   content: "content")
