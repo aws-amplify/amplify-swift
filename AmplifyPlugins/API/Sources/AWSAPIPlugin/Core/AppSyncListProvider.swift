@@ -115,7 +115,6 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
             var queryPredicates: [QueryPredicateOperation] = []
             
             let columnNames = columnNames(fields: associatedFields, Element.schema)
-            print("####### columnNames for \(associatedFields) \(columnNames) ")
             let predicateValues = zip(columnNames, associatedIdentifiers)
             for (identifierName, identifierValue) in predicateValues {
                 queryPredicates.append(QueryPredicateOperation(field: identifierName,
