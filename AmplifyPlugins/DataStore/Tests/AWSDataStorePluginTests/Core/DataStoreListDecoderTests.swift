@@ -57,8 +57,8 @@ class DataStoreListDecoderTests: BaseDataStoreTests {
 
     func testDataStoreListDecoderShouldDecodeFromAssociationData() throws {
         let json: JSONValue = [
-            "associatedId": "postId",
-            "associatedField": "post"
+            "dataStoreAssociatedIdentifiers": ["postId"],
+            "dataStoreAssociatedFields": ["post"]
         ]
         let data = try encoder.encode(json)
         let harness = try decoder.decode(DataStoreListDecoderHarness<Post4>.self, from: data)

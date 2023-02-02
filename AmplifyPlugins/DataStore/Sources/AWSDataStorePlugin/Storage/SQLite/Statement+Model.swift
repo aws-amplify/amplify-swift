@@ -154,10 +154,10 @@ extension Statement: StatementModelConvertible {
 
     private func convertCollection(field: ModelField, schema: ModelSchema, from element: Element, path: [String]) -> Any? {
         if field.isArray && field.hasAssociation,
-           case let .some(.hasMany(associatedFieldName: associatedFieldName, targetNames: targetNames)) = field.association
+           case let .some(.hasMany(associatedFieldName: associatedFieldName, associatedFieldNames: associatedFieldNames)) = field.association
         {
             // Construct the lazy list based on the field reference name and `@@primarykey` or primary key field of the parent
-            if targetNames.count <= 1, let associatedFieldName = associatedFieldName {
+            if associatedFieldNames.count <= 1, let associatedFieldName = associatedFieldName {
                 let primaryKeyName = schema.primaryKey.isCompositeKey
                     ? ModelIdentifierFormat.Custom.sqlColumnName
                     : schema.primaryKey.fields.first.flatMap { $0.name }
@@ -176,7 +176,7 @@ extension Statement: StatementModelConvertible {
                     .compactMap { $0 }
                     .map { String(describing: $0) }
                 return DataStoreListDecoder.lazyInit(associatedIds: primaryKeyValues,
-                                                     associatedWith: targetNames)
+                                                     associatedWith: associatedFieldNames)
             }
             
         }

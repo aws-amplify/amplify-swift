@@ -87,7 +87,7 @@ import Foundation
 /// - Warning: Although this has `public` access, it is intended for internal & codegen use and should not be used
 ///   directly by host applications. The behavior of this may change without warning.
 public enum ModelAssociation {
-    case hasMany(associatedFieldName: String?, targetNames: [String] = [])
+    case hasMany(associatedFieldName: String?, associatedFieldNames: [String] = [])
     case hasOne(associatedFieldName: String?, targetNames: [String])
     case belongsTo(associatedFieldName: String?, targetNames: [String])
 
@@ -98,8 +98,8 @@ public enum ModelAssociation {
         return .belongsTo(associatedFieldName: nil, targetNames: targetNames)
     }
     
-    public static func hasMany(associatedWith: CodingKey?, targetNames: [String] = []) -> ModelAssociation {
-        return .hasMany(associatedFieldName: associatedWith?.stringValue, targetNames: targetNames)
+    public static func hasMany(associatedWith: CodingKey? = nil, associatedWithFields: [CodingKey] = []) -> ModelAssociation {
+        return .hasMany(associatedFieldName: associatedWith?.stringValue, associatedFieldNames: associatedWithFields.map { $0.stringValue })
     }
 
     @available(*, deprecated, message: "Use hasOne(associatedWith:targetNames:)")
@@ -267,14 +267,14 @@ extension ModelField {
     ///   breaking change.
     public var associatedFieldNames: [String] {
         switch association {
-        case .belongsTo(let associatedKey, let targetNames),
-                .hasOne(let associatedKey, let targetNames),
-                .hasMany(let associatedKey, let targetNames):
-            if targetNames.isEmpty, let associatedKey = associatedKey {
+        case .belongsTo(let associatedKey, let associatedKeys),
+                .hasOne(let associatedKey, let associatedKeys),
+                .hasMany(let associatedKey, let associatedKeys):
+            if associatedKeys.isEmpty, let associatedKey = associatedKey {
                 return [associatedKey]
             }
             
-            return targetNames
+            return associatedKeys
         case .none:
             return []
         }
