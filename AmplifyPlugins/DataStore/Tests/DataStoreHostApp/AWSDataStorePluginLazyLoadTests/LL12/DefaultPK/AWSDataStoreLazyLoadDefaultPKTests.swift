@@ -132,8 +132,8 @@ class AWSDataStoreLazyLoadDefaultPKTests: AWSDataStoreLazyLoadBaseTest {
             XCTFail("Missing children on parent")
             return
         }
-        assertList(children, state: .isNotLoaded(associatedId: parent.identifier,
-                                                 associatedField: "parent"))
+        assertList(children, state: .isNotLoaded(associatedIds: [parent.identifier],
+                                                 associatedFields: ["parent"]))
         
         try await children.fetch()
         assertList(children, state: .isLoaded(count: 1))

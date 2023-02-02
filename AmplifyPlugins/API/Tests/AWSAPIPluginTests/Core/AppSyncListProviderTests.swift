@@ -94,15 +94,15 @@ class AppSyncListProviderTests: XCTestCase {
 
     func testInitWithModelMetadataShouldBeNotLoadedState() throws {
         let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
-                                                        appSyncAssociatedField: "post",
+                                                        appSyncAssociatedFields: ["post"],
                                                         apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
-        guard case .notLoaded(let associatedIdentifiers, let associatedField) = provider.loadedState else {
+        guard case .notLoaded(let associatedIdentifiers, let associatedFields) = provider.loadedState else {
             XCTFail("Should be in not loaded state")
             return
         }
         XCTAssertEqual(associatedIdentifiers, ["postId"])
-        XCTAssertEqual(associatedField, "post")
+        XCTAssertEqual(associatedFields, ["post"])
     }
 
     func testLoadedStateLoadSuccess() async throws {
@@ -137,7 +137,7 @@ class AppSyncListProviderTests: XCTestCase {
             return event
         }
         let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
-                                                        appSyncAssociatedField: "post",
+                                                        appSyncAssociatedFields: ["post"],
                                                         apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
@@ -174,7 +174,7 @@ class AppSyncListProviderTests: XCTestCase {
             return event
         }
         let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
-                                                        appSyncAssociatedField: "post",
+                                                        appSyncAssociatedFields: ["post"],
                                                         apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
@@ -221,7 +221,7 @@ class AppSyncListProviderTests: XCTestCase {
             return event
         }
         let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
-                                                        appSyncAssociatedField: "post",
+                                                        appSyncAssociatedFields: ["post"],
                                                         apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
@@ -258,7 +258,7 @@ class AppSyncListProviderTests: XCTestCase {
             return event
         }
         let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
-                                                        appSyncAssociatedField: "post",
+                                                        appSyncAssociatedFields: ["post"],
                                                         apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
@@ -294,7 +294,7 @@ class AppSyncListProviderTests: XCTestCase {
             return event
         }
         let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
-                                                 appSyncAssociatedField: "post",
+                                                 appSyncAssociatedFields: ["post"],
                                                  apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {
@@ -343,7 +343,7 @@ class AppSyncListProviderTests: XCTestCase {
             return event
         }
         let modelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: ["postId"],
-                                                        appSyncAssociatedField: "post",
+                                                        appSyncAssociatedFields: ["post"],
                                                         apiName: "apiName")
         let provider = AppSyncListProvider<Comment4>(metadata: modelMetadata)
         guard case .notLoaded = provider.loadedState else {

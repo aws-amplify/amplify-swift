@@ -154,16 +154,31 @@ extension Statement: StatementModelConvertible {
 
     private func convertCollection(field: ModelField, schema: ModelSchema, from element: Element, path: [String]) -> Any? {
         if field.isArray && field.hasAssociation,
-           case let .some(.hasMany(associatedFieldName: associatedFieldName)) = field.association
+           case let .some(.hasMany(associatedFieldName: associatedFieldName, targetNames: targetNames)) = field.association
         {
-            let primeryKeyName = schema.primaryKey.isCompositeKey
-                ? ModelIdentifierFormat.Custom.sqlColumnName
-                : schema.primaryKey.fields.first.flatMap { $0.name }
-            let primeryKeyValue = primeryKeyName.flatMap { getValue(from: element, by: path + [$0]) }
+            // Construct the lazy list based on the field reference name and `@@primarykey` or primary key field of the parent
+            if targetNames.count <= 1, let associatedFieldName = associatedFieldName {
+                let primaryKeyName = schema.primaryKey.isCompositeKey
+                    ? ModelIdentifierFormat.Custom.sqlColumnName
+                    : schema.primaryKey.fields.first.flatMap { $0.name }
+                let primaryKeyValue = primaryKeyName.flatMap { getValue(from: element, by: path + [$0]) }
 
-            return primeryKeyValue.map {
-                DataStoreListDecoder.lazyInit(associatedId: String(describing: $0), associatedWith: associatedFieldName)
+                return primaryKeyValue.map {
+                    DataStoreListDecoder.lazyInit(associatedIds: [String(describing: $0)],
+                                                  associatedWith: [associatedFieldName])
+                }
+            } else {
+                // If `targetNames` is > 1, then this is a uni-directional has-many, thus no reference field on the child
+                // Construct the lazy list based on the primary key values and the corresponding target names
+                let primaryKeyNames = schema.primaryKey.fields.map { $0.name }
+                let primaryKeyValues = primaryKeyNames
+                    .map { getValue(from: element, by: path + [$0]) }
+                    .compactMap { $0 }
+                    .map { String(describing: $0) }
+                return DataStoreListDecoder.lazyInit(associatedIds: primaryKeyValues,
+                                                     associatedWith: targetNames)
             }
+            
         }
 
         return nil

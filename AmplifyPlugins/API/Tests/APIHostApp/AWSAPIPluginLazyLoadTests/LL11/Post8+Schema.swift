@@ -28,7 +28,7 @@ extension Post8 {
     model.fields(
       .field(post8.postId, is: .required, ofType: .string),
       .field(post8.title, is: .required, ofType: .string),
-      .hasMany(post8.comments, is: .optional, ofType: Comment8.self, associatedWith: Comment8.keys.postId),
+      .hasMany(post8.comments, is: .optional, ofType: Comment8.self, associatedWith: Comment8.keys.postId, targetNames: ["postId", "postTitle"]),
       .field(post8.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(post8.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )

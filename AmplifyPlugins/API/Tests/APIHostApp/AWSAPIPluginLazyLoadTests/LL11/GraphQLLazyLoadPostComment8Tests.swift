@@ -61,7 +61,7 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
             return
         }
         assertList(comments, state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title],
-                                                 associatedField: "postId"))
+                                                 associatedFields: ["postId", "postTitle"]))
         try await comments.fetch()
         assertList(comments, state: .isLoaded(count: 1))
         guard let comment = comments.first else {
@@ -85,7 +85,7 @@ final class GraphQLLazyLoadPostComment8Tests: GraphQLLazyLoadBaseTest {
         let queriedPosts = try await listQuery(.list(Post.self, where: Post.keys.postId == post.postId))
         assertList(queriedPosts, state: .isLoaded(count: 1))
         assertList(queriedPosts.first!.comments!,
-                   state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title], associatedField: "postId"))
+                   state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title], associatedFields: ["postId", "postTitle"]))
         
         let queriedComments = try await listQuery(.list(Comment.self, where: Comment.keys.commentId == comment.commentId))
         assertList(queriedComments, state: .isLoaded(count: 1))

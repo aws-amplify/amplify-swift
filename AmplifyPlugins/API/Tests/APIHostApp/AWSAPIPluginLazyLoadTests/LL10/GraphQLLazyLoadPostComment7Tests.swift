@@ -41,7 +41,7 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
         
         let comments = loadedPost.comments!
         // The loaded post should have comments that are also not loaded
-        assertList(comments, state: .isNotLoaded(associatedIdentifiers: [createdPost.postId, createdPost.title], associatedField: "post"))
+        assertList(comments, state: .isNotLoaded(associatedIdentifiers: [createdPost.postId, createdPost.title], associatedFields: ["post"]))
         // load the comments
         try await comments.fetch()
         assertList(comments, state: .isLoaded(count: 1))
@@ -63,7 +63,7 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
         XCTAssertEqual(loadedPost.postId, post.postId)
         // The loaded post should have comments that are not loaded
         let comments = loadedPost.comments!
-        assertList(comments, state: .isNotLoaded(associatedIdentifiers: [createdPost.postId, createdPost.title], associatedField: "post"))
+        assertList(comments, state: .isNotLoaded(associatedIdentifiers: [createdPost.postId, createdPost.title], associatedFields: ["post"]))
         // load the comments
         try await comments.fetch()
         assertList(comments, state: .isLoaded(count: 1))
@@ -97,7 +97,7 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
         let queriedPosts = try await listQuery(.list(Post.self, where: Post.keys.postId == post.postId))
         assertList(queriedPosts, state: .isLoaded(count: 1))
         assertList(queriedPosts.first!.comments!,
-                   state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title], associatedField: "post"))
+                   state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title], associatedFields: ["post"]))
         
         let queriedComments = try await listQuery(.list(Comment.self, where: Comment.keys.commentId == comment.commentId))
         assertList(queriedComments, state: .isLoaded(count: 1))
@@ -142,7 +142,7 @@ final class GraphQLLazyLoadPostComment7Tests: GraphQLLazyLoadBaseTest {
             return
         }
         assertList(comments, state: .isNotLoaded(associatedIdentifiers: [post.postId, post.title],
-                                                 associatedField: "post"))
+                                                 associatedFields: ["post"]))
         try await comments.fetch()
         assertList(comments, state: .isLoaded(count: 1))
         guard let comment = comments.first else {

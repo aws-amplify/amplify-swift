@@ -72,7 +72,7 @@ class DataStoreListDecoderTests: BaseDataStoreTests {
             return
         }
         XCTAssertEqual(associatedIdentifiers, ["postId"])
-        XCTAssertEqual(associatedField, "post")
+        XCTAssertEqual(associatedField, ["post"])
     }
 
     func testDataStoreListDecoderShouldNotDecodeForInvalidAssociationData() throws {

@@ -133,18 +133,18 @@ class GraphQLLazyLoadBaseTest: XCTestCase {
     }
     
     enum AssertListState {
-        case isNotLoaded(associatedIdentifiers: [String], associatedField: String)
+        case isNotLoaded(associatedIdentifiers: [String], associatedFields: [String])
         case isLoaded(count: Int)
     }
     
     func assertList<M: Model>(_ list: List<M>, state: AssertListState) {
         switch state {
-        case .isNotLoaded(let expectedAssociatedIdentifiers, let expectedAssociatedField):
-            if case .notLoaded(let associatedIdentifiers, let associatedField) = list.listProvider.getState() {
+        case .isNotLoaded(let expectedAssociatedIdentifiers, let expectedAssociatedFields):
+            if case .notLoaded(let associatedIdentifiers, let associatedFields) = list.listProvider.getState() {
                 XCTAssertEqual(associatedIdentifiers, expectedAssociatedIdentifiers)
-                XCTAssertEqual(associatedField, expectedAssociatedField)
+                XCTAssertEqual(associatedFields, expectedAssociatedFields)
             } else {
-                XCTFail("It should be not loaded with expected associatedId \(expectedAssociatedIdentifiers) associatedField \(expectedAssociatedField)")
+                XCTFail("It should be not loaded with expected associatedIds \(expectedAssociatedIdentifiers) associatedFields \(expectedAssociatedFields)")
             }
         case .isLoaded(let count):
             if case .loaded(let loadedList) = list.listProvider.getState() {

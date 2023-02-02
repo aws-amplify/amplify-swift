@@ -90,9 +90,9 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         }
         XCTAssertEqual(queriedPost.id, queriedPost.id)
         switch queriedPost.comments?.listProvider.getState() {
-        case .notLoaded(let associatedIdentifiers, let associatedField):
+        case .notLoaded(let associatedIdentifiers, let associatedFields):
             XCTAssertEqual(associatedIdentifiers, [post.id])
-            XCTAssertEqual(associatedField, LazyChildComment4V2.CodingKeys.post.stringValue)
+            XCTAssertEqual(associatedFields, [LazyChildComment4V2.CodingKeys.post.stringValue])
         case .loaded:
             XCTFail("Should be not loaded")
         default:
@@ -288,9 +288,9 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         }
         
         switch comments.listProvider.getState() {
-        case .notLoaded(let associatedIdentifiers, let associatedField):
+        case .notLoaded(let associatedIdentifiers, let associatedFields):
             XCTAssertEqual(associatedIdentifiers, [post.id])
-            XCTAssertEqual(associatedField, "post")
+            XCTAssertEqual(associatedFields, ["post"])
         case .loaded:
             XCTFail("Should not be loaded")
         }
@@ -396,9 +396,9 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
         }
         
         switch comments1.listProvider.getState() {
-        case .notLoaded(let associatedIdentifiers, let associatedField):
+        case .notLoaded(let associatedIdentifiers, let associatedFields):
             XCTAssertEqual(associatedIdentifiers, [post1.id])
-            XCTAssertEqual(associatedField, "post")
+            XCTAssertEqual(associatedFields, ["post"])
         case .loaded:
             XCTFail("Should not be loaded")
         }
@@ -408,9 +408,9 @@ final class StorageEngineTestsLazyPostComment4V2Tests: StorageEngineTestsBase, S
             return
         }
         switch comments2.listProvider.getState() {
-        case .notLoaded(let associatedIdentifiers, let associatedField):
+        case .notLoaded(let associatedIdentifiers, let associatedFields):
             XCTAssertEqual(associatedIdentifiers, [post2.id])
-            XCTAssertEqual(associatedField, "post")
+            XCTAssertEqual(associatedFields, ["post"])
         case .loaded:
             XCTFail("Should not be loaded")
         }

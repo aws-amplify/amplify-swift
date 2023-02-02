@@ -233,12 +233,13 @@ public enum ModelFieldDefinition {
                                is nullability: ModelFieldNullability = .required,
                                isReadOnly: Bool = false,
                                ofType type: Model.Type,
-                               associatedWith associatedKey: CodingKey) -> ModelFieldDefinition {
+                               associatedWith associatedKey: CodingKey,
+                               targetNames: [String] = []) -> ModelFieldDefinition {
         return .field(key,
                       is: nullability,
                       isReadOnly: isReadOnly,
                       ofType: .collection(of: type),
-                      association: .hasMany(associatedWith: associatedKey))
+                      association: .hasMany(associatedWith: associatedKey, targetNames: targetNames))
     }
 
     public static func hasOne(_ key: CodingKey,

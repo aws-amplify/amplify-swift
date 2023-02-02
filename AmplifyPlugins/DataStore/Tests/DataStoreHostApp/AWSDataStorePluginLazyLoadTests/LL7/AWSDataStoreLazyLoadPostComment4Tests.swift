@@ -33,9 +33,7 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
     }
     
     func testLazyLoad() async throws {
-        throw XCTSkip("Need further investigation, saved post cannot lazy load comment")
         await setup(withModels: PostComment4Models())
-        
         let post = Post(postId: UUID().uuidString, title: "title")
         let comment = Comment(commentId: UUID().uuidString,
                               content: "content",
@@ -45,8 +43,12 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
         let savedComment = try await saveAndWaitForSync(comment)
         assertComment(savedComment, contains: savedPost)
         try await assertPost(savedPost, canLazyLoad: savedComment)
+        
+        // Assert on Queried Comment
         let queriedComment = try await query(for: savedComment)
         assertComment(queriedComment, contains: savedPost)
+
+        // Assert on Queried Post
         let queriedPost = try await query(for: savedPost)
         try await assertPost(queriedPost, canLazyLoad: savedComment)
     }
@@ -67,8 +69,8 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
             XCTFail("Missing comments on post")
             return
         }
-        assertList(comments, state: .isNotLoaded(associatedId: post.identifier,
-                                                 associatedField: "post"))
+        assertList(comments, state: .isNotLoaded(associatedIds: [post.postId, post.title],
+                                                 associatedFields: ["post4CommentsPostId", "post4CommentsTitle"]))
         try await comments.fetch()
         assertList(comments, state: .isLoaded(count: 1))
         guard let comment = comments.first else {
@@ -186,11 +188,8 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
                    version == 1,
                    let receivedPost = try? mutationEvent.decodeModel(as: Post.self),
                    receivedPost.postId == post.postId {
-                    
-                    // TODO: Needs further investigation, received post cannot lazy load comment
-                    //let savedComment = try await saveAndWaitForSync(comment)
-                    //try await assertPost(receivedPost, canLazyLoad: savedComment)
-                    
+                    let savedComment = try await saveAndWaitForSync(comment)
+                    try await assertPost(receivedPost, canLazyLoad: savedComment)
                     await mutationEventReceived.fulfill()
                 }
             }
@@ -254,10 +253,8 @@ final class AWSDataStoreLazyLoadPostComment4Tests: AWSDataStoreLazyLoadBaseTest 
         Task {
             for try await querySnapshot in querySnapshots {
                 if let receivedPost = querySnapshot.items.first {
-                    // TODO: Needs further investigation, received post cannot lazy load comment
-                    //let savedComment = try await saveAndWaitForSync(comment)
-                    //try await assertPost(receivedPost, canLazyLoad: savedComment)
-                    
+                    let savedComment = try await saveAndWaitForSync(comment)
+                    try await assertPost(receivedPost, canLazyLoad: savedComment)
                     await snapshotReceived.fulfill()
                 }
             }
