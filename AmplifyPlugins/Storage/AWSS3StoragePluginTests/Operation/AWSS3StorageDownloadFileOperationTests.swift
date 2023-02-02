@@ -177,5 +177,6 @@ class AWSS3StorageDownloadFileOperationTests: AWSS3StorageOperationTestBase {
         mockStorageService.verifyDownload(serviceKey: expectedServiceKey, fileURL: url)
     }
 
+    // swiftlint:disable:next todo
     // TODO: missing unit tests for pause resume and cancel. do we create a mock of the StorageTaskReference?
 }

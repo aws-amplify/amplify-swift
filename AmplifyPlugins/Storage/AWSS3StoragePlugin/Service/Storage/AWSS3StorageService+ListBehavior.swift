@@ -13,6 +13,7 @@ typealias ListCompletedHandler = (AWSTask<AWSS3ListObjectsV2Output>) -> Any?
 
 extension AWSS3StorageService {
     func list(prefix: String, path: String?, onEvent: @escaping StorageServiceListEventHandler) {
+        // swiftlint:disable:next todo
         // TODO: implementation details - use request.options.limit.
         // listObjectsV2Request.maxKeys ?
         // Figure out if we need ay batching logic

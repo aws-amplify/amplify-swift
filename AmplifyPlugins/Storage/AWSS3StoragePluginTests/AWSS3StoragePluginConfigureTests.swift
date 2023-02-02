@@ -9,6 +9,7 @@ import XCTest
 import Amplify
 @testable import AWSS3StoragePlugin
 
+// swiftlint:disable:next type_body_length
 class AWSS3StoragePluginConfigureTests: AWSS3StoragePluginTests {
 
     // MARK: Plugin Key test

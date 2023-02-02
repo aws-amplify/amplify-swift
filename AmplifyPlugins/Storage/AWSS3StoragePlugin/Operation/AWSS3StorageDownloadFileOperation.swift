@@ -10,6 +10,7 @@ import Amplify
 import AWSPluginsCore
 import AWSS3
 
+// swiftlint:disable todo
 // TODO: thread safety: everything has to be locked down
 // TODO verify no retain cycle
 
@@ -91,7 +92,7 @@ public class AWSS3StorageDownloadFileOperation: AmplifyInProcessReportingOperati
         let prefixResolver = storageConfiguration.prefixResolver ??
             StorageAccessLevelAwarePrefixResolver(authService: authService)
         prefixResolver.resolvePrefix(for: request.options.accessLevel,
-                                                               targetIdentityId: request.options.targetIdentityId) { prefixResolution in
+                                     targetIdentityId: request.options.targetIdentityId) { prefixResolution in
             switch prefixResolution {
             case .success(let prefix):
                 let serviceKey = prefix + self.request.key
