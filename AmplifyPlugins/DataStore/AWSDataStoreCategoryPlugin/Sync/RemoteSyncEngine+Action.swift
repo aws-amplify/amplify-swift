@@ -21,6 +21,7 @@ extension RemoteSyncEngine {
         case clearedStateOutgoingMutations(APICategoryGraphQLBehavior, StorageEngineAdapter)
         case initializedSubscriptions
         case performedInitialSync
+        // swiftlint:disable:next line_length
         case activatedCloudSubscriptions(APICategoryGraphQLBehavior, MutationEventPublisher, IncomingEventReconciliationQueue?)
         case activatedMutationQueue
         case notifiedSyncStarted

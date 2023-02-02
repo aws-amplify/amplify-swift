@@ -45,6 +45,7 @@ protocol ModelStorageBehavior {
                          paginationInput: QueryPaginationInput?,
                          completion: DataStoreCallback<[M]>)
 
+    // swiftlint:disable:next function_parameter_count
     func query<M: Model>(_ modelType: M.Type,
                          modelSchema: ModelSchema,
                          predicate: QueryPredicate?,

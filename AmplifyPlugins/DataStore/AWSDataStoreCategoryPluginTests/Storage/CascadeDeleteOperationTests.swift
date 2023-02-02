@@ -856,4 +856,4 @@ class CascadeDeleteOperationTests: StorageEngineTestsBase {
         XCTAssertEqual(submittedEvents[1].modelName, Menu.modelName)
         XCTAssertEqual(submittedEvents[2].modelName, Restaurant.modelName)
     }
-}
+} // swiftlint:disable:this file_length

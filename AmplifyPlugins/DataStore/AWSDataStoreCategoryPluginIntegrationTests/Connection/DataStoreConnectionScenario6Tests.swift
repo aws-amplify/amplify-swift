@@ -40,6 +40,7 @@ import Combine
  */
 
 @available(iOS 13.0, *)
+// swiftlint:disable:next type_body_length
 class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
 
     struct TestModelRegistration: AmplifyModelRegistration {
@@ -220,7 +221,7 @@ class DataStoreConnectionScenario6Tests: SyncEngineIntegrationTestBase {
     /// Ensure that the delete with `.all` predicate works as expected.
     /// There may be additional blogs/post/comments from other tests that are being deleted as part of this test
     /// We ignore those and only assert that that 6 models created in this test were deleted successfully.
-    func testDeleteAll() throws {
+    func testDeleteAll() throws { // swiftlint:disable:this cyclomatic_complexity
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForReady()
         var cancellables = Set<AnyCancellable>()

@@ -520,4 +520,4 @@ class SQLiteStorageEngineAdapterJsonTests: XCTestCase {
             XCTFail(String(describing: error))
         }
     }
-}
+} // swiftlint:disable:this file_length

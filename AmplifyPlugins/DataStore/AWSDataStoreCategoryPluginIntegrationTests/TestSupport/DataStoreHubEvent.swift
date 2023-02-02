@@ -26,6 +26,7 @@ enum DataStoreHubEvent {
     case outboxMutationProcessed(OutboxMutationEvent)
     case unknown(HubPayload)
 
+    // swiftlint:disable:next cyclomatic_complexity
     init(payload: HubPayload) {
         switch payload.eventName {
         case HubPayload.EventName.DataStore.syncStarted:

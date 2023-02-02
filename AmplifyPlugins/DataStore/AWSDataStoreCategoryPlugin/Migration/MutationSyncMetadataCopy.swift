@@ -17,6 +17,7 @@ extension MutationSyncMetadataMigration {
 
         // MARK: - CodingKeys
 
+        // swiftlint:disable:next nesting
         public enum CodingKeys: String, ModelKey {
             case id
             case deleted

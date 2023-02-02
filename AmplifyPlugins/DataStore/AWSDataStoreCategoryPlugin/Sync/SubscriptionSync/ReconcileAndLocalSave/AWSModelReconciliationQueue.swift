@@ -199,6 +199,7 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
                case let APIError.operationError(errorDescription, _, underlyingError) = error,
                isUnauthorizedError(errorDescription: errorDescription, underlyingError) {
 
+                // swiftlint:disable:next line_length
                 log.verbose("[InitializeSubscription.3] AWSModelReconciliationQueue determined unauthorized \(modelSchema.name)")
                 modelReconciliationQueueSubject.send(.disconnected(modelName: modelSchema.name, reason: .unauthorized))
                 return
@@ -206,11 +207,14 @@ final class AWSModelReconciliationQueue: ModelReconciliationQueue {
             if case let .api(error, _) = dataStoreError,
                case let APIError.operationError(_, _, underlyingError) = error,
                isOperationDisabledError(underlyingError) {
+                // swiftlint:disable:next line_length
                 log.verbose("[InitializeSubscription.3] AWSModelReconciliationQueue determined isOperationDisabledError \(modelSchema.name)")
 
-                modelReconciliationQueueSubject.send(.disconnected(modelName: modelSchema.name, reason: .operationDisabled))
+                modelReconciliationQueueSubject.send(.disconnected(modelName: modelSchema.name,
+                                                                   reason: .operationDisabled))
                 return
             }
+            // swiftlint:disable:next line_length
             log.error("[InitializeSubscription.3] AWSModelReconciliationQueue receiveCompletion: error: \(dataStoreError)")
             modelReconciliationQueueSubject.send(completion: .failure(dataStoreError))
         }

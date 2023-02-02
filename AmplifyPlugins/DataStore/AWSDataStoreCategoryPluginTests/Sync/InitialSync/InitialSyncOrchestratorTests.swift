@@ -12,6 +12,7 @@ import XCTest
 @testable import AWSDataStoreCategoryPlugin
 @testable import AWSPluginsCore
 
+// swiftlint:disable:next type_body_length
 class InitialSyncOrchestratorTests: XCTestCase {
 
     override class func setUp() {
@@ -102,12 +103,13 @@ class InitialSyncOrchestratorTests: XCTestCase {
         sink.cancel()
     }
 
-    /// - Given: An InitialSyncOrchestrator with a model dependency graph, API is expected to return an error for certain models
+    /// - Given: An InitialSyncOrchestrator with a model dependency graph,
+    ///        API is expected to return an error for certain models
     /// - When:
     ///    - The orchestrator starts up
     /// - Then:
     ///    - Finish with an error for each sync query that fails.
-    func testFinishWithAPIError() throws {
+    func testFinishWithAPIError() throws { // swiftlint:disable:this cyclomatic_complexity
         ModelRegistry.reset()
         PostCommentModelRegistration().registerModels(registry: ModelRegistry.self)
         let responder = QueryRequestListenerResponder<PaginatedList<AnyModel>> { request, listener in
@@ -409,4 +411,4 @@ class InitialSyncOrchestratorTests: XCTestCase {
         sink.cancel()
     }
 
-}
+} // swiftlint:disable:this file_length

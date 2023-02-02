@@ -14,8 +14,8 @@ import Combine
 @testable import AWSDataStoreCategoryPlugin
 
 class MockAWSInitialSyncOrchestrator: InitialSyncOrchestrator {
-    static let factory: InitialSyncOrchestratorFactory = {
-        dataStoreConfiguration, authModeStrategy, api, reconciliationQueue, storageAdapter  in
+    // swiftlint:disable:next line_length
+    static let factory: InitialSyncOrchestratorFactory = { dataStoreConfiguration, _, api, reconciliationQueue, storageAdapter  in
         MockAWSInitialSyncOrchestrator(dataStoreConfiguration: dataStoreConfiguration,
                                        api: api,
                                        reconciliationQueue: reconciliationQueue,

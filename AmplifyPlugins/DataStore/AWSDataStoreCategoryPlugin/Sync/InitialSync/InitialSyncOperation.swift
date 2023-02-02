@@ -131,6 +131,7 @@ final class InitialSyncOperation: AsynchronousOperation {
                 if self.isAuthSignedOutError(apiError: apiError) {
                     self.dataStoreConfiguration.errorHandler(DataStoreError.api(apiError))
                 }
+                // swiftlint:disable:next todo
                 // TODO: Retry query on error
                 self.finish(result: .failure(DataStoreError.api(apiError)))
             case .success(let graphQLResult):
@@ -150,9 +151,9 @@ final class InitialSyncOperation: AsynchronousOperation {
                                                       authType: authTypes.next())
         },
                                   maxRetries: authTypes.count,
-                                  resultListener: completionListener) { nextRequest, wrappedCompletionListener in
+                                  resultListener: completionListener, { nextRequest, wrappedCompletionListener in
             api.query(request: nextRequest, listener: wrappedCompletionListener)
-        }.main()
+        }).main()
     }
 
     /// Disposes of the query results: Stops if error, reconciles results if success, and kick off a new query if there

@@ -13,14 +13,16 @@ import Combine
 /// CascadeDeleteOperation has the following logic:
 /// 1. Query models from local store based on the following use cases:
 ///    1a. If the use case is Delete with id, then query by `id`
-///    1b. or Delete with id and condition, then query by `id` and `condition`. If the model given the condition does not exist,
-///        check if the model exists. if the model exists, then fail with `DataStoreError.invalidCondition`.
+///    1b. or Delete with id and condition, then query by `id` and `condition`.
+///        If the model given the condition does not exist, check if the model exists.
+///        if the model exists, then fail with `DataStoreError.invalidCondition`.
 ///    1c. or Delete with filter, then query by `filter`.
 /// 2. If there are at least one item to delete, query for all its associated models recursively.
 /// 3. Delete the original queried items from local store. This performs a cascade delete by default (See
-///    **CreateTableStatement** for more details, `on delete cascade` when creating the SQL table enables this behavior).
-///    4. If sync is enabled, then submit the delete mutations to the sync engine, in the order of children to parent models.
-public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
+///   **CreateTableStatement** for more details, `on delete cascade` when creating the SQL table enables this behavior).
+/// 4. If sync is enabled, then submit the delete mutations to the sync engine,
+///   in the order of children to parent models.
+public class CascadeDeleteOperation<M: Model>: AsynchronousOperation { // swiftlint:disable:this type_body_length
     let storageAdapter: StorageEngineAdapter
     var syncEngine: RemoteSyncEngineBehavior?
     let modelType: M.Type
@@ -178,6 +180,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         var queriedModels: [(ModelName, Model)] = []
         let chunkedArrays = ids.chunked(into: SQLiteStorageEngineAdapter.maxNumberOfPredicates)
         for chunkedArray in chunkedArrays {
+            // swiftlint:disable:next todo
             // TODO: Add conveinence to queryPredicate where we have a list of items, to be all or'ed
             var queryPredicates: [QueryPredicateOperation] = []
             for id in chunkedArray {
@@ -207,6 +210,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
     private func collapseResults<M: Model>(queryResult: DataStoreResult<[M]>?,
                                            deleteResult: DataStoreResult<[M]>?,
                                            associatedModels: [(ModelName, Model)]) -> DataStoreResult<QueryAndDeleteResult<M>> {
+        // swiftlint:disable:previous line_length
         if let queryResult = queryResult {
             switch queryResult {
             case .success(let models):
@@ -229,6 +233,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
         }
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func syncIfNeededAndFinish(_ transactionResult: DataStoreResult<QueryAndDeleteResult<M>>) {
         switch transactionResult {
         case .success(let queryAndDeleteResult):
@@ -273,6 +278,7 @@ public class CascadeDeleteOperation<M: Model>: AsynchronousOperation {
                 return
             }
 
+            // swiftlint:disable:next todo
             // TODO: This requires follow up.
             // In the current code, when deleting a single model instance conditionally, the `condition` predicate is
             // first applied locally to determine whether the item should be deleted or not. If met, the local item is
@@ -497,4 +503,4 @@ extension CascadeDeleteOperation {
     }
 }
 
-extension CascadeDeleteOperation: DefaultLogger { }
+extension CascadeDeleteOperation: DefaultLogger { } // swiftlint:disable:this file_length

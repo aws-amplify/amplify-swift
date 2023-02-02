@@ -32,8 +32,10 @@ class DataStoreModelWithCustomTimestampTests: SyncEngineIntegrationV2TestBase {
         let version: String = "1"
     }
 
+    // swiftlint:disable:next todo
     // TODO: Upates are not working due to CLI provisioning issue. the Update mutation is missing the `id`
     // https://github.com/aws-amplify/amplify-cli/issues/9136
+    // swiftlint:disable:next cyclomatic_complexity
     func testSaveModelAndSync() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
@@ -55,7 +57,8 @@ class DataStoreModelWithCustomTimestampTests: SyncEngineIntegrationV2TestBase {
                         XCTFail("Can't cast payload as mutation event")
                         return
                 }
-                guard let todoEvent = try? mutationEvent.decodeModel() as? TodoCustomTimestampV2, todoEvent.id == todo.id else {
+                guard let todoEvent = try? mutationEvent.decodeModel() as? TodoCustomTimestampV2,
+                      todoEvent.id == todo.id else {
                     return
                 }
 
@@ -71,6 +74,7 @@ class DataStoreModelWithCustomTimestampTests: SyncEngineIntegrationV2TestBase {
                     XCTAssertEqual(mutationEvent.version, 2)
                     // updateReceived.fulfill()
                 } else if mutationEvent.mutationType == GraphQLMutationType.delete.rawValue {
+                    // swiftlint:disable:next todo
                     // TODO: assert on version 3 once updates are working
                     // XCTAssertEqual(mutationEvent.version, 3)
                     XCTAssertEqual(mutationEvent.version, 2)
@@ -149,4 +153,3 @@ class DataStoreModelWithCustomTimestampTests: SyncEngineIntegrationV2TestBase {
         return result
     }
 }
-

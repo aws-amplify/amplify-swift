@@ -27,7 +27,8 @@ struct CreateIndexStatement: SQLStatement {
 
     var stringValue: String {
         return """
-        create index if not exists \"\(indexName)\" on \"\(modelSchema.name)\" (\(fields.map { "\"\($0)\"" }.joined(separator: ", ")));
+        create index if not exists \"\(indexName)\" on \"\(modelSchema.name)\" \
+        (\(fields.map { "\"\($0)\"" }.joined(separator: ", ")));
         """
     }
 }

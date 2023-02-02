@@ -523,4 +523,4 @@ extension Post: Equatable {
             && lhs.content == rhs.content
             && lhs.rating == rhs.rating
     }
-}
+} // swiftlint:disable:this file_length

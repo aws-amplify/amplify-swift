@@ -46,7 +46,7 @@ class DataStoreHubTests: XCTestCase {
     ///    - Hub is notified
     ///    - Hub payload accurately represents the incoming sync
     func testDataStoreDispatchesConflictToHub() {
-        // TODO: Can this actually happen on an incoming sync?
+        // TODO: Can this actually happen on an incoming sync? swiftlint:disable:this todo
         XCTFail("Not yet implemented")
     }
 

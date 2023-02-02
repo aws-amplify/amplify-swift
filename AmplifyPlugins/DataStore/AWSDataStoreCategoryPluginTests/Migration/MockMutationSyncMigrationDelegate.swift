@@ -10,11 +10,14 @@ import XCTest
 @testable import Amplify
 @testable import AWSDataStoreCategoryPlugin
 
+// swiftlint:disable:next type_name
 class MockMutationSyncMetadataMigrationDelegate: MutationSyncMetadataMigrationDelegate {
 
     var preconditionCheckError: DataStoreError?
     var transactionError: DataStoreError?
+    // swiftlint:disable:next identifier_name
     var mutationSyncMetadataStoreEmptyOrMigratedError: DataStoreError?
+    // swiftlint:disable:next identifier_name
     var mutationSyncMetadataStoreEmptyOrMigratedResult: Bool = false
     var containsDuplicateIdsAcrossModelsError: DataStoreError?
     var containsDuplicateIdsAcrossModelsResult: Bool = false

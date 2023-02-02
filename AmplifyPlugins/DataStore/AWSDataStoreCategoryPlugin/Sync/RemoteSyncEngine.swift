@@ -11,6 +11,7 @@ import Foundation
 import AWSPluginsCore
 
 @available(iOS 13.0, *)
+// swiftlint:disable:next type_body_length
 class RemoteSyncEngine: RemoteSyncEngineBehavior {
 
     weak var storageAdapter: StorageEngineAdapter?
@@ -88,10 +89,10 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                                   authModeStrategy: resolvedAuthStrategy)
 
         let reconciliationQueueFactory = reconciliationQueueFactory ??
-            AWSIncomingEventReconciliationQueue.init(modelSchemas:api:storageAdapter:syncExpressions:auth:authModeStrategy:modelReconciliationQueueFactory:)
+            AWSIncomingEventReconciliationQueue.init(modelSchemas:api:storageAdapter:syncExpressions:auth:authModeStrategy:modelReconciliationQueueFactory:) // swiftlint:disable:this line_length
 
         let initialSyncOrchestratorFactory = initialSyncOrchestratorFactory ??
-            AWSInitialSyncOrchestrator.init(dataStoreConfiguration:authModeStrategy:api:reconciliationQueue:storageAdapter:)
+            AWSInitialSyncOrchestrator.init(dataStoreConfiguration:authModeStrategy:api:reconciliationQueue:storageAdapter:) // swiftlint:disable:this line_length
 
         let resolver = RemoteSyncEngine.Resolver.resolve(currentState:action:)
         let stateMachine = stateMachine ?? StateMachine(initialState: .notStarted,
@@ -323,6 +324,7 @@ class RemoteSyncEngine: RemoteSyncEngineBehavior {
                 receiveValue: { [weak self] in self?.onReceive(receiveValue: $0) }
             )
 
+        // swiftlint:disable:next todo
         // TODO: This should be an AsynchronousOperation, not a semaphore-waited block
         let semaphore = DispatchSemaphore(value: 0)
 
@@ -454,4 +456,4 @@ extension RemoteSyncEngine: Resettable {
         group.wait()
         onComplete()
     }
-}
+} // swiftlint:disable:this file_length

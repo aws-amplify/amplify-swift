@@ -43,6 +43,7 @@ class DataStoreSchemaDriftTests: SyncEngineIntegrationV2TestBase {
         let version: String = "1"
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testSchemaDrift() throws {
         setUp(withModels: TestModelRegistration())
         let startSuccess = expectation(description: "start success")

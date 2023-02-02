@@ -108,7 +108,9 @@ extension ModelSchema {
                     return false
                 }
             case .enum:
+                // swiftlint:disable:next syntactic_sugar
                 guard case .some(Optional<Any>.some(let value1Optional)) = value1,
+                      // swiftlint:disable:next syntactic_sugar
                       case .some(Optional<Any>.some(let value2Optional)) = value2 else {
                     if value1 == nil && value2 == nil {
                         continue

@@ -12,6 +12,7 @@ import AWSDataStoreCategoryPlugin
 @testable import Amplify
 @testable import AmplifyTestCommon
 
+// swiftlint:disable:next type_name
 class AWSDataStoreCategoryPluginAuthIntegrationTests: AWSDataStoreAuthBaseTest {
     let syncReceived = HubPayload.EventName.DataStore.syncReceived
     let syncStarted = HubPayload.EventName.DataStore.syncStarted

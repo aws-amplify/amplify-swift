@@ -30,6 +30,7 @@ import AmplifyPlugins
 
  */
 
+// swiftlint:disable:next type_body_length
 class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
 
     struct TestModelRegistration: AmplifyModelRegistration {
@@ -41,10 +42,12 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
         let version: String = "1"
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testSaveTeamAndProjectSyncToCloud() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let team = Team1V2(name: "name1")
+        // swiftlint:disable:next todo
         // TODO: No need to add the `team` into the project, it is using explicit field `project1V2TeamId`
         let project = Project1V2(team: team, project1V2TeamId: team.id)
         let syncedTeamReceived = expectation(description: "received team from sync path")
@@ -102,6 +105,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
                     return
                 }
                 XCTAssertEqual(queriedProject.id, project.id)
+                // swiftlint:disable:next todo
                 // TODO: Should the queried project eager load the has-one team?
                 // XCTAssertEqual(queriedProject.team, team)
                 // or
@@ -115,11 +119,13 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [queriedProjectCompleted], timeout: networkTimeout)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testUpdateProjectWithAnotherTeam() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
         let team = Team1V2(name: "name1")
         let anotherTeam = Team1V2(name: "name1")
+        // swiftlint:disable:next todo
         // TODO: No need to add the `team` into the project, it is using explicit field `project1V2TeamId`
         var project = Project1V2(team: team, project1V2TeamId: team.id)
         let expectedUpdatedProject = Project1V2(id: project.id,
@@ -196,6 +202,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
                 XCTAssertNotNil(queriedProjectOptional)
                 if let queriedProject = queriedProjectOptional {
                     XCTAssertEqual(queriedProject, project)
+                    // swiftlint:disable:next todo
                     // TODO: Should the queried project eager load the has-one team?
                     // XCTAssertEqual(queriedProject.team, anotherTeam)
                     // or
@@ -211,6 +218,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [queriedProjectCompleted, syncUpdatedProjectReceived], timeout: networkTimeout)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testCreateUpdateDeleteAndGetProjectReturnsNil() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
@@ -284,6 +292,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [getProjectAfterDeleteCompleted], timeout: TestCommonConstants.networkTimeout)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testDeleteAndGetProjectReturnsNilWithSync() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
@@ -339,6 +348,7 @@ class DataStoreConnectionScenario1V2Tests: SyncEngineIntegrationV2TestBase {
         }
         wait(for: [deleteProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
 
+        // swiftlint:disable:next todo
         // TODO: Delete Team should not be necessary, cascade delete should delete the team when deleting the project.
         // Once cascade works for hasOne, the following code can be removed.
         let deleteTeamSuccessful = expectation(description: "delete team")
@@ -522,7 +532,8 @@ extension Project1V2: Equatable {
         return lhs.id == rhs.id
         && lhs.name == rhs.name
         && lhs.project1V2TeamId == rhs.project1V2TeamId
+            // swiftlint:disable:next todo
             // && lhs.team == rhs.team // TODO: Should the Project have the team?
 
     }
-}
+} // swiftlint:disable:this file_length

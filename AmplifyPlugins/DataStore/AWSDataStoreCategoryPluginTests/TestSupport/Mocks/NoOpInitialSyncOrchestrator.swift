@@ -18,7 +18,9 @@ struct NoOpInitialSyncOrchestrator: InitialSyncOrchestrator {
 
     static let factory: InitialSyncOrchestratorFactory = { _, _, _, _, _  in
         let initialSyncOrchestratorTopic = PassthroughSubject<InitialSyncOperationEvent, DataStoreError>()
-        let noOpInitialSyncOrchestrator = NoOpInitialSyncOrchestrator(initialSyncOrchestratorTopic: initialSyncOrchestratorTopic)
+        let noOpInitialSyncOrchestrator = NoOpInitialSyncOrchestrator(
+            initialSyncOrchestratorTopic: initialSyncOrchestratorTopic
+        )
         return noOpInitialSyncOrchestrator
     }
 

@@ -188,12 +188,14 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
         case .success:
             incomingSubscriptionEvents.send(completion: .finished)
         case .failure(let apiError):
+            // swiftlint:disable:next line_length
             log.verbose("[InitializeSubscription.1] API.subscribe failed for `\(modelName)` error: \(apiError.errorDescription)")
             let dataStoreError = DataStoreError(error: apiError)
             incomingSubscriptionEvents.send(completion: .failure(dataStoreError))
         }
     }
 
+    // swiftlint:disable:next function_parameter_count
     static func makeAPIRequest(for modelSchema: ModelSchema,
                                subscriptionType: GraphQLSubscriptionType,
                                api: APICategoryGraphQLBehavior,
@@ -202,7 +204,7 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
                                awsAuthService: AWSAuthServiceBehavior) -> GraphQLRequest<Payload> {
         let request: GraphQLRequest<Payload>
         if modelSchema.hasAuthenticationRules,
-            let _ = auth,
+            auth != nil,
             case .success(let tokenString) = awsAuthService.getToken(),
             case .success(let claims) = awsAuthService.getTokenClaims(tokenString: tokenString) {
             request = GraphQLRequest<Payload>.subscription(to: modelSchema,
@@ -225,7 +227,6 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
 
         return request
     }
-
 
     static func hasOIDCAuthProviderAvailable(api: APICategoryGraphQLBehavior) -> AmplifyOIDCAuthProvider? {
         if let apiPlugin = api as? APICategoryAuthProviderFactoryBehavior,
@@ -285,12 +286,14 @@ final class IncomingAsyncSubscriptionEventPublisher: AmplifyCancellable {
 // MARK: - IncomingAsyncSubscriptionEventPublisher + API request factory
 @available(iOS 13.0, *)
 extension IncomingAsyncSubscriptionEventPublisher {
+    // swiftlint:disable:next function_parameter_count
     static func apiRequestFactoryFor(for modelSchema: ModelSchema,
                                      subscriptionType: GraphQLSubscriptionType,
                                      api: APICategoryGraphQLBehavior,
                                      auth: AuthCategoryBehavior?,
                                      awsAuthService: AWSAuthServiceBehavior,
                                      authTypeProvider: AWSAuthorizationTypeIterator) -> RetryableGraphQLOperation<Payload>.RequestFactory {
+        // swiftlint:disable:previous line_length
         var authTypes = authTypeProvider
         return {
             return IncomingAsyncSubscriptionEventPublisher.makeAPIRequest(for: modelSchema,

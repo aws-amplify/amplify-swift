@@ -30,6 +30,7 @@ import AmplifyPlugins
  See https://docs.amplify.aws/cli/graphql-transformer/connection for more details.
  */
 
+// swiftlint:disable:next type_body_length
 class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
 
     struct TestModelRegistration: AmplifyModelRegistration {
@@ -137,7 +138,6 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
                         XCTFail("\(error)")
                     }
                 }
-
 
             case .failure(let error):
                 XCTFail("\(error)")
@@ -328,6 +328,7 @@ class DataStoreConnectionScenario5V2Tests: SyncEngineIntegrationV2TestBase {
         wait(for: [deletePostSuccess, deleteReceived], timeout: TestCommonConstants.networkTimeout)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testDeletePostCascadeToPostEditor() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
@@ -459,4 +460,4 @@ extension Post5V2: Equatable {
         return lhs.id == rhs.id
         && lhs.title == rhs.title
     }
-}
+} // swiftlint:disable:this file_length

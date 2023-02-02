@@ -17,6 +17,7 @@ import AWSMobileClient
 
 class HubEventsIntegrationTestBase: XCTestCase {
 
+    // swiftlint:disable:next line_length
     static let amplifyConfigurationFile = "testconfiguration/AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration"
 
     static let networkTimeout = TimeInterval(180)
@@ -42,7 +43,9 @@ class HubEventsIntegrationTestBase: XCTestCase {
 
     func startAmplify(withModels models: AmplifyModelRegistration) {
         do {
-            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(forResource: Self.amplifyConfigurationFile)
+            let amplifyConfig = try TestConfigHelper.retrieveAmplifyConfiguration(
+                forResource: Self.amplifyConfigurationFile
+            )
 
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: models))
             try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: models))

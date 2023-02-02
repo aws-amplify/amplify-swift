@@ -256,8 +256,10 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
     }
 
     /// Multiple published objects (more than the `.collect` count of 1000) in a relatively short time window
-    /// will cause the operation in test to exceed the limit of 1000 in its collection of items before sending a snapshot.
-    /// The first snapshot will have 1000 items, and subsequent snapshots will follow as the remaining objects are published and processed.
+    /// will cause the operation in test to exceed the limit of 1000 in its collection of items
+    /// before sending a snapshot.
+    /// The first snapshot will have 1000 items, and subsequent snapshots will follow
+    /// as the remaining objects are published and processed.
     ///
     /// - Given:  The operation has started and the first query has completed.
     /// - When:
@@ -703,4 +705,4 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
                           modelSchema: Post.schema,
                           mutationType: MutationEvent.MutationType.create)
     }
-}
+} // swiftlint:disable:this file_length

@@ -353,7 +353,7 @@ class DataStoreObserveQueryTests: SyncEngineIntegrationTestBase {
     ///      The snasphot sould have the models in the correct sorted order
     ///    - Delete models. The snapshot should have the models removed
     ///
-    func testSortWithCreateUpdateDelete() throws {
+    func testSortWithCreateUpdateDelete() throws { // swiftlint:disable:this cyclomatic_complexity
         setUp(withModels: TestModelRegistration(), logLevel: .info)
         try startAmplifyAndWaitForReady()
 

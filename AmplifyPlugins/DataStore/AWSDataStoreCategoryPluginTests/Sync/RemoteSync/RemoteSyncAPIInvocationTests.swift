@@ -109,6 +109,7 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
         Amplify.DataStore.start(completion: {_ in})
         waitForExpectations(timeout: 1.0)
     }
+    // swiftlint:disable:next todo
     // TODO: Implement the test below
 
     /// - Given: Amplify configured with an API
@@ -117,7 +118,7 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
     /// - Then:
     ///    - The listener is notified
     func testOnCreateNotifiesListener() throws {
-        //XCTFail("Not yet implemented")
+        // XCTFail("Not yet implemented")
     }
 
     /// - Given: Amplify configured with an API
@@ -126,7 +127,7 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
     /// - Then:
     ///    - The listener is notified
     func testOnCreateUpdatesLocalStore() throws {
-        //XCTFail("Not yet implemented")
+        // XCTFail("Not yet implemented")
     }
 
     /// - Given: Amplify configured with an API
@@ -135,7 +136,7 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
     /// - Then:
     ///    - The listener is notified
     func testOnUpdateNotifiesListener() throws {
-        //XCTFail("Not yet implemented")
+        // XCTFail("Not yet implemented")
     }
 
     /// - Given: Amplify configured with an API
@@ -144,7 +145,7 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
     /// - Then:
     ///    - The listener is notified
     func testOnUpdateUpdatesLocalStore() throws {
-        //XCTFail("Not yet implemented")
+        // XCTFail("Not yet implemented")
     }
 
     /// - Given: Amplify configured with an API
@@ -153,7 +154,7 @@ class RemoteSyncAPIInvocationTests: XCTestCase {
     /// - Then:
     ///    - The listener is notified
     func testOnDeleteNotifiesListener() throws {
-        //XCTFail("Not yet implemented")
+        // XCTFail("Not yet implemented")
     }
 
     /// - Given: Amplify configured with an API

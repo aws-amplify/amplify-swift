@@ -30,6 +30,6 @@ final class MockReconciliationQueue: MessageReporter, IncomingEventReconciliatio
     }
 
     func cancel() {
-        //no-op for mock
+        // no-op for mock
     }
 }

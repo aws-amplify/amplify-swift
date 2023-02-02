@@ -16,6 +16,7 @@ import AWSMobileClient
 
 class SyncEngineIntegrationTestBase: DataStoreTestBase {
 
+    // swiftlint:disable:next line_length
     static let amplifyConfigurationFile = "testconfiguration/AWSDataStoreCategoryPluginIntegrationTests-amplifyconfiguration"
 
     static let networkTimeout = TimeInterval(180)

@@ -32,6 +32,7 @@ import AWSMobileClient
  See https://docs.amplify.aws/cli/graphql-transformer/connection for more details
  */
 
+// swiftlint:disable:next type_body_length
 class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase {
 
     struct TestModelRegistration: AmplifyModelRegistration {
@@ -106,6 +107,7 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase {
         wait(for: [queriedProjectCompleted], timeout: networkTimeout)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testUpdateProjectWithAnotherTeam() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
@@ -194,6 +196,7 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase {
         wait(for: [queriedProjectCompleted, syncUpdatedProjectReceived], timeout: networkTimeout)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func testDeleteAndGetProjectReturnsNilWithSync() throws {
         setUp(withModels: TestModelRegistration())
         try startAmplifyAndWaitForSync()
@@ -249,6 +252,7 @@ class DataStoreConnectionScenario2Tests: SyncEngineIntegrationTestBase {
         }
         wait(for: [deleteProjectSuccessful], timeout: TestCommonConstants.networkTimeout)
 
+        // swiftlint:disable:next todo
         // TODO: Delete Team should not be necessary, cascade delete should delete the team when deleting the project.
         // Once cascade works for hasOne, the following code can be removed.
         let deleteTeamSuccessful = expectation(description: "delete team")
@@ -463,4 +467,4 @@ extension Project2: Equatable {
             && lhs.name == rhs.name
             && lhs.teamID == rhs.teamID
     }
-}
+} // swiftlint:disable:this file_length

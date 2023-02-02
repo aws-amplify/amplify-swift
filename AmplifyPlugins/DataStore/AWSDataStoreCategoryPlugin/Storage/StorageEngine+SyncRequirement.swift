@@ -15,8 +15,11 @@ extension StorageEngine {
     func startSync(completion: @escaping DataStoreCallback<Void>) {
         guard let api = tryGetAPIPlugin() else {
             log.info("Unable to find suitable API plugin for syncEngine. syncEngine will not be started")
-            completion(.failure(.configuration("Unable to find suitable API plugin for syncEngine. syncEngine will not be started",
-                                               "Ensure the API category has been setup and configured for your project", nil)))
+            completion(.failure(.configuration(
+                "Unable to find suitable API plugin for syncEngine. syncEngine will not be started",
+                "Ensure the API category has been setup and configured for your project",
+                nil
+            )))
             return
         }
 
@@ -30,8 +33,11 @@ extension StorageEngine {
 
         guard let auth = tryGetAuthPlugin() else {
             log.warn("Unable to find suitable Auth plugin for syncEngine. Models require auth")
-            completion(.failure(.configuration("Unable to find suitable Auth plugin for syncEngine. Models require auth",
-                                               "Ensure the Auth category has been setup and configured for your project", nil)))
+            completion(.failure(.configuration(
+                "Unable to find suitable Auth plugin for syncEngine. Models require auth",
+                "Ensure the Auth category has been setup and configured for your project",
+                nil
+            )))
             return
         }
         syncEngine?.start(api: api, auth: auth)
