@@ -12,6 +12,7 @@ import AWSPluginsCore
 
 public class MockAWSAuthService: AWSAuthServiceBehavior {
 
+    var interactions: [String] = []
     var getIdentityIdError: AuthError?
     var getTokenError: AuthError?
     var getTokenClaimsError: AuthError?
@@ -20,17 +21,21 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
     var tokenClaims: [String: AnyObject]?
 
     public func configure() {
+        interactions.append(#function)
     }
 
     public func reset() {
+        interactions.append(#function)
     }
 
     public func getCredentialsProvider() -> CredentialsProvider {
+        interactions.append(#function)
         let cognitoCredentialsProvider = MyCustomCredentialsProvider()
         return cognitoCredentialsProvider
     }
 
     public func getIdentityID() async throws -> String {
+        interactions.append(#function)
         if let error = getIdentityIdError {
             throw error
         }
@@ -39,6 +44,7 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
     }
     
     public func getUserPoolAccessToken() async throws -> String {
+        interactions.append(#function)
         if let error = getTokenError {
             throw error
         } else {
@@ -47,6 +53,7 @@ public class MockAWSAuthService: AWSAuthServiceBehavior {
     }
 
     public func getTokenClaims(tokenString: String) -> Result<[String: AnyObject], AuthError> {
+        interactions.append(#function)
         if let error = getTokenClaimsError {
             return .failure(error)
         }

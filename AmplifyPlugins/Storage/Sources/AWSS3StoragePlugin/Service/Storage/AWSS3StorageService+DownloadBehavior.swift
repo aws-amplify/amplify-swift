@@ -27,7 +27,7 @@ extension AWSS3StorageService {
 
         Task {
             do {
-                let preSignedURL = try await preSignedURLBuilder.getPreSignedURL(key: serviceKey)
+                let preSignedURL = try await preSignedURLBuilder.getPreSignedURL(key: serviceKey, signingOperation: .getObject, expires: nil)
                 startDownload(preSignedURL: preSignedURL, transferTask: transferTask)
             } catch {
                 onEvent(.failed(StorageError.unknown("Failed to get pre-signed URL", nil)))

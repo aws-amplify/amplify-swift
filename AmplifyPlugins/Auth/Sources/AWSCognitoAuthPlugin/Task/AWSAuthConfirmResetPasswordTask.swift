@@ -11,7 +11,7 @@ import AWSPluginsCore
 import ClientRuntime
 import AWSCognitoIdentityProvider
 
-class AWSAuthConfirmResetPasswordTask: AuthConfirmResetPasswordTask {
+class AWSAuthConfirmResetPasswordTask: AuthConfirmResetPasswordTask, DefaultLogger {
     private let request: AuthConfirmResetPasswordRequest
     private let environment: AuthEnvironment
     private let authConfiguration: AuthConfiguration
@@ -27,10 +27,12 @@ class AWSAuthConfirmResetPasswordTask: AuthConfirmResetPasswordTask {
     }
 
     func execute() async throws {
+        log.verbose("Starting execution")
         if let validationError = request.hasError() {
             throw validationError
         }
         do {
+            
             try await confirmResetPassword()
         } catch let error as ConfirmForgotPasswordOutputError {
             throw error.authError

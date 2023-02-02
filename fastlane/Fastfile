@@ -65,7 +65,7 @@ platform :ios do
   desc "Tag in git and push to GitHub"
   private_lane :add_tag do |options|
     next_version = options[:version]
-    next_tag = "v#{next_version}"
+    next_tag = "#{next_version}"
 
     add_git_tag(tag: next_tag)
     push_git_tags(tag: next_tag)
@@ -75,7 +75,7 @@ platform :ios do
   private_lane :post_release do |options|
     version = options[:version].to_s
     changelog = options[:changelog]
-    tag = "v#{version}"
+    tag = "#{version}"
   
     sh('bundle', 'exec', 'swift', 'package', 'update')
 

@@ -159,7 +159,9 @@ extension AWSCognitoAuthPlugin: AuthCategoryBehavior {
     }
 
     public func deleteUser() async throws {
-        let task = AWSAuthDeleteUserTask(authStateMachine: self.authStateMachine)
+        let task = AWSAuthDeleteUserTask(
+            authStateMachine: self.authStateMachine,
+            authConfiguraiton: authConfiguration)
         _ = try await taskQueue.sync {
             return try await task.value
         }

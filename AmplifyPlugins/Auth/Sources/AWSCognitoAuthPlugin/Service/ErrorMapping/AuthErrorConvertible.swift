@@ -14,3 +14,9 @@ protocol AuthErrorConvertible {
 
     var authError: AuthError { get }
 }
+
+extension AuthError: AuthErrorConvertible {
+    var authError: AuthError {
+        return self
+    }
+}

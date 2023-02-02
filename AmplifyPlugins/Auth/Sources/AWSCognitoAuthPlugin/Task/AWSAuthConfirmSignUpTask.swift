@@ -9,7 +9,7 @@ import Foundation
 import Amplify
 import AWSCognitoIdentityProvider
 
-class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask {
+class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask, DefaultLogger {
 
     private let request: AuthConfirmSignUpRequest
     private let authEnvironment: AuthEnvironment
@@ -24,10 +24,10 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask {
     }
 
     func execute() async throws -> AuthSignUpResult {
+        log.verbose("Starting execution")
         try request.hasError()
         let userPoolEnvironment = authEnvironment.userPoolEnvironment
         do {
-
             let metadata = (request.options.pluginOptions as? AWSAuthConfirmSignUpOptions)?.metadata
             let client = try userPoolEnvironment.cognitoUserPoolFactory()
             let input = ConfirmSignUpInput(username: request.username,
@@ -35,6 +35,7 @@ class AWSAuthConfirmSignUpTask: AuthConfirmSignUpTask {
                                            clientMetadata: metadata,
                                            environment: userPoolEnvironment)
             _ = try await client.confirmSignUp(input: input)
+            log.verbose("Received success")
             return AuthSignUpResult(.done)
         } catch let error as AuthError {
             throw error

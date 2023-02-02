@@ -47,7 +47,7 @@ struct DeleteUser: Action {
                 _ = try await client.deleteUser(input: input)
                 event = DeleteUserEvent(eventType: .signOutDeletedUser)
                 logVerbose("\(#fileID) Delete User succeeded", environment: environment)
-            } catch let error as DeleteUserOutputError {
+            } catch let error as AuthErrorConvertible {
                 event = DeleteUserEvent(eventType: .throwError(error.authError))
                 logVerbose("\(#fileID) Delete User failed \(error)", environment: environment)
             } catch let error {

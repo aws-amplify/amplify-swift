@@ -5,6 +5,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
+import Foundation
+
 @testable import AWSAPIPlugin
 import Amplify
 
@@ -14,6 +16,7 @@ import AppSyncRealTimeClient
 struct MockSubscriptionConnectionFactory: SubscriptionConnectionFactory {
     typealias OnGetOrCreateConnection = (
         AWSAPICategoryPluginConfiguration.EndpointConfig,
+        URLRequest,
         AWSAuthServiceBehavior,
         AWSAuthorizationType?,
         APIAuthProviderFactory
@@ -27,11 +30,12 @@ struct MockSubscriptionConnectionFactory: SubscriptionConnectionFactory {
 
     func getOrCreateConnection(
         for endpointConfig: AWSAPICategoryPluginConfiguration.EndpointConfig,
+        urlRequest: URLRequest,
         authService: AWSAuthServiceBehavior,
         authType: AWSAuthorizationType?,
         apiAuthProviderFactory: APIAuthProviderFactory
     ) throws -> SubscriptionConnection {
-        try onGetOrCreateConnection(endpointConfig, authService, authType, apiAuthProviderFactory)
+        try onGetOrCreateConnection(endpointConfig, urlRequest,  authService, authType, apiAuthProviderFactory)
     }
 
 }

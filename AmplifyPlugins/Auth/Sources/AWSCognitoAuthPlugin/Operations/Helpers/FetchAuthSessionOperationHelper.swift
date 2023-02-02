@@ -8,9 +8,9 @@
 import Foundation
 import Amplify
 
-class FetchAuthSessionOperationHelper {
+class FetchAuthSessionOperationHelper: DefaultLogger {
 
-    static let expiryBufferInSeconds = TimeInterval.seconds(2 * 60)
+
 
     typealias FetchAuthSessionCompletion = (Result<AuthSession, AuthError>) -> Void
 
@@ -23,28 +23,35 @@ class FetchAuthSessionOperationHelper {
             throw error
         }
 
+        log.verbose("Fetching current state")
         switch authorizationState {
         case .configured:
             // If session has not been established, ask statemachine to invoke fetching
             // a fresh session.
+            log.verbose("No session found, fetching unauth session")
             let event = AuthorizationEvent(eventType: .fetchUnAuthSession)
             await authStateMachine.send(event)
             return try await listenForSession(authStateMachine: authStateMachine)
+
         case .sessionEstablished(let credentials):
-            return try await postAuthSessionEvent(
-                forCredential: credentials,
+            log.verbose("Session exists, checking validity")
+            return try await refreshIfRequired(
+                existingCredentials: credentials,
                 authStateMachine: authStateMachine,
                 forceRefresh: forceRefresh)
+
         case .error(let error):
             if case .sessionExpired = error {
+                log.verbose("Session is expired")
                 let session = AuthCognitoSignedInSessionHelper.makeExpiredSignedInSession()
                 return session
             } else if case .sessionError(_, let credentials) = error {
-                return try await postAuthSessionEvent(
-                    forCredential: credentials,
+                return try await refreshIfRequired(
+                    existingCredentials: credentials,
                     authStateMachine: authStateMachine,
                     forceRefresh: forceRefresh)
             } else {
+                log.verbose("Session is in error state \(error)")
                 let event = AuthorizationEvent(eventType: .fetchUnAuthSession)
                 await authStateMachine.send(event)
                 return try await listenForSession(authStateMachine: authStateMachine)
@@ -55,65 +62,34 @@ class FetchAuthSessionOperationHelper {
         }
     }
 
-    func postAuthSessionEvent(
-        forCredential credentials: AmplifyCredentials,
+    func refreshIfRequired(
+        existingCredentials credentials: AmplifyCredentials,
         authStateMachine: AuthStateMachine,
         forceRefresh: Bool) async throws -> AuthSession {
-            switch credentials {
 
-            case .userPoolOnly(signedInData: let data):
-                if data.cognitoUserPoolTokens.doesExpire(in: Self.expiryBufferInSeconds) ||
-                    forceRefresh {
-                    let event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
-                    await authStateMachine.send(event)
-                    return try await listenForSession(authStateMachine: authStateMachine)
+            var event: AuthorizationEvent
+            if forceRefresh || !credentials.areValid() {
+                if case .identityPoolWithFederation(
+                    let federatedToken,
+                    let identityId,
+                    _
+                ) = credentials {
+                    event = AuthorizationEvent(
+                        eventType: .startFederationToIdentityPool(federatedToken, identityId)
+                    )
                 } else {
-                    return credentials.cognitoSession
+                    event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
                 }
-
-            case .identityPoolOnly(identityID: _, credentials: let awsCredentials):
-                if awsCredentials.doesExpire(in: Self.expiryBufferInSeconds) ||
-                    forceRefresh {
-                    let event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
-                    await authStateMachine.send(event)
-                    return try await listenForSession(authStateMachine: authStateMachine)
-                } else {
-                   return credentials.cognitoSession
-                }
-
-            case .userPoolAndIdentityPool(signedInData: let data,
-                                          identityID: _,
-                                          credentials: let awsCredentials):
-                if  data.cognitoUserPoolTokens.doesExpire(in: Self.expiryBufferInSeconds) ||
-                        awsCredentials.doesExpire(in: Self.expiryBufferInSeconds) ||
-                        forceRefresh {
-                    let event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
-                    await authStateMachine.send(event)
-                    return try await listenForSession(authStateMachine: authStateMachine)
-                } else {
-                    return credentials.cognitoSession
-                }
-
-            case .identityPoolWithFederation(let federatedToken, let identityId, let awsCredentials):
-                if awsCredentials.doesExpire() || forceRefresh {
-                    let event = AuthorizationEvent.init(
-                        eventType: .startFederationToIdentityPool(federatedToken, identityId))
-                    await authStateMachine.send(event)
-                    return try await listenForSession(authStateMachine: authStateMachine)
-                } else {
-                    return credentials.cognitoSession
-                }
-
-            case .noCredentials:
-                let event = AuthorizationEvent(eventType: .refreshSession(forceRefresh))
                 await authStateMachine.send(event)
                 return try await listenForSession(authStateMachine: authStateMachine)
             }
+            return credentials.cognitoSession
         }
 
     func listenForSession(authStateMachine: AuthStateMachine) async throws -> AuthSession {
 
         let stateSequences = await authStateMachine.listen()
+        log.verbose("Waiting for session to establish")
         for await state in stateSequences {
             guard case .configured(let authenticationState, let authorizationState) = state  else {
                 let message = "Auth state machine not in configured state: \(state)"
@@ -138,6 +114,7 @@ class FetchAuthSessionOperationHelper {
     func sessionResultWithError(_ error: AuthorizationError,
                                 authenticationState: AuthenticationState)
     throws -> AuthSession {
+        log.verbose("Received error - \(error)")
 
         var isSignedIn = false
         if case .signedIn = authenticationState {
@@ -146,8 +123,8 @@ class FetchAuthSessionOperationHelper {
         switch error {
         case .sessionError(let fetchError, let credentials):
             return try sessionResultWithFetchError(fetchError,
-                                        authenticationState: authenticationState,
-                                        existingCredentials: credentials)
+                                                   authenticationState: authenticationState,
+                                                   existingCredentials: credentials)
         case .sessionExpired:
             let session = AuthCognitoSignedInSessionHelper.makeExpiredSignedInSession()
             return session
@@ -163,8 +140,8 @@ class FetchAuthSessionOperationHelper {
     }
 
     func sessionResultWithFetchError(_ error: FetchSessionError,
-                                authenticationState: AuthenticationState,
-                                existingCredentials: AmplifyCredentials)
+                                     authenticationState: AuthenticationState,
+                                     existingCredentials: AmplifyCredentials)
     throws -> AuthSession {
 
         var isSignedIn = false
@@ -174,13 +151,18 @@ class FetchAuthSessionOperationHelper {
 
         switch error {
 
-        case .notAuthorized:
+        case .notAuthorized, .noCredentialsToRefresh:
             if !isSignedIn {
                 return AuthCognitoSignedOutSessionHelper.makeSessionWithNoGuestAccess()
             }
-        case .noCredentialsToRefresh:
-            if !isSignedIn {
-                return AuthCognitoSignedOutSessionHelper.makeSessionWithNoGuestAccess()
+
+        case .service(let error):
+            if let authError = (error as? AuthErrorConvertible)?.authError {
+                let session = AWSAuthCognitoSession(isSignedIn: isSignedIn,
+                                                    identityIdResult: .failure(authError),
+                                                    awsCredentialsResult: .failure(authError),
+                                                    cognitoTokensResult: .failure(authError))
+                return session
             }
         default: break
 

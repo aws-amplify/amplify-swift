@@ -8,7 +8,7 @@ import Foundation
 import Amplify
 import AWSPluginsCore
 
-class AWSAuthWebUISignInTask: AuthWebUISignInTask {
+class AWSAuthWebUISignInTask: AuthWebUISignInTask, DefaultLogger {
 
     private let helper: HostedUISignInHelper
     private let request: AuthWebUISignInRequest
@@ -31,10 +31,11 @@ class AWSAuthWebUISignInTask: AuthWebUISignInTask {
     }
 
     func execute() async throws -> AuthSignInResult {
-
+        log.verbose("Starting execution")
         do {
             await taskHelper.didStateMachineConfigured()
             let result = try await helper.initiateSignIn()
+            log.verbose("Received result")
             return result
         } catch let autherror as AuthErrorConvertible {
             throw autherror.authError
