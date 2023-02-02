@@ -58,6 +58,7 @@ final class RESTOperationRequestUtils {
                                     requestPayload: Data?) -> URLRequest {
 
         var baseRequest = URLRequest(url: url)
+        baseRequest.cachePolicy = Amplify.DefaultRESTAPIURLRequestCachePolicy
         var requestHeaders = ["content-type": "application/json"]
         if let headers = headers {
             for (key, value) in headers {
