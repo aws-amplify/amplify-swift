@@ -98,8 +98,8 @@ public enum ModelAssociation {
         return .belongsTo(associatedFieldName: nil, targetNames: targetNames)
     }
     
-    public static func hasMany(associatedWith: CodingKey? = nil, associatedWithFields: [CodingKey] = []) -> ModelAssociation {
-        return .hasMany(associatedFieldName: associatedWith?.stringValue, associatedFieldNames: associatedWithFields.map { $0.stringValue })
+    public static func hasMany(associatedWith: CodingKey? = nil, associatedFields: [CodingKey] = []) -> ModelAssociation {
+        return .hasMany(associatedFieldName: associatedWith?.stringValue, associatedFieldNames: associatedFields.map { $0.stringValue })
     }
 
     @available(*, deprecated, message: "Use hasOne(associatedWith:targetNames:)")
