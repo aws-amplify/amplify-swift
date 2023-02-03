@@ -92,7 +92,7 @@ class DataStoreObserveQueryOperationTests: XCTestCase {
         let secondSnapshot = expectation(description: "second query snapshots")
         let thirdSnapshot = expectation(description: "third query snapshot")
         thirdSnapshot.isInverted = true
-        
+
         var querySnapshots = [DataStoreQuerySnapshot<Post>]()
         let dispatchedModelSyncedEvent = AtomicValue(initialValue: false)
         let operation = AWSDataStoreObserveQueryOperation(

@@ -82,7 +82,7 @@ extension ModelField: SQLColumn {
     var sqlName: String {
         if case let .belongsTo(_, targetNames) = association {
             return foreignKeySqlName(withAssociationTargets: targetNames)
-        } else if case let .hasOne(_, targetNames) = association {
+        } else if case let .hasOne(_, _, targetNames) = association {
             return foreignKeySqlName(withAssociationTargets: targetNames)
         }
         return name
