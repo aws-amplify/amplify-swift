@@ -28,7 +28,7 @@ extension Post4 {
     model.fields(
       .field(post4.postId, is: .required, ofType: .string),
       .field(post4.title, is: .required, ofType: .string),
-      .hasMany(post4.comments, is: .optional, ofType: Comment4.self, associatedWith: Comment4.keys.post4CommentsPostId),
+      .hasMany(post4.comments, is: .optional, ofType: Comment4.self, associatedFields: [Comment4.keys.post4CommentsPostId, Comment4.keys.post4CommentsTitle]),
       .field(post4.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(post4.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )

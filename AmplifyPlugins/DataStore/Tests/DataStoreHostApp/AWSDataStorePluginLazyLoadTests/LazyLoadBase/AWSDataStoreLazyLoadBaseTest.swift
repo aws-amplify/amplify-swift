@@ -189,18 +189,18 @@ class AWSDataStoreLazyLoadBaseTest: XCTestCase {
     }
     
     enum AssertListState {
-        case isNotLoaded(associatedId: String, associatedField: String)
+        case isNotLoaded(associatedIds: [String], associatedFields: [String])
         case isLoaded(count: Int)
     }
     
     func assertList<M: Model>(_ list: List<M>, state: AssertListState) {
         switch state {
-        case .isNotLoaded(let expectedAssociatedId, let expectedAssociatedField):
-            if case .notLoaded(let associatedIdentifiers, let associatedField) = list.listProvider.getState() {
-                XCTAssertEqual(associatedIdentifiers.first, expectedAssociatedId)
-                XCTAssertEqual(associatedField, expectedAssociatedField)
+        case .isNotLoaded(let expectedAssociatedIds, let expectedAssociatedFields):
+            if case .notLoaded(let associatedIdentifiers, let associatedFields) = list.listProvider.getState() {
+                XCTAssertEqual(associatedIdentifiers, expectedAssociatedIds)
+                XCTAssertEqual(associatedFields, expectedAssociatedFields)
             } else {
-                XCTFail("It should be not loaded with expected associatedId \(expectedAssociatedId) associatedField \(expectedAssociatedField)")
+                XCTFail("It should be not loaded with expected associatedIds \(expectedAssociatedIds) associatedFields \(expectedAssociatedFields)")
             }
         case .isLoaded(let count):
             if case .loaded(let loadedList) = list.listProvider.getState() {

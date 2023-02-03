@@ -74,7 +74,7 @@ final class GraphQLLazyLoadDefaultPKTests: GraphQLLazyLoadBaseTest {
         
         let queriedParent = try await query(.get(DefaultPKParent.self, byId: savedParent.id))!
         assertList(queriedParent.children!, state: .isNotLoaded(associatedIdentifiers: [queriedParent.id],
-                                                                associatedField: "parent"))
+                                                                associatedFields: ["parent"]))
         try await queriedParent.children?.fetch()
         assertList(queriedParent.children!, state: .isLoaded(count: 1))
         

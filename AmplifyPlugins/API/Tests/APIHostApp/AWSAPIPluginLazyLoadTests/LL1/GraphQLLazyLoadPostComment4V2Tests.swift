@@ -39,7 +39,7 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
         
         // The loaded post should have comments that are also not loaded
         let comments = loadedPost.comments!
-        assertList(comments, state: .isNotLoaded(associatedIdentifiers: [createdPost.id], associatedField: "post"))
+        assertList(comments, state: .isNotLoaded(associatedIdentifiers: [createdPost.id], associatedFields: ["post"]))
         // load the comments
         try await comments.fetch()
         assertList(comments, state: .isLoaded(count: 1))
@@ -60,7 +60,7 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
         XCTAssertEqual(loadedPost.id, post.id)
         // The loaded post should have comments that are not loaded
         let comments = loadedPost.comments!
-        assertList(comments, state: .isNotLoaded(associatedIdentifiers: [post.id], associatedField: "post"))
+        assertList(comments, state: .isNotLoaded(associatedIdentifiers: [post.id], associatedFields: ["post"]))
         // load the comments
         try await comments.fetch()
         assertList(comments, state: .isLoaded(count: 1))
@@ -175,7 +175,7 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
         _ = try await mutate(.create(comment))
         let queriedPost = try await query(.get(Post.self, byId: post.id))!
         let comments = queriedPost.comments!
-        assertList(comments, state: .isNotLoaded(associatedIdentifiers: [post.id], associatedField: "post"))
+        assertList(comments, state: .isNotLoaded(associatedIdentifiers: [post.id], associatedFields: ["post"]))
         try await comments.fetch()
         assertList(comments, state: .isLoaded(count: 1))
         assertLazyReference(comments.first!._post, state: .notLoaded(identifiers: [.init(name: "id", value: post.id)]))
@@ -217,7 +217,7 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
         let queriedPosts = try await listQuery(.list(Post.self, where: Post.keys.id == post.id))
         assertList(queriedPosts, state: .isLoaded(count: 1))
         assertList(queriedPosts.first!.comments!,
-                   state: .isNotLoaded(associatedIdentifiers: [post.id], associatedField: "post"))
+                   state: .isNotLoaded(associatedIdentifiers: [post.id], associatedFields: ["post"]))
         
         let queriedComments = try await listQuery(.list(Comment.self, where: Comment.keys.id == comment.id))
         assertList(queriedComments, state: .isLoaded(count: 1))
@@ -394,7 +394,7 @@ final class GraphQLLazyLoadPostComment4V2Tests: GraphQLLazyLoadBaseTest {
                         switch result {
                         case .success(let createdPost):
                             log.verbose("Successfully got createdPost from subscription: \(createdPost)")
-                            assertList(createdPost.comments!, state: .isNotLoaded(associatedIdentifiers: [post.id], associatedField: "post"))
+                            assertList(createdPost.comments!, state: .isNotLoaded(associatedIdentifiers: [post.id], associatedFields: ["post"]))
                             await onCreatedPost.fulfill()
                         case .failure(let error):
                             XCTFail("Got failed result with \(error.errorDescription)")

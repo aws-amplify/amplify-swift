@@ -25,10 +25,10 @@ public enum ModelListProviderState<Element: Model> {
     /// If the list represents an association between two models, the `associatedIdentifiers` will
     /// hold the information necessary to query the associated elements (e.g. comments of a post)
     ///
-    /// The associatedField represents the field to which the owner of the `List` is linked to.
+    /// The associatedFields represents the field to which the owner of the `List` is linked to.
     /// For example, if `Post.comments` is associated with `Comment.post` the `List<Comment>`
     /// of `Post` will have a reference to the `post` field in `Comment`.
-    case notLoaded(associatedIdentifiers: [String], associatedField: String)
+    case notLoaded(associatedIdentifiers: [String], associatedFields: [String])
     case loaded([Element])
 }
 

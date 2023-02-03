@@ -10,24 +10,18 @@ import Amplify
 import Combine
 
 public struct DataStoreListDecoder: ModelListDecoder {
-
+    
     struct Metadata: Codable {
-        let associatedId: String
-        let associatedField: String
-        
-        init(associatedId: String, associatedField: String) {
-            self.associatedId = associatedId
-            self.associatedField = associatedField
-        }
+        let dataStoreAssociatedIdentifiers: [String]
+        let dataStoreAssociatedFields: [String]
     }
     
     /// Creates a data structure that is capable of initializing a `List<M>` with
     /// lazy-load capabilities when the list is being decoded.
-    static func lazyInit(associatedId: String, associatedWith: String?) -> [String: Any?] {
+    static func lazyInit(associatedIds: [String], associatedWith: [String]) -> [String: Any?] {
         return [
-            "associatedId": associatedId,
-            "associatedField": associatedWith,
-            "elements": []
+            "dataStoreAssociatedIdentifiers": associatedIds,
+            "dataStoreAssociatedFields": associatedWith,
         ]
     }
     
@@ -36,6 +30,10 @@ public struct DataStoreListDecoder: ModelListDecoder {
     }
     
     public static func shouldDecodeToDataStoreListProvider<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> DataStoreListProvider<ModelType>? {
+        if let metadata = try? Metadata.init(from: decoder) {
+            return DataStoreListProvider<ModelType>(metadata: metadata)
+        }
+        
         let json = try? JSONValue(from: decoder)
         switch json {
         case .array:
@@ -45,13 +43,6 @@ public struct DataStoreListDecoder: ModelListDecoder {
             } catch {
                 return nil
             }
-        case .object(let associationData):
-            if case let .string(associatedId) = associationData["associatedId"],
-               case let .string(associatedField) = associationData["associatedField"] {
-                return DataStoreListProvider<ModelType>(associatedIdentifiers: [associatedId],
-                                                        associatedField: associatedField)
-            }
-            return nil
         default:
             return nil
         }
