@@ -131,7 +131,7 @@ extension QueryPredicateOperation: GraphQLFilterConvertible {
             }
             let targetName = targetNames.first ?? defaultFieldName
             return targetName
-        case .hasOne(_, let targetNames):
+        case .hasOne(_, _, let targetNames):
             guard targetNames.count == 1 else {
                 preconditionFailure("QueryPredicate not supported on associated field with composite key: \(field)")
             }
