@@ -46,6 +46,35 @@ extension Model {
         return identifier(schema: schema).stringValue
     }
 
+    public static func identifier(from id: String) -> ModelIdentifierProtocol {
+        return DefaultModelIdentifier<Self>.makeDefault(id: id)
+    }
+
+    public static func identifier(
+        of lazyReferenceField: ModelField,
+        from assoicatedModelName: String,
+        associatedFieldsData: [String: Persistable?]
+    ) -> ModelIdentifierProtocol? {
+        // according to codegen logic:
+        // https://github.com/aws-amplify/amplify-codegen/blob/main/packages/appsync-modelgen-plugin/src/utils/process-connections.ts#L41
+        // associated field name has format ${type}${field}${primaryKey} in camel case.
+        let prefixLength = assoicatedModelName.count + lazyReferenceField.name.count
+        let primaryKeyFields: [ModelIdentifierProtocol.Field] = schema.primaryKey.fields.map { primaryKeyField in
+            let nomalizeKey: (String) -> String? = { key in
+                guard key.count - prefixLength >= 0 else { return nil }
+                return String(key.suffix(key.count - prefixLength)).camelCased()
+            }
+
+            return associatedFieldsData
+                .first { nomalizeKey($0.key) == primaryKeyField.name }
+                .flatMap(\.value)
+                .map { (name: primaryKeyField.name, value: $0) }
+        }.compactMap({ $0 })
+
+        guard !primaryKeyFields.isEmpty else { return nil }
+        return ModelIdentifier<Self, ModelIdentifierFormat.Custom>(fields: primaryKeyFields)
+    }
+
     public func identifier(schema modelSchema: ModelSchema) -> ModelIdentifierProtocol {
         // resolve current instance identifier fields
         let fields: ModelIdentifierProtocol.Fields = modelSchema.primaryKey.fields.map {

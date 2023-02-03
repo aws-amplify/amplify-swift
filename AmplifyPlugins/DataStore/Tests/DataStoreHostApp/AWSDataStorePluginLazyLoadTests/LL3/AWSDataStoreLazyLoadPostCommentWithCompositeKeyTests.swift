@@ -21,7 +21,7 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
         let comment = Comment(content: "content", post: post)
         let savedPost = try await saveAndWaitForSync(post)
         let savedComment = try await saveAndWaitForSync(comment)
-        try await assertComment(savedComment, hasEagerLoaded: savedPost)
+        try await assertComment(savedComment, canLazyLoad: savedPost)
         try await assertPost(savedPost, canLazyLoad: savedComment)
         let queriedComment = try await query(for: savedComment)
         try await assertComment(queriedComment, canLazyLoad: savedPost)

@@ -99,7 +99,7 @@ class AWSDataStoreLazyLoadPhoneCallTests: AWSDataStoreLazyLoadBaseTest {
         XCTAssertEqual(savedPhoneCall.phoneCallTranscriptId, transcript.id)
         let savedTranscript = try await saveAndWaitForSync(transcript)
         assertLazyReference(savedTranscript._phoneCall,
-                            state: .loaded(model: savedPhoneCall))
+                            state: .notLoaded(identifiers: [.init(name: "id", value: savedPhoneCall.id)]))
         
         let queriedTranscript = try await query(for: savedTranscript)
         assertLazyReference(queriedTranscript._phoneCall,

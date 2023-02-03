@@ -166,24 +166,24 @@ extension Model {
         }
 
         let fieldNames = getFieldNameForAssociatedModels(modelField: field)
+
+        let foreignKeyValues = fieldNames.map {
+            getFieldValue(for: $0, modelSchema: self.schema)?.flatMap({$0 as? Persistable})
+        }
+
         var values = getModelIdentifierValues(from: value, modelSchema: associateModelSchema)
 
         if fieldNames.count != values.count {
-            // if the field is required, the associated field keys and values should match
-            if field.isRequired {
-                preconditionFailure(
-                """
-                Associated model target names and values for field \(field.name) of model \(modelName) mismatch.
-                There is a possibility that is an issue with the generated models.
-                """
-                )
-            } else if mutationType == .update {
-                // otherwise, pad the values with `nil` to account for removals of associations on updates.
+            if field.isAssociationOwner && fieldNames.count > 1 && values.compactMap({$0}).count == 1 {
+                values = String(describing: values.first!!).split(separator: "#").map {
+                    $0.trimmingCharacters(in: CharacterSet(charactersIn: "\""))
+                }
+            } else {
                 values = [Persistable?](repeating: nil, count: fieldNames.count)
             }
         }
 
-        return Array(zip(fieldNames, values))
+        return zip(fieldNames, zip(values, foreignKeyValues)).map { ($0.0, $0.1.0 ?? $0.1.1) }
     }
 
     /// Given a model and its schema, returns the values of its identifier (primary key).
@@ -192,7 +192,10 @@ extension Model {
     ///   - value: model value
     ///   - modelSchema: model's schema
     /// - Returns: array of values of its primary key
-    private func getModelIdentifierValues(from value: Any, modelSchema: ModelSchema) -> [Persistable?] {
+    private func getModelIdentifierValues(
+        from value: Any,
+        modelSchema: ModelSchema
+    ) -> [Persistable?] {
         if let modelValue = value as? Model {
             return modelValue.identifier(schema: modelSchema).values
         } else if let optionalModel = value as? Model?,

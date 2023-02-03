@@ -25,8 +25,11 @@ public struct DataStoreModelDecoder: ModelProviderDecoder {
     }
     
     /// Create a SQLite payload that is capable of initializting a LazyReference, by decoding to `DataStoreModelDecoder.Metadata`.
-    static func lazyInit(identifier: Binding?) -> [String: Binding?] {
-        return ["identifier": identifier, "source": DataStoreSource]
+    static func lazyInit(identifier: ModelIdentifierProtocol?) -> [String: Binding?] {
+        return [
+            "identifier": identifier?.stringValue,
+            "source": DataStoreSource
+        ]
     }
     
     public static func decode<ModelType: Model>(modelType: ModelType.Type, decoder: Decoder) -> AnyModelProvider<ModelType>? {

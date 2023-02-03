@@ -53,7 +53,7 @@ extension Statement: StatementModelConvertible {
         Amplify.Logging.logger(forCategory: .dataStore)
     }
 
-    
+
     func convert<M: Model>(to modelType: M.Type,
                            withSchema modelSchema: ModelSchema,
                            using statement: SelectStatement,
@@ -66,7 +66,7 @@ extension Statement: StatementModelConvertible {
         let result: StatementResult<M> = try StatementResult.from(dictionary: values)
         return result.elements
     }
-    
+
     func convertToModelValues<M: Model>(to modelType: M.Type,
                                         withSchema modelSchema: ModelSchema,
                                         using statement: SelectStatement,
@@ -120,14 +120,36 @@ extension Statement: StatementModelConvertible {
         case (.collection, _):
             return convertCollection(field: field, schema: schema, from: element, path: path)
 
-        case (.model, false):
-            let foreignKey = field.association.map(getTargetNames).map {
+        case let (.model(modelName), false):
+            guard let modelType = ModelRegistry.modelType(from: modelName)
+            else {
+                return nil
+            }
+
+            let associatedFieldNames = field.association.map(getTargetNames)
+            let foreignKeyColumnName = associatedFieldNames.map {
                 field.foreignKeySqlName(withAssociationTargets: $0)
             }
-            let targetBinding = foreignKey.flatMap {
+
+            let associatedFieldValue = foreignKeyColumnName.flatMap {
                 getValue(from: element, by: path + [$0])
             }
-            return DataStoreModelDecoder.lazyInit(identifier: targetBinding)
+
+            if let identifier = associatedFieldValue.map({ modelType.identifier(from: String(describing: $0)) }) {
+                return DataStoreModelDecoder.lazyInit(identifier: identifier)
+            } else {
+                let associatedFieldsData = field.association.map(getTargetNames)?.reduce([String: String?]()) { result, fieldName in
+                    let value = getValue(from: element, by: path + [fieldName]).map({ String(describing:$0) })
+                    return result.merging([fieldName: value]) { $1 }
+                }
+
+                return DataStoreModelDecoder.lazyInit(
+                    identifier: associatedFieldsData.flatMap {
+                        modelType.identifier(of: field, from: modelName, associatedFieldsData: $0)
+                    }
+                )
+            }
+
 
         case let (.model(modelName), true):
             guard let modelSchema = getModelSchema(for: modelName, with: statement)
@@ -178,7 +200,7 @@ extension Statement: StatementModelConvertible {
                 return DataStoreListDecoder.lazyInit(associatedIds: primaryKeyValues,
                                                      associatedWith: associatedFieldNames)
             }
-            
+
         }
 
         return nil
