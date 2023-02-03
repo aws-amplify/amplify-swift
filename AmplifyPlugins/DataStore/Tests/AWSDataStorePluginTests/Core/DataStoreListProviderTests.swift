@@ -48,7 +48,8 @@ class DataStoreListProviderTests: XCTestCase {
     }
 
     func testInitWithAssociationDataShouldBeInNotLoadedState() {
-        let provider = DataStoreListProvider<Post4>(associatedIdentifiers: ["id"], associatedField: "field")
+        let provider = DataStoreListProvider<Post4>(metadata: .init(dataStoreAssociatedIdentifiers: ["id"],
+                                                                    dataStoreAssociatedFields: ["field"]))
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
             return
@@ -62,7 +63,8 @@ class DataStoreListProviderTests: XCTestCase {
                                  Comment4(content: "content")])
             }
 
-        let provider = DataStoreListProvider<Comment4>(associatedIdentifiers: ["postId"], associatedField: "post")
+        let provider = DataStoreListProvider<Comment4>(metadata: .init(dataStoreAssociatedIdentifiers: ["postId"],
+                                                                    dataStoreAssociatedFields: ["post"]))
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
             return
@@ -93,8 +95,9 @@ class DataStoreListProviderTests: XCTestCase {
             QueryModelsResponder<Comment4> { _, _, _, _ in
                 return .failure(DataStoreError.internalOperation("", "", nil))
             }
-
-        let provider = DataStoreListProvider<Comment4>(associatedIdentifiers: ["postId"], associatedField: "post")
+        
+        let provider = DataStoreListProvider<Comment4>(metadata: .init(dataStoreAssociatedIdentifiers: ["postId"],
+                                                                    dataStoreAssociatedFields: ["post"]))
         guard case .notLoaded = provider.loadedState else {
             XCTFail("Should not be loaded")
             return

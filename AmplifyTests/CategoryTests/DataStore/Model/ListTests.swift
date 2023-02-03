@@ -59,7 +59,7 @@ class ListTests: XCTestCase {
         }
 
         public func getState() -> ModelListProviderState<Element> {
-            state ?? .notLoaded(associatedIdentifiers: [""], associatedField: "")
+            state ?? .notLoaded(associatedIdentifiers: [""], associatedFields: [""])
         }
         
         public func load(completion: (Result<[Element], CoreError>) -> Void) {

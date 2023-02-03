@@ -113,10 +113,9 @@ public struct AppSyncModelMetadataUtils {
                 // Scenario: Has-many items array is missing.
                 // Store the association data (parent's identifier and field name)
                 // This allows the list to perform lazy loading of child items using parent identifier as the predicate
-                if let associatedField = modelField.associatedField,
-                   modelJSON[modelField.name] == nil {
+                if modelJSON[modelField.name] == nil {
                     let appSyncModelMetadata = AppSyncListDecoder.Metadata(appSyncAssociatedIdentifiers: identifiers,
-                                                                           appSyncAssociatedField: associatedField.name,
+                                                                           appSyncAssociatedFields: modelField.associatedFieldNames,
                                                                            apiName: apiName)
                     if let serializedMetadata = try? encoder.encode(appSyncModelMetadata),
                        let metadataJSON = try? decoder.decode(JSONValue.self, from: serializedMetadata) {

@@ -46,8 +46,8 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
             XCTFail("Missing postTags on post")
             return
         }
-        assertList(postTags, state: .isNotLoaded(associatedId: post.identifier,
-                                                 associatedField: "postWithTagsCompositeKey"))
+        assertList(postTags, state: .isNotLoaded(associatedIds: [post.identifier],
+                                                 associatedFields: ["postWithTagsCompositeKey"]))
         try await postTags.fetch()
         assertList(postTags, state: .isLoaded(count: 1))
     }
@@ -58,8 +58,8 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
             XCTFail("Missing postTags on post")
             return
         }
-        assertList(postTags, state: .isNotLoaded(associatedId: tag.identifier,
-                                                 associatedField: "tagWithCompositeKey"))
+        assertList(postTags, state: .isNotLoaded(associatedIds: [tag.identifier],
+                                                 associatedFields: ["tagWithCompositeKey"]))
         try await postTags.fetch()
         assertList(postTags, state: .isLoaded(count: 1))
     }
@@ -110,8 +110,8 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
             XCTFail("Missing postTags on post")
             return
         }
-        assertList(postTags, state: .isNotLoaded(associatedId: post.identifier,
-                                                 associatedField: "postWithTagsCompositeKey"))
+        assertList(postTags, state: .isNotLoaded(associatedIds: [post.identifier],
+                                                 associatedFields: ["postWithTagsCompositeKey"]))
         try await postTags.fetch()
         assertList(postTags, state: .isLoaded(count: 0))
     }
@@ -121,8 +121,8 @@ final class AWSDataStoreLazyLoadPostTagTests: AWSDataStoreLazyLoadBaseTest {
             XCTFail("Missing postTags on post")
             return
         }
-        assertList(postTags, state: .isNotLoaded(associatedId: tag.identifier,
-                                                 associatedField: "tagWithCompositeKey"))
+        assertList(postTags, state: .isNotLoaded(associatedIds: [tag.identifier],
+                                                 associatedFields: ["tagWithCompositeKey"]))
         try await postTags.fetch()
         assertList(postTags, state: .isLoaded(count: 0))
     }

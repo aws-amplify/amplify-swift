@@ -57,8 +57,8 @@ class DataStoreListDecoderTests: BaseDataStoreTests {
 
     func testDataStoreListDecoderShouldDecodeFromAssociationData() throws {
         let json: JSONValue = [
-            "associatedId": "postId",
-            "associatedField": "post"
+            "dataStoreAssociatedIdentifiers": ["postId"],
+            "dataStoreAssociatedFields": ["post"]
         ]
         let data = try encoder.encode(json)
         let harness = try decoder.decode(DataStoreListDecoderHarness<Post4>.self, from: data)
@@ -72,7 +72,7 @@ class DataStoreListDecoderTests: BaseDataStoreTests {
             return
         }
         XCTAssertEqual(associatedIdentifiers, ["postId"])
-        XCTAssertEqual(associatedField, "post")
+        XCTAssertEqual(associatedField, ["post"])
     }
 
     func testDataStoreListDecoderShouldNotDecodeForInvalidAssociationData() throws {

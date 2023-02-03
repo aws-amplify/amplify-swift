@@ -22,11 +22,11 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
         /// If the list represents an association between two models, the `associatedIdentifiers` will
         /// hold the information necessary to query the associated elements (e.g. comments of a post)
         ///
-        /// The associatedField represents the field to which the owner of the `List` is linked to.
+        /// The associatedFields represents the field to which the owner of the `List` is linked to.
         /// For example, if `Post.comments` is associated with `Comment.post` the `List<Comment>`
         /// of `Post` will have a reference to the `post` field in `Comment`.
         case notLoaded(associatedIdentifiers: [String],
-                       associatedField: String)
+                       associatedFields: [String])
 
         /// If the list is retrieved directly, this state holds the underlying data, nextToken used to create
         /// the subsequent GraphQL request, and previous filter used to create the loaded list
@@ -58,7 +58,7 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
 
     convenience init(metadata: AppSyncListDecoder.Metadata) {
         self.init(associatedIdentifiers: metadata.appSyncAssociatedIdentifiers,
-                  associatedField: metadata.appSyncAssociatedField,
+                  associatedFields: metadata.appSyncAssociatedFields,
                   apiName: metadata.apiName)
     }
 
@@ -76,9 +76,9 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
     }
 
     // Internal initializer for testing
-    init(associatedIdentifiers: [String], associatedField: String, apiName: String? = nil) {
+    init(associatedIdentifiers: [String], associatedFields: [String], apiName: String? = nil) {
         self.loadedState = .notLoaded(associatedIdentifiers: associatedIdentifiers,
-                                      associatedField: associatedField)
+                                      associatedFields: associatedFields)
         self.apiName = apiName
     }
 
@@ -86,8 +86,8 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
 
     public func getState() -> ModelListProviderState<Element> {
         switch loadedState {
-        case .notLoaded(let associatedIdentifiers, let associatedField):
-            return .notLoaded(associatedIdentifiers: associatedIdentifiers, associatedField: associatedField)
+        case .notLoaded(let associatedIdentifiers, let associatedFields):
+            return .notLoaded(associatedIdentifiers: associatedIdentifiers, associatedFields: associatedFields)
         case .loaded(let elements, _, _):
             return .loaded(elements)
         }
@@ -97,22 +97,24 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
         switch loadedState {
         case .loaded(let elements, _, _):
             return elements
-        case .notLoaded(let associatedIdentifiers, let associatedField):
-            return try await load(associatedIdentifiers: associatedIdentifiers, associatedField: associatedField)
+        case .notLoaded(let associatedIdentifiers, let associatedFields):
+            return try await load(associatedIdentifiers: associatedIdentifiers, associatedFields: associatedFields)
         }
     }
     
     //// Internal `load` to perform the retrieval of the first page and storing it in memory
     func load(associatedIdentifiers: [String],
-              associatedField: String) async throws -> [Element] {
+              associatedFields: [String]) async throws -> [Element] {
         let filter: GraphQLFilter
-        if associatedIdentifiers.count == 1, let associatedId = associatedIdentifiers.first {
+        if associatedIdentifiers.count == 1,
+            let associatedId = associatedIdentifiers.first,
+            let associatedField = associatedFields.first {
             let predicate: QueryPredicate = field(associatedField) == associatedId
             filter = predicate.graphQLFilter(for: Element.schema)
         } else {
             var queryPredicates: [QueryPredicateOperation] = []
-            let columnNames = columnNames(field: associatedField, Element.schema)
             
+            let columnNames = columnNames(fields: associatedFields, Element.schema)
             let predicateValues = zip(columnNames, associatedIdentifiers)
             for (identifierName, identifierValue) in predicateValues {
                 queryPredicates.append(QueryPredicateOperation(field: identifierName,
@@ -220,10 +222,10 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
     
     public func encode(to encoder: Encoder) throws {
         switch loadedState {
-        case .notLoaded(let associatedIdentifiers, let associatedField):
+        case .notLoaded(let associatedIdentifiers, let associatedFields):
             let metadata = AppSyncListDecoder.Metadata.init(
                 appSyncAssociatedIdentifiers: associatedIdentifiers,
-                appSyncAssociatedField: associatedField,
+                appSyncAssociatedFields: associatedFields,
                 apiName: apiName)
             var container = encoder.singleValueContainer()
             try container.encode(metadata)
@@ -241,9 +243,14 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
     // MARK: - Helpers
     
     /// Retrieve the column names for the specified field `field` for this schema.
-    func columnNames(field: String, _ modelSchema: ModelSchema) -> [String] {
-        guard let modelField = modelSchema.field(withName: field) else {
-            return [field]
+    func columnNames(fields: [String], _ modelSchema: ModelSchema) -> [String] {
+        // Associated field names have already been resolved from the parent model's has-many targetNames
+        if fields.count > 1 {
+            return fields
+        }
+        // Resolve the ModelField of the field reference
+        guard let field = fields.first, let modelField = modelSchema.field(withName: field) else {
+            return fields
         }
         let defaultFieldName = modelSchema.name.camelCased() + field.pascalCased() + "Id"
         switch modelField.association {
@@ -254,7 +261,7 @@ public class AppSyncListProvider<Element: Model>: ModelListProvider {
             }
             return targetNames
         default:
-            return [field]
+            return fields
         }
     }
     

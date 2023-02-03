@@ -19,7 +19,7 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
         let blog = Blog(name: "name")
         let createdBlog = try await mutate(.create(blog))
         let queriedBlog = try await query(for: createdBlog)!
-        assertList(queriedBlog.posts!, state: .isNotLoaded(associatedIdentifiers: [blog.id], associatedField: "blog"))
+        assertList(queriedBlog.posts!, state: .isNotLoaded(associatedIdentifiers: [blog.id], associatedFields: ["blog"]))
         try await queriedBlog.posts?.fetch()
         assertList(queriedBlog.posts!, state: .isLoaded(count: 0))
     }
@@ -29,7 +29,7 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
         let post = Post(name: "name", randomId: "randomId")
         let createdPost = try await mutate(.create(post))
         let queriedPost = try await query(for: createdPost)!
-        assertList(queriedPost.comments!, state: .isNotLoaded(associatedIdentifiers: [post.id], associatedField: "post"))
+        assertList(queriedPost.comments!, state: .isNotLoaded(associatedIdentifiers: [post.id], associatedFields: ["post"]))
         try await queriedPost.comments?.fetch()
         assertList(queriedPost.comments!, state: .isLoaded(count: 0))
         
@@ -44,7 +44,7 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
         let createdPost = try await mutate(.create(post))
         
         // the blog can load the posts
-        assertList(createdBlog.posts!, state: .isNotLoaded(associatedIdentifiers: [blog.id], associatedField: "blog"))
+        assertList(createdBlog.posts!, state: .isNotLoaded(associatedIdentifiers: [blog.id], associatedFields: ["blog"]))
         try await createdBlog.posts?.fetch()
         assertList(createdBlog.posts!, state: .isLoaded(count: 1))
         assertLazyReference(createdBlog.posts!.first!._blog, state: .notLoaded(identifiers: [.init(name: "id", value: blog.id)]))
@@ -53,7 +53,7 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
         assertLazyReference(createdPost._blog, state: .notLoaded(identifiers: [.init(name: "id", value: blog.id)]))
         let loadedBlog = try await createdPost.blog!
         assertLazyReference(createdPost._blog, state: .loaded(model: loadedBlog))
-        assertList(loadedBlog.posts!, state: .isNotLoaded(associatedIdentifiers: [blog.id], associatedField: "blog"))
+        assertList(loadedBlog.posts!, state: .isNotLoaded(associatedIdentifiers: [blog.id], associatedFields: ["blog"]))
     }
     
     func testSaveComment() async throws {
@@ -73,10 +73,10 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
         // the comment can load the post
         assertLazyReference(createdComment._post, state: .notLoaded(identifiers: [.init(name: "id", value: post.id)]))
         let loadedPost = try await createdComment.post!
-        assertList(loadedPost.comments!, state: .isNotLoaded(associatedIdentifiers: [post.id], associatedField: "post"))
+        assertList(loadedPost.comments!, state: .isNotLoaded(associatedIdentifiers: [post.id], associatedFields: ["post"]))
         
         // the post can load the comment
-        assertList(createdPost.comments!, state: .isNotLoaded(associatedIdentifiers: [post.id], associatedField: "post"))
+        assertList(createdPost.comments!, state: .isNotLoaded(associatedIdentifiers: [post.id], associatedFields: ["post"]))
         try await createdPost.comments?.fetch()
         assertList(createdPost.comments!, state: .isLoaded(count: 1))
     }
@@ -95,13 +95,13 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
         let loadedPost = try await createdComment.post!
         assertLazyReference(loadedPost._blog, state: .notLoaded(identifiers: [.init(name: "id", value: blog.id)]))
         let loadedBlog = try await loadedPost.blog!
-        assertList(loadedBlog.posts!, state: .isNotLoaded(associatedIdentifiers: [blog.id], associatedField: "blog"))
+        assertList(loadedBlog.posts!, state: .isNotLoaded(associatedIdentifiers: [blog.id], associatedFields: ["blog"]))
         
         // the blog can load the post and load the comment
-        assertList(createdBlog.posts!, state: .isNotLoaded(associatedIdentifiers: [createdBlog.id], associatedField: "blog"))
+        assertList(createdBlog.posts!, state: .isNotLoaded(associatedIdentifiers: [createdBlog.id], associatedFields: ["blog"]))
         try await createdBlog.posts?.fetch()
         let loadedPost2 = createdBlog.posts!.first!
-        assertList(loadedPost2.comments!, state: .isNotLoaded(associatedIdentifiers: [loadedPost2.id], associatedField: "post"))
+        assertList(loadedPost2.comments!, state: .isNotLoaded(associatedIdentifiers: [loadedPost2.id], associatedFields: ["post"]))
         try await loadedPost2.comments?.fetch()
         assertLazyReference(loadedPost2.comments!.first!._post, state: .notLoaded(identifiers: [.init(name: "id", value: post.id)]))
     }
@@ -179,12 +179,12 @@ final class GraphQLLazyLoadBlogPostComment8V2Tests: GraphQLLazyLoadBaseTest {
         let queriedBlogs = try await listQuery(.list(Blog.self, where: Blog.keys.id == blog.id))
         assertList(queriedBlogs, state: .isLoaded(count: 1))
         assertList(queriedBlogs.first!.posts!,
-                   state: .isNotLoaded(associatedIdentifiers: [blog.id], associatedField: "blog"))
+                   state: .isNotLoaded(associatedIdentifiers: [blog.id], associatedFields: ["blog"]))
         
         let queriedPosts = try await listQuery(.list(Post.self, where: Post.keys.id == post.id))
         assertList(queriedPosts, state: .isLoaded(count: 1))
         assertList(queriedPosts.first!.comments!,
-                   state: .isNotLoaded(associatedIdentifiers: [post.id], associatedField: "post"))
+                   state: .isNotLoaded(associatedIdentifiers: [post.id], associatedFields: ["post"]))
         
         let queriedComments = try await listQuery(.list(Comment.self, where: Comment.keys.id == comment.id))
         assertList(queriedComments, state: .isLoaded(count: 1))

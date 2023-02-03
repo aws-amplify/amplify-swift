@@ -70,8 +70,8 @@ final class AWSDataStoreLazyLoadPostCommentWithCompositeKeyTests: AWSDataStoreLa
             XCTFail("Missing comments on post")
             return
         }
-        assertList(comments, state: .isNotLoaded(associatedId: post.identifier,
-                                                 associatedField: "post"))
+        assertList(comments, state: .isNotLoaded(associatedIds: [post.identifier],
+                                                 associatedFields: ["post"]))
         try await comments.fetch()
         assertList(comments, state: .isLoaded(count: 1))
         guard let comment = comments.first else {
