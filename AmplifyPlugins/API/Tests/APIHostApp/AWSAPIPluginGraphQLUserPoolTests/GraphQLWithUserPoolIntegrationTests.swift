@@ -326,7 +326,7 @@ class GraphQLWithUserPoolIntegrationTests: XCTestCase {
             }
             XCTAssertTrue(!listTodos.items.isEmpty)
         case .failure(let error):
-            print("\(error.underlyingError)")
+            print("\(String(describing: error.underlyingError))")
             XCTFail("Unexpected .failed event: \(error)")
         }
     }
