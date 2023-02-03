@@ -172,8 +172,13 @@ final class InitialSyncOperation: AsynchronousOperation {
         let syncQueryResult: SyncQueryResult
         switch graphQLResult {
         case .failure(let graphQLResponseError):
-            finish(result: .failure(DataStoreError.api(graphQLResponseError)))
-            return
+            if case .partial(let queryResult, let errors) = graphQLResponseError {
+                log.verbose("Received partially-successful response. Continue processing data. Dropping errors: \(errors)")
+                syncQueryResult = queryResult
+            } else {
+                finish(result: .failure(DataStoreError.api(graphQLResponseError)))
+                return
+            }
         case .success(let queryResult):
             syncQueryResult = queryResult
         }
