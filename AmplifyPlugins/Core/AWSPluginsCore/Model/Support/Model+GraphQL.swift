@@ -174,16 +174,27 @@ extension Model {
         var values = getModelIdentifierValues(from: value, modelSchema: associateModelSchema)
 
         if fieldNames.count != values.count {
-            if field.isAssociationOwner && fieldNames.count > 1 && values.compactMap({$0}).count == 1 {
-                values = String(describing: values.first!!).split(separator: "#").map {
-                    $0.trimmingCharacters(in: CharacterSet(charactersIn: "\""))
-                }
+            let defaultValues = [Persistable?](repeating: nil, count: fieldNames.count)
+            if field.isAssociationOwner && fieldNames.count > 1 && values.count == 1 {
+                let discreteKeys = values.compactMap { persistable in
+                    persistable.map({ String(describing: $0) })
+                        .map({ $0.split(separator: ModelIdentifierFormat.Custom.separator.first!) })
+                }.flatMap({ $0 })
+                .map({ $0.trimmingCharacters(in: CharacterSet(charactersIn: "\"")) })
+                values = discreteKeys.count == fieldNames.count ? discreteKeys : defaultValues
             } else {
-                values = [Persistable?](repeating: nil, count: fieldNames.count)
+                values = defaultValues
             }
         }
 
-        return zip(fieldNames, zip(values, foreignKeyValues)).map { ($0.0, $0.1.0 ?? $0.1.1) }
+        let associatedModelIdentifiers = zip(fieldNames, zip(values, foreignKeyValues)).map { ($0.0, $0.1.0 ?? $0.1.1) }
+        if mutationType != .update {
+            return associatedModelIdentifiers.compactMap { key, value in
+                value.map { (key, $0) }
+            }
+        } else {
+            return associatedModelIdentifiers
+        }
     }
 
     /// Given a model and its schema, returns the values of its identifier (primary key).
